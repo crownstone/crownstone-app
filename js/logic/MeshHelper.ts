@@ -1,5 +1,5 @@
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
-import { LOG }                   from '../logging/Log'
+import {LOG, LOGi} from '../logging/Log'
 import { eventBus }              from "../util/EventBus";
 import { conditionMap }          from "../native/advertisements/StoneEntity";
 import {Util} from "../util/Util";
@@ -48,6 +48,17 @@ export class MeshHelper {
       })
   }
 
+  _verifyDirectTarget(commandArray) {
+    for (let i = 0; i < commandArray.length; i++) {
+      let command = commandArray[i];
+      if (command.stoneId === this.connectedCrownstoneId) {
+        return true;
+      }
+    }
+    LOGi.info("MeshHelper: No direct target in set, moving on.")
+    return false;
+  }
+
 
   _handleMultiSwitchCommands() {
     if (this.meshInstruction.multiSwitch.length > 0) {
@@ -55,19 +66,25 @@ export class MeshHelper {
       // get data from set
       let multiSwitchPackets = [];
       let multiSwitchWaitInstructions = [];
-      multiSwitchInstructions.forEach((instruction : multiSwitchPayload) => {
+
+      if (this._verifyDirectTarget(multiSwitchInstructions) === false) {
+        return null;
+      }
+
+      for (let i = 0; i < multiSwitchInstructions.length; i++) {
+        let instruction = multiSwitchInstructions[i]
         if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
           // get the longest timeout and use that
           multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
-          multiSwitchWaitInstructions.push(() => {
-            eventBus.emit(
-              Util.events.getIgnoreTopic(instruction.stoneId),
-              {
-                      timeoutMs: MESH_PROPAGATION_TIMEOUT_MS,
-                      conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: instruction.state}]
-                    }
-            );
-          });
+          // multiSwitchWaitInstructions.push(() => {
+          //   eventBus.emit(
+          //     Util.events.getIgnoreTopic(instruction.stoneId),
+          //     {
+          //             timeoutMs: MESH_PROPAGATION_TIMEOUT_MS,
+          //             conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: instruction.state}]
+          //           }
+          //   );
+          // });
 
           instruction.promise.pending = true;
           MeshHelper._mergeOptions(instruction.options, this.activeOptions);
@@ -76,18 +93,19 @@ export class MeshHelper {
         else {
           LOG.error("MeshHelper: Invalid multiSwitchPackets instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
         }
-      });
+      };
 
       if (multiSwitchPackets.length === 0) {
         return null;
       }
+
       // update the used channels.
       LOG.mesh('MeshHelper: Dispatching ', 'multiSwitchPackets ', multiSwitchPackets);
       return BluenetPromiseWrapper.multiSwitch(multiSwitchPackets)
-        .then((result) => {
-          multiSwitchWaitInstructions.forEach((waitInstruction) => { waitInstruction(); });
-          return result;
-        })
+        // .then((result) => {
+        //   multiSwitchWaitInstructions.forEach((waitInstruction) => { waitInstruction(); });
+        //   return result;
+        // })
     }
     return null;
   }
@@ -98,6 +116,11 @@ export class MeshHelper {
       // get data from set
       let stoneKeepAlivePackets = [];
       let maxTimeout = 0;
+
+      if (this._verifyDirectTarget(keepAliveInstructions) === false) {
+        return null;
+      }
+
       keepAliveInstructions.forEach((instruction : keepAliveStatePayload) => {
         if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.changeState !== undefined) {
           // get the longest timeout and use that
@@ -127,6 +150,10 @@ export class MeshHelper {
   _handleKeepAliveCommands() {
     if (this.meshInstruction.keepAlive.length > 0) {
       LOG.mesh('MeshHelper: Dispatching meshKeepAlive');
+
+      if (this._verifyDirectTarget(this.meshInstruction.keepAlive) === false) {
+        return null;
+      }
 
       // add the promise of this part of the payload to the list that we will need to resolve or reject when the mesh message is delivered.
       // these promises are loaded into the handler when load called.

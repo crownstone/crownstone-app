@@ -1,6 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import { Dimensions, PixelRatio, Platform, StyleSheet, View } from 'react-native'
-import { hex2rgb} from '../util/ColorConverters'
+import {hex2rgb, rgb2hex} from '../util/ColorConverters'
 const DeviceInfo = require('react-native-device-info');
 
 export const deviceModel = DeviceInfo.getModel();
@@ -65,11 +65,31 @@ export let colors : any = {
 
 for (let color in colors) {
   if (colors.hasOwnProperty(color)) {
-    colors[color].rgb = hex2rgb(colors[color].hex);
-    colors[color].rgba = (opacity) => { opacity = Math.min(1,opacity); return 'rgba(' + colors[color].rgb.r + ',' + colors[color].rgb.g + ',' + colors[color].rgb.b + ',' + opacity + ')'};
-    // colors[color].hsv = rgb2hsv(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
-    // colors[color].hsl = rgb2hsl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
-    // colors[color].hcl = rgb2hcl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
+    let clr = colors[color];
+    clr.name = color;
+    clr.rgb = hex2rgb(clr.hex);
+    clr.rgba = (opacity) => { opacity = Math.min(1,opacity); return 'rgba(' + clr.rgb.r + ',' + clr.rgb.g + ',' + clr.rgb.b + ',' + opacity + ')'};
+    /**
+     * Factor 0 means fully initial color, 1 means fully other color
+     * @param otherColor
+     * @param factor
+     * @returns {{name: string; hex: string; rgb: {r: number; g: number; b: number}; rgba: (opacity) => string}}
+     */
+    clr.blend = (otherColor, factor) => {
+      let red   = Math.floor((1-factor) * clr.rgb.r + factor * otherColor.rgb.r);
+      let green = Math.floor((1-factor) * clr.rgb.g + factor * otherColor.rgb.g);
+      let blue  = Math.floor((1-factor) * clr.rgb.b + factor * otherColor.rgb.b);
+      return {
+        name: 'blend:'+color+"_"+otherColor.name+"_"+factor,
+        hex: rgb2hex(red, green, blue),
+        rgb: {r: red, g: green, b: blue},
+        rgba: (opacity) => { opacity = Math.min(1,opacity); return 'rgba(' + red + ',' + green + ',' + blue + ',' + opacity + ')'}
+      };
+    };
+    
+    // clr.hsv = rgb2hsv(clr.rgb.r,clr.rgb.g,clr.rgb.b);
+    // clr.hsl = rgb2hsl(clr.rgb.r,clr.rgb.g,clr.rgb.b);
+    // clr.hcl = rgb2hcl(clr.rgb.r,clr.rgb.g,clr.rgb.b);
   }
 }
 

@@ -23,6 +23,7 @@ import { Views }                     from './Views'
 import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
+import {SettingsMeshTopologyHelp} from "../views/settingsViews/SettingsMeshTopologyHelp";
 
 
 export class Router_IOS extends Component {
@@ -81,6 +82,7 @@ export class Router_IOS extends Component {
             <Scene key="deviceScheduleEdit"             component={Views.DeviceScheduleEdit}         />
             <Scene key="messageAdd"                     component={Views.MessageAdd}                 />
             <Scene key="switchCraftInformation"         component={Views.SwitchCraftInformation}     />
+            <Scene key="settingsMeshTopologyHelp"       component={Views.SettingsMeshTopologyHelp}   />
             <Scene key="deviceIconSelection"            component={Views.DeviceIconSelection}        />
             <Scene key="settingsPluginRecoverStep1"     component={Views.SettingsPluginRecoverStep1} />
             <Scene key="settingsPluginRecoverStep2"     component={Views.SettingsPluginRecoverStep2} />

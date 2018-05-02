@@ -15,6 +15,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import {IconCircle} from "./IconCircle";
 import {eventBus} from "../../util/EventBus";
+import {Scheduler} from "../../logic/Scheduler";
 
 
 class MeshElementClass extends Component<any, any> {
@@ -25,8 +26,11 @@ class MeshElementClass extends Component<any, any> {
   moveAnimationTimeout : any;
   color : any;
 
-  unsubscribeStoreEvents : any;
-  unsubscribeControlEvents : any;
+  unsubscribeControlEvents = [];
+  unsubscribeBeaconEvent : any;
+
+  reachable = false;
+  reachableTimeout : any = null;
 
   constructor(props) {
     super(props);
@@ -34,28 +38,94 @@ class MeshElementClass extends Component<any, any> {
     this.state = {
       scale: new Animated.Value(1),
       opacity: new Animated.Value(1),
+      reachable: new Animated.Value(props.forceReachable === true ? 1 : 0),
+      pulse: new Animated.Value(0),
     };
+
   }
 
 
   componentDidMount() {
-    this.unsubscribeControlEvents = eventBus.on('nodeWasTapped'+this.props.id, (data) => {
+    this.unsubscribeControlEvents.push(eventBus.on('nodeWasTapped'+this.props.id, (data) => {
       this.handleTap(data);
-    });
+    }));
 
-    this.unsubscribeControlEvents = eventBus.on('nodeTouched'+this.props.id, (data) => {
+    this.unsubscribeControlEvents.push(eventBus.on('nodeTouched'+this.props.id, (data) => {
       this.handleTouch(data);
-    });
+    }));
 
-    this.unsubscribeControlEvents = eventBus.on('nodeReleased'+this.props.id, (data) => {
+    this.unsubscribeControlEvents.push(eventBus.on('nodeReleased'+this.props.id, (data) => {
       this.handleTouchReleased(data);
-    })
+    }));
+
+    this.unsubscribeBeaconEvent = eventBus.on('iBeaconOfValidCrownstone', (data) => {
+      if (data.stoneId === this.props.id) {
+        this.isReachable();
+      }
+    });
+  }
+
+  animatePulse() {
+    if (this.reachable === true) {
+      let animations = [];
+      this.state.pulse.stopAnimation();
+      animations.push(Animated.timing(this.state.pulse, { toValue: 1, duration: 50 }))
+      animations.push(Animated.timing(this.state.pulse, { toValue: 0, duration: 250 }))
+      Animated.sequence(animations).start();
+
+      this.delayUnreachable();
+    }
+  }
+
+  delayUnreachable() {
+    if (this.reachableTimeout !== null) {
+      this.reachableTimeout();
+      this.reachableTimeout = null;
+    }
+    this.reachableTimeout =  Scheduler.scheduleCallback(() => { this.setUnreachable() }, 3000);
+  }
+
+  isReachable() {
+    if (this.reachableTimeout !== null) {
+      this.reachableTimeout();
+      this.reachableTimeout = null;
+    }
+
+    if (this.reachable === false) {
+      this.reachable = true;
+      this.state.reachable.stopAnimation();
+      this.state.pulse.stopAnimation();
+      this.state.pulse.setValue(0);
+
+      Animated.timing(this.state.reachable, {toValue: 1, duration: 100}).start(() => { this.animatePulse() });
+    }
+    else {
+      this.animatePulse()
+    }
+  }
+
+  setUnreachable() {
+    if (this.reachableTimeout !== null) {
+      this.reachableTimeout();
+      this.reachableTimeout = null;
+    }
+
+    if (this.reachable === true) {
+      this.reachable = false;
+      this.state.reachable.stopAnimation();
+      this.state.pulse.stopAnimation();
+
+      let animations = [];
+      animations.push(Animated.timing(this.state.reachable, {toValue: 0, duration: 600}))
+      animations.push(Animated.timing(this.state.pulse,     {toValue: 0, duration: 600}))
+      Animated.parallel(animations).start();
+    }
   }
 
 
   componentWillUnmount() {
     clearTimeout(this.moveAnimationTimeout);
-    this.unsubscribeControlEvents();
+    this.unsubscribeControlEvents.forEach((unsub) => { unsub() });
   }
 
 
@@ -65,6 +135,11 @@ class MeshElementClass extends Component<any, any> {
         { scale: this.state.scale },
       ]
     };
+
+    let pulseColor = this.state.pulse.interpolate({
+      inputRange: [0,1],
+      outputRange: ['rgba(255, 255, 255, 1.0)',  colors.green.rgba(1)]
+    });
 
     let width    = 2*this.props.radius;
     let height   = 2*this.props.radius;
@@ -77,10 +152,21 @@ class MeshElementClass extends Component<any, any> {
     return (
       <Animated.View style={[animatedStyle, {position:'absolute', top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity, width:width, height: height, overflow:'hidden'}]}>
         <View style={{position:"absolute", top:0.5*(width-innerWidth),  left:0.5*(width-innerWidth),  width: innerWidth,  height: innerWidth,  borderRadius: 0.5*innerWidth,  borderWidth: 0.03*innerWidth, borderColor: "#fff"}} />
-        <View style={{position:"absolute", top:0.5*(width-innerWidth2), left:0.5*(width-innerWidth2), width: innerWidth2, height: innerWidth2, borderRadius: 0.5*innerWidth2, borderWidth: 0.1*innerWidth2, borderColor: "#fff", backgroundColor:colors.darkBackground.hex}} />
+        <Animated.View style={{
+          position:"absolute",
+          opacity: this.state.reachable,
+          top:0.5*(width-innerWidth2),
+          left:0.5*(width-innerWidth2),
+          width: innerWidth2,
+          height: innerWidth2,
+          borderRadius: 0.5*innerWidth2,
+          borderWidth: 0.1*innerWidth2,
+          borderColor: pulseColor,
+          backgroundColor:colors.darkBackground.hex
+        }} />
         <View style={{position:"absolute", top:0, left:0, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', width:width, height: height, overflow:'hidden'}}>
           <IconCircle icon={this.props.nodeData.locationIcon} size={iconSize} backgroundColor={this.props.nodeData.locationColor} color={colors.white.hex} borderColor={colors.csBlue.hex} style={{position:'relative', top:-0.5*overlap*width, left:0}} />
-          <IconCircle icon={this.props.nodeData.element.config.icon} size={iconSize} backgroundColor={colors.csBlue.hex} color="#fff" borderColor={colors.csBlue.hex} style={{position:'relative', top:0.5*overlap*width, left: -overlap*width}} />
+          <IconCircle icon={this.props.nodeData.deviceIcon} size={iconSize} backgroundColor={colors.csBlue.hex} color="#fff" borderColor={colors.csBlue.hex} style={{position:'relative', top:0.5*overlap*width, left: -overlap*width}} />
         </View>
       </Animated.View>
     )
@@ -118,63 +204,3 @@ class MeshElementClass extends Component<any, any> {
 }
 
 export const MeshElement = Animated.createAnimatedComponent(MeshElementClass);
-
-// ------------------------------------------------------------ //
-// code for when there was an image behind the icon
-// ------------------------------------------------------------ //
-// if (this.props.backgroundImage) {
-//   return (
-//     <View style={{
-//         width: outerDiameter,
-//         height: outerDiameter,
-//         backgroundColor:'transparent'
-//       }}>
-//       <View style={{
-//         borderWidth:borderWidth,
-//         borderColor:this.props.borderColor || '#ffffff',
-//         borderRadius:outerDiameter,
-//         width: outerDiameter,
-//         height: outerDiameter,
-//         backgroundColor:`rgb(${this.props.color.r},${this.props.color.g},${this.props.color.b})`
-//       }}>
-//         <Surface
-//           width={innerDiameter}
-//           height={innerDiameter}
-//           backgroundColor='transparent'>
-//           <CircleCrop>
-//             <ImageHueBlend
-//               r={this.props.color.r/255}
-//               g={this.props.color.g/255}
-//               b={this.props.color.b/255}
-//               blendFactor={0.7}
-//               image={this.props.backgroundImage}
-//             />
-//           </CircleCrop>
-//         </Surface>
-//       </View>
-//       <View style={{
-//         position:'relative',
-//         top:-(1+offset)* outerDiameter,
-//         left:0,
-//         backgroundColor:'transparent',
-//         width:outerDiameter,
-//         height:outerDiameter,
-//         alignItems:'center',
-//         justifyContent:'center'
-//         }}>
-//         <Ionicon name={this.props.icon} size={iconSize} color='#ffffff' />
-//       </View>
-//       <View style={{
-//         position:'relative',
-//         top:-(1.4 + offset)*outerDiameter,
-//         backgroundColor:'transparent',
-//         width:outerDiameter,
-//         height:(0.4+offset)*outerDiameter,
-//         alignItems:'center',
-//         justifyContent:'center'
-//         }}>
-//         <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:iconSize/4}}>{this.props.content.value + ' ' + this.props.content.unit}</Text>
-//       </View>
-//     </View>
-//   );
-// }

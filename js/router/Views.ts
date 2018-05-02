@@ -33,6 +33,7 @@ import { SettingsStoneBleDebug }      from '../views/settingsViews/SettingsStone
 import { SettingsDeveloper }          from '../views/settingsViews/SettingsDeveloper'
 import { SettingsMeshOverview }       from '../views/settingsViews/SettingsMeshOverview'
 import { SettingsMeshTopology}        from '../views/settingsViews/SettingsMeshTopology'
+import { SettingsMeshTopologyHelp }   from "../views/settingsViews/SettingsMeshTopologyHelp";
 import { SettingsSphereOverview }     from '../views/settingsViews/SettingsSphereOverview'
 import { SettingsSphere }             from '../views/settingsViews/SettingsSphere'
 import { SettingsSphereInvite }       from '../views/settingsViews/SettingsSphereInvite'
@@ -81,6 +82,7 @@ export const Views = {
   SettingsFAQ,
   SettingsMeshOverview,
   SettingsMeshTopology,
+  SettingsMeshTopologyHelp,
   SettingsSphereOverview,
   SettingsSphere,
   SettingsSphereInvite,

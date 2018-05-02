@@ -46,7 +46,7 @@ export class SettingsMeshOverview extends Component<any, any> {
 
 
   getNetworks(networks) {
-    let networksAvailable = Object.keys(networks);
+    let networksAvailable = Object.keys(networks).sort((a,b) => {return a > b ? -1 : 1});
     let networkElements = [];
     networksAvailable.forEach((networkKey) => {
       networkElements.push(<Network

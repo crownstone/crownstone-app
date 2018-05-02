@@ -8,6 +8,7 @@ import {
   ScrollView,
   Switch,
   Text,
+  TouchableOpacity,
   View
 } from 'react-native';
 
@@ -20,6 +21,7 @@ import {ForceDirectedView} from "../components/interactiveView/ForceDirectedView
 import {topBarHeight} from "../styles";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import KeepAwake from 'react-native-keep-awake';
+import {Icon} from "../components/Icon";
 const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
@@ -47,7 +49,7 @@ export class SettingsMeshTopology extends Component<any, any> {
   componentDidMount() {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if ( change.meshIdUpdated || change.meshIndicatorUpdated || change.changeStones || change.changeLocations || change.stoneLocationUpdated) {
+      if ( change.meshIdUpdated || change.meshIndicatorUpdated || change.changeStones || change.changeLocations || change.stoneLocationUpdated ) {
         this.forceUpdate();
       }
     });
@@ -64,9 +66,17 @@ export class SettingsMeshTopology extends Component<any, any> {
     );
   }
 
-  getEdgeSettings(edge) {
-    let label = edge.rssi + '';
-    if (edge.rssi > -60) {
+  getEdgeSettings(state, edge) {
+    let label = undefined;
+    if (state.user.developer === true) {
+      label = edge.rssi + '';
+    }
+
+    // item list for the 6 different phases. They fade to eachother.
+    let bounds = [-60, -70, -80, -85, -90, -95];
+
+    if (edge.rssi > bounds[0]) {
+      // 0 .. -60
       return [
         {offset: 0, color: colors.white.hex, thickness: 6, coverage: 1, label: label},
         {offset: -15, color: colors.lightGreen.hex, thickness: 4, coverage: 1},
@@ -75,38 +85,55 @@ export class SettingsMeshTopology extends Component<any, any> {
         {offset: 28, color: colors.green.hex, thickness: 2, coverage: 0.8},
       ]
     }
-    else if (edge.rssi > -70) {
+    else if (edge.rssi > bounds[1]) {
+      // -61 .. -70
+      let factor = 1-Math.abs((edge.rssi - bounds[0])/(bounds[0]-bounds[1]));
       return [
-        {offset: 0, color: colors.lightGreen.hex, thickness: 4, coverage: 1, label: label},
-        {offset: -12, color: colors.green.hex, thickness: 3, coverage: 0.8},
-        {offset: 12, color: colors.green.hex, thickness: 3, coverage: 0.8},
+        {offset: 0,               color: colors.white.blend(colors.lightGreen, 1-factor).hex, thickness: 4 + 2*factor, coverage: 1, label: label},
+        {offset: -12 - factor*3,  color: colors.lightGreen.blend(colors.green, 1-factor).hex, thickness: 3 +factor,    coverage: 0.8 + 0.2*factor},
+        {offset: 12  + factor*3,  color: colors.lightGreen.blend(colors.green, 1-factor).hex, thickness: 3 +factor,    coverage: 0.8 + 0.2*factor},
+        {offset: -28,             color: colors.green.rgba(factor),                           thickness: 2*factor,     coverage: 0.8},
+        {offset: 28,              color: colors.green.rgba(factor),                           thickness: 2*factor,     coverage: 0.8},
       ]
     }
-    else if (edge.rssi > -80) {
+    else if (edge.rssi > bounds[2]) {
+      // -71 .. -80
+      let factor = 1-Math.abs((edge.rssi - bounds[1])/(bounds[1]-bounds[2]));
       return [
-        {offset: 0, color: colors.green.hex, thickness: 4, coverage: 1, label: label},
-        {offset: -12, color: colors.white.hex, thickness: 3, coverage: 0.7},
-        {offset: 12, color: colors.white.hex, thickness: 3, coverage: 0.7},
+        {offset: 0,   color: colors.lightGreen.blend(colors.green, 1-factor).hex, thickness: 4, coverage: 1, label: label},
+        {offset: -12, color: colors.green.blend(colors.white, 1-factor).hex,      thickness: 3, coverage: 0.7 + 0.1*factor},
+        {offset: 12,  color: colors.green.blend(colors.white, 1-factor).hex,      thickness: 3, coverage: 0.7 + 0.1*factor},
+      ];
+    }
+    else if (edge.rssi > bounds[3]) {
+      let factor = 1-Math.abs((edge.rssi - bounds[2])/(bounds[2]-bounds[3]));
+      // -81 .. -85
+      return [
+        {offset: 0,   color: colors.green.blend(colors.lightCsOrange, 1-factor).hex, thickness: 4, coverage: 1, label: label},
+        {offset: -12, color: colors.white.blend(colors.lightCsOrange, 1-factor).hex, thickness: 3, coverage: 0.8 - 0.1*factor},
+        {offset: 12,  color: colors.white.blend(colors.lightCsOrange, 1-factor).hex, thickness: 3, coverage: 0.8 - 0.1*factor},
+      ];
+    }
+    else if (edge.rssi > bounds[4]) {
+      let factor = 1-Math.abs((edge.rssi - bounds[3])/(bounds[3]-bounds[4]))
+      // -86 .. -90
+      return [
+        {offset: 0,   color: colors.lightCsOrange.hex,          thickness: 4, coverage: 1, label: label},
+        {offset: -12, color: colors.lightCsOrange.rgba(factor), thickness: 3*factor, coverage: 0.8},
+        {offset: 12,  color: colors.lightCsOrange.rgba(factor), thickness: 3*factor, coverage: 0.8},
       ]
     }
-    else if (edge.rssi > -85) {
+    else if (edge.rssi > bounds[5]) {
+      let factor = 1-Math.abs((edge.rssi - bounds[4])/(bounds[4]-bounds[5]))
+      // -91 .. -95
       return [
-        {offset: 0, color: colors.lightCsOrange.hex, thickness: 4, coverage: 1, label: label},
-        {offset: -12, color: colors.lightCsOrange.hex, thickness: 3, coverage: 0.8},
-        {offset: 12, color: colors.lightCsOrange.hex, thickness: 3, coverage: 0.8},
+        {offset: 0, color: colors.lightCsOrange.blend(colors.darkCsOrange, 1-factor).rgba(1-factor), thickness: 6 - 2*factor, coverage: 0.8+0.2*factor, label: label},
+        {offset: 0, color: colors.lightCsOrange.blend(colors.darkCsOrange, 1-factor).rgba(factor),   thickness: 6 - 2*factor, coverage: 0.8+0.2*factor, dashArray:"10, 5"},
       ]
-    }
-    else if (edge.rssi > -90) {
-      return [
-        {offset: 0, color: colors.lightCsOrange.hex, thickness: 4, coverage: 1, label: label},
-      ]
-    }
-    else if (edge.rssi > -95) {
-      return [
-        {offset: 0, color: colors.darkCsOrange.hex, thickness: 6, coverage: 0.8, dashArray:"10, 5", label: label},
-      ]
+
     }
     else {
+      // -96 .. -120
       return [
         {offset: 0, color: colors.darkRed.hex, thickness: 6, coverage: 0.8, opacity: 0.3, dashArray:"8, 12", label: label},
       ]
@@ -160,7 +187,7 @@ export class SettingsMeshTopology extends Component<any, any> {
       }
       let element = Util.data.getElement(sphere, stone);
 
-      this.nodeData[stoneId] = {locationIcon: locationIcon, locationTitle:locationTitle, locationColor: locationColor, element: element};
+      this.nodeData[stoneId] = {locationIcon: locationIcon, deviceIcon: element.config.icon, locationTitle:locationTitle, locationColor: locationColor, element: element};
 
       //  if a stone is not in a mesh, do not show any stored connections
       if (!stone.config.meshNetworkId) { return; }
@@ -202,7 +229,7 @@ export class SettingsMeshTopology extends Component<any, any> {
           nodeRadius={this._baseRadius}
           edges={edges}
           renderNode={(id, nodePosition) => { return this.renderNode(id, nodePosition); }}
-          edgeRenderSettings={(edge) => { return this.getEdgeSettings(edge); }}
+          edgeRenderSettings={(edge) => { return this.getEdgeSettings(state, edge); }}
           heightOffset={0}
           options={{
             solver:"forceAtlas2Based",
@@ -214,6 +241,11 @@ export class SettingsMeshTopology extends Component<any, any> {
           }}
         />
         <KeepAwake />
+        <TouchableOpacity
+          onPress={() => { Actions.settingsMeshTopologyHelp() }}
+          style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
+          <Icon name={'ios-help-circle'} size={40} color={colors.white.rgba(0.75)} />
+        </TouchableOpacity>
       </Background>
     );
   }

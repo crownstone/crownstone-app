@@ -75,6 +75,8 @@ export class Router_Android extends Component {
             <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}           />
             <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}      />
             <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}       />
+            <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}       />
+            <Scene key="settingsMeshTopologyHelp"   component={Views.SettingsMeshTopologyHelp}   />
             <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}            />
             <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     />
             <Scene key="settingsSphere"             component={Views.SettingsSphere}             />
