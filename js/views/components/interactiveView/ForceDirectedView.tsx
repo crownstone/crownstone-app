@@ -164,7 +164,13 @@ export class ForceDirectedView extends Component<{
 
       this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
     }
+    else if (nextProps.nodeIds.length !== this.props.nodeIds.length) {
+      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
+    }
     else if (nextProps.nodeIds.join() !== this.props.nodeIds.join()) {
+      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
+    }
+    else if (nextProps.nodeIds.indexOf(null) !== this.props.nodeIds.indexOf(null)) {
       this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
     }
     else {

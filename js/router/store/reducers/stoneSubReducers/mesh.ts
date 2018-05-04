@@ -27,6 +27,10 @@ export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'CLEAR_MESH_TOPOLOGY':
       return {};
+    case 'REMOVE_MESH_LINK':
+      let stateCopy = {...state};
+      delete stateCopy[action.nodeId];
+      return stateCopy;
     default:
       if (action.nodeId !== undefined) {
         if (state[action.nodeId] !== undefined || action.type === "SET_MESH_INDICATOR") {

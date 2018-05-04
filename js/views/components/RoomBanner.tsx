@@ -25,7 +25,7 @@ export class RoomBanner extends Component<any, any> {
       return <Text style={styles.roomImageText}>{this.props.overlayText}</Text>;
     }
     else if (this.props.viewingRemotely === true) {
-      return <Text style={styles.roomImageText}>Viewing Data</Text>;
+      return <Text style={styles.roomImageText}>Not in Sphere</Text>;
     }
     else if (this.props.canDoLocalization === true) {
       if (this.props.presentUsers.length === 0) {

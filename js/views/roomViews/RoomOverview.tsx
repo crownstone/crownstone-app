@@ -39,6 +39,7 @@ import {SphereDeleted} from "../static/SphereDeleted";
 import {RoomDeleted} from "../static/RoomDeleted";
 import {ScaledImage} from "../components/ScaledImage";
 import {preparePictureURI} from "../../util/Util";
+import {ShadedImage} from "../components/ShadedImage";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -294,7 +295,7 @@ export class RoomOverview extends Component<any, any> {
       if (!location) { return <RoomDeleted /> }
       if (location.config.picture) {
         this.roomBackgroundImageAvailable = true;
-        roomBackgroundImage = <Image style={{width: screenWidth, height: screenHeight}}  source={{uri:preparePictureURI(location.config.picture)}}  />;
+        roomBackgroundImage = <ShadedImage style={{width: screenWidth, height: screenHeight}}  source={{uri:preparePictureURI(location.config.picture)}}  />;
       }
     }
 

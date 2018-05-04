@@ -78,6 +78,8 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'getFirmwareVersion' } |
   { commandName : 'getHardwareVersion' } |
   { commandName : 'keepAliveBatchCommand' } |
+  { commandName : 'sendNoOp' } |
+  { commandName : 'sendMeshNoOp' } |
   { commandName : 'getErrors' } |
   { commandName : 'getTime' } |
   { commandName : 'meshSetTime', time: number } |

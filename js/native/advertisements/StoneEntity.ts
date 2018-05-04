@@ -229,17 +229,35 @@ export class StoneEntity {
       return;
     }
 
-    if (rssi >= 0) {
-      return;
-    }
+    // invalid measurement
+    if (rssi > 0) { return; }
 
-    this.store.dispatch({
-      type: 'SET_MESH_INDICATOR',
-      sphereId: this.sphereId,
-      stoneId: this.stoneId,
-      nodeId: externalId,
-      data: {rssi: rssi}
-    });
+    if (rssi === 0) {
+      // there is no connection between these nodes, remove it from both.
+      let actions = [];
+      actions.push({
+        type: 'REMOVE_MESH_LINK',
+        sphereId: this.sphereId,
+        stoneId: this.stoneId,
+        nodeId: externalId,
+      });
+      actions.push({
+        type: 'REMOVE_MESH_LINK',
+        sphereId: this.sphereId,
+        stoneId: externalId,
+        nodeId: this.stoneId,
+      });
+      this.store.batchDispatch(actions);
+    }
+    else {
+      this.store.dispatch({
+        type: 'SET_MESH_INDICATOR',
+        sphereId: this.sphereId,
+        stoneId: this.stoneId,
+        nodeId: externalId,
+        data: {rssi: rssi}
+      });
+    }
   }
 
 

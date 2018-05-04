@@ -22,6 +22,7 @@ import {topBarHeight} from "../styles";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import KeepAwake from 'react-native-keep-awake';
 import {Icon} from "../components/Icon";
+import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
@@ -40,6 +41,9 @@ export class SettingsMeshTopology extends Component<any, any> {
   _baseRadius = 50;
   unsubscribeStoreEvents : any;
   nodeData = {};
+
+  refreshCount = 0
+  refreshAmountRequired = 0
 
   constructor(props) {
     super(props);
@@ -138,7 +142,31 @@ export class SettingsMeshTopology extends Component<any, any> {
         {offset: 0, color: colors.darkRed.hex, thickness: 6, coverage: 0.8, opacity: 0.3, dashArray:"8, 12", label: label},
       ]
     }
+  }
 
+  _refreshMesh(sphereId, stones) {
+    let stoneIds = Object.keys(stones);
+    this.refreshAmountRequired = stoneIds.length;
+    this.refreshCount = 0;
+
+    this.props.eventBus.emit('showProgress', {progress: 0, progressText:'Refreshing Mesh Topology\n\nStarting...'});
+
+    let evaluateRefreshProgress = () => {
+      this.refreshCount += 1
+      if (this.refreshCount >= this.refreshAmountRequired) {
+        this.props.eventBus.emit("hideProgress")
+      }
+      else {
+        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText:'Refreshing Mesh Topology\n\n('+this.refreshCount+' out of '+ this.refreshAmountRequired+")"});
+      }
+    }
+
+    stoneIds.forEach((stoneId) => {
+      BatchCommandHandler.loadPriority(stones[stoneId], stoneId, sphereId, {commandName: 'sendMeshNoOp'}, {}, 2, 'meshNoOp_meshRefresh' + stoneId )
+        .then(() => { evaluateRefreshProgress() })
+        .catch(() => { evaluateRefreshProgress() })
+    })
+    BatchCommandHandler.executePriority()
   }
 
   render() {
@@ -245,6 +273,12 @@ export class SettingsMeshTopology extends Component<any, any> {
           onPress={() => { Actions.settingsMeshTopologyHelp() }}
           style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
           <Icon name={'ios-help-circle'} size={40} color={colors.white.rgba(0.75)} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => { Alert.alert("Refresh Topology", "While the topology updates automatically, if you move a Crownstone out of range of the others " +
+            "it will take a while for the connection to time out. Manually refreshing like this will speed up this process.", [{text:"OK", onPress: () => { this._refreshMesh(sphereId, stones); }}, {text:'Cancel'}]) }}
+          style={{position:'absolute', bottom:0, right:40, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
+          <Icon name={'md-refresh-circle'} size={40} color={colors.white.rgba(0.75)} />
         </TouchableOpacity>
       </Background>
     );

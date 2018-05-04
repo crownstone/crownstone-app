@@ -155,6 +155,8 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-device-info')
+    compile project(':react-native-webgl')
     compile project(':bluenet')
     compile project(':localization-lib-android')
     compile project(':react-native-image-resizer')

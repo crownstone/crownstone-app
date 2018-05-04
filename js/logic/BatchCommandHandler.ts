@@ -179,8 +179,14 @@ class BatchCommandHandlerClass {
               case 'setSwitchCraft':
                 actionPromise = BluenetPromiseWrapper.setSwitchCraft(command.value);
                 break;
-                case 'allowDimming':
+              case 'allowDimming':
                 actionPromise = BluenetPromiseWrapper.allowDimming(command.value);
+                break;
+              case 'sendNoOp':
+                actionPromise = BluenetPromiseWrapper.sendNoOp();
+                break;
+              case 'sendMeshNoOp':
+                actionPromise = BluenetPromiseWrapper.sendMeshNoOp();
                 break;
               case 'lockSwitch':
                 actionPromise = BluenetPromiseWrapper.lockSwitch(command.value);

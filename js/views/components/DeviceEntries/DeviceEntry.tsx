@@ -124,6 +124,7 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _getIcon(element, stone, state) {
+    let customStyle = undefined;
     let color = (
       stone.config.disabled === true ?
           colors.gray.hex :
@@ -175,8 +176,11 @@ export class DeviceEntry extends Component<any, any> {
       );
     }
     else {
+      if (stone.config.disabled) {
+        customStyle = {borderWidth:1, borderColor: colors.darkGray2.hex}
+      }
       return (
-        <AnimatedCircle size={60} color={color}>
+        <AnimatedCircle size={60} color={color} style={customStyle}>
           <Icon name={element.config.icon} size={35} color={'#ffffff'} />
         </AnimatedCircle>
       );

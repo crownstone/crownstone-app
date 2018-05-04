@@ -863,11 +863,9 @@ open class BluenetJS: RCTEventEmitter {
 
     if (batterySavingState) {
       GLOBAL_BLUENET!.bluenet.enableBatterySaving()
-      GLOBAL_BLUENET!.bluenetLocalization.pauseTracking()
     }
     else {
       GLOBAL_BLUENET!.bluenet.disableBatterySaving()
-      GLOBAL_BLUENET!.bluenetLocalization.resumeTracking()
     }
   }
 
