@@ -521,7 +521,6 @@ export class ForceDirectedView extends Component<{
     this.physicsEngine.setOptions(this.props.options);
     this.physicsEngine.load(this.nodes, this.edges);
     this.physicsEngine.stabilize(300, false);
-    // setInterval(() => { this.physicsEngine.stabilize(2, false); }, 50)
   }
 
 
@@ -663,8 +662,6 @@ export class ForceDirectedView extends Component<{
 
             color = 'url(#'+id+')';
           }
-
-
 
 
           if (useVia) {

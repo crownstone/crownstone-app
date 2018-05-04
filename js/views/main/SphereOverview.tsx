@@ -41,6 +41,7 @@ export class SphereOverview extends Component<any, any> {
       }
     }
 
+
     return {
       title: paramsToUse.title,
       headerRight: paramsToUse.showAdd ? <TopbarButton
@@ -48,7 +49,7 @@ export class SphereOverview extends Component<any, any> {
         onPress={() => {
           eventBus.emit("showBlurredMenu", {
             fields:[
-              {label:'Add Room',       onPress: () => { Actions.roomAdd({sphereId: params.activeSphereId}); }},
+              {label:'Add Room',       onPress: () => { Actions.roomAdd({sphereId: paramsToUse.activeSphereId}); }},
               {label:'Add Crownstone', onPress: () => {
                   Alert.alert(
                     "Adding a Crownstone",
@@ -149,7 +150,6 @@ export class SphereOverview extends Component<any, any> {
 
   render() {
     LOG.info("RENDERING_OVERVIEW");
-
     const store = this.props.store;
     const state = store.getState();
 

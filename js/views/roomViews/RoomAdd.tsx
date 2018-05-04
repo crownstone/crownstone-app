@@ -218,7 +218,7 @@ export class RoomAdd extends Component<any, any> {
     let state = this.props.store.getState();
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
-    if (this.props.sphereId === null) {
+    if (!this.props.sphereId) {
       BackAction();
       return <View />
     }
@@ -229,7 +229,7 @@ export class RoomAdd extends Component<any, any> {
 
     let itemHeight = amountOfFloatingStones * 62 + (items.length - amountOfFloatingStones)*50 + 120;
     return (
-      <Background image={backgroundImage} >
+      <Background image={backgroundImage} fullScreen={ true } >
         <OrangeLine/>
         <ScrollView>
           <View style={{height: itemHeight}}>

@@ -241,6 +241,7 @@ function checkAction(action, affectedIds) {
       eventStatus['changeAppSettings'] = affectedIds; break;
     case 'UPDATE_MESH_NETWORK_ID':
       eventStatus['meshIdUpdated'] = affectedIds; break;
+    case 'REMOVE_MESH_LINK':
     case 'SET_MESH_INDICATOR':
       eventStatus['meshIndicatorUpdated'] = affectedIds; break;
     case "CLOUD_EVENT_REMOVE_APPLIANCES":

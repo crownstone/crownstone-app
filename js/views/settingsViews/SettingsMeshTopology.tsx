@@ -63,7 +63,6 @@ export class SettingsMeshTopology extends Component<any, any> {
     this.unsubscribeStoreEvents();
   }
 
-
   renderNode(id, nodePosition) {
     return (
       <MeshElement key={"meshElement"+id} id={id} nodeData={this.nodeData[id]} pos={nodePosition} radius={this._baseRadius} />

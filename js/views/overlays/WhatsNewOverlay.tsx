@@ -70,8 +70,11 @@ export class WhatsNewOverlay extends Component<any, any> {
   }
 
   render() {
-    let height = Math.min(500, 0.9 * screenHeight);
+    let idealAspectRatio = 1.8354978354978355;
+
     let width = 0.85*screenWidth-30;
+    let height = Math.min(width*idealAspectRatio, 0.9 * screenHeight);
+
     return (
       <OverlayBox
         visible={this.state.visible}
@@ -105,30 +108,3 @@ export class WhatsNewOverlay extends Component<any, any> {
     );
   }
 }
-
-
-let swiperStyles = StyleSheet.create({
-  wrapper: {
-
-  },
-  slide1: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  slide2: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  slide3: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: '#fff',
-    fontSize: 30,
-    fontWeight: 'bold',
-  }
-});
