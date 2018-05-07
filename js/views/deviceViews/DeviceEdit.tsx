@@ -82,7 +82,7 @@ export class DeviceEdit extends Component<any, any> {
 
       showStone: false,
 
-      gettingFirmwareVersion: false
+      refreshingStoneVersions: false
     };
 
     this.props.navigation.setParams({rightAction: () => { this._updateCrownstone();}})
@@ -544,10 +544,10 @@ export class DeviceEdit extends Component<any, any> {
   _getVersionInformation(stone) {
     let unknownString = "Not checked.";
 
-    if (this.state.gettingFirmwareVersion) {
+    if (this.state.refreshingStoneVersions) {
       return (
         <View style={{paddingTop:15, paddingBottom:30}}>
-          <Text style={[styles.version,{paddingBottom:4}]}>{'Checking firmware version... '}</Text>
+          <Text style={[styles.version,{paddingBottom:4}]}>{'Checking versions... '}</Text>
           <ActivityIndicator animating={true} size='small' color={colors.darkGray2.hex} />
         </View>
       );
@@ -559,22 +559,47 @@ export class DeviceEdit extends Component<any, any> {
             return Alert.alert("Can't see this stone!", "I have to be in range to get the firwmare version of this Crownstone.", [{text:'OK'}]);
           }
 
-          this.setState({gettingFirmwareVersion: true});
-          StoneUtil.checkFirmwareVersion(this.props.sphereId, this.props.stoneId, stone)
+          this.setState({refreshingStoneVersions: true});
+          let promises = [];
+          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware')
             .then((firmwareVersion) => {
-              this.setState({gettingFirmwareVersion: false});
               this.props.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
                 stoneId: this.props.stoneId,
                 sphereId: this.props.sphereId,
                 data: {
-                  firmwareVersion: firmwareVersion, //firmwareVersion,
+                  firmwareVersion: firmwareVersion,
                 }
+              })
+              .catch((err) => {
+                Alert.alert("Whoops!", "I could not get the firmware version....", [{text:'OK'}]);
+                throw err;
               });
+            }));
+          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware')
+            .then((hardwareVersion) => {
+              this.props.store.dispatch({
+                type: "UPDATE_STONE_CONFIG",
+                stoneId: this.props.stoneId,
+                sphereId: this.props.sphereId,
+                data: {
+                  hardwareVersion: hardwareVersion,
+                }
+              })
+              .catch((err) => {
+                Alert.alert("Whoops!", "I could not get the hardware version....", [{text:'OK'}]);
+                throw err;
+              });
+            }));
+          BatchCommandHandler.executePriority();
+          
+          
+          Promise.all(promises)
+            .then(() => {
+              this.setState({refreshingStoneVersions: false});
             })
             .catch((err) => {
-              Alert.alert("Whoops!", "I could not get the firmware version....", [{text:'OK'}]);
-              this.setState({gettingFirmwareVersion: false});
+              this.setState({refreshingStoneVersions: false});
             });
         }}>
           <Text style={styles.version}>{'address: '      + (stone.config.macAddress        || unknownString)}</Text>

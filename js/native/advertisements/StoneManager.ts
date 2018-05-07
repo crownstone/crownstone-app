@@ -276,8 +276,7 @@ class StoneManagerClass {
       this._resolveMeshNetworkIds(sphereId, stoneFromServiceData, referenceByCrownstoneId.id, stoneFromAdvertisement, referenceByHandle.id);
 
       this.entities[referenceByCrownstoneId.id].handleContentViaMesh(stoneFromServiceData, advertisement);
-      this.entities[referenceByHandle.id].handleAdvertisementOfExternalCrownstone(stoneFromAdvertisement, advertisement, referenceByCrownstoneId.id);
-
+      this.entities[referenceByHandle.id].handleAdvertisementOfExternalCrownstone(advertisement.referenceId, stoneFromAdvertisement, referenceByCrownstoneId.id, stoneFromServiceData, advertisement);
     }
     else {
       this.entities[referenceByCrownstoneId.id].handleDirectAdvertisement(stoneFromAdvertisement, advertisement);

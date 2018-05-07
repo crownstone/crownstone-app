@@ -293,9 +293,10 @@ export class RoomOverview extends Component<any, any> {
     if (this.props.locationId) {
       location = sphere.locations[this.props.locationId];
       if (!location) { return <RoomDeleted /> }
+
       if (location.config.picture) {
         this.roomBackgroundImageAvailable = true;
-        roomBackgroundImage = <ShadedImage style={{width: screenWidth, height: screenHeight}}  source={{uri:preparePictureURI(location.config.picture)}}  />;
+        roomBackgroundImage = <ShadedImage style={{width: screenWidth, height: screenHeight}}  image={location.config.picture}  />;
       }
     }
 

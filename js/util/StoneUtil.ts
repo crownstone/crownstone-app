@@ -80,6 +80,17 @@ export const StoneUtil = {
     return promise;
   },
 
+  refreshFirmwareAndHardwareVersion: function(sphereId, stoneId, stone) {
+    let results = {hardwareVersion: null, firmwareVersion: null};
+    let promiseFW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware').then((result) => { results.hardwareVersion = result; });
+    let promiseHW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware').then((result) => { results.firmwareVersion = result; });
+    BatchCommandHandler.executePriority();
+    return Promise.all([promiseFW, promiseHW])
+      .then(() => {
+        return results;
+      });
+  },
+
   clearErrors: function(sphereId, stoneId, stone, store) {
     let clearTheseErrors = {
       dimmerOnFailure:    true,

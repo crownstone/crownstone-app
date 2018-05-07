@@ -23,7 +23,7 @@ export class Background extends Component<{hasNavBar?: boolean, fullScreen?: boo
         {this.props.image}
         <View style={[styles.fullscreen, {height:height}]} >
           { this.props.shadedStatusBar === true ? <View style={styles.shadedStatusBar} /> : undefined}
-          { this.props.hasNavBar !== false ? <SafeAreaView style={{flex:1}}>{this.props.children}</SafeAreaView> : this.props.children }
+          { this.props.hasNavBar === false ? <SafeAreaView style={{flex:1}}>{this.props.children}</SafeAreaView> : this.props.children }
         </View>
       </View>
     );

@@ -224,10 +224,11 @@ export class StoneEntity {
     this.disabledTimeout = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + this.stoneId + "_");
   }
 
-  _updateExternalRssiIndicator(stone, externalId, rssi) {
+  _updateExternalRssiIndicator(stoneId, stone, externalId, externalStone, rssi ) {
     if (stone.mesh[externalId] && stone.mesh[externalId].rssi === rssi) {
       return;
     }
+    else if (!stone.mesh[externalId] && !externalStone.mesh[stoneId] && rssi === 0)
 
     // invalid measurement
     if (rssi > 0) { return; }
@@ -305,14 +306,14 @@ export class StoneEntity {
    * @param stone
    * @param {crownstoneAdvertisement} advertisement
    */
-  handleAdvertisementOfExternalCrownstone(stone, advertisement : crownstoneAdvertisement, externalId: string) {
+  handleAdvertisementOfExternalCrownstone(stoneId: string, stone, externalId: string, externalStone, advertisement : crownstoneAdvertisement) {
     this._updateStoneLastSeen();
 
     // if this crownstone was disabled, change this since we saw it directly
     this._updateDisabledState();
 
     // if this crownstone was disabled, change this since we saw it directly
-    this._updateExternalRssiIndicator(stone, externalId, advertisement.serviceData.rssiOfExternalCrownstone);
+    this._updateExternalRssiIndicator(stoneId, stone, externalId, externalStone, advertisement.serviceData.rssiOfExternalCrownstone);
 
     /// tell the rest of the app this stone was seen, and its meshnetwork was heard from.
     this._emitUpdateEvents(stone, advertisement.rssi); // emit

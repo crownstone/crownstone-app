@@ -99,7 +99,7 @@ export class Processing extends Component<any, any> {
         </View>
         {this.state.text ? <Text style={[styles.menuText,{fontWeight:'bold', paddingLeft:20, paddingRight:20, textAlign:'center'}]}>{this.state.text}</Text> : undefined}
         {this.state.progress !== undefined ? <AnimatedLoadingBar progress={this.state.progress} /> : undefined}
-        {this.state.progressText ? <Text style={[styles.menuText,{fontSize:15, fontWeight:'400', fontStyle:'italic'}]}>{this.state.progressText}</Text> : undefined}
+        {this.state.progressText ? <Text style={[styles.menuText,{fontSize:15, fontWeight:'400', fontStyle:'italic', textAlign:'center'}]}>{this.state.progressText}</Text> : undefined}
       </FadeInView>
     );
   }

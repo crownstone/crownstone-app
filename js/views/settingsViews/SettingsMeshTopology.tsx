@@ -23,6 +23,7 @@ import {TopbarButton} from "../components/topbar/TopbarButton";
 import KeepAwake from 'react-native-keep-awake';
 import {Icon} from "../components/Icon";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
+import {MeshUtil} from "../../util/MeshUtil";
 const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
@@ -153,7 +154,11 @@ export class SettingsMeshTopology extends Component<any, any> {
     let evaluateRefreshProgress = () => {
       this.refreshCount += 1
       if (this.refreshCount >= this.refreshAmountRequired) {
-        this.props.eventBus.emit("hideProgress")
+        this.props.eventBus.emit("hideProgress");
+        const store = this.props.store;
+        const state = store.getState();
+        let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
+        MeshUtil.clearMeshNetworkIds(store, sphereId);
       }
       else {
         this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText:'Refreshing Mesh Topology\n\n('+this.refreshCount+' out of '+ this.refreshAmountRequired+")"});

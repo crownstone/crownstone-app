@@ -217,7 +217,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
   }
 
   syncLocalLocationDown(localId, locationInState, location_from_cloud) {
-    if (location_from_cloud.imageId && locationInState.pictureId === null || (location_from_cloud.imageId && (location_from_cloud.imageId !== locationInState.pictureId))) {
+    if (location_from_cloud.imageId && locationInState.config.pictureId === null || (location_from_cloud.imageId && (location_from_cloud.imageId !== locationInState.config.pictureId))) {
       // user should have A or A DIFFERENT profile picture according to the cloud
       this._downloadLocationImage(localId, location_from_cloud.id,  location_from_cloud.imageId);
     }
