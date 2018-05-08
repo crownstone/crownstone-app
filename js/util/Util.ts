@@ -29,12 +29,12 @@ export const getImageFileFromUser = function(email) {
 };
 
 
-export const processImage = function(pictureURI, targetFilename) {
+export const processImage = function(pictureURI, targetFilename, scaleFactor = 0.5) {
   return new Promise((resolve, reject) => {
     if (pictureURI !== undefined) {
       let targetPath = Util.getPath(targetFilename);
 
-      ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90)
+      ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * scaleFactor, screenHeight * pxRatio * scaleFactor, 'JPEG', 90)
         .then(({uri}) => {
           return safeMoveFile(uri, targetPath);
         })
