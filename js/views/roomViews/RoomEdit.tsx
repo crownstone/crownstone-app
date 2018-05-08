@@ -178,6 +178,7 @@ export class RoomEdit extends Component<any, any> {
       label: 'Picture',
       type:  'picture',
       value: this.state.picture,
+      forceAspectRatio: false,
       placeholderText: 'Optional',
       callback:(image) => {
         this.pictureTaken = true; this.setState({picture:image}); },

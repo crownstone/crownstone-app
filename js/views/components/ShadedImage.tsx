@@ -42,7 +42,7 @@ export class ShadedImage extends Component<{image: string, imageTaken: number, s
       this.loadedImage = this.props.image;
       this.loadedImageTaken = this.props.imageTaken;
       this.loadedImageURI = {uri:this.loadedImage};
-
+      eventBus.emit("changedPicture" + this._uid);
     }
     else if (
       this.props.r !== prevProps.r ||

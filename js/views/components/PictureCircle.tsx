@@ -35,7 +35,7 @@ export class PictureCircle extends Component<any, any> {
       buttons.push({ text: 'Choose from Gallery', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
     }
     else {
-      buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
+      buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
       buttons.push({ text: 'Choose Existing', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
     }
     eventBus.emit('showPopup', {title:'Profile Picture', buttons: buttons} );

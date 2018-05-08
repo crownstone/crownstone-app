@@ -67,7 +67,7 @@ export class PictureView extends Component<any, any> {
             flashMode: 'auto',
             focusMode: 'on',
             zoomMode: 'on',
-            ratioOverlay:'1:1',            // optional, ratio overlay on the camera and crop the image seamlessly
+            ratioOverlay: this.props.forceAspectRatio === false ? undefined : '1:1',            // optional, ratio overlay on the camera and crop the image seamlessly
             ratioOverlayColor: colors.black.rgba(0.7)
           }}
           allowCaptureRetake={true}
