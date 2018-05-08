@@ -23,6 +23,7 @@ import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
+import {eventBus} from "../../util/EventBus";
 
 
 
@@ -103,7 +104,6 @@ export class RoomEdit extends Component<any, any> {
 
   _removePicture(image) {
     if (image) {
-      console.log("safe deleting")
       safeDeleteFile(image).catch(() => {});
     }
   }
@@ -180,7 +180,7 @@ export class RoomEdit extends Component<any, any> {
       value: this.state.picture,
       placeholderText: 'Optional',
       callback:(image) => {
-        console.log("image", image); this.pictureTaken = true; this.setState({picture:image}); },
+        this.pictureTaken = true; this.setState({picture:image}); },
       removePicture:() => {
         this.removePictureQueue.push(this.state.picture);
         this.setState({picture: null});
@@ -267,6 +267,7 @@ export class RoomEdit extends Component<any, any> {
             locationId: this.props.locationId,
             data: {
               picture: picture,
+              pictureTaken: new Date().valueOf(),
               pictureId: null
             }});
         })
@@ -280,6 +281,7 @@ export class RoomEdit extends Component<any, any> {
         locationId: this.props.locationId,
         data: {
           picture: null,
+          pictureTaken: null,
           pictureId: null
         }});
     }

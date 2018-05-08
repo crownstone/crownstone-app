@@ -435,7 +435,6 @@ class LocationHandlerClass {
 
           // track the sphere beacon UUID
           Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
-          LOG.info("LocationHandler: Setup tracking for iBeacon UUID: ", sphereIBeaconUUID);
 
         });
       })

@@ -62,14 +62,12 @@ export class RoomOverview extends Component<any, any> {
     }
   };
 
-
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
   justFinishedSetup : any;
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
-  roomBackgroundImageAvailable = false;
 
   constructor(props) {
     super(props);
@@ -213,7 +211,6 @@ export class RoomOverview extends Component<any, any> {
             locationId={this.props.locationId}
             sphereId={this.props.sphereId}
             viewingRemotely={this.viewingRemotely}
-            roomBackgroundImageAvailable={this.roomBackgroundImageAvailable}
             nearestInSphere={stoneId === this.nearestStoneIdInSphere}
             nearestInRoom={stoneId === this.nearestStoneIdInRoom}
           />
@@ -287,18 +284,7 @@ export class RoomOverview extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted/> }
     let location = null;
-    let roomBackgroundImage = null;
-    this.roomBackgroundImageAvailable = false;
-
-    if (this.props.locationId) {
-      location = sphere.locations[this.props.locationId];
-      if (!location) { return <RoomDeleted /> }
-
-      if (location.config.picture) {
-        this.roomBackgroundImageAvailable = true;
-        roomBackgroundImage = <ShadedImage style={{width: screenWidth, height: screenHeight}}  image={location.config.picture}  />;
-      }
-    }
+    let roomCustomImage = null;
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
@@ -312,8 +298,26 @@ export class RoomOverview extends Component<any, any> {
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     this.viewingRemotely = this.props.locationId === null && Object.keys(stones).length === 0 ? false : this.viewingRemotely;
 
+    if (this.props.locationId) {
+      location = sphere.locations[this.props.locationId];
+      if (!location) { return <RoomDeleted /> }
+
+      if (location.config.picture) {
+        roomCustomImage = (
+          <ShadedImage
+            style={{width: screenWidth, height: screenHeight}}
+            image={location.config.picture}
+            imageTaken={location.config.pictureTaken}
+            r={1} g={1} b={1}
+            blendFactor={this.viewingRemotely ? 0.3 : 0.0}
+            grayScale={this.viewingRemotely ? 1.0 : 0.0}
+          />
+        );
+      }
+    }
+
     let amountOfStonesInRoom = Object.keys(stones).length;
-    let backgroundImage = roomBackgroundImage || this.props.getBackground('main', this.viewingRemotely);
+    let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
 
     let content = undefined;
     if (amountOfStonesInRoom === 0 && seeStoneInSetupMode == false) {
@@ -341,7 +345,7 @@ export class RoomOverview extends Component<any, any> {
     }
 
     return (
-      <Background image={backgroundImage}>
+      <Background image={backgroundImage} topImage={roomCustomImage}>
         <RoomBanner
           presentUsers={users}
           noCrownstones={amountOfStonesInRoom === 0}

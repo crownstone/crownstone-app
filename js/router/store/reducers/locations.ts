@@ -7,6 +7,7 @@ let defaultSettings = {
     name:'Untitled Room',
     icon: undefined,
     picture: null,
+    pictureTaken: null,
     pictureId: null,
     cloudId: null,
     updatedAt: 1,
@@ -89,6 +90,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
         newState.icon               = update(action.data.icon,              newState.icon);
         newState.cloudId            = update(action.data.cloudId,           newState.cloudId);
         newState.picture            = update(action.data.picture,           newState.picture);
+        newState.pictureTaken       = update(action.data.pictureTaken,      newState.pictureTaken);
         newState.pictureId          = update(action.data.pictureId,         newState.pictureId);
         newState.fingerprintRaw     = update(action.data.fingerprintRaw,    newState.fingerprintRaw);
         newState.fingerprintParsed  = update(action.data.fingerprintParsed, newState.fingerprintParsed);

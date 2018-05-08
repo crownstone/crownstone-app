@@ -21,16 +21,16 @@ import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 import { NotificationHandler, NotificationParser } from "./NotificationHandler";
-import { BatchCommandHandler } from "../logic/BatchCommandHandler";
-import { BatchUploader } from "./BatchUploader";
-import { MessageCenter } from "./MessageCenter";
-import { CloudEventHandler } from "./CloudEventHandler";
-import { Permissions } from "./PermissionManager";
-import {LOG, LOGw} from "../logging/Log";
-import {LogProcessor} from "../logging/LogProcessor";
-import {BleLogger} from "../native/advertisements/BleLogger";
-import {StoneManager} from "../native/advertisements/StoneManager";
-import {MeshUtil} from "../util/MeshUtil";
+import { BatchCommandHandler }   from "../logic/BatchCommandHandler";
+import { BatchUploader }         from "./BatchUploader";
+import { MessageCenter }         from "./MessageCenter";
+import { CloudEventHandler }     from "./CloudEventHandler";
+import { Permissions }           from "./PermissionManager";
+import {LOG, LOGw}               from "../logging/Log";
+import {LogProcessor}            from "../logging/LogProcessor";
+import {BleLogger}               from "../native/advertisements/BleLogger";
+import {StoneManager}            from "../native/advertisements/StoneManager";
+import {MeshUtil}                from "../util/MeshUtil";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -373,7 +373,6 @@ class BackgroundProcessHandlerClass {
     MessageCenter.loadStore(this.store);
     CloudEventHandler.loadStore(this.store);
     Permissions.loadStore(this.store, this.userLoggedIn);
-
 
     BleLogger.init();
   }
