@@ -331,8 +331,15 @@ class LocationHandlerClass {
         mostRecentSeenTime = lastSeenPerSphere[sphereIds[i]];
       }
     }
+    let leaveAllSpheres = () => {
+      Object.keys(state.spheres).forEach((sphereId) => {
+        LOG.info("LocationHandler: Apply exit sphere.", sphereId);
+        this.exitSphere(sphereId);
+      });
+    }
 
     if (currentSphere === null) {
+      leaveAllSpheres();
       return;
     }
 
@@ -344,10 +351,7 @@ class LocationHandlerClass {
     }
     else {
       // exit all spheres
-      Object.keys(state.spheres).forEach((sphereId) => {
-        LOG.info("LocationHandler: Apply exit sphere.", sphereId);
-        this.exitSphere(sphereId);
-      });
+      leaveAllSpheres();
     }
   }
 

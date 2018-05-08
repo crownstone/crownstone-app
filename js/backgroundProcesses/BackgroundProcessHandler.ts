@@ -45,6 +45,9 @@ class BackgroundProcessHandlerClass {
   store : any;
   connectionPopupActive : boolean = false;
 
+  cancelPauseTrackingCallback = null;
+  trackingPaused = false;
+
   constructor() { }
 
   start() {
@@ -266,12 +269,38 @@ class BackgroundProcessHandlerClass {
         // remove any badges from the app icon on the phone.
         this._clearBadge();
 
+        // restore tracking state if required. An independent check for the indoorlocalization state is not required.
+        if (this.cancelPauseTrackingCallback !== null) {
+          this.cancelPauseTrackingCallback();
+          this.cancelPauseTrackingCallback = null;
+        }
+        if (this.trackingPaused) {
+          Bluenet.resumeTracking();
+          BluenetPromiseWrapper.isReady().then(() => {
+            LOG.info("BackgroundProcessHandler: Start Scanning after inactive.");
+            return Bluenet.startScanningForCrownstonesUniqueOnly();
+          });
+          this.trackingPaused = false;
+        }
+
         // if the app is open, update the user locations every 10 seconds
         Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
       }
       else if (appState === 'background') {
         // in the background: stop scanning to save battery!
         BatterySavingUtil.startBatterySaving();
+
+        // check if we require indoor localization, pause tracking if we dont.
+        let state = this.store.getState();
+        if (state.app.indoorLocalizationEnabled === false) {
+          this.cancelPauseTrackingCallback = Scheduler.scheduleCallback(() => {
+            // stop all scanning and tracking to save battery. This will only happen if the app lives in the background for 5 minutes when it shouldnt.
+            Bluenet.pauseTracking();
+            Bluenet.stopScanning();
+            this.cancelPauseTrackingCallback = null;
+            this.trackingPaused = true;
+          }, 5*60*1000, 'pauseTracking');
+        }
 
         // remove the user sync so it won't use battery in the background
         Scheduler.pauseTrigger(BACKGROUND_USER_SYNC_TRIGGER);

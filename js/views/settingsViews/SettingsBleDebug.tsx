@@ -39,20 +39,20 @@ export class SettingsBleDebug extends Component<any, any> {
 
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
-    if (stone.state.state > 0 && stone.config.disabled === false) {
+    if (stone && stone.state.state > 0 && stone.config.disabled === false) {
       backgroundColor = colors.green.hex
     }
-    else if (stone.config.disabled) {
+    else if (stone && stone.config.disabled) {
       backgroundColor = colors.gray.hex;
     }
     items.push({
       mediumIcon: <IconCircle
-        icon={element.config.icon}
+        icon={element ? element.config.icon : 'ios-analytics'}
         size={52}
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: element.config.name,
+      label: element ? element.config.name : "Any",
       subtext: subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',
@@ -84,9 +84,10 @@ export class SettingsBleDebug extends Component<any, any> {
       }
       let element = Util.data.getElement(sphere, stone);
 
-      this._pushCrownstoneItem(items, sphereId, element, stone, stoneId, locationTitle, locationColor)
+      this._pushCrownstoneItem(items, sphereId, element, stone, stoneId, locationTitle, locationColor);
     });
 
+    this._pushCrownstoneItem(items, sphereId, null, null, null, null, colors.csOrange.hex)
 
 
     return items;

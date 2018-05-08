@@ -32,11 +32,11 @@ export class SettingsStoneBleDebug extends Component<any, any> {
     let sphere = state.spheres[props.sphereId];
     let stone = sphere.stones[props.stoneId];
 
-    this._crownstoneId = stone.config.crownstoneId;
     this._ibeaconUuid  = sphere.config.iBeaconUUID;
-    this._major        = stone.config.iBeaconMajor;
-    this._minor        = stone.config.iBeaconMinor;
-    this._handle       = stone.config.handle;
+    this._crownstoneId = stone ? stone.config.crownstoneId : null;
+    this._major        = stone ? stone.config.iBeaconMajor : null;
+    this._minor        = stone ? stone.config.iBeaconMinor : null;
+    this._handle       = stone ? stone.config.handle       : null;
 
     this.state = {
       advertisementPayload: '',
@@ -60,8 +60,8 @@ export class SettingsStoneBleDebug extends Component<any, any> {
   _parseIBeacon(data : ibeaconPackage[]) {
     data.forEach((ibeacon) => {
       if (ibeacon.uuid.toLowerCase() !== this._ibeaconUuid.toLowerCase() ) { return; }
-      if (ibeacon.major !== this._major)                                   { return; }
-      if (ibeacon.minor !== this._minor)                                   { return; }
+      if (this._major && ibeacon.major !== this._major)                    { return; }
+      if (this._minor && ibeacon.minor !== this._minor)                    { return; }
 
       this.setState({ibeaconPayload: JSON.stringify(ibeacon, undefined, 2), ibeaconTimestamp: new Date().valueOf()});
     })
@@ -73,14 +73,14 @@ export class SettingsStoneBleDebug extends Component<any, any> {
     let newData : any = {};
     let changes = false;
 
-    if (data.serviceData.crownstoneId === this._crownstoneId) {
+    if (data.serviceData.crownstoneId === this._crownstoneId || !this._crownstoneId) {
       newData['advertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
       newData["advertisementPayload"] = JSON.stringify(data, undefined, 2);
       newData["advertisementTimestamp"] = new Date().valueOf();
       changes = true;
     }
 
-    if (data.handle === this._handle) {
+    if (data.handle === this._handle || !this._handle) {
       newData['directAdvertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
       newData["directAdvertisementPayload"] = JSON.stringify(data, undefined, 2);
       newData["directAdvertisementTimestamp"] = new Date().valueOf();
@@ -104,12 +104,18 @@ export class SettingsStoneBleDebug extends Component<any, any> {
     let state = store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
-    let element = Util.data.getElement(sphere, stone);
 
-    let largeLabel = "Examining \"" + stone.config.name + "\"\nMAC address: \"" + stone.config.macAddress;
-    if (stone.config.applianceId) {
-      largeLabel += "\nConnected device: " + element.config.name
+
+    let largeLabel = 'Examining Sphere';
+    if (stone) {
+      let element = Util.data.getElement(sphere, stone);
+
+      largeLabel = "Examining \"" + stone.config.name + "\"\nMAC address: \"" + stone.config.macAddress;
+      if (stone.config.applianceId) {
+        largeLabel += "\nConnected device: " + element.config.name
+      }
     }
+
     items.push({label: largeLabel, type: 'largeExplanation'});
     items.push({label:
       "iBeacon UUID: " + this._ibeaconUuid.toUpperCase() + '\n' +
