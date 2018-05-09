@@ -331,6 +331,7 @@ class LocationHandlerClass {
         mostRecentSeenTime = lastSeenPerSphere[sphereIds[i]];
       }
     }
+
     let leaveAllSpheres = () => {
       Object.keys(state.spheres).forEach((sphereId) => {
         LOG.info("LocationHandler: Apply exit sphere.", sphereId);

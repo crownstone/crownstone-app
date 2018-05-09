@@ -111,7 +111,7 @@ export class RoomSelection extends Component<any, any> {
   render() {
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
     return (
-      <Background image={backgroundImage} fullScreen={true} >
+      <Background image={backgroundImage} hasNavBar={false} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

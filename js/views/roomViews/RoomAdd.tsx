@@ -17,7 +17,7 @@ import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../.
 import { LOG } from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
 import {colors, OrangeLine} from '../styles'
-import {Util} from "../../util/Util";
+import {processImage, safeDeleteFile, Util} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
@@ -31,7 +31,7 @@ export class RoomAdd extends Component<any, any> {
     const { params } = navigation.state;
     return {
       title: "Create Room",
-      headerLeft: <CancelButton onPress={BackAction} />,
+      headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : BackAction() }}/>,
       headerRight: <TopbarButton
         text={"Create"}
         onPress={() => {
@@ -42,10 +42,11 @@ export class RoomAdd extends Component<any, any> {
   };
 
   refName : string;
+  removePictureQueue = [];
 
   constructor(props) {
     super(props);
-    let initialState = {name:'', icon: 'c1-bookshelf', selectedStones: {}};
+    let initialState = {name:'', icon: 'c1-bookshelf', selectedStones: {}, picture: null};
     this.refName = "listItems";
 
     if (props.movingCrownstone) {
@@ -56,7 +57,26 @@ export class RoomAdd extends Component<any, any> {
 
     this.state = initialState;
 
-    this.props.navigation.setParams({rightAction: () => { this.createRoom();}})
+    this.props.navigation.setParams({leftAction: () => { this.cancelEdit(); }, rightAction: () => { this.createRoom(); }})
+  }
+
+  cancelEdit() {
+    // clean up any pictures that were taken
+    this._removeUnusedPictures();
+    this._removePicture(this.state.picture)
+    BackAction();
+  }
+
+  _removeUnusedPictures() {
+    this.removePictureQueue.forEach((pic) => {
+      this._removePicture(pic);
+    })
+  }
+
+  _removePicture(image) {
+    if (image) {
+      safeDeleteFile(image).catch(() => {});
+    }
   }
 
 
@@ -96,8 +116,23 @@ export class RoomAdd extends Component<any, any> {
         }
       )}
     });
+    items.push({
+      label: 'Picture',
+      type:  'picture',
+      value: this.state.picture,
+      forceAspectRatio: false,
+      placeholderText: 'Optional',
+      callback:(image) => {
+        this.setState({picture:image}); },
+      removePicture:() => {
+        this.removePictureQueue.push(this.state.picture);
+        this.setState({picture: null});
+      }
+    })
 
     let floatingStoneIds = Object.keys(floatingStones);
+    floatingStoneIds.sort((a,b) => { return (floatingStones[a].device.config.name < floatingStones[b].device.config.name) ? -1 : 1 })
+
     let shownMovingStone = false;
     if (floatingStoneIds.length > 0) {
       items.push({label:'ADD CROWNSTONES TO ROOM', type:'explanation', below:false});
@@ -130,6 +165,8 @@ export class RoomAdd extends Component<any, any> {
       this._pushCrownstoneItem(items, device, stone, stoneId);
     }
 
+    items.push({type:'spacer'});
+
     return items;
   }
 
@@ -153,8 +190,7 @@ export class RoomAdd extends Component<any, any> {
   }
 
   _createRoom() {
-    const store = this.props.store;
-    const state = store.getState();
+    const state = this.props.store.getState();
 
     if (this.state.name.length === 0) {
       Alert.alert(
@@ -170,6 +206,7 @@ export class RoomAdd extends Component<any, any> {
         this.props.eventBus.emit('showLoading', 'Creating room...');
         let actions = [];
         let localId = Util.getUUID();
+
         // todo Move to create new location method once it is implemented in transferLocations
         actions.push({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: localId, data:{name: this.state.name, icon: this.state.icon}});
         transferLocations.createOnCloud(actions, {
@@ -192,10 +229,26 @@ export class RoomAdd extends Component<any, any> {
               }
             });
 
-            store.batchDispatch(actions);
+            // if we have a picture:
+            if (this.state.picture !== null) {
+              processImage(this.state.picture, localId + ".jpg", 1.0)
+                .then((picture) => {
+                  this.props.store.dispatch({
+                    type:'UPDATE_LOCATION_CONFIG',
+                    sphereId: this.props.sphereId,
+                    locationId: localId,
+                    data: {
+                      picture: picture,
+                      pictureTaken: new Date().valueOf(),
+                      pictureId: null
+                    }});
+                })
+            }
+
+            this.props.store.batchDispatch(actions);
 
             // BackAction('sphereOverview');
-            Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, store: store, seeStoneInSetupMode: false});
+            Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false});
             this.props.eventBus.emit('hideLoading');
           })
           .catch((err) => {
@@ -224,17 +277,13 @@ export class RoomAdd extends Component<any, any> {
     }
 
     let floatingStones = getStonesAndAppliancesInLocation(state, this.props.sphereId, null);
-    let amountOfFloatingStones = Object.keys(floatingStones).length;
     let items = this._getItems(floatingStones);
 
-    let itemHeight = amountOfFloatingStones * 62 + (items.length - amountOfFloatingStones)*50 + 120;
     return (
-      <Background image={backgroundImage} fullScreen={ true } >
+      <Background image={backgroundImage} hasNavBar={ false } >
         <OrangeLine/>
-        <ScrollView>
-          <View style={{height: itemHeight}}>
-            <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} />
-          </View>
+        <ScrollView keyboardShouldPersistTaps="always">
+          <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} />
         </ScrollView>
       </Background>
     );

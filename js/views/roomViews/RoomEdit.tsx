@@ -92,8 +92,6 @@ export class RoomEdit extends Component<any, any> {
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
-
-
   }
 
   _removeUnusedPictures() {
@@ -112,6 +110,11 @@ export class RoomEdit extends Component<any, any> {
   _removeRoom() {
     const store = this.props.store;
     const state = store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    let location = null;
+
+    if (sphere) { location = sphere.locations[this.props.locationId]; }
+
     this.deleting = true;
     this.props.eventBus.emit('showLoading','Removing this room in the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteLocation(this.props.locationId)
@@ -124,6 +127,17 @@ export class RoomEdit extends Component<any, any> {
           removeActions.push({sphereId: this.props.sphereId, stoneId: stoneIds[i], type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
         }
         store.batchDispatch(removeActions);
+
+        // remove all pictures that have been attempted except the one we will use.
+        this._removeUnusedPictures()
+
+        // remove the picture currently shown.
+        this._removePicture(this.state.picture);
+
+        // remove the picture that belongs to the location.
+        if (location && location.config) {
+          this._removePicture(location.config.picture)
+        }
 
         // jump back to root
         this.props.eventBus.emit('hideLoading');
@@ -260,7 +274,7 @@ export class RoomEdit extends Component<any, any> {
     this._removeUnusedPictures()
 
     if (this.pictureTaken) {
-      processImage(this.state.picture, this.props.locationId + ".jpg")
+      processImage(this.state.picture, this.props.locationId + ".jpg", 1.0)
         .then((picture) => {
           this.props.store.dispatch({
             type:'UPDATE_LOCATION_CONFIG',

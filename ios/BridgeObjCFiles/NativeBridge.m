@@ -82,9 +82,11 @@ RCT_EXTERN_METHOD(getTime:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(batterySaving:(nonnull NSNumber *)state)
 RCT_EXTERN_METHOD(setBackgroundScanning:(nonnull NSNumber *)state)
 RCT_EXTERN_METHOD(viewsInitialized)
+RCT_EXTERN_METHOD(resetBle)
 
 RCT_EXTERN_METHOD(allowDimming:(nonnull NSNumber *)allow callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(lockSwitch:(nonnull NSNumber *)lock callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setSwitchCraft:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 
 // MESH
 

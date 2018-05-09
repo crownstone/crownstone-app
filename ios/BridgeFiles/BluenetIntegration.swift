@@ -375,6 +375,10 @@ open class BluenetJS: RCTEventEmitter {
     exit(0)
   }
   
+  @objc func resetBle() {
+    LOGGER.info("BluenetBridge: called resetBle, do nothing, this is only used in Android")
+  }
+  
   @objc func requestBleState() {
     GLOBAL_BLUENET!.bluenet.emitBleState()
   }
@@ -1146,6 +1150,21 @@ open class BluenetJS: RCTEventEmitter {
         }
         else {
           callback([["error" : true, "data": "UNKNOWN ERROR IN lockSwitch"]])
+        }
+    }
+  }
+  
+  @objc func setSwitchCraft(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let stateBool = state.boolValue
+    LOGGER.info("BluenetBridge: Called setSwitchCraft")
+    GLOBAL_BLUENET!.bluenet.control.setSwitchCraft(enabled: stateBool)
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchCraft"]])
         }
     }
   }
