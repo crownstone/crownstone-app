@@ -53,13 +53,6 @@ Turn this Crownstone on when its dark outside (-60 minutes +- 15 random), regard
 export class DeviceSmartBehaviourAdd extends Component<any, any> {
 
   render() {
-    const store = this.props.store;
-    const state = store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-    const stone = sphere.stones[this.props.stoneId];
-    const element = Util.data.getElement(sphere, stone);
-
-
     return (
       <View style={{flex:1, flexDirection: 'column', alignItems:'center'}}>
         <View style={{flex: 1.5}} />

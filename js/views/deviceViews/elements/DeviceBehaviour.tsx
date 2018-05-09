@@ -83,7 +83,7 @@ export class DeviceBehaviour extends Component<any, any> {
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
-    const element = Util.data.getElement(sphere, stone);
+    const element = Util.data.getElement(this.props.store, this.props.sphereId, this.props.stoneId, stone);
 
     let canChangeBehaviour = Permissions.inSphere(this.props.sphereId).changeBehaviour && state.app.indoorLocalizationEnabled;
 

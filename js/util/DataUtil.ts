@@ -128,7 +128,9 @@ export const DataUtil = {
    * @param stone
    * @returns {*}
    */
-  getElement: function(sphere, stone) {
+  getElement: function(store, sphereId, stoneId, stone) {
+    let state = store.getState();
+    let sphere = state.spheres[sphereId];
     if (!sphere) { return stone; }
 
     if (stone.config.applianceId && sphere.appliances[stone.config.applianceId]) {
@@ -136,6 +138,12 @@ export const DataUtil = {
     }
     else if (stone.config.applianceId) {
       LOG.error("DataUtil: Stone has an appliance ID but the appliance itself is not found.", stone.config.applianceId);
+
+      // self repair..
+      if (stoneId) {
+        store.dispatch({type: "UPDATE_STONE_CONFIG", sphereId: sphereId, stoneId: stoneId, data: { applianceId: null }})
+      }
+
       return stone;
     }
     else {

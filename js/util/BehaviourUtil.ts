@@ -136,7 +136,7 @@ export const BehaviourUtil = {
 
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];
-    let element = Util.data.getElement(sphere, stone);
+    let element = Util.data.getElement(store, sphereId, stoneId, stone);
     let behaviour = element.behaviour[behaviourType];
 
     this._enactBehaviourCore(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, callbacks);

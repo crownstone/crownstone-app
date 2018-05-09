@@ -48,7 +48,7 @@ export class DeviceOverview extends Component<any, any> {
         paramsToUse = NAVBAR_PARAMS_CACHE;
       }
       else {
-        paramsToUse = getNavBarParams(params.store.getState(), params, 0, false);
+        paramsToUse = getNavBarParams(params.store, params.store.getState(), params, 0, false);
       }
     }
 
@@ -176,7 +176,7 @@ export class DeviceOverview extends Component<any, any> {
 
   _updateNavBar(swiperIndex, scrolling) {
     let state = this.props.store.getState();
-    let params = getNavBarParams(state, this.props, swiperIndex, scrolling);
+    let params = getNavBarParams(this.props.store, state, this.props, swiperIndex, scrolling);
     this.props.navigation.setParams(params)
   }
 
@@ -300,9 +300,9 @@ export class DeviceOverview extends Component<any, any> {
 }
 
 
-function getNavBarParams(state, props, swiperIndex, scrolling) {
+function getNavBarParams(store, state, props, swiperIndex, scrolling) {
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
-  const element = Util.data.getElement(state.spheres[props.sphereId], stone);
+  const element = Util.data.getElement(store, props.sphereId, props.stoneId, stone);
 
   let hasAppliance = stone.config.applianceId !== null;
   let summaryIndex = 0;

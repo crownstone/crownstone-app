@@ -108,7 +108,7 @@ export class SettingsStoneBleDebug extends Component<any, any> {
 
     let largeLabel = 'Examining Sphere';
     if (stone) {
-      let element = Util.data.getElement(sphere, stone);
+      let element = Util.data.getElement(this.props.store, this.props.sphereId, this.props.stoneId, stone);
 
       largeLabel = "Examining \"" + stone.config.name + "\"\nMAC address: \"" + stone.config.macAddress;
       if (stone.config.applianceId) {

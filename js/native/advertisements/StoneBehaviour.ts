@@ -128,7 +128,7 @@ export class StoneBehaviour {
       if (this.tapToToggleDisabledTemporarily === false) {
         LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', tapToToggleCalibration);
         // notify the user by vibration that the crownstone will be switched.
-        let element = Util.data.getElement(state.spheres[this.sphereId], stone);
+        let element = Util.data.getElement(this.store, this.sphereId, this.stoneId, stone);
         LocalNotifications.sendLocalPopup('Toggling ' + element.config.name + '!', false);
 
         if (state.user.seenTapToToggle !== true) {

@@ -100,7 +100,7 @@ export class SettingsMeshOverview extends Component<any, any> {
         }
         networks[key].push({
           location: locationId === null ? null : state.spheres[sphereId].locations[locationId],
-          element: Util.data.getElement(sphere, stone)
+          element: Util.data.getElement(this.props.store, sphereId, null, stone) // we get away with using no stone id since it is only used for self repair. Without ID, the self repair won't do anything.
         });
       });
     });

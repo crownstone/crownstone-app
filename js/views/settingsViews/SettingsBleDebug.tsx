@@ -82,7 +82,7 @@ export class SettingsBleDebug extends Component<any, any> {
         locationTitle = location.config.name;
         locationColor = colors.iosBlue.hex;
       }
-      let element = Util.data.getElement(sphere, stone);
+      let element = Util.data.getElement(store, sphereId, stoneId, stone);
 
       this._pushCrownstoneItem(items, sphereId, element, stone, stoneId, locationTitle, locationColor);
     });

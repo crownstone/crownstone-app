@@ -217,7 +217,7 @@ export class SettingsMeshTopology extends Component<any, any> {
         locationIcon = location.config.icon;
         locationTitle = location.config.name;
       }
-      let element = Util.data.getElement(sphere, stone);
+      let element = Util.data.getElement(this.props.store, sphereId, stoneId, stone);
 
       this.nodeData[stoneId] = {locationIcon: locationIcon, deviceIcon: element.config.icon, locationTitle:locationTitle, locationColor: locationColor, element: element};
 
