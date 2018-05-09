@@ -180,7 +180,7 @@ export class RoomEdit extends Component<any, any> {
         this.setState({name: newText});
       }
     });
-    items.push({label:'Icon', type: 'icon', value: room.config.icon, callback: () => {
+    items.push({label:'Icon', type: 'icon', value: this.state.icon, callback: () => {
       Actions.roomIconSelection({
         icon: this.state.icon,
         callback: (newIcon) => {
