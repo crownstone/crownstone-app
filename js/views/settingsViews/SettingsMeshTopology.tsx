@@ -262,7 +262,6 @@ export class SettingsMeshTopology extends Component<any, any> {
           edges={edges}
           renderNode={(id, nodePosition) => { return this.renderNode(id, nodePosition); }}
           edgeRenderSettings={(edge) => { return this.getEdgeSettings(state, edge); }}
-          heightOffset={0}
           options={{
             solver:"forceAtlas2Based",
             barnesHut: {gravitationalConstant: -1000, springLength: 50, springConstant: 0.02},

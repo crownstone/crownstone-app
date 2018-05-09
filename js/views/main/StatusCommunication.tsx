@@ -92,9 +92,9 @@ export class StatusCommunication extends Component<any, any> {
     else if (noStones === true && noRoomsCurrentSphere == true) {
       return (
         <View style={[generalStyle, {alignItems: 'center', justifyContent: 'center', height: availableScreenHeight}]}>
-          <Icon name="c2-pluginFront" size={150} color={colors.blue.hex}/>
-          <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
-          <Text style={overviewStyles.subText}>Get close to a Crownstone and wait for it to appear! If it does not appear, try the recovery procedure in the settings.</Text>
+          <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
+          <Text style={overviewStyles.mainText}>{"No Crownstones added yet!"}</Text>
+          <Text style={overviewStyles.subText}>{"Get close to a new Crownstone and it will appear here automatically! If nothing happens, ensure the Crownstone is powered on and not paired to another user.\n\nMore help is available in the help menu in the settings."}</Text>
         </View>
       );
     }

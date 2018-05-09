@@ -314,6 +314,11 @@ const glyphMap = {
   'c1-present':0xf136,
   'c1-screen':0xf137,
   'c1-computer':0xf138,
+  'c1-crossOutlines':0xf139,
+  'c1-newCircle':0xf13a,
+  'c1-addRounded':0xf13b,
+  'c1-addRoundedBold':0xf13c,
+  'c1-addRoundedThin':0xf13d,
 };
 
 export const getRandomC1Name = function() {

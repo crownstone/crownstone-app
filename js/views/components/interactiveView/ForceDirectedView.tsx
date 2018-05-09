@@ -34,7 +34,8 @@ export class ForceDirectedView extends Component<{
   nodeRadius: number,
   renderNode(string, any): any,
   edgeRenderSettings?(edge): any,
-  heightOffset: number,
+  topOffset?: number,
+  bottomOffset?: number,
   drawToken?: string,
   options? : any,
 }, any> {
@@ -390,12 +391,16 @@ export class ForceDirectedView extends Component<{
 
     // draw it as nice as possible depending on whether or not the multiple sphere button is drawn.
     minY -= 0.3*this.props.nodeRadius;
-    if (this.props.heightOffset) {
-      minY -= this.props.heightOffset;
+    if (this.props.topOffset) {
+      minY -= this.props.topOffset;
     }
 
     maxX += 0.3*this.props.nodeRadius;
     maxY += 0.7*this.props.nodeRadius;
+
+    if (this.props.bottomOffset) {
+      maxY += this.props.bottomOffset;
+    }
 
     this.boundingBoxData['minX'] = minX;
     this.boundingBoxData['maxX'] = maxX;

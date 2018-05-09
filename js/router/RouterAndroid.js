@@ -59,6 +59,7 @@ export class Router_Android extends Component {
             >
               <Scene key="sphereOverview"           component={Views.SphereOverview}             />
             </Drawer>
+            <Scene key="addItemsToSphere"           component={Views.AddItemsToSphere}           />
             <Scene key="roomOverview"               component={Views.RoomOverview}               />
             <Scene key="roomEdit"                   component={Views.RoomEdit}                   />
             <Scene key="roomAdd"                    component={Views.RoomAdd}                    />

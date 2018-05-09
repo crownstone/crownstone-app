@@ -6,6 +6,7 @@ import {
   PanResponder,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   Text,
   View
 } from 'react-native';
@@ -14,7 +15,7 @@ let Actions = require('react-native-router-flux').Actions;
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
 import { LOG }       from '../../logging/Log'
-import { screenWidth, availableScreenHeight } from '../styles'
+import {screenWidth, availableScreenHeight, colors} from '../styles'
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 

@@ -3,6 +3,7 @@ import { Login }                      from '../views/startupViews/Login'
 import { Logout }                     from "../views/startupViews/Logout";
 import { SelectFromList }             from '../views/selection/SelectFromList'
 import { Register }                   from '../views/startupViews/Register'
+import { AddItemsToSphere }           from '../views/main/AddItemsToSphere'
 import { AiStart }                    from '../views/startupViews/AiStart'
 import { RegisterConclusion }         from '../views/startupViews/RegisterConclusion'
 import { PictureView }                from '../views/cameraViews/PictureView'
@@ -46,6 +47,7 @@ import { SettingsFAQ }                from "../views/settingsViews/SettingsFAQ";
 import { SwitchCraftInformation }     from "../views/deviceViews/elements/SwitchCraftInformation";
 
 export const Views = {
+  AddItemsToSphere,
   AiStart,
   SelectFromList,
   LoginSplash,

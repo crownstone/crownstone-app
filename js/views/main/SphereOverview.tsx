@@ -19,12 +19,10 @@ import { Icon }                                           from '../components/Ic
 import { Sphere }                                         from './Sphere'
 import { requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { LOG }                        from '../../logging/Log'
-import {colors, screenWidth, topBarHeight} from '../styles'
+import {colors, OrangeLine, screenWidth, topBarHeight} from '../styles'
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {eventBus} from "../../util/EventBus";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {TopbarButton} from '../components/topbar/TopbarButton';
-
 
 export class SphereOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -44,26 +42,6 @@ export class SphereOverview extends Component<any, any> {
 
     return {
       title: paramsToUse.title,
-      headerRight: paramsToUse.showAdd ? <TopbarButton
-        text={"Add"}
-        onPress={() => {
-          eventBus.emit("showBlurredMenu", {
-            fields:[
-              {label:'Add Room',       onPress: () => { Actions.roomAdd({sphereId: paramsToUse.activeSphereId}); }},
-              {label:'Add Crownstone', onPress: () => {
-                  Alert.alert(
-                    "Adding a Crownstone",
-                    "Plug the new Crownstone in and hold your phone close to it (touching it). " +
-                    "It will automatically show up in this overview." +
-                    "\n\nYou don't have to press this button for each Crownstone you add :).",
-                    [{text: 'Buy', onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},{text: 'OK'}]
-                  );
-                }},
-            ], position:{top: topBarHeight - 10, right:5}
-          })
-        }}
-      /> : undefined
-
       // headerTitle: <Component /> // used to insert custom header Title component
       // headerLeft: <Component /> // used to insert custom header Left component
       // headerRight: <Component /> // used to insert custom header Right component
@@ -176,8 +154,10 @@ export class SphereOverview extends Component<any, any> {
       return (
         <View>
           <AnimatedBackground image={background}>
-              <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
+            <OrangeLine/>
+            <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
             { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
+            { Permissions.inSphere(activeSphereId).addRoom ? <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
           </AnimatedBackground>
         </View>
       );
@@ -337,11 +317,44 @@ class SphereChangeButton extends Component<any, any> {
   }
 }
 
+class AddItemButton extends Component<any, any> {
+  render() {
+    let outerRadius = 0.11*screenWidth;
+    let size = 0.083*screenWidth;
+    let color = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
+    return (
+      <TouchableOpacity style={{
+        position:'absolute',
+        bottom: 0,
+        right: 0,
+        padding: 6,
+        paddingLeft:10,
+        paddingTop:10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+      }}
+        onPress={() => { Actions.addItemsToSphere({sphereId: this.props.sphereId}) }}>
+        <View style={{
+          width: outerRadius,
+          height:outerRadius,
+          borderRadius:0.5*outerRadius,
+          backgroundColor: colors.white.rgba(0.5),
+          alignItems:'center',
+          justifyContent:'center',
+        }}>
+          <Icon name="c1-addRounded" size={size} color={ color } />
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
+
 export const overviewStyles = StyleSheet.create({
   mainText: {
     backgroundColor: 'transparent',
     textAlign: 'center',
-    color: colors.blue.hex,
+    color: colors.menuBackground.hex,
     fontSize: 25,
     padding: 15,
     paddingBottom: 0
@@ -349,7 +362,7 @@ export const overviewStyles = StyleSheet.create({
   subText: {
     backgroundColor: 'transparent',
     textAlign: 'center',
-    color: colors.blue.hex,
+    color: colors.menuBackground.hex,
     fontSize: 15,
     padding: 15,
     paddingBottom: 0

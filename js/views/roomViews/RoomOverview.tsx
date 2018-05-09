@@ -28,7 +28,7 @@ import {
   canUseIndoorLocalizationInSphere,
   enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
-import {styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth} from '../styles'
+import {styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth, OrangeLine} from '../styles'
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
 import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
@@ -346,6 +346,7 @@ export class RoomOverview extends Component<any, any> {
 
     return (
       <Background image={backgroundImage} topImage={roomCustomImage}>
+        <OrangeLine/>
         <RoomBanner
           presentUsers={users}
           noCrownstones={amountOfStonesInRoom === 0}

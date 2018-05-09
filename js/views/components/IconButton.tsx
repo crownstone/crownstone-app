@@ -29,7 +29,7 @@ export class IconButton extends Component<any, any> {
           width:plusSize,
           height:plusSize,
           borderRadius:plusSize*0.5,
-          backgroundColor: colors.green.hex,
+          backgroundColor: this.props.addColor || colors.green.hex,
           borderColor: '#ffffff',
           borderWidth: 3,
           alignItems:'center',

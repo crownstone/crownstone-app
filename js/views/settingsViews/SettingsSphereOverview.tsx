@@ -50,7 +50,7 @@ export class SettingsSphereOverview extends Component<any, any> {
             label: sphere.config.name,
             type:'navigation',
             callback: () => {
-              Actions.settingsSphere({sphereId:sphereId, title: sphere.config.name})
+              Actions.settingsSphere({sphereId: sphereId, title: sphere.config.name})
             }
           });
         }

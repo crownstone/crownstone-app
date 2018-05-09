@@ -24,6 +24,7 @@ import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
 import {SettingsMeshTopologyHelp}   from "../views/settingsViews/SettingsMeshTopologyHelp";
+import {AddItemsToSphere} from "../views/main/AddItemsToSphere";
 
 
 export class Router_IOS extends Component {
@@ -73,6 +74,7 @@ export class Router_IOS extends Component {
             <Scene key="roomSelection"                  component={Views.RoomSelection}              />
             <Scene key="roomIconSelection"              component={Views.RoomIconSelection}          />
             <Scene key="roomAdd"                        component={Views.RoomAdd}                    />
+            <Scene key="addItemsToSphere"               component={Views.AddItemsToSphere}           />
             <Scene key="roomEdit"                       component={Views.RoomEdit}                   />
             <Scene key="deviceEdit"                     component={Views.DeviceEdit}                 />
             <Scene key="deviceBehaviourEdit"            component={Views.DeviceBehaviourEdit}        />

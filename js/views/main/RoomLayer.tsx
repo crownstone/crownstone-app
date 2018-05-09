@@ -124,7 +124,8 @@ export class RoomLayer extends Component<any, any> {
 
       return (
         <ForceDirectedView
-          heightOffset={0.3*this._baseRadius}
+          topOffset={0.3*this._baseRadius}
+          bottomOffset={Permissions.inSphere(this.props.sphereId).addRoom ? 0.3*this._baseRadius : 0}
           drawToken={this.props.sphereId}
           nodeIds={roomIdArray}
           nodeRadius={this._baseRadius}
