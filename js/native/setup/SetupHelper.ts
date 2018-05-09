@@ -105,7 +105,7 @@ export class SetupHelper {
             let fastSetupEnabled = Util.versions.isHigherOrEqual(this.firmwareVersion, '2.1.0')
 
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-            Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 250, 'setup19');
+            Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 20, 'setup19');
             Scheduler.scheduleCallback(() => {
               let actions = [];
 
@@ -201,7 +201,7 @@ export class SetupHelper {
               }
 
 
-            }, fastSetupEnabled ? 500 : 2500, 'setup20 resolver timeout');
+            }, fastSetupEnabled ? 50 : 2500, 'setup20 resolver timeout');
           })
           .catch((err) => {
             // Restore trigger state

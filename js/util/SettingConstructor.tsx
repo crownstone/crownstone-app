@@ -164,16 +164,8 @@ export const SettingConstructor = function(store, state, eventBus) {
       // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
       Actions.settingsFAQ()
     }
-
   });
-  items.push({
-    id: 'Recover a Crownstone',
-    label: 'Recover a Crownstone',
-    icon: getIcon('c1-socket2', 23, colors.white.hex, colors.menuTextSelected.hex),
-    type: 'navigation',
-    callback: () => { Actions.settingsPluginRecoverStep1(); }
-  });
-  insertExplanation(items, 'If you want to reset a Crownstone because it is not responding correctly, recover it!', true);
+  items.push({type:'spacer'})
 
   items.push({
     id:'Log Out',

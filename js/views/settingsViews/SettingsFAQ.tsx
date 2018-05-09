@@ -3,6 +3,7 @@ import {
   Alert,
   Platform,
   Linking,
+  TouchableOpacity,
   TouchableHighlight,
   ScrollView,
   Switch,
@@ -12,8 +13,11 @@ import {
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {colors, OrangeLine} from "../styles";
+import {colors, OrangeLine, screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
+import {Actions} from "react-native-router-flux";
+import {Icon} from "../components/Icon";
+import {NavigationBar} from "../components/editComponents/NavigationBar";
 
 export class SettingsFAQ extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -130,7 +134,7 @@ export class SettingsFAQ extends Component<any, any> {
       label:"... a new Crownstone won't show up.",
       content:"Make sure the Crownstone is powered and that you're close to it. " +
       "During setup mode the Crownstone is transmitting very quietly so other people can't claim your Crownstones!\n\n" +
-      "If it still won't show up, you may want to try the recovery procedure (see 'what to do if I want to recover a Crownstone' below).",
+      "If it still won't show up, you may want to try the recovery procedure (see 'what to do if I need to recover a Crownstone' below).",
       contentHeight: 175
     });
 
@@ -138,7 +142,7 @@ export class SettingsFAQ extends Component<any, any> {
       type:'collapsable',
       label:"... a Crownstone is on 'Searching'.",
       content:"Ensure there is power on the Crownstone and that you can reach it.\n\n" +
-      "If you're near (within a meter) and it is still on 'Searching' you may want to try the recovery procedure (see 'what to do if I want to recover a Crownstone' below).",
+      "If you're near (within a meter) and it is still on 'Searching' you may want to try the recovery procedure (see 'what to do if I need to recover a Crownstone' below).",
       contentHeight: 155
     });
 
@@ -167,19 +171,26 @@ export class SettingsFAQ extends Component<any, any> {
     });
 
 
-    label = "- Go to the Settings\n- Tap on Recover a Crownstone";
-    if (Platform.OS === 'android') {
-      label = "- Tap on Recover a Crownstone in the side menu\n";
-    }
     items.push({
       type:'collapsable',
-      label:"... I want to recover a Crownstone.",
-      content: label +
-      "- Follow the instructions.\n" +
-      "- If something goes wrong, read the error message. It explains what is going on.",
+      label:"... I need to recover a Crownstone.",
+      contentItem:
+        <View style={{flex:1}}>
+          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{"Only use this as a last resort. \n\n- Tap the button below and follow the instructions.\n" +
+            "- If something goes wrong, read the error message. It explains what is going on."}
+          </Text>
+          <View style={{flex:1}} />
+          <NavigationBar
+            label={'Recover Crownstone'}
+            icon={<IconButton name={'ios-build'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
+            callback={() => {
+              Actions.settingsPluginRecoverStep1()
+            }}
+          />
+          <View style={{flex:1}} />
+        </View>,
       contentHeight: 175
     });
-
 
     items.push({
       type:'largeExplanation',
