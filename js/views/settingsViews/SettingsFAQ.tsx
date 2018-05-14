@@ -63,6 +63,16 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'collapsable',
+      label:"... create a room?",
+      content:"You need to be an admin of the Sphere to add rooms.\n\n" +
+      "- Go to the Sphere Overview\n  (with the room bubbles)\n" +
+      "- Tap the icon  with the + sign on it in the lower right corner.\n" +
+      "- Select add room.",
+      contentHeight: 175
+    });
+
+    items.push({
+      type:'collapsable',
       label:"... move a Crownstone to a room?",
       content:"Moving the Crownstone is done in the Crownstone overview:\n\n" +
       "- Go to the Sphere Overview\n  (with the room bubbles)\n" +
