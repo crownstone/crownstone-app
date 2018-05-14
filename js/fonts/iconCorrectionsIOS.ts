@@ -221,7 +221,6 @@ const c1CorrectionsIOS = {
   'c1-tap-block-outline':   {change: false, top: +0.000, left: +0.000},
   'c1-tap-fat':             {change: false, top: +0.000, left: +0.000},
   'c1-sphere':              {change: true,  top: +0.034, left: +0.010},
-  'c1-addRounded':          {change: true,  top: +0.034, left: +0.010},
 };
 
 
@@ -230,6 +229,16 @@ const c2CorrectionsIOS = {
   'c2-plugin':          {change: false, top: +0.000, left: +0.000},
   'c2-pluginFilled':    {change: true,  top: +0.000, left: +0.000},
   'c2-pluginFront':     {change: false, top: +0.000, left: +0.000},
+};
+
+const c3CorrectionsIOS = {
+  'c3-newCircle':        {change: false, top: +0.000, left: +0.000},
+  'c3-newSign':          {change: false, top: +0.000, left: +0.000},
+  'c3-newStar':          {change: false, top: +0.000, left: +0.000},
+  'c3-addRounded':       {change: true,  top: +0.034, left: +0.010},
+  'c3-addRoundedBold':   {change: false, top: +0.000, left: +0.000},
+  'c3-addRoundedfilled': {change: false, top: +0.000, left: +0.000},
+  'c3-addCircle':        {change: false, top: +0.000, left: +0.000},
 };
 
 const ioniconCorrectionsIOS = {
@@ -261,6 +270,7 @@ const evilIconCorrectionsIOS = {
 export const iconCorrectionsIOS = {
   c1: c1CorrectionsIOS,
   c2: c2CorrectionsIOS,
+  c3: c3CorrectionsIOS,
   ionicons: ioniconCorrectionsIOS,
   evilIcons: evilIconCorrectionsIOS,
 };

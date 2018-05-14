@@ -8,6 +8,7 @@ import { iconCorrectionsIOS } from './iconCorrectionsIOS'
 export const iconCorrections = {
   c1:       Platform.OS === 'android' ? iconCorrectionsAndroid.c1 : iconCorrectionsIOS.c1,
   c2:       Platform.OS === 'android' ? iconCorrectionsAndroid.c2 : iconCorrectionsIOS.c2,
+  c3:       Platform.OS === 'android' ? iconCorrectionsAndroid.c3 : iconCorrectionsIOS.c3,
   ionicons: Platform.OS === 'android' ? iconCorrectionsAndroid.ionicons : iconCorrectionsIOS.ionicons,
   evilIcons: Platform.OS === 'android' ? iconCorrectionsAndroid.evilIcons : iconCorrectionsIOS.evilIcons,
 

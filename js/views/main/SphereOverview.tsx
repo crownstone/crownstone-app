@@ -343,7 +343,7 @@ class AddItemButton extends Component<any, any> {
           alignItems:'center',
           justifyContent:'center',
         }}>
-          <Icon name="c1-addRounded" size={size} color={ color } />
+          <Icon name="c3-addRounded" size={ size } color={ color } />
         </View>
       </TouchableOpacity>
     );

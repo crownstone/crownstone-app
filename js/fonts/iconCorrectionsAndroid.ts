@@ -236,6 +236,15 @@ const c2CorrectionsAndroid = {
   'c2-pluginFront':     {change: false, top: +0.000, left: +0.000},
 };
 
+
+const c3CorrectionsAndroid = {
+  'c3-crossOutlines':   {change: false, top: +0.000, left: +0.000},
+  'c3-newCircle':       {change: false, top: +0.000, left: +0.000},
+  'c3-addRounded':      {change: false, top: +0.000, left: +0.000},
+  'c3-addRoundedBold':  {change: false, top: +0.000, left: +0.000},
+};
+
+
 const ioniconCorrectionsAndroid = {
   'ios-warning':        {change: true, top: -0.065, left: +0.000},
 };
@@ -251,6 +260,7 @@ const evilIconsCorrectionsAndroid = {
 export const iconCorrectionsAndroid = {
   c1: c1CorrectionsAndroid,
   c2: c2CorrectionsAndroid,
+  c3: c3CorrectionsAndroid,
   ionicons: ioniconCorrectionsAndroid,
   evilIcons: evilIconsCorrectionsAndroid,
 };

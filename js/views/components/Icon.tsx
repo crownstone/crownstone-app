@@ -4,7 +4,7 @@ import { Component } from 'react';
 
 import Ionicon from 'react-native-vector-icons/dist/Ionicons';
 import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
-import { CustomIcon, CustomIcon2 } from '../../fonts/customIcons'
+import {CustomIcon, CustomIcon2, CustomIcon3} from '../../fonts/customIcons'
 
 import { iconCorrections } from '../../fonts/iconCorrections'
 
@@ -41,6 +41,13 @@ export class Icon extends Component<any, any> {
         offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
       }
       return <CustomIcon2 {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
+    }
+    else if (prefix == 'c3-') {
+      let correction = iconCorrections.c3[this.props.name];
+      if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
+        offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
+      }
+      return <CustomIcon3 {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
     }
     else if (prefix == 'ei-') {
       let correction = iconCorrections.evilIcons[this.props.name];

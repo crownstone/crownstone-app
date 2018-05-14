@@ -314,18 +314,11 @@ const glyphMap = {
   'c1-present':0xf136,
   'c1-screen':0xf137,
   'c1-computer':0xf138,
-  'c1-crossOutlines':0xf139,
-  'c1-newCircle':0xf13a,
-  'c1-addRounded':0xf13b,
-  'c1-addRoundedBold':0xf13c,
-  'c1-addRoundedThin':0xf13d,
 };
 
 export const getRandomC1Name = function() {
   return getRandomName(glyphMap);
 };
-
-export const CustomIcon = VectorIcons.createIconSet(glyphMap, 'Crownstone', 'Crownstone.ttf');
 
 
 const glyphMap2 = {
@@ -335,11 +328,29 @@ const glyphMap2 = {
   'c2-pluginFront':0xf003,
 };
 
-export const CustomIcon2 = VectorIcons.createIconSet(glyphMap2,  'CustomIcons', 'CustomIcons.ttf');
-
-export const getRandomC21Name = function() {
+export const getRandomC2Name = function() {
   return getRandomName(glyphMap2);
 };
+
+const glyphMap3 = {
+  'c3-newCircle':       0xf000,
+  'c3-newSign':         0xf001,
+  'c3-newStar':         0xf002,
+  'c3-addRounded':      0xf003,
+  'c3-addRoundedBold':  0xf004,
+  'c3-addRoundedfilled':0xf005,
+  'c3-addCircle':       0xf006,
+}
+
+export const getRandomC3Name = function() {
+  return getRandomName(glyphMap3);
+};
+
+export const CustomIcon = VectorIcons.createIconSet(glyphMap,    'Crownstone', 'Crownstone.ttf');
+export const CustomIcon2 = VectorIcons.createIconSet(glyphMap2,  'CustomIcons', 'CustomIcons.ttf');
+export const CustomIcon3 = VectorIcons.createIconSet(glyphMap3,  'Crownstone2', 'Crownstone2.ttf');
+
+
 
 const getRandomName = function(map) {
   let keys = Object.keys(map);

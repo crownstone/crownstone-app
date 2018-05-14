@@ -78,6 +78,7 @@ export class RoomLayer extends Component<any, any> {
     this.unsubscribeStoreEvents();
   }
 
+
   _renderRoom(locationId, nodePosition) {
     // variables to pass to the room overview
     return (

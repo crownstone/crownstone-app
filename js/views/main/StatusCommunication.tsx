@@ -61,6 +61,7 @@ export class StatusCommunication extends Component<any, any> {
 
     let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphere);
     let requiresFingerprints = requireMoreFingerprints(state, currentSphere);
+    let addButtonShown = Permissions.inSphere(currentSphere).addRoom === true;
 
     let stones = state.spheres[this.props.sphereId].stones;
     let stoneIds = Object.keys(stones);
@@ -71,13 +72,15 @@ export class StatusCommunication extends Component<any, any> {
       }
     });
 
+
     let generalStyle = {
       position:'absolute',
       bottom: 0,
       justifyContent: 'center',
       alignItems: 'center',
       opacity: this.props.opacity || 1,
-      width: screenWidth,
+      left: addButtonShown ? (0.11 * screenWidth) + 5: 0,   // 0.11*screenwidth is the width of the add icon
+      width: addButtonShown ? (1 - (0.11 * 2)) * screenWidth - 10 : screenWidth,
       height: 25,
       overflow: 'hidden'
     };

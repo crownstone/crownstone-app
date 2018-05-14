@@ -24,34 +24,37 @@ let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
 };
 
+const FLOATING_CROWNSTONE_LOCATION_ID = null;
+
 class RoomCircleClass extends Component<any, any> {
-  initializedPosition : any;
-  energyLevels : any;
-  usage : any;
-  borderWidth : number;
-  innerDiameter : number;
-  outerDiameter : number;
-  iconSize : number;
-  textSize : number;
+  initializedPosition: any;
+  energyLevels: any;
+  usage: any;
+  borderWidth: number;
+  innerDiameter: number;
+  outerDiameter: number;
+  iconSize: number;
+  textSize: number;
 
-  showAlert : string = null;
+  showAlert: string = null;
 
-  animationStarted : boolean;
-  animating : boolean;
-  animatedMoving : boolean;
+  animationStarted: boolean;
+  animating: boolean;
+  animatedMoving: boolean;
 
-  previousCircle : any;
-  moveAnimationTimeout : any;
-  color : any;
+  previousCircle: any;
+  moveAnimationTimeout: any;
+  wiggleEnabled = false;
+  color: any;
 
-  movementDuration : number;
-  jumpDuration : number;
-  fadeDuration : number;
+  movementDuration: number;
+  jumpDuration: number;
+  fadeDuration: number;
 
-  unsubscribeSetupEvents : any;
-  unsubscribeStoreEvents : any;
-  unsubscribeControlEvents : any;
-  renderState : any;
+  unsubscribeSetupEvents: any;
+  unsubscribeStoreEvents: any;
+  unsubscribeControlEvents: any;
+  renderState: any;
 
   constructor(props) {
     super(props);
@@ -70,18 +73,18 @@ class RoomCircleClass extends Component<any, any> {
     };
 
     this.energyLevels = [
-      {min: 0,    max:50,    color: colors.green.hex},
-      {min: 50,   max:200,   color: colors.orange.hex},
-      {min: 200,  max:1000,  color: colors.red.hex},
-      {min: 1000, max:4000,  color: colors.darkRed.hex},
+      {min: 0, max: 50, color: colors.green.hex},
+      {min: 50, max: 200, color: colors.orange.hex},
+      {min: 200, max: 1000, color: colors.red.hex},
+      {min: 1000, max: 4000, color: colors.darkRed.hex},
     ];
 
     this.usage = 0;
     this.props = props;
     // calculate the size of the circle based on the screen size
     this.borderWidth = props.radius / 15;
-    this.innerDiameter = 2*props.radius - 4.5 * this.borderWidth;
-    this.outerDiameter = 2*props.radius;
+    this.innerDiameter = 2 * props.radius - 4.5 * this.borderWidth;
+    this.outerDiameter = 2 * props.radius;
     this.iconSize = props.radius * 0.8;
     this.textSize = props.radius * 0.25;
 
@@ -104,9 +107,9 @@ class RoomCircleClass extends Component<any, any> {
 
 
   componentDidMount() {
-    const { store } = this.props;
+    const {store} = this.props;
 
-    if (this.props.locationId === null) {
+    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID) {
       this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled", (handle) => {
         this.setState({setupProgress: 20});
       }));
@@ -133,11 +136,11 @@ class RoomCircleClass extends Component<any, any> {
       let usage = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
 
       // in the case the room is deleted, do not redraw.
-      if (this.props.locationId !== null && state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
+      if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID && state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
         return;
       }
 
-      if (this.props.locationId !== null) {
+      if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID) {
         if (usage !== this.usage || state.spheres[this.props.sphereId].locations[this.props.locationId].config != this.renderState.spheres[this.props.sphereId].locations[this.props.locationId].config) {
           this.usage = usage;
           this.forceUpdate();
@@ -149,19 +152,47 @@ class RoomCircleClass extends Component<any, any> {
       }
     });
 
-    this.unsubscribeControlEvents = this.props.eventBus.on('nodeWasTapped'+this.props.locationId, (data) => {
+    this.unsubscribeControlEvents = this.props.eventBus.on('nodeWasTapped' + this.props.locationId, (data) => {
       this.handleTap(data);
     });
 
-    this.unsubscribeControlEvents = this.props.eventBus.on('nodeTouched'+this.props.locationId, (data) => {
+    this.unsubscribeControlEvents = this.props.eventBus.on('nodeTouched' + this.props.locationId, (data) => {
       this.handleTouch(data);
     });
 
-    this.unsubscribeControlEvents = this.props.eventBus.on('nodeReleased'+this.props.locationId, (data) => {
+    this.unsubscribeControlEvents = this.props.eventBus.on('nodeReleased' + this.props.locationId, (data) => {
       this.handleTouchReleased(data);
     })
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID) { return }
+
+    if (this.props.seeStonesInSetupMode !== prevProps.seeStonesInSetupMode) {
+      if (this.props.seeStonesInSetupMode) {
+        if (this.wiggleEnabled === false) {
+          this.wiggleEnabled = true;
+          this._startWiggle();
+        }
+      }
+      else {
+        this._stopWiggle();
+      }
+    }
+  }
+
+
+  _startWiggle() {
+    if (!this.wiggleEnabled) { return;}
+    Animated.spring(this.state.scale, { toValue: Math.random() * 0.4 + 0.8, friction: 3, tension: 60 }).start(() => {
+        this._startWiggle()
+    });
+  }
+
+  _stopWiggle() {
+    this.state.scale.stopAnimation();
+    this.wiggleEnabled = false;
+  }
 
   componentWillUnmount() {
     clearTimeout(this.moveAnimationTimeout);
@@ -170,6 +201,7 @@ class RoomCircleClass extends Component<any, any> {
     });
     this.unsubscribeStoreEvents();
     this.unsubscribeControlEvents();
+    this._stopWiggle();
   }
 
 
@@ -178,7 +210,7 @@ class RoomCircleClass extends Component<any, any> {
       if (usage < this.energyLevels[i].max)
         return i
     }
-    return this.energyLevels.length-1;
+    return this.energyLevels.length - 1;
   }
 
   _areDfuStonesInLocation() {
@@ -201,7 +233,7 @@ class RoomCircleClass extends Component<any, any> {
       return colors.purple.hex;
     }
 
-    if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
+    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
       if (prev)  {
         return colors.lightGray.hex;
       }
@@ -225,7 +257,7 @@ class RoomCircleClass extends Component<any, any> {
       return <Icon name="ios-settings" size={this.iconSize*1.3} color='#ffffff'/>;
     }
 
-    if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
+    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
       let smallSize = this.iconSize*1.1*0.6;
       return (
         <View style={{width:this.iconSize*1.1, height: this.iconSize}}>
@@ -234,7 +266,7 @@ class RoomCircleClass extends Component<any, any> {
         </View>
       )
     }
-    else if (this.props.locationId === null) {
+    else if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID) {
       return <Icon name="c2-pluginFilled" size={this.iconSize} color='#ffffff'/>;
     }
     else {
@@ -283,7 +315,7 @@ class RoomCircleClass extends Component<any, any> {
   _getUsageCircle(usage, newColor) {
     let colorOfLowerLayer = this._getColor(usage, true);
     let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
-    if (usage == 0 && !(this.props.locationId === null && this.props.seeStonesInSetupMode === true)) {
+    if (usage == 0 && !(this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true)) {
       return (
         <View style={{position:'absolute', top:0, left:0}}>
           <Svg width={this.outerDiameter} height={this.outerDiameter}>
@@ -302,7 +334,7 @@ class RoomCircleClass extends Component<any, any> {
     }
 
     let levelProgress = this._getFactor(usage);
-    if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
+    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
       levelProgress = this.state.setupProgress / 20;
     }
     return (
@@ -365,7 +397,7 @@ class RoomCircleClass extends Component<any, any> {
     if (state.app.indoorLocalizationEnabled) {
       let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
       this.showAlert = null;
-      if (this.props.locationId !== null && this.props.viewingRemotely !== true) {
+      if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID && this.props.viewingRemotely !== true) {
         if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
           this.showAlert = ALERT_TYPES.fingerprintNeeded;
         }

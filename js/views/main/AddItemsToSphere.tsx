@@ -95,7 +95,11 @@ export class AddItemsToSphere extends Component<any, any> {
               Alert.alert(
                 "Adding a Person",
                 "This is done through the Sphere settings. " + label + "\n\nYou will be taken there now.",
-                [{text: 'OK', onPress: () => { Actions.settingsSphere({sphereId: this.props.sphereId }); }}]
+                [{text: 'OK', onPress: () => {
+                  Actions.reset('tabBar');
+                  Actions.jump('settings');
+                  Actions.settingsSphere({sphereId: this.props.sphereId})
+                }}]
               );
             }} />
           </View>
