@@ -551,6 +551,11 @@ export class StoneEntity {
       transient = false;
       changeData.dimmingEnabled = advertisement.serviceData.dimmingAllowed;
     }
+    if (stone.config.switchCraft !== advertisement.serviceData.switchCraftEnabled) {
+      changed = true;
+      transient = false;
+      changeData.switchCraft = advertisement.serviceData.switchCraftEnabled;
+    }
 
 
     if (changed) {

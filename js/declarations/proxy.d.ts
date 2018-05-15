@@ -73,15 +73,22 @@ interface crownstoneServiceData {
   powerUsageApparent        : number, // VA
   accumulatedEnergy         : number, // J
   timestamp                 : number, // reconstructed timestamp, -1 if not available, uint16 counter when time is not set
+
+  // bitmask flags
   dimmingAvailable          : boolean,
   dimmingAllowed            : boolean,
   switchLocked              : boolean,
   timeSet                   : boolean,
+  switchCraftEnabled        : boolean,
+
   deviceType                : deviceType,
   rssiOfExternalCrownstone  : number,
   errorMode                 : boolean, // True when service data is of type error.
   errors                    : errorData, // Has to be correct when errorMode is true.
   uniqueElement             : number // partial timestamp, counter, etc
+
+
+
 }
 
 
