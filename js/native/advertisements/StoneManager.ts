@@ -34,6 +34,14 @@ class StoneManagerClass {
   factoryResetUnknownStonesEnabled = false;
   factoryResetUnknownStonesEnableTimeout = null;
 
+  // _debugging = false
+  //
+  // constructor() {
+  //   eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
+  //     this._debug(state);
+  //   })
+  // }
+
   loadStore(store) {
     if (this._initialized === false) {
       LOGi.native("StoreManager: loadStore");
@@ -42,6 +50,23 @@ class StoneManagerClass {
       this._init();
     }
   }
+
+  // _debug(debugState) {
+  //   if (debugState) {
+  //     if (!this._debugging) {
+  //       this._debugging = true;
+  //       let state = this.store.getState();
+  //       let sphereIds = Object.keys(state.spheres);
+  //       sphereIds.forEach((sphereId) => {
+  //         let stoneIds = Object.keys(state.spheres[sphereId].stones);
+  //         stoneIds.forEach((stoneId) => {
+  //           this.createEntity(sphereId, stoneId);
+  //         })
+  //       })
+  //       eventBus.emit("ADVERTISEMENT_DEBUGGING", true);
+  //     }
+  //   }
+  // }
 
 
   _init() {

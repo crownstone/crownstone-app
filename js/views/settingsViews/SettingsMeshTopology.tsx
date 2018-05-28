@@ -182,6 +182,22 @@ export class SettingsMeshTopology extends Component<any, any> {
     let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
 
+    if (stoneIds.length === 0) {
+      return (
+        <Background image={this.props.backgrounds.detailsDark}>
+          <OrangeLine/>
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Text style={{color:colors.white.hex, fontWeight:'bold'}}>{'No Crownstones in Sphere "' + sphere.config.name + '" yet.'}</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => { Actions.settingsMeshTopologyHelp() }}
+            style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
+            <Icon name={'ios-help-circle'} size={40} color={colors.white.rgba(0.75)} />
+          </TouchableOpacity>
+        </Background>
+      );
+    }
+
     let locationColorArray = [
       colors.green.hex,
       colors.menuTextSelected.hex,

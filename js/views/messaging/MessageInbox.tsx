@@ -32,6 +32,7 @@ export class MessageInbox extends Component<any, any> {
 
     let state = params.store.getState();
     let activeSphere = state.app.activeSphere;
+
     let title = "Messages";
     if (activeSphere && state.spheres[activeSphere]) {
       let sphere = state.spheres[activeSphere];
@@ -162,6 +163,7 @@ export class MessageInbox extends Component<any, any> {
   }
 
   render() {
+    console.log("updating message inbox VIEW")
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
     let messageExplanationStyle = {

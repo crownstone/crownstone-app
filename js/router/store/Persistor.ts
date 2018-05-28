@@ -247,7 +247,7 @@ export class Persistor {
     LOGd.store("Persistor: Hydration v2 Step2, getting data from keys.");
     return AsyncStorage.multiGet(keyList)
       .catch((errorArray : asyncMultiError[]) => {
-        LOGd.store("Persistor: Hydration v2 Step2, error while getting data.");
+        LOGw.store("Persistor: Hydration v2 Step2, error while getting data.");
         // attempt to get the historical version of failed keys.
         if (Array.isArray(errorArray)) {
           // handle all errors
@@ -386,11 +386,11 @@ export class Persistor {
 
       if (state.spheres[sphereId].stones) {
         let stoneIds = Object.keys(state.spheres[sphereId].stones);
-        stoneIds.forEach((stoneId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId:     stoneId});});
+        stoneIds.forEach((stoneId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId});});
       }
       if (state.spheres[sphereId].locations) {
         let locationIds = Object.keys(state.spheres[sphereId].locations);
-        locationIds.forEach((locationId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId:  locationId});});
+        locationIds.forEach((locationId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId: locationId});});
       }
       if (state.spheres[sphereId].appliances) {
         let applianceIds = Object.keys(state.spheres[sphereId].appliances);
@@ -398,7 +398,7 @@ export class Persistor {
       }
       if (state.spheres[sphereId].users) {
         let userIds = Object.keys(state.spheres[sphereId].users);
-        userIds.forEach((userId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId:      userId});});
+        userIds.forEach((userId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId: userId});});
       }
     }
 

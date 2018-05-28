@@ -8,6 +8,7 @@ import { LocationHandler }  from "../localization/LocationHandler";
 import { StoneMeshTracker } from "./StoneMeshTracker";
 import { StoneBehaviour }   from "./StoneBehaviour";
 import { StoneStoreManager } from "./StoneStoreManager";
+import {generateFakeAdvertisement} from "./Debug";
 
 let RSSI_TIMEOUT = 5000;
 
@@ -50,6 +51,9 @@ export class StoneEntity {
   ignoreAdvertisements = false;
   ignoreConditions : condition[] = null;
 
+  debugging = false;
+  debugInterval = null;
+
   constructor(store, storeManager, sphereId, stoneId) {
     LOGi.native("StoneEntity: Creating entity for ", stoneId);
     this.store = store;
@@ -61,7 +65,31 @@ export class StoneEntity {
     this.meshTracker = new StoneMeshTracker(store, sphereId, stoneId);
 
     this.subscribe();
+    // eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
+    //   this._debug(state);
+    // })
   }
+
+  // _debug(state) {
+  //   // this can be used to fill the database with fake advertisements
+  //   if (state) {
+  //     if (this.debugging === false) {
+  //       this.debugging = true;
+  //       this.debugInterval = setInterval(() => {
+  //         let state = this.store.getState();
+  //         let stone = state.spheres[this.sphereId].stones[this.stoneId];
+  //
+  //         let adv = generateFakeAdvertisement(this.sphereId, stone);
+  //         this.handleDirectAdvertisement(stone, adv)
+  //       }, 50);
+  //     }
+  //   }
+  //   else {
+  //     clearInterval(this.debugInterval)
+  //   }
+  // }
+
+
 
 
   _validate(state = undefined) {

@@ -356,6 +356,7 @@ export const overviewStyles = StyleSheet.create({
     textAlign: 'center',
     color: colors.menuBackground.hex,
     fontSize: 25,
+    fontWeight: 'bold',
     padding: 15,
     paddingBottom: 0
   },
@@ -365,6 +366,14 @@ export const overviewStyles = StyleSheet.create({
     color: colors.menuBackground.hex,
     fontSize: 15,
     padding: 15,
+    paddingBottom: 0
+  },
+  subTextSmall: {
+    backgroundColor: 'transparent',
+    textAlign: 'center',
+    color: colors.menuBackground.rgba(0.4),
+    fontSize: 12,
+    padding: 30,
     paddingBottom: 0
   },
   bottomText: {

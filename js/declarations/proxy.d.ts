@@ -86,9 +86,6 @@ interface crownstoneServiceData {
   errorMode                 : boolean, // True when service data is of type error.
   errors                    : errorData, // Has to be correct when errorMode is true.
   uniqueElement             : number // partial timestamp, counter, etc
-
-
-
 }
 
 

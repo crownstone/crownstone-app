@@ -200,6 +200,9 @@ export class StoneSyncer extends SyncingSphereItemBase {
   }
 
   syncLocalStoneDown(localId, stoneInState, stone_from_cloud, locationLinkId) {
+    // somehow sometimes ibeacon major and minor go missing. If this happens, redownload from cloud
+    let corruptData = !stoneInState.config.iBeaconMajor || !stoneInState.config.iBeaconMinor;
+
     let localApplianceId = this._getLocalApplianceId(stone_from_cloud.applianceId);
     let localLocationId  = this._getLocalLocationId(locationLinkId);
 
@@ -218,7 +221,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
     };
 
 
-    if (shouldUpdateInCloud(stoneInState.config, stone_from_cloud)) {
+    if (shouldUpdateInCloud(stoneInState.config, stone_from_cloud) && !corruptData) {
       if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return }
 
       let localDataForCloud = {...stoneInState};
@@ -254,7 +257,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
           .catch(() => {})
       );
     }
-    else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud)) {
+    else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud) || corruptData) {
       syncLocal()
     }
     else if (stoneInState.config.applianceId && localApplianceId === null) { // self repair

@@ -23,7 +23,7 @@ import {ScaledImage} from "../../components/ScaledImage";
 export class SwitchCraftInformation extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "SwitchCraft",
+      title: "Switchcraft",
     }
   };
   // "SwitchCraft is a new, experimental feature of the Crownstone that allows you to switch your lights with both Crownstone and an existing wall switch." +

@@ -260,7 +260,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
             </Animated.View>
           </View>
           <View style={{flex:1}} />
-          <View style={{marginBottom:20}}>
+          <View style={{marginBottom: 20}}>
             <ActivityIndicator animating={true} color={colors.white.hex} size="large"/>
           </View>
         </View>

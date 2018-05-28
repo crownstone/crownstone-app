@@ -55,10 +55,6 @@ export class StatusCommunication extends Component<any, any> {
       return <View />;
     }
 
-    // the bottom distance pops the bottom text up if the orbs are shown. Orbs are shown when there are multiple spheres.
-    let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
-    let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
-
     let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphere);
     let requiresFingerprints = requireMoreFingerprints(state, currentSphere);
     let addButtonShown = Permissions.inSphere(currentSphere).addRoom === true;
@@ -89,15 +85,6 @@ export class StatusCommunication extends Component<any, any> {
       return (
         <View style={[generalStyle, {alignItems: 'center', justifyContent: 'center'}]}>
           <Text style={overviewStyles.bottomText}>{'New Crownstone Detected! Tap on it!'}</Text>
-        </View>
-      );
-    }
-    else if (noStones === true && noRoomsCurrentSphere == true) {
-      return (
-        <View style={[generalStyle, {alignItems: 'center', justifyContent: 'center', height: availableScreenHeight}]}>
-          <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
-          <Text style={overviewStyles.mainText}>{"No Crownstones added yet!"}</Text>
-          <Text style={overviewStyles.subText}>{"Get close to a new Crownstone and it will appear here automatically! If nothing happens, ensure the Crownstone is powered on and not paired to another user.\n\nMore help is available in the help menu in the settings."}</Text>
         </View>
       );
     }

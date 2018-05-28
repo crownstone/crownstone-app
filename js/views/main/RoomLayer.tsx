@@ -122,7 +122,6 @@ export class RoomLayer extends Component<any, any> {
     }
     else {
       let roomIdArray = this.getRooms();
-
       return (
         <ForceDirectedView
           topOffset={0.3*this._baseRadius}
