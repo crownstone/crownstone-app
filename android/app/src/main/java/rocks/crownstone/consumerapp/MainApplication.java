@@ -40,8 +40,6 @@ public class MainApplication extends Application implements ReactApplication {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
 					new MainReactPackage(),
-            new RNDeviceInfo(),
-            new RNWebGLPackage(),
 					new VectorIconsPackage(),
 					new SvgPackage(),
 					new ImageResizerPackage(),
@@ -52,6 +50,8 @@ public class MainApplication extends Application implements ReactApplication {
 					new RNCameraKitPackage(),
 					new SplashScreenReactPackage(),
 					new RNSentryPackage(MainApplication.this),
+					new RNDeviceInfo(),
+					new RNWebGLPackage(),
 					new ReactNativePushNotificationPackage()
 			);
 		}
