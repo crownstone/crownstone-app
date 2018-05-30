@@ -11,7 +11,6 @@ import {
 
 import {
   styles, colors, screenWidth, screenHeight} from '../../styles'
-import { BlurView } from 'react-native-blur';
 import { FadeInView } from "./FadeInView";
 import { eventBus }  from "../../../util/EventBus";
 
@@ -136,7 +135,7 @@ export class AnimatedMenu extends Component<any, any> {
               borderRadius: 3,
             }}
           />
-          <BlurView
+          <View
             style={[this.state.style,
               {...this.state.position},
               {position:'absolute',
@@ -144,8 +143,6 @@ export class AnimatedMenu extends Component<any, any> {
                 height: totalHeight,
                 borderRadius:15,
               }]}
-            blurType="light"
-            blurAmount={20}
           />
           <View style={{
             ...this.state.position,

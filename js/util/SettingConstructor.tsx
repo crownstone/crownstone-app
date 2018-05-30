@@ -10,15 +10,15 @@ import {
   View
 } from 'react-native';
 
-import { Util } from './Util'
-import { AppUtil } from './AppUtil'
-import { Actions } from 'react-native-router-flux';
-import { colors } from '../views/styles'
-import { Icon } from '../views/components/Icon'
-import { IconButton } from '../views/components/IconButton'
-import {createNewSphere} from "./CreateSphere";
-import {AlternatingContent} from "../views/components/animated/AlternatingContent";
-import {MapProvider} from "../backgroundProcesses/MapProvider";
+import { Util }               from './Util'
+import { AppUtil }            from './AppUtil'
+import { Actions }            from 'react-native-router-flux';
+import { colors }             from '../views/styles'
+import { Icon }               from '../views/components/Icon'
+import { IconButton }         from '../views/components/IconButton'
+import { createNewSphere }    from "./CreateSphere";
+import { AlternatingContent } from "../views/components/animated/AlternatingContent";
+import { MapProvider }        from "../backgroundProcesses/MapProvider";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
