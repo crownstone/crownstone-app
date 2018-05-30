@@ -4,22 +4,37 @@ const DeviceInfo = require('react-native-device-info');
 
 /******************** RELEASE FLAGS ********************/
 
-  // USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
-  const IGNORE_LOCAL_CONFIG = true;
-
   // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
+  const RELEASE_MODE = false;
+
+  // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
+  const IGNORE_LOCAL_CONFIG = false;
+
   export const FALLBACKS_ENABLED = true;
+
+  // possiblity to block Sentry
+  export let USE_SENTRY = true;
+
+  // DO NOT CHANGE THIS LINE.
+  // the global is meant as a last resort, forcing release to true when compiled in release mode.
+  export const RELEASE_MODE_USED = (RELEASE_MODE && DeviceInfo.getModel() !== "Simulator") || global.__DEV__ !== true;
 
   // this is the name of the app in the database. It has to be exactly this to match the database entry for push notifications.
   // it is used to link an installation to a specific App.
   export const APP_NAME = 'Crownstone.consumer';
 
-  // possiblity to block Sentry
-  export const USE_SENTRY = true;
+  // WHEN DOING A RELEASE, MAKE SURE THIS FLAG IS SET TO FALSE
+  export const DEBUG_MODE_ENABLED = false;
 
 /******************** /RELEASE FLAGS ********************/
 
 
+/**
+ *  DO NOT CHANGE THESE VALUES BELOW THIS LINE. YOU CAN CHANGE THEM IN THE LOCAL CONFIG FILE!
+ *
+ *  To use local config, create a file called LocalConfig.ts next to this file. Any value you put in there will overwrite the matching one here.
+ *  The local file is ignored if RELEASE_MODE is set to true.
+ */
 
 
 /******************** APP ********************/
@@ -33,6 +48,7 @@ const DeviceInfo = require('react-native-device-info');
    * Disable Native will automatically mock all BLE commands so the app can run in the simulator.
    * Silence cloud will silently reject all cloud calls.
    */
+  export let DISABLE_NATIVE = DeviceInfo.isEmulator();
   export let SILENCE_CLOUD  = false;
 
   /**
@@ -42,35 +58,32 @@ const DeviceInfo = require('react-native-device-info');
   export let ENCRYPTION_ENABLED = true;   // Enable encryption for the app and the libs
   export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
 
+  /**
+   * Switch to disable the usage of the mesh in the app
+   */
+  export const MESH_ENABLED = true;
 
   /**
    * Switch to disable the usage of the mesh in the app
    */
-  export const MESH_ENABLED = false;
+  export const HARDWARE_ERROR_REPORTING = true;
 
-  /**
-   * Switch to disable the usage of the mesh in the app
-   */
-  export const HARDWARE_ERROR_REPORTING = false;
 
   /**
    * Switch to enable/disable the Dimming functionality
    */
-  export const DIMMING_ENABLED = false;
+  export const DIMMING_ENABLED = true;
 
   /**
    * Point to the production cloud.
    */
-  // export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';            // point to the production cloud.
-  export let CLOUD_ADDRESS = 'https://crownstone-cloud-dev.herokuapp.com/api/';   // point to the dev cloud.
+  export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
 
-  // point to the local cloud when using a phone
-  // export let CLOUD_ADDRESS = DeviceInfo.getModel() !== "Simulator" ? 'http://10.27.8.130:3000/api/' : 'http://0.0.0.0:3000/api/';
 
   /**
    * The app will not allow usage of crownstones with a lower version than this.
    */
-  export let MINIMUM_REQUIRED_FIRMWARE_VERSION = '1.7.1';
+  export let MINIMUM_REQUIRED_FIRMWARE_VERSION = '2.0.0';
 
 /******************** /APP ********************/
 
@@ -91,22 +104,22 @@ const DeviceInfo = require('react-native-device-info');
   export let LOG_ADVERTISEMENTS = LOG_LEVEL.info;    // enabling LOG.advertisement  commands to be shown.
 
   /**
-  * Specific logging settings used for debugging mostly. These will override developer settings only if true.
-  */
+   * Specific logging settings used for debugging mostly. These will override developer settings only if true.
+   */
   export let LOG_VERBOSE    = LOG_LEVEL.ERROR;   // enabling LOG.verbose    commands to be shown.
   export let LOG_SCHEDULER  = LOG_LEVEL.ERROR;   // enabling LOG.scheduler  commands to be shown.
   export let LOG_BLE        = LOG_LEVEL.ERROR;   // enabling LOG.ble        commands to be shown.
   export let LOG_EVENTS     = LOG_LEVEL.ERROR;   // enabling LOG.event      commands to be shown.
   export let LOG_STORE      = LOG_LEVEL.ERROR;   // enabling LOG.store      commands to be shown.
   export let LOG_CLOUD      = LOG_LEVEL.ERROR;   // enabling LOG.cloud      commands to be shown.
-  export let LOG_NATIVE     = LOG_LEVEL.info;   // enabling LOG.native      commands to be shown.
+  export let LOG_NATIVE     = LOG_LEVEL.ERROR;   // enabling LOG.native      commands to be shown.
 
   /**
    * Log to file. Even if this is false, if the user configures it in the user profile through the developer mode, logging to file will still be used.
    * This flag is meant to just always log to file, regardless of the user input. Used for debugging.
    */
-  export let LOG_TO_FILE             = false;   // log everything that is logged to a file.
-  export let LOG_EXTENDED_TO_FILE    = false;   // log even more to file.
+  export let LOG_TO_FILE          = false;   // log everything that is logged to a file.
+  export let LOG_EXTENDED_TO_FILE = false;   // log even more to file.
 
 /******************** /LOGGING ********************/
 
@@ -122,15 +135,11 @@ const DeviceInfo = require('react-native-device-info');
   export const HIGH_FREQUENCY_SCAN_MAX_DURATION = 15000; //ms
 
   // The disable timeout determines how long we will keep showing the crownstone active (instead of searching...) since we last heard from it.
-  export const DISABLE_TIMEOUT = 30000; //ms
+  export const DISABLE_TIMEOUT = 120000; //ms == 2 min
 
   // settings for the keepAlive. The interval determines how often the keep alive fires, the attemps are the times it will try in total. 2 means 1 retry.
   export const KEEPALIVE_INTERVAL = 70; // s !
   export const KEEPALIVE_ATTEMPTS = 2;
-
-  // in the event that only an away event (or only a near event) is configured,
-  // reset the trigger if you spend this amount of milliseconds in the other zone.
-  export const RESET_TIMER_FOR_NEAR_AWAY_EVENTS = 20000; // ms
 
   // Time until a scanned crownstone in setup mode is regarded to be gone.
   export const SETUP_MODE_TIMEOUT = 15000; // ms
@@ -139,7 +148,7 @@ const DeviceInfo = require('react-native-device-info');
   export const DFU_MODE_TIMEOUT = 15000; // ms
 
   // interval for syncing with the cloud.
-  export const SYNC_INTERVAL = 60*10; // s
+  export const SYNC_INTERVAL = 60*10; // s --> 10 minutes
 
   // interval for syncing sphere users with the cloud so you see their faces in the app.
   export const SPHERE_USER_SYNC_INTERVAL = 10; // s --> 10 seconds
@@ -169,10 +178,11 @@ const DeviceInfo = require('react-native-device-info');
 
 
 
+
 /********************  DEV EXCEPTIONS ********************/
 
-  // if this is enabled, you will always have the option to update the firmware and bootloader,
-  // and all of them will be installed and a hard reset follows. This is to test the DFU.
+    // if this is enabled, you will always have the option to update the firmware and bootloader,
+    // and all of them will be installed and a hard reset follows. This is to test the DFU.
   export const ALWAYS_DFU_UPDATE = false;
 
 /******************** /DEV EXCEPTIONS ********************/
