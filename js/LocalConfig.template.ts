@@ -58,21 +58,6 @@ const DeviceInfo = require('react-native-device-info');
   export let ENCRYPTION_ENABLED = true;   // Enable encryption for the app and the libs
   export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
 
-  /**
-   * Switch to disable the usage of the mesh in the app
-   */
-  export const MESH_ENABLED = true;
-
-  /**
-   * Switch to disable the usage of the mesh in the app
-   */
-  export const HARDWARE_ERROR_REPORTING = true;
-
-
-  /**
-   * Switch to enable/disable the Dimming functionality
-   */
-  export const DIMMING_ENABLED = true;
 
   /**
    * Point to the production cloud.

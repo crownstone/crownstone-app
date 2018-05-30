@@ -110,7 +110,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     });
   }
 
-  if (Object.keys(state.spheres).length > 0 && MapProvider.meshEnabled) {
+  if (Object.keys(state.spheres).length > 0) {
     items.push({
       id: 'Mesh Overview',
       label: 'Mesh Overview',

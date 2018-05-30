@@ -254,7 +254,7 @@ export class CommandManager {
 
       sphereMap[todo.stoneId] = todo.sphereId;
 
-      if (this.isMeshEnabledCommand(command) === true && MapProvider.meshEnabled ) {
+      if (this.isMeshEnabledCommand(command) === true) {
         directTargets[todo.stoneId] = todo.sphereId;
         let allMembersInNetwork = MeshUtil.getStonesInNetwork(state, todo.sphereId, stone.config.meshNetworkId);
 

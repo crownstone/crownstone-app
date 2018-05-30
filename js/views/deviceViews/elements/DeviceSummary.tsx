@@ -21,7 +21,6 @@ import { StoneUtil }           from "../../../util/StoneUtil";
 import { AnimatedCircle }      from "../../components/animated/AnimatedCircle";
 import { DimmerButton }        from "../../components/DimmerButton";
 import { INTENTS }             from "../../../native/libInterface/Constants";
-import { DIMMING_ENABLED}      from "../../../ExternalConfig";
 import { Permissions}          from "../../../backgroundProcesses/PermissionManager";
 import { EventBusClass}        from "../../../util/EventBus";
 import { LockedStateUI}        from "../../components/LockedStateUI";
@@ -133,7 +132,7 @@ export class DeviceSummary extends Component<any, any> {
       );
     }
 
-    if (stone.config.dimmingEnabled === true && DIMMING_ENABLED) {
+    if (stone.config.dimmingEnabled === true) {
       return <DimmerButton size={0.3*screenHeight} state={currentState} stone={stone} sphereId={this.props.sphereId} stoneId={this.props.stoneId} callback={(newState) => {
         let data = {state: newState};
         if (newState === 0) {

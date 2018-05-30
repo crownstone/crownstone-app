@@ -333,8 +333,6 @@ class StoneManagerClass {
 
 
   _resolveMeshNetworkIds(sphereId, stoneFromServiceData, stoneFromServiceDataId, stoneFromAdvertisement, stoneFromAdvertisementId) {
-    if (!MapProvider.meshEnabled) { return; }
-
     let meshNetworkId_external   = stoneFromServiceData.config.meshNetworkId;
     let meshNetworkId_advertiser = stoneFromAdvertisement.config.meshNetworkId;
 

@@ -1,6 +1,6 @@
 import { LOG_LEVEL }        from "../../logging/LogLevels";
 import {LOG, LOGd, LOGi, LOGw} from "../../logging/Log";
-import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, HARDWARE_ERROR_REPORTING } from "../../ExternalConfig";
+import { DISABLE_TIMEOUT, FALLBACKS_ENABLED } from "../../ExternalConfig";
 import { eventBus }         from "../../util/EventBus";
 import { Util }             from "../../util/Util";
 import { Scheduler }        from "../../logic/Scheduler";
@@ -616,49 +616,47 @@ export class StoneEntity {
   }
 
   handleErrors(stone, advertisement : crownstoneAdvertisement) {
-    if (HARDWARE_ERROR_REPORTING) {
-      if (Util.versions.canIUse(stone.config.firmwareVersion, '2.0.0')) {
-        if (advertisement.serviceData.hasError === true) {
-          LOGi.advertisements("StoneEntity: GOT ERROR", advertisement.serviceData);
-          if (advertisement.serviceData.errorMode) {
-            if (this._errorsHaveChanged(stone.errors, advertisement.serviceData.errors)) {
-              this.store.dispatch({
-                type: 'UPDATE_STONE_ERRORS',
-                sphereId: this.sphereId,
-                stoneId: this.stoneId,
-                data: {
-                  overCurrent:       advertisement.serviceData.errors.overCurrent,
-                  overCurrentDimmer: advertisement.serviceData.errors.overCurrentDimmer,
-                  temperatureChip:   advertisement.serviceData.errors.temperatureChip,
-                  temperatureDimmer: advertisement.serviceData.errors.temperatureDimmer,
-                  dimmerOnFailure:   advertisement.serviceData.errors.dimmerOnFailure,
-                  dimmerOffFailure:  advertisement.serviceData.errors.dimmerOffFailure,
-                }
-              });
-              eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
-            }
-          }
-          else {
-            // only mark as error is it is not already marked as error
-            if (stone.errors.hasError === false) {
-              this.store.dispatch({
-                type: 'UPDATE_STONE_ERRORS',
-                sphereId: this.sphereId,
-                stoneId: this.stoneId,
-                data: { hasError: true }
-              });
-              eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
-            }
+    if (Util.versions.canIUse(stone.config.firmwareVersion, '2.0.0')) {
+      if (advertisement.serviceData.hasError === true) {
+        LOGi.advertisements("StoneEntity: GOT ERROR", advertisement.serviceData);
+        if (advertisement.serviceData.errorMode) {
+          if (this._errorsHaveChanged(stone.errors, advertisement.serviceData.errors)) {
+            this.store.dispatch({
+              type: 'UPDATE_STONE_ERRORS',
+              sphereId: this.sphereId,
+              stoneId: this.stoneId,
+              data: {
+                overCurrent:       advertisement.serviceData.errors.overCurrent,
+                overCurrentDimmer: advertisement.serviceData.errors.overCurrentDimmer,
+                temperatureChip:   advertisement.serviceData.errors.temperatureChip,
+                temperatureDimmer: advertisement.serviceData.errors.temperatureDimmer,
+                dimmerOnFailure:   advertisement.serviceData.errors.dimmerOnFailure,
+                dimmerOffFailure:  advertisement.serviceData.errors.dimmerOffFailure,
+              }
+            });
+            eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
           }
         }
-        else if (stone.errors.hasError === true) {
-          LOGi.advertisements("StoneEntity: GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
-          this.store.dispatch({
-            type:     'CLEAR_STONE_ERRORS',
-            sphereId: this.sphereId,
-            stoneId:  this.stoneId,
-          });
+        else {
+          // only mark as error is it is not already marked as error
+          if (stone.errors.hasError === false) {
+            this.store.dispatch({
+              type: 'UPDATE_STONE_ERRORS',
+              sphereId: this.sphereId,
+              stoneId: this.stoneId,
+              data: { hasError: true }
+            });
+            eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
+          }
         }
+      }
+      else if (stone.errors.hasError === true) {
+        LOGi.advertisements("StoneEntity: GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
+        this.store.dispatch({
+          type:     'CLEAR_STONE_ERRORS',
+          sphereId: this.sphereId,
+          stoneId:  this.stoneId,
+        });
       }
     }
   }
