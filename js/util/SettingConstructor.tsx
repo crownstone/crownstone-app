@@ -165,7 +165,10 @@ export const SettingConstructor = function(store, state, eventBus) {
       Actions.settingsFAQ()
     }
   });
-  items.push({type:'spacer'})
+
+  if (Platform.OS !== 'android') {
+    items.push({id: 'settingsSpacer', type: 'spacer'})
+  }
 
   items.push({
     id:'Log Out',

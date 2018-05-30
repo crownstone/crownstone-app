@@ -14,7 +14,6 @@
     "prop-types": "~15.6.0",
     "react": "16.2.0",
     "react-native": "0.53.3",
-    "react-native-blur": "^3.2.2",
     "react-native-camera-kit": "https://github.com/AlexDM0/react-native-camera-kit#master",
     "react-native-console-time-polyfill": "^0.0.6",
     "react-native-device-info": "~0.21.5",

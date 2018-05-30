@@ -62,16 +62,17 @@ export class EventBusClass {
       // Firing these elements can lead to a removal of a point in this._topics.
       // To ensure we do not cause a shift by deletion (thus skipping a callback) we first put them in a separate Array
       let fireElements = [];
-      this._topics[topic].forEach((element) => {
-        fireElements.push(element);
-      });
 
-      fireElements.forEach((element) => {
+      for (let i = 0; i < this._topics[topic].length; i++) {
+        fireElements.push(this._topics[topic][i]);
+      }
+
+      for (let i = 0; i < fireElements.length; i++) {
         // this check makes sure that if a callback has been deleted, we do not fire it.
-        if (this._topicIds[element.id] === true) {
-          element.callback(data);
+        if (this._topicIds[fireElements[i].id] === true) {
+          fireElements[i].callback(data);
         }
-      })
+      }
     }
   }
 
