@@ -20,6 +20,7 @@ import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
 import { SideBar }                   from "../views/components/sideMenu/SideBar";
+import { Icon }                      from "../views/components/Icon";
 
 import { Views }                     from './Views'
 import { colors, screenWidth} from '../views/styles'
@@ -53,6 +54,7 @@ export class Router_Android extends Component {
             <Drawer
               hideNavBar
               key="drawer"
+              drawerIcon={ <Icon name="md-menu" size={27} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} /> }
               contentComponent={SideBar}
               drawerWidth={0.75*screenWidth}
               initial={this.props.loggedIn}

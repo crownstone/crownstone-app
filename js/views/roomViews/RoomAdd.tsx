@@ -4,6 +4,7 @@ import {
   Dimensions,
   TouchableHighlight,
   PixelRatio,
+  Platform,
   ScrollView,
   Switch,
   Text,
@@ -247,7 +248,7 @@ export class RoomAdd extends Component<any, any> {
 
             this.props.store.batchDispatch(actions);
 
-            // BackAction('sphereOverview');
+            BackAction('sphereOverview');
             Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false});
             this.props.eventBus.emit('hideLoading');
           })

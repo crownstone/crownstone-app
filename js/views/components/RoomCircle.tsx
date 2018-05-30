@@ -184,8 +184,9 @@ class RoomCircleClass extends Component<any, any> {
 
   _startWiggle() {
     if (!this.wiggleEnabled) { return;}
+    this.state.scale.stopAnimation();
     Animated.spring(this.state.scale, { toValue: Math.random() * 0.4 + 0.8, friction: 3, tension: 60 }).start(() => {
-        this._startWiggle()
+      this._startWiggle()
     });
   }
 
