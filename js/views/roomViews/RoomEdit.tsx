@@ -330,7 +330,7 @@ export class RoomEdit extends Component<any, any> {
     if (this.pictureTaken) {
       this._removePicture(this.state.picture)
     }
-    BackAction();
+    BackAction('sphereOverview');
   }
 
   render() {

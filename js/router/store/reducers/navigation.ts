@@ -39,6 +39,10 @@ let getTabRootName = (state) => {
 export const reducerCreate = (params) => {
   const defaultReducer = Reducer(params, {});
   return (state, action)=>{
+    console.log("REDUCER:", state, action)
+    if (action && action.type == "REACT_NATIVE_ROUTER_FLUX_POP_TO") {
+      return state;
+    }
     if (action && action.type == "REACT_NATIVE_ROUTER_FLUX_PUSH") {
       if (action && action.params && action.params.__popBeforeAddCount) {
         let newState = {...state};
