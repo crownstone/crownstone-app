@@ -81,9 +81,14 @@ export class AddItemsToSphere extends Component<any, any> {
                 "Adding a Person",
                 "This is done through the Sphere settings. " + label + "\n\nYou will be taken there now.",
                 [{text: 'OK', onPress: () => {
-                  Actions.reset('tabBar');
-                  Actions.jump('settings');
-                  Actions.settingsSphere({sphereId: this.props.sphereId})
+                  if (Platform.OS === 'android') {
+                    Actions.settingsSphere({sphereId: this.props.sphereId, __popBeforeAddCount: 1})
+                  }
+                  else {
+                    Actions.reset('tabBar');
+                    Actions.jump('settings');
+                    Actions.settingsSphere({sphereId: this.props.sphereId})
+                  }
                 }}]
               );
             }} />
