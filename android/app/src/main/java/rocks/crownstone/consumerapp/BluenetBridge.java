@@ -1779,6 +1779,37 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	@ReactMethod
+	public void meshSetTime(double timestampDouble, final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "meshSetTime: " + timestampDouble);
+		// Sets the unix time on the crownstone
+		// Assume already connected
+		long timestamp = (long)timestampDouble;
+		byte[] arr = BleUtils.uint32ToByteArray(timestamp);
+		ControlMsg controlMsgPayload = new ControlMsg(BluenetConfig.CMD_SET_TIME, arr.length, arr);
+		MeshControlPacket meshControlPacket = new MeshControlPacket(controlMsgPayload);
+		byte[] payload = meshControlPacket.toArray();
+		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_MESH_COMMAND, payload.length, payload);
+		getBleExt().writeControl(controlMsg, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
 	public void getTime(final Callback callback) {
 		// Gets the current unix time from the crownstone
 		// Assume already connected
