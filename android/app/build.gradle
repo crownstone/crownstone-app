@@ -174,7 +174,6 @@ dependencies {
     compile project(':react-native-splash-screen')
     compile project(':react-native-keep-awake')
     compile project(":react-native-camera-kit")
-    compile project(':react-native-blur')
     compile project(':react-native-sentry')
     compile project(':react-native-device-info')
     compile project(':react-native-webgl')

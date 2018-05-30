@@ -97,7 +97,7 @@ export class AddItemsToSphere extends Component<any, any> {
 class AddItem extends Component<any, any> {
   render() {
     return (
-      <TouchableOpacity style={{alignItems:'center', padding:10}} onPress={() => { BackAction('sphereOverview'); /*this.props.callback()*/ }}>
+      <TouchableOpacity style={{alignItems:'center', padding:10}} onPress={() => { this.props.callback(); }}>
         <IconButton
           name={this.props.icon}
           size={0.75*iconSize}

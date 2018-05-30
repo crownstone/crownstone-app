@@ -141,7 +141,8 @@ export class RoomEdit extends Component<any, any> {
 
         // jump back to root
         this.props.eventBus.emit('hideLoading');
-        Actions.popTo('sphereOverview');
+
+        BackAction('sphereOverview');
 
         // reload fingerprints.
         LocationHandler.loadFingerprints();
@@ -330,7 +331,6 @@ export class RoomEdit extends Component<any, any> {
     if (this.pictureTaken) {
       this._removePicture(this.state.picture)
     }
-    BackAction('sphereOverview');
   }
 
   render() {

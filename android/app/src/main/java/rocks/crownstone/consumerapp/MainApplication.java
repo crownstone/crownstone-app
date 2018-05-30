@@ -15,7 +15,6 @@ import fr.bamlab.rnimageresizer.ImageResizerPackage;
 import com.rnfs.RNFSPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.wix.RNCameraKit.RNCameraKitPackage;
-import com.cmcewen.blurview.BlurViewPackage;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -44,7 +43,6 @@ public class MainApplication extends Application implements ReactApplication {
 					new ImageResizerPackage(),
 					new RNFSPackage(),
 					new KCKeepAwakePackage(),
-					new BlurViewPackage(),
 					new RNCameraKitPackage(),
 					new SplashScreenReactPackage(),
 					new RNSentryPackage(MainApplication.this),
