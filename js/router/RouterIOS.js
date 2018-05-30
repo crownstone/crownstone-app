@@ -23,8 +23,8 @@ import { Views }                     from './Views'
 import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
-import {SettingsMeshTopologyHelp}   from "../views/settingsViews/SettingsMeshTopologyHelp";
-import {AddItemsToSphere} from "../views/main/AddItemsToSphere";
+import { SettingsMeshTopologyHelp }  from "../views/settingsViews/SettingsMeshTopologyHelp";
+import { AddItemsToSphere }          from "../views/main/AddItemsToSphere";
 
 
 export class Router_IOS extends Component {

@@ -38,7 +38,17 @@ let getTabRootName = (state) => {
 
 export const reducerCreate = (params) => {
   const defaultReducer = Reducer(params, {});
-  return (state, action)=> {
+  return (state, action)=>{
+    if (action && action.type == "REACT_NATIVE_ROUTER_FLUX_PUSH") {
+      if (action && action.params && action.params.__popBeforeAddCount) {
+        let newState = {...state};
+        for (let i = 0; i < action.params.__popBeforeAddCount; i++) {
+          newState.routes.pop();
+          newState.index -= 1;
+        }
+        return defaultReducer(newState, action);
+      }
+    }
     return defaultReducer(state, action);
   }
 };
