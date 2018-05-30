@@ -71,6 +71,9 @@ import nl.dobots.bluenet.ble.extended.callbacks.EventListener;
 import nl.dobots.bluenet.ble.extended.CrownstoneSetup;
 import nl.dobots.bluenet.ble.extended.structs.BleDevice;
 import nl.dobots.bluenet.ble.extended.structs.BleDeviceList;
+import nl.dobots.bluenet.ble.mesh.structs.MeshControlMsg;
+import nl.dobots.bluenet.ble.mesh.structs.cmd.MeshConfigPacket;
+import nl.dobots.bluenet.ble.mesh.structs.cmd.MeshControlPacket;
 import nl.dobots.bluenet.ble.mesh.structs.keepalive.MeshKeepAlivePacket;
 import nl.dobots.bluenet.ble.mesh.structs.keepalive.MeshKeepAliveSameTimeoutPacket;
 import nl.dobots.bluenet.ble.mesh.structs.multiswitch.MeshMultiSwitchListPacket;
@@ -98,6 +101,7 @@ import rocks.crownstone.localization.Localization;
 import rocks.crownstone.localization.LocalizationCallback;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE;
 
 public class BluenetBridge extends ReactContextBaseJavaModule implements EventListener, ScanDeviceListener, BleBeaconRangingListener, LocalizationCallback {
 	private static final String TAG = BluenetBridge.class.getCanonicalName();
@@ -1303,7 +1307,59 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 			retVal.putString("data", "not connected");
 			callback.invoke(retVal);
 		}
+	}
 
+	@ReactMethod
+	public void sendNoOp(final Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "sendNoOp");
+		byte[] arr = {};
+		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_NOP, arr.length, arr);
+		getBleExt().writeControl(controlMsg, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void sendMeshNoOp(final Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "sendMeshNoOp");
+		byte[] arr = {};
+		ControlMsg controlMsgPayload = new ControlMsg(BluenetConfig.CMD_NOP, arr.length, arr);
+		MeshControlPacket meshControlPacket = new MeshControlPacket(controlMsgPayload, 0);
+		byte[] payload = meshControlPacket.toArray();
+		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_MESH_COMMAND, payload.length, payload);
+		getBleExt().writeControl(controlMsg, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	//########################################################################################
@@ -1647,6 +1703,31 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void allowDimming(boolean enable, final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "allowDimming: " + enable);
 		getBleExt().writeAllowDimming(enable, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void setSwitchCraft(boolean enable, final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "setSwitchCraft: " + enable);
+		byte[] arr = {(byte)(enable?1:0)};
+		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_ENABLE_SWITCHCRAFT, arr.length, arr);
+		getBleExt().writeControl(controlMsg, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				BleLog.getInstance().LOGd(TAG, "Success");
@@ -2634,19 +2715,32 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		advertisementMap.putString("handle", device.getAddress());
 		advertisementMap.putString("name", device.getName());
 		advertisementMap.putInt("rssi", device.getRssi());
+
 		advertisementMap.putBoolean("isCrownstoneFamily", device.isStone());
-		advertisementMap.putBoolean("isCrownstonePlug", device.isCrownstonePlug());
-		advertisementMap.putBoolean("isCrownstoneBuiltin", device.isCrownstoneBuiltin());
-		advertisementMap.putBoolean("isGuidestone", device.isGuidestone());
 		advertisementMap.putBoolean("isInDFUMode", device.isDfuMode());
 		advertisementMap.putString("serviceUUID", Integer.toHexString(serviceData.getServiceUuid())); // TODO: make sure it's zero padded
 
-
 		WritableMap serviceDataMap = Arguments.createMap();
 //		if (serviceData != null) {
+
+		serviceDataMap.putString("deviceType", "undefined");
+		if (device.isCrownstonePlug()) {
+			serviceDataMap.putString("deviceType", "plug");
+		}
+		else if (device.isCrownstoneBuiltin()) {
+			serviceDataMap.putString("deviceType", "builtin");
+		}
+		else if (device.isCrownstoneDongle()) {
+			serviceDataMap.putString("deviceType", "crownstoneUSB");
+		}
+		else if (device.isGuidestone()) {
+			serviceDataMap.putString("deviceType", "guidestone");
+		}
+
 		serviceDataMap.putInt("opCode", serviceData.getOpCode());
 //		serviceDataMap.putInt("dataType", 255); // Not stored in ServiceData
 		serviceDataMap.putBoolean("stateOfExternalCrownstone", serviceData.getFlagExternalData());
+		serviceDataMap.putInt("rssiOfExternalCrownstone", serviceData.getExternalRssi());
 		serviceDataMap.putBoolean("hasError", serviceData.getFlagError());
 		serviceDataMap.putBoolean("setupMode", serviceData.isSetupMode());
 
@@ -2678,6 +2772,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		serviceDataMap.putBoolean("dimmingAllowed", serviceData.getFlagDimmingAllowed());
 		serviceDataMap.putBoolean("switchLocked", serviceData.getFlagSwitchLocked());
 		serviceDataMap.putBoolean("timeSet", serviceData.getFlagTimeSet());
+		serviceDataMap.putBoolean("switchCraftEnabled", serviceData.getFlagSwitchcraftEnabled());
 
 		boolean errorMode = false;
 		if (serviceData.getType() == CrownstoneServiceData.TYPE_ERROR || serviceData.getType() == CrownstoneServiceData.TYPE_EXT_ERROR) {
