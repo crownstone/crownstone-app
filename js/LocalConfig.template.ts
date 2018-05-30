@@ -4,6 +4,7 @@ const DeviceInfo = require('react-native-device-info');
 
 /******************** RELEASE FLAGS ********************/
 
+
   // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
   const RELEASE_MODE = false;
 
@@ -166,8 +167,34 @@ const DeviceInfo = require('react-native-device-info');
 
 /********************  DEV EXCEPTIONS ********************/
 
-    // if this is enabled, you will always have the option to update the firmware and bootloader,
-    // and all of them will be installed and a hard reset follows. This is to test the DFU.
+  // if this is enabled, you will always have the option to update the firmware and bootloader,
+  // and all of them will be installed and a hard reset follows. This is to test the DFU.
   export const ALWAYS_DFU_UPDATE = false;
 
 /******************** /DEV EXCEPTIONS ********************/
+
+
+
+
+/******************** LOCAL OVERRIDE ********************/
+
+// force flags based on release modes
+if (RELEASE_MODE_USED === false && !IGNORE_LOCAL_CONFIG) {
+  //override settings with local config, if it exists
+  try {
+  let localConfig = require('./LocalConfig');
+  let localKeys = Object.keys(localConfig);
+  for (let i = 0; i < localKeys.length; i++) {
+    if (module.exports[localKeys[i]] !== undefined && module.exports[localKeys[i]] !== localConfig[localKeys[i]]) {
+    console.log("LOCAL CONFIG OVERRIDE", localKeys[i], module.exports[localKeys[i]], 'to', localConfig[localKeys[i]]);
+    module.exports[localKeys[i]] = localConfig[localKeys[i]];
+    }
+  }
+  console.log("USING CONFIG", module.exports);
+  } catch (err) {
+  // cant find local config. ignore import.
+  }
+}
+
+
+/******************** /LOCAL OVERRIDE ********************/
