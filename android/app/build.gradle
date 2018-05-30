@@ -99,13 +99,15 @@ android {
             keyPassword "$System.env.CS_ANDROID_KEY_PASSWORD"
             v2SigningEnabled false // See https://developer.android.com/about/versions/nougat/android-7.0.html#apk_signature_v2
         }
+        debug {
+        }
     }
 
     defaultConfig {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 28 // Uneven numbers for beta releases!
+        versionCode 29 // Uneven numbers for beta releases!
         versionName "2.1.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"

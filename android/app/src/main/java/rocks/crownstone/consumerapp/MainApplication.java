@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import fr.greweb.rnwebgl.RNWebGLPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
@@ -44,7 +43,6 @@ public class MainApplication extends Application implements ReactApplication {
 					new SvgPackage(),
 					new ImageResizerPackage(),
 					new RNFSPackage(),
-					new RNDeviceInfo(),
 					new KCKeepAwakePackage(),
 					new BlurViewPackage(),
 					new RNCameraKitPackage(),
