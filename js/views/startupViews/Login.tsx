@@ -395,7 +395,7 @@ export class Login extends Component<any, any> {
           }
           else if (Platform.OS === 'android') {
             this.props.eventBus.emit("userLoggedInFinished");
-            Actions.sphereOverview({type: 'reset'});
+            Actions.drawer({type: 'reset'});
           }
           else {
             this.props.eventBus.emit("userLoggedInFinished");
