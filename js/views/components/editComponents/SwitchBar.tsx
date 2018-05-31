@@ -9,8 +9,6 @@ import {
 } from 'react-native';
 
 import {styles, colors, screenWidth, barHeight} from '../../styles'
-import {Text} from "react-native-svg";
-
 
 export class SwitchBar extends Component<any, any> {
   animationAllowed;
