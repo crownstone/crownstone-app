@@ -2,7 +2,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
   Alert,
-  BackAndroid,
+  BackHandler,
   Image,
   ScrollView,
   StyleSheet,
@@ -93,12 +93,12 @@ export class AiStart extends Component<any, any> {
   disableBackButton() {
     // Execute callback function and return true to override.
     this.backButtonFunction = () => { return true; };
-    BackAndroid.addEventListener('hardwareBackPress', this.backButtonFunction);
+    BackHandler.addEventListener('hardwareBackPress', this.backButtonFunction);
   }
 
   restoreBackButton() {
     if (typeof this.backButtonFunction === 'function') {
-      BackAndroid.removeEventListener('hardwareBackPress', this.backButtonFunction);
+      BackHandler.removeEventListener('hardwareBackPress', this.backButtonFunction);
       this.backButtonFunction = null;
     }
   }

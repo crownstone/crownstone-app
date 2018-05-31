@@ -3,7 +3,7 @@ import {
   ActivityIndicator,
   Alert,
   AppState,
-  BackAndroid,
+  BackHandler,
   Image,
   Platform,
   Text,
@@ -166,7 +166,7 @@ export class DfuOverlay extends Component<any, any> {
     this.killProcess = false;
     if (Platform.OS === 'android') {
       this.backButtonFunction = () => { return true; };
-      BackAndroid.addEventListener('hardwareBackPress', this.backButtonFunction);
+      BackHandler.addEventListener('hardwareBackPress', this.backButtonFunction);
     }
   }
 
@@ -501,7 +501,7 @@ export class DfuOverlay extends Component<any, any> {
 
     FirmwareHandler.dfuInProgress = false;
     if (Platform.OS === 'android') {
-      BackAndroid.removeEventListener('hardwareBackPress', this.backButtonFunction);
+      BackHandler.removeEventListener('hardwareBackPress', this.backButtonFunction);
       this.backButtonFunction = null;
     }
 
