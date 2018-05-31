@@ -31,7 +31,7 @@ export class WhatsNewOverlay extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = { visible: true };
+    this.state = { visible: false };
     this.unsubscribe = [];
   }
 
