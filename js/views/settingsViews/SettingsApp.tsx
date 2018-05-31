@@ -129,44 +129,42 @@ export class SettingsApp extends Component<any, any> {
         type: 'explanation', below: true});
     }
 
-    if (Platform.OS !== 'android') {
-      items.push({
-        label: "Use Indoor localization",
-        value: state.app.indoorLocalizationEnabled,
-        type: 'switch',
-        icon: <IconButton name="c1-locationPin1" size={18} button={true} color="#fff"
-                          buttonStyle={{backgroundColor: colors.blue.hex}}/>,
-        callback: (newValue) => {
-          store.dispatch({
-            type: 'UPDATE_APP_SETTINGS',
-            data: {indoorLocalizationEnabled: newValue}
-          });
+    items.push({
+      label: "Use Indoor localization",
+      value: state.app.indoorLocalizationEnabled,
+      type: 'switch',
+      icon: <IconButton name="c1-locationPin1" size={18} button={true} color="#fff"
+                        buttonStyle={{backgroundColor: colors.blue.hex}}/>,
+      callback: (newValue) => {
+        store.dispatch({
+          type: 'UPDATE_APP_SETTINGS',
+          data: {indoorLocalizationEnabled: newValue}
+        });
 
-          LOG.info("BackgroundProcessHandler: Set background processes to", newValue);
-          Bluenet.setBackgroundScanning(newValue);
+        LOG.info("BackgroundProcessHandler: Set background processes to", newValue);
+        Bluenet.setBackgroundScanning(newValue);
 
-          if (newValue === false) {
-            // REMOVE USER FROM ALL SPHERES AND ALL LOCATIONS.
-            let deviceId = Util.data.getCurrentDeviceId(state);
-            if (deviceId) {
-              CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });
-              CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => { });
-            }
+        if (newValue === false) {
+          // REMOVE USER FROM ALL SPHERES AND ALL LOCATIONS.
+          let deviceId = Util.data.getCurrentDeviceId(state);
+          if (deviceId) {
+            CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });
+            CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => { });
           }
         }
-      });
-      items.push({
-        label: "Indoor localization allows the Crownstones to react to: " +
-        "\n  - Enter/Exit Sphere" +
-        "\n  - Enter/Exit Room" +
-        "\n  - Your distance to the Crownstone (Near and Away) " +
-        "\n  - Tap to Toggle" +
-        "\n\nTo do this, the app has to run in the background. If you are in the Sphere, this can use more power than an average app." +
-        "\n\nIf you do not wish to make use of any of the behaviours listed above, you can disable Indoor Localization and use the app as a remote control.\n\n",
-        type: 'explanation',
-        below: true
-      });
-    }
+      }
+    });
+    items.push({
+      label: "Indoor localization allows the Crownstones to react to: " +
+      "\n  - Enter/Exit Sphere" +
+      "\n  - Enter/Exit Room" +
+      "\n  - Your distance to the Crownstone (Near and Away) " +
+      "\n  - Tap to Toggle" +
+      "\n\nTo do this, the app has to run in the background. If you are in the Sphere, this can use more power than an average app." +
+      "\n\nIf you do not wish to make use of any of the behaviours listed above, you can disable Indoor Localization and use the app as a remote control.\n\n",
+      type: 'explanation',
+      below: true
+    });
     return items;
   }
 
