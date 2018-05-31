@@ -2448,10 +2448,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		_initScannerInBackground = enable;
 		if (_scanner.isInitialized()) {
 			Notification notification = getScanServiceNotification("Crownstone is running in the background");
-
 			_scanner.runInBackground(true, enable, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
 				@Override
 				public void onSuccess() {
+					// Scanner may have stopped when background changed.
+					updateScanner();
 					BleLog.getInstance().LOGi(TAG, "success");
 				}
 
