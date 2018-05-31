@@ -30,13 +30,13 @@ export const topBarStyle = StyleSheet.create({
     // backgroundColor:'#ff0',
     height:barHeight,
     width:70,
-    paddingLeft: 6,
+    paddingLeft: 10,
   },
   topBarRightTouch: {
     // backgroundColor:'#ff0',
     height:barHeight,
     width:70,
-    paddingRight: 6,
+    paddingRight: 10,
   },
   topBarCenter: {
     textAlign: 'center',

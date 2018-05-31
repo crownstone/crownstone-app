@@ -17,6 +17,11 @@ import {Dimmer} from "./WhatsNew/2.0.0/Dimmer";
 import {FirmwareUpdate} from "./WhatsNew/2.0.0/FirmwareUpdate";
 import {BatteryImprovements} from "./WhatsNew/2.0.0/BatteryImprovements";
 import {Locking} from "./WhatsNew/2.0.0/Locking";
+import {MeshTopology} from "./WhatsNew/2.1.0/MeshTopology";
+import {Switchcraft} from "./WhatsNew/2.1.0/Switchcraft";
+import {FastSetup} from "./WhatsNew/2.1.0/FastSetup";
+import {RoomImages} from "./WhatsNew/2.1.0/RoomImages";
+import {NewLocalizationSettings} from "./WhatsNew/1.10.0/NewLocalizationSettings";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -26,7 +31,7 @@ export class WhatsNewOverlay extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = { visible: false };
+    this.state = { visible: true };
     this.unsubscribe = [];
   }
 
@@ -46,18 +51,19 @@ export class WhatsNewOverlay extends Component<any, any> {
     let size = {height: height-10, width: width};
 
     if (Platform.OS === 'ios') {
-      content.push(<Dimmer key="Dimmer"  {...size}/>);
+      content.push(<Switchcraft key="Switchcraft"  {...size}/>);
       content.push(<Mesh key="Mesh"  {...size}/>);
-      content.push(<FirmwareUpdate key="FirmwareUpdate"  {...size}/>);
-      content.push(<Locking key="Locking"  {...size}/>);
-      content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
+      content.push(<MeshTopology key="MeshTopology"  {...size}/>);
+      content.push(<RoomImages key="RoomImages"  {...size}/>);
+      content.push(<FastSetup key="FastSetup"  {...size}/>);
     }
     if (Platform.OS === 'android') {
-      content.push(<Dimmer key="Dimmer"  {...size} />);
-      // content.push(<Mesh key="Mesh"  {...size}/>);
-      content.push(<FirmwareUpdate key="FirmwareUpdate"  {...size}/>);
-      content.push(<Locking key="Locking"  {...size}/>);
-      // content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
+      content.push(<Switchcraft key="Switchcraft"  {...size}/>);
+      content.push(<Mesh key="Mesh"  {...size}/>);
+      content.push(<MeshTopology key="MeshTopology"  {...size}/>);
+      content.push(<FastSetup key="FastSetup"  {...size}/>);
+      content.push(<RoomImages key="RoomImages"  {...size}/>);
+      content.push(<NewLocalizationSettings key="NewLocalizationSettings"  {...size}/>);
     }
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }} {...size} />);
 
@@ -91,10 +97,10 @@ export class WhatsNewOverlay extends Component<any, any> {
           fontWeight:'bold',
           backgroundColor:'transparent',
           color:colors.csBlue.hex,
-          marginTop:15,
+          marginTop:25,
           marginBottom:25,
           overflow:'hidden'
-        }}>Your app was updated!</Text>
+        }}>Your App was updated!</Text>
         <Swiper style={{}} showsPagination={true} height={height-80} width={width}
           dot={<View style={{backgroundColor: colors.menuBackground.rgba(0.15), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.menuBackground.rgba(0.2)}} />}
           activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 9, height: 9, borderRadius: 4.5, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}

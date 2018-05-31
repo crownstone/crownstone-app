@@ -1817,7 +1817,6 @@
 					"$(SRCROOT)/../node_modules/react-native-uncontrolled-date-picker-ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-camera-kit/ios/lib/ReactNativeCameraKit",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-webgl/**",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
@@ -1867,7 +1866,6 @@
 					"$(SRCROOT)/../node_modules/react-native-uncontrolled-date-picker-ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-camera-kit/ios/lib/ReactNativeCameraKit",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-webgl/**",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;

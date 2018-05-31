@@ -27,6 +27,8 @@ export const WNStyles = StyleSheet.create({
   innerScrollView: {
     alignItems: 'center',
     paddingBottom: 50,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   outerScrollView: {
   },
