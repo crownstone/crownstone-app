@@ -1,6 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  BackAndroid,
+  BackHandler,
   Image,
   Platform,
   Text,
@@ -61,11 +61,11 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
       }
       return true;
     };
-    BackAndroid.addEventListener('hardwareBackPress', this.backButtonFunction);
+    BackHandler.addEventListener('hardwareBackPress', this.backButtonFunction);
   }
 
   cleanupBackButton() {
-    BackAndroid.removeEventListener('hardwareBackPress', this.backButtonFunction);
+    BackHandler.removeEventListener('hardwareBackPress', this.backButtonFunction);
     this.backButtonFunction = null;
   }
 

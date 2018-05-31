@@ -78,6 +78,17 @@ const BluenetAPI = {
   setSwitchCraft:() => {},
   sendNoOp:() => {},
   sendMeshNoOp:() => {},
+
+
+  getSwitchState:() => {},
+  getTime:() => {},
+  putInDFU:() => {},
+  performDFU:() => {},
+  restartCrownstone:() => {},
+  setSettings:() => {},
+  setupFactoryReset:() => {},
+  setupPutInDFU: () => {},
+  toggleSwitchState:() => {},
 }
 
 if (DISABLE_NATIVE === true) {

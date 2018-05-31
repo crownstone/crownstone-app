@@ -3,12 +3,12 @@ import {
   Animated,
   Switch,
   TouchableOpacity,
+  Platform,
   Text,
   View
 } from 'react-native';
 
 import {styles, colors, screenWidth, barHeight} from '../../styles'
-
 
 export class SwitchBar extends Component<any, any> {
   animationAllowed;
@@ -107,7 +107,7 @@ export class SwitchBar extends Component<any, any> {
       return (
         <View style={{height: navBarHeight , width: screenWidth, backgroundColor: colors.menuBackground.hex}}>
           <Animated.View style={{position:'absolute', top:0, left:0, overflow:'hidden', height: navBarHeight, width: screenWidth, opacity: this.state.opacity}}>
-            <Animated.View style={{position:'absolute', top:-17, left: this.state.leftPos}}>
+            <Animated.View style={{position:'absolute', top: Platform.OS === 'android' ? -24 : -17, left: this.state.leftPos}}>
               <Text style={{color:colors.white.rgba(0.1), fontSize:70, fontWeight:'900', fontStyle:'italic', width: 540}}>{this.props.experimentalLabel || 'EXPERIMENTAL'}</Text>
             </Animated.View>
           </Animated.View>
