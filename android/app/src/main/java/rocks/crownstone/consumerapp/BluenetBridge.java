@@ -260,11 +260,17 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 					BleLog.getInstance().LOGd(TAG, "location permission not granted");
 					sendEvent("locationStatus", "noPermission");
 				}
+				if (!_initScannerInBackground) {
+					updateScanner();
+				}
 			}
 
 			@Override
 			public void onHostPause() {
 				BleLog.getInstance().LOGi(TAG, "onHostPause");
+				if (_scannerInitialized && !_initScannerInBackground) {
+					_scanner.stopScanning();
+				}
 			}
 
 			@Override
@@ -344,11 +350,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	private void initBluetooth(final boolean makeReady) {
-		BleLog.getInstance().LOGd(TAG, "initBluetooth");
+		BleLog.getInstance().LOGi(TAG, "initBluetooth");
 
 		Activity activity = _reactContext.getCurrentActivity();
 		Notification notification = getScanServiceNotification("Crownstone is running in the background");
-		_scanner.init(makeReady, _initScannerInBackground, activity, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
+		final boolean scannerInBackground = _initScannerInBackground;
+		_scanner.init(makeReady, scannerInBackground, activity, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				BleLog.getInstance().LOGi(TAG, "Initialized bluetooth");
@@ -380,6 +387,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	private void onScannerInitialized() {
+		BleLog.getInstance().LOGi(TAG, "onScannerInitialized");
 //		_scanner.setScanInterval(SCAN_INTERVAL_IN_SPHERE, SCAN_PAUSE_IN_SPHERE);
 		getBleExt().setConnectTimeout(CONNECT_TIMEOUT_MS);
 		getBleExt().setNumRetries(CONNECT_NUM_RETRIES);
@@ -2441,7 +2449,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	@ReactMethod
-	public void setBackgroundScanning(boolean enable) {
+	public void setBackgroundScanning(final boolean enable) {
 		// Called after used logged in, and when change.
 		// When disabled, no scanning has to happen in background.
 		BleLog.getInstance().LOGi(TAG, "setBackgroundScanning: " + enable);
@@ -2451,9 +2459,21 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 			_scanner.runInBackground(true, enable, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
 				@Override
 				public void onSuccess() {
-					// Scanner may have stopped when background changed.
-					updateScanner();
 					BleLog.getInstance().LOGi(TAG, "success");
+					// Scanner may have stopped when background changed.
+					onScannerInitialized();
+					for (UUID uuid : _iBeaconSphereIds.keySet()) {
+						getIBeaconRanger().addIbeaconFilter(new BleIbeaconFilter(uuid, -1, -1));
+					}
+					if (!_iBeaconSphereIds.isEmpty()) {
+						setTrackingState(true);
+//						_deviceFilter = BleDeviceFilter.anyStone;
+					}
+					updateScanner();
+
+					if (!enable) {
+						cancelScanServiceNotification();
+					}
 				}
 
 				@Override
@@ -2462,7 +2482,27 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 				}
 			});
 		}
+		else {
+			checkBackgroundScanning();
+		}
 	}
+
+	private void checkBackgroundScanning() {
+		BleLog.getInstance().LOGi(TAG, "checkBackgroundScanning");
+		_handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				BleLog.getInstance().LOGi(TAG, "_initScannerInBackground=" + _initScannerInBackground + " isRunningInBackground=" + _scanner.isRunningInBackground());
+				if (_scanner.isRunningInBackground() != _initScannerInBackground) {
+					setBackgroundScanning(_initScannerInBackground);
+				}
+			}
+		}, 100);
+	}
+
+//	private Runnable checkBackgroundScanning() {
+//
+//	}
 
 
 	//########################################################################################
@@ -2628,9 +2668,16 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	private void updateScanServiceNotification(String text) {
-		Notification notification = getScanServiceNotification(text);
-		NotificationManager mNotificationManager = (NotificationManager) _reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
+		if (_scanner.isRunningInBackground()) {
+			Notification notification = getScanServiceNotification(text);
+			NotificationManager notificationManager = (NotificationManager) _reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
+		}
+	}
+
+	private void cancelScanServiceNotification() {
+		NotificationManager notificationManager = (NotificationManager) _reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(ONGOING_NOTIFICATION_ID);
 	}
 
 
@@ -2968,7 +3015,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 
 	@Override
 	public void onLocationUpdate(String locationId) {
-		BleLog.getInstance().LOGd(TAG, "LocationUpdate: " + locationId);
+		BleLog.getInstance().LOGi(TAG, "LocationUpdate: " + locationId);
 		if (locationId == null) {
 			if (_lastLocationId != null) {
 				BleLog.getInstance().LOGd(TAG, "Send exit " + _currentSphereId + " " + _lastLocationId);
@@ -3085,6 +3132,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	private void setTrackingState(boolean enabled) { _isTrackingIbeacon = enabled; }
 	private boolean isScannerIdle() { return !isScanning() && !isTrackingIbeacon(); }
 	private void updateScanner() {
+//		if (_scanner == null) {
+		if (!_scannerInitialized) {
+			return;
+		}
 		if (isScannerIdle()) {
 			_scanner.stopScanning();
 			return;
