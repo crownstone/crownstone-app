@@ -13,7 +13,7 @@ import {WNStyles} from "../WhatsNewStyles";
 export class Switchcraft extends Component<any, any> {
   render() {
     let factor = 0.0001*screenWidth;
-    let size = 12*factor;
+    let size = 11*factor;
     return (
       <View style={{flex:1, paddingBottom:0, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={[WNStyles.outerScrollView,{width: this.props.width}]}>

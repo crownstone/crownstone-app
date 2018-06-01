@@ -22,6 +22,7 @@ import {Switchcraft} from "./WhatsNew/2.1.0/Switchcraft";
 import {FastSetup} from "./WhatsNew/2.1.0/FastSetup";
 import {RoomImages} from "./WhatsNew/2.1.0/RoomImages";
 import {NewLocalizationSettings} from "./WhatsNew/1.10.0/NewLocalizationSettings";
+import {IPhoneXSupport} from "./WhatsNew/2.1.0/IPhoneXSupport";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -56,6 +57,7 @@ export class WhatsNewOverlay extends Component<any, any> {
       content.push(<MeshTopology key="MeshTopology"  {...size}/>);
       content.push(<RoomImages key="RoomImages"  {...size}/>);
       content.push(<FastSetup key="FastSetup"  {...size}/>);
+      content.push(<IPhoneXSupport key="IPhoneXSupport"  {...size}/>);
     }
     if (Platform.OS === 'android') {
       content.push(<Switchcraft key="Switchcraft"  {...size}/>);
