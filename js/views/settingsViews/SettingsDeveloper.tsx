@@ -126,7 +126,7 @@ export class SettingsDeveloper extends Component<any, any> {
         style: {color: colors.menuBackground.hex},
         icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
         callback: () => {
-          Alert.alert("Clear all Logs?", "Press OK to clear logs.", [{text:'Cancel'},{text: 'OK', onPress: () => {clearAllLogs();}}])
+          Alert.alert("Clear all Logs?", "Press OK to clear logs.", [{text:'Cancel', style: 'cancel'},{text: 'OK', onPress: () => {clearAllLogs();}}])
         }
       });
     }
@@ -197,7 +197,7 @@ export class SettingsDeveloper extends Component<any, any> {
         };
 
         if (newValue === true) {
-          Alert.alert("Are you sure?", "Only enable this if you know what you're doing!",[{text:"Do it.", onPress: execute}, {text:"Nevermind..."}])
+          Alert.alert("Are you sure?", "Only enable this if you know what you're doing!",[{text:"Nevermind..."}, {text:"Do it.", onPress: execute}])
         }
         else {
           execute();

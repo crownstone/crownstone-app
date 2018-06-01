@@ -35,7 +35,7 @@ export class IconCircle extends Component<any, any> {
           borderRadius:size * 0.5,
           backgroundColor: this.props.backgroundColor || '#ffffff',
           borderColor: this.props.borderColor || this.props.color || colors.menuBackground.hex,
-          borderWidth: 2
+          borderWidth: this.props.borderWidth || 2
           }, styles.centered]}>
           <Icon name={this.props.icon} size={this.props.iconSize || size*0.6} color={this.props.color || colors.menuBackground.hex} />
         </View>
@@ -48,7 +48,7 @@ export class IconCircle extends Component<any, any> {
             borderRadius:size/6,
             backgroundColor: colors.green.hex,
             borderColor: '#ffffff',
-            borderWidth: 2
+            borderWidth: this.props.borderWidth || 2
           }, styles.centered]}>
             <Icon name={'md-create'} size={size/5} color={'#ffffff'} />
           </View> : undefined}
@@ -61,7 +61,7 @@ export class IconCircle extends Component<any, any> {
             borderRadius:size/6,
             backgroundColor: colors.green.hex,
             borderColor: '#ffffff',
-            borderWidth: 2
+            borderWidth: this.props.borderWidth || 2
           }, styles.centered]}>
             <Icon name={'md-add'} size={size/5} color={'#ffffff'} />
           </View> : undefined}

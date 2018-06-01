@@ -225,7 +225,7 @@ const c1CorrectionsIOS = {
 
 
 const c2CorrectionsIOS = {
-  'c2-crownstone':      {change: false, top: +0.000, left: +0.000},
+  'c2-crownstone':      {change: true,  top: +0.015, left: +0.000},
   'c2-plugin':          {change: false, top: +0.000, left: +0.000},
   'c2-pluginFilled':    {change: true,  top: +0.000, left: +0.000},
   'c2-pluginFront':     {change: false, top: +0.000, left: +0.000},

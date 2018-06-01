@@ -76,70 +76,40 @@ export class SettingsMeshTopology extends Component<any, any> {
       label = edge.rssi + '';
     }
 
-    // item list for the 6 different phases. They fade to eachother.
-    let bounds = [-60, -70, -80, -85, -90, -95];
+    // item list for the 6 different phases. They fade to each other.
+    let bounds = [-70, -76, -83, -92];
 
     if (edge.rssi > bounds[0]) {
-      // 0 .. -60
+      // 0 .. -59
       return [
-        {offset: 0, color: colors.white.hex, thickness: 6, coverage: 1, label: label},
-        {offset: -15, color: colors.lightGreen.hex, thickness: 4, coverage: 1},
-        {offset: 15, color: colors.lightGreen.hex, thickness: 4, coverage: 1},
-        {offset: -28, color: colors.green.hex, thickness: 2, coverage: 0.8},
-        {offset: 28, color: colors.green.hex, thickness: 2, coverage: 0.8},
+        {offset: 0, color: colors.green.hex, thickness: 25, coverage: 1, label: label},
       ]
     }
     else if (edge.rssi > bounds[1]) {
-      // -61 .. -70
+      // -60 .. -69
       let factor = 1-Math.abs((edge.rssi - bounds[0])/(bounds[0]-bounds[1]));
       return [
-        {offset: 0,               color: colors.white.blend(colors.lightGreen, 1-factor).hex, thickness: 4 + 2*factor, coverage: 1, label: label},
-        {offset: -12 - factor*3,  color: colors.lightGreen.blend(colors.green, 1-factor).hex, thickness: 3 +factor,    coverage: 0.8 + 0.2*factor},
-        {offset: 12  + factor*3,  color: colors.lightGreen.blend(colors.green, 1-factor).hex, thickness: 3 +factor,    coverage: 0.8 + 0.2*factor},
-        {offset: -28,             color: colors.green.rgba(factor),                           thickness: 2*factor,     coverage: 0.8},
-        {offset: 28,              color: colors.green.rgba(factor),                           thickness: 2*factor,     coverage: 0.8},
+        {offset: 0, color: colors.green.blend(colors.blue2, 1-factor).hex, thickness: 10 + 15*factor, coverage: 1, label: label},
       ]
     }
     else if (edge.rssi > bounds[2]) {
-      // -71 .. -80
+      // -70 .. -79
       let factor = 1-Math.abs((edge.rssi - bounds[1])/(bounds[1]-bounds[2]));
       return [
-        {offset: 0,   color: colors.lightGreen.blend(colors.green, 1-factor).hex, thickness: 4, coverage: 1, label: label},
-        {offset: -12, color: colors.green.blend(colors.white, 1-factor).hex,      thickness: 3, coverage: 0.7 + 0.1*factor},
-        {offset: 12,  color: colors.green.blend(colors.white, 1-factor).hex,      thickness: 3, coverage: 0.7 + 0.1*factor},
+        {offset: 0, color: colors.blue2.blend(colors.purple, 1-factor).hex, thickness: 4 + 6*factor, coverage: 1, label: label},
       ];
     }
     else if (edge.rssi > bounds[3]) {
       let factor = 1-Math.abs((edge.rssi - bounds[2])/(bounds[2]-bounds[3]));
       // -81 .. -85
       return [
-        {offset: 0,   color: colors.green.blend(colors.lightCsOrange, 1-factor).hex, thickness: 4, coverage: 1, label: label},
-        {offset: -12, color: colors.white.blend(colors.lightCsOrange, 1-factor).hex, thickness: 3, coverage: 0.8 - 0.1*factor},
-        {offset: 12,  color: colors.white.blend(colors.lightCsOrange, 1-factor).hex, thickness: 3, coverage: 0.8 - 0.1*factor},
+        {offset: 0, color: colors.purple.blend(colors.red, 1-factor).hex, thickness: 4, coverage: 1, label: label},
       ];
     }
-    else if (edge.rssi > bounds[4]) {
-      let factor = 1-Math.abs((edge.rssi - bounds[3])/(bounds[3]-bounds[4]))
-      // -86 .. -90
-      return [
-        {offset: 0,   color: colors.lightCsOrange.hex,          thickness: 4, coverage: 1, label: label},
-        {offset: -12, color: colors.lightCsOrange.rgba(factor), thickness: 3*factor, coverage: 0.8},
-        {offset: 12,  color: colors.lightCsOrange.rgba(factor), thickness: 3*factor, coverage: 0.8},
-      ]
-    }
-    else if (edge.rssi > bounds[5]) {
-      let factor = 1-Math.abs((edge.rssi - bounds[4])/(bounds[4]-bounds[5]))
-      // -91 .. -95
-      return [
-        {offset: 0, color: colors.lightCsOrange.blend(colors.darkCsOrange, 1-factor).rgba(1-factor), thickness: 6 - 2*factor, coverage: 0.8+0.2*factor, label: label},
-        {offset: 0, color: colors.lightCsOrange.blend(colors.darkCsOrange, 1-factor).rgba(factor),   thickness: 6 - 2*factor, coverage: 0.8+0.2*factor, dashArray:"10, 5"},
-      ]
-
-    }
     else {
-      // -96 .. -120
+      // -95 .. -120
       return [
-        {offset: 0, color: colors.darkRed.hex, thickness: 6, coverage: 0.8, opacity: 0.3, dashArray:"8, 12", label: label},
+        {offset: 0, color: colors.darkRed.hex, thickness: 5, coverage: 1, opacity: 0.6, dashArray:"8, 12", label: label},
       ]
     }
   }
@@ -192,41 +162,19 @@ export class SettingsMeshTopology extends Component<any, any> {
           <TouchableOpacity
             onPress={() => { Actions.settingsMeshTopologyHelp() }}
             style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
-            <Icon name={'ios-help-circle'} size={40} color={colors.white.rgba(0.75)} />
+            <Icon name={'ios-help-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
           </TouchableOpacity>
         </Background>
       );
     }
-
-    let locationColorArray = [
-      colors.green.hex,
-      colors.menuTextSelected.hex,
-      colors.blue.hex,
-      colors.purple.hex,
-      colors.darkPurple.hex,
-      colors.menuBackground.hex,
-      colors.csOrange.hex,
-      colors.red.hex,
-      colors.darkRed.hex,
-    ];
-
-    let colorIndex = 0;
-    let locationColorMap = {"null": colors.gray.hex};
-
 
     let edges = [];
     let connections = {};
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
 
-      if (locationColorMap[stone.config.locationId] === undefined) {
-        locationColorMap[stone.config.locationId] = locationColorArray[colorIndex];
-        colorIndex++;
-        if (colorIndex >= locationColorArray.length) { colorIndex = 0; }
-      }
 
       let location = Util.data.getLocationFromStone(sphere, stone);
-      let locationColor = locationColorMap[stone.config.locationId];
       let locationTitle = 'Floating...';
       let locationIcon = 'c2-pluginFilled';
       if (location) {
@@ -235,7 +183,7 @@ export class SettingsMeshTopology extends Component<any, any> {
       }
       let element = Util.data.getElement(this.props.store, sphereId, stoneId, stone);
 
-      this.nodeData[stoneId] = {locationIcon: locationIcon, deviceIcon: element.config.icon, locationTitle:locationTitle, locationColor: locationColor, element: element};
+      this.nodeData[stoneId] = {locationIcon: locationIcon, deviceIcon: element.config.icon, locationTitle:locationTitle, element: element};
 
       //  if a stone is not in a mesh, do not show any stored connections
       if (!stone.config.meshNetworkId) { return; }
@@ -264,13 +212,14 @@ export class SettingsMeshTopology extends Component<any, any> {
         }
       });
     });
+
     let edgeIds = Object.keys(connections);
     edgeIds.forEach((edgeId) => {
       edges.push(connections[edgeId]);
     })
 
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
+      <Background image={this.props.backgrounds.menu}>
         <OrangeLine/>
         <ForceDirectedView
           nodeIds={stoneIds}
@@ -291,13 +240,13 @@ export class SettingsMeshTopology extends Component<any, any> {
         <TouchableOpacity
           onPress={() => { Actions.settingsMeshTopologyHelp() }}
           style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
-          <Icon name={'ios-help-circle'} size={40} color={colors.white.rgba(0.75)} />
+          <Icon name={'ios-help-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => { Alert.alert("Refresh Topology", "While the topology updates automatically, if you move a Crownstone out of range of the others " +
-            "it will take a while for the connection to time out. Manually refreshing like this will speed up this process.", [{text:"OK", onPress: () => { this._refreshMesh(sphereId, stones); }}, {text:'Cancel'}]) }}
+            "it will take a while for the connection to time out. Manually refreshing like this will speed up this process.", [{text:'Cancel',style: 'cancel'}, {text:"OK", onPress: () => { this._refreshMesh(sphereId, stones); }}]) }}
           style={{position:'absolute', bottom:0, right:40, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
-          <Icon name={'md-refresh-circle'} size={40} color={colors.white.rgba(0.75)} />
+          <Icon name={'md-refresh-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
         </TouchableOpacity>
       </Background>
     );

@@ -109,7 +109,7 @@ export class TapToToggleCalibration extends Component<any, any> {
         else {
           eventBus.emit("hideLoading");
           if (attempt === 2) {
-            Alert.alert("That's a bit far away.", "Maybe try again later.")
+            Alert.alert("That's a bit far away.", "Maybe try again later.",[{text:"OK"}])
           }
           else {
             let defaultAction = () => {this.learnDistance(attempt + 1)};
