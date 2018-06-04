@@ -365,7 +365,6 @@ class BatchCommandHandlerClass {
 
   _connectAndHandleCommands(crownstoneToHandle : connectionInfo) {
     return new Promise((resolve, reject) => {
-      console.log("CrownstoneTOHandle", crownstoneToHandle)
       LOG.info("BatchCommandHandler: connecting to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
       BluenetPromiseWrapper.connect(crownstoneToHandle.handle)
         .then(() => {

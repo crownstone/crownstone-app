@@ -467,7 +467,7 @@ class RoomCircleClass extends Component<any, any> {
     }
 
     if (handled === false) {
-      Actions.roomOverview({sphereId: this.props.sphereId, locationId: this.props.locationId});
+      Actions.roomOverview({ sphereId: this.props.sphereId, locationId: this.props.locationId });
     }
   }
 }

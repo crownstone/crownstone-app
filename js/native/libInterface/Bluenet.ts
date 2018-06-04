@@ -97,7 +97,7 @@ if (DISABLE_NATIVE === true) {
   // LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   Bluenet = BluenetAPI;
 }
-else {
+else if (NativeModules.BluenetJS) {
   Bluenet = NativeModules.BluenetJS;
 
   let API_Keys = Object.keys(BluenetAPI);

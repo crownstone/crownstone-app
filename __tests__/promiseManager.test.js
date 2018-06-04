@@ -61,7 +61,7 @@ test('PromiseManager load', () => {
 });
 
 test('PromiseManager timeout successfully handled', () => {
-  Scheduler._loadStore({
+  Scheduler.loadStore({
       getState: () => {
         return {}
       },

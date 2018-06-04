@@ -1,82 +1,89 @@
 import { Reducer} from 'react-native-router-flux';
 import { Platform } from 'react-native';
 import {LOGw} from "../../../logging/Log";
+import {Util} from "../../../util/Util";
 
-let inTabMenu = (state) => {
-  if (state && state.children && state.children.length > 0) {
-    return state.children[0].name == "tabBar";
+// check for simple
+let stripAdditionalStates = (routeState, target) => {
+  for (let i = routeState.index; i >= 0; i--) {
+    if (routeState.routes[i].routeName === target) {
+      // found it!
+      routeState.index = i
+      return true;
+    }
+    else {
+      let childRoutes = routeState.routes[i].routes;
+      if (childRoutes && Array.isArray(childRoutes)) {
+        let subCheck = stripAdditionalStates(routeState.routes[i], target);
+        if (subCheck) {
+          routeState.index = i;
+          return true;
+        }
+      }
+    }
+    routeState.routes.pop()
   }
   return false;
-};
+}
 
-let getActiveTabName = (state) => {
-  if (state && state.children && state.children.length > 0) {
-    let tabBar = state.children[0];
-    let tabIndex =  tabBar.index;
-    return tabBar.children[tabIndex].name;
-  }
-  return undefined;
-};
 
-let getTabTreeIndex = (state) => {
-  if (state && state.children && state.children.length > 0) {
-    let tabBar = state.children[0];
-    let tabIndex =  tabBar.index;
-    return tabBar.children[tabIndex].index;
+let getState = (routeState) => {
+  for (let i = routeState.routes.length-1; i >= 0; i--) {
+    if (routeState.index !== i) {
+      routeState.routes.splice(i,1)
+    }
   }
-  return undefined;
-};
 
-let getTabRootName = (state) => {
-  if (state && state.children && state.children.length > 0) {
-    let tabBar = state.children[0];
-    let tabIndex =  tabBar.index;
-    let tabContainer = tabBar.children[tabIndex];
-    return tabContainer.children[0].name;
+  routeState.index = 0;
+  if (routeState.routes[0].routes) {
+    routeState.routes[0] = getState(routeState.routes[0])
   }
-  return undefined;
-};
+  return routeState;
+}
+
+let getNameOfCurrentRoute = (routeState) => {
+  if (routeState.routes[routeState.index].routes) {
+    return getNameOfCurrentRoute(routeState.routes[routeState.index])
+  }
+  else {
+    return routeState.routes[routeState.index].routeName;
+  }
+}
+
+let mergeStates = (targetState, oneOver) => {
+  if (oneOver.routes && Array.isArray(oneOver.routes) && oneOver.routes.length > 0) {
+    if (oneOver.routes[0].routes) {
+      if (targetState.routes[0].routes) {
+        // we merge it one deeper
+        mergeStates(targetState.routes[0], oneOver.routes[0]);
+      }
+      else {
+        targetState.routes.push(oneOver.routes[0]);
+        targetState.index = targetState.routes.length - 1;
+      }
+    }
+    else {
+      targetState.routes.push(oneOver.routes[0]);
+      targetState.index = targetState.routes.length - 1;
+    }
+  }
+}
+
 
 export const reducerCreate = (params) => {
   const defaultReducer = Reducer(params, {});
-  return (state, action)=>{
+  return (state, action) => {
     if (action && action.type == "REACT_NATIVE_ROUTER_FLUX_POP_TO") {
       // check if we can see the key in the list of items, if not, do a back.
-      let popCount = 0;
-      let success = false;
-      // search throught all routes in the state, starting from the top, for one that matches the route name
-      for (let i = state.index; i >= 0; i--) {
-        if (state.routes[i].routeName == action.routeName) {
-          // we found it!
-          success = true
-          break;
-        }
-        // how many pops do we need for this operation?
-        popCount++;
-      }
+      let newState = Util.deepExtend({}, state);
+      let isolatedState = Util.deepExtend({}, state);
+
+      let success = stripAdditionalStates(newState, action.routeName)
       if (success) {
-        // if our routing stack is [1, 2, 3, 4, 5] and we're in 5 and want to go back to 1, we remove [2,3,4] so [1,5] are left, then do a nav/back for animated transition
-        // cut out the intermediates ([2,3,4])
-        if (popCount == 1) {
-          return defaultReducer(state, {type: "Navigation/BACK"});
-        }
-        else if (popCount > 1) {
-          let newState = {...state};
-          newState.routes = newState.routes.slice(0, newState.routes.length - popCount);
-          // push the current scene back on top of the stack.
-          newState.routes.push(state.routes[state.routes.length-1])
+        getState(isolatedState);
+        mergeStates(newState, isolatedState)
 
-          // have the index point to a the correct scene.
-          newState.index -= (popCount - 1);
-
-          // go back one step to go from 5 to 1
-          return defaultReducer(newState, {type: "Navigation/BACK"});
-        }
-        else {
-          // popCount = 0, we're already there?
-          LOGw.info("navigation.ts: Tried PopTo with name", action.routeName, " while already on that route. Popping once.")
-          return defaultReducer(state, {type: "Navigation/BACK"});
-        }
+        return defaultReducer(newState, {type: "Navigation/BACK"});
       }
       else {
         // just go back one if we can't find the target?
@@ -85,6 +92,12 @@ export const reducerCreate = (params) => {
       }
     }
     if (action && action.type == "REACT_NATIVE_ROUTER_FLUX_PUSH") {
+      // check if this is a double trigger.
+      let currentTopName = getNameOfCurrentRoute(state);
+      if (currentTopName === action.routeName) {
+        return state;
+      }
+
       if (action.params && action.params.__popBeforeAddCount) {
         let newState = {...state};
         for (let i = 0; i < action.params.__popBeforeAddCount; i++) {

@@ -27,7 +27,6 @@ export class SettingsProfile extends Component<any, any> {
     return { title: "My Account" }
   };
 
-
   unsubscribe : any;
   renderState : any;
   validationState : any;
@@ -128,25 +127,7 @@ export class SettingsProfile extends Component<any, any> {
       }
     });
 
-    if (user.betaAccess) {
-      items.push({label: 'BETA FEATURES WILL LOOK LIKE THIS', type: 'explanation', below: false});
-    }
-    else {
-      items.push({label: ' ', type: 'explanation', below: false});
-    }
-    items.push({
-      label:'Join Beta Program',
-      value: user.betaAccess,
-      experimental: user.betaAccess,
-      icon: <IconButton name={"ios-flask"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
-      type: 'switch',
-      callback:(newValue) => {
-        store.dispatch({
-          type: 'SET_BETA_ACCESS',
-          data: {betaAccess: newValue}
-        });
-      }});
-    items.push({label: 'This will give you early access to new experimental features!', type: 'explanation', below: true});
+    items.push({type:'spacer'});
 
     if (user.developer !== true) {
       items.push({

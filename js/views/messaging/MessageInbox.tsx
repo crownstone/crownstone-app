@@ -163,7 +163,6 @@ export class MessageInbox extends Component<any, any> {
   }
 
   render() {
-    console.log("updating message inbox VIEW")
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
     let messageExplanationStyle = {

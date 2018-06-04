@@ -240,7 +240,8 @@ export class DeviceOverview extends Component<any, any> {
           loop={false}
           scrollEnabled={this.state.swipeEnabled}
           bounces={true}
-          loadMinimal={false}
+          loadMinimal={true}
+          loadMinimalSize={2}
           onScrollBeginDrag={ () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >

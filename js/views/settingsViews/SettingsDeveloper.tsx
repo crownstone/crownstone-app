@@ -228,7 +228,42 @@ export class SettingsDeveloper extends Component<any, any> {
       }
     });
 
-    items.push({label: "RESET DEVELOPER STATE", type: 'explanation', below: false});
+    if (user.betaAccess) {
+      items.push({label: 'ALPHA FEATURES WILL LOOK LIKE THIS', type: 'explanation', below: false});
+    }
+    else {
+      items.push({label: 'EXPERIMENTAL FEATURES', type: 'explanation', below: false});
+    }
+    items.push({
+      label:'Join Alpha Program',
+      value: user.betaAccess,
+      experimental: user.betaAccess,
+      icon: <IconButton name={"ios-flask"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+      type: 'switch',
+      callback:(newValue) => {
+        let storeIt = () => {
+          store.dispatch({
+            type: 'SET_BETA_ACCESS',
+            data: {betaAccess: newValue}
+          });
+        }
+        if (newValue) {
+          Alert.alert(
+            "EXPERIMENTAL!",
+            "Switchcraft is currently in the experimental phase. It will not detect all switches, " +
+            "it might switch accidentally or your Built-in Crownstone might be unsupported.\n\n" +
+            "Use this at your own risk! Are you sure?",
+            [{text:"I'll wait.", style:'cancel'}, {text:"Yes.", onPress: storeIt}]
+          );
+        }
+        else {
+          storeIt();
+        }
+      }});
+    items.push({label: 'This will give you early access to new experimental features!', type: 'explanation', below: true});
+
+
+    items.push({label: "RESET DEVELOPER STATE", type: 'explanation', alreadyPadded: true});
     items.push({
       label:"Disable Developer Mode",
       type: 'button',

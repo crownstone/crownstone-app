@@ -374,12 +374,19 @@ export const Util = {
               a[prop] = b[prop];
             }
           }
-        } else if (Array.isArray(b[prop])) {
+        }
+        else if (Array.isArray(b[prop])) {
           a[prop] = [];
           for (let i = 0; i < b[prop].length; i++) {
-            a[prop].push(b[prop][i]);
+            if (b[prop][i].constructor === Object) {
+              a[prop].push(Util.deepExtend({},b[prop][i]));
+            }
+            else {
+              a[prop].push(b[prop][i]);
+            }
           }
-        } else {
+        }
+        else {
           if ((b[prop] === null) && a[prop] !== undefined && allowDeletion === true) {
             delete a[prop];
           }

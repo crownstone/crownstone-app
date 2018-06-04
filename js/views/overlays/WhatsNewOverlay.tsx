@@ -52,7 +52,7 @@ export class WhatsNewOverlay extends Component<any, any> {
     let size = {height: height-10, width: width};
 
     if (Platform.OS === 'ios') {
-      content.push(<Switchcraft key="Switchcraft"  {...size}/>);
+      // content.push(<Switchcraft key="Switchcraft"  {...size}/>);
       content.push(<Mesh key="Mesh"  {...size}/>);
       content.push(<MeshTopology key="MeshTopology"  {...size}/>);
       content.push(<RoomImages key="RoomImages"  {...size}/>);
@@ -60,7 +60,7 @@ export class WhatsNewOverlay extends Component<any, any> {
       content.push(<IPhoneXSupport key="IPhoneXSupport"  {...size}/>);
     }
     if (Platform.OS === 'android') {
-      content.push(<Switchcraft key="Switchcraft"  {...size}/>);
+      // content.push(<Switchcraft key="Switchcraft"  {...size}/>);
       content.push(<Mesh key="Mesh"  {...size}/>);
       content.push(<MeshTopology key="MeshTopology"  {...size}/>);
       content.push(<FastSetup key="FastSetup"  {...size}/>);
@@ -104,6 +104,8 @@ export class WhatsNewOverlay extends Component<any, any> {
           overflow:'hidden'
         }}>Your App was updated!</Text>
         <Swiper style={{}} showsPagination={true} height={height-80} width={width}
+          loadMinimal={true}
+          loadMinimalSize={2}
           dot={<View style={{backgroundColor: colors.menuBackground.rgba(0.15), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.menuBackground.rgba(0.2)}} />}
           activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 9, height: 9, borderRadius: 4.5, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}
           loop={false}

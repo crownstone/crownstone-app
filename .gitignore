@@ -76,3 +76,5 @@ app-logs
 sentrySettings.js
 sentry.properties
 LocalConfig.ts
+
+__prototypes
