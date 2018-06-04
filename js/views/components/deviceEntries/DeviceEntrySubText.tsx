@@ -16,14 +16,16 @@ import {
 
 import { colors} from '../../styles'
 import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
+import {STONE_TYPES} from "../../../router/store/reducers/stones";
 
 export class DeviceEntrySubText extends Component<any, any> {
   render() {
     let currentUsage = this.props.currentUsage;
     let rssi = this.props.rssi;
     let disabled = this.props.disabled;
+    let measuresPower = this.props.deviceType === STONE_TYPES.plug || this.props.deviceType === STONE_TYPES.builtin;
 
-    if (disabled === false && currentUsage !== undefined) {
+    if (disabled === false && currentUsage !== undefined && measuresPower) {
       // show it in orange if it's in tap to toggle range
       let color = colors.iosBlue.hex;
       if (this.props.tap2toggleThreshold && rssi >= this.props.tap2toggleThreshold && this.props.tap2toggleEnabled) {
@@ -76,13 +78,16 @@ export class DeviceEntrySubText extends Component<any, any> {
     }
     else if (disabled === false) {
       if (this.props.nearest === true) {
-        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Nearest)'}</Text>
+        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{'(Nearest)'}</Text>
       }
       else if (rssi > -60) {
-        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Very near)'}</Text>
+        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{'(Very near)'}</Text>
       }
       else if (rssi > -70) {
-        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Near)'}</Text>
+        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{'(Near)'}</Text>
+      }
+      else {
+        return <View />
       }
     }
     else if (disabled === true) {

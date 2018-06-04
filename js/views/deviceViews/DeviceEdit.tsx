@@ -121,10 +121,11 @@ export class DeviceEdit extends Component<any, any> {
 
   constructStoneOptions(stone, state) {
     let items = [];
-    let hasAppliance = stone.config.type !== STONE_TYPES.guidestone && !this.state.applianceId;
+    let canSwitch = stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.plug;
+    let hasAppliance = canSwitch && !this.state.applianceId;
 
 
-    if (this.state.applianceId) {
+    if (this.state.applianceId && hasAppliance) {
       items.push({label:'PLUGGED IN DEVICE TYPE', type: 'explanation',  below:false});
       items.push({
         label: 'Device Type',
@@ -180,74 +181,103 @@ export class DeviceEdit extends Component<any, any> {
     });
 
 
-    items.push({
-      label: 'Allow Dimming',
-      type: 'switch',
-      icon: <IconButton name="ios-sunny" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightCsOrange.hex}} />,
-      value: this.state.dimmingEnabled === true,
-      callback: (newValue) => {
-        if (Permissions.inSphere(this.props.sphereId).canEnableDimming) {
-          this.setState({dimmingEnabled: newValue});
-        }
-        else {
-          Alert.alert("Permission Required", "Only Admins have permission to enable dimming on a Crownstone.", [{text:"OK"}])
-        }
-      }
-    });
-
-    items.push({
-      label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
-        Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {})
-      }
-    });
-    items.push({
-      label: 'Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk.',
-      type: 'explanation',
-      below: true
-    });
-
-
-    if (state.app.tapToToggleEnabled) {
+    if (canSwitch) {
       items.push({
-        label: 'Tap to toggle',
-        icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
+        label: 'Allow Dimming',
         type: 'switch',
-        value: this.state.tapToToggle === true,
+        icon: <IconButton name="ios-sunny" size={22} button={true} color="#fff"
+                          buttonStyle={{backgroundColor: colors.lightCsOrange.hex}}/>,
+        value: this.state.dimmingEnabled === true,
         callback: (newValue) => {
-          this.setState({tapToToggle: newValue});
+          if (Permissions.inSphere(this.props.sphereId).canEnableDimming) {
+            this.setState({dimmingEnabled: newValue});
+          }
+          else {
+            Alert.alert("Permission Required", "Only Admins have permission to enable dimming on a Crownstone.", [{text: "OK"}])
+          }
         }
       });
 
-      items.push({label: 'Tap to toggle can be enabled per Crownstone.', type: 'explanation', below: true});
-    }
-    else {
-      items.push({ label: 'Tap to toggle is disabled.', type: 'disabledInfo', icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,});
       items.push({
-        label: 'To use tap to toggle, you have to enable it globally in the app settings.',
-        type: 'explanation',
-        below: true,
+        label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
+          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {
+          })
+        }
       });
-    }
+      items.push({
+        label: 'Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk.',
+        type: 'explanation',
+        below: true
+      });
 
-    if (state.user.betaAccess && this.state.stoneType === STONE_TYPES.builtin) {
-      if (Util.versions.canIUse(stone.config.firmwareVersion, '2.1.0')) {
+
+      if (state.app.tapToToggleEnabled) {
         items.push({
-          label: 'Enable Switchcraft',
+          label: 'Tap to toggle',
+          icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff"
+                            buttonStyle={{backgroundColor: colors.green2.hex}}/>,
           type: 'switch',
-          experimental: true, hasHelp: true, onHelp: () => { Actions.switchCraftInformation() },
-          icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
-          value: this.state.switchCraft === true,
+          value: this.state.tapToToggle === true,
           callback: (newValue) => {
-            this.setState({switchCraft: newValue});
+            this.setState({tapToToggle: newValue});
           }
         });
-        items.push({label: 'Use modified wall switches to switch both the Crownstone and the light. Tap the questionmark for more information.', type: 'explanation', below: true});
+
+        items.push({label: 'Tap to toggle can be enabled per Crownstone.', type: 'explanation', below: true});
       }
       else {
-        items.push({ label: 'SWITCHCRAFT', type: 'explanation', below: false, alreadyPadded:true});
-        items.push({ label: 'Firmware update required.', type: 'disabledInfo', icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,});
-        items.push({label: 'Use modified wall switches to switch both the Crownstone and the light.', type: 'explanation', below: true});
+        items.push({
+          label: 'Tap to toggle is disabled.',
+          type: 'disabledInfo',
+          icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff"
+                            buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+        });
+        items.push({
+          label: 'To use tap to toggle, you have to enable it globally in the app settings.',
+          type: 'explanation',
+          below: true,
+        });
       }
+
+      if (state.user.betaAccess && this.state.stoneType === STONE_TYPES.builtin) {
+        if (Util.versions.canIUse(stone.config.firmwareVersion, '2.1.0')) {
+          items.push({
+            label: 'Enable Switchcraft',
+            type: 'switch',
+            experimental: true, hasHelp: true, onHelp: () => {
+              Actions.switchCraftInformation()
+            },
+            icon: <IconButton name="md-power" size={22} button={true} color="#fff"
+                              buttonStyle={{backgroundColor: colors.purple.hex}}/>,
+            value: this.state.switchCraft === true,
+            callback: (newValue) => {
+              this.setState({switchCraft: newValue});
+            }
+          });
+          items.push({
+            label: 'Use modified wall switches to switch both the Crownstone and the light. Tap the questionmark for more information.',
+            type: 'explanation',
+            below: true
+          });
+        }
+        else {
+          items.push({label: 'SWITCHCRAFT', type: 'explanation', below: false, alreadyPadded: true});
+          items.push({
+            label: 'Firmware update required.',
+            type: 'disabledInfo',
+            icon: <IconButton name="md-power" size={22} button={true} color="#fff"
+                              buttonStyle={{backgroundColor: colors.purple.hex}}/>,
+          });
+          items.push({
+            label: 'Use modified wall switches to switch both the Crownstone and the light.',
+            type: 'explanation',
+            below: true
+          });
+        }
+      }
+    }
+    else {
+      items.push({type: 'spacer'});
     }
 
 

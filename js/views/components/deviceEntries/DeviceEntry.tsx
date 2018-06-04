@@ -192,7 +192,7 @@ export class DeviceEntry extends Component<any, any> {
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let element = stone.config.applianceId ? state.spheres[this.props.sphereId].appliances[stone.config.applianceId] : stone;
-    let useControl = stone.config.type !== STONE_TYPES.guidestone;
+    let useControl = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
     let backgroundColor = this.state.backgroundColor.interpolate({
       inputRange: [0,10],
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
@@ -210,6 +210,7 @@ export class DeviceEntry extends Component<any, any> {
               <Text style={{fontSize: 17, fontWeight: '100'}}>{element.config.name}</Text>
               <DeviceEntrySubText
                 statusText={this.state.statusText}
+                deviceType={stone.config.type}
                 rssi={stone.config.rssi}
                 disabled={stone.config.disabled}
                 currentUsage={stone.state.currentUsage}

@@ -33,6 +33,7 @@ import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
+import {UsbSummary} from "./elements/UsbSummary";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -205,9 +206,9 @@ export class DeviceOverview extends Component<any, any> {
     let hasError        = stone.errors.hasError;
     let mustUpdate      = Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
     let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
-    let hasBehaviour    = stone.config.type !== STONE_TYPES.guidestone;
-    let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
-    let hasScheduler    = stone.config.type !== STONE_TYPES.guidestone;
+    let hasBehaviour    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
+    let hasPowerMonitor = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
+    let hasScheduler    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
     let deviceType      = stone.config.type;
 
     // if this stone requires to be dfu-ed to continue working, block all other actions.
@@ -227,10 +228,11 @@ export class DeviceOverview extends Component<any, any> {
       }
     };
 
+    let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stone.config)
     return (
       <Background image={this.props.backgrounds.detailsDark}>
         <OrangeLine/>
-        <Swiper
+        { content.length > 1 ? <Swiper
           style={swiperStyles.wrapper}
           showsPagination={true}
           height={availableScreenHeight}
@@ -245,8 +247,8 @@ export class DeviceOverview extends Component<any, any> {
           onScrollBeginDrag={ () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
-          { this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stone.config) }
-        </Swiper>
+          { content }
+        </Swiper> : content }
       </Background>
     )
   }
@@ -279,6 +281,9 @@ export class DeviceOverview extends Component<any, any> {
 
     if (deviceType === STONE_TYPES.guidestone) {
       content.push(<GuidestoneSummary key={'summarySlide'}  {...props} />);
+    }
+    else if (deviceType === STONE_TYPES.crownstoneUSB) {
+      content.push(<UsbSummary key={'summarySlide'}  {...props} />);
     }
     else {
       content.push(<DeviceSummary key={'summarySlide'}  {...props} />);

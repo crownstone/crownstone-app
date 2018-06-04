@@ -174,12 +174,11 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
               this.recoverStone(nearestNormal.handle);
             }
             else {
-
               Alert.alert("No Crownstones near.",
                 "We detect a Crownstone but it's not very close by. Please move closer and try again. If you are already holding your phone very close to the Crownstone something may be wrong.",
                 [{text:'OK', onPress: defaultAction }],
                 { cancelable: false }
-              )
+              );
             }
           }
         }

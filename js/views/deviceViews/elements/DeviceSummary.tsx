@@ -234,16 +234,12 @@ export class DeviceSummary extends Component<any, any> {
 
     return (
       <View style={{flex:1, paddingBottom: 35}}>
-        <DeviceInformation left={"Energy Usage:"}
-                           leftValue={stone.state.currentUsage + ' W'}
-                           right={locationLabel}
-                           rightValue={locationName}
-                           rightTapAction={spherePermissions.moveCrownstone ? () => {
-                           Actions.roomSelection({
-                             sphereId: this.props.sphereId,
-                             stoneId: this.props.stoneId,
-                             locationId: this.props.locationId,
-                           }); } : null}
+        <DeviceInformation
+          left={"Energy Usage:"}
+          leftValue={stone.state.currentUsage + ' W'}
+          right={locationLabel}
+          rightValue={locationName}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { Actions.roomSelection({sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
         />
         <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>
@@ -266,7 +262,7 @@ export class DeviceSummary extends Component<any, any> {
   }
 }
 
-export class DeviceButton extends Component<{store: any, sphereId: string, stoneId: string, eventBus: EventBusClass, callback(any): void}, any> {
+export class DeviceButton extends Component<{store: any, sphereId: string, stoneId: string, eventBus: EventBusClass, callback?(any): void}, any> {
   unsubscribeStoreEvents;
 
   componentDidMount() {
@@ -277,8 +273,6 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
         this.forceUpdate();
       }
     });
-
-
   }
 
   componentWillUnmount() {
@@ -304,23 +298,33 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
 
     let size = 0.2*screenHeight;
     let innerSize = size - 6;
-    return (
-      <TouchableOpacity onPress={() => {
-        const store = this.props.store;
-        const state = store.getState();
-        const sphere = state.spheres[this.props.sphereId];
-        const stone = sphere.stones[this.props.stoneId];
-        this.props.callback(stone);
-      }} >
-        <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
-          <AnimatedCircle size={size} color={stateColor}>
-            <AnimatedCircle size={innerSize} color={stateColor} borderWidth={3} borderColor={colors.white.hex}>
-              <Icon name={element.config.icon} size={0.575*innerSize} color={'#fff'} />
-            </AnimatedCircle>
+
+    let content = (
+      <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
+        <AnimatedCircle size={size} color={stateColor}>
+          <AnimatedCircle size={innerSize} color={stateColor} borderWidth={3} borderColor={colors.white.hex}>
+            <Icon name={element.config.icon} size={0.575*innerSize} color={'#fff'} />
           </AnimatedCircle>
         </AnimatedCircle>
-      </TouchableOpacity>
+      </AnimatedCircle>
     );
+
+    if (this.props.callback) {
+      return (
+        <TouchableOpacity onPress={() => {
+          const store = this.props.store;
+          const state = store.getState();
+          const sphere = state.spheres[this.props.sphereId];
+          const stone = sphere.stones[this.props.stoneId];
+          this.props.callback(stone);
+        }}>
+          {content}
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return<View>{content}</View>
+    }
   }
 }
 
