@@ -25,6 +25,7 @@ import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
 import { SettingsMeshTopologyHelp }  from "../views/settingsViews/SettingsMeshTopologyHelp";
 import { AddItemsToSphere }          from "../views/main/AddItemsToSphere";
+import { LibMessages }               from "../views/overlays/LibMessages";
 
 
 export class Router_IOS extends Component {
@@ -92,6 +93,7 @@ export class Router_IOS extends Component {
         </Router>
 
         <AnimatedMenu />
+        <LibMessages />
         <DfuOverlay store={this.props.store}  />
         <LockOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />

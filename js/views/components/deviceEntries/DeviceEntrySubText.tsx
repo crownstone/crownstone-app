@@ -14,9 +14,9 @@ import {
   View
 } from 'react-native';
 
-import { colors} from '../../styles'
-import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
-import {STONE_TYPES} from "../../../router/store/reducers/stones";
+import { colors}             from '../../styles'
+import { SetupStateHandler } from "../../../native/setup/SetupStateHandler";
+import { STONE_TYPES }       from "../../../router/store/reducers/stones";
 
 export class DeviceEntrySubText extends Component<any, any> {
   render() {

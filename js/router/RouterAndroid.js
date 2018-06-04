@@ -21,6 +21,7 @@ import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
 import { SideBar }                   from "../views/components/sideMenu/SideBar";
 import { Icon }                      from "../views/components/Icon";
+import { LibMessages }               from "../views/overlays/LibMessages";
 
 import { Views }                     from './Views'
 import { colors, screenWidth} from '../views/styles'
@@ -93,6 +94,7 @@ export class Router_Android extends Component {
         </Router>
 
         <AnimatedMenu />
+        <LibMessages  />
         <DfuOverlay  store={this.props.store} />
         <LockOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />
