@@ -37,7 +37,7 @@ class NativeBusClass {
       currentRoom:          "currentLocation",                  // data type = {region: sphereId, location: locationId}
 
       libAlert:             "libAlert",                         // data type = {header: string, body: string, buttonText: string }
-      libPopup:             "libPopup",                         // data type = {header: string, body: string, buttonText: string, type: 'PHONE_ERROR' | 'SAD_FACE | }
+      libPopup:             "libPopup",                         // data type = {header: string, body: string, buttonText: string, type: <not used yet> }
     };
 
     this.refMap = {};

@@ -43,12 +43,15 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
   }
 
   componentDidMount() {
-    // we scan high frequency when we see a setup node
-    BleUtil.startHighFrequencyScanning(this.uuid, true);
-
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     this.props.eventBus.emit("ignoreTriggers");
-    setTimeout(() => { this.searchForStone(); }, 1000);
+
+    // this is done with an event to avoid double starting due to additional construction by the navigation lib.
+    this.props.eventBus.on("StartRecoverProcess", () => {
+      // we scan high frequency when we see a setup node
+      BleUtil.startHighFrequencyScanning(this.uuid, true);
+      this.searchForStone()
+    });
   }
 
   componentWillUnmount() {

@@ -49,6 +49,8 @@ class EventEmitter {
     allEventNames.append("enterLocation")
     allEventNames.append("exitLocation")
     allEventNames.append("currentLocation")
+    allEventNames.append("libPopup")
+    allEventNames.append("libAlert")
     
     return allEventNames
   }()

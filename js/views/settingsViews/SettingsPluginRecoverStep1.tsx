@@ -37,7 +37,11 @@ export class SettingsPluginRecoverStep1 extends Component<any, any> {
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
             <View style={{flex:1}} />
-            <NextButton onPress={Actions.settingsPluginRecoverStep2} />
+            <NextButton onPress={ () => {
+              Actions.settingsPluginRecoverStep2();
+              // trigger to start the process
+              setTimeout(() => { this.props.eventBus.emit("StartRecoverProcess"); }, 1000)
+            }} />
           </View>
         </View>
       </Background>

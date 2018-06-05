@@ -73,6 +73,7 @@ let mergeStates = (targetState, oneOver) => {
 export const reducerCreate = (params) => {
   const defaultReducer = Reducer(params, {});
   return (state, action) => {
+
     if (action && action.type == "REACT_NATIVE_ROUTER_FLUX_POP_TO") {
       // check if we can see the key in the list of items, if not, do a back.
       let newState = Util.deepExtend({}, state);
