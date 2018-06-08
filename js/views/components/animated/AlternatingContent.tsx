@@ -33,7 +33,7 @@ export class AlternatingContent extends Component<any, any> {
     let content = [];
     for (let i = 0; i < this.props.contentArray.length; i++) {
       content.push(
-        <FadeInView key={i + "_alternatingContent"} duration={this.props.fadeDuration || 400} visible={i === this.state.visibleIndex} style={[this.props.style, {position:'absolute', top:0}]}>
+        <FadeInView key={i + "_alternatingContent"} duration={this.props.fadeDuration || 400} visible={i === this.state.visibleIndex} style={[this.props.style, {position:'absolute', top:0,  justifyContent:'center', alignItems:'center',}]}>
           {this.props.contentArray[i]}
         </FadeInView>
       );

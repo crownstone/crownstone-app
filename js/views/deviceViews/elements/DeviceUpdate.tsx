@@ -108,7 +108,6 @@ export class DeviceUpdate extends Component<any, any> {
           size={0.15*screenHeight}
           color={iconColor}
           buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor: colors.white.hex, borderRadius: 0.03*screenHeight}}
-          style={{position:'relative', top: 0.0051*screenHeight}}
         />
       </TouchableOpacity>
     );

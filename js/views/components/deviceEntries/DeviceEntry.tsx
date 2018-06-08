@@ -152,9 +152,7 @@ export class DeviceEntry extends Component<any, any> {
       </View>
       );
     }
-    else if (
-      ((Util.versions.canUpdate(stone, state) === true) || Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) &&
-      stone.config.disabled === false) {
+    else if (((Util.versions.canUpdate(stone, state) === true) || Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) && stone.config.disabled === false) {
       return (
         <View style={[{
           width:60,
@@ -163,14 +161,15 @@ export class DeviceEntry extends Component<any, any> {
           backgroundColor: colors.white.hex,
           borderWidth: 2,
           borderColor: color,
+          justifyContent:'center', alignItems:'center'
         }, styles.centered]}>
           <AlternatingContent
-            style={{flex:1, width:60, height:60, justifyContent:'center', alignItems:'center'}}
+            style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}
             fadeDuration={500}
             switchDuration={2000}
             contentArray={[
-              <View style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}><Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} /></View>,
-              <View style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}><Icon name={element.config.icon} size={35} color={color} /></View>,
+              <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
+              <Icon name={element.config.icon} size={35} color={color} />,
             ]} />
         </View>
       );
