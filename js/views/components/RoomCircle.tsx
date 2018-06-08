@@ -417,7 +417,7 @@ class RoomCircleClass extends Component<any, any> {
     };
 
     return (
-      <Animated.View style={[animatedStyle,{position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}>
+      <Animated.View style={[animatedStyle, {position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}>
         <View>
           {this.getCircle()}
           {this.showAlert !== null ? this._getAlertIcon() : undefined}

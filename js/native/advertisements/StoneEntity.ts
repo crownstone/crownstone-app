@@ -254,29 +254,74 @@ export class StoneEntity {
 
   _updateExternalRssiIndicator(stoneId, stone, externalId, externalStone, rssi ) {
     if (stone.mesh[externalId] && stone.mesh[externalId].rssi === rssi) {
+      // this is the same value as before, ignore
       return;
     }
-    else if (!stone.mesh[externalId] && !externalStone.mesh[stoneId] && rssi === 0)
 
     // invalid measurement
     if (rssi > 0) { return; }
 
+    const BAD_CONNECTION = -150
+
     if (rssi === 0) {
-      // there is no connection between these nodes, remove it from both.
-      let actions = [];
-      actions.push({
-        type: 'REMOVE_MESH_LINK',
-        sphereId: this.sphereId,
-        stoneId: this.stoneId,
-        nodeId: externalId,
-      });
-      actions.push({
-        type: 'REMOVE_MESH_LINK',
-        sphereId: this.sphereId,
-        stoneId: externalId,
-        nodeId: this.stoneId,
-      });
-      this.store.batchDispatch(actions);
+      // One of the Crownstones says there is no connection. We check if the other one says there IS one, if not, we delete the links
+      if (externalStone.mesh[stoneId]) {
+        // the external stone thinks its connected to this stone
+        if (externalStone.mesh[stoneId].rssi === BAD_CONNECTION) {
+          // the connection from the external stone is bad, as is this one. Clear them both.
+          let actions = [];
+          actions.push({
+            type: 'REMOVE_MESH_LINK',
+            sphereId: this.sphereId,
+            stoneId: this.stoneId,
+            nodeId: externalId,
+          });
+          actions.push({
+            type: 'REMOVE_MESH_LINK',
+            sphereId: this.sphereId,
+            stoneId: externalId,
+            nodeId: this.stoneId,
+          });
+          this.store.batchDispatch(actions);
+        }
+        else {
+          // the connection from the external stone is OK, this one is bad. Store it as a bad connection
+          this.store.dispatch({
+            type: 'SET_MESH_INDICATOR',
+            sphereId: this.sphereId,
+            stoneId: this.stoneId,
+            nodeId: externalId,
+            data: {rssi: BAD_CONNECTION}
+          });
+        }
+      }
+      else if (stone.mesh[externalId]) {
+        // the crownstone currently has a link in the store
+
+        // its already bad, clean it up.
+        if (stone.mesh[externalId].rssi === BAD_CONNECTION) {
+          this.store.dispatch({
+            type: 'REMOVE_MESH_LINK',
+            sphereId: this.sphereId,
+            stoneId: this.stoneId,
+            nodeId: externalId,
+          })
+        }
+        else {
+          // there is an existing link which is not bad, what do we do here?
+          this.store.dispatch({
+            type: 'SET_MESH_INDICATOR',
+            sphereId: this.sphereId,
+            stoneId: this.stoneId,
+            nodeId: externalId,
+            data: {rssi: BAD_CONNECTION}
+          });
+        }
+      }
+      else {
+        // the external stone is not connected to this stone, nor is this stone connected to the external one.
+        // this means we do not have to do anything.
+      }
     }
     else {
       this.store.dispatch({

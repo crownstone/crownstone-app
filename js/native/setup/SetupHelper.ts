@@ -112,7 +112,7 @@ export class SetupHelper {
               // if we know this crownstone, its localId is in the mapProvider which we can look for with the cloudId
               let localId = MapProvider.cloud2localMap.stones[this.stoneIdInCloud] || this.stoneIdInCloud;
               let isPlug = this.type === STONE_TYPES.plug;
-              let isGuidestone = this.type === STONE_TYPES.guidestone;
+              let canSwitch = this.type === STONE_TYPES.plug || this.type === STONE_TYPES.builtin;
               let showRestoreAlert = false;
               let finalizeSetupStoneAction = {
                 type:           "ADD_STONE",
@@ -150,7 +150,7 @@ export class SetupHelper {
                 type: 'UPDATE_STONE_SWITCH_STATE',
                 sphereId: sphereId,
                 stoneId: localId,
-                data: { state: isGuidestone ? 0 : 1, currentUsage: 0 },
+                data: { state: canSwitch ? 1 : 0, currentUsage: 0 },
               });
 
               store.batchDispatch(actions);

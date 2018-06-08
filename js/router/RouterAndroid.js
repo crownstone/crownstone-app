@@ -90,6 +90,8 @@ export class Router_Android extends Component {
             <Scene key="switchCraftInformation"     component={Views.SwitchCraftInformation}     />
             <Scene key="messageInbox"               component={Views.MessageInbox}               />
             <Scene key="messageAdd"                 component={Views.MessageAdd}                 />
+
+            <Scene key="iconDebug"                  component={Views.IconDebug}  initial={false} />
           </Modal>
         </Router>
 

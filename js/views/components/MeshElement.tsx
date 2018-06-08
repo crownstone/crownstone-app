@@ -150,12 +150,7 @@ class MeshElementClass extends Component<any, any> {
 
     return (
       <Animated.View
-        style={[animatedStyle,
-          {position:'absolute',
-            top: this.props.pos.y, left: this.props.pos.x,
-            width: this.state.width, height: this.state.height,
-            overflow:'hidden'}
-          ]}>
+        style={[animatedStyle, { position:'absolute', top: this.props.pos.y, left: this.props.pos.x, width: this.state.width, height: this.state.height, overflow:'hidden'}]}>
         <Animated.View style={{position:'absolute', top: this.state.locationY, left: this.state.locationX}}>
           <IconCircle
             icon={this.props.nodeData.locationIcon}

@@ -216,7 +216,7 @@ export class SettingsMeshTopology extends Component<any, any> {
     let edgeIds = Object.keys(connections);
     edgeIds.forEach((edgeId) => {
       edges.push(connections[edgeId]);
-    })
+    });
 
     return (
       <Background image={this.props.backgrounds.menu}>

@@ -15,9 +15,10 @@ import { SlideInView } from './animated/SlideInView'
 import { NavigationBar } from './editComponents/NavigationBar'
 import { Separator } from './Separator'
 import { CustomIcon } from '../../fonts/customIcons'
+import {Icon} from "./Icon";
 
 let borderColor = 'rgba(0,0,0,0.1)';
-let rowHeight = 70;
+let ROW_HEIGHT = 70;
 let ICON_SIZE = 35;
 let AMOUNT_OF_ITEMS_IN_ROW = 4;
 
@@ -39,6 +40,9 @@ export class IconSelection extends Component<any, any> {
     }
 
     if (props.debug) {
+      AMOUNT_OF_ITEMS_IN_ROW = 3
+      ROW_HEIGHT = 150
+      ICON_SIZE = 50
       let iconKeys = Object.keys(props.icons);
       let newOnes = {};
       iconKeys.forEach((key) => {
@@ -61,7 +65,8 @@ export class IconSelection extends Component<any, any> {
           newIconArray.push(newIcon)
         }
       });
-      console.log(JSON.stringify(newIconArray, undefined, 2));
+      stateContent["offset"] = {}
+      // console.log(JSON.stringify(newIconArray, undefined, 2));
       console.log("Amount of duplicate icons: ", Object.keys(this.duplicates).length, ':', JSON.stringify(Object.keys(this.duplicates), undefined, 2))
     }
 
@@ -79,7 +84,7 @@ export class IconSelection extends Component<any, any> {
 
   _getCategory(category) {
     let icons = this.props.icons[category.key];
-    let heightWhenVisible =  Math.ceil(icons.length / AMOUNT_OF_ITEMS_IN_ROW) * (rowHeight + 1);
+    let heightWhenVisible =  Math.ceil(icons.length / AMOUNT_OF_ITEMS_IN_ROW) * (ROW_HEIGHT + 1);
 
     return (
       <View key={category.key}>
@@ -134,6 +139,7 @@ export class IconSelection extends Component<any, any> {
       )
     }
   }
+
   _getIcon(icons, iconIndex) {
     if (iconIndex < icons.length) {
       let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : "transparent";
@@ -141,16 +147,46 @@ export class IconSelection extends Component<any, any> {
         backgroundColor = colors.red.hex;
       }
 
-      return (
-        <TouchableOpacity
-          key={icons[iconIndex]}
-          style={[styles.centered, {height:rowHeight, flex:1}, {backgroundColor: backgroundColor} ]}
-          onPress={() => {this.props.callback(icons[iconIndex])}}
-        >
-          <CustomIcon name={icons[iconIndex]} size={ICON_SIZE} color={ this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex} />
-          {this.props.debug ? <Text style={{fontSize:14, color: this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex}}>{icons[iconIndex]}</Text> : undefined}
-        </TouchableOpacity>
-      )
+      if (this.props.debug) {
+        let offset = Number(this.state.offset[icons[iconIndex]]) || 0;
+        let h = ICON_SIZE + 20;
+        return (
+          <View style={[styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ]} key={icons[iconIndex]}>
+            <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h}, {backgroundColor: colors.blue.rgba(1)} ]} />
+            <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h, borderRadius: 0.5*h}, {backgroundColor: colors.red.rgba(1)} ]} />
+            <View style={[styles.centered, {position:'absolute', top: 15, left: 15, width: ICON_SIZE, height:ICON_SIZE}, {backgroundColor: colors.purple.rgba(0.6)} ]} />
+            <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h} ]}>
+              <View style={{position:'relative', top: offset*ICON_SIZE, left: 0}}>
+                <Icon name={icons[iconIndex]} size={ICON_SIZE} color={ this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex} />
+              </View>
+            </View>
+            <View style={[styles.centered, {position:'absolute', top:5, left: 5 + 0.5*h - 1, width: 2, height:h},  {backgroundColor: colors.black.rgba(0.5)} ]} />
+            <View style={[styles.centered, {position:'absolute', top:5 + 0.5*h - 1, left: 5, width: h, height: 2}, {backgroundColor: colors.black.rgba(0.5)} ]} />
+            <TouchableOpacity style={{position:'absolute', top:5, left: 5, width:h, height: 0.5*h}} onPress={() => {
+              let offsetObj = this.state.offset;
+              offsetObj[icons[iconIndex]] = String(offset - 0.01);
+              this.setState({offset: offsetObj})}} />
+            <TouchableOpacity style={{position:'absolute', top: 0.5*h + 5, left: 5, width:h, height: 0.5*h}} onPress={() => {
+              let offsetObj = this.state.offset;
+              offsetObj[icons[iconIndex]] = String(offset + 0.01);
+              this.setState({offset: offsetObj})}} />
+            
+            <Text style={{position:'absolute', top: ICON_SIZE + 40, fontSize:14, color: this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex}}>{icons[iconIndex] + " o:" + offset}</Text>
+          </View>
+        )
+      }
+      else {
+        return (
+          <TouchableOpacity
+            key={icons[iconIndex]}
+            style={[styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ]}
+            onPress={() => {this.props.callback(icons[iconIndex])}}
+          >
+            <CustomIcon name={icons[iconIndex]} size={ICON_SIZE} color={ this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex} />
+             </TouchableOpacity>
+        )
+      }
+
     }
     else {
       return (

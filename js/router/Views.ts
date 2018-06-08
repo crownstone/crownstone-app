@@ -43,6 +43,7 @@ import { SettingsSphereInvitedUser }  from '../views/settingsViews/SettingsSpher
 import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPluginRecoverStep1'
 import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
 import { Tutorial }                   from "../views/tutorialViews/Tutorial";
+import { IconDebug }                  from "../views/development/IconDebug";
 import { SettingsFAQ }                from "../views/settingsViews/SettingsFAQ";
 import { SwitchCraftInformation }     from "../views/deviceViews/elements/SwitchCraftInformation";
 
@@ -94,4 +95,5 @@ export const Views = {
   SettingsPluginRecoverStep2,
   SwitchCraftInformation,
   Tutorial,
+  IconDebug,
 };

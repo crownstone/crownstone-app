@@ -200,7 +200,6 @@ export class DeviceEntry extends Component<any, any> {
 
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>
-        {/*<DeviceCommandProgressBar {...this.props} pendingCommand={this.state.pendingCommand } baseHeight={this.baseHeight} updateStatusText={(text) => { this.setState({statusText: text}) }} />*/}
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
           <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
             {this._getIcon(element, stone, state)}

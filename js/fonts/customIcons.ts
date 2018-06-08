@@ -1,6 +1,6 @@
 import * as VectorIcons from 'react-native-vector-icons'
 
-const glyphMap = {
+export const glyphMapC1 = {
   'c1-syncDrives':0xf001,
   'c1-hdd1':0xf002,
   'c1-hdd2':0xf003,
@@ -317,11 +317,11 @@ const glyphMap = {
 };
 
 export const getRandomC1Name = function() {
-  return getRandomName(glyphMap);
+  return getRandomName(glyphMapC1);
 };
 
 
-const glyphMap2 = {
+export const glyphMapC2 = {
   'c2-crownstone':0xf000,
   'c2-plugin':0xf001,
   'c2-pluginFilled':0xf002,
@@ -329,10 +329,10 @@ const glyphMap2 = {
 };
 
 export const getRandomC2Name = function() {
-  return getRandomName(glyphMap2);
+  return getRandomName(glyphMapC2);
 };
 
-const glyphMap3 = {
+export const glyphMapC3 = {
   'c3-newCircle':       0xf000,
   'c3-newSign':         0xf001,
   'c3-newStar':         0xf002,
@@ -343,12 +343,12 @@ const glyphMap3 = {
 }
 
 export const getRandomC3Name = function() {
-  return getRandomName(glyphMap3);
+  return getRandomName(glyphMapC3);
 };
 
-export const CustomIcon = VectorIcons.createIconSet(glyphMap,    'Crownstone', 'Crownstone.ttf');
-export const CustomIcon2 = VectorIcons.createIconSet(glyphMap2,  'CustomIcons', 'CustomIcons.ttf');
-export const CustomIcon3 = VectorIcons.createIconSet(glyphMap3,  'Crownstone2', 'Crownstone2.ttf');
+export const CustomIcon = VectorIcons.createIconSet(glyphMapC1,   'Crownstone', 'Crownstone.ttf');
+export const CustomIcon2 = VectorIcons.createIconSet(glyphMapC2,  'CustomIcons', 'CustomIcons.ttf');
+export const CustomIcon3 = VectorIcons.createIconSet(glyphMapC3,  'Crownstone2', 'Crownstone2.ttf');
 
 
 

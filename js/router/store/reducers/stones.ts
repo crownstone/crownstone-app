@@ -180,14 +180,14 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       if (action.data) {
         let newState = {...state};
         newState.firmwareVersionSeenInOverview = update(action.data.firmwareVersionSeenInOverview, newState.firmwareVersionSeenInOverview);
-        newState.cloudId                       = update(action.data.cloudId,           newState.cloudId);
-        newState.disabled                      = update(action.data.disabled,          newState.disabled);
-        newState.dfuResetRequired              = update(action.data.dfuResetRequired,  newState.dfuResetRequired);
-        newState.meshNetworkId                 = update(action.data.meshNetworkId,  newState.meshNetworkId);
-        newState.handle                        = update(action.data.handle,            newState.handle);
-        newState.hidden                        = update(action.data.hidden,            newState.hidden);
-        newState.locked                        = update(action.data.locked,            newState.locked);
-        newState.rssi                          = update(action.data.rssi,              newState.rssi);
+        newState.cloudId                       = update(action.data.cloudId,          newState.cloudId);
+        newState.disabled                      = update(action.data.disabled,         newState.disabled);
+        newState.dfuResetRequired              = update(action.data.dfuResetRequired, newState.dfuResetRequired);
+        newState.meshNetworkId                 = update(action.data.meshNetworkId,    newState.meshNetworkId);
+        newState.handle                        = update(action.data.handle,           newState.handle);
+        newState.hidden                        = update(action.data.hidden,           newState.hidden);
+        newState.locked                        = update(action.data.locked,           newState.locked);
+        newState.rssi                          = update(action.data.rssi,             newState.rssi);
         return newState;
       }
       return state;
