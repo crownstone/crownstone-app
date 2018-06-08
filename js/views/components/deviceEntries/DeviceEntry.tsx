@@ -169,8 +169,8 @@ export class DeviceEntry extends Component<any, any> {
             fadeDuration={500}
             switchDuration={2000}
             contentArray={[
-              <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
-              <Icon name={element.config.icon} size={35} color={color} />,
+              <View style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}><Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} /></View>,
+              <View style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}><Icon name={element.config.icon} size={35} color={color} /></View>,
             ]} />
         </View>
       );

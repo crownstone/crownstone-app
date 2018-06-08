@@ -66,7 +66,7 @@ const insertExplanation = function(items: any[], label : string, below : boolean
   }
 };
 
-export const SettingConstructor = function(store, state, eventBus) {
+export const SettingConstructor = function(store, state, eventBus, clickCallback = () => {}) {
   let items = [];
 
   insertExplanation(items, 'MY PROFILE', false);
@@ -76,7 +76,8 @@ export const SettingConstructor = function(store, state, eventBus) {
     icon: getIcon('ios-body', 23, colors.white.hex, colors.purple.hex),
     type: 'navigation',
     callback: () => {
-      Actions.settingsProfile()
+      clickCallback();
+      Actions.settingsProfile();
     }
   });
   items.push({
@@ -84,7 +85,10 @@ export const SettingConstructor = function(store, state, eventBus) {
     label:'Privacy',
     icon: getIcon('ios-eye', 27, colors.white.hex, colors.darkPurple.hex),
     type: 'navigation',
-    callback:() => { Actions.settingsPrivacy(); }
+    callback:() => {
+      clickCallback();
+      Actions.settingsPrivacy();
+    }
   });
   insertExplanation(items, 'You are in control of which data is shared with the cloud.', true);
 
@@ -95,7 +99,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       label: 'Spheres',
       icon: getIcon('c1-sphere', 21.5, colors.white.hex, colors.blue.hex),
       type: 'navigation',
-      callback: () => { Actions.settingsSphereOverview() }
+      callback: () => { clickCallback(); Actions.settingsSphereOverview() }
     });
   }
   else {
@@ -117,7 +121,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       type: 'navigation',
       style: {color: '#000'},
       icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
-      callback: () => { Actions.settingsMeshTopology(); }
+      callback: () => { clickCallback(); Actions.settingsMeshTopology(); }
     });
   }
 
@@ -127,7 +131,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     type: 'navigation',
     style: {color: '#000'},
     icon: getAlternatingIcons(['ios-cog','ios-battery-full'],[25,25],[colors.white.hex, colors.white.hex],[colors.darkBackground.hex, colors.darkBackground.hex]) ,
-    callback: () => { Actions.settingsApp(); }
+    callback: () => { clickCallback(); Actions.settingsApp(); }
   });
 
   if (state.app.tapToToggleEnabled !== false) {
@@ -141,7 +145,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       type:'button',
       style: {color:'#000'},
       icon: getIcon('md-flask', 22, colors.white.hex, colors.menuBackground.hex),
-      callback: () => { eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
+      callback: () => { clickCallback(); eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
     });
   }
 
@@ -151,7 +155,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     type: 'button',
     style: {color: '#000'},
     icon: getIcon('md-bulb', 23, colors.white.hex, colors.green.hex),
-    callback: () => { eventBus.emit("showWhatsNew"); }
+    callback: () => { clickCallback(); eventBus.emit("showWhatsNew"); }
   });
 
   insertExplanation(items, 'TROUBLESHOOTING', false);
@@ -162,6 +166,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     icon: getIcon('md-help-circle', 22, colors.white.hex, colors.csBlue.hex),
     callback: () => {
       // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
+      clickCallback();
       Actions.settingsFAQ()
     }
   });

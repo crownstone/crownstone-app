@@ -90,7 +90,7 @@ export class Router_IOS extends Component {
             <Scene key="settingsPluginRecoverStep1"     component={Views.SettingsPluginRecoverStep1} />
             <Scene key="settingsPluginRecoverStep2"     component={Views.SettingsPluginRecoverStep2} />
 
-            <Scene key="iconDebug"                      component={Views.IconDebug}              initial={false}    />
+            <Scene key="iconDebug"                      component={Views.IconDebug}  initial={true}  />
           </Modal>
         </Router>
 

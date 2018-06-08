@@ -12,16 +12,16 @@ import {
   Text,
   View
 } from 'react-native';
-import { eventBus } from '../../../util/EventBus'
-import { Actions } from 'react-native-router-flux';
+import { eventBus }                 from '../../../util/EventBus'
+import { Actions }                  from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
-import { Icon } from '../Icon'
+import { Icon }                     from '../Icon'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
-import { NativeBus } from '../../../native/libInterface/NativeBus'
-import { AppUtil } from '../../../util/AppUtil'
-import { SettingConstructor } from '../../../util/SettingConstructor'
-import {LOG} from "../../../logging/Log";
-import {StoreManager} from "../../../router/store/storeManager";
+import { NativeBus }                from '../../../native/libInterface/NativeBus'
+import { AppUtil }                  from '../../../util/AppUtil'
+import { SettingConstructor }       from '../../../util/SettingConstructor'
+import { LOG }                      from "../../../logging/Log";
+import { StoreManager }             from "../../../router/store/storeManager";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -74,6 +74,7 @@ export class SideBar extends Component<any, any> {
           label: 'Setup localization',
           icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
           callback: () => {
+            () => { Actions.drawerClose() };
             this.props.viewProps.actions.finalizeLocalization();
           }
         });
@@ -112,6 +113,7 @@ export class SideBar extends Component<any, any> {
       />,
       highlight: highlight,
       callback: () => {
+        Actions.drawerClose();
         Actions.messageInbox();
       }
     });
@@ -120,7 +122,7 @@ export class SideBar extends Component<any, any> {
 
   _getSettingsItems() {
     let state = this.store.getState();
-    let settingItems = SettingConstructor(this.store, state, eventBus);
+    let settingItems = SettingConstructor(this.store, state, eventBus, () => { Actions.drawerClose() });
 
     settingItems.push({
       id: 'quit',
