@@ -181,6 +181,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	private ReactApplicationContext _reactContext;
+	private boolean _isAppOnForeground = true;
 	private boolean _isInitialized = false;
 
 	private BleScanner _scanner;
@@ -244,6 +245,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 			@Override
 			public void onHostResume() {
 				BleLog.getInstance().LOGi(TAG, "onHostResume");
+				_isAppOnForeground = true;
 				BleLog.getInstance().LOGd(TAG, "_bleTurnedOff=" + _bleTurnedOff
 						+ " _locationServiceTurnedOff=" + _locationServiceTurnedOff
 						+ " _locationPermissionMissing=" + _locationPermissionMissing);
@@ -260,22 +262,24 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 					BleLog.getInstance().LOGd(TAG, "location permission not granted");
 					sendEvent("locationStatus", "noPermission");
 				}
-				if (!_initScannerInBackground) {
-					updateScanner();
-				}
+				updateScanner();
+//				if (!_initScannerInBackground) {
+//					updateScanner();
+//				}
 			}
 
 			@Override
 			public void onHostPause() {
 				BleLog.getInstance().LOGi(TAG, "onHostPause");
-				if (_scannerInitialized && !_initScannerInBackground) {
-					_scanner.stopScanning();
-				}
+				_isAppOnForeground = false;
+				updateScanner();
 			}
 
 			@Override
 			public void onHostDestroy() {
 				BleLog.getInstance().LOGi(TAG, "onHostDestroy");
+				_isAppOnForeground = false;
+				updateScanner();
 			}
 		});
 
@@ -3136,6 +3140,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		if (!_scannerInitialized) {
 			return;
 		}
+		if (!_isAppOnForeground && !_initScannerInBackground) {
+			_scanner.stopScanning();
+			return;
+		}
+
 		if (isScannerIdle()) {
 			_scanner.stopScanning();
 			return;
