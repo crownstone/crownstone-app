@@ -297,7 +297,6 @@ export class RoomOverview extends Component<any, any> {
 
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     this.viewingRemotely = this.props.locationId === null && Object.keys(stones).length === 0 ? false : this.viewingRemotely;
-
     if (this.props.locationId) {
       location = sphere.locations[this.props.locationId];
       if (!location) { return <RoomDeleted /> }
@@ -310,7 +309,7 @@ export class RoomOverview extends Component<any, any> {
             imageTaken={location.config.pictureTaken}
             r={1} g={1} b={1}
             blendFactor={this.viewingRemotely ? 0.3 : 0.0}
-            grayScale={this.viewingRemotely ? 1.0 : 0.0}
+            grayScale={this.viewingRemotely ? 0.9 : 0.0}
           />
         );
       }
