@@ -168,7 +168,6 @@ export class IconSelection extends Component<any, any> {
         let topExistingOffset = this.props.offsets[categoryKey] && this.props.offsets[categoryKey][icons[iconIndex]] && this.props.offsets[categoryKey][icons[iconIndex]].top || 0;
         let topOffset = Number(this.state.offset[categoryKey][icons[iconIndex]].top) - topExistingOffset;
         let topOffsetLabel = topExistingOffset + topOffset;
-        console.log("TopExisintg", topExistingOffset, topOffset)
         let leftExistingOffset = this.props.offsets[categoryKey] && this.props.offsets[categoryKey][icons[iconIndex]] && this.props.offsets[categoryKey][icons[iconIndex]].left || 0;
         let leftOffset = Number(this.state.offset[categoryKey][icons[iconIndex]].left) - leftExistingOffset;
         let leftOffsetLabel = leftExistingOffset + leftOffset;
