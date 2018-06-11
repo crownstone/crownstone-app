@@ -66,6 +66,17 @@ export class IconSelection extends Component<any, any> {
         }
       });
       stateContent["offset"] = {}
+
+      this.props.categories.forEach((category) => {
+        stateContent["offset"][category.key] = {};
+        this.props.icons[category.key].forEach((iconName) => {
+          let topExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].top || 0;
+
+          let leftExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].left || 0;
+          stateContent["offset"][category.key][iconName] = {top: topExistingOffset, left: leftExistingOffset}
+        })
+      })
+
       // console.log(JSON.stringify(newIconArray, undefined, 2));
       console.log("Amount of duplicate icons: ", Object.keys(this.duplicates).length, ':', JSON.stringify(Object.keys(this.duplicates), undefined, 2))
     }
@@ -155,12 +166,12 @@ export class IconSelection extends Component<any, any> {
           console.log("No offset for ", categoryKey, icons[iconIndex])
         }
         let topExistingOffset = this.props.offsets[categoryKey] && this.props.offsets[categoryKey][icons[iconIndex]] && this.props.offsets[categoryKey][icons[iconIndex]].top || 0;
-        let topOffset = Number(this.state.offset[icons[iconIndex]] && this.state.offset[icons[iconIndex]].top) || 0;
-        let topOffsetLabel = topExistingOffset + Number(this.state.offset[icons[iconIndex]] && this.state.offset[icons[iconIndex]].top) || 0;
-
+        let topOffset = Number(this.state.offset[categoryKey][icons[iconIndex]].top) - topExistingOffset;
+        let topOffsetLabel = topExistingOffset + topOffset;
+        console.log("TopExisintg", topExistingOffset, topOffset)
         let leftExistingOffset = this.props.offsets[categoryKey] && this.props.offsets[categoryKey][icons[iconIndex]] && this.props.offsets[categoryKey][icons[iconIndex]].left || 0;
-        let leftOffset = Number(this.state.offset[icons[iconIndex]] && this.state.offset[icons[iconIndex]].left) || 0;
-        let leftOffsetLabel = leftExistingOffset + Number(this.state.offset[icons[iconIndex]] && this.state.offset[icons[iconIndex]].left) || 0;
+        let leftOffset = Number(this.state.offset[categoryKey][icons[iconIndex]].left) - leftExistingOffset;
+        let leftOffsetLabel = leftExistingOffset + leftOffset;
         let h = ICON_SIZE + 20;
         let small = ICON_SIZE / 2;
         let sh = small + 20;
@@ -177,7 +188,7 @@ export class IconSelection extends Component<any, any> {
             <View style={[styles.centered, {position:'absolute', top:5, left: 5 + 0.5*h - 1, width: 2, height:h},  {backgroundColor: colors.black.rgba(0.5)} ]} />
             <View style={[styles.centered, {position:'absolute', top:5 + 0.5*h - 1, left: 5, width: h, height: 2}, {backgroundColor: colors.black.rgba(0.5)} ]} />
             <TouchableOpacity style={{position:'absolute', top:5, left: 5 +0.25*h, width:0.5*h, height: 0.5*h}} onPress={() => {
-              let offsetObj = this.state.offset;
+              let offsetObj = this.state.offset[categoryKey];
               if (offsetObj[icons[iconIndex]]) {
                 offsetObj[icons[iconIndex]].top = String(topOffset - 0.01);
               }
@@ -187,7 +198,7 @@ export class IconSelection extends Component<any, any> {
               this.setState({offset: offsetObj})}}
             />
             <TouchableOpacity style={{position:'absolute', top: 0.5*h + 5, left: 5 +0.25*h, width:0.5*h, height: 0.5*h}} onPress={() => {
-              let offsetObj = this.state.offset;
+              let offsetObj = this.state.offset[categoryKey];
               if (offsetObj[icons[iconIndex]]) {
                 offsetObj[icons[iconIndex]].top = String(topOffset + 0.01);
               }
@@ -197,7 +208,7 @@ export class IconSelection extends Component<any, any> {
               this.setState({offset: offsetObj})}}
             />
             <TouchableOpacity style={{position:'absolute', top:5, left: 5, width:0.25*h, height: h}} onPress={() => {
-              let offsetObj = this.state.offset;
+              let offsetObj = this.state.offset[categoryKey];
               if (offsetObj[icons[iconIndex]]) {
                 offsetObj[icons[iconIndex]].left = String(leftOffset - 0.01);
               }
@@ -207,7 +218,7 @@ export class IconSelection extends Component<any, any> {
               this.setState({offset: offsetObj})}}
             />
             <TouchableOpacity style={{position:'absolute', top:5, left: 5+0.75*h, width:0.25*h, height: h}} onPress={() => {
-              let offsetObj = this.state.offset;
+              let offsetObj = this.state.offset[categoryKey];
               if (offsetObj[icons[iconIndex]]) {
                 offsetObj[icons[iconIndex]].left = String(leftOffset + 0.01);
               }
@@ -255,7 +266,7 @@ export class IconSelection extends Component<any, any> {
   }
 
   _generateOffsets() {
-    let nameLength = 26;
+    let nameLength = 35;
     this.props.categories.forEach((category) => {
       let str = "const " + category.key + "Corrections = {\n"
       this.props.icons[category.key].forEach((iconName) => {
@@ -264,10 +275,13 @@ export class IconSelection extends Component<any, any> {
           lineStr += ' '
         }
         let topExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].top || 0;
-        let topOffsetLabel = topExistingOffset + Number(this.state.offset[iconName] && this.state.offset[iconName].top) || 0;
-
+        let topOffset = Number(this.state.offset[category.key][iconName].top) - topExistingOffset;
+        let topOffsetLabel = topExistingOffset + topOffset;
+        
         let leftExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].left || 0;
-        let leftOffsetLabel = leftExistingOffset + Number(this.state.offset[iconName] && this.state.offset[iconName].left) || 0;
+        let leftOffset = Number(this.state.offset[category.key][iconName].left) - leftExistingOffset;
+        let leftOffsetLabel = leftExistingOffset + leftOffset;
+        
         lineStr += "{change: true, top: " + (topOffsetLabel < 0 ? '' : '+') + topOffsetLabel.toFixed(3) + ', left: ' + (leftOffsetLabel < 0 ? '' : '+') + leftOffsetLabel.toFixed(3) + '},\n';
         str += lineStr
       })
