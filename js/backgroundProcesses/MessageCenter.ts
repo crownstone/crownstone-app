@@ -17,7 +17,7 @@ class MessageCenterClass {
   constructor() { }
 
   loadStore(store: any) {
-    LOG.info('LOADED STORE MessageSearcher', this._initialized);
+    LOG.info('LOADED STORE MessageCenter', this._initialized);
     if (this._initialized === false) {
       this._store = store;
 
@@ -208,12 +208,11 @@ class MessageCenterClass {
     });
   }
 
-
   _enterSphere(localSphereId) {
     if (this._enterSphereInProgress === true) { return; }
     this._enterSphereInProgress = true;
 
-    LOG.info("MessageSearcher: enter sphere", localSphereId);
+    LOG.info("MessageCenter: enter sphere / already in sphere", localSphereId);
     this._handleMessageInSphere(localSphereId, 'enter')
       .then(() => { this._enterSphereInProgress = false; })
       .catch(() => {          this._enterSphereInProgress = false; })
@@ -223,7 +222,7 @@ class MessageCenterClass {
     if (this._exitSphereInProgress === true) { return; }
     this._exitSphereInProgress = true;
 
-    LOG.info("MessageSearcher: exit sphere", localSphereId);
+    LOG.info("MessageCenter: exit sphere", localSphereId);
     this._handleMessageInSphere(localSphereId, 'exit')
       .then(() => { this._exitSphereInProgress = false; })
       .catch(() => {          this._exitSphereInProgress = false; })
@@ -233,7 +232,7 @@ class MessageCenterClass {
     if (this._enterRoomInProgress === true) { return; }
     this._enterRoomInProgress = true;
 
-    LOG.info("MessageSearcher: enter room", data);
+    LOG.info("MessageCenter: enter room / already in room", data);
     this._handleMessageInLocation(data.region, data.location, 'enter')
       .then(() => { this._enterRoomInProgress = false; })
       .catch(() => {          this._enterRoomInProgress = false; })
@@ -243,7 +242,7 @@ class MessageCenterClass {
     if (this._exitRoomInProgress === true) { return; }
     this._exitRoomInProgress = true;
 
-    LOG.info("MessageSearcher: exit room", data);
+    LOG.info("MessageCenter: exit room", data);
     this._handleMessageInLocation(data.region, data.location, 'exit')
       .then(() => { this._exitRoomInProgress = false; })
       .catch(() => {          this._exitRoomInProgress = false; })

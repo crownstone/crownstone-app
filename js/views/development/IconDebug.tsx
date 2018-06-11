@@ -14,7 +14,7 @@ import { IconSelection }  from '../components/IconSelection'
 import {colors, screenWidth} from "../styles";
 import {BackAction} from "../../util/Back";
 import {glyphMapC1, glyphMapC2, glyphMapC3} from "../../fonts/customIcons";
-// import glyphMap from 'react-native-vector-icons/glyphmaps/Ionicons.json'
+import {iconCorrections} from "../../fonts/iconCorrections";
 
 const Actions = require('react-native-router-flux').Actions;
 
@@ -50,6 +50,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
               c2: Object.keys(glyphMapC2),
               c3: Object.keys(glyphMapC3)
             }}
+            offsets={iconCorrections}
             selectedIcon={this.props.icon}
             debug={true}
             callback={(newIcon) => {

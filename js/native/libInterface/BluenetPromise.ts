@@ -38,9 +38,9 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
 export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
-  connect:             (handle) => {
+  connect:             (handle, highPriority = true) => {
     // tell the app that something is connecting.
-    eventBus.emit("connecting", handle);
+    eventBus.emit("connecting", handle, " with priority:", highPriority);
 
     // connect
     if (handle) {
@@ -49,7 +49,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
           eventBus.emit("connected", handle);
         })
     }
-    else {
+    else if (highPriority) {
       return new Promise((resolve, reject) => {
         Alert.alert(
           "Can't connect to this Crownstone.",

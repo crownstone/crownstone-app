@@ -268,7 +268,7 @@ class BatchCommandHandlerClass {
           stoneId:        foundId,
           stone:          stone,
           meshNetworkId:  stone.config.meshNetworkId,
-          handle :        stone.config.handle,
+          handle:         stone.config.handle
         });
       }
 
@@ -338,7 +338,7 @@ class BatchCommandHandlerClass {
             return;
           }
           else {
-            return this._connectAndHandleCommands(crownstoneToHandle);
+            return this._connectAndHandleCommands(crownstoneToHandle, highPriorityActive);
           }
         })
         .then(() => {
@@ -363,10 +363,10 @@ class BatchCommandHandlerClass {
     })
   }
 
-  _connectAndHandleCommands(crownstoneToHandle : connectionInfo) {
+  _connectAndHandleCommands(crownstoneToHandle : connectionInfo, highPriorityActive) {
     return new Promise((resolve, reject) => {
       LOG.info("BatchCommandHandler: connecting to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
-      BluenetPromiseWrapper.connect(crownstoneToHandle.handle)
+      BluenetPromiseWrapper.connect(crownstoneToHandle.handle, highPriorityActive)
         .then(() => {
           LOG.info("BatchCommandHandler: Connected to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
           return this._handleAllCommandsForStone(crownstoneToHandle);

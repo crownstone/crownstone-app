@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors } from '../styles'
+import {styles, colors, screenWidth} from '../styles'
 
 import { SlideInView } from './animated/SlideInView'
 import { NavigationBar } from './editComponents/NavigationBar'
@@ -41,8 +41,8 @@ export class IconSelection extends Component<any, any> {
 
     if (props.debug) {
       AMOUNT_OF_ITEMS_IN_ROW = 3
-      ROW_HEIGHT = 150
-      ICON_SIZE = 50
+      ROW_HEIGHT = 250
+      ICON_SIZE = screenWidth / (AMOUNT_OF_ITEMS_IN_ROW + 1)
       let iconKeys = Object.keys(props.icons);
       let newOnes = {};
       iconKeys.forEach((key) => {
@@ -91,32 +91,35 @@ export class IconSelection extends Component<any, any> {
         <NavigationBar label={category.label} arrowDown={this.state[category.key]} callback={() => {
           let newState = {};
           newState[category.key] = !this.state[category.key];
-          this.setState(newState)
+          this.setState(newState);
+          if (this.props.debug) {
+            this._generateOffsets()
+          }
         }} />
         <Separator fullLength={true} />
         <SlideInView visible={this.state[category.key]} height={heightWhenVisible} duration={300}>
-          {this._getIconRows(icons, this.state[category.key])}
+          {this._getIconRows(icons, this.state[category.key], category.key)}
         </SlideInView>
       </View>
     )
   }
 
-  _getIconRows(icons, visible) {
+  _getIconRows(icons, visible, categoryKey) {
     if (visible === true) {
       let rowCount = Math.ceil(icons.length / AMOUNT_OF_ITEMS_IN_ROW);
       let items = [];
       for (let i = 0; i < rowCount; i++) {
-        items.push(this._getIconRow(icons, i * AMOUNT_OF_ITEMS_IN_ROW, 'iconRow_' + i))
+        items.push(this._getIconRow(icons, i * AMOUNT_OF_ITEMS_IN_ROW, 'iconRow_' + i, categoryKey))
       }
       return items;
     }
     return undefined;
   }
 
-  _getIconRow(icons, iconIndex, key) {
+  _getIconRow(icons, iconIndex, key, categoryKey) {
     let items = [];
     for (let i = 0; i < AMOUNT_OF_ITEMS_IN_ROW; i++) {
-      items.push(this._getIcon(   icons, iconIndex + i));
+      items.push(this._getIcon(   icons, iconIndex + i, categoryKey));
       if (i < AMOUNT_OF_ITEMS_IN_ROW - 1) {
         items.push(this._getBorder(icons, iconIndex + i))
       }
@@ -140,7 +143,7 @@ export class IconSelection extends Component<any, any> {
     }
   }
 
-  _getIcon(icons, iconIndex) {
+  _getIcon(icons, iconIndex, categoryKey) {
     if (iconIndex < icons.length) {
       let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : "transparent";
       if (this.props.debug === true && this.duplicates[icons[iconIndex]]) {
@@ -148,30 +151,86 @@ export class IconSelection extends Component<any, any> {
       }
 
       if (this.props.debug) {
-        let offset = Number(this.state.offset[icons[iconIndex]]) || 0;
+        if (!this.props.offsets[categoryKey][icons[iconIndex]]) {
+          console.log("No offset for ", categoryKey, icons[iconIndex])
+        }
+        let topExistingOffset = this.props.offsets[categoryKey] && this.props.offsets[categoryKey][icons[iconIndex]] && this.props.offsets[categoryKey][icons[iconIndex]].top || 0;
+        let topOffset = Number(this.state.offset[icons[iconIndex]] && this.state.offset[icons[iconIndex]].top) || 0;
+        let topOffsetLabel = topExistingOffset + Number(this.state.offset[icons[iconIndex]] && this.state.offset[icons[iconIndex]].top) || 0;
+
+        let leftExistingOffset = this.props.offsets[categoryKey] && this.props.offsets[categoryKey][icons[iconIndex]] && this.props.offsets[categoryKey][icons[iconIndex]].left || 0;
+        let leftOffset = Number(this.state.offset[icons[iconIndex]] && this.state.offset[icons[iconIndex]].left) || 0;
+        let leftOffsetLabel = leftExistingOffset + Number(this.state.offset[icons[iconIndex]] && this.state.offset[icons[iconIndex]].left) || 0;
         let h = ICON_SIZE + 20;
+        let small = ICON_SIZE / 2;
+        let sh = small + 20;
         return (
           <View style={[styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ]} key={icons[iconIndex]}>
             <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h}, {backgroundColor: colors.blue.rgba(1)} ]} />
             <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h, borderRadius: 0.5*h}, {backgroundColor: colors.red.rgba(1)} ]} />
             <View style={[styles.centered, {position:'absolute', top: 15, left: 15, width: ICON_SIZE, height:ICON_SIZE}, {backgroundColor: colors.purple.rgba(0.6)} ]} />
             <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h} ]}>
-              <View style={{position:'relative', top: offset*ICON_SIZE, left: 0}}>
-                <Icon name={icons[iconIndex]} size={ICON_SIZE} color={ this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex} />
+              <View style={{position:'relative', top: topOffset*ICON_SIZE, left: leftOffset*ICON_SIZE}}>
+                <Icon name={icons[iconIndex]} size={ICON_SIZE} color={ colors.white.hex} />
               </View>
             </View>
             <View style={[styles.centered, {position:'absolute', top:5, left: 5 + 0.5*h - 1, width: 2, height:h},  {backgroundColor: colors.black.rgba(0.5)} ]} />
             <View style={[styles.centered, {position:'absolute', top:5 + 0.5*h - 1, left: 5, width: h, height: 2}, {backgroundColor: colors.black.rgba(0.5)} ]} />
-            <TouchableOpacity style={{position:'absolute', top:5, left: 5, width:h, height: 0.5*h}} onPress={() => {
+            <TouchableOpacity style={{position:'absolute', top:5, left: 5 +0.25*h, width:0.5*h, height: 0.5*h}} onPress={() => {
               let offsetObj = this.state.offset;
-              offsetObj[icons[iconIndex]] = String(offset - 0.01);
-              this.setState({offset: offsetObj})}} />
-            <TouchableOpacity style={{position:'absolute', top: 0.5*h + 5, left: 5, width:h, height: 0.5*h}} onPress={() => {
+              if (offsetObj[icons[iconIndex]]) {
+                offsetObj[icons[iconIndex]].top = String(topOffset - 0.01);
+              }
+              else {
+                offsetObj[icons[iconIndex]] = {top:String(topOffset - 0.01), left: '0'};
+              }
+              this.setState({offset: offsetObj})}}
+            />
+            <TouchableOpacity style={{position:'absolute', top: 0.5*h + 5, left: 5 +0.25*h, width:0.5*h, height: 0.5*h}} onPress={() => {
               let offsetObj = this.state.offset;
-              offsetObj[icons[iconIndex]] = String(offset + 0.01);
-              this.setState({offset: offsetObj})}} />
+              if (offsetObj[icons[iconIndex]]) {
+                offsetObj[icons[iconIndex]].top = String(topOffset + 0.01);
+              }
+              else {
+                offsetObj[icons[iconIndex]] = {top:String(topOffset + 0.01), left: '0'};
+              }
+              this.setState({offset: offsetObj})}}
+            />
+            <TouchableOpacity style={{position:'absolute', top:5, left: 5, width:0.25*h, height: h}} onPress={() => {
+              let offsetObj = this.state.offset;
+              if (offsetObj[icons[iconIndex]]) {
+                offsetObj[icons[iconIndex]].left = String(leftOffset - 0.01);
+              }
+              else {
+                offsetObj[icons[iconIndex]] = {top:'0', left:String(leftOffset - 0.01)};
+              }
+              this.setState({offset: offsetObj})}}
+            />
+            <TouchableOpacity style={{position:'absolute', top:5, left: 5+0.75*h, width:0.25*h, height: h}} onPress={() => {
+              let offsetObj = this.state.offset;
+              if (offsetObj[icons[iconIndex]]) {
+                offsetObj[icons[iconIndex]].left = String(leftOffset + 0.01);
+              }
+              else {
+                offsetObj[icons[iconIndex]] = {top:'0', left:String(leftOffset + 0.01)};
+              }
+              this.setState({offset: offsetObj})}}
+            />
             
-            <Text style={{position:'absolute', top: ICON_SIZE + 40, fontSize:14, color: this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex}}>{icons[iconIndex] + " o:" + offset}</Text>
+
+            {/*<View style={[styles.centered, {position:'absolute', top:10+h, left: 5, width: sh, height:sh}, {backgroundColor: colors.blue.rgba(1)} ]} />*/}
+            <View style={[styles.centered, {position:'absolute', top:10+h, left: 5, width: sh, height:sh, borderRadius: 0.5*sh}, {backgroundColor: colors.red.rgba(1)} ]} />
+            {/*<View style={[styles.centered, {position:'absolute', top:20+h, left: 15, width: small, height:small}, {backgroundColor: colors.purple.rgba(0.6)} ]} />*/}
+            <View style={[styles.centered, {position:'absolute', top:10+h, left: 5, width: sh, height:sh} ]}>
+              <View style={{position:'relative', top: topOffset*small*0.9, left: leftOffset*small*0.9}}>
+                <Icon name={icons[iconIndex]} size={small*0.9} color={ colors.white.hex} />
+              </View>
+            </View>
+            {/*<View style={[styles.centered, {position:'absolute', top:10+h, left: 5 + 0.5*sh - 1, width: 2, height:sh},  {backgroundColor: colors.black.rgba(0.5)} ]} />*/}
+            {/*<View style={[styles.centered, {position:'absolute', top:10+h + 0.5*sh - 1, left: 5, width: sh, height: 2}, {backgroundColor: colors.black.rgba(0.5)} ]} />*/}
+
+
+            <Text style={{position:'absolute', top: h + sh + 10, fontSize:14, color: colors.white.hex}}>{icons[iconIndex] + " o:" + topOffsetLabel.toFixed(3) + ',' +  + leftOffsetLabel.toFixed(3)}</Text>
           </View>
         )
       }
@@ -182,7 +241,7 @@ export class IconSelection extends Component<any, any> {
             style={[styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ]}
             onPress={() => {this.props.callback(icons[iconIndex])}}
           >
-            <CustomIcon name={icons[iconIndex]} size={ICON_SIZE} color={ this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex} />
+            <CustomIcon name={icons[iconIndex]} size={ICON_SIZE} color={ colors.white.hex} />
              </TouchableOpacity>
         )
       }
@@ -193,6 +252,28 @@ export class IconSelection extends Component<any, any> {
         <View key={"Empty" + iconIndex} style={{flex:1}} />
       )
     }
+  }
+
+  _generateOffsets() {
+    let nameLength = 26;
+    this.props.categories.forEach((category) => {
+      let str = "const " + category.key + "Corrections = {\n"
+      this.props.icons[category.key].forEach((iconName) => {
+        let lineStr = "  '" + iconName + "':";
+        for (let i =  lineStr.length; i < nameLength; i++) {
+          lineStr += ' '
+        }
+        let topExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].top || 0;
+        let topOffsetLabel = topExistingOffset + Number(this.state.offset[iconName] && this.state.offset[iconName].top) || 0;
+
+        let leftExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].left || 0;
+        let leftOffsetLabel = leftExistingOffset + Number(this.state.offset[iconName] && this.state.offset[iconName].left) || 0;
+        lineStr += "{change: true, top: " + (topOffsetLabel < 0 ? '' : '+') + topOffsetLabel.toFixed(3) + ', left: ' + (leftOffsetLabel < 0 ? '' : '+') + leftOffsetLabel.toFixed(3) + '},\n';
+        str += lineStr
+      })
+      str += '}\n\n'
+      console.log(str)
+    })
   }
 
   render() {

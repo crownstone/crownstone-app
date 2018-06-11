@@ -245,13 +245,16 @@ export class DfuOverlay extends Component<any, any> {
       // if the firmware should not be upgraded, and the bootloader shouldnt be upgraderd don't check the bootloader version
       let firmwareUpdateRequired   = Util.versions.isHigher(userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.firmwareVersion);
       let bootloaderUpdateRequired = Util.versions.isHigher(userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.bootloaderVersion);
+      console.log("Check if firmwareUpdateRequired is required", firmwareUpdateRequired, userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.firmwareVersion)
+      console.log("Check if bootloaderUpdateRequired is required", bootloaderUpdateRequired, userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.bootloaderVersion)
+
+      this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
 
       if (!firmwareUpdateRequired && !bootloaderUpdateRequired) {
         return false;
       }
 
       this.setState({ step: STEP_TYPES.GET_BOOTLOADER_VERSION, phaseDescription:'setting up...', detail:'putting Crownstone in update mode...' });
-      this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
       return this.helper.putInDFU(data);
     })
     .then((shouldGetFirmwareVersions) => {
@@ -279,7 +282,7 @@ export class DfuOverlay extends Component<any, any> {
 
       // check what we have to do for this Crownstone. This will give us an amount of phases to do.
       let phasesRequired = this.helper.getAmountOfPhases(stoneConfig.dfuResetRequired);
-
+      console.log("phasesRequired", phasesRequired)
       if (this.helper.resetRequired === true) {
         this.props.store.dispatch({
           type: "UPDATE_STONE_DFU_RESET",
@@ -292,7 +295,7 @@ export class DfuOverlay extends Component<any, any> {
       }
 
       if (phasesRequired > 0) {
-        // if the first phase expects the Crownstone to be in normal mode, switch back from DFU first.
+        // if the first phase expects the Crownstone to be in normal mode, check if we are in DFU and switch back from DFU if required.
         if (this.helper.dfuSegmentFinishedAtPhase(0) === true && didGetBootloaderVersion === false) {
           return this.helper.restartInAppMode()
             .then(() => {

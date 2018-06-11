@@ -275,12 +275,14 @@ export class StoneEntity {
             sphereId: this.sphereId,
             stoneId: this.stoneId,
             nodeId: externalId,
+            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
           });
           actions.push({
             type: 'REMOVE_MESH_LINK',
             sphereId: this.sphereId,
             stoneId: externalId,
             nodeId: this.stoneId,
+            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
           });
           this.store.batchDispatch(actions);
         }
@@ -291,7 +293,8 @@ export class StoneEntity {
             sphereId: this.sphereId,
             stoneId: this.stoneId,
             nodeId: externalId,
-            data: {rssi: BAD_CONNECTION}
+            data: {rssi: BAD_CONNECTION},
+            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
           });
         }
       }
@@ -305,6 +308,7 @@ export class StoneEntity {
             sphereId: this.sphereId,
             stoneId: this.stoneId,
             nodeId: externalId,
+            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
           })
         }
         else {
@@ -314,7 +318,8 @@ export class StoneEntity {
             sphereId: this.sphereId,
             stoneId: this.stoneId,
             nodeId: externalId,
-            data: {rssi: BAD_CONNECTION}
+            data: {rssi: BAD_CONNECTION},
+            __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
           });
         }
       }
@@ -329,7 +334,8 @@ export class StoneEntity {
         sphereId: this.sphereId,
         stoneId: this.stoneId,
         nodeId: externalId,
-        data: {rssi: rssi}
+        data: {rssi: rssi},
+        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
       });
     }
   }

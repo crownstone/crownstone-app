@@ -1,7 +1,7 @@
 interface BluenetPromiseWrapperProtocol {
   clearTrackedBeacons()                         : Promise< void >,
   commandFactoryReset()                         : Promise< void >,
-  connect(handle: string)                       : Promise< void >,
+  connect(handle: string, highPriority: boolean): Promise< void >,
   disconnectCommand()                           : Promise< void >,
   getMACAddress()                               : Promise< string >,
   getFirmwareVersion()                          : Promise< string >,
