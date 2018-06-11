@@ -187,44 +187,26 @@ export class IconSelection extends Component<any, any> {
             <View style={[styles.centered, {position:'absolute', top:5, left: 5 + 0.5*h - 1, width: 2, height:h},  {backgroundColor: colors.black.rgba(0.5)} ]} />
             <View style={[styles.centered, {position:'absolute', top:5 + 0.5*h - 1, left: 5, width: h, height: 2}, {backgroundColor: colors.black.rgba(0.5)} ]} />
             <TouchableOpacity style={{position:'absolute', top:5, left: 5 +0.25*h, width:0.5*h, height: 0.5*h}} onPress={() => {
-              let offsetObj = this.state.offset[categoryKey];
-              if (offsetObj[icons[iconIndex]]) {
-                offsetObj[icons[iconIndex]].top = String(topOffset - 0.01);
-              }
-              else {
-                offsetObj[icons[iconIndex]] = {top:String(topOffset - 0.01), left: '0'};
-              }
+              let offsetObj = this.state.offset;
+              offsetObj[categoryKey][icons[iconIndex]].top = String(topOffset - 0.01);
               this.setState({offset: offsetObj})}}
             />
             <TouchableOpacity style={{position:'absolute', top: 0.5*h + 5, left: 5 +0.25*h, width:0.5*h, height: 0.5*h}} onPress={() => {
-              let offsetObj = this.state.offset[categoryKey];
-              if (offsetObj[icons[iconIndex]]) {
-                offsetObj[icons[iconIndex]].top = String(topOffset + 0.01);
-              }
-              else {
-                offsetObj[icons[iconIndex]] = {top:String(topOffset + 0.01), left: '0'};
-              }
+              let offsetObj = this.state.offset;
+              offsetObj[categoryKey][icons[iconIndex]].top = String(topOffset + 0.01);
               this.setState({offset: offsetObj})}}
             />
             <TouchableOpacity style={{position:'absolute', top:5, left: 5, width:0.25*h, height: h}} onPress={() => {
-              let offsetObj = this.state.offset[categoryKey];
-              if (offsetObj[icons[iconIndex]]) {
-                offsetObj[icons[iconIndex]].left = String(leftOffset - 0.01);
-              }
-              else {
-                offsetObj[icons[iconIndex]] = {top:'0', left:String(leftOffset - 0.01)};
-              }
-              this.setState({offset: offsetObj})}}
+              let offsetObj = this.state.offset;
+              offsetObj[categoryKey][icons[iconIndex]].left = String(leftOffset - 0.01);
+              this.setState({offset: offsetObj})
+            }}
             />
             <TouchableOpacity style={{position:'absolute', top:5, left: 5+0.75*h, width:0.25*h, height: h}} onPress={() => {
-              let offsetObj = this.state.offset[categoryKey];
-              if (offsetObj[icons[iconIndex]]) {
-                offsetObj[icons[iconIndex]].left = String(leftOffset + 0.01);
-              }
-              else {
-                offsetObj[icons[iconIndex]] = {top:'0', left:String(leftOffset + 0.01)};
-              }
-              this.setState({offset: offsetObj})}}
+              let offsetObj = this.state.offset;
+              offsetObj[categoryKey][icons[iconIndex]].left = String(leftOffset + 0.01);
+              this.setState({offset: offsetObj})
+            }}
             />
             
 
