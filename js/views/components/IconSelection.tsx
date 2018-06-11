@@ -70,10 +70,7 @@ export class IconSelection extends Component<any, any> {
       this.props.categories.forEach((category) => {
         stateContent["offset"][category.key] = {};
         this.props.icons[category.key].forEach((iconName) => {
-          let topExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].top || 0;
-
-          let leftExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].left || 0;
-          stateContent["offset"][category.key][iconName] = {top: topExistingOffset, left: leftExistingOffset}
+          stateContent["offset"][category.key][iconName] = {top: 0, left: 0}
         })
       })
 
@@ -166,10 +163,10 @@ export class IconSelection extends Component<any, any> {
           console.log("No offset for ", categoryKey, icons[iconIndex])
         }
         let topExistingOffset = this.props.offsets[categoryKey] && this.props.offsets[categoryKey][icons[iconIndex]] && this.props.offsets[categoryKey][icons[iconIndex]].top || 0;
-        let topOffset = Number(this.state.offset[categoryKey][icons[iconIndex]].top) - topExistingOffset;
+        let topOffset = Number(this.state.offset[categoryKey][icons[iconIndex]].top);
         let topOffsetLabel = topExistingOffset + topOffset;
         let leftExistingOffset = this.props.offsets[categoryKey] && this.props.offsets[categoryKey][icons[iconIndex]] && this.props.offsets[categoryKey][icons[iconIndex]].left || 0;
-        let leftOffset = Number(this.state.offset[categoryKey][icons[iconIndex]].left) - leftExistingOffset;
+        let leftOffset = Number(this.state.offset[categoryKey][icons[iconIndex]].left);
         let leftOffsetLabel = leftExistingOffset + leftOffset;
         let h = ICON_SIZE + 20;
         let small = ICON_SIZE / 2;
@@ -256,11 +253,11 @@ export class IconSelection extends Component<any, any> {
           lineStr += ' '
         }
         let topExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].top || 0;
-        let topOffset = Number(this.state.offset[category.key][iconName].top) - topExistingOffset;
+        let topOffset = Number(this.state.offset[category.key][iconName].top);
         let topOffsetLabel = topExistingOffset + topOffset;
         
         let leftExistingOffset = this.props.offsets[category.key] && this.props.offsets[category.key][iconName] && this.props.offsets[category.key][iconName].left || 0;
-        let leftOffset = Number(this.state.offset[category.key][iconName].left) - leftExistingOffset;
+        let leftOffset = Number(this.state.offset[category.key][iconName].left);
         let leftOffsetLabel = leftExistingOffset + leftOffset;
         
         lineStr += "{change: true, top: " + (topOffsetLabel < 0 ? '' : '+') + topOffsetLabel.toFixed(3) + ', left: ' + (leftOffsetLabel < 0 ? '' : '+') + leftOffsetLabel.toFixed(3) + '},\n';
