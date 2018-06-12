@@ -56,9 +56,14 @@
     "setupFiles": [
       "./jest/setup.js"
     ],
-    "testMatch": ["**/__tests__/**/*test.js","**/**/navigator.js"],
+    "testMatch": [
+      "**/__tests__/**/*test.js",
+      "**/**/navigator.js"
+    ],
     "collectCoverage": false,
-    "transformIgnorePatterns": ["node_modules/(?!react-native|native-base|react-navigation|react-native-fabric)"],
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native|native-base|react-navigation|react-native-fabric)"
+    ],
     "collectCoverageFrom": [
       "**/js/router/store/Persistor.js",
       "**/js/router/store/PersistorUtil.js"

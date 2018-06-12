@@ -33,7 +33,16 @@ export class Router_Android extends Component {
   render() {
     return (
       <View style={{flex:1, backgroundColor: colors.menuBackground.hex}}>
-        <Router createReducer={reducerCreate} store={this.props.store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.black.hex}}} backgrounds={this.props.backgrounds} getBackground={this.props.getBackground.bind(this)} eventBus={eventBus}>
+        <Router
+          createReducer={reducerCreate}
+          store={this.props.store}
+          {...navBarStyle}
+          getSceneStyle={() => {return {backgroundColor: colors.black.hex}}}
+          backgrounds={this.props.backgrounds}
+          getBackground={this.props.getBackground.bind(this)}
+          getBackgroundSource={this.props.getBackgroundSource.bind(this)}
+          eventBus={eventBus}
+        >
           <Modal>
             <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true} type="reset" initial={this.props.loggedIn === false} />
             <Scene key="login"                      component={Views.Login}                      hideNavBar={true} />

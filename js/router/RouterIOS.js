@@ -32,7 +32,15 @@ export class Router_IOS extends Component {
   render() {
     return (
       <View style={{flex:1}}>
-        <Router createReducer={reducerCreate} store={this.props.store} {...navBarStyle} backgrounds={this.props.backgrounds} getBackground={this.props.getBackground.bind(this)} eventBus={eventBus}>
+        <Router
+          createReducer={reducerCreate}
+          store={this.props.store}
+          {...navBarStyle}
+          backgrounds={this.props.backgrounds}
+          getBackground={this.props.getBackground.bind(this)}
+          getBackgroundSource={this.props.getBackgroundSource.bind(this)}
+          eventBus={eventBus}
+        >
           <Modal>
             <Scene key="loginSplash"                    component={Views.LoginSplash}                hideNavBar={true} initial={false && this.props.loggedIn === false} />
             <Scene key="login"                          component={Views.Login}                      hideNavBar={true} />

@@ -10,9 +10,10 @@ import {screenHeight, screenWidth} from "../styles";
 import {preparePictureURI, Util} from "../../util/Util";
 import {eventBus} from "../../util/EventBus";
 import {request} from "../../cloud/cloudCore";
+import { LoaderResolver } from "webgltexture-loader";
+import "webgltexture-loader-react-native"; // import support for DOM, including video, canvas or simple image url
 
-
-export class ShadedImage extends Component<{image: string, imageTaken: number, style?:any, r?, g?, b?, blendFactor?, grayScale?}, any> {
+export class ShadedImage extends Component<{image: string, imageTaken: number, backgroundImageSource?: any, style?:any, r?, g?, b?, blendFactor?, grayScale?}, any> {
 
   loadedImageTaken = null;
   loadedImage = null;
@@ -20,7 +21,8 @@ export class ShadedImage extends Component<{image: string, imageTaken: number, s
   blendFactor = 0;
   diff = 0.01;
   animationFrame = null;
-  _opacity = 0;
+  _opacity = 1;
+  _crossfade = 0;
   _uid = Util.getUUID();
 
   constructor(props) {
@@ -30,7 +32,26 @@ export class ShadedImage extends Component<{image: string, imageTaken: number, s
     this.loadedImage = this.props.image;
     this.loadedImageURI = {uri:preparePictureURI(this.loadedImage)};
 
-    this.state = { debugText: '' };
+    this.state = { debugText: '', opacity: new Animated.Value(1) };
+  }
+
+  componentWillMount() {
+    // const resolver = new LoaderResolver(gl);
+    //
+    // function load (input) { // just an example (create your own load function based on needs)
+    //   const loader = resolver.resolve(input);
+    //   return loader ? loader.load(input) : Promise.reject("no loader supports the input "+input);
+    // }
+    //
+    // load("https://i.imgur.com/wxqlQkh.jpg") // just an example, many format supported here
+    //   .then(({ texture }) => {
+    //     const program = createDemoProgram(gl);
+    //     const tLocation = gl.getUniformLocation(program, "t");
+    //     gl.activeTexture(gl.TEXTURE0);
+    //     gl.bindTexture(gl.TEXTURE_2D, texture);
+    //     gl.uniform1i(tLocation, 0);
+    //     gl.drawArrays(gl.TRIANGLES, 0, 3);
+    //   });
   }
 
   componentWillUnmount() {
@@ -97,8 +118,11 @@ void main() {
       `\
 precision highp float;
 varying vec2 uv;
+uniform sampler2D backgroundImage;
 uniform sampler2D inputImage;
 uniform float blendFactor;
+uniform float bgW;
+uniform float bgH;
 uniform float inputW;
 uniform float inputH;
 uniform float surfaceW;
@@ -106,6 +130,7 @@ uniform float surfaceH;
 
 uniform float grayScale;
 uniform float opacity;
+uniform float crossfade;
 
 uniform float r;
 uniform float g;
@@ -114,6 +139,14 @@ uniform float b;
 void main() {
   float wComp = inputW/surfaceW;
   float hComp = inputH/surfaceH;
+  
+  // usage of the background is optional
+  float bgwComp = 0.;
+  float bghComp = 0.;
+  if (bgW > 0.) {
+    bgwComp = bgW/surfaceW;
+    bghComp = bgH/surfaceH;
+  }
   
   vec2 transformedUV = uv;
   if (wComp > hComp) {
@@ -134,6 +167,34 @@ void main() {
     
     transformedUV = uv * vec2(1., scale) + vec2(0.,centerCorrection);
   }
+  
+  // usage of the background is optional
+  vec2 transformedUV2 = uv;
+  vec4 backgroundC;
+  if (bgW > 0.) {
+    if (bgwComp > bghComp) {
+      // H is scaled up, W has to scale to correct and W will be shifted
+      float scale = surfaceW * bghComp / bgW;
+      float newW = bgW / bghComp;
+      float centerCorrection = 0.5*(newW - surfaceW) / newW;
+
+      transformedUV2 = uv * vec2(scale, 1.0) + vec2(centerCorrection,0.);
+    }
+    else {
+      // W is scaled up, H has to scale to correct and H will be shifted
+
+      float scale = surfaceH * bgwComp / bgH;
+      float newH = bgH / bgwComp;
+      float centerCorrection = 0.5*(newH - surfaceH) / newH;
+
+      transformedUV2 = uv * vec2(1., scale) + vec2(0.,centerCorrection);
+    }
+
+    // transform the UV vector of the background
+    backgroundC = texture2D(backgroundImage, transformedUV2);
+  }
+    
+  
   
   // transform the UV vector
   vec4 c = texture2D(inputImage, transformedUV);
@@ -162,7 +223,17 @@ void main() {
   // blend the color into the background image.
   vec3 res = mix(result * color, color, blendFactor);
   
-  gl_FragColor = vec4(res, opacity);
+  
+  
+  // usage of the background is optional
+  if (bgW > 0.) {
+    vec3 cross = mix(backgroundC.rgb, res.rgb, crossfade);
+    gl_FragColor = vec4(cross, opacity);
+  }
+  else {
+    gl_FragColor = vec4(res, opacity);
+  }
+  
 }`
     );
     gl.compileShader(fragmentShader);
@@ -175,6 +246,10 @@ void main() {
     gl.enableVertexAttribArray(p);
     gl.vertexAttribPointer(p, 2, gl.FLOAT, false, 0, 0);
     let tLocation           = gl.getUniformLocation(program, "inputImage");
+    let bgLocation          = gl.getUniformLocation(program, "backgroundImage");
+
+    let bgWLocation         = gl.getUniformLocation(program, "bgW");
+    let bgHLocation         = gl.getUniformLocation(program, "bgH");
     let inputWLocation      = gl.getUniformLocation(program, "inputW");
     let inputHLocation      = gl.getUniformLocation(program, "inputH");
     let surfaceWLocation    = gl.getUniformLocation(program, "surfaceW");
@@ -182,12 +257,14 @@ void main() {
     let blendFactorLocation = gl.getUniformLocation(program, "blendFactor");
     let grayScaleLocation   = gl.getUniformLocation(program, "grayScale");
     let opacityLocation     = gl.getUniformLocation(program, "opacity");
+    let crossfadeLocation   = gl.getUniformLocation(program, "crossfade");
     let rLocation = gl.getUniformLocation(program, "r");
     let gLocation = gl.getUniformLocation(program, "g");
     let bLocation = gl.getUniformLocation(program, "b");
     let loadedTexture = null;
 
     let variables = [
+      'crossfade',
       'opacity',
       'grayScale',
       'blendFactor',
@@ -204,6 +281,8 @@ void main() {
      *   blendMap['b']           = {value: currentValue, target: targetValue, step: stepSize}
      *   blendMap['blendFactor'] = {value: currentValue, target: targetValue, step: stepSize}
      *   blendMap['grayScale']   = {value: currentValue, target: targetValue, step: stepSize}
+     *   blendMap['opacity']     = {value: currentValue, target: targetValue, step: stepSize}
+     *   blendMap['crossfade']   = {value: currentValue, target: targetValue, step: stepSize}
      *
      * it does not have to be fully filled
      * @param blendMap
@@ -237,7 +316,8 @@ void main() {
 
     const loadDefaultVariables = () => {
       loadVariables({
-        opacity:  this._opacity,
+        crossfade:  this._crossfade,
+        opacity:    this._opacity,
         grayScale:  this.props.grayScale,
         blendFactor:this.props.blendFactor,
         r: this.props.r,
@@ -246,8 +326,9 @@ void main() {
       });
     }
 
-    const loadVariables = ({opacity, grayScale, blendFactor, r, g, b}) => {
-      gl.uniform1f(opacityLocation,opacity || 0.0);
+    const loadVariables = ({crossfade, opacity, grayScale, blendFactor, r, g, b}) => {
+      gl.uniform1f(crossfadeLocation,crossfade || 1.0);
+      gl.uniform1f(opacityLocation,opacity || 1.0);
 
       gl.uniform1f(grayScaleLocation,   grayScale   || 0.0);
       gl.uniform1f(blendFactorLocation, blendFactor || 0.0);
@@ -274,24 +355,50 @@ void main() {
     }
 
     const drawWithNewTexture = (fadeIn?) => {
-      draw();
-      rngl
-        .loadTexture({ image: this.loadedImageURI, yflip: false })
-        .then((result) => {
-          this._opacity = 0;
+      let images = {background: null, cover: null};
+      let promises = [];
+      if (this.props.backgroundImageSource) {
+        promises.push(rngl.loadTexture({ image: this.props.backgroundImageSource, yflip: false }).then((texture) => { images.background = texture; }))
+      }
+      promises.push(rngl.loadTexture({ image: this.loadedImageURI, yflip: false }).then((texture) => { images.cover = texture; }))
+
+      Promise.all(promises)
+        .then(() => {
+          this._opacity = 1;
+          this._crossfade = 0;
           loadDefaultVariables();
-          loadedTexture = result;
+          loadedTexture = images.cover;
           gl.activeTexture(gl.TEXTURE0);
-          gl.bindTexture(gl.TEXTURE_2D, result.texture);
+          gl.bindTexture(gl.TEXTURE_2D, images.cover.texture);
           gl.uniform1i(tLocation, 0);
-          gl.uniform1f(inputWLocation, result.width);
-          gl.uniform1f(inputHLocation, result.height);
+          gl.uniform1f(inputWLocation, images.cover.width);
+          gl.uniform1f(inputHLocation, images.cover.height);
+
+          if (this.props.backgroundImageSource && images.background) {
+            this._crossfade = 0;
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, images.background.texture);
+            gl.uniform1i(bgLocation, 1);
+            gl.uniform1f(bgWLocation, images.background.width);
+            gl.uniform1f(bgHLocation, images.background.height);
+          }
+          else {
+            gl.uniform1f(bgWLocation, 0);
+            gl.uniform1f(bgHLocation, 0);
+          }
 
           draw();
 
           if (fadeIn) {
             this._opacity = 1;
-            requestAnimationFrame(() => { animateFade({opacity: {value: 0.0, target: 1, step: 0.1}}) })
+            this._crossfade = 1;
+
+            this.state.opacity.setValue(1);
+            if (this.props.backgroundImageSource) {
+              requestAnimationFrame(() => {
+                animateFade({crossfade: {value: 0.0, target: 1, step: 0.1}})
+              })
+            }
           }
         });
     }
@@ -299,10 +406,11 @@ void main() {
     drawWithNewTexture(true);
 
     eventBus.on("changedPicture" + this._uid, () => {
+      this.state.opacity.setValue(0);
       if (loadedTexture) {
         rngl.unloadTexture(loadedTexture.texture)
       }
-      drawWithNewTexture(true)
+      drawWithNewTexture(true);
     })
 
     eventBus.on("changedVarariables" + this._uid, (blendMap) => {
@@ -315,12 +423,16 @@ void main() {
       }
     })
   };
+
+
   render() {
     return (
-      <WebGLView
-        style={[this.props.style,{backgroundColor:"transparent"}]}
-        onContextCreate={this.onContextCreate}
-      />
+      <Animated.View style={[this.props.style,{opacity: this.state.opacity}]}>
+        <WebGLView
+          style={[this.props.style]}
+          onContextCreate={this.onContextCreate}
+        />
+      </Animated.View>
     );
   }
 }

@@ -23,9 +23,19 @@ interface backgroundType {
   mainDarkLogo: any,
   mainDark: any,
   detailsDark: any,
+
+  setup_source: any,
+  main_source: any,
+  mainRemoteNotConnected_source: any,
+  menuRemoteNotConnected_source: any,
+  menu_source: any,
+  mainDarkLogo_source: any,
+  mainDark_source: any,
+  detailsDark_source: any,
 }
 
 export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared: boolean}> {
+
 
   backgrounds : backgroundType = {
     setup:undefined,
@@ -36,6 +46,15 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
     mainDarkLogo: undefined,
     mainDark: undefined,
     detailsDark: undefined,
+
+    setup_source: undefined,
+    main_source: undefined,
+    mainRemoteNotConnected_source: undefined,
+    menuRemoteNotConnected_source: undefined,
+    menu_source: undefined,
+    mainDarkLogo_source: undefined,
+    mainDark_source: undefined,
+    detailsDark_source: undefined,
   };
   unsubscribe = [];
 
@@ -60,13 +79,21 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
       );
     }
 
-    this.backgrounds.main                   = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLight.png')} />;
-    this.backgrounds.menu                   = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackground.png')} />;
-    this.backgrounds.mainRemoteNotConnected = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLightNotConnected.png')} />;
-    this.backgrounds.menuRemoteNotConnected = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackgroundRemoteNotConnected.png')} />;
-    this.backgrounds.mainDarkLogo           = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/backgroundWLogo.png')} />;
-    this.backgrounds.mainDark               = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
-    this.backgrounds.detailsDark            = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/stoneDetails.png')} />;
+    this.backgrounds.main_source                   = require('../images/mainBackgroundLight.png')
+    this.backgrounds.menu_source                   = require('../images/menuBackground.png')
+    this.backgrounds.mainRemoteNotConnected_source = require('../images/mainBackgroundLightNotConnected.png')
+    this.backgrounds.menuRemoteNotConnected_source = require('../images/menuBackgroundRemoteNotConnected.png')
+    this.backgrounds.mainDarkLogo_source           = require('../images/backgroundWLogo.png')
+    this.backgrounds.mainDark_source               = require('../images/background.png')
+    this.backgrounds.detailsDark_source            = require('../images/stoneDetails.png')
+
+    this.backgrounds.main                   = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={this.backgrounds.main_source} />
+    this.backgrounds.menu                   = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={this.backgrounds.menu_source} />
+    this.backgrounds.mainRemoteNotConnected = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={this.backgrounds.mainRemoteNotConnected_source} />
+    this.backgrounds.menuRemoteNotConnected = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={this.backgrounds.menuRemoteNotConnected_source} />
+    this.backgrounds.mainDarkLogo           = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={this.backgrounds.mainDarkLogo_source} />
+    this.backgrounds.mainDark               = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={this.backgrounds.mainDark_source} />
+    this.backgrounds.detailsDark            = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={this.backgrounds.detailsDark_source} />
 
     this.state = initialState;
   }
@@ -74,6 +101,32 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
 
   componentWillUnmount() { // cleanup
     this.cleanUp()
+  }
+
+  getBackgroundSource(type, remotely) {
+    let imageName;
+    switch (type) {
+      case "menu":
+        imageName = this.backgrounds.menu_source;
+        if (remotely === true) {
+          imageName = this.backgrounds.menuRemoteNotConnected_source;
+        }
+        break;
+      case "dark":
+        imageName = this.backgrounds.main_source;
+        if (remotely === true) {
+          imageName = this.backgrounds.mainRemoteNotConnected_source;
+        }
+        break;
+      default:
+        imageName = this.backgrounds.main_source;
+        if (remotely === true) {
+          imageName = this.backgrounds.mainRemoteNotConnected_source;
+        }
+        break;
+    }
+
+    return imageName;
   }
 
   getBackground(type, remotely) {
@@ -117,6 +170,7 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
             store={store}
             backgrounds={this.backgrounds}
             getBackground={this.getBackground.bind(this)}
+            getBackgroundSource={this.getBackgroundSource.bind(this)}
             loggedIn={this.state.loggedIn}
           />
         );
@@ -127,6 +181,7 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
             store={store}
             backgrounds={this.backgrounds}
             getBackground={this.getBackground.bind(this)}
+            getBackgroundSource={this.getBackgroundSource.bind(this)}
             loggedIn={this.state.loggedIn}
           />
         );
