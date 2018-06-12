@@ -32,26 +32,7 @@ export class ShadedImage extends Component<{image: string, imageTaken: number, b
     this.loadedImage = this.props.image;
     this.loadedImageURI = {uri:preparePictureURI(this.loadedImage)};
 
-    this.state = { debugText: '', opacity: new Animated.Value(1) };
-  }
-
-  componentWillMount() {
-    // const resolver = new LoaderResolver(gl);
-    //
-    // function load (input) { // just an example (create your own load function based on needs)
-    //   const loader = resolver.resolve(input);
-    //   return loader ? loader.load(input) : Promise.reject("no loader supports the input "+input);
-    // }
-    //
-    // load("https://i.imgur.com/wxqlQkh.jpg") // just an example, many format supported here
-    //   .then(({ texture }) => {
-    //     const program = createDemoProgram(gl);
-    //     const tLocation = gl.getUniformLocation(program, "t");
-    //     gl.activeTexture(gl.TEXTURE0);
-    //     gl.bindTexture(gl.TEXTURE_2D, texture);
-    //     gl.uniform1i(tLocation, 0);
-    //     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    //   });
+    this.state = { debugText: '', opacity: new Animated.Value(0) };
   }
 
   componentWillUnmount() {
@@ -227,8 +208,13 @@ void main() {
   
   // usage of the background is optional
   if (bgW > 0.) {
-    vec3 cross = mix(backgroundC.rgb, res.rgb, crossfade);
-    gl_FragColor = vec4(cross, opacity);
+    if (crossfade < 1.) {
+      vec3 cross = mix(backgroundC.rgb, res.rgb, crossfade);
+      gl_FragColor = vec4(cross, opacity);
+    }
+    else {
+      gl_FragColor = vec4(res, opacity);
+    }
   }
   else {
     gl_FragColor = vec4(res, opacity);
@@ -299,13 +285,16 @@ void main() {
           }
         }
         if (variables[i] === 'opacity') {
-          values[variables[i]] = blendMap[variables[i]] ? blendMap[variables[i]].value : this._opacity
+          values[variables[i]] = blendMap[variables[i]] ? blendMap[variables[i]].value : this._opacity;
+        }
+        else if (variables[i] === 'crossfade') {
+          values[variables[i]] = blendMap[variables[i]] ? blendMap[variables[i]].value : this._crossfade;
         }
         else {
-          values[variables[i]] = blendMap[variables[i]] ? blendMap[variables[i]].value : this.props[variables[i]]
+          values[variables[i]] = blendMap[variables[i]] ? blendMap[variables[i]].value : this.props[variables[i]];
         }
       }
-      // this.setState({debugText:JSON.stringify(values)})
+      this.setState({debugText:JSON.stringify(values)})
       loadVariables(values);
       draw();
 
@@ -327,8 +316,8 @@ void main() {
     }
 
     const loadVariables = ({crossfade, opacity, grayScale, blendFactor, r, g, b}) => {
-      gl.uniform1f(crossfadeLocation,crossfade || 1.0);
-      gl.uniform1f(opacityLocation,opacity || 1.0);
+      gl.uniform1f(crossfadeLocation,crossfade || 0.0);
+      gl.uniform1f(opacityLocation,opacity || 0.0);
 
       gl.uniform1f(grayScaleLocation,   grayScale   || 0.0);
       gl.uniform1f(blendFactorLocation, blendFactor || 0.0);
@@ -395,9 +384,9 @@ void main() {
 
             this.state.opacity.setValue(1);
             if (this.props.backgroundImageSource) {
-              requestAnimationFrame(() => {
+              setTimeout(() => { requestAnimationFrame(() => {
                 animateFade({crossfade: {value: 0.0, target: 1, step: 0.1}})
-              })
+              })},0);
             }
           }
         });
@@ -432,6 +421,7 @@ void main() {
           style={[this.props.style]}
           onContextCreate={this.onContextCreate}
         />
+        {/*<Text style={{position:'absolute', top:400, left:10}}>{this.state.debugText}</Text>*/}
       </Animated.View>
     );
   }
