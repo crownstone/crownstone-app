@@ -86,12 +86,14 @@ export class RoomOverview extends Component<any, any> {
 
     let state = props.store.getState();
     const sphere = state.spheres[this.props.sphereId];
-    this.viewingRemotely = sphere.config.present === false;
+    if (sphere) {
+      this.viewingRemotely = sphere.config.present === false;
+    }
 
     let stonesInRoom = getStonesAndAppliancesInLocation(state, props.sphereId, props.locationId);
     let {stoneArray, ids} = this._getStoneList(stonesInRoom);
     if (SetupStateHandler.areSetupStonesAvailable()) {
-      this.viewingRemotely = true
+      this.viewingRemotely = false;
       if (stoneArray.length === 0) {
         initialState.scrollViewHeight = new Animated.Value(screenHeight - tabBarHeight - topBarHeight - 100 - 60 - 60);
       }
@@ -327,7 +329,7 @@ export class RoomOverview extends Component<any, any> {
       if (!location) { return <RoomDeleted /> }
 
       if (location.config.picture) {
-        if (this.viewingRemotelyInitial === false && this.viewingRemotely === false && Platform.OS !== 'android') {
+        if (this.viewingRemotelyInitial === false && this.viewingRemotely === false && Platform.OS === 'android') {
           backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri:preparePictureURI(location.config.picture)}} />
         }
         else {
