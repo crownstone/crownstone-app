@@ -13,7 +13,16 @@ import {request} from "../../cloud/cloudCore";
 import { LoaderResolver } from "webgltexture-loader";
 import "webgltexture-loader-react-native"; // import support for DOM, including video, canvas or simple image url
 
-export class ShadedImage extends Component<{image: string, imageTaken: number, backgroundImageSource?: any, style?:any, r?, g?, b?, blendFactor?, grayScale?}, any> {
+export class ShadedImage extends Component<{
+  image: string,
+  imageTaken: number,
+  backgroundImageSource?: any,
+  style?:any,
+  r?, g?, b?,
+  blendFactor?, grayScale?,
+  ignoreBackground?: boolean
+  enableOpacityFade?: boolean
+}, any> {
 
   loadedImageTaken = null;
   loadedImage = null;
@@ -32,11 +41,11 @@ export class ShadedImage extends Component<{image: string, imageTaken: number, b
     this.loadedImage = this.props.image;
     this.loadedImageURI = {uri:preparePictureURI(this.loadedImage)};
 
-    this.state = { debugText: '', opacity: new Animated.Value(0) };
+    this.state = { debugText: '', opacity: new Animated.Value(this.props.enableOpacityFade ? 1 : 0) };
   }
 
   componentWillUnmount() {
-    eventBus.emit("cleanupTextures" + this._uid)
+    eventBus.emit("cleanupTextures" + this._uid);
     cancelAnimationFrame(this.animationFrame);
   }
 
@@ -247,7 +256,7 @@ void main() {
     let rLocation = gl.getUniformLocation(program, "r");
     let gLocation = gl.getUniformLocation(program, "g");
     let bLocation = gl.getUniformLocation(program, "b");
-    let loadedTexture = null;
+    let loadedTextures = [];
 
     let variables = [
       'crossfade',
@@ -346,28 +355,35 @@ void main() {
     const drawWithNewTexture = (fadeIn?) => {
       let images = {background: null, cover: null};
       let promises = [];
-      if (this.props.backgroundImageSource) {
+      if (this.props.backgroundImageSource && this.props.ignoreBackground !== true) {
         promises.push(rngl.loadTexture({ image: this.props.backgroundImageSource, yflip: false }).then((texture) => { images.background = texture; }))
       }
       promises.push(rngl.loadTexture({ image: this.loadedImageURI, yflip: false }).then((texture) => { images.cover = texture; }))
 
       Promise.all(promises)
         .then(() => {
-          this._opacity = 1;
+          if (this.props.enableOpacityFade) {
+            this._opacity = 0;
+          }
+          else {
+            this._opacity = 1;
+          }
+
           this._crossfade = 0;
           loadDefaultVariables();
-          loadedTexture = images.cover;
+          loadedTextures.push(images.cover);
           gl.activeTexture(gl.TEXTURE0);
           gl.bindTexture(gl.TEXTURE_2D, images.cover.texture);
           gl.uniform1i(tLocation, 0);
           gl.uniform1f(inputWLocation, images.cover.width);
           gl.uniform1f(inputHLocation, images.cover.height);
 
-          if (this.props.backgroundImageSource && images.background) {
+          if (this.props.backgroundImageSource && images.background && this.props.ignoreBackground !== true) {
             this._crossfade = 0;
+            loadedTextures.push(images.background);
             gl.activeTexture(gl.TEXTURE1);
             gl.bindTexture(gl.TEXTURE_2D, images.background.texture);
-            gl.uniform1i(bgLocation, 1);
+            gl.uniform1i(bgLocation, 1); // 1 is referring to TEXTURE1
             gl.uniform1f(bgWLocation, images.background.width);
             gl.uniform1f(bgHLocation, images.background.height);
           }
@@ -382,11 +398,14 @@ void main() {
             this._opacity = 1;
             this._crossfade = 1;
 
-            this.state.opacity.setValue(1);
-            if (this.props.backgroundImageSource) {
-              setTimeout(() => { requestAnimationFrame(() => {
-                animateFade({crossfade: {value: 0.0, target: 1, step: 0.1}})
-              })},0);
+            // backgrounds are required to fade from the original background to the custom one.
+            if (this.props.backgroundImageSource && this.props.ignoreBackground !== true) {
+              this.state.opacity.setValue(1);
+              setTimeout(() => { requestAnimationFrame(() => { animateFade({crossfade: {value: 0.0, target: 1, step: 0.1}})})},0);
+            }
+            else if (this.props.enableOpacityFade) {
+              // iOS devices can do a nice opacity fade and do not need the background
+              requestAnimationFrame(() => { animateFade({opacity: {value: 0.0, target: 1, step: 0.1}})});
             }
           }
         });
@@ -396,8 +415,11 @@ void main() {
 
     eventBus.on("changedPicture" + this._uid, () => {
       this.state.opacity.setValue(0);
-      if (loadedTexture) {
-        rngl.unloadTexture(loadedTexture.texture)
+      if (loadedTextures.length > 0) {
+        loadedTextures.forEach((loadedTexture) => {
+          rngl.unloadTexture(loadedTexture.texture)
+        })
+        loadedTextures = [];
       }
       drawWithNewTexture(true);
     })
@@ -407,8 +429,11 @@ void main() {
     })
 
     eventBus.on("cleanupTextures" + this._uid, () => {
-      if (loadedTexture) {
-        rngl.unloadTexture(loadedTexture.texture)
+      if (loadedTextures.length > 0) {
+        loadedTextures.forEach((loadedTexture) => {
+          rngl.unloadTexture(loadedTexture.texture)
+        });
+        loadedTextures = [];
       }
     })
   };

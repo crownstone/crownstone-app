@@ -3,11 +3,12 @@ import {
   Alert,
   Animated,
   Image,
+  Platform,
   TouchableHighlight,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
   View
 } from 'react-native';
 
@@ -65,6 +66,7 @@ export class RoomOverview extends Component<any, any> {
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
+  viewingRemotelyInitial : boolean;
   justFinishedSetup : any;
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
@@ -82,9 +84,13 @@ export class RoomOverview extends Component<any, any> {
     this.nearestStoneIdInRoom = undefined;
 
     let state = props.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    this.viewingRemotely = sphere.config.present === false;
+
     let stonesInRoom = getStonesAndAppliancesInLocation(state, props.sphereId, props.locationId);
     let {stoneArray, ids} = this._getStoneList(stonesInRoom);
     if (SetupStateHandler.areSetupStonesAvailable()) {
+      this.viewingRemotely = true
       if (stoneArray.length === 0) {
         initialState.scrollViewHeight = new Animated.Value(screenHeight - tabBarHeight - topBarHeight - 100 - 60 - 60);
       }
@@ -97,6 +103,8 @@ export class RoomOverview extends Component<any, any> {
     }
 
     this.state = initialState;
+
+    this.viewingRemotelyInitial = this.viewingRemotely;
 
     this._updateNavBar();
   }
@@ -297,28 +305,36 @@ export class RoomOverview extends Component<any, any> {
 
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     this.viewingRemotely = this.props.locationId === null && Object.keys(stones).length === 0 ? false : this.viewingRemotely;
+
+    let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
+
     if (this.props.locationId) {
       location = sphere.locations[this.props.locationId];
       if (!location) { return <RoomDeleted /> }
 
       if (location.config.picture) {
-        roomCustomImage = (
-          <ShadedImage
-            style={{width: screenWidth, height: screenHeight}}
-            image={location.config.picture}
-            imageTaken={location.config.pictureTaken}
-            backgroundImageSource={this.props.getBackgroundSource('main', this.viewingRemotely)}
-            r={1} g={1} b={1}
-            blendFactor={this.viewingRemotely ? 0.3 : 0.0}
-            grayScale={this.viewingRemotely ? 0.9 : 0.0}
-          />
-        );
+        if (this.viewingRemotelyInitial === false && this.viewingRemotely === false && Platform.OS !== 'android') {
+          backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri:preparePictureURI(location.config.picture)}} />
+        }
+        else {
+          roomCustomImage = (
+            <ShadedImage
+              style={{width: screenWidth, height: screenHeight}}
+              image={location.config.picture}
+              imageTaken={location.config.pictureTaken}
+              backgroundImageSource={this.props.getBackgroundSource('main', this.viewingRemotely)}
+              r={1} g={1} b={1}
+              blendFactor={this.viewingRemotely ? 0.0 : 0.0}
+              grayScale={this.viewingRemotely ? 0.9 : 0.0}
+              ignoreBackground={Platform.OS === 'ios'}
+              enableOpacityFade={Platform.OS === 'ios'}
+            />
+          );
+        }
       }
     }
 
     let amountOfStonesInRoom = Object.keys(stones).length;
-    let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
-
     let content = undefined;
     if (amountOfStonesInRoom === 0 && seeStoneInSetupMode == false) {
       content = undefined;
