@@ -21,7 +21,7 @@ export class Background extends Component<{hasNavBar?: boolean, fullScreen?: boo
     return (
       <View style={[styles.fullscreen, {height:height, overflow:"hidden"}]} >
         {this.props.image}
-        {this.props.topImage ? <View style={[styles.fullscreen, {height:height}]}>{this.props.topImage}</View> : undefined }
+        {this.props.topImage ? <View style={[styles.fullscreen, {height:height, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
         <View style={[styles.fullscreen, {height:height}]} >
           { this.props.shadedStatusBar === true ? <View style={styles.shadedStatusBar} /> : undefined}
           { this.props.children }

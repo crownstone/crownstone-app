@@ -307,6 +307,7 @@ export class RoomOverview extends Component<any, any> {
             style={{width: screenWidth, height: screenHeight}}
             image={location.config.picture}
             imageTaken={location.config.pictureTaken}
+            backgroundImageSource={this.props.getBackgroundSource('main', this.viewingRemotely)}
             r={1} g={1} b={1}
             blendFactor={this.viewingRemotely ? 0.3 : 0.0}
             grayScale={this.viewingRemotely ? 0.9 : 0.0}
