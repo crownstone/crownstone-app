@@ -302,7 +302,7 @@ class SchedulerClass {
     // fallback to try to fire this callback after exactly the amount of ms
     let timeoutId = null;
 
-    if (useTimeout) {
+    if (useTimeout && afterMilliseconds < 20000) {
       timeoutId = setTimeout(() => { this.tick(); }, afterMilliseconds + 10);
     }
 

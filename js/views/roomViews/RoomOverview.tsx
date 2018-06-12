@@ -68,9 +68,11 @@ export class RoomOverview extends Component<any, any> {
   viewingRemotely : boolean;
   viewingRemotelyInitial : boolean;
   justFinishedSetup : any;
+  pictureTaken : any = null
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
   navBarCalback : any = null;
+  cacheBuster : number = 0;
 
   constructor(props) {
     super(props);
@@ -80,6 +82,7 @@ export class RoomOverview extends Component<any, any> {
 
     this.viewingRemotely = true;
     this.justFinishedSetup = "";
+    this.cacheBuster = Math.random();
 
     this.nearestStoneIdInSphere = undefined;
     this.nearestStoneIdInRoom = undefined;
@@ -330,7 +333,13 @@ export class RoomOverview extends Component<any, any> {
 
       if (location.config.picture) {
         if (this.viewingRemotelyInitial === false && this.viewingRemotely === false && Platform.OS === 'android') {
-          backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri:preparePictureURI(location.config.picture)}} />
+          // update cache buster
+          if (this.pictureTaken !== location.config.pictureTaken) {
+            this.cacheBuster = Math.random();
+            this.pictureTaken = location.config.pictureTaken;
+          }
+          
+          backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri: preparePictureURI(location.config.picture, false) + "?r=" + this.cacheBuster}} />
         }
         else {
           roomCustomImage = (
