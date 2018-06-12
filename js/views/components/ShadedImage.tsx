@@ -290,8 +290,8 @@ void main() {
           draw();
 
           if (fadeIn) {
-            // this._opacity = 1;
-            // requestAnimationFrame(() => { animateFade({opacity: {value: 0.0, target: 1, step: 0.1}}) })
+            this._opacity = 1;
+            requestAnimationFrame(() => { animateFade({opacity: {value: 0.0, target: 1, step: 0.1}}) })
           }
         });
     }
