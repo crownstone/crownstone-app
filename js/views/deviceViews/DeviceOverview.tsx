@@ -34,6 +34,7 @@ import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
 import {UsbSummary} from "./elements/UsbSummary";
+import {Scheduler} from "../../logic/Scheduler";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -59,6 +60,7 @@ export class DeviceOverview extends Component<any, any> {
     }
   };
 
+  navBarCalback : any = null;
   unsubscribeStoreEvents : any;
   unsubscribeSwiperEvents : any = [];
   touchEndTimeout: any;
@@ -173,12 +175,25 @@ export class DeviceOverview extends Component<any, any> {
     }
 
     NAVBAR_PARAMS_CACHE = null;
+
+    if (this.navBarCalback) {
+      this.navBarCalback();
+      this.navBarCalback = null
+    }
   }
 
   _updateNavBar(swiperIndex, scrolling) {
-    let state = this.props.store.getState();
-    let params = getNavBarParams(this.props.store, state, this.props, swiperIndex, scrolling);
-    this.props.navigation.setParams(params)
+    if (this.navBarCalback) {
+      this.navBarCalback();
+      this.navBarCalback = null
+    }
+
+    this.navBarCalback = Scheduler.scheduleCallback(() => {
+      let state = this.props.store.getState();
+      let params = getNavBarParams(this.props.store, state, this.props, swiperIndex, scrolling);
+      this.props.navigation.setParams(params)
+    } , 0)
+
   }
 
 

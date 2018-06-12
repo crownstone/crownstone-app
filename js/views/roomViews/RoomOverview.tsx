@@ -38,9 +38,9 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {RoomDeleted} from "../static/RoomDeleted";
-import {ScaledImage} from "../components/ScaledImage";
 import {preparePictureURI} from "../../util/Util";
 import {ShadedImage} from "../components/ShadedImage";
+import {Scheduler} from "../../logic/Scheduler";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -70,6 +70,7 @@ export class RoomOverview extends Component<any, any> {
   justFinishedSetup : any;
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
+  navBarCalback : any = null;
 
   constructor(props) {
     super(props);
@@ -160,6 +161,7 @@ export class RoomOverview extends Component<any, any> {
           (change.updateLocationConfig && change.updateLocationConfig.locationIds[this.props.locationId])
         ) {
           this.forceUpdate();
+          this._updateNavBar();
         }
       }
     });
@@ -172,6 +174,11 @@ export class RoomOverview extends Component<any, any> {
     // we keep open a connection for a few seconds to await a second command
     BatchCommandHandler.closeKeptOpenConnection();
     NAVBAR_PARAMS_CACHE = null;
+
+    if (this.navBarCalback) {
+      this.navBarCalback();
+      this.navBarCalback = null
+    }
   }
 
   _renderer(item, index, stoneId) {
@@ -281,9 +288,16 @@ export class RoomOverview extends Component<any, any> {
 
 
   _updateNavBar() {
-    let state = this.props.store.getState();
-    let params = getNavBarParams(state, this.props, this.viewingRemotely);
-    this.props.navigation.setParams(params)
+    if (this.navBarCalback) {
+      this.navBarCalback();
+      this.navBarCalback = null
+    }
+
+    this.navBarCalback = Scheduler.scheduleCallback(() => {
+      let state = this.props.store.getState();
+      let params = getNavBarParams(state, this.props, this.viewingRemotely);
+      this.props.navigation.setParams(params)
+    } , 0)
   }
 
   render() {
