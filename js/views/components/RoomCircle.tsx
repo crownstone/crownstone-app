@@ -287,7 +287,7 @@ class RoomCircleClass extends Component<any, any> {
           borderRadius: this.outerDiameter,
           width: this.outerDiameter,
           height: this.outerDiameter,
-          backgroundColor:'#ffffff',
+          backgroundColor: colors.white.hex,
           padding:0,
           margin:0
         }}>

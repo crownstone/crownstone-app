@@ -195,7 +195,9 @@ export class StoneEntity {
     // These events are used in the Batch Command Handler
     eventBus.emit(Util.events.getCrownstoneTopic(this.sphereId, this.stoneId), {
       handle: stone.config.handle,
+      stone: stone,
       stoneId: this.stoneId,
+      sphereId: this.sphereId,
       rssi: rssi,
     });
 
@@ -203,6 +205,8 @@ export class StoneEntity {
       eventBus.emit(Util.events.getMeshTopic(this.sphereId, stone.config.meshNetworkId), {
         handle: stone.config.handle,
         stoneId: this.stoneId,
+        stone: stone,
+        sphereId: this.sphereId,
         meshNetworkId: stone.config.meshNetworkId,
         rssi: rssi,
       });

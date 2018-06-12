@@ -245,8 +245,6 @@ export class DfuOverlay extends Component<any, any> {
       // if the firmware should not be upgraded, and the bootloader shouldnt be upgraderd don't check the bootloader version
       let firmwareUpdateRequired   = Util.versions.isHigher(userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.firmwareVersion);
       let bootloaderUpdateRequired = Util.versions.isHigher(userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.bootloaderVersion);
-      console.log("Check if firmwareUpdateRequired is required", firmwareUpdateRequired, userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.firmwareVersion)
-      console.log("Check if bootloaderUpdateRequired is required", bootloaderUpdateRequired, userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.bootloaderVersion)
 
       this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
 

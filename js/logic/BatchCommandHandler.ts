@@ -569,7 +569,7 @@ class BatchCommandHandlerClass {
    * If this returns null, the search has been cancelled prematurely.
    * @private
    */
-  _searchScan(objectsToScan : any[], rssiThreshold = null, highPriorityActive = false, timeout = 5000) {
+  _searchScan(objectsToScan : any[], rssiThreshold = null, highPriorityActive = false, timeout = 5000) : Promise<connectionInfo> {
     return new Promise((resolve, reject) => {
 
       let unsubscribeListeners = [];
@@ -623,6 +623,7 @@ class BatchCommandHandlerClass {
             // resolve with the handle.
             resolve({
               stoneId: data.stoneId,
+              stone: data.stone,
               meshNetworkId: data.meshNetworkId || null,
               sphereId: topic.sphereId,
               handle: data.handle

@@ -32,6 +32,8 @@ class MeshElementClass extends Component<any, any> {
   reachable = false;
   reachableTimeout : any = null;
 
+  expanded = false
+
   constructor(props) {
     super(props);
 
@@ -149,8 +151,7 @@ class MeshElementClass extends Component<any, any> {
     let iconSize = width;
 
     return (
-      <Animated.View
-        style={[animatedStyle, { position:'absolute', top: this.props.pos.y, left: this.props.pos.x, width: this.state.width, height: this.state.height, overflow:'hidden'}]}>
+      <Animated.View style={[animatedStyle, { position:'absolute', top: this.props.pos.y, left: this.props.pos.x, width: this.state.width, height: this.state.height, overflow:'hidden'}]}>
         <Animated.View style={{position:'absolute', top: this.state.locationY, left: this.state.locationX}}>
           <IconCircle
             icon={this.props.nodeData.locationIcon}
@@ -192,6 +193,20 @@ class MeshElementClass extends Component<any, any> {
   }
 
   handleTouch(data) {
+    if (this.expanded) {
+      this._revert();
+    }
+    else {
+      this._expand();
+    }
+  }
+
+  handleTouchReleased(data) {
+
+  }
+
+  _expand() {
+    this.expanded = true;
     this._stopAnimations();
 
     let offset = 1.25*this.props.radius;;
@@ -206,7 +221,8 @@ class MeshElementClass extends Component<any, any> {
     Animated.parallel(tapAnimations).start();
   }
 
-  handleTouchReleased(data) {
+  _revert() {
+    this.expanded = false;
     this._stopAnimations();
 
     let revertAnimations = [];
@@ -221,14 +237,14 @@ class MeshElementClass extends Component<any, any> {
   }
 
   handleTap(data) {
-    this._stopAnimations();
-
-    this.state.scale.setValue(1);
-    this.state.locationX.setValue(0);
-    this.state.locationY.setValue(0);
-    this.state.opacity.setValue(0);
-    this.state.width.setValue(2*this.props.radius);
-    this.state.height.setValue(2*this.props.radius);
+    // this._stopAnimations();
+    //
+    // this.state.scale.setValue(1);
+    // this.state.locationX.setValue(0);
+    // this.state.locationY.setValue(0);
+    // this.state.opacity.setValue(0);
+    // this.state.width.setValue(2*this.props.radius);
+    // this.state.height.setValue(2*this.props.radius);
   }
 
   _stopAnimations() {

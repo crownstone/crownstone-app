@@ -2,7 +2,8 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
   Image,
-  View
+  View,
+  Text
 } from 'react-native';
 import { WebGLView,  } from "react-native-webgl";
 import {screenHeight, screenWidth} from "../styles";
@@ -19,6 +20,7 @@ export class ShadedImage extends Component<{image: string, imageTaken: number, s
   blendFactor = 0;
   diff = 0.01;
   animationFrame = null;
+  _opacity = 0;
   _uid = Util.getUUID();
 
   constructor(props) {
@@ -28,7 +30,7 @@ export class ShadedImage extends Component<{image: string, imageTaken: number, s
     this.loadedImage = this.props.image;
     this.loadedImageURI = {uri:preparePictureURI(this.loadedImage)};
 
-    this.state = { opacity: new Animated.Value(0) }
+    this.state = { debugText: '' };
   }
 
   componentWillUnmount() {
@@ -103,6 +105,7 @@ uniform float surfaceW;
 uniform float surfaceH;
 
 uniform float grayScale;
+uniform float opacity;
 
 uniform float r;
 uniform float g;
@@ -159,7 +162,7 @@ void main() {
   // blend the color into the background image.
   vec3 res = mix(result * color, color, blendFactor);
   
-  gl_FragColor = vec4(res, c.a);
+  gl_FragColor = vec4(res, opacity);
 }`
     );
     gl.compileShader(fragmentShader);
@@ -178,13 +181,14 @@ void main() {
     let surfaceHLocation    = gl.getUniformLocation(program, "surfaceH");
     let blendFactorLocation = gl.getUniformLocation(program, "blendFactor");
     let grayScaleLocation   = gl.getUniformLocation(program, "grayScale");
+    let opacityLocation     = gl.getUniformLocation(program, "opacity");
     let rLocation = gl.getUniformLocation(program, "r");
     let gLocation = gl.getUniformLocation(program, "g");
     let bLocation = gl.getUniformLocation(program, "b");
     let loadedTexture = null;
 
-
     let variables = [
+      'opacity',
       'grayScale',
       'blendFactor',
       'r',
@@ -192,6 +196,18 @@ void main() {
       'b',
     ]
 
+    /**
+     * This function uses a blendmap to fade from one set of values to another.
+     * The blendmap looks like this:
+     *   blendMap['r']           = {value: currentValue, target: targetValue, step: stepSize}
+     *   blendMap['g']           = {value: currentValue, target: targetValue, step: stepSize}
+     *   blendMap['b']           = {value: currentValue, target: targetValue, step: stepSize}
+     *   blendMap['blendFactor'] = {value: currentValue, target: targetValue, step: stepSize}
+     *   blendMap['grayScale']   = {value: currentValue, target: targetValue, step: stepSize}
+     *
+     * it does not have to be fully filled
+     * @param blendMap
+     */
     const animateFade = (blendMap) => {
       let values : any = {}
       let animationFinished = true;
@@ -203,8 +219,14 @@ void main() {
             delete blendMap[variables[i]]
           }
         }
-        values[variables[i]] = blendMap[variables[i]] ? blendMap[variables[i]].value : this.props[variables[i]]
+        if (variables[i] === 'opacity') {
+          values[variables[i]] = blendMap[variables[i]] ? blendMap[variables[i]].value : this._opacity
+        }
+        else {
+          values[variables[i]] = blendMap[variables[i]] ? blendMap[variables[i]].value : this.props[variables[i]]
+        }
       }
+      // this.setState({debugText:JSON.stringify(values)})
       loadVariables(values);
       draw();
 
@@ -215,6 +237,7 @@ void main() {
 
     const loadDefaultVariables = () => {
       loadVariables({
+        opacity:  this._opacity,
         grayScale:  this.props.grayScale,
         blendFactor:this.props.blendFactor,
         r: this.props.r,
@@ -223,7 +246,9 @@ void main() {
       });
     }
 
-    const loadVariables = ({grayScale, blendFactor, r, g, b}) => {
+    const loadVariables = ({opacity, grayScale, blendFactor, r, g, b}) => {
+      gl.uniform1f(opacityLocation,opacity || 0.0);
+
       gl.uniform1f(grayScaleLocation,   grayScale   || 0.0);
       gl.uniform1f(blendFactorLocation, blendFactor || 0.0);
       gl.uniform1f(rLocation, r || 0.0);
@@ -235,16 +260,25 @@ void main() {
     }
 
     const draw = () => {
-      gl.clearColor(0,0,0, 0.0);
+      gl.enable( gl.BLEND );
+      gl.blendEquationSeparate( gl.FUNC_ADD, gl.FUNC_ADD );
+      gl.blendFuncSeparate( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA );
+
+      gl.colorMask(true, true, true, true);
+      gl.clearColor(0.0,0.0, 0.0, 0.0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       gl.flush();
       rngl.endFrame();
     }
 
     const drawWithNewTexture = (fadeIn?) => {
+      draw();
       rngl
         .loadTexture({ image: this.loadedImageURI, yflip: false })
         .then((result) => {
+          this._opacity = 0;
           loadDefaultVariables();
           loadedTexture = result;
           gl.activeTexture(gl.TEXTURE0);
@@ -256,7 +290,8 @@ void main() {
           draw();
 
           if (fadeIn) {
-            Animated.timing(this.state.opacity, {toValue: 1.0, duration: 300}).start()
+            // this._opacity = 1;
+            // requestAnimationFrame(() => { animateFade({opacity: {value: 0.0, target: 1, step: 0.1}}) })
           }
         });
     }
@@ -267,7 +302,7 @@ void main() {
       if (loadedTexture) {
         rngl.unloadTexture(loadedTexture.texture)
       }
-      Animated.timing(this.state.opacity, {toValue: 0.0, duration: 300}).start( () => {drawWithNewTexture(true)})
+      drawWithNewTexture(true)
     })
 
     eventBus.on("changedVarariables" + this._uid, (blendMap) => {
@@ -282,12 +317,10 @@ void main() {
   };
   render() {
     return (
-      <Animated.View style={[this.props.style,{opacity: this.state.opacity}]}>
-        <WebGLView
-          style={this.props.style}
-          onContextCreate={this.onContextCreate}
-        />
-      </Animated.View>
+      <WebGLView
+        style={[this.props.style,{backgroundColor:"transparent"}]}
+        onContextCreate={this.onContextCreate}
+      />
     );
   }
 }
