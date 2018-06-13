@@ -378,7 +378,7 @@ export const Util = {
         else if (Array.isArray(b[prop])) {
           a[prop] = [];
           for (let i = 0; i < b[prop].length; i++) {
-            if (b[prop][i].constructor === Object) {
+            if (b[prop][i] && b[prop][i].constructor === Object) {
               a[prop].push(Util.deepExtend({},b[prop][i]));
             }
             else {
