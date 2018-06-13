@@ -74,6 +74,7 @@ class BackgroundProcessHandlerClass {
           Bluenet.setBackgroundScanning(false);
         }
 
+
         LOG.info("BackgroundProcessHandler: received userLoggedIn event.");
 
         // disable battery saving (meaning, no BLE scans reach the app)
@@ -94,6 +95,12 @@ class BackgroundProcessHandlerClass {
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
       eventBus.on('userLoggedInFinished', () => {
+        let state = this.store.getState();
+        // this should have been covered by the naming of the AI. This is a fallback and it's for users who are not admins.
+        if (state.user.accessToken !== null && state.user.isNew !== false) {
+          this.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
+        }
+
         LOG.info("BackgroundProcessHandler: received userLoggedInFinished event.");
         LocationHandler.initializeTracking();
 

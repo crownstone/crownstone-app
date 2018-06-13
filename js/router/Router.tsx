@@ -62,19 +62,30 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
     super(props);
     let initialState = {loggedIn: false, storePrepared: false};
 
-    if (BackgroundProcessHandler.storePrepared === true) {
-      initialState = {storePrepared: true, loggedIn: BackgroundProcessHandler.userLoggedIn};
+    let startUp = () => {
       if (Platform.OS === "android") {
         SplashScreen.hide();
       }
+
+      // This is a last chance fallback if a user is new but has for some reason never been marked as "not New"
+      let store = StoreManager.getStore();
+      let state = store.getState();
+      // this should have been covered by the naming of the AI. This is a fallback.
+      if (state.user.accessToken !== null && state.user.isNew !== false) {
+        store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
+        eventBus.emit("userLoggedInFinished");
+      }
+    }
+
+    if (BackgroundProcessHandler.storePrepared === true) {
+      initialState = {storePrepared: true, loggedIn: BackgroundProcessHandler.userLoggedIn};
+      startUp();
     }
     else {
       this.unsubscribe.push(
         eventBus.on('storePrepared', (result) => {
+          startUp();
           this.setState({storePrepared:true, loggedIn: result.userLoggedIn});
-          if (Platform.OS === "android") {
-            SplashScreen.hide();
-          }
         })
       );
     }

@@ -246,7 +246,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} safeView={true}>
         <OrangeLine/>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>Hold your phone next to the Crownstone.</Text>

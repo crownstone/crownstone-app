@@ -26,7 +26,7 @@ export class Splash extends Component<any, any> {
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true}>
+      <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true} safeView={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>

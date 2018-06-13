@@ -182,7 +182,7 @@ export class Login extends Component<any, any> {
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true}>
+      <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true} safeView={true}>
         <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:2, width:screenWidth}} />

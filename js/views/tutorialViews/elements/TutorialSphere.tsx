@@ -32,7 +32,7 @@ export class TutorialSphere extends Component<any, any> {
           />
             <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <Text style={tutorialStyle.text}>{'Your sphere is your collection of Crownstones. This is usually your house, office or personal space.' +
-          '\n\nOnly one sphere can be active at the time. It contains rooms, Crownstones, device types and possibly other users.' +
+          '\n\nOnly one sphere can be active at a time. It contains rooms, Crownstones, device types and possibly other users.' +
           '\n\nYou can invite other people (as admins, members or guests) to your sphere so they can use your Crownstones.'}</Text>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />
         </View>

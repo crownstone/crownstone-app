@@ -67,7 +67,7 @@ export class Sphere extends Component<any, any> {
             <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
             <Text style={overviewStyles.mainText}>{"No Crownstones added yet!"}</Text>
             <Text style={overviewStyles.subText}>{"Get close to a new Crownstone and it will appear here automatically!"}</Text>
-            <Text style={overviewStyles.subTextSmall}>{"If nothing happens, ensure the Crownstone is powered on and not paired to another user.\n\n" +
+            <Text style={overviewStyles.subTextSmall}>{"If nothing happens, ensure the Crownstone is powered on and not paired with another user.\n\n" +
             (Platform.OS === 'android' ? "More help is available under 'help' in the side menu." : "More help is available in the help menu in the settings.")
             }</Text>
           </View>

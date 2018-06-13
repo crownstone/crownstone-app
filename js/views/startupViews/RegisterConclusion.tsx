@@ -25,7 +25,7 @@ export class RegisterConclusion extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.mainDark}>
+      <Background hasNavBar={false} image={this.props.backgrounds.mainDark} safeView={true}>
         <View style={{flex:1}}>
           <View style={{flex:4}} />
           <View style={style.viewContainer}>
