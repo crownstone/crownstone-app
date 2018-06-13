@@ -8,7 +8,6 @@ import {
 
 import { colors} from '../styles'
 import { preparePictureURI } from '../../util/Util'
-let Actions = require('react-native-router-flux').Actions;
 import { Icon } from './Icon';
 
 export class ProfilePicture extends Component<any, any> {
@@ -18,19 +17,27 @@ export class ProfilePicture extends Component<any, any> {
     if (this.props.picture !== undefined && this.props.picture !== null) {
       let pictureURI = preparePictureURI(this.props.picture);
       let borderWidth = this.props.borderWidth || 0.07*size;
+      let innerBorderSize = size - 2 * borderWidth;
       return (
         <View style={this.props.style}>
-          <Image style={{
-            width:size,
-            height:size,
+          <View style={{
+            width:   size,
+            height:  size,
             padding: 0,
             margin:  0,
             borderRadius: 0.5*size,
-            borderWidth:borderWidth,
-            borderColor: colors.white.hex,
-            backgroundColor: 'transparent',
-          }} source={{uri:pictureURI}}
-          />
+            backgroundColor: colors.white.hex,
+            alignItems:'center',
+            justifyContent:'center'
+          }}>
+            <Image style={{
+              width:   innerBorderSize,
+              height:  innerBorderSize,
+              borderRadius: 0.5*innerBorderSize,
+              backgroundColor: 'transparent',
+            }} source={{uri:pictureURI}}
+            />
+          </View>
           {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
         </View>
       );
@@ -50,7 +57,6 @@ export class ProfilePicture extends Component<any, any> {
             <Icon
               name={this.props.placeHolderIcon || 'ios-contact'}
               size={innerSize} color={this.props.color || colors.menuBackground.hex}
-              style={{paddingTop: Platform.OS === 'android' ? 0 : 0.1*size, margin:0}}
             />
           </View>
           {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}

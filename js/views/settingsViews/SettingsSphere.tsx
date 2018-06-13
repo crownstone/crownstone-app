@@ -95,7 +95,7 @@ export class SettingsSphere extends Component<any, any> {
             result.push({
               label: users[userId].firstName + " " + users[userId].lastName,
               type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' : 'navigation',
-              icon: <ProfilePicture picture={users[userId].picture}/>,
+              icon: <ProfilePicture picture={users[userId].picture} borderless={false} />,
               callback: () => {
                 Actions.settingsSphereUser({
                   title: users[userId].firstName,

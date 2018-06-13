@@ -44,24 +44,21 @@ export class PictureCircle extends Component<any, any> {
   render() {
     let size = this.props.size || 60;
     if (this.props.value !== undefined && this.props.value !== null) {
-
       let imageURI = preparePictureURI(this.props.value);
       let borderWidth = size / 30;
+      let innerSize = size - 2*borderWidth;
       return (
-        <TouchableOpacity onPress={() => {
-          Alert.alert("Delete this picture?", undefined, [{text:'No'}, {text:'Yes', onPress:() => {
-            this.props.removePicture()
-          }}])
-        }} style={{height:size, width:size, position:'relative'}}>
-            <Image style={{
-                marginTop: 4,
-                width:size-2*borderWidth,
-                height:size-2*borderWidth,
-                borderRadius:(size-2*borderWidth) * 0.5,
-                backgroundColor: 'transparent',
-                borderColor: '#ffffff',
-                borderWidth: borderWidth
-                }} source={{uri:imageURI}} />
+        <TouchableOpacity
+          onPress={() => { Alert.alert("Delete this picture?", undefined, [{text:'No'}, {text:'Yes', onPress:() => { this.props.removePicture(); }}])}}
+          style={{
+            height:size,
+            width:size,
+            borderRadius: 0.5*size,
+            backgroundColor: colors.white.hex,
+            alignItems:'center',
+            justifyContent:'center',
+          }}>
+            <Image style={{width:innerSize, height:innerSize, borderRadius:innerSize * 0.5, backgroundColor: 'transparent'}} source={{uri:imageURI}} />
             <View style={[{
                 position: 'absolute',
                 top: 0,
@@ -70,7 +67,7 @@ export class PictureCircle extends Component<any, any> {
                 height:size/3,
                 borderRadius:size/6,
                 backgroundColor: colors.blue.hex,
-                borderColor: '#ffffff',
+                borderColor: colors.white.hex,
                 borderWidth: size/30
               }, styles.centered]}>
                 <Icon name={'md-remove'} size={size/5} color={'#ffffff'} />
