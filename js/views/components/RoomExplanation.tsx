@@ -42,11 +42,6 @@ export class RoomExplanation extends Component<any, any> {
     // if the button callback is not undefined at draw time, we draw a button, not a view
     let buttonCallback = undefined;
 
-    // callback to go to the floating crownstones. Is used twice
-    let goToFloatingCrownstonesCallback = () => {
-      BackAction();
-      setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
-
     // In case we see a crownstone in setup mode:
     if (explanation === undefined && seeStoneInSetupMode === true && locationId === null) {
       explanation = "Crownstones in setup mode have a blue icon."
@@ -65,7 +60,7 @@ export class RoomExplanation extends Component<any, any> {
       // there are floating crownstones
       else if (getFloatingStones(state, sphereId).length > 0) {
         explanation = "Tap here to see all Crownstones without rooms!";
-        buttonCallback = goToFloatingCrownstonesCallback;
+        buttonCallback = () => { BackAction(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
       }
       else {
         explanation = "No Crownstones in this room.";
@@ -79,11 +74,11 @@ export class RoomExplanation extends Component<any, any> {
     else if (buttonCallback !== undefined) {
       return (
         <TouchableOpacity style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}} onPress={buttonCallback}>
-        <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
-          <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
-        </View>
-      </TouchableOpacity>
-    )
+          <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
+            <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
+          </View>
+        </TouchableOpacity>
+      );
     }
     else {
       return (
@@ -92,7 +87,7 @@ export class RoomExplanation extends Component<any, any> {
             <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
           </View>
         </View>
-      )
+      );
     }
   }
 }

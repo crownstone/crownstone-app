@@ -13,6 +13,7 @@ import { colors, topBarHeight, statusBarHeight} from '../styles'
 let Actions = require('react-native-router-flux').Actions;
 import { AlternatingContent }   from './animated/AlternatingContent'
 import {BackAction} from "../../util/Back";
+import {topBarStyle} from "./topbar/TopbarStyles";
 
 let barHeight = topBarHeight - statusBarHeight;
 
@@ -225,51 +226,3 @@ else {
 
 export const TopBar = TopBarClass;
 
-export const topBarStyle = StyleSheet.create({
-  topBar: {
-    backgroundColor: colors.menuBackground.hex,
-    flexDirection: 'row',
-    paddingTop: statusBarHeight
-  },
-  topBarCenterView: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  topBarLeft: {
-    textAlign: 'left',
-  },
-  topBarLeftTouch: {
-    position:'relative',
-    top: -statusBarHeight,
-    // backgroundColor:'#f00',
-    height:topBarHeight,
-    width:70,
-    paddingLeft:10,
-    paddingTop:statusBarHeight
-  },
-  topBarRightTouch: {
-    position:'relative',
-    top: -statusBarHeight,
-    // backgroundColor:'#ff0',
-    height:topBarHeight,
-    width:70,
-    paddingRight:6,
-    paddingTop:statusBarHeight
-  },
-  topBarCenter: {
-    textAlign: 'center',
-  },
-  topBarRight: {
-    textAlign: 'right',
-  },
-  titleText: {
-    fontSize: 18,
-    color: 'white'
-  },
-  text:{
-    fontSize: 17,
-    fontWeight:'bold',
-    color: colors.menuTextSelected.hex
-  }
-});

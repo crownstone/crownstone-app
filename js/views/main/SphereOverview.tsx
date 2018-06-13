@@ -23,6 +23,8 @@ import {colors, OrangeLine, screenWidth, topBarHeight} from '../styles'
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {eventBus} from "../../util/EventBus";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {FinalizeLocalizationIcon} from "../components/FinalizeLocalizationIcon";
+import {TopbarButton, TopbarLeftButton} from "../components/topbar/TopbarButton";
 
 export class SphereOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -39,11 +41,10 @@ export class SphereOverview extends Component<any, any> {
       }
     }
 
-
     return {
       title: paramsToUse.title,
       // headerTitle: <Component /> // used to insert custom header Title component
-      // headerLeft: <Component /> // used to insert custom header Left component
+      headerLeft: paramsToUse.showFinalizeNavigationButton ? <TopbarLeftButton item={<FinalizeLocalizationIcon />} onPress={paramsToUse.showFinalizeIndoorNavigationCallback} />  : undefined
       // headerRight: <Component /> // used to insert custom header Right component
       // headerBackImage: require("path to image") // customize back button image
     }
@@ -56,7 +57,6 @@ export class SphereOverview extends Component<any, any> {
     super(props);
 
     this.state = { menuOpen: true };
-
     this._setActiveSphere();
   }
 
@@ -182,39 +182,6 @@ export class SphereOverview extends Component<any, any> {
       </View>
     );
   }
-
-
-
-  _finalizeIndoorLocalization(state, activeSphere, sphereIsPresent, noRooms) {
-    if (!sphereIsPresent) {
-      Alert.alert(
-        "You'll have to be in the Sphere to continue.",
-        "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!",
-        [{text: 'OK'}]
-      );
-    }
-    else if (noRooms) {
-      Alert.alert(
-        "Let's create some rooms!",
-        "Tap the icon on the right to add a room!",
-        [{text: 'OK'}]
-      );
-    }
-    else if (enoughCrownstonesInLocationsForIndoorLocalization(state, activeSphere)) {
-      this.props.eventBus.emit("showLocalizationSetupStep2", activeSphere);
-    }
-    else {
-      Actions.roomOverview({
-        sphereId: activeSphere,
-        locationId: null,
-        title: 'First things first :)',
-        hideRight: true,
-        usedForIndoorLocalizationSetup: true,
-        overlayText:'Place your Crownstones in rooms!',
-        explanation: 'Tap a Crownstone to see the options, then tap the left icon to select a room!'
-      });
-    }
-  }
 }
 
 function getNavBarParams(state, props) {
@@ -226,10 +193,10 @@ function getNavBarParams(state, props) {
   let activeSphereId = state.app.activeSphere;
 
   if (amountOfSpheres > 0) {
-    let activeSphere = state.spheres[activeSphereId];
-    if (activeSphere === undefined) {
-      activeSphere = state.spheres[sphereIds[0]]
+    if (!activeSphereId) {
+      activeSphereId = sphereIds[0];
     }
+    let activeSphere = state.spheres[activeSphereId];
 
     let sphereIsPresent = activeSphere.config.present;
 
@@ -248,22 +215,49 @@ function getNavBarParams(state, props) {
     let showFinalizeIndoorNavigationButton = (
       state.app.indoorLocalizationEnabled &&
       spherePermissions.doLocalizationTutorial &&
-      sphereIsPresent === false && // only show this if you're there.
+      sphereIsPresent === true && // only show this if you're there.
       enoughCrownstonesForLocalization === true && // Have 4 or more crownstones
       (noRooms === true || requiresFingerprints === true)  // Need more fingerprints.
     );
 
-
     let showFinalizeIndoorNavigationCallback = () => {
-      this._finalizeIndoorLocalization(state, activeSphereId, sphereIsPresent, noRooms);
+      if (!sphereIsPresent) {
+        Alert.alert(
+          "You'll have to be in the Sphere to continue.",
+          "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!",
+          [{text: 'OK'}]
+        );
+      }
+      else if (noRooms) {
+        Alert.alert(
+          "Let's create some rooms!",
+          "Tap the icon on the bottom-right to add a room!",
+          [{text: 'OK'}]
+        );
+      }
+      else if (enoughCrownstonesInLocationsForIndoorLocalization(state, activeSphereId)) {
+        eventBus.emit("showLocalizationSetupStep2", activeSphereId);
+      }
+      else {
+        Actions.roomOverview({
+          sphereId: activeSphereId,
+          locationId: null,
+          title: 'First things first :)',
+          hideRight: true,
+          usedForIndoorLocalizationSetup: true,
+          overlayText:'Place your Crownstones in rooms!',
+          explanation: "Tap a Crownstone to see it's details, then tap 'Not in room' in the top-left corner!"
+        });
+      }
     };
+
     let showMailIcon = activeSphere.config.newMessageFound;
 
     NAVBAR_PARAMS_CACHE = {
       title: activeSphere.config.name,
       showFinalizeNavigationButton: showFinalizeIndoorNavigationButton,
+      showFinalizeIndoorNavigationCallback: showFinalizeIndoorNavigationCallback,
       showAdd: !noStones && spherePermissions.addRoom && !blockAddButton,
-      showHamburgerMenu: true,
       activeSphereId: activeSphereId
     }
   }
@@ -271,8 +265,6 @@ function getNavBarParams(state, props) {
     NAVBAR_PARAMS_CACHE = {
       title: "Hello there!",
       showFinalizeNavigationButton: false,
-      showAdd: false,
-      showHamburgerMenu: true
     }
   }
 

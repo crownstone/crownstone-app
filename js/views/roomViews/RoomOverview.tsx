@@ -41,6 +41,7 @@ import {RoomDeleted} from "../static/RoomDeleted";
 import {preparePictureURI} from "../../util/Util";
 import {ShadedImage} from "../components/ShadedImage";
 import {Scheduler} from "../../logic/Scheduler";
+import {topBarStyle} from "../components/topbar/TopbarStyles";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -452,7 +453,7 @@ function getNavBarRightItem(state, enoughCrownstones, label, props, viewingRemot
   if (!enoughCrownstones)                   { return; } // not enough crownstones to train this room
 
   let location = state.spheres[props.sphereId].locations[props.locationId];
-  if (location.config.fingerPrintRaw !== null) { return; } // there already is a fingerprint, dont show animated training icon.
+  if (location.config.fingerprintRaw !== null) { return; } // there already is a fingerprint, dont show animated training icon.
 
   // this will show a one-time popup for localization
   if (state.user.seenRoomFingerprintAlert !== true) {
@@ -464,11 +465,10 @@ function getNavBarRightItem(state, enoughCrownstones, label, props, viewingRemot
       [{text: "OK"}]
     );
   }
-
   let iconSize = 25;
   return (
     <AlternatingContent
-      style={{flex:1, width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
+      style={{width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
       fadeDuration={500}
       switchDuration={2000}
       contentArray={[
@@ -480,7 +480,7 @@ function getNavBarRightItem(state, enoughCrownstones, label, props, viewingRemot
           backgroundColor:colors.iosBlue.hex}]} >
           <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
         </View>,
-        <Text style={[topBarStyle.topBarRight, topBarStyle.text, props.rightStyle]}>{ label }</Text>
+        <Text style={[topBarStyle.text, props.rightStyle]}>{ label }</Text>
       ]} />
   );
 }
@@ -520,39 +520,3 @@ function getNavBarParams(state, props, viewingRemotely) {
 }
 
 let NAVBAR_PARAMS_CACHE = null;
-
-
-export const topBarStyle = StyleSheet.create({
-  topBar: {
-    backgroundColor: colors.menuBackground.hex,
-    paddingLeft: 10,
-    paddingRight: 10,
-    flexDirection: 'row'
-  },
-  topBarSideView: {
-    justifyContent: 'center',
-    width: 60, // TODO: make dynamic
-  },
-  topBarCenterView: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  topBarLeft: {
-    textAlign: 'left',
-  },
-  topBarCenter: {
-    textAlign: 'center',
-  },
-  topBarRight: {
-    textAlign: 'right',
-  },
-  titleText: {
-    fontSize: 18,
-    color: 'white'
-  },
-  text:{
-    fontSize: 17,
-    color: colors.iosBlue.hex
-  }
-});

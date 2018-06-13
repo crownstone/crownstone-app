@@ -247,8 +247,12 @@ export class RoomAdd extends Component<any, any> {
             }
 
             this.props.store.batchDispatch(actions);
-
-            Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false, __popBeforeAddCount: 2});
+            if (this.props.returnToCrownstone) {
+              Actions.popTo("deviceOverview");
+            }
+            else {
+              Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false, __popBeforeAddCount: 2});
+            }
             this.props.eventBus.emit('hideLoading');
           })
           .catch((err) => {

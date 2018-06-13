@@ -245,9 +245,7 @@ class MeshElementClass extends Component<any, any> {
 
     let offset = 1.25*this.props.radius;
 
-
     let supportedFirmware = Util.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.0');
-    console.log("LAL", data)
     if (!supportedFirmware && data) {
       if (data.dx > this.props.radius && data.dy > -this.props.radius) {
         Alert.alert("Update Required", "The firmware of this Crownstone must be updated before it can show connections.", [{text: 'OK'}]);

@@ -17,9 +17,10 @@ let barHeight = topBarHeight - statusBarHeight;
 export class TopbarButton extends Component<any, any> {
 
   render() {
+    let alignmentStyle = this.props.alignmentStyle || topBarStyle.topBarRightTouch;
     if ( this.props.item ) {
       return (
-        <TouchableOpacity onPress={() => {this.props.onPress();}} style={[topBarStyle.topBarRightTouch, this.props.style]}>
+        <TouchableOpacity onPress={() => {this.props.onPress();}} style={[alignmentStyle, this.props.style]}>
           {this.props.item}
         </TouchableOpacity>
       );
@@ -30,13 +31,29 @@ export class TopbarButton extends Component<any, any> {
         text = this.props.text();
       }
       return (
-        <TouchableOpacity onPress={() => {this.props.onPress();}}  style={[topBarStyle.topBarRightTouch, this.props.style]}>
+        <TouchableOpacity onPress={() => {this.props.onPress();}}  style={[alignmentStyle, this.props.style]}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
             <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.style]}>{text}</Text>
           </View>
         </TouchableOpacity>
       );
     }
-    return <View style={[topBarStyle.topBarRightTouch, this.props.style]} />;
+    return <View style={[alignmentStyle, this.props.style]} />;
+  }
+}
+
+
+export class TopbarLeftButton extends Component<any, any> {
+
+  render() {
+    return <TopbarButton {...this.props} alignmentStyle={topBarStyle.topBarLeftTouch}/>
+  }
+}
+
+
+export class TopbarRightButton extends Component<any, any> {
+
+  render() {
+    return <TopbarButton {...this.props} alignmentStyle={topBarStyle.topBarRightTouch}/>
   }
 }

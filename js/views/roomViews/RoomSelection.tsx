@@ -89,7 +89,7 @@ export class RoomSelection extends Component<any, any> {
       style: {color:colors.blue.hex},
       type: 'navigation',
       callback: () => {
-        Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true})
+        Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true, returnToCrownstone: this.props.returnToCrownstone})
       }
     });
 
