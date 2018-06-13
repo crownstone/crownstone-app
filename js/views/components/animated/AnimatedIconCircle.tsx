@@ -1,5 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Animated,
   Dimensions,
   Image,
   PixelRatio,
@@ -7,10 +8,10 @@ import {
   Text,
   View
 } from 'react-native';
+import {Icon} from "../Icon";
+import {colors, styles} from "../../styles";
 
-import { Icon } from './Icon';
 
-import { styles, colors} from '../styles'
 
 /**
  * props: {
@@ -24,7 +25,7 @@ import { styles, colors} from '../styles'
  *   showEdit        : Bool     // show an edit icon in the corner
  * }
  */
-export class IconCircle extends Component<any, any> {
+export class AnimatedIconCircle extends Component<any, any> {
   _getEditIcon(size) {
     if (this.props.showEdit === true) {
       return (
@@ -64,14 +65,14 @@ export class IconCircle extends Component<any, any> {
   }
   _getMainIcon(size) {
     return (
-      <View style={[{
+      <Animated.View style={[{
         width:size,
         height:size,
         borderRadius:size * 0.5,
         backgroundColor: this.props.backgroundColor || colors.white.hex,
       }, styles.centered]}>
         <Icon name={this.props.icon} size={this.props.iconSize || size*0.6} color={this.props.color || colors.menuBackground.hex} />
-      </View>
+      </Animated.View>
     )
   }
 
@@ -83,14 +84,14 @@ export class IconCircle extends Component<any, any> {
       let innerSize = size - 2* borderWidth;
       return (
         <View style={[this.props.style, {width:size, height:size}]}>
-          <View style={[{
+          <Animated.View style={[{
             width:size,
             height:size,
             borderRadius:size * 0.5,
             backgroundColor: borderColor,
           }, styles.centered]}>
             { this._getMainIcon(innerSize) }
-          </View>
+          </Animated.View>
           { this._getEditIcon(size) }
           { this._getAddIcon(size) }
         </View>

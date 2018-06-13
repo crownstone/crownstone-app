@@ -183,7 +183,7 @@ export class SettingsMeshTopology extends Component<any, any> {
       }
       let element = Util.data.getElement(this.props.store, sphereId, stoneId, stone);
 
-      this.nodeData[stoneId] = {locationIcon: locationIcon, deviceIcon: element.config.icon, locationTitle:locationTitle, element: element};
+      this.nodeData[stoneId] = {locationIcon: locationIcon, deviceIcon: element.config.icon, locationTitle:locationTitle, element: element, stone:stone};
 
       //  if a stone is not in a mesh, do not show any stored connections
       if (!stone.config.meshNetworkId) { return; }

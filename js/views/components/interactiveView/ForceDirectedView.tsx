@@ -139,12 +139,14 @@ export class ForceDirectedView extends Component<{
         // null is a special ID since it implies a floating crownstone. This null is not a string, but actual null.
         let nodeId = nodeIds[i] === 'null' ? null : nodeIds[i];
 
+
+        let nodeData = {nodeId: nodeId, dx: (x1 - node.x), dy: (node.y - y1)};
         // if we select a new node, animate it popping up and turning a bit translucent.
         if (this._pressedNodeData === false || this._pressedNodeData.nodeId !== nodeIds[i]) {
-          eventBus.emit('nodeTouched'+nodeId);
+          eventBus.emit('nodeTouched'+nodeId, nodeData);
         }
 
-        return {nodeId: nodeId, dx: (x1 - node.x), dy: (node.y - y1)}; // --> _pressedNodeData
+        return nodeData; // --> _pressedNodeData
       }
     }
 

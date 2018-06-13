@@ -1,5 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Alert,
   Animated,
   Dimensions,
   Image,
@@ -9,13 +10,16 @@ import {
   View
 } from 'react-native';
 
-import {colors, screenWidth} from '../styles'
+import {colors, screenWidth, styles} from '../styles'
 
 const Actions = require('react-native-router-flux').Actions;
 
 import {IconCircle} from "./IconCircle";
 import {eventBus} from "../../util/EventBus";
 import {Scheduler} from "../../logic/Scheduler";
+import {Util} from "../../util/Util";
+import {Icon} from "./Icon";
+import {AnimatedIconCircle} from "./animated/AnimatedIconCircle";
 
 
 class MeshElementClass extends Component<any, any> {
@@ -105,6 +109,7 @@ class MeshElementClass extends Component<any, any> {
       this.reachable = true;
       this.state.pulse.stopAnimation();
       this.state.pulse.setValue(0);
+      this.forceUpdate()
     }
     else {
       this.animatePulse()
@@ -122,7 +127,7 @@ class MeshElementClass extends Component<any, any> {
       this.state.pulse.stopAnimation();
 
       let animations = [];
-      animations.push(Animated.timing(this.state.pulse,     {toValue: 0, duration: 600}))
+      animations.push(Animated.timing(this.state.pulse, {toValue: 0, duration: 600}))
       Animated.parallel(animations).start();
     }
   }
@@ -131,6 +136,32 @@ class MeshElementClass extends Component<any, any> {
   componentWillUnmount() {
     clearTimeout(this.moveAnimationTimeout);
     this.unsubscribeControlEvents.forEach((unsub) => { unsub() });
+  }
+
+  _getUpdateIcon(iconSize) {
+    let size = iconSize / 2.5;
+    let borderWidth = 0.08*size;
+    let innerSize = size - 2*borderWidth;
+    return (
+      <View style={[{
+        position: 'absolute',
+        top: 0,
+        left: iconSize - size,
+        width:size,
+        height:size,
+        borderRadius:size * 0.5,
+        backgroundColor: colors.white.hex,
+      }, styles.centered]}>
+        <View style={[{
+          width:innerSize,
+          height:innerSize,
+          borderRadius:innerSize * 0.5,
+          backgroundColor: colors.orange.hex
+        }, styles.centered]}>
+          <Icon name={'c1-update-arrow'} size={innerSize - 2 * borderWidth} color={ colors.white.hex } />
+        </View>
+      </View>
+    )
   }
 
 
@@ -150,6 +181,10 @@ class MeshElementClass extends Component<any, any> {
     let height   = 2*this.props.radius;
     let iconSize = width;
 
+    let fontContainerViewStyle = { position:'absolute', top: 0, left: 2.1*this.props.radius, height: height, width: 0.5*screenWidth, alignItems:'flex-start', justifyContent:'center' };
+    let fontViewStyle = { backgroundColor: colors.white.hex, padding: 7, borderRadius:8, borderColor: colors.csBlue.rgba(0.1), borderWidth: 2 };
+
+    let supportedFirmware = Util.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.0');
     return (
       <Animated.View style={[animatedStyle, { position:'absolute', top: this.props.pos.y, left: this.props.pos.x, width: this.state.width, height: this.state.height, overflow:'hidden'}]}>
         <Animated.View style={{position:'absolute', top: this.state.locationY, left: this.state.locationX}}>
@@ -161,43 +196,42 @@ class MeshElementClass extends Component<any, any> {
             borderColor={this.reachable ? colors.white.hex : colors.csBlue.hex}
             borderWidth={this.reachable ? 5 : undefined}
           />
-          <Text style={{
-            position:'absolute', top: 0, left: 2.1*this.props.radius,
-            lineHeight:height, height: height, width: 0.5*screenWidth,
-            fontSize:15
-          }}>{this.props.nodeData.locationTitle}</Text>
+          <View style={fontContainerViewStyle}>
+            <View style={fontViewStyle}>
+              <Text style={{fontSize:15}}>{this.props.nodeData.locationTitle}</Text>
+            </View>
+          </View>
         </Animated.View>
-        <Animated.View style={{
+        <View style={{
           position:'absolute',
-          top: this.state.deviceX,
+          top:  this.state.deviceX,
           left: this.state.deviceY,
-          backgroundColor:pulseColor,
-          borderRadius: this.props.radius
         }}>
-          <IconCircle
+          <AnimatedIconCircle
             icon={this.props.nodeData.deviceIcon}
             size={iconSize}
-            backgroundColor={'transparent'}
+            backgroundColor={pulseColor}
             color="#fff"
             borderColor={this.reachable ? colors.green.hex : colors.csBlue.hex}
             borderWidth={this.reachable ? 5 : undefined}
           />
-          <Text style={{
-            position:'absolute', top: 0, left: 2.1*this.props.radius,
-            lineHeight:height, height: height, width: 0.5*screenWidth,
-            fontSize:15
-          }}>{this.props.nodeData.element.config.name}</Text>
-        </Animated.View>
+          <View style={fontContainerViewStyle}>
+            <View style={fontViewStyle}>
+              <Text style={{fontSize:15}}>{this.props.nodeData.element.config.name}</Text>
+            </View>
+          </View>
+        </View>
+        { supportedFirmware ? undefined : this._getUpdateIcon(iconSize) }
       </Animated.View>
     )
   }
 
   handleTouch(data) {
     if (this.expanded) {
-      this._revert();
+      this._revert(data);
     }
     else {
-      this._expand();
+      this._expand(data);
     }
   }
 
@@ -205,11 +239,20 @@ class MeshElementClass extends Component<any, any> {
 
   }
 
-  _expand() {
+  _expand(data) {
     this.expanded = true;
     this._stopAnimations();
 
-    let offset = 1.25*this.props.radius;;
+    let offset = 1.25*this.props.radius;
+
+
+    let supportedFirmware = Util.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.0');
+    console.log("LAL", data)
+    if (!supportedFirmware && data) {
+      if (data.dx > this.props.radius && data.dy > -this.props.radius) {
+        Alert.alert("Update Required", "The firmware of this Crownstone must be updated before it can show connections.", [{text: 'OK'}]);
+      }
+    }
 
     let tapAnimations = [];
     tapAnimations.push(Animated.spring(this.state.scale,      { toValue: 1.35, friction: 4, tension: 70 }));
@@ -221,7 +264,7 @@ class MeshElementClass extends Component<any, any> {
     Animated.parallel(tapAnimations).start();
   }
 
-  _revert() {
+  _revert(data) {
     this.expanded = false;
     this._stopAnimations();
 
@@ -236,16 +279,7 @@ class MeshElementClass extends Component<any, any> {
     Animated.parallel(revertAnimations).start();
   }
 
-  handleTap(data) {
-    // this._stopAnimations();
-    //
-    // this.state.scale.setValue(1);
-    // this.state.locationX.setValue(0);
-    // this.state.locationY.setValue(0);
-    // this.state.opacity.setValue(0);
-    // this.state.width.setValue(2*this.props.radius);
-    // this.state.height.setValue(2*this.props.radius);
-  }
+  handleTap(data) {}
 
   _stopAnimations() {
     this.state.scale.stopAnimation();
