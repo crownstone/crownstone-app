@@ -10,8 +10,6 @@ import {screenHeight, screenWidth} from "../styles";
 import {preparePictureURI, Util} from "../../util/Util";
 import {eventBus} from "../../util/EventBus";
 import {request} from "../../cloud/cloudCore";
-import { LoaderResolver } from "webgltexture-loader";
-import "webgltexture-loader-react-native"; // import support for DOM, including video, canvas or simple image url
 
 export class ShadedImage extends Component<{
   image: string,
@@ -33,6 +31,7 @@ export class ShadedImage extends Component<{
   _opacity = 1;
   _crossfade = 0;
   _uid = Util.getUUID();
+  cacheBuster = 0;
 
   constructor(props) {
     super(props);
@@ -42,6 +41,7 @@ export class ShadedImage extends Component<{
     this.loadedImageURI = {uri:preparePictureURI(this.loadedImage)};
 
     this.state = { debugText: '', opacity: new Animated.Value(this.props.enableOpacityFade ? 1 : 0) };
+    this.cacheBuster = Math.random();
   }
 
   componentWillUnmount() {
@@ -358,7 +358,7 @@ void main() {
       if (this.props.backgroundImageSource && this.props.ignoreBackground !== true) {
         promises.push(rngl.loadTexture({ image: this.props.backgroundImageSource, yflip: false }).then((texture) => { images.background = texture; }))
       }
-      promises.push(rngl.loadTexture({ image: this.loadedImageURI, yflip: false }).then((texture) => { images.cover = texture; }))
+      promises.push(rngl.loadTexture({ image: this.loadedImageURI + "?r=" + this.cacheBuster, yflip: false }).then((texture) => { images.cover = texture; }))
 
       Promise.all(promises)
         .then(() => {
@@ -421,6 +421,7 @@ void main() {
         })
         loadedTextures = [];
       }
+      this.cacheBuster = Math.random();
       drawWithNewTexture(true);
     })
 

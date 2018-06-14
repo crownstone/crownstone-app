@@ -25,6 +25,7 @@ import {eventBus} from "../../util/EventBus";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {FinalizeLocalizationIcon} from "../components/FinalizeLocalizationIcon";
 import {TopbarButton, TopbarLeftButton} from "../components/topbar/TopbarButton";
+import {AlternatingContent} from "../components/animated/AlternatingContent";
 
 export class SphereOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -41,10 +42,31 @@ export class SphereOverview extends Component<any, any> {
       }
     }
 
+    let headerLeft = undefined;
+    if (paramsToUse.showFinalizeNavigationButton) {
+      if (Platform.OS === 'android') {
+        headerLeft = (
+          <AlternatingContent
+            style={{width: 40, height: 40, backgroundColor:'transparent', borderRadius: 6}}
+            fadeDuration={500}
+            switchDuration={2000}
+            contentArray={[
+              <FinalizeLocalizationIcon />,
+              <Icon name="md-menu" size={27} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
+            ]}
+          />
+        );
+      }
+      else {
+        headerLeft = <TopbarLeftButton item={<FinalizeLocalizationIcon />} onPress={paramsToUse.showFinalizeIndoorNavigationCallback} />
+      }
+    }
+
+
     return {
       title: paramsToUse.title,
       // headerTitle: <Component /> // used to insert custom header Title component
-      headerLeft: paramsToUse.showFinalizeNavigationButton ? <TopbarLeftButton item={<FinalizeLocalizationIcon />} onPress={paramsToUse.showFinalizeIndoorNavigationCallback} />  : undefined
+      headerLeft: headerLeft
       // headerRight: <Component /> // used to insert custom header Right component
       // headerBackImage: require("path to image") // customize back button image
     }
@@ -272,8 +294,6 @@ function getNavBarParams(state, props) {
 }
 
 let NAVBAR_PARAMS_CACHE = null;
-
-
 
 
 class SphereChangeButton extends Component<any, any> {
