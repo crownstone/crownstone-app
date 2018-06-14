@@ -388,6 +388,7 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
       newState.temperatureDimmer = false;
       newState.dimmerOnFailure   = false;
       newState.dimmerOffFailure  = false;
+
       newState.hasError          = false;
       return newState;
     case 'REFRESH_DEFAULTS':

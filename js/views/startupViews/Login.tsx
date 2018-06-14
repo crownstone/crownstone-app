@@ -32,6 +32,10 @@ import {TopBar} from "../components/Topbar";
 export class Login extends Component<any, any> {
   progress : number;
 
+  emailInputRef    = null;
+  passwordInputRef = null;
+
+
   constructor(props) {
     super(props);
     this.state = {email: SessionMemory.loginEmail || '', password:''};
@@ -190,6 +194,7 @@ export class Login extends Component<any, any> {
           <View style={{flex:3, width:screenWidth}} />
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput
+              ref={(input) => { this.emailInputRef = input; }}
               style={{width: 0.8*screenWidth, padding:10}}
               placeholder='email'
               keyboardType='email-address'
@@ -198,11 +203,13 @@ export class Login extends Component<any, any> {
               placeholderTextColor='#888'
               value={this.state.email}
               callback={(newValue) => { this.setState({email:newValue});}}
+              endCallback={() => { this.passwordInputRef.focus() }}
             />
           </View>
           <View style={{height:10, width:screenWidth}} />
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput
+              ref={(input) => { this.passwordInputRef = input; }}
               style={{width: 0.8*screenWidth, padding:10}}
               secureTextEntry={true}
               placeholder='password'

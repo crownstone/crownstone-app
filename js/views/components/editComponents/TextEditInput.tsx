@@ -13,6 +13,7 @@ export class TextEditInput extends Component<any, any> {
   blurListener : any;
   unsubscribe : any;
   blurValue : string;
+  focusEmitted : boolean = false;
 
   constructor(props) {
     super(props);
@@ -22,13 +23,13 @@ export class TextEditInput extends Component<any, any> {
     this.refName = (Math.random() * 1e9).toString(36);
 
     // make sure we submit the data if the keyboard is hidden.
-    this.blurListener = Keyboard.addListener('keyboardDidHide', () => { this.blur();  });
-    this.unsubscribe = eventBus.on("inputComplete", () => { this.blur(); })
+    this.blurListener = Keyboard.addListener('keyboardDidHide', () => { this._blur(); });
+    this.unsubscribe  = eventBus.on("inputComplete",            () => { this._blur(); });
   }
 
   componentWillUnmount() {
     if (this.isInFocus === true) {
-      this.blur();
+      this._blur();
     }
     this.unsubscribe();
     this.blurListener.remove();
@@ -37,19 +38,29 @@ export class TextEditInput extends Component<any, any> {
   componentDidMount() { }
 
   focus() {
-    this.isInFocus = true;
+    (this.refs[this.refName] as any).focus()
+
+  }
+
+  blur() {
+    (this.refs[this.refName] as any).blur()
+  }
+
+  _focus() {
+    this.isInFocus   = true;
     this.initialized = true;
-    this.blurValue = null;
+    this.blurValue   = null;
     if (!this.props.autoFocus) {
       (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
         eventBus.emit("focus", py);
+        this.focusEmitted = true;
       })
     }
   }
 
-  blur() {
+  _blur() {
     if (this.initialized) {
-      if (this.blurValue !== this.props.value) {
+      if (this.blurValue !== this.props.value || this.focusEmitted === true) {
         this.blurValue = this.props.value;
         this.isInFocus = false;
         if (this.props.__validate) {
@@ -59,6 +70,7 @@ export class TextEditInput extends Component<any, any> {
           this.props.endCallback(this.props.value);
         }
         eventBus.emit('blur');
+        this.focusEmitted = false;
       }
     }
   }
@@ -67,7 +79,7 @@ export class TextEditInput extends Component<any, any> {
     if (this.props.submitOnEnter === true) {
       if (newValue) {
         if (newValue.indexOf('\n') !== -1) {
-          setTimeout(() => { (this.refs[this.refName] as any).blur(); },0);
+          setTimeout(() => { (this.refs[this.refName] as any)._blur(); },0);
           return newValue.replace('\n','');
         }
       }
@@ -81,14 +93,14 @@ export class TextEditInput extends Component<any, any> {
         ref={this.refName}
         autoFocus={this.props.autoFocus || false}
         autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
-        autoCorrect={this.props.autoCorrect || false}
+        autoCorrect={  this.props.autoCorrect || false}
         keyboardType={ this.props.keyboardType || 'default'}
-        blurOnSubmit={this.props.blurOnSubmit || (this.props.multiline !== false)}
-        maxLength={this.props.maxLength}
+        blurOnSubmit={ this.props.blurOnSubmit || (this.props.multiline !== false)}
+        maxLength={ this.props.maxLength }
         multiline={ this.props.multiline }
-        onEndEditing={() => { this.blur(); }}
-        onBlur={() => { this.blur(); }}
-        onSubmitEditing={() => { this.blur(); }}
+        onEndEditing={() => { this._blur(); }}
+        onBlur={() => { this._blur(); }}
+        onSubmitEditing={() => { this._blur(); }}
         onChangeText={(newValue) => {
           if (this.props.maxLength && newValue) {
             if (newValue.length > this.props.maxLength) {
@@ -99,7 +111,7 @@ export class TextEditInput extends Component<any, any> {
           let updatedValue = this._checkForEnter(newValue);
           this.props.callback(updatedValue);
         }}
-        onFocus={() => {this.focus();}}
+        onFocus={() => {this._focus();}}
         placeholder={this.props.placeholder || this.props.label}
         placeholderTextColor={this.props.placeholderTextColor}
         returnKeyType={this.props.returnKeyType}
