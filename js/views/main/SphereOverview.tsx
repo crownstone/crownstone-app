@@ -13,19 +13,21 @@ import {
   View
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
-import { SetupStateHandler }                              from '../../native/setup/SetupStateHandler'
-import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
-import { Icon }                                           from '../components/Icon'
-import { Sphere }                                         from './Sphere'
-import { requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
-import { LOG }                        from '../../logging/Log'
-import {colors, OrangeLine, screenWidth, topBarHeight} from '../styles'
-import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
-import {eventBus} from "../../util/EventBus";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {FinalizeLocalizationIcon} from "../components/FinalizeLocalizationIcon";
-import {TopbarButton, TopbarLeftButton} from "../components/topbar/TopbarButton";
-import {AlternatingContent} from "../components/animated/AlternatingContent";
+import { SetupStateHandler }        from '../../native/setup/SetupStateHandler'
+import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
+import { Icon }                     from '../components/Icon'
+import { Sphere }                   from './Sphere'
+import { LOG }                      from '../../logging/Log'
+import { colors, OrangeLine }       from '../styles'
+import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
+import { Permissions}               from "../../backgroundProcesses/PermissionManager";
+import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
+import { TopbarLeftButton }         from "../components/topbar/TopbarButton";
+import { AlternatingContent }       from "../components/animated/AlternatingContent";
+import { topBarStyle }              from "../components/topbar/TopbarStyles";
+import { SphereChangeButton }       from "./buttons/SphereChangeButton";
+import { AddItemButton }            from "./buttons/AddItemButton";
+import { SphereUtil }               from "../../util/SphereUtil";
 
 export class SphereOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -42,23 +44,34 @@ export class SphereOverview extends Component<any, any> {
       }
     }
 
-    let headerLeft = undefined;
-    if (paramsToUse.showFinalizeNavigationButton) {
+    if (paramsToUse.showFinalizeNavigationButton || paramsToUse.showMailIcon) {
+      let headerLeft = null
       if (Platform.OS === 'android') {
+        let contentArray = [];
+
+        if (paramsToUse.showFinalizeNavigationButton) { contentArray.push(<FinalizeLocalizationIcon />); }
+        if (paramsToUse.showMailIcon)                 { contentArray.push(<Icon name='md-mail' size={27} style={{color:colors.white.hex}} />); }
+        contentArray.push(<Icon name="md-menu" size={27} color={colors.white.hex} />);
+
         headerLeft = (
           <AlternatingContent
-            style={{width: 40, height: 40, backgroundColor:'transparent', borderRadius: 6}}
+            style={topBarStyle.topBarLeftTouch}
             fadeDuration={500}
             switchDuration={2000}
-            contentArray={[
-              <FinalizeLocalizationIcon />,
-              <Icon name="md-menu" size={27} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
-            ]}
+            onPress={() => { Actions.drawerOpen(); }}
+            contentArray={contentArray}
           />
         );
       }
       else {
         headerLeft = <TopbarLeftButton item={<FinalizeLocalizationIcon />} onPress={paramsToUse.showFinalizeIndoorNavigationCallback} />
+      }
+      return {
+        title: paramsToUse.title,
+        // headerTitle: <Component /> // used to insert custom header Title component
+        headerLeft: headerLeft
+        // headerRight: <Component /> // used to insert custom header Right component
+        // headerBackImage: require("path to image") // customize back button image
       }
     }
 
@@ -66,7 +79,7 @@ export class SphereOverview extends Component<any, any> {
     return {
       title: paramsToUse.title,
       // headerTitle: <Component /> // used to insert custom header Title component
-      headerLeft: headerLeft
+      // headerLeft:  <Component /> // used to insert custom header Title component
       // headerRight: <Component /> // used to insert custom header Right component
       // headerBackImage: require("path to image") // customize back button image
     }
@@ -196,171 +209,35 @@ export class SphereOverview extends Component<any, any> {
       );
     }
   }
-
-  _getMailIcon() {
-    return (
-      <View style={{flex: 1, alignItems: 'flex-start', justifyContent: 'center'}}>
-        <Icon name={'md-mail'} size={25} style={{color:colors.white.hex}} />
-      </View>
-    );
-  }
 }
 
 function getNavBarParams(state, props) {
   LOG.info("UPDATING SPHERE OVERVIEW NAV BAR");
-  let sphereIds = Object.keys(state.spheres);
-  let amountOfSpheres = sphereIds.length;
-
-  let blockAddButton = false;
-  let activeSphereId = state.app.activeSphere;
-
-  if (amountOfSpheres > 0) {
-    if (!activeSphereId) {
-      activeSphereId = sphereIds[0];
-    }
-    let activeSphere = state.spheres[activeSphereId];
-
-    let sphereIsPresent = activeSphere.config.present;
-
-    // are there enough in total?
-    let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state, activeSphereId);
-
-    // do we need more fingerprints?
-    let requiresFingerprints = requireMoreFingerprints(state, activeSphereId);
-
-    let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length : 0) == 0;
-    let noRooms = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
-
-
-    let spherePermissions = Permissions.inSphere(activeSphereId);
-
-    let showFinalizeIndoorNavigationButton = (
-      state.app.indoorLocalizationEnabled &&
-      spherePermissions.doLocalizationTutorial &&
-      sphereIsPresent === true && // only show this if you're there.
-      enoughCrownstonesForLocalization === true && // Have 4 or more crownstones
-      (noRooms === true || requiresFingerprints === true)  // Need more fingerprints.
-    );
-
-    let showFinalizeIndoorNavigationCallback = () => {
-      if (!sphereIsPresent) {
-        Alert.alert(
-          "You'll have to be in the Sphere to continue.",
-          "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!",
-          [{text: 'OK'}]
-        );
-      }
-      else if (noRooms) {
-        Alert.alert(
-          "Let's create some rooms!",
-          "Tap the icon on the bottom-right to add a room!",
-          [{text: 'OK'}]
-        );
-      }
-      else if (enoughCrownstonesInLocationsForIndoorLocalization(state, activeSphereId)) {
-        eventBus.emit("showLocalizationSetupStep2", activeSphereId);
-      }
-      else {
-        Actions.roomOverview({
-          sphereId: activeSphereId,
-          locationId: null,
-          title: 'First things first :)',
-          hideRight: true,
-          usedForIndoorLocalizationSetup: true,
-          overlayText:'Place your Crownstones in rooms!',
-          explanation: "Tap a Crownstone to see it's details, then tap 'Not in room' in the top-left corner!"
-        });
-      }
-    };
-
-    let showMailIcon = activeSphere.config.newMessageFound;
-
-    NAVBAR_PARAMS_CACHE = {
-      title: activeSphere.config.name,
-      showFinalizeNavigationButton: showFinalizeIndoorNavigationButton,
-      showFinalizeIndoorNavigationCallback: showFinalizeIndoorNavigationCallback,
-      showAdd: !noStones && spherePermissions.addRoom && !blockAddButton,
-      activeSphereId: activeSphereId
-    }
-  }
-  else {
+  let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
+  if (sphereId === null) {
     NAVBAR_PARAMS_CACHE = {
       title: "Hello there!",
       showFinalizeNavigationButton: false,
     }
   }
+  else {
+    let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
+    let newMailAvailable = SphereUtil.newMailAvailable(state);
+    NAVBAR_PARAMS_CACHE = {
+      title: sphere.config.name,
+      showMailIcon: newMailAvailable,
+      showFinalizeNavigationButton: finalizeLocalization.showItem,
+      showFinalizeIndoorNavigationCallback: finalizeLocalization.action,
+      activeSphereId: sphereId,
+    }
+  }
 
   return NAVBAR_PARAMS_CACHE;
+
 }
 
 let NAVBAR_PARAMS_CACHE = null;
 
-
-class SphereChangeButton extends Component<any, any> {
-  render() {
-    let outerRadius = 0.11*screenWidth;
-    let size = 0.084*screenWidth;
-    let color = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
-    return (
-      <TouchableOpacity style={{
-        position:'absolute',
-        top: 0,
-        left: 0,
-        padding: 6,
-        paddingRight:10,
-        paddingBottom:10,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center',
-      }}
-      onPress={() => { eventBus.emit('showSphereSelectionOverlay'); }}>
-        <View style={{
-          width: outerRadius,
-          height:outerRadius,
-          borderRadius:0.5*outerRadius,
-          backgroundColor: colors.white.rgba(0.5),
-          alignItems:'center',
-          justifyContent:'center',
-        }}>
-          <Icon name="c1-sphere" size={size} color={ color } />
-        </View>
-      </TouchableOpacity>
-    );
-  }
-}
-
-class AddItemButton extends Component<any, any> {
-  render() {
-    let outerRadius = 0.11*screenWidth;
-    let size = 0.083*screenWidth;
-    let color = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
-    return (
-      <TouchableOpacity style={{
-        position:'absolute',
-        bottom: 0,
-        right: 0,
-        padding: 6,
-        paddingLeft:10,
-        paddingTop:10,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center',
-      }}
-        onPress={() => { Actions.addItemsToSphere({sphereId: this.props.sphereId}) }}>
-        <View style={{
-          width: outerRadius,
-          height:outerRadius,
-          borderRadius:0.5*outerRadius,
-          backgroundColor: colors.white.rgba(0.5),
-          alignItems:'center',
-          justifyContent:'center',
-        }}>
-          <Icon name="c3-addRounded" size={ size } color={ color } />
-        </View>
-      </TouchableOpacity>
-    );
-  }
-}
 
 export const overviewStyles = StyleSheet.create({
   mainText: {

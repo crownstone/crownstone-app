@@ -31,6 +31,8 @@ export const topBarStyle = StyleSheet.create({
     height:barHeight,
     width:70,
     paddingLeft: 10,
+    alignItems:'flex-start',
+    justifyContent:'center'
   },
   topBarRightTouch: {
     // backgroundColor:'#ff0',

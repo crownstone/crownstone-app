@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
+  TouchableOpacity,
   View
 } from 'react-native';
 import { FadeInView } from './FadeInView'
@@ -33,7 +34,7 @@ export class AlternatingContent extends Component<any, any> {
     let content = [];
     for (let i = 0; i < this.props.contentArray.length; i++) {
       content.push(
-        <FadeInView key={i + "_alternatingContent"} duration={this.props.fadeDuration || 400} visible={i === this.state.visibleIndex} style={[this.props.style, {position:'absolute', top:0,  justifyContent:'center', alignItems:'center',}]}>
+        <FadeInView key={i + "_alternatingContent"} duration={this.props.fadeDuration || 400} visible={i === this.state.visibleIndex} style={[{position:'absolute', top:0,  justifyContent:'center', alignItems:'center'}, this.props.style]}>
           {this.props.contentArray[i]}
         </FadeInView>
       );
@@ -42,10 +43,19 @@ export class AlternatingContent extends Component<any, any> {
   }
 
   render() {
-    return (
-      <View style={this.props.style}>
-        {this.getContent()}
-      </View>
-    )
+    if (this.props.onPress) {
+      return (
+        <TouchableOpacity style={this.props.style} onPress={this.props.onPress}>
+          {this.getContent()}
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return (
+        <View style={this.props.style}>
+          {this.getContent()}
+        </View>
+      );
+    }
   }
 }

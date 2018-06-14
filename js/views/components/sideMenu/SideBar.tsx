@@ -22,6 +22,7 @@ import { AppUtil }                  from '../../../util/AppUtil'
 import { SettingConstructor }       from '../../../util/SettingConstructor'
 import { LOG }                      from "../../../logging/Log";
 import { StoreManager }             from "../../../router/store/storeManager";
+import { SphereUtil }               from "../../../util/SphereUtil";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -67,40 +68,29 @@ export class SideBar extends Component<any, any> {
 
   _getActions() {
     let actionItems = [];
-    if (this.props.viewProps && this.props.viewProps.actions) {
-      if (this.props.viewProps.actions.finalizeLocalization !== undefined) {
-        actionItems.push({
-          id: 'finalizeLocalization',
-          label: 'Setup localization',
-          icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
-          callback: () => {
-            () => { Actions.drawerClose() };
-            this.props.viewProps.actions.finalizeLocalization();
-          }
-        });
-      }
+
+    let state = this.store.getState();
+    let finalizeLocalization = SphereUtil.finalizeLocalizationData(state)
+
+    if (finalizeLocalization.showItem) {
+      actionItems.push({
+        id: 'finalizeLocalization',
+        label: 'Setup localization',
+        icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
+        callback: () => {
+          Actions.drawerClose()
+          finalizeLocalization.action()
+        }
+      });
     }
     return actionItems;
   }
 
   _getMenuItems() {
     let menuItems = [];
-    // menuItems.push({
-    //   id: 'overview',
-    //   label: 'Overview',
-    //   icon: <Icon name={"ios-color-filter-outline"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-    //   callback: () => {
-    //     Actions.sphereOverview({type:'reset'});
-    //     setTimeout(() => {this.props.closeCallback();},0)
-    //   }
-    // });
 
     let state = this.store.getState();
-    let activeSphereId = state.app.activeSphere;
-    let highlight = false;
-    if (activeSphereId && state.spheres[activeSphereId]) {
-      highlight = state.spheres[activeSphereId].config.newMessageFound
-    }
+    let highlight = SphereUtil.newMailAvailable(state)
 
     menuItems.push({
       id: 'messages',
@@ -232,7 +222,7 @@ class MenuItem extends Component<any, any> {
         borderBottomWidth:1,
         borderColor: colors.darkGray.rgba(0.1),
         backgroundColor: backgroundColor,
-        alignItems:'center'
+        alignItems:'center',
       }} onPress={() => {
         this.props.callback();
       }}>

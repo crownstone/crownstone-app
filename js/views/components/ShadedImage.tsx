@@ -31,7 +31,6 @@ export class ShadedImage extends Component<{
   _opacity = 1;
   _crossfade = 0;
   _uid = Util.getUUID();
-  cacheBuster = 0;
 
   constructor(props) {
     super(props);
@@ -41,7 +40,6 @@ export class ShadedImage extends Component<{
     this.loadedImageURI = {uri:preparePictureURI(this.loadedImage)};
 
     this.state = { debugText: '', opacity: new Animated.Value(this.props.enableOpacityFade ? 1 : 0) };
-    this.cacheBuster = Math.random();
   }
 
   componentWillUnmount() {
@@ -54,7 +52,7 @@ export class ShadedImage extends Component<{
     if (this.props.image !== prevProps.image || this.props.imageTaken !== prevProps.imageTaken) {
       this.loadedImage = this.props.image;
       this.loadedImageTaken = this.props.imageTaken;
-      this.loadedImageURI = {uri:this.loadedImage};
+      this.loadedImageURI = {uri: preparePictureURI(this.loadedImage) };
       eventBus.emit("changedPicture" + this._uid);
     }
     else if (
@@ -358,7 +356,7 @@ void main() {
       if (this.props.backgroundImageSource && this.props.ignoreBackground !== true) {
         promises.push(rngl.loadTexture({ image: this.props.backgroundImageSource, yflip: false }).then((texture) => { images.background = texture; }))
       }
-      promises.push(rngl.loadTexture({ image: this.loadedImageURI + "?r=" + this.cacheBuster, yflip: false }).then((texture) => { images.cover = texture; }))
+      promises.push(rngl.loadTexture({ image: this.loadedImageURI, yflip: false }).then((texture) => { images.cover = texture; }))
 
       Promise.all(promises)
         .then(() => {
@@ -421,7 +419,6 @@ void main() {
         })
         loadedTextures = [];
       }
-      this.cacheBuster = Math.random();
       drawWithNewTexture(true);
     })
 
