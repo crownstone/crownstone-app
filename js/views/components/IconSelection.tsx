@@ -65,7 +65,8 @@ export class IconSelection extends Component<any, any> {
           newIconArray.push(newIcon)
         }
       });
-      stateContent["offset"] = {}
+      stateContent["offset"] = {};
+      stateContent["circleSizeOffset"] = 20;
 
       this.props.categories.forEach((category) => {
         stateContent["offset"][category.key] = {};
@@ -170,7 +171,8 @@ export class IconSelection extends Component<any, any> {
         let leftOffsetLabel = leftExistingOffset + leftOffset;
         let h = ICON_SIZE + 20;
         let small = ICON_SIZE / 2;
-        let sh = small + 20;
+        let sh = small + this.state.circleSizeOffset;
+
         return (
           <View style={[styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ]} key={icons[iconIndex]}>
             <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h}, {backgroundColor: colors.blue.rgba(1)} ]} />
@@ -185,39 +187,41 @@ export class IconSelection extends Component<any, any> {
             <View style={[styles.centered, {position:'absolute', top:5 + 0.5*h - 1, left: 5, width: h, height: 2}, {backgroundColor: colors.black.rgba(0.5)} ]} />
             <TouchableOpacity style={{position:'absolute', top:5, left: 5 +0.25*h, width:0.5*h, height: 0.5*h}} onPress={() => {
               let offsetObj = this.state.offset;
-              offsetObj[categoryKey][icons[iconIndex]].top = String(topOffset - 0.01);
+              offsetObj[categoryKey][icons[iconIndex]].top = String(topOffset - 0.005);
               this.setState({offset: offsetObj})}}
             />
             <TouchableOpacity style={{position:'absolute', top: 0.5*h + 5, left: 5 +0.25*h, width:0.5*h, height: 0.5*h}} onPress={() => {
               let offsetObj = this.state.offset;
-              offsetObj[categoryKey][icons[iconIndex]].top = String(topOffset + 0.01);
+              offsetObj[categoryKey][icons[iconIndex]].top = String(topOffset + 0.005);
               this.setState({offset: offsetObj})}}
             />
             <TouchableOpacity style={{position:'absolute', top:5, left: 5, width:0.25*h, height: h}} onPress={() => {
               let offsetObj = this.state.offset;
-              offsetObj[categoryKey][icons[iconIndex]].left = String(leftOffset - 0.01);
+              offsetObj[categoryKey][icons[iconIndex]].left = String(leftOffset - 0.005);
               this.setState({offset: offsetObj})
             }}
             />
             <TouchableOpacity style={{position:'absolute', top:5, left: 5+0.75*h, width:0.25*h, height: h}} onPress={() => {
               let offsetObj = this.state.offset;
-              offsetObj[categoryKey][icons[iconIndex]].left = String(leftOffset + 0.01);
+              offsetObj[categoryKey][icons[iconIndex]].left = String(leftOffset + 0.005);
               this.setState({offset: offsetObj})
             }}
             />
-            
 
-            {/*<View style={[styles.centered, {position:'absolute', top:10+h, left: 5, width: sh, height:sh}, {backgroundColor: colors.blue.rgba(1)} ]} />*/}
+
             <View style={[styles.centered, {position:'absolute', top:10+h, left: 5, width: sh, height:sh, borderRadius: 0.5*sh}, {backgroundColor: colors.red.rgba(1)} ]} />
-            {/*<View style={[styles.centered, {position:'absolute', top:20+h, left: 15, width: small, height:small}, {backgroundColor: colors.purple.rgba(0.6)} ]} />*/}
-            <View style={[styles.centered, {position:'absolute', top:10+h, left: 5, width: sh, height:sh} ]}>
+            <TouchableOpacity
+              style={[styles.centered, {position:'absolute', top:10+h, left: 5, width: sh, height:sh} ]}
+              onPress={() => {
+                let values = [ -15, -10, -5, 0, 2, 5, 10, 15, 20];
+                let newValue = values[(values.indexOf(this.state.circleSizeOffset) + 1)%values.length]
+                this.setState({circleSizeOffset: newValue})
+              }}
+            >
               <View style={{position:'relative', top: topOffset*small*0.9, left: leftOffset*small*0.9}}>
                 <Icon name={icons[iconIndex]} size={small*0.9} color={ colors.white.hex} />
               </View>
-            </View>
-            {/*<View style={[styles.centered, {position:'absolute', top:10+h, left: 5 + 0.5*sh - 1, width: 2, height:sh},  {backgroundColor: colors.black.rgba(0.5)} ]} />*/}
-            {/*<View style={[styles.centered, {position:'absolute', top:10+h + 0.5*sh - 1, left: 5, width: sh, height: 2}, {backgroundColor: colors.black.rgba(0.5)} ]} />*/}
-
+            </TouchableOpacity>
 
             <Text style={{position:'absolute', top: h + sh + 10, fontSize:14, color: colors.white.hex}}>{icons[iconIndex] + " o:" + topOffsetLabel.toFixed(3) + ',' +  + leftOffsetLabel.toFixed(3)}</Text>
           </View>

@@ -446,7 +446,10 @@ class BatchCommandHandlerClass {
         this._handleAllCommandsForStone(crownstoneToHandle)
           .then((optionsOfPerformedActions : batchCommandEntryOptions) => {
             if (optionsOfPerformedActions.keepConnectionOpenTimeout && optionsOfPerformedActions.keepConnectionOpenTimeout > 0) {
-              this._removeCloseConnectionTimeout();
+              if (typeof this._removeCloseConnectionTimeout === 'function') {
+                this._removeCloseConnectionTimeout();
+                this._removeCloseConnectionTimeout = null;
+              }
               scheduleCloseTimeout( optionsOfPerformedActions.keepConnectionOpenTimeout )
             }
             return this._keepConnectionOpen(options, crownstoneToHandle, false);
