@@ -288,9 +288,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		_reactContext.registerReceiver(new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
+				if (intent.getAction() == null) {
+					return;
+				}
 				if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
 					BleLog.getInstance().LOGi(TAG, "screen 0");
-				} else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+				}
+				else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
 					BleLog.getInstance().LOGi(TAG, "screen 1");
 				}
 			}
@@ -479,6 +483,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		BleLog.getInstance().LOGi(TAG, "setSettings");
 		// keys can be either in plain string or hex string format, check length to determine which
 
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		WritableMap retVal = Arguments.createMap();
 		String adminKey = null;
 		String memberKey = null;
@@ -572,11 +579,31 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	private BleExt getBleExt() {
+		if (_scanner == null || _scanner.getIntervalScanner() == null) {
+			return null;
+		}
 		return _scanner.getIntervalScanner().getBleExt();
 	}
 
 	private BleIbeaconRanging getIBeaconRanger() {
+		if (getBleExt() == null) {
+			return null;
+		}
 		return getBleExt().getIbeaconRanger();
+	}
+
+	private boolean checkBleExt(@Nullable Callback callback) {
+		if (getBleExt() == null) {
+			BleLog.getInstance().LOGw(TAG, "not ready");
+			if (callback != null) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "not ready");
+				callback.invoke(retVal);
+			}
+			return false;
+		}
+		return true;
 	}
 
 	@ReactMethod
@@ -765,15 +792,19 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void connect(final String uuid, final Callback callback) {
 		int rssi = 0;
-		BleDevice dev = getBleExt().getDeviceMap().get(uuid);
-		if (dev != null) {
-			rssi = dev.getAverageRssi();
+		if (getBleExt() != null) {
+			BleDevice dev = getBleExt().getDeviceMap().get(uuid);
+			if (dev != null) {
+				rssi = dev.getAverageRssi();
+			}
 		}
 		BleLog.getInstance().LOGd(TAG, "Connect to " + uuid + " rssi: " + rssi);
 		if (_isTraingingLocalization) {
 			BleLog.getInstance().LOGw(TAG, "Connecting while training localization is bad");
 		}
-
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		_connectCallbackInvoked = false;
 //		_bleExt.connectDevice(uuid, 3, new IDataCallback() {
 //			@Override
@@ -891,6 +922,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void phoneDisconnect(final Callback callback) {
 		// Normal disconnect
 		BleLog.getInstance().LOGd(TAG, "phoneDisconnect");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().disconnectAndClose(false, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -919,7 +953,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void commandFactoryReset(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "commandFactoryReset");
-
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().refreshServices(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -961,10 +997,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	@ReactMethod
-	public void recover(String crownstoneHandle, final Callback callback) {
+	public void recover(String address, final Callback callback) {
 		// If stone is not in recovery mode, then return string "NOT_IN_RECOVERY_MODE" as error data.
-		String address = crownstoneHandle;
 		BleLog.getInstance().LOGi(TAG, "Recover: " + address);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().recover(address, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -1041,6 +1079,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		// int ibeaconMajor
 		// int ibeaconMinor
 
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		final WritableMap retVal = Arguments.createMap();
 
 		int crownstoneId;
@@ -1188,7 +1229,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void bootloaderToNormalMode(final String address, final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "bootloaderToNormalMode: " + address);
-
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().resetBootloader(address, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -1213,6 +1256,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void restartCrownstone(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "restartCrownstone");
 		// Reboots the crownstone, already connected
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().resetDevice(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -1237,6 +1283,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void putInDFU(final Callback callback) {
 		// Puts the crownstone in DFU mode
 		BleLog.getInstance().LOGi(TAG, "putInDFU");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().resetToBootloader(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -1268,6 +1317,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void performDFU(String address, String fileString, final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "performDfu: " + address + " file: " + fileString);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		if (_dfuCallback != null) {
 			BleLog.getInstance().LOGw(TAG, "previous callback was not called");
 		}
@@ -1294,6 +1346,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void getMACAddress(final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "getMacAddress");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		if (getBleExt().isConnected(null)) {
 			// Refresh services, because there is a good chance that this crownstone was just factory reset / recovered.
 			getBleExt().refreshServices(new IStatusCallback() {
@@ -1324,6 +1379,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void sendNoOp(final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "sendNoOp");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		byte[] arr = {};
 		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_NOP, arr.length, arr);
 		getBleExt().writeControl(controlMsg, new IStatusCallback() {
@@ -1349,6 +1407,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void sendMeshNoOp(final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "sendMeshNoOp");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		byte[] arr = {};
 		ControlMsg controlMsgPayload = new ControlMsg(BluenetConfig.CMD_NOP, arr.length, arr);
 		MeshControlPacket meshControlPacket = new MeshControlPacket(controlMsgPayload, 0);
@@ -1381,6 +1442,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void getSwitchState(final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "getSwitchState");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().readSwitch(new IIntegerCallback() {
 			@Override
 			public void onSuccess(int result) {
@@ -1405,6 +1469,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void setSwitchState(Float switchStateFloat, final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "set switch to: " + switchStateFloat);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		int switchState = convertSwitchVal(switchStateFloat);
 		getBleExt().writeSwitch(switchState, new IStatusCallback() {
 			@Override
@@ -1429,6 +1496,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void toggleSwitchState(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "toggleSwitchState");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		// For now: just toggle relay
 		getBleExt().toggleRelay(new IBooleanCallback() {
 			@Override
@@ -1455,6 +1525,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void multiSwitch(final ReadableArray switchItems, final Callback callback) {
 		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
 		BleLog.getInstance().LOGi(TAG, "multiSwitch " + switchItems.toString());
+		if (!checkBleExt(callback)) {
+			return;
+		}
 
 		// Create the multi switch packet
 		MeshMultiSwitchListPacket listPacket = new MeshMultiSwitchListPacket();
@@ -1546,6 +1619,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void getFirmwareVersion(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "getFirmwareVersion");
 		// Returns firmware version string as data
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().readFirmwareRevision(new IByteArrayCallback() {
 			@Override
 			public void onSuccess(byte[] result) {
@@ -1570,6 +1646,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void getHardwareVersion(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "getHardwareVersion");
 		// Returns hardware version string as data
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().readHardwareRevision(new IByteArrayCallback() {
 			@Override
 			public void onSuccess(byte[] result) {
@@ -1594,6 +1673,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void getBootloaderVersion(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "getBootloaderVersion");
 		// Returns bootloader version string as data
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().readBootloaderRevision(new IByteArrayCallback() {
 			@Override
 			public void onSuccess(byte[] result) {
@@ -1625,6 +1707,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		// Assume already connected
 		// returns as data field, a map: { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
 		BleLog.getInstance().LOGi(TAG, "getErrors");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().getBleExtState().getErrorState(new IIntegerCallback() {
 			@Override
 			public void onSuccess(int result) {
@@ -1656,6 +1741,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		// Clears given state errors
 		// Assume already connected
 		BleLog.getInstance().LOGi(TAG, "clearErrors: " + clearErrorsMap.toString());
+		if (!checkBleExt(callback)) {
+			return;
+		}
         int stateErrorBitmask = 0;
 		if (clearErrorsMap.getBoolean("overCurrent"))       { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_OVERCURRENT, stateErrorBitmask); }
 		if (clearErrorsMap.getBoolean("overCurrentDimmer")) { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_OVERCURRENT_DIMMER, stateErrorBitmask); }
@@ -1691,6 +1779,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void lockSwitch(boolean enable, final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "lockSwitch: " + enable);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().writeSwitchLock(enable, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -1714,6 +1805,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void allowDimming(boolean enable, final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "allowDimming: " + enable);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().writeAllowDimming(enable, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -1737,6 +1831,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void setSwitchCraft(boolean enable, final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "setSwitchCraft: " + enable);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		byte[] arr = {(byte)(enable?1:0)};
 		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_ENABLE_SWITCHCRAFT, arr.length, arr);
 		getBleExt().writeControl(controlMsg, new IStatusCallback() {
@@ -1766,9 +1863,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 
 	@ReactMethod
 	public void setTime(double timestampDouble, final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "setTime: " + timestampDouble);
 		// Sets the unix time on the crownstone
 		// Assume already connected
+		BleLog.getInstance().LOGi(TAG, "setTime: " + timestampDouble);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		long timestamp = (long)timestampDouble;
 		getBleExt().writeSetTime(timestamp, new IStatusCallback() {
 			@Override
@@ -1792,9 +1892,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 
 	@ReactMethod
 	public void meshSetTime(double timestampDouble, final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "meshSetTime: " + timestampDouble);
 		// Sets the unix time on the crownstone
 		// Assume already connected
+		BleLog.getInstance().LOGi(TAG, "meshSetTime: " + timestampDouble);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		long timestamp = (long)timestampDouble;
 		byte[] arr = BleUtils.uint32ToByteArray(timestamp);
 		ControlMsg controlMsgPayload = new ControlMsg(BluenetConfig.CMD_SET_TIME, arr.length, arr);
@@ -1823,9 +1926,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 
 	@ReactMethod
 	public void getTime(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "getTime");
 		// Gets the current unix time from the crownstone
 		// Assume already connected
-		BleLog.getInstance().LOGi(TAG, "getTime");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().getBleExtState().getTime(new IIntegerCallback() {
 			@Override
 			public void onSuccess(int result) {
@@ -1858,6 +1964,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		// Adds a new entry to the schedule on an empty spot.
 		// If no empty spots: fails
         BleLog.getInstance().LOGi(TAG, "addSchedule: " + scheduleEntryMap.toString());
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		final ScheduleEntryPacket entryPacket = parseScheduleEntryMap(scheduleEntryMap);
 		if (entryPacket == null) {
 			WritableMap retVal = Arguments.createMap();
@@ -1907,6 +2016,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void setSchedule(ReadableMap scheduleEntryMap, final Callback callback) {
 		// Overwrites a schedule entry at given index.
         BleLog.getInstance().LOGi(TAG, "setSchedule: " + scheduleEntryMap.toString());
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		ScheduleEntryPacket entryPacket = parseScheduleEntryMap(scheduleEntryMap);
 		if (entryPacket == null || !scheduleEntryMap.hasKey("scheduleEntryIndex")) {
 			WritableMap retVal = Arguments.createMap();
@@ -1941,6 +2053,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void clearSchedule(int scheduleEntryIndex, final Callback callback) {
 		// Clears the schedule entry at given index.
         BleLog.getInstance().LOGi(TAG, "clearSchedule: " + scheduleEntryIndex);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		clearScheduleEntry(scheduleEntryIndex, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -1963,6 +2078,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void getAvailableScheduleEntryIndex(final Callback callback) {
 		// Returns an empty spot in the schedule list.
         BleLog.getInstance().LOGi(TAG, "getAvailableScheduleEntryIndex");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getAvailableScheduleEntryIndex(new IIntegerCallback() {
 			@Override
 			public void onSuccess(int result) {
@@ -1986,6 +2104,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void getSchedules(final Callback callback) {
         // Returns an array of schedule entry maps.
         BleLog.getInstance().LOGi(TAG, "getSchedules");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().getBleExtState().getSchedule(new IByteArrayCallback() {
 			@Override
 			public void onSuccess(byte[] result) {
@@ -2251,6 +2372,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void keepAlive(final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "keepAlive");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().writeKeepAlive(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -2275,6 +2399,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void keepAliveState(boolean action, float state, int timeout, final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "keepAliveState: action=" + action + " state=" + state + " timeout=" + timeout);
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		int actionInt = 0;
 		if (action) {
 			actionInt = 1;
@@ -2304,7 +2431,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void meshKeepAlive(final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "meshKeepAlive");
-
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		getBleExt().writeControl(new ControlMsg(BluenetConfig.CMD_KEEP_ALIVE_MESH), new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -2327,7 +2456,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void meshKeepAliveState(int timeout, ReadableArray keepAliveItems, final Callback callback) {
 		// keepAliveItems = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}, {}, ...]
 		BleLog.getInstance().LOGd(TAG, "keepAliveState: " + keepAliveItems.toString());
-
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		// Create new packet, fill it with keep alive items.
 		MeshKeepAliveSameTimeoutPacket sameTimeoutPacket = new MeshKeepAliveSameTimeoutPacket();
 		sameTimeoutPacket.setTimeout(timeout);
@@ -2389,6 +2520,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		// Add the uuid to the list of tracked iBeacons, associate it with given sphereId
 		// Also starts the tracking
 		BleLog.getInstance().LOGi(TAG, "trackIBeacon: " + ibeaconUUID + " sphereId=" + sphereId);
+		if (!checkBleExt(null)) {
+			return;
+		}
 		if (ibeaconUUID == null || sphereId == null) {
 			BleLog.getInstance().LOGe(TAG, "invalid parameters");
 			return;
@@ -2408,6 +2542,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void stopTrackingIBeacon(String ibeaconUUID) {
 		// Remove the uuid from the list of tracked iBeacons
 		BleLog.getInstance().LOGi(TAG, "stopTrackingIBeacon: " + ibeaconUUID);
+		if (!checkBleExt(null)) {
+			return;
+		}
 		UUID uuid = UUID.fromString(ibeaconUUID);
 		getIBeaconRanger().remIbeaconFilter(new BleIbeaconFilter(uuid, -1, -1));
 		_iBeaconSphereIds.remove(uuid);
@@ -2433,6 +2570,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	public void clearTrackedBeacons(Callback callback) {
 		// Clear the list of tracked iBeacons and stop tracking.
 		BleLog.getInstance().LOGi(TAG, "clearTrackedBeacons");
+		if (!checkBleExt(callback)) {
+			return;
+		}
 		setTrackingState(false);
 		getIBeaconRanger().clearIbeaconFilter();
 		_iBeaconSphereIds.clear();
