@@ -122,8 +122,7 @@ export class DeviceEdit extends Component<any, any> {
   constructStoneOptions(stone, state) {
     let items = [];
     let canSwitch = stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.plug;
-    let hasAppliance = canSwitch && !this.state.applianceId;
-
+    let hasAppliance = canSwitch && this.state.applianceId;
 
     if (this.state.applianceId && hasAppliance) {
       items.push({label:'PLUGGED IN DEVICE TYPE', type: 'explanation',  below:false});

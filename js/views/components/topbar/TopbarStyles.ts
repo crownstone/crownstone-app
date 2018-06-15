@@ -29,7 +29,7 @@ export const topBarStyle = StyleSheet.create({
   topBarLeftTouch: {
     // backgroundColor:'#ff0',
     height:barHeight,
-    width:70,
+    width:80,
     paddingLeft: 10,
     alignItems:'flex-start',
     justifyContent:'center'
@@ -37,7 +37,7 @@ export const topBarStyle = StyleSheet.create({
   topBarRightTouch: {
     // backgroundColor:'#ff0',
     height:barHeight,
-    width:70,
+    width:80,
     paddingRight: 10,
   },
   topBarCenter: {

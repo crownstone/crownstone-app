@@ -16,25 +16,25 @@ const Actions = require('react-native-router-flux').Actions;
 import {colors, screenWidth, availableScreenHeight, OrangeLine} from '../styles'
 import { Background } from '../components/Background'
 const Swiper = require("react-native-swiper");
-import { Util } from "../../util/Util";
-import { DeviceBehaviour } from "./elements/DeviceBehaviour";
-import { DeviceSummary } from "./elements/DeviceSummary";
-import { STONE_TYPES } from "../../router/store/reducers/stones";
-import { DeviceError } from "./elements/DeviceError";
-import { DeviceUpdate } from "./elements/DeviceUpdate";
-import { GuidestoneSummary } from "./elements/GuidestoneSummary";
-import { eventBus } from "../../util/EventBus";
-import {DevicePowerCurve} from "./elements/DevicePowerCurve";
-import {DeviceSchedule} from "./elements/DeviceSchedule";
-import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
-import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
-import {TopbarButton} from "../components/topbar/TopbarButton";
-import {SphereDeleted} from "../static/SphereDeleted";
-import {StoneDeleted} from "../static/StoneDeleted";
-import {UsbSummary} from "./elements/UsbSummary";
-import {Scheduler} from "../../logic/Scheduler";
+import { Util }                 from "../../util/Util";
+import { DeviceBehaviour }      from "./elements/DeviceBehaviour";
+import { DeviceSummary }        from "./elements/DeviceSummary";
+import { STONE_TYPES }          from "../../router/store/reducers/stones";
+import { DeviceError }          from "./elements/DeviceError";
+import { DeviceUpdate }         from "./elements/DeviceUpdate";
+import { GuidestoneSummary }    from "./elements/GuidestoneSummary";
+import { eventBus }             from "../../util/EventBus";
+import { DevicePowerCurve }     from "./elements/DevicePowerCurve";
+import { DeviceSchedule }       from "./elements/DeviceSchedule";
+import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
+import { Permissions }          from "../../backgroundProcesses/PermissionManager";
+import { DeviceWhatsNew }       from "./elements/DeviceWhatsNew";
+import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
+import { TopbarButton }         from "../components/topbar/TopbarButton";
+import { SphereDeleted }        from "../static/SphereDeleted";
+import { StoneDeleted }         from "../static/StoneDeleted";
+import { UsbSummary }           from "./elements/UsbSummary";
+import { Scheduler }            from "../../logic/Scheduler";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
