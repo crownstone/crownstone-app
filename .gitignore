@@ -70,6 +70,7 @@ app-logs
 !vis.js
 !./App.js
 !sentrySettings.template.js
+!testRouterEquality.js
 !__tests__/**
 !**.tapetest.js
 
