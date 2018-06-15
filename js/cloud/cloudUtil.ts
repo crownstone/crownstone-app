@@ -57,10 +57,10 @@ function _appendToURL(url, toAppend) {
 }
 function _htmlEncode(str) {
   if (Array.isArray(str) || typeof str === 'object') {
-    return JSON.stringify(str);
+    return encodeURIComponent(JSON.stringify(str));
   }
   else {
-    return str + '';
+    return encodeURIComponent(str + '');
   }
 }
 
