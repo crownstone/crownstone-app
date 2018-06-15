@@ -41,15 +41,13 @@ export class Root extends Component {
 
       let snapBack = () => { Animated.timing(this.state.top, {toValue: 0, duration:0}).start(); };
       let snapBackKeyboard = () => {
-        console.log("snapBackKeyboard")
         if (new Date().valueOf() - this.focusTime > 100) {
           Animated.timing(this.state.top, {toValue: 0, duration: 200}).start();
         }
       };
 
       this.unsubscribe.push(eventBus.on('focus', (posY) => {
-        console.log("focus")
-        let keyboardHeight = 360;
+        let keyboardHeight = 360 + 80; // 80 is to correct of that stupid autofill bar that i cant turn off.
         let distFromBottom = screenHeight - (posY - this.state.top._value);
         this.focusTime = new Date().valueOf();
         Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration: 200}).start()

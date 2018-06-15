@@ -155,7 +155,7 @@ export class TextEditBar extends Component<any, any> {
           ref={this.refName}
           __validate={(value) => {this.validate(value)}}
           {...this.props}
-          secureTextEntry={this.props.secureTextEntry ? (Platform.OS === 'android' ? true : this.state.passwordSecureDisplay  ) : false}
+          secureTextEntry={this.props.secureTextEntry ? (Platform.OS === 'android' ? true : this.state.passwordSecureDisplay   ) : undefined}
           visiblePassword={this.props.secureTextEntry ? (Platform.OS === 'android' ? !this.state.passwordSecureDisplay : false ) : undefined}
           placeholder={this.props.placeholder || this.props.label}
           value={this.props.value}

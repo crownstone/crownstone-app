@@ -9,10 +9,10 @@ import { eventBus }        from '../util/EventBus'
 import { LOG }             from '../logging/Log'
 import { Router_IOS }      from './RouterIOS';
 import { Router_Android }  from './RouterAndroid';
-import { styles} from '../views/styles'
-import SplashScreen from 'react-native-splash-screen'
-import {Splash} from "../views/startupViews/Splash";
-
+import { styles}           from '../views/styles'
+import SplashScreen        from 'react-native-splash-screen'
+import { Splash }          from "../views/startupViews/Splash";
+const Actions = require('react-native-router-flux').Actions;
 
 interface backgroundType {
   setup:any,
@@ -35,7 +35,6 @@ interface backgroundType {
 }
 
 export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared: boolean}> {
-
 
   backgrounds : backgroundType = {
     setup:undefined,

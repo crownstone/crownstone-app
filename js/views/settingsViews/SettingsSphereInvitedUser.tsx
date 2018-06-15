@@ -129,7 +129,7 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width:screenWidth, paddingTop:40}}>
             <ProfilePicture
-              value={user.picture}
+              value={user && user.picture || undefined}
               size={120}
             />
           </View>

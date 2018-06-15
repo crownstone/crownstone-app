@@ -2,6 +2,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
   Image,
+  ScrollView,
   StyleSheet,
   Platform,
   TouchableHighlight,
@@ -24,7 +25,7 @@ import { TextEditInput }                            from '../components/editComp
 import { Background }                               from '../components/Background'
 import { StoreManager }                             from '../../router/store/storeManager'
 import loginStyles                                  from './LoginStyles'
-import { screenWidth, screenHeight, colors }        from '../styles'
+import {screenWidth, screenHeight, colors, availableScreenHeight, topBarHeight} from '../styles'
 import { DEBUG_MODE_ENABLED }                       from '../../ExternalConfig';
 import { TopBar }                                   from "../components/Topbar";
 import { Icon }                                     from "../components/Icon";
@@ -188,45 +189,47 @@ export class Login extends Component<any, any> {
     return (
       <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true} safeView={true}>
         <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent', paddingTop:0}} />
-        <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
-          <View style={{flex:2, width:screenWidth}} />
-          <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
-          <View style={{flex:3, width:screenWidth}} />
-          <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
-            <TextEditInput
-              ref={(input) => { this.emailInputRef = input; }}
-              style={{width: 0.8*screenWidth, padding:10}}
-              placeholder='email'
-              keyboardType='email-address'
-              autocorrect={false}
-              autoCapitalize="none"
-              placeholderTextColor='#888'
-              value={this.state.email}
-              callback={(newValue) => { this.setState({email:newValue});}}
-              endCallback={() => { this.passwordInputRef.focus() }}
-            />
+        <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
+          <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
+            <View style={{flex:2, width:screenWidth}} />
+            <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
+            <View style={{flex:3, width:screenWidth}} />
+            <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
+              <TextEditInput
+                ref={(input) => { this.emailInputRef = input; }}
+                style={{width: 0.8*screenWidth, padding:10}}
+                placeholder='email'
+                keyboardType='email-address'
+                autocorrect={false}
+                autoCapitalize="none"
+                placeholderTextColor='#888'
+                value={this.state.email}
+                callback={(newValue) => { this.setState({email:newValue});}}
+                endCallback={() => { this.passwordInputRef.focus() }}
+              />
+            </View>
+            <View style={{height:10, width:screenWidth}} />
+            <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
+              <TextEditInput
+                ref={(input) => { this.passwordInputRef = input; }}
+                style={{width: 0.8*screenWidth, padding:10}}
+                secureTextEntry={Platform.OS === 'android' ? true : this.state.passwordSecureDisplay  }
+                visiblePassword={Platform.OS === 'android' ? !this.state.passwordSecureDisplay : false }
+                placeholder='password'
+                placeholderTextColor='#888'
+                autoCorrect={false}
+                value={this.state.password}
+                callback={(newValue) => { this.setState({password:newValue});}}
+              />
+              <TouchableOpacity style={{position:'absolute', top:0, right: 0, height:40, width: 40, alignItems:'center', justifyContent: 'center'}} onPress={() => { this.setState({passwordSecureDisplay: !this.state.passwordSecureDisplay })}}>
+                <Icon name={'md-eye'} color={Platform.OS === 'ios' ? (this.state.passwordSecureDisplay ? colors.lightGray2.hex : colors.darkGray2.hex) : colors.lightGray2.hex} size={20} />
+              </TouchableOpacity>
+            </View>
+            <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
+            <Text style={{color: '#93cfff'}}>Forgot Password?</Text></TouchableHighlight>
+            <LoginButton loginCallback={() => {this.attemptLogin()}} />
           </View>
-          <View style={{height:10, width:screenWidth}} />
-          <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
-            <TextEditInput
-              ref={(input) => { this.passwordInputRef = input; }}
-              style={{width: 0.8*screenWidth, padding:10}}
-              secureTextEntry={Platform.OS === 'android' ? true : this.state.passwordSecureDisplay  }
-              visiblePassword={Platform.OS === 'android' ? !this.state.passwordSecureDisplay : false }
-              placeholder='password'
-              placeholderTextColor='#888'
-              autoCorrect={false}
-              value={this.state.password}
-              callback={(newValue) => { this.setState({password:newValue});}}
-            />
-            <TouchableOpacity style={{position:'absolute', top:0, right: 0, height:40, width: 40, alignItems:'center', justifyContent: 'center'}} onPress={() => { this.setState({passwordSecureDisplay: !this.state.passwordSecureDisplay })}}>
-              <Icon name={'md-eye'} color={Platform.OS === 'ios' ? (this.state.passwordSecureDisplay ? colors.lightGray2.hex : colors.darkGray2.hex) : colors.lightGray2.hex} size={20} />
-            </TouchableOpacity>
-          </View>
-          <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
-          <Text style={{color: '#93cfff'}}>Forgot Password?</Text></TouchableHighlight>
-          <LoginButton loginCallback={() => {this.attemptLogin()}} />
-        </View>
+        </ScrollView>
       </Background>
     )
   }

@@ -49,7 +49,7 @@ export class LockOverlay extends Component<any, any> {
     }
 
     if (stone.config.dimmingEnabled) {
-      return "You can only lock Crownstones that are not configured as dimmer.";
+      return "You can only lock Crownstones that do not have dimming enabled.";
     }
 
     if (stone.state.state > 0) {

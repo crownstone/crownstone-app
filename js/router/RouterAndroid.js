@@ -82,6 +82,7 @@ export class Router_Android extends Component {
             <Scene key="applianceSelection"         component={Views.ApplianceSelection}         />
             <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        />
             <Scene key="settingsApp"                component={Views.SettingsApp}                />
+            <Scene key="settingsFAQ"                component={Views.SettingsFAQ}                />
             <Scene key="settingsOverview"           component={Views.SettingsOverview}           />
             <Scene key="settingsProfile"            component={Views.SettingsProfile}            />
             <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          />

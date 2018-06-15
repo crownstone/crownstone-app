@@ -103,8 +103,8 @@ export class Router_IOS extends Component {
         </Router>
 
         <AnimatedMenu />
-        <LibMessages />
-        <DfuOverlay store={this.props.store}  />
+        <LibMessages  />
+        <DfuOverlay  store={this.props.store}  />
         <LockOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />

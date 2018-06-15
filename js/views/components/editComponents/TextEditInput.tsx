@@ -93,15 +93,15 @@ export class TextEditInput extends Component<any, any> {
         ref={this.refName}
         autoFocus={this.props.autoFocus || false}
         autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
-        autoCorrect={  this.props.autoCorrect || false}
+        autoCorrect={  false }
         keyboardType={ this.props.visiblePassword ? 'visible-password' : (this.props.keyboardType || 'default')}
         blurOnSubmit={ this.props.blurOnSubmit || (this.props.multiline !== false)}
-        maxLength={ this.props.maxLength }
-        multiline={ this.props.multiline }
-        onEndEditing={() => { this._blur(); }}
-        onBlur={() => { this._blur(); }}
+        maxLength={    this.props.maxLength }
+        multiline={    this.props.multiline }
+        onEndEditing={   () => { this._blur(); }}
+        onBlur={         () => { this._blur(); }}
         onSubmitEditing={() => { this._blur(); }}
-        onChangeText={(newValue) => {
+        onChangeText={   (newValue) => {
           if (this.props.maxLength && newValue) {
             if (newValue.length > this.props.maxLength) {
               newValue = newValue.substr(0, this.props.maxLength)
