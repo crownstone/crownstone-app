@@ -94,7 +94,7 @@ export class TextEditInput extends Component<any, any> {
         autoFocus={this.props.autoFocus || false}
         autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
         autoCorrect={  this.props.autoCorrect || false}
-        keyboardType={ this.props.keyboardType || 'default'}
+        keyboardType={ this.props.visiblePassword ? 'visible-password' : (this.props.keyboardType || 'default')}
         blurOnSubmit={ this.props.blurOnSubmit || (this.props.multiline !== false)}
         maxLength={ this.props.maxLength }
         multiline={ this.props.multiline }
@@ -117,7 +117,8 @@ export class TextEditInput extends Component<any, any> {
         returnKeyType={this.props.returnKeyType}
         style={[{flex:1, fontSize:16}, this.props.style]}
         secureTextEntry={this.props.secureTextEntry}
-        value={this.props.value}
+        defaultValue={this.props.value}
+        // value={this.props.value}
       />
     );
   }

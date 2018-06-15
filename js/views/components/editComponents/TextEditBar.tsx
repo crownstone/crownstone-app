@@ -1,7 +1,9 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Platform,
   TextInput,
   Text,
+  TouchableOpacity,
   View
 } from 'react-native';
 import { Icon } from '../Icon';
@@ -17,7 +19,7 @@ export class TextEditBar extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {validation: undefined};
+    this.state = {validation: undefined, passwordSecureDisplay: props.initiallyExposed ? false : true};
 
     this.verificationContent = '';
     this.refName = (Math.random() * 1e9).toString(36);
@@ -119,6 +121,31 @@ export class TextEditBar extends Component<any, any> {
     return undefined;
   }
 
+  getExposeIcon() {
+    if (this.props.secureTextEntry && this.props.showExposeIcon !== false) {
+      // check if we're also showing the validation icons.
+      let rightOffset = 0;
+      if (this.props.validationMethod === 'icons') {
+        if (this.state.validation === 'valid')
+          rightOffset = 30;
+        else if (this.state.validation === undefined)
+          rightOffset = 0;
+        else // we can have many different types of errors
+          rightOffset = 30;
+      }
+      return (
+        <TouchableOpacity style={{position:'absolute', top:0, right: rightOffset, height:this.props.barHeight, width: 40, alignItems:'center', justifyContent: 'center'}} onPress={() => { this.setState({passwordSecureDisplay: !this.state.passwordSecureDisplay })}}>
+          <Icon
+            name={'md-eye'}
+            color={Platform.OS === 'ios' ? (this.state.passwordSecureDisplay ? colors.lightGray2.hex : colors.darkGray2.hex) : colors.lightGray2.hex}
+            size={20}
+          />
+        </TouchableOpacity>
+      );
+    }
+    return undefined;
+  }
+
 
   render() {
     return (
@@ -128,10 +155,13 @@ export class TextEditBar extends Component<any, any> {
           ref={this.refName}
           __validate={(value) => {this.validate(value)}}
           {...this.props}
+          secureTextEntry={this.props.secureTextEntry ? (Platform.OS === 'android' ? true : this.state.passwordSecureDisplay  ) : false}
+          visiblePassword={this.props.secureTextEntry ? (Platform.OS === 'android' ? !this.state.passwordSecureDisplay : false ) : undefined}
           placeholder={this.props.placeholder || this.props.label}
           value={this.props.value}
         />
         {this.getValidationIcons()}
+        {this.getExposeIcon()}
       </View>
     );
 
