@@ -27,7 +27,7 @@ import {
   getCurrentPowerUsageInLocation,
   getStonesAndAppliancesInLocation,
   canUseIndoorLocalizationInSphere,
-  enoughCrownstonesForIndoorLocalization
+  enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization
 } from '../../util/DataUtil'
 import { styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth, OrangeLine} from '../styles'
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
@@ -443,14 +443,14 @@ export class RoomOverview extends Component<any, any> {
 /**
  * The right item is the flickering icon for localization.
  * @param state
- * @param enoughCrownstones
+ * @param enoughCrownstonesInLocations
  * @param label
  */
-function getNavBarRightItem(state, enoughCrownstones, label, props, viewingRemotely) {
+function getNavBarRightItem(state, enoughCrownstonesInLocations, label, props, viewingRemotely) {
   if (!state.app.indoorLocalizationEnabled) { return; } // do not show localization if it is disabled
   if (props.locationId === null)            { return; } // floating crownstones do not have settings
   if (viewingRemotely === true)             { return; } // cant train a room when not in the sphere
-  if (!enoughCrownstones)                   { return; } // not enough crownstones to train this room
+  if (!enoughCrownstonesInLocations)                   { return; } // not enough crownstones to train this room
 
   let location = state.spheres[props.sphereId].locations[props.locationId];
   if (location.config.fingerprintRaw !== null) { return; } // there already is a fingerprint, dont show animated training icon.
@@ -487,7 +487,7 @@ function getNavBarRightItem(state, enoughCrownstones, label, props, viewingRemot
 
 function getNavBarParams(state, props, viewingRemotely) {
   let title = undefined;
-  let enoughCrownstones = enoughCrownstonesForIndoorLocalization(state, props.sphereId);
+  let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, props.sphereId);
   if (props.locationId !== null) {
     title = state.spheres[props.sphereId].locations[props.locationId].config.name;
   }
@@ -503,7 +503,7 @@ function getNavBarParams(state, props, viewingRemotely) {
     rightLabel = 'Edit';
     rightAction = () => { Actions.roomEdit({sphereId: props.sphereId, locationId: props.locationId}); };
   }
-  else if (spherePermissions.editRoom === false && props.locationId !== null && enoughCrownstones === true) {
+  else if (spherePermissions.editRoom === false && props.locationId !== null && enoughCrownstonesInLocations === true) {
     rightLabel = 'Train';
     rightAction = () => {
       if (viewingRemotely === true) {
@@ -515,7 +515,7 @@ function getNavBarParams(state, props, viewingRemotely) {
     };
   }
 
-  NAVBAR_PARAMS_CACHE = {title: title, rightItem: getNavBarRightItem(state, enoughCrownstones, rightLabel, props, viewingRemotely), rightAction: rightAction, rightLabel: rightLabel};
+  NAVBAR_PARAMS_CACHE = {title: title, rightItem: getNavBarRightItem(state, enoughCrownstonesInLocations, rightLabel, props, viewingRemotely), rightAction: rightAction, rightLabel: rightLabel};
   return NAVBAR_PARAMS_CACHE;
 }
 

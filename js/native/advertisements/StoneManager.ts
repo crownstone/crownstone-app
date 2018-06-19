@@ -141,6 +141,9 @@ class StoneManagerClass {
   }
 
   _restoreFactoryResetCapability() {
+    if (this.factoryResetUnknownStonesEnableTimeout !== null) {
+      this.factoryResetUnknownStonesEnableTimeout();
+    }
     this.factoryResetUnknownStonesEnableTimeout = Scheduler.scheduleCallback(() => {
       this.factoryResetUnknownStonesEnableTimeout = null;
       this.factoryResetUnknownStonesEnabled = true;
@@ -254,7 +257,10 @@ class StoneManagerClass {
 
     // check if we have a Crownstone with this CID, if not, ignore it.
     if (referenceByCrownstoneId === undefined) {
-      LOGd.native("StoneManager: IGNORE: unknown Crownsotne Id.");
+      // unknown crownstone, factory reset it.
+      LOGd.native("StoneManager: IGNORE: unknown Crownstone Id.");
+      LOGw.native("StoneManager: ATTEMPTING FACTORY RESET OF UNKNOWN CROWNSTONE");
+      this._factoryResetUnknownCrownstone(advertisement.handle);
       return;;
     }
 
@@ -269,7 +275,10 @@ class StoneManagerClass {
 
     let referenceByHandle = MapProvider.stoneSphereHandleMap[sphereId][advertisement.handle];
     if (!referenceByHandle) {
+      // unknown crownstone, factory reset it.
       LOGw.native("StoneManager: IGNORE: UNKNOWN REFERENCE BY HANDLE");
+      LOGw.native("StoneManager: ATTEMPTING FACTORY RESET OF UNKNOWN CROWNSTONE");
+      this._factoryResetUnknownCrownstone(advertisement.handle);
       return;
     }
 
@@ -284,11 +293,7 @@ class StoneManagerClass {
       return;
     }
 
-    // unknown crownstone, factory reset it.
-    if (referenceByHandle === undefined) {
-      this._factoryResetUnknownCrownstone(advertisement.handle);
-      return;
-    }
+
 
     // create an entity for this crownstone if one does not exist yet.
     if (!this.entities[referenceByCrownstoneId.id]) { this.createEntity(sphereId, referenceByCrownstoneId.id); }

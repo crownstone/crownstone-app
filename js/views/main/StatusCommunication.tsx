@@ -11,7 +11,11 @@ import {
 } from 'react-native';
 
 import { Icon }               from '../components/Icon'
-import { requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import {
+  requireMoreFingerprints,
+  enoughCrownstonesInLocationsForIndoorLocalization,
+  enoughCrownstonesForIndoorLocalization
+} from '../../util/DataUtil'
 import { overviewStyles }     from './SphereOverview'
 import { colors, screenWidth, availableScreenHeight} from '../styles'
 import { SetupStateHandler} from "../../native/setup/SetupStateHandler";
@@ -55,7 +59,8 @@ export class StatusCommunication extends Component<any, any> {
       return <View />;
     }
 
-    let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphere);
+    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(state, currentSphere);
+    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphere);
     let requiresFingerprints = requireMoreFingerprints(state, currentSphere);
     let addButtonShown = Permissions.inSphere(currentSphere).addRoom === true;
 
@@ -95,7 +100,7 @@ export class StatusCommunication extends Component<any, any> {
         </View>
       );
     }
-    else if (amountOfVisible >= 3 && enoughForLocalization && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    else if (amountOfVisible >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
           <Text style={descriptionTextStyle}>{'I see ' + amountOfVisible}</Text>
@@ -104,7 +109,7 @@ export class StatusCommunication extends Component<any, any> {
         </View>
       )
     }
-    else if (amountOfVisible > 0 && enoughForLocalization && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    else if (amountOfVisible > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
           <Text style={descriptionTextStyle}>{'I see only ' + amountOfVisible}</Text>
@@ -113,10 +118,17 @@ export class StatusCommunication extends Component<any, any> {
         </View>
       )
     }
-    else if (enoughForLocalization && requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    else if (enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]}>
           <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained so I can\'t do indoor localization.'}</Text>
+        </View>
+      )
+    }
+    else if (!enoughForLocalizationInLocations && enoughForLocalization) {
+      return (
+        <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]}>
+          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not enough Crownstones placed in rooms to do indoor localization.'}</Text>
         </View>
       )
     }

@@ -347,22 +347,20 @@ function handleSphereStateOnDevice(action, state) {
   }
 }
 function handleUserLocationEnter(action, state) {
-  if (state.user.uploadLocation === true) {
-    let deviceId = Util.data.getCurrentDeviceId(state);
-    if (deviceId) {
-      CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => { });
-      CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => {});
+  // only update the cloud if this is from the ACTIVE user
+  if (action.data.userId === state.user.userId) {
+    if (state.user.uploadLocation === true) {
+      let deviceId = Util.data.getCurrentDeviceId(state);
+      if (deviceId) {
+        CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => { });
+        CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => {});
+      }
     }
   }
 }
 
 function handleUserLocationExit(action, state) {
-  // if (state.user.uploadLocation === true) {
-  //   let deviceId = Util.data.getCurrentDeviceId(state);
-  //   if (deviceId) {
-  //     CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => { });
-  //   }
-  // }
+  // we do not need to do anything here since the user leaving is the user entering another room. On sphere exit, both are cleared.
 }
 
 
