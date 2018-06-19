@@ -29,19 +29,19 @@ import {
   canUseIndoorLocalizationInSphere,
   enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
-import {styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth, OrangeLine} from '../styles'
-import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
-import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
-import {RoomExplanation} from '../components/RoomExplanation';
-import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {TopbarButton} from "../components/topbar/TopbarButton";
-import {SphereDeleted} from "../static/SphereDeleted";
-import {RoomDeleted} from "../static/RoomDeleted";
-import {preparePictureURI} from "../../util/Util";
-import {ShadedImage} from "../components/ShadedImage";
-import {Scheduler} from "../../logic/Scheduler";
-import {topBarStyle} from "../components/topbar/TopbarStyles";
+import { styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth, OrangeLine} from '../styles'
+import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
+import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
+import { RoomExplanation }        from '../components/RoomExplanation';
+import { RoomBottomExplanation }  from "../components/RoomBottomExplanation";
+import { Permissions }            from "../../backgroundProcesses/PermissionManager";
+import { TopbarButton }           from "../components/topbar/TopbarButton";
+import { SphereDeleted }          from "../static/SphereDeleted";
+import { RoomDeleted }            from "../static/RoomDeleted";
+import { preparePictureURI }      from "../../util/Util";
+import { ShadedImage }            from "../components/ShadedImage";
+import { Scheduler }              from "../../logic/Scheduler";
+import { topBarStyle }            from "../components/topbar/TopbarStyles";
 
 
 export class RoomOverview extends Component<any, any> {

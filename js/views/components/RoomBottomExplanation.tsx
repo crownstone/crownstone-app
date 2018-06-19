@@ -15,6 +15,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { colors } from '../styles'
 import {eventBus} from "../../util/EventBus";
 import {BackAction} from "../../util/Back";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
 /**
@@ -69,7 +70,10 @@ export class RoomBottomExplanation extends Component<any, any> {
   }
 
   _loadSetupMessage() {
-    if (this.props.locationId !== null && SetupStateHandler.areSetupStonesAvailable()) {
+    // members and guests are not allowed to see setup crownstones.
+    let canSeeSetupCrownstones = Permissions.inSphere(this.props.sphereId).seeSetupCrownstone;
+
+    if (this.props.locationId !== null && SetupStateHandler.areSetupStonesAvailable() && canSeeSetupCrownstones) {
       let explanation = "Crownstone in setup mode found.\nTap here to see it!";
       let buttonCallback = () => {
         BackAction();
@@ -79,7 +83,7 @@ export class RoomBottomExplanation extends Component<any, any> {
       };
       this.setState({explanation: explanation, buttonCallback: buttonCallback});
     }
-    else {
+    else if (canSeeSetupCrownstones) {
       this.setState({explanation: null, buttonCallback: null});
     }
   }

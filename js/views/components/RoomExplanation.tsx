@@ -38,12 +38,13 @@ export class RoomExplanation extends Component<any, any> {
     // check if we have special cases
     let amountOfStonesInRoom = Object.keys(getStonesAndAppliancesInLocation(state, sphereId, locationId)).length;
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(sphereId).seeSetupCrownstone;
+    let canSeeSetupCrownstones = Permissions.inSphere(this.props.sphereId).seeSetupCrownstone;
 
     // if the button callback is not undefined at draw time, we draw a button, not a view
     let buttonCallback = undefined;
 
     // In case we see a crownstone in setup mode:
-    if (explanation === undefined && seeStoneInSetupMode === true && locationId === null) {
+    if (canSeeSetupCrownstones && explanation === undefined && seeStoneInSetupMode === true && locationId === null) {
       explanation = "Crownstones in setup mode have a blue icon."
     }
 
@@ -54,7 +55,7 @@ export class RoomExplanation extends Component<any, any> {
         explanation = "No Crownstones found."
       }
       // there are no crownstones in the sphere
-      else if (Object.keys(state.spheres[sphereId].stones).length === 0) {
+      else if (Object.keys(state.spheres[sphereId].stones).length === 0 && canSeeSetupCrownstones) {
         explanation = "To add a Crownstones to your sphere, hold your phone really close to a new one!"
       }
       // there are floating crownstones
