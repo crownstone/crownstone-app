@@ -2434,7 +2434,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		if (!checkBleExt(callback)) {
 			return;
 		}
-		getBleExt().writeControl(new ControlMsg(BluenetConfig.CMD_KEEP_ALIVE_MESH), new IStatusCallback() {
+		getBleExt().writeControl(new ControlMsg(BluenetConfig.CMD_KEEP_ALIVE_REPEAT_LAST), new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				WritableMap retVal = Arguments.createMap();
