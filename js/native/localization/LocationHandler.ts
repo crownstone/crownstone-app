@@ -56,6 +56,22 @@ class LocationHandlerClass {
       NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });
       NativeBus.on(NativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
       NativeBus.on(NativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
+
+      eventBus.on("KEYS_UPDATED", (data) => {
+        let bluenetSettings = {
+          encryptionEnabled: ENCRYPTION_ENABLED,
+          adminKey:    data.keys.adminKey,
+          memberKey:   data.keys.memberKey,
+          guestKey:    data.keys.guestKey,
+          referenceId: data.sphereId,
+        };
+
+        LOG.info("Set Settings.", bluenetSettings);
+        BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
+          LOG.error("LocationHandler: Could not set Settings!", err);
+          Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
+        });
+      })
     }
   }
 

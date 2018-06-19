@@ -93,7 +93,7 @@ export const sync = {
         LOG.info("Sync: DONE SphereSyncer sync.");
         LOG.info("Sync: START KeySyncer sync.");
         let keySyncer = new KeySyncer(actions, [], globalCloudIdMap);
-        return keySyncer.sync();
+        return keySyncer.sync(store);
       })
       .then(() => {
         LOG.info("Sync: DONE KeySyncer sync.");
