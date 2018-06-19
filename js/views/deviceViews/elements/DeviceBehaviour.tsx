@@ -241,7 +241,7 @@ class BehaviourResponse extends Component<any, any> {
       );
     }
 
-    if (isDisabled) {
+    if (isDisabled || !this.props.canChangeBehaviour) {
       return (
         <View style={{alignItems:'center'}}>
           {content}

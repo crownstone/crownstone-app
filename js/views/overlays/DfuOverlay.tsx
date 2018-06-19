@@ -146,7 +146,14 @@ export class DfuOverlay extends Component<any, any> {
       })
       .catch((err) => {
         LOG.error("DfuOverlay: Could not download release notes...", err);
-        this.setState({releaseNotes: RELEASE_NOTES_ERROR});
+        let errorMessage = RELEASE_NOTES_ERROR;
+        if (userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion] === undefined) {
+          errorMessage += "\nNo firmware available form hardwareVersion" + stoneConfig.hardwareVersion
+        }
+        if (userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion] === undefined) {
+          errorMessage += "\nNo bootloader available form hardwareVersion" + stoneConfig.hardwareVersion
+        }
+        this.setState({releaseNotes: errorMessage});
       })
   }
 

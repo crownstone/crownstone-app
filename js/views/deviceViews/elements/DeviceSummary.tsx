@@ -230,6 +230,7 @@ export class DeviceSummary extends Component<any, any> {
       locationName = location.config.name;
     }
 
+    // make sure it doesnt say tap here to move me if you're not allowed to move it.
     if (spherePermissions.moveCrownstone) {
       locationLabel = "Tap here to move me!";
     }
