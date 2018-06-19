@@ -223,11 +223,15 @@ export class DeviceSummary extends Component<any, any> {
     // stone.config.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let locationLabel = "Tap here to move me!";
+    let locationLabel = "Location:";
     let locationName = "Not in room";
     if (location) {
       locationLabel = "Located in:";
       locationName = location.config.name;
+    }
+
+    if (spherePermissions.moveCrownstone) {
+      locationLabel = "Tap here to move me!";
     }
 
     let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && stone.config.disabled === false;
