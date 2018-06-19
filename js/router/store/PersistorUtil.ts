@@ -67,15 +67,18 @@ export const PersistorUtil = {
     // get parent keys out of this list because they will destroy the pointer tree
     let illegalKeys = [];
     let filteredUserKeys = [];
-    for (let i = 0; i < userKeys.length - 1; i++) {
+    for (let i = 0; i < userKeys.length; i++) {
       let found = false;
       let checkKey = PersistorUtil.stripHistoryTag(userKeys[i].key);
       for (let j = i + 1; j < userKeys.length; j++) {
         let candidate = userKeys[j].key;
 
         if (candidate.substr(0, checkKey.length) === checkKey) {
-          found = true;
-          break;
+          // check if these keys are on the same level before marking one of them illegal
+          if (candidate.match(/(\.)/g).length !== checkKey.match(/(\.)/g).length) {
+            found = true;
+            break;
+          }
         }
       }
       if (!found) {

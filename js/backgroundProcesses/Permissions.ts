@@ -26,6 +26,7 @@ export class PermissionBase {
   canChangeAppliance      = false; // a or m
   editAppliance           = false; // a
   removeAppliance         = false; // a
+  canClearErrors          = false; // a
 
   editSphere              = false; // a
   manageUsers             = false; // a or m
@@ -130,6 +131,7 @@ export class PermissionClass extends PermissionBase {
         this.removeCrownstone        = true; // admin
         this.editAppliance           = true; // admin
         this.removeAppliance         = true; // admin
+        this.canClearErrors          = true; // admin
 
         this.editSphere              = true; // admin
         this.deleteSphere            = true; // admin

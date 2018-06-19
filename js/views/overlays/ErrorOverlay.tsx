@@ -46,6 +46,14 @@ export class ErrorOverlay extends Component<any, any> {
       }
     }));
 
+    this.unsubscribe.push(eventBus.on("updateErrorOverlay", (data) => { // { stoneId : stoneId, sphereId: sphereId }
+      if (this.state.visible === true) {
+        this.setState({
+          stoneId: data.stoneId,
+          sphereId: data.sphereId,
+        });
+      }
+    }));
   }
 
   componentWillUnmount() {

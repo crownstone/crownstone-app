@@ -661,9 +661,16 @@ export class Persistor {
             if (!keyRemovalMap[checkKey]) {
               // if the key is larger than the parent key and the parentKey prefixes this key
               if (checkKeyWithoutHistoryTag.length > keyLength && checkKey.substr(0, keyLength) === candidate) {
-                keyRemovals.push(checkKey);
-                keyRemovalMap[checkKey] = true;
-                LOGd.store("Persistor: Added field to be removed due to cascade.", checkKey);
+                // check if these keys are on the same level before deleting one of them.
+                if (checkKeyWithoutHistoryTag.match(/(\.)/g).length !== candidate.match(/(\.)/g).length) {
+                  keyRemovals.push(checkKey);
+                  keyRemovalMap[checkKey] = true;
+                  LOGd.store("Persistor: Added field to be removed due to cascade.", checkKey);
+                }
+                else {
+                  LOGd.store("Persistor: SKIPPING cascaded field that did not pass the level check.");
+                }
+
               }
             }
           }

@@ -18,7 +18,7 @@ export class TextEditInput extends Component<any, any> {
   constructor(props) {
     super(props);
     this.initialized = false;
-    this.blurValue = null;
+    this.blurValue = undefined;
     this.isInFocus = false;
     this.refName = (Math.random() * 1e9).toString(36);
 
@@ -49,7 +49,7 @@ export class TextEditInput extends Component<any, any> {
   _focus() {
     this.isInFocus   = true;
     this.initialized = true;
-    this.blurValue   = null;
+    this.blurValue   = undefined;
     if (!this.props.autoFocus) {
       (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
         eventBus.emit("focus", py);

@@ -228,6 +228,7 @@ export class Login extends Component<any, any> {
             <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
             <Text style={{color: '#93cfff'}}>Forgot Password?</Text></TouchableHighlight>
             <LoginButton loginCallback={() => {this.attemptLogin()}} />
+            <View style={{flex: 1, width:screenWidth}} />
           </View>
         </ScrollView>
       </Background>

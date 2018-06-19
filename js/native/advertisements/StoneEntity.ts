@@ -9,6 +9,7 @@ import { StoneMeshTracker } from "./StoneMeshTracker";
 import { StoneBehaviour }   from "./StoneBehaviour";
 import { StoneStoreManager } from "./StoneStoreManager";
 import {generateFakeAdvertisement} from "./Debug";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 let RSSI_TIMEOUT = 5000;
 
@@ -675,6 +676,20 @@ export class StoneEntity {
       if (advertisement.serviceData.hasError === true) {
         LOGi.advertisements("StoneEntity: GOT ERROR", advertisement.serviceData);
         if (advertisement.serviceData.errorMode) {
+          // only mark as error is it is not already marked as error
+          if (stone.errors.hasError === false) {
+            this.store.dispatch({
+              type: 'UPDATE_STONE_ERRORS',
+              sphereId: this.sphereId,
+              stoneId: this.stoneId,
+              data: { hasError: true }
+            });
+            if (Permissions.inSphere(this.sphereId).canClearErrors) {
+              eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
+            }
+          }
+
+          // store errors in the db
           if (this._errorsHaveChanged(stone.errors, advertisement.serviceData.errors)) {
             this.store.dispatch({
               type: 'UPDATE_STONE_ERRORS',
@@ -689,19 +704,9 @@ export class StoneEntity {
                 dimmerOffFailure:  advertisement.serviceData.errors.dimmerOffFailure,
               }
             });
-            eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
-          }
-        }
-        else {
-          // only mark as error is it is not already marked as error
-          if (stone.errors.hasError === false) {
-            this.store.dispatch({
-              type: 'UPDATE_STONE_ERRORS',
-              sphereId: this.sphereId,
-              stoneId: this.stoneId,
-              data: { hasError: true }
-            });
-            eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
+            if (Permissions.inSphere(this.sphereId).canClearErrors) {
+              eventBus.emit('updateErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
+            }
           }
         }
       }

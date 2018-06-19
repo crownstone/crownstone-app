@@ -19,6 +19,7 @@ import { Svg, Circle } from 'react-native-svg';
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
+import {IconCircle} from "./IconCircle";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -379,14 +380,8 @@ class RoomCircleClass extends Component<any, any> {
   _getAlertIcon() {
     let alertSize = this.outerDiameter*0.30;
     return (
-      <View style={[styles.centered, {
-        width:alertSize,
-        height:alertSize, borderRadius:alertSize*0.5,
-        borderWidth:3,
-        borderColor:'#fff',
-        position:'absolute',
-        top: 0, left: this.outerDiameter - alertSize, backgroundColor:colors.iosBlue.hex}]}>
-        <Icon name="c1-locationPin1" color="#fff" size={17} style={{backgroundColor:'transparent'}} />
+      <View style={{position:'absolute', top: 0, left: this.outerDiameter - alertSize}}>
+        <IconCircle icon="c1-locationPin1" color="#fff" size={alertSize} backgroundColor={colors.csBlue.hex} borderWidth={3} />
       </View>
     )
   }

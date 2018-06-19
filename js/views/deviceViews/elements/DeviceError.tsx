@@ -18,9 +18,35 @@ import {IconButton} from "../../components/IconButton";
 import {ErrorContent} from "../../content/ErrorContent";
 import {deviceStyles} from "../DeviceOverview";
 import {StoneUtil} from "../../../util/StoneUtil";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class DeviceError extends Component<any, any> {
+
+  _getAction(stone) {
+    if (Permissions.inSphere(this.props.sphereId).canClearErrors) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            StoneUtil.clearErrors(this.props.sphereId, this.props.stoneId, stone, this.props.store);
+          }}
+          style={[styles.centered, {
+            width: 0.6 * screenWidth,
+            height: 50,
+            borderRadius: 25,
+            borderWidth: 3,
+            borderColor: colors.red.hex,
+            backgroundColor: colors.white.hex
+          }]}>
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{"Reset Error"}</Text>
+        </TouchableOpacity>
+      )
+    }
+    else {
+      return <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, textAlign:'center'}}>{"Notify an admin of your Sphere to resolve this error."}</Text>
+    }
+  }
+
   render() {
     const store = this.props.store;
     const state = store.getState();
@@ -34,25 +60,12 @@ export class DeviceError extends Component<any, any> {
           size={0.15*screenHeight}
           color="#fff"
           buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.red.hex, borderRadius: 0.03*screenHeight}}
-          style={{position:'relative',}}
+          style={{position:'relative'}}
         />
         <View style={{flex:1}} />
         <Text style={deviceStyles.errorText}>{ErrorContent.getTextDescription(2, stone.errors)}</Text>
         <View style={{flex:1}} />
-        <TouchableOpacity
-          onPress={() => {
-            StoneUtil.clearErrors(this.props.sphereId, this.props.stoneId, stone, store);
-          }}
-          style={[styles.centered, {
-            width: 0.6 * screenWidth,
-            height: 50,
-            borderRadius: 25,
-            borderWidth: 3,
-            borderColor: colors.red.hex,
-            backgroundColor: colors.white.hex
-          }]}>
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{"Reset Error"}</Text>
-        </TouchableOpacity>
+        { this._getAction(stone) }
         <View style={{flex:1}} />
       </View>
     )
