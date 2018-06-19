@@ -69,8 +69,9 @@ export class SelectFromList extends Component<any, any> {
             }
             this.setState({selectedItemIds: newIds, singularId: item.singular ? item.id : null});
 
+            this.props.callback(newIds);
+
             if (item.singular) {
-              this.props.callback(newIds);
               BackAction();
             }
           }}
