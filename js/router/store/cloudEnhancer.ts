@@ -226,25 +226,9 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
   let sphereId   = action.sphereId;
   let stoneId    = action.stoneId;
   let locationId = action.data.locationId;
-  let updatedAt  = state.spheres[sphereId].stones[stoneId].config.updatedAt;
 
   let data = { locationId: MapProvider.local2cloudMap.locations[locationId] || locationId };
   CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
-
-  let prevLocationId = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] && oldState.spheres[sphereId].stones[stoneId].config.locationId || null;
-
-  if (prevLocationId === null && locationId !== null) {
-    CLOUD.forStone(stoneId).updateStoneLocationLink(locationId, sphereId, updatedAt, true).catch(() => {});
-  }
-  else {
-    CLOUD.forStone(stoneId).deleteStoneLocationLink(prevLocationId, sphereId, updatedAt, true)
-      .then(() => {
-        if (locationId !== null) {
-          return CLOUD.forStone(stoneId).updateStoneLocationLink(locationId, sphereId, updatedAt, true);
-        }
-      })
-      .catch(() => {});
-  }
 }
 
 function handleApplianceInCloud(action, state) {

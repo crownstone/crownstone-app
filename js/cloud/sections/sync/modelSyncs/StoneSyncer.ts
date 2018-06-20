@@ -50,14 +50,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
       let localId = cloudIdMap[stone_from_cloud.id];
 
       // determine the linked location id
-      // TODO: [2017-10-02] RETROFIT CODE: AFTER A FEW RELEASES
-      let locationLinkId = null;
-      if (stone_from_cloud.locations.length > 0 && stone_from_cloud.locations[0]) {
-        locationLinkId = stone_from_cloud.locations[0].id || stone_from_cloud.locationId;
-      }
-      else {
-        locationLinkId = stone_from_cloud.locationId || null;
-      }
+      let locationLinkId = stone_from_cloud.locationId || null;
 
       // if we do not have a stone with exactly this cloudId, verify that we do not have the same stone on our device already.
       if (localId === undefined) {
@@ -235,26 +228,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
           cloudSphereId: this.cloudSphereId,
           cloudId: stone_from_cloud.id,
         })
-          .then(() => {
-            // check if we have to sync the locations:
-            if (stoneInState.config.locationId !== locationLinkId) {
-              // if the one in the cloud is null, we only create a link
-              if (locationLinkId === null && stoneInState.config.locationId !== null) {
-                CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, this.cloudSphereId, stoneInState.config.updatedAt, true).catch(() => {
-                });
-              }
-              else {
-                CLOUD.forStone(stone_from_cloud.id).deleteStoneLocationLink(locationLinkId,this.cloudSphereId, stoneInState.config.updatedAt, true)
-                  .then(() => {
-                    if (stoneInState.config.locationId !== null) {
-                      return CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, this.cloudSphereId, stoneInState.config.updatedAt, true);
-                    }
-                  }).catch(() => {
-                })
-              }
-            }
-          })
-          .catch(() => {})
+        .catch(() => {})
       );
     }
     else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud) || corruptData) {

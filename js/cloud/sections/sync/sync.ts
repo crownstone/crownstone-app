@@ -46,6 +46,7 @@ export const sync = {
     }, 30000);
 
     LOG.cloud("SYNC: Start Syncing.");
+    this.__currentlySyncing = true;
 
     // set the authentication tokens
     let userId = state.user.userId;

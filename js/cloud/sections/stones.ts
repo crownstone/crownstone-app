@@ -81,6 +81,11 @@ export const stones = {
 
 
   /**
+   * !
+   * !
+   * ! ------------- DEPRECATED -----------------
+   * !
+   * !
    * Update the link from a crownstone to a room.
    * @param localLocationId
    * @param localSphereId
@@ -90,6 +95,7 @@ export const stones = {
    * @returns {*}
    */
   updateStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true, doNotSetUpdatedTimes = false) {
+    console.warn("WARNING DEPRECATED updateStoneLocationLink")
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
         'PUT',
@@ -109,6 +115,11 @@ export const stones = {
 
 
   /**
+   * !
+   * !
+   * ! ------------- DEPRECATED -----------------
+   * !
+   * !
    * Delete the link from a crownstone to a room.
    * @param localLocationId
    * @param localSphereId
@@ -117,6 +128,7 @@ export const stones = {
    * @returns {*}
    */
   deleteStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true) {
+    console.warn("WARNING DEPRECATED deleteStoneLocationLink")
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
         'DELETE',
