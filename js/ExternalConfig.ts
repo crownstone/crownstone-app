@@ -100,6 +100,10 @@ const DeviceInfo = require('react-native-device-info');
   export let LOG_CLOUD      = LOG_LEVEL.ERROR;   // enabling LOG.cloud      commands to be shown.
   export let LOG_NATIVE     = LOG_LEVEL.ERROR;   // enabling LOG.native      commands to be shown.
 
+
+  export let LOG_TIMESTAMPS     = false;    // add timestamps to logs.
+  export let LOG_TIME_DIFFS     = false;    // add dt since last log to logs.
+
   /**
    * Log to file. Even if this is false, if the user configures it in the user profile through the developer mode, logging to file will still be used.
    * This flag is meant to just always log to file, regardless of the user input. Used for debugging.

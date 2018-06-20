@@ -18,7 +18,6 @@ import {update} from "../../../../router/store/reducers/reducerUtil";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {LOGe} from "../../../../logging/Log";
 
-
 export class FingerprintSyncer extends SyncingBase {
   userId: string;
 
@@ -72,12 +71,16 @@ export class FingerprintSyncer extends SyncingBase {
     let existingFingerprints = {};
     let missingFingerprints = {};
 
+    let existingLocations = {};
+
     // for all existing rooms in our database, check if they require fingerprints. If so, ask the cloud for an appropriate fingerprint
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++) {
       let sphere = state.spheres[sphereIds[i]];
       let locationIds = Object.keys(sphere.locations);
       for (let j = 0; j < locationIds.length; j++) {
+        existingLocations[locationIds[j]] = true;
+
         let location = sphere.locations[locationIds[j]];
         let payload = {locationConfig: location.config, localLocationId: locationIds[j], sphereId: sphereIds[i]};
         // rooms without fingerprints.
@@ -103,7 +106,9 @@ export class FingerprintSyncer extends SyncingBase {
       let newLocationCloudIds = Object.keys(newLocationsData);
       for (let j = 0; j < newLocationCloudIds.length; j++) {
         let localId = newLocationsData[newLocationCloudIds[j]];
-        missingFingerprints[newLocationCloudIds[j]] = {localLocationId: localId, sphereId: newSphereIds[i]};
+        if (existingLocations[localId] === undefined) {
+          missingFingerprints[newLocationCloudIds[j]] = {localLocationId: localId, sphereId: newSphereIds[i]};
+        }
       }
     }
 

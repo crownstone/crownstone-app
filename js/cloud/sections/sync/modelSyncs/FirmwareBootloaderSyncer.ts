@@ -51,7 +51,7 @@ export class FirmwareBootloaderSyncer extends SyncingBase {
     if (
       userInState &&
       bootloadersInCloud &&
-      JSON.stringify(userInState.firmwareVersionsAvailable) !== JSON.stringify(bootloadersInCloud)
+      JSON.stringify(userInState.bootloaderVersionsAvailable) !== JSON.stringify(bootloadersInCloud)
     ) {
       this.actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {bootloaderVersionsAvailable: bootloadersInCloud}})
     }

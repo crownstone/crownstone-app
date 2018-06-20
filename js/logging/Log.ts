@@ -12,11 +12,14 @@ import {
   LOG_STORE,
   LOG_SCHEDULER,
   RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
+  LOG_TIME_DIFFS,
+  LOG_TIMESTAMPS
 } from '../ExternalConfig'
 import {LogProcessor} from "./LogProcessor";
 import {logToFile} from "./LogUtil";
 import {LOG_LEVEL} from "./LogLevels";
 
+let lastLogTime = 0;
 
 class Logger {
   level : number;
@@ -95,7 +98,17 @@ class Logger {
 
   _log(type, globalCheckField, dbCheckField, allArguments) {
     if (Math.min(globalCheckField, dbCheckField) <= this.level) {
-      let args = ['LOG' + this.levelPrefix + ' ' + type + ' :'];
+      let prefix = ''
+      let now = new Date().valueOf();
+      if (LOG_TIMESTAMPS) {
+        prefix += now + ' - '
+      }
+      if (LOG_TIME_DIFFS) {
+        prefix = "dt:" + (now - lastLogTime) + ' - ' + prefix
+      }
+      lastLogTime = now;
+
+      let args = [prefix + 'LOG' + this.levelPrefix + ' ' + type + ' :'];
       for (let i = 0; i < allArguments.length; i++) {
         let arg = allArguments[i];
         args.push(arg);
