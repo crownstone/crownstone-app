@@ -591,8 +591,8 @@ class BatchCommandHandlerClass {
         // remove the listeners
         cleanup();
 
-        LOG.warn("BatchCommandHandler: No stones found before timeout.");
-        reject("No stones found before timeout.");
+        LOG.info("BatchCommandHandler: None of the required stones found before timeout.");
+        reject("None of the required stones found before timeout.");
       }, timeout, 'Looking for target...');
 
 
