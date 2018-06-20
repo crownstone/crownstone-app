@@ -247,7 +247,16 @@ export class SetupHelper {
         }
       };
 
-      CLOUD.forSphere(sphereId).createStone({sphereId: sphereId, address: this.macAddress, type: this.type}, false)
+      CLOUD.forSphere(sphereId).createStone({
+        sphereId: sphereId,
+        address: this.macAddress,
+        type: this.type,
+        name: this.name,
+        icon: this.icon,
+        firmwareVersion: this.firmwareVersion,
+        hardwareVersion: this.hardwareVersion,
+        tapToToggle: this.type == STONE_TYPES.plug
+      }, false)
         .then(resolve)
         .catch((err) => {
           if (err.status === 422) {

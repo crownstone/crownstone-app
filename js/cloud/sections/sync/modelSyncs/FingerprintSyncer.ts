@@ -73,6 +73,7 @@ export class FingerprintSyncer extends SyncingBase {
 
     let existingLocations = {};
 
+
     // for all existing rooms in our database, check if they require fingerprints. If so, ask the cloud for an appropriate fingerprint
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++) {
@@ -212,6 +213,10 @@ export class FingerprintSyncer extends SyncingBase {
     let cloudIds = Object.keys(locationIdsRequiringFingerprints);
     // download fingerprints for rooms that need it from our cloud database.
     let pendingActions =  [];
+
+    if (cloudIds.length > 0) {
+      return new Promise((resolve, reject) => { resolve(); });
+    }
 
     return CLOUD.forDevice(deviceId).getFingerprintsInLocations(cloudIds)
       .then((fingerprints) => {

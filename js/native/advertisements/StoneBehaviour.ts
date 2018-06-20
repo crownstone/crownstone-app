@@ -1,5 +1,5 @@
 import { Alert }                    from "react-native"
-import {LOG, LOGd} from "../../logging/Log";
+import { LOG, LOGd }                from "../../logging/Log";
 import { eventBus }                 from "../../util/EventBus";
 import { FirmwareHandler }          from "../firmware/FirmwareHandler";
 import { BEHAVIOUR_TYPES }          from "../../router/store/reducers/stones";
