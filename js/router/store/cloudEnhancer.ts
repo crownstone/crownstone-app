@@ -346,6 +346,8 @@ function handleSphereStateOnDevice(action, state) {
     }
   }
 }
+
+
 function handleUserLocationEnter(action, state) {
   // only update the cloud if this is from the ACTIVE user
   if (action.data.userId === state.user.userId) {
