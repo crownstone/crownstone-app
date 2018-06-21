@@ -4,12 +4,12 @@ import { eventBus }                 from "../../util/EventBus";
 import { FirmwareHandler }          from "../firmware/FirmwareHandler";
 import { BEHAVIOUR_TYPES }          from "../../router/store/reducers/stones";
 import { BleUtil }                  from "../../util/BleUtil";
-import { BluenetPromiseWrapper }    from "../libInterface/BluenetPromise";
 import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
 import { TIME_BETWEEN_TAP_TO_TOGGLES, TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY } from "../../ExternalConfig";
 import { addDistanceToRssi, Util }  from "../../util/Util";
 import { LocalNotifications }       from "../../notifications/LocalNotifications";
 import { BehaviourUtil }            from "../../util/BehaviourUtil";
+import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
@@ -136,59 +136,8 @@ export class StoneBehaviour {
           Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
         }
 
-        let newSwitchState = 0;
-        let proxy = BleUtil.getProxy(stone.config.handle);
-        proxy.performMultipleCommands([
-          () => { return BluenetPromiseWrapper.getSwitchState(); },
-          (currentSwitchState) => {
-            // get the most actual state of the crownstone from the database
-            let state = this.store.getState();
-            let sphere = state.spheres[this.sphereId];
-            if (!sphere) { return new Promise((resolve, reject) => { reject() }) }
-            let stone = sphere.stones[this.stoneId];
-            if (!stone) { return new Promise((resolve, reject) => { reject() }) }
-
-            // if the device is currenlty off
-            if (currentSwitchState == 0) {
-              // turn to the last known state
-              if (stone.state.previousState !== 0 && stone.state.previousState !== null && stone.state.previousState !== undefined) {
-                newSwitchState = stone.state.previousState;
-              }
-              else if (stone.config.dimmingEnabled) {
-                newSwitchState = 0.99;
-              }
-              else {
-                newSwitchState = 1.00;
-              }
-              return BluenetPromiseWrapper.setSwitchState(newSwitchState);
-            }
-            else {
-              // turn off
-              // take dimming into account. 100 is max dimming, which we map to 0.99. 128 is relay on, which we map to 1.0.
-              let currentSwitchStateTransformed = 0;
-              if (currentSwitchState > 100) {
-                currentSwitchStateTransformed = 1.00;
-              }
-              else if (currentSwitchState === 100) {
-                currentSwitchStateTransformed = 0.99;
-              }
-              else {
-                currentSwitchStateTransformed = currentSwitchState * 0.0099;
-              }
-              this.store.dispatch({
-                type: "UPDATE_STONE_SWITCH_STATE_TRANSIENT",
-                sphereId: this.sphereId,
-                stoneId: this.stoneId,
-                data: {
-                  state: currentSwitchStateTransformed
-                }
-              });
-              newSwitchState = 0;
-              return BluenetPromiseWrapper.setSwitchState(newSwitchState)
-            }
-          }
-        ], true)
-          .then(() => {
+        BatchCommandHandler.loadPriority(stone, this.stoneId, this.sphereId, {commandName:'toggle', stateForOn: stone.config.dimmingEnabled ? 0.99 : 1.00}, {}, 2, 'Tap To Toggle!')
+          .then((newSwitchState) => {
             let data = {state: newSwitchState};
             if (newSwitchState === 0) {
               data["currentUsage"] = 0;
@@ -202,8 +151,11 @@ export class StoneBehaviour {
           })
           .catch((err) => {});
 
+        BatchCommandHandler.executePriority();
+
         this.touchTime = now;
         this.touchTemporarilyDisabled = true;
+
         return true;
       }
       else {

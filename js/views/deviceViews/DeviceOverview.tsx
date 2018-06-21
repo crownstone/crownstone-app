@@ -129,13 +129,13 @@ export class DeviceOverview extends Component<any, any> {
       let applianceId = stone.config.applianceId;
       if (
         change.changeAppSettings ||
-        change.stoneLocationUpdated && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
-        change.changeStoneState && change.changeStoneState.stoneIds[this.props.stoneId] ||
-        change.updateStoneSchedule && change.updateStoneSchedule.stoneIds[this.props.stoneId] ||
-        change.powerUsageUpdated && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
-        change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
-        change.updateStoneBehaviour && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
-        applianceId && change.updateApplianceConfig && change.updateApplianceConfig.applianceIds[applianceId] ||
+        change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+        change.changeStoneState       && change.changeStoneState.stoneIds[this.props.stoneId] ||
+        change.updateStoneSchedule    && change.updateStoneSchedule.stoneIds[this.props.stoneId] ||
+        change.powerUsageUpdated      && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
+        change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
+        change.updateStoneBehaviour   && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
+        applianceId && change.updateApplianceConfig    && change.updateApplianceConfig.applianceIds[applianceId] ||
         applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
         ) {
           this.forceUpdate();

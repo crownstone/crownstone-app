@@ -24,31 +24,41 @@ export const PersistorUtil = {
     let historyReference = {};
 
     // examine all keys for history
+    // the goal here is to have the history object filled with the latest entries.
+    // the second goal is to have the history index be the oldest index of the data key
     for (let i = 0; i < userKeys.length; i++) {
       let keyArray = userKeys[i].key.split(HISTORY_PREFIX);
       if (keyArray.length === 2) {
         let pureKey = keyArray[0];
         let index = Number(keyArray[1]);
         if (history[pureKey] === undefined) {
-          history[pureKey] = {index: index, keyData: userKeys[i], historyIndex: null};
+          history[pureKey] = { index: index, fullKey: userKeys[i], historyIndex: null };
         }
-        else if (history[pureKey].index === 9 && index === 0) { // we loop from 0..9. This means 0 is higher than 0.
-          history[pureKey].historyIndex = history[pureKey].index;
-          history[pureKey].index = index;
-          history[pureKey].keyData = userKeys[i];
-
-        }
-        else if (history[pureKey].index < index) {
-          history[pureKey].historyIndex = history[pureKey].index;
-          history[pureKey].index = index;
-          history[pureKey].keyData = userKeys[i];
-        }
-        else if (history[pureKey].index > index) {
-          history[pureKey].historyIndex = index;
+        else {
+          // We have an existing entry for this key..
+          // We want to try to get the latest version of this data. The index is from 0 to (HISTORY_CYCLE_SIZE - 1).
+          // For now, we only store 1 historical item (HISTORY_SIZE). If we want to change this, we will need to keep track of the current index and calculate a distance.
+          if (isNewer(index, history[pureKey].index)) {
+            // we have a new "newest" key. Check if we should shift the previous to the oldest slot.
+            if (history[pureKey].historyIndex === null || !isNewer(history[pureKey].index, history[pureKey].historyIndex)) {
+              history[pureKey].historyIndex = history[pureKey].index;
+            }
+            history[pureKey].index = index;
+          }
+          else {
+            if (history[pureKey].historyIndex === null) {
+              history[pureKey].historyIndex = index;
+            }
+            else {
+              if (!isNewer(index, history[pureKey].historyIndex)) {
+                history[pureKey].historyIndex = index;
+              }
+            }
+          }
         }
       }
       else {
-        console.warn("CANT HANDLE KEYARRAY", userKeys[i]);
+        console.warn("PersistorUtil: Can't handle this key array. Invalid array:", userKeys[i]);
       }
     }
 
@@ -57,7 +67,7 @@ export const PersistorUtil = {
     for (let i = 0; i < historyKeys.length; i++) {
       let pureKey = historyKeys[i];
       historyReference[pureKey] = history[pureKey].index;
-      latestKeys.push(history[pureKey].keyData)
+      latestKeys.push(history[pureKey].fullKey)
     }
 
     return { latestKeys, historyReference };
@@ -144,3 +154,24 @@ export const PersistorUtil = {
     return key.split(HISTORY_PREFIX)[0]
   },
 };
+
+function isNewer(candidate, reference) {
+  let midPoint = 0.5*HISTORY_CYCLE_SIZE;
+  let dx = candidate - reference;
+  if (dx > 0) {
+    if (dx > midPoint) {
+      return false
+    }
+    else {
+      return true
+    }
+  }
+  else {
+    if (dx > -midPoint) {
+      return false
+    }
+    else {
+      return true
+    }
+  }
+}

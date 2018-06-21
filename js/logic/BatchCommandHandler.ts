@@ -158,6 +158,9 @@ class BatchCommandHandlerClass {
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive();
                 break;
+              case 'commandFactoryReset':
+                actionPromise = BluenetPromiseWrapper.commandFactoryReset();
+                break;
               case 'keepAliveState':
                 actionPromise = BluenetPromiseWrapper.keepAliveState(command.changeState, command.state, command.timeout);
                 break;
@@ -194,6 +197,9 @@ class BatchCommandHandlerClass {
               case 'setSwitchState':
               case 'multiSwitch': // if it's a direct call, we just use the setSwitchState.
                 actionPromise = BluenetPromiseWrapper.setSwitchState(command.state);
+                break;
+              case 'toggle':
+                actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 1.0);
                 break;
               default:
                 performedAction = null;

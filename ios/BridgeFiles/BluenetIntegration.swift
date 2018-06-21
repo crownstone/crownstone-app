@@ -261,9 +261,9 @@ open class BluenetJS: RCTEventEmitter {
       }
   }
   
-  @objc func toggleSwitchState(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func toggleSwitchState(_ stateForOn: NSNumber, callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called toggleSwitchState")
-    GLOBAL_BLUENET!.bluenet.control.toggleSwitchState()
+    GLOBAL_BLUENET!.bluenet.control.toggleSwitchState(stateForOn: stateForOn.floatValue)
       .then{newState in callback([["error" : false, "data": newState]])}
       .catch{err in
         if let bleErr = err as? BleError {

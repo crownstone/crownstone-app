@@ -12,7 +12,7 @@ interface BluenetPromiseWrapperProtocol {
   keepAlive()                                   : Promise< void >,
   keepAliveState(changeState : boolean, state : number, timeout: number): Promise< void >,
   phoneDisconnect()                             : Promise< void >,
-  toggleSwitchState()                           : Promise< void >,
+  toggleSwitchState(stateForOn)                 : Promise< number >,
   setSwitchState(state: number)                 : Promise< void >,
   setupCrownstone(dataObject)                   : Promise< void >,
   setSettings(dataObject)                       : Promise< void >,

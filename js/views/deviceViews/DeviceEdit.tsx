@@ -396,12 +396,7 @@ export class DeviceEdit extends Component<any, any> {
       })
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
-        let proxy = BleUtil.getProxy(stone.config.handle);
-        proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
-          .catch(() => {
-            // second attempt
-            return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
-          })
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:"commandFactoryReset"}, {}, 5, "Factory reset from deviceEdit.")
           .then(() => {
             this._removeCrownstoneFromRedux(true);
           })
@@ -416,6 +411,9 @@ export class DeviceEdit extends Component<any, any> {
               }}]
             )
           })
+
+        BatchCommandHandler.executePriority();
+
       })
       .catch((err) => {
         LOG.info("error while asking the cloud to remove this crownstone", err);

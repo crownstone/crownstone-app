@@ -7,6 +7,11 @@ const LEGACY_BASE_STORAGE_KEY = 'CrownstoneStore_';
 export const HISTORY_PREFIX = '_@$:';
 export const HISTORY_CYCLE_SIZE = 10;
 
+// We keep 1 historical item. WARN: This cannot be changed without a refactor of this module.
+// We will assume the amount of history kept is never more than half the cycle size.
+export const HISTORY_SIZE = 1;
+
+
 interface persistOptions {
   idContainers: { [propName: string]: boolean },
   unpackKeys:   { [propName: string]: boolean },
@@ -207,7 +212,7 @@ export class Persistor {
         // get latest entries from the userKey list
         let latestData     = PersistorUtil.extractLatestEntries(userKeys);
         let latestUserKeys = latestData.latestKeys;
-        this.keyHistory    = latestData.historyReference;
+        this.keyHistory    = latestData.historyReference; // this is a map with all the oldest indices of this data set.
 
         // sort the userKeysList by length
         latestUserKeys.sort((a,b) => { return a.key.length - b.key.length; });

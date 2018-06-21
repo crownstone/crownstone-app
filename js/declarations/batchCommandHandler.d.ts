@@ -74,10 +74,12 @@ interface meshTodo {
 type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'keepAliveState', state : number, timeout : number, changeState : boolean } |
   { commandName : 'setSwitchState', state : number } |
+  { commandName : 'toggle', stateForOn : number } |
   { commandName : 'multiSwitch', state : number, timeout : number, intent: number } |
   { commandName : 'getFirmwareVersion' } |
   { commandName : 'getHardwareVersion' } |
   { commandName : 'keepAliveBatchCommand' } |
+  { commandName : 'commandFactoryReset' } |
   { commandName : 'sendNoOp' } |
   { commandName : 'sendMeshNoOp' } |
   { commandName : 'getErrors' } |
