@@ -19,7 +19,7 @@ export class ShadedImage extends Component<{
   r?, g?, b?,
   blendFactor?, grayScale?,
   ignoreBackground?: boolean
-  enableOpacityFade?: boolean
+  enableOpacityShaderFade?: boolean
 }, any> {
 
   loadedImageTaken = null;
@@ -39,7 +39,7 @@ export class ShadedImage extends Component<{
     this.loadedImage = this.props.image;
     this.loadedImageURI = {uri:preparePictureURI(this.loadedImage)};
 
-    this.state = { debugText: '', opacity: new Animated.Value(this.props.enableOpacityFade ? 1 : 0) };
+    this.state = { debugText: '', opacity: new Animated.Value(this.props.enableOpacityShaderFade ? 1 : 0) };
   }
 
   componentWillUnmount() {
@@ -306,7 +306,7 @@ void main() {
       draw();
 
       if (!animationFinished) {
-        this.animationFrame = requestAnimationFrame(() => { animateFade(blendMap) })
+        this.animationFrame = requestAnimationFrame(() => { animateFade(blendMap) });
       }
     }
 
@@ -360,7 +360,7 @@ void main() {
 
       Promise.all(promises)
         .then(() => {
-          if (this.props.enableOpacityFade) {
+          if (this.props.enableOpacityShaderFade) {
             this._opacity = 0;
           }
           else {
@@ -401,7 +401,7 @@ void main() {
               this.state.opacity.setValue(1);
               setTimeout(() => { requestAnimationFrame(() => { animateFade({crossfade: {value: 0.0, target: 1, step: 0.1}})})},0);
             }
-            else if (this.props.enableOpacityFade) {
+            else if (this.props.enableOpacityShaderFade) {
               // iOS devices can do a nice opacity fade and do not need the background
               requestAnimationFrame(() => { animateFade({opacity: {value: 0.0, target: 1, step: 0.1}})});
             }
@@ -412,7 +412,10 @@ void main() {
     drawWithNewTexture(true);
 
     eventBus.on("changedPicture" + this._uid, () => {
-      this.state.opacity.setValue(0);
+      if (!this.props.enableOpacityShaderFade) {
+        this.state.opacity.setValue(0);
+      }
+
       if (loadedTextures.length > 0) {
         loadedTextures.forEach((loadedTexture) => {
           rngl.unloadTexture(loadedTexture.texture)

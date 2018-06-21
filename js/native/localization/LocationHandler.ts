@@ -323,7 +323,7 @@ class LocationHandlerClass {
    * @param [ bleController ]
    * @private
    */
-  _triggerRoomEvent( store, sphereId, locationId, behaviourType, bleController?) {
+  _triggerRoomEvent( store, sphereId, locationId, behaviourType, bleController? ) {
     // fire BEHAVIOUR_TYPES.ROOM_ENTER on crownstones in room
     BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, bleController);
   }

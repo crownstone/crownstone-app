@@ -16,14 +16,18 @@ export const emailChecker = function(email) {
   return reg.test(email);
 };
 
+
 export const characterChecker = function (value) {
   let reg = /[\D]/g;
   return reg.test(value);
 };
+
+
 export const numberChecker = function (value) {
   let reg = /[0-9]/g;
   return reg.test(value);
 };
+
 
 export const getImageFileFromUser = function(email) {
   return email.replace(/[^\w\s]/gi, '') + '.jpg';

@@ -97,9 +97,9 @@ export class Login extends Component<any, any> {
 
         if (validationLink) {
           Alert.alert(
-            'Your email address has not been verified',
+            'Your email address has not been verified.',
             'Please click on the link in the email that was sent to you. If you did not receive an email, press Resend Email to try again.', [
-            {text: 'Resend Email', onPress: () => this.requestVerificationEmail()},
+            {text: 'Resend Email', style:'cancel', onPress: () => this.requestVerificationEmail()},
             {text: 'OK', onPress: defaultAction}
           ], { onDismiss: defaultAction });
         }

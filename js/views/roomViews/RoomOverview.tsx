@@ -353,7 +353,7 @@ export class RoomOverview extends Component<any, any> {
               blendFactor={this.viewingRemotely ? 0.0 : 0.0}
               grayScale={this.viewingRemotely ? 0.9 : 0.0}
               ignoreBackground={Platform.OS === 'ios'}
-              enableOpacityFade={Platform.OS === 'ios'}
+              enableOpacityShaderFade={Platform.OS === 'ios'}
             />
           );
         }
