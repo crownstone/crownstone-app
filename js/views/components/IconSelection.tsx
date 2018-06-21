@@ -100,10 +100,10 @@ export class IconSelection extends Component<any, any> {
         <NavigationBar label={category.label} arrowDown={this.state[category.key]} callback={() => {
           let newState = {};
           newState[category.key] = !this.state[category.key];
-          this.setState(newState);
-          if (this.props.debug) {
+          if (this.props.debug && !this.state[category.key] == false) {
             this._generateOffsets()
           }
+          this.setState(newState);
         }} />
         <Separator fullLength={true} />
         <SlideInView visible={this.state[category.key]} height={heightWhenVisible} duration={300}>
