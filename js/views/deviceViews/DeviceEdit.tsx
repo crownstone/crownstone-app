@@ -460,7 +460,9 @@ export class DeviceEdit extends Component<any, any> {
     let switchCraftChange = this._setSwitchcraftState(stone);
     if (dimChange)         { changePromises.push(dimChange); }
     if (switchCraftChange) { changePromises.push(switchCraftChange); }
-    Promise.all(changePromises).then(() => { this.props.eventBus.emit("hideLoading") } ).catch((err) => { () => { this.props.eventBus.emit("hideLoading") } });
+    Promise.all(changePromises)
+      .then(() => { this.props.eventBus.emit("hideLoading") } )
+      .catch((err) => { () => { this.props.eventBus.emit("hideLoading") } });
 
     let actions = [];
     if (
@@ -505,11 +507,16 @@ export class DeviceEdit extends Component<any, any> {
   _setDimState(stone) {
     if (stone.config.dimmingEnabled !== this.state.dimmingEnabled) {
       if (stone.config.locked) {
-        Alert.alert("Crownstone Locked", "You have to unlock the Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + "dimming.", [{text:'OK'}]);
+        Alert.alert("Crownstone Locked", "You have to unlock the Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " dimming.", [{text:'OK'}]);
+        return;
+      }
+      if (stone.config.disabled) {
+        Alert.alert("Can't see this Crownstone!", "You have to be in range of Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " dimming.", [{text:'OK'}]);
         return;
       }
 
       let promises = [];
+      let dimmingChangedSuccessfully = false;
       if (this.state.dimmingEnabled === false) {
         this.props.eventBus.emit("showLoading", "Disabling dimming on this Crownstone...");
         // turn the relay on if dimming is being disabled and the stone is dimming
@@ -517,6 +524,7 @@ export class DeviceEdit extends Component<any, any> {
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'multiSwitch', state: 1, intent: INTENTS.manual, timeout: 0}));
         }
         promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: false })
+          .then(() => { dimmingChangedSuccessfully = true; })
           .catch((err) => {
             LOGe.info("DeviceEdit: Could not disable dimming on Crownstone", err);
             Alert.alert("I'm sorry...","I couldn't disable dimming on this Crownstone. Please move closer and try again.", [{text:'OK'}])
@@ -525,6 +533,7 @@ export class DeviceEdit extends Component<any, any> {
       else {
         this.props.eventBus.emit("showLoading", "Enabling dimming on this Crownstone...");
         promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: true })
+          .then(() => { dimmingChangedSuccessfully = true; })
           .catch((err) => {
             LOGe.info("DeviceEdit: Could not enable dimming on Crownstone", err);
             Alert.alert("I'm sorry...","I couldn't enable dimming on this Crownstone. Please move closer and try again.", [{text:'OK'}])
@@ -532,14 +541,16 @@ export class DeviceEdit extends Component<any, any> {
       }
       BatchCommandHandler.executePriority();
       return Promise.all(promises).then(() => {
-        this.props.store.dispatch({
-          type: 'UPDATE_STONE_CONFIG',
-          sphereId: this.props.sphereId,
-          stoneId: this.props.stoneId,
-          data: {
-            dimmingEnabled: this.state.dimmingEnabled,
-          }
-        });
+        if (dimmingChangedSuccessfully) {
+          this.props.store.dispatch({
+            type: 'UPDATE_STONE_CONFIG',
+            sphereId: this.props.sphereId,
+            stoneId: this.props.stoneId,
+            data: {
+              dimmingEnabled: this.state.dimmingEnabled,
+            }
+          });
+        }
       });
     }
   }
@@ -547,6 +558,12 @@ export class DeviceEdit extends Component<any, any> {
   _setSwitchcraftState(stone) {
     if (stone.config.switchCraft !== this.state.switchCraft) {
       this.props.eventBus.emit("showLoading", "Configuring Switchcraft on this Crownstone...");
+
+      if (stone.config.disabled) {
+        Alert.alert("Can't see this Crownstone!", "You have to be in range of Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " Switchcraft.", [{text:'OK'}]);
+        return;
+      }
+
       let changePromise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'setSwitchCraft', value: this.state.switchCraft })
         .then(() => {
           this.props.store.dispatch({
@@ -563,7 +580,7 @@ export class DeviceEdit extends Component<any, any> {
           Alert.alert("I'm sorry...","I couldn't configure Switchcraft on this Crownstone. Please move closer and try again.", [{text:'OK'}])
         });
       BatchCommandHandler.executePriority();
-      return changePromise
+      return changePromise;
     }
   }
 
