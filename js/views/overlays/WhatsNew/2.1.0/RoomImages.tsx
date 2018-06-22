@@ -20,7 +20,7 @@ export class RoomImages extends Component<any, any> {
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>Customize Rooms!</Text>
             <Image source={require('../../../../images/whatsNew/2.1.0/roomImages.png')} style={{width:557*size, height:639*size, marginTop:10, marginBottom: 20}} />
-            <Text style={WNStyles.detail}>If you're the admin of your Sphere, you can now add a picture to a room!</Text>
+            <Text style={WNStyles.detail}>If you're the admin of your Sphere, this update enables to add a picture to a room!</Text>
           </View>
         </ScrollView>
       </View>

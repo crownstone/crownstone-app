@@ -17,8 +17,8 @@ export class NewLocalizationSettings extends Component<any, any> {
 
     let text = '';
     if (Platform.OS === 'android') {
-      text = "If you don't want to use the background features, the app will not use any battery when it is not in the foreground. " +
-        "However, this also means the indoor localization won't work so you can only use the app as a remote control." +
+      text = "By turning off the background features in your settings you’ll eliminate any battery usage of the app in the background." +
+        " However, by turning off these functionalities you’ll only be able to use the app as a remote control. " +
         "\n\nYou can get there from the sidebar: \n\"App Settings\"\n"
     }
     else { // ios

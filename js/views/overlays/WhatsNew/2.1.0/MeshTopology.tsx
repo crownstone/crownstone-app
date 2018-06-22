@@ -20,7 +20,7 @@ export class MeshTopology extends Component<any, any> {
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>Mesh Topology Visualization</Text>
             <Image source={require('../../../../images/whatsNew/2.1.0/meshTopology.png')} style={{width:485*size, height:722*size, marginTop: 20, marginBottom: 20}} />
-            <Text style={WNStyles.detail}>Since Crownstones need to be connected to each other to form a mesh network, we've added a visualization of the mesh network to help you set it up!</Text>
+            <Text style={WNStyles.detail}>We've added a visualisation of the mesh network, this feature shows you the quality of the connections between Crownstones within a mesh.</Text>
           </View>
         </ScrollView>
       </View>

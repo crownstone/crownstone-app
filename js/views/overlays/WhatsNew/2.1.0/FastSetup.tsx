@@ -19,7 +19,7 @@ export class FastSetup extends Component<any, any> {
         <ScrollView style={[WNStyles.outerScrollView,{width: this.props.width}]}>
           <View style={WNStyles.innerScrollView}>
             <Image source={require('../../../../images/whatsNew/2.1.0/fastSetup.png')} style={{width:475*size, height:571*size, marginTop:15, marginBottom: 25}} />
-            <Text style={WNStyles.detail}>The setup process will be much faster with the new firmware 2.1.0! This will also address issues some Android phones.</Text>
+            <Text style={WNStyles.detail}>By speeding up the setup process in the new 2.1.2 firmware, we’ve fixed issues with certain android phones.</Text>
           </View>
         </ScrollView>
       </View>
