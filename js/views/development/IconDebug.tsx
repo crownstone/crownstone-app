@@ -15,6 +15,7 @@ import {colors, screenWidth} from "../styles";
 import {BackAction} from "../../util/Back";
 import {glyphMapC1, glyphMapC2, glyphMapC3} from "../../fonts/customIcons";
 import {iconCorrections} from "../../fonts/iconCorrections";
+import {DebugIconSelection} from "./DebugIconSelection";
 
 const Actions = require('react-native-router-flux').Actions;
 
@@ -168,7 +169,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
-          <IconSelection
+          <DebugIconSelection
             categories={categories}
             icons={icons}
             offsets={this.iconCorrectionsMap}
