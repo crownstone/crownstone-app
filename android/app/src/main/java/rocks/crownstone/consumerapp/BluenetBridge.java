@@ -1451,7 +1451,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 				BleLog.getInstance().LOGi(TAG, "get switch success: " + result);
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", false);
-				retVal.putDouble("data", convertSwitchVal(result));
+				retVal.putDouble("data", convertSwitchState(result));
 				callback.invoke(retVal);
 			}
 
@@ -1494,19 +1494,19 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	@ReactMethod
-	public void toggleSwitchState(final Callback callback) {
+	public void toggleSwitchState(Float valueOnFloat, final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "toggleSwitchState");
 		if (!checkBleExt(callback)) {
 			return;
 		}
-		// For now: just toggle relay
-		getBleExt().toggleRelay(new IBooleanCallback() {
+		int valueOn = convertSwitchVal(valueOnFloat);
+		getBleExt().toggleSwitch(valueOn, new IIntegerCallback() {
 			@Override
-			public void onSuccess(boolean value) {
-				String switchRes = value ? "on" : "off";
-				BleLog.getInstance().LOGi(TAG, "toggled switch " + switchRes);
+			public void onSuccess(int value) {
+				BleLog.getInstance().LOGi(TAG, "toggled switch " + value);
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", false);
+				retVal.putDouble("data", convertSwitchState(value));
 				callback.invoke(retVal);
 			}
 
@@ -1588,7 +1588,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		return switchValInt;
 	}
 
-	/** Convert switch value to 0.0 .. 1.0 value.
+	/** Convert switch value (0-100) to 0.0 .. 1.0 value.
 	 *
 	 * @param switchVal      Integer value.
 	 * @return               Converted value.
@@ -1597,7 +1597,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		return (double)switchVal / BluenetConfig.SWITCH_ON;
 	}
 
-	/** Converts switch state to 0.0 .. 1.0 value.
+	/** Converts switch state (0-228) to 0.0 .. 1.0 value.
 	 *
 	 * @param switchState    Combined dimmer and relay state.
 	 * @return               Converted value.
@@ -1607,7 +1607,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 			switchState = BluenetConfig.SWITCH_ON;
 		}
 		return (double)switchState / BluenetConfig.SWITCH_ON;
-
 	}
 
 
