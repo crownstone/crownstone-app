@@ -31,27 +31,29 @@ export const PersistorUtil = {
       if (keyArray.length === 2) {
         let pureKey = keyArray[0];
         let index = Number(keyArray[1]);
+
         if (history[pureKey] === undefined) {
-          history[pureKey] = { index: index, fullKey: userKeys[i], historyIndex: null };
+          history[pureKey] = { newestIndex: index, newestFullKey: userKeys[i], oldestIndex: null };
         }
         else {
           // We have an existing entry for this key..
           // We want to try to get the latest version of this data. The index is from 0 to (HISTORY_CYCLE_SIZE - 1).
           // For now, we only store 1 historical item (HISTORY_SIZE). If we want to change this, we will need to keep track of the current index and calculate a distance.
-          if (isNewer(index, history[pureKey].index)) {
+          if (isNewer(index, history[pureKey].newestIndex)) {
             // we have a new "newest" key. Check if we should shift the previous to the oldest slot.
-            if (history[pureKey].historyIndex === null || !isNewer(history[pureKey].index, history[pureKey].historyIndex)) {
-              history[pureKey].historyIndex = history[pureKey].index;
+            if (history[pureKey].oldestIndex === null || !isNewer(history[pureKey].newestIndex, history[pureKey].oldestIndex)) {
+              history[pureKey].oldestIndex = history[pureKey].newestIndex;
             }
-            history[pureKey].index = index;
+            history[pureKey].newestIndex = index;
+            history[pureKey].newestFullKey = userKeys[i];
           }
           else {
-            if (history[pureKey].historyIndex === null) {
-              history[pureKey].historyIndex = index;
+            if (history[pureKey].oldestIndex === null) {
+              history[pureKey].oldestIndex = index;
             }
             else {
-              if (!isNewer(index, history[pureKey].historyIndex)) {
-                history[pureKey].historyIndex = index;
+              if (!isNewer(index, history[pureKey].oldestIndex)) {
+                history[pureKey].oldestIndex = index;
               }
             }
           }
@@ -66,8 +68,8 @@ export const PersistorUtil = {
     let historyKeys = Object.keys(history);
     for (let i = 0; i < historyKeys.length; i++) {
       let pureKey = historyKeys[i];
-      historyReference[pureKey] = history[pureKey].index;
-      latestKeys.push(history[pureKey].fullKey)
+      historyReference[pureKey] = history[pureKey].oldestIndex;
+      latestKeys.push(history[pureKey].newestFullKey)
     }
 
     return { latestKeys, historyReference };
