@@ -216,7 +216,7 @@ const c1CorrectionsAndroid = {
   'c1-court':                      {change: true, top: +0.000, left: +0.000},
   'c1-garage':                     {change: true, top: -0.020, left: +0.000},
   'c1-cinema':                     {change: true, top: +0.030, left: +0.000},
-  'c1-update-arrow':               {change: true, top: +0.010, left: +0.000},
+  'c1-update-arrow':               {change: true, top: -0.010, left: +0.000},
   'c1-tap':                        {change: true, top: +0.000, left: +0.030},
   'c1-tap-buttons':                {change: true, top: +0.010, left: +0.030},
   'c1-tap-lines':                  {change: true, top: +0.020, left: +0.010},
