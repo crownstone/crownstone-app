@@ -50,7 +50,7 @@ export class SettingsMeshTopologyHelp extends Component<any, any> {
             <Text style={explanationStyle}>{
               "Crownstones can talk to each other, and a group of Crownstones chatting makes up a mesh network." +
               "\n\nThey can only talk to each other if they are in range of each other. The topology view shows you which Crownstones can talk to each other." +
-              "\n\nThe icons show the Crownstone with it's device icon as shown here:"
+              "\n\nThe icons show the Crownstone with its device icon as shown here:"
             }</Text>
             <View style={{ width:screenWidth, height:120, alignItems:'center', justifyContent:'center'}}>
               <MeshElement key={"explanation1"} id={1} nodeData={mockData} pos={[0,0]} radius={50} />
@@ -65,7 +65,7 @@ export class SettingsMeshTopologyHelp extends Component<any, any> {
             </View>
             <Text style={explanationStyle}>{
               "Every second, the background will blink green to show you you're still in range of that Crownstone." +
-              "\n\nIf you tap on the bubble, it will expand to show you it's name and the room that it's currently in:"
+              "\n\nIf you tap on the bubble, it will expand to show you its name and the room that it's currently in:"
             }</Text>
             <View style={{width:280, height:135, alignItems:'center', justifyContent:'center', overflow:'hidden'}}>
               <MeshElement __expandOverride={true} key={"explanation2"} id={1} nodeData={mockData} pos={{x:60, y:20}} radius={30} />
