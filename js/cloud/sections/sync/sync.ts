@@ -109,7 +109,7 @@ export const sync = {
         return fingerprintSyncer.sync(state);
       })
       .then(() => {
-        LOG.info("Sync: DONE DeviceSyncer sync.");
+        LOG.info("Sync: DONE Fingerprint sync.");
         LOG.info("Sync: START syncPowerUsage.");
         return syncPowerUsage(state, actions);
       })

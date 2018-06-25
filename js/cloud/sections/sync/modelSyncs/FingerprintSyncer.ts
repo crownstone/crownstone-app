@@ -214,7 +214,7 @@ export class FingerprintSyncer extends SyncingBase {
     // download fingerprints for rooms that need it from our cloud database.
     let pendingActions =  [];
 
-    if (cloudIds.length > 0) {
+    if (cloudIds.length === 0) {
       return new Promise((resolve, reject) => { resolve(); });
     }
 
