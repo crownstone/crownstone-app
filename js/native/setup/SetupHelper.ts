@@ -83,10 +83,8 @@ export class SetupHelper {
           .then((hardwareVersion) => {
             this.hardwareVersion = hardwareVersion;
             LOG.info("setup progress: have hardware version: ", hardwareVersion);
-            return BluenetPromiseWrapper.phoneDisconnect();
           })
           .then(() => {
-            LOG.info("setup progress: disconnected");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
             return this.registerInCloud(sphereId);
           })
