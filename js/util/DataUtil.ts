@@ -286,6 +286,7 @@ export const DataUtil = {
   },
 
 
+
   getSpheresWhereUserHasAccessLevel: function(state, accessLevel) {
     let items = [];
     for (let sphereId in state.spheres) {
@@ -298,6 +299,36 @@ export const DataUtil = {
       }
     }
     return items;
+  },
+
+  getLayoutDataRooms: function(state, sphereId) {
+    let initialPositions = {}
+    let sphere = state.spheres[sphereId]
+    let rooms = sphere.locations;
+
+    let floatingStones = getFloatingStones(state, sphereId);
+    let showFloatingCrownstones = floatingStones.length > 0;
+
+    let roomIdArray = Object.keys(rooms).sort();
+    let usePhysics = false;
+
+    for (let i = 0; i < roomIdArray.length; i++) {
+      let room = rooms[roomIdArray[i]];
+      initialPositions[roomIdArray[i]] = {x: room.layout.x, y: room.layout.y};
+      if (room.layout.setOnThisDevice === false) {
+        usePhysics = true
+      }
+    }
+
+    if (showFloatingCrownstones) {
+      roomIdArray.push(null);
+      initialPositions['null'] = {x: sphere.layout.floatingLocation.x, y: sphere.layout.floatingLocation.y};
+      if ( sphere.layout.floatingLocation.setOnThisDevice === false ) {
+        usePhysics = true
+      }
+    }
+
+    return { roomIdArray, initialPositions, usePhysics };
   },
 
 

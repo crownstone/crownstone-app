@@ -25,6 +25,14 @@ export class DeviceEntrySubText extends Component<any, any> {
     let disabled = this.props.disabled;
     let measuresPower = this.props.deviceType === STONE_TYPES.plug || this.props.deviceType === STONE_TYPES.builtin;
 
+    if (this.props.statusTextOverride) {
+      return (
+        <View style={{flexDirection:'row'}}>
+          <Text style={{fontSize: 12}}>{this.props.statusTextOverride}</Text>
+        </View>
+      )
+    }
+
     if (disabled === false && currentUsage !== undefined && measuresPower) {
       // show it in orange if it's in tap to toggle range
       let color = colors.iosBlue.hex;

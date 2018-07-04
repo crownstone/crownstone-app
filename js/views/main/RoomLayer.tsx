@@ -20,6 +20,7 @@ import { screenWidth} from '../styles'
 import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
+import {Util} from "../../util/Util";
 
 export class RoomLayer extends Component<any, any> {
   state:any; // used to avoid warnings for setting state values
@@ -29,12 +30,13 @@ export class RoomLayer extends Component<any, any> {
   _showingFloatingRoom;
   unsubscribeSetupEvents = [];
   unsubscribeStoreEvents;
+  viewId: string;
 
   constructor(props) {
     super(props);
 
     this._baseRadius = 0.15 * screenWidth;
-
+    this.viewId = Util.getUUID()
     this._currentSphere = props.sphereId;
     this._showingFloatingRoom = false
   }
@@ -65,9 +67,12 @@ export class RoomLayer extends Component<any, any> {
       }
 
       if (
-        change.changeStones ||      // in case a stone that was floating was removed (and it was the last one floating) or added (and its floating)
+        change.changeStones            || // in case a stone that was floating was removed (and it was the last one floating) or added (and its floating)
         change.stoneLocationUpdated // in case a stone was moved from floating to room and it was the last one floating.)
       ) {
+        reloadSolverOnDemand();
+      }
+      if (change.changeLocationPositions) {
         reloadSolverOnDemand();
       }
     });
@@ -83,6 +88,7 @@ export class RoomLayer extends Component<any, any> {
     // variables to pass to the room overview
     return (
       <RoomCircle
+        viewId={this.viewId}
         eventBus={this.props.eventBus}
         locationId={locationId}
         sphereId={this.props.sphereId}
@@ -96,39 +102,23 @@ export class RoomLayer extends Component<any, any> {
     );
   }
 
-  _isFloatingRoomRequired(state) {
-    let floatingStones = getFloatingStones(state, this.props.sphereId);
-    return floatingStones.length > 0 || (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone);
-  }
-
-  getRooms() {
-    const state = this.props.store.getState();
-    let rooms = state.spheres[this.props.sphereId].locations;
-
-    let showFloatingCrownstones = this._isFloatingRoomRequired(state);
-
-    let roomIdArray = Object.keys(rooms).sort();
-    if (showFloatingCrownstones) {
-      roomIdArray.push(null);
-    }
-
-    return roomIdArray;
-  }
-
-
   render() {
     if (this.props.sphereId === null) {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }
     else {
-      let roomIdArray = this.getRooms();
+      let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), this.props.sphereId);
       return (
         <ForceDirectedView
+          viewId={this.viewId}
           topOffset={0.3*this._baseRadius}
           bottomOffset={Permissions.inSphere(this.props.sphereId).addRoom ? 0.3*this._baseRadius : 0}
           drawToken={this.props.sphereId}
-          nodeIds={roomIdArray}
+          nodeIds={roomData.roomIdArray}
+          initialPositions={roomData.initialPositions}
+          enablePhysics={roomData.usePhysics}
           nodeRadius={this._baseRadius}
+          allowDrag={false}
           renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}>
           <UserLayer
             store={this.props.store}

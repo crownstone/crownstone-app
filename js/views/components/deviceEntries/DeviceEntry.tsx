@@ -197,16 +197,22 @@ export class DeviceEntry extends Component<any, any> {
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
     });
 
+    let WrapperElement = TouchableOpacity;
+    if (this.props.touchable === false) {
+      WrapperElement = View
+    }
+
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
+          <WrapperElement style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
             {this._getIcon(element, stone, state)}
-          </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
+          </WrapperElement>
+          <WrapperElement style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
             <View style={{flexDirection: 'column'}}>
               <Text style={{fontSize: 17, fontWeight: '100'}}>{element.config.name}</Text>
               <DeviceEntrySubText
+                statusTextOverride={this.props.statusText}
                 statusText={this.state.statusText}
                 deviceType={stone.config.type}
                 rssi={stone.config.rssi}
@@ -218,7 +224,7 @@ export class DeviceEntry extends Component<any, any> {
                 tap2toggleEnabled={state.app.tapToToggleEnabled}
               />
             </View>
-          </TouchableOpacity>
+          </WrapperElement>
           {useControl === true && Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}
         </View>
       </Animated.View>

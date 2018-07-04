@@ -10,18 +10,18 @@ import {
   View
 } from 'react-native';
 
-import { IconButton } from './../components/IconButton'
-import { Background } from './../components/Background'
-import { ProfilePicture } from './../components/ProfilePicture'
-import { ListEditableItems } from './../components/ListEditableItems'
-import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG } from '../../logging/Log'
-import {colors, screenWidth, OrangeLine} from './../styles'
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {BackAction} from "../../util/Back";
+import { IconButton } from '../../components/IconButton'
+import { Background } from '../../components/Background'
+import { ProfilePicture } from '../../components/ProfilePicture'
+import { ListEditableItems } from '../../components/ListEditableItems'
+import { CLOUD } from '../../../cloud/cloudAPI'
+import { LOG } from '../../../logging/Log'
+import {colors, screenWidth, OrangeLine} from '../../styles'
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
-export class SettingsSphereInvitedUser extends Component<any, any> {
+export class SphereInvitedUser extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: "Invited User" }
   };

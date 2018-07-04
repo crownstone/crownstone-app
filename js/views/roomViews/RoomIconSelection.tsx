@@ -199,6 +199,12 @@ let listOfIcons = {
   ]
 };
 
+export const getRandomRoomIcon = () => {
+  let allKeys = Object.keys(listOfIcons);
+  let key = allKeys[Math.floor(Math.random()*allKeys.length)]
+  return listOfIcons[key][Math.floor(Math.random()*listOfIcons[key].length)]
+}
+
 export class RoomIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
     return {

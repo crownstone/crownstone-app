@@ -2,8 +2,8 @@ import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 import powerUsageReducer from './stoneSubReducers/powerUsage'
-import scheduleReducer from './stoneSubReducers/schedule'
-import meshReducer from './stoneSubReducers/mesh'
+import scheduleReducer   from './stoneSubReducers/schedule'
+import meshReducer       from './stoneSubReducers/mesh'
 
 export let BEHAVIOUR_TYPES = {
   NEAR: 'onNear',
@@ -416,7 +416,7 @@ let combinedStoneReducer = combineReducers({
   schedules:  scheduleReducer,
   errors:     stoneErrorsReducer,
   powerUsage: powerUsageReducer,
-  mesh:       meshReducer
+  mesh:       meshReducer,
 });
 
 // stonesReducer

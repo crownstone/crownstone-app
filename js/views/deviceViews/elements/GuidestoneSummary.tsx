@@ -16,6 +16,8 @@ const Actions = require('react-native-router-flux').Actions;
 
 import {colors, screenWidth, availableScreenHeight} from '../../styles'
 import {Util} from "../../../util/Util";
+import {DeviceInformation} from "./DeviceSummary";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 export class GuidestoneSummary extends Component<any, any> {
   constructor(props) {
@@ -29,9 +31,10 @@ export class GuidestoneSummary extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let locationLabel = "Currently in Room:";
-    let locationName = "No";
+    let locationLabel = "Tap here to move me!";
+    let locationName = "Not in room";
     if (location) {
       locationLabel = "Located in:";
       locationName = location.config.name;
@@ -39,6 +42,11 @@ export class GuidestoneSummary extends Component<any, any> {
 
     return (
       <View style={{flex:1, paddingBottom:35}}>
+        <DeviceInformation
+          right={locationLabel}
+          rightValue={locationName}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { Actions.roomSelection({sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
+        />
         <View style={{flex:1}} />
         <View style={{alignItems:'center'}}>
           <Text style={deviceStyles.subText}>{"Device Type:"}</Text>

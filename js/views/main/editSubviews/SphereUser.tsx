@@ -9,18 +9,17 @@ import {
   Text,
   View
 } from 'react-native';
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {CLOUD} from "../../../cloud/cloudAPI";
+import {LOG} from "../../../logging/Log";
+import {BackAction} from "../../../util/Back";
+import {Background} from "../../components/Background";
+import {OrangeLine, screenWidth} from "../../styles";
+import {ProfilePicture} from "../../components/ProfilePicture";
+import {ListEditableItems} from "../../components/ListEditableItems";
 
-import { Background } from '../components/Background'
-import { ProfilePicture } from '../components/ProfilePicture'
-import { ListEditableItems } from '../components/ListEditableItems'
-import { CLOUD } from '../../cloud/cloudAPI'
-import {screenWidth, OrangeLine} from '../styles'
-import {LOG} from "../../logging/Log";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {BackAction} from "../../util/Back";
-const Actions = require('react-native-router-flux').Actions;
 
-export class SettingsSphereUser extends Component<any, any> {
+export class SphereUser extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: "Sphere User" }
   };

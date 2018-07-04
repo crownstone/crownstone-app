@@ -45,9 +45,11 @@ export class SettingsMeshTopology extends Component<any, any> {
 
   refreshCount = 0
   refreshAmountRequired = 0
+  viewId : string
 
   constructor(props) {
     super(props);
+    this.viewId = Util.getUUID();
     this.state = { leftOffset: new Animated.Value() };
   }
 
@@ -66,7 +68,7 @@ export class SettingsMeshTopology extends Component<any, any> {
 
   renderNode(id, nodePosition) {
     return (
-      <MeshElement key={"meshElement"+id} id={id} nodeData={this.nodeData[id]} pos={nodePosition} radius={this._baseRadius} />
+      <MeshElement key={"meshElement"+id} id={id} nodeData={this.nodeData[id]} pos={nodePosition} radius={this._baseRadius} viewId={this.viewId} />
     );
   }
 
@@ -222,6 +224,7 @@ export class SettingsMeshTopology extends Component<any, any> {
       <Background image={this.props.backgrounds.menu}>
         <OrangeLine/>
         <ForceDirectedView
+          viewId={this.viewId}
           nodeIds={stoneIds}
           nodeRadius={this._baseRadius}
           edges={edges}

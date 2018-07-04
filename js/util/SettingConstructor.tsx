@@ -93,16 +93,7 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
   insertExplanation(items, 'You are in control of which data is shared with the cloud.', true);
 
   insertExplanation(items, 'CONFIGURATION', false, true);
-  if (Object.keys(state.spheres).length > 0) {
-    items.push({
-      id: 'Spheres',
-      label: 'Spheres',
-      icon: getIcon('c1-sphere', 21.5, colors.white.hex, colors.blue.hex),
-      type: 'navigation',
-      callback: () => { clickCallback(); Actions.settingsSphereOverview() }
-    });
-  }
-  else {
+  if (Object.keys(state.spheres).length == 0) {
     items.push({
       id: 'Add Sphere',
       label: 'Add Sphere',

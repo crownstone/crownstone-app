@@ -24,6 +24,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {CancelButton} from "../components/topbar/CancelButton";
+import {getRandomRoomIcon} from "./RoomIconSelection";
 
 
 
@@ -47,7 +48,7 @@ export class RoomAdd extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    let initialState = {name:'', icon: 'c1-bookshelf', selectedStones: {}, picture: null};
+    let initialState = {name:'', icon: getRandomRoomIcon(), selectedStones: {}, picture: null};
     this.refName = "listItems";
 
     if (props.movingCrownstone) {
@@ -247,8 +248,8 @@ export class RoomAdd extends Component<any, any> {
             }
 
             this.props.store.batchDispatch(actions);
-            if (this.props.returnToCrownstone) {
-              Actions.popTo("deviceOverview");
+            if (this.props.returnToRoute) {
+              Actions.popTo(this.props.returnToRoute);
             }
             else {
               Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false, __popBeforeAddCount: 2});

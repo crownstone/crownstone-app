@@ -9,16 +9,16 @@ import {
   Text,
   View
 } from 'react-native';
-import { Background } from '../components/Background'
-import { ListEditableItems } from '../components/ListEditableItems'
+import { Background } from '../../components/Background'
+import { ListEditableItems } from '../../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
-import {colors, OrangeLine} from '../styles';
-import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG } from '../../logging/Log'
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {BackAction} from "../../util/Back";
+import {colors, OrangeLine} from '../../styles';
+import { CLOUD } from '../../../cloud/cloudAPI'
+import { LOG } from '../../../logging/Log'
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../../util/Back";
 
-export class SettingsSphereInvite extends Component<any, any> {
+export class SphereUserInvite extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: "Invite" }
   };

@@ -25,6 +25,14 @@ let defaultSettings = {
     newMessageFound: false,
     updatedAt: 1,
     lastSeen: 1,
+  },
+  layout: {
+    floatingLocation: {
+      x: null,
+      y: null,
+      setOnThisDevice: false,
+      updatedAt: 0,
+    }
   }
 };
 
@@ -107,13 +115,40 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
   }
 };
 
+
+
+let floatingLocationReducer = (state = defaultSettings.layout.floatingLocation, action : any = {}) => {
+  switch (action.type) {
+    case 'SET_FLOATING_LAYOUT_LOCATION':
+      if (action.data) {
+        let newState = {...state};
+        newState.x = update(action.data.x, newState.x);
+        newState.y = update(action.data.y, newState.y);
+        newState.setOnThisDevice = update(action.data.setOnThisDevice, newState.setOnThisDevice);
+        newState.updatedAt = getTime(action.data.timestamp || action.updatedAt);
+        return newState;
+      }
+      return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.layout.floatingLocation);
+    default:
+      return state;
+  }
+}
+
+let layoutReducer = combineReducers({
+  floatingLocation: floatingLocationReducer,
+});
+
+
 let combinedSphereReducer = combineReducers({
   config:     sphereConfigReducer,
+  layout:     layoutReducer,
   users:      sphereUserReducer,
   locations:  locationsReducer,
   stones:     stonesReducer,
   messages:   messageReducer,
-  appliances: appliancesReducer
+  appliances: appliancesReducer,
 });
 
 // spheresReducer

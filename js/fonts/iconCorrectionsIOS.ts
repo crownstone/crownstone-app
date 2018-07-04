@@ -317,7 +317,7 @@ const c2CorrectionsIOS = {
   'c2-crownstone':      {change: true, top: +0.015, left: +0.000},
   'c2-plugin':          {change: true, top: +0.040, left: +0.000},
   'c2-pluginFilled':    {change: true, top: +0.000, left: +0.000},
-  'c2-pluginFront':     {change: true, top: -0.020, left: +0.000},
+  'c2-pluginFront':     {change: true, top: -0.015, left: -0.010},
 };
 
 const c3CorrectionsIOS = {

@@ -19,16 +19,17 @@ const DeviceInfo = require('react-native-device-info');
 
 import { LOG, LOGd, LOGi } from '../../logging/Log'
 import { emailChecker, getImageFileFromUser, Util } from '../../util/Util'
-import { SessionMemory }                            from '../../util/SessionMemory'
-import { CLOUD }                                    from '../../cloud/cloudAPI'
-import { TextEditInput }                            from '../components/editComponents/TextEditInput'
-import { Background }                               from '../components/Background'
-import { StoreManager }                             from '../../router/store/storeManager'
-import loginStyles                                  from './LoginStyles'
+import { SessionMemory }      from '../../util/SessionMemory'
+import { CLOUD }              from '../../cloud/cloudAPI'
+import { TextEditInput }      from '../components/editComponents/TextEditInput'
+import { Background }         from '../components/Background'
+import { StoreManager }       from '../../router/store/storeManager'
+import loginStyles            from './LoginStyles'
 import {screenWidth, screenHeight, colors, availableScreenHeight, topBarHeight} from '../styles'
-import { DEBUG_MODE_ENABLED }                       from '../../ExternalConfig';
-import { TopBar }                                   from "../components/Topbar";
-import { Icon }                                     from "../components/Icon";
+import { DEBUG_MODE_ENABLED } from '../../ExternalConfig';
+import { TopBar }             from "../components/Topbar";
+import { Icon }               from "../components/Icon";
+import { Sentry }             from "react-native-sentry";
 
 
 export class Login extends Component<any, any> {
@@ -323,6 +324,13 @@ export class Login extends Component<any, any> {
         })
     );
 
+    Sentry.captureBreadcrumb({
+      category: 'login',
+      data: {
+        state: 'downloading settings'
+      }
+    });
+
     // check if we need to upload a picture that has been set aside during the registration process.
     let imageFilename = getImageFileFromUser(this.state.email.toLowerCase());
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
@@ -383,6 +391,14 @@ export class Login extends Component<any, any> {
 
     Promise.all(promises)
       .then(() => {
+
+        Sentry.captureBreadcrumb({
+          category: 'login',
+          data: {
+            state:'finished'
+          }
+        });
+
         LOG.info("Login: finished promises");
         this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
 

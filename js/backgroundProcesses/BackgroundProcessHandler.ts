@@ -26,11 +26,12 @@ import { BatchUploader }         from "./BatchUploader";
 import { MessageCenter }         from "./MessageCenter";
 import { CloudEventHandler }     from "./CloudEventHandler";
 import { Permissions }           from "./PermissionManager";
-import {LOG, LOGw}               from "../logging/Log";
-import {LogProcessor}            from "../logging/LogProcessor";
-import {BleLogger}               from "../native/advertisements/BleLogger";
-import {StoneManager}            from "../native/advertisements/StoneManager";
-import {MeshUtil}                from "../util/MeshUtil";
+import { LOG, LOGw }             from "../logging/Log";
+import { LogProcessor }          from "../logging/LogProcessor";
+import { BleLogger }             from "../native/advertisements/BleLogger";
+import { StoneManager }          from "../native/advertisements/StoneManager";
+import { MeshUtil }              from "../util/MeshUtil";
+import { Sentry }                from "react-native-sentry";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -264,6 +265,12 @@ class BackgroundProcessHandlerClass {
     // listen to the state of the app: if it is in the foreground or background
     AppState.addEventListener('change', (appState) => {
       LOG.info("App State Change", appState);
+      Sentry.captureBreadcrumb({
+        category: 'AppState',
+        data: {
+          state: appState,
+        }
+      });
       // in the foreground: start scanning!
       if (appState === "active" && this.userLoggedIn) {
         BatterySavingUtil.startNormalUsage();

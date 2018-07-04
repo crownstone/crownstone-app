@@ -27,7 +27,7 @@ import {
   getCurrentPowerUsageInLocation,
   getStonesAndAppliancesInLocation,
   canUseIndoorLocalizationInSphere,
-  enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization
+  enoughCrownstonesInLocationsForIndoorLocalization
 } from '../../util/DataUtil'
 import { styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth, OrangeLine} from '../styles'
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
@@ -73,7 +73,6 @@ export class RoomOverview extends Component<any, any> {
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
   navBarCalback : any = null;
-  cacheBuster : number = 0;
 
   constructor(props) {
     super(props);
@@ -83,7 +82,6 @@ export class RoomOverview extends Component<any, any> {
 
     this.viewingRemotely = true;
     this.justFinishedSetup = "";
-    this.cacheBuster = Math.random();
 
     this.nearestStoneIdInSphere = undefined;
     this.nearestStoneIdInRoom = undefined;
@@ -225,7 +223,6 @@ export class RoomOverview extends Component<any, any> {
       return (
         <View key={stoneId + '_entry'}>
           <DeviceEntry
-            initiallyOpen={this.justFinishedSetup === item.stone.config.handle || (this.props.usedForIndoorLocalizationSetup == true && index == 0)}
             eventBus={this.props.eventBus}
             store={this.props.store}
             stoneId={stoneId}
@@ -336,11 +333,10 @@ export class RoomOverview extends Component<any, any> {
         if (this.viewingRemotelyInitial === false && this.viewingRemotely === false && Platform.OS === 'android') {
           // update cache buster
           if (this.pictureTaken !== location.config.pictureTaken) {
-            this.cacheBuster = Math.random();
             this.pictureTaken = location.config.pictureTaken;
           }
           
-          backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri: preparePictureURI(location.config.picture, false) + "?r=" + this.cacheBuster}} />
+          backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri: preparePictureURI(location.config.picture)}} />
         }
         else {
           roomCustomImage = (
@@ -370,6 +366,7 @@ export class RoomOverview extends Component<any, any> {
       this._setNearestStoneInRoom(stoneArray, ids);
       this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
       let viewHeight = screenHeight-tabBarHeight-topBarHeight-100;
+
       content = (
         <Animated.View style={{height: this.state.scrollViewHeight}}>
           <ScrollView style={{position:'relative', top:-1}}>

@@ -18,6 +18,7 @@ import {IconButton} from "../components/IconButton";
 import {Actions} from "react-native-router-flux";
 import {Icon} from "../components/Icon";
 import {NavigationBar} from "../components/editComponents/NavigationBar";
+import { Sentry } from "react-native-sentry";
 
 export class SettingsFAQ extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {

@@ -15,6 +15,7 @@ import { eventBus }                 from "../../../util/EventBus";
 import { KeySyncer }                from "./modelSyncs/KeySyncer";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
+import { Sentry }                   from "react-native-sentry";
 
 
 
@@ -55,6 +56,13 @@ export const sync = {
     CLOUD.setUserId(userId);
 
     eventBus.emit("CloudSyncStarting");
+
+    Sentry.captureBreadcrumb({
+      category: 'sync',
+      data: {
+        state:'start'
+      }
+    });
 
     let globalCloudIdMap = getGlobalIdMap();
     let globalSphereMap = {};
@@ -156,6 +164,13 @@ export const sync = {
       .then(() => {
         this.__currentlySyncing = false;
         cancelFallbackCallback();
+
+        Sentry.captureBreadcrumb({
+          category: 'sync',
+          data: {
+            state:'success'
+          }
+        });
       })
       .catch((err) => {
         LOG.info("SYNC: Failed... Could dispatch ", actions.length, " actions!", actions);
@@ -166,6 +181,14 @@ export const sync = {
         // if (actions.length > 0) {
         //   store.batchDispatch(actions);
         // }
+
+        Sentry.captureBreadcrumb({
+          category: 'sync',
+          data: {
+            state:'failed',
+            err: err
+          }
+        });
 
         this.__currentlySyncing = false;
         cancelFallbackCallback();

@@ -345,18 +345,16 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
   let mustUpdate = Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
   let canUpdate  = Permissions.inSphere(props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
 
-  // if this stone requires to be dfu-ed to continue working, block all other actions.
-  if (stone.config.dfuResetRequired) {
-    canUpdate = true;
-    hasError  = false;
-  }
-
   // only shift the indexes (move the edit button to the next pages) if we do not have a mandatory view
   if (!hasError && !mustUpdate) {
     if (showWhatsNew) { summaryIndex++; behaviourIndex++; }
     if (canUpdate)    { summaryIndex++; behaviourIndex++; }
   }
 
+  // if this stone requires to be dfu-ed to continue working, block all other actions.
+  if (stone.config.dfuResetRequired) {
+    summaryIndex = 0;
+  }
 
   let rightLabel = null;
   let rightItem  = null;
@@ -441,5 +439,3 @@ export const deviceStyles = StyleSheet.create({
     textAlign:'center'
   },
 });
-
-

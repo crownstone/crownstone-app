@@ -23,17 +23,17 @@ import { Util } from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
 import {OrangeLine} from "../styles";
+import {addCrownstoneExplanationAlert} from "./AddItemsToSphere";
 
-export class SettingsSphere extends Component<any, any> {
+export class SphereEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     let state = params.store.getState();
     let sphere = state.spheres[params.sphereId] ;
     return {
-      title: sphere.config.name,
+      title: 'Edit ' + sphere.config.name,
     }
   };
-
 
   deleting : boolean;
   validationState : any;
@@ -69,60 +69,6 @@ export class SettingsSphere extends Component<any, any> {
     this.unsubscribeStoreEvents();
   }
 
-  _getUsersWithAccess(state, accessLevel) {
-    let spherePermissions = Permissions.inSphere(this.props.sphereId);
-    let result = [];
-    let users = state.spheres[this.props.sphereId].users;
-    for (let userId in users) {
-      if (users.hasOwnProperty(userId)) {
-        if (users[userId].accessLevel == accessLevel) {
-          if (users[userId].invitationPending === true) {
-            result.push({
-              label: users[userId].email,
-              type: (userId === state.user.userId || spherePermissions.manageUsers === false) ? 'info' : 'navigation',
-              icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
-              callback: () => {
-                Actions.settingsSphereInvitedUser({
-                  title: users[userId].email,
-                  userId: userId,
-                  invitePending: true,
-                  sphereId: this.props.sphereId
-                });
-              }
-            });
-          }
-          else {
-            result.push({
-              label: users[userId].firstName + " " + users[userId].lastName,
-              type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' : 'navigation',
-              icon: <ProfilePicture picture={users[userId].picture} borderless={false} />,
-              callback: () => {
-                Actions.settingsSphereUser({
-                  title: users[userId].firstName,
-                  userId: userId,
-                  sphereId: this.props.sphereId
-                });
-              }
-            });
-          }
-        }
-      }
-    }
-
-    return result
-  }
-
-  _getDelayLabel(delay) {
-    if (delay === undefined || delay == 0)
-      return 'None';
-
-    if (delay < 60) {
-      return 'after ' + Math.floor(delay) + ' seconds';
-    }
-    else {
-      return 'after ' + Math.floor(delay/60) + ' minutes';
-    }
-  }
 
   _getItems() {
     let items = [];
@@ -132,9 +78,9 @@ export class SettingsSphere extends Component<any, any> {
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
+    items.push({label:'SPHERE DETAILS',  type:'explanation', below:false});
     if (spherePermissions.editSphere) {
       let sphereSettings = state.spheres[this.props.sphereId].config;
-      items.push({label:'SPHERE SETTINGS',  type:'explanation', below:false});
       items.push({
         type:'textEdit',
         label:'Name',
@@ -164,6 +110,13 @@ export class SettingsSphere extends Component<any, any> {
         }
       });
     }
+    else {
+      items.push({
+        type:'info',
+        label:'Name',
+        value: this.state.sphereName,
+      });
+    }
 
     let ai = Util.data.getAiData(state, this.props.sphereId);
 
@@ -178,94 +131,120 @@ export class SettingsSphere extends Component<any, any> {
     });
     items.push({label: ai.name + ' will do ' + ai.his + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
 
-    if (spherePermissions.editSphere) {
-      let options = [];
-      options.push({label: '5 Minutes', value: 300});
-      options.push({label: '10 Minutes', value: 600});
-      options.push({label: '15 Minutes', value: 900});
-      options.push({label: '30 Minutes', value: 1800});
-      items.push({label: 'SPHERE EXIT DELAY', type: 'explanation', below: false});
-      items.push({
-        type: 'dropdown',
-        label: 'Delay',
-        value: Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), // max to allow older versions of the app that have a timeout of 2 minutes to also turn off at 5
-        valueLabel: this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),
-        dropdownHeight: 130,
-        items: options,
-        buttons: true,
-        callback: (newValue) => {
-          LOG.info("SettingsSphere: new Value for exit delay", newValue);
-          store.dispatch({
-            sphereId: this.props.sphereId,
-            type: 'UPDATE_SPHERE_CONFIG',
-            data: {exitDelay: newValue}
-          });
+
+    items.push({label:'ROOMS',  type:'explanation', below:false});
+    items.push({
+      label: 'All Rooms in Sphere',
+      type: 'navigation',
+      icon: <IconButton name='md-cube' size={20} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/>,
+      callback: () => {
+        Actions.sphereRoomOverview({sphereId: this.props.sphereId});
+      }
+    });
+    items.push({
+      label: 'Rearrange Rooms',
+      icon: <IconButton name="md-cube" size={20} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7}} />,
+      type: 'navigation',
+      callback: () => {
+        let state = this.props.store.getState();
+        let sphere = state.spheres[this.props.sphereId];
+        let locationIds = Object.keys(sphere.locations);
+        if (locationIds.length > 0) {
+          Actions.sphereRoomArranger({sphereId: this.props.sphereId});
         }
-      });
-      items.push({
-        label: 'If nobody is left in the sphere, the Crownstones that are configured to switch when you leave the sphere will do so after this delay.',
-        type: 'explanation',
-        below: true,
-        style: {paddingBottom: 0}
-      });
-    }
+        else {
+          Alert.alert("You don't have any rooms yet!", "First add a few rooms, then you can rearrange them!",[{text:"OK"}])
+        }
+      }
+    });
 
-    items.push({label:'ADMINS',  type:'explanation', below:false});
-    items = items.concat(this._getUsersWithAccess(state,'admin'));
-    items.push({label:'Admins can add, configure and remove Crownstones and Rooms.', style:{paddingBottom:0}, type:'explanation', below:true});
 
-    let members = this._getUsersWithAccess(state,'member');
-    if (members.length > 0) {
-      items.push({label:'MEMBERS',  type: 'explanation', below: false});
-      items = items.concat(members);
-      items.push({label:'Members can configure Crownstones.', style:{paddingBottom:0}, type:'explanation', below:true});
-    }
+    items.push({label:'CROWNSTONES',  type:'explanation', below:false});
+    items.push({
+      label: 'All Crownstones in Sphere',
+      type: 'navigation',
+      icon: <IconButton name='c2-pluginFilled' size={21} radius={5} button={true} color="#fff" buttonStyle={{backgroundColor: colors.purple.hex, marginLeft:3, marginRight:7}}/>,
+      callback: () => {
+        Actions.sphereCrownstoneOverview({sphereId: this.props.sphereId});
+      }
+    });
+    items.push({
+      label: 'Add a Crownstone',
+      type: 'button',
+      style: {color: colors.black.hex},
+      icon: <IconButton name='c3-addRoundedfilled' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkPurple.hex, marginLeft:3, marginRight:7}}/>,
+      callback: () => {
+        if (spherePermissions.canSetupCrownstone) {
+          addCrownstoneExplanationAlert()
+        }
+        else {
+          Alert.alert("Ask your Sphere Admin","Admins can add new Crownstones to Spheres. If you have a new Crownstone you'd like to add, ask the sphere Admin.",[{text:"OK"}]);
+        }
+      }
+    });
 
-    let guest = this._getUsersWithAccess(state, 'guest');
-    if (guest.length > 0) {
-      items.push({label:'GUESTS',  type:'explanation', below: false});
-      items = items.concat(guest);
-      items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', style:{paddingBottom:0}, type:'explanation', below:true});
-    }
 
-    if (spherePermissions.inviteAdminToSphere || spherePermissions.inviteMemberToSphere || spherePermissions.inviteGuestToSphere) {
-      items.push({label:'ADD PEOPLE TO YOUR SPHERE', type:'explanation'});
+
+    items.push({label:'USERS',  type:'explanation', below:false});
+    items.push({
+      label: 'User overview',
+      type: 'navigation',
+      icon: <IconButton name='c1-people' size={21} radius={5} button={true} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex, marginLeft:3, marginRight:7}}/>,
+      callback: () => {
+        Actions.sphereUserOverview({sphereId: this.props.sphereId});
+      }
+    });
+    if (spherePermissions.inviteGuestToSphere || spherePermissions.inviteMemberToSphere || spherePermissions.inviteAdminToSphere) {
       items.push({
         label: 'Invite someone new', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
         type: 'navigation',
-        labelStyle: {color:colors.blue.hex},
-        icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor:colors.green.hex, marginLeft:3, marginRight:7}} />,
+        labelStyle: {color: colors.blinkColor1.hex},
+        icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor: colors.blinkColor1.hex, marginLeft: 3, marginRight: 7}}/>,
         callback: () => {
-          Actions.settingsSphereInvite({sphereId: this.props.sphereId});
+          Actions.sphereUserInvite({sphereId: this.props.sphereId});
+        }
+      });
+    }
+
+    if (spherePermissions.editSphere) {
+      items.push({label: 'BEHAVIOUR', type: 'explanation', below: false});
+      items.push({
+        label: 'Sphere behaviour',
+        type: 'navigation',
+        icon: <IconButton name='c1-brain' size={21} radius={5} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex, marginLeft: 3, marginRight: 7}}/>,
+        callback: () => {
+          Actions.sphereBehaviour({sphereId: this.props.sphereId});
         }
       });
     }
 
 
     items.push({label:'DANGER',  type:'explanation', below: false});
-    let leaveColor = spherePermissions.deleteSphere ? colors.orange.hex : colors.red.hex;
     items.push({
-      label: 'Leave this Sphere',
-      icon: <IconButton name="md-exit" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: leaveColor, marginLeft:3, marginRight:7}} />,
-      style: {color:leaveColor},
+      label: 'Leave Sphere',
+      icon: <IconButton name="md-exit" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex, marginLeft:3, marginRight:7}} />,
+      style: {color:colors.menuRed.hex},
       type: 'button',
       callback: () => {
         this._leaveSphere(state);
       }
     });
-    items.push({label:'Leaving a sphere cannot be undone. You will have to be invited again.',  type:'explanation', below:true});
-
     if (spherePermissions.deleteSphere) {
       items.push({
-        label: 'Delete this Sphere',
-        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex, marginLeft:3, marginRight:7}} />,
+        label: 'Delete Sphere',
+        icon: <IconButton name="md-exit" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkRed.hex, marginLeft: 3, marginRight: 7}}/>,
+        style: {color: colors.darkRed.hex},
         type: 'button',
         callback: () => {
           this._deleteSphere(state);
         }
       });
-      items.push({label:'Deleting a sphere cannot be undone.',  type:'explanation', below:true});
     }
+    items.push({label:'This cannot be undone!',  type:'explanation', below: true});
+
+    items.push({type:'spacer'});
+    items.push({type:'spacer'});
+    items.push({type:'spacer'});
 
     return items;
   }
@@ -347,7 +326,7 @@ export class SettingsSphere extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={this.props.backgrounds.menu} hasNavBar={false} >
         <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

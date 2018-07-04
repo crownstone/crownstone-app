@@ -77,6 +77,7 @@ export class RoomSelection extends Component<any, any> {
 
     let rooms = state.spheres[this.props.sphereId].locations;
     let roomIds = Object.keys(rooms);
+    roomIds.sort((a,b) => { return rooms[a].config.name > rooms[b].config.name ? 1 : -1 })
     items.push({label:"ROOMS IN CURRENT SPHERE",  type:'explanation', below:false});
     roomIds.forEach((roomId) => {
       let room = rooms[roomId];
@@ -85,11 +86,11 @@ export class RoomSelection extends Component<any, any> {
 
     items.push({
       label: 'Add a room',
-      largeIcon: <Icon name="ios-add-circle" size={60} color={colors.green.hex} style={{position:'relative', top:2}} />,
-      style: {color:colors.blue.hex},
+      largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position:'relative', top:2}} />,
+      style: {color:colors.blue.hex, fontWeight:'bold'},
       type: 'navigation',
       callback: () => {
-        Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true, returnToCrownstone: this.props.returnToCrownstone})
+        Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true, returnToRoute: this.props.returnToRoute})
       }
     });
 
@@ -97,7 +98,7 @@ export class RoomSelection extends Component<any, any> {
     items.push({
       label: 'Not in a specific room',
       largeIcon: <Icon name="md-cube" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
-      style: {color:colors.blue.hex},
+      style: {color:colors.blue.hex, fontWeight:'bold'},
       type: 'navigation',
       callback: () => {
         this._moveCrownstone( null );

@@ -4318,9 +4318,9 @@ react-native-splash-screen@3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.0.6.tgz#c0bbf2c8ae40a313c4c7044f55e569414ff68332"
 
-react-native-svg@6.2.2:
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-6.2.2.tgz#5803cddce374a542b4468c38a2474fca32080685"
+react-native-svg@6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-6.4.0.tgz#7738cb3144064d612c8d0478188b7e7d582afabf"
   dependencies:
     color "^2.0.1"
     lodash "^4.16.6"

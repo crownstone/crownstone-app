@@ -287,7 +287,6 @@ export class DfuOverlay extends Component<any, any> {
 
       // check what we have to do for this Crownstone. This will give us an amount of phases to do.
       let phasesRequired = this.helper.getAmountOfPhases(stoneConfig.dfuResetRequired);
-      console.log("phasesRequired", phasesRequired)
       if (this.helper.resetRequired === true) {
         this.props.store.dispatch({
           type: "UPDATE_STONE_DFU_RESET",

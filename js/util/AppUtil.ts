@@ -8,6 +8,7 @@ import { Actions } from "react-native-router-flux";
 import {NativeBus} from "../native/libInterface/NativeBus";
 import {CLOUD} from "../cloud/cloudAPI";
 import {Util} from "./Util";
+import { Sentry } from "react-native-sentry";
 
 export const AppUtil = {
   quit: function() {
@@ -41,6 +42,14 @@ export const AppUtil = {
   },
 
   _logOut: function(store, gracefulExit) {
+
+    Sentry.captureBreadcrumb({
+      category: 'logout',
+      data: {
+        state:'startLogOut'
+      }
+    });
+
     eventBus.emit("showLoading", {text:"Logging out and closing app...", opacity:0.25});
 
     // clear position for this device.

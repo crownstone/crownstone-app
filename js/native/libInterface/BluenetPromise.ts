@@ -3,6 +3,7 @@ import { DISABLE_NATIVE } from '../../ExternalConfig'
 import { LOG } from '../../logging/Log'
 import { Bluenet } from './Bluenet'
 import { eventBus }  from '../../util/EventBus'
+import {Sentry} from "react-native-sentry";
 
 export const BluenetPromise : any = function(functionName, param, param2, param3, param4, param5) {
   return new Promise((resolve, reject) => {
@@ -10,13 +11,35 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
       resolve()
     }
     else {
+      Sentry.captureBreadcrumb({
+        category: 'ble',
+        data: {
+          functionCalled: functionName,
+          state: 'started',
+        }
+      });
       let bluenetArguments = [];
       let promiseResolver = (result) => {
         if (result.error === true) {
           LOG.info("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data);
+          Sentry.captureBreadcrumb({
+            category: 'ble',
+            data: {
+              functionCalled: functionName,
+              state: 'failed',
+              err: result.data
+            }
+          });
           reject(result.data);
         }
         else {
+          Sentry.captureBreadcrumb({
+            category: 'ble',
+            data: {
+              functionCalled: functionName,
+              state: 'success',
+            }
+          });
           resolve(result.data);
         }
       };

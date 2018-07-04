@@ -44,9 +44,13 @@ class PhysicsEngine {
   height: number;
   width: number;
 
+  usePhysics = true;
+
   constructor() {}
 
-  initEngine(center, width, height, radius, onChange = () => {}, onStable = () => {}) {
+  initEngine(center, width, height, radius, onChange = () => {}, onStable = () => {}, usePhysics = true) {
+    this.usePhysics = usePhysics;
+
     this.onChange = onChange;
     this.onStable = onStable;
     this.radius = radius;
@@ -157,14 +161,15 @@ class PhysicsEngine {
     this.positionInitially(nodes, nodeIds);
     if (edges.length > 0) {
       let springLength = this.options[this.options.solver].springLength;
-      let layoutSolver = new KamadaKawai(
-        nodes,
-        edges,
-        this.options.useDynamicEdges ? 2*springLength : springLength,
-        this.options[this.options.solver].springConstant
-      );
-      layoutSolver.solve();
-
+      if (this.usePhysics) {
+        let layoutSolver = new KamadaKawai(
+          nodes,
+          edges,
+          this.options.useDynamicEdges ? 2 * springLength : springLength,
+          this.options[this.options.solver].springConstant
+        );
+        layoutSolver.solve();
+      }
 
       if (this.options.useDynamicEdges === true) {
         for (let i = 0; i < edges.length; i++) {
@@ -186,7 +191,7 @@ class PhysicsEngine {
 
     nodeIds = Object.keys(nodes).sort();
 
-    this.onChange();
+    // this.onChange();
 
     // load edges into nodeModel
     nodeIds.forEach((nodeId) => {
@@ -402,8 +407,8 @@ class PhysicsEngine {
         let radius = (2*this.radius + 10*i);
         let angle = i * (2 * Math.PI) / (radius / (1.5*this.radius));
 
-        node.x = this.options.center.x + radius * Math.cos(angle);
-        node.y = this.options.center.y + radius * Math.sin(angle);
+        node.x = node.x || this.options.center.x + radius * Math.cos(angle);
+        node.y = node.y || this.options.center.y + radius * Math.sin(angle);
       }
     }
   }
@@ -468,7 +473,7 @@ class PhysicsEngine {
    * @returns {number}
    * @private
    */
-  _performStep(nodeId,maxVelocity) {
+  _performStep(nodeId, maxVelocity) {
     let node = this.physicsBody.nodes[nodeId];
     let timestep = this.timestep;
     let forces = this.physicsBody.forces;
@@ -549,26 +554,39 @@ class PhysicsEngine {
    * One batch of stabilization
    * @private
    */
-  _stabilizationBatch(hidden = false) {
+  _stabilizationBatch(hidden = false, count = 0) {
     // this is here to ensure that there is at least one start event.
     if (this.startedStabilization === false) {
       this.startedStabilization = true;
     }
 
-    let count = 0;
-    while (this.stabilized === false && count < this.options.stabilization.updateInterval && this.stabilizationIterations < this.targetIterations) {
-      this.physicsTick();
-      if (hidden === false) {
-        this.onChange();
+    if (hidden === false) {
+      let iterate = (count) => {
+        if (this.stabilized === false && count < this.targetIterations) {
+          this.physicsTick();
+          count++;
+          if (this.stabilized === true || count >= this.targetIterations) {
+            this.onStable(this.stabilizationIterations);
+          }
+          else {
+            this.onChange(() => { iterate(count) }); // this is async
+          }
+        }
       }
-      count++;
-    }
+      iterate(count);
 
-    if (this.stabilized === false && this.stabilizationIterations < this.targetIterations) {
-      this._stabilizationBatch();
     }
     else {
-      this.onStable(this.stabilizationIterations);
+      while (this.stabilized === false && count < this.options.stabilization.updateInterval && this.stabilizationIterations < this.targetIterations) {
+        this.physicsTick();
+        count++;
+      }
+      if (this.stabilized === false && this.stabilizationIterations < this.targetIterations) {
+        this._stabilizationBatch(hidden);
+      }
+      else {
+        this.onStable(this.stabilizationIterations);
+      }
     }
   }
 }

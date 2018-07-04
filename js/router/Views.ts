@@ -9,6 +9,15 @@ import { RegisterConclusion }         from '../views/startupViews/RegisterConclu
 import { PictureView }                from '../views/cameraViews/PictureView'
 import { CameraRollView }             from '../views/cameraViews/CameraRollView'
 import { SphereOverview }             from '../views/main/SphereOverview'
+import { SphereEdit }                 from '../views/main/SphereEdit'
+import { SphereRoomOverview }         from "../views/main/editSubviews/SphereRoomOverview";
+import { SphereCrownstoneOverview }   from "../views/main/editSubviews/SphereCrownstoneOverview";
+import { SphereRoomArranger }         from "../views/main/editSubviews/SphereRoomArranger";
+import { SphereUserInvite }           from "../views/main/editSubviews/SphereUserInvite";
+import { SphereUserOverview }         from "../views/main/editSubviews/SphereUserOverview";
+import { SphereInvitedUser }          from "../views/main/editSubviews/SphereInvitedUser";
+import { SphereUser }                 from "../views/main/editSubviews/SphereUser";
+import { SphereBehaviour }            from "../views/main/editSubviews/SphereBehaviour";
 import { RoomOverview }               from '../views/roomViews/RoomOverview'
 import { RoomEdit }                   from '../views/roomViews/RoomEdit'
 import { RoomAdd }                    from '../views/roomViews/RoomAdd'
@@ -35,11 +44,6 @@ import { SettingsDeveloper }          from '../views/settingsViews/SettingsDevel
 import { SettingsMeshOverview }       from '../views/settingsViews/SettingsMeshOverview'
 import { SettingsMeshTopology}        from '../views/settingsViews/SettingsMeshTopology'
 import { SettingsMeshTopologyHelp }   from "../views/settingsViews/SettingsMeshTopologyHelp";
-import { SettingsSphereOverview }     from '../views/settingsViews/SettingsSphereOverview'
-import { SettingsSphere }             from '../views/settingsViews/SettingsSphere'
-import { SettingsSphereInvite }       from '../views/settingsViews/SettingsSphereInvite'
-import { SettingsSphereUser }         from '../views/settingsViews/SettingsSphereUser'
-import { SettingsSphereInvitedUser }  from '../views/settingsViews/SettingsSphereInvitedUser'
 import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPluginRecoverStep1'
 import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
 import { Tutorial }                   from "../views/tutorialViews/Tutorial";
@@ -59,6 +63,15 @@ export const Views = {
   PictureView,
   CameraRollView,
   SphereOverview,
+  SphereEdit,
+  SphereRoomOverview,
+  SphereCrownstoneOverview,
+  SphereRoomArranger,
+  SphereUserInvite,
+  SphereUserOverview,
+  SphereInvitedUser,
+  SphereUser,
+  SphereBehaviour,
   RoomOverview,
   RoomEdit,
   RoomAdd,
@@ -86,11 +99,6 @@ export const Views = {
   SettingsMeshOverview,
   SettingsMeshTopology,
   SettingsMeshTopologyHelp,
-  SettingsSphereOverview,
-  SettingsSphere,
-  SettingsSphereInvite,
-  SettingsSphereUser,
-  SettingsSphereInvitedUser,
   SettingsPluginRecoverStep1,
   SettingsPluginRecoverStep2,
   SwitchCraftInformation,

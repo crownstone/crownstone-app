@@ -24,7 +24,7 @@ export class RoomList extends Component<any, any> {
             width:60,
             height:60,
             borderRadius:30,
-            backgroundColor: colors.blue.hex,
+            backgroundColor: colors.csBlue.hex,
           }, styles.centered]}
           >
             <Icon name={this.props.icon} size={35} color={'#fff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
