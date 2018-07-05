@@ -38,8 +38,9 @@ import { SettingsApp }                from '../views/settingsViews/SettingsApp'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
 import { SettingsPrivacy }            from '../views/settingsViews/SettingsPrivacy'
-import { SettingsBleDebug }           from '../views/settingsViews/SettingsBleDebug'
-import { SettingsStoneBleDebug }      from '../views/settingsViews/SettingsStoneBleDebug'
+import { SettingsBleDebug }           from '../views/settingsViews/dev/SettingsBleDebug'
+import { SettingsLocalizationDebug }  from '../views/settingsViews/dev/SettingsLocalizationDebug'
+import { SettingsStoneBleDebug }      from '../views/settingsViews/dev/SettingsStoneBleDebug'
 import { SettingsDeveloper }          from '../views/settingsViews/SettingsDeveloper'
 import { SettingsMeshOverview }       from '../views/settingsViews/SettingsMeshOverview'
 import { SettingsMeshTopology}        from '../views/settingsViews/SettingsMeshTopology'
@@ -93,6 +94,7 @@ export const Views = {
   SettingsProfile,
   SettingsPrivacy,
   SettingsBleDebug,
+  SettingsLocalizationDebug,
   SettingsStoneBleDebug,
   SettingsDeveloper,
   SettingsFAQ,

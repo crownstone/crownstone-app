@@ -177,9 +177,16 @@ export class SettingsDeveloper extends Component<any, any> {
     items.push({
       label:"BLE Debug",
       type: 'navigation',
-      icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback:() => {
         Actions.settingsBleDebug()
+      }});
+    items.push({
+      label:"Localization Debug",
+      type: 'navigation',
+      icon: <IconButton name="md-locate" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      callback:() => {
+        Actions.settingsLocalizationDebug()
       }});
     items.push({
       label:"Use Advertisement RSSI",

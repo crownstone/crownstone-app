@@ -40,7 +40,6 @@ export class Router_Android extends Component {
           getSceneStyle={() => {return {backgroundColor: colors.black.hex}}}
           backgrounds={this.props.backgrounds}
           getBackground={this.props.getBackground.bind(this)}
-          getBackgroundSource={this.props.getBackgroundSource.bind(this)}
           eventBus={eventBus}
         >
           <Modal>

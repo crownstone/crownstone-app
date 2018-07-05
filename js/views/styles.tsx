@@ -6,8 +6,8 @@ const DeviceInfo = require('react-native-device-info');
 export const deviceModel = DeviceInfo.getModel();
 
 export const topBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
-export const tabBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
-export const tabBarHeight    = (Platform.OS === 'android' ? 0  :  (deviceModel === 'iPhone X' ? 49 +34: 49));
+export const tabBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 34 : 0 ); // Status bar in iOS is 20 high
+export const tabBarHeight    = (Platform.OS === 'android' ? 0  :  (deviceModel === 'iPhone X' ? 49 + 34: 49));
 export const statusBarHeight = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 44 : 20); // Status bar in iOS is 20 high
 export const topBarHeight    = Platform.OS === 'android' ? 54  :  (deviceModel === 'iPhone X' ? 44 : 44 ) + statusBarHeight; // Status bar in iOS is 20 high
 
@@ -16,8 +16,6 @@ export const screenWidth = Dimensions.get('window').width;
 export let screenHeight = Platform.OS === 'android' ?
   Dimensions.get('window').height - 24 :  // android includes the top bar in the window height but we cant draw there.
   Dimensions.get('window').height;
-
-screenHeight = screenHeight - topBarMargin - tabBarMargin;
 
 export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 

@@ -22,7 +22,7 @@ typealias voidCallback = () -> Void
   open var bluenetLocalization : BluenetLocalization!
   open var bluenetMotion : BluenetMotion!
   open var trainingHelper : TrainingHelper!
-  var classifier : CrownstoneBasicClassifier!
+  open var classifier : CrownstoneBasicClassifier!
   
   var subscriptions = [voidCallback]()
   

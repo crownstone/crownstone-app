@@ -33,6 +33,20 @@ open class BluenetJS: RCTEventEmitter {
     LOGGER.info("BluenetBridge: Called rerouteEvents")
     if let globalBluenet = GLOBAL_BLUENET {
       print("BluenetBridge: ----- BLUENET BRIDGE: Rerouting events")
+      _ = globalBluenet.classifier.subscribe("__classifierProbabilities", callback:{ (data) -> Void in
+        if let dict = data as? NSDictionary {
+          self.sendEvent(withName: "classifierProbabilities", body: dict)
+        }
+      })
+      
+      _ = globalBluenet.classifier.subscribe("__classifierResult", callback: { (data) -> Void in
+        if let dict = data as? NSDictionary {
+          self.sendEvent(withName: "classifierResult", body: dict)
+        }
+      })
+      
+      
+      
       // forward the event streams to react native
       globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {

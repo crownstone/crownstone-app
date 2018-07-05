@@ -8,11 +8,11 @@ import {
   View
 } from 'react-native';
 
-import { Background } from '../components/Background'
-import { ListEditableItems } from '../components/ListEditableItems'
-import {colors, OrangeLine} from '../styles'
-import {Util} from "../../util/Util";
-import {IconCircle} from "../components/IconCircle";
+import { Background } from '../../components/Background'
+import { ListEditableItems } from '../../components/ListEditableItems'
+import {colors, OrangeLine} from '../../styles'
+import {Util} from "../../../util/Util";
+import {IconCircle} from "../../components/IconCircle";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsBleDebug extends Component<any, any> {

@@ -7,6 +7,7 @@ import {
 import { SafeAreaView } from 'react-navigation';
 
 import { styles, screenHeight, topBarHeight, tabBarHeight} from '../../styles'
+import {BackgroundImage} from "../BackgroundImage";
 
 
 export class AnimatedBackground extends Component<any, any> {
@@ -56,9 +57,11 @@ export class AnimatedBackground extends Component<any, any> {
     return (
       <View style={[styles.fullscreen, {height:height}]}>
         <View style={[styles.fullscreen, {height:height}]}>
-          {this.staticImage}
+          <BackgroundImage height={height} image={this.staticImage} />
         </View>
-        <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>{this.animatedImage}</Animated.View>
+        <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>
+          <BackgroundImage height={height} image={this.animatedImage} />
+        </Animated.View>
           {this.props.children}
       </View>
     );

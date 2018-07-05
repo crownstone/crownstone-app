@@ -23,10 +23,7 @@ import { Views }                     from './Views'
 import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
-import { SettingsMeshTopologyHelp }  from "../views/settingsViews/SettingsMeshTopologyHelp";
-import { AddItemsToSphere }          from "../views/main/AddItemsToSphere";
 import { LibMessages }               from "../views/overlays/LibMessages";
-import {SphereRoomOverview} from "../views/main/editSubviews/SphereRoomOverview";
 
 
 export class Router_IOS extends Component {
@@ -39,7 +36,6 @@ export class Router_IOS extends Component {
           {...navBarStyle}
           backgrounds={this.props.backgrounds}
           getBackground={this.props.getBackground.bind(this)}
-          getBackgroundSource={this.props.getBackgroundSource.bind(this)}
           eventBus={eventBus}
         >
           <Modal>
@@ -67,6 +63,7 @@ export class Router_IOS extends Component {
                 <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
                 <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}      />
                 <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
+                <Scene key="settingsLocalizationDebug"  component={Views.SettingsLocalizationDebug} />
                 <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         />
                 <Scene key="settingsFAQ"                component={Views.SettingsFAQ}               />
               </Scene>

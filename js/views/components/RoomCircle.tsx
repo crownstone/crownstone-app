@@ -52,9 +52,9 @@ class RoomCircleClass extends Component<any, any> {
   jumpDuration: number;
   fadeDuration: number;
 
-  unsubscribeSetupEvents: any;
+  unsubscribeSetupEvents = []
   unsubscribeStoreEvents: any;
-  unsubscribeControlEvents: any;
+  unsubscribeControlEvents = []
   renderState: any;
 
   constructor(props) {
@@ -153,21 +153,21 @@ class RoomCircleClass extends Component<any, any> {
       }
     });
 
-    this.unsubscribeControlEvents = this.props.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTap(data);
-    });
+    }));
 
-    this.unsubscribeControlEvents = this.props.eventBus.on('nodeTouched' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeTouched' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTouch(data);
-    });
+    }));
 
-    this.unsubscribeControlEvents = this.props.eventBus.on('nodeReleased' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeReleased' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTouchReleased(data);
-    })
+    }));
 
-    this.unsubscribeControlEvents = this.props.eventBus.on('nodeDragging' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeDragging' + this.props.viewId + this.props.locationId, (data) => {
       this.handleDragging(data);
-    })
+    }));
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -203,11 +203,9 @@ class RoomCircleClass extends Component<any, any> {
 
   componentWillUnmount() {
     clearTimeout(this.moveAnimationTimeout);
-    this.unsubscribeSetupEvents.forEach((unsubscribe) => {
-      unsubscribe();
-    });
+    this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
+    this.unsubscribeControlEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
-    this.unsubscribeControlEvents();
     this._stopWiggle();
   }
 

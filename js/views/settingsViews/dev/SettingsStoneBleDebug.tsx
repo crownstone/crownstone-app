@@ -8,12 +8,12 @@ import {
   View
 } from 'react-native';
 
-import { Background } from '../components/Background'
-import { ListEditableItems } from '../components/ListEditableItems'
-import {colors, OrangeLine} from '../styles'
-import {Util} from "../../util/Util";
-import {NativeBus} from "../../native/libInterface/NativeBus";
-import {Scheduler} from "../../logic/Scheduler";
+import { Background } from '../../components/Background'
+import { ListEditableItems } from '../../components/ListEditableItems'
+import {colors, OrangeLine} from '../../styles'
+import {Util} from "../../../util/Util";
+import {NativeBus} from "../../../native/libInterface/NativeBus";
+import {Scheduler} from "../../../logic/Scheduler";
 
 const triggerId = "SettingsStoneBleDebug";
 

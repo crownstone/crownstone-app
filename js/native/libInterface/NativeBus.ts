@@ -38,6 +38,9 @@ class NativeBusClass {
 
       libAlert:             "libAlert",                         // data type = {header: string, body: string, buttonText: string }
       libPopup:             "libPopup",                         // data type = {header: string, body: string, buttonText: string, type: <not used yet> }
+
+      classifierProbabilities: "classifierProbabilities",       // data type = {locationId: {sampleSize: number, probability: number }}
+      classifierResult:        "classifierResult",              // data type = {valid: boolean, highestPredictionLabel: string, highestPrediction: number }
     };
 
     this.refMap = {};

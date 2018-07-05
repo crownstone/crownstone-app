@@ -12,7 +12,7 @@ import {
   Text,
   View
 } from 'react-native';
-import {colors, OrangeLine, screenWidth, tabBarHeight, topBarHeight} from "../../styles";
+import {colors, OrangeLine, screenWidth, tabBarHeight, tabBarMargin, topBarHeight} from "../../styles";
 import {RoomCircle} from "../../components/RoomCircle";
 import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
@@ -31,8 +31,6 @@ let Actions = require('react-native-router-flux').Actions;
 export class SphereRoomArranger extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-    let state = params.store.getState();
-    let sphere = state.spheres[params.sphereId] ;
     return {
       title: 'Drag rooms around!',
       headerLeft: <CancelButton onPress={BackAction} />,
@@ -50,6 +48,7 @@ export class SphereRoomArranger extends Component<any, any> {
   unsubscribeStoreEvents;
   viewId = null;
   refName : string
+  viewingRemotely = false;
 
   constructor(props) {
     super(props);
@@ -104,7 +103,7 @@ export class SphereRoomArranger extends Component<any, any> {
         store={this.props.store}
         pos={{x: nodePosition.x, y: nodePosition.y}}
         seeStonesInSetupMode={false}
-        viewingRemotely={this.props.viewingRemotely}
+        viewingRemotely={this.viewingRemotely}
         key={locationId || 'floating'}
       />
     );
@@ -138,6 +137,7 @@ export class SphereRoomArranger extends Component<any, any> {
           <Icon name={'md-radio-button-on'} size={35} color={colors.csBlue.hex} />
           <Text style={{color: colors.csBlue.hex, fontWeight:'bold', paddingLeft:15, paddingRight:15, fontSize:16, textAlign:'center'}}>Solve Positions</Text>
         </TouchableOpacity>
+        <View style={{height: 0.5*tabBarMargin, width: screenWidth}} />
       </View>
     )
   }
@@ -148,9 +148,12 @@ export class SphereRoomArranger extends Component<any, any> {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }
     else {
+      let activeSphere = this.props.store.getState().spheres[this.props.sphereId];
+      this.viewingRemotely = !activeSphere.config.present;
+
       let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), this.props.sphereId);
       return (
-        <Background image={this.props.backgrounds.main} hasNavBar={false}>
+        <Background image={require('../../../images/blueprintBackgroundGray.png')} hasNavBar={false} safeView={true}>
           <OrangeLine/>
           <ForceDirectedView
             ref={this.refName}
