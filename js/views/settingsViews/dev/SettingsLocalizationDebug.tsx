@@ -11,16 +11,15 @@ import {
   Text,
   View
 } from 'react-native';
-import {availableScreenHeight, colors, OrangeLine, screenWidth, styles} from "../../styles";
+import {colors, OrangeLine, screenWidth, styles} from "../../styles";
 import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ForceDirectedView} from "../../components/interactiveView/ForceDirectedView";
-import {RoomCircle} from "../../components/RoomCircle";
 import {NativeBus} from "../../../native/libInterface/NativeBus";
 import {LocalizationDebugCircle} from "./LocalizationDebugCircle";
 import {getPresentUsersInLocation} from "../../../util/DataUtil";
+import {AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION} from "../../../ExternalConfig";
 
-let Actions = require('react-native-router-flux').Actions;
 
 export class SettingsLocalizationDebug extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -39,6 +38,7 @@ export class SettingsLocalizationDebug extends Component<any, any> {
   sphereId = null;
   currentLocation = null;
   appLocation = null;
+  _amountOfStones = 0
 
   constructor(props) {
     super(props);
@@ -56,6 +56,9 @@ export class SettingsLocalizationDebug extends Component<any, any> {
     }))
     this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.classifierResult, (data) => {
       this.currentLocation = data.highestPredictionLabel;
+    }))
+    this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+      this._amountOfStones = data.length
     }))
     this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.currentRoom, (data) => {
       this.forceUpdate();
@@ -175,8 +178,19 @@ export class SettingsLocalizationDebug extends Component<any, any> {
     else {
       let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), sphereId);
       return (
-        <Background image={require('../../../images/blueprintBackgroundDesaturated.png')}>
+        <Background image={require('../../../images/blueprintBackgroundDesaturated_noLine.png')}>
           <OrangeLine/>
+          <View style={{
+            position:'absolute', top:5, left:5, padding:5, borderRadius:5,
+            backgroundColor:this._amountOfStones < AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION ? colors.csOrange.hex : 'transparent',
+          }}>
+            <Text style={{
+              color: colors.white.hex,
+              fontSize:17, fontWeight:'bold'}}
+            >
+            {this._amountOfStones + " Crownstone" + (this._amountOfStones !== 1 ? "s" : '') + " in vector"}
+            </Text>
+          </View>
           <ForceDirectedView
             ref={this.refName}
             viewId={this.viewId}
