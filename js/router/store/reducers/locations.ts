@@ -128,10 +128,17 @@ let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
         newState.x = update(action.data.x, newState.x);
         newState.y = update(action.data.y, newState.y);
         newState.setOnThisDevice = update(action.data.setOnThisDevice, newState.setOnThisDevice);
-        newState.updatedAt = getTime(action.data.timestamp || action.updatedAt);
+        newState.updatedAt = getTime(action.data.updatedAt || action.updatedAt);
         return newState;
       }
       return state;
+    case 'CLEAR_LOCATION_POSITIONS':
+      let newState = {...state};
+      newState.x = null
+      newState.y = null
+      newState.setOnThisDevice = false
+      newState.updatedAt = null
+      return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.layout);
     default:

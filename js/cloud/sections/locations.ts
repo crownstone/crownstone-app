@@ -2,7 +2,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 export const locations = {
   getLocations: function (background = true) {
-    return this._setupRequest('GET', '/Spheres/{id}/ownedLocations', {background: background, data:{filter:{"include":"presentPeople"}}});
+    return this._setupRequest('GET', '/Spheres/{id}/ownedLocations', {background: background, data:{filter:{"include":["sphereOverviewPosition","presentPeople"]}}});
   },
 
   createLocation: function (data, background = true) {
@@ -24,6 +24,14 @@ export const locations = {
     );
   },
 
+  updateLocationPosition: function (data, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Locations/{id}/sphereOverviewPosition/',
+      {background: background, data: data},
+      'body'
+    );
+  },
 
   deleteLocation: function(localLocationId) {
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.

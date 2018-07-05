@@ -239,7 +239,6 @@ export class SettingsMeshTopology extends Component<any, any> {
             timestep: 0.4
           }}
         />
-        <KeepAwake />
         <TouchableOpacity
           onPress={() => { Actions.settingsMeshTopologyHelp() }}
           style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>

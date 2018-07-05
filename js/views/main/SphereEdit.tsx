@@ -65,6 +65,7 @@ export class SphereEdit extends Component<any, any> {
     });
   }
 
+
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
   }
@@ -172,7 +173,7 @@ export class SphereEdit extends Component<any, any> {
       label: 'Add a Crownstone',
       type: 'button',
       style: {color: colors.black.hex},
-      icon: <IconButton name='c3-addRoundedfilled' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkPurple.hex, marginLeft:3, marginRight:7}}/>,
+      icon: <IconButton name='c3-addRounded' size={21} radius={5} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkPurple.hex, marginLeft:3, marginRight:7}}/>,
       callback: () => {
         if (spherePermissions.canSetupCrownstone) {
           addCrownstoneExplanationAlert()

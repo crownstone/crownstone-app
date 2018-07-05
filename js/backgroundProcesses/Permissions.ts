@@ -17,6 +17,8 @@ export class PermissionBase {
   canUnlockCrownstone     = false; // a
   canEnableDimming        = false; // a
 
+  canSetPositionInCloud   = false; // a
+
   doLocalizationTutorial  = false; // a?
   addRoom                 = false; // a?
   editRoom                = false; // a
@@ -42,6 +44,12 @@ export class PermissionBase {
   canEditSchedule         = false; // a or m
   canSeeSchedules         = false; // a or m
   canDeleteSchedule       = false; // a or m
+
+  canCreateStones         = false; // a
+  canCreateLocations      = false; // a or m
+  canCreateAppliances     = false; // a or m
+  canCreateData           = false; // a or m
+  canCreateSpheres        = false; // a or m
 
   canUploadDiagnostics    = false; // a or m
   canUploadStones         = false; // a or m
@@ -137,6 +145,8 @@ export class PermissionClass extends PermissionBase {
         this.canSetupCrownstone      = true; // admin
         this.seeSetupCrownstone      = true; // admin
 
+        this.canSetPositionInCloud   = true; // admin
+
         this.addRoom                 = true; // admin
         this.editRoom                = true; // admin
         this.removeRoom              = true; // admin
@@ -172,6 +182,12 @@ export class PermissionClass extends PermissionBase {
         this.canUploadData           = true; // admin and member
         this.canUploadSpheres        = true; // admin and member
         this.canUploadDiagnostics    = true; // admin and member
+
+        this.canCreateStones         = true; // admin and member
+        this.canCreateLocations      = true; // admin and member
+        this.canCreateAppliances     = true; // admin and member
+        this.canCreateData           = true; // admin and member
+        this.canCreateSpheres        = true; // admin and member
 
         this.canAddSchedule          = true; // admin and member
         this.canEditSchedule         = true; // admin and member
