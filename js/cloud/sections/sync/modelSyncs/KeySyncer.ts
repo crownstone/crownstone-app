@@ -47,9 +47,14 @@ export class KeySyncer extends SyncingBase {
         }
       }
 
-      if (sphere.config.adminKey  !== keys.adminKey  ||
-          sphere.config.memberKey !== keys.memberKey ||
-          sphere.config.guestKey  !== keys.guestKey) {
+      if (sphere) {
+        if (sphere.config.adminKey !== keys.adminKey ||
+            sphere.config.memberKey !== keys.memberKey ||
+            sphere.config.guestKey !== keys.guestKey) {
+          this.actions.push({type: 'SET_SPHERE_KEYS', sphereId: localSphereId, data: keys});
+        }
+      }
+      else {
         this.actions.push({type: 'SET_SPHERE_KEYS', sphereId: localSphereId, data: keys});
       }
     })

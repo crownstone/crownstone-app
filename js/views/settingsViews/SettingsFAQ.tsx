@@ -159,6 +159,27 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'collapsable',
+      label:"... my Sphere name is gone and things are weird.",
+      contentItem:
+        <View style={{flex:1}}>
+          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{"Sometimes something goes wrong in the persisting of the local data.\n\nTo solve this you can try to redownload the data from the Cloud. Press the button below to do this."}
+          </Text>
+          <View style={{flex:1}} />
+          <NavigationBar
+            label={'Revert to Cloud Data'}
+            icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
+            callback={() => {
+              Actions.settingsRedownloadFromCloud()
+            }}
+          />
+          <View style={{flex:1}} />
+        </View>,
+
+      contentHeight: 200
+    });
+
+    items.push({
+      type:'collapsable',
       label:"... it always says 'No Crownstones in Range'.",
       contentItem:
         <View style={{flex:1}}>
@@ -177,7 +198,7 @@ export class SettingsFAQ extends Component<any, any> {
           <View style={{flex:1}} />
         </View>,
 
-      contentHeight: 250
+      contentHeight: 275
     });
 
     let label = "If that fails, quit the app (double tap home button and swipe it up to really close it).\n";
