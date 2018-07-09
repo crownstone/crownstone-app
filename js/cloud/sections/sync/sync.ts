@@ -27,6 +27,7 @@ import { Sentry }                   from "react-native-sentry";
 export const sync = {
 
   __currentlySyncing: false,
+  __syncTriggerDatabaseEvents: true,
 
   sync: function (store, background = true) {
     if (this.__currentlySyncing) {
@@ -134,6 +135,10 @@ export const sync = {
         actions.forEach((action) => {
           action.triggeredBySync = true;
 
+          if (this.__syncTriggerDatabaseEvents === false) {
+            action.__noEvents = true
+          }
+
           switch (action.type) {
             case 'ADD_SPHERE':
             case 'REMOVE_SPHERE':
@@ -150,19 +155,16 @@ export const sync = {
         LOG.info("Sync: Requesting notification permissions during updating of the device.");
         NotificationHandler.request();
 
-        eventBus.emit("CloudSyncComplete");
-
-        if (reloadTrackingRequired) {
-          eventBus.emit("CloudSyncComplete_spheresChanged");
-        }
 
         LOG.info("Sync after: START MessageCenter checkForMessages.");
         MessageCenter.checkForMessages();
         LOG.info("Sync after: DONE MessageCenter checkForMessages.");
 
+        return reloadTrackingRequired;
       })
-      .then(() => {
+      .then((reloadTrackingRequired) => {
         this.__currentlySyncing = false;
+        this.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
 
         Sentry.captureBreadcrumb({
@@ -171,6 +173,13 @@ export const sync = {
             state:'success'
           }
         });
+
+        eventBus.emit("CloudSyncComplete");
+
+        if (reloadTrackingRequired) {
+          eventBus.emit("CloudSyncComplete_spheresChanged");
+        }
+
       })
       .catch((err) => {
         LOG.info("SYNC: Failed... Could dispatch ", actions.length, " actions!", actions);
@@ -191,8 +200,11 @@ export const sync = {
         });
 
         this.__currentlySyncing = false;
+        this.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
+        eventBus.emit("CloudSyncComplete");
         LOG.error("SYNC: error during sync:", err);
+
         throw err;
       })
   }

@@ -85,7 +85,7 @@ export const DataUtil = {
   getPresentSphereId: function(state) {
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++ ) {
-      if (state.spheres[sphereIds[i]].config.present === true) {
+      if (state.spheres[sphereIds[i]].state.present === true) {
         return sphereIds[i];
       }
     }
@@ -174,7 +174,7 @@ export const DataUtil = {
     // first we determine in which sphere we are:
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++) {
-      if (state.spheres[sphereIds[i]].config.present === true) {
+      if (state.spheres[sphereIds[i]].state.present === true) {
         presentSphereId = sphereIds[i];
       }
     }

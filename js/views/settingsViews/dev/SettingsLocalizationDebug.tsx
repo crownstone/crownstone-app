@@ -36,6 +36,7 @@ export class SettingsLocalizationDebug extends Component<any, any> {
 
   roomData = {};
   sphereId = null;
+  validMeasurement = false;
   currentLocation = null;
   appLocation = null;
   _amountOfStones = 0
@@ -56,6 +57,7 @@ export class SettingsLocalizationDebug extends Component<any, any> {
     }))
     this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.classifierResult, (data) => {
       this.currentLocation = data.highestPredictionLabel;
+      this.validMeasurement = data.valid;
     }))
     this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
       this._amountOfStones = data.length
@@ -144,24 +146,27 @@ export class SettingsLocalizationDebug extends Component<any, any> {
 
 
   _renderRoom(locationId, nodePosition) {
-    // variables to pass to the room overview
-    return (
-      <LocalizationDebugCircle
-        viewId={this.viewId}
-        eventBus={this.props.eventBus}
-        locationId={locationId}
-        sphereId={this.sphereId}
-        radius={this._baseRadius}
-        store={this.props.store}
-        pos={{x: nodePosition.x, y: nodePosition.y}}
-        viewingRemotely={true}
-        key={locationId}
-        inLocation={locationId === this.currentLocation}
-        isAppLocation={locationId === this.appLocation}
-        probabilityData={this.roomData[locationId] || {}}
-        backgroundColor={this._calculateColor(locationId)}
-      />
-    );
+    if (locationId !== null) {
+      // variables to pass to the room overview
+      return (
+        <LocalizationDebugCircle
+          viewId={this.viewId}
+          eventBus={this.props.eventBus}
+          locationId={locationId}
+          sphereId={this.sphereId}
+          radius={this._baseRadius}
+          store={this.props.store}
+          pos={{x: nodePosition.x, y: nodePosition.y}}
+          viewingRemotely={true}
+          key={locationId}
+          inLocation={locationId === this.currentLocation}
+          isAppLocation={locationId === this.appLocation}
+          probabilityData={this.roomData[locationId] || {}}
+          backgroundColor={this._calculateColor(locationId)}
+          validMeasurement={this.validMeasurement}
+        />
+      );
+    }
   }
 
 

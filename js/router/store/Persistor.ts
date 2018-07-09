@@ -53,6 +53,17 @@ export class Persistor {
       })
   }
 
+  destroyActiveUser() {
+    return AsyncStorage.getAllKeys()
+      .then((allKeys) => {
+        LOGd.store("Persistor: all keys found:", allKeys);
+
+        // get the keys for this user from the list of all keys.
+        let userKeys = PersistorUtil.extractUserKeys(allKeys, this.userId);
+        return AsyncStorage.multiRemove(userKeys)
+      })
+  }
+
   endSession() : Promise<void> {
     return new Promise((resolve, reject) => {
       this.initialized = false;

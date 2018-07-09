@@ -148,7 +148,7 @@ class LocalizationDebugCircleClass extends Component<any, any> {
     let alertSize = this.outerDiameter*0.30;
     return (
       <View style={{position:'absolute', top: 0, left: this.outerDiameter - alertSize}}>
-        <IconCircle icon="c1-locationPin1" color="#fff" size={alertSize} backgroundColor={colors.csBlue.hex} borderWidth={3} />
+        <IconCircle icon="c1-locationPin1" color="#fff" size={alertSize} backgroundColor={this.props.validMeasurement ? colors.csBlue.hex : colors.red.hex } borderWidth={3} />
       </View>
     )
   }

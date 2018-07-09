@@ -157,6 +157,10 @@ class StoreManagerClass {
     })
   }
 
+  destroyActiveUser() {
+    this.persistor.destroyActiveUser();
+  }
+
   getStore() {
     return this.store;
   }

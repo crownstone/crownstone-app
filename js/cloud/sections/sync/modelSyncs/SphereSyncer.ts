@@ -35,6 +35,7 @@ export class SphereSyncer extends SyncingBase {
       .then((spheresInCloud) => {
         let state = store.getState();
         let spheresInState = state.spheres;
+
         let localSphereIdsSynced = this.syncDown(store, spheresInState, spheresInCloud);
         this.syncUp(spheresInState, localSphereIdsSynced);
 
@@ -202,7 +203,7 @@ export class SphereSyncer extends SyncingBase {
   syncLocalSphereDown(localId, sphereInState, sphere_from_cloud) {
     // somehow sometimes all keys go missing or the ibeacon uuid goes missing. If this is the case, redownload from cloud.
     let corruptData = sphereInState.config.adminKey === null && sphereInState.config.memberKey === null &&sphereInState.config.guestKey === null;
-    corruptData = sphereInState.config.iBeaconUUID || corruptData;
+    corruptData = sphereInState.config.iBeaconUUID === undefined || sphereInState.config.iBeaconUUID === null || corruptData;
 
     if (shouldUpdateInCloud(sphereInState.config, sphere_from_cloud) && !corruptData) {
       if (!Permissions.inSphere(localId).canUploadSpheres) { return }

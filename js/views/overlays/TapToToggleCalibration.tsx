@@ -68,7 +68,7 @@ export class TapToToggleCalibration extends Component<any, any> {
             // search through all present spheres  that are not disabled and have RSSI indicators
             sphereIds.forEach((sphereId) => {
               let sphere = state.spheres[sphereId];
-              if (sphere.config.present === true) {
+              if (sphere.state.present === true) {
                 let stoneIds = Object.keys(sphere.stones);
                 stoneIds.forEach((stoneId) => {
                   let stone = sphere.stones[stoneId];

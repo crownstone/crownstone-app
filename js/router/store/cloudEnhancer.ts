@@ -69,7 +69,7 @@ export function CloudEnhancer({ getState }) {
 
 function handleAction(action, returnValue, newState, oldState) {
   // do not sync actions that have been triggered BY the cloud sync mechanism.
-  if (action.triggeredBySync === true || action.__test === true) {
+  if (action.triggeredBySync === true || action.__test === true || action.__purelyLocal === true) {
     return returnValue;
   }
 

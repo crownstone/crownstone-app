@@ -68,6 +68,10 @@ typealias voidCallback = () -> Void
     // self.bluenetLocalization.applicationWillEnterForeground()
   }
   
+  open func parseUserActivity(userActivity: NSUserActivity) {
+    print(userActivity)
+  }
+  
   deinit {
     print("BluenetBridge: CLEANING UP!")
     

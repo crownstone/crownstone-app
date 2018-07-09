@@ -18,6 +18,7 @@ import { IconButton }   from "../../components/IconButton";
 import { eventBus }     from "../../../util/EventBus";
 import { Permissions }  from "../../../backgroundProcesses/PermissionManager";
 import { StoneUtil }    from "../../../util/StoneUtil";
+import {deviceStyles} from "../DeviceOverview";
 
 export class DeviceUpdate extends Component<any, any> {
 
@@ -146,29 +147,3 @@ export class DeviceUpdate extends Component<any, any> {
     )
   }
 }
-
-
-let textColor = colors.white;
-let deviceStyles = StyleSheet.create({
-  header: {
-    color: textColor.hex,
-    fontSize: 25,
-    fontWeight:'800'
-  },
-  text: {
-    color: textColor.hex,
-    fontSize: 16,
-    textAlign:'center',
-    fontWeight:'500'
-  },
-  subText: {
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-  },
-  explanation: {
-    width: screenWidth,
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-    textAlign:'center'
-  }
-});

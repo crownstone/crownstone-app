@@ -68,10 +68,6 @@ export const transferSpheres = {
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
-    // TODO: fix lat/long
-    // {local:'latitude' ,           cloud: 'latitude'},
-    // {local:'longitude',           cloud: 'longitude'},
-
     return CLOUD.updateSphere(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {

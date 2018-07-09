@@ -92,7 +92,7 @@ class KeepAliveHandlerClass {
       let sphere = state.spheres[sphereId];
 
       // Do not keep alive in spheres that we are not present in.
-      if (sphere.config.present === false) {
+      if (sphere.state.present === false) {
         return;
       }
 

@@ -14,6 +14,9 @@ let defaultState = {
 export default (state = defaultState, action : any = {}) => {
   let newState;
   switch (action.type) {
+    case 'RESET_APP_SETTINGS':
+      return {...defaultState}
+
     case 'SET_NOTIFICATION_TOKEN':
       if (action.data) {
         newState = {...state};

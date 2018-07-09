@@ -168,7 +168,7 @@ export class SphereOverview extends Component<any, any> {
 
     if (amountOfSpheres > 0) {
       let activeSphere = state.spheres[activeSphereId];
-      let sphereIsPresent = activeSphere.config.present;
+      let sphereIsPresent = activeSphere.state.present;
 
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;

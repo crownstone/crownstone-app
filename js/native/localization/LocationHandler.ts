@@ -122,7 +122,7 @@ class LocationHandlerClass {
 
 
     // make sure we only do the following once per sphere
-    if (sphere && sphere.config && sphere.config.present === true) {
+    if (sphere && sphere.state && sphere.state.present === true) {
       LOG.info('LocationHandler: IGNORE ENTER SPHERE because I\'m already in the Sphere.');
       return;
     }
@@ -132,7 +132,7 @@ class LocationHandlerClass {
       let sphereIds = Object.keys(state.spheres);
       let otherSpherePresentCount = 0;
       sphereIds.forEach((checkSphereId) => {
-        if (state.spheres[checkSphereId].config.present === true && checkSphereId !== enteringSphereId) {
+        if (state.spheres[checkSphereId].state.present === true && checkSphereId !== enteringSphereId) {
           otherSpherePresentCount += 1;
         }
       });
@@ -150,18 +150,18 @@ class LocationHandlerClass {
         })
         .then((location) => {
           if (location && location.latitude && location.longitude) {
-            if (sphere.config.latitude && sphere.config.longitude) {
-              let dx = location.latitude - sphere.config.latitude;
-              let dy = location.longitude - sphere.config.longitude;
+            if (sphere.state.latitude && sphere.state.longitude) {
+              let dx = location.latitude - sphere.state.latitude;
+              let dy = location.longitude - sphere.state.longitude;
               let distance = Math.sqrt(dx*dx + dy*dy);
               if (distance > 0.4) {
-                LOG.info('LocationHandler: Update sphere location, old: (', sphere.config.latitude, ',', sphere.config.longitude,') to new: (', location.latitude, ',', location.longitude,')');
-                this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+                LOG.info('LocationHandler: Update sphere location, old: (', sphere.state.latitude, ',', sphere.state.longitude,') to new: (', location.latitude, ',', location.longitude,')');
+                this.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
               }
             }
             else {
               LOG.info('LocationHandler: Setting sphere location to (', location.latitude, ',', location.longitude,')');
-              this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+              this.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
             }
           }
         })
@@ -211,7 +211,7 @@ class LocationHandlerClass {
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
 
-    if (state.spheres[sphereId] && state.spheres[sphereId].config.present === true) {
+    if (state.spheres[sphereId] && state.spheres[sphereId].state.present === true) {
       LOG.info('Applying EXIT SPHERE');
       // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);
@@ -225,7 +225,7 @@ class LocationHandlerClass {
       // check if you are present in any sphere. If not, stop scanning (BLE, not iBeacon).
       let presentSomewhere = false;
       Object.keys(state.spheres).forEach((checkSphereId) => {
-        if (state.spheres[checkSphereId].config.present === true && checkSphereId !== sphereId) {
+        if (state.spheres[checkSphereId].state.present === true && checkSphereId !== sphereId) {
           presentSomewhere = true;
         }
       });

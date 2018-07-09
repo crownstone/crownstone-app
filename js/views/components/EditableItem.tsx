@@ -104,7 +104,7 @@ export class EditableItem extends Component<any, any> {
         return <ButtonBar barHeight={barHeight} {...this.props} />;
       case 'checkbar':
         return <CheckBar barHeight={barHeight} {...this.props} />;
-        case 'collapsable':
+      case 'collapsable':
         return <CollapsableBar barHeight={barHeight} {...this.props} />;
       case 'dropdown':
         return <Dropdown barHeight={barHeight} {...this.props} />;

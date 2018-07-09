@@ -149,7 +149,7 @@ export class SphereRoomArranger extends Component<any, any> {
     }
     else {
       let activeSphere = this.props.store.getState().spheres[this.props.sphereId];
-      this.viewingRemotely = !activeSphere.config.present;
+      this.viewingRemotely = !activeSphere.state.present;
 
       let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), this.props.sphereId);
       return (

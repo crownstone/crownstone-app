@@ -33,15 +33,19 @@ export function EventEnhancer({ getState }) {
     let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}, threadIds:{} , scheduleIds:{}};
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
-        let { data, ids } = checkAction(action, affectedIds);
-        affectedIds = ids;
-        eventData = {...eventData, ...data};
+        if (action.__noEvents !== true) {
+          let {data, ids} = checkAction(action, affectedIds);
+          affectedIds = ids;
+          eventData = {...eventData, ...data};
+        }
       })
     }
     else {
-      let { data, ids } = checkAction(action, affectedIds);
-      affectedIds = ids;
-      eventData = {...eventData, ...data};
+      if (action.__noEvents !== true) {
+        let {data, ids} = checkAction(action, affectedIds);
+        affectedIds = ids;
+        eventData = {...eventData, ...data};
+      }
     }
 
     eventBus.emit("databaseChange", {...action, change: eventData});

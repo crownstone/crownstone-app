@@ -89,7 +89,7 @@ export class RoomOverview extends Component<any, any> {
     let state = props.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (sphere) {
-      this.viewingRemotely = sphere.config.present === false;
+      this.viewingRemotely = sphere.state.present === false;
     }
 
     let stonesInRoom = getStonesAndAppliancesInLocation(state, props.sphereId, props.locationId);
@@ -313,7 +313,7 @@ export class RoomOverview extends Component<any, any> {
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
-    this.viewingRemotely = sphere.config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
+    this.viewingRemotely = sphere.state.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);

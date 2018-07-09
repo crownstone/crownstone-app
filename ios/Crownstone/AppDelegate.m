@@ -94,8 +94,7 @@ Portal *portal;
   [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 // Required for the notification event. You must call the completion handler after handling the remote notification.
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
-fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
   [RCTPushNotificationManager didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
@@ -110,6 +109,12 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
   [RCTPushNotificationManager didReceiveLocalNotification:notification];
 }
 
+// required to hook web urls
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void(^)(NSArray * __nullable restorableObjects))restorationHandler
+{
+  [ portal parseUserActivityWithUserActivity: userActivity];
+  return true;
+}
 
 @end
 

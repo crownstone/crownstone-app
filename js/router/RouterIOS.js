@@ -97,6 +97,7 @@ export class Router_IOS extends Component {
             <Scene key="switchCraftInformation"         component={Views.SwitchCraftInformation}     />
             <Scene key="settingsMeshTopologyHelp"       component={Views.SettingsMeshTopologyHelp}   />
             <Scene key="deviceIconSelection"            component={Views.DeviceIconSelection}        />
+            <Scene key="settingsRedownloadFromCloud"    component={Views.SettingsRedownloadFromCloud}/>
             <Scene key="settingsPluginRecoverStep1"     component={Views.SettingsPluginRecoverStep1} />
             <Scene key="settingsPluginRecoverStep2"     component={Views.SettingsPluginRecoverStep2} />
 
@@ -142,7 +143,7 @@ class TabIcon extends Component {
 
         let change = data.change;
         if (change.changeMessageState && change.changeMessageState.sphereIds[activeSphere]) {
-          let newMessages = state.spheres[activeSphere].config.newMessageFound;
+          let newMessages = state.spheres[activeSphere].state.newMessageFound;
 
           if (this.state.badge === 0 && newMessages) {
             this.setState({ badge : 1 });
