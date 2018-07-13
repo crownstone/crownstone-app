@@ -301,13 +301,13 @@ export const DataUtil = {
     return items;
   },
 
-  getLayoutDataRooms: function(state, sphereId) {
+  getLayoutDataRooms: function(state, sphereId, showSetupCrownstone = false) {
     let initialPositions = {}
     let sphere = state.spheres[sphereId]
     let rooms = sphere.locations;
 
     let floatingStones = getFloatingStones(state, sphereId);
-    let showFloatingCrownstones = floatingStones.length > 0;
+    let showFloatingCrownstones = floatingStones.length > 0 || showSetupCrownstone;
 
     let roomIdArray = Object.keys(rooms).sort();
     let usePhysics = false;

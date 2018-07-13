@@ -174,7 +174,6 @@ export class SettingsFAQ extends Component<any, any> {
           />
           <View style={{flex:1}} />
         </View>,
-
       contentHeight: 200
     });
 
@@ -197,7 +196,6 @@ export class SettingsFAQ extends Component<any, any> {
           />
           <View style={{flex:1}} />
         </View>,
-
       contentHeight: 275
     });
 

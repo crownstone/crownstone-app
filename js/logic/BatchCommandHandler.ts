@@ -194,6 +194,9 @@ class BatchCommandHandlerClass {
               case 'lockSwitch':
                 actionPromise = BluenetPromiseWrapper.lockSwitch(command.value);
                 break;
+              case 'setMeshChannel':
+                actionPromise = BluenetPromiseWrapper.setMeshChannel(command.channel);
+                break;
               case 'setSwitchState':
               case 'multiSwitch': // if it's a direct call, we just use the setSwitchState.
                 actionPromise = BluenetPromiseWrapper.setSwitchState(command.state);

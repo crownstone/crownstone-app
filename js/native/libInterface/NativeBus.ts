@@ -41,6 +41,8 @@ class NativeBusClass {
 
       classifierProbabilities: "classifierProbabilities",       // data type = {locationId: {sampleSize: number, probability: number }}
       classifierResult:        "classifierResult",              // data type = {valid: boolean, highestPredictionLabel: string, highestPrediction: number }
+
+      callbackUrlInvoked:      "callbackUrlInvoked",            // data type = string (url)
     };
 
     this.refMap = {};

@@ -13,6 +13,10 @@ import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {DeviceEntry} from "../../components/deviceEntries/DeviceEntry";
+import {addCrownstoneExplanationAlert} from "../AddItemsToSphere";
+import {Icon} from "../../components/Icon";
+import {IconButton} from "../../components/IconButton";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 const Actions = require('react-native-router-flux').Actions;
 
@@ -107,6 +111,21 @@ export class SphereCrownstoneOverview extends Component<any, any> {
 
     items.push({label: "This is an overview of all your Crownstones. To access the settings of these Crownstones, go to their rooms and tap on them there.", type:'explanation', below:true});
 
+
+    items.push({
+      label: 'Add a Crownstone',
+      largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
+      style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
+      type: 'button',
+      callback: () => {
+        if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
+          addCrownstoneExplanationAlert()
+        }
+        else {
+          Alert.alert("Ask your Sphere Admin","Admins can add new Crownstones to Spheres. If you have a new Crownstone you'd like to add, ask the sphere Admin.",[{text:"OK"}]);
+        }
+      }
+    });
 
 
 

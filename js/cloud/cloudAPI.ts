@@ -19,9 +19,10 @@ import { syncEvents }        from './sections/sync/syncEvents'
 import { syncUsersInSphere } from './sections/sync/syncUsersInSphere'
 import { user }              from './sections/user'
 
+import { toon }              from './sections/thirdParty/toon'
 
 function combineSections() {
-  let result = {};
+  let result : any = {};
   Util.mixin(result, cloudApiBase);
 
   // mixin all modules.
@@ -40,6 +41,9 @@ function combineSections() {
   Util.mixin(result, syncEvents);
   Util.mixin(result, syncUsersInSphere);
   Util.mixin(result, user);
+
+  result["thirdParty"] = {toon:{}};
+  Util.mixin(result.thirdParty.toon, toon);
 
   return result;
 }

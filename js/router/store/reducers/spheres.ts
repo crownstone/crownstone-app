@@ -4,6 +4,7 @@ import sphereUserReducer from './sphereUser'
 import stonesReducer from './stones'
 import appliancesReducer from './appliances'
 import messageReducer from './messages'
+import thirdPartyReducer from './thirdParty'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
@@ -164,6 +165,7 @@ let combinedSphereReducer = combineReducers({
   messages:   messageReducer,
   appliances: appliancesReducer,
   state:      sphereStateReducer,
+  thirdParty: thirdPartyReducer,
 });
 
 // spheresReducer

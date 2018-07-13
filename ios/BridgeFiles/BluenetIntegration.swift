@@ -32,14 +32,24 @@ open class BluenetJS: RCTEventEmitter {
   @objc func rerouteEvents() {
     LOGGER.info("BluenetBridge: Called rerouteEvents")
     if let globalBluenet = GLOBAL_BLUENET {
+      
+      _ = AppEventBus.on("callbackUrlInvoked", { (data) -> Void in
+        if let urlStr = data as? String {
+          self.sendEvent(withName: "callbackUrlInvoked", body: urlStr)
+        }
+      })
+      
       print("BluenetBridge: ----- BLUENET BRIDGE: Rerouting events")
+      
       _ = globalBluenet.classifier.subscribe("__classifierProbabilities", callback:{ (data) -> Void in
+        print("__classifierProbabilities",data)
         if let dict = data as? NSDictionary {
           self.sendEvent(withName: "classifierProbabilities", body: dict)
         }
       })
       
       _ = globalBluenet.classifier.subscribe("__classifierResult", callback: { (data) -> Void in
+        print("__classifierResult",data)
         if let dict = data as? NSDictionary {
           self.sendEvent(withName: "classifierResult", body: dict)
         }
@@ -1225,6 +1235,24 @@ open class BluenetJS: RCTEventEmitter {
         }
     }
   }
+  
+  
+  @objc func setMeshChannel(_ channel: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called setMeshChannel")
+    GLOBAL_BLUENET!.bluenet.config.setMeshChannel(channel) // set channel
+      .then{_ in return GLOBAL_BLUENET!.bluenet.waitToWrite()} // wait to store
+      .then{_ in return GLOBAL_BLUENET!.bluenet.control.reset()} // reset
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN sendMeshNoOp"]])
+        }
+    }
+  }
+  
   
   @objc func viewsInitialized() {
     LOGGER.info("BluenetBridge: Called viewsInitialized")

@@ -35,7 +35,7 @@ export const addCrownstoneExplanationAlert = () => {
     "It will automatically show up in the main overview. I'll take you there now." +
     "\n\nYou don't have to press this button for each Crownstone you add :).",
     [{text: 'Buy', style:'cancel',onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},
-      {text: 'OK', onPress: () => { BackAction(); }}]
+      {text: 'OK', onPress: () => { }}]
   );
 }
 
@@ -70,14 +70,14 @@ export class AddItemsToSphere extends Component<any, any> {
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row'}}>
               <AddItem icon={'md-cube'} label={'a Room.'} callback={() => { Actions.roomAdd({sphereId: this.props.sphereId }); }} />
-              <AddItem icon={'c2-crownstone'} label={'a Crownstone.'} callback={() => {
-                addCrownstoneExplanationAlert()
-              }} />
+              <AddItem icon={'c2-crownstone'} label={'a Crownstone.'} callback={() => { addCrownstoneExplanationAlert(); }} />
             </View>
-            <AddItem icon={'ios-body'} label={'a Person.'} callback={() => {
-                Actions.sphereUserInvite({sphereId: this.props.sphereId})
-            }} />
+            <View  style={{flexDirection:'row'}}>
+              <AddItem icon={'ios-body'} label={'a Person.'} callback={() => { Actions.sphereUserInvite({sphereId: this.props.sphereId}) }} />
+              <AddItem icon={'ios-link'} label={'Something else.'} callback={() => { Actions.sphereIntegrations({sphereId: this.props.sphereId}) }} />
+            </View>
           </View>
+          <View style={{height: 30}} />
         </ScrollView>
       </Background>
     );

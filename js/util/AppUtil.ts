@@ -69,11 +69,7 @@ export const AppUtil = {
 
     BluenetPromiseWrapper.clearTrackedBeacons().catch(() => {});
     Bluenet.stopScanning();
-    CLOUD.forDevice(deviceId).updateDeviceSphere(null)
-      .catch(() => {})
-      .then(() => {
-        return CLOUD.forDevice(deviceId).updateDeviceLocation(null);
-      })
+    CLOUD.forDevice(deviceId).updateDeviceSphere(null)  // will also clear location
       .catch(() => {})
       .then(() => {
         return StoreManager.userLogOut()

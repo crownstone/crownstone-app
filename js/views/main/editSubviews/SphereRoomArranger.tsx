@@ -32,7 +32,7 @@ export class SphereRoomArranger extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: 'Drag rooms around!',
+      title: 'Drag it around!',
       headerLeft: <CancelButton onPress={BackAction} />,
       headerRight: <TopbarButton
         text={"Save"}

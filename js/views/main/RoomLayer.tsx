@@ -107,7 +107,8 @@ export class RoomLayer extends Component<any, any> {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }
     else {
-      let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), this.props.sphereId);
+      let showSetupCrownstones = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone;
+      let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), this.props.sphereId, showSetupCrownstones);
       return (
         <ForceDirectedView
           viewId={this.viewId}

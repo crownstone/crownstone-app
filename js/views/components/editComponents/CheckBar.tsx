@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import { Icon } from '../Icon';
-import { styles, colors, screenWidth, barHeight} from '../../styles'
+import {styles, colors, screenWidth, LARGE_ROW_SIZE, MID_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
 
 
 export class CheckBar extends Component<any, any> {
@@ -29,14 +29,13 @@ export class CheckBar extends Component<any, any> {
   }
 
   render() {
-    let navBarHeight = this.props.barHeight || barHeight;
+    let navBarHeight = this.props.barHeight || NORMAL_ROW_SIZE;
     if (this.props.largeIcon)
-      navBarHeight = 75;
+      navBarHeight = LARGE_ROW_SIZE;
     else if (this.props.mediumIcon)
-      navBarHeight = 62;
+      navBarHeight = MID_ROW_SIZE;
     else if (this.props.icon)
-      navBarHeight = 50;
-
+      navBarHeight = NORMAL_ROW_SIZE;
 
     return (
       <TouchableHighlight onPress={() => {this.props.setActiveElement(); this.props.callback()}}>

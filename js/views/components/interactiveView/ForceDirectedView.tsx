@@ -787,8 +787,8 @@ export class ForceDirectedView extends Component<{
                 key={edge.id + "_" + i}
                 x1={ sX + dx }
                 y1={ sY - dy }
-                x2={ eX + dx}
-                y2={ eY - dy}
+                x2={ eX + dx }
+                y2={ eY - dy }
                 stroke={color}
                 strokeWidth={settings.thickness || 3}
                 strokeDasharray={settings.dashArray}

@@ -362,6 +362,7 @@ const ioniconCorrectionsIOS = {
   'ios-heart':                     {change: true, top: +0.090, left: +0.000},
   'ios-help-circle':               {change: true, top: +0.040, left: +0.000},
   'ios-home':                      {change: true, top: +0.010, left: +0.000},
+  'ios-link':                      {change: true, top: +0.050, left: +0.010},
   'ios-leaf':                      {change: true, top: +0.040, left: +0.020},
   'ios-mail':                      {change: true, top: +0.040, left: +0.000},
   'ios-navigate':                  {change: true, top: +0.040, left: +0.000},

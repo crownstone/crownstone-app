@@ -8,7 +8,7 @@ import {
   View
 } from 'react-native';
 
-import {styles, colors, screenWidth, barHeight} from '../../styles'
+import {styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
 
 export class SwitchBar extends Component<any, any> {
   animationAllowed;
@@ -91,11 +91,11 @@ export class SwitchBar extends Component<any, any> {
   }
 
   render() {
-    let navBarHeight = this.props.barHeight || barHeight;
+    let navBarHeight = this.props.barHeight || NORMAL_ROW_SIZE;
     if (this.props.largeIcon)
-      navBarHeight = 75;
+      navBarHeight = LARGE_ROW_SIZE;
     else if (this.props.icon)
-      navBarHeight = 50;
+      navBarHeight = NORMAL_ROW_SIZE;
 
 
     if (this.props.experimental) {

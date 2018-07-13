@@ -65,9 +65,32 @@ export class SphereRoomOverview extends Component<any, any> {
     )
   }
 
+  _getRearrangeItem() {
+    return (
+      <TouchableHighlight key={'rearrangeItem_entry'} onPress={() => {
+        Actions.sphereRoomArranger({sphereId: this.props.sphereId});
+      }}>
+        <View style={[styles.listView, {paddingRight:5}]}>
+          <RoomList
+            icon={"md-cube"}
+            name={"Rearrange Rooms!"}
+            hideSubtitle={true}
+            iconSizeOverride={40}
+            backgroundColor={colors.menuTextSelected.hex}
+            navigation={true}
+          />
+        </View>
+      </TouchableHighlight>
+    )
+  }
+
   _getItems() {
     let items = [];
     const state = this.props.store.getState();
+
+    items.push({label:"CUSTOMIZE LAYOUT",  type:'explanation', below:false});
+    items.push({__item: this._getRearrangeItem()});
+
 
     let rooms = state.spheres[this.props.sphereId].locations;
     let roomIds = Object.keys(rooms);
@@ -82,9 +105,8 @@ export class SphereRoomOverview extends Component<any, any> {
     if (Permissions.inSphere(this.props.sphereId).addRoom) {
       items.push({
         label: 'Add a room',
-        largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex}
-                         style={{position: 'relative', top: 2}}/>,
-        style: {color: colors.blue.hex, fontWeight: 'bold'},
+        largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
+        style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
         type: 'navigation',
         callback: () => {
           Actions.roomAdd({sphereId: this.props.sphereId, fromMovingView: true, returnToRoute: 'sphereRoomOverview'})

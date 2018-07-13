@@ -114,6 +114,20 @@ export class SphereUserOverview extends Component<any, any> {
       items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
+    if (spherePermissions.inviteGuestToSphere || spherePermissions.inviteMemberToSphere || spherePermissions.inviteAdminToSphere) {
+      items.push({label:'ADD MORE PEOPLE',  type:'explanation', below: false});
+      items.push({
+        label: 'Invite someone new!', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
+        type: 'navigation',
+        labelStyle: {color: colors.menuTextSelected.hex, fontWeight:'bold'},
+        icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft: 3, marginRight: 7}}/>,
+        callback: () => {
+          Actions.sphereUserInvite({sphereId: this.props.sphereId});
+        }
+      });
+    }
+
     items.push({type:'spacer'})
     items.push({type:'spacer'})
     items.push({type:'spacer'})

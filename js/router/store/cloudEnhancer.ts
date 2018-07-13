@@ -320,13 +320,11 @@ function handleSphereStateOnDevice(action, state) {
         CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => {});
       }
       else {
-        CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => {});
-        CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {});
+        CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });  // will also clear location
       }
     }
     else {
-      CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => {});
-      CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {});
+      CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });  // will also clear location
     }
   }
 }
@@ -338,8 +336,11 @@ function handleUserLocationEnter(action, state) {
     if (state.user.uploadLocation === true) {
       let deviceId = Util.data.getCurrentDeviceId(state);
       if (deviceId) {
-        CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => { });
-        CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => {});
+        CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId)
+          .then(() => {
+            return CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId)
+          })
+          .catch(() => {});
       }
     }
   }

@@ -21,8 +21,10 @@ export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 
 export const pxRatio = PixelRatio.get();
 
-export let barHeight = 46;
-export let barHeightLarge = 80;
+export const EXTRA_LARGE_ROW_SIZE  = 85;
+export const LARGE_ROW_SIZE  = 75;
+export const MID_ROW_SIZE    = 62;
+export const NORMAL_ROW_SIZE = 50;
 
 export let colors : any = {
   darkBackground: {hex:'#4f6b84'},

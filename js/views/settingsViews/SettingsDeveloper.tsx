@@ -215,6 +215,13 @@ export class SettingsDeveloper extends Component<any, any> {
 
     items.push({label: "MESH", type: 'explanation', below: false, alreadyPadded: true});
     items.push({
+      label:"Change Channels",
+      type: 'navigation',
+      icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
+      callback:() => {
+        Actions.settingsMeshDebug()
+      }});
+    items.push({
       label: 'Reset networks',
       type:  'button',
       style: {color: colors.black.hex},

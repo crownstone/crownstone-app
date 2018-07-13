@@ -199,8 +199,7 @@ export class DeviceEdit extends Component<any, any> {
 
       items.push({
         label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
-          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {
-          })
+          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {})
         }
       });
       items.push({

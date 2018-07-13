@@ -63,6 +63,7 @@ export class Router_IOS extends Component {
                 <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
                 <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}      />
                 <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
+                <Scene key="settingsMeshDebug"          component={Views.SettingsMeshDebug}         />
                 <Scene key="settingsLocalizationDebug"  component={Views.SettingsLocalizationDebug} />
                 <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         />
                 <Scene key="settingsFAQ"                component={Views.SettingsFAQ}               />
@@ -78,7 +79,10 @@ export class Router_IOS extends Component {
             <Scene key="roomAdd"                        component={Views.RoomAdd}                    />
             <Scene key="addItemsToSphere"               component={Views.AddItemsToSphere}           />
             <Scene key="roomEdit"                       component={Views.RoomEdit}                   />
+            <Scene key="toonAdd"                        component={Views.ToonAdd}   initial={false}  />
+
             <Scene key="sphereEdit"                     component={Views.SphereEdit}                 panHandlers={null} />
+            <Scene key="sphereEditSettings"             component={Views.SphereEditSettings}         panHandlers={null} />
             <Scene key="sphereRoomOverview"             component={Views.SphereRoomOverview}         panHandlers={null} />
             <Scene key="sphereCrownstoneOverview"       component={Views.SphereCrownstoneOverview}   panHandlers={null} />
             <Scene key="sphereRoomArranger"             component={Views.SphereRoomArranger}         panHandlers={null} />
@@ -87,6 +91,8 @@ export class Router_IOS extends Component {
             <Scene key="sphereInvitedUser"              component={Views.SphereInvitedUser}          panHandlers={null} />
             <Scene key="sphereUser"                     component={Views.SphereUser}                 panHandlers={null} />
             <Scene key="sphereBehaviour"                component={Views.SphereBehaviour}            panHandlers={null} />
+            <Scene key="sphereIntegrations"             component={Views.SphereIntegrations}         panHandlers={null} />
+
             <Scene key="deviceEdit"                     component={Views.DeviceEdit}                 />
             <Scene key="deviceBehaviourEdit"            component={Views.DeviceBehaviourEdit}        />
             <Scene key="applianceSelection"             component={Views.ApplianceSelection}         />

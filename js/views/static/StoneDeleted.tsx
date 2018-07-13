@@ -17,7 +17,7 @@ export class StoneDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={<Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../../images/stoneDetails.png')} />}>
+      <Background image={require('../../images/stoneDetails.png')}>
         <OrangeLine/>
         <Text>Stone Deleted.</Text>
       </Background>

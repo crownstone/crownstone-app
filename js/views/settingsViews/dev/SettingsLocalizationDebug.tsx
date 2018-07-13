@@ -117,16 +117,19 @@ export class SettingsLocalizationDebug extends Component<any, any> {
     let min = 1e9;
     let max = -1e9;
     for (let i = 0; i < roomIds.length; i++) {
-      min = Math.min(Math.log10(this.roomData[roomIds[i]].probability), min);
-      max = Math.max(Math.log10(this.roomData[roomIds[i]].probability), max);
+      if (this.roomData[roomIds[i]].probability != 0) {
+        min = Math.min(Math.log10(this.roomData[roomIds[i]].probability), min);
+        max = Math.max(Math.log10(this.roomData[roomIds[i]].probability), max);
+      }
     }
+
 
     let valueRange = (max - min)
     if (valueRange == 0) {
       return 'rgb(0,30,60)'
     }
 
-    let factor = (value - min) / valueRange
+    let factor = (value - min) / valueRange;
 
     if (factor > 1)
       factor = 1

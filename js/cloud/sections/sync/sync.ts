@@ -47,7 +47,7 @@ export const sync = {
       }
     }, 30000);
 
-    LOG.cloud("SYNC: Start Syncing.");
+    LOG.info("SYNC: Start Syncing.");
     this.__currentlySyncing = true;
 
     // set the authentication tokens

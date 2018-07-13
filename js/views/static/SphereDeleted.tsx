@@ -17,7 +17,7 @@ export class SphereDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={<Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../../images/mainBackgroundLightNotConnected.png')} />}>
+      <Background image={require('../../images/mainBackgroundLightNotConnected.png')}>
         <OrangeLine/>
         <Text>Sphere Deleted.</Text>
       </Background>

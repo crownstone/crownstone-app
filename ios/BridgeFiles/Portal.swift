@@ -69,7 +69,11 @@ typealias voidCallback = () -> Void
   }
   
   open func parseUserActivity(userActivity: NSUserActivity) {
-    print(userActivity)
+    if (userActivity.activityType == NSUserActivityTypeBrowsingWeb) {
+      if let url = userActivity.webpageURL {
+        AppEventBus.emit("callbackUrlInvoked", url.absoluteString)
+      }
+    }
   }
   
   deinit {

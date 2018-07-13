@@ -5,7 +5,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, screenWidth } from '../../styles'
+import {styles, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
 
 
 export class InfoBar extends Component<any, any> {
@@ -13,9 +13,10 @@ export class InfoBar extends Component<any, any> {
   render() {
     let barHeight = this.props.barHeight;
     if (this.props.largeIcon)
-      barHeight = 75;
+      barHeight = LARGE_ROW_SIZE;
     else if (this.props.icon)
-      barHeight = 50;
+      barHeight = NORMAL_ROW_SIZE;
+
     return (
       <View>
         <View style={[styles.listView, {height: barHeight}]}>

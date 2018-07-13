@@ -94,7 +94,8 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'getSchedules' } |
   { commandName : 'lockSwitch',     value: boolean } |
   { commandName : 'setSwitchCraft', value: boolean } |
-  { commandName : 'allowDimming',   value: boolean }
+  { commandName : 'allowDimming',   value: boolean } |
+  { commandName : 'setMeshChannel', channel: number }
 
 
 interface batchCommands  {

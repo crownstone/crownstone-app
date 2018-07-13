@@ -10,6 +10,7 @@ import { PictureView }                 from '../views/cameraViews/PictureView'
 import { CameraRollView }              from '../views/cameraViews/CameraRollView'
 import { SphereOverview }              from '../views/main/SphereOverview'
 import { SphereEdit }                  from '../views/main/SphereEdit'
+import { SphereEditSettings }          from '../views/main/editSubviews/SphereEditSettings'
 import { SphereRoomOverview }          from "../views/main/editSubviews/SphereRoomOverview";
 import { SphereCrownstoneOverview }    from "../views/main/editSubviews/SphereCrownstoneOverview";
 import { SphereRoomArranger }          from "../views/main/editSubviews/SphereRoomArranger";
@@ -18,6 +19,7 @@ import { SphereUserOverview }          from "../views/main/editSubviews/SphereUs
 import { SphereInvitedUser }           from "../views/main/editSubviews/SphereInvitedUser";
 import { SphereUser }                  from "../views/main/editSubviews/SphereUser";
 import { SphereBehaviour }             from "../views/main/editSubviews/SphereBehaviour";
+import { SphereIntegrations }          from "../views/main/editSubviews/SphereIntegrations";
 import { RoomOverview }                from '../views/roomViews/RoomOverview'
 import { RoomEdit }                    from '../views/roomViews/RoomEdit'
 import { RoomAdd }                     from '../views/roomViews/RoomAdd'
@@ -53,6 +55,9 @@ import { IconDebug }                   from "../views/development/IconDebug";
 import { SettingsFAQ }                 from "../views/settingsViews/SettingsFAQ";
 import { SwitchCraftInformation }      from "../views/deviceViews/elements/SwitchCraftInformation";
 
+import { ToonAdd }                     from "../views/thirdParty/toon/ToonAdd";
+import {SettingsMeshDebug} from "../views/settingsViews/dev/SettingsMeshDebug";
+
 export const Views = {
   AddItemsToSphere,
   AiStart,
@@ -66,6 +71,7 @@ export const Views = {
   CameraRollView,
   SphereOverview,
   SphereEdit,
+  SphereEditSettings,
   SphereRoomOverview,
   SphereCrownstoneOverview,
   SphereRoomArranger,
@@ -74,6 +80,10 @@ export const Views = {
   SphereInvitedUser,
   SphereUser,
   SphereBehaviour,
+  SphereIntegrations,
+
+  ToonAdd,
+
   RoomOverview,
   RoomEdit,
   RoomAdd,
@@ -95,6 +105,7 @@ export const Views = {
   SettingsProfile,
   SettingsPrivacy,
   SettingsBleDebug,
+  SettingsMeshDebug,
   SettingsLocalizationDebug,
   SettingsStoneBleDebug,
   SettingsDeveloper,

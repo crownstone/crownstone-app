@@ -93,6 +93,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "ios-heart",
       "ios-help-circle",
       "ios-home",
+      "ios-link",
       "ios-leaf",
       "ios-mail",
       "ios-navigate",
