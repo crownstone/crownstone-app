@@ -42,7 +42,7 @@ export class SphereIntegrations extends Component<any, any> {
           <Text style={{color:"#fff", fontSize:12, fontWeight:'bold', paddingTop: 2}}>Toon®</Text>
         </View>,
       callback: () => {
-        // Actions.sphereRoomOverview({sphereId: this.props.sphereId});
+        Actions.toonAdd({sphereId: this.props.sphereId});
       }
     });
 

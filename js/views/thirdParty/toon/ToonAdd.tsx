@@ -31,7 +31,7 @@ export class ToonAdd extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Toon Thermostat",
+      title: "Toon",
       headerLeft: <CancelButton onPress={BackAction} />,
       headerRight: <TopbarButton
         text={"Create"}
@@ -134,8 +134,7 @@ export class ToonAdd extends Component<any, any> {
       return (
         <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{
           "When you integrate your Toon with Crownstone, you can use the indoor localization together with your heating!\n\n" +
-          "When your Toon is set to Away and you're still at home, Crownstone will set Toon's program to home as long as you're home.\n\n" +
-          "Tap the button below to get started!"
+          "When your Toon is set to \"Away\" and you're still at home, Crownstone will set Toon's program to \"Home\" as long as you're home."
         }</Text>
       )
     }

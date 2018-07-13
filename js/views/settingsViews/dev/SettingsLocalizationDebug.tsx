@@ -36,7 +36,6 @@ export class SettingsLocalizationDebug extends Component<any, any> {
 
   roomData = {};
   sphereId = null;
-  validMeasurement = false;
   currentLocation = null;
   appLocation = null;
   _amountOfStones = 0
@@ -57,10 +56,9 @@ export class SettingsLocalizationDebug extends Component<any, any> {
     }))
     this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.classifierResult, (data) => {
       this.currentLocation = data.highestPredictionLabel;
-      this.validMeasurement = data.valid;
     }))
     this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
-      this._amountOfStones = data.length
+      this._amountOfStones = data.length;
     }))
     this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.currentRoom, (data) => {
       this.forceUpdate();
@@ -166,7 +164,6 @@ export class SettingsLocalizationDebug extends Component<any, any> {
           isAppLocation={locationId === this.appLocation}
           probabilityData={this.roomData[locationId] || {}}
           backgroundColor={this._calculateColor(locationId)}
-          validMeasurement={this.validMeasurement}
         />
       );
     }

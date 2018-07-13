@@ -197,9 +197,9 @@ class BatchCommandHandlerClass {
               case 'setMeshChannel':
                 actionPromise = BluenetPromiseWrapper.setMeshChannel(command.channel);
                 break;
-              case 'setSwitchState':
               case 'multiSwitch': // if it's a direct call, we just use the setSwitchState.
-                actionPromise = BluenetPromiseWrapper.setSwitchState(command.state);
+                let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, timeout: command.timeout, intent: command.intent, state: command.state}
+                actionPromise = BluenetPromiseWrapper.multiSwitch([stoneSwitchPacket]);
                 break;
               case 'toggle':
                 actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 1.0);

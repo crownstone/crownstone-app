@@ -23,7 +23,7 @@ export class SphereEdit extends Component<any, any> {
     let state = params.store.getState();
     let sphere = state.spheres[params.sphereId] ;
     return {
-      title: 'Edit ' + sphere.config.name,
+      title: sphere.config.name,
     }
   };
 

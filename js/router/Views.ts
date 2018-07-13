@@ -56,7 +56,7 @@ import { SettingsFAQ }                 from "../views/settingsViews/SettingsFAQ"
 import { SwitchCraftInformation }      from "../views/deviceViews/elements/SwitchCraftInformation";
 
 import { ToonAdd }                     from "../views/thirdParty/toon/ToonAdd";
-import {SettingsMeshDebug} from "../views/settingsViews/dev/SettingsMeshDebug";
+import { SettingsMeshDebug }           from "../views/settingsViews/dev/SettingsMeshDebug";
 
 export const Views = {
   AddItemsToSphere,
