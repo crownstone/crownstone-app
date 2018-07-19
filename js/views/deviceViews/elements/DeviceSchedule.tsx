@@ -33,6 +33,24 @@ import {ScheduleUtil} from "../../../util/ScheduleUtil";
 
 
 export class DeviceSchedule extends Component<any, any> {
+
+  unsubscribeStoreEvents
+  componentDidMount() {
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (
+        change.changeAppSettings || change.updateStoneSchedule && change.updateStoneSchedule.stoneIds[this.props.stoneId]
+      ) {
+        this.forceUpdate();
+      }
+    });
+  }
+  componentWillUnmount() {
+    this.unsubscribeStoreEvents();
+  }
+
   _getItems(schedules) {
     let items = [];
 

@@ -14,13 +14,11 @@ const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 class KeepAliveHandlerClass {
   _initialized : any;
   store : any;
-  state : any;
   lastTimeFired : number = 0;
 
   constructor() {
     this._initialized = false;
     this.store = undefined;
-    this.state = {};
   }
 
   loadStore(store) {

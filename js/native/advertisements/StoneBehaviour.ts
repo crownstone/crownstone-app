@@ -10,6 +10,7 @@ import { addDistanceToRssi, Util }  from "../../util/Util";
 import { LocalNotifications }       from "../../notifications/LocalNotifications";
 import { BehaviourUtil }            from "../../util/BehaviourUtil";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
+import {INTENTS} from "../libInterface/Constants";
 
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
@@ -138,6 +139,18 @@ export class StoneBehaviour {
 
         BatchCommandHandler.loadPriority(stone, this.stoneId, this.sphereId, {commandName:'toggle', stateForOn: stone.config.dimmingEnabled ? 0.99 : 1.00}, {}, 2, 'Tap To Toggle!')
           .then((newSwitchState) => {
+            eventBus.emit("NEW_ACTIVITY_LOG", {
+              command:     "tap2toggle",
+              commandUuid: Util.getUUID(),
+              connectedTo: this.stoneId,
+              target:      this.stoneId,
+              timeout:     0,
+              intent:      INTENTS.manual,
+              state:       newSwitchState,
+              sphereId:    this.sphereId
+            });
+
+
             let data = {state: newSwitchState};
             if (newSwitchState === 0) {
               data["currentUsage"] = 0;

@@ -25,6 +25,31 @@ let WARNING_COLOR = colors.csOrange.hex;
 
 export class DeviceBehaviour extends Component<any, any> {
 
+  unsubscribeStoreEvents
+  componentDidMount() {
+    const { store } = this.props;
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      let state = store.getState();
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+
+      let applianceId = stone.config.applianceId;
+      if (
+        change.changeAppSettings ||
+        change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+        change.updateStoneBehaviour   && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
+        applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
+        ) {
+          this.forceUpdate();
+        }
+    });
+  }
+  componentWillUnmount() {
+    this.unsubscribeStoreEvents();
+  }
+
   getWarning(state, stone, nearFarDisabled) {
     let warnings = [];
     if (stone.config.locked) {

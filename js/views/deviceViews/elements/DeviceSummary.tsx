@@ -28,7 +28,7 @@ import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 
 export class DeviceSummary extends Component<any, any> {
   storedSwitchState = 0;
-  unsubscribeStoreEvents;
+  unsubscribeStoreEvents
 
   constructor(props) {
     super(props);
@@ -39,8 +39,30 @@ export class DeviceSummary extends Component<any, any> {
     const stone = sphere.stones[props.stoneId];
     this.storedSwitchState = stone.state.state;
   }
+  componentDidMount() {
+    const { store } = this.props;
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
 
+      let state = store.getState();
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+
+      let applianceId = stone.config.applianceId;
+      if (
+        change.changeAppSettings ||
+        change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+        change.changeStoneState       && change.changeStoneState.stoneIds[this.props.stoneId] ||
+        change.powerUsageUpdated      && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
+        change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
+        applianceId && change.updateApplianceConfig    && change.updateApplianceConfig.applianceIds[applianceId]
+      ) {
+        this.forceUpdate();
+      }
+    });
+  }
   componentWillUnmount() {
+    this.unsubscribeStoreEvents();
     this.safeStoreUpdate();
   }
 

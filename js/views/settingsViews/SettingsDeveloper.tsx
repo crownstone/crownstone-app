@@ -177,16 +177,24 @@ export class SettingsDeveloper extends Component<any, any> {
     items.push({
       label:"BLE Debug",
       type: 'navigation',
-      icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
+      icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightBlue2.hex}} />,
       callback:() => {
         Actions.settingsBleDebug()
       }});
     items.push({
       label:"Localization Debug",
       type: 'navigation',
-      icon: <IconButton name="md-locate" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      icon: <IconButton name="md-locate" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback:() => {
         Actions.settingsLocalizationDebug()
+      }});
+    items.push({
+      label:"Show Full Activity Log",
+      value: dev.show_full_activity_log,
+      type: 'switch',
+      icon: <IconButton name="md-calendar" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_full_activity_log: newValue }});
       }});
     items.push({
       label:"Use Advertisement RSSI",
@@ -220,6 +228,14 @@ export class SettingsDeveloper extends Component<any, any> {
       icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
       callback:() => {
         Actions.settingsMeshDebug()
+      }});
+    items.push({
+      label:"Show RSSI in Topology",
+      value: dev.show_rssi_values_in_mesh,
+      type: 'switch',
+      icon: <IconButton name="ios-calculator" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightGreen.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_rssi_values_in_mesh: newValue }});
       }});
     items.push({
       label: 'Reset networks',

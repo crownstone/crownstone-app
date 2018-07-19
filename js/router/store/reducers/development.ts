@@ -14,6 +14,8 @@ let defaultState = {
   log_cloud:     false,
   log_debug:     false,
   use_advertisement_rssi_too: false,
+  show_rssi_values_in_mesh:   false,
+  show_full_activity_log:     false
 };
 
 // developmentReducer
@@ -36,7 +38,9 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_store =     update(action.data.log_store,      newState.log_store);
         newState.log_cloud =     update(action.data.log_cloud,      newState.log_cloud);
         newState.log_debug =     update(action.data.log_debug,      newState.log_debug);
-        newState.use_advertisement_rssi_too = update(action.data.use_advertisement_rssi_too,      newState.use_advertisement_rssi_too);
+        newState.use_advertisement_rssi_too = update(action.data.use_advertisement_rssi_too, newState.use_advertisement_rssi_too);
+        newState.show_rssi_values_in_mesh = update(action.data.show_rssi_values_in_mesh,     newState.show_rssi_values_in_mesh);
+        newState.show_full_activity_log = update(action.data.show_full_activity_log,         newState.show_full_activity_log);
         return newState;
       }
       return state;

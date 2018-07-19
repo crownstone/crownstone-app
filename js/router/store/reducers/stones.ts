@@ -4,6 +4,7 @@ import { updateToggleState, toggleState, toggleStateAway } from './shared'
 import powerUsageReducer from './stoneSubReducers/powerUsage'
 import scheduleReducer   from './stoneSubReducers/schedule'
 import meshReducer       from './stoneSubReducers/mesh'
+import activityLogsReducer from './stoneSubReducers/activityLog'
 
 export let BEHAVIOUR_TYPES = {
   NEAR: 'onNear',
@@ -417,6 +418,7 @@ let combinedStoneReducer = combineReducers({
   errors:     stoneErrorsReducer,
   powerUsage: powerUsageReducer,
   mesh:       meshReducer,
+  activityLogs: activityLogsReducer,
 });
 
 // stonesReducer

@@ -20,9 +20,23 @@ import {DeviceInformation} from "./DeviceSummary";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 export class GuidestoneSummary extends Component<any, any> {
-  constructor(props) {
-    super(props);
-    this.state = {pendingCommand: false}
+  unsubscribeStoreEvents
+  componentDidMount() {
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (
+        change.changeAppSettings ||
+        change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+        change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId]
+      ) {
+        this.forceUpdate();
+      }
+    });
+  }
+  componentWillUnmount() {
+    this.unsubscribeStoreEvents();
   }
 
   render() {

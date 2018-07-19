@@ -74,7 +74,7 @@ export class SettingsMeshTopology extends Component<any, any> {
 
   getEdgeSettings(state, edge) {
     let label = undefined;
-    if (state.user.developer === true) {
+    if (state.user.developer === true && state.development.show_rssi_values_in_mesh === true) {
       label = edge.rssi + '';
     }
 

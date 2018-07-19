@@ -33,7 +33,7 @@ import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 
-let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
 export class DeviceScheduleEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {

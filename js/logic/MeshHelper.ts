@@ -12,16 +12,16 @@ export class MeshHelper {
   sphereId : any;
   meshNetworkId : any;
   meshInstruction : meshTodo;
-  connectedCrownstoneId : string;
+  connectedStoneId : string;
   targets : any;
   _containedInstructions : any[] = [];
   activeOptions : batchCommandEntryOptions = {};
 
-  constructor(sphereId, meshNetworkId, meshInstruction : meshTodo, connectedCrownstoneId: string) {
+  constructor(sphereId, meshNetworkId, meshInstruction : meshTodo, connectedStoneId: string) {
     this.sphereId = sphereId;
     this.meshNetworkId = meshNetworkId;
     this.meshInstruction = meshInstruction;
-    this.connectedCrownstoneId = connectedCrownstoneId;
+    this.connectedStoneId = connectedStoneId;
   }
 
   performAction() {
@@ -40,7 +40,7 @@ export class MeshHelper {
     return actionPromise
       .then((result) => {
         this._containedInstructions.forEach((instruction) => {
-          if (instruction.stoneId === this.connectedCrownstoneId) {
+          if (instruction.stoneId === this.connectedStoneId) {
             instruction.promise.resolve(result);
             instruction.cleanup();
           }
@@ -51,7 +51,7 @@ export class MeshHelper {
   _verifyDirectTarget(commandArray) {
     for (let i = 0; i < commandArray.length; i++) {
       let command = commandArray[i];
-      if (command.stoneId === this.connectedCrownstoneId) {
+      if (command.stoneId === this.connectedStoneId) {
         return true;
       }
     }
@@ -65,7 +65,6 @@ export class MeshHelper {
       let multiSwitchInstructions : multiSwitchPayload[] = this.meshInstruction.multiSwitch;
       // get data from set
       let multiSwitchPackets = [];
-      let multiSwitchWaitInstructions = [];
 
       if (this._verifyDirectTarget(multiSwitchInstructions) === false) {
         return null;
@@ -74,18 +73,7 @@ export class MeshHelper {
       for (let i = 0; i < multiSwitchInstructions.length; i++) {
         let instruction = multiSwitchInstructions[i]
         if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
-          // get the longest timeout and use that
           multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
-          // multiSwitchWaitInstructions.push(() => {
-          //   eventBus.emit(
-          //     Util.events.getIgnoreTopic(instruction.stoneId),
-          //     {
-          //             timeoutMs: MESH_PROPAGATION_TIMEOUT_MS,
-          //             conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: instruction.state}]
-          //           }
-          //   );
-          // });
-
           instruction.promise.pending = true;
           MeshHelper._mergeOptions(instruction.options, this.activeOptions);
           this._containedInstructions.push(instruction);
@@ -102,10 +90,22 @@ export class MeshHelper {
       // update the used channels.
       LOG.mesh('MeshHelper: Dispatching ', 'multiSwitchPackets ', multiSwitchPackets);
       return BluenetPromiseWrapper.multiSwitch(multiSwitchPackets)
-        // .then((result) => {
-        //   multiSwitchWaitInstructions.forEach((waitInstruction) => { waitInstruction(); });
-        //   return result;
-        // })
+        .then(() => {
+          // log all the multiswitches
+          for (let i = 0; i < multiSwitchInstructions.length; i++) {
+            let command = multiSwitchInstructions[i];
+            eventBus.emit("NEW_ACTIVITY_LOG", {
+              command:     "multiswitch",
+              commandUuid: command.commandUuid,
+              connectedTo: this.connectedStoneId,
+              target:      command.stoneId,
+              timeout:     command.timeout,
+              intent:      command.intent,
+              state:       command.state,
+              sphereId:    this.sphereId
+            });
+          }
+        })
     }
     return null;
   }
@@ -141,7 +141,21 @@ export class MeshHelper {
       }
       // update the used channels.
       LOG.mesh('MeshHelper: Dispatching ', 'keepAliveState w timeout:',maxTimeout, 'packs:', stoneKeepAlivePackets);
-      return BluenetPromiseWrapper.meshKeepAliveState(maxTimeout, stoneKeepAlivePackets);
+      return BluenetPromiseWrapper.meshKeepAliveState(maxTimeout, stoneKeepAlivePackets)
+        .then(() => {
+          keepAliveInstructions.forEach((command) => {
+            eventBus.emit("NEW_ACTIVITY_LOG", {
+              command:     "keepAliveState",
+              commandUuid: command.commandUuid,
+              connectedTo: this.connectedStoneId,
+              target:      command.stoneId,
+              timeout:     command.timeout,
+              changeState: command.changeState,
+              state:       command.state,
+              sphereId:    this.sphereId
+            });
+          })
+        })
     }
 
     return null;
@@ -163,7 +177,18 @@ export class MeshHelper {
         this._containedInstructions.push( instruction );
       });
 
-      return BluenetPromiseWrapper.meshKeepAlive();
+      return BluenetPromiseWrapper.meshKeepAlive()
+        .then(() => {
+          this.meshInstruction.keepAlive.forEach((command) => {
+            eventBus.emit("NEW_ACTIVITY_LOG", {
+              command:     "keepAlive",
+              commandUuid: command.commandUuid,
+              connectedTo: this.connectedStoneId,
+              target:      command.stoneId,
+              sphereId:    this.sphereId
+            });
+          })
+        })
     }
     return null
   }

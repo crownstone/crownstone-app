@@ -26,6 +26,7 @@ export class CommandManager {
           sphereId: sphereId,
           stoneId:  stoneId,
           command:  command,
+          commandUuid: uuid,
           attempts: attempts,
           options:  options,
           timestamp: new Date().valueOf(),
@@ -377,6 +378,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   if (command.commandName === 'keepAlive') {
     payload = {
       stoneId: batchCommand.stoneId,
+      commandUuid: batchCommand.commandUuid,
       attempts: batchCommand.attempts,
       timestamp: batchCommand.timestamp,
       options: batchCommand.options,
@@ -387,6 +389,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   else if (command.commandName === 'keepAliveState') {
     payload = {
       stoneId: batchCommand.stoneId,
+      commandUuid: batchCommand.commandUuid,
       attempts: batchCommand.attempts,
       timestamp: batchCommand.timestamp,
       options: batchCommand.options,
@@ -402,6 +405,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   else if (command.commandName === 'multiSwitch') {
     payload = {
       stoneId: batchCommand.stoneId,
+      commandUuid: batchCommand.commandUuid,
       attempts: batchCommand.attempts,
       timestamp: batchCommand.timestamp,
       crownstoneId: stoneConfig.crownstoneId,

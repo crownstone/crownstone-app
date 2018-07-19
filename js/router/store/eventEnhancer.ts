@@ -311,7 +311,11 @@ function checkAction(action, affectedIds) {
       eventStatus['stoneUsageUpdatedTransient'] = affectedIds; break;
     case "UPDATE_STONE_CONFIG_TRANSIENT":
     case "USER_UPDATE_PICTURE":
+    case "UPDATE_ACTIVITY_LOG_CLOUD_ID":
       break;
+    case "ADD_ACTIVITY_LOG":
+    case "REMOVE_ACTIVITY_LOG":
+      eventStatus['stoneChangeLogs'] = affectedIds; break;
     default:
       LOG.warn("UNKNOWN ACTION TYPE:", action);
   }
