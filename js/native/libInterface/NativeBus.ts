@@ -39,8 +39,8 @@ class NativeBusClass {
       libAlert:             "libAlert",                         // data type = {header: string, body: string, buttonText: string }
       libPopup:             "libPopup",                         // data type = {header: string, body: string, buttonText: string, type: <not used yet> }
 
-      classifierProbabilities: "classifierProbabilities",       // data type = {locationId: {sampleSize: number, probability: number }}
-      classifierResult:        "classifierResult",              // data type = {valid: boolean, highestPredictionLabel: string, highestPrediction: number }
+      classifierProbabilities: "classifierProbabilities",       // data type = {locationId1: {sampleSize: number, probability: number }, locationId2: {sampleSize: number, probability: number }, ...}
+      classifierResult:        "classifierResult",              // data type = {highestPredictionLabel: string, highestPrediction: number } // highestPredictionLabel == locationId with highest probability and highestPrediction is that probability
 
       callbackUrlInvoked:      "callbackUrlInvoked",            // data type = string (url)
     };

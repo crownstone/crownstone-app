@@ -36,9 +36,14 @@ export class DeviceSchedule extends Component<any, any> {
 
   unsubscribeStoreEvents
   componentDidMount() {
+    const { store } = this.props;
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
+
+      let state = store.getState();
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      if (!stone || !stone.config) { return; }
 
       if (
         change.changeAppSettings || change.updateStoneSchedule && change.updateStoneSchedule.stoneIds[this.props.stoneId]

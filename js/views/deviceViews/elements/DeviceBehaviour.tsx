@@ -34,6 +34,7 @@ export class DeviceBehaviour extends Component<any, any> {
 
       let state = store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      if (!stone || !stone.config) { return; }
 
       let applianceId = stone.config.applianceId;
       if (
