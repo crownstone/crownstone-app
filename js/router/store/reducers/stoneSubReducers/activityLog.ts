@@ -1,5 +1,7 @@
 import { update, getTime, refreshDefaults } from '../reducerUtil'
 
+
+
 let dataState = {
   connectedTo: null,
   switchedToState: null, // 0 .. 1 || -1

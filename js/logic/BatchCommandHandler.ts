@@ -2,7 +2,7 @@ import { eventBus }              from '../util/EventBus'
 import { Util }                  from '../util/Util'
 import { BlePromiseManager }     from './BlePromiseManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
-import {LOG, LOGd, LOGi} from '../logging/Log'
+import {LOG, LOGd, LOGe, LOGi, LOGv, LOGw} from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
 import { DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL } from '../ExternalConfig'
@@ -48,7 +48,7 @@ class BatchCommandHandlerClass {
    * @param { string } label              // explain where the command comes from,
    */
   load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') {
-    LOG.verbose("BatchCommandHandler: Loading Command, sphereId:",sphereId," stoneId:", stoneId, stone.config.name, command, label);
+    LOGv.bch("BatchCommandHandler: Loading Command, sphereId:",sphereId," stoneId:", stoneId, stone.config.name, command, label);
     return this._commandHandler.load(stone, stoneId, sphereId, command, false,  attempts, options );
   }
 
@@ -62,7 +62,7 @@ class BatchCommandHandlerClass {
    * @param { string } label              // explain where the command comes from,
    */
   loadPriority(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') {
-    LOG.verbose("BatchCommandHandler: Loading High Priority Command, sphereId:",sphereId," stoneId", stoneId, stone.config.name, command, label);
+    LOGv.bch("BatchCommandHandler: Loading High Priority Command, sphereId:",sphereId," stoneId", stoneId, stone.config.name, command, label);
     return this._commandHandler.load(stone, stoneId, sphereId, command, true, attempts, options );
   }
 
@@ -80,7 +80,7 @@ class BatchCommandHandlerClass {
     // find all the topics for individual crownstones.
     let stoneIds = Object.keys(directTargets);
     stoneIds.forEach((stoneId) => {
-      LOG.info("BatchCommandHandler: directCommands for sphere:", directTargets[stoneId], " stone:", stoneId, this.activePromiseId);
+      LOGi.bch("BatchCommandHandler: directCommands for sphere:", directTargets[stoneId], " stone:", stoneId, this.activePromiseId);
       topicsToScan.push({ sphereId: directTargets[stoneId], topic: Util.events.getCrownstoneTopic(directTargets[stoneId], stoneId) });
     });
     return topicsToScan;
@@ -247,7 +247,7 @@ class BatchCommandHandlerClass {
         if (actionPromise !== null) {
           // clean up by resolving the promises of the items contained in the mesh messages.
           promise = actionPromise.then((data) => {
-            LOGi.info("BatchCommandHandler:", actionPromiseName, "finalized successfully.");
+            LOGi.bch("BatchCommandHandler:", actionPromiseName, "finalized successfully.");
             performedAction.promise.resolve(data);
             performedAction.cleanup();
           })
@@ -294,10 +294,10 @@ class BatchCommandHandlerClass {
       let foundSphereId = directTargets[nearestDirect];
 
       if (nearestDirect) {
-        LOGi.info("BatchCommandHandler: Found stone to directly connect to:", nearestDirect);
+        LOGi.bch("BatchCommandHandler: Found stone to directly connect to:", nearestDirect);
       }
       else {
-        LOGi.info("BatchCommandHandler: No relevant stones found in the scan history for the last few seconds");
+        LOGi.bch("BatchCommandHandler: No relevant stones found in the scan history for the last few seconds");
       }
 
       if (foundId) {
@@ -341,7 +341,7 @@ class BatchCommandHandlerClass {
         // Use the attempt handler to clean up after something fails.
         this.attemptHandler(null, executionTimestamp,'Nothing to scan');
 
-        LOG.info("BatchCommandHandler: No topics to scan during BatchCommandHandler execution", this.activePromiseId);
+        LOGi.bch("BatchCommandHandler: No topics to scan during BatchCommandHandler execution", this.activePromiseId);
         resolve();
 
         // abort the rest of the method.
@@ -398,7 +398,7 @@ class BatchCommandHandlerClass {
         })
         .catch((err) => {
           // this fallback catches errors in the attemptHandler.
-          LOG.error("BatchCommandHandler: FATAL ERROR DURING EXECUTE", err, this.activePromiseId);
+          LOGe.bch("BatchCommandHandler: FATAL ERROR DURING EXECUTE", err, this.activePromiseId);
           reject(err);
         })
     })
@@ -406,10 +406,10 @@ class BatchCommandHandlerClass {
 
   _connectAndHandleCommands(crownstoneToHandle : connectionInfo, highPriorityActive) {
     return new Promise((resolve, reject) => {
-      LOG.info("BatchCommandHandler: connecting to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
+      LOGi.bch("BatchCommandHandler: connecting to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
       BluenetPromiseWrapper.connect(crownstoneToHandle.handle, highPriorityActive)
         .then(() => {
-          LOG.info("BatchCommandHandler: Connected to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
+          LOGi.bch("BatchCommandHandler: Connected to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
           return this._handleAllCommandsForStone(crownstoneToHandle);
         })
         .then((optionsOfPerformedActions : batchCommandEntryOptions) => {
@@ -430,15 +430,15 @@ class BatchCommandHandlerClass {
                   this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
                 })
                 .catch((err) => {
-                  LOG.warn("BatchCommandHandler: Could not set the time of Crownstone", err);
+                  LOGw.bch("BatchCommandHandler: Could not set the time of Crownstone", err);
                 });
             }
             else {
-              LOGd.info("BatchCommandHandler: Decided not to set the time because delta time:", new Date().valueOf() - lastTime, ' ms.');
+              LOGd.bch("BatchCommandHandler: Decided not to set the time because delta time:", new Date().valueOf() - lastTime, ' ms.');
             }
           }
           else {
-            LOGd.info("BatchCommandHandler: Decided not to set the time Permissions.setStoneTime:", Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime, Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store);
+            LOGd.bch("BatchCommandHandler: Decided not to set the time Permissions.setStoneTime:", Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime, Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store);
           }
         })
         .then(() => {
@@ -587,10 +587,10 @@ class BatchCommandHandlerClass {
       return;
     }
 
-    LOG.info("BatchCommandHandler: Scheduling command in promiseManager");
+    LOGi.bch("BatchCommandHandler: Scheduling command in promiseManager");
     let actionPromise = () => {
       this.activePromiseId = Util.getUUID();
-      LOG.info("BatchCommandHandler: Executing!", this.activePromiseId);
+      LOGi.bch("BatchCommandHandler: Executing!", this.activePromiseId);
       return this._searchAndHandleCommands();
     };
 
@@ -602,7 +602,7 @@ class BatchCommandHandlerClass {
     promiseRegistration(actionPromise, {from: 'BatchCommandHandler: executing.'})
       .catch((err) => {
         // disable execution stop the error propagation since this is not returned anywhere.
-        LOG.error("BatchCommandHandler: Error completing promise.", err, this.activePromiseId);
+        LOGe.bch("BatchCommandHandler: Error completing promise.", err, this.activePromiseId);
       });
   }
 
@@ -632,7 +632,7 @@ class BatchCommandHandlerClass {
         // remove the listeners
         cleanup();
 
-        LOG.info("BatchCommandHandler: None of the required stones found before timeout.");
+        LOGi.bch("BatchCommandHandler: None of the required stones found before timeout.");
         reject("None of the required stones found before timeout.");
       }, timeout, 'Looking for target...');
 
@@ -640,7 +640,7 @@ class BatchCommandHandlerClass {
       // if we're busy with a low priority command, we will stop the search if a high priority execute comes in.
       if (highPriorityActive !== true) {
         unsubscribeListeners.push(eventBus.on('PriorityCommandSubmitted', () => {
-          LOG.info("BatchCommandHandler: Stopped listening for Crownstones due to Priority Execute.");
+          LOGi.bch("BatchCommandHandler: Stopped listening for Crownstones due to Priority Execute.");
           // remove the listeners
           cleanup();
 
@@ -656,7 +656,7 @@ class BatchCommandHandlerClass {
       objectsToScan.forEach((topic) => {
         // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
         unsubscribeListeners.push( eventBus.on(topic.topic, (data) => {
-          LOGd.info("BatchCommandHandler: Got an event:", data);
+          LOGd.bch("BatchCommandHandler: Got an event:", data);
           if (rssiThreshold === null || data.rssi > rssiThreshold) {
             // remove the listeners
             cleanup();

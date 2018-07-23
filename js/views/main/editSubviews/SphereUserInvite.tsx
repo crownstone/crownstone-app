@@ -14,7 +14,7 @@ import { ListEditableItems } from '../../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
 import {colors, OrangeLine} from '../../styles';
 import { CLOUD } from '../../../cloud/cloudAPI'
-import { LOG } from '../../../logging/Log'
+import {LOG, LOGe} from '../../../logging/Log'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../../util/Back";
 
@@ -133,7 +133,7 @@ export class SphereUserInvite extends Component<any, any> {
       })
       .catch((err) => {
         this.props.eventBus.emit('hideLoading');
-        LOG.error("Error when inviting using:",err);
+        LOGe.info("Error when inviting using:",err);
         Alert.alert("Could not send invite..","Please try again later.", [{text:'OK'}])
       })
   }

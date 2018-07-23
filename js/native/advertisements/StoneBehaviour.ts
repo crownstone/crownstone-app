@@ -1,5 +1,5 @@
 import { Alert }                    from "react-native"
-import { LOG, LOGd }                from "../../logging/Log";
+import {LOG, LOGd, LOGw} from "../../logging/Log";
 import { eventBus }                 from "../../util/EventBus";
 import { FirmwareHandler }          from "../firmware/FirmwareHandler";
 import { BEHAVIOUR_TYPES }          from "../../router/store/reducers/stones";
@@ -53,7 +53,7 @@ export class StoneBehaviour {
       this.temporaryIgnore = true;
       this.temporaryIgnoreTimeout = setTimeout(() => {
         if (this.temporaryIgnore === true) {
-          LOG.warn("temporary ignore of triggers has been on for more than 30 seconds!!");
+          LOGw.info("temporary ignore of triggers has been on for more than 30 seconds!!");
         }
       }, 30000 );
     }));

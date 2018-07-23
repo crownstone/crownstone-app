@@ -117,6 +117,8 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "md-add",
       "md-add-circle",
       "md-arrow-back",
+      "md-arrow-round-down",
+      "md-arrow-down",
       "md-book",
       "md-bulb",
       "md-checkmark",

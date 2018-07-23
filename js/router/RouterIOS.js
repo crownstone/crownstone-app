@@ -24,6 +24,7 @@ import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
 import { LibMessages }               from "../views/overlays/LibMessages";
+import {SettingsLogging} from "../views/settingsViews/dev/SettingsLogging";
 
 
 export class Router_IOS extends Component {
@@ -48,8 +49,8 @@ export class Router_IOS extends Component {
             <Tabs key="tabBar" showLabel={false} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} backToInitial={true} initial={this.props.loggedIn}>
               <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                 <Scene key="sphereOverview"             component={Views.SphereOverview}             />
+                <Scene key="deviceOverview"             component={Views.DeviceOverview}        sphereId={"165796f4-3dfe-4447-5cb8-aad82b29de68"} stoneId={"d27ff2d2-27cd-d1ed-1ff4-6d0f24bca6b"} />
                 <Scene key="roomOverview"               component={Views.RoomOverview}               />
-                <Scene key="deviceOverview"             component={Views.DeviceOverview}             />
               </Scene>
               <Scene key="messages"  tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
                 <Scene key="messageInbox"               component={Views.MessageInbox}    />
@@ -62,6 +63,7 @@ export class Router_IOS extends Component {
                 <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      />
                 <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
                 <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}      />
+                <Scene key="settingsLogging"            component={Views.SettingsLogging}           />
                 <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
                 <Scene key="settingsMeshDebug"          component={Views.SettingsMeshDebug}         />
                 <Scene key="settingsLocalizationDebug"  component={Views.SettingsLocalizationDebug} />
@@ -109,7 +111,7 @@ export class Router_IOS extends Component {
             <Scene key="settingsPluginRecoverStep1"     component={Views.SettingsPluginRecoverStep1} />
             <Scene key="settingsPluginRecoverStep2"     component={Views.SettingsPluginRecoverStep2} />
 
-            <Scene key="iconDebug"     chunks={1}       component={Views.IconDebug}  initial={false} />
+            {/*<Scene key="iconDebug"     chunks={1}       component={Views.IconDebug}  initial={true} />*/}
           </Modal>
         </Router>
 

@@ -1,5 +1,5 @@
 import { CLOUD }        from "../cloudAPI";
-import { LOG }          from "../../logging/Log";
+import {LOG, LOGe} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
@@ -58,7 +58,7 @@ export const transferStones = {
         actions.push({type: 'UPDATE_STONE_CLOUD_ID', sphereId: data.localSphereId, stoneId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
-        LOG.error("Transfer-Stone: Could not create stone in cloud", err);
+        LOGe.cloud("Transfer-Stone: Could not create stone in cloud", err);
         throw err;
       });
   },
@@ -81,7 +81,7 @@ export const transferStones = {
         // TODO: update location as well.
       })
       .catch((err) => {
-        LOG.error("Transfer-Stone: Could not update stone in cloud", err);
+        LOGe.cloud("Transfer-Stone: Could not update stone in cloud", err);
         throw err;
       });
   },

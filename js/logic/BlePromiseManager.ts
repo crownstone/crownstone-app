@@ -1,4 +1,4 @@
-import { LOG }                   from '../logging/Log'
+import {LOG, LOGe} from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { PROMISE_MANAGER_FALLBACK_TIMEOUT } from "../ExternalConfig";
 import { eventBus } from "../util/EventBus";
@@ -52,7 +52,7 @@ class BlePromiseManagerClass {
     // This timeout is a fallback to ensure the promise manager will not get jammed with a single promise.
     // It guarantees uniqueness
     this.clearPendingPromiseTimeout = Scheduler.scheduleCallback(() => {
-      LOG.error('BlePromiseManager: Forced timeout after', PROMISE_MANAGER_FALLBACK_TIMEOUT*0.001 , 'seconds for', promiseContainer.message);
+      LOGe.info('BlePromiseManager: Forced timeout after', PROMISE_MANAGER_FALLBACK_TIMEOUT*0.001 , 'seconds for', promiseContainer.message);
       this.clearPendingPromiseTimeout = null;
       this.finalize(promiseContainer, () => {
         promiseContainer.reject('Forced timeout after ' + PROMISE_MANAGER_FALLBACK_TIMEOUT*0.001 + ' seconds.');

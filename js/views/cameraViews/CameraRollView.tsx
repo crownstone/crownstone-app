@@ -13,7 +13,7 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 import {styles, OrangeLine} from '../styles'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 import {BackAction} from "../../util/Back";
 
 export class CameraRollView extends Component<any, any> {
@@ -76,7 +76,7 @@ export class CameraRollView extends Component<any, any> {
           );
         }
         else {
-          LOG.error(err.message, err)
+          LOGe.info(err.message, err)
         }
       });
     }

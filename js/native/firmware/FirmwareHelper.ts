@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper}  from '../libInterface/BluenetPromise';
 import { NativeBus }             from '../libInterface/NativeBus';
-import {LOG, LOGi} from '../../logging/Log'
+import {LOG, LOGd, LOGe, LOGi, LOGv} from '../../logging/Log'
 import { Util }                  from '../../util/Util'
 import { SetupStateHandler } from "../setup/SetupStateHandler";
 import { eventBus } from "../../util/EventBus";
@@ -141,7 +141,7 @@ export class FirmwareHelper {
         .then(() => { return delay(3000); })
         .then(() => { resolve(); })
         .catch((err) => {
-          LOG.error("FirmwareHelper: Error during putInDFU.", err);
+          LOGe.info("FirmwareHelper: Error during putInDFU.", err);
           BluenetPromiseWrapper.phoneDisconnect().catch(() => {});
           reject(err);
         })
@@ -166,7 +166,7 @@ export class FirmwareHelper {
             resolve(this.stoneBootloaderVersion);
           })
           .catch((err) => {
-            LOG.error("FirmwareHelper: Error during getBootloaderVersion.", err);
+            LOGe.info("FirmwareHelper: Error during getBootloaderVersion.", err);
             BluenetPromiseWrapper.phoneDisconnect().catch(() => {});
             reject(err);
           })
@@ -185,11 +185,11 @@ export class FirmwareHelper {
     }
 
     this.eventSubscriptions.push(NativeBus.on(NativeBus.topics.dfuProgress, (data) => {
-      LOG.verbose("FirmwareHelper: DFU event:", data);
+      LOGd.info("FirmwareHelper: DFU event:", data);
       eventBus.emit("updateDfuProgress", (data.progress*0.01));
     }));
     this.eventSubscriptions.push(NativeBus.on(NativeBus.topics.setupProgress, (progress) => {
-      LOG.verbose("FirmwareHelper: Setup event:", progress);
+      LOGd.info("FirmwareHelper: Setup event:", progress);
       eventBus.emit("updateDfuProgress", (progress/13));
     }));
 
@@ -273,7 +273,7 @@ export class FirmwareHelper {
 
       if (crownstoneMode.dfuMode === true) {
         return new Promise((resolve, reject) => {
-          LOG.error("FirmwareHelper: Cannot perform factory reset in DFU mode!");
+          LOGe.info("FirmwareHelper: Cannot perform factory reset in DFU mode!");
           reject("Cannot perform factory reset in DFU mode!");
         });
       }
@@ -317,7 +317,7 @@ export class FirmwareHelper {
   _setup(crownstoneMode: crownstoneModes) {
     if (crownstoneMode.dfuMode === true) {
       return new Promise((resolve, reject) => {
-        LOG.error("FirmwareHelper: Cannot perform setup in DFU mode!");
+        LOGe.info("FirmwareHelper: Cannot perform setup in DFU mode!");
         reject("Cannot perform setup in DFU mode!");
       });
     }

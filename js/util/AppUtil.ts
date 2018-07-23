@@ -3,7 +3,7 @@ import { StoreManager }          from '../router/store/storeManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise'
 import { Bluenet }               from '../native/libInterface/Bluenet';
 import { eventBus }              from './EventBus';
-import { LOG }                   from "../logging/Log";
+import {LOG, LOGe} from "../logging/Log";
 import { Actions } from "react-native-router-flux";
 import {NativeBus} from "../native/libInterface/NativeBus";
 import {CLOUD} from "../cloud/cloudAPI";
@@ -79,7 +79,7 @@ export const AppUtil = {
         gracefulExit();
       })
       .catch((err) => {
-        LOG.error("Could not log user out!", err);
+        LOGe.info("Could not log user out!", err);
         gracefulExit();
       });
   },

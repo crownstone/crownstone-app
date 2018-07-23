@@ -384,6 +384,8 @@ const ioniconCorrectionsIOS = {
   'md-switch':                     {change: true, top: +0.045, left: +0.000},
   'md-add':                        {change: true, top: +0.040, left: +0.000},
   'md-add-circle':                 {change: true, top: +0.045, left: +0.000},
+  'md-arrow-round-down':           {change: true, top: +0.040, left: +0.000},
+  'md-arrow-down':                 {change: true, top: +0.045, left: +0.000},
   'md-arrow-back':                 {change: true, top: +0.045, left: +0.000},
   'md-book':                       {change: true, top: +0.080, left: +0.000},
   'md-bulb':                       {change: true, top: +0.035, left: +0.000},

@@ -1,5 +1,5 @@
 import { BatchCommandHandler } from '../logic/BatchCommandHandler'
-import { LOG }                 from "../logging/Log";
+import {LOG, LOGe} from "../logging/Log";
 import { eventBus }            from "../util/EventBus";
 import { Util } from "../util/Util";
 
@@ -24,7 +24,7 @@ class FirmwareWatcherClass {
 
     let state = this.store.getState();
     if (!state.spheres[sphereId]) {
-      LOG.error("FirmwareWatcher: Can not find this Sphere in the state.", sphereId);
+      LOGe.info("FirmwareWatcher: Can not find this Sphere in the state.", sphereId);
       return;
     }
 
@@ -50,7 +50,7 @@ class FirmwareWatcherClass {
               }
             });
           })
-          .catch((err) => { LOG.error("FirmwareWatcher: Failed to get firmware version from stone.", err)});
+          .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
         BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'}, {},100, 'from checkFirmware in Firmware Watcher')
           .then((hardwareVersion) => {
             this.store.dispatch({
@@ -62,7 +62,7 @@ class FirmwareWatcherClass {
               }
             });
           })
-          .catch((err) => { LOG.error("FirmwareWatcher: Failed to get hardware version from stone.", err)});
+          .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err)});
         loadedCommands = true;
       }
     });

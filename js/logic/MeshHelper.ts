@@ -1,5 +1,5 @@
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
-import {LOG, LOGi} from '../logging/Log'
+import {LOG, LOGe, LOGi, LOGw} from '../logging/Log'
 import { eventBus }              from "../util/EventBus";
 import { conditionMap }          from "../native/advertisements/StoneEntity";
 import {Util} from "../util/Util";
@@ -79,7 +79,7 @@ export class MeshHelper {
           this._containedInstructions.push(instruction);
         }
         else {
-          LOG.error("MeshHelper: Invalid multiSwitchPackets instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
+          LOGe.mesh("MeshHelper: Invalid multiSwitchPackets instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
         }
       };
 
@@ -131,7 +131,7 @@ export class MeshHelper {
           this._containedInstructions.push(instruction);
         }
         else {
-          LOG.error("MeshHelper: Invalid keepAlive instruction, required crownstoneId, timeout, state, changeState. Got:", instruction);
+          LOGe.mesh("MeshHelper: Invalid keepAlive instruction, required crownstoneId, timeout, state, changeState. Got:", instruction);
         }
       });
 
@@ -195,7 +195,7 @@ export class MeshHelper {
 
 
   _handleOtherCommands() {
-    LOG.warn("Other commands are not implemented in the mesh yet.");
+    LOGw.mesh("Other commands are not implemented in the mesh yet.");
     return null
   }
 

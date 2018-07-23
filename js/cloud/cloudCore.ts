@@ -97,7 +97,7 @@ export function request(
         })
         .catch((parseError) => {
           // TODO: cleanly fix this
-          // LOG.error("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
+          // LOGe.cloud("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
           return '';
         })
         .then((parsedResponse) => {

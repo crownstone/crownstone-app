@@ -1,5 +1,5 @@
 import { CLOUD } from "../cloudAPI";
-import { LOG }   from "../../logging/Log";
+import {LOG, LOGe} from "../../logging/Log";
 
 
 import { transferUtil } from "./shared/transferUtil";
@@ -55,7 +55,7 @@ export const transferUser = {
     CLOUD.forUser(data.cloudId).updateUserData(payload)
       .then(() => { })
       .catch((err) => {
-        LOG.error("Transfer-User: Could not update user in cloud", err);
+        LOGe.cloud("Transfer-User: Could not update user in cloud", err);
         throw err;
       });
   },

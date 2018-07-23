@@ -4,7 +4,7 @@ import { BleUtil }            from '../../util/BleUtil';
 import { STONE_TYPES }         from '../../router/store/reducers/stones'
 import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
-import {LOG, LOGd} from '../../logging/Log';
+import {LOG, LOGd, LOGe} from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
 import { DfuStateHandler }    from "../firmware/DfuStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
@@ -167,7 +167,7 @@ class SetupStateHandlerClass {
     else if (advertisement.serviceData.deviceType == 'crownstoneUSB')
       return {name: 'Crownstone USB',     icon: 'c1-router',        type:STONE_TYPES.crownstoneUSB, handle: advertisement.handle};
     else {
-      LOG.error("UNKNOWN DEVICE in setup procedure", advertisement);
+      LOGe.info("UNKNOWN DEVICE in setup procedure", advertisement);
     }
   }
   

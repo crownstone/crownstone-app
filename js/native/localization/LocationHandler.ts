@@ -6,7 +6,7 @@ import { Bluenet  }                 from '../libInterface/Bluenet';
 import { BehaviourUtil }            from '../../util/BehaviourUtil';
 import { KeepAliveHandler }         from '../../backgroundProcesses/KeepAliveHandler';
 import { Scheduler }                from '../../logic/Scheduler';
-import { LOG }                      from '../../logging/Log';
+import {LOG, LOGe} from '../../logging/Log';
 import { Util }                     from '../../util/Util';
 import { BEHAVIOUR_TYPES }          from '../../router/store/reducers/stones';
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
@@ -68,7 +68,7 @@ class LocationHandlerClass {
 
         LOG.info("Set Settings.", bluenetSettings);
         BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
-          LOG.error("LocationHandler: Could not set Settings!", err);
+          LOGe.info("LocationHandler: Could not set Settings!", err);
           Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
         });
       })
@@ -81,7 +81,7 @@ class LocationHandlerClass {
     let sphere = state.spheres[enteringSphereId];
 
     if (!sphere) {
-      LOG.error('LocationHandler: Received enter sphere for a sphere that we shouldn\'t be tracking...');
+      LOGe.info('LocationHandler: Received enter sphere for a sphere that we shouldn\'t be tracking...');
       return;
     }
 
@@ -116,7 +116,7 @@ class LocationHandlerClass {
 
     LOG.info("Set Settings.", bluenetSettings);
     BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
-      LOG.error("LocationHandler: Could not set Settings!", err);
+      LOGe.info("LocationHandler: Could not set Settings!", err);
       Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
     });
 
@@ -146,7 +146,7 @@ class LocationHandlerClass {
 
       BluenetPromiseWrapper.requestLocation()
         .catch((err) => {
-          LOG.error('LocationHandler: Could not get GPS Location when entering a sphere: ', err);
+          LOGe.info('LocationHandler: Could not get GPS Location when entering a sphere: ', err);
         })
         .then((location) => {
           if (location && location.latitude && location.longitude) {

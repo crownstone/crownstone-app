@@ -49,7 +49,7 @@ export class CommandManager {
     let uuids = Object.keys(this.commands);
 
     let clean = (todo) => {
-      LOGd.info("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
+      LOGd.bch("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
       todo.promise.reject("Removed because of duplicate");
       todo.cleanup();
     };
@@ -69,7 +69,7 @@ export class CommandManager {
           clean(todo);
         }
         else {
-          LOGd.info("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
+          LOGd.bch("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
         }
       }
     }
@@ -146,7 +146,7 @@ export class CommandManager {
         meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
         break;
       default:
-        LOGe.info("CommandManager: Invalid command received. This should not happen!");
+        LOGe.bch("CommandManager: Invalid command received. This should not happen!");
     }
   }
 

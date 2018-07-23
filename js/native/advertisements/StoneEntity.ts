@@ -185,7 +185,7 @@ export class StoneEntity {
     // fallback to ensure we never miss an enter event caused by a bug in ios 10
     if (FALLBACKS_ENABLED) {
       if (state.spheres[this.sphereId].state.present === false) {
-        LOG.warn("FALLBACK: StoneEntity: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
+        LOGw.info("FALLBACK: StoneEntity: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
         LocationHandler.enterSphere(this.sphereId);
       }
     }

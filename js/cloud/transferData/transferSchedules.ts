@@ -1,5 +1,5 @@
 import { CLOUD }        from "../cloudAPI";
-import {LOG, LOGw} from "../../logging/Log";
+import {LOG, LOGe, LOGw} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 
 
@@ -84,12 +84,12 @@ export const transferSchedules = {
               }
             })
             .catch((err) => {
-              LOG.error("Transfer-Schedule: Could not create/update schedule in cloud", err);
+              LOGe.cloud("Transfer-Schedule: Could not create/update schedule in cloud", err);
               throw err;
             })
         }
         else {
-          LOG.error("Transfer-Schedule: Could not create schedule in cloud", err);
+          LOGe.cloud("Transfer-Schedule: Could not create schedule in cloud", err);
           throw err;
         }
       })
@@ -106,7 +106,7 @@ export const transferSchedules = {
     return CLOUD.forStone(data.cloudStoneId).updateSchedule(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
-        LOG.error("Transfer-Schedule: Could not update schedule in cloud", err);
+        LOGe.cloud("Transfer-Schedule: Could not update schedule in cloud", err);
         throw err;
       });
   },

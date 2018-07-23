@@ -269,6 +269,9 @@ export class DeviceOverview extends Component<any, any> {
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId, eventBus: this.props.eventBus};
 
 
+    if (hasActivityLog) {
+      content.push(<DeviceActivityLog key={'activityLogSlide'} {...props} />);
+    }
 
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
@@ -310,9 +313,6 @@ export class DeviceOverview extends Component<any, any> {
       content.push(<DeviceSchedule key={'scheduleSlide'} {...props} />);
     }
 
-    if (hasActivityLog) {
-      content.push(<DeviceActivityLog key={'activityLogSlide'} {...props} />);
-    }
 
     if (hasPowerMonitor) {
       content.push(<DevicePowerCurve key={'powerSlide'} {...props} />);

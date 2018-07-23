@@ -68,32 +68,33 @@ export class Router_Android extends Component {
               drawerWidth={0.75*screenWidth}
               initial={this.props.loggedIn}
             >
-              <Scene key="sphereOverview"           component={Views.SphereOverview}             />
+              <Scene key="sphereOverview"           component={Views.SphereOverview}               />
             </Drawer>
-            <Scene key="addItemsToSphere"            component={Views.AddItemsToSphere}           />
-            <Scene key="roomOverview"                component={Views.RoomOverview}               />
-            <Scene key="roomEdit"                    component={Views.RoomEdit}                   />
-            <Scene key="roomAdd"                     component={Views.RoomAdd}                    />
-            <Scene key="deviceEdit"                  component={Views.DeviceEdit}                 />
-            <Scene key="deviceOverview"              component={Views.DeviceOverview}             />
-            <Scene key="deviceScheduleEdit"          component={Views.DeviceScheduleEdit}         />
-            <Scene key="applianceAdd"                component={Views.ApplianceAdd}               />
-            <Scene key="applianceSelection"          component={Views.ApplianceSelection}         />
-            <Scene key="deviceBehaviourEdit"         component={Views.DeviceBehaviourEdit}        />
-            <Scene key="settingsApp"                 component={Views.SettingsApp}                />
-            <Scene key="settingsFAQ"                 component={Views.SettingsFAQ}                />
-            <Scene key="settingsOverview"            component={Views.SettingsOverview}           />
-            <Scene key="settingsProfile"             component={Views.SettingsProfile}            />
-            <Scene key="settingsDeveloper"           component={Views.SettingsDeveloper}          />
-            <Scene key="settingsBleDebug"            component={Views.SettingsBleDebug}           />
-            <Scene key="settingsStoneBleDebug"       component={Views.SettingsStoneBleDebug}      />
-            <Scene key="settingsMeshOverview"        component={Views.SettingsMeshOverview}       />
-            <Scene key="settingsMeshTopology"        component={Views.SettingsMeshTopology}       />
-            <Scene key="settingsMeshTopologyHelp"    component={Views.SettingsMeshTopologyHelp}   />
-            <Scene key="settingsMeshDebug"           component={Views.SettingsMeshDebug}          />
-            <Scene key="settingsRedownloadFromCloud" component={Views.SettingsRedownloadFromCloud}/>
-            <Scene key="settingsPrivacy"             component={Views.SettingsPrivacy}            />
-            <Scene key="switchCraftInformation"      component={Views.SwitchCraftInformation}     />
+            <Scene key="addItemsToSphere"            component={Views.AddItemsToSphere}            />
+            <Scene key="roomOverview"                component={Views.RoomOverview}                />
+            <Scene key="roomEdit"                    component={Views.RoomEdit}                    />
+            <Scene key="roomAdd"                     component={Views.RoomAdd}                     />
+            <Scene key="deviceEdit"                  component={Views.DeviceEdit}                  />
+            <Scene key="deviceOverview"              component={Views.DeviceOverview}              />
+            <Scene key="deviceScheduleEdit"          component={Views.DeviceScheduleEdit}          />
+            <Scene key="applianceAdd"                component={Views.ApplianceAdd}                />
+            <Scene key="applianceSelection"          component={Views.ApplianceSelection}          />
+            <Scene key="deviceBehaviourEdit"         component={Views.DeviceBehaviourEdit}         />
+            <Scene key="settingsApp"                 component={Views.SettingsApp}                 />
+            <Scene key="settingsFAQ"                 component={Views.SettingsFAQ}                 />
+            <Scene key="settingsOverview"            component={Views.SettingsOverview}            />
+            <Scene key="settingsProfile"             component={Views.SettingsProfile}             />
+            <Scene key="settingsDeveloper"           component={Views.SettingsDeveloper}           />
+            <Scene key="settingsBleDebug"            component={Views.SettingsBleDebug}            />
+            <Scene key="settingsLogging"             component={Views.SettingsLogging}             />
+            <Scene key="settingsStoneBleDebug"       component={Views.SettingsStoneBleDebug}       />
+            <Scene key="settingsMeshOverview"        component={Views.SettingsMeshOverview}        />
+            <Scene key="settingsMeshTopology"        component={Views.SettingsMeshTopology}        />
+            <Scene key="settingsMeshTopologyHelp"    component={Views.SettingsMeshTopologyHelp}    />
+            <Scene key="settingsMeshDebug"           component={Views.SettingsMeshDebug}           />
+            <Scene key="settingsRedownloadFromCloud" component={Views.SettingsRedownloadFromCloud} />
+            <Scene key="settingsPrivacy"             component={Views.SettingsPrivacy}             />
+            <Scene key="switchCraftInformation"      component={Views.SwitchCraftInformation}      />
 
             <Scene key="settingsLocalizationDebug"   component={Views.SettingsLocalizationDebug} />
 

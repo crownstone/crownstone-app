@@ -1,7 +1,7 @@
 import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 const PushNotification = require('react-native-push-notification');
 import { Platform } from 'react-native';
-import { LOG } from "../logging/Log";
+import {LOG, LOGe, LOGi, LOGw} from "../logging/Log";
 import { Util } from "../util/Util";
 import { CLOUD } from "../cloud/cloudAPI";
 import { INTENTS } from "../native/libInterface/Constants";
@@ -27,7 +27,7 @@ class NotificationHandlerClass {
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
-      LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
+      LOG.notifications("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
   }
@@ -37,13 +37,13 @@ class NotificationHandlerClass {
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
-      LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
+      LOG.notifications("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
   }
 
   configure() {
-    LOG.info("NotificationHandler: Configuring Push");
+    LOG.notifications("NotificationHandler: Configuring Push");
     PushNotification.configure({
 
       // (optional) Called when Token is generated (iOS and Android)
@@ -55,19 +55,19 @@ class NotificationHandlerClass {
             notificationToken: tokenData.token
           }
         });
-        LOG.info("NotificationHandler: Got notification token!", tokenData, tokenData.token);
+        LOG.notifications("NotificationHandler: Got notification token!", tokenData, tokenData.token);
 
         let state = this.store.getState();
         let deviceId = Util.data.getCurrentDeviceId(state);
-        if (!deviceId) { return LOG.error("NotificationHandler: NO DEVICE CONFIGURED"); }
+        if (!deviceId) { return LOGe.notifications("NotificationHandler: NO DEVICE CONFIGURED"); }
 
         let installationId = state.devices[deviceId].installationId;
 
         if (!installationId || !state.installations[installationId]) {
-          LOG.warn("NotificationHandler: No Installation found.");
+          LOGw.notifications("NotificationHandler: No Installation found.");
           CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS })
             .then((installation) => {
-              LOG.info("NotificationHandler: Creating new installation and connecting it to the device.");
+              LOG.notifications("NotificationHandler: Creating new installation and connecting it to the device.");
               let actions = [];
               actions.push({
                 type: 'ADD_INSTALLATION',
@@ -82,7 +82,7 @@ class NotificationHandlerClass {
               this.store.batchDispatch(actions);
             })
             .catch((err) => {
-              LOG.error("NotificationHandler: Error during creation of Installation", err);
+              LOGe.notifications("NotificationHandler: Error during creation of Installation", err);
             });
         }
         else {
@@ -101,7 +101,7 @@ class NotificationHandlerClass {
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
-        LOG.info("NotificationHandler: Received notification", notification);
+        LOG.notifications("NotificationHandler: Received notification", notification);
         if (Platform.OS === 'android') {
           NotificationParser.handle(notification)
         }
@@ -114,7 +114,7 @@ class NotificationHandlerClass {
       senderID: "922370214953",
 
       onRemoteFetch: (x) => {
-        LOG.info("NotificationHandler: onRemoteFetch",x)
+        LOG.notifications("NotificationHandler: onRemoteFetch",x)
       },
 
       // IOS ONLY (optional): default: all - Permissions to register.
@@ -139,12 +139,12 @@ class NotificationHandlerClass {
 
   request() {
     if (this.requesting === false) {
-      LOG.info("NotificationHandler: Requesting push permissions");
+      LOGi.notifications("NotificationHandler: Requesting push permissions");
       this.requesting = true;
       PushNotification.requestPermissions();
     }
     else {
-      LOG.info("NotificationHandler: Push permissions request already pending.");
+      LOGi.notifications("NotificationHandler: Push permissions request already pending.");
     }
   }
 }
@@ -198,7 +198,7 @@ class NotificationParserClass {
                 MessageCenter.storeMessage(result);
               }
             })
-            .catch((err) => { LOG.error("NotificationParser: Couldn't get message to store", err)})
+            .catch((err) => { LOGe.notifications("NotificationParser: Couldn't get message to store", err)})
         }
         break;
       case "sphereUsersUpdated":
@@ -209,7 +209,7 @@ class NotificationParserClass {
       case "sphereUserRemoved":
         if (messageData.sphereId) {
           if (messageData.removedUserId === state.user.userId) {
-            CLOUD.sync(this.store).catch((err) => { LOG.error("Could not sync to remove user from sphere!", err); });
+            CLOUD.sync(this.store).catch((err) => { LOGe.notifications("Could not sync to remove user from sphere!", err); });
           }
           else {
             this._updateSphereUsers(messageData);
@@ -230,7 +230,7 @@ class NotificationParserClass {
             this.store.batchDispatch(actions);
           }
         })
-        .catch((err) => { LOG.error("NotifcationParser: Failed to update sphere users.", err); })
+        .catch((err) => { LOGe.notifications("NotifcationParser: Failed to update sphere users.", err); })
     }
   }
 
@@ -246,7 +246,7 @@ class NotificationParserClass {
 
 
     if (state && state.spheres[localSphereId] && state.spheres[localSphereId].stones[localStoneId]) {
-      LOG.info("NotificationParser: switching based on notification", messageData);
+      LOG.notifications("NotificationParser: switching based on notification", messageData);
       StoneUtil.switchBHC(
         localSphereId,
         localStoneId,
@@ -255,7 +255,7 @@ class NotificationParserClass {
         this.store,
         {},
         (err) => {},
-        INTENTS.remotely,
+        INTENTS.manual,
         25,
         'from handle in NotificationParser'
       );

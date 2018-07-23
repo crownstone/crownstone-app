@@ -1,5 +1,5 @@
 import {eventBus} from "../util/EventBus";
-import {LOG} from "../logging/Log";
+import {LOG, LOGe} from "../logging/Log";
 import {syncEvents} from "../cloud/sections/sync/syncEvents";
 
 class CloudEventHandlerClass {
@@ -48,7 +48,7 @@ class CloudEventHandlerClass {
           this._eventSyncInProgress = false;
         })
         .catch((err) => {
-          LOG.error("Failed Event Sync: ", err);
+          LOGe.cloud("Failed Event Sync: ", err);
           this._eventSyncInProgress = false;
         });
     }

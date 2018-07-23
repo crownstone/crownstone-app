@@ -23,7 +23,7 @@ import {ListEditableItems} from "../components/ListEditableItems";
 import {Util} from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {Scheduler} from "../../logic/Scheduler";
-import {LOG} from "../../logging/Log";
+import {LOG, LOGe} from "../../logging/Log";
 import {StoneUtil} from "../../util/StoneUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
@@ -34,6 +34,7 @@ import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 
 export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+export let DAYS_FULL = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
 export class DeviceScheduleEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -102,14 +103,14 @@ export class DeviceScheduleEdit extends Component<any, any> {
       this.props.navigation.setParams({rightAction: () => {
           this._handleTime()
             .then(() => {this._updateSchedule(); })
-            .catch((err) => { LOG.error("DeviceScheduleEdit: Could not get time.", err); })
+            .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
         }})
     }
     else {
       this.props.navigation.setParams({rightAction: () => {
           this._handleTime()
             .then(() => {this._createSchedule(); })
-            .catch((err) => { LOG.error("DeviceScheduleEdit: Could not get time.", err); })
+            .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
         }})
     }
   }
@@ -140,7 +141,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
               this.setState({time: timeToday.valueOf() });
             }
           })
-          .catch((err) => { LOG.error("DeviceScheduleEdit: Could not pick time for android.", err) })
+          .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not pick time for android.", err) })
       }}>
         <Text style={{flex:1, fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6) }}>
           {Util.getTimeFormat(this.state.time, false)}
@@ -379,7 +380,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
       }
     }
     else {
-      LOG.error("DeviceScheduleEdit: _updateSchedule should not be called without this.props.scheduleId");
+      LOGe.info("DeviceScheduleEdit: _updateSchedule should not be called without this.props.scheduleId");
       BackAction();
     }
   }

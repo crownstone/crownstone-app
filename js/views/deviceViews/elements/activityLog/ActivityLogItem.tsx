@@ -92,8 +92,6 @@ export class ActivityLogItem extends Component<any, any> {
           else {
             return 'md-eye-off';
           }
-        case INTENTS.remotely:
-          return 'md-cloud'
       }
     }
 
@@ -155,8 +153,6 @@ export class ActivityLogItem extends Component<any, any> {
           else {
             return timeIndicator + 'Moved away.';
           }
-        case INTENTS.remotely:
-          return timeIndicator + 'Remote switch.'
       }
     }
   }
@@ -165,6 +161,14 @@ export class ActivityLogItem extends Component<any, any> {
 
   _getText(canDoIndoorLocalization, roomConfig) {
     let targetState = (this.props.data.switchedToState === 0 ? 'off' : 'on');
+    let initialLabel = 'Switched ';
+    if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
+      targetState = Math.round((this.props.data.switchedToState/0.99)*100) + " %"
+      initialLabel = "Dimmed to ";
+    }
+    if (this.props.data.presumedDuplicate) {
+      initialLabel = "Already "
+    }
 
     if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState') {
       if (this.props.data.viaMesh) {
@@ -187,14 +191,7 @@ export class ActivityLogItem extends Component<any, any> {
       return this.props.data.count + ' heartbeats once every ' + this.props.data.averageTime + ' seconds.';
     }
     else if (this.props.data.type === 'schedule') {
-      let initialLabel = 'Switched ';
-      if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-        targetState = Math.round((this.props.data.switchedToState/0.99)*100) + " %"
-        initialLabel = "Dimmed to ";
-      }
-      if (this.props.data.presumedDuplicate) {
-        initialLabel = "Already "
-      }
+
 
       let scheduledEndLabel = " for a scheduled action.";
       if (this.props.data.label && this.props.data.label.length > 0) {
@@ -214,10 +211,10 @@ export class ActivityLogItem extends Component<any, any> {
           return 'Sphere heartbeat expired.';
         }
         else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-          return "Dimmed to " + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the Sphere.";
+          return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the Sphere.";
         }
         else {
-          return "Switched " + targetState + " because everyone left the Sphere.";
+          return initialLabel + targetState + " because everyone left the Sphere.";
         }
       }
       else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
@@ -225,10 +222,10 @@ export class ActivityLogItem extends Component<any, any> {
           return 'Sphere heartbeat expired.';
         }
         else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-          return "Dimmed to " + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the " + roomConfig.name + '.';
+          return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the " + roomConfig.name + '.';
         }
         else {
-          return "Switched " + targetState + " because everyone left the " + roomConfig.name + '.';
+          return initialLabel + targetState + " because everyone left the " + roomConfig.name + '.';
         }
       }
       else if (this.props.data.generatedFrom === 'keepAliveOther') {
@@ -236,10 +233,10 @@ export class ActivityLogItem extends Component<any, any> {
           return 'Sphere heartbeat expired.';
         }
         else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-          return "Dimmed to " + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone is away from this Crownstone.";
+          return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone is away from this Crownstone.";
         }
         else {
-          return "Switched " + targetState + " because everyone is away from this Crownstone.";
+          return initialLabel + targetState + " because everyone is away from this Crownstone.";
         }
       }
     }
@@ -294,8 +291,6 @@ export class ActivityLogItem extends Component<any, any> {
           else {
             return label + '.';
           }
-        case INTENTS.remotely:
-          return 'The Crownstone was switched by the cloud.'
       }
     }
   }

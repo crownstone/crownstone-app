@@ -1,6 +1,6 @@
 import { eventBus } from '../../util/EventBus'
 import { BATCH } from './storeManager'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGw} from '../../logging/Log'
 
 
 /**
@@ -317,7 +317,7 @@ function checkAction(action, affectedIds) {
     case "REMOVE_ACTIVITY_LOG":
       eventStatus['stoneChangeLogs'] = affectedIds; break;
     default:
-      LOG.warn("UNKNOWN ACTION TYPE:", action);
+      LOGw.store("UNKNOWN ACTION TYPE:", action);
   }
 
   eventStatus['totalAffectedIds'] = affectedIds;

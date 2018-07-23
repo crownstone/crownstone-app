@@ -26,7 +26,7 @@ import { BatchUploader }         from "./BatchUploader";
 import { MessageCenter }         from "./MessageCenter";
 import { CloudEventHandler }     from "./CloudEventHandler";
 import { Permissions }           from "./PermissionManager";
-import { LOG, LOGw }             from "../logging/Log";
+import {LOG, LOGe, LOGw} from "../logging/Log";
 import { LogProcessor }          from "../logging/LogProcessor";
 import { BleLogger }             from "../native/advertisements/BleLogger";
 import { StoneManager }          from "../native/advertisements/StoneManager";
@@ -155,7 +155,7 @@ class BackgroundProcessHandlerClass {
   setupLogging() {
     let state = this.store.getState();
     Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true) || LOG_TO_FILE === true);
-    if ((state.user.logging === true && state.user.developer === true && state.development.log_ble === true) || LOG_EXTENDED_TO_FILE === true) {
+    if ((state.user.logging === true && state.user.developer === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
       Bluenet.enableExtendedLogging(true);
     }
   }
@@ -184,7 +184,7 @@ class BackgroundProcessHandlerClass {
       if (SetupStateHandler.isSetupInProgress() === false) {
         if (state.user.userId) {
           LOG.info("BackgroundProcessHandler: STARTING ROUTINE SYNCING IN BACKGROUND");
-          CLOUD.sync(this.store, true).catch((err) => { LOG.error("Error during background sync: ", err)});
+          CLOUD.sync(this.store, true).catch((err) => { LOGe.cloud("Error during background sync: ", err)});
         }
       }
       else {
@@ -359,7 +359,7 @@ class BackgroundProcessHandlerClass {
       CLOUD.forUser(state.user.userId).getUserData()
         .catch((err) => {
           if (err.status === 401) {
-            LOG.warn("BackgroundProcessHandler: Could not verify user, attempting to login again.");
+            LOGw.info("BackgroundProcessHandler: Could not verify user, attempting to login again.");
             return CLOUD.login({
               email: state.user.email,
               password: state.user.passwordHash,

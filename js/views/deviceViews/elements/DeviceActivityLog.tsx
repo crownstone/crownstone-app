@@ -74,6 +74,7 @@ export class DeviceActivityLog extends Component<any, any> {
 
 
   render() {
+    console.log('sphereId={"'+this.props.sphereId+'"} stoneId={"'+ this.props.stoneId+ '"}')
     const store = this.props.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];

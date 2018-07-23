@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import { LOG }                                        from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 import { BlePromiseManager }                          from '../../logic/BlePromiseManager'
 import { addDistanceToRssi, Util }                    from '../../util/Util'
 import { OverlayBox }                                 from '../components/overlays/OverlayBox'
@@ -119,7 +119,7 @@ export class TapToToggleCalibration extends Component<any, any> {
         }
       })
       .catch((err) => {
-        LOG.error("TapToToggleCalibration error:", err);
+        LOGe.info("TapToToggleCalibration error:", err);
         eventBus.emit("hideLoading");
         Alert.alert("Something went wrong", "Maybe try again later.", [{text:'OK'}])
       })

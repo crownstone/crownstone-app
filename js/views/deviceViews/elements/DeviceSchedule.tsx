@@ -24,7 +24,7 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
 import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
-import {LOG} from "../../../logging/Log";
+import {LOG, LOGe} from "../../../logging/Log";
 import {eventBus} from "../../../util/EventBus";
 import {SchedulerEntry} from "../../components/SchedulerEntry";
 import {Scheduler} from "../../../logic/Scheduler";
@@ -178,7 +178,7 @@ export class DeviceSchedule extends Component<any, any> {
       })
       .catch((err) => {
         eventBus.emit("hideLoading");
-        LOG.error("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
+        LOGe.info("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
         Alert.alert(
           "Could not Sync",
           "Move closer to the Crownstone and try again!",

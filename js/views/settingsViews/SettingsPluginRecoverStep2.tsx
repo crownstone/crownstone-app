@@ -20,7 +20,7 @@ import {colors, screenWidth, screenHeight, OrangeLine} from './../styles'
 import { Util }                  from '../../util/Util'
 import { BleUtil }               from '../../util/BleUtil'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
-import { LOG }                   from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 import { BlePromiseManager }     from "../../logic/BlePromiseManager";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
@@ -223,7 +223,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
         )
       })
       .catch((err) => {
-        LOG.error("ERROR IN RECOVERY", err);
+        LOGe.info("ERROR IN RECOVERY", err);
         let defaultAction = () => { BackAction(); };
         if (err === "NOT_IN_RECOVERY_MODE") {
           Alert.alert("Not in recovery mode.",

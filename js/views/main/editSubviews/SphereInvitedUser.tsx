@@ -15,7 +15,7 @@ import { Background } from '../../components/Background'
 import { ProfilePicture } from '../../components/ProfilePicture'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { CLOUD } from '../../../cloud/cloudAPI'
-import { LOG } from '../../../logging/Log'
+import {LOG, LOGe} from '../../../logging/Log'
 import {colors, screenWidth, OrangeLine} from '../../styles'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../../util/Back";
@@ -62,7 +62,7 @@ export class SphereInvitedUser extends Component<any, any> {
               .catch((err) => {
                 this.props.eventBus.emit('hideLoading');
                 Alert.alert("Could not resend email..", "Please try again later.", [{text:"OK"}]);
-                LOG.error("Could not resend email", err);
+                LOGe.info("Could not resend email", err);
               })
         }}], { cancelable : false });
     }});
@@ -104,7 +104,7 @@ export class SphereInvitedUser extends Component<any, any> {
                     this.deleting = false;
                     this.props.eventBus.emit('hideLoading');
                     Alert.alert("Could not revoke invitation..", "Please try again later.", [{text: "OK"}]);
-                    LOG.error("Could not revoke invitation", err);
+                    LOGe.info("Could not revoke invitation", err);
                   })
               }
             }

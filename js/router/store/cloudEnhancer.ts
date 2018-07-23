@@ -381,7 +381,7 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 function handleDeviceInCloud(action, state) {
   let deviceId = action.deviceId;
   if (!deviceId) {
-    LOG.error("handleDeviceInCloud: invalid device id: ", deviceId);
+    LOGe.store("handleDeviceInCloud: invalid device id: ", deviceId);
     return;
   }  
   let deviceConfig = state.devices[deviceId];
@@ -411,7 +411,7 @@ function handleDeviceInCloud(action, state) {
 function handleInstallation(action, state) {
   let installationId = action.installationId;
   if (!installationId) {
-    LOG.error("handleDeviceInCloud: invalid installationId: ", installationId);
+    LOGe.store("handleDeviceInCloud: invalid installationId: ", installationId);
     return;
   }
   let installationConfig = state.installations[installationId];

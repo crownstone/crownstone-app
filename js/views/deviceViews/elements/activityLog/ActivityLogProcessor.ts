@@ -110,21 +110,17 @@ export class ActivityLogProcessor {
   }
 
   _addDateIndicators(logs) {
-    let hasDayBreak = false;
-
-    if (logs.length > 2) {
-      if (new Date(logs[0].timestamp).getDay() !== new Date(logs[logs.length - 1].timestamp).getDay()) {
-        hasDayBreak = true;
+    let additions = []
+    for (let i = 1; i < logs.length; i++) {
+      if (new Date(logs[i].timestamp).getDay() !== new Date(logs[i-1].timestamp).getDay()) {
+        additions.push({
+          timestamp: new Date(new Date(new Date(logs[i].timestamp).setHours(0)).setMinutes(0)).setSeconds(0),
+          type: 'dayIndicator',
+        })
       }
     }
 
-    if (hasDayBreak) {
-      logs.push({
-        timestamp: new Date(new Date(new Date(logs[logs.length - 1].timestamp).setHours(0)).setMinutes(0)).setSeconds(0),
-        type: 'dayIndicator',
-      })
-    }
-
+    logs = logs.concat(additions);
     return logs;
   }
 
@@ -225,7 +221,7 @@ export class ActivityLogProcessor {
     }
   }
 
-  _removePresumedDuplicates(logs) {
+  _markPresumedDuplicates(logs) {
     // hide the presumed duplicate actions.
     let presumedState = null;
     let result = [];
@@ -246,22 +242,29 @@ export class ActivityLogProcessor {
       let log = logs[i];
       if (log.type === 'multiswitch' && log.cancelled !== true) {
         if (log.delayInCommand === 0) {
-          if (log.intent !== INTENTS.manual && log.intent !== INTENTS.remotely) {
-            checkForDuplicate(log);
-          }
-          else {
-            presumedState = log.switchedToState;
-          }
+          // if (log.intent !== INTENTS.manual) {
+          //   checkForDuplicate(log);
+          // }
+          // else {
+          //   presumedState = log.switchedToState;
+          // }
+          presumedState = log.switchedToState;
         }
 
 
         if (log.presumedDuplicate !== true) {
           result.push(log)
         }
+        else {
+          result.push(log)
+        }
       }
       else if (log.type === 'generatedResponse') {
         checkForDuplicate(log);
         if (log.presumedDuplicate !== true) {
+          result.push(log);
+        }
+        else {
           result.push(log);
         }
       }
@@ -328,7 +331,7 @@ export class ActivityLogProcessor {
     // convert object to array.
     let logs = [];
     // dont show times older than 1.5 day
-    let earliestDateAllowed = new Date().valueOf() - 1.5*24*36000000;
+    let earliestDateAllowed = new Date().valueOf() - 10.5*24*3600000;
     let minAvailable = new Date().valueOf();
     let deleteActions = [];
     for ( let i = 0; i < logIds.length; i++ ) {
@@ -338,7 +341,7 @@ export class ActivityLogProcessor {
         logs.push({...log});
       }
       else {
-        deleteActions.push({type:"REMOVE_ACTIVITY_LOG", sphereId: sphereId, stoneId: stoneId, logId: logIds[i]})
+        // deleteActions.push({type:"REMOVE_ACTIVITY_LOG", sphereId: sphereId, stoneId: stoneId, logId: logIds[i]})
       }
     }
 
@@ -393,7 +396,7 @@ export class ActivityLogProcessor {
     logs = this._addEventsForExpiredMultiswitches(logs, keepAliveType);
 
     // hide the presumed duplicate actions.
-    logs = this._removePresumedDuplicates(logs);
+    logs = this._markPresumedDuplicates(logs);
 
     // collapse keepalive lists
     logs = this._collapseKeepAliveLists(logs);

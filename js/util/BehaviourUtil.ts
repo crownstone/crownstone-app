@@ -1,6 +1,6 @@
 import { BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/libInterface/Constants';
 import { BatchCommandHandler } from '../logic/BatchCommandHandler';
-import { LOG } from '../logging/Log';
+import {LOG, LOGe} from '../logging/Log';
 import { Util } from './Util';
 import {BEHAVIOUR_TYPES} from "../router/store/reducers/stones";
 const SunCalc = require('suncalc');
@@ -214,7 +214,7 @@ export const BehaviourUtil = {
           });
         })
         .catch((err) => {
-          LOG.error("BehaviourUtil: Could not fire", behaviourType, ' due to ', err);
+          LOGe.info("BehaviourUtil: Could not fire", behaviourType, ' due to ', err);
         });
     }
     else {

@@ -13,7 +13,7 @@ import {
   LOG_SCHEDULER,
   RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
   LOG_TIME_DIFFS,
-  LOG_TIMESTAMPS
+  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH
 } from '../ExternalConfig'
 import {LogProcessor} from "./LogProcessor";
 import {logToFile} from "./LogUtil";
@@ -48,20 +48,12 @@ class Logger {
     this._log('------------', LOG_INFO,      LogProcessor.log_info, arguments);
   }
 
-  verbose(...any) {
-    this._log('VERBOSE ----', LOG_VERBOSE,   LogProcessor.log_verbose, arguments);
-  }
-
-  warn(...any) {
-    this._log('WARNING ! --', LOG_WARNINGS,  LogProcessor.log_warnings, arguments);
+  notifications(...any) {
+    this._log('NOTIFCATION ', LOG_NOTIFICATIONS, LogProcessor.log_notifications, arguments);
   }
 
   event(...any) {
     this._log('EVENT ------', LOG_EVENTS,    LogProcessor.log_events, arguments);
-  }
-
-  error(...any) {
-    this._log('ERROR !!! --', LOG_ERRORS,    LogProcessor.log_errors, arguments);
   }
 
   cloud(...any) {
@@ -70,6 +62,10 @@ class Logger {
 
   advertisements(...any) {
     this._log('ADVERTISEMENTS --------', LOG_ADVERTISEMENTS, LogProcessor.log_advertisements, arguments);
+  }
+
+  bch(...any) {
+    this._log('bch --------', LOG_BCH,       LogProcessor.log_bch, arguments);
   }
 
   ble(...any) {

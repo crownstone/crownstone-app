@@ -1,6 +1,6 @@
 import { Scheduler }                              from '../logic/Scheduler';
 import { BehaviourUtil }                          from '../util/BehaviourUtil';
-import { LOG }                                    from '../logging/Log'
+import {LOG, LOGe} from '../logging/Log'
 import { KEEPALIVE_INTERVAL, KEEPALIVE_ATTEMPTS } from '../ExternalConfig';
 import { NativeBus }                              from '../native/libInterface/NativeBus';
 import { BatchCommandHandler }                    from '../logic/BatchCommandHandler';
@@ -109,7 +109,7 @@ class KeepAliveHandlerClass {
         if (stone.config.type !== STONE_TYPES.guidestone) {
           let element = Util.data.getElement(this.store, sphereId, stoneId, stone);
           if (!element || !element.behaviour) {
-            LOG.error("KeepAliveHandler: Invalid Element received");
+            LOGe.info("KeepAliveHandler: Invalid Element received");
             return;
           }
 

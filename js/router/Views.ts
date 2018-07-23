@@ -57,6 +57,7 @@ import { SwitchCraftInformation }      from "../views/deviceViews/elements/Switc
 
 import { ToonAdd }                     from "../views/thirdParty/toon/ToonAdd";
 import { SettingsMeshDebug }           from "../views/settingsViews/dev/SettingsMeshDebug";
+import { SettingsLogging }             from "../views/settingsViews/dev/SettingsLogging";
 
 export const Views = {
   AddItemsToSphere,
@@ -105,6 +106,7 @@ export const Views = {
   SettingsProfile,
   SettingsPrivacy,
   SettingsBleDebug,
+  SettingsLogging,
   SettingsMeshDebug,
   SettingsLocalizationDebug,
   SettingsStoneBleDebug,

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CLOUD} from "../../../cloud/cloudAPI";
-import {LOG} from "../../../logging/Log";
+import {LOG, LOGe} from "../../../logging/Log";
 import {BackAction} from "../../../util/Back";
 import {Background} from "../../components/Background";
 import {OrangeLine, screenWidth} from "../../styles";
@@ -72,7 +72,7 @@ export class SphereUser extends Component<any, any> {
           .catch((err) => {
             Alert.alert("Something went wrong", "Please try again later.", [{text:"OK"}]);
             this.props.eventBus.emit('hideLoading');
-            LOG.error("Something went wrong during Updating user permissions.", err);
+            LOGe.info("Something went wrong during Updating user permissions.", err);
           })
         }
       }
@@ -102,7 +102,7 @@ export class SphereUser extends Component<any, any> {
             this.deleting = false;
             this.props.eventBus.emit('hideLoading');
             Alert.alert("Something went wrong", "Please try again later.", [{text:"OK"}]);
-            LOG.error("Something went wrong during Updating user permissions.", err);
+            LOGe.info("Something went wrong during Updating user permissions.", err);
           })
 
       }}])

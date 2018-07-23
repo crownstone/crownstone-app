@@ -361,7 +361,7 @@ export class DeviceEdit extends Component<any, any> {
             resolve();
           }
           else {
-            LOG.error("COULD NOT DELETE IN CLOUD", err);
+            LOGe.info("COULD NOT DELETE IN CLOUD", err);
             reject();
           }
         })
@@ -388,7 +388,7 @@ export class DeviceEdit extends Component<any, any> {
             resolve();
           }
           else {
-            LOG.error("COULD NOT DELETE IN CLOUD", err);
+            LOGe.info("COULD NOT DELETE IN CLOUD", err);
             reject();
           }
         })
@@ -400,7 +400,7 @@ export class DeviceEdit extends Component<any, any> {
             this._removeCrownstoneFromRedux(true);
           })
           .catch((err) => {
-            LOG.error("ERROR:",err);
+            LOGe.info("ERROR:",err);
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
               "Try deleting it again or use the recovery procedure to put it in setup mode.",

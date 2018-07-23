@@ -1,5 +1,5 @@
 import { CLOUD }                    from '../../cloudAPI'
-import { LOG }                      from '../../../logging/Log'
+import {LOG, LOGe, LOGw} from '../../../logging/Log'
 import { Platform }                 from 'react-native'
 import { AppUtil }                  from "../../../util/AppUtil";
 import { cleanupPowerUsage, syncPowerUsage }   from "./syncPowerUsage";
@@ -203,7 +203,7 @@ export const sync = {
         this.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
         eventBus.emit("CloudSyncComplete");
-        LOG.error("SYNC: error during sync:", err);
+        LOGe.cloud("SYNC: error during sync:", err);
 
         throw err;
       })
@@ -214,7 +214,7 @@ let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
   return (err) => {
     // perhaps there is a 401, user token expired or replaced. Retry logging in.
     if (err.status === 401) {
-      LOG.warn("Could not verify user, attempting to login again and retry sync.");
+      LOGw.cloud("Could not verify user, attempting to login again and retry sync.");
       return CLOUD.login({
         email: state.user.email,
         password: state.user.passwordHash,

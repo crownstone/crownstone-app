@@ -1,7 +1,7 @@
 import {Scheduler} from "../logic/Scheduler";
 import {CLOUD} from "../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL} from "../ExternalConfig";
-import {LOG, LOGd} from "../logging/Log";
+import {LOG, LOGd, LOGe} from "../logging/Log";
 import {Util} from "../util/Util";
 
 const TRIGGER_ID = 'BATCH_UPLOADER_INTERVAL';
@@ -86,7 +86,7 @@ class BatchUploadClass {
           }
           this.queue.power[key].data = this.queue.power[key].data.concat(data);
           this.queue.power[key].indices = this.queue.power[key].indices.concat(indices);
-          LOG.error("BatchUploader: Could not upload samples:", indices, " because of: ", err);
+          LOGe.cloud("BatchUploader: Could not upload samples:", indices, " because of: ", err);
         })
     })
     .then(() => {
@@ -99,7 +99,7 @@ class BatchUploadClass {
       this._store.batchDispatch(actions);
     })
     .catch((err) => {
-      LOG.error("BatchUploader: Error during upload session", err);
+      LOGe.cloud("BatchUploader: Error during upload session", err);
     });
   }
 }

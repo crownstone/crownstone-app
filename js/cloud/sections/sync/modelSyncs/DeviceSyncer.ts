@@ -14,7 +14,7 @@ import { Platform } from 'react-native'
 import {Util} from "../../../../util/Util";
 import {SyncingBase} from "./SyncingBase";
 import {CLOUD} from "../../../cloudAPI";
-import {LOG} from "../../../../logging/Log";
+import {LOG, LOGe} from "../../../../logging/Log";
 import {APP_NAME} from "../../../../ExternalConfig";
 
 
@@ -280,7 +280,7 @@ export class DeviceSyncer extends SyncingBase {
             .forDevice(deviceId)
             .updateDeviceLocation(cloudLocationId)
             .catch((err) => {
-              LOG.error("DeviceSyncer: Failed to set device location in cloud :userLocation", userLocation, "cloudLocationId:", cloudLocationId, err);
+              LOGe.cloud("DeviceSyncer: Failed to set device location in cloud :userLocation", userLocation, "cloudLocationId:", cloudLocationId, err);
             })
         );
         this.transferPromises.push(
@@ -288,7 +288,7 @@ export class DeviceSyncer extends SyncingBase {
             .forDevice(deviceId)
             .updateDeviceSphere(cloudSphereId)
             .catch((err) => {
-              LOG.error("DeviceSyncer: Failed to set device sphere in cloud :userLocation", userLocation, "cloudSphereId:", cloudSphereId, err);
+              LOGe.cloud("DeviceSyncer: Failed to set device sphere in cloud :userLocation", userLocation, "cloudSphereId:", cloudSphereId, err);
             })
         );
       }

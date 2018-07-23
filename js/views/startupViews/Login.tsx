@@ -17,7 +17,7 @@ const sha1    = require('sha-1');
 const RNFS    = require('react-native-fs');
 const DeviceInfo = require('react-native-device-info');
 
-import { LOG, LOGd, LOGi } from '../../logging/Log'
+import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import { emailChecker, getImageFileFromUser, Util } from '../../util/Util'
 import { SessionMemory }      from '../../util/SessionMemory'
 import { CLOUD }              from '../../cloud/cloudAPI'
@@ -182,7 +182,7 @@ export class Login extends Component<any, any> {
       .then((response) => {
         this.finalizeLogin(response.id, response.userId);
       })
-      .catch((err) => { LOG.error("Error during login.", err); })
+      .catch((err) => { LOGe.info("Error during login.", err); })
   }
 
   render() {
@@ -259,7 +259,7 @@ export class Login extends Component<any, any> {
                 resolve(newPath);
               })
               .catch((err) => {
-                LOGi.error("Login: failed checkForRegistrationPictureUpload", err);
+                LOGe.info("Login: failed checkForRegistrationPictureUpload", err);
                 reject(err);
               })
           }
@@ -374,7 +374,7 @@ export class Login extends Component<any, any> {
         }
       })
       .catch((err) => {
-        LOG.error("Login: Failed to login.", err);
+        LOGe.info("Login: Failed to login.", err);
         let defaultAction = () => {this.props.eventBus.emit('hideProgress')};
         Alert.alert("Whoops!", "An error has occurred while syncing with the Cloud. Please try again later.", [{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
 
@@ -436,7 +436,7 @@ export class Login extends Component<any, any> {
         }, 100);
       })
       .catch((err) => {
-        LOG.error("Login: ERROR during login.", err);
+        LOGe.info("Login: ERROR during login.", err);
         this.props.eventBus.emit('hideProgress');
       });
   }

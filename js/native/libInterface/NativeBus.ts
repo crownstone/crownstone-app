@@ -1,5 +1,5 @@
 import { Alert, NativeModules, NativeEventEmitter } from 'react-native';
-import {LOG, LOGi} from '../../logging/Log'
+import {LOG, LOGe, LOGi} from '../../logging/Log'
 import { Util } from "../../util/Util";
 import {DISABLE_NATIVE} from "../../ExternalConfig";
 
@@ -53,15 +53,15 @@ class NativeBusClass {
 
   on(topic, callback) {
     if (!(topic)) {
-      LOG.error("Attempting to subscribe to undefined topic:", topic);
+      LOGe.event("Attempting to subscribe to undefined topic:", topic);
       return;
     }
     if (!(callback)) {
-      LOG.error("Attempting to subscribe without callback to topic:", topic);
+      LOGe.event("Attempting to subscribe without callback to topic:", topic);
       return;
     }
     if (this.refMap[topic] === undefined) {
-      LOG.error("Attempting to subscribe to a topic that does not exist in the native bus.", topic);
+      LOGe.event("Attempting to subscribe to a topic that does not exist in the native bus.", topic);
       return;
     }
 

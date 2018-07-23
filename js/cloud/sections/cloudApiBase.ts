@@ -135,7 +135,7 @@ export const cloudApiBase = {
         promise = this._head(promiseBody);
         break;
       default:
-        LOG.error("UNKNOWN TYPE:", reqType);
+        LOGe.cloud("UNKNOWN TYPE:", reqType);
         return;
     }
     return this._finalizeRequest(promise, options, endpoint, promiseBody);
@@ -177,7 +177,7 @@ export const cloudApiBase = {
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
-      LOG.error("ERROR: HTML ERROR IN API:", reply, debugOptions);
+      LOGe.cloud("ERROR: HTML ERROR IN API:", reply, debugOptions);
     }
     reject(reply);
   }

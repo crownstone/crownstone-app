@@ -15,7 +15,7 @@ import { Background } from '../components/Background'
 import { IconCircle } from '../components/IconCircle'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
 import {colors, OrangeLine} from '../styles'
 import {processImage, safeDeleteFile, Util} from "../../util/Util";
@@ -257,7 +257,7 @@ export class RoomAdd extends Component<any, any> {
             this.props.eventBus.emit('hideLoading');
           })
           .catch((err) => {
-            LOG.error("RoomAdd: Something went wrong with creation of rooms", err);
+            LOGe.info("RoomAdd: Something went wrong with creation of rooms", err);
             let defaultActions = () => {this.props.eventBus.emit('hideLoading');};
             Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: defaultActions}], { onDismiss: defaultActions })
           })

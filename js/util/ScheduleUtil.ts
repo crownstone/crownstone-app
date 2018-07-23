@@ -1,5 +1,5 @@
 import {StoneUtil} from "./StoneUtil";
-import {LOG} from "../logging/Log";
+import {LOG, LOGe} from "../logging/Log";
 
 export const ScheduleUtil = {
   getNextTime: function(time, activeDays) {
@@ -26,7 +26,7 @@ export const ScheduleUtil = {
       }
     }
 
-    LOG.error("DeviceScheduleEdit: Error, could not determine next time to fire!", time, activeDays);
+    LOGe.scheduler("DeviceScheduleEdit: Error, could not determine next time to fire!", time, activeDays);
   },
 
   getBridgeFormat(input) {
