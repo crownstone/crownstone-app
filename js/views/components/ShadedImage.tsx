@@ -53,6 +53,7 @@ export class ShadedImage extends Component<{
     }
     else if (appState === 'background') {
       this.setState({renderable:false});
+      eventBus.emit("cleanupTextures" + this._uid);
     }
   }
 
@@ -470,7 +471,7 @@ void main() {
       );
     }
     else {
-      return <View style={this.props.style} />
+      return <View style={this.props.style}><Image source= {{uri: preparePictureURI(this.props.image) }} style={[this.props.style, {resizeMode:'cover'}]} /></View>
     }
   }
 }
