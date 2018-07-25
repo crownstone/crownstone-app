@@ -3,7 +3,6 @@ import { update, getTime, refreshDefaults } from '../reducerUtil'
 
 
 let dataState = {
-  connectedTo: null,
   switchedToState: null, // 0 .. 1 || -1
   type: null,            // "keepAliveState" || "keepAlive" || "multiswitch" || "tap2toggle",
   intent: null,          // manual, room enter, room exit, sphere enter, sphere exit, near, far, tap-to-toggle
@@ -27,7 +26,6 @@ let logReducer = (state = dataState, action : any = {}) => {
     case 'ADD_ACTIVITY_LOG':
       if (action.data) {
         let newState = {...state};
-        newState.connectedTo     = update( action.data.connectedTo,     newState.connectedTo);
         newState.switchedToState = update( action.data.switchedToState, newState.switchedToState);
         newState.type            = update( action.data.type,            newState.type);
         newState.intent          = update( action.data.intent,          newState.intent);
@@ -35,7 +33,7 @@ let logReducer = (state = dataState, action : any = {}) => {
         newState.viaMesh         = update( action.data.viaMesh,         newState.viaMesh);
         newState.userId          = update( action.data.userId,          newState.userId);
         newState.commandUuid     = update( action.data.commandUuid,     newState.commandUuid);
-        newState.timestamp       = getTime(action.data.timestamp);
+        newState.timestamp       = getTime( action.data.timestamp );
         return newState;
       }
       return state;

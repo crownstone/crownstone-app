@@ -39,8 +39,9 @@ export class DeviceBehaviour extends Component<any, any> {
       let applianceId = stone.config.applianceId;
       if (
         change.changeAppSettings ||
-        change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
-        change.updateStoneBehaviour   && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
+        change.stoneLocationUpdated && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+        change.updateStoneConfig    && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
+        change.updateStoneBehaviour && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
         applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
         ) {
           this.forceUpdate();

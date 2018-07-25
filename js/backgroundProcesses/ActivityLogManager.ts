@@ -54,7 +54,6 @@ class ActivityLogManagerClass {
         stoneId:  data.target,
         logId: Util.getUUID(),
         data: {
-          connectedTo: data.connectedTo,
           commandUuid: data.commandUuid,
           viaMesh: data.connectedTo !== data.target,
           type: data.command,

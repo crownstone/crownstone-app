@@ -19,6 +19,7 @@ import {Util} from "../../util/Util";
 import {clearLogs} from "../../logging/LogUtil";
 import {BackAction} from "../../util/Back";
 import {MeshUtil} from "../../util/MeshUtil";
+import {CLOUD_ADDRESS} from "../../ExternalConfig";
 
 
 export class SettingsDeveloper extends Component<any, any> {
@@ -274,6 +275,11 @@ export class SettingsDeveloper extends Component<any, any> {
 
         BackAction();
     }});
+
+    items.push({label: 'CLOUD URL:' + CLOUD_ADDRESS, type: 'explanation'});
+    items.push({type: 'spacer'});
+    items.push({type: 'spacer'});
+
 
     return items;
   }

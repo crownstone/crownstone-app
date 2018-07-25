@@ -331,7 +331,11 @@ export class ActivityLogProcessor {
     // convert object to array.
     let logs = [];
     // dont show times older than 1.5 day
-    let earliestDateAllowed = new Date().valueOf() - 10.5*24*3600000;
+    let earliestDateAllowed = new Date().valueOf() - 1.5*24*3600000;
+    if (showFullLogs) {
+      // developers get to keep 10 days of logs! Jey!
+      earliestDateAllowed = new Date().valueOf() - 10*24*3600000;
+    }
     let minAvailable = new Date().valueOf();
     let deleteActions = [];
     for ( let i = 0; i < logIds.length; i++ ) {
@@ -341,7 +345,7 @@ export class ActivityLogProcessor {
         logs.push({...log});
       }
       else {
-        // deleteActions.push({type:"REMOVE_ACTIVITY_LOG", sphereId: sphereId, stoneId: stoneId, logId: logIds[i]})
+        deleteActions.push({type:"REMOVE_ACTIVITY_LOG", sphereId: sphereId, stoneId: stoneId, logId: logIds[i]})
       }
     }
 

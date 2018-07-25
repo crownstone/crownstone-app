@@ -104,17 +104,17 @@ class LogProcessorClass {
 
       this.writeToFile = dev === true && log === true;
 
-      this.log_info           = dev === true && log === true && devState.log_info;
-      this.log_mesh           = dev === true && log === true && devState.log_mesh;
-      this.log_native         = dev === true && log === true && devState.log_native;
-      this.log_notifications  = dev === true && log === true && devState.log_notifications;
-      this.log_scheduler      = dev === true && log === true && devState.log_scheduler;
-      this.log_ble            = dev === true && log === true && devState.log_ble;
-      this.log_bch            = dev === true && log === true && devState.log_bch;
-      this.log_advertisements = dev === true && log === true && devState.log_advertisements;
-      this.log_events         = dev === true && log === true && devState.log_events;
-      this.log_store          = dev === true && log === true && devState.log_store;
-      this.log_cloud          = dev === true && log === true && devState.log_cloud;
+      this.log_info           = devState.log_info;
+      this.log_mesh           = devState.log_mesh;
+      this.log_native         = devState.log_native;
+      this.log_notifications  = devState.log_notifications;
+      this.log_scheduler      = devState.log_scheduler;
+      this.log_ble            = devState.log_ble;
+      this.log_bch            = devState.log_bch;
+      this.log_advertisements = devState.log_advertisements;
+      this.log_events         = devState.log_events;
+      this.log_store          = devState.log_store;
+      this.log_cloud          = devState.log_cloud;
     }
   }
 }

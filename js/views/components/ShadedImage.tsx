@@ -1,15 +1,14 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
+  AppState,
   Animated,
   Image,
   View,
   Text
 } from 'react-native';
 import { WebGLView,  } from "react-native-webgl";
-import {screenHeight, screenWidth} from "../styles";
 import {preparePictureURI, Util} from "../../util/Util";
 import {eventBus} from "../../util/EventBus";
-import {request} from "../../cloud/cloudCore";
 
 export class ShadedImage extends Component<{
   image: string,
@@ -39,37 +38,55 @@ export class ShadedImage extends Component<{
     this.loadedImage = this.props.image;
     this.loadedImageURI = {uri:preparePictureURI(this.loadedImage)};
 
-    this.state = { debugText: '', opacity: new Animated.Value(this.props.enableOpacityShaderFade ? 1 : 0) };
+    this.state = { renderable: AppState.currentState === 'active', debugText: '', opacity: new Animated.Value(this.props.enableOpacityShaderFade ? 1 : 0) };
+  }
+
+  componentDidMount() {
+    // listen to state things.
+    AppState.addEventListener('change', this._checkRenderable);
+  }
+
+  _checkRenderable = (appState) => {
+    // in the foreground: start scanning!
+    if (appState === "active") {
+      this.setState({renderable:true});
+    }
+    else if (appState === 'background') {
+      this.setState({renderable:false});
+    }
   }
 
   componentWillUnmount() {
     eventBus.emit("cleanupTextures" + this._uid);
     cancelAnimationFrame(this.animationFrame);
+    AppState.removeEventListener('change', this._checkRenderable)
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    // we use the image taken to show that the image has been updated. The name of the image is the locationId.
-    if (this.props.image !== prevProps.image || this.props.imageTaken !== prevProps.imageTaken) {
-      this.loadedImage = this.props.image;
-      this.loadedImageTaken = this.props.imageTaken;
-      this.loadedImageURI = {uri: preparePictureURI(this.loadedImage) };
-      eventBus.emit("changedPicture" + this._uid);
-    }
-    else if (
-      this.props.r !== prevProps.r ||
-      this.props.g !== prevProps.g ||
-      this.props.b !== prevProps.b ||
-      this.props.blendFactor !== prevProps.blendFactor ||
-      this.props.grayScale   !== prevProps.grayScale
-    ) {
-      let blendMap = {};
-      let steps = 10;
-      if (this.props.r !== prevProps.r)                     { blendMap['r']           = {value: prevProps.r,           target: this.props.r, step: (this.props.r - prevProps.r) / steps}}
-      if (this.props.g !== prevProps.g)                     { blendMap['g']           = {value: prevProps.g,           target: this.props.g, step: (this.props.g - prevProps.g) / steps}}
-      if (this.props.b !== prevProps.b)                     { blendMap['b']           = {value: prevProps.b,           target: this.props.b, step: (this.props.b - prevProps.b) / steps}}
-      if (this.props.blendFactor !== prevProps.blendFactor) { blendMap['blendFactor'] = {value: prevProps.blendFactor, target: this.props.blendFactor, step: (this.props.blendFactor - prevProps.blendFactor) / steps}}
-      if (this.props.grayScale   !== prevProps.grayScale)   { blendMap['grayScale']   = {value: prevProps.grayScale,   target: this.props.grayScale,   step: (this.props.grayScale   - prevProps.grayScale  ) / steps}}
-      eventBus.emit("changedVarariables" + this._uid, blendMap);
+    if (this.state.renderable === true) {
+      // we use the image taken to show that the image has been updated. The name of the image is the locationId.
+      if (this.props.image !== prevProps.image || this.props.imageTaken !== prevProps.imageTaken) {
+        this.loadedImage = this.props.image;
+        this.loadedImageTaken = this.props.imageTaken;
+        this.loadedImageURI = {uri: preparePictureURI(this.loadedImage) };
+        eventBus.emit("changedPicture" + this._uid);
+      }
+      else if (
+        this.props.r !== prevProps.r ||
+        this.props.g !== prevProps.g ||
+        this.props.b !== prevProps.b ||
+        this.props.blendFactor !== prevProps.blendFactor ||
+        this.props.grayScale   !== prevProps.grayScale
+      ) {
+        let blendMap = {};
+        let steps = 10;
+        if (this.props.r !== prevProps.r)                     { blendMap['r']           = {value: prevProps.r,           target: this.props.r, step: (this.props.r - prevProps.r) / steps}}
+        if (this.props.g !== prevProps.g)                     { blendMap['g']           = {value: prevProps.g,           target: this.props.g, step: (this.props.g - prevProps.g) / steps}}
+        if (this.props.b !== prevProps.b)                     { blendMap['b']           = {value: prevProps.b,           target: this.props.b, step: (this.props.b - prevProps.b) / steps}}
+        if (this.props.blendFactor !== prevProps.blendFactor) { blendMap['blendFactor'] = {value: prevProps.blendFactor, target: this.props.blendFactor, step: (this.props.blendFactor - prevProps.blendFactor) / steps}}
+        if (this.props.grayScale   !== prevProps.grayScale)   { blendMap['grayScale']   = {value: prevProps.grayScale,   target: this.props.grayScale,   step: (this.props.grayScale   - prevProps.grayScale  ) / steps}}
+        eventBus.emit("changedVarariables" + this._uid, blendMap);
+      }
     }
   }
 
@@ -441,14 +458,19 @@ void main() {
 
 
   render() {
-    return (
-      <Animated.View style={[this.props.style,{opacity: this.state.opacity}]}>
-        <WebGLView
-          style={[this.props.style]}
-          onContextCreate={this.onContextCreate}
-        />
-        {/*<Text style={{position:'absolute', top:400, left:10}}>{this.state.debugText}</Text>*/}
-      </Animated.View>
-    );
+    if (this.state.renderable) {
+      return (
+        <Animated.View style={[this.props.style, {opacity: this.state.opacity}]}>
+          <WebGLView
+            style={[this.props.style]}
+            onContextCreate={this.onContextCreate}
+          />
+          {/*<Text style={{position:'absolute', top:400, left:10}}>{this.state.debugText}</Text>*/}
+        </Animated.View>
+      );
+    }
+    else {
+      return <View style={this.props.style} />
+    }
   }
 }
