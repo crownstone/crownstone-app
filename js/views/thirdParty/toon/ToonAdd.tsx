@@ -13,17 +13,18 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import {CancelButton} from "../../components/topbar/CancelButton";
-import {TopbarButton} from "../../components/topbar/TopbarButton";
-import {BackAction} from "../../../util/Back";
-import {Background} from "../../components/Background";
-import {ListEditableItems} from "../../components/ListEditableItems";
-import {colors, OrangeLine, screenHeight, screenWidth, tabBarHeight} from "../../styles";
-import {deviceStyles} from "../../deviceViews/DeviceOverview";
-import {IconButton} from "../../components/IconButton";
-import {toonConfig} from "../../../sensitiveData/toonConfig";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
-import {CLOUD} from "../../../cloud/cloudAPI";
+import { CancelButton } from "../../components/topbar/CancelButton";
+import { TopbarButton } from "../../components/topbar/TopbarButton";
+import { BackAction } from "../../../util/Back";
+import { Background } from "../../components/Background";
+import { ListEditableItems } from "../../components/ListEditableItems";
+import { colors, OrangeLine, screenHeight, screenWidth, tabBarHeight } from "../../styles";
+import { deviceStyles } from "../../deviceViews/DeviceOverview";
+import { IconButton } from "../../components/IconButton";
+import { toonConfig } from "../../../sensitiveData/toonConfig";
+import { NativeBus } from "../../../native/libInterface/NativeBus";
+import { CLOUD } from "../../../cloud/cloudAPI";
+import { Actions } from 'react-native-router-flux';
 import {request} from "../../../cloud/cloudCore";
 
 
@@ -62,15 +63,56 @@ export class ToonAdd extends Component<any, any> {
 
 
   process(url) {
+    console.log("URL",url)
     let codeExtractRegex = /code=(.*?)&/gm;
     let result = codeExtractRegex.exec(url);
     if (!result || result.length != 2) { return this.setState({failed: true}); }
 
     let code = result[1];
 
+    let accessTokens : any = {};
     CLOUD.thirdParty.toon.getAccessToken(code)
       .then((data) => {
-        console.log("Data",data)
+        if (data.status === 200) {
+          accessTokens = data.data;
+          this.props.store.dispatch({
+            type: 'TOON_ADD_TOKEN',
+            sphereId: this.props.sphereId,
+            data: {
+              accessToken: accessTokens.access_token,
+              accessTokenExpires: new Date().valueOf() + 1799*1000,
+              refreshToken: accessTokens.refresh_token,
+            }
+          });
+          return CLOUD.thirdParty.toon.getToonIds(accessTokens.access_token);
+        }
+        else {
+          throw "Failed";
+        }
+      })
+      .then((data) => {
+        if (data.status !== 200) {
+          throw "Failed"
+        }
+
+        let toonIds = data.data;
+        if (toonIds.length > 0) {
+          let agreementId = toonIds[0].agreementId;
+          this.props.store.dispatch({
+            type: 'TOON_UPDATE_SETTINGS',
+            sphereId: this.props.sphereId,
+            data: {
+              toonAgreementId: agreementId,
+            }
+          });
+          return CLOUD.thirdParty.toon.getToonSchedules(agreementId, accessTokens.access_token)
+        }
+      })
+      .then((schedules) => {
+        console.log("schedule", schedules)
+      })
+      .catch((err) => {
+        Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
       })
   }
 
@@ -156,7 +198,7 @@ export class ToonAdd extends Component<any, any> {
         <TouchableOpacity onPress={() => {
           Linking.openURL('https://api.toon.eu/authorize?response_type=code&client_id=' + toonConfig.clientId).catch(() => {})
         }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{"Connect to Toon!"}</Text>
+          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{"Connect with Toon!"}</Text>
         </TouchableOpacity>
       )
     }
@@ -176,6 +218,7 @@ export class ToonAdd extends Component<any, any> {
           { this._getText() }
           <View style={{flex:1}} />
           { this._getButton() }
+          <View style={{flex:0.5}} />
         </View>
       </Background>
     );

@@ -3,15 +3,6 @@ import {LOG, LOGe, LOGw} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 
 
-
-type transferScheduleToLocalData = {
-  localId: string,
-  localSphereId: string,
-  localStoneId: string,
-  cloudData: any,
-}
-
-
 type transferScheduleToCloudData = {
   localId: string,
   localData: any,
@@ -19,13 +10,6 @@ type transferScheduleToCloudData = {
   cloudId: string,
 }
 
-type transferNewScheduleToCloudData = {
-  localId: string,
-  localData: any,
-  localSphereId: string,
-  localStoneId: string,
-  cloudStoneId: string,
-}
 
 let fieldMap : fieldMap = [
   {local:'label',                  cloud: 'label'},
@@ -53,7 +37,7 @@ let fieldMap : fieldMap = [
 export const transferSchedules = {
   fieldMap: fieldMap,
 
-  createOnCloud: function( actions, data : transferNewScheduleToCloudData ) {
+  createOnCloud: function( actions, data : transferNewToCloudStoneData ) {
     let payload = {};
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
@@ -112,7 +96,7 @@ export const transferSchedules = {
   },
 
 
-  createLocal: function( actions, data: transferScheduleToLocalData) {
+  createLocal: function( actions, data: transferToLocalStoneData) {
     return transferUtil._handleLocal(
       actions,
       'ADD_STONE_SCHEDULE',
@@ -123,7 +107,7 @@ export const transferSchedules = {
   },
 
 
-  updateLocal: function( actions, data: transferScheduleToLocalData) {
+  updateLocal: function( actions, data: transferToLocalStoneData) {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_STONE_SCHEDULE',

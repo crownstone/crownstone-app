@@ -310,7 +310,7 @@ export class DeviceEdit extends Component<any, any> {
             "Are you sure?",
             "Removing a Crownstone from the sphere will revert it to it's factory default settings.",
             [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
-              if (stone.config.disabled === true) {
+              if (stone.reachability.disabled === true) {
                 Alert.alert("Can't see this one!",
                   "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
                   [{text:'Delete anyway', onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
@@ -509,7 +509,7 @@ export class DeviceEdit extends Component<any, any> {
         Alert.alert("Crownstone Locked", "You have to unlock the Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " dimming.", [{text:'OK'}]);
         return;
       }
-      if (stone.config.disabled) {
+      if (stone.reachability.disabled) {
         Alert.alert("Can't see this Crownstone!", "You have to be in range of Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " dimming.", [{text:'OK'}]);
         return;
       }
@@ -558,7 +558,7 @@ export class DeviceEdit extends Component<any, any> {
     if (stone.config.switchCraft !== this.state.switchCraft) {
       this.props.eventBus.emit("showLoading", "Configuring Switchcraft on this Crownstone...");
 
-      if (stone.config.disabled) {
+      if (stone.reachability.disabled) {
         Alert.alert("Can't see this Crownstone!", "You have to be in range of Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " Switchcraft.", [{text:'OK'}]);
         return;
       }
@@ -598,7 +598,7 @@ export class DeviceEdit extends Component<any, any> {
     else {
       return (
         <TouchableOpacity style={{paddingTop:15, paddingBottom:30}} onPress={() => {
-          if (stone.config.disabled) {
+          if (stone.reachability.disabled) {
             return Alert.alert("Can't see this stone!", "I have to be in range to get the firwmare version of this Crownstone.", [{text:'OK'}]);
           }
 

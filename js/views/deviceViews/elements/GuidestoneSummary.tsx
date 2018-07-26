@@ -79,9 +79,9 @@ export class GuidestoneSummary extends Component<any, any> {
         <View style={{flex: 0.2}} />
         <View style={{alignItems:'center', height: 0.2*availableScreenHeight}}>
           <Text style={deviceStyles.subText}>{"Reachable:"}</Text>
-          <Text style={deviceStyles.text}>{stone.config.disabled === false ? 'Yes' : 'Searching...'}</Text>
+          <Text style={deviceStyles.text}>{stone.reachability.disabled === false ? 'Yes' : 'Searching...'}</Text>
           {
-            stone.config.disabled  ?
+            stone.reachability.disabled  ?
               <ActivityIndicator animating={true} size='small' color={colors.white.hex} style={{paddingTop:20}} />
             : undefined
           }

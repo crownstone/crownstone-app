@@ -25,7 +25,7 @@ export const MeshUtil = {
       if (stone.config.meshNetworkId === meshNetworkId) {
         // allow this method to be used to filter for specific rssi requirements on the mesh network.
         if (rssiThreshold !== null) {
-          if (stone.config.disabled === false && stone.config.rssi > rssiThreshold) {
+          if (stone.reachability.disabled === false && stone.reachability.rssi > rssiThreshold) {
             result.push({id: stoneIds[i], stone: stone});
           }
         }

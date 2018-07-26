@@ -25,6 +25,17 @@ export function prepareEndpointAndBody(options : any, id : any, accessToken : an
       body = options.data;
     }
   }
+  else if (options.type === 'body-urlencoded') {
+    body = '';
+    if (typeof options.data === 'object') {
+      let keys = Object.keys(options.data);
+      for (let i = 0; i < keys.length; i++) {
+        body += keys[i] + '=' + options.data[keys[i]] + '&'
+      }
+      // strip last &
+      body = body.substr(0, body.length-1);
+    }
+  }
   else
     endPoint = _appendToURL(endPoint, options.data);
 

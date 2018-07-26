@@ -416,8 +416,8 @@ export class RoomOverview extends Component<any, any> {
     let rssi = -1000;
     for (let i = 0; i < stoneArray.length; i++) {
       let stone = stoneArray[i].stone;
-      if (stone && stone.config && stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
-        rssi = stone.config.rssi;
+      if (stone && stone.reachability && stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
+        rssi = stone.reachability.rssi;
         this.nearestStoneIdInRoom = ids[i];
       }
     }
@@ -428,8 +428,8 @@ export class RoomOverview extends Component<any, any> {
     let stoneIds = Object.keys(allStones);
     for (let i = 0; i < stoneIds.length; i++) {
       let stone = allStones[stoneIds[i]];
-      if (stone && stone.config && stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
-        rssi = stone.config.rssi;
+      if (stone && stone.reachability && stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
+        rssi = stone.reachability.rssi;
         this.nearestStoneIdInSphere = stoneIds[i];
       }
     }

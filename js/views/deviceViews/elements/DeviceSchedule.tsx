@@ -99,7 +99,7 @@ export class DeviceSchedule extends Component<any, any> {
             alignItems:'center',
             flexDirection:'row'}}
           onPress={() => {
-          if (stone.config.disabled === true) {
+          if (stone.reachability.disabled === true) {
             Alert.alert(
               "Can't see Crownstone!",
               "You cannot sync schedules from Crownstone if I can't see it...",
@@ -224,7 +224,7 @@ export class DeviceSchedule extends Component<any, any> {
     if (canAddSchedule) {
       return (
         <TouchableOpacity onPress={() => {
-            if (stone.config.disabled === true) {
+            if (stone.reachability.disabled === true) {
               Alert.alert(
                 "Can't see Crownstone!",
                 "You cannot add schedules without being near to the Crownstone.",

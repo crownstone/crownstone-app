@@ -10,6 +10,7 @@ import {SyncingSphereItemBase} from "./SyncingBase";
 import {ScheduleSyncer} from "./ScheduleSyncer";
 import {LOGe, LOGw} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
+import {ActivityLogSyncer} from "./ActivityLogSyncer";
 
 export class StoneSyncer extends SyncingSphereItemBase {
 
@@ -96,18 +97,14 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
 
   syncChildren(localId, store, stone_from_cloud) {
-    let scheduleSyncing = new ScheduleSyncer(
-      this.actions,
-      [],
-      this.localSphereId,
-      this.cloudSphereId,
-      localId,
-      stone_from_cloud.id,
-      this.globalCloudIdMap,
-    );
+    let scheduleSyncing    = new ScheduleSyncer(   this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
+    let activityLogSyncing = new ActivityLogSyncer(this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
 
     this.transferPromises.push(
       scheduleSyncing.sync(store, stone_from_cloud.schedules)
+        .then(() => {
+          return activityLogSyncing.sync(store)
+        })
     );
   }
 
@@ -317,35 +314,35 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
         let cloudId = stone_from_cloud.id;
         let uploaded = false;
-        if (stoneInState.config.lastSeen) {
+        if (stoneInState.reachability.lastSeen) {
           uploaded = true;
           this.transferPromises.push(
             CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
               timestamp: new Date().valueOf(),
               type: 'lastSeen',
-              value: stoneInState.config.lastSeen
+              value: stoneInState.reachability.lastSeen
             }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeen Diagnostic", err); })
           );
         }
 
-        if (stoneInState.config.lastSeenTemperature) {
+        if (stoneInState.reachability.lastSeenTemperature) {
           uploaded = true;
           this.transferPromises.push(
             CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
               timestamp: new Date().valueOf(),
               type: 'lastSeenTemperature',
-              value: stoneInState.config.lastSeenTemperature
+              value: stoneInState.reachability.lastSeenTemperature
             }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenTemperature Diagnostic", err); })
           );
         }
 
-        if (stoneInState.config.lastSeenViaMesh) {
+        if (stoneInState.reachability.lastSeenViaMesh) {
           uploaded = true;
           this.transferPromises.push(
             CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
               timestamp: new Date().valueOf(),
               type: 'lastSeenViaMesh',
-              value: stoneInState.config.lastSeenViaMesh
+              value: stoneInState.reachability.lastSeenViaMesh
             }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenViaMesh Diagnostic", err); })
           );
         }

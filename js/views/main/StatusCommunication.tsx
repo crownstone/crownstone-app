@@ -68,7 +68,7 @@ export class StatusCommunication extends Component<any, any> {
     let stoneIds = Object.keys(stones);
     let amountOfVisible = 0;
     stoneIds.forEach((stoneId) => {
-      if (stones[stoneId].config.rssi > -100 && stones[stoneId].config.disabled === false) {
+      if (stones[stoneId].reachability.rssi > -100 && stones[stoneId].reachability.disabled === false) {
         amountOfVisible += 1;
       }
     });

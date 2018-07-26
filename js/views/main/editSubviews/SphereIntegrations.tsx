@@ -29,7 +29,6 @@ export class SphereIntegrations extends Component<any, any> {
   _getItemsAlternative() {
     let items = [];
 
-
     items.push({label:'Here you can integrate with different services. We\'re hard at work to add more!',  type:'largeExplanation'});
 
     items.push({label:'Thermostats:',  type:'largeExplanation'});
@@ -42,7 +41,15 @@ export class SphereIntegrations extends Component<any, any> {
           <Text style={{color:"#fff", fontSize:12, fontWeight:'bold', paddingTop: 2}}>Toon®</Text>
         </View>,
       callback: () => {
-        Actions.toonAdd({sphereId: this.props.sphereId});
+        let state = this.props.store.getState();
+        let sphere = state.spheres[this.props.sphereId];
+        console.log(sphere)
+        if (sphere.thirdParty.toon.refreshTokens) {
+          Actions.toonSettings({sphereId: this.props.sphereId});
+        }
+        else {
+          Actions.toonAdd({sphereId: this.props.sphereId});
+        }
       }
     });
 

@@ -56,6 +56,7 @@ import { SettingsFAQ }                 from "../views/settingsViews/SettingsFAQ"
 import { SwitchCraftInformation }      from "../views/deviceViews/elements/SwitchCraftInformation";
 
 import { ToonAdd }                     from "../views/thirdParty/toon/ToonAdd";
+import { ToonSettings }                from "../views/thirdParty/toon/ToonSettings";
 import { SettingsMeshDebug }           from "../views/settingsViews/dev/SettingsMeshDebug";
 import { SettingsLogging }             from "../views/settingsViews/dev/SettingsLogging";
 
@@ -84,6 +85,7 @@ export const Views = {
   SphereIntegrations,
 
   ToonAdd,
+  ToonSettings,
 
   RoomOverview,
   RoomEdit,

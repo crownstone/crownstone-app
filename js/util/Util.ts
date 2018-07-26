@@ -204,6 +204,17 @@ export const Util = {
     );
   },
 
+  getShortUUID : () : string => {
+    const S4 = function () {
+      return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(36);
+    };
+
+    return (
+      S4() + S4() + '-' +
+      S4()
+    );
+  },
+
 
   getToken : () : string => {
     return Math.floor(Math.random() * 1e8 /* 65536 */).toString(36);

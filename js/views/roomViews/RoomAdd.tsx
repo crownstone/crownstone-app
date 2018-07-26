@@ -87,7 +87,7 @@ export class RoomAdd extends Component<any, any> {
       mediumIcon: <IconCircle
         icon={device.config.icon}
         size={52}
-        backgroundColor={stone.state.state > 0 && stone.config.disabled === false ? colors.green.hex : colors.menuBackground.hex}
+        backgroundColor={stone.state.state > 0 && stone.reachability.disabled === false ? colors.green.hex : colors.menuBackground.hex}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
       label: device.config.name,
@@ -145,8 +145,8 @@ export class RoomAdd extends Component<any, any> {
 
         let device = floatingStones[stoneId].device;
         let stone = floatingStones[stoneId].stone;
-        let subtext = stone.config.disabled === false ?
-          (nearestId === stoneId ? 'Nearest' : stone.config.rssi > -60 ? 'Very near' : stone.config.rssi > -70 ? 'Near' : undefined)
+        let subtext = stone.reachability.disabled === false ?
+          (nearestId === stoneId ? 'Nearest' : stone.reachability.rssi > -60 ? 'Very near' : stone.reachability.rssi > -70 ? 'Near' : undefined)
           : undefined;
 
         this._pushCrownstoneItem(items, device, stone, stoneId, subtext);
@@ -177,8 +177,8 @@ export class RoomAdd extends Component<any, any> {
     let id = undefined;
     for (let i = 0; i < floatingStoneIds.length; i++) {
       let stone = floatingStones[floatingStoneIds[i]].stone;
-      if (stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
-        rssi = stone.config.rssi;
+      if (stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
+        rssi = stone.reachability.rssi;
         id = floatingStoneIds[i];
       }
     }

@@ -64,7 +64,12 @@ export function request(
 
   let logToken = Util.getToken();
 
-  LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, "config:", requestConfig, logToken);
+  let url = endPoint;
+  if (endPoint.substr(0,4) !== 'http') {
+    url = CLOUD_ADDRESS + endPoint;
+  }
+
+  LOG.cloud(method,"requesting from URL:", url, "config:", requestConfig, logToken);
 
   // the actual request
   return new Promise((resolve, reject) => {
@@ -83,7 +88,7 @@ export function request(
         },
       NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
-      fetch(CLOUD_ADDRESS + endPoint, requestConfig as any)
+      fetch(url, requestConfig as any)
         .catch((connectionError) => {
           if (stopRequest === false) {
             reject('Network request to ' + CLOUD_ADDRESS + endPoint + ' failed');

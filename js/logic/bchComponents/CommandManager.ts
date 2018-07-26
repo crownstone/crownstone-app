@@ -20,13 +20,14 @@ export class CommandManager {
         // remove duplicates from list.
         this._clearDuplicates(stoneId, sphereId, command);
         let uuid = Util.getUUID();
+        let shortUuid = Util.getShortUUID();
         this.commands[uuid] = {
           priority: priority,
           handle:   stone.config.handle,
           sphereId: sphereId,
           stoneId:  stoneId,
           command:  command,
-          commandUuid: uuid,
+          commandUuid: shortUuid,
           attempts: attempts,
           options:  options,
           timestamp: new Date().valueOf(),

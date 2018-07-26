@@ -29,6 +29,7 @@ let logReducer = (state = dataState, action : any = {}) => {
         newState.switchedToState = update( action.data.switchedToState, newState.switchedToState);
         newState.type            = update( action.data.type,            newState.type);
         newState.intent          = update( action.data.intent,          newState.intent);
+        newState.cloudId         = update( action.data.cloudId,         newState.cloudId);
         newState.delayInCommand  = update( action.data.delayInCommand,  newState.delayInCommand);
         newState.viaMesh         = update( action.data.viaMesh,         newState.viaMesh);
         newState.userId          = update( action.data.userId,          newState.userId);

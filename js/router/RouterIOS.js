@@ -96,6 +96,7 @@ export class Router_IOS extends Component {
             <Scene key="sphereIntegrations"             component={Views.SphereIntegrations}         panHandlers={null} />
 
             <Scene key="toonAdd"                        component={Views.ToonAdd}                    panHandlers={null} />
+            <Scene key="toonSettings"                   component={Views.ToonSettings}               panHandlers={null} />
 
             <Scene key="deviceEdit"                     component={Views.DeviceEdit}                 />
             <Scene key="deviceBehaviourEdit"            component={Views.DeviceBehaviourEdit}        />

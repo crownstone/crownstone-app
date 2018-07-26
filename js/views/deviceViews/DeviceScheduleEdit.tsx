@@ -216,7 +216,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           }
 
 
-          if (stone.config.disabled === true) {
+          if (stone.reachability.disabled === true) {
             Alert.alert(
               "Can't see Crownstone",
               "You cannot remove the schedule without being near to the Crownstone",
@@ -325,7 +325,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
       }
 
       if (changed) {
-        if (stone.config.disabled === true) {
+        if (stone.reachability.disabled === true) {
           Alert.alert(
             "Can't see Crownstone",
             "You cannot change the schedule without being near to the Crownstone.",

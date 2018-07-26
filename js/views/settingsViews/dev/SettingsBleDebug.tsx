@@ -39,10 +39,10 @@ export class SettingsBleDebug extends Component<any, any> {
 
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
-    if (stone && stone.state.state > 0 && stone.config.disabled === false) {
+    if (stone && stone.state.state > 0 && stone.reachability.disabled === false) {
       backgroundColor = colors.green.hex
     }
-    else if (stone && stone.config.disabled) {
+    else if (stone && stone.reachability.disabled) {
       backgroundColor = colors.gray.hex;
     }
     items.push({

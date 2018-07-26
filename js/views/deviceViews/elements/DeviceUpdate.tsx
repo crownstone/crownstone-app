@@ -118,7 +118,7 @@ export class DeviceUpdate extends Component<any, any> {
     const state    = this.props.store.getState();
     const sphere   = state.spheres[this.props.sphereId];
     const stone    = sphere.stones[this.props.stoneId];
-    const disabled = stone.config.disabled;
+    const disabled = stone.reachability.disabled;
 
     return (
       <View style={{flex:1, alignItems:'center', padding: 30}}>

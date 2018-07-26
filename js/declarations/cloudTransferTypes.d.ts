@@ -26,6 +26,23 @@ type transferToLocalData = {
 }
 
 
+type transferToLocalStoneData = {
+  localId: string,
+  localSphereId: string,
+  localStoneId: string,
+  cloudData: any,
+}
+
+type transferNewToCloudStoneData = {
+  localId: string,
+  localData: any,
+  localSphereId: string,
+  localStoneId: string,
+  cloudStoneId: string,
+}
+
+
+
 type fieldMap = {
   local: string,
   cloud: string,

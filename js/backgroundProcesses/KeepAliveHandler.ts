@@ -61,7 +61,7 @@ class KeepAliveHandlerClass {
         let keepAliveId = (Math.floor(Math.random()*1e6)).toString(36);
 
         if (stone.config.type !== STONE_TYPES.guidestone) {
-          if (stone.config.handle && stone.config.disabled === false) {
+          if (stone.config.handle && stone.reachability.disabled === false) {
             let element = Util.data.getElement(this.store, sphereId, stoneId, stone);
             this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, {active:false, state:0}, 10, element, keepAliveId);
           }

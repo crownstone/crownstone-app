@@ -212,7 +212,7 @@ export class DeviceOverview extends Component<any, any> {
     // check what we want to show the user:
     let hasError        = stone.errors.hasError;
     let mustUpdate      = Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
-    let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
+    let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.reachability.disabled === false;
     let hasBehaviour    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
     let hasPowerMonitor = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
     let hasScheduler    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
@@ -346,7 +346,7 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
   // check what we want to show the user:
   let hasError   = stone.errors.hasError;
   let mustUpdate = Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
-  let canUpdate  = Permissions.inSphere(props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
+  let canUpdate  = Permissions.inSphere(props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.reachability.disabled === false;
 
   // only shift the indexes (move the edit button to the next pages) if we do not have a mandatory view
   if (!hasError && !mustUpdate) {

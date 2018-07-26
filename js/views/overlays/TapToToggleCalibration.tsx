@@ -72,8 +72,8 @@ export class TapToToggleCalibration extends Component<any, any> {
                 let stoneIds = Object.keys(sphere.stones);
                 stoneIds.forEach((stoneId) => {
                   let stone = sphere.stones[stoneId];
-                  if (stone.config.disabled === false) {
-                    minRSSI = Math.max(stone.config.rssi, minRSSI);
+                  if (stone.reachability.disabled === false) {
+                    minRSSI = Math.max(stone.reachability.rssi, minRSSI);
                   }
                 });
               }

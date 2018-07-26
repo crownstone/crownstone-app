@@ -87,7 +87,7 @@ export class DeviceEntry extends Component<any, any> {
   _getControl(stone) {
     let content;
     let action = null;
-    if (stone.config.disabled === false) {
+    if (stone.reachability.disabled === false) {
       if (stone.errors.hasError) {
         content = <Switch value={stone.state.state === 1} disabled={true} />;
         action = () => { this._basePressed(); }
@@ -126,7 +126,7 @@ export class DeviceEntry extends Component<any, any> {
   _getIcon(element, stone, state) {
     let customStyle = undefined;
     let color = (
-      stone.config.disabled === true ?
+      stone.reachability.disabled === true ?
           colors.gray.hex :
           (stone.state.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
@@ -152,7 +152,7 @@ export class DeviceEntry extends Component<any, any> {
       </View>
       );
     }
-    else if (((Util.versions.canUpdate(stone, state) === true) || Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) && stone.config.disabled === false) {
+    else if (((Util.versions.canUpdate(stone, state) === true) || Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) && stone.reachability.disabled === false) {
       return (
         <View style={[{
           width:60,
@@ -175,7 +175,7 @@ export class DeviceEntry extends Component<any, any> {
       );
     }
     else {
-      if (stone.config.disabled) {
+      if (stone.reachability.disabled) {
         customStyle = {borderWidth:1, borderColor: colors.darkGray2.hex}
       }
       return (
@@ -215,8 +215,8 @@ export class DeviceEntry extends Component<any, any> {
                 statusTextOverride={this.props.statusText}
                 statusText={this.state.statusText}
                 deviceType={stone.config.type}
-                rssi={stone.config.rssi}
-                disabled={stone.config.disabled}
+                rssi={stone.reachability.rssi}
+                disabled={stone.reachability.disabled}
                 currentUsage={stone.state.currentUsage}
                 nearestInSphere={this.props.nearestInSphere}
                 nearestInRoom={this.props.nearestInRoom}

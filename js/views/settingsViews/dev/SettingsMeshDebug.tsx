@@ -43,10 +43,10 @@ export class SettingsMeshDebug extends Component<any, any> {
 
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
-    if (stone && stone.state.state > 0 && stone.config.disabled === false) {
+    if (stone && stone.state.state > 0 && stone.reachability.disabled === false) {
       backgroundColor = colors.green.hex
     }
-    else if (stone && stone.config.disabled) {
+    else if (stone && stone.reachability.disabled) {
       backgroundColor = colors.gray.hex;
     }
     items.push({
@@ -80,7 +80,7 @@ export class SettingsMeshDebug extends Component<any, any> {
 
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
-      if (stone.config.disabled === false) {
+      if (stone.reachability.disabled === false) {
         this.refreshAmountRequired += 1;
       }
     });
@@ -104,7 +104,7 @@ export class SettingsMeshDebug extends Component<any, any> {
 
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
-      if (stone.config.disabled === false) {
+      if (stone.reachability.disabled === false) {
         BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {
           commandName: 'setMeshChannel',
           channel: channel
@@ -147,7 +147,7 @@ export class SettingsMeshDebug extends Component<any, any> {
         locationColor = colors.iosBlue.hex;
       }
       let element = Util.data.getElement(store, sphereId, stoneId, stone);
-      if (stone.config.disabled === false) {
+      if (stone.reachability.disabled === false) {
         this._pushCrownstoneItem(items, sphereId, element, stone, stoneId, locationTitle, locationColor);
       }
     });

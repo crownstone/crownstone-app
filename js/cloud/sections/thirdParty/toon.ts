@@ -14,7 +14,8 @@ export const toon = {
       code: code,
       grant_type:'authorization_code'
     }
-    let options = {endPoint: "https://api.toon.eu/token", data: payload, type: 'body', options: {}};
+
+    let options = {endPoint: "https://api.toon.eu/token", data: payload, type: 'body-urlencoded', options: {}};
     let headers = {'Content-Type': 'application/x-www-form-urlencoded'};
     return request(options, 'POST',   headers, null, null);
   },
@@ -27,14 +28,14 @@ export const toon = {
       refresh_token: refreshToken,
       grant_type:'refresh_token'
     }
-    let options = {endPoint: "https://api.toon.eu/token", data: payload, type: 'body', options: {}};
+    let options = {endPoint: "https://api.toon.eu/token", data: payload, type: 'body-urlencoded', options: {}};
     let headers = {'Content-Type': 'application/x-www-form-urlencoded'};
     return request(options, 'POST',   headers, null, null);
   },
 
 
   getToonIds: function(accessToken) {
-    let options = {endPoint: "https://api.toon.eu/toon/v3/agreements", type: 'body', options: {}};
+    let options = {endPoint: "https://api.toon.eu/toon/v3/agreements", type: 'body-urlencoded', options: {}};
     let headers = {
       'content-type': 'application/json',
       'cache-control': 'no-cache',
@@ -42,6 +43,20 @@ export const toon = {
     };
     return request(options, 'GET',   headers, null, null);
   },
+
+  getToonSchedules(agreementId, accessToken) {
+    let options = {
+      endPoint: "https://api.toon.eu/toon/v3/" + agreementId + "/thermostat/programs",
+      type: 'body-urlencoded',
+      options: {}
+    };
+    let headers = {
+      'content-type': 'application/json',
+      'cache-control': 'no-cache',
+      'authorization': 'Bearer ' + accessToken,
+    };
+    return request(options, 'GET',   headers, null, null);
+  }
 
 };
 
