@@ -48,6 +48,13 @@ let logReducer = (state = dataState, action : any = {}) => {
 // meshReducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'DELETE_ACTIVITY_LOG_CLOUD_IDS':
+      let s = {...state};
+      let k = Object.keys(s);
+      for (let i = 0; i < k.length; i++) {
+        s[k[i]].cloudId = null;
+      }
+      return s
     case 'REMOVE_ALL_ACTIVITY_LOGS':
       return {};
     case 'REMOVE_ACTIVITY_LOG':

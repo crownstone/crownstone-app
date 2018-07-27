@@ -335,8 +335,9 @@ class LocationHandlerClass {
 
     let lastSeenPerSphere = {};
     Util.data.callOnAllStones(state, (sphereId, stoneId, stone) => {
-      lastSeenPerSphere[sphereId] = Math.max(stone.config.lastSeen || 0, lastSeenPerSphere[sphereId] || 0);
+      lastSeenPerSphere[sphereId] = Math.max(stone.reachability.lastSeen || 0, lastSeenPerSphere[sphereId] || 0);
     });
+
 
     let sphereIds = Object.keys(lastSeenPerSphere);
     let currentSphere = null;
@@ -362,7 +363,8 @@ class LocationHandlerClass {
 
     // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
     let sphereTimeout = state.spheres[currentSphere].config.exitDelay - KEEPALIVE_INTERVAL;
-    if (mostRecentSeenTime > (new Date().valueOf() - sphereTimeout)) {
+
+    if (mostRecentSeenTime > (new Date().valueOf() - sphereTimeout*1000)) {
       LOG.info("LocationHandler: Apply enter sphere.", currentSphere);
       this.enterSphere(currentSphere);
     }

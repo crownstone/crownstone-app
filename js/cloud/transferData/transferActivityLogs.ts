@@ -39,27 +39,50 @@ export const transferActivityLogs = {
       });
   },
 
-  batchCreateOnCloud: function( actoins, dataArray: [transferNewToCloudStoneData]) {
-    let stones = {};
-    dataArray.forEach((data) => {
+  batchCreateOnCloud: function( state, actions, dataArray: [transferNewToCloudStoneData]) {
+    let batch = [];
+
+    let localSphereId = null;
+    let localStoneId  = null;
+    let localLogId    = [];
+
+    if (dataArray.length > 0) {
+      localStoneId = dataArray[0].localStoneId;
+      localSphereId = dataArray[0].localSphereId;
+    }
+
+    for (let i = 0; i < dataArray.length; i++) {
+      let data = dataArray[i];
       let payload = {};
       transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+      localLogId.push(data.localId);
+      batch.push(payload);
+    }
 
-      if (stones[data.cloudStoneId] === undefined) {
-        stones[data.cloudStoneId] = [];
-      }
+    return CLOUD.forStone(localStoneId).batchCreateActivityLogs(batch)
+      .then((data) => {
+        if (data.length > 0) {
+          let sphere = state.spheres[localSphereId];
+          let stone = sphere.stones[localStoneId];
 
-      stones[data.cloudStoneId].push(payload);
-    });
+          // here we do something that's a little ugly... We disrespect the redux format in order to save performance.
+          // we directly edit the state instead of going through action dispatching. Since activity logs add quickly,
+          // this can lead up to 10.000 actions. This would slow down the UI thread for too long.
+          for (let i = 0; i < data.length; i++) {
+            stone.activityLogs[localLogId[i]].cloudId = data[i].id;
+          }
 
-    let stoneIds = Object.keys(stones);
-    let promises = [];
-
-    stoneIds.forEach((stoneId) => {
-      promises.push(CLOUD.forStone(stoneId).batchCreateActivityLogs(stones[stoneId]));
-    })
-
-    return Promise.all(promises);
+          // We fire one action. This action will at least trigger a persist call which will persist all changes in our
+          // state.
+          actions.push({
+            type: 'UPDATE_ACTIVITY_LOG_CLOUD_ID',
+            sphereId: localSphereId,
+            stoneId: localStoneId,
+            logId: localLogId[0],
+            data: {cloudId: data[0].id}
+          });
+        }
+      })
   },
 
 

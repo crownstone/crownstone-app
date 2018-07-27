@@ -76,7 +76,6 @@ class StoreManagerClass {
         .then(() => {
           // we emit the storeInitialized event just in case of race conditions.
           this.storeInitialized = true;
-
           // this setTimeout ensures that any errors that crash the app will not trigger a DatabaseFailure message
           setTimeout(() => { eventBus.emit('storeManagerInitialized'); } , 0)
         })

@@ -146,6 +146,16 @@ export class SphereOverview extends Component<any, any> {
     if (activeSphere === null && sphereIds.length > 0) {
       this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
     }
+    //
+    // let sphere = state.spheres[activeSphere];
+    // let stoneIds = Object.keys(sphere.stones);
+    // stoneIds.forEach((stoneId) => {
+    //   this.props.store.dispatch({
+    //     type:     'DELETE_ACTIVITY_LOG_CLOUD_IDS',
+    //     sphereId: activeSphere,
+    //     stoneId:  stoneId
+    //   });
+    // })
 
     this._updateNavBar();
   }

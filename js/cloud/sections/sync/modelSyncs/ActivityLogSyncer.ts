@@ -13,13 +13,16 @@
 import {transferActivityLogs} from "../../../transferData/transferActivityLogs";
 import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
+import {LOG, LOGe} from "../../../../logging/Log";
+import {CLOUD} from "../../../cloudAPI";
 
 
 export class ActivityLogSyncer extends SyncingSphereItemBase {
   localStoneId: string;
   cloudStoneId: string;
 
-  activityLogUploadBatch : [transferNewToCloudStoneData]
+  activityLogUploadBatch : [[transferNewToCloudStoneData]]
+  maxBatchSize;
 
   constructor(
     actions: any[],
@@ -37,6 +40,7 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
     this.cloudStoneId = cloudStoneId;
     // @ts-ignore
     this.activityLogUploadBatch = [];
+    this.maxBatchSize = 100;
   }
 
 
@@ -64,11 +68,16 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
 
         let localActivityLogIdsSynced = this.syncDown(activityLogsInState, activity_logs_in_cloud);
         this.syncUp(activityLogsInState, localActivityLogIdsSynced);
-
         if (this.activityLogUploadBatch.length > 0) {
+          let uploadCounter = 0;
           this.transferPromises.push(
-            transferActivityLogs.batchCreateOnCloud(this.actions, this.activityLogUploadBatch)
-          );
+            Util.promiseBatchPerformer(this.activityLogUploadBatch, (uploadBatch) => {
+              uploadCounter++;
+              LOG.info("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');
+              console.log("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');
+              return transferActivityLogs.batchCreateOnCloud(store.getState(), this.actions, uploadBatch);
+            })
+          )
         }
 
         return Promise.all(this.transferPromises);
@@ -129,7 +138,18 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
     // if the scheduleId does not exist in the cloud but we have it locally.
     if (!hasSyncedDown) {
       if (!activityLogInState.cloudId) {
-        this.activityLogUploadBatch.push({
+        // fill the batch uploader.
+        if (this.activityLogUploadBatch.length === 0) {
+          // @ts-ignore
+          this.activityLogUploadBatch.push([]);
+        }
+
+        if (this.activityLogUploadBatch[this.activityLogUploadBatch.length-1].length >= this.maxBatchSize) {
+          // @ts-ignore
+          this.activityLogUploadBatch.push([]);
+        }
+
+        this.activityLogUploadBatch[this.activityLogUploadBatch.length-1].push({
           localId: localId,
           localData: activityLogInState,
           localSphereId: this.localSphereId,

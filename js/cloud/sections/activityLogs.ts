@@ -14,8 +14,7 @@ export const activityLogs = {
   },
 
   batchCreateActivityLogs: function (data, background = true) {
-    console.log("implement batchCreateActivityLogs to upload", data, "for stone", this.stoneId)
-    return new Promise((resolve, reject) => { resolve()})
+    return new Promise((resolve, reject) => { resolve([])})
     // return this._setupRequest(
     //   'POST',
     //   '/Stones/{id}/activityLogBatch',

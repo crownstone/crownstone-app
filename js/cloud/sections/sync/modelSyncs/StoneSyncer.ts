@@ -27,12 +27,18 @@ export class StoneSyncer extends SyncingSphereItemBase {
   }
 
   sync(store) {
+    let stonesInState;
+    let stonesInCloud;
     return this.download()
-      .then((stonesInCloud) => {
+      .then((result) => {
+        stonesInCloud = result;
         this._constructLocalIdMap();
 
-        let stonesInState = this._getLocalData(store);
-        let localStoneIdsSynced = this.syncDown(store, stonesInState, stonesInCloud);
+        stonesInState = this._getLocalData(store);
+        return this.syncDown(store, stonesInState, stonesInCloud);
+      })
+      .then((localStoneIdsSynced) => {
+
         this.syncUp(stonesInState, localStoneIdsSynced);
 
         this.uploadDiagnostics(store, stonesInState, stonesInCloud);
@@ -47,7 +53,10 @@ export class StoneSyncer extends SyncingSphereItemBase {
     let cloudIdMap = this._getCloudIdMap(stonesInState);
 
     // go through all stones in the cloud.
-    stonesInCloud.forEach((stone_from_cloud) => { // underscores so its visually different from stoneInState
+    return Util.promiseBatchPerformer(stonesInCloud, (stone_from_cloud) => { // underscores so its visually different from stoneInState
+      console.log("Syncing Stone", stone_from_cloud.name)
+      this.transferPromises = [];
+
       let localId = cloudIdMap[stone_from_cloud.id];
 
       // determine the linked location id
@@ -87,12 +96,14 @@ export class StoneSyncer extends SyncingSphereItemBase {
       cloudIdMap[stone_from_cloud.id] = localId;
 
       this.syncChildren(localId, store, stone_from_cloud);
-    });
 
-
-    this.globalSphereMap.stones = {...this.globalSphereMap.stones, ...cloudIdMap}
-    this.globalCloudIdMap.stones = {...this.globalCloudIdMap.stones, ...cloudIdMap};
-    return localStoneIdsSynced;
+      return Promise.all(this.transferPromises);
+    })
+      .then(() => {
+        this.globalSphereMap.stones = {...this.globalSphereMap.stones, ...cloudIdMap}
+        this.globalCloudIdMap.stones = {...this.globalCloudIdMap.stones, ...cloudIdMap};
+        return localStoneIdsSynced;
+      })
   }
 
 
