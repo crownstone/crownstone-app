@@ -218,4 +218,3 @@ let aiStyle = StyleSheet.create({
     borderWidth: 2, width:90, height:50, borderRadius:25, borderColor: colors.white.rgba(0.75), alignItems:'center', justifyContent:'center'
   }
 });
-

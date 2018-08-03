@@ -25,9 +25,9 @@ import { BlePromiseManager }     from "../../logic/BlePromiseManager";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
 
-export class SettingsPluginRecoverStep2 extends Component<any, any> {
+export class SettingsFactoryResetStep2 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Recovering" }
+    return { title: "Resettings" }
   };
 
   lookingForCrownstone : boolean = true;
@@ -47,7 +47,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
     this.props.eventBus.emit("ignoreTriggers");
 
     // this is done with an event to avoid double starting due to additional construction by the navigation lib.
-    this.props.eventBus.on("StartRecoverProcess", () => {
+    this.props.eventBus.on("StartFactoryResetProcess", () => {
       // we scan high frequency when we see a setup node
       BleUtil.startHighFrequencyScanning(this.uuid, true);
       this.searchForStone()
@@ -63,7 +63,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
 
   switchImages() {
     if (this.lookingForCrownstone === true) {
-      this.setState({text:'Attempting to recover Crownstone...',});
+      this.setState({text:'Attempting to reset Crownstone...',});
       Animated.timing(this.state.fade1, {toValue: 0, duration: 200}).start();
       setTimeout(() => {
         Animated.timing(this.state.fade2, {toValue: 1, duration: 200}).start();
@@ -114,7 +114,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
           let description = this._getDescription(map[nearestNormal.handle]);
           if (nearestNormal.rssi > -60) {
             Alert.alert("Crownstone in Setup mode nearby.",
-              "We detect a Crownstone in setup mode close by, as well as one in normal mode which is already in your Sphere (" + description + "). Do you want to try to recover your own Crownstone?",
+              "We detect a Crownstone in setup mode close by, as well as one in normal mode which is already in your Sphere (" + description + "). Do you want to try to factory reset your own Crownstone?",
               [{text:'Cancel', style: 'cancel', onPress: () => { BackAction(); }},{text:'Recover', onPress: () => {
                 this._removeOwnedCrownstone(nearestNormal.handle);
               }}],
@@ -124,7 +124,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
           else {
             let defaultAction = () => { BackAction(); };
             Alert.alert("Crownstone in Setup mode nearby.",
-              "We detect a Crownstone in setup mode close by, as well as one in normal mode which is already in your Sphere and a bit farther away (" + description + "). If you want to try to recover this one, move closer to it.",
+              "We detect a Crownstone in setup mode close by, as well as one in normal mode which is already in your Sphere and a bit farther away (" + description + "). If you want to try to factory reset this one, move closer to it.",
               [{text:'OK', onPress: defaultAction }],
               { cancelable: false }
             );
@@ -134,14 +134,14 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
           // both setup AND normal in range.
           if (nearestNormal.rssi > -60) {
             Alert.alert("Crownstone in Setup mode nearby.",
-              "We detect a Crownstone in setup mode close by, as well as one in normal mode that is not in your Spheres. Do you still want to try to recover the one in normal mode?",
+              "We detect a Crownstone in setup mode close by, as well as one in normal mode that is not in your Spheres. Do you still want to try to factory reset the one in normal mode?",
               [{text:'Cancel', style: 'cancel', onPress: () => { BackAction(); }},{text:'Recover', onPress: () => { this.recoverStone(nearestNormal.handle); }}],
               { cancelable: false }
             );
           }
           else {
             Alert.alert("Crownstone in Setup mode nearby.",
-              "We detect a Crownstone in setup mode close by, and one in normal mode (that is not in your Spheres) a bit further away. Do you still want to try to recover the one in normal mode?",
+              "We detect a Crownstone in setup mode close by, and one in normal mode (that is not in your Spheres) a bit further away. Do you still want to try to factory reset the one in normal mode?",
               [{text:'Cancel', style: 'cancel', onPress: () => { BackAction(); }},{text:'Recover', onPress: () => { this.recoverStone(nearestNormal.handle); }}],
               { cancelable: false }
             );
@@ -157,7 +157,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
             let description = this._getDescription(map[nearestNormal.handle]);
             if (nearestNormal.rssi > -60) {
               Alert.alert("No unknown Crownstone nearby.",
-                "We detect a Crownstone that is already in your Sphere (" + description + "). Do you want to try to recover your own Crownstone?",
+                "We detect a Crownstone that is already in your Sphere (" + description + "). Do you want to try to factory reset your own Crownstone?",
                 [{text:'Cancel', style: 'cancel', onPress: () => { BackAction(); BackAction(); }},{text:'Recover', onPress: () => {
                   this._removeOwnedCrownstone(nearestNormal.handle);
                 }}],
@@ -166,7 +166,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
             }
             else {
               Alert.alert("No unknown Crownstones found.",
-                "We detect a Crownstone that is already in your Sphere (" + description + ") and not very close. If you want to try to recover this one, move closer to it.",
+                "We detect a Crownstone that is already in your Sphere (" + description + ") and not very close. If you want to try to factory reset this one, move closer to it.",
                 [{text:'OK', onPress: defaultAction }],
                 { cancelable: false }
               );
@@ -187,7 +187,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
         }
         else if (nearestSetup !== undefined && nearestNormal === undefined) {
           Alert.alert("Recovery might not be needed.",
-            "We can not find a recoverable Crownstone in range, though there is a Crownstone in setup mode close by. Maybe the Crownstone has already been recovered or set to factory defaults? Try adding it to your Sphere!",
+            "We can not find a suitable Crownstone in range, though there is a Crownstone in setup mode close by. Maybe the Crownstone has already been set to factory defaults? Try adding it to your Sphere!",
             [{text:'OK', onPress: defaultAction }],
             { cancelable: false }
           )
@@ -204,7 +204,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
 
   recoverStone(handle) {
     this.switchImages();
-    LOG.info('attempting to recover handle:', handle);
+    LOG.info('attempting to factory reset handle:', handle);
     let recoveryPromise = () => {
       return BluenetPromiseWrapper.recover(handle);
     };
@@ -226,14 +226,14 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
         LOGe.info("ERROR IN RECOVERY", err);
         let defaultAction = () => { BackAction(); };
         if (err === "NOT_IN_RECOVERY_MODE") {
-          Alert.alert("Not in recovery mode.",
-            "You have 20 seconds after you plug the Crownstone in to recover. Please follow the steps again to retry.",
+          Alert.alert("Not in Factory Reset mode.",
+            "You have 20 seconds after you plug the Crownstone in to factory reset it. Please follow the steps again to retry.",
             [{text:'OK', onPress: defaultAction}],
             { cancelable: false }
           )
         }
         else {
-          Alert.alert("Error during recovery.",
+          Alert.alert("Error during Factory Reset.",
             "Please repeat the process to try again.",
             [{text:'OK', onPress: defaultAction}],
             { cancelable: false }

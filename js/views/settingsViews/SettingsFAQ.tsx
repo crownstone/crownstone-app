@@ -145,7 +145,7 @@ export class SettingsFAQ extends Component<any, any> {
       label:"... a new Crownstone won't show up.",
       content:"Make sure the Crownstone is powered and that you're close to it. " +
       "During setup mode the Crownstone is transmitting very quietly so other people can't claim your Crownstones!\n\n" +
-      "If it still won't show up, you may want to try the recovery procedure (see 'what to do if I need to recover a Crownstone' below).",
+      "If it still won't show up, you may want to try the factory reset procedure (see 'what to do if I need to factory reset a Crownstone' below).",
       contentHeight: 175
     });
 
@@ -153,7 +153,7 @@ export class SettingsFAQ extends Component<any, any> {
       type:'collapsable',
       label:"... a Crownstone is on 'Searching'.",
       content:"Ensure there is power on the Crownstone and that you can reach it.\n\n" +
-      "If you're near (within a meter) and it is still on 'Searching' you may want to try the recovery procedure (see 'what to do if I need to recover a Crownstone' below).",
+      "If you're near (within a meter) and it is still on 'Searching' you may want to try the factory reset procedure (see 'what to do if I need to factory reset a Crownstone' below).",
       contentHeight: 155
     });
 
@@ -226,7 +226,7 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'collapsable',
-      label:"... I need to recover a Crownstone.",
+      label:"... I need to factory reset a Crownstone.",
       contentItem:
         <View style={{flex:1}}>
           <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{"Only use this as a last resort. \n\n- Tap the button below and follow the instructions.\n" +
@@ -234,10 +234,10 @@ export class SettingsFAQ extends Component<any, any> {
           </Text>
           <View style={{flex:1}} />
           <NavigationBar
-            label={'Recover Crownstone'}
+            label={'Reset Crownstone'}
             icon={<IconButton name={'ios-build'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              Actions.settingsPluginRecoverStep1()
+              Actions.settingsFactoryResetStep1()
             }}
           />
           <View style={{flex:1}} />

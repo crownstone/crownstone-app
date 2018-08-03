@@ -48,8 +48,8 @@ import { SettingsMeshOverview }        from '../views/settingsViews/SettingsMesh
 import { SettingsMeshTopology}         from '../views/settingsViews/SettingsMeshTopology'
 import { SettingsMeshTopologyHelp }    from "../views/settingsViews/SettingsMeshTopologyHelp";
 import { SettingsRedownloadFromCloud } from '../views/settingsViews/SettingsRedownloadFromCloud'
-import { SettingsPluginRecoverStep1 }  from '../views/settingsViews/SettingsPluginRecoverStep1'
-import { SettingsPluginRecoverStep2 }  from '../views/settingsViews/SettingsPluginRecoverStep2'
+import { SettingsFactoryResetStep1 }   from '../views/settingsViews/SettingsFactoryResetStep1'
+import { SettingsFactoryResetStep2 }   from '../views/settingsViews/SettingsFactoryResetStep2'
 import { Tutorial }                    from "../views/tutorialViews/Tutorial";
 import { IconDebug }                   from "../views/development/IconDebug";
 import { SettingsFAQ }                 from "../views/settingsViews/SettingsFAQ";
@@ -120,8 +120,8 @@ export const Views = {
   SettingsMeshTopology,
   SettingsMeshTopologyHelp,
   SettingsRedownloadFromCloud,
-  SettingsPluginRecoverStep1,
-  SettingsPluginRecoverStep2,
+  SettingsFactoryResetStep1,
+  SettingsFactoryResetStep2,
   SwitchCraftInformation,
   Tutorial,
   IconDebug,

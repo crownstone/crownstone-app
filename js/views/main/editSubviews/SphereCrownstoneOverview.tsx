@@ -17,6 +17,7 @@ import {addCrownstoneExplanationAlert} from "../AddItemsToSphere";
 import {Icon} from "../../components/Icon";
 import {IconButton} from "../../components/IconButton";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../../util/Back";
 
 const Actions = require('react-native-router-flux').Actions;
 
@@ -119,7 +120,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
       type: 'button',
       callback: () => {
         if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
-          addCrownstoneExplanationAlert()
+          addCrownstoneExplanationAlert(() => { BackAction('sphereOverview'); } )
         }
         else {
           Alert.alert("Ask your Sphere Admin","Admins can add new Crownstones to Spheres. If you have a new Crownstone you'd like to add, ask the sphere Admin.",[{text:"OK"}]);

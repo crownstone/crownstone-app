@@ -110,8 +110,8 @@ export class Router_IOS extends Component {
             <Scene key="settingsMeshTopologyHelp"       component={Views.SettingsMeshTopologyHelp}   />
             <Scene key="deviceIconSelection"            component={Views.DeviceIconSelection}        />
             <Scene key="settingsRedownloadFromCloud"    component={Views.SettingsRedownloadFromCloud}/>
-            <Scene key="settingsPluginRecoverStep1"     component={Views.SettingsPluginRecoverStep1} />
-            <Scene key="settingsPluginRecoverStep2"     component={Views.SettingsPluginRecoverStep2} />
+            <Scene key="settingsFactoryResetStep1"      component={Views.SettingsFactoryResetStep1}  />
+            <Scene key="settingsFactoryResetStep2"      component={Views.SettingsFactoryResetStep2}  />
 
             {/*<Scene key="iconDebug"     chunks={1}       component={Views.IconDebug}  initial={true} />*/}
           </Modal>

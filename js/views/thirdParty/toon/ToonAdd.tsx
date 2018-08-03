@@ -186,7 +186,7 @@ export class ToonAdd extends Component<any, any> {
   }
 
   _getExplanation() {
-    if (!this.state.processing && !this.state.failed) {
+    if (!this.state.success && !this.state.processing && !this.state.failed) {
      return (
        <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{
          "Sometimes, Toon is set to \"Away\" while you're still there...\n\n... but Crownstone can ensure that it is set to \"Home\" as long as you're home!"
