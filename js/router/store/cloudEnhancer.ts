@@ -13,6 +13,8 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {LOG_LEVEL} from "../../logging/LogLevels";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
+import {transferActivityLogs} from "../../cloud/transferData/transferActivityLogs";
+import {transferToons} from "../../cloud/transferData/thirdParty/transferToons";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -159,7 +161,6 @@ function handleAction(action, returnValue, newState, oldState) {
     case "SET_SPHERE_STATE":
       handleSphereStateOnDevice(action, newState);
       break;
-
 
   }
 }
@@ -389,8 +390,6 @@ function handleDeviceInCloud(action, state) {
     name: deviceConfig.name,
     address: deviceConfig.address,
     description: deviceConfig.description,
-    hubFunction: deviceConfig.hubFunction,
-    location: state.user.uploadLocation === true ? deviceConfig.location : undefined,
     tapToToggleCalibration: deviceConfig.tapToToggleCalibration,
     updatedAt: deviceConfig.updatedAt
   };

@@ -55,10 +55,10 @@ export class SettingsDeveloper extends Component<any, any> {
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
     items.push({label: "LOGGING", type: 'explanation', below: false});
-    if (!user.logging) {
+    if (!dev.logging_enabled) {
       items.push({
         label: "Enable Logging",
-        value: user.logging,
+        value: dev.logging_enabled,
         type: 'switch',
         icon: <IconButton name="ios-create" size={22} button={true} color="#fff"
                           buttonStyle={{backgroundColor: colors.green2.hex}}/>,
@@ -68,7 +68,7 @@ export class SettingsDeveloper extends Component<any, any> {
           }
           store.dispatch({
             type: 'SET_LOGGING',
-            data: {logging: newValue}
+            data: {logging_enabled: newValue}
           });
           Bluenet.enableLoggingToFile(newValue);
         }
@@ -79,8 +79,7 @@ export class SettingsDeveloper extends Component<any, any> {
       items.push({
         label: "Logging Configuration",
         type: 'navigation',
-        icon: <IconButton name="ios-create" size={22} button={true} color="#fff"
-                          buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+        icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         callback: () => {
           Actions.settingsLogging()
         }
@@ -118,28 +117,9 @@ export class SettingsDeveloper extends Component<any, any> {
     }});
 
 
-    let deviceId = Util.data.getCurrentDeviceId(state);
-    let device = deviceId && state.devices[deviceId] || null;
-    if (device) {
-      items.push({
-        label:"Use as Hub",
-        value: device.hubFunction,
-        type: 'switch',
-        icon: <IconButton name="md-cube" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-        callback:(newValue) => {
-          store.dispatch({
-            type: 'UPDATE_DEVICE_CONFIG',
-            deviceId: deviceId,
-            data: {hubFunction: newValue}
-          });
-        }});
-      items.push({label: "A Hub will use push notifications from the cloud to toggle your devices remotely.", type: 'explanation', below: true});
-    }
-    else {
-      items.push({label: "No device available... Try triggering a sync?", type: 'explanation', below: true});
-    }
-
-
+    // let deviceId = Util.data.getCurrentDeviceId(state);
+    // let device = deviceId && state.devices[deviceId] || null;
+    items.push({label: "DEBUG VIEWS", type: 'explanation'});
     items.push({
       label:"BLE Debug",
       type: 'navigation',
@@ -154,6 +134,8 @@ export class SettingsDeveloper extends Component<any, any> {
       callback:() => {
         Actions.settingsLocalizationDebug()
       }});
+
+    items.push({label: "ACTIVITY LOGS", type: 'explanation'});
     items.push({
       label:"Show Full Activity Log",
       value: dev.show_full_activity_log,
@@ -162,6 +144,18 @@ export class SettingsDeveloper extends Component<any, any> {
       callback:(newValue) => {
         store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_full_activity_log: newValue }});
       }});
+    if (dev.show_full_activity_log) {
+      items.push({
+        label:"Show only own activity",
+        value: dev.show_only_own_activity_log,
+        type: 'switch',
+        icon: <IconButton name="c1-people" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkerPurple.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_only_own_activity_log: newValue }});
+        }});
+    }
+
+    items.push({label: "DO NOT USE", type: 'explanation'});
     items.push({
       label:"Use Advertisement RSSI",
       value: dev.use_advertisement_rssi_too,

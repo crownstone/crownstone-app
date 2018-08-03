@@ -1,6 +1,8 @@
 import {eventBus} from "../util/EventBus";
 import {LOG} from "../logging/Log";
 import {Util} from "../util/Util";
+import {transferActivityLogs} from "../cloud/transferData/transferActivityLogs";
+import {MapProvider} from "./MapProvider";
 
 
 class ActivityLogManagerClass {
@@ -88,6 +90,32 @@ class ActivityLogManagerClass {
   _commit() {
     if (this._stagedActions.length > 0) {
       this.store.batchDispatch(this._stagedActions);
+
+      // @ts-ignore
+      let data : [transferNewToCloudStoneData] = [];
+      let state = this.store.getState();
+
+      for (let i = 0; i < this._stagedActions.length; i++) {
+        let action = this._stagedActions[i];
+        let sphere = state.spheres[action.sphereId];
+        let stone = sphere.stones[action.stoneId];
+        data.push({
+          localId: action.logId,
+          localData: stone.activityLogs[action.logId],
+          localSphereId: action.sphereId,
+          localStoneId: action.stoneId,
+          cloudStoneId: MapProvider.local2cloudMap.stones[action.stoneId],
+        })
+      }
+
+      let actions = [];
+      transferActivityLogs.batchCreateOnCloud(state,actions, data)
+        .then(() => {
+          this.store.batchDispatch(actions);
+        })
+        .catch((err) => {
+          this.store.batchDispatch(actions);
+        })
     }
     this._stagedActions = [];
   }

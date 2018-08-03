@@ -63,7 +63,6 @@ export class ToonAdd extends Component<any, any> {
 
 
   process(url) {
-    console.log("URL",url)
     let codeExtractRegex = /code=(.*?)&/gm;
     let result = codeExtractRegex.exec(url);
     if (!result || result.length != 2) { return this.setState({failed: true}); }
@@ -71,6 +70,7 @@ export class ToonAdd extends Component<any, any> {
     let code = result[1];
 
     let accessTokens : any = {};
+    let agreementIds : any = {};
     CLOUD.thirdParty.toon.getAccessToken(code)
       .then((data) => {
         if (data.status === 200) {
@@ -84,6 +84,7 @@ export class ToonAdd extends Component<any, any> {
               refreshToken: accessTokens.refresh_token,
             }
           });
+
           return CLOUD.thirdParty.toon.getToonIds(accessTokens.access_token);
         }
         else {
@@ -91,27 +92,52 @@ export class ToonAdd extends Component<any, any> {
         }
       })
       .then((data) => {
-        if (data.status !== 200) {
-          throw "Failed"
-        }
+        if (data.status === 200) {
+          agreementIds = data.data;
+          this.props.store.dispatch({type:"REMOVE_ALL_TOONS", sphereId: this.props.sphereId});
 
-        let toonIds = data.data;
-        if (toonIds.length > 0) {
-          let agreementId = toonIds[0].agreementId;
-          this.props.store.dispatch({
-            type: 'TOON_UPDATE_SETTINGS',
-            sphereId: this.props.sphereId,
-            data: {
-              toonAgreementId: agreementId,
-            }
-          });
-          return CLOUD.thirdParty.toon.getToonSchedules(agreementId, accessTokens.access_token)
+          return CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud()
+        }
+        else {
+          throw "Failed to get agreementIds";
         }
       })
-      .then((schedules) => {
-        console.log("schedule", schedules)
+      .then(() => {
+          let actions = [];
+          let promises = [];
+          agreementIds.forEach((agreementId) => {
+            CLOUD.forSphere(this.props.sphereId).thirdParty.toon.createToonInCrownstoneCloud({
+              refreshToken: accessTokens.refresh_token,
+              toonAgreementId: agreementId.agreementId,
+              toonAddress: agreementId.street + " " + agreementId.houseNumber
+            })
+              .then((toon) => {
+                actions.push({
+                  type: "ADD_TOON",
+                  sphereId: this.props.sphereId,
+                  toonId: agreementId.agreementId,
+                  data: {
+                    enabled: true,
+                    toonAgreementId: agreementId.agreementId,
+                    toonAddress: agreementId.street + " " + agreementId.houseNumber,
+                    schedule: toon.schedule
+                  }
+                })
+              })
+          })
+        return Promise.all(promises).then(() => { this.props.store.batchDispatch(actions) })
+      })
+      .then(() => {
+        if (agreementIds.length > 1) {
+          Alert.alert("more than 1 toon detected")
+          Actions.toonSettings({sphereId: this.props.sphereId, __popBeforeAddCount: 1})
+        }
+        else {
+          Actions.toonSettings({sphereId: this.props.sphereId, __popBeforeAddCount: 1})
+        }
       })
       .catch((err) => {
+        console.log("ERROR:", err);
         Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
       })
   }

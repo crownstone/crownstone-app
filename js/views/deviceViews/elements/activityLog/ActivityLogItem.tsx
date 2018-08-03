@@ -24,16 +24,6 @@ import {Icon} from "../../../components/Icon";
 export class ActivityLogItem extends Component<any, any> {
 
   _getBackgroundColor() {
-    // if (this.props.data.presumedDuplicate) {
-    //   return colors.darkGray.hex;
-    // }
-    // if (this.props.data.duplicate) {
-    //   return colors.purple.hex;
-    // }
-    // if (this.props.data.extra === 'multiswitch') {
-    //   return colors.darkRed.hex;
-    // }
-
     if (this.props.data.cancelled) {
       return colors.menuRed.hex;
     }
@@ -161,6 +151,10 @@ export class ActivityLogItem extends Component<any, any> {
 
   _getText(canDoIndoorLocalization, roomConfig) {
     let targetState = (this.props.data.switchedToState === 0 ? 'off' : 'on');
+    let personPrefix = "You";
+    if (this.props.data.userId !== this.props.state.user.userId && this.props.data.userId) {
+      personPrefix = "Someone else"
+    }
     let initialLabel = 'Switched ';
     if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
       targetState = Math.round((this.props.data.switchedToState/0.99)*100) + " %"
@@ -173,9 +167,9 @@ export class ActivityLogItem extends Component<any, any> {
     if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState') {
       if (this.props.data.viaMesh) {
         if (this.props.data.switchedToState === -1) {
-          return 'You told another Crownstone to tell this one that it should not change if no more heartbeats come in.'
+          return personPrefix + ' told another Crownstone to tell this one that it should not change if no more heartbeats come in.'
         }
-        return 'You told another Crownstone to turn ' + targetState + ' this one after ' + Math.floor(this.props.data.delayInCommand / 60) + ' minutes if no more heartbeats come in.';
+        return personPrefix + ' told another Crownstone to turn ' + targetState + ' this one after ' + Math.floor(this.props.data.delayInCommand / 60) + ' minutes if no more heartbeats come in.';
       }
       else {
         if (this.props.data.switchedToState === -1) {
@@ -185,7 +179,7 @@ export class ActivityLogItem extends Component<any, any> {
       }
     }
     else if (this.props.data.type === 'tap2toggle') {
-      return 'You held your phone so close to the Crownstone that you triggered Tap-to-Toggle!';
+      return personPrefix + ' held the phone so close to the Crownstone that ' + personPrefix.toLowerCase() + ' triggered Tap-to-Toggle!';
     }
     else if (this.props.data.type === 'skippedHeartbeat') {
       return this.props.data.count + ' heartbeats once every ' + this.props.data.averageTime + ' seconds.';
@@ -244,10 +238,10 @@ export class ActivityLogItem extends Component<any, any> {
       let label = '';
       if ( this.props.data.delayInCommand > 0) {
         if (this.props.data.viaMesh) {
-          label = 'You told another Crownstone to switch this one ' + targetState + " after "
+          label = personPrefix + ' told another Crownstone to switch this one ' + targetState + " after "
         }
         else {
-          label = 'You told this the Crownstone to switch ' + targetState + " after "
+          label = personPrefix + ' told this the Crownstone to switch ' + targetState + " after "
         }
 
         if (this.props.data.delayInCommand > 60) {
@@ -260,10 +254,10 @@ export class ActivityLogItem extends Component<any, any> {
       }
       else {
         if (this.props.data.viaMesh) {
-          label = 'You told another Crownstone to switch this one ' + targetState
+          label = personPrefix + ' told another Crownstone to switch this one ' + targetState
         }
         else {
-          label = 'You switched the Crownstone ' + targetState
+          label = personPrefix + ' switched the Crownstone ' + targetState
         }
       }
       switch (this.props.data.intent) {

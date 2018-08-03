@@ -154,8 +154,8 @@ class BackgroundProcessHandlerClass {
 
   setupLogging() {
     let state = this.store.getState();
-    Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true) || LOG_TO_FILE === true);
-    if ((state.user.logging === true && state.user.developer === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
+    Bluenet.enableLoggingToFile((state.user.developer === true && state.development.logging_enabled === true) || LOG_TO_FILE === true);
+    if ((state.user.developer === true && state.development.logging_enabled === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
       Bluenet.enableExtendedLogging(true);
     }
   }

@@ -17,6 +17,7 @@ import { StoneSyncer }        from "./StoneSyncer";
 import { MessageSyncer }      from "./MessageSyncer";
 import {LOG} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
+import {ToonSyncer} from "./thirdParty/ToonSyncer";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;
@@ -85,13 +86,14 @@ export class SphereSyncer extends SyncingBase {
   syncChildren(store, localId, localSphere, sphere_from_cloud) {
     this.globalSphereMap[localId] = getGlobalIdMap();
 
-    this.syncFloatingLocationPosition(store, localId, localSphere, sphere_from_cloud)
+    this.syncFloatingLocationPosition(store, localId, localSphere, sphere_from_cloud);
 
     let sphereUserSyncer  = new SphereUserSyncer( this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let locationSyncer    = new LocationSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let applianceSyncer   = new ApplianceSyncer(  this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let stoneSyncer       = new StoneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    let toonSyncer        = new ToonSyncer(       this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
 
     // sync sphere users
     LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");
@@ -123,6 +125,12 @@ export class SphereSyncer extends SyncingBase {
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE messageSyncer sync.");
+        LOG.info("SphereSync ",localId,": START ToonSyncer sync.");
+        // sync messages
+        return toonSyncer.sync(store);
+      })
+      .then(() => {
+        LOG.info("SphereSync ",localId,": DONE ToonSyncer sync.");
       })
     );
   }

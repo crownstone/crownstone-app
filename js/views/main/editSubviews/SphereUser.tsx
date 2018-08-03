@@ -118,7 +118,7 @@ export class SphereUser extends Component<any, any> {
     let user = state.spheres[this.props.sphereId].users[this.props.userId];
 
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={this.props.backgrounds.menu} hasNavBar={false}>
         <OrangeLine/>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>

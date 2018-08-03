@@ -99,7 +99,7 @@ class LogProcessorClass {
     if (this.store) {
       let state = this.store.getState();
       let dev = state.user.developer;
-      let log = state.user.logging;
+      let log = state.development.logging_enabled;
       let devState = state.development;
 
       this.writeToFile = dev === true && log === true;

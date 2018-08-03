@@ -421,7 +421,7 @@ class BatchCommandHandlerClass {
           if (Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store) {
             // check if we have to tell this crownstone what time it is.
             let state = this.store.getState();
-            let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].config.lastUpdatedStoneTime;
+            let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].lastUpdated.stoneTime;
             // if it is more than 5 hours ago, tell this crownstone the time.
             if (new Date().valueOf() - lastTime > STONE_TIME_REFRESH_INTERVAL) {
               // this will never halt the chain since it's optional.

@@ -27,9 +27,12 @@ export class GuidestoneSummary extends Component<any, any> {
       let change = data.change;
 
       if (
-        change.changeAppSettings ||
-        change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
-        change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId]
+        !change.removeStone &&
+        (
+          change.changeAppSettings ||
+          change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+          change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId]
+        )
       ) {
         this.forceUpdate();
       }

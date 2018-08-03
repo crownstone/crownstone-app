@@ -6,6 +6,7 @@ import scheduleReducer   from './stoneSubReducers/schedule'
 import meshReducer       from './stoneSubReducers/mesh'
 import activityLogsReducer from './stoneSubReducers/activityLog'
 import reachabilityReducer from './stoneSubReducers/reachability'
+import lastUpdatedReducer from './stoneSubReducers/lastUpdated'
 
 export let BEHAVIOUR_TYPES = {
   NEAR: 'onNear',
@@ -50,10 +51,10 @@ let defaultSettings = {
     locked: false,
     switchCraft: false,
     type: STONE_TYPES.plug,
-    stoneTime: 0,
-    stoneTimeChecked: 0,
     updatedAt: 1,
-    lastUpdatedStoneTime: 0,
+  },
+  lastUpdated: {
+    stoneTime: 0,
   },
   state: {
     state: 0.0,
@@ -134,14 +135,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       }
       return state;
 
-    case 'UPDATE_STONE_REMOTE_TIME':
-      if (action.data) {
-        let newState = {...state};
-        newState.stoneTime        = update(action.data.stoneTime, newState.stoneTime);
-        newState.stoneTimeChecked = getTime(action.data.stoneTimeChecked);
-        return newState;
-      }
-      return state;
     case 'UPDATE_STONE_DFU_RESET':
       if (action.data) {
         let newState = {...state};
@@ -203,10 +196,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
-    case 'UPDATED_STONE_TIME':
-      let newState = {...state};
-      newState.lastUpdatedStoneTime = getTime();
-      return newState;
+
     case 'REFRESH_DEFAULTS':
 
       return refreshDefaults(state, defaultSettings.config);
@@ -386,6 +376,7 @@ let combinedStoneReducer = combineReducers({
   errors:     stoneErrorsReducer,
   powerUsage: powerUsageReducer,
   mesh:       meshReducer,
+  lastUpdated:  lastUpdatedReducer,
   activityLogs: activityLogsReducer,
   reachability:  reachabilityReducer,
 });

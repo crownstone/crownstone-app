@@ -142,8 +142,8 @@ export class SettingsLogging extends Component<any, any> {
       icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:(newValue) => {
         store.dispatch({
-          type: 'SET_DEVELOPER_MODE',
-          data: {logging: false}
+          type: 'SET_LOGGING',
+          data: {logging_enabled: false}
         });
 
         clearAllLogs();

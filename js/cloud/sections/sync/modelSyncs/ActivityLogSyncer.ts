@@ -15,6 +15,7 @@ import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {LOG, LOGe} from "../../../../logging/Log";
 import {CLOUD} from "../../../cloudAPI";
+import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 
 
 export class ActivityLogSyncer extends SyncingSphereItemBase {
@@ -44,9 +45,25 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
   }
 
 
-  download() {
-    // TODO: add this
-    return new Promise((resolve, reject) => { resolve([]); })
+  download(state) {
+    if (Permissions.inSphere(this.localSphereId).seeActivityLogs === false) {
+      return new Promise((resolve, reject) => { resolve([]); })
+    }
+
+    let lastTimestamp = null;
+    if (state &&
+      state.spheres[this.localSphereId] &&
+      state.spheres[this.localSphereId].stones &&
+      state.spheres[this.localSphereId].stones[this.localStoneId]) {
+      lastTimestamp = state.spheres[this.localSphereId].stones[this.localStoneId].lastUpdated.syncedActivityLog;
+    }
+
+    let request = { excludeUserId: state.user.userId, yourTimestamp: new Date().valueOf() };
+    if (lastTimestamp) {
+      request['lastTimestamp'] = lastTimestamp;
+    }
+
+    return CLOUD.forStone(this.cloudStoneId).getActivityLogs(request);
   }
 
   _getLocalData(store) {
@@ -62,11 +79,12 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
   }
 
   sync(store) {
-    return this.download()
+    let state = store.getState();
+    return this.download(state)
       .then((activity_logs_in_cloud) => {
         let activityLogsInState = this._getLocalData(store);
-
         let localActivityLogIdsSynced = this.syncDown(activityLogsInState, activity_logs_in_cloud);
+
         this.syncUp(activityLogsInState, localActivityLogIdsSynced);
         if (this.activityLogUploadBatch.length > 0) {
           let uploadCounter = 0;
@@ -74,11 +92,17 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
             Util.promiseBatchPerformer(this.activityLogUploadBatch, (uploadBatch) => {
               uploadCounter++;
               LOG.info("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');
-              console.log("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');
+              // console.log("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');
               return transferActivityLogs.batchCreateOnCloud(store.getState(), this.actions, uploadBatch);
             })
           )
         }
+
+        this.actions.push({
+          type:'UPDATE_SYNC_ACTIVITY_TIME',
+          sphereId: this.localSphereId,
+          stoneId: this.localStoneId
+        })
 
         return Promise.all(this.transferPromises);
       })
@@ -185,4 +209,5 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
     }
     return null;
   }
+
 }

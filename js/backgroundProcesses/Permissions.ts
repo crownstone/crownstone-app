@@ -7,6 +7,7 @@ export class PermissionBase {
 
   useKeepAliveState       = false; // g
   setStoneTime            = false; // a or m
+  setToonInCloud          = false; // a
   setBehaviourInCloud     = false; // a
   seeUpdateCrownstone     = false; // a?
   canUpdateCrownstone     = false; // a
@@ -31,6 +32,7 @@ export class PermissionBase {
   editAppliance           = false; // a
   removeAppliance         = false; // a
   canClearErrors          = false; // a
+  seeActivityLogs         = false; // a or m
 
   editSphere              = false; // a
   manageUsers             = false; // a or m
@@ -140,6 +142,7 @@ export class PermissionClass extends PermissionBase {
     switch (level) {
       case 'admin':
         this.setBehaviourInCloud     = true; // admin
+        this.setToonInCloud          = true; // admin
         this.seeUpdateCrownstone     = true; // admin
         this.canUpdateCrownstone     = true; // admin
         this.canSetupCrownstone      = true; // admin
@@ -172,6 +175,7 @@ export class PermissionClass extends PermissionBase {
         this.setStoneTime            = true; // admin and member
         this.manageUsers             = true; // admin and member
         this.moveCrownstone          = true; // admin and member
+        this.seeActivityLogs         = true; // admin and member
 
         this.inviteMemberToSphere    = true; // admin and member
         this.inviteGuestToSphere     = true; // admin and member

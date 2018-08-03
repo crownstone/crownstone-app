@@ -4,18 +4,21 @@ import {
   Dimensions,
   TouchableHighlight,
   PixelRatio,
+  RefreshControl,
   ScrollView,
   Switch,
   Text,
   View
 } from 'react-native';
-import { Background } from '../components/Background'
-import { ListEditableItems } from '../components/ListEditableItems'
-import { IconButton } from '../components/IconButton'
 const Actions = require('react-native-router-flux').Actions;
-import { colors } from './../styles';
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {OrangeLine} from "../styles";
+import { Background }        from '../components/Background'
+import { ListEditableItems } from '../components/ListEditableItems'
+import { IconButton }        from '../components/IconButton'
+import { colors }            from './../styles';
+import {Permissions}         from "../../backgroundProcesses/PermissionManager";
+import {OrangeLine}          from "../styles";
+import {eventBus}            from "../../util/EventBus";
+import {CLOUD}               from "../../cloud/cloudAPI";
 
 export class SphereEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -27,6 +30,25 @@ export class SphereEdit extends Component<any, any> {
     }
   };
 
+  unsubscribe
+
+  constructor(props) {
+    super(props);
+
+    this.state = {syncing: false}
+  }
+
+  componentDidMount() {
+    this.unsubscribe = eventBus.on("CloudSyncComplete", () => {
+      if (this.state.syncing) {
+        this.setState({syncing: false})
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
 
   _getItems() {
     let items = [];
@@ -106,12 +128,19 @@ export class SphereEdit extends Component<any, any> {
 
 
 
-
   render() {
     return (
       <Background image={this.props.backgrounds.menu} hasNavBar={false} >
         <OrangeLine/>
         <ScrollView>
+          <RefreshControl
+            refreshing={this.state.syncing}
+            onRefresh={() => { this.setState({syncing: true}); CLOUD.sync(this.props.store, true) }}
+            title={"Syncing with the Cloud..."}
+            titleColor={colors.darkGray.hex}
+            colors={[colors.csBlue.hex]}
+            tintColor={colors.csBlue.hex}
+          />
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>

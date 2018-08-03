@@ -100,7 +100,7 @@ export class SphereBehaviour extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={this.props.backgrounds.menu} hasNavBar={false}>
         <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

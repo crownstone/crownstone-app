@@ -4,6 +4,7 @@ import { transferUtil } from "./shared/transferUtil";
 
 let fieldMap : fieldMap = [
   {local: 'switchedToState', cloud: 'switchedToState' },
+  {local: 'timestamp',       cloud: 'timestamp'       },
   {local: 'type',            cloud: 'type'            },
   {local: 'intent',          cloud: 'intent'          },
   {local: 'delayInCommand',  cloud: 'delayInCommand'  },
@@ -59,7 +60,7 @@ export const transferActivityLogs = {
       batch.push(payload);
     }
 
-    return CLOUD.forStone(localStoneId).batchCreateActivityLogs(batch)
+    return CLOUD.forStone(localStoneId).batchCreateActivityLogs(batch, new Date().valueOf())
       .then((data) => {
         if (data.length > 0) {
           let sphere = state.spheres[localSphereId];

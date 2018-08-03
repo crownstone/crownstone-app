@@ -4,22 +4,21 @@
 
 export const activityLogs = {
 
-  createActivityLog: function (data, background = true) {
+  getActivityLogs: function (data, background = true) {
     return this._setupRequest(
-      'POST',
-      '/Stones/{id}/activityLog',
+      'GET',
+      '/Stones/{id}/activityLogs',
       {data: data, background: background},
-      'body'
+      'query'
     );
   },
 
-  batchCreateActivityLogs: function (data, background = true) {
-    return new Promise((resolve, reject) => { resolve([])})
-    // return this._setupRequest(
-    //   'POST',
-    //   '/Stones/{id}/activityLogBatch',
-    //   {data: data, background: background},
-    //   'body'
-    // );
+  batchCreateActivityLogs: function (data, timestamp, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Stones/{id}/activityLogBatch?timestamp=' + timestamp,
+      {data: data, background: background},
+      'body'
+    );
   },
 };

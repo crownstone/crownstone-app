@@ -16,6 +16,7 @@ import { KeySyncer }                from "./modelSyncs/KeySyncer";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 import { Sentry }                   from "react-native-sentry";
+import {PreferenceSyncer} from "./modelSyncs/PreferencesSyncer";
 
 
 
@@ -119,6 +120,12 @@ export const sync = {
       })
       .then(() => {
         LOG.info("Sync: DONE Fingerprint sync.");
+        LOG.info("Sync: START Preferences sync.");
+        let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
+        return preferenceSyncer.sync(state);
+      })
+      .then(() => {
+        LOG.info("Sync: DONE Preferences sync.");
         LOG.info("Sync: START syncPowerUsage.");
         return syncPowerUsage(state, actions);
       })

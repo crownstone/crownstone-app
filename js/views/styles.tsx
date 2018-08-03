@@ -46,6 +46,7 @@ export let colors : any = {
   lightGray: {hex:'#eee'},
   purple: {hex:'#8a01ff'},
   darkPurple: {hex:'#5801a9'},
+  darkerPurple: {hex:'#2a0051'},
   blue: {hex:'#0075c9'},
   blue2: {hex:'#2698e9'},
   green: {hex:'#a0eb58'},

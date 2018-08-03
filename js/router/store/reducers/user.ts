@@ -19,7 +19,6 @@ let defaultSettings = {
   seenRoomFingerprintAlert: false,
   appIdentifier: null,
   developer: false,
-  logging: false,
   uploadDiagnostics: true,
   uploadLocation: true,
   uploadSwitchState: true,
@@ -36,13 +35,6 @@ export default (state = defaultSettings, action : any = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.developer = update(action.data.developer, newState.developer);
-        return newState;
-      }
-      return state;
-    case 'SET_LOGGING':
-      if (action.data) {
-        let newState = {...state};
-        newState.logging = update(action.data.logging, newState.logging);
         return newState;
       }
       return state;

@@ -321,6 +321,7 @@ export class ActivityLogProcessor {
     const state = store.getState();
     const sphere = state.spheres[sphereId];
     const stone = sphere.stones[stoneId];
+    let userId = state.user.userId;
 
     let rawLogs = stone.activityLogs;
     let schedules = stone.schedules;
@@ -341,8 +342,16 @@ export class ActivityLogProcessor {
     for ( let i = 0; i < logIds.length; i++ ) {
       let log = rawLogs[logIds[i]]
       if (log.timestamp > earliestDateAllowed) {
-        minAvailable = Math.min(log.timestamp, minAvailable);
-        logs.push({...log});
+        if (state.development.show_only_own_activity_log) {
+          if (log.userId === userId) {
+            minAvailable = Math.min(log.timestamp, minAvailable);
+            logs.push({...log});
+          }
+        }
+        else {
+          minAvailable = Math.min(log.timestamp, minAvailable);
+          logs.push({...log});
+        }
       }
       else {
         deleteActions.push({type:"REMOVE_ACTIVITY_LOG", sphereId: sphereId, stoneId: stoneId, logId: logIds[i]})

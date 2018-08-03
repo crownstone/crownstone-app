@@ -221,10 +221,16 @@ export const Util = {
   },
 
 
-  mixin: function(base, section) {
+  mixin: function(base, section, context) {
     for (let key in section) {
-      if (section.hasOwnProperty(key))
-        base[key] = section[key]
+      if (section.hasOwnProperty(key)) {
+        if (typeof section[key] === 'function') {
+          base[key] = section[key].bind(context)
+        }
+        else {
+          base[key] = section[key]
+        }
+      }
     }
   },
 

@@ -3,5 +3,5 @@ import toonReducer from './thirdPartyReducers/toon'
 
 // thirdPartyReducer
 export default combineReducers({
-  toon: toonReducer,
+  toons: toonReducer,
 });

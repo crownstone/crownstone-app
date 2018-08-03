@@ -43,8 +43,7 @@ export class SphereIntegrations extends Component<any, any> {
       callback: () => {
         let state = this.props.store.getState();
         let sphere = state.spheres[this.props.sphereId];
-        console.log(sphere)
-        if (sphere.thirdParty.toon.refreshTokens) {
+        if (Object.keys(sphere.thirdParty.toons).length > 0) {
           Actions.toonSettings({sphereId: this.props.sphereId});
         }
         else {

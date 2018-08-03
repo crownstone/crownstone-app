@@ -137,6 +137,10 @@ export const spheres = {
     return this._setupRequest('GET', '/Spheres/{id}/guests', { background : background });
   },
 
+  getToons: function (background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/Toons', { background : background });
+  },
+
 
   /**
    * @param data

@@ -36,7 +36,6 @@ export class DeviceSyncer extends SyncingBase {
 
   sync(state) {
     this.userId = state.user.userId;
-
     return this.download()
       .then((devicesInCloud) => {
         this._constructLocalIdMap();
@@ -50,7 +49,7 @@ export class DeviceSyncer extends SyncingBase {
 
 
   syncUp(state, devicesInState, devicesInCloud) {
-    // cleanup
+    // cleanup. remove local devices that do not exist in the cloud.
     let cloudDeviceIdList = {};
     for (let i = 0; i < devicesInCloud.length; i++) {
       cloudDeviceIdList[devicesInCloud[i].id] = true;
@@ -87,6 +86,8 @@ export class DeviceSyncer extends SyncingBase {
       this._updateLocalDevice(state, specs, devicesInState[matchingSpecs.id], matchingSpecs)
       this.globalCloudIdMap.devices[matchingSpecs.id] = matchingSpecs.id
     }
+
+
   }
 
 
@@ -169,7 +170,6 @@ export class DeviceSyncer extends SyncingBase {
           deviceType:  specs.deviceType,
           userAgent:   specs.userAgent,
           locale:      specs.locale,
-          hubFunction: matchingSpecs.deviceInCloud.hubFunction,
         }
       });
     }
@@ -186,7 +186,8 @@ export class DeviceSyncer extends SyncingBase {
     }
 
     LOG.info("Sync: User device found in cloud, updating installation: ", installationId);
-    this._verifyInstallation(state, matchingSpecs.id, installationId)
+    this._verifyInstallation(state, matchingSpecs.id, installationId);
+    this._updateUserLocationInCloud(state, matchingSpecs.id);
   }
 
   _createNewDeviceLocally(state, specs, matchingSpecs : matchingSpecs) {
@@ -209,7 +210,6 @@ export class DeviceSyncer extends SyncingBase {
         locale:       specs.locale,
         installationId: installationId,
         tapToToggleCalibration: matchingSpecs.deviceInCloud.tapToToggleCalibration,
-        hubFunction: matchingSpecs.deviceInCloud.hubFunction,
       }
     });
 
@@ -276,19 +276,13 @@ export class DeviceSyncer extends SyncingBase {
         let cloudSphereId   = this._getCloudSphereId(userLocation.sphereId);
 
         this.transferPromises.push(
-          CLOUD
-            .forDevice(deviceId)
-            .updateDeviceLocation(cloudLocationId)
-            .catch((err) => {
-              LOGe.cloud("DeviceSyncer: Failed to set device location in cloud :userLocation", userLocation, "cloudLocationId:", cloudLocationId, err);
-            })
-        );
-        this.transferPromises.push(
-          CLOUD
-            .forDevice(deviceId)
-            .updateDeviceSphere(cloudSphereId)
-            .catch((err) => {
-              LOGe.cloud("DeviceSyncer: Failed to set device sphere in cloud :userLocation", userLocation, "cloudSphereId:", cloudSphereId, err);
+          CLOUD.forDevice(deviceId).updateDeviceLocation(cloudLocationId).catch((err) => {
+            LOGe.cloud("DeviceSyncer: Failed to set device location in cloud :userLocation", userLocation, "cloudLocationId:", cloudLocationId, err);
+          })
+            .then(() => {
+              return CLOUD.forDevice(deviceId).updateDeviceSphere(cloudSphereId).catch((err) => {
+                LOGe.cloud("DeviceSyncer: Failed to set device sphere in cloud :userLocation", userLocation, "cloudSphereId:", cloudSphereId, err);
+              })
             })
         );
       }

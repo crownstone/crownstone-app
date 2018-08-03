@@ -297,6 +297,9 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_DEVICES":
     case "FINISHED_SPECIAL_MESSAGES":
       break;
+    case "UPDATE_SYNC_ACTIVITY_TIME":
+    case "ADD_TOON":
+      break;
     case "UPDATE_SCHEDULE_CLOUD_ID":
     case "UPDATE_MESSAGE_CLOUD_ID":
     case "UPDATE_APPLIANCE_CLOUD_ID":

@@ -163,7 +163,7 @@ export const cloudApiBase = {
 
   setNetworkErrorHandler: function(handler)      { this._networkErrorHandler = handler },
 
-  setAccess:          function(accessToken)      { this._accessToken = accessToken;        return this; },
+  setAccess:          function(accessToken)      { this._accessToken = accessToken;       return this; },
 
   setUserId:          function(userId)           { this._userId = userId;                 return this; }, // cloudId === localId
   forUser:            function(userId)           { this._userId = userId;                 return this; }, // cloudId === localId

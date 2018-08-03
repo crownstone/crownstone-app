@@ -1,5 +1,7 @@
 import {toonConfig} from "../../../sensitiveData/toonConfig";
 import {request} from "../../cloudCore";
+import {refreshDefaults} from "../../../router/store/reducers/reducerUtil";
+import {cloudApiBase} from "../cloudApiBase";
 
 /**
  * Created by alex on 25/08/16.
@@ -44,19 +46,35 @@ export const toon = {
     return request(options, 'GET',   headers, null, null);
   },
 
-  getToonSchedules(agreementId, accessToken) {
-    let options = {
-      endPoint: "https://api.toon.eu/toon/v3/" + agreementId + "/thermostat/programs",
-      type: 'body-urlencoded',
-      options: {}
-    };
-    let headers = {
-      'content-type': 'application/json',
-      'cache-control': 'no-cache',
-      'authorization': 'Bearer ' + accessToken,
-    };
-    return request(options, 'GET',   headers, null, null);
+
+  updateToonInCrownstoneCloud: function(cloudId, data, background = true) {
+    return this._setupRequest(
+      'PUT',
+      '/Spheres/{id}/Toons/' + cloudId,
+      {data: data, background: background},
+      'body'
+    )
+  },
+
+
+  createToonInCrownstoneCloud: function(data, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Spheres/{id}/Toons',
+      {data: data, background: background},
+      'body'
+    )
+  },
+
+  deleteToonsInCrownstoneCloud: function(data, background = true) {
+    return this._setupRequest(
+      'DELETE',
+      '/Spheres/{id}/Toons',
+      {data: data, background: background},
+      'body'
+    )
   }
+
 
 };
 
