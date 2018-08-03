@@ -26,21 +26,12 @@ import { NativeBus } from "../../../native/libInterface/NativeBus";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { Actions } from 'react-native-router-flux';
 import {request} from "../../../cloud/cloudCore";
+import {ScaledImage} from "../../components/ScaledImage";
 
 
 export class ToonAdd extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: "Toon",
-      headerLeft: <CancelButton onPress={BackAction} />,
-      headerRight: <TopbarButton
-        text={"Create"}
-        onPress={() => {
-          params.rightAction ? params.rightAction() : () => {}
-        }}
-      />
-    }
+    return { title: "Toon" }
   };
 
 
@@ -52,6 +43,7 @@ export class ToonAdd extends Component<any, any> {
     this.state = {
       processing: false,
       failed:     false,
+      success:     false,
     }
 
     this.unsubscribeNativeEvent = NativeBus.on(NativeBus.topics.callbackUrlInvoked, (url) => {
@@ -75,16 +67,6 @@ export class ToonAdd extends Component<any, any> {
       .then((data) => {
         if (data.status === 200) {
           accessTokens = data.data;
-          this.props.store.dispatch({
-            type: 'TOON_ADD_TOKEN',
-            sphereId: this.props.sphereId,
-            data: {
-              accessToken: accessTokens.access_token,
-              accessTokenExpires: new Date().valueOf() + 1799*1000,
-              refreshToken: accessTokens.refresh_token,
-            }
-          });
-
           return CLOUD.thirdParty.toon.getToonIds(accessTokens.access_token);
         }
         else {
@@ -106,11 +88,12 @@ export class ToonAdd extends Component<any, any> {
           let actions = [];
           let promises = [];
           agreementIds.forEach((agreementId) => {
-            CLOUD.forSphere(this.props.sphereId).thirdParty.toon.createToonInCrownstoneCloud({
-              refreshToken: accessTokens.refresh_token,
-              toonAgreementId: agreementId.agreementId,
-              toonAddress: agreementId.street + " " + agreementId.houseNumber
-            })
+            promises.push(
+              CLOUD.forSphere(this.props.sphereId).thirdParty.toon.createToonInCrownstoneCloud({
+                refreshToken: accessTokens.refresh_token,
+                toonAgreementId: agreementId.agreementId,
+                toonAddress: agreementId.street + " " + agreementId.houseNumber
+              })
               .then((toon) => {
                 actions.push({
                   type: "ADD_TOON",
@@ -124,16 +107,25 @@ export class ToonAdd extends Component<any, any> {
                   }
                 })
               })
+            )
           })
         return Promise.all(promises).then(() => { this.props.store.batchDispatch(actions) })
       })
       .then(() => {
-        if (agreementIds.length > 1) {
-          Alert.alert("more than 1 toon detected")
-          Actions.toonSettings({sphereId: this.props.sphereId, __popBeforeAddCount: 1})
+        if (agreementIds.length === 0) {
+          Alert.alert("No Toon Found","This account does not seem to have a Toon we can use....",[{text:'OK'}])
         }
         else {
-          Actions.toonSettings({sphereId: this.props.sphereId, __popBeforeAddCount: 1})
+          this.setState({success:true, processing:false}, () => {
+            setTimeout(() => {
+              if (agreementIds.length > 1) {
+                Actions.toonOverview({sphereId: this.props.sphereId,  __popBeforeAddCount: 1})
+              }
+              else {
+                Actions.toonSettings({sphereId: this.props.sphereId, toonId: agreementIds[0].agreementId, __popBeforeAddCount: 1})
+              }
+            }, 1500);
+          })
         }
       })
       .catch((err) => {
@@ -151,61 +143,24 @@ export class ToonAdd extends Component<any, any> {
     return items;
   }
 
-  _getIcon() {
-    if (this.state.failed) {
-      return (
-        <IconButton
-          name="c3-addRoundedBold"
-          size={0.15*screenHeight}
-          color="#fff"
-          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.csOrange.hex, borderRadius: 0.03*screenHeight}}
-          style={{position:'relative'}}
-        />
-      );
-    }
-    else if (this.state.processing) {
-      return (
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <ActivityIndicator animating={true} size="large" />
-        </View>
-      );
-    }
-    else {
-      return (
-        <IconButton
-          name="c3-addRoundedBold"
-          size={0.15*screenHeight}
-          color="#fff"
-          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.csOrange.hex, borderRadius: 0.03*screenHeight}}
-          style={{position:'relative'}}
-        />
-      );
-    }
-  }
-
   _getText() {
+    let text = '';
     if (this.state.failed) {
-      return (
-        <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{
-          "Failed to connect :("
-        }</Text>
-      )
+      text = "Failed to connect :(";
+    }
+    else if (this.state.success) {
+      text = "Success!"
     }
     else if (this.state.processing) {
-      return (
-        <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{
-          "Connecting to Toon... This shouldn't take long!"
-        }</Text>
-      )
+      text = "Connecting to Toon... This shouldn't take long!"
     }
     else {
-      return (
-        <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{
-          "When you integrate your Toon with Crownstone, you can use the indoor localization together with your heating!\n\n" +
-          "When your Toon is set to \"Away\" and you're still at home, Crownstone will set Toon's program to \"Home\" as long as you're home."
-        }</Text>
-      )
+      text =  "When you integrate your Toon with Crownstone, you can use the indoor localization together with your heating!"
     }
+
+    return (
+      <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{text}</Text>
+    );
   }
 
   _getButton() {
@@ -228,21 +183,32 @@ export class ToonAdd extends Component<any, any> {
         </TouchableOpacity>
       )
     }
-
   }
 
+  _getExplanation() {
+    if (!this.state.processing && !this.state.failed) {
+     return (
+       <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{
+         "Sometimes, Toon is set to \"Away\" while you're still there...\n\n... but Crownstone can ensure that it is set to \"Home\" as long as you're home!"
+       }</Text>
+     )
+    }
+  }
 
   render() {
     return (
       <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={true}>
         <OrangeLine/>
         <View style={{flex:1, alignItems:'center', padding: 20}}>
-          <Text style={[deviceStyles.header,{color:colors.menuBackground.hex}]}>Integration with Toon</Text>
           <View style={{flex:1}} />
-          { this._getIcon() }
+          <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
+          { this.state.processing ?  <View style={{paddingTop:50, alignItems:'center', justifyContent:'center'}}><ActivityIndicator animating={true} size="large" /></View> : undefined}
           <View style={{flex:1}} />
           { this._getText() }
-          <View style={{flex:1}} />
+          <View style={{flex:0.75}} />
+          { this._getExplanation() }
+
+          {!this.state.processing && !this.state.failed ? <View style={{flex:1}} /> : <View style={{flex:0.5}} /> }
           { this._getButton() }
           <View style={{flex:0.5}} />
         </View>

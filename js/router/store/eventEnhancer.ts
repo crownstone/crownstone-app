@@ -30,7 +30,7 @@ export function EventEnhancer({ getState }) {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
     let eventData = {};
-    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}, threadIds:{} , scheduleIds:{}};
+    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}, messageIds:{} , scheduleIds:{}, activityLogIds: {}, toonIds:{}};
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         if (action.__noEvents !== true) {
@@ -59,12 +59,14 @@ export function EventEnhancer({ getState }) {
 function checkAction(action, affectedIds) {
   let eventStatus = {};
 
-  if (action.locationId)  { affectedIds.locationIds[action.locationId]   = true; }
-  if (action.sphereId)    { affectedIds.sphereIds[action.sphereId]       = true; }
-  if (action.stoneId)     { affectedIds.stoneIds[action.stoneId]         = true; }
-  if (action.applianceId) { affectedIds.applianceIds[action.applianceId] = true; }
-  if (action.threadId)    { affectedIds.threadIds[action.threadId]       = true; }
-  if (action.scheduleId)  { affectedIds.scheduleIds[action.scheduleId]   = true; }
+  if (action.locationId)     { affectedIds.locationIds[action.locationId]       = true; }
+  if (action.sphereId)       { affectedIds.sphereIds[action.sphereId]           = true; }
+  if (action.stoneId)        { affectedIds.stoneIds[action.stoneId]             = true; }
+  if (action.applianceId)    { affectedIds.applianceIds[action.applianceId]     = true; }
+  if (action.messageId)      { affectedIds.messageIds[action.messageId]         = true; }
+  if (action.scheduleId)     { affectedIds.scheduleIds[action.scheduleId]       = true; }
+  if (action.activityLogId)  { affectedIds.activityLogIds[action.activityLogId] = true; }
+  if (action.toonId)         { affectedIds.toonIds[action.toonId]               = true; }
 
   switch (action.type) {
     case 'SET_ACTIVE_SPHERE':
@@ -300,6 +302,10 @@ function checkAction(action, affectedIds) {
     case "UPDATE_SYNC_ACTIVITY_TIME":
     case "ADD_TOON":
       break;
+    case "TOON_UPDATE_SETTINGS":
+    case "REMOVE_TOON":
+    case "REMOVE_ALL_TOONS":
+      eventStatus['updatedToon'] = affectedIds; break;
     case "UPDATE_SCHEDULE_CLOUD_ID":
     case "UPDATE_MESSAGE_CLOUD_ID":
     case "UPDATE_APPLIANCE_CLOUD_ID":

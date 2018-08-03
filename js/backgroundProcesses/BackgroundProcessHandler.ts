@@ -353,6 +353,26 @@ class BackgroundProcessHandlerClass {
 
     // if we have an accessToken, we proceed with logging in automatically
     let state = this.store.getState();
+
+    // Catch a broken sphere.
+    let spheres = state.spheres;
+    let brokenSphere = false;
+    Object.keys(spheres).forEach((sphereId) => {
+      let sphere = spheres[sphereId];
+      let corruptData = sphere.config.adminKey === null && sphere.config.memberKey === null && sphere.config.guestKey === null;
+      corruptData = sphere.config.iBeaconUUID === undefined || sphere.config.iBeaconUUID === null || corruptData;
+      if (corruptData) {
+        brokenSphere = true;
+      }
+    })
+
+    if (brokenSphere) {
+      Alert.alert("Something went wrong...","I have identified a problem with the Sphere on your phone... I'll have to redownload it from the Cloud to fix this.", [{text:'OK', onPress: () => {
+        AppUtil.resetDatabase(this.store, eventBus);
+      }}], {cancelable:false});
+      return;
+    }
+
     if (state.user.accessToken !== null) {
       // in the background we check if we're authenticated, if not we log out.
       CLOUD.setAccess(state.user.accessToken);

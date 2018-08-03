@@ -57,6 +57,7 @@ import { SwitchCraftInformation }      from "../views/deviceViews/elements/Switc
 
 import { ToonAdd }                     from "../views/thirdParty/toon/ToonAdd";
 import { ToonSettings }                from "../views/thirdParty/toon/ToonSettings";
+import { ToonOverview }                from "../views/thirdParty/toon/ToonOverview";
 import { SettingsMeshDebug }           from "../views/settingsViews/dev/SettingsMeshDebug";
 import { SettingsLogging }             from "../views/settingsViews/dev/SettingsLogging";
 
@@ -86,6 +87,7 @@ export const Views = {
 
   ToonAdd,
   ToonSettings,
+  ToonOverview,
 
   RoomOverview,
   RoomEdit,

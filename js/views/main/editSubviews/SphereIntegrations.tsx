@@ -35,16 +35,16 @@ export class SphereIntegrations extends Component<any, any> {
     items.push({
       label: 'Toon®',
       type: 'navigation',
-      largeIcon:
-        <View style={{backgroundColor:colors.csOrange.hex, width:55, height:55, borderRadius:12, alignItems:"center", justifyContent:"center", paddingTop:6, paddingBottom: 2}}>
-          <View style={{width:35, height:24, borderRadius:5, borderWidth:3, borderColor:"#fff"}} />
-          <Text style={{color:"#fff", fontSize:12, fontWeight:'bold', paddingTop: 2}}>Toon®</Text>
-        </View>,
+      largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/toonLogoSmall.png')} targetWidth={45} targetHeight={45} sourceWidth={500} sourceHeight={500} />,
       callback: () => {
         let state = this.props.store.getState();
         let sphere = state.spheres[this.props.sphereId];
-        if (Object.keys(sphere.thirdParty.toons).length > 0) {
-          Actions.toonSettings({sphereId: this.props.sphereId});
+        let toonIds = Object.keys(sphere.thirdParty.toons)
+        if (toonIds.length === 1) {
+          Actions.toonSettings({sphereId: this.props.sphereId, toonId: toonIds[0]});
+        }
+        else if (toonIds.length > 1) {
+          Actions.toonOverview({sphereId: this.props.sphereId});
         }
         else {
           Actions.toonAdd({sphereId: this.props.sphereId});
