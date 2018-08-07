@@ -78,7 +78,7 @@ export class ToonAdd extends Component<any, any> {
           agreementIds = data.data;
           this.props.store.dispatch({type:"REMOVE_ALL_TOONS", sphereId: this.props.sphereId});
 
-          return CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud()
+          return CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud(false)
         }
         else {
           throw "Failed to get agreementIds";
@@ -93,7 +93,7 @@ export class ToonAdd extends Component<any, any> {
                 refreshToken: accessTokens.refresh_token,
                 toonAgreementId: agreementId.agreementId,
                 toonAddress: agreementId.street + " " + agreementId.houseNumber
-              })
+              }, false)
               .then((toon) => {
                 actions.push({
                   type: "ADD_TOON",

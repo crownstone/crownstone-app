@@ -85,7 +85,7 @@ export class ToonSettings extends Component<any, any> {
             text: "Yes", onPress: () => {
               this.props.eventBus.emit("showLoading", "Removing the integration with Toon...")
               this.deleting = true;
-              CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud()
+              CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud(false)
                 .then(() => {
                   this.props.store.dispatch({
                     type: 'REMOVE_ALL_TOONS',
@@ -96,7 +96,7 @@ export class ToonSettings extends Component<any, any> {
                 })
                 .catch((err) => {
                   this.props.eventBus.emit("hideLoading")
-                  console.log("SOMETHING WENT WRONG", err)
+                  Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
                 })
             }
           }])

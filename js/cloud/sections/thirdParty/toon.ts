@@ -52,6 +52,24 @@ export const toon = {
     )
   },
 
+  setToonToHome: function(background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Toons/{id}/',
+      {background: background},
+      'body'
+    )
+  },
+
+  setToonToAway: function(background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Toons/{id}/',
+      {background: background},
+      'body'
+    )
+  },
+
   deleteToonsInCrownstoneCloud: function(background = true) {
     return this._setupRequest(
       'DELETE',

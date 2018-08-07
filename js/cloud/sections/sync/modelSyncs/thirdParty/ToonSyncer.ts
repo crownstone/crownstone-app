@@ -19,7 +19,6 @@ export class ToonSyncer extends SyncingSphereItemBase {
 
   _getLocalData(store) {
     let state = store.getState();
-    console.log("SPHERE STATE", state.spheres[this.localSphereId])
     if (state && state.spheres[this.localSphereId]
       && state.spheres[this.localSphereId].thirdParty.toons) {
       return state.spheres[this.localSphereId].thirdParty.toons;
@@ -43,8 +42,6 @@ export class ToonSyncer extends SyncingSphereItemBase {
     let localToonIdsSynced = {};
     let cloudIdMap = this._getCloudIdMap(toonsInState);
 
-
-    console.log("cloudIdMap", cloudIdMap)
     // go through all toons in the cloud.
     toons_in_cloud.forEach((toon_in_cloud) => { // underscores so its visually different from applianceInState
       let localId = cloudIdMap[toon_in_cloud.id];
@@ -63,7 +60,6 @@ export class ToonSyncer extends SyncingSphereItemBase {
         // the appliance does not exist locally but it does exist in the cloud.
         // we create it locally.
         localId = toon_in_cloud.toonAgreementId;
-        console.log("CREATE TOON LOCALLY", toon_in_cloud)
         this.transferPromises.push(
           transferToons.createLocal(this.actions, {
             localId: localId,
@@ -123,7 +119,7 @@ export class ToonSyncer extends SyncingSphereItemBase {
 
 
   syncToonDown(localId, toonInState, toon_from_cloud) {
-    if (shouldUpdateLocally(toonInState, toon_from_cloud)) {
+    if (toonInState.schedule !== toon_from_cloud.schedule) {
       this.transferPromises.push(
         transferToons.updateLocal(this.actions, {
           localSphereId:  this.localSphereId,
@@ -142,7 +138,6 @@ export class ToonSyncer extends SyncingSphereItemBase {
   _getCloudIdMap(toonsInState) {
     let cloudIdMap = {};
     let toonIds = Object.keys(toonsInState);
-    console.log("TOONS IN STATE", toonsInState)
     toonIds.forEach((toonId) => {
       let toon = toonsInState[toonId];
       if (toon.cloudId) {

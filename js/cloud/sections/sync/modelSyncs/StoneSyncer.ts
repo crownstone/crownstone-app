@@ -54,7 +54,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
     // go through all stones in the cloud.
     return Util.promiseBatchPerformer(stonesInCloud, (stone_from_cloud) => { // underscores so its visually different from stoneInState
-      console.log("Syncing Stone", stone_from_cloud.name)
       this.transferPromises = [];
 
       let localId = cloudIdMap[stone_from_cloud.id];

@@ -57,8 +57,8 @@ export class Router_Android extends Component {
             <Scene key="roomSelection"              component={Views.RoomSelection}              />
             <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          />
             <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        />
-            <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} />
-            <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} />
+            <Scene key="settingsFactoryResetStep1"  component={Views.SettingsFactoryResetStep1}  />
+            <Scene key="settingsFactoryResetStep2"  component={Views.SettingsFactoryResetStep2}  />
             <Scene key="selectFromList"             component={Views.SelectFromList}             />
             <Drawer
               hideNavBar
@@ -112,6 +112,8 @@ export class Router_Android extends Component {
             <Scene key="sphereIntegrations"         component={Views.SphereIntegrations}         panHandlers={null} />
 
             <Scene key="toonAdd"                    component={Views.ToonAdd}                    panHandlers={null} />
+            <Scene key="toonSettings"               component={Views.ToonSettings}               panHandlers={null} />
+            <Scene key="toonOverview"               component={Views.ToonOverview}               panHandlers={null} />
 
             <Scene key="messageInbox"               component={Views.MessageInbox}               />
             <Scene key="messageAdd"                 component={Views.MessageAdd}                 />

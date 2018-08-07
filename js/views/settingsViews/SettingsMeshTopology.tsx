@@ -152,13 +152,13 @@ export class SettingsMeshTopology extends Component<any, any> {
     let stoneName0 = stones[connections[edgeId].from].config.name
     let stoneName1 = stones[connections[edgeId].to].config.name
 
-    let names = [element1.config.name, element2.config.name].sort()
+    let names = [stoneName0, stoneName1].sort()
 
     let n0 = stoneName0.split(":")
     let n1 = stoneName1.split(":")
 
     if (n0[1] !== n1[1]) {
-      console.log("'"+names[0], '-', names[1], ';', connections[edgeId].rssi+"',")
+      console.log("meshDebug: '"+names[0], '-', names[1], ';', connections[edgeId].rssi+"',")
     }
   }
 

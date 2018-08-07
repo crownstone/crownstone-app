@@ -11,8 +11,11 @@ let fieldMap : fieldMap = [
 
   {local: 'schedule',           cloud: 'schedule', cloudToLocalOnly: true},
 
+  {local: 'cloudChangedProgramTime', cloud: 'changedProgramTime', cloudToLocalOnly: true},
+
   // used for local config
-  {local: 'cloudId',            cloud: 'id' ,  cloudToLocalOnly: true }
+  {local: 'cloudId',            cloud: 'id' ,  cloudToLocalOnly: true },
+  {local: 'updatedAt',          cloud: 'updatedAt'},
 ];
 
 export const transferToons = {

@@ -236,6 +236,8 @@ class LocationHandlerClass {
       }
 
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
+
+      eventBus.emit('exitSphere', sphereId);
     }
   }
 

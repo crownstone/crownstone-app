@@ -91,7 +91,8 @@ export class SettingsMeshDebug extends Component<any, any> {
     let evaluateRefreshProgress = () => {
       this.refreshCount += 1
       if (this.refreshCount >= this.refreshAmountRequired) {
-        this.props.eventBus.emit("hideProgress");
+        this.props.eventBus.emit('updateProgress', {progress:1, progressText:"Done"});
+        setTimeout(() => { this.props.eventBus.emit("hideProgress");}, 500);
         const store = this.props.store;
         const state = store.getState();
         let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];

@@ -99,22 +99,22 @@ class LogProcessorClass {
     if (this.store) {
       let state = this.store.getState();
       let dev = state.user.developer;
-      let log = state.development.logging_enabled;
+      let loggingEnabled = state.development.logging_enabled;
       let devState = state.development;
 
-      this.writeToFile = dev === true && log === true;
+      this.writeToFile = dev === true && loggingEnabled === true;
 
-      this.log_info           = devState.log_info;
-      this.log_mesh           = devState.log_mesh;
-      this.log_native         = devState.log_native;
-      this.log_notifications  = devState.log_notifications;
-      this.log_scheduler      = devState.log_scheduler;
-      this.log_ble            = devState.log_ble;
-      this.log_bch            = devState.log_bch;
-      this.log_advertisements = devState.log_advertisements;
-      this.log_events         = devState.log_events;
-      this.log_store          = devState.log_store;
-      this.log_cloud          = devState.log_cloud;
+      this.log_info           = loggingEnabled && devState.log_info;
+      this.log_mesh           = loggingEnabled && devState.log_mesh;
+      this.log_native         = loggingEnabled && devState.log_native;
+      this.log_notifications  = loggingEnabled && devState.log_notifications;
+      this.log_scheduler      = loggingEnabled && devState.log_scheduler;
+      this.log_ble            = loggingEnabled && devState.log_ble;
+      this.log_bch            = loggingEnabled && devState.log_bch;
+      this.log_advertisements = loggingEnabled && devState.log_advertisements;
+      this.log_events         = loggingEnabled && devState.log_events;
+      this.log_store          = loggingEnabled && devState.log_store;
+      this.log_cloud          = loggingEnabled && devState.log_cloud;
     }
   }
 }

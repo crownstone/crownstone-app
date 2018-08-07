@@ -33,6 +33,7 @@ import { StoneManager }          from "../native/advertisements/StoneManager";
 import { MeshUtil }              from "../util/MeshUtil";
 import { Sentry }                from "react-native-sentry";
 import {ActivityLogManager} from "./ActivityLogManager";
+import {ToonIntegration} from "./thirdParty/ToonIntegration";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -436,6 +437,7 @@ class BackgroundProcessHandlerClass {
     CloudEventHandler.loadStore(this.store);
     Permissions.loadStore(this.store, this.userLoggedIn);
     ActivityLogManager.loadStore(this.store);
+    ToonIntegration.loadStore(this.store);
 
     BleLogger.init();
   }
