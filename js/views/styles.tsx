@@ -29,6 +29,7 @@ export const NORMAL_ROW_SIZE = 50;
 export let colors : any = {
   darkBackground: {hex:'#4f6b84'},
   csBlue: {hex:'#003E52'},
+  csBlueLight: {hex:'#006f84'},
   csOrange: {hex:'#ff8400'},
   darkCsOrange: {hex:'#d97500'},
   lightCsOrange: {hex:'#ffa94d'},

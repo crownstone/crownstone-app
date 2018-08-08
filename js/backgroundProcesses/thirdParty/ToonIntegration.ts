@@ -2,6 +2,7 @@ import {LOG, LOGe} from "../../logging/Log";
 import { eventBus }  from "../../util/EventBus";
 import { Scheduler } from "../../logic/Scheduler";
 import {Util} from "../../util/Util";
+import {CLOUD} from "../../cloud/cloudAPI";
 
 const CHECK_TOON_SCHEDULE_TRIGGER = "CHECK_TOON_SCHEDULE_TRIGGER";
 
@@ -41,30 +42,57 @@ class ToonIntegrationClass {
     if (presentSphereId === null) { return; }
 
     let sphere = state.spheres[presentSphereId];
-    let toons = sphere.thirdParty.toons;
-    Object.keys(toons).forEach((toonId) => {
-      if (toons[toonId].enabled) {
-        if (this._checkIfScheduleIsAway(toons[toonId].schedule)) {
+    let toons  = sphere.thirdParty.toons;
 
+    let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
+    let deviceId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
+
+    Object.keys(toons).forEach((toonId) => {
+      let toon = toons[toonId];
+      // only use the ENABLED Toons in this sphere
+      if (toon.enabled) {
+        // evaluate if the schedule is currently set to "AWAY"
+        let activeProgram = this._getActiveProgram(toon.schedule)
+        if (activeProgram.program === 'away') {
+          // if the schedule is away BUT I am home, the toon should be on too!
+          let timestampOfStartProgram = new Date(new Date().setHours(activeProgram.start.hour)).setMinutes(activeProgram.start.minute);
+          if (timestampOfStartProgram < toon.cloudChangedProgramTime && toon.cloudChangedProgram === 'home') {
+            // cloud has already changed the program
+          }
+          else {
+            CLOUD.thirdParty.forToon(toonId).setToonToHome(deviceId)
+              .catch((err) => {
+                if (err && err.statusCode == 405 && err.model) {
+                  return err.model;
+                }
+                else {
+                  LOGe.cloud("ToonIntegration: Unexpected error in cloud request:", err);
+                  throw err;
+                }
+              })
+              .then((toon) => {
+                let action = {
+                  type:    'UPDATE_TOON',
+                  sphereId: presentSphereId,
+                  toonId:   toonId,
+                  data: {
+                   schedule:           toon.schedule,
+                   changedToProgram:   toon.changedToProgram,
+                   changedProgramTime: toon.changedProgramTime,
+                  }
+                };
+                this.store.dispatch(action);
+              })
+          }
+        }
+        else {
+          // We do not do anything if the schedule is not set to AWAY
         }
       }
     })
-
-    // get the ENABLED Toons in this sphere
-
-    // JSON.stringify the schedule (with try catch)
-
-    // evaluate if the schedule is currently set to "AWAY"
-
-    // check if the cloud already interfered with the Toon
-
-    // if not (or if you dont know), notify the CLOUD to set it to "HOME"
-
-    // Store the time the cloud interfered with the Toon
-
   }
 
-  _checkIfScheduleIsAway(scheduleString : string) {
+  _getActiveProgram(scheduleString : string) {
     let currentDate = new Date();
     let scheduleObj = null;
     try {
@@ -87,30 +115,61 @@ class ToonIntegrationClass {
     for ( let i = 0; i < scheduleToday.length; i++ ) {
       let timeslot = scheduleToday[i];
       if (
-          minutesSinceMidnight >= (timeslot.start.hour*60 + timeslot.start.minute) &&
-          minutesSinceMidnight <  (timeslot.end.hour  *60 + timeslot.end.minute  )
-         ) {
-        if (timeslot.program === 'away') {
-          return true;
-        }
+        minutesSinceMidnight >= (timeslot.start.hour * 60 + timeslot.start.minute ) &&
+        minutesSinceMidnight <  (timeslot.end.hour   * 60 + timeslot.end.minute   )
+      ) {
+        return timeslot;
       }
     }
-    return false;
+    return null;
   }
 
 
   _handleExitSphere(sphereId) {
-    // get the ENABLED Toons in this sphere
+    // find in which Sphere we are present
+    let state = this.store.getState();
+    let sphere = state.spheres[sphereId];
+    let toons  = sphere.thirdParty.toons;
 
-    // JSON.stringify the schedule (with try catch)
+    let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
+    let deviceId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
 
-    // evaluate if the schedule is currently set to "AWAY" (assuming it was changed by the cloud to HOME, but now it should be AWAY again)
-
-    // tell the cloud you left. There can be a race condition with the storing of the location so the cloud should ignore this device.
-
-    // the cloud will tell you if it has restored the program to the schedule.
-
-
+    Object.keys(toons).forEach((toonId) => {
+      let toon = toons[toonId];
+      // only use the ENABLED Toons in this sphere
+      if (toon.enabled) {
+        // evaluate if the schedule is currently set to "AWAY"
+        let activeProgram = this._getActiveProgram(toon.schedule)
+        if (activeProgram.program === 'away') {
+          CLOUD.thirdParty.forToon(toonId).setToonToAway(deviceId)
+            .catch((err) => {
+              if (err && err.statusCode == 405 && err.model) {
+                return err.model;
+              }
+              else {
+                LOGe.cloud("ToonIntegration: Unexpected error in cloud request:", err);
+                throw err;
+              }
+            })
+            .then((toon) => {
+              let action = {
+                type:    'UPDATE_TOON',
+                sphereId: sphereId,
+                toonId:   toonId,
+                data: {
+                  schedule:           toon.schedule,
+                  changedToProgram:   toon.changedToProgram,
+                  changedProgramTime: toon.changedProgramTime,
+                }
+              };
+              this.store.dispatch(action);
+            })
+        }
+        else {
+          // We do not do anything if the schedule is not set to AWAY
+        }
+      }
+    })
   }
 }
 

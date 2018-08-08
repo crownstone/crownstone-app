@@ -52,21 +52,21 @@ export const toon = {
     )
   },
 
-  setToonToHome: function(background = true) {
+  setToonToHome: function(deviceId, background = true) {
     return this._setupRequest(
       'POST',
       '/Toons/{id}/',
-      {background: background},
-      'body'
+      { data: {program: 'home', ignoreDeviceId: deviceId }, background: background},
+      'query'
     )
   },
 
-  setToonToAway: function(background = true) {
+  setToonToAway: function(deviceId, background = true) {
     return this._setupRequest(
       'POST',
       '/Toons/{id}/',
-      {background: background},
-      'body'
+      { data: {program: 'away', ignoreDeviceId: deviceId }, background: background},
+      'query'
     )
   },
 

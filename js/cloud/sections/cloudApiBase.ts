@@ -31,16 +31,18 @@ type requestType = 'query' | 'body';
  * When the responses come back successfully, the convenience wrappers allow callbacks for relevant scenarios.
  */
 export const cloudApiBase = {
-  _accessToken: undefined,
-  _userId: undefined,
-  _deviceId: undefined,
+  _accessToken:    undefined,
+  _applianceId:    undefined,
+  _deviceId:       undefined,
+  _eventId:        undefined,
   _installationId: undefined,
-  _eventId: undefined,
-  _sphereId: undefined,
-  _locationId: undefined,
-  _stoneId: undefined,
-  _applianceId: undefined,
-  _messageId: undefined,
+  _locationId:     undefined,
+  _messageId:      undefined,
+  _sphereId:       undefined,
+  _stoneId:        undefined,
+  _toonId:         undefined,
+  _userId:         undefined,
+
   _networkErrorHandler: () => {},
 
   _post: function(options) {
@@ -174,6 +176,7 @@ export const cloudApiBase = {
   forLocation:        function(localLocationId)  { this._locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return this; },
   forAppliance:       function(localApplianceId) { this._applianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; return this; },
   forMessage:         function(localMessageId)   { this._messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return this; },
+  forToon:            function(localToonId)      { this._toonId      = MapProvider.local2cloudMap.toons[localToonId]           || localToonId;      return this; },
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
@@ -221,5 +224,9 @@ function _getId(url, obj) : string {
   let messagesLocation = url.indexOf('Messages');
   if (messagesLocation !== -1 && messagesLocation < 3)
     return obj._messageId;
+
+  let toonsLocation = url.indexOf('Toons');
+  if (toonsLocation !== -1 && toonsLocation < 3)
+    return obj._toonId;
 }
 

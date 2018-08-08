@@ -151,10 +151,20 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
 
   insertExplanation(items, 'TROUBLESHOOTING', false);
   items.push({
+    id:'Diagnostics',
+    label:'Diagnostics',
+    type:'navigation',
+    icon: getIcon('md-analytics', 21, colors.white.hex, colors.csBlue.hex),
+    callback: () => {
+      clickCallback();
+      Actions.settingsDiagnostics()
+    }
+  });
+  items.push({
     id:'Help',
     label:'Help',
     type:'navigation',
-    icon: getIcon('md-help-circle', 22, colors.white.hex, colors.csBlue.hex),
+    icon: getIcon('ios-help-circle', 23, colors.white.hex, colors.csBlueLight.hex),
     callback: () => {
       // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
       clickCallback();
