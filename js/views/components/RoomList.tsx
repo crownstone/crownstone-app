@@ -24,16 +24,16 @@ export class RoomList extends Component<any, any> {
             width:60,
             height:60,
             borderRadius:30,
-            backgroundColor: colors.blue.hex,
+            backgroundColor: this.props.backgroundColor || colors.csBlue.hex,
           }, styles.centered]}
           >
-            <Icon name={this.props.icon} size={35} color={'#fff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+            <Icon name={this.props.icon} size={this.props.iconSizeOverride || 35} color={'#fff'} style={{backgroundColor:'transparent'}} />
           </View>
         </View>
         <View style={{flex:1}}>
           <View style={{flexDirection:'column'}}>
             <Text style={{fontSize:16, fontWeight:'500'}}>{this.props.name}</Text>
-            <Text style={{fontSize:14, fontWeight:'100', paddingTop:3}}>{'Number of Crownstones: ' + this.props.stoneCount}</Text>
+            { this.props.hideSubtitle !== true ? <Text style={{fontSize:14, fontWeight:'100', paddingTop:3}}>{'Number of Crownstones: ' + this.props.stoneCount}</Text> : undefined }
           </View>
         </View>
         {this.props.navigation ? <Icon name="ios-arrow-forward" size={18} color={'#888'} /> : undefined}

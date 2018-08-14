@@ -204,16 +204,33 @@ export const Util = {
     );
   },
 
+  getShortUUID : () : string => {
+    const S4 = function () {
+      return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(36);
+    };
+
+    return (
+      S4() + S4() + '-' +
+      S4()
+    );
+  },
+
 
   getToken : () : string => {
     return Math.floor(Math.random() * 1e8 /* 65536 */).toString(36);
   },
 
 
-  mixin: function(base, section) {
+  mixin: function(base, section, context) {
     for (let key in section) {
-      if (section.hasOwnProperty(key))
-        base[key] = section[key]
+      if (section.hasOwnProperty(key)) {
+        if (typeof section[key] === 'function') {
+          base[key] = section[key].bind(context)
+        }
+        else {
+          base[key] = section[key]
+        }
+      }
     }
   },
 

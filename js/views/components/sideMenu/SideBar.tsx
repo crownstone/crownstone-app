@@ -20,7 +20,7 @@ import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
 import { NativeBus }                from '../../../native/libInterface/NativeBus'
 import { AppUtil }                  from '../../../util/AppUtil'
 import { SettingConstructor }       from '../../../util/SettingConstructor'
-import { LOG }                      from "../../../logging/Log";
+import {LOG, LOGe} from "../../../logging/Log";
 import { StoreManager }             from "../../../router/store/storeManager";
 import { SphereUtil }               from "../../../util/SphereUtil";
 
@@ -126,7 +126,7 @@ export class SideBar extends Component<any, any> {
               AppUtil.quit();
             }
             catch(err) {
-              LOG.error("Failed to quit.", err);
+              LOGe.info("Failed to quit.", err);
             }
           }}
         ])

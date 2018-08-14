@@ -2,6 +2,7 @@ import { Reducer} from 'react-native-router-flux';
 import { Platform } from 'react-native';
 import { LOGw } from "../../../logging/Log";
 import { Util } from "../../../util/Util";
+import { Sentry } from "react-native-sentry";
 
 // check for simple
 let stripAdditionalStates = (routeState, target) => {
@@ -69,10 +70,11 @@ let mergeStates = (targetState, oneOver) => {
   }
 }
 
+let t = new Date().valueOf()
 
 export const reducerCreate = (params) => {
   const defaultReducer = Reducer(params, {});
-  return (state, action) => {
+  let reducer = (state, action) => {
     if (action && action.type == "REACT_NATIVE_ROUTER_FLUX_POP_TO") {
       // check if we can see the key in the list of items, if not, do a back.
       let newState = Util.deepExtend({}, state);
@@ -108,5 +110,23 @@ export const reducerCreate = (params) => {
       }
     }
     return defaultReducer(state, action);
+  }
+
+  return (state, action) => {
+    let result = reducer(state, action);
+    if (action) {
+      if (action.type == "REACT_NATIVE_ROUTER_FLUX_PUSH" || action.type == "REACT_NATIVE_ROUTER_FLUX_POP_TO" || action.type == "Navigation/BACK") {
+        let name = getNameOfCurrentRoute(result)
+        Sentry.captureBreadcrumb({
+          message: 'User Navigated',
+          category: 'navigation',
+          data: {
+            isOnRoute: name,
+          }
+        });
+      }
+    }
+
+    return result;
   }
 };

@@ -16,9 +16,9 @@ import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupShared'
 import {colors, screenHeight, OrangeLine} from './../styles'
 
-export class SettingsPluginRecoverStep1 extends Component<any, any> {
+export class SettingsFactoryResetStep1 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Recovery" }
+    return { title: "Factory Reset" }
   };
 
   render() {
@@ -27,7 +27,7 @@ export class SettingsPluginRecoverStep1 extends Component<any, any> {
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} safeView={true}>
         <OrangeLine/>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
-          <Text style={[setupStyle.text, {color:colors.white.hex}]}>{"If you're physically next to the Crownstone, you can restore it to factory defaults."}</Text>
+          <Text style={[setupStyle.text, {color:colors.white.hex}]}>{"If you're physically next to the Crownstone, you can reset it to factory defaults."}</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={[setupStyle.information, {color:colors.white.hex}]}>{"Please take the Crownstone out of the outlet, wait 5 seconds, and plug it back in. Hold your phone close to it and press Next to continue."}</Text>
           <View style={{flex:1}} />
@@ -38,9 +38,9 @@ export class SettingsPluginRecoverStep1 extends Component<any, any> {
           <View style={setupStyle.buttonContainer}>
             <View style={{flex:1}} />
             <NextButton onPress={ () => {
-              Actions.settingsPluginRecoverStep2();
+              Actions.settingsFactoryResetStep2();
               // trigger to start the process
-              setTimeout(() => { this.props.eventBus.emit("StartRecoverProcess"); }, 1000)
+              setTimeout(() => { this.props.eventBus.emit("StartFactoryResetProcess"); }, 1000)
             }} />
           </View>
         </View>

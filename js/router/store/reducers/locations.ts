@@ -17,7 +17,13 @@ let defaultSettings = {
     fingerprintParsed: null,
     fingerprintUpdatedAt: 1,
   },
-  presentUsers: []
+  presentUsers: [],
+  layout: {
+    x: null,
+    y: null,
+    setOnThisDevice: false,
+    updatedAt: 0,
+  }
 };
 
 let userPresenceReducer = (state = [], action : any = {}) => {
@@ -113,9 +119,37 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
   }
 };
 
+
+let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
+  switch (action.type) {
+    case 'SET_LOCATION_POSITIONS':
+      if (action.data) {
+        let newState = {...state};
+        newState.x = update(action.data.x, newState.x);
+        newState.y = update(action.data.y, newState.y);
+        newState.setOnThisDevice = update(action.data.setOnThisDevice, newState.setOnThisDevice);
+        newState.updatedAt = getTime(action.data.updatedAt || action.updatedAt);
+        return newState;
+      }
+      return state;
+    case 'CLEAR_LOCATION_POSITIONS':
+      let newState = {...state};
+      newState.x = null
+      newState.y = null
+      newState.setOnThisDevice = false
+      newState.updatedAt = null
+      return newState;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.layout);
+    default:
+      return state;
+  }
+}
+
 let combinedLocationReducer = combineReducers({
   config:       locationConfigReducer,
   presentUsers: userPresenceReducer,
+  layout:       layoutReducer
 });
 
 

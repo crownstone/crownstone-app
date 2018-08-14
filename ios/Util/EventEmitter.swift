@@ -51,6 +51,9 @@ class EventEmitter {
     allEventNames.append("currentLocation")
     allEventNames.append("libPopup")
     allEventNames.append("libAlert")
+    allEventNames.append("classifierResult")
+    allEventNames.append("classifierProbabilities")
+    allEventNames.append("callbackUrlInvoked")
     
     return allEventNames
   }()

@@ -30,13 +30,18 @@ import {Util} from "../../../util/Util";
 
 export class ForceDirectedView extends Component<{
   nodeIds: string[],
+  viewId: string,
   edges?: any,
+  positionGetter?: any
   nodeRadius: number,
   renderNode(string, any): any,
   edgeRenderSettings?(edge): any,
   topOffset?: number,
   bottomOffset?: number,
+  allowDrag?: boolean,
   drawToken?: string,
+  initialPositions?: any,
+  enablePhysics?: boolean,
   options? : any,
 }, any> {
 
@@ -50,6 +55,7 @@ export class ForceDirectedView extends Component<{
   _currentScale : number;
   _minScale : number = 0.1;
   _maxScale : number = 1.25;
+  _draggingNode : any = false;
   _pressedNodeData : any = false;
   _recenteringInProgress = false;
 
@@ -65,6 +71,7 @@ export class ForceDirectedView extends Component<{
   panListener : any;
 
   animationFrame : any;
+  recenterOnStable = false
 
   nodes: any = {};
   edges: any = [];
@@ -77,6 +84,9 @@ export class ForceDirectedView extends Component<{
   boundingBoxData : any = {};
   _shownDoubleTap = false;
   _clearScheduledDoubleTapGesture = () => {};
+
+  _dragInitialX = 0
+  _dragInitialY = 0
 
   constructor(props) {
     super(props);
@@ -102,7 +112,7 @@ export class ForceDirectedView extends Component<{
     this.init();
   }
 
-  _findPress(x,y) {
+  _convertToScreenSpace(x,y) {
     // center of the view in absolute coordinates
     let cx = 0.5*screenWidth;
     let cy = 0.5*availableScreenHeight;
@@ -129,10 +139,20 @@ export class ForceDirectedView extends Component<{
     let x1 = cx + dx1 + offsetX;
     let y1 = cy + dy1 + offsetY;
 
+    return {x: x1, y: y1}
+  }
+
+  _findPress(x,y) {
+    let convertedPosition = this._convertToScreenSpace(x,y);
+    let x1 = convertedPosition.x;
+    let y1 = convertedPosition.y;
+
+
     let nodeIds = Object.keys(this.nodes);
     let diameter = 2*this.props.nodeRadius;
     let found = false;
-    for(let i = 0; i < nodeIds.length; i++) {
+    // we iterate over all nodes backwards so the ones that are overlapping the others are selected first.
+    for(let i = nodeIds.length-1; i >= 0; i--) {
       let node = this.nodes[nodeIds[i]];
       if (node.x + diameter > x1 && node.y + diameter > y1 && node.x < x1 && node.y < y1) {
         found = true;
@@ -143,7 +163,12 @@ export class ForceDirectedView extends Component<{
         let nodeData = {nodeId: nodeId, dx: (x1 - node.x), dy: (node.y - y1)};
         // if we select a new node, animate it popping up and turning a bit translucent.
         if (this._pressedNodeData === false || this._pressedNodeData.nodeId !== nodeIds[i]) {
-          eventBus.emit('nodeTouched'+nodeId, nodeData);
+          if (this.props.allowDrag) {
+            eventBus.emit('nodeTouchedAllowDrag'+this.props.viewId+nodeId, nodeData);
+          }
+          else {
+            eventBus.emit('nodeTouched'+this.props.viewId+nodeId, nodeData);
+          }
         }
 
         return nodeData; // --> _pressedNodeData
@@ -165,16 +190,19 @@ export class ForceDirectedView extends Component<{
       this._currentPan = {x:0, y:0};
       this._currentScale = 1;
 
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
+      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
     }
     else if (nextProps.nodeIds.length !== this.props.nodeIds.length) {
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
+      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
     }
     else if (nextProps.nodeIds.join() !== this.props.nodeIds.join()) {
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
+      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
     }
     else if (nextProps.nodeIds.indexOf(null) !== this.props.nodeIds.indexOf(null)) {
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
+      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
+    }
+    else if (JSON.stringify(nextProps.initialPositions) !== JSON.stringify(this.props.initialPositions)) {
+      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
     }
     else {
       // check for changes in edges.
@@ -194,7 +222,7 @@ export class ForceDirectedView extends Component<{
       }
       if (edgeIdsCurrent.join() !== edgeIdsNew.join()) {
         // the ids are different --> we need to change the physics
-        this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
+        this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
       }
       else {
         // the IDs are not different, but we will merge the edge information into our edges anyway.
@@ -210,7 +238,7 @@ export class ForceDirectedView extends Component<{
 
   init() {
     this.panListener = this.state.pan.addListener(value => this._currentPan = value);
-    this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges);
+    this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges, this.props.initialPositions, this.props.enablePhysics);
 
     // configure the pan responder
     this._panResponder = PanResponder.create({
@@ -240,10 +268,25 @@ export class ForceDirectedView extends Component<{
           this._totalMovedY += Math.abs(gestureState.dy);
           this._multiTouch = false;
 
-          if (this._totalMovedX < 50 && this._totalMovedY < 50 && this._multiTouchUsed === false) {
+
+          if (this._draggingNode !== false && this.props.allowDrag) {
+            let nodeId = this._draggingNode.nodeId;
+            let newX = this._dragInitialX + gestureState.dx / this._currentScale;
+            let newY = this._dragInitialY + gestureState.dy / this._currentScale;
+            this.state.nodes[nodeId].x.setValue(newX);
+            this.state.nodes[nodeId].y.setValue(newY);
+            this.nodes[nodeId].x = newX;
+            this.nodes[nodeId].y = newY;
+          }
+          else if (this._totalMovedX < 50 && this._totalMovedY < 50 && this._multiTouchUsed === false) {
             this._pressedNodeData = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
             if (this._pressedNodeData !== false) {
               // do nothing
+              if (this.props.allowDrag)
+                eventBus.emit('nodeDragging'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
+                this._draggingNode = this._pressedNodeData;
+                this._dragInitialX = this.nodes[this._pressedNodeData.nodeId].x;
+                this._dragInitialY = this.nodes[this._pressedNodeData.nodeId].y;
             }
             else {
               return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
@@ -278,7 +321,7 @@ export class ForceDirectedView extends Component<{
             this._clearScheduledDoubleTapGesture();
             this._clearScheduledDoubleTapGesture = Scheduler.scheduleCallback(() => {
               if (this._shownDoubleTap === false) {
-                eventBus.emit("showDoubleTapGesture");
+                eventBus.emit("showDoubleTapGesture" + this.props.viewId);
                 this._shownDoubleTap = true;
               }
               this._recenter();
@@ -287,23 +330,28 @@ export class ForceDirectedView extends Component<{
           }
         };
 
-        if (gestureState.vx !== 0 || gestureState.vy !== 0) {
-          Animated.decay(this.state.pan, { velocity: {x: gestureState.vx, y: gestureState.vy}, deceleration:0.99}).start(() => {
-            this._panOffset.x = this._currentPan.x;
-            this._panOffset.y = this._currentPan.y;
-            this.state.pan.setOffset({x: this._currentPan.x, y: this._currentPan.y });
-            this.state.pan.setValue({ x: 0, y: 0 });
-            showRecenterGesture()
-          });
-        }
-        else {
-          this._panOffset.x += gestureState.dx;
-          this._panOffset.y += gestureState.dy;
-          this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
-          this.state.pan.setValue({ x: 0, y: 0 });
+        if (this._draggingNode === false) {
+          if (gestureState.vx !== 0 || gestureState.vy !== 0) {
+            Animated.decay(this.state.pan, {
+              velocity: {x: gestureState.vx, y: gestureState.vy},
+              deceleration: 0.99
+            }).start(() => {
+              this._panOffset.x = this._currentPan.x;
+              this._panOffset.y = this._currentPan.y;
+              this.state.pan.setOffset({x: this._currentPan.x, y: this._currentPan.y});
+              this.state.pan.setValue({x: 0, y: 0});
+              showRecenterGesture()
+            });
+          }
+          else {
+            this._panOffset.x += gestureState.dx;
+            this._panOffset.y += gestureState.dy;
+            this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y});
+            this.state.pan.setValue({x: 0, y: 0});
 
-          if (this._validTap === false) {
-            showRecenterGesture();
+            if (this._validTap === false) {
+              showRecenterGesture();
+            }
           }
         }
 
@@ -328,8 +376,21 @@ export class ForceDirectedView extends Component<{
         }
 
         if (this._pressedNodeData !== false) {
-          eventBus.emit('nodeWasTapped'+this._pressedNodeData.nodeId, this._pressedNodeData);
+          if (this.props.allowDrag) {
+            eventBus.emit('nodeWasTappedAllowDrag'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
+          }
+          else {
+            eventBus.emit('nodeWasTapped'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
+          }
         }
+
+        if (this._draggingNode !== false) {
+          // calculate all bounding box properties once after drag.
+          this._getBoundingBox();
+        }
+
+        // reset drag
+        this._draggingNode = false
 
         if (this._currentScale > this._maxScale) {
           Animated.spring(this.state.scale, { toValue: this._maxScale, friction: 7, tension: 70 }).start(() => { this._currentScale = this._maxScale; });
@@ -354,8 +415,13 @@ export class ForceDirectedView extends Component<{
 
   componentDidMount() {
     this.unsubscribeGestureEvents = [];
-    this.unsubscribeGestureEvents.push(eventBus.on('showDoubleTapGesture', () => {
+    this.unsubscribeGestureEvents.push(eventBus.on('showDoubleTapGesture'+this.props.viewId, () => {
       Scheduler.scheduleCallback(() => { this._shownDoubleTap = false;}, 5000)
+    }))
+
+    this.unsubscribeGestureEvents.push(eventBus.on('physicsRun'+this.props.viewId, (iterations) => {
+      this.recenterOnStable = true
+      this.physicsEngine.stabilize(iterations, false);
     }))
   }
 
@@ -465,14 +531,14 @@ export class ForceDirectedView extends Component<{
 
   _clearTap() {
     if (this._pressedNodeData !== false) {
-      eventBus.emit('nodeReleased'+this._pressedNodeData.nodeId, this._pressedNodeData);
+      eventBus.emit('nodeReleased'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
     }
 
     this._validTap = false;
     this._pressedNodeData = false;
   }
 
-  loadIdsInSolver(nodeIds, radius, edges) {
+  loadIdsInSolver(nodeIds, radius, edges, initialPositions, enablePhysics) {
     this.state.opacity.setValue(0);
     this.physicsEngine.clear();
 
@@ -484,8 +550,9 @@ export class ForceDirectedView extends Component<{
     // load rooms into nodes
     for (let i = 0; i < nodeIds.length; i++) {
       let id = nodeIds[i];
-      this.nodes[id] = {id: id, mass: 1, fixed: false, support:false};
-      this.state.nodes[id] = {x: new Animated.Value(0), y: new Animated.Value(0), scale: new Animated.Value(1), opacity: new Animated.Value(1)};
+      let initialPosition = initialPositions && initialPositions[id] || {x:null, y:null}
+      this.nodes[id] = {id: id, mass: 1, fixed: false, support:false, x: initialPosition.x, y: initialPosition.y };
+      this.state.nodes[id] = {x: new Animated.Value(initialPosition.x || 0), y: new Animated.Value(initialPosition.y || 0), scale: new Animated.Value(1), opacity: new Animated.Value(1)};
     }
 
     this.edges = [];
@@ -518,16 +585,45 @@ export class ForceDirectedView extends Component<{
           this._recenter(true);
           initialized = true;
         }
+        else if (this.recenterOnStable === true) {
+          this._recenter(false);
+          this.recenterOnStable = false;
+        }
 
-        this.forceUpdate()
+
       })
     };
 
+    let onChange = (finishCallback) => {
+      this.animationFrame = requestAnimationFrame(() => {
+        let node = null;
+        for (let i = 0; i < nodeIds.length; i++) {
+          node = this.nodes[nodeIds[i]];
+          if (node.support !== true) {
+            this.state.nodes[nodeIds[i]].x.setValue(this.nodes[nodeIds[i]].x);
+            this.state.nodes[nodeIds[i]].y.setValue(this.nodes[nodeIds[i]].y);
+          }
+        }
+        finishCallback();
+      })
+    };
+
+
+    let usePhysics = true;
+    if (enablePhysics === false) {
+      usePhysics = false;
+    }
+
     // here we do not use this.viewWidth because it is meant to give the exact screen proportions
-    this.physicsEngine.initEngine(center, screenWidth, availableScreenHeight - 50, radius, () => {}, onStable);
+    this.physicsEngine.initEngine(center, screenWidth, availableScreenHeight - 50, radius, onChange, onStable, usePhysics);
     this.physicsEngine.setOptions(this.props.options);
     this.physicsEngine.load(this.nodes, this.edges);
-    this.physicsEngine.stabilize(300, false);
+    if (usePhysics) {
+      this.physicsEngine.stabilize(300, true);
+    }
+    else {
+      this.physicsEngine.stabilize(0, true);
+    }
   }
 
 
@@ -691,8 +787,8 @@ export class ForceDirectedView extends Component<{
                 key={edge.id + "_" + i}
                 x1={ sX + dx }
                 y1={ sY - dy }
-                x2={ eX + dx}
-                y2={ eY - dy}
+                x2={ eX + dx }
+                y2={ eY - dy }
                 stroke={color}
                 strokeWidth={settings.thickness || 3}
                 strokeDasharray={settings.dashArray}
@@ -705,7 +801,7 @@ export class ForceDirectedView extends Component<{
             let middleY = (sY + eY) * 0.5;
             textResult.push(
               <Text
-                key={edge.id + "_t" + i}
+                // key={edge.id + "_t" + i}
                 fill={colors.white.hex}
                 stroke={colors.menuBackground.hex}
                 strokeWidth={2}
@@ -748,7 +844,11 @@ export class ForceDirectedView extends Component<{
     return edges;
   }
 
-
+  getPositions() {
+    if (this.props.positionGetter && typeof this.props.positionGetter === 'function') {
+      this.props.positionGetter(this.nodes)
+    }
+  }
 
 
   render() {

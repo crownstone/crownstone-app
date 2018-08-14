@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import { IconCircle }  from './IconCircle'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 import { eventBus } from '../../util/EventBus'
@@ -173,7 +173,7 @@ export class PictureCircle extends Component<any, any> {
           }
         })
         .catch((err) => {
-          LOG.error("PictureCircle: Error in checking camera permission:", err);
+          LOGe.info("PictureCircle: Error in checking camera permission:", err);
         })
     }
   }

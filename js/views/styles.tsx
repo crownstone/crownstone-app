@@ -6,8 +6,8 @@ const DeviceInfo = require('react-native-device-info');
 export const deviceModel = DeviceInfo.getModel();
 
 export const topBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
-export const tabBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
-export const tabBarHeight    = (Platform.OS === 'android' ? 0  :  (deviceModel === 'iPhone X' ? 49 +34: 49));
+export const tabBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 34 : 0 ); // Status bar in iOS is 20 high
+export const tabBarHeight    = (Platform.OS === 'android' ? 0  :  (deviceModel === 'iPhone X' ? 49 + 34: 49));
 export const statusBarHeight = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 44 : 20); // Status bar in iOS is 20 high
 export const topBarHeight    = Platform.OS === 'android' ? 54  :  (deviceModel === 'iPhone X' ? 44 : 44 ) + statusBarHeight; // Status bar in iOS is 20 high
 
@@ -17,18 +17,19 @@ export let screenHeight = Platform.OS === 'android' ?
   Dimensions.get('window').height - 24 :  // android includes the top bar in the window height but we cant draw there.
   Dimensions.get('window').height;
 
-screenHeight = screenHeight - topBarMargin - tabBarMargin;
-
 export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 
 export const pxRatio = PixelRatio.get();
 
-export let barHeight = 46;
-export let barHeightLarge = 80;
+export const EXTRA_LARGE_ROW_SIZE  = 85;
+export const LARGE_ROW_SIZE  = 75;
+export const MID_ROW_SIZE    = 62;
+export const NORMAL_ROW_SIZE = 50;
 
 export let colors : any = {
   darkBackground: {hex:'#4f6b84'},
   csBlue: {hex:'#003E52'},
+  csBlueLight: {hex:'#006f84'},
   csOrange: {hex:'#ff8400'},
   darkCsOrange: {hex:'#d97500'},
   lightCsOrange: {hex:'#ffa94d'},
@@ -46,6 +47,7 @@ export let colors : any = {
   lightGray: {hex:'#eee'},
   purple: {hex:'#8a01ff'},
   darkPurple: {hex:'#5801a9'},
+  darkerPurple: {hex:'#2a0051'},
   blue: {hex:'#0075c9'},
   blue2: {hex:'#2698e9'},
   green: {hex:'#a0eb58'},

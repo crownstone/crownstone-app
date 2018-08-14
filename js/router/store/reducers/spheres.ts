@@ -4,6 +4,7 @@ import sphereUserReducer from './sphereUser'
 import stonesReducer from './stones'
 import appliancesReducer from './appliances'
 import messageReducer from './messages'
+import thirdPartyReducer from './thirdParty'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
@@ -15,17 +16,29 @@ let defaultSettings = {
     guestKey: null,
     cloudId: null,
     meshAccessAddress: null,
-    reachable: false,
-    present: false,
+
     aiName: null,
     aiSex: null,
     exitDelay: 600,
+
+    updatedAt: 1,
+    lastSeen: 1,
+  },
+  layout: {
+    floatingLocation: {
+      x: null,
+      y: null,
+      setOnThisDevice: false,
+      updatedAt: 0,
+    }
+  },
+  state: {
+    reachable: false,
+    present: false,
     latitude: null,
     longitude: null,
     newMessageFound: false,
-    updatedAt: 1,
-    lastSeen: 1,
-  }
+  },
 };
 
 let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) => {
@@ -34,30 +47,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
       if (action.data) {
         let newState = {...state};
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
-        return newState;
-      }
-      return state;
-    case 'UPDATE_STONE_RSSI':
-      // update the time this user has seen the sphere last.
-      let newState = {...state};
-      newState.lastSeen = getTime(action && action.data && action.data.lastSeen);
-      return newState;
-    case 'SET_SPHERE_STATE':
-      if (action.data) {
-        let newState = {...state};
-
-        newState.reachable = update(action.data.reachable, newState.reachable);
-        newState.present = update(action.data.present, newState.present);
-
-        return newState;
-      }
-      return state;
-    case 'RESET_SPHERE_STATE':
-      if (action.data) {
-        let newState = {...state};
-        newState.reachable = update(action.data.reachable, newState.reachable);
-        newState.present = update(action.data.present, newState.present);
-
         return newState;
       }
       return state;
@@ -70,14 +59,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         return newState;
       }
       return state;
-    case 'SET_SPHERE_MESSAGE_STATE': {
-      if (action.data) {
-        let newState = {...state};
-        newState.newMessageFound  = update(action.data.newMessageFound, newState.newMessageFound);
-        return newState;
-      }
-      return state;
-    }
     case 'ADD_SPHERE':
     case 'UPDATE_SPHERE_CONFIG':
       if (action.data) {
@@ -85,8 +66,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         newState.name        = update(action.data.name,        newState.name);
         newState.aiName      = update(action.data.aiName,      newState.aiName);
         newState.aiSex       = update(action.data.aiSex,       newState.aiSex);
-        newState.latitude    = update(action.data.latitude,    newState.latitude);
-        newState.longitude   = update(action.data.longitude,   newState.longitude);
         newState.exitDelay   = update(action.data.exitDelay,   newState.exitDelay);
         newState.iBeaconUUID = update(action.data.iBeaconUUID, newState.iBeaconUUID);
         newState.adminKey    = update(action.data.adminKey,    newState.adminKey);
@@ -107,13 +86,86 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
   }
 };
 
+
+let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
+  switch (action.type) {
+    case 'RESET_SPHERE_STATE':
+      if (action.data) {
+        let newState = {...state};
+        newState.reachable = update(action.data.reachable, newState.reachable);
+        newState.present = update(action.data.present, newState.present);
+        return newState;
+      }
+      return state;
+    case 'SET_SPHERE_MESSAGE_STATE': {
+      if (action.data) {
+        let newState = {...state};
+        newState.newMessageFound  = update(action.data.newMessageFound, newState.newMessageFound);
+        return newState;
+      }
+      return state;
+    }
+    case 'SET_SPHERE_STATE':
+      if (action.data) {
+        let newState = {...state};
+
+        newState.reachable = update(action.data.reachable, newState.reachable);
+        newState.present = update(action.data.present, newState.present);
+
+        return newState;
+      }
+      return state;
+    case 'SET_SPHERE_GPS_COORDINATES':
+      if (action.data) {
+        let newState = {...state};
+
+        newState.latitude = update(action.data.latitude, newState.latitude);
+        newState.longitude = update(action.data.longitude, newState.longitude);
+
+        return newState;
+      }
+      return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.layout.floatingLocation);
+    default:
+      return state;
+  }
+}
+
+let floatingLocationReducer = (state = defaultSettings.layout.floatingLocation, action : any = {}) => {
+  switch (action.type) {
+    case 'SET_FLOATING_LAYOUT_LOCATION':
+      if (action.data) {
+        let newState = {...state};
+        newState.x = update(action.data.x, newState.x);
+        newState.y = update(action.data.y, newState.y);
+        newState.setOnThisDevice = update(action.data.setOnThisDevice, newState.setOnThisDevice);
+        newState.updatedAt = getTime(action.data.timestamp || action.updatedAt);
+        return newState;
+      }
+      return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.layout.floatingLocation);
+    default:
+      return state;
+  }
+}
+
+let layoutReducer = combineReducers({
+  floatingLocation: floatingLocationReducer,
+});
+
+
 let combinedSphereReducer = combineReducers({
   config:     sphereConfigReducer,
+  layout:     layoutReducer,
   users:      sphereUserReducer,
   locations:  locationsReducer,
   stones:     stonesReducer,
   messages:   messageReducer,
-  appliances: appliancesReducer
+  appliances: appliancesReducer,
+  state:      sphereStateReducer,
+  thirdParty: thirdPartyReducer,
 });
 
 // spheresReducer

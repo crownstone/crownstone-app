@@ -1,6 +1,6 @@
 import { Scheduler }                              from '../logic/Scheduler';
 import { BehaviourUtil }                          from '../util/BehaviourUtil';
-import { LOG }                                    from '../logging/Log'
+import {LOG, LOGe} from '../logging/Log'
 import { KEEPALIVE_INTERVAL, KEEPALIVE_ATTEMPTS } from '../ExternalConfig';
 import { NativeBus }                              from '../native/libInterface/NativeBus';
 import { BatchCommandHandler }                    from '../logic/BatchCommandHandler';
@@ -14,13 +14,11 @@ const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 class KeepAliveHandlerClass {
   _initialized : any;
   store : any;
-  state : any;
   lastTimeFired : number = 0;
 
   constructor() {
     this._initialized = false;
     this.store = undefined;
-    this.state = {};
   }
 
   loadStore(store) {
@@ -63,7 +61,7 @@ class KeepAliveHandlerClass {
         let keepAliveId = (Math.floor(Math.random()*1e6)).toString(36);
 
         if (stone.config.type !== STONE_TYPES.guidestone) {
-          if (stone.config.handle && stone.config.disabled === false) {
+          if (stone.config.handle && stone.reachability.disabled === false) {
             let element = Util.data.getElement(this.store, sphereId, stoneId, stone);
             this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, {active:false, state:0}, 10, element, keepAliveId);
           }
@@ -92,7 +90,7 @@ class KeepAliveHandlerClass {
       let sphere = state.spheres[sphereId];
 
       // Do not keep alive in spheres that we are not present in.
-      if (sphere.config.present === false) {
+      if (sphere.state.present === false) {
         return;
       }
 
@@ -111,7 +109,7 @@ class KeepAliveHandlerClass {
         if (stone.config.type !== STONE_TYPES.guidestone) {
           let element = Util.data.getElement(this.store, sphereId, stoneId, stone);
           if (!element || !element.behaviour) {
-            LOG.error("KeepAliveHandler: Invalid Element received");
+            LOGe.info("KeepAliveHandler: Invalid Element received");
             return;
           }
 

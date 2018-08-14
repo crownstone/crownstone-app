@@ -57,7 +57,7 @@ export class MessageInbox extends Component<any, any> {
     if (activeSphere) {
       let state = this.props.store.getState();
       let sphere = state.spheres[activeSphere];
-      if (sphere.config.newMessageFound) {
+      if (sphere.state.newMessageFound) {
         MessageCenter.newMessageStateInSphere(activeSphere, false);
       }
     }
@@ -99,7 +99,7 @@ export class MessageInbox extends Component<any, any> {
         let activeSphere = state.app.activeSphere;
         if (activeSphere) {
           let sphere = state.spheres[activeSphere];
-          if (sphere.config.newMessageFound) {
+          if (sphere.state.newMessageFound) {
             MessageCenter.newMessageStateInSphere(activeSphere, false);
           }
         }

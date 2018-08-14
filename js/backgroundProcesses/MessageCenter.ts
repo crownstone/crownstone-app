@@ -1,5 +1,5 @@
 import { AppState }           from "react-native"
-import { LOG }                from "../logging/Log";
+import {LOG, LOGe} from "../logging/Log";
 import { NativeBus }          from "../native/libInterface/NativeBus";
 import { CLOUD }              from "../cloud/cloudAPI";
 import { LocalNotifications } from "../notifications/LocalNotifications";
@@ -268,7 +268,7 @@ class MessageCenterClass {
           }
         }
       })
-      .catch((err) => { LOG.error("MessageCenter: Could not handle message in Location:", err);})
+      .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Location:", err);})
   }
 
   _handleMessageInSphere(localSphereId, triggerEvent) {
@@ -289,7 +289,7 @@ class MessageCenterClass {
           }
         }
       })
-      .catch((err) => { LOG.error("MessageCenter: Could not handle message in Sphere:", err);})
+      .catch((err) => { LOGe.info("MessageCenter: Could not handle message in Sphere:", err);})
   }
 
   /**

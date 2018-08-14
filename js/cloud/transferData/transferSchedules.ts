@@ -1,15 +1,6 @@
 import { CLOUD }        from "../cloudAPI";
-import {LOG, LOGw} from "../../logging/Log";
+import {LOG, LOGe, LOGw} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
-
-
-
-type transferScheduleToLocalData = {
-  localId: string,
-  localSphereId: string,
-  localStoneId: string,
-  cloudData: any,
-}
 
 
 type transferScheduleToCloudData = {
@@ -19,13 +10,6 @@ type transferScheduleToCloudData = {
   cloudId: string,
 }
 
-type transferNewScheduleToCloudData = {
-  localId: string,
-  localData: any,
-  localSphereId: string,
-  localStoneId: string,
-  cloudStoneId: string,
-}
 
 let fieldMap : fieldMap = [
   {local:'label',                  cloud: 'label'},
@@ -53,7 +37,7 @@ let fieldMap : fieldMap = [
 export const transferSchedules = {
   fieldMap: fieldMap,
 
-  createOnCloud: function( actions, data : transferNewScheduleToCloudData ) {
+  createOnCloud: function( actions, data : transferNewToCloudStoneData ) {
     let payload = {};
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
@@ -84,12 +68,12 @@ export const transferSchedules = {
               }
             })
             .catch((err) => {
-              LOG.error("Transfer-Schedule: Could not create/update schedule in cloud", err);
+              LOGe.cloud("Transfer-Schedule: Could not create/update schedule in cloud", err);
               throw err;
             })
         }
         else {
-          LOG.error("Transfer-Schedule: Could not create schedule in cloud", err);
+          LOGe.cloud("Transfer-Schedule: Could not create schedule in cloud", err);
           throw err;
         }
       })
@@ -106,13 +90,13 @@ export const transferSchedules = {
     return CLOUD.forStone(data.cloudStoneId).updateSchedule(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
-        LOG.error("Transfer-Schedule: Could not update schedule in cloud", err);
+        LOGe.cloud("Transfer-Schedule: Could not update schedule in cloud", err);
         throw err;
       });
   },
 
 
-  createLocal: function( actions, data: transferScheduleToLocalData) {
+  createLocal: function( actions, data: transferToLocalStoneData) {
     return transferUtil._handleLocal(
       actions,
       'ADD_STONE_SCHEDULE',
@@ -123,7 +107,7 @@ export const transferSchedules = {
   },
 
 
-  updateLocal: function( actions, data: transferScheduleToLocalData) {
+  updateLocal: function( actions, data: transferToLocalStoneData) {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_STONE_SCHEDULE',

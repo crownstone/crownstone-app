@@ -27,7 +27,7 @@ import {
   getCurrentPowerUsageInLocation,
   getStonesAndAppliancesInLocation,
   canUseIndoorLocalizationInSphere,
-  enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization
+  enoughCrownstonesInLocationsForIndoorLocalization
 } from '../../util/DataUtil'
 import { styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth, OrangeLine} from '../styles'
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
@@ -73,7 +73,6 @@ export class RoomOverview extends Component<any, any> {
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
   navBarCalback : any = null;
-  cacheBuster : number = 0;
 
   constructor(props) {
     super(props);
@@ -83,7 +82,6 @@ export class RoomOverview extends Component<any, any> {
 
     this.viewingRemotely = true;
     this.justFinishedSetup = "";
-    this.cacheBuster = Math.random();
 
     this.nearestStoneIdInSphere = undefined;
     this.nearestStoneIdInRoom = undefined;
@@ -91,7 +89,7 @@ export class RoomOverview extends Component<any, any> {
     let state = props.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (sphere) {
-      this.viewingRemotely = sphere.config.present === false;
+      this.viewingRemotely = sphere.state.present === false;
     }
 
     let stonesInRoom = getStonesAndAppliancesInLocation(state, props.sphereId, props.locationId);
@@ -225,7 +223,6 @@ export class RoomOverview extends Component<any, any> {
       return (
         <View key={stoneId + '_entry'}>
           <DeviceEntry
-            initiallyOpen={this.justFinishedSetup === item.stone.config.handle || (this.props.usedForIndoorLocalizationSetup == true && index == 0)}
             eventBus={this.props.eventBus}
             store={this.props.store}
             stoneId={stoneId}
@@ -316,7 +313,7 @@ export class RoomOverview extends Component<any, any> {
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
-    this.viewingRemotely = sphere.config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
+    this.viewingRemotely = sphere.state.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
@@ -336,11 +333,10 @@ export class RoomOverview extends Component<any, any> {
         if (this.viewingRemotelyInitial === false && this.viewingRemotely === false && Platform.OS === 'android') {
           // update cache buster
           if (this.pictureTaken !== location.config.pictureTaken) {
-            this.cacheBuster = Math.random();
             this.pictureTaken = location.config.pictureTaken;
           }
           
-          backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri: preparePictureURI(location.config.picture, false) + "?r=" + this.cacheBuster}} />
+          backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri: preparePictureURI(location.config.picture)}} />
         }
         else {
           roomCustomImage = (
@@ -348,7 +344,7 @@ export class RoomOverview extends Component<any, any> {
               style={{width: screenWidth, height: screenHeight}}
               image={location.config.picture}
               imageTaken={location.config.pictureTaken}
-              backgroundImageSource={this.props.getBackgroundSource('main', this.viewingRemotely)}
+              backgroundImageSource={this.props.getBackground('main', this.viewingRemotely)}
               r={1} g={1} b={1}
               blendFactor={this.viewingRemotely ? 0.0 : 0.0}
               grayScale={this.viewingRemotely ? 0.9 : 0.0}
@@ -370,6 +366,7 @@ export class RoomOverview extends Component<any, any> {
       this._setNearestStoneInRoom(stoneArray, ids);
       this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
       let viewHeight = screenHeight-tabBarHeight-topBarHeight-100;
+
       content = (
         <Animated.View style={{height: this.state.scrollViewHeight}}>
           <ScrollView style={{position:'relative', top:-1}}>
@@ -419,8 +416,8 @@ export class RoomOverview extends Component<any, any> {
     let rssi = -1000;
     for (let i = 0; i < stoneArray.length; i++) {
       let stone = stoneArray[i].stone;
-      if (stone && stone.config && stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
-        rssi = stone.config.rssi;
+      if (stone && stone.reachability && stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
+        rssi = stone.reachability.rssi;
         this.nearestStoneIdInRoom = ids[i];
       }
     }
@@ -431,8 +428,8 @@ export class RoomOverview extends Component<any, any> {
     let stoneIds = Object.keys(allStones);
     for (let i = 0; i < stoneIds.length; i++) {
       let stone = allStones[stoneIds[i]];
-      if (stone && stone.config && stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
-        rssi = stone.config.rssi;
+      if (stone && stone.reachability && stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
+        rssi = stone.reachability.rssi;
         this.nearestStoneIdInSphere = stoneIds[i];
       }
     }

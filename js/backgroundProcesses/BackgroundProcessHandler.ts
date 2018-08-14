@@ -26,11 +26,14 @@ import { BatchUploader }         from "./BatchUploader";
 import { MessageCenter }         from "./MessageCenter";
 import { CloudEventHandler }     from "./CloudEventHandler";
 import { Permissions }           from "./PermissionManager";
-import {LOG, LOGw}               from "../logging/Log";
-import {LogProcessor}            from "../logging/LogProcessor";
-import {BleLogger}               from "../native/advertisements/BleLogger";
-import {StoneManager}            from "../native/advertisements/StoneManager";
-import {MeshUtil}                from "../util/MeshUtil";
+import {LOG, LOGe, LOGw} from "../logging/Log";
+import { LogProcessor }          from "../logging/LogProcessor";
+import { BleLogger }             from "../native/advertisements/BleLogger";
+import { StoneManager }          from "../native/advertisements/StoneManager";
+import { MeshUtil }              from "../util/MeshUtil";
+import { Sentry }                from "react-native-sentry";
+import {ActivityLogManager} from "./ActivityLogManager";
+import {ToonIntegration} from "./thirdParty/ToonIntegration";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -152,8 +155,8 @@ class BackgroundProcessHandlerClass {
 
   setupLogging() {
     let state = this.store.getState();
-    Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true) || LOG_TO_FILE === true);
-    if ((state.user.logging === true && state.user.developer === true && state.development.log_ble === true) || LOG_EXTENDED_TO_FILE === true) {
+    Bluenet.enableLoggingToFile((state.user.developer === true && state.development.logging_enabled === true) || LOG_TO_FILE === true);
+    if ((state.user.developer === true && state.development.logging_enabled === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
       Bluenet.enableExtendedLogging(true);
     }
   }
@@ -182,7 +185,7 @@ class BackgroundProcessHandlerClass {
       if (SetupStateHandler.isSetupInProgress() === false) {
         if (state.user.userId) {
           LOG.info("BackgroundProcessHandler: STARTING ROUTINE SYNCING IN BACKGROUND");
-          CLOUD.sync(this.store, true).catch((err) => { LOG.error("Error during background sync: ", err)});
+          CLOUD.sync(this.store, true).catch((err) => { LOGe.cloud("Error during background sync: ", err)});
         }
       }
       else {
@@ -264,6 +267,12 @@ class BackgroundProcessHandlerClass {
     // listen to the state of the app: if it is in the foreground or background
     AppState.addEventListener('change', (appState) => {
       LOG.info("App State Change", appState);
+      Sentry.captureBreadcrumb({
+        category: 'AppState',
+        data: {
+          state: appState,
+        }
+      });
       // in the foreground: start scanning!
       if (appState === "active" && this.userLoggedIn) {
         BatterySavingUtil.startNormalUsage();
@@ -345,13 +354,33 @@ class BackgroundProcessHandlerClass {
 
     // if we have an accessToken, we proceed with logging in automatically
     let state = this.store.getState();
+
+    // Catch a broken sphere.
+    let spheres = state.spheres;
+    let brokenSphere = false;
+    Object.keys(spheres).forEach((sphereId) => {
+      let sphere = spheres[sphereId];
+      let corruptData = sphere.config.adminKey === null && sphere.config.memberKey === null && sphere.config.guestKey === null;
+      corruptData = sphere.config.iBeaconUUID === undefined || sphere.config.iBeaconUUID === null || corruptData;
+      if (corruptData) {
+        brokenSphere = true;
+      }
+    })
+
+    if (brokenSphere) {
+      Alert.alert("Something went wrong...","I have identified a problem with the Sphere on your phone... I'll have to redownload it from the Cloud to fix this.", [{text:'OK', onPress: () => {
+        AppUtil.resetDatabase(this.store, eventBus);
+      }}], {cancelable:false});
+      return;
+    }
+
     if (state.user.accessToken !== null) {
       // in the background we check if we're authenticated, if not we log out.
       CLOUD.setAccess(state.user.accessToken);
       CLOUD.forUser(state.user.userId).getUserData()
         .catch((err) => {
           if (err.status === 401) {
-            LOG.warn("BackgroundProcessHandler: Could not verify user, attempting to login again.");
+            LOGw.info("BackgroundProcessHandler: Could not verify user, attempting to login again.");
             return CLOUD.login({
               email: state.user.email,
               password: state.user.passwordHash,
@@ -407,6 +436,8 @@ class BackgroundProcessHandlerClass {
     MessageCenter.loadStore(this.store);
     CloudEventHandler.loadStore(this.store);
     Permissions.loadStore(this.store, this.userLoggedIn);
+    ActivityLogManager.loadStore(this.store);
+    ToonIntegration.loadStore(this.store);
 
     BleLogger.init();
   }

@@ -1,6 +1,6 @@
 import { CLOUD } from '../../cloudAPI'
 import { Platform } from 'react-native'
-import {LOG} from "../../../logging/Log";
+import {LOG, LOGe} from "../../../logging/Log";
 const RNFS = require('react-native-fs');
 
 /**
@@ -39,7 +39,7 @@ export const syncEvents = function(store) {
         store.batchDispatch(actions);
       }
     })
-    .catch((err) => { LOG.error('syncEvents: error', err)})
+    .catch((err) => { LOGe.cloud('syncEvents: error', err)})
 
 };
 
@@ -111,7 +111,7 @@ const handleSpecial = function(state, events, actions) {
         promises.push(CLOUD.removeProfileImage({background: true}).then(() => { success(); })
           .catch((err) => {
             // even if there is no profile pic, 204 will be returned. Any other errors are.. errors?
-            LOG.error("syncEvents Special: Could not remove image from cloud", err);
+            LOGe.cloud("syncEvents Special: Could not remove image from cloud", err);
           }));
         break;
       case 'uploadProfilePicture':
@@ -131,7 +131,7 @@ const handleSpecial = function(state, events, actions) {
               })
               .then(() => { success() })
               .catch((err) => {
-                LOG.error("syncEvents Special: Could not upload image to cloud", err);
+                LOGe.cloud("syncEvents Special: Could not upload image to cloud", err);
               })
           )
         }
@@ -156,7 +156,7 @@ const handleSpecial = function(state, events, actions) {
         promises.push(CLOUD.forLocation(payload.localId).deleteLocationPicture({background: true}).then(() => { success(); })
           .catch((err) => {
             // even if there is no profile pic, 204 will be returned. Any other errors are.. errors?
-            LOG.error("syncEvents Special: Could not remove location image from cloud", err);
+            LOGe.cloud("syncEvents Special: Could not remove location image from cloud", err);
           }));
         break;
       case 'uploadLocationPicture':
@@ -176,7 +176,7 @@ const handleSpecial = function(state, events, actions) {
               })
               .then(() => { success() })
               .catch((err) => {
-                LOG.error("syncEvents Special: Could not upload location image to cloud", err);
+                LOGe.cloud("syncEvents Special: Could not upload location image to cloud", err);
               })
           )
         }

@@ -6,7 +6,7 @@ import { Bluenet  }                 from '../libInterface/Bluenet';
 import { BehaviourUtil }            from '../../util/BehaviourUtil';
 import { KeepAliveHandler }         from '../../backgroundProcesses/KeepAliveHandler';
 import { Scheduler }                from '../../logic/Scheduler';
-import { LOG }                      from '../../logging/Log';
+import {LOG, LOGe} from '../../logging/Log';
 import { Util }                     from '../../util/Util';
 import { BEHAVIOUR_TYPES }          from '../../router/store/reducers/stones';
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
@@ -68,7 +68,7 @@ class LocationHandlerClass {
 
         LOG.info("Set Settings.", bluenetSettings);
         BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
-          LOG.error("LocationHandler: Could not set Settings!", err);
+          LOGe.info("LocationHandler: Could not set Settings!", err);
           Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
         });
       })
@@ -81,7 +81,7 @@ class LocationHandlerClass {
     let sphere = state.spheres[enteringSphereId];
 
     if (!sphere) {
-      LOG.error('LocationHandler: Received enter sphere for a sphere that we shouldn\'t be tracking...');
+      LOGe.info('LocationHandler: Received enter sphere for a sphere that we shouldn\'t be tracking...');
       return;
     }
 
@@ -116,13 +116,13 @@ class LocationHandlerClass {
 
     LOG.info("Set Settings.", bluenetSettings);
     BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
-      LOG.error("LocationHandler: Could not set Settings!", err);
+      LOGe.info("LocationHandler: Could not set Settings!", err);
       Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
     });
 
 
     // make sure we only do the following once per sphere
-    if (sphere && sphere.config && sphere.config.present === true) {
+    if (sphere && sphere.state && sphere.state.present === true) {
       LOG.info('LocationHandler: IGNORE ENTER SPHERE because I\'m already in the Sphere.');
       return;
     }
@@ -132,7 +132,7 @@ class LocationHandlerClass {
       let sphereIds = Object.keys(state.spheres);
       let otherSpherePresentCount = 0;
       sphereIds.forEach((checkSphereId) => {
-        if (state.spheres[checkSphereId].config.present === true && checkSphereId !== enteringSphereId) {
+        if (state.spheres[checkSphereId].state.present === true && checkSphereId !== enteringSphereId) {
           otherSpherePresentCount += 1;
         }
       });
@@ -146,22 +146,22 @@ class LocationHandlerClass {
 
       BluenetPromiseWrapper.requestLocation()
         .catch((err) => {
-          LOG.error('LocationHandler: Could not get GPS Location when entering a sphere: ', err);
+          LOGe.info('LocationHandler: Could not get GPS Location when entering a sphere: ', err);
         })
         .then((location) => {
           if (location && location.latitude && location.longitude) {
-            if (sphere.config.latitude && sphere.config.longitude) {
-              let dx = location.latitude - sphere.config.latitude;
-              let dy = location.longitude - sphere.config.longitude;
+            if (sphere.state.latitude && sphere.state.longitude) {
+              let dx = location.latitude - sphere.state.latitude;
+              let dy = location.longitude - sphere.state.longitude;
               let distance = Math.sqrt(dx*dx + dy*dy);
               if (distance > 0.4) {
-                LOG.info('LocationHandler: Update sphere location, old: (', sphere.config.latitude, ',', sphere.config.longitude,') to new: (', location.latitude, ',', location.longitude,')');
-                this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+                LOG.info('LocationHandler: Update sphere location, old: (', sphere.state.latitude, ',', sphere.state.longitude,') to new: (', location.latitude, ',', location.longitude,')');
+                this.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
               }
             }
             else {
               LOG.info('LocationHandler: Setting sphere location to (', location.latitude, ',', location.longitude,')');
-              this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+              this.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
             }
           }
         })
@@ -211,7 +211,7 @@ class LocationHandlerClass {
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
 
-    if (state.spheres[sphereId] && state.spheres[sphereId].config.present === true) {
+    if (state.spheres[sphereId] && state.spheres[sphereId].state.present === true) {
       LOG.info('Applying EXIT SPHERE');
       // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);
@@ -225,7 +225,7 @@ class LocationHandlerClass {
       // check if you are present in any sphere. If not, stop scanning (BLE, not iBeacon).
       let presentSomewhere = false;
       Object.keys(state.spheres).forEach((checkSphereId) => {
-        if (state.spheres[checkSphereId].config.present === true && checkSphereId !== sphereId) {
+        if (state.spheres[checkSphereId].state.present === true && checkSphereId !== sphereId) {
           presentSomewhere = true;
         }
       });
@@ -236,6 +236,8 @@ class LocationHandlerClass {
       }
 
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
+
+      eventBus.emit('exitSphere', sphereId);
     }
   }
 
@@ -335,8 +337,9 @@ class LocationHandlerClass {
 
     let lastSeenPerSphere = {};
     Util.data.callOnAllStones(state, (sphereId, stoneId, stone) => {
-      lastSeenPerSphere[sphereId] = Math.max(stone.config.lastSeen || 0, lastSeenPerSphere[sphereId] || 0);
+      lastSeenPerSphere[sphereId] = Math.max(stone.reachability.lastSeen || 0, lastSeenPerSphere[sphereId] || 0);
     });
+
 
     let sphereIds = Object.keys(lastSeenPerSphere);
     let currentSphere = null;
@@ -362,7 +365,8 @@ class LocationHandlerClass {
 
     // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
     let sphereTimeout = state.spheres[currentSphere].config.exitDelay - KEEPALIVE_INTERVAL;
-    if (mostRecentSeenTime > (new Date().valueOf() - sphereTimeout)) {
+
+    if (mostRecentSeenTime > (new Date().valueOf() - sphereTimeout*1000)) {
       LOG.info("LocationHandler: Apply enter sphere.", currentSphere);
       this.enterSphere(currentSphere);
     }

@@ -1,6 +1,6 @@
 import { BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/libInterface/Constants';
 import { BatchCommandHandler } from '../logic/BatchCommandHandler';
-import { LOG } from '../logging/Log';
+import {LOG, LOGe} from '../logging/Log';
 import { Util } from './Util';
 import {BEHAVIOUR_TYPES} from "../router/store/reducers/stones";
 const SunCalc = require('suncalc');
@@ -214,7 +214,7 @@ export const BehaviourUtil = {
           });
         })
         .catch((err) => {
-          LOG.error("BehaviourUtil: Could not fire", behaviourType, ' due to ', err);
+          LOGe.info("BehaviourUtil: Could not fire", behaviourType, ' due to ', err);
         });
     }
     else {
@@ -247,13 +247,13 @@ export const BehaviourUtil = {
   },
 
   getEveningTimes: function(sphere) {
-    if (!(sphere && sphere.config)) {
-      sphere = {config:{}};
+    if (!(sphere && sphere.state)) {
+      sphere = {state:{}};
     }
 
     // the time in our rotterdam office
-    let latitude = sphere.config.latitude || 51.923611570463152;
-    let longitude = sphere.config.longitude || 4.4667693378575288;
+    let latitude = sphere.state.latitude || 51.923611570463152;
+    let longitude = sphere.state.longitude || 4.4667693378575288;
     let allTimes = SunCalc.getTimes(new Date(), latitude, longitude);
     let times = {
       morning: 0.5*(allTimes.sunrise.valueOf() + allTimes.dawn.valueOf()),

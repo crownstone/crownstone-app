@@ -60,15 +60,15 @@ class MeshElementClass extends Component<any, any> {
 
 
   componentDidMount() {
-    this.unsubscribeControlEvents.push(eventBus.on('nodeWasTapped'+this.props.id, (data) => {
+    this.unsubscribeControlEvents.push(eventBus.on('nodeWasTapped' + this.props.viewId + this.props.id, (data) => {
       this.handleTap(data);
     }));
 
-    this.unsubscribeControlEvents.push(eventBus.on('nodeTouched'+this.props.id, (data) => {
+    this.unsubscribeControlEvents.push(eventBus.on('nodeTouched' + this.props.viewId + this.props.id, (data) => {
       this.handleTouch(data);
     }));
 
-    this.unsubscribeControlEvents.push(eventBus.on('nodeReleased'+this.props.id, (data) => {
+    this.unsubscribeControlEvents.push(eventBus.on('nodeReleased' + this.props.viewId + this.props.id, (data) => {
       this.handleTouchReleased(data);
     }));
 

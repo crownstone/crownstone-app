@@ -16,7 +16,7 @@ export class RoomDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={<Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../../images/mainBackgroundLightNotConnected.png')} />}>
+      <Background image={require('../../images/mainBackgroundLightNotConnected.png')}>
         <OrangeLine/>
         <Text>Room Deleted.</Text>
       </Background>

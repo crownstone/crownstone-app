@@ -3,17 +3,22 @@ import {Util} from "../util/Util";
 import {LOG} from "../logging/Log";
 
 export class PermissionBase {
+  canEditSphere           = false; // a or m
+
   useKeepAliveState       = false; // g
   setStoneTime            = false; // a or m
+  setToonInCloud          = false; // a
   setBehaviourInCloud     = false; // a
   seeUpdateCrownstone     = false; // a?
   canUpdateCrownstone     = false; // a
-  setupCrownstone         = false; // a
+  canSetupCrownstone      = false; // a
   seeSetupCrownstone      = false; // a
   moveCrownstone          = false; // a or m
   canLockCrownstone       = false; // a
   canUnlockCrownstone     = false; // a
   canEnableDimming        = false; // a
+
+  canSetPositionInCloud   = false; // a
 
   doLocalizationTutorial  = false; // a?
   addRoom                 = false; // a?
@@ -27,6 +32,7 @@ export class PermissionBase {
   editAppliance           = false; // a
   removeAppliance         = false; // a
   canClearErrors          = false; // a
+  seeActivityLogs         = false; // a or m
 
   editSphere              = false; // a
   manageUsers             = false; // a or m
@@ -41,7 +47,7 @@ export class PermissionBase {
   canSeeSchedules         = false; // a or m
   canDeleteSchedule       = false; // a or m
 
-  canCreateStones         = false; // a or m
+  canCreateStones         = false; // a
   canCreateLocations      = false; // a or m
   canCreateAppliances     = false; // a or m
   canCreateData           = false; // a or m
@@ -103,9 +109,27 @@ export class PermissionClass extends PermissionBase {
     }
   }
 
-  _update(state = null) {
+  pretendToBeAdmin() {
+    console.warn("WARNING: OVERRIDING PERMISSIONS as ADMIN");
+    this._update(null, 'admin')
+  }
+
+  pretendToBeMember() {
+    console.warn("WARNING: OVERRIDING PERMISSIONS as MEMBER");
+    this._update(null, 'member')
+  }
+
+  pretendToBeGuest() {
+    console.warn("WARNING: OVERRIDING PERMISSIONS as GUEST");
+    this._update(null, 'guest')
+  }
+
+  _update(state = null, levelOverride : any = false) {
     LOG.info("Permissions: Update permissions for", this._sphereId);
     let level = Util.data.getUserLevelInSphere(state, this._sphereId);
+    if (levelOverride) {
+      level = levelOverride;
+    }
 
     this._revokeAll();
 
@@ -118,10 +142,13 @@ export class PermissionClass extends PermissionBase {
     switch (level) {
       case 'admin':
         this.setBehaviourInCloud     = true; // admin
+        this.setToonInCloud          = true; // admin
         this.seeUpdateCrownstone     = true; // admin
         this.canUpdateCrownstone     = true; // admin
-        this.setupCrownstone         = true; // admin
+        this.canSetupCrownstone      = true; // admin
         this.seeSetupCrownstone      = true; // admin
+
+        this.canSetPositionInCloud   = true; // admin
 
         this.addRoom                 = true; // admin
         this.editRoom                = true; // admin
@@ -148,6 +175,7 @@ export class PermissionClass extends PermissionBase {
         this.setStoneTime            = true; // admin and member
         this.manageUsers             = true; // admin and member
         this.moveCrownstone          = true; // admin and member
+        this.seeActivityLogs         = true; // admin and member
 
         this.inviteMemberToSphere    = true; // admin and member
         this.inviteGuestToSphere     = true; // admin and member
@@ -171,6 +199,9 @@ export class PermissionClass extends PermissionBase {
         this.canDeleteSchedule       = true; // admin and member
 
         this.canChangeAppliance      = true; // admin and member
+
+        // spheres
+        this.canEditSphere           = true; // admin and member
       case 'guest':
         // nothing will be added.
     }

@@ -15,7 +15,7 @@ import { Background } from '../components/Background'
 import { IconCircle } from '../components/IconCircle'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
 import {colors, OrangeLine} from '../styles'
 import {processImage, safeDeleteFile, Util} from "../../util/Util";
@@ -24,6 +24,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {CancelButton} from "../components/topbar/CancelButton";
+import {getRandomRoomIcon} from "./RoomIconSelection";
 
 
 
@@ -47,7 +48,7 @@ export class RoomAdd extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    let initialState = {name:'', icon: 'c1-bookshelf', selectedStones: {}, picture: null};
+    let initialState = {name:'', icon: getRandomRoomIcon(), selectedStones: {}, picture: null};
     this.refName = "listItems";
 
     if (props.movingCrownstone) {
@@ -86,7 +87,7 @@ export class RoomAdd extends Component<any, any> {
       mediumIcon: <IconCircle
         icon={device.config.icon}
         size={52}
-        backgroundColor={stone.state.state > 0 && stone.config.disabled === false ? colors.green.hex : colors.menuBackground.hex}
+        backgroundColor={stone.state.state > 0 && stone.reachability.disabled === false ? colors.green.hex : colors.menuBackground.hex}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
       label: device.config.name,
@@ -144,8 +145,8 @@ export class RoomAdd extends Component<any, any> {
 
         let device = floatingStones[stoneId].device;
         let stone = floatingStones[stoneId].stone;
-        let subtext = stone.config.disabled === false ?
-          (nearestId === stoneId ? 'Nearest' : stone.config.rssi > -60 ? 'Very near' : stone.config.rssi > -70 ? 'Near' : undefined)
+        let subtext = stone.reachability.disabled === false ?
+          (nearestId === stoneId ? 'Nearest' : stone.reachability.rssi > -60 ? 'Very near' : stone.reachability.rssi > -70 ? 'Near' : undefined)
           : undefined;
 
         this._pushCrownstoneItem(items, device, stone, stoneId, subtext);
@@ -176,8 +177,8 @@ export class RoomAdd extends Component<any, any> {
     let id = undefined;
     for (let i = 0; i < floatingStoneIds.length; i++) {
       let stone = floatingStones[floatingStoneIds[i]].stone;
-      if (stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
-        rssi = stone.config.rssi;
+      if (stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
+        rssi = stone.reachability.rssi;
         id = floatingStoneIds[i];
       }
     }
@@ -247,8 +248,8 @@ export class RoomAdd extends Component<any, any> {
             }
 
             this.props.store.batchDispatch(actions);
-            if (this.props.returnToCrownstone) {
-              Actions.popTo("deviceOverview");
+            if (this.props.returnToRoute) {
+              Actions.popTo(this.props.returnToRoute);
             }
             else {
               Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false, __popBeforeAddCount: 2});
@@ -256,7 +257,7 @@ export class RoomAdd extends Component<any, any> {
             this.props.eventBus.emit('hideLoading');
           })
           .catch((err) => {
-            LOG.error("RoomAdd: Something went wrong with creation of rooms", err);
+            LOGe.info("RoomAdd: Something went wrong with creation of rooms", err);
             let defaultActions = () => {this.props.eventBus.emit('hideLoading');};
             Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: defaultActions}], { onDismiss: defaultActions })
           })

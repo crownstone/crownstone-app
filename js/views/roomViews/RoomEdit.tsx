@@ -338,7 +338,7 @@ export class RoomEdit extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false;
+    this.viewingRemotely = state.spheres[this.props.sphereId].state.present === false;
 
     let backgroundImage = this.props.getBackground('menu', this.viewingRemotely);
     return (

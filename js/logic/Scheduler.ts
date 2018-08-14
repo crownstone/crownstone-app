@@ -1,6 +1,6 @@
 import { AppState } from 'react-native'
 import { NativeBus } from '../native/libInterface/NativeBus';
-import { LOG } from '../logging/Log'
+import {LOG, LOGe, LOGw} from '../logging/Log'
 import { Util } from '../util/Util'
 import {eventBus} from "../util/EventBus";
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
@@ -87,7 +87,7 @@ class SchedulerClass {
    */
   setRepeatingTrigger(id, options) {
     if (options.repeatEveryNSeconds && options.repeatEveryNSeconds > 20000) {
-      LOG.warn(id, "Probably passed milliseconds to scheduler", options.repeatEveryNSeconds);
+      LOGw.info(id, "Probably passed milliseconds to scheduler", options.repeatEveryNSeconds);
     }
 
     if (this.triggers[id] === undefined) {
@@ -128,11 +128,11 @@ class SchedulerClass {
         this.triggers[triggerId].overwritableActions[actionId] = action;
       }
       else {
-        LOG.error("INVALID ACTION", action);
+        LOGe.scheduler("INVALID ACTION", action);
       }
     }
     else {
-      LOG.error("Invalid trigger ID", triggerId, this.triggers)
+      LOGe.scheduler("Invalid trigger ID", triggerId, this.triggers)
     }
   }
 
@@ -176,11 +176,11 @@ class SchedulerClass {
         this.triggers[triggerId].actions.push(action);
       }
       else {
-        LOG.error("INVALID ACTION", action);
+        LOGe.scheduler("INVALID ACTION", action);
       }
     }
     else {
-      LOG.error("Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
+      LOGe.scheduler("Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
     }
   }
 
@@ -201,11 +201,11 @@ class SchedulerClass {
         }
       }
       else {
-        LOG.error("Scheduler: INVALID callback", callback);
+        LOGe.scheduler("Scheduler: INVALID callback", callback);
       }
     }
     else {
-      LOG.error("Scheduler: Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
+      LOGe.scheduler("Scheduler: Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
     }
   }
 
@@ -227,11 +227,11 @@ class SchedulerClass {
         }
       }
       else {
-        LOG.error("Scheduler: INVALID callback", callback);
+        LOGe.scheduler("Scheduler: INVALID callback", callback);
       }
     }
     else {
-      LOG.error("Scheduler: Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
+      LOGe.scheduler("Scheduler: Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
     }
   }
 
@@ -291,7 +291,7 @@ class SchedulerClass {
 
   _scheduleCallback(callback, afterMilliseconds, useTimeout: boolean, label = "unlabeled") : () => void {
     if (typeof callback !== 'function') {
-      LOG.error("Scheduler: Failed to schedule callback. Not a function", label, afterMilliseconds);
+      LOGe.scheduler("Scheduler: Failed to schedule callback. Not a function", label, afterMilliseconds);
       if (DEBUG) {
         throw "Scheduler: Failed to schedule callback. Not a function: " + label;
       }

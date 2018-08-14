@@ -184,8 +184,8 @@ export class StoneEntity {
 
     // fallback to ensure we never miss an enter event caused by a bug in ios 10
     if (FALLBACKS_ENABLED) {
-      if (state.spheres[this.sphereId].config.present === false) {
-        LOG.warn("FALLBACK: StoneEntity: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
+      if (state.spheres[this.sphereId].state.present === false) {
+        LOGw.info("FALLBACK: StoneEntity: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
         LocationHandler.enterSphere(this.sphereId);
       }
     }
@@ -223,7 +223,7 @@ export class StoneEntity {
     let stone = sphere.stones[this.stoneId];
 
     // if we hear this stone and yet it is set to disabled, we re-enable it.
-    if (stone.config.disabled === true) {
+    if (stone.reachability.disabled === true) {
       this.store.dispatch({
         type: 'UPDATE_STONE_DISABILITY',
         sphereId: this.sphereId,
@@ -356,7 +356,7 @@ export class StoneEntity {
     if (rssi < 0) { this.lastKnownRSSI = rssi; }
 
     // only update rssi if there is a measurable difference and check if rssi is smaller than 0 to make sure its a valid measurement.
-    if (stone.config.rssi !== rssi && rssi < 0) {
+    if (stone.reachability.rssi !== rssi && rssi < 0) {
       this.storeManager.loadAction(this.stoneId, UPDATE_STONE_RSSI, {
         type: 'UPDATE_STONE_RSSI',
         sphereId: this.sphereId,

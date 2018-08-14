@@ -17,6 +17,7 @@ import { StoneSyncer }        from "./StoneSyncer";
 import { MessageSyncer }      from "./MessageSyncer";
 import {LOG} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
+import {ToonSyncer} from "./thirdParty/ToonSyncer";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;
@@ -35,6 +36,7 @@ export class SphereSyncer extends SyncingBase {
       .then((spheresInCloud) => {
         let state = store.getState();
         let spheresInState = state.spheres;
+
         let localSphereIdsSynced = this.syncDown(store, spheresInState, spheresInCloud);
         this.syncUp(spheresInState, localSphereIdsSynced);
 
@@ -84,11 +86,14 @@ export class SphereSyncer extends SyncingBase {
   syncChildren(store, localId, localSphere, sphere_from_cloud) {
     this.globalSphereMap[localId] = getGlobalIdMap();
 
+    this.syncFloatingLocationPosition(store, localId, localSphere, sphere_from_cloud);
+
     let sphereUserSyncer  = new SphereUserSyncer( this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let locationSyncer    = new LocationSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let applianceSyncer   = new ApplianceSyncer(  this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let stoneSyncer       = new StoneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    let toonSyncer        = new ToonSyncer(       this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
 
     // sync sphere users
     LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");
@@ -120,8 +125,59 @@ export class SphereSyncer extends SyncingBase {
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE messageSyncer sync.");
+        LOG.info("SphereSync ",localId,": START ToonSyncer sync.");
+        // sync messages
+        return toonSyncer.sync(store);
+      })
+      .then(() => {
+        LOG.info("SphereSync ",localId,": DONE ToonSyncer sync.");
       })
     );
+  }
+
+  syncFloatingLocationPosition(store, localId, localSphere, sphere_from_cloud) {
+    let addPositionToFloatingLocation = () => {
+      this.actions.push({
+        type: "SET_FLOATING_LAYOUT_LOCATION",
+        sphereId: localId,
+        data: {
+          x: sphere_from_cloud.floatingLocationPosition.x,
+          y: sphere_from_cloud.floatingLocationPosition.y,
+          setOnThisDevice: false,
+          updatedAt: sphere_from_cloud.floatingLocationPosition.updatedAt,
+        }
+      })
+    }
+    if (localSphere) {
+      if (localSphere.layout.floatingLocation.x === null || localSphere.layout.floatingLocation.y === null) {
+        if (sphere_from_cloud.floatingLocationPosition) {
+          addPositionToFloatingLocation();
+        }
+      }
+      else if (localSphere.layout.floatingLocation.setOnThisDevice === false) {
+        if (sphere_from_cloud.floatingLocationPosition && shouldUpdateLocally(localSphere.layout.floatingLocation, sphere_from_cloud.floatingLocationPosition)) {
+          addPositionToFloatingLocation();
+        }
+      }
+      else if (Permissions.inSphere(localId).canSetPositionInCloud) {
+        if (!sphere_from_cloud.floatingLocationPosition) {
+          this.transferPromises.push(
+            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition(localSphere.layout.floatingLocation)
+          )
+        }
+        else if (shouldUpdateInCloud(localSphere.layout.floatingLocation, sphere_from_cloud.floatingLocationPosition)) {
+          this.transferPromises.push(
+            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition(localSphere.layout.floatingLocation)
+          )
+        }
+      }
+    }
+    else {
+      // new location! store the positions
+      if (sphere_from_cloud.floatingLocationPosition) {
+        addPositionToFloatingLocation();
+      }
+    }
   }
 
   syncUp(spheresInState, localSphereIdsSynced) {
@@ -155,7 +211,7 @@ export class SphereSyncer extends SyncingBase {
   syncLocalSphereDown(localId, sphereInState, sphere_from_cloud) {
     // somehow sometimes all keys go missing or the ibeacon uuid goes missing. If this is the case, redownload from cloud.
     let corruptData = sphereInState.config.adminKey === null && sphereInState.config.memberKey === null &&sphereInState.config.guestKey === null;
-    corruptData = sphereInState.config.iBeaconUUID || corruptData;
+    corruptData = sphereInState.config.iBeaconUUID === undefined || sphereInState.config.iBeaconUUID === null || corruptData;
 
     if (shouldUpdateInCloud(sphereInState.config, sphere_from_cloud) && !corruptData) {
       if (!Permissions.inSphere(localId).canUploadSpheres) { return }

@@ -25,7 +25,7 @@ export const LocalNotifications = {
     let sphere = state.spheres[localSphereId];
     if (state && sphere) {
       // check if in the sphere
-      if (sphere.config.present === true) {
+      if (sphere.state.present === true) {
         if (localLocationId) {
           // check if you're in this location or if you can't be in a location due to disabled localization
           // return if we do NOT have to deliver the message RIGHT NOW
@@ -61,7 +61,7 @@ export const LocalNotifications = {
 
 
         // add a flag that there is a new message in this sphere.
-        if (sphere.config.newMessageFound === false) {
+        if (sphere.state.newMessageFound === false) {
           MessageCenter.newMessageStateInSphere(localSphereId, true);
         }
 

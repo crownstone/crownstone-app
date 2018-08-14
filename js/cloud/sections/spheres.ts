@@ -118,7 +118,7 @@ export const spheres = {
    * @returns {*}
    */
   getSpheres: function (background = true) {
-    return this._setupRequest('GET', '/users/{id}/spheres', { background: background });
+    return this._setupRequest('GET', '/users/{id}/spheres', { data: {filter: {include:"floatingLocationPosition"}}, background: background });
   },
 
   getUsers: function (background = true) {
@@ -135,6 +135,10 @@ export const spheres = {
 
   getGuests: function (background = true) {
     return this._setupRequest('GET', '/Spheres/{id}/guests', { background : background });
+  },
+
+  getToons: function (background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/Toons', { background : background });
   },
 
 
@@ -163,6 +167,15 @@ export const spheres = {
 
   changeUserAccess: function(email, accessLevel, background = false) {
     return this._setupRequest('PUT', '/Spheres/{id}/role', {data: {email: email, role:accessLevel}, background:background}, 'query');
+  },
+
+  updateFloatingLocationPosition: function (data, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Spheres/{id}/floatingLocationPosition/',
+      {background: background, data: data},
+      'body'
+    );
   },
 
   deleteUserFromSphere: function(userId) {

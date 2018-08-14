@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
-import { LOG } from '../logging/Log'
+import {LOG, LOGe} from '../logging/Log'
 import { STONE_TYPES } from '../router/store/reducers/stones'
 
 import { Alert } from 'react-native';
@@ -41,7 +41,7 @@ export const DataUtil = {
       }
     }
     else {
-      LOG.error("DataUtil: Trying to call method on all stones in sphere but I cannot find stones in this sphere (or the sphere itself)");
+      LOGe.info("DataUtil: Trying to call method on all stones in sphere but I cannot find stones in this sphere (or the sphere itself)");
     }
   },
 
@@ -85,7 +85,7 @@ export const DataUtil = {
   getPresentSphereId: function(state) {
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++ ) {
-      if (state.spheres[sphereIds[i]].config.present === true) {
+      if (state.spheres[sphereIds[i]].state.present === true) {
         return sphereIds[i];
       }
     }
@@ -137,7 +137,7 @@ export const DataUtil = {
       return sphere.appliances[stone.config.applianceId];
     }
     else if (stone.config.applianceId) {
-      LOG.error("DataUtil: Stone has an appliance ID but the appliance itself is not found.", stone.config.applianceId);
+      LOGe.info("DataUtil: Stone has an appliance ID but the appliance itself is not found.", stone.config.applianceId);
 
       // self repair..
       if (stoneId) {
@@ -174,7 +174,7 @@ export const DataUtil = {
     // first we determine in which sphere we are:
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++) {
-      if (state.spheres[sphereIds[i]].config.present === true) {
+      if (state.spheres[sphereIds[i]].state.present === true) {
         presentSphereId = sphereIds[i];
       }
     }
@@ -286,6 +286,7 @@ export const DataUtil = {
   },
 
 
+
   getSpheresWhereUserHasAccessLevel: function(state, accessLevel) {
     let items = [];
     for (let sphereId in state.spheres) {
@@ -298,6 +299,36 @@ export const DataUtil = {
       }
     }
     return items;
+  },
+
+  getLayoutDataRooms: function(state, sphereId, showSetupCrownstone = false) {
+    let initialPositions = {}
+    let sphere = state.spheres[sphereId]
+    let rooms = sphere.locations;
+
+    let floatingStones = getFloatingStones(state, sphereId);
+    let showFloatingCrownstones = floatingStones.length > 0 || showSetupCrownstone;
+
+    let roomIdArray = Object.keys(rooms).sort();
+    let usePhysics = false;
+
+    for (let i = 0; i < roomIdArray.length; i++) {
+      let room = rooms[roomIdArray[i]];
+      initialPositions[roomIdArray[i]] = {x: room.layout.x, y: room.layout.y};
+      if (room.layout.setOnThisDevice === false) {
+        usePhysics = true
+      }
+    }
+
+    if (showFloatingCrownstones) {
+      roomIdArray.push(null);
+      initialPositions['null'] = {x: sphere.layout.floatingLocation.x, y: sphere.layout.floatingLocation.y};
+      if ( sphere.layout.floatingLocation.setOnThisDevice === false ) {
+        usePhysics = true
+      }
+    }
+
+    return { roomIdArray, initialPositions, usePhysics };
   },
 
 
@@ -319,15 +350,15 @@ export const DataUtil = {
       return state.spheres[sphereId].users[userId].accessLevel;
     else {
       if (state.spheres[sphereId].config.adminKey !== null) {
-        LOG.error("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
+        LOGe.info("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
         return 'admin';
       }
       else if (state.spheres[sphereId].config.memberKey !== null) {
-        LOG.error("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
+        LOGe.info("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
         return 'member';
       }
       else if (state.spheres[sphereId].config.guestKey !== null) {
-        LOG.error("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
+        LOGe.info("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
         return 'guest';
       }
     }

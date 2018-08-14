@@ -1,5 +1,5 @@
 import { CLOUD }        from "../cloudAPI";
-import { LOG }          from "../../logging/Log";
+import {LOG, LOGe} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
@@ -34,7 +34,7 @@ export const transferAppliances = {
         return result.id;
       })
       .catch((err) => {
-        LOG.error("Transfer-Appliance: Could not create Appliance in cloud", err);
+        LOGe.cloud("Transfer-Appliance: Could not create Appliance in cloud", err);
         throw err;
       });
   },
@@ -55,7 +55,7 @@ export const transferAppliances = {
     return CLOUD.forSphere(data.cloudSphereId).updateAppliance(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
-        LOG.error("Transfer-Appliance: Could not update Appliance in cloud", err);
+        LOGe.cloud("Transfer-Appliance: Could not update Appliance in cloud", err);
         throw err;
       });
   },

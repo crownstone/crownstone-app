@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import { LOG }                                        from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 import { BlePromiseManager }                          from '../../logic/BlePromiseManager'
 import { addDistanceToRssi, Util }                    from '../../util/Util'
 import { OverlayBox }                                 from '../components/overlays/OverlayBox'
@@ -68,12 +68,12 @@ export class TapToToggleCalibration extends Component<any, any> {
             // search through all present spheres  that are not disabled and have RSSI indicators
             sphereIds.forEach((sphereId) => {
               let sphere = state.spheres[sphereId];
-              if (sphere.config.present === true) {
+              if (sphere.state.present === true) {
                 let stoneIds = Object.keys(sphere.stones);
                 stoneIds.forEach((stoneId) => {
                   let stone = sphere.stones[stoneId];
-                  if (stone.config.disabled === false) {
-                    minRSSI = Math.max(stone.config.rssi, minRSSI);
+                  if (stone.reachability.disabled === false) {
+                    minRSSI = Math.max(stone.reachability.rssi, minRSSI);
                   }
                 });
               }
@@ -119,7 +119,7 @@ export class TapToToggleCalibration extends Component<any, any> {
         }
       })
       .catch((err) => {
-        LOG.error("TapToToggleCalibration error:", err);
+        LOGe.info("TapToToggleCalibration error:", err);
         eventBus.emit("hideLoading");
         Alert.alert("Something went wrong", "Maybe try again later.", [{text:'OK'}])
       })

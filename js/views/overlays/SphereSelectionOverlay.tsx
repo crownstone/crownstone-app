@@ -40,10 +40,10 @@ export class SphereSelectionOverlay extends Component<any, any> {
     this.unsubscribe = [];
   }
 
-  _sphereRenderer(item, index, itemId) {
+  _sphereRenderer(sphere, index, sphereId) {
     let color = colors.white.hex;
     let textStyle = {paddingLeft:10, flex:1};
-    if (this.activeSphere === itemId) {
+    if (this.activeSphere === sphereId) {
       color = colors.csBlue.hex;
       textStyle['fontWeight'] = '600';
       textStyle['color'] = colors.white.hex;
@@ -53,12 +53,12 @@ export class SphereSelectionOverlay extends Component<any, any> {
         key={'spherePicker'+index}
         style={{flexDirection: 'row', width:0.7*screenWidth, height:40, backgroundColor: color, alignItems:'center'}}
         onPress={() => {
-          this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: itemId}});
+          this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereId}});
           this.setState({visible:false});
         }}
       >
-        <Text style={textStyle}>{item.config.name}</Text>
-        {item.config.present ? <Icon name="c1-locationPin1" size={20} style={{paddingRight:10}} color={colors.black.rgba(0.4)} /> : undefined }
+        <Text style={textStyle}>{sphere.config.name}</Text>
+        {sphere.state.present ? <Icon name="c1-locationPin1" size={20} style={{paddingRight:10}} color={colors.black.rgba(0.4)} /> : undefined }
       </TouchableOpacity>
     )
   }

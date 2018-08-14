@@ -16,11 +16,30 @@ const Actions = require('react-native-router-flux').Actions;
 
 import {colors, screenWidth, availableScreenHeight} from '../../styles'
 import {Util} from "../../../util/Util";
+import {DeviceInformation} from "./DeviceSummary";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 export class GuidestoneSummary extends Component<any, any> {
-  constructor(props) {
-    super(props);
-    this.state = {pendingCommand: false}
+  unsubscribeStoreEvents
+  componentDidMount() {
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (
+        !change.removeStone &&
+        (
+          change.changeAppSettings ||
+          change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+          change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId]
+        )
+      ) {
+        this.forceUpdate();
+      }
+    });
+  }
+  componentWillUnmount() {
+    this.unsubscribeStoreEvents();
   }
 
   render() {
@@ -29,9 +48,10 @@ export class GuidestoneSummary extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let locationLabel = "Currently in Room:";
-    let locationName = "No";
+    let locationLabel = "Tap here to move me!";
+    let locationName = "Not in room";
     if (location) {
       locationLabel = "Located in:";
       locationName = location.config.name;
@@ -39,6 +59,11 @@ export class GuidestoneSummary extends Component<any, any> {
 
     return (
       <View style={{flex:1, paddingBottom:35}}>
+        <DeviceInformation
+          right={locationLabel}
+          rightValue={locationName}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { Actions.roomSelection({sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
+        />
         <View style={{flex:1}} />
         <View style={{alignItems:'center'}}>
           <Text style={deviceStyles.subText}>{"Device Type:"}</Text>
@@ -57,9 +82,9 @@ export class GuidestoneSummary extends Component<any, any> {
         <View style={{flex: 0.2}} />
         <View style={{alignItems:'center', height: 0.2*availableScreenHeight}}>
           <Text style={deviceStyles.subText}>{"Reachable:"}</Text>
-          <Text style={deviceStyles.text}>{stone.config.disabled === false ? 'Yes' : 'Searching...'}</Text>
+          <Text style={deviceStyles.text}>{stone.reachability.disabled === false ? 'Yes' : 'Searching...'}</Text>
           {
-            stone.config.disabled  ?
+            stone.reachability.disabled  ?
               <ActivityIndicator animating={true} size='small' color={colors.white.hex} style={{paddingTop:20}} />
             : undefined
           }

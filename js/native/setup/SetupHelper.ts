@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
 import { NativeBus }             from '../libInterface/NativeBus';
-import { LOG }                   from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 import { STONE_TYPES }            from '../../router/store/reducers/stones'
 import { eventBus }              from '../../util/EventBus'
 import { Util }                  from '../../util/Util'
@@ -83,10 +83,8 @@ export class SetupHelper {
           .then((hardwareVersion) => {
             this.hardwareVersion = hardwareVersion;
             LOG.info("setup progress: have hardware version: ", hardwareVersion);
-            return BluenetPromiseWrapper.phoneDisconnect();
           })
           .then(() => {
-            LOG.info("setup progress: disconnected");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
             return this.registerInCloud(sphereId);
           })
@@ -210,7 +208,7 @@ export class SetupHelper {
 
             // clean up in the cloud after failed setup.
             if (this.stoneIdInCloud !== undefined && this.stoneWasAlreadyInCloud === false) {
-              CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOG.error("COULD NOT CLEAN UP AFTER SETUP", err)})
+              CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOGe.info("COULD NOT CLEAN UP AFTER SETUP", err)})
             }
 
             if (err == "INVALID_SESSION_DATA" && silent === false) {
@@ -224,7 +222,7 @@ export class SetupHelper {
               Alert.alert("I'm Sorry!", "Something went wrong during the setup. Please try it again and stay really close to it!", [{text:"OK"}]);
             }
 
-            LOG.error("SetupHelper: Error during setup phase:", err);
+            LOGe.info("SetupHelper: Error during setup phase:", err);
 
             BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
           })
@@ -271,12 +269,12 @@ export class SetupHelper {
                 }
               })
               .catch((err) => {
-                LOG.error("SetupHelper: CONNECTION ERROR on find:",err);
+                LOGe.info("SetupHelper: CONNECTION ERROR on find:",err);
                 processFailure(err);
               })
           }
           else {
-            LOG.error("SetupHelper: CONNECTION ERROR on register:",err);
+            LOGe.info("SetupHelper: CONNECTION ERROR on register:",err);
             processFailure(err);
           }
         });
@@ -347,7 +345,7 @@ export class SetupHelper {
           { commandName : 'setSchedule', scheduleConfig: scheduleConfig },
           {},
           10
-        ).catch((err) => { LOG.error("SetupHelper: could not restore schedules.", err)})
+        ).catch((err) => { LOGe.info("SetupHelper: could not restore schedules.", err)})
         }
     });
 

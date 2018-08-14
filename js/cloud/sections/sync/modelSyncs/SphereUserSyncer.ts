@@ -6,7 +6,7 @@
 
 import {CLOUD} from "../../../cloudAPI";
 import {SyncingSphereItemBase} from "./SyncingBase";
-import {LOG} from "../../../../logging/Log";
+import {LOG, LOGe} from "../../../../logging/Log";
 
 export class SphereUserSyncer extends SyncingSphereItemBase {
   userId: string;
@@ -116,7 +116,7 @@ export class SphereUserSyncer extends SyncingSphereItemBase {
                 this.actions.push(action);
               })
               .catch((err) => {
-                LOG.error("SphereUserSyncer: Failed getting user picture", err);
+                LOGe.cloud("SphereUserSyncer: Failed getting user picture", err);
                 // still add data to ensure we never miss out on a user because of a bad profile picture.
                 this.actions.push(action);
               })

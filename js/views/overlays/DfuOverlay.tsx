@@ -15,7 +15,7 @@ import { OverlayContent }  from '../components/overlays/OverlayContent'
 import { OverlayBox }      from '../components/overlays/OverlayBox'
 import { eventBus }        from '../../util/EventBus'
 import { FirmwareHandler } from "../../native/firmware/FirmwareHandler";
-import {LOG, LOGd} from "../../logging/Log";
+import {LOG, LOGd, LOGe} from "../../logging/Log";
 import { Util }            from "../../util/Util";
 import { ProgressCircle }  from "../components/ProgressCircle";
 import {colors, screenHeight, screenWidth} from '../styles'
@@ -145,7 +145,7 @@ export class DfuOverlay extends Component<any, any> {
         this.setState({releaseNotes: releaseNotes});
       })
       .catch((err) => {
-        LOG.error("DfuOverlay: Could not download release notes...", err);
+        LOGe.info("DfuOverlay: Could not download release notes...", err);
         let errorMessage = RELEASE_NOTES_ERROR;
         if (userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion] === undefined) {
           errorMessage += "\nNo firmware available form hardwareVersion" + stoneConfig.hardwareVersion
@@ -207,7 +207,7 @@ export class DfuOverlay extends Component<any, any> {
         this._processCleanup();
 
         if (killCurrentProcess === true) {
-          LOG.error("DfuOverlay: killProcess is true. Aborting DFU");
+          LOGe.info("DfuOverlay: killProcess is true. Aborting DFU");
           return;
         }
 
@@ -233,7 +233,7 @@ export class DfuOverlay extends Component<any, any> {
             this.setState({step: STEP_TYPES.UPDATE_FAILED});
           }
         }
-        LOG.error("DfuOverlay: ERROR DURING DFU: ", err);
+        LOGe.info("DfuOverlay: ERROR DURING DFU: ", err);
       })
   }
 
@@ -287,7 +287,6 @@ export class DfuOverlay extends Component<any, any> {
 
       // check what we have to do for this Crownstone. This will give us an amount of phases to do.
       let phasesRequired = this.helper.getAmountOfPhases(stoneConfig.dfuResetRequired);
-      console.log("phasesRequired", phasesRequired)
       if (this.helper.resetRequired === true) {
         this.props.store.dispatch({
           type: "UPDATE_STONE_DFU_RESET",

@@ -398,7 +398,7 @@ class StoneManagerClass {
     let stoneIds = Object.keys(state.spheres[sphereId].stones);
     let allDisabled = true;
     stoneIds.forEach((stoneId) => {
-      if (state.spheres[sphereId].stones[stoneId].config.disabled === false) {
+      if (state.spheres[sphereId].stones[stoneId].reachability.disabled === false) {
         allDisabled = false;
       }
     });

@@ -18,6 +18,7 @@ import {IconButton} from "../components/IconButton";
 import {Actions} from "react-native-router-flux";
 import {Icon} from "../components/Icon";
 import {NavigationBar} from "../components/editComponents/NavigationBar";
+import { Sentry } from "react-native-sentry";
 
 export class SettingsFAQ extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -144,7 +145,7 @@ export class SettingsFAQ extends Component<any, any> {
       label:"... a new Crownstone won't show up.",
       content:"Make sure the Crownstone is powered and that you're close to it. " +
       "During setup mode the Crownstone is transmitting very quietly so other people can't claim your Crownstones!\n\n" +
-      "If it still won't show up, you may want to try the recovery procedure (see 'what to do if I need to recover a Crownstone' below).",
+      "If it still won't show up, you may want to try the factory reset procedure (see 'what to do if I need to factory reset a Crownstone' below).",
       contentHeight: 175
     });
 
@@ -152,8 +153,50 @@ export class SettingsFAQ extends Component<any, any> {
       type:'collapsable',
       label:"... a Crownstone is on 'Searching'.",
       content:"Ensure there is power on the Crownstone and that you can reach it.\n\n" +
-      "If you're near (within a meter) and it is still on 'Searching' you may want to try the recovery procedure (see 'what to do if I need to recover a Crownstone' below).",
+      "If you're near (within a meter) and it is still on 'Searching' you may want to try the factory reset procedure (see 'what to do if I need to factory reset a Crownstone' below).",
       contentHeight: 155
+    });
+
+    items.push({
+      type:'collapsable',
+      label:"... my Sphere name is gone and things are weird.",
+      contentItem:
+        <View style={{flex:1}}>
+          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{"Sometimes something goes wrong in the persisting of the local data.\n\nTo solve this you can try to redownload the data from the Cloud. Press the button below to do this."}
+          </Text>
+          <View style={{flex:1}} />
+          <NavigationBar
+            label={'Revert to Cloud Data'}
+            icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
+            callback={() => {
+              Actions.settingsRedownloadFromCloud()
+            }}
+          />
+          <View style={{flex:1}} />
+        </View>,
+      contentHeight: 200
+    });
+
+    items.push({
+      type:'collapsable',
+      label:"... it always says 'No Crownstones in Range'.",
+      contentItem:
+        <View style={{flex:1}}>
+          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{"It could be that you're not close enough to the nearest Crownstone. Try going closer.\n\n" +
+          "If that does not work, try to restarting your Bluetooth, restarting the App or even restarting your Phone.\n\n" +
+          "If that does not work either, you can try to press the button below to resync with the Cloud. This will delete all your local preferences and replace it by the data in the Cloud."}
+          </Text>
+          <View style={{flex:1}} />
+          <NavigationBar
+            label={'Revert to Cloud Data'}
+            icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
+            callback={() => {
+              Actions.settingsRedownloadFromCloud()
+            }}
+          />
+          <View style={{flex:1}} />
+        </View>,
+      contentHeight: 275
     });
 
     let label = "If that fails, quit the app (double tap home button and swipe it up to really close it).\n";
@@ -183,7 +226,7 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'collapsable',
-      label:"... I need to recover a Crownstone.",
+      label:"... I need to factory reset a Crownstone.",
       contentItem:
         <View style={{flex:1}}>
           <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{"Only use this as a last resort. \n\n- Tap the button below and follow the instructions.\n" +
@@ -191,10 +234,10 @@ export class SettingsFAQ extends Component<any, any> {
           </Text>
           <View style={{flex:1}} />
           <NavigationBar
-            label={'Recover Crownstone'}
+            label={'Reset Crownstone'}
             icon={<IconButton name={'ios-build'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              Actions.settingsPluginRecoverStep1()
+              Actions.settingsFactoryResetStep1()
             }}
           />
           <View style={{flex:1}} />

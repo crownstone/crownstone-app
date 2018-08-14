@@ -1,6 +1,6 @@
 import { BlePromiseManager } from './BlePromiseManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
-import { LOG } from '../logging/Log'
+import {LOG, LOGe} from '../logging/Log'
 
 export class DirectCommand {
   handle   : any;
@@ -39,7 +39,7 @@ export class DirectCommand {
           })
           .then(() => { LOG.info("DirectCommand: completed", action, 'disconnecting'); return BluenetPromiseWrapper.disconnectCommand(); })
           .catch((err) => {
-            LOG.error("DirectCommand: BLE Single command Error:", err);
+            LOGe.ble("DirectCommand: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
               BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
             })
@@ -110,7 +110,7 @@ export class DirectCommand {
           })
           .then(() => { LOG.info("DirectCommand: performMultipleCommands: completed", actions, 'disconnecting'); return BluenetPromiseWrapper.disconnectCommand(); })
           .catch((err) => {
-            LOG.error("performMultipleCommands: BLE Single command Error:", err);
+            LOGe.ble("performMultipleCommands: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
               BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
             })

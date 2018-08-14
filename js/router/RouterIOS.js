@@ -23,9 +23,8 @@ import { Views }                     from './Views'
 import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
-import { SettingsMeshTopologyHelp }  from "../views/settingsViews/SettingsMeshTopologyHelp";
-import { AddItemsToSphere }          from "../views/main/AddItemsToSphere";
 import { LibMessages }               from "../views/overlays/LibMessages";
+import {SettingsLogging} from "../views/settingsViews/dev/SettingsLogging";
 
 
 export class Router_IOS extends Component {
@@ -38,7 +37,6 @@ export class Router_IOS extends Component {
           {...navBarStyle}
           backgrounds={this.props.backgrounds}
           getBackground={this.props.getBackground.bind(this)}
-          getBackgroundSource={this.props.getBackgroundSource.bind(this)}
           eventBus={eventBus}
         >
           <Modal>
@@ -51,8 +49,8 @@ export class Router_IOS extends Component {
             <Tabs key="tabBar" showLabel={false} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} backToInitial={true} initial={this.props.loggedIn}>
               <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                 <Scene key="sphereOverview"             component={Views.SphereOverview}             />
+                <Scene key="deviceOverview"             component={Views.DeviceOverview}        sphereId={"165796f4-3dfe-4447-5cb8-aad82b29de68"} stoneId={"d27ff2d2-27cd-d1ed-1ff4-6d0f24bca6b"} />
                 <Scene key="roomOverview"               component={Views.RoomOverview}               />
-                <Scene key="deviceOverview"             component={Views.DeviceOverview}             />
               </Scene>
               <Scene key="messages"  tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
                 <Scene key="messageInbox"               component={Views.MessageInbox}    />
@@ -61,17 +59,16 @@ export class Router_IOS extends Component {
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}          />
                 <Scene key="settingsProfile"            component={Views.SettingsProfile}           />
                 <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           />
+                <Scene key="settingsDiagnostics"        component={Views.SettingsDiagnostics}       />
                 <Scene key="settingsApp"                component={Views.SettingsApp}               />
                 <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      />
                 <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
                 <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}      />
+                <Scene key="settingsLogging"            component={Views.SettingsLogging}           />
                 <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
+                <Scene key="settingsMeshDebug"          component={Views.SettingsMeshDebug}         />
+                <Scene key="settingsLocalizationDebug"  component={Views.SettingsLocalizationDebug} />
                 <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         />
-                <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}    />
-                <Scene key="settingsSphere"             component={Views.SettingsSphere}            />
-                <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}        />
-                <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser} />
-                <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}      />
                 <Scene key="settingsFAQ"                component={Views.SettingsFAQ}               />
               </Scene>
             </Tabs>
@@ -85,6 +82,24 @@ export class Router_IOS extends Component {
             <Scene key="roomAdd"                        component={Views.RoomAdd}                    />
             <Scene key="addItemsToSphere"               component={Views.AddItemsToSphere}           />
             <Scene key="roomEdit"                       component={Views.RoomEdit}                   />
+            <Scene key="toonAdd"                        component={Views.ToonAdd}   initial={false}  />
+
+            <Scene key="sphereEdit"                     component={Views.SphereEdit}                 panHandlers={null} />
+            <Scene key="sphereEditSettings"             component={Views.SphereEditSettings}         panHandlers={null} />
+            <Scene key="sphereRoomOverview"             component={Views.SphereRoomOverview}         panHandlers={null} />
+            <Scene key="sphereCrownstoneOverview"       component={Views.SphereCrownstoneOverview}   panHandlers={null} />
+            <Scene key="sphereRoomArranger"             component={Views.SphereRoomArranger}         panHandlers={null} />
+            <Scene key="sphereUserOverview"             component={Views.SphereUserOverview}         panHandlers={null} />
+            <Scene key="sphereUserInvite"               component={Views.SphereUserInvite}           panHandlers={null} />
+            <Scene key="sphereInvitedUser"              component={Views.SphereInvitedUser}          panHandlers={null} />
+            <Scene key="sphereUser"                     component={Views.SphereUser}                 panHandlers={null} />
+            <Scene key="sphereBehaviour"                component={Views.SphereBehaviour}            panHandlers={null} />
+            <Scene key="sphereIntegrations"             component={Views.SphereIntegrations}         panHandlers={null} />
+
+            <Scene key="toonAdd"                        component={Views.ToonAdd}                    panHandlers={null} />
+            <Scene key="toonSettings"                   component={Views.ToonSettings}               panHandlers={null} />
+            <Scene key="toonOverview"                   component={Views.ToonOverview}               panHandlers={null} />
+
             <Scene key="deviceEdit"                     component={Views.DeviceEdit}                 />
             <Scene key="deviceBehaviourEdit"            component={Views.DeviceBehaviourEdit}        />
             <Scene key="applianceSelection"             component={Views.ApplianceSelection}         />
@@ -95,10 +110,11 @@ export class Router_IOS extends Component {
             <Scene key="switchCraftInformation"         component={Views.SwitchCraftInformation}     />
             <Scene key="settingsMeshTopologyHelp"       component={Views.SettingsMeshTopologyHelp}   />
             <Scene key="deviceIconSelection"            component={Views.DeviceIconSelection}        />
-            <Scene key="settingsPluginRecoverStep1"     component={Views.SettingsPluginRecoverStep1} />
-            <Scene key="settingsPluginRecoverStep2"     component={Views.SettingsPluginRecoverStep2} />
+            <Scene key="settingsRedownloadFromCloud"    component={Views.SettingsRedownloadFromCloud}/>
+            <Scene key="settingsFactoryResetStep1"      component={Views.SettingsFactoryResetStep1}  />
+            <Scene key="settingsFactoryResetStep2"      component={Views.SettingsFactoryResetStep2}  />
 
-            <Scene key="iconDebug"                      component={Views.IconDebug}  initial={false} />
+            {/*<Scene key="iconDebug"     chunks={1}       component={Views.IconDebug}  initial={true} />*/}
           </Modal>
         </Router>
 
@@ -140,7 +156,7 @@ class TabIcon extends Component {
 
         let change = data.change;
         if (change.changeMessageState && change.changeMessageState.sphereIds[activeSphere]) {
-          let newMessages = state.spheres[activeSphere].config.newMessageFound;
+          let newMessages = state.spheres[activeSphere].state.newMessageFound;
 
           if (this.state.badge === 0 && newMessages) {
             this.setState({ badge : 1 });

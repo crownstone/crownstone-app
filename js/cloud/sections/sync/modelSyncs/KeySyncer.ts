@@ -39,15 +39,24 @@ export class KeySyncer extends SyncingBase {
       let state = store.getState();
       let sphere = state.spheres[localSphereId];
       // if we are present in this sphere, we need to update the keys asap.
-      if (sphere && sphere.config.present) {
+      if (sphere && sphere.state.present) {
         if (sphere.config.adminKey  !== keys.adminKey  ||
             sphere.config.memberKey !== keys.memberKey ||
             sphere.config.guestKey  !== keys.guestKey) {
-          eventBus.emit("KEYS_UPDATED", { sphereId: localSphereId, keys: keys, presentInSphere: sphere.config.present });
+          eventBus.emit("KEYS_UPDATED", { sphereId: localSphereId, keys: keys, presentInSphere: sphere.state.present });
         }
       }
 
-      this.actions.push({type:'SET_SPHERE_KEYS', sphereId: localSphereId, data: keys});
+      if (sphere) {
+        if (sphere.config.adminKey !== keys.adminKey ||
+            sphere.config.memberKey !== keys.memberKey ||
+            sphere.config.guestKey !== keys.guestKey) {
+          this.actions.push({type: 'SET_SPHERE_KEYS', sphereId: localSphereId, data: keys});
+        }
+      }
+      else {
+        this.actions.push({type: 'SET_SPHERE_KEYS', sphereId: localSphereId, data: keys});
+      }
     })
   }
 

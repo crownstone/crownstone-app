@@ -1,6 +1,6 @@
 import { eventBus } from '../../util/EventBus'
 import { BATCH } from './storeManager'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGw} from '../../logging/Log'
 
 
 /**
@@ -30,18 +30,22 @@ export function EventEnhancer({ getState }) {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
     let eventData = {};
-    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}, threadIds:{} , scheduleIds:{}};
+    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}, messageIds:{} , scheduleIds:{}, activityLogIds: {}, toonIds:{}};
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
-        let { data, ids } = checkAction(action, affectedIds);
-        affectedIds = ids;
-        eventData = {...eventData, ...data};
+        if (action.__noEvents !== true) {
+          let {data, ids} = checkAction(action, affectedIds);
+          affectedIds = ids;
+          eventData = {...eventData, ...data};
+        }
       })
     }
     else {
-      let { data, ids } = checkAction(action, affectedIds);
-      affectedIds = ids;
-      eventData = {...eventData, ...data};
+      if (action.__noEvents !== true) {
+        let {data, ids} = checkAction(action, affectedIds);
+        affectedIds = ids;
+        eventData = {...eventData, ...data};
+      }
     }
 
     eventBus.emit("databaseChange", {...action, change: eventData});
@@ -55,12 +59,14 @@ export function EventEnhancer({ getState }) {
 function checkAction(action, affectedIds) {
   let eventStatus = {};
 
-  if (action.locationId)  { affectedIds.locationIds[action.locationId]   = true; }
-  if (action.sphereId)    { affectedIds.sphereIds[action.sphereId]       = true; }
-  if (action.stoneId)     { affectedIds.stoneIds[action.stoneId]         = true; }
-  if (action.applianceId) { affectedIds.applianceIds[action.applianceId] = true; }
-  if (action.threadId)    { affectedIds.threadIds[action.threadId]       = true; }
-  if (action.scheduleId)  { affectedIds.scheduleIds[action.scheduleId]   = true; }
+  if (action.locationId)     { affectedIds.locationIds[action.locationId]       = true; }
+  if (action.sphereId)       { affectedIds.sphereIds[action.sphereId]           = true; }
+  if (action.stoneId)        { affectedIds.stoneIds[action.stoneId]             = true; }
+  if (action.applianceId)    { affectedIds.applianceIds[action.applianceId]     = true; }
+  if (action.messageId)      { affectedIds.messageIds[action.messageId]         = true; }
+  if (action.scheduleId)     { affectedIds.scheduleIds[action.scheduleId]       = true; }
+  if (action.activityLogId)  { affectedIds.activityLogIds[action.activityLogId] = true; }
+  if (action.toonId)         { affectedIds.toonIds[action.toonId]               = true; }
 
   switch (action.type) {
     case 'SET_ACTIVE_SPHERE':
@@ -112,6 +118,9 @@ function checkAction(action, affectedIds) {
       eventStatus['removeLocation'] = affectedIds;
       eventStatus['changeLocations'] = affectedIds;
       eventStatus['updateLocationConfig'] = affectedIds; break;
+    case 'SET_FLOATING_LAYOUT_LOCATION':
+    case 'SET_LOCATION_POSITIONS':
+      eventStatus['changeLocationPositions'] = affectedIds; break;
     case 'SET_SPHERE_STATE':
       eventStatus['changeSphereState'] = affectedIds; break;
     case 'SET_SPHERE_KEYS':
@@ -152,6 +161,7 @@ function checkAction(action, affectedIds) {
     case 'UPDATE_STONE_ERRORS':
     case 'RESET_STONE_ERRORS':
     case 'CLEAR_STONE_ERRORS':
+    case "UPDATE_STONE_CONFIG_TRANSIENT":
       eventStatus['updateStoneConfig'] = affectedIds; break;
     case 'UPDATE_STONE_LOCATION':
       eventStatus['stoneLocationUpdated'] = affectedIds; break;
@@ -290,6 +300,13 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_DEVICES":
     case "FINISHED_SPECIAL_MESSAGES":
       break;
+    case "UPDATE_SYNC_ACTIVITY_TIME":
+    case "ADD_TOON":
+      break;
+    case "TOON_UPDATE_SETTINGS":
+    case "REMOVE_TOON":
+    case "REMOVE_ALL_TOONS":
+      eventStatus['updatedToon'] = affectedIds; break;
     case "UPDATE_SCHEDULE_CLOUD_ID":
     case "UPDATE_MESSAGE_CLOUD_ID":
     case "UPDATE_APPLIANCE_CLOUD_ID":
@@ -302,11 +319,14 @@ function checkAction(action, affectedIds) {
       break;
     case "UPDATE_STONE_SWITCH_STATE_TRANSIENT":
       eventStatus['stoneUsageUpdatedTransient'] = affectedIds; break;
-    case "UPDATE_STONE_CONFIG_TRANSIENT":
     case "USER_UPDATE_PICTURE":
+    case "UPDATE_ACTIVITY_LOG_CLOUD_ID":
       break;
+    case "ADD_ACTIVITY_LOG":
+    case "REMOVE_ACTIVITY_LOG":
+      eventStatus['stoneChangeLogs'] = affectedIds; break;
     default:
-      LOG.warn("UNKNOWN ACTION TYPE:", action);
+      LOGw.store("UNKNOWN ACTION TYPE:", action);
   }
 
   eventStatus['totalAffectedIds'] = affectedIds;

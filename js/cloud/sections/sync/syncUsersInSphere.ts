@@ -1,4 +1,4 @@
-import { LOG } from "../../../logging/Log";
+import {LOG, LOGe} from "../../../logging/Log";
 import {LocationSyncer} from "./modelSyncs/LocationSyncer";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
@@ -38,6 +38,6 @@ export const syncUsersInSphere = {
             store.batchDispatch(actions);
           }
         })
-        .catch((err) => { LOG.error("SyncUsersInSphere: Error during background user sync: ", err); })
+        .catch((err) => { LOGe.cloud("SyncUsersInSphere: Error during background user sync: ", err); })
     }
 };

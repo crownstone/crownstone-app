@@ -9,18 +9,17 @@ import {
   Text,
   View
 } from 'react-native';
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {CLOUD} from "../../../cloud/cloudAPI";
+import {LOG, LOGe} from "../../../logging/Log";
+import {BackAction} from "../../../util/Back";
+import {Background} from "../../components/Background";
+import {OrangeLine, screenWidth} from "../../styles";
+import {ProfilePicture} from "../../components/ProfilePicture";
+import {ListEditableItems} from "../../components/ListEditableItems";
 
-import { Background } from '../components/Background'
-import { ProfilePicture } from '../components/ProfilePicture'
-import { ListEditableItems } from '../components/ListEditableItems'
-import { CLOUD } from '../../cloud/cloudAPI'
-import {screenWidth, OrangeLine} from '../styles'
-import {LOG} from "../../logging/Log";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {BackAction} from "../../util/Back";
-const Actions = require('react-native-router-flux').Actions;
 
-export class SettingsSphereUser extends Component<any, any> {
+export class SphereUser extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: "Sphere User" }
   };
@@ -73,7 +72,7 @@ export class SettingsSphereUser extends Component<any, any> {
           .catch((err) => {
             Alert.alert("Something went wrong", "Please try again later.", [{text:"OK"}]);
             this.props.eventBus.emit('hideLoading');
-            LOG.error("Something went wrong during Updating user permissions.", err);
+            LOGe.info("Something went wrong during Updating user permissions.", err);
           })
         }
       }
@@ -103,7 +102,7 @@ export class SettingsSphereUser extends Component<any, any> {
             this.deleting = false;
             this.props.eventBus.emit('hideLoading');
             Alert.alert("Something went wrong", "Please try again later.", [{text:"OK"}]);
-            LOG.error("Something went wrong during Updating user permissions.", err);
+            LOGe.info("Something went wrong during Updating user permissions.", err);
           })
 
       }}])
@@ -119,7 +118,7 @@ export class SettingsSphereUser extends Component<any, any> {
     let user = state.spheres[this.props.sphereId].users[this.props.userId];
 
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={this.props.backgrounds.menu} hasNavBar={false}>
         <OrangeLine/>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>

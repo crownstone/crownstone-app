@@ -1,5 +1,5 @@
 import { CLOUD }                    from '../../cloudAPI'
-import { LOG }                      from '../../../logging/Log'
+import {LOG, LOGe, LOGw} from '../../../logging/Log'
 import { Platform }                 from 'react-native'
 import { AppUtil }                  from "../../../util/AppUtil";
 import { cleanupPowerUsage, syncPowerUsage }   from "./syncPowerUsage";
@@ -15,6 +15,8 @@ import { eventBus }                 from "../../../util/EventBus";
 import { KeySyncer }                from "./modelSyncs/KeySyncer";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
+import { Sentry }                   from "react-native-sentry";
+import {PreferenceSyncer} from "./modelSyncs/PreferencesSyncer";
 
 
 
@@ -26,6 +28,7 @@ import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 export const sync = {
 
   __currentlySyncing: false,
+  __syncTriggerDatabaseEvents: true,
 
   sync: function (store, background = true) {
     if (this.__currentlySyncing) {
@@ -45,7 +48,7 @@ export const sync = {
       }
     }, 30000);
 
-    LOG.cloud("SYNC: Start Syncing.");
+    LOG.info("SYNC: Start Syncing.");
     this.__currentlySyncing = true;
 
     // set the authentication tokens
@@ -55,6 +58,13 @@ export const sync = {
     CLOUD.setUserId(userId);
 
     eventBus.emit("CloudSyncStarting");
+
+    Sentry.captureBreadcrumb({
+      category: 'sync',
+      data: {
+        state:'start'
+      }
+    });
 
     let globalCloudIdMap = getGlobalIdMap();
     let globalSphereMap = {};
@@ -110,6 +120,12 @@ export const sync = {
       })
       .then(() => {
         LOG.info("Sync: DONE Fingerprint sync.");
+        LOG.info("Sync: START Preferences sync.");
+        let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
+        return preferenceSyncer.sync(state);
+      })
+      .then(() => {
+        LOG.info("Sync: DONE Preferences sync.");
         LOG.info("Sync: START syncPowerUsage.");
         return syncPowerUsage(state, actions);
       })
@@ -125,6 +141,10 @@ export const sync = {
 
         actions.forEach((action) => {
           action.triggeredBySync = true;
+
+          if (this.__syncTriggerDatabaseEvents === false) {
+            action.__noEvents = true
+          }
 
           switch (action.type) {
             case 'ADD_SPHERE':
@@ -142,20 +162,31 @@ export const sync = {
         LOG.info("Sync: Requesting notification permissions during updating of the device.");
         NotificationHandler.request();
 
+
+        LOG.info("Sync after: START MessageCenter checkForMessages.");
+        MessageCenter.checkForMessages();
+        LOG.info("Sync after: DONE MessageCenter checkForMessages.");
+
+        return reloadTrackingRequired;
+      })
+      .then((reloadTrackingRequired) => {
+        this.__currentlySyncing = false;
+        this.__syncTriggerDatabaseEvents = true;
+        cancelFallbackCallback();
+
+        Sentry.captureBreadcrumb({
+          category: 'sync',
+          data: {
+            state:'success'
+          }
+        });
+
         eventBus.emit("CloudSyncComplete");
 
         if (reloadTrackingRequired) {
           eventBus.emit("CloudSyncComplete_spheresChanged");
         }
 
-        LOG.info("Sync after: START MessageCenter checkForMessages.");
-        MessageCenter.checkForMessages();
-        LOG.info("Sync after: DONE MessageCenter checkForMessages.");
-
-      })
-      .then(() => {
-        this.__currentlySyncing = false;
-        cancelFallbackCallback();
       })
       .catch((err) => {
         LOG.info("SYNC: Failed... Could dispatch ", actions.length, " actions!", actions);
@@ -167,9 +198,20 @@ export const sync = {
         //   store.batchDispatch(actions);
         // }
 
+        Sentry.captureBreadcrumb({
+          category: 'sync',
+          data: {
+            state:'failed',
+            err: err
+          }
+        });
+
         this.__currentlySyncing = false;
+        this.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
-        LOG.error("SYNC: error during sync:", err);
+        eventBus.emit("CloudSyncComplete");
+        LOGe.cloud("SYNC: error during sync:", err);
+
         throw err;
       })
   }
@@ -179,7 +221,7 @@ let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
   return (err) => {
     // perhaps there is a 401, user token expired or replaced. Retry logging in.
     if (err.status === 401) {
-      LOG.warn("Could not verify user, attempting to login again and retry sync.");
+      LOGw.cloud("Could not verify user, attempting to login again and retry sync.");
       return CLOUD.login({
         email: state.user.email,
         password: state.user.passwordHash,

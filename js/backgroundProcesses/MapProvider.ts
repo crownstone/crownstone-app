@@ -115,10 +115,11 @@ class MapProviderClass {
     let sphereIds = Object.keys(state.spheres);
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
-      getFromConfig(sphere.messages,    this.cloud2localMap.messages,   this.local2cloudMap.messages);
-      getFromConfig(sphere.appliances,  this.cloud2localMap.appliances, this.local2cloudMap.appliances);
-      getFromConfig(sphere.locations,   this.cloud2localMap.locations,  this.local2cloudMap.locations);
-      getFromConfig(sphere.stones,      this.cloud2localMap.stones,     this.local2cloudMap.stones);
+      getFromConfig(sphere.messages,         this.cloud2localMap.messages,   this.local2cloudMap.messages);
+      getFromConfig(sphere.appliances,       this.cloud2localMap.appliances, this.local2cloudMap.appliances);
+      getFromConfig(sphere.locations,        this.cloud2localMap.locations,  this.local2cloudMap.locations);
+      getFromConfig(sphere.stones,           this.cloud2localMap.stones,     this.local2cloudMap.stones);
+      getFromItem(sphere.thirdParty.toons,   this.cloud2localMap.toons,      this.local2cloudMap.toons);
 
       getFromId(sphere.users,         this.cloud2localMap.users,      this.local2cloudMap.users);
 

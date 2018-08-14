@@ -19,6 +19,7 @@ import {Util} from "../../util/Util";
 import {clearLogs} from "../../logging/LogUtil";
 import {BackAction} from "../../util/Back";
 import {MeshUtil} from "../../util/MeshUtil";
+import {CLOUD_ADDRESS} from "../../ExternalConfig";
 
 
 export class SettingsDeveloper extends Component<any, any> {
@@ -54,72 +55,35 @@ export class SettingsDeveloper extends Component<any, any> {
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
     items.push({label: "LOGGING", type: 'explanation', below: false});
-    items.push({
-      label:"Enable Logging",
-      value: user.logging,
-      type: 'switch',
-      icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
-      callback:(newValue) => {
-      if (newValue === false) {
-        clearAllLogs();
-      }
-      store.dispatch({
-        type: 'SET_LOGGING',
-        data: {logging: newValue}
+    if (!dev.logging_enabled) {
+      items.push({
+        label: "Enable Logging",
+        value: dev.logging_enabled,
+        type: 'switch',
+        icon: <IconButton name="ios-create" size={22} button={true} color="#fff"
+                          buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+        callback: (newValue) => {
+          if (newValue === false) {
+            clearAllLogs();
+          }
+          store.dispatch({
+            type: 'SET_LOGGING',
+            data: {logging_enabled: newValue}
+          });
+          Bluenet.enableLoggingToFile(newValue);
+        }
       });
-      Bluenet.enableLoggingToFile(newValue);
-    }});
-
-    if (user.logging) {
-      items.push({label: "ADDITIONAL LOGGING", type: 'explanation', below: false});
+      items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
+    }
+    else {
       items.push({
-        label:"Debug",
-        value: dev.log_debug && dev.log_verbose,
-        type: 'switch',
-        icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-        callback:(newValue) => {
-          store.dispatch({
-            type: 'DEFINE_LOGGING_DETAILS',
-            data: {log_debug: newValue, log_verbose: newValue}
-          });
-        }});
-      items.push({
-        label:"Store & Cloud",
-        value: dev.log_store && dev.log_cloud,
-        type: 'switch',
-        icon: <IconButton name="ios-cloud" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-        callback:(newValue) => {
-          store.dispatch({
-            type: 'DEFINE_LOGGING_DETAILS',
-            data: {log_store: newValue, log_cloud: newValue}
-          });
-        }});
-      items.push({
-        label:"BLE Advertisements",
-        value: dev.log_ble,
-        type: 'switch',
-        icon: <IconButton name="ios-bluetooth" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-        callback:(newValue) => {
-          Bluenet.enableExtendedLogging(newValue);
-          store.dispatch({
-            type: 'DEFINE_LOGGING_DETAILS',
-            data: {log_ble: newValue}
-          });
-        }});
-      items.push({
-        label:"Scheduler & Events",
-        value: dev.log_scheduler &&  dev.log_events,
-        type: 'switch',
-        icon: <IconButton name="md-clipboard" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-        callback:(newValue) => {
-          store.dispatch({
-            type: 'DEFINE_LOGGING_DETAILS',
-            data: {
-              log_scheduler: newValue,
-              log_events: newValue,
-            }
-          });
-        }});
+        label: "Logging Configuration",
+        type: 'navigation',
+        icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+        callback: () => {
+          Actions.settingsLogging()
+        }
+      });
       items.push({
         label: "Clear Logs!",
         type: 'button',
@@ -129,8 +93,9 @@ export class SettingsDeveloper extends Component<any, any> {
           Alert.alert("Clear all Logs?", "Press OK to clear logs.", [{text:'Cancel', style: 'cancel'},{text: 'OK', onPress: () => {clearAllLogs();}}])
         }
       });
+      items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
     }
-    items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
+
 
 
     items.push({label: "CLOUD", type: 'explanation', below: false, alreadyPadded: true});
@@ -152,35 +117,45 @@ export class SettingsDeveloper extends Component<any, any> {
     }});
 
 
-    let deviceId = Util.data.getCurrentDeviceId(state);
-    let device = deviceId && state.devices[deviceId] || null;
-    if (device) {
-      items.push({
-        label:"Use as Hub",
-        value: device.hubFunction,
-        type: 'switch',
-        icon: <IconButton name="md-cube" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-        callback:(newValue) => {
-          store.dispatch({
-            type: 'UPDATE_DEVICE_CONFIG',
-            deviceId: deviceId,
-            data: {hubFunction: newValue}
-          });
-        }});
-      items.push({label: "A Hub will use push notifications from the cloud to toggle your devices remotely.", type: 'explanation', below: true});
-    }
-    else {
-      items.push({label: "No device available... Try triggering a sync?", type: 'explanation', below: true});
-    }
-
-
+    // let deviceId = Util.data.getCurrentDeviceId(state);
+    // let device = deviceId && state.devices[deviceId] || null;
+    items.push({label: "DEBUG VIEWS", type: 'explanation'});
     items.push({
       label:"BLE Debug",
       type: 'navigation',
-      icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightBlue2.hex}} />,
       callback:() => {
         Actions.settingsBleDebug()
       }});
+    items.push({
+      label:"Localization Debug",
+      type: 'navigation',
+      icon: <IconButton name="md-locate" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
+      callback:() => {
+        Actions.settingsLocalizationDebug()
+      }});
+
+    items.push({label: "ACTIVITY LOGS", type: 'explanation'});
+    items.push({
+      label:"Show Full Activity Log",
+      value: dev.show_full_activity_log,
+      type: 'switch',
+      icon: <IconButton name="md-calendar" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_full_activity_log: newValue }});
+      }});
+    if (dev.show_full_activity_log) {
+      items.push({
+        label:"Show only own activity",
+        value: dev.show_only_own_activity_log,
+        type: 'switch',
+        icon: <IconButton name="c1-people" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkerPurple.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_only_own_activity_log: newValue }});
+        }});
+    }
+
+    items.push({label: "DO NOT USE", type: 'explanation'});
     items.push({
       label:"Use Advertisement RSSI",
       value: dev.use_advertisement_rssi_too,
@@ -207,6 +182,21 @@ export class SettingsDeveloper extends Component<any, any> {
 
 
     items.push({label: "MESH", type: 'explanation', below: false, alreadyPadded: true});
+    items.push({
+      label:"Change Channels",
+      type: 'navigation',
+      icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
+      callback:() => {
+        Actions.settingsMeshDebug()
+      }});
+    items.push({
+      label:"Show RSSI in Topology",
+      value: dev.show_rssi_values_in_mesh,
+      type: 'switch',
+      icon: <IconButton name="ios-calculator" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightGreen.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_rssi_values_in_mesh: newValue }});
+      }});
     items.push({
       label: 'Reset networks',
       type:  'button',
@@ -268,10 +258,10 @@ export class SettingsDeveloper extends Component<any, any> {
       label:"Disable Developer Mode",
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
-      callback:(newValue) => {
+      callback:() => {
         store.dispatch({
-          type: 'SET_DEVELOPER_MODE',
-          data: {developer: false}
+          type: 'SET_LOGGING',
+          data: {logging: false}
         });
 
         clearAllLogs();
@@ -279,7 +269,11 @@ export class SettingsDeveloper extends Component<any, any> {
 
         BackAction();
     }});
-    items.push({label: "Revert back to the normal user state.", type: 'explanation', below: true});
+
+    items.push({label: 'CLOUD URL:' + CLOUD_ADDRESS, type: 'explanation'});
+    items.push({type: 'spacer'});
+    items.push({type: 'spacer'});
+
 
     return items;
   }

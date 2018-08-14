@@ -1,6 +1,6 @@
 import { Platform }       from 'react-native';
 import { CLOUD }          from "../../cloud/cloudAPI";
-import { LOG }            from "../../logging/Log";
+import {LOG, LOGe} from "../../logging/Log";
 import {safeDeleteFile, Util} from "../../util/Util";
 import { FirmwareHelper } from "./FirmwareHelper";
 
@@ -83,7 +83,7 @@ class FirmwareHandlerClass {
       })
       .catch((err) => {
         safeDeleteFile(toPath).catch(() => {});
-        LOG.error("FirmwareHandler: Could not download file", err);
+        LOGe.info("FirmwareHandler: Could not download file", err);
 
         // propagate the error
         throw err;

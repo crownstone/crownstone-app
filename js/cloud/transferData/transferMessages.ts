@@ -1,5 +1,5 @@
 import { CLOUD }        from "../cloudAPI";
-import { LOG }          from "../../logging/Log";
+import {LOG, LOGe} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 
 
@@ -37,7 +37,7 @@ export const transferMessages = {
         actions.push({type: 'UPDATE_MESSAGE_CLOUD_ID', sphereId: data.localSphereId, messageId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
-        LOG.error("Transfer-Message: Could not create Message in cloud", err);
+        LOGe.cloud("Transfer-Message: Could not create Message in cloud", err);
         throw err;
       });
   },

@@ -1,5 +1,5 @@
 import { Alert, NativeModules, NativeEventEmitter } from 'react-native';
-import {LOG, LOGi} from '../../logging/Log'
+import {LOG, LOGe, LOGi} from '../../logging/Log'
 import { Util } from "../../util/Util";
 import {DISABLE_NATIVE} from "../../ExternalConfig";
 
@@ -38,6 +38,11 @@ class NativeBusClass {
 
       libAlert:             "libAlert",                         // data type = {header: string, body: string, buttonText: string }
       libPopup:             "libPopup",                         // data type = {header: string, body: string, buttonText: string, type: <not used yet> }
+
+      classifierProbabilities: "classifierProbabilities",       // data type = {locationId1: {sampleSize: number, probability: number }, locationId2: {sampleSize: number, probability: number }, ...}
+      classifierResult:        "classifierResult",              // data type = {highestPredictionLabel: string, highestPrediction: number } // highestPredictionLabel == locationId with highest probability and highestPrediction is that probability
+
+      callbackUrlInvoked:      "callbackUrlInvoked",            // data type = string (url)
     };
 
     this.refMap = {};
@@ -48,15 +53,15 @@ class NativeBusClass {
 
   on(topic, callback) {
     if (!(topic)) {
-      LOG.error("Attempting to subscribe to undefined topic:", topic);
+      LOGe.event("Attempting to subscribe to undefined topic:", topic);
       return;
     }
     if (!(callback)) {
-      LOG.error("Attempting to subscribe without callback to topic:", topic);
+      LOGe.event("Attempting to subscribe without callback to topic:", topic);
       return;
     }
     if (this.refMap[topic] === undefined) {
-      LOG.error("Attempting to subscribe to a topic that does not exist in the native bus.", topic);
+      LOGe.event("Attempting to subscribe to a topic that does not exist in the native bus.", topic);
       return;
     }
 

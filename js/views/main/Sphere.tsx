@@ -32,7 +32,7 @@ export class Sphere extends Component<any, any> {
     let viewingRemotely = true;
     let currentSphere = this.props.sphereId;
 
-    let sphereIsPresent = state.spheres[currentSphere].config.present;
+    let sphereIsPresent = state.spheres[currentSphere].state.present;
     if (sphereIsPresent || SetupStateHandler.areSetupStonesAvailable() || DfuStateHandler.areDfuStonesAvailable()) {
       viewingRemotely = false;
     }

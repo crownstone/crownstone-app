@@ -20,12 +20,14 @@ export class CommandManager {
         // remove duplicates from list.
         this._clearDuplicates(stoneId, sphereId, command);
         let uuid = Util.getUUID();
+        let shortUuid = Util.getShortUUID();
         this.commands[uuid] = {
           priority: priority,
           handle:   stone.config.handle,
           sphereId: sphereId,
           stoneId:  stoneId,
           command:  command,
+          commandUuid: shortUuid,
           attempts: attempts,
           options:  options,
           timestamp: new Date().valueOf(),
@@ -48,7 +50,7 @@ export class CommandManager {
     let uuids = Object.keys(this.commands);
 
     let clean = (todo) => {
-      LOGd.info("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
+      LOGd.bch("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
       todo.promise.reject("Removed because of duplicate");
       todo.cleanup();
     };
@@ -68,7 +70,7 @@ export class CommandManager {
           clean(todo);
         }
         else {
-          LOGd.info("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
+          LOGd.bch("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
         }
       }
     }
@@ -145,7 +147,7 @@ export class CommandManager {
         meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
         break;
       default:
-        LOGe.info("CommandManager: Invalid command received. This should not happen!");
+        LOGe.bch("CommandManager: Invalid command received. This should not happen!");
     }
   }
 
@@ -377,6 +379,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   if (command.commandName === 'keepAlive') {
     payload = {
       stoneId: batchCommand.stoneId,
+      commandUuid: batchCommand.commandUuid,
       attempts: batchCommand.attempts,
       timestamp: batchCommand.timestamp,
       options: batchCommand.options,
@@ -387,6 +390,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   else if (command.commandName === 'keepAliveState') {
     payload = {
       stoneId: batchCommand.stoneId,
+      commandUuid: batchCommand.commandUuid,
       attempts: batchCommand.attempts,
       timestamp: batchCommand.timestamp,
       options: batchCommand.options,
@@ -402,6 +406,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   else if (command.commandName === 'multiSwitch') {
     payload = {
       stoneId: batchCommand.stoneId,
+      commandUuid: batchCommand.commandUuid,
       attempts: batchCommand.attempts,
       timestamp: batchCommand.timestamp,
       crownstoneId: stoneConfig.crownstoneId,

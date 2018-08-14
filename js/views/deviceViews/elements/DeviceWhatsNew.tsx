@@ -15,6 +15,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import {styles, colors, screenWidth, screenHeight} from '../../styles'
 import {IconButton} from "../../components/IconButton";
+import {deviceStyles} from "../DeviceOverview";
 
 
 export class DeviceWhatsNew extends Component<any, any> {
@@ -107,35 +108,3 @@ export class DeviceWhatsNew extends Component<any, any> {
     )
   }
 }
-
-
-let textColor = colors.white;
-let deviceStyles = StyleSheet.create({
-  header: {
-    color: textColor.hex,
-    fontSize: 25,
-    fontWeight:'800'
-  },
-  subHeader: {
-    paddingTop:10,
-    color: textColor.hex,
-    fontSize: 22,
-    fontWeight:'800'
-  },
-  text: {
-    color: textColor.hex,
-    fontSize: 16,
-    textAlign:'center',
-    fontWeight:'500'
-  },
-  subText: {
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-  },
-  explanation: {
-    width: screenWidth,
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-    textAlign:'center'
-  }
-});

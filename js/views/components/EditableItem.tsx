@@ -25,8 +25,9 @@ import { TextEditBar }       from './editComponents/TextEditBar'
 import { TimePicker }        from './editComponents/TimePicker'
 import { TextBlob }          from "./editComponents/TextBlob";
 
-import {styles, barHeight, barHeightLarge, colors} from '../styles'
+import {styles, colors, NORMAL_ROW_SIZE, LARGE_ROW_SIZE, EXTRA_LARGE_ROW_SIZE} from '../styles'
 import {CollapsableBar} from "./editComponents/Collapsable";
+
 
 /**
  *
@@ -101,15 +102,15 @@ export class EditableItem extends Component<any, any> {
 
     switch (this.props.type) {
       case 'button':
-        return <ButtonBar barHeight={barHeight} {...this.props} />;
+        return <ButtonBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'checkbar':
-        return <CheckBar barHeight={barHeight} {...this.props} />;
-        case 'collapsable':
-        return <CollapsableBar barHeight={barHeight} {...this.props} />;
+        return <CheckBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
+      case 'collapsable':
+        return <CollapsableBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'dropdown':
-        return <Dropdown barHeight={barHeight} {...this.props} />;
+        return <Dropdown barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'deletableEntry':
-        return <DeletableEntry barHeight={barHeight} {...this.props} />;
+        return <DeletableEntry barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'explanation':
         return <Explanation text={this.props.label} {...this.props} />;
       case 'lightExplanation':
@@ -119,33 +120,33 @@ export class EditableItem extends Component<any, any> {
       case 'largeLightExplanation':
         return <LargeExplanation text={this.props.label} {...this.props} color={colors.white.hex} />;
       case 'icon':
-        return <IconEdit barHeightLarge={barHeightLarge} {...this.props} />;
+        return <IconEdit barHeightLarge={EXTRA_LARGE_ROW_SIZE} {...this.props} />;
       case 'info':
-        return <InfoBar barHeight={barHeight} {...this.props} />;
+        return <InfoBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'disabledInfo':
-        return <InfoBar barHeight={barHeight} {...this.props} style={[this.props.style, {color: colors.darkGray2.hex }]} />;
+        return <InfoBar barHeight={NORMAL_ROW_SIZE} {...this.props} style={[this.props.style, {color: colors.darkGray2.hex }]} />;
       case 'navigation':
-        return <NavigationBar barHeight={barHeight} {...this.props} />;
+        return <NavigationBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'picture':
-        return <PictureEdit barHeightLarge={barHeightLarge} {...this.props} />;
+        return <PictureEdit barHeightLarge={EXTRA_LARGE_ROW_SIZE} {...this.props} />;
       case 'optionalSwitch':
-        return <OptionalSwitchBar barHeight={barHeight} {...this.props} />;
+        return <OptionalSwitchBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'switch':
-        return <SwitchBar barHeight={barHeight} {...this.props} />;
+        return <SwitchBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'slider':
-        return <SliderBar barHeight={barHeight} {...this.props} />;
+        return <SliderBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'spacer':
         return <EditSpacer {...this.props} />;
       case 'textEdit':
-        return <TextEditBar barHeight={barHeight} {...this.props} />;
+        return <TextEditBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'textBlob':
-        return <TextBlob barHeight={barHeight} {...this.props} />;
+        return <TextBlob barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'timePicker':
-        return <TimePicker barHeight={barHeight} {...this.props} />;
+        return <TimePicker barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       default:
         return (
           <View>
-            <View style={[styles.listView, {barHeight, flex:1} ]}>
+            <View style={[styles.listView, {NORMAL_ROW_SIZE, flex:1} ]}>
               <Text>{this.props.label + ' - UNHANDLED for ' + this.props.type}</Text>
             </View>
           </View>

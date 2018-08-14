@@ -1,5 +1,5 @@
 
-import {LOG} from "../../../logging/Log";
+import {LOG, LOGe} from "../../../logging/Log";
 import {Util} from "../../../util/Util";
 import {CLOUD} from "../../cloudAPI";
 import {HISTORY_PERSISTENCE} from "../../../ExternalConfig";
@@ -129,9 +129,9 @@ export const syncPowerUsage = function(state, actions) {
         });
       })
       .catch((err) => {
-        LOG.error("SYNC: Could not upload samples",uploadBatch.indices, "due to:", err);
+        LOGe.cloud("SYNC: Could not upload samples",uploadBatch.indices, "due to:", err);
       })
   }).catch((err) => {
-    LOG.error("SYNC: Error during sample upload", err);
+    LOGe.cloud("SYNC: Error during sample upload", err);
   });
 };

@@ -28,7 +28,7 @@ import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 
 export class DeviceSummary extends Component<any, any> {
   storedSwitchState = 0;
-  unsubscribeStoreEvents;
+  unsubscribeStoreEvents
 
   constructor(props) {
     super(props);
@@ -39,8 +39,34 @@ export class DeviceSummary extends Component<any, any> {
     const stone = sphere.stones[props.stoneId];
     this.storedSwitchState = stone.state.state;
   }
+  componentDidMount() {
+    const { store } = this.props;
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
 
+      let state = store.getState();
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      if (!stone || !stone.config) { return; }
+
+      let applianceId = stone.config.applianceId;
+      if (
+        !change.removeStone &&
+        (
+          change.changeAppSettings ||
+          change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+          change.changeStoneState       && change.changeStoneState.stoneIds[this.props.stoneId] ||
+          change.powerUsageUpdated      && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
+          change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
+          applianceId && change.updateApplianceConfig    && change.updateApplianceConfig.applianceIds[applianceId]
+        )
+      ) {
+        this.forceUpdate();
+      }
+    });
+  }
   componentWillUnmount() {
+    this.unsubscribeStoreEvents();
     this.safeStoreUpdate();
   }
 
@@ -100,7 +126,7 @@ export class DeviceSummary extends Component<any, any> {
     let borderWidth = 5;
 
 
-    if (stone.config.disabled) {
+    if (stone.reachability.disabled) {
       return (
         <View style={{width:0.75*screenWidth, height:size*1.05, alignItems:'center'}}>
           <View style={{flex:2}} />
@@ -199,7 +225,7 @@ export class DeviceSummary extends Component<any, any> {
       alignItems: 'center',
       justifyContent: "center"
     };
-    if (stone.config.disabled === false && stone.config.locked === false) {
+    if (stone.reachability.disabled === false && stone.config.locked === false) {
       return (
         <TouchableOpacity
           onPress={() => {this.props.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
@@ -220,7 +246,7 @@ export class DeviceSummary extends Component<any, any> {
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
 
-    // stone.config.disabled = false
+    // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let locationLabel = "Location:";
@@ -235,7 +261,7 @@ export class DeviceSummary extends Component<any, any> {
       locationLabel = "Tap here to move me!";
     }
 
-    let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && stone.config.disabled === false;
+    let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && stone.reachability.disabled === false;
 
     return (
       <View style={{flex:1, paddingBottom: 35}}>
@@ -244,7 +270,7 @@ export class DeviceSummary extends Component<any, any> {
           leftValue={stone.state.currentUsage + ' W'}
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { Actions.roomSelection({sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId, returnToCrownstone: true}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { Actions.roomSelection({sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'deviceOverview'}); } : null}
         />
         <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>
@@ -297,7 +323,7 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
       stateColor = colors.green.hex;
     }
 
-    if (stone.config.disabled) {
+    if (stone.reachability.disabled) {
       stateColor = colors.gray.hex;
     }
 

@@ -1,5 +1,5 @@
 import { CLOUD } from "../cloudAPI";
-import { LOG }   from "../../logging/Log";
+import {LOG, LOGe} from "../../logging/Log";
 
 
 import { transferUtil } from "./shared/transferUtil";
@@ -31,7 +31,7 @@ export const transferLocations = {
         return result.id;
       })
       .catch((err) => {
-        LOG.error("Transfer-Location: Could not create location in cloud", err);
+        LOGe.cloud("Transfer-Location: Could not create location in cloud", err);
         throw err;
       });
   },
@@ -48,7 +48,7 @@ export const transferLocations = {
     return CLOUD.forSphere(data.cloudSphereId).updateLocation(data.cloudId, payload)
       .then((result) => { })
       .catch((err) => {
-        LOG.error("Transfer-Location: Could not update location in cloud", err);
+        LOGe.cloud("Transfer-Location: Could not update location in cloud", err);
         throw err;
       });
   },

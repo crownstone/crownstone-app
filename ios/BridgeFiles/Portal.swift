@@ -22,7 +22,7 @@ typealias voidCallback = () -> Void
   open var bluenetLocalization : BluenetLocalization!
   open var bluenetMotion : BluenetMotion!
   open var trainingHelper : TrainingHelper!
-  var classifier : CrownstoneBasicClassifier!
+  open var classifier : CrownstoneBasicClassifier!
   
   var subscriptions = [voidCallback]()
   
@@ -66,6 +66,14 @@ typealias voidCallback = () -> Void
     // check if we have to use this to stop the scanning in the background
     // self.bluenet.applicationWillEnterForeground()
     // self.bluenetLocalization.applicationWillEnterForeground()
+  }
+  
+  open func parseUserActivity(userActivity: NSUserActivity) {
+    if (userActivity.activityType == NSUserActivityTypeBrowsingWeb) {
+      if let url = userActivity.webpageURL {
+        AppEventBus.emit("callbackUrlInvoked", url.absoluteString)
+      }
+    }
   }
   
   deinit {

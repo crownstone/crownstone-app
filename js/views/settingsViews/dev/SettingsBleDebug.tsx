@@ -8,11 +8,11 @@ import {
   View
 } from 'react-native';
 
-import { Background } from '../components/Background'
-import { ListEditableItems } from '../components/ListEditableItems'
-import {colors, OrangeLine} from '../styles'
-import {Util} from "../../util/Util";
-import {IconCircle} from "../components/IconCircle";
+import { Background } from '../../components/Background'
+import { ListEditableItems } from '../../components/ListEditableItems'
+import {colors, OrangeLine} from '../../styles'
+import {Util} from "../../../util/Util";
+import {IconCircle} from "../../components/IconCircle";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsBleDebug extends Component<any, any> {
@@ -39,10 +39,10 @@ export class SettingsBleDebug extends Component<any, any> {
 
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
-    if (stone && stone.state.state > 0 && stone.config.disabled === false) {
+    if (stone && stone.state.state > 0 && stone.reachability.disabled === false) {
       backgroundColor = colors.green.hex
     }
-    else if (stone && stone.config.disabled) {
+    else if (stone && stone.reachability.disabled) {
       backgroundColor = colors.gray.hex;
     }
     items.push({

@@ -19,7 +19,6 @@ import {DebugIconSelection} from "./DebugIconSelection";
 
 const Actions = require('react-native-router-flux').Actions;
 
-
 export class IconDebug extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -33,6 +32,8 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
 
   constructor(props) {
     super(props);
+
+    this.chunks = props.chunks || 10;
 
     let c1Glyphs = Object.keys(glyphMapC1);
 
@@ -92,6 +93,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "ios-heart",
       "ios-help-circle",
       "ios-home",
+      "ios-link",
       "ios-leaf",
       "ios-mail",
       "ios-navigate",
@@ -108,11 +110,16 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "ios-sunny",
       "ios-trash",
       "ios-warning",
+      "ios-more",
     ]
     let ioniconsMdList = [
+      "md-analytics",
+      "md-switch",
       "md-add",
       "md-add-circle",
       "md-arrow-back",
+      "md-arrow-round-down",
+      "md-arrow-down",
       "md-book",
       "md-bulb",
       "md-checkmark",

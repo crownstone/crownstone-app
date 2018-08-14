@@ -1,6 +1,7 @@
 interface keepAlivePayload {
   attempts: number,
   stoneId: string,
+  commandUuid: string,
   timestamp: number,
   options: batchCommandEntryOptions,
   cleanup(): void,
@@ -15,6 +16,7 @@ interface keepAliveStatePayload {
   handle: string,
   stoneId: string,
   crownstoneId: string,
+  commandUuid: string,
   changeState: boolean,
   state: number,
   timestamp: number,
@@ -33,6 +35,7 @@ interface multiSwitchPayload {
   handle: string,
   stoneId: string,
   crownstoneId: string,
+  commandUuid: string,
   state: number,
   intent: number,
   timestamp: number,
@@ -93,7 +96,8 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'getSchedules' } |
   { commandName : 'lockSwitch',     value: boolean } |
   { commandName : 'setSwitchCraft', value: boolean } |
-  { commandName : 'allowDimming',   value: boolean }
+  { commandName : 'allowDimming',   value: boolean } |
+  { commandName : 'setMeshChannel', channel: number }
 
 
 interface batchCommands  {
@@ -106,15 +110,16 @@ interface directCommands  {
 }
 
 interface batchCommandEntry {
-  priority:  boolean,
-  handle:    string,
-  sphereId:  string,
-  stoneId:   string,
-  timestamp: number,
-  attempts:  number,
-  options:   batchCommandEntryOptions,
-  command:   commandInterface,
-  cleanup(): void,
+  priority:    boolean,
+  handle:      string,
+  sphereId:    string,
+  stoneId:     string,
+  timestamp:   number,
+  attempts:    number,
+  options:     batchCommandEntryOptions,
+  command:     commandInterface,
+  commandUuid: string,
+  cleanup():   void,
   promise:{
     resolve(any?) : void,
     reject(any?) :  void,

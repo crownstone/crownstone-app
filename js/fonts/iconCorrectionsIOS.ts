@@ -317,7 +317,7 @@ const c2CorrectionsIOS = {
   'c2-crownstone':      {change: true, top: +0.015, left: +0.000},
   'c2-plugin':          {change: true, top: +0.040, left: +0.000},
   'c2-pluginFilled':    {change: true, top: +0.000, left: +0.000},
-  'c2-pluginFront':     {change: true, top: -0.020, left: +0.000},
+  'c2-pluginFront':     {change: true, top: -0.015, left: -0.010},
 };
 
 const c3CorrectionsIOS = {
@@ -362,6 +362,7 @@ const ioniconCorrectionsIOS = {
   'ios-heart':                     {change: true, top: +0.090, left: +0.000},
   'ios-help-circle':               {change: true, top: +0.040, left: +0.000},
   'ios-home':                      {change: true, top: +0.010, left: +0.000},
+  'ios-link':                      {change: true, top: +0.050, left: +0.010},
   'ios-leaf':                      {change: true, top: +0.040, left: +0.020},
   'ios-mail':                      {change: true, top: +0.040, left: +0.000},
   'ios-navigate':                  {change: true, top: +0.040, left: +0.000},
@@ -378,9 +379,14 @@ const ioniconCorrectionsIOS = {
   'ios-sunny':                     {change: true, top: +0.040, left: +0.000},
   'ios-trash':                     {change: true, top: +0.020, left: +0.000},
   'ios-warning':                   {change: true, top: -0.020, left: +0.000},
+  'ios-more':                      {change: true, top: +0.045, left: +0.000},
 
+  'md-analytics':                  {change: true, top: +0.045, left: +0.000},
+  'md-switch':                     {change: true, top: +0.045, left: +0.000},
   'md-add':                        {change: true, top: +0.040, left: +0.000},
   'md-add-circle':                 {change: true, top: +0.045, left: +0.000},
+  'md-arrow-round-down':           {change: true, top: +0.040, left: +0.000},
+  'md-arrow-down':                 {change: true, top: +0.045, left: +0.000},
   'md-arrow-back':                 {change: true, top: +0.045, left: +0.000},
   'md-book':                       {change: true, top: +0.080, left: +0.000},
   'md-bulb':                       {change: true, top: +0.035, left: +0.000},

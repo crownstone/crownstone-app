@@ -94,6 +94,7 @@ RCT_EXTERN_METHOD(meshSetTime:(nonnull NSNumber *)time callback:(RCTResponseSend
 RCT_EXTERN_METHOD(meshKeepAlive:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAlivePackets:(NSArray *)stoneKeepAlivePackets callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setMeshChannel:(nonnull NSNumber *)channel callback:(RCTResponseSenderBlock)callback)
 
 // DFU
 

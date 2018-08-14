@@ -45,9 +45,11 @@ export class SettingsMeshTopology extends Component<any, any> {
 
   refreshCount = 0
   refreshAmountRequired = 0
+  viewId : string
 
   constructor(props) {
     super(props);
+    this.viewId = Util.getUUID();
     this.state = { leftOffset: new Animated.Value() };
   }
 
@@ -66,13 +68,13 @@ export class SettingsMeshTopology extends Component<any, any> {
 
   renderNode(id, nodePosition) {
     return (
-      <MeshElement key={"meshElement"+id} id={id} nodeData={this.nodeData[id]} pos={nodePosition} radius={this._baseRadius} />
+      <MeshElement key={"meshElement"+id} id={id} nodeData={this.nodeData[id]} pos={nodePosition} radius={this._baseRadius} viewId={this.viewId} />
     );
   }
 
   getEdgeSettings(state, edge) {
     let label = undefined;
-    if (state.user.developer === true) {
+    if (state.user.developer === true && state.development.show_rssi_values_in_mesh === true) {
       label = edge.rssi + '';
     }
 
@@ -141,6 +143,23 @@ export class SettingsMeshTopology extends Component<any, any> {
         .catch(() => { evaluateRefreshProgress() })
     })
     BatchCommandHandler.executePriority()
+  }
+
+  _debugPrints(sphereId, connections, edgeId, stones) {
+    let element1 = Util.data.getElement(this.props.store, sphereId, connections[edgeId].from, stones[connections[edgeId].from]);
+    let element2 = Util.data.getElement(this.props.store, sphereId, connections[edgeId].to,   stones[connections[edgeId].to]);
+
+    let stoneName0 = stones[connections[edgeId].from].config.name
+    let stoneName1 = stones[connections[edgeId].to].config.name
+
+    let names = [stoneName0, stoneName1].sort()
+
+    let n0 = stoneName0.split(":")
+    let n1 = stoneName1.split(":")
+
+    if (n0[1] !== n1[1]) {
+      console.log("meshDebug: '"+names[0], '-', names[1], ';', connections[edgeId].rssi+"',")
+    }
   }
 
   render() {
@@ -216,12 +235,16 @@ export class SettingsMeshTopology extends Component<any, any> {
     let edgeIds = Object.keys(connections);
     edgeIds.forEach((edgeId) => {
       edges.push(connections[edgeId]);
+
+      // used for comparative measurements.
+      // this._debugPrints(sphereId, connections, edgeId, stones);
     });
 
     return (
       <Background image={this.props.backgrounds.menu}>
         <OrangeLine/>
         <ForceDirectedView
+          viewId={this.viewId}
           nodeIds={stoneIds}
           nodeRadius={this._baseRadius}
           edges={edges}
@@ -236,7 +259,6 @@ export class SettingsMeshTopology extends Component<any, any> {
             timestep: 0.4
           }}
         />
-        <KeepAwake />
         <TouchableOpacity
           onPress={() => { Actions.settingsMeshTopologyHelp() }}
           style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>

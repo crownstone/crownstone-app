@@ -199,8 +199,7 @@ export class DeviceEdit extends Component<any, any> {
 
       items.push({
         label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
-          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {
-          })
+          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {})
         }
       });
       items.push({
@@ -311,7 +310,7 @@ export class DeviceEdit extends Component<any, any> {
             "Are you sure?",
             "Removing a Crownstone from the sphere will revert it to it's factory default settings.",
             [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
-              if (stone.config.disabled === true) {
+              if (stone.reachability.disabled === true) {
                 Alert.alert("Can't see this one!",
                   "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
                   [{text:'Delete anyway', onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
@@ -362,7 +361,7 @@ export class DeviceEdit extends Component<any, any> {
             resolve();
           }
           else {
-            LOG.error("COULD NOT DELETE IN CLOUD", err);
+            LOGe.info("COULD NOT DELETE IN CLOUD", err);
             reject();
           }
         })
@@ -389,7 +388,7 @@ export class DeviceEdit extends Component<any, any> {
             resolve();
           }
           else {
-            LOG.error("COULD NOT DELETE IN CLOUD", err);
+            LOGe.info("COULD NOT DELETE IN CLOUD", err);
             reject();
           }
         })
@@ -401,7 +400,7 @@ export class DeviceEdit extends Component<any, any> {
             this._removeCrownstoneFromRedux(true);
           })
           .catch((err) => {
-            LOG.error("ERROR:",err);
+            LOGe.info("ERROR:",err);
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
               "Try deleting it again or use the recovery procedure to put it in setup mode.",
@@ -510,7 +509,7 @@ export class DeviceEdit extends Component<any, any> {
         Alert.alert("Crownstone Locked", "You have to unlock the Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " dimming.", [{text:'OK'}]);
         return;
       }
-      if (stone.config.disabled) {
+      if (stone.reachability.disabled) {
         Alert.alert("Can't see this Crownstone!", "You have to be in range of Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " dimming.", [{text:'OK'}]);
         return;
       }
@@ -559,7 +558,7 @@ export class DeviceEdit extends Component<any, any> {
     if (stone.config.switchCraft !== this.state.switchCraft) {
       this.props.eventBus.emit("showLoading", "Configuring Switchcraft on this Crownstone...");
 
-      if (stone.config.disabled) {
+      if (stone.reachability.disabled) {
         Alert.alert("Can't see this Crownstone!", "You have to be in range of Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " Switchcraft.", [{text:'OK'}]);
         return;
       }
@@ -599,7 +598,7 @@ export class DeviceEdit extends Component<any, any> {
     else {
       return (
         <TouchableOpacity style={{paddingTop:15, paddingBottom:30}} onPress={() => {
-          if (stone.config.disabled) {
+          if (stone.reachability.disabled) {
             return Alert.alert("Can't see this stone!", "I have to be in range to get the firwmare version of this Crownstone.", [{text:'OK'}]);
           }
 

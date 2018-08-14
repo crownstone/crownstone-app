@@ -22,7 +22,7 @@ import { colors, OrangeLine }       from '../styles'
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
-import { TopbarLeftButton }         from "../components/topbar/TopbarButton";
+import { TopbarButton, TopbarLeftButton } from "../components/topbar/TopbarButton";
 import { AlternatingContent }       from "../components/animated/AlternatingContent";
 import { topBarStyle }              from "../components/topbar/TopbarStyles";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
@@ -42,6 +42,14 @@ export class SphereOverview extends Component<any, any> {
       else {
         paramsToUse = getNavBarParams(params.store.getState(), params);
       }
+    }
+
+    let returnData = {
+      title: paramsToUse.title,
+      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem} />
+      // headerTitle: <Component /> // used to insert custom header Title component
+      // headerLeft:  <Component /> // used to insert custom header Title component
+      // headerBackImage: require("path to image") // customize back button image
     }
 
     if (paramsToUse.showFinalizeNavigationButton || paramsToUse.showMailIcon) {
@@ -66,23 +74,11 @@ export class SphereOverview extends Component<any, any> {
       else {
         headerLeft = <TopbarLeftButton item={<FinalizeLocalizationIcon />} onPress={paramsToUse.showFinalizeIndoorNavigationCallback} />
       }
-      return {
-        title: paramsToUse.title,
-        // headerTitle: <Component /> // used to insert custom header Title component
-        headerLeft: headerLeft
-        // headerRight: <Component /> // used to insert custom header Right component
-        // headerBackImage: require("path to image") // customize back button image
-      }
+
+      returnData["headerLeft"] = headerLeft
     }
 
-
-    return {
-      title: paramsToUse.title,
-      // headerTitle: <Component /> // used to insert custom header Title component
-      // headerLeft:  <Component /> // used to insert custom header Title component
-      // headerRight: <Component /> // used to insert custom header Right component
-      // headerBackImage: require("path to image") // customize back button image
-    }
+    return returnData;
   };
 
   unsubscribeSetupEvents : any;
@@ -150,6 +146,16 @@ export class SphereOverview extends Component<any, any> {
     if (activeSphere === null && sphereIds.length > 0) {
       this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
     }
+    //
+    // let sphere = state.spheres[activeSphere];
+    // let stoneIds = Object.keys(sphere.stones);
+    // stoneIds.forEach((stoneId) => {
+    //   this.props.store.dispatch({
+    //     type:     'DELETE_ACTIVITY_LOG_CLOUD_IDS',
+    //     sphereId: activeSphere,
+    //     stoneId:  stoneId
+    //   });
+    // })
 
     this._updateNavBar();
   }
@@ -172,7 +178,7 @@ export class SphereOverview extends Component<any, any> {
 
     if (amountOfSpheres > 0) {
       let activeSphere = state.spheres[activeSphereId];
-      let sphereIsPresent = activeSphere.config.present;
+      let sphereIsPresent = activeSphere.state.present;
 
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
@@ -187,14 +193,12 @@ export class SphereOverview extends Component<any, any> {
       }
 
       return (
-        <View>
-          <AnimatedBackground image={background}>
-            <OrangeLine/>
-            <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
-            { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
-            { Permissions.inSphere(activeSphereId).addRoom ? <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
-          </AnimatedBackground>
-        </View>
+        <AnimatedBackground image={background}>
+          <OrangeLine/>
+          <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
+          { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
+          { Permissions.inSphere(activeSphereId).addRoom ? <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
+        </AnimatedBackground>
       );
     }
     else {
@@ -223,11 +227,14 @@ function getNavBarParams(state, props) {
   else {
     let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
     let newMailAvailable = SphereUtil.newMailAvailable(state);
+
     NAVBAR_PARAMS_CACHE = {
       title: sphere.config.name,
       showMailIcon: newMailAvailable,
       showFinalizeNavigationButton: finalizeLocalization.showItem,
       showFinalizeIndoorNavigationCallback: finalizeLocalization.action,
+      rightLabel:'Edit',
+      rightAction: () => { Actions.sphereEdit({sphereId: sphereId}) },
       activeSphereId: sphereId,
     }
   }

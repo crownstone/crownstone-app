@@ -88,6 +88,7 @@ const BluenetAPI = {
   setupFactoryReset:() => {},
   setupPutInDFU: () => {},
   toggleSwitchState:() => {},
+  setMeshChannel:(channel) => {},
 }
 
 if (DISABLE_NATIVE === true) {

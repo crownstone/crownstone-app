@@ -5,6 +5,7 @@ import spheresReducer      from './reducers/spheres'
 import installationReducer from './reducers/installation'
 import appReducer          from './reducers/app'
 import developmentReducer  from './reducers/development'
+// import preferencesReducer  from "./reducers/preferences";
 
 // crownstoneReducer
 export default (state : any = {}, action : any = {}) => {
@@ -18,12 +19,13 @@ export default (state : any = {}, action : any = {}) => {
   }
 
   return {
-    user: userReducer(state.user, action),
-    devices: devicesReducer(state.devices, action),
-    spheres: spheresReducer(state.spheres, action),
-    events: eventReducer(state.events, action),
+    app:         appReducer(state.app, action),
+    devices:     devicesReducer(state.devices, action),
+    development: developmentReducer(state.development, action),
+    events:      eventReducer(state.events, action),
     installations: installationReducer(state.installations, action),
-    app: appReducer(state.app, action),
-    development: developmentReducer(state.development, action)
+    // preferences: preferencesReducer(state.preferences, action),
+    spheres:     spheresReducer(state.spheres, action),
+    user:        userReducer(state.user, action),
   }
 };

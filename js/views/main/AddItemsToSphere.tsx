@@ -28,6 +28,17 @@ import {BackAction} from "../../util/Back";
 
 let iconSize = 100;
 
+export const addCrownstoneExplanationAlert = (actionOnOK = () => {}) => {
+  Alert.alert(
+    "Adding a Crownstone",
+    "Plug the new Crownstone in and hold your phone close to it (touching it). " +
+    "It will automatically show up in the main overview. I'll take you there now." +
+    "\n\nYou don't have to press this button for each Crownstone you add :).",
+    [{text: 'Buy', style:'cancel',onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},
+      {text: 'OK', onPress: () => { actionOnOK() }}]
+  );
+}
+
 export class AddItemsToSphere extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
@@ -38,8 +49,6 @@ export class AddItemsToSphere extends Component<any, any> {
     }
   };
 
-
-
   render() {
     return (
       <Background image={this.props.backgrounds.detailsDark} hasNavBar={false}>
@@ -47,7 +56,7 @@ export class AddItemsToSphere extends Component<any, any> {
         <ScrollView>
           <View style={{ width: screenWidth, alignItems:'center' }}>
             <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>Adding Items to your Sphere</Text>
+            <Text style={[deviceStyles.header]}>Add to your Sphere</Text>
             <View style={{height: 0.2*iconSize}} />
             <IconButton
               name="c1-sphere"
@@ -60,40 +69,15 @@ export class AddItemsToSphere extends Component<any, any> {
             <Text style={textStyle.specification}>{'You can add Rooms, People or Crownstones to your Sphere. As more devices will be integrated with the Crownstone, they will appear here as well!\n\nWhat do you want to add?'}</Text>
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row'}}>
-              <AddItem icon={'md-cube'} label={'a Room.'} callback={() => { Actions.roomAdd({sphereId: this.props.sphereId }); }} />
-              <AddItem icon={'c2-crownstone'} label={'a Crownstone.'} callback={() => {
-                Alert.alert(
-                  "Adding a Crownstone",
-                  "Plug the new Crownstone in and hold your phone close to it (touching it). " +
-                  "It will automatically show up in the main overview. I'll take you there now." +
-                  "\n\nYou don't have to press this button for each Crownstone you add :).",
-                  [{text: 'Buy', style:'cancel',onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},
-                    {text: 'OK', onPress: () => { BackAction(); }}]
-                );
-              }} />
+              <AddItem icon={'md-cube'} label={'Room'} callback={() => { Actions.roomAdd({sphereId: this.props.sphereId }); }} />
+              <AddItem icon={'c2-crownstone'} label={'Crownstone'} callback={() => { addCrownstoneExplanationAlert(() => { BackAction(); }); }} />
             </View>
-            <AddItem icon={'ios-body'} label={'a Person.'} callback={() => {
-              let label = "These are found by tapping at the cogwheel icon at the right of the navigation bar and tapping on 'Spheres'."
-              if (Platform.OS === 'android') {
-                label = "These are found in the Side menu under 'Spheres'";
-              }
-
-              Alert.alert(
-                "Adding a Person",
-                "This is done through the Sphere settings. " + label + "\n\nYou will be taken there now.",
-                [{text: 'OK', onPress: () => {
-                  if (Platform.OS === 'android') {
-                    Actions.settingsSphere({sphereId: this.props.sphereId, __popBeforeAddCount: 1})
-                  }
-                  else {
-                    Actions.reset('tabBar');
-                    Actions.jump('settings');
-                    Actions.settingsSphere({sphereId: this.props.sphereId})
-                  }
-                }}]
-              );
-            }} />
+            <View  style={{flexDirection:'row'}}>
+              <AddItem icon={'ios-body'} label={'Person'} callback={() => { Actions.sphereUserInvite({sphereId: this.props.sphereId}) }} />
+              <AddItem icon={'ios-link'} label={'Something else!'} callback={() => { Actions.sphereIntegrations({sphereId: this.props.sphereId}) }} />
+            </View>
           </View>
+          <View style={{height: 30}} />
         </ScrollView>
       </Background>
     );

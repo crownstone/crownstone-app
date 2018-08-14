@@ -35,6 +35,7 @@ import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
 import { UsbSummary }           from "./elements/UsbSummary";
 import { Scheduler }            from "../../logic/Scheduler";
+import {DeviceActivityLog} from "./elements/DeviceActivityLog";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -115,30 +116,21 @@ export class DeviceOverview extends Component<any, any> {
         (change.removeSphere && change.removeSphere.sphereIds[this.props.sphereId]) ||
         (change.removeStone  && change.removeStone.stoneIds[this.props.stoneId])
        ) {
-        this.forceUpdate();
-        return;
+        return this.forceUpdate();
       }
 
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
       if (!stone || !stone.config) {
-        this.forceUpdate();
-        return;
+        return this.forceUpdate();
       }
 
       let applianceId = stone.config.applianceId;
       if (
         change.changeAppSettings ||
-        change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
-        change.changeStoneState       && change.changeStoneState.stoneIds[this.props.stoneId] ||
-        change.updateStoneSchedule    && change.updateStoneSchedule.stoneIds[this.props.stoneId] ||
-        change.powerUsageUpdated      && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
-        change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
-        change.updateStoneBehaviour   && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
-        applianceId && change.updateApplianceConfig    && change.updateApplianceConfig.applianceIds[applianceId] ||
-        applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
+        change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
+        applianceId && change.updateApplianceConfig && change.updateApplianceConfig.applianceIds[applianceId]
         ) {
-          this.forceUpdate();
           this._updateNavBar(this.state.swiperIndex, false);
         }
     });
@@ -220,10 +212,11 @@ export class DeviceOverview extends Component<any, any> {
     // check what we want to show the user:
     let hasError        = stone.errors.hasError;
     let mustUpdate      = Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
-    let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
+    let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.reachability.disabled === false;
     let hasBehaviour    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
     let hasPowerMonitor = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
     let hasScheduler    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
+    let hasActivityLog  = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
     let deviceType      = stone.config.type;
 
     // if this stone requires to be dfu-ed to continue working, block all other actions.
@@ -243,7 +236,7 @@ export class DeviceOverview extends Component<any, any> {
       }
     };
 
-    let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stone.config)
+    let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog, showWhatsNew, deviceType, stone.config)
     return (
       <Background image={this.props.backgrounds.detailsDark}>
         <OrangeLine/>
@@ -258,7 +251,7 @@ export class DeviceOverview extends Component<any, any> {
           scrollEnabled={this.state.swipeEnabled}
           bounces={true}
           loadMinimal={true}
-          loadMinimalSize={2}
+          loadMinimalSize={3}
           onScrollBeginDrag={ () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
@@ -269,9 +262,13 @@ export class DeviceOverview extends Component<any, any> {
   }
 
 
-  _getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stoneConfig) {
+  _getContent(
+    hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog,
+    showWhatsNew, deviceType, stoneConfig) {
     let content = [];
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId, eventBus: this.props.eventBus};
+
+
 
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
@@ -304,6 +301,7 @@ export class DeviceOverview extends Component<any, any> {
       content.push(<DeviceSummary key={'summarySlide'}  {...props} />);
     }
 
+
     if (hasBehaviour) {
       content.push(<DeviceBehaviour key={'behaviourSlide'} {...props} />);
     }
@@ -312,9 +310,14 @@ export class DeviceOverview extends Component<any, any> {
       content.push(<DeviceSchedule key={'scheduleSlide'} {...props} />);
     }
 
+    if (hasActivityLog) {
+      content.push(<DeviceActivityLog key={'activityLogSlide'} {...props} />);
+    }
+
     if (hasPowerMonitor) {
       content.push(<DevicePowerCurve key={'powerSlide'} {...props} />);
     }
+
 
     return content;
   }
@@ -343,13 +346,7 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
   // check what we want to show the user:
   let hasError   = stone.errors.hasError;
   let mustUpdate = Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
-  let canUpdate  = Permissions.inSphere(props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
-
-  // if this stone requires to be dfu-ed to continue working, block all other actions.
-  if (stone.config.dfuResetRequired) {
-    canUpdate = true;
-    hasError  = false;
-  }
+  let canUpdate  = Permissions.inSphere(props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.reachability.disabled === false;
 
   // only shift the indexes (move the edit button to the next pages) if we do not have a mandatory view
   if (!hasError && !mustUpdate) {
@@ -357,6 +354,10 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
     if (canUpdate)    { summaryIndex++; behaviourIndex++; }
   }
 
+  // if this stone requires to be dfu-ed to continue working, block all other actions.
+  if (stone.config.dfuResetRequired) {
+    summaryIndex = 0;
+  }
 
   let rightLabel = null;
   let rightItem  = null;
@@ -422,13 +423,20 @@ export const deviceStyles = StyleSheet.create({
   header: {
     color: textColor.hex,
     fontSize: 25,
+    fontWeight:'800',
+    textAlign:'center'
+  },
+  subHeader: {
+    paddingTop:10,
+    color: textColor.hex,
+    fontSize: 22,
     fontWeight:'800'
   },
-  errorText: {
+  text: {
     color: textColor.hex,
     fontSize: 16,
     textAlign:'center',
-    fontWeight:'600'
+    fontWeight:'500'
   },
   subText: {
     color: textColor.rgba(0.5),
@@ -440,6 +448,10 @@ export const deviceStyles = StyleSheet.create({
     fontSize: 13,
     textAlign:'center'
   },
+  errorText: {
+    color: textColor.hex,
+    fontSize: 16,
+    textAlign:'center',
+    fontWeight:'600'
+  },
 });
-
-

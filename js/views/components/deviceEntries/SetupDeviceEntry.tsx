@@ -178,7 +178,7 @@ export class SetupDeviceEntry extends Component<any, any> {
   }
 
   setupStone() {
-    if (Permissions.inSphere(this.props.sphereId).setupCrownstone) {
+    if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
       if (this.state.disabled === false && this.state.setupInProgress !== true) {
         SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {  })
       }

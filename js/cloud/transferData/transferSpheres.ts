@@ -1,5 +1,5 @@
 import { CLOUD }        from "../cloudAPI";
-import { LOG }          from "../../logging/Log";
+import {LOG, LOGe} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 
 
@@ -53,7 +53,7 @@ export const transferSpheres = {
         actions.push({type: 'UPDATE_SPHERE_CLOUD_ID', sphereId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
-        LOG.error("Transfer-Sphere: Could not create Sphere in cloud", err);
+        LOGe.cloud("Transfer-Sphere: Could not create Sphere in cloud", err);
         throw err;
       });
   },
@@ -68,14 +68,10 @@ export const transferSpheres = {
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
-    // TODO: fix lat/long
-    // {local:'latitude' ,           cloud: 'latitude'},
-    // {local:'longitude',           cloud: 'longitude'},
-
     return CLOUD.updateSphere(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
-        LOG.error("Transfer-Sphere: Could not update sphere in cloud", err);
+        LOGe.cloud("Transfer-Sphere: Could not update sphere in cloud", err);
         throw err;
       });
   },

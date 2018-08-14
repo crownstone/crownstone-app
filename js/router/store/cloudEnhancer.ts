@@ -13,6 +13,8 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {LOG_LEVEL} from "../../logging/LogLevels";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
+import {transferActivityLogs} from "../../cloud/transferData/transferActivityLogs";
+import {transferToons} from "../../cloud/transferData/thirdParty/transferToons";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -69,7 +71,7 @@ export function CloudEnhancer({ getState }) {
 
 function handleAction(action, returnValue, newState, oldState) {
   // do not sync actions that have been triggered BY the cloud sync mechanism.
-  if (action.triggeredBySync === true || action.__test === true) {
+  if (action.triggeredBySync === true || action.__test === true || action.__purelyLocal === true) {
     return returnValue;
   }
 
@@ -159,7 +161,6 @@ function handleAction(action, returnValue, newState, oldState) {
     case "SET_SPHERE_STATE":
       handleSphereStateOnDevice(action, newState);
       break;
-
 
   }
 }
@@ -320,13 +321,11 @@ function handleSphereStateOnDevice(action, state) {
         CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => {});
       }
       else {
-        CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => {});
-        CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {});
+        CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });  // will also clear location
       }
     }
     else {
-      CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => {});
-      CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {});
+      CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });  // will also clear location
     }
   }
 }
@@ -338,8 +337,11 @@ function handleUserLocationEnter(action, state) {
     if (state.user.uploadLocation === true) {
       let deviceId = Util.data.getCurrentDeviceId(state);
       if (deviceId) {
-        CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => { });
-        CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => {});
+        CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId)
+          .then(() => {
+            return CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId)
+          })
+          .catch(() => {});
       }
     }
   }
@@ -380,7 +382,7 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 function handleDeviceInCloud(action, state) {
   let deviceId = action.deviceId;
   if (!deviceId) {
-    LOG.error("handleDeviceInCloud: invalid device id: ", deviceId);
+    LOGe.store("handleDeviceInCloud: invalid device id: ", deviceId);
     return;
   }  
   let deviceConfig = state.devices[deviceId];
@@ -388,8 +390,6 @@ function handleDeviceInCloud(action, state) {
     name: deviceConfig.name,
     address: deviceConfig.address,
     description: deviceConfig.description,
-    hubFunction: deviceConfig.hubFunction,
-    location: state.user.uploadLocation === true ? deviceConfig.location : undefined,
     tapToToggleCalibration: deviceConfig.tapToToggleCalibration,
     updatedAt: deviceConfig.updatedAt
   };
@@ -410,7 +410,7 @@ function handleDeviceInCloud(action, state) {
 function handleInstallation(action, state) {
   let installationId = action.installationId;
   if (!installationId) {
-    LOG.error("handleDeviceInCloud: invalid installationId: ", installationId);
+    LOGe.store("handleDeviceInCloud: invalid installationId: ", installationId);
     return;
   }
   let installationConfig = state.installations[installationId];

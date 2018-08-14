@@ -352,7 +352,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
                   // show loading bar
                   this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
                   this.pocketTimeout = setTimeout(() => {
-                    this.defineThreshold(iBeaconUUID, stone.config.iBeaconMajor, stone.config.iBeaconMinor)
+                    this.defineThreshold(iBeaconUUID, stone.config.iBeaconMajor, stone.config.iBeaconMinor);
                   }, 5000);
                 }
               }]

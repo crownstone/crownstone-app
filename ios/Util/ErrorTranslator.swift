@@ -139,5 +139,7 @@ func getBleErrorString(_ err: BleError) -> String {
     return "PROCESS_ABORTED_WITH_ERROR"
   case .UNKNOWN_PROCESS_TYPE:
     return "UNKNOWN_PROCESS_TYPE"
+  case .INVALID_INPUT:
+    return "INVALID_INPUT"
   }
 }

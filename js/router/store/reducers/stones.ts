@@ -2,8 +2,11 @@ import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 import powerUsageReducer from './stoneSubReducers/powerUsage'
-import scheduleReducer from './stoneSubReducers/schedule'
-import meshReducer from './stoneSubReducers/mesh'
+import scheduleReducer   from './stoneSubReducers/schedule'
+import meshReducer       from './stoneSubReducers/mesh'
+import activityLogsReducer from './stoneSubReducers/activityLog'
+import reachabilityReducer from './stoneSubReducers/reachability'
+import lastUpdatedReducer from './stoneSubReducers/lastUpdated'
 
 export let BEHAVIOUR_TYPES = {
   NEAR: 'onNear',
@@ -26,7 +29,6 @@ let defaultSettings = {
     icon: 'c2-pluginFilled',
     applianceId: null,
     crownstoneId: undefined,
-    disabled: true,
     cloudId: null,
     dimmingAvailable: false,
     dimmingEnabled: false,
@@ -43,20 +45,16 @@ let defaultSettings = {
     meshNetworkId: null,
     name: 'Crownstone Plug',
     nearThreshold: null,
-    rssi: -1000,
     onlyOnWhenDark: false,
     tapToToggle: true,
     hidden: false,
     locked: false,
     switchCraft: false,
     type: STONE_TYPES.plug,
-    stoneTime: 0,
-    stoneTimeChecked: 0,
-    lastSeen: null,
-    lastSeenViaMesh: null,
-    lastSeenTemperature: null,
     updatedAt: 1,
-    lastUpdatedStoneTime: 0,
+  },
+  lastUpdated: {
+    stoneTime: 0,
   },
   state: {
     state: 0.0,
@@ -64,6 +62,13 @@ let defaultSettings = {
     currentUsage: 0,
     powerFactor: null,
     updatedAt: 1
+  },
+  reachability: {
+    // disabled: true,
+    // lastSeen: null,
+    // lastSeenViaMesh: null,
+    // lastSeenTemperature: null,
+    // rssi: -1000,
   },
   schedules: { // this schedule will be overruled by the appliance if applianceId is not undefined.
     updatedAt: 1
@@ -115,34 +120,10 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
-    case 'UPDATE_STONE_STATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
-      if (action.data) {
-        let newState = {...state};
-        newState.disabled = false;
-        newState.lastSeenTemperature = update(action.data.lastSeenTemperature, newState.lastSeenTemperature);;
-        return newState;
-      }
-      return state;
     case 'UPDATE_MESH_NETWORK_ID':
       if (action.data) {
         let newState = {...state};
         newState.meshNetworkId   = update(action.data.meshNetworkId, newState.meshNetworkId);
-        return newState;
-      }
-      return state;
-    case 'UPDATE_STONE_RSSI':
-      if (action.data) {
-        let newState = {...state};
-        newState.rssi            = update(action.data.rssi, newState.rssi);
-        return newState;
-      }
-      return state;
-    case 'UPDATE_STONE_DIAGNOSTICS':
-      if (action.data) {
-        let newState = {...state};
-        newState.lastSeen            = update(action.data.lastSeen,            newState.lastSeen);
-        newState.lastSeenViaMesh     = update(action.data.lastSeenViaMesh,     newState.lastSeenViaMesh);
-        newState.lastSeenTemperature = update(action.data.lastSeenTemperature, newState.lastSeenTemperature);
         return newState;
       }
       return state;
@@ -153,22 +134,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
-    case 'UPDATE_STONE_DISABILITY': // used for crownstones that are not heard from for a while.
-      if (action.data) {
-        let newState = {...state};
-        newState.disabled        = update(action.data.disabled, newState.disabled);
-        newState.rssi            = update(action.data.rssi, newState.rssi);
-        return newState;
-      }
-      return state;
-    case 'UPDATE_STONE_REMOTE_TIME':
-      if (action.data) {
-        let newState = {...state};
-        newState.stoneTime        = update(action.data.stoneTime, newState.stoneTime);
-        newState.stoneTimeChecked = getTime(action.data.stoneTimeChecked);
-        return newState;
-      }
-      return state;
+
     case 'UPDATE_STONE_DFU_RESET':
       if (action.data) {
         let newState = {...state};
@@ -181,13 +147,11 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         let newState = {...state};
         newState.firmwareVersionSeenInOverview = update(action.data.firmwareVersionSeenInOverview, newState.firmwareVersionSeenInOverview);
         newState.cloudId                       = update(action.data.cloudId,          newState.cloudId);
-        newState.disabled                      = update(action.data.disabled,         newState.disabled);
         newState.dfuResetRequired              = update(action.data.dfuResetRequired, newState.dfuResetRequired);
         newState.meshNetworkId                 = update(action.data.meshNetworkId,    newState.meshNetworkId);
         newState.handle                        = update(action.data.handle,           newState.handle);
         newState.hidden                        = update(action.data.hidden,           newState.hidden);
         newState.locked                        = update(action.data.locked,           newState.locked);
-        newState.rssi                          = update(action.data.rssi,             newState.rssi);
         return newState;
       }
       return state;
@@ -201,7 +165,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.cloudId           = update(action.data.cloudId,           newState.cloudId);
         newState.dimmingEnabled    = update(action.data.dimmingEnabled,    newState.dimmingEnabled);
         newState.dimmingAvailable  = update(action.data.dimmingAvailable,  newState.dimmingAvailable);
-        newState.disabled          = update(action.data.disabled,          newState.disabled);
         newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
         newState.bootloaderVersion = update(action.data.bootloaderVersion, newState.bootloaderVersion);
         newState.hardwareVersion   = update(action.data.hardwareVersion,   newState.hardwareVersion);
@@ -218,7 +181,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.name              = update(action.data.name,              newState.name);
         newState.nearThreshold     = update(action.data.nearThreshold,     newState.nearThreshold);
         newState.onlyOnWhenDark    = update(action.data.onlyOnWhenDark,    newState.onlyOnWhenDark);
-        newState.rssi              = update(action.data.rssi,              newState.rssi);
         newState.tapToToggle       = update(action.data.tapToToggle,       newState.tapToToggle);
         newState.switchCraft       = update(action.data.switchCraft,       newState.switchCraft);
         newState.type              = update(action.data.type,              newState.type);
@@ -234,10 +196,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
-    case 'UPDATED_STONE_TIME':
-      let newState = {...state};
-      newState.lastUpdatedStoneTime = getTime();
-      return newState;
+
     case 'REFRESH_DEFAULTS':
 
       return refreshDefaults(state, defaultSettings.config);
@@ -416,7 +375,10 @@ let combinedStoneReducer = combineReducers({
   schedules:  scheduleReducer,
   errors:     stoneErrorsReducer,
   powerUsage: powerUsageReducer,
-  mesh:       meshReducer
+  mesh:       meshReducer,
+  lastUpdated:  lastUpdatedReducer,
+  activityLogs: activityLogsReducer,
+  reachability:  reachabilityReducer,
 });
 
 // stonesReducer

@@ -1,5 +1,5 @@
 import { Platform } from 'react-native'
-import {LOG} from "../logging/Log";
+import {LOG, LOGe} from "../logging/Log";
 const Actions = require('react-native-router-flux').Actions;
 
 
@@ -19,6 +19,6 @@ export const BackAction = function(popToName?) {
       Actions.pop();
     }
   } catch (popErr) {
-    LOG.error("Pop error:", popErr);
+    LOGe.info("Pop error:", popErr);
   }
 };

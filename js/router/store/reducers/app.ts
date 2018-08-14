@@ -14,6 +14,9 @@ let defaultState = {
 export default (state = defaultState, action : any = {}) => {
   let newState;
   switch (action.type) {
+    case 'RESET_APP_SETTINGS':
+      return {...defaultState}
+
     case 'SET_NOTIFICATION_TOKEN':
       if (action.data) {
         newState = {...state};
@@ -46,10 +49,10 @@ export default (state = defaultState, action : any = {}) => {
     case 'UPDATE_APP_SETTINGS':
       if (action.data) {
         newState = {...state};
-        newState.keepAlivesEnabled         = update(action.data.keepAlivesEnabled,  newState.keepAlivesEnabled);
+        newState.keepAlivesEnabled         = update(action.data.keepAlivesEnabled,          newState.keepAlivesEnabled);
         newState.indoorLocalizationEnabled = update(action.data.indoorLocalizationEnabled,  newState.indoorLocalizationEnabled);
-        newState.tapToToggleEnabled        = update(action.data.tapToToggleEnabled,  newState.tapToToggleEnabled);
-        newState.shownWhatsNewVersion      = update(action.data.shownWhatsNewVersion,  newState.shownWhatsNewVersion);
+        newState.tapToToggleEnabled        = update(action.data.tapToToggleEnabled,         newState.tapToToggleEnabled);
+        newState.shownWhatsNewVersion      = update(action.data.shownWhatsNewVersion,       newState.shownWhatsNewVersion);
         newState.updatedAt                 = getTime(action.data.updatedAt);
         return newState;
       }

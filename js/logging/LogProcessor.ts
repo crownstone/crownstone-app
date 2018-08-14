@@ -11,18 +11,16 @@ class LogProcessorClass {
   store : any;
   writeToFile:        boolean;
   log_info:           number = LOG_LEVEL.NONE;
-  log_warnings:       number = LOG_LEVEL.NONE;
-  log_errors:         number = LOG_LEVEL.NONE;
   log_mesh:           number = LOG_LEVEL.NONE;
+  log_notifications:  number = LOG_LEVEL.NONE;
   log_native:         number = LOG_LEVEL.NONE;
   log_scheduler:      number = LOG_LEVEL.NONE;
-  log_verbose:        number = LOG_LEVEL.NONE;
   log_advertisements: number = LOG_LEVEL.NONE;
   log_ble:            number = LOG_LEVEL.NONE;
+  log_bch:            number = LOG_LEVEL.NONE;
   log_events:         number = LOG_LEVEL.NONE;
   log_store:          number = LOG_LEVEL.NONE;
   log_cloud:          number = LOG_LEVEL.NONE;
-  log_debug:          number = LOG_LEVEL.NONE;
 
   constructor() {
     this.store = undefined;
@@ -101,24 +99,22 @@ class LogProcessorClass {
     if (this.store) {
       let state = this.store.getState();
       let dev = state.user.developer;
-      let log = state.user.logging;
+      let loggingEnabled = state.development.logging_enabled;
       let devState = state.development;
 
-      this.writeToFile = dev === true && log === true;
+      this.writeToFile = dev === true && loggingEnabled === true;
 
-      this.log_info           = dev === true && log === true && devState.log_info           === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_warnings       = dev === true && log === true && devState.log_warnings       === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_errors         = dev === true && log === true && devState.log_errors         === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_mesh           = dev === true && log === true && devState.log_mesh           === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_native         = dev === true && log === true && devState.log_native         === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_scheduler      = dev === true && log === true && devState.log_scheduler      === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_verbose        = dev === true && log === true && devState.log_verbose        === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_ble            = dev === true && log === true && devState.log_ble            === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_advertisements = dev === true && log === true && devState.log_advertisements === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_events         = dev === true && log === true && devState.log_events         === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_store          = dev === true && log === true && devState.log_store          === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_cloud          = dev === true && log === true && devState.log_cloud          === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
-      this.log_debug          = dev === true && log === true && devState.log_debug          === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
+      this.log_info           = loggingEnabled && devState.log_info;
+      this.log_mesh           = loggingEnabled && devState.log_mesh;
+      this.log_native         = loggingEnabled && devState.log_native;
+      this.log_notifications  = loggingEnabled && devState.log_notifications;
+      this.log_scheduler      = loggingEnabled && devState.log_scheduler;
+      this.log_ble            = loggingEnabled && devState.log_ble;
+      this.log_bch            = loggingEnabled && devState.log_bch;
+      this.log_advertisements = loggingEnabled && devState.log_advertisements;
+      this.log_events         = loggingEnabled && devState.log_events;
+      this.log_store          = loggingEnabled && devState.log_store;
+      this.log_cloud          = loggingEnabled && devState.log_cloud;
     }
   }
 }

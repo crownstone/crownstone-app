@@ -40,8 +40,10 @@ export class Persistor {
   processPending = false;
   executeOnFinish: any = null;
 
-  keyHistory : numberMap = {};
+  lastPersistedState = null;
+  persistQueue = [];
 
+  keyHistory : numberMap = {};
 
   initialize(userId, store) : Promise<void> {
     LOGi.store("Persistor: Initializing...");
@@ -50,6 +52,17 @@ export class Persistor {
     return this.hydrate()
       .then(() => {
         this.initialized = true;
+      })
+  }
+
+  destroyActiveUser() {
+    return AsyncStorage.getAllKeys()
+      .then((allKeys) => {
+        LOGd.store("Persistor: all keys found:", allKeys);
+
+        // get the keys for this user from the list of all keys.
+        let userKeys = PersistorUtil.extractUserKeys(allKeys, this.userId);
+        return AsyncStorage.multiRemove(userKeys)
       })
   }
 
@@ -68,7 +81,8 @@ export class Persistor {
     })
   }
 
-  indicateProcessEnded() {
+  indicateProcessEnded(newState) {
+    this.lastPersistedState = newState;
     this.processPending = false;
     if (typeof this.executeOnFinish === 'function') {
       this.executeOnFinish();
@@ -94,6 +108,7 @@ export class Persistor {
     LOGi.store("Persistor: Starting Hydration...");
     let migrationRequired = false;
     let abortHydration = false;
+    let initialState;
     return this._checkHydrateMode()
       .then((result) => {
         LOGi.store("Persistor: hydration mode determined: ", result);
@@ -135,11 +150,11 @@ export class Persistor {
       })
       .then(() => {
         LOGi.store("Persistor: Hydration Complete!");
-        this.indicateProcessEnded();
+        this.indicateProcessEnded(initialState);
       })
       .catch((err) => {
         LOGe.store("Persistor: Error during hydration", err);
-        this.indicateProcessEnded();
+        this.indicateProcessEnded(initialState);
         throw err;
       })
   }
@@ -420,9 +435,33 @@ export class Persistor {
     return this._persist(state, state, true);
   }
 
+  _checkPersistQueue() {
+    if (this.persistQueue.length > 0) {
+      if (this.processPending !== true) {
+        this._persist(this.lastPersistedState, this.store.getState(), false).then(() => {
+          // on next tick.
+          this.persistQueue.forEach((queue) => {
+            queue.resolver();
+          });
+          this.persistQueue = [];
+        })
+      }
+    }
+    return false;
+  }
+
   persistChanges(oldState, newState) : Promise<void> {
     LOGd.store("Persistor: Starting partial persist.");
-    return this._persist(oldState, newState, false);
+    if (this.processPending === true) {
+      return new Promise((resolve, reject) => {
+        this.persistQueue.push({resolver: resolve});
+      })
+    }
+
+    return this._persist(this.lastPersistedState || oldState, newState, false).then(() => {
+      // on next tick.
+      setTimeout(() => { this._checkPersistQueue(); }, 0);
+    })
   }
 
   _persist(oldState, newState, fullPersist = false) : Promise<void> {
@@ -528,12 +567,13 @@ export class Persistor {
         return this._batchRemove(keysToRemove);
       })
       .then(() => {
-        this.indicateProcessEnded();
+        this.indicateProcessEnded(newState);
       })
       .catch((err) => {
-        this.indicateProcessEnded();
+        this.indicateProcessEnded(newState);
         throw err;
-    })
+       })
+
   }
 
   _parseForStorage(data, path, storageKey, options, resultArray, keysToRemove) {

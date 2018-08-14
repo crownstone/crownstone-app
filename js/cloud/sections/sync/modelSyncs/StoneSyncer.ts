@@ -10,6 +10,7 @@ import {SyncingSphereItemBase} from "./SyncingBase";
 import {ScheduleSyncer} from "./ScheduleSyncer";
 import {LOGe, LOGw} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
+import {ActivityLogSyncer} from "./ActivityLogSyncer";
 
 export class StoneSyncer extends SyncingSphereItemBase {
 
@@ -26,12 +27,18 @@ export class StoneSyncer extends SyncingSphereItemBase {
   }
 
   sync(store) {
+    let stonesInState;
+    let stonesInCloud;
     return this.download()
-      .then((stonesInCloud) => {
+      .then((result) => {
+        stonesInCloud = result;
         this._constructLocalIdMap();
 
-        let stonesInState = this._getLocalData(store);
-        let localStoneIdsSynced = this.syncDown(store, stonesInState, stonesInCloud);
+        stonesInState = this._getLocalData(store);
+        return this.syncDown(store, stonesInState, stonesInCloud);
+      })
+      .then((localStoneIdsSynced) => {
+
         this.syncUp(stonesInState, localStoneIdsSynced);
 
         this.uploadDiagnostics(store, stonesInState, stonesInCloud);
@@ -46,7 +53,9 @@ export class StoneSyncer extends SyncingSphereItemBase {
     let cloudIdMap = this._getCloudIdMap(stonesInState);
 
     // go through all stones in the cloud.
-    stonesInCloud.forEach((stone_from_cloud) => { // underscores so its visually different from stoneInState
+    return Util.promiseBatchPerformer(stonesInCloud, (stone_from_cloud) => { // underscores so its visually different from stoneInState
+      this.transferPromises = [];
+
       let localId = cloudIdMap[stone_from_cloud.id];
 
       // determine the linked location id
@@ -86,28 +95,26 @@ export class StoneSyncer extends SyncingSphereItemBase {
       cloudIdMap[stone_from_cloud.id] = localId;
 
       this.syncChildren(localId, store, stone_from_cloud);
-    });
 
-
-    this.globalSphereMap.stones = {...this.globalSphereMap.stones, ...cloudIdMap}
-    this.globalCloudIdMap.stones = {...this.globalCloudIdMap.stones, ...cloudIdMap};
-    return localStoneIdsSynced;
+      return Promise.all(this.transferPromises);
+    })
+      .then(() => {
+        this.globalSphereMap.stones = {...this.globalSphereMap.stones, ...cloudIdMap}
+        this.globalCloudIdMap.stones = {...this.globalCloudIdMap.stones, ...cloudIdMap};
+        return localStoneIdsSynced;
+      })
   }
 
 
   syncChildren(localId, store, stone_from_cloud) {
-    let scheduleSyncing = new ScheduleSyncer(
-      this.actions,
-      [],
-      this.localSphereId,
-      this.cloudSphereId,
-      localId,
-      stone_from_cloud.id,
-      this.globalCloudIdMap,
-    );
+    let scheduleSyncing    = new ScheduleSyncer(   this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
+    let activityLogSyncing = new ActivityLogSyncer(this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
 
     this.transferPromises.push(
       scheduleSyncing.sync(store, stone_from_cloud.schedules)
+        .then(() => {
+          return activityLogSyncing.sync(store)
+        })
     );
   }
 
@@ -166,7 +173,12 @@ export class StoneSyncer extends SyncingSphereItemBase {
         localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId( localStone.locationId);
         this.transferPromises.push(
           transferStones.createOnCloud(
-            this.actions, { localId: localStoneId, localData: localDataForCloud, localSphereId: this.localSphereId, cloudSphereId: this.cloudSphereId }));
+            this.actions, {
+              localId: localStoneId,
+              localData: localDataForCloud,
+              localSphereId: this.localSphereId,
+              cloudSphereId: this.cloudSphereId
+            }));
       }
     }
   }
@@ -212,7 +224,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
         }).catch(() => {})
       );
     };
-
 
     if (shouldUpdateInCloud(stoneInState.config, stone_from_cloud) && !corruptData) {
       if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return }
@@ -313,35 +324,35 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
         let cloudId = stone_from_cloud.id;
         let uploaded = false;
-        if (stoneInState.config.lastSeen) {
+        if (stoneInState.reachability.lastSeen) {
           uploaded = true;
           this.transferPromises.push(
             CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
               timestamp: new Date().valueOf(),
               type: 'lastSeen',
-              value: stoneInState.config.lastSeen
+              value: stoneInState.reachability.lastSeen
             }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeen Diagnostic", err); })
           );
         }
 
-        if (stoneInState.config.lastSeenTemperature) {
+        if (stoneInState.reachability.lastSeenTemperature) {
           uploaded = true;
           this.transferPromises.push(
             CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
               timestamp: new Date().valueOf(),
               type: 'lastSeenTemperature',
-              value: stoneInState.config.lastSeenTemperature
+              value: stoneInState.reachability.lastSeenTemperature
             }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenTemperature Diagnostic", err); })
           );
         }
 
-        if (stoneInState.config.lastSeenViaMesh) {
+        if (stoneInState.reachability.lastSeenViaMesh) {
           uploaded = true;
           this.transferPromises.push(
             CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
               timestamp: new Date().valueOf(),
               type: 'lastSeenViaMesh',
-              value: stoneInState.config.lastSeenViaMesh
+              value: stoneInState.reachability.lastSeenViaMesh
             }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenViaMesh Diagnostic", err); })
           );
         }

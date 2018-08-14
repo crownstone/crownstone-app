@@ -1,4 +1,4 @@
-import {LOG, LOGi, LOGv} from '../logging/Log'
+import {LOG, LOGe, LOGi, LOGv} from '../logging/Log'
 import { Util } from './Util'
 
 
@@ -13,11 +13,11 @@ export class EventBusClass {
   
   on(topic, callback) {
     if (!(topic)) {
-      LOG.error('Attempting to subscribe to undefined topic:', topic);
+      LOGe.event('Attempting to subscribe to undefined topic:', topic);
       return;
     }
     if (!(callback)) {
-      LOG.error('Attempting to subscribe without callback to topic:', topic);
+      LOGe.event('Attempting to subscribe without callback to topic:', topic);
       return;
     }
 

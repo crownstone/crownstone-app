@@ -24,7 +24,7 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
 import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
-import {LOG} from "../../../logging/Log";
+import {LOG, LOGe} from "../../../logging/Log";
 import {eventBus} from "../../../util/EventBus";
 import {SchedulerEntry} from "../../components/SchedulerEntry";
 import {Scheduler} from "../../../logic/Scheduler";
@@ -33,6 +33,29 @@ import {ScheduleUtil} from "../../../util/ScheduleUtil";
 
 
 export class DeviceSchedule extends Component<any, any> {
+
+  unsubscribeStoreEvents
+  componentDidMount() {
+    const { store } = this.props;
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      let state = store.getState();
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      if (!stone || !stone.config) { return; }
+
+      if (
+        change.changeAppSettings || change.updateStoneSchedule && change.updateStoneSchedule.stoneIds[this.props.stoneId]
+      ) {
+        this.forceUpdate();
+      }
+    });
+  }
+  componentWillUnmount() {
+    this.unsubscribeStoreEvents();
+  }
+
   _getItems(schedules) {
     let items = [];
 
@@ -76,7 +99,7 @@ export class DeviceSchedule extends Component<any, any> {
             alignItems:'center',
             flexDirection:'row'}}
           onPress={() => {
-          if (stone.config.disabled === true) {
+          if (stone.reachability.disabled === true) {
             Alert.alert(
               "Can't see Crownstone!",
               "You cannot sync schedules from Crownstone if I can't see it...",
@@ -155,7 +178,7 @@ export class DeviceSchedule extends Component<any, any> {
       })
       .catch((err) => {
         eventBus.emit("hideLoading");
-        LOG.error("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
+        LOGe.info("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
         Alert.alert(
           "Could not Sync",
           "Move closer to the Crownstone and try again!",
@@ -201,7 +224,7 @@ export class DeviceSchedule extends Component<any, any> {
     if (canAddSchedule) {
       return (
         <TouchableOpacity onPress={() => {
-            if (stone.config.disabled === true) {
+            if (stone.reachability.disabled === true) {
               Alert.alert(
                 "Can't see Crownstone!",
                 "You cannot add schedules without being near to the Crownstone.",

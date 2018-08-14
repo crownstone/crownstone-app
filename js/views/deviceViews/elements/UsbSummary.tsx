@@ -41,30 +41,25 @@ export class UsbSummary extends Component<any, any> {
     this.storedSwitchState = stone.state.state;
   }
 
+  componentDidMount() {
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
 
-
-  _getLockIcon(stone) {
-    let wrapperStyle = {
-      width: 35,
-      height: 35,
-      position: 'absolute',
-      bottom: 0,
-      right: 0,
-      alignItems: 'center',
-      justifyContent: "center"
-    };
-    if (stone.config.disabled === false && stone.config.locked === false) {
-      return (
-        <TouchableOpacity
-          onPress={() => {this.props.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
-          style={wrapperStyle}>
-          <Icon name={"md-unlock"} color={colors.white.rgba(0.5)} size={30}/>
-        </TouchableOpacity>
-      );
-    }
-    else {
-      return <View style={wrapperStyle} />;
-    }
+      if (
+        !change.removeStone &&
+        (
+          change.changeAppSettings ||
+          change.stoneLocationUpdated   && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
+          change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId]
+        )
+      ) {
+        this.forceUpdate();
+      }
+    });
+  }
+  componentWillUnmount() {
+    this.unsubscribeStoreEvents();
   }
 
   render() {
@@ -74,7 +69,7 @@ export class UsbSummary extends Component<any, any> {
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
 
-    // stone.config.disabled = false
+    // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let locationLabel = "Tap here to move me!";

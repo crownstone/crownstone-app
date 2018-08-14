@@ -1,7 +1,7 @@
 
 import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 import {INTENTS} from "../native/libInterface/Constants";
-import {LOG} from "../logging/Log";
+import {LOG, LOGe} from "../logging/Log";
 import {Scheduler} from "../logic/Scheduler";
 import {eventBus} from "./EventBus";
 import {
@@ -128,7 +128,7 @@ export const StoneUtil = {
         Alert.alert("Success!","The Error has been reset. Normal functionality is re-enabled.",[{text:'OK'}]);
       })
       .catch((err) => {
-        LOG.error("ErrorOverlay: Could not reset errors of Crownstone", err);
+        LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err);
         let defaultAction = () => { eventBus.emit("hideLoading"); };
         Alert.alert("Failed to reset error :(","You can move closer and try again or ignore the error for now.",[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
       });

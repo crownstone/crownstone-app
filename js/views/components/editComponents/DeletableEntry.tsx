@@ -6,7 +6,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, screenWidth } from '../../styles'
+import {styles, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
 import {Util} from "../../../util/Util";
 import {DoubleTapDelete} from "../DoubleTapDelete";
 
@@ -23,9 +23,10 @@ export class DeletableEntry extends Component<any, any> {
   render() {
     let barHeight = this.props.barHeight;
     if (this.props.largeIcon)
-      barHeight = 75;
+      barHeight = LARGE_ROW_SIZE;
     else if (this.props.icon)
-      barHeight = 50;
+      barHeight = NORMAL_ROW_SIZE;
+
     return (
       <View style={[styles.listView, {height: barHeight, paddingRight:0}, this.props.wrapperStyle]}>
         {this.props.largeIcon !== undefined ?

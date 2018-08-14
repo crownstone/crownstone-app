@@ -42,7 +42,7 @@ export const SphereUtil = {
 
     if (sphereId === null) { return { showItem: false, action: () => {} } }
 
-    let sphereIsPresent = sphere.config.present;
+    let sphereIsPresent = sphere.state.present;
 
     // are there enough in total?
     let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state, sphereId);
@@ -103,7 +103,7 @@ export const SphereUtil = {
   newMailAvailable: function(state) {
     let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
     if (sphereId && sphere) {
-      return sphere.config.newMessageFound
+      return sphere.state.newMessageFound
     }
     return false;
   }

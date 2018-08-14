@@ -89,7 +89,55 @@ export class LocationSyncer extends SyncingSphereItemBase {
 
   syncChildren(localId, localLocation, location_from_cloud) {
     this.syncUsersInLocation(localId, localLocation, location_from_cloud)
+    this.syncLayoutPosition(localId, localLocation, location_from_cloud);
   }
+
+  syncLayoutPosition(localLocationId, localLocation, location_from_cloud) {
+    let addPositionToLocation = () => {
+      this.actions.push({
+        type: "SET_LOCATION_POSITIONS",
+        sphereId:   this.localSphereId,
+        locationId: localLocationId,
+        data:       {
+          x: location_from_cloud.sphereOverviewPosition.x,
+          y: location_from_cloud.sphereOverviewPosition.y,
+          setOnThisDevice: false,
+          updatedAt: location_from_cloud.sphereOverviewPosition.updatedAt,
+        }
+      })
+    }
+    if (localLocation) {
+      if (localLocation.layout.x === null || localLocation.layout.y === null) {
+        if (location_from_cloud.sphereOverviewPosition) {
+          addPositionToLocation();
+        }
+      }
+      else if (localLocation.layout.setOnThisDevice === false) {
+        if (location_from_cloud.sphereOverviewPosition && shouldUpdateLocally(localLocation.layout, location_from_cloud.sphereOverviewPosition)) {
+          addPositionToLocation();
+        }
+      }
+      else if (Permissions.inSphere(this.localSphereId).canSetPositionInCloud) {
+        if (!location_from_cloud.sphereOverviewPosition) {
+          this.transferPromises.push(
+            CLOUD.forLocation(location_from_cloud.id).updateLocationPosition(localLocation.layout)
+          );
+        }
+        else if (shouldUpdateInCloud(localLocation.layout, location_from_cloud.sphereOverviewPosition)) {
+          this.transferPromises.push(
+            CLOUD.forLocation(location_from_cloud.id).updateLocationPosition(localLocation.layout)
+          );
+        }
+      }
+    }
+    else {
+      // new location! store the positions
+      if (location_from_cloud.sphereOverviewPosition) {
+        addPositionToLocation();
+      }
+    }
+  }
+
 
   syncUsersInLocation(localLocationId, localLocation, location_from_cloud) {
     // put the present users from the cloud into the location.

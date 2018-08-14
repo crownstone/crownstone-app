@@ -93,16 +93,7 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
   insertExplanation(items, 'You are in control of which data is shared with the cloud.', true);
 
   insertExplanation(items, 'CONFIGURATION', false, true);
-  if (Object.keys(state.spheres).length > 0) {
-    items.push({
-      id: 'Spheres',
-      label: 'Spheres',
-      icon: getIcon('c1-sphere', 21.5, colors.white.hex, colors.blue.hex),
-      type: 'navigation',
-      callback: () => { clickCallback(); Actions.settingsSphereOverview() }
-    });
-  }
-  else {
+  if (Object.keys(state.spheres).length == 0) {
     items.push({
       id: 'Add Sphere',
       label: 'Add Sphere',
@@ -160,10 +151,20 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
 
   insertExplanation(items, 'TROUBLESHOOTING', false);
   items.push({
+    id:'Diagnostics',
+    label:'Diagnostics',
+    type:'navigation',
+    icon: getIcon('md-analytics', 21, colors.white.hex, colors.csBlue.hex),
+    callback: () => {
+      clickCallback();
+      Actions.settingsDiagnostics()
+    }
+  });
+  items.push({
     id:'Help',
     label:'Help',
     type:'navigation',
-    icon: getIcon('md-help-circle', 22, colors.white.hex, colors.csBlue.hex),
+    icon: getIcon('ios-help-circle', 23, colors.white.hex, colors.csBlueLight.hex),
     callback: () => {
       // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
       clickCallback();

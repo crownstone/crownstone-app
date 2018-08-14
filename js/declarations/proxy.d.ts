@@ -52,6 +52,7 @@ interface BluenetPromiseWrapperProtocol {
 
   sendNoOp()                                    : Promise< void >,
   sendMeshNoOp()                                : Promise< void >,
+  setMeshChannel(channel)                       : Promise< void >,
 }
 
 
