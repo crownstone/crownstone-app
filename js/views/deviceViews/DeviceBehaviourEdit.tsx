@@ -117,7 +117,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     clearTimeout(this.pocketTimeout);
   }
 
-  defineThreshold(iBeaconId) {
+  defineThreshold(uuid, major, minor) {
     // show loading screen
     this.props.eventBus.emit("showLoading", "Determining range...");
 
@@ -146,7 +146,11 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     this.unsubscribeNative = NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
       data.forEach((iBeaconAdvertisement) => {
         // filter for our crownstone with only valid rssi measurements. We force the strings to lowercase to avoid os interpretation of UUIDs
-        if (iBeaconId && iBeaconAdvertisement && iBeaconId.toLowerCase() === iBeaconAdvertisement.id.toLowerCase() && iBeaconAdvertisement.rssi < 0) {
+        if (
+          iBeaconAdvertisement.uuid.toLowerCase() == uuid.toLowerCase() &&
+          iBeaconAdvertisement.major == major &&
+          iBeaconAdvertisement.minor == minor &&
+          iBeaconAdvertisement.rssi < 0) {
           measurements.push(iBeaconAdvertisement.rssi);
         }
       });
@@ -339,7 +343,6 @@ export class DeviceBehaviourEdit extends Component<any, any> {
           callback: () => {
             let state = this.props.store.getState();
             let iBeaconUUID = state.spheres[this.props.sphereId].config.iBeaconUUID;
-            let iBeaconId = iBeaconUUID + ".Maj:" + stone.config.iBeaconMajor + ".Min:" + stone.config.iBeaconMinor;
 
             Alert.alert(
               "How near is near?",
@@ -349,7 +352,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
                   // show loading bar
                   this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
                   this.pocketTimeout = setTimeout(() => {
-                    this.defineThreshold(iBeaconId)
+                    this.defineThreshold(iBeaconUUID, stone.config.iBeaconMajor, stone.config.iBeaconMinor)
                   }, 5000);
                 }
               }]

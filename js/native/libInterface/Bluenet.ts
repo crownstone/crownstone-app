@@ -11,7 +11,6 @@ const BluenetAPI = {
   disconnectCommand: () => {},          // called through BluenetPromiseWrapper --> must be promise.
   phoneDisconnect: () => {},            // called through BluenetPromiseWrapper --> must be promise.
   resetBle: () => {},
-  setSwitchState: () => {},             // called through BluenetPromiseWrapper --> must be promise.
   startScanning: () => {},
   startScanningForCrownstones: () => {},
   startScanningForCrownstonesUniqueOnly: () => {},

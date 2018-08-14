@@ -399,19 +399,6 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
       promise: batchCommand.promise
     };
   }
-  else if (command.commandName === 'setSwitchState') {
-    payload = {
-      stoneId: batchCommand.stoneId,
-      attempts: batchCommand.attempts,
-      timestamp: batchCommand.timestamp,
-      crownstoneId: stoneConfig.crownstoneId,
-      options: batchCommand.options,
-      handle: stoneConfig.handle,
-      state: command.state,
-      cleanup: batchCommand.cleanup,
-      promise: batchCommand.promise
-    };
-  }
   else if (command.commandName === 'multiSwitch') {
     payload = {
       stoneId: batchCommand.stoneId,
