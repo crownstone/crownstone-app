@@ -12,17 +12,7 @@ import { colors, screenHeight, screenWidth} from '../styles'
 import {eventBus} from "../../util/EventBus";
 const Swiper = require("react-native-swiper");
 import { Awesome } from "./WhatsNew/Awesome";
-import {Mesh} from "./WhatsNew/2.0.0/Mesh";
-import {Dimmer} from "./WhatsNew/2.0.0/Dimmer";
-import {FirmwareUpdate} from "./WhatsNew/2.0.0/FirmwareUpdate";
-import {BatteryImprovements} from "./WhatsNew/2.0.0/BatteryImprovements";
-import {Locking} from "./WhatsNew/2.0.0/Locking";
-import {MeshTopology} from "./WhatsNew/2.1.0/MeshTopology";
-import {Switchcraft} from "./WhatsNew/2.1.0/Switchcraft";
-import {FastSetup} from "./WhatsNew/2.1.0/FastSetup";
-import {RoomImages} from "./WhatsNew/2.1.0/RoomImages";
-import {NewLocalizationSettings} from "./WhatsNew/1.10.0/NewLocalizationSettings";
-import {IPhoneXSupport} from "./WhatsNew/2.1.0/IPhoneXSupport";
+import {BugsFixedAndroid} from "./WhatsNew/2.1.2/BugsFixedAndroid";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -53,19 +43,10 @@ export class WhatsNewOverlay extends Component<any, any> {
 
     if (Platform.OS === 'ios') {
       // content.push(<Switchcraft key="Switchcraft"  {...size}/>);
-      content.push(<Mesh key="Mesh"  {...size}/>);
-      content.push(<MeshTopology key="MeshTopology"  {...size}/>);
-      content.push(<RoomImages key="RoomImages"  {...size}/>);
-      content.push(<FastSetup key="FastSetup"  {...size}/>);
-      content.push(<IPhoneXSupport key="IPhoneXSupport"  {...size}/>);
     }
     if (Platform.OS === 'android') {
       // content.push(<Switchcraft key="Switchcraft"  {...size}/>);
-      content.push(<Mesh key="Mesh"  {...size}/>);
-      content.push(<MeshTopology key="MeshTopology"  {...size}/>);
-      content.push(<FastSetup key="FastSetup"  {...size}/>);
-      content.push(<RoomImages key="RoomImages"  {...size}/>);
-      content.push(<NewLocalizationSettings key="NewLocalizationSettings"  {...size}/>);
+      content.push(<BugsFixedAndroid key="BugsFixedAndroid"  {...size}/>);
     }
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }} {...size} />);
 
