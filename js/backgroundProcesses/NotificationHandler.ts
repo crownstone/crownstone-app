@@ -255,7 +255,7 @@ class NotificationParserClass {
         this.store,
         {},
         (err) => {},
-        INTENTS.remotely,
+        INTENTS.manual,
         25,
         'from handle in NotificationParser'
       );
