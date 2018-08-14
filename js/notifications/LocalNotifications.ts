@@ -127,6 +127,7 @@ export const LocalNotifications = {
           message: text, // (required)
           autoCancel: true, // Make this notification automatically dismissed when the user touches it.
           playSound: sound, // (optional) default: true
+          group: "t2t", // Doesn't work yet?
           ongoing: false,
         });
       }
