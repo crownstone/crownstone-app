@@ -21,9 +21,7 @@ export const createNewSphere = function(eventBus, store, name) {
     })
     .then((sphereId) => {
       eventBus.emit('hideLoading');
-      let state = store.getState();
-      let title = state.spheres[sphereId].config.name;
-      Actions.settingsSphere({sphereId: sphereId, title: title})
+      return sphereId;
     })
     .catch((err) => {
       if (err.status == 422) {

@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { FadeInView } from './FadeInView'
+import { HiddenFadeInView } from './FadeInView'
 
 export class AlternatingContent extends Component<any, any> {
   interval : any;
@@ -34,9 +34,9 @@ export class AlternatingContent extends Component<any, any> {
     let content = [];
     for (let i = 0; i < this.props.contentArray.length; i++) {
       content.push(
-        <FadeInView key={i + "_alternatingContent"} duration={this.props.fadeDuration || 400} visible={i === this.state.visibleIndex} style={[{position:'absolute', top:0,  justifyContent:'center', alignItems:'center'}, this.props.style]}>
+        <HiddenFadeInView key={i + "_alternatingContent"} duration={this.props.fadeDuration || 400} visible={i === this.state.visibleIndex} style={[{position:'absolute', top:0,  justifyContent:'center', alignItems:'center'}, this.props.style]}>
           {this.props.contentArray[i]}
-        </FadeInView>
+        </HiddenFadeInView>
       );
     }
     return content;

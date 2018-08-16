@@ -64,3 +64,4 @@ export class UserPicture extends Component<any, any> {
     );
   }
 }
+

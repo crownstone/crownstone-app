@@ -90,6 +90,14 @@ open class BluenetJS: RCTEventEmitter {
         }
       })
       
+      
+      // we will not forward the unverified events
+      globalBluenet.bluenetOn("unverifiedAdvertisementData", {data -> Void in
+        if let castData = data as? Advertisement {
+          self.sendEvent(withName: "unverifiedAdvertisementData", body: castData.getDictionary())
+        }
+      })
+      
       globalBluenet.bluenetLocalizationOn("locationStatus", {data -> Void in
         if let castData = data as? String {
           self.sendEvent(withName: "locationStatus", body: castData)
@@ -98,12 +106,11 @@ open class BluenetJS: RCTEventEmitter {
       })
       
 //      we will not forward the unverified events
-//      globalBluenet.bluenetOn("advertisementData", {data -> Void in
-//        if let castData = data as? Advertisement {
-//          print("BluenetBridge: advertisementData", castData.getDictionary())
-//         // self.bridge.eventDispatcher().sendAppEvent(withName: "advertisementData", body: castData.getDictionary())
-//        }
-//      })
+      globalBluenet.bluenetOn("advertisementData", {data -> Void in
+        if let castData = data as? Advertisement {
+          self.sendEvent(withName: "anyAdvertisementData", body: castData.getDictionary())
+        }
+      })
 
       globalBluenet.bluenetOn("dfuProgress", {data -> Void in
         if let castData = data as? [String: NSNumber] {
@@ -1251,6 +1258,11 @@ open class BluenetJS: RCTEventEmitter {
           callback([["error" : true, "data": "UNKNOWN ERROR IN sendMeshNoOp"]])
         }
     }
+  }
+  
+  @objc func getTrackingState(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called getTrackingState")
+    callback([["error" : false, "data": GLOBAL_BLUENET!.bluenetLocalization.getTrackingState() ]])
   }
   
   

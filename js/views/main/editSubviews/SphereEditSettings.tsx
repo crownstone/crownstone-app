@@ -24,10 +24,12 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 export class SphereEditSettings extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-    let state = params.store.getState();
-    let sphere = state.spheres[params.sphereId] ;
-    return {
-      title: 'Edit ' + sphere.config.name,
+    if (params.sphereId) {
+      let state = params.store.getState();
+      let sphere = state.spheres[params.sphereId];
+      return {
+        title: 'Edit ' + sphere.config.name,
+      }
     }
   };
 
@@ -186,7 +188,6 @@ export class SphereEditSettings extends Component<any, any> {
   _processLocalDeletion(){
     this.props.eventBus.emit('hideLoading');
     this.deleting = true;
-    BackAction();
 
     let state = this.props.store.getState();
     let actions = [];
@@ -198,6 +199,7 @@ export class SphereEditSettings extends Component<any, any> {
     // stop tracking sphere.
     Bluenet.stopTrackingIBeacon(state.spheres[this.props.sphereId].config.iBeaconUUID);
     this.props.store.batchDispatch(actions);
+    BackAction('sphereOverview')
   }
 
   _deleteSphere(state) {

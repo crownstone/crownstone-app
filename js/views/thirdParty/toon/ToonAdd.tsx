@@ -164,7 +164,7 @@ export class ToonAdd extends Component<any, any> {
   }
 
   _getButton() {
-    if (this.state.failed) {
+    if (this.state.failed || this.state.success) {
       return null;
     }
     else if (this.state.processing) {

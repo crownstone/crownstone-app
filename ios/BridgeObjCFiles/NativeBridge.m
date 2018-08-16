@@ -115,5 +115,8 @@ RCT_EXTERN_METHOD(getSchedules:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(sendNoOp:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(sendMeshNoOp:(RCTResponseSenderBlock)callback)
 
+
+RCT_EXTERN_METHOD(getTrackingState:(RCTResponseSenderBlock)callback)
+
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end

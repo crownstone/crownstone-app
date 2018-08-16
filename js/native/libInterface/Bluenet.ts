@@ -89,6 +89,7 @@ const BluenetAPI = {
   setupPutInDFU: () => {},
   toggleSwitchState:() => {},
   setMeshChannel:(channel) => {},
+  getTrackingState:() => {},
 }
 
 if (DISABLE_NATIVE === true) {

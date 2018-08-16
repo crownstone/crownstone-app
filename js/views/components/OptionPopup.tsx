@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native';
 
-import { FadeInView }   from './animated/FadeInView'
+import { HiddenFadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
 import { styles, screenHeight, screenWidth } from './../styles'
 import { eventBus } from '../../util/EventBus'
@@ -103,18 +103,18 @@ export class OptionPopup extends Component<any, any> {
   render() {
     if (Platform.OS === 'android') {
       return (
-        <FadeInView
+        <HiddenFadeInView
           style={[styles.fullscreen, {backgroundColor: 'rgba(0,0,0,0.3)'}]}
           height={screenHeight}
           duration={100}
           visible={this.state.visible}>
           {this.getChildrenAndroid()}
-        </FadeInView>
+        </HiddenFadeInView>
       );
     }
     else {
       return (
-        <FadeInView
+        <HiddenFadeInView
           style={[styles.fullscreen, {backgroundColor: 'rgba(0,0,0,0.3)'}]}
           height={screenHeight}
           visible={this.state.visible}>
@@ -127,7 +127,7 @@ export class OptionPopup extends Component<any, any> {
               <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>Cancel</Text>
             </TouchableOpacity>
           </SlideInFromBottomView>
-        </FadeInView>
+        </HiddenFadeInView>
       );
     }
   }

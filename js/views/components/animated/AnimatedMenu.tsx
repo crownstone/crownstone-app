@@ -11,7 +11,7 @@ import {
 
 import {
   styles, colors, screenWidth, screenHeight} from '../../styles'
-import { FadeInView } from "./FadeInView";
+import { HiddenFadeInView } from "./FadeInView";
 import { eventBus }  from "../../../util/EventBus";
 
 export class AnimatedMenu extends Component<any, any> {
@@ -104,7 +104,7 @@ export class AnimatedMenu extends Component<any, any> {
   render() {
     let totalHeight = this.menuItemHeight*this.state.content.length+ (this.state.content.length-1)*this.menuSpacerHeight;
     return (
-      <FadeInView
+      <HiddenFadeInView
         style={[styles.fullscreen]}
         height={screenHeight}
         duration={30}
@@ -159,7 +159,7 @@ export class AnimatedMenu extends Component<any, any> {
             {this._getFields()}
           </View>
         </Animated.View>
-      </FadeInView>
+      </HiddenFadeInView>
     );
   }
 }

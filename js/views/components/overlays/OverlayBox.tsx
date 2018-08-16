@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import { FadeInView }   from '../animated/FadeInView'
+import { HiddenFadeInView }   from '../animated/FadeInView'
 import { Icon }         from '../Icon'
 import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../../styles'
 
@@ -71,7 +71,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
 
   render() {
     return (
-      <FadeInView
+      <HiddenFadeInView
         style={[
           styles.fullscreen,
           {backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2), justifyContent:'center', alignItems:'center', overflow:'hidden'}
@@ -93,7 +93,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
               <Icon name="md-close" size={30} color="#fff" style={{position:'relative', top:1, right:0}}/>
             </TouchableOpacity> : undefined}
         </View>
-      </FadeInView>
+      </HiddenFadeInView>
     );
   }
 }

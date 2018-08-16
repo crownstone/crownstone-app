@@ -53,6 +53,8 @@ interface BluenetPromiseWrapperProtocol {
   sendNoOp()                                    : Promise< void >,
   sendMeshNoOp()                                : Promise< void >,
   setMeshChannel(channel)                       : Promise< void >,
+
+  getTrackingState()                            : Promise< trackingState >,
 }
 
 
@@ -137,4 +139,19 @@ interface clearErrorData {
 interface locationType {
   latitude:  number,
   longitude: number,
+}
+
+
+interface trackingState {
+  isMonitoring: boolean,
+  isRanging:    boolean,
+}
+
+interface nearestStone  {
+  name      : string,
+  handle    : string,
+  rssi      : number,
+  setupMode : boolean
+  dfuMode   : boolean
+  verified  : boolean
 }

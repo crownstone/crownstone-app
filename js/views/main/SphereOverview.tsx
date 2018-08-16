@@ -205,9 +205,9 @@ export class SphereOverview extends Component<any, any> {
       return (
         <AnimatedBackground image={background}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Icon name="c1-house" size={150} color={colors.blue.hex}/>
+            <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
             <Text style={overviewStyles.mainText}>No Spheres available.</Text>
-            <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
+            <Text style={overviewStyles.subText}>Press Edit in the upper right corner to create your own Sphere or wait to be added to those of others.</Text>
           </View>
         </AnimatedBackground>
       );
@@ -222,6 +222,8 @@ function getNavBarParams(state, props) {
     NAVBAR_PARAMS_CACHE = {
       title: "Hello there!",
       showFinalizeNavigationButton: false,
+      rightLabel:'Edit',
+      rightAction: () => { Actions.sphereEdit() },
     }
   }
   else {

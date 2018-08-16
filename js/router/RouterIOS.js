@@ -49,17 +49,17 @@ export class Router_IOS extends Component {
             <Tabs key="tabBar" showLabel={false} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} backToInitial={true} initial={this.props.loggedIn}>
               <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                 <Scene key="sphereOverview"             component={Views.SphereOverview}             />
-                <Scene key="deviceOverview"             component={Views.DeviceOverview}        sphereId={"165796f4-3dfe-4447-5cb8-aad82b29de68"} stoneId={"d27ff2d2-27cd-d1ed-1ff4-6d0f24bca6b"} />
+                <Scene key="deviceOverview"             component={Views.DeviceOverview}             />
                 <Scene key="roomOverview"               component={Views.RoomOverview}               />
               </Scene>
               <Scene key="messages"  tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
                 <Scene key="messageInbox"               component={Views.MessageInbox}    />
               </Scene>
-              <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
+              <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={true}>
+                <Scene key="settingsDiagnostics"        component={Views.SettingsDiagnostics}       />
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}          />
                 <Scene key="settingsProfile"            component={Views.SettingsProfile}           />
                 <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           />
-                <Scene key="settingsDiagnostics"        component={Views.SettingsDiagnostics}       />
                 <Scene key="settingsApp"                component={Views.SettingsApp}               />
                 <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      />
                 <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />

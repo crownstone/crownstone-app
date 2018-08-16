@@ -104,10 +104,9 @@ export class SyncingBase {
 }
 
 export class SyncingSphereItemBase extends SyncingBase {
-  localSphereId : string;
-  cloudSphereId : string;
+  localSphereId   : string;
+  cloudSphereId   : string;
   globalSphereMap : globalIdMap;
-
 
   constructor(
     actions : any[],

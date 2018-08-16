@@ -1,7 +1,10 @@
 
 import {
-  getMapOfCrownstonesBySphereByHandle, getMapOfCrownstonesInAllSpheresByCID,
-  getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByIBeacon
+  getMapOfCrownstonesBySphereByHandle,
+  getMapOfCrownstonesInAllSpheresByCID,
+  getMapOfCrownstonesInAllSpheresByHandle,
+  getMapOfCrownstonesInAllSpheresByIBeacon,
+  getMapOfCrownstonesInAllSpheresByStoneId
 } from "../util/DataUtil";
 import {eventBus} from "../util/EventBus";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
@@ -34,11 +37,12 @@ class MapProviderClass {
   _store : any;
   _initialized : boolean = false;
   stoneSphereHandleMap : StoneSphereHandleMap = {};
-  stoneHandleMap : StoneHandleMap = {};
-  stoneCIDMap : StoneCIDMap = {};
+  stoneHandleMap  : StoneHandleMap = {};
+  stoneSummaryMap : StoneSummaryMap = {};
+  stoneCIDMap     : StoneCIDMap = {};
   stoneIBeaconMap : StoneIBeaconMap = {};
-  cloud2localMap : globalIdMap = getGlobalIdMap();
-  local2cloudMap : globalIdMap = getGlobalIdMap();
+  cloud2localMap  : globalIdMap = getGlobalIdMap();
+  local2cloudMap  : globalIdMap = getGlobalIdMap();
 
   loadStore(store) {
     if (this._initialized === false) {
@@ -79,6 +83,7 @@ class MapProviderClass {
 
     this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(     state);
     this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle( state);
+    this.stoneSummaryMap      = getMapOfCrownstonesInAllSpheresByStoneId(state);
     this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(    state);
     this.stoneIBeaconMap      = getMapOfCrownstonesInAllSpheresByIBeacon(state);
     this._updateCloudIdMap();

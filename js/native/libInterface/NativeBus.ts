@@ -21,13 +21,15 @@ class NativeBusClass {
       dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = crownstoneAdvertisement
       advertisement:        "verifiedAdvertisementData",        // data type = crownstoneAdvertisement // = from crownstone in normal operation mode.
       anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = crownstoneAdvertisement
+      anyAdvertisementData: "anyAdvertisementData",             // data type = crownstoneAdvertisement
+      unverifiedAdvertisementData:    "unverifiedAdvertisementData",  // data type = crownstoneAdvertisement
       setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error)
       dfuProgress:          "dfuProgress",                      // data type = {percentage: number, part: number, totalParts: number, progress: number, currentSpeedBytesPerSecond: number, avgSpeedBytesPerSecond: number}
       bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")
       locationStatus:       "locationStatus",                   // data type = string ("unknown", "off", "foreground", "on", "noPermission")
 
-      nearest:              "nearestCrownstone",                // data type = type_nearest
-      nearestSetup:         "nearestSetupCrownstone",           // data type = type_nearest
+      nearest:              "nearestCrownstone",                // data type = nearestStone // NOT VERIFIED ONLY
+      nearestSetup:         "nearestSetupCrownstone",           // data type = nearestStone
 
       iBeaconAdvertisement: "iBeaconAdvertisement",             // data type = type_beacon[]
       enterSphere:          "enterSphere",                      // data type = string (sphereId)
@@ -72,9 +74,11 @@ class NativeBusClass {
     let subscription = BluenetEmitter.addListener(topic, callback);
 
     let removeCallback = () => {
-      subscription.remove();
-      this._registeredEvents[id] = undefined;
-      delete this._registeredEvents[id];
+      if (this._registeredEvents[id]) {
+        subscription.remove();
+        this._registeredEvents[id] = undefined;
+        delete this._registeredEvents[id];
+      }
     };
 
     this._registeredEvents[id] = removeCallback;
@@ -99,12 +103,6 @@ export const NativeBus = new NativeBusClass();
 
 /** type defs **/
 
-// type type_nearest = {
-//   name      : string,
-//   handle    : string,
-//   rssi      : number,
-//   setupMode : boolean
-// }
 //
 // type type_beacon = {
 //   id        : string,

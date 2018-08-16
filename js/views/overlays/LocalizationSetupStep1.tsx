@@ -11,7 +11,7 @@ import {
 
 import { FinalizeLocalizationIcon } from '../components/FinalizeLocalizationIcon'
 import { Icon }                     from '../components/Icon'
-import { FadeInView }               from '../components/animated/FadeInView'
+import { HiddenFadeInView }               from '../components/animated/FadeInView'
 import { styles, colors, screenHeight, screenWidth } from '../styles'
 import { eventBus } from '../../util/EventBus'
 
@@ -353,13 +353,13 @@ export class LocalizationSetupStep1 extends Component<any, any> {
 
   render() {
     return (
-      <FadeInView
+      <HiddenFadeInView
         style={[styles.fullscreen, {backgroundColor:'rgba('+ colors.menuBackground.rgb.r + ',' + colors.menuBackground.rgb.g + ',' + colors.menuBackground.rgb.b + ',' + '0.6)',justifyContent:'center', alignItems:'center'}]}
         height={screenHeight}
         duration={this.fadeInDuration}
         visible={this.state.visible}>
         {this._getContent()}
-      </FadeInView>
+      </HiddenFadeInView>
     );
   }
 }

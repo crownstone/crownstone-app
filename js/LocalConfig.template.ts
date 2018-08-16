@@ -141,7 +141,7 @@ const DeviceInfo = require('react-native-device-info');
   // The amount of time to wait until the promise manager gives up on a pending promise.
   export const PROMISE_MANAGER_FALLBACK_TIMEOUT = 60000; // ms --> 1 minute
 
-  // The amount of time the scheduler tick (setTimeout) waits between ticks. The normal heartbeat is by the ibeacon messages (once a second)
+  // The amount of time the scheduler tick (setTimeout) waits between ticks. The normal heartbeat is by the ibeacons messages (once a second)
   export const SCHEDULER_FALLBACK_TICK = 4000; // ms --> 1 minute
 
   // the amount of time between the near/far switching. If you go from near->far, it will ignore the messages for the next TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY ms

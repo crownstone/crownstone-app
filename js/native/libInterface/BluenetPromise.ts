@@ -142,4 +142,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   sendNoOp:                       () => { return BluenetPromise('sendNoOp'); },
   sendMeshNoOp:                   () => { return BluenetPromise('sendMeshNoOp'); },
   setMeshChannel:                 (channel) => { return BluenetPromise('setMeshChannel', channel); },
+
+  getTrackingState:               () => { return BluenetPromise('getTrackingState'); },
 };

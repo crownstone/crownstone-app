@@ -12,9 +12,7 @@ import { Sentry } from "react-native-sentry";
 
 export const AppUtil = {
   quit: function() {
-    if (Platform.OS === 'android') {
-      Bluenet.quitApp();
-    }
+    Bluenet.quitApp();
   },
 
   resetBle: function() {

@@ -19,14 +19,23 @@ import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {OrangeLine}          from "../styles";
 import {eventBus}            from "../../util/EventBus";
 import {CLOUD}               from "../../cloud/cloudAPI";
+import {createNewSphere} from "../../util/CreateSphere";
 
 export class SphereEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     let state = params.store.getState();
-    let sphere = state.spheres[params.sphereId] ;
+    if (params.sphereId) {
+      let sphere = state.spheres[params.sphereId];
+      if (sphere) {
+        return {
+          title: sphere.config.name,
+        }
+      }
+    }
+
     return {
-      title: sphere.config.name,
+      title: "Welcome!"
     }
   };
 
@@ -52,6 +61,31 @@ export class SphereEdit extends Component<any, any> {
 
   _getItems() {
     let items = [];
+    let state = this.props.store.getState();
+
+    if (!this.props.sphereId || !state.spheres[this.props.sphereId]) {
+      items.push({label:'What can I help you with?',  type:'largeExplanation'});
+
+      let radius = 12;
+
+      items.push({
+        label: 'Create Sphere',
+        type: 'navigation',
+        largeIcon: <IconButton name='c1-sphere' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+        callback: () => {
+          createNewSphere(eventBus, this.props.store, state.user.firstName+"'s Sphere")
+            .then((sphereId) => {
+              Actions.refresh({sphereId:sphereId})
+              setTimeout(() => {Actions.aiStart()}, 100)
+            })
+            .catch((err) => {
+              Alert("Whoops!", "Something went wrong with the creation of your Sphere.", [{text:"OK"}])
+            });
+        }
+      });
+      items.push({label:'A Sphere contains your Crownstones, Rooms and preferences. You can add others to your Sphere so they may also use your Crownstones!',  type:'explanation', below: true});
+      return items;
+    }
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 

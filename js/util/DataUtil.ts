@@ -481,6 +481,29 @@ export const getLocationNamesInSphere = function(state, sphereId) {
  * @param state
  * @returns {{}}
  *
+ * return dataType = { localStoneId: details }
+ *
+ * details = {
+      id:  reduxStoneId
+      cid: crownstoneId (smallId)
+      handle: handle
+      name: stone name in config
+      sphereId: sphere id that contains stone
+      stoneConfig: config of stone
+      applianceName: name of appliance
+      applianceId: applianceId in redux
+      locationName: name of location
+      locationId: locationId in redux
+    }
+ */
+export const getMapOfCrownstonesInAllSpheresByStoneId = function(state) {
+  return _getMap(state, 'STONE_ID', false);
+};
+
+/**
+ * @param state
+ * @returns {{}}
+ *
  * return dataType = { handle: details }
  *
  * details = {
@@ -632,11 +655,21 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
         locationId: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? stoneConfig.locationId : null
       };
 
-      if (sphereMap) {
-        map[sphereId][stoneConfig[requestedKey]] = data
+      if (requestedKey === "STONE_ID") {
+        if (sphereMap) {
+          map[sphereId][stoneId] = data;
+        }
+        else {
+          map[stoneId] = data;
+        }
       }
       else {
-        map[stoneConfig[requestedKey]] = data
+        if (sphereMap) {
+          map[sphereId][stoneConfig[requestedKey]] = data;
+        }
+        else {
+          map[stoneConfig[requestedKey]] = data;
+        }
       }
     }
   }
