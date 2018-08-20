@@ -16,7 +16,6 @@ import {
   DiagOptions,
   TestResult
 } from "./DiagnosticUtil";
-import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {ProblemWithExistingCrownstone} from "./ProblemWithExistingCrownstone";
 import {ProblemWithNewCrownstone} from "./ProblemWithNewCrownstone";
 

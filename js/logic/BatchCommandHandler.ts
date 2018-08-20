@@ -12,6 +12,10 @@ import { CommandManager }        from "./bchComponents/CommandManager";
 import {RssiLogger} from "../native/advertisements/RssiLogger";
 
 
+export const errorCodes = {
+  NO_STONES_FOUND: "NO_STONES_FOUND",
+}
+
 /**
  * This can be used to batch commands over the mesh or 1:1 to the Crownstones.
  */
@@ -421,9 +425,10 @@ class BatchCommandHandlerClass {
           if (Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store) {
             // check if we have to tell this crownstone what time it is.
             let state = this.store.getState();
-            let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].lastUpdated.stoneTime;
+            let stone = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId]
+            let lastTime = stone.lastUpdated.stoneTime;
             // if it is more than 5 hours ago, tell this crownstone the time.
-            if (new Date().valueOf() - lastTime > STONE_TIME_REFRESH_INTERVAL) {
+            if (new Date().valueOf() - lastTime > STONE_TIME_REFRESH_INTERVAL || stone.state.timeSet === false) {
               // this will never halt the chain since it's optional.
               return BluenetPromiseWrapper.setTime(StoneUtil.nowToCrownstoneTime())
                 .then(() => {
@@ -633,7 +638,7 @@ class BatchCommandHandlerClass {
         cleanup();
 
         LOGi.bch("BatchCommandHandler: None of the required stones found before timeout.");
-        reject("None of the required stones found before timeout.");
+        reject({code: "NO_STONES_FOUND", message:"None of the required stones found before timeout."});
       }, timeout, 'Looking for target...');
 
 

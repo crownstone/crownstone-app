@@ -73,12 +73,14 @@ class TestRunnerClass {
   getNearestResult(results)            : boolean          { return results[this.types.nearestCrownstone].result;   }
   getNearestScans(results)             : nearestStone[]   { return results[this.types.nearestCrownstone].data;     }
 
-  getSearchResultForIbeacon(stoneId, results)      : boolean { return results["searchForCrownstone_" + stoneId + "_ibeacon"].result; }
-  getSearchRssiForAdvertisment(stoneId, results)   : number  { return results["searchForCrownstone_" + stoneId + "_advertisement_direct"].rssi;   }
-  getSearchResultForAdvertisment(stoneId, results) : boolean { return results["searchForCrownstone_" + stoneId + "_advertisement_direct"].result; }
-  getSearchRssiForUnVerified(stoneId, results)     : number  { return results["searchForCrownstone_" + stoneId + "_advertisement_otherSphere"].rssi; }
-  getSearchResultForUnVerified(stoneId, results)   : boolean { return results["searchForCrownstone_" + stoneId + "_advertisement_otherSphere"].result; }
-  getSearchResultForMesh(stoneId, results)         : boolean { return results["searchForCrownstone_" + stoneId + "_advertisement_mesh"].result; }
+  getSearchResultForIbeacon(stoneId, results)          : boolean                 { return results["searchForCrownstone_" + stoneId + "_ibeacon"].result; }
+  getSearchRssiForAdvertisment(stoneId, results)       : number                  { return results["searchForCrownstone_" + stoneId + "_advertisement_direct"].rssi;   }
+  getSearchResultForAdvertisment(stoneId, results)     : boolean                 { return results["searchForCrownstone_" + stoneId + "_advertisement_direct"].result; }
+  getSearchResultForAdvertismentData(stoneId, results) : crownstoneAdvertisement { return results["searchForCrownstone_" + stoneId + "_advertisement_direct"].data; }
+  getSearchRssiForUnVerified(stoneId, results)         : number                  { return results["searchForCrownstone_" + stoneId + "_advertisement_otherSphere"].rssi; }
+  getSearchResultForUnVerified(stoneId, results)       : boolean                 { return results["searchForCrownstone_" + stoneId + "_advertisement_otherSphere"].result; }
+  getSearchResultForViaMesh(stoneId, results)          : boolean                 { return results["searchForCrownstone_" + stoneId + "_advertisement_mesh"].result; }
+  getSearchResultForMeshing(stoneId, results)          : boolean                 { return results["searchForCrownstone_" + stoneId + "_advertisement_externalState"].result; }
 
   addIBeaconTest() {
     this.queue.push({type:this.types.ibeacons});
@@ -199,18 +201,19 @@ class TestRunnerClass {
   }
 
   _setupSearch(task) {
-    this.tests[task.type + "_" + task.stoneId + "_ibeacon"]                   = { result: null };
-    this.tests[task.type + "_" + task.stoneId + "_advertisement_direct"]      = { result: null, rssi: null };
-    this.tests[task.type + "_" + task.stoneId + "_advertisement_otherSphere"] = { result: null, rssi: null };
-    this.tests[task.type + "_" + task.stoneId + "_advertisement_mesh"]        = { result: null };
+    this.tests[task.type + "_" + task.stoneId + "_ibeacon"]                     = { result: null };
+    this.tests[task.type + "_" + task.stoneId + "_advertisement_direct"]        = { result: null, rssi: null, data: [] };
+    this.tests[task.type + "_" + task.stoneId + "_advertisement_otherSphere"]   = { result: null, rssi: null };
+    this.tests[task.type + "_" + task.stoneId + "_advertisement_mesh"]          = { result: null };
+    this.tests[task.type + "_" + task.stoneId + "_advertisement_externalState"] = { result: null };
 
     // search for ibeacon signals from this Crownstone
     let unsubIbeacon = NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
       data.forEach((ibeacon) => {
         let stone = task.sphere.stones[task.stoneId];
         if (ibeacon.uuid.toLowerCase() !== task.sphere.config.iBeaconUUID.toLowerCase() ) { return; }
-        if (ibeacon.major !== stone.config.iBeaconMajor)                    { return; }
-        if (ibeacon.minor !== stone.config.iBeaconMinor)                    { return; }
+        if (ibeacon.major              !== stone.config.iBeaconMajor)                     { return; }
+        if (ibeacon.minor              !== stone.config.iBeaconMinor)                     { return; }
 
         unsubIbeacon();
         this.tests[task.type + "_" + task.stoneId + "_ibeacon"] = { result: true };
@@ -240,10 +243,16 @@ class TestRunnerClass {
       let stone = task.sphere.stones[task.stoneId];
       // direct
       if (data.handle === stone.config.handle) {
-        this.tests[task.type + "_" + task.stoneId + "_advertisement_direct"].result = true;
-        this.tests[task.type + "_" + task.stoneId + "_advertisement_direct"].rssi   = data.rssi;
         this.tests[task.type + "_" + task.stoneId + "_advertisement_otherSphere"].result = true;
         this.tests[task.type + "_" + task.stoneId + "_advertisement_otherSphere"].rssi   = data.rssi;
+        if (data.serviceData && data.serviceData.stateOfExternalCrownstone) {
+          this.tests[task.type + "_" + task.stoneId + "_advertisement_externalState"].result = true;
+        }
+        else {
+          this.tests[task.type + "_" + task.stoneId + "_advertisement_direct"].result = true;
+          this.tests[task.type + "_" + task.stoneId + "_advertisement_direct"].data   = data;
+          this.tests[task.type + "_" + task.stoneId + "_advertisement_direct"].rssi   = data.rssi;
+        }
       }
       // via mesh
       else if (data.serviceData.crownstoneId === stone.config.crownstoneId) {
@@ -254,6 +263,7 @@ class TestRunnerClass {
 
       // done with the search
       if (
+        this.tests[task.type + "_" + task.stoneId + "_advertisement_externalState"].result &&
         this.tests[task.type + "_" + task.stoneId + "_advertisement_direct"].result &&
         this.tests[task.type + "_" + task.stoneId + "_advertisement_mesh"].result) {
         unsubAdvertisements();

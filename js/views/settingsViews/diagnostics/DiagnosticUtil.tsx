@@ -17,6 +17,7 @@ import {Actions} from "react-native-router-flux";
 import {AppUtil} from "../../../util/AppUtil";
 import {IconButton} from "../../components/IconButton";
 import {Icon} from "../../components/Icon";
+import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 
 
 class DiagResponseBase extends Component<{
@@ -46,6 +47,30 @@ class DiagResponseBase extends Component<{
     );
   }
 }
+
+
+export class DiagWaiting extends Component<{
+  visible:          boolean,
+  explanation?:     string,
+  header:           string
+}, any> {
+  render() {
+    return (
+      <View style={{flex:1}}>
+        <View style={{flex:1}} />
+        <FadeInView visible={this.props.visible} style={{width:screenWidth}}>
+          <Text style={diagnosticStyles.headerStyle}>{this.props.header}</Text>
+        </FadeInView>
+        { this.props.explanation ? <View style={{flex:0.25}} /> : undefined }
+        { this.props.explanation ? <FadeInView visible={this.props.visible} delay={200}>
+          <Text style={diagnosticStyles.explanationStyle}>{this.props.explanation}</Text>
+        </FadeInView> : undefined }
+        <View style={{flex:1}} />
+      </View>
+    );
+  }
+}
+
 
 
 export class DiagSingleButton extends Component<{
@@ -132,7 +157,7 @@ export class DiagOptions extends Component<{
           visible={this.props.visible}
           label={label}
           onPress={this.props.pressHandlers[index]}
-          delay={300 + index*100}
+          delay={100 + index*100}
         />
       );
     })
@@ -176,7 +201,24 @@ export class DiagOptionsItem extends Component<{visible: boolean, delay?: number
 }
 
 
+export class DiagSingleButtonMeshTopology extends Component<{
+  visible:      boolean,
+  explanation?: string,
+  header:       string
+}, any> {
 
+  render() {
+    return (
+      <DiagSingleButton
+        visible={this.props.visible}
+        header={ this.props.header }
+        explanation={ this.props.explanation }
+        label={"To Mesh Topology"}
+        onPress={() => { Actions.settingsMeshTopology(); }}
+      />
+    );
+  }
+}
 
 
 
@@ -278,10 +320,52 @@ export class DiagSingleButtonHelp extends Component<{
 }
 
 
+export class DiagListOfStones extends Component<{
+  stones:any,
+  callback(summary): void
+}, any> {
+
+  render() {
+    let labels : string[] = [];
+    let pressHandlers : any = [];
+    let summaries = [];
+    Object.keys(this.props.stones).forEach((stoneId) => {
+      summaries.push(MapProvider.stoneSummaryMap[stoneId]);
+    });
+
+    summaries.sort((a,b) => { return String(a.locationName) < String(b.locationName) ? -1 : 1 })
+
+    summaries.forEach((summary) => {
+      let name = nameFromSummary(summary);
+      labels.push(name);
+      pressHandlers.push(() => {
+        this.props.callback(summary)
+      });
+    })
+
+    return (
+      <DiagOptions
+        visible={this.state.visible}
+        header={"Which Crownstone is giving problems?"}
+        subExplanation={"Scroll down to see all of them."}
+        labels={labels}
+        pressHandlers={pressHandlers}
+      />
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
 
 
 export class TestResult extends Component<any, any> {
-
   render() {
     let testResult = {};
     return (
@@ -291,14 +375,15 @@ export class TestResult extends Component<any, any> {
       >
         <Text style={testResult}>{this.props.label + (this.props.state === null ? '...' : '.')}</Text>
         <View style={{flex:1}} />
-        { this.props.state === null || this.props.state === undefined  ? <ActivityIndicator animating={true} size="small" /> : undefined }
+        { this.props.state === null  || this.props.state === undefined  ? <ActivityIndicator animating={true} size="small" /> : undefined }
         { this.props.state === true  ? <IconButton name="md-analytics" buttonSize={25} size={17} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />: undefined }
-        { this.props.state === false ? <IconButton name="md-analytics" buttonSize={25} size={17} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csOrange.hex}} />: undefined }
+        { this.props.state === false ? <IconButton name="md-analytics" buttonSize={25} size={17} button={true} color="#fff" buttonStyle={{backgroundColor:colors.gray.hex}}  />: undefined }
       </FadeInView>
     )
   }
-
 }
+
+
 
 export function nameFromSummary(summary) {
   let name = summary.name;

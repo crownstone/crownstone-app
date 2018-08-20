@@ -52,17 +52,17 @@ export class StatusCommunication extends Component<any, any> {
     const store = this.props.store;
     const state = store.getState();
 
-    let currentSphere = this.props.sphereId;
+    let currentSphereId = this.props.sphereId;
 
     // it can happen on deletion of spheres that the app will crash here.
-    if (!(state && state.spheres && state.spheres[currentSphere])) {
+    if (!(state && state.spheres && state.spheres[currentSphereId])) {
       return <View />;
     }
 
-    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(state, currentSphere);
-    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphere);
-    let requiresFingerprints = requireMoreFingerprints(state, currentSphere);
-    let addButtonShown = Permissions.inSphere(currentSphere).addRoom === true;
+    let enoughForLocalization = enoughCrownstonesForIndoorLocalization(state, currentSphereId);
+    let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphereId);
+    let requiresFingerprints = requireMoreFingerprints(state, currentSphereId);
+    let addButtonShown = Permissions.inSphere(currentSphereId).addRoom === true;
 
     let stones = state.spheres[this.props.sphereId].stones;
     let stoneIds = Object.keys(stones);

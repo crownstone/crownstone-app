@@ -20,6 +20,10 @@ import {
   TestResult
 } from "./DiagnosticUtil";
 import {ProblemWithCrownstone} from "./ProblemWithCrownstone";
+import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
+import {ProblemWithLocalization} from "./ProblemWithLocalization";
+import {Util} from "../../../util/Util";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class InSphere extends Component<any, any> {
@@ -56,12 +60,12 @@ export class InSphere extends Component<any, any> {
 
   _getTests() {
     return (
-      <View>
+      <SlideFadeInView visible={this.state.userInputProblemType !== 'localization'} height={180}>
         <TestResult label={"Database is healthy"}          state={ true } />
         <TestResult label={"Scanning is enabled"}          state={ true } />
         <TestResult label={"Receiving Sphere beacons"}     state={ true } />
         <TestResult label={"Receiving Crownstone data"}    state={ true } />
-      </View>
+      </SlideFadeInView>
     )
   }
 
@@ -72,24 +76,6 @@ export class InSphere extends Component<any, any> {
         <DiagSingleButtonHelp
           visible={this.state.visible}
           header={'Perhaps the Help menu can help you further.'}
-          explanation={"Alternatively you can send us an email at team@crownstone.rocks and we'll do our best to help you!"}
-        />
-      );
-    }
-    else if (this.state.userInputProblemType === 'localization') {
-      return (
-        <DiagSingleButtonHelp
-          visible={this.state.visible}
-          header={'Localization.'}
-          explanation={"Alternatively you can send us an email at team@crownstone.rocks and we'll do our best to help you!"}
-        />
-      );
-    }
-    else if (this.state.userInputProblemType === 'inviting') {
-      return (
-        <DiagSingleButtonHelp
-          visible={this.state.visible}
-          header={'Inviting.'}
           explanation={"Alternatively you can send us an email at team@crownstone.rocks and we'll do our best to help you!"}
         />
       );
@@ -108,6 +94,7 @@ export class InSphere extends Component<any, any> {
         <DiagOptions
           visible={this.state.visible}
           header={"What are you having problems with?"}
+          subExplanation={"Scroll down to see all options."}
           labels={[
             "A Crownstone.",
             "The indoor localization.",
@@ -144,6 +131,36 @@ export class InSphere extends Component<any, any> {
           { ...this.props }
         />
       );
+    }
+    else if (this.state.userInputProblemType === 'localization') {
+      return (
+        <ProblemWithLocalization
+          { ...this.props }
+        />
+      );
+    }
+    else if (this.state.userInputProblemType === 'inviting') {
+      let state = this.props.store.getState();
+      let presentSphereId = Util.data.getPresentSphereId(state);
+
+      if (Permissions.inSphere(presentSphereId).inviteGuestToSphere === false) {
+        return (
+          <DiagSingleButtonGoBack
+            visible={this.state.visible}
+            header={"You do not have permission to invite users to this Sphere...."}
+            explanation={"You will have to ask a member or an admin to invite other users."}
+          />
+        );
+      }
+      else {
+        return (
+          <DiagSingleButtonGoBack
+            visible={this.state.visible}
+            header={"You can add people to this Sphere by tapping on the '+' button in the lower right hand corner of the Sphere overview."}
+            explanation={"Alternatively, you can tap 'Edit' in the top right hand corner of the Sphere overview."}
+          />
+        );
+      }
     }
     else {
       return (

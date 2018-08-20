@@ -57,6 +57,7 @@ let defaultSettings = {
     stoneTime: 0,
   },
   state: {
+    timeSet: false,
     state: 0.0,
     previousState: 0.0,
     currentUsage: 0,
@@ -212,6 +213,13 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
       newState.currentUsage = 0;
       newState.updatedAt    = getTime();
       return newState;
+    case 'UPDATE_STONE_TIME_STATE':
+      if (action.data) {
+        let newState           = {...state};
+        newState.timeSet       = update(action.data.timeSet,  newState.timeSet);
+        return newState;
+      }
+      return state;
     case 'UPDATE_STONE_STATE':
     case 'UPDATE_STONE_SWITCH_STATE': // this duplicate call will allow the cloudEnhancer to differentiate.
     case 'UPDATE_STONE_SWITCH_STATE_TRANSIENT': // this duplicate call will allow the cloudEnhancer to differentiate.

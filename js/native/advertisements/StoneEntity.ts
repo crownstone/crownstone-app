@@ -641,6 +641,17 @@ export class StoneEntity {
       changeData.switchCraft = advertisement.serviceData.switchCraftEnabled;
     }
 
+    if (stone.state.timeSet !== advertisement.serviceData.timeSet) {
+      this.store.dispatch({
+        type: 'UPDATE_STONE_TIME_STATE',
+        sphereId: this.sphereId,
+        stoneId: this.stoneId,
+        data: {
+          timeSet: advertisement.serviceData.timeSet
+        }
+      })
+    }
+
 
     if (changed) {
       this.storeManager.loadAction(this.stoneId, UPDATE_CONFIG_FROM_ADVERTISEMENT, {
