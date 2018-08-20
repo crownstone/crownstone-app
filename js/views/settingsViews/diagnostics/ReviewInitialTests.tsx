@@ -28,7 +28,7 @@ export class ReviewInitialTests extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = { visible: false, ibeacons: null, verifiedAdvertisements: null }
+    this.state = { visible: false, ibeacons: null, verifiedAdvertisements: null };
     setTimeout(() => {
       this.setState({visible: true});
       if (this.props.inSphere) {
@@ -41,8 +41,8 @@ export class ReviewInitialTests extends Component<any, any> {
 
   _runBeaconDataTests() {
     TestRunner.prepare();
-    TestRunner.addIBeaconTest()
-    TestRunner.addVerifiedCrownstoneTest()
+    TestRunner.addIBeaconTest();
+    TestRunner.addVerifiedCrownstoneTest();
     TestRunner.run()
       .then((result) => {
         this.setState({ibeacons: TestRunner.getIBeaconResult(result)});

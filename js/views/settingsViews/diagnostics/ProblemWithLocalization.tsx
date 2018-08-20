@@ -121,10 +121,10 @@ export class ProblemWithLocalization extends Component<any, any> {
     if (ldata.enoughForLocalization) {
       if (inAccurate) {
         if (ldata.enoughVisible) {
-          let header = ''
+          let header = '';
           let explanation = "Make sure the Crownstones are spread around the space evenly! If they're all side by side, it's very difficult to pinpoint you.\n\n" +
             "Alternatively you can try to retrain your rooms. You can do this by tapping on a room bubble in the overview, then tapping on the button in the top right corner.\n\n" +
-            "Finally, we're working on brand new algorithms that will make this much more reliable! You'll get these as a free update when they're available!"
+            "Finally, we're working on brand new algorithms that will make this much more reliable! You'll get these as a free update when they're available!";
           if (ldata.amountOfStones > 10) {
             header = "You have a good amount of Crownstones! If you have a large area to cover, you'll need more Crownstones as well.";
           }
@@ -142,10 +142,10 @@ export class ProblemWithLocalization extends Component<any, any> {
           );
         }
         else {
-          let header = ''
+          let header = '';
           let explanation = "Make sure the Crownstones are spread around the space evenly! If they're all side by side, it's very difficult to pinpoint you.\n\n" +
             "Alternatively you can try to retrain your rooms. You can do this by tapping on a room bubble in the overview, then tapping on the button in the top right corner.\n\n" +
-            "Finally, we're working on brand new algorithms that will make this much more reliable! You'll get these as a free update when they're available!"
+            "Finally, we're working on brand new algorithms that will make this much more reliable! You'll get these as a free update when they're available!";
           if (ldata.amountOfStones > 10) {
             header = "Even thought you have a good amount of Crownstones, if you have a large area to cover, you'll need more Crownstones as well.\n\nWhere you are right now, I can't see at least 3 Crownstones to do the indoor localization.";
           }
@@ -388,13 +388,15 @@ export class ProblemWithLocalization extends Component<any, any> {
         }
       }
       else if (stone.config.type === STONE_TYPES.builtin) {
-        <DiagSingleButton
-          visible={this.state.visible}
-          header={"We don't generally recommend using tap-to-toggle on built-ins. Calibrating tap-to-toggle for built-ins can cause issues with tap-to-toggle on plugs."}
-          explanation={"Press the button to continue, or close the diagnostic menu."}
-          label={"Continue"}
-          onPress={() => { this._changeContent(() => { this.setState({ stoneTypeWarningRead: true }); }); }}
-        />
+        return (
+          <DiagSingleButton
+            visible={this.state.visible}
+            header={"We don't generally recommend using tap-to-toggle on built-ins. Calibrating tap-to-toggle for built-ins can cause issues with tap-to-toggle on plugs."}
+            explanation={"Press the button to continue, or close the diagnostic menu."}
+            label={"Continue"}
+            onPress={() => { this._changeContent(() => { this.setState({ stoneTypeWarningRead: true }); }); }}
+          />
+        );
       }
       else {
         return (

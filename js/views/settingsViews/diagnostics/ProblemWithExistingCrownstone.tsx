@@ -127,7 +127,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           canSeeCrownstoneBeacon: TestRunner.getSearchResultForIbeacon(stoneId, result),
           nearestCheck: TestRunner.getNearestScans(result),
           amountOfIBeacons: TestRunner.getIBeaconData(result).length
-        })
+        });
 
         setTimeout(() => { this.setState({
           canSeeCrownstoneDirectly:     TestRunner.getSearchResultForAdvertisment(    stoneId, result),
@@ -223,7 +223,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       });
 
       let header = "I can't hear this Crownstone at all...";
-      let explanation = "Try disconnecting it's power, then wait 5 seconds, make sure it's powered again, wait 5 more seconds and press the button below."
+      let explanation = "Try disconnecting it's power, then wait 5 seconds, make sure it's powered again, wait 5 more seconds and press the button below.";
 
       if (nearest) {
         let nearSummary = MapProvider.stoneHandleMap[nearest.handle];
@@ -245,7 +245,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           }
 
           if (noun) {
-            header = "The nearest Crownstone I can detect is " + name + " and it's " + noun + " close!"
+            header = "The nearest Crownstone I can detect is " + name + " and it's " + noun + " close!";
             explanation = "If you're sure you're near the right Crownstone, Try disconnecting it's power, then wait 5 seconds, make sure it's powered again, wait 5 more seconds and press the button below."
           }
         }

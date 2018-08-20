@@ -160,7 +160,7 @@ export class DiagOptions extends Component<{
           delay={100 + index*100}
         />
       );
-    })
+    });
     return (
       <View style={{marginBottom:30}}>
         { options }
@@ -333,7 +333,7 @@ export class DiagListOfStones extends Component<{
       summaries.push(MapProvider.stoneSummaryMap[stoneId]);
     });
 
-    summaries.sort((a,b) => { return String(a.locationName) < String(b.locationName) ? -1 : 1 })
+    summaries.sort((a,b) => { return String(a.locationName) < String(b.locationName) ? -1 : 1 });
 
     summaries.forEach((summary) => {
       let name = nameFromSummary(summary);
@@ -341,7 +341,7 @@ export class DiagListOfStones extends Component<{
       pressHandlers.push(() => {
         this.props.callback(summary)
       });
-    })
+    });
 
     return (
       <DiagOptions

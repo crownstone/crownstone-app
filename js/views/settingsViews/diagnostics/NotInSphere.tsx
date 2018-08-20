@@ -65,11 +65,11 @@ export class NotInSphere extends Component<any, any> {
 
   _runSphereTests() {
     TestRunner.prepare();
-    TestRunner.addIBeaconTest()
-    TestRunner.addVerifiedCrownstoneTest()
-    TestRunner.addAnyCrownstoneTest()
-    TestRunner.addSetupCrownstoneTest()
-    TestRunner.addBleTest()
+    TestRunner.addIBeaconTest();
+    TestRunner.addVerifiedCrownstoneTest();
+    TestRunner.addAnyCrownstoneTest();
+    TestRunner.addSetupCrownstoneTest();
+    TestRunner.addBleTest();
     TestRunner.run()
       .then((result) => {
         let newState = { scanningFinished: true };
@@ -79,7 +79,6 @@ export class NotInSphere extends Component<any, any> {
         newState["verifiedAdvertisements"]      = TestRunner.getVerifiedCrownstoneResult(result);
         newState["anyAdvertisements"]           = TestRunner.getBleResult(result);
 
-        console.log("HERE", newState)
         if (newState["ibeacons"] && newState["verifiedAdvertisements"]) {
           this.props.amInSphere();
         }

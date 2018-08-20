@@ -49,9 +49,9 @@ export class NoStones extends Component<any, any> {
 
   init() {
     TestRunner.prepare();
-    TestRunner.addAnyCrownstoneTest()
-    TestRunner.addSetupCrownstoneTest()
-    TestRunner.addBleTest()
+    TestRunner.addAnyCrownstoneTest();
+    TestRunner.addSetupCrownstoneTest();
+    TestRunner.addBleTest();
     TestRunner.run()
       .then((result) => {
         let newState = { scanningFinished: true };

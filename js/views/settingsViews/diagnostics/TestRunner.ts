@@ -193,7 +193,7 @@ class TestRunnerClass {
       this.tests[label].data.push(data);
       if (this.tests[label].data.length >= this.amountThreshold[label]) {
         this.tests[label].result = true;
-        this.evaluateProcess()
+        this.evaluateProcess();
         unsubscribeNativeEvent();
       }
     });
@@ -278,4 +278,4 @@ class TestRunnerClass {
   }
 }
 
-export const TestRunner = new TestRunnerClass()
+export const TestRunner = new TestRunnerClass();

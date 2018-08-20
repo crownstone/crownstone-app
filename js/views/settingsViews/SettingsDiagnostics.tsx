@@ -68,7 +68,7 @@ export const diagnosticStyles = {
     paddingLeft:10,
     marginTop:20,
   }
-}
+};
 
 
 export const DiagnosticStates = {
@@ -79,7 +79,7 @@ export const DiagnosticStates = {
   NOT_IN_SPHERE:        'NOT_IN_SPHERE',
   IN_SPHERE:            'IN_SPHERE',
 
-}
+};
 
 export class SettingsDiagnostics extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -135,7 +135,7 @@ export class SettingsDiagnostics extends Component<any, any> {
         this.canSetupStones = true;
       }
       stoneCount += Object.keys(sphere.stones).length;
-    })
+    });
 
     setTimeout(() => { this.setState({ databaseHealth: healthySpheres }); }, 500);
     setTimeout(() => {

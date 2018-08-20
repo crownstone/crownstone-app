@@ -75,15 +75,15 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
   _runNewCrownstoneTests() {
     this.setState({newTestsVisible: true});
     TestRunner.prepare();
-    TestRunner.addSetupCrownstoneTest()
-    TestRunner.addNearestCheck()
+    TestRunner.addSetupCrownstoneTest();
+    TestRunner.addNearestCheck();
     TestRunner.run()
       .then((result) => {
         let newState = {};
 
         newState["stonesInSetupMode"] = TestRunner.getSetupCrownstoneResult(result);
         let nearestScans = TestRunner.getNearestScans(result);
-        let nearestCrownstone = null
+        let nearestCrownstone = null;
         let nearestCrownstoneRssi = -100;
         nearestScans.forEach((near) => {
           if (near.rssi > -1) { return; }
@@ -92,7 +92,7 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
             nearestCrownstone = near;
             nearestCrownstoneRssi = near.rssi;
           }
-        })
+        });
 
         if (nearestCrownstone === null && nearestScans.length > 0) {
           nearestCrownstone = nearestScans[0];
