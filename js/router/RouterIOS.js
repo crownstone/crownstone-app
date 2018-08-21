@@ -55,21 +55,22 @@ export class Router_IOS extends Component {
               <Scene key="messages"  tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
                 <Scene key="messageInbox"               component={Views.MessageInbox}    />
               </Scene>
-              <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={true}>
-                <Scene key="settingsDiagnostics"        component={Views.SettingsDiagnostics}       />
-                <Scene key="settingsOverview"           component={Views.SettingsOverview}          />
-                <Scene key="settingsProfile"            component={Views.SettingsProfile}           />
-                <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           />
-                <Scene key="settingsApp"                component={Views.SettingsApp}               />
-                <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      />
-                <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
-                <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}      />
-                <Scene key="settingsLogging"            component={Views.SettingsLogging}           />
-                <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
-                <Scene key="settingsMeshDebug"          component={Views.SettingsMeshDebug}         />
-                <Scene key="settingsLocalizationDebug"  component={Views.SettingsLocalizationDebug} />
-                <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         />
-                <Scene key="settingsFAQ"                component={Views.SettingsFAQ}               />
+              <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
+                <Scene key="settingsOverview"           component={Views.SettingsOverview}           />
+                <Scene key="settingsBleTroubleshooting" component={Views.SettingsBleTroubleshooting} />
+                <Scene key="settingsDiagnostics"        component={Views.SettingsDiagnostics}        />
+                <Scene key="settingsProfile"            component={Views.SettingsProfile}            />
+                <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}            />
+                <Scene key="settingsApp"                component={Views.SettingsApp}                />
+                <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}       />
+                <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}      />
+                <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}       />
+                <Scene key="settingsLogging"            component={Views.SettingsLogging}            />
+                <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}           />
+                <Scene key="settingsMeshDebug"          component={Views.SettingsMeshDebug}          />
+                <Scene key="settingsLocalizationDebug"  component={Views.SettingsLocalizationDebug}  />
+                <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          />
+                <Scene key="settingsFAQ"                component={Views.SettingsFAQ}                />
               </Scene>
             </Tabs>
             <Scene key="pictureView"                    component={Views.PictureView}                />
@@ -82,7 +83,7 @@ export class Router_IOS extends Component {
             <Scene key="roomAdd"                        component={Views.RoomAdd}                    />
             <Scene key="addItemsToSphere"               component={Views.AddItemsToSphere}           />
             <Scene key="roomEdit"                       component={Views.RoomEdit}                   />
-            <Scene key="toonAdd"                        component={Views.ToonAdd}   initial={false}  />
+            <Scene key="toonAdd"                        component={Views.ToonAdd}                    />
 
             <Scene key="sphereEdit"                     component={Views.SphereEdit}                 panHandlers={null} />
             <Scene key="sphereEditSettings"             component={Views.SphereEditSettings}         panHandlers={null} />

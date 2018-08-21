@@ -7,6 +7,7 @@ let defaultState = {
   keepAlivesEnabled: true,
   indoorLocalizationEnabled: true,
   shownWhatsNewVersion: '0',
+  hasSeenDeviceSettings: false,
   updatedAt: 1
 };
 
@@ -53,6 +54,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.indoorLocalizationEnabled = update(action.data.indoorLocalizationEnabled,  newState.indoorLocalizationEnabled);
         newState.tapToToggleEnabled        = update(action.data.tapToToggleEnabled,         newState.tapToToggleEnabled);
         newState.shownWhatsNewVersion      = update(action.data.shownWhatsNewVersion,       newState.shownWhatsNewVersion);
+        newState.hasSeenDeviceSettings     = update(action.data.hasSeenDeviceSettings,      newState.hasSeenDeviceSettings);
         newState.updatedAt                 = getTime(action.data.updatedAt);
         return newState;
       }

@@ -150,6 +150,10 @@ export class DiagOptions extends Component<{
 
   _generateOptions() {
     let options = [];
+    let delay = 200;
+    if (this.props.explanation || this.props.subExplanation) {
+      delay = 300;
+    }
     this.props.labels.forEach((label, index) => {
       options.push(
         <DiagOptionsItem
@@ -157,7 +161,7 @@ export class DiagOptions extends Component<{
           visible={this.props.visible}
           label={label}
           onPress={this.props.pressHandlers[index]}
-          delay={100 + index*100}
+          delay={delay + index*100}
         />
       );
     });
@@ -322,6 +326,7 @@ export class DiagSingleButtonHelp extends Component<{
 
 export class DiagListOfStones extends Component<{
   stones:any,
+  visible: boolean,
   callback(summary): void
 }, any> {
 
@@ -345,7 +350,7 @@ export class DiagListOfStones extends Component<{
 
     return (
       <DiagOptions
-        visible={this.state.visible}
+        visible={this.props.visible}
         header={"Which Crownstone is giving problems?"}
         subExplanation={"Scroll down to see all of them."}
         labels={labels}
@@ -354,15 +359,6 @@ export class DiagListOfStones extends Component<{
     );
   }
 }
-
-
-
-
-
-
-
-
-
 
 
 export class TestResult extends Component<any, any> {

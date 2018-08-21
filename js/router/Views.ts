@@ -55,6 +55,7 @@ import { SettingsProfile }             from '../views/settingsViews/SettingsProf
 import { SettingsPrivacy }             from '../views/settingsViews/SettingsPrivacy'
 import { SettingsRedownloadFromCloud } from '../views/settingsViews/SettingsRedownloadFromCloud'
 import { SettingsStoneBleDebug }       from '../views/settingsViews/dev/SettingsStoneBleDebug'
+import { SettingsBleTroubleshooting }  from '../views/settingsViews/SettingsBleTroubleshooting'
 
 import { Tutorial }                    from "../views/tutorialViews/Tutorial";
 import { IconDebug }                   from "../views/development/IconDebug";
@@ -111,6 +112,7 @@ export const Views = {
   SettingsApp,
   SettingsOverview,
   SettingsDiagnostics,
+  SettingsBleTroubleshooting,
   SettingsProfile,
   SettingsPrivacy,
   SettingsBleDebug,

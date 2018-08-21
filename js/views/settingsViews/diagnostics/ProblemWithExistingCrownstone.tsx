@@ -323,10 +323,10 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       }
       else {
         if (this.state.amountOfIBeacons <= 1) {
-          explanation = "I didn't hear it via the mesh though. From over here, I can only hear this Crownstone so it's unlikely that it's close enough to other Crownstones to form a mesh."
+          explanation = "I didn't hear it via the mesh though. From where I am, I can only hear this Crownstone so it's unlikely that it's close enough to other Crownstones to form a mesh."
         }
         else {
-          explanation = "I didn't hear it via the mesh though. From over here, I can a few Crownstones but it could be too far from the other Crownstones to form a mesh."
+          explanation = "I didn't hear it via the mesh though. From where I am, I can a few Crownstones but it could be too far from the other Crownstones to form a mesh."
         }
       }
 
@@ -348,10 +348,10 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       }
       else {
         if (this.state.amountOfIBeacons <= 1) {
-          explanation = "I didn't hear it via the mesh though. From over here, I can only hear this Crownstone so it's unlikely that it's close enough to other Crownstones to form a mesh."
+          explanation = "I didn't hear it via the mesh though. From where I am, I can only hear this Crownstone so it's unlikely that it's close enough to other Crownstones to form a mesh."
         }
         else {
-          explanation = "I didn't hear it via the mesh though. From over here, I can a few Crownstones but it could be too far from the other Crownstones to form a mesh."
+          explanation = "I didn't hear it via the mesh though. From where I am, I can a few Crownstones but it could be too far from the other Crownstones to form a mesh."
         }
       }
 
@@ -368,7 +368,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         <DiagSingleButtonGoBack
           visible={this.state.visible}
           header={"I can hear the Crownstone via the mesh, it should not be 'Seaching...' anymore."}
-          explanation={"Since I can't hear this Crownstone directly from over here, some commands will go through the mesh and won't always be delivered. We're working to improve that!"}
+          explanation={"Since I can't hear this Crownstone directly from where I am, some commands will go through the mesh and won't always be delivered. We're working to improve that!"}
         />
       );
     }
@@ -422,7 +422,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         }
       }
       else {
-        explanation = "I can't hear it via the mesh nor is it currently in one. From over here, I can a few Crownstones but it could be too far from the other Crownstones to form a mesh.\n\n";
+        explanation = "I can't hear it via the mesh nor is it currently in one. From where I am, I can a few Crownstones but it could be too far from the other Crownstones to form a mesh.\n\n";
       }
       explanation += "You can try moving it closer or adding more Crownstones to your network. You can use the Mesh Topology view to see how well the mesh is connected. It's in the ";
       if (Platform.OS === 'android') {
@@ -792,6 +792,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       let stones = state.spheres[sphereId].stones;
       return (
         <DiagListOfStones
+          visible={this.state.visible}
           stones={stones}
           callback={(summary) => {
             this._changeContent(() => {

@@ -257,6 +257,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     if (this.state.userInputProblemCrownstoneId === null) {
       return (
         <DiagListOfStones
+          visible={this.state.visible}
           stones={stones}
           callback={(summary) => {
             this._changeContent(() => {
@@ -344,6 +345,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     if (this.state.userInputProblemCrownstoneId === null) {
       return (
         <DiagListOfStones
+          visible={this.state.visible}
           stones={stones}
           callback={(summary) => {
             this._changeContent(() => {

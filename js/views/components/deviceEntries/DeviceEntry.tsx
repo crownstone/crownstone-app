@@ -197,6 +197,8 @@ export class DeviceEntry extends Component<any, any> {
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
     });
 
+    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12}
+
     let WrapperElement = TouchableOpacity;
     if (this.props.touchable === false) {
       WrapperElement = View
@@ -223,6 +225,7 @@ export class DeviceEntry extends Component<any, any> {
                 tap2toggleThreshold={Util.data.getTapToToggleCalibration(state)}
                 tap2toggleEnabled={state.app.tapToToggleEnabled}
               />
+              { this.props.locationId === null || state.app.hasSeenDeviceSettings === false ? <Text style={explanationStyle}>Tap me for more!</Text> : undefined}
             </View>
           </WrapperElement>
           {useControl === true && Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}

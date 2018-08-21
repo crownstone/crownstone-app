@@ -247,6 +247,20 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'largeExplanation',
+      label:"Solve most BLE issues",
+    });
+
+    items.push({
+      id:'Troubleshooting',
+      label:'BLE Troubleshooting',
+      type:'navigation',
+      icon: <IconButton name={'ios-bluetooth'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex }}/>,
+      callback: () => {
+        Actions.bleTroubleshooter()
+      }
+    });
+    items.push({
+      type:'largeExplanation',
       label:"More help is available on the website",
     });
 

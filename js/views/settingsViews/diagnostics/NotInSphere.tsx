@@ -134,15 +134,6 @@ export class NotInSphere extends Component<any, any> {
           />
         );
       }
-      /*else if (this.state.ibeacons && this.state.verifiedAdvertisements) {
-        return (
-          <DiagSingleButtonGoBack
-            visible={this.state.visible}
-            header={"I'm picking up beacon signals and data from your Crownstones, you should be in your Sphere now."}
-            explanation={"If it still looks like you're not in the Sphere, try restarting the app."}
-          />
-        );
-      }*/
       else if (this.state.ibeacons && this.state.verifiedAdvertisements === false) {
         return (
           <DiagSingleButtonHelp

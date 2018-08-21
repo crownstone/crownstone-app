@@ -83,6 +83,8 @@ export class Router_Android extends Component {
             <Scene key="settingsApp"                 component={Views.SettingsApp}                 />
             <Scene key="settingsFAQ"                 component={Views.SettingsFAQ}                 />
             <Scene key="settingsOverview"            component={Views.SettingsOverview}            />
+            <Scene key="settingsBleTroubleshooting"  component={Views.SettingsBleTroubleshooting}  />
+            <Scene key="settingsDiagnostics"         component={Views.SettingsDiagnostics}         />
             <Scene key="settingsProfile"             component={Views.SettingsProfile}             />
             <Scene key="settingsDeveloper"           component={Views.SettingsDeveloper}           />
             <Scene key="settingsBleDebug"            component={Views.SettingsBleDebug}            />
@@ -95,8 +97,7 @@ export class Router_Android extends Component {
             <Scene key="settingsRedownloadFromCloud" component={Views.SettingsRedownloadFromCloud} />
             <Scene key="settingsPrivacy"             component={Views.SettingsPrivacy}             />
             <Scene key="switchCraftInformation"      component={Views.SwitchCraftInformation}      />
-
-            <Scene key="settingsLocalizationDebug"   component={Views.SettingsLocalizationDebug} />
+            <Scene key="settingsLocalizationDebug"   component={Views.SettingsLocalizationDebug}   />
 
             <Scene key="toonAdd"                    component={Views.ToonAdd}   initial={false}  />
             <Scene key="sphereEdit"                 component={Views.SphereEdit}                 panHandlers={null} />

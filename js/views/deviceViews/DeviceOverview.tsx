@@ -106,6 +106,11 @@ export class DeviceOverview extends Component<any, any> {
 
   componentDidMount() {
     const { store } = this.props;
+    let state = store.getState();
+    if (state.app.hasSeenDeviceSettings === false) {
+      store.dispatch({type: 'UPDATE_APP_SETTINGS', data: {hasSeenDeviceSettings: true}})
+    }
+
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
