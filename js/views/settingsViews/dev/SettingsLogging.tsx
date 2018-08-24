@@ -51,16 +51,16 @@ export class SettingsLogging extends Component<any, any> {
     })
 
     let logLevelsData = {
-      log_info:          {label: 'General', explanation: 'test'},
-      log_native:        {label: 'Native', explanation: 'test'},
-      log_mesh:          {label: 'Mesh', explanation: 'test'},
-      log_notifications: {label: 'Notifications', explanation: 'test'},
-      log_scheduler:     {label: 'Scheduler', explanation: 'test'},
-      log_ble:           {label: 'BLE', explanation: 'test'},
-      log_bch:           {label: 'Batch C Handler', explanation: 'test'},
-      log_events:        {label: 'Events', explanation: 'test'},
-      log_store:         {label: 'Store', explanation: 'test'},
-      log_cloud:         {label: 'Cloud', explanation: 'test'},
+      log_info:          { label: 'General',         explanation: ''},
+      log_native:        { label: 'Native',          explanation: ''},
+      log_mesh:          { label: 'Mesh',            explanation: ''},
+      log_notifications: { label: 'Notifications',   explanation: ''},
+      log_scheduler:     { label: 'Scheduler',       explanation: ''},
+      log_ble:           { label: 'BLE',             explanation: ''},
+      log_bch:           { label: 'Batch C Handler', explanation: ''},
+      log_events:        { label: 'Events',          explanation: ''},
+      log_store:         { label: 'Store',           explanation: ''},
+      log_cloud:         { label: 'Cloud',           explanation: ''},
     };
 
     let logLevels = Object.keys(logLevelsData);
@@ -75,11 +75,11 @@ export class SettingsLogging extends Component<any, any> {
 
     let values = [
       {label: 'disabled', value: LOG_LEVEL.none},
-      {label: 'error', value: LOG_LEVEL.error},
-      {label: 'warning', value: LOG_LEVEL.warning},
-      {label: 'info', value: LOG_LEVEL.info},
-      {label: 'debug', value: LOG_LEVEL.debug},
-      {label: 'verbose', value: LOG_LEVEL.verbose},
+      {label: 'error',    value: LOG_LEVEL.error},
+      {label: 'warning',  value: LOG_LEVEL.warning},
+      {label: 'info',     value: LOG_LEVEL.info},
+      {label: 'debug',    value: LOG_LEVEL.debug},
+      {label: 'verbose',  value: LOG_LEVEL.verbose},
     ]
 
     logLevels.forEach((level) => {

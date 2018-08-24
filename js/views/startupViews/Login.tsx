@@ -187,14 +187,17 @@ export class Login extends Component<any, any> {
 
   render() {
     let factor = 0.25;
+    if (screenHeight < 500) {
+      factor = 0.15
+    }
     return (
       <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true} safeView={true}>
         <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
-            <View style={{flex:2, width:screenWidth}} />
+            <View style={{flex:1, width:screenWidth}} />
             <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
-            <View style={{flex:3, width:screenWidth}} />
+            <View style={{flex:2, width:screenWidth}} />
             <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
               <TextEditInput
                 ref={(input) => { this.emailInputRef = input; }}
@@ -226,10 +229,11 @@ export class Login extends Component<any, any> {
                 <Icon name={'md-eye'} color={Platform.OS === 'ios' ? (this.state.passwordSecureDisplay ? colors.lightGray2.hex : colors.darkGray2.hex) : colors.lightGray2.hex} size={20} />
               </TouchableOpacity>
             </View>
-            <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
-            <Text style={{color: '#93cfff'}}>Forgot Password?</Text></TouchableHighlight>
+            <TouchableHighlight style={{borderRadius:20, height:50, width:screenWidth*0.6, paddingBottom: 10, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
+              <Text style={{color: '#93cfff'}}>Forgot Password?</Text>
+            </TouchableHighlight>
             <LoginButton loginCallback={() => {this.attemptLogin()}} />
-            <View style={{flex: 1, width:screenWidth}} />
+            <View style={{flex: 1, width:screenWidth, minHeight:30}} />
           </View>
         </ScrollView>
       </Background>

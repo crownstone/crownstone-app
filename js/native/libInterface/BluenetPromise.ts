@@ -1,6 +1,6 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
 import { DISABLE_NATIVE } from '../../ExternalConfig'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGi} from '../../logging/Log'
 import { Bluenet } from './Bluenet'
 import { eventBus }  from '../../util/EventBus'
 import {Sentry} from "react-native-sentry";
@@ -21,7 +21,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
       let bluenetArguments = [];
       let promiseResolver = (result) => {
         if (result.error === true) {
-          LOG.info("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data);
+          LOGi.bch("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data);
           Sentry.captureBreadcrumb({
             category: 'ble',
             data: {
@@ -49,7 +49,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
         bluenetArguments.push(arguments[i])
       }
 
-      LOG.info("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments);
+      LOGi.bch("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments);
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);

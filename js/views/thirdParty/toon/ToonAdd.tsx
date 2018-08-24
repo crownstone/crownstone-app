@@ -129,7 +129,6 @@ export class ToonAdd extends Component<any, any> {
         }
       })
       .catch((err) => {
-        console.log("ERROR:", err);
         Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
       })
   }

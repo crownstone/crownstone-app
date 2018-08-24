@@ -58,41 +58,6 @@ class LogProcessorClass {
     LOG.info("Device Locale", DeviceInfo.getDeviceLocale()); // e.g en-US
     LOG.info("Device Country", DeviceInfo.getDeviceCountry()); // e.g US
     LOG.info("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https://developers.google.com/instance-id/
-
-    // console.log("getAPILevel()", DeviceInfo.getAPILevel());
-    // console.log("getApplicationName()", DeviceInfo.getApplicationName());
-    // console.log("getBrand()", DeviceInfo.getBrand());
-    // console.log("getBuildNumber()", DeviceInfo.getBuildNumber());
-    // console.log("getBundleId()", DeviceInfo.getBundleId());
-    // console.log("getCarrier()", DeviceInfo.getCarrier());
-    // console.log("getDeviceCountry()", DeviceInfo.getDeviceCountry());
-    // console.log("getDeviceId()", DeviceInfo.getDeviceId());
-    // console.log("getDeviceLocale()", DeviceInfo.getDeviceLocale());
-    // console.log("getDeviceName()", DeviceInfo.getDeviceName());
-    // console.log("getFirstInstallTime()", DeviceInfo.getFirstInstallTime());
-    // console.log("getFontScale()", DeviceInfo.getFontScale());
-    // console.log("getFreeDiskStorage()", DeviceInfo.getFreeDiskStorage());
-    // console.log("getInstallReferrer()", DeviceInfo.getInstallReferrer());
-    // console.log("getInstanceID()", DeviceInfo.getInstanceID());
-    // console.log("getLastUpdateTime()", DeviceInfo.getLastUpdateTime());
-    // console.log("getManufacturer()", DeviceInfo.getManufacturer());
-    // console.log("getMaxMemory()", DeviceInfo.getMaxMemory());
-    // console.log("getModel()", DeviceInfo.getModel());
-    // console.log("getPhoneNumber()", DeviceInfo.getPhoneNumber());
-    // console.log("getReadableVersion()", DeviceInfo.getReadableVersion());
-    // console.log("getSerialNumber()", DeviceInfo.getSerialNumber());
-    // console.log("getSystemName()", DeviceInfo.getSystemName());
-    // console.log("getSystemVersion()", DeviceInfo.getSystemVersion());
-    // console.log("getTimezone()", DeviceInfo.getTimezone());
-    // console.log("getTotalDiskCapacity()", DeviceInfo.getTotalDiskCapacity());
-    // console.log("getTotalMemory()", DeviceInfo.getTotalMemory());
-    // console.log("getUniqueID()", DeviceInfo.getUniqueID());
-    // console.log("getUserAgent()", DeviceInfo.getUserAgent());
-    // console.log("getVersion()", DeviceInfo.getVersion());
-    // console.log("is24Hour()", DeviceInfo.is24Hour());
-    // console.log("isEmulator()", DeviceInfo.isEmulator());
-    // console.log("isPinOrFingerprintSet()", DeviceInfo.isPinOrFingerprintSet());
-    // console.log("isTablet()", DeviceInfo.isTablet());
   }
 
   refreshData() {
@@ -104,17 +69,17 @@ class LogProcessorClass {
 
       this.writeToFile = dev === true && loggingEnabled === true;
 
-      this.log_info           = loggingEnabled && devState.log_info;
-      this.log_mesh           = loggingEnabled && devState.log_mesh;
-      this.log_native         = loggingEnabled && devState.log_native;
-      this.log_notifications  = loggingEnabled && devState.log_notifications;
-      this.log_scheduler      = loggingEnabled && devState.log_scheduler;
-      this.log_ble            = loggingEnabled && devState.log_ble;
-      this.log_bch            = loggingEnabled && devState.log_bch;
-      this.log_advertisements = loggingEnabled && devState.log_advertisements;
-      this.log_events         = loggingEnabled && devState.log_events;
-      this.log_store          = loggingEnabled && devState.log_store;
-      this.log_cloud          = loggingEnabled && devState.log_cloud;
+      this.log_info           = loggingEnabled && devState.log_info           || LOG_LEVEL.NONE;
+      this.log_mesh           = loggingEnabled && devState.log_mesh           || LOG_LEVEL.NONE;
+      this.log_native         = loggingEnabled && devState.log_native         || LOG_LEVEL.NONE;
+      this.log_notifications  = loggingEnabled && devState.log_notifications  || LOG_LEVEL.NONE;
+      this.log_scheduler      = loggingEnabled && devState.log_scheduler      || LOG_LEVEL.NONE;
+      this.log_ble            = loggingEnabled && devState.log_ble            || LOG_LEVEL.NONE;
+      this.log_bch            = loggingEnabled && devState.log_bch            || LOG_LEVEL.NONE;
+      this.log_advertisements = loggingEnabled && devState.log_advertisements || LOG_LEVEL.NONE;
+      this.log_events         = loggingEnabled && devState.log_events         || LOG_LEVEL.NONE;
+      this.log_store          = loggingEnabled && devState.log_store          || LOG_LEVEL.NONE;
+      this.log_cloud          = loggingEnabled && devState.log_cloud          || LOG_LEVEL.NONE;
     }
   }
 }

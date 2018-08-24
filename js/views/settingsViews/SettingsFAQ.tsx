@@ -256,7 +256,7 @@ export class SettingsFAQ extends Component<any, any> {
       type:'navigation',
       icon: <IconButton name={'ios-bluetooth'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex }}/>,
       callback: () => {
-        Actions.bleTroubleshooter()
+        Actions.settingsBleTroubleshooting()
       }
     });
     items.push({

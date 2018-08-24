@@ -52,7 +52,8 @@ export class TextEditInput extends Component<any, any> {
     this.blurValue   = undefined;
     if (!this.props.autoFocus) {
       (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
-        eventBus.emit("focus", py);
+        console.log("fx",fx,"fy",fy,"width",width,"height",height,"px",px,"py",py)
+        eventBus.emit("focus", py+height);
         this.focusEmitted = true;
       })
     }

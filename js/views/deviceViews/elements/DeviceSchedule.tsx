@@ -141,11 +141,11 @@ export class DeviceSchedule extends Component<any, any> {
     };
     eventBus.emit("showLoading", "Downloading schedules from Crownstone...");
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSchedules'}, {},1, 'sync schedules from DeviceSchedule')
-      .then((stoneSchedules : [bridgeScheduleEntry]) => {
+      .then((stoneSchedules : {data: [bridgeScheduleEntry]}) => {
         let dbSchedules = stone.schedules;
         let syncActions = [];
         let activeIds = {};
-        stoneSchedules.forEach((schedule) => {
+        stoneSchedules.data.forEach((schedule) => {
           let matchingId = ScheduleUtil.findMatchingScheduleId(schedule, dbSchedules);
           if (matchingId === null) {
             syncActions.push({

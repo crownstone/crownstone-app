@@ -664,11 +664,13 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
         }
       }
       else {
-        if (sphereMap) {
-          map[sphereId][stoneConfig[requestedKey]] = data;
-        }
-        else {
-          map[stoneConfig[requestedKey]] = data;
+        if (stoneConfig[requestedKey]) {
+          if (sphereMap) {
+            map[sphereId][stoneConfig[requestedKey]] = data;
+          }
+          else {
+            map[stoneConfig[requestedKey]] = data;
+          }
         }
       }
     }

@@ -15,8 +15,8 @@ export const StoneUtil = {
       stone : any,
       newState : number,
       store : any,
-      options = {},
-      finalize = (err) => {},
+      options : batchCommandEntryOptions = {},
+      finalize = (err, result?: any) => {},
       intent = INTENTS.manual,
       attempts : number = 1,
       label : string = 'from StoneUtil'
@@ -31,24 +31,24 @@ export const StoneUtil = {
       stoneId,
       sphereId,
       {commandName:'multiSwitch', state: newState, intent: intent, timeout: 0},
-      {},
+      options,
       attempts,
       label
     )
-      .then(() => {
+      .then((result) => {
         store.dispatch({
           type: 'UPDATE_STONE_SWITCH_STATE',
           sphereId: sphereId,
           stoneId: stoneId,
           data: data
         });
-        finalize(null);
+        finalize(null, result);
       })
       .catch((err) => {
         finalize(err);
       });
 
-    BatchCommandHandler.executePriority();
+    BatchCommandHandler.executePriority(options);
   },
 
 
@@ -82,8 +82,8 @@ export const StoneUtil = {
 
   refreshFirmwareAndHardwareVersion: function(sphereId, stoneId, stone) {
     let results = {hardwareVersion: null, firmwareVersion: null};
-    let promiseFW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware').then((result) => { results.hardwareVersion = result; });
-    let promiseHW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware').then((result) => { results.firmwareVersion = result; });
+    let promiseFW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware').then((result : {data: string}) => { results.hardwareVersion = result.data; });
+    let promiseHW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware').then((result : {data: string}) => { results.firmwareVersion = result.data; });
     BatchCommandHandler.executePriority();
     return Promise.all([promiseFW, promiseHW])
       .then(() => {

@@ -37,6 +37,9 @@ import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {Util} from "../../../util/Util";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {INTENTS} from "../../../native/libInterface/Constants";
+import {BlePromiseManager} from "../../../logic/BlePromiseManager";
+import {BleUtil} from "../../../util/BleUtil";
+import {BluenetPromiseWrapper} from "../../../native/libInterface/BluenetPromise";
 
 
 export class ProblemWithExistingCrownstone extends Component<any, any> {
@@ -71,6 +74,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       switchedCrownstoneNotNear: null,
       switchSuccessful:          null,
       switchSuccessfulVerified:  null,
+      factoryResetSuccess:       null,
 
       userInputProblemCrownstoneId:    null,
       userInputProblemsWithCrownstone: null,
@@ -79,6 +83,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       userInputExistingCrownstone:     null,
       userInputPhoneIsClose:           null,
       userInputCycledPower:            null,
+      userInputResetCrownstoneNow:     null,
 
       userInputAllowedToSwitch:        null,
     };
@@ -147,7 +152,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
 
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{"You're in your Sphere!"}</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{"Problem with existing Crownstone..."}</Text>
   }
 
   _getTests() {
@@ -175,10 +180,32 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     )
   }
 
+  _factoryResetMyLostCrownstone(handle) {
+    let proxy = BleUtil.getProxy(handle);
+    return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
+      .then(() => { this.setState({factoryResetSuccess: true}); })
+      .catch(() => { this.setState({factoryResetSuccess: false}); })
+  }
+
 
   _handleNotInRange() {
+    let helpPlace = 'Settings';
+    if (Platform.OS === 'android') {
+      helpPlace = "Sidebar.";
+    }
+
     // not in range
-    if (this.state.userInputPhoneIsClose === null) {
+    if (this.state.canSeeCrownstoneAddress === true) {
+      return (
+        <DiagSingleButtonHelp
+          visible={this.state.visible}
+          header={"I can hear a Crownstone with the same address as the one we're looking for, but it does not seem to belong to your Sphere."}
+          explanation={"You can try to factory reset it.\n\n" +
+          "Tap the button below to go to help and tap on 'I need to factory reset a Crownstone'."}
+        />
+      );
+    }
+    else if (this.state.userInputPhoneIsClose === null) {
       return (
         <DiagYesNo
           visible={this.state.visible}
@@ -203,6 +230,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             canSeeCrownstoneDirectly: null,
             canSeeCrownstoneRssi: null,
             canSeeCrownstoneViaMesh : null,
+            canSeeThisCrownstoneMesh : null,
             existingTestsFinished : false,
             userInputPhoneIsClose: true
           });
@@ -210,6 +238,38 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           }); }}
         />
       );
+    }
+    else if (this.state.userInputResetCrownstoneNow === false) {
+      return (
+        <DiagSingleButtonGoBack
+          visible={this.state.visible}
+          header={"OK, we can do it later!"}
+          explanation={"Run the diagnostic again when you're ready or factory reset the Crownstone yourself.\n\n" +
+          "Go to help in the " + helpPlace + " and tap on 'I need to factory reset a Crownstone'."}
+        />
+      );
+    }
+    else if (this.state.factoryResetSuccess === true) {
+      return (
+        <DiagSingleButtonToOverview
+          visible={this.state.visible}
+          header={"Crownstone successfully reset!"}
+          explanation={"It will be in setup mode now. You can add it to your Sphere again from the Sphere overview.\n\nTap the button below to go there now."}
+        />
+      );
+    }
+    else if (this.state.factoryResetSuccess === false) {
+      return (
+        <DiagSingleButtonHelp
+          visible={this.state.visible}
+          header={"Failed to reset Crownstone..."}
+          explanation={"Something went wrong during the recover process.. You can try to factory reset it yourself!\n\n" +
+          "Tap the button below to go to help and tap on 'I need to factory reset a Crownstone'."}
+        />
+      );
+    }
+    else if (this.state.userInputResetCrownstoneNow === true) {
+      return <DiagWaiting visible={this.state.visible} header={"Factory resetting your lost Crownstone..."}/>;
     }
     else if (this.state.userInputCycledPower === null) {
       let nearCrownstones = this.state.nearestCheck;
@@ -226,52 +286,94 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       let explanation = "Try disconnecting it's power, then wait 5 seconds, make sure it's powered again, wait 5 more seconds and press the button below.";
 
       if (nearest) {
-        let nearSummary = MapProvider.stoneHandleMap[nearest.handle];
-        if (nearSummary.id !== this.state.userInputProblemCrownstoneId) {
-          // nearest Crownstone is not the selected one.
-          let name = nameFromSummary(nearSummary);
-          let noun = null;
-          if (nearest.rssi > -55) {
-            noun = 'very';
-          }
-          else if (nearest.rssi > -65) {
-            noun = 'pretty'
-          }
-          else if (nearest.rssi > -75) {
-            noun = 'somewhat'
-          }
-          else if (nearest.rssi > -85) {
-            noun = 'not that'
-          }
-
-          if (noun) {
-            header = "The nearest Crownstone I can detect is " + name + " and it's " + noun + " close!";
-            explanation = "If you're sure you're near the right Crownstone, Try disconnecting it's power, then wait 5 seconds, make sure it's powered again, wait 5 more seconds and press the button below."
-          }
+        let noun = null;
+        if (nearest.rssi > -55) {
+          noun = 'very';
+        }
+        else if (nearest.rssi > -65) {
+          noun = 'pretty'
+        }
+        else if (nearest.rssi > -75) {
+          noun = 'somewhat'
+        }
+        else if (nearest.rssi > -85) {
+          noun = 'not that'
         }
 
-        // phone is close
-        return (
-          <DiagSingleButton
-            visible={this.state.visible}
-            header={header}
-            explanation={explanation}
-            label={"OK, done!"}
-            onPress={() => { this._changeContent(() => { this.setState({
-              canSeeCrownstoneNotInSphere: null,
-              canSeeCrownstoneAddress: null,
-              canSeeCrownstoneBeacon: null,
-              canSeeCrownstoneDirectly: null,
-              canSeeCrownstoneRssi: null,
-              canSeeCrownstoneViaMesh : null,
-              existingTestsFinished : false,
-              userInputCycledPower: true,
-              userInputPhoneIsClose: true
-            });
-              this._runExistingCrownstoneTests();
-            }); }}
-          />
-        );
+        let nearSummary = MapProvider.stoneHandleMap[nearest.handle];
+        if (!nearSummary) {
+          if (nearest.verified === true) {
+            if (Permissions.inSphere(this.state.problemStoneSummary.sphereId).removeCrownstone) {
+              return (
+                <DiagYesNo
+                  visible={this.state.visible}
+                  header={"The nearest Crownstone belongs to your Sphere but it has been removed from your database.\n\nIt's " + noun + " close by."}
+                  explanation={"This can happen when someone removed this Crownstone from your Sphere, but they did not factory reset it.\n\nWould you like me to reset it?"}
+                  onPressNo={ () => { this._changeContent(() => { this.setState({userInputResetCrownstoneNow: false }); }) }}
+                  onPressYes={() => { this._changeContent(() => { this.setState({userInputResetCrownstoneNow: true  }); this._factoryResetMyLostCrownstone(nearest.handle) }) }}
+                />
+              );
+            }
+            else {
+              return (
+                <DiagSingleButtonGoBack
+                  visible={this.state.visible}
+                  header={"TThe nearest Crownstone belongs to your Sphere but it has been removed from your database.\n\nIt's " + noun + " close by."}
+                  explanation={
+                    "This can happen when someone removed this Crownstone from your Sphere, but they did not factory reset it.\n\n" +
+                    "You will have to ask an admin to reset it for you."
+                  }
+                />
+              );
+            }
+          }
+          else {
+            return (
+              <DiagSingleButtonHelp
+                visible={this.state.visible}
+                header={"The nearest Crownstone is not registered to your Sphere, and it's " + noun + " close!"}
+                explanation={"If you're sure it's one of your Crownstones, you can try to factory reset it!\n\n" +
+                "Tap the button below to go to help and tap on 'I need to factory reset a Crownstone'."}
+              />
+            );
+          }
+        }
+        else {
+          if (nearSummary.id !== this.state.userInputProblemCrownstoneId) {
+            // nearest Crownstone is not the selected one.
+            let name = nameFromSummary(nearSummary);
+            if (noun) {
+              header = "The nearest Crownstone I can detect is " + name + " and it's " + noun + " close!";
+              explanation = "If you're sure you're near the right Crownstone, Try disconnecting it's power, then wait 5 seconds, make sure it's powered again, wait 5 more seconds and press the button below."
+            }
+          }
+
+          // phone is close
+          return (
+            <DiagSingleButton
+              visible={this.state.visible}
+              header={header}
+              explanation={explanation}
+              label={"OK, done!"}
+              onPress={() => { this._changeContent(() => { this.setState({
+                canSeeCrownstoneNotInSphere: null,
+                canSeeCrownstoneAddress: null,
+                canSeeCrownstoneBeacon: null,
+                canSeeCrownstoneDirectly: null,
+                canSeeCrownstoneRssi: null,
+                canSeeCrownstoneViaMesh : null,
+                canSeeThisCrownstoneMesh : null,
+                existingTestsFinished : false,
+                userInputCycledPower: true,
+                userInputPhoneIsClose: true
+              });
+                this._runExistingCrownstoneTests();
+              }); }}
+            />
+          );
+        }
+
+
       }
       else {
         return (
@@ -287,6 +389,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
               canSeeCrownstoneDirectly: null,
               canSeeCrownstoneRssi: null,
               canSeeCrownstoneViaMesh : null,
+              canSeeThisCrownstoneMesh : null,
               existingTestsFinished : false,
               userInputCycledPower: true,
               userInputPhoneIsClose: true
@@ -389,6 +492,16 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           visible={this.state.visible}
           header={"I can see this Crownstone perfectly!"}
           explanation={"It is not on 'Searching...' now."}
+        />
+      );
+    }
+    else if (this.state.canSeeCrownstoneBeacon === true && this.state.canSeeCrownstoneDirectly === false && this.state.canSeeCrownstoneViaMesh === false) {
+      // crownstone has no data (resetting?)
+      return (
+        <DiagSingleButtonGoBack
+          visible={this.state.visible}
+          header={"I can hear this Crownstone beacon signal but not it's data."}
+          explanation={"You can try to take the power off this Crownstone for a little while and see if it's fixed.\n\nIf this keeps happening, contact us at team@crownstone.rocks."}
         />
       );
     }
@@ -509,7 +622,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];
 
-    StoneUtil.switchBHC(sphereId, stoneId, stone,stone.state.state > 0 ? 0 : 1, this.props.store,{},
+    StoneUtil.switchBHC(sphereId, stoneId, stone,stone.state.state > 0 ? 0 : 1, this.props.store,{onlyAllowDirectCommand: true},
       (err) => {
         if (err) {
           if (typeof err === 'object' && err.code === "NO_STONES_FOUND") {
@@ -742,7 +855,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         <DiagSingleButton
           visible={this.state.visible}
           header={"It could just be out of range, could you hold your phone as close as possible?"}
-          explanation={"Press the button to continue?"}
+          explanation={"Press the button to continue."}
           label={"I'm near now!"}
           onPress={() => { this._changeContent(() => { this.setState({
             canSeeCrownstoneNotInSphere: null,
@@ -751,6 +864,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             canSeeCrownstoneDirectly: null,
             canSeeCrownstoneRssi: null,
             canSeeCrownstoneViaMesh : null,
+            canSeeThisCrownstoneMesh : null,
             existingTestsFinished : false,
             userInputPhoneIsClose: true
           });
@@ -892,7 +1006,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       );
     }
     else if (this.state.crownstoneProblemType === 'behaviour_is_weird' && this.state.weirdType === 'unexpected_behaviour') {
-      // check for switchCraft
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
@@ -902,7 +1015,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       );
     }
     else if (this.state.crownstoneProblemType === 'behaviour_is_weird' && this.state.weirdType === 'not_in_background') {
-      // check for switchCraft
       return (
         <DiagSingleBleTroubleshooter
           visible={this.state.visible}

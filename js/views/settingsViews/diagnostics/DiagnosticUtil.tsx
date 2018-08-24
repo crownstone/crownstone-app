@@ -298,7 +298,7 @@ export class DiagSingleBleTroubleshooter extends Component<{
         header={ this.props.header }
         explanation={ this.props.explanation }
         label={"Open Troubleshooter"}
-        onPress={() => { Actions.bleTroubleshooter(); }}
+        onPress={() => { Actions.settingsBleTroubleshooting(); }}
       />
     );
   }
@@ -316,7 +316,7 @@ export class DiagSingleButtonHelp extends Component<{
         visible={this.props.visible}
         header={ this.props.header }
         explanation={ this.props.explanation }
-        label={"Go to help screen"}
+        label={"To Help screen"}
         onPress={() => { Actions.settingsFAQ(); }}
       />
     );

@@ -14,10 +14,17 @@ import {
 import {diagnosticStyles} from "../SettingsDiagnostics";
 import {
   DiagOptions,
+  DiagSingleButton,
+  DiagSingleButtonGoBack,
+  DiagSingleButtonHelp,
+  DiagSingleButtonToOverview,
+  DiagWaiting,
+  DiagYesNo, nameFromSummary,
   TestResult
 } from "./DiagnosticUtil";
 import {ProblemWithExistingCrownstone} from "./ProblemWithExistingCrownstone";
 import {ProblemWithNewCrownstone} from "./ProblemWithNewCrownstone";
+import {ProblemWithOtherCrownstone} from "./ProblemWithOtherCrownstone";
 
 
 export class ProblemWithCrownstone extends Component<any, any> {
@@ -28,7 +35,8 @@ export class ProblemWithCrownstone extends Component<any, any> {
 
     this.state = {
       visible: false,
-      userInputExistingCrownstone:     null,
+      userInputOther: null,
+      userInputExistingCrownstone: null,
     };
     setTimeout(() => { this.setState({visible: true}) }, 10);
   }
@@ -60,7 +68,10 @@ export class ProblemWithCrownstone extends Component<any, any> {
   }
 
   render() {
-    if (this.state.userInputExistingCrownstone === true) {
+    if (this.state.userInputOther) {
+      return <ProblemWithOtherCrownstone {...this.props} />
+    }
+    else if (this.state.userInputExistingCrownstone === true) {
       return <ProblemWithExistingCrownstone {...this.props} />
     }
     else if (this.state.userInputExistingCrownstone === false) {
@@ -74,15 +85,20 @@ export class ProblemWithCrownstone extends Component<any, any> {
           <DiagOptions
             visible={this.state.visible}
             header={"Is the problem with a new or an existing Crownstone?"}
-            labels={["new", "existing"]}
+            labels={[
+              "new",
+              "existing",
+              "other"
+            ]}
             pressHandlers={[
               () => { this._changeContent(() => { this.setState({userInputExistingCrownstone: false}); }); },
-              () => { this._changeContent(() => { this.setState({userInputExistingCrownstone: true }); }); }
+              () => { this._changeContent(() => { this.setState({userInputExistingCrownstone: true }); }); },
+              () => { this._changeContent(() => { this.setState({userInputOther: true }); }); }
             ]}
           />
         </View>
-      )
+      );
     }
-  } 
+  }
 
 }

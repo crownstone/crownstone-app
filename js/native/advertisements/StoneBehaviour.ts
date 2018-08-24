@@ -138,7 +138,7 @@ export class StoneBehaviour {
         }
 
         BatchCommandHandler.loadPriority(stone, this.stoneId, this.sphereId, {commandName:'toggle', stateForOn: stone.config.dimmingEnabled ? 0.99 : 1.00}, {}, 2, 'Tap To Toggle!')
-          .then((newSwitchState) => {
+          .then((newSwitchState : {data: number}) => {
             eventBus.emit("NEW_ACTIVITY_LOG", {
               command:     "tap2toggle",
               commandUuid: Util.getUUID(),
@@ -146,13 +146,13 @@ export class StoneBehaviour {
               target:      this.stoneId,
               timeout:     0,
               intent:      INTENTS.manual,
-              state:       newSwitchState,
+              state:       newSwitchState.data,
               sphereId:    this.sphereId
             });
 
 
-            let data = {state: newSwitchState};
-            if (newSwitchState === 0) {
+            let data = {state: newSwitchState.data};
+            if (newSwitchState.data === 0) {
               data["currentUsage"] = 0;
             }
             this.store.dispatch({

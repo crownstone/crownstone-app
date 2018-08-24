@@ -43,6 +43,7 @@ export class ProblemWithLocalization extends Component<any, any> {
 
     this.state = {
       visible: false,
+      sphereTestsVisible: true,
       beaconTestVisible: false,
 
       stoneTypeWarningRead: null,
@@ -52,7 +53,7 @@ export class ProblemWithLocalization extends Component<any, any> {
       userInputProblemType:     null,
       userInputRoomProblemType: null,
     };
-    setTimeout(() => { this.setState({visible: true}) }, 10);
+    setTimeout(() => { this.setState({visible: true, sphereTestsVisible: false}) }, 10);
   }
 
   componentWillUnmount() {
@@ -67,14 +68,22 @@ export class ProblemWithLocalization extends Component<any, any> {
   }
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{"You're in your Sphere!"}</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{"Problem with localization..."}</Text>
   }
 
   _getTests() {
     return (
-      <SlideFadeInView visible={this.state.beaconTestVisible} height={45}>
-        <TestResult label={"Checking for Beacons"} state={ this.state.canSeeBeacons } />
-      </SlideFadeInView>
+      <View>
+        <SlideFadeInView visible={this.state.sphereTestsVisible} height={180}>
+          <TestResult label={"Database is healthy"}       state={ true } />
+          <TestResult label={"Scanning is enabled"}       state={ true } />
+          <TestResult label={"Receiving Sphere beacons"}  state={ true } />
+          <TestResult label={"Receiving Crownstone data"} state={ true } />
+        </SlideFadeInView>
+        <SlideFadeInView visible={this.state.beaconTestVisible} height={45}>
+          <TestResult label={"Checking for Beacons"} state={ this.state.canSeeBeacons } />
+        </SlideFadeInView>
+      </View>
     );
   }
 

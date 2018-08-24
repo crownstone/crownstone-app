@@ -215,8 +215,14 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
       return newState;
     case 'UPDATE_STONE_TIME_STATE':
       if (action.data) {
-        let newState           = {...state};
-        newState.timeSet       = update(action.data.timeSet,  newState.timeSet);
+        let newState     = {...state};
+        newState.timeSet = update(action.data.timeSet,  newState.timeSet);
+        return newState;
+      }
+      return state;
+    case 'UPDATED_STONE_TIME':
+      if (state.timeSet !== true) {
+        let newState = {...state};
         return newState;
       }
       return state;

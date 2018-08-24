@@ -89,7 +89,6 @@ export class ToonOverview extends Component<any, any> {
               })
               .catch((err) => {
                 this.props.eventBus.emit("hideLoading")
-                console.log("SOMETHING WENT WRONG", err)
               })
           }}])
       }

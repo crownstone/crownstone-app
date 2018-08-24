@@ -463,7 +463,7 @@ class LocationHandlerClass {
 
         });
       })
-      .catch((err) => { console.log("Tracking Spheres Failed", err); })
+      .catch((err) => { LOGe.info("Tracking Spheres Failed", err); })
   }
 
   initializeTracking() {

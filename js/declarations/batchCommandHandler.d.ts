@@ -130,4 +130,5 @@ interface batchCommandEntry {
 interface batchCommandEntryOptions {
   keepConnectionOpen?: boolean,
   keepConnectionOpenTimeout?: number, // ms
+  onlyAllowDirectCommand?: boolean,
 }

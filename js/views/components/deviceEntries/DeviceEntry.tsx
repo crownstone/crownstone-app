@@ -25,6 +25,8 @@ import { Actions }                            from 'react-native-router-flux';
 import { StoneUtil }                          from "../../../util/StoneUtil";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
+import {FadeInView} from "../animated/FadeInView";
+import {SlideFadeInView} from "../animated/SlideFadeInView";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -32,6 +34,8 @@ export class DeviceEntry extends Component<any, any> {
   unsubscribe = [];
   animating = false;
   id = Util.getUUID();
+
+  showMeshMessageTimeout
 
   constructor(props) {
     super(props);
@@ -43,6 +47,7 @@ export class DeviceEntry extends Component<any, any> {
       pendingCommand:  false,
       backgroundColor: new Animated.Value(0),
       statusText:      null,
+      showViaMesh: false
     };
   }
 
@@ -60,6 +65,7 @@ export class DeviceEntry extends Component<any, any> {
 
   componentWillUnmount() { // cleanup
     this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
+    clearTimeout(this.showMeshMessageTimeout);
   }
 
 
@@ -77,7 +83,14 @@ export class DeviceEntry extends Component<any, any> {
       stone, newState,
       this.props.store,
       {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
-      () => { this.setState({pendingCommand:false}); },
+      (err, result) => {
+        let newState = {pendingCommand:false};
+        if (!err && result && result.viaMesh === true) {
+          newState['showViaMesh'] = true;
+          this.showMeshMessageTimeout = setTimeout(() => { this.setState({showViaMesh: false})}, 1000);
+        }
+        this.setState(newState);
+      },
       INTENTS.manual,
       1,
       'from _pressedDevice in DeviceEntry'
@@ -225,7 +238,10 @@ export class DeviceEntry extends Component<any, any> {
                 tap2toggleThreshold={Util.data.getTapToToggleCalibration(state)}
                 tap2toggleEnabled={state.app.tapToToggleEnabled}
               />
-              { this.props.locationId === null || state.app.hasSeenDeviceSettings === false ? <Text style={explanationStyle}>Tap me for more!</Text> : undefined}
+              { this.props.locationId === null || state.app.hasSeenDeviceSettings === false ? <SlideFadeInView height={15} visible={!this.state.showViaMesh}><Text style={explanationStyle}>Tap me for more!</Text></SlideFadeInView> : undefined}
+              <SlideFadeInView height={15} visible={this.state.showViaMesh}>
+                <Text style={{ color: colors.csOrange.hex, fontSize: 12}}>Sent via mesh!</Text>
+              </SlideFadeInView>
             </View>
           </WrapperElement>
           {useControl === true && Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}

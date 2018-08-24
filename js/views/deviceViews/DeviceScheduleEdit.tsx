@@ -408,7 +408,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
   _addScheduleEntry(stone, scheduleConfig, config) {
     this.props.eventBus.emit("showLoading", config.loadingLabel);
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'addSchedule', scheduleConfig: scheduleConfig })
-      .then((scheduleEntryIndex) => {
+      .then((scheduleEntryIndex : {data: string}) => {
         this.props.eventBus.emit("showLoading", "Done!");
         Scheduler.scheduleCallback(() => {
           this.props.eventBus.emit("hideLoading");
@@ -417,7 +417,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             scheduleId: config.scheduleId,
-            data: {scheduleEntryIndex:scheduleEntryIndex, ...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays) }
+            data: {scheduleEntryIndex:scheduleEntryIndex.data, ...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays) }
           });
           BackAction();
         }, 500, 'Deactivate Schedule UI callback');

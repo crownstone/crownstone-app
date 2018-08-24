@@ -24,15 +24,13 @@ import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
 import { LibMessages }               from "../views/overlays/LibMessages";
-import {SettingsLogging} from "../views/settingsViews/dev/SettingsLogging";
-
+import { SettingsLogging }           from "../views/settingsViews/dev/SettingsLogging";
 
 export class Router_IOS extends Component {
   render() {
     return (
       <View style={{flex:1}}>
         <Router
-          createReducer={reducerCreate}
           store={this.props.store}
           {...navBarStyle}
           backgrounds={this.props.backgrounds}

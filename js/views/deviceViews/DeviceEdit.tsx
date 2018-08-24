@@ -98,7 +98,6 @@ export class DeviceEdit extends Component<any, any> {
 
       // in case the sphere is deleted
       if (state.spheres[this.props.sphereId] === undefined) {
-        BackAction();
         return;
       }
 
@@ -403,7 +402,7 @@ export class DeviceEdit extends Component<any, any> {
             LOGe.info("ERROR:",err);
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
-              "Try deleting it again or use the recovery procedure to put it in setup mode.",
+              "Try deleting it again or use the factory reset procedure to put it in setup mode.",
               [{text:'OK', onPress: () => {
                 this.props.eventBus.emit('hideLoading');
                 BackAction('roomOverview');
@@ -431,7 +430,7 @@ export class DeviceEdit extends Component<any, any> {
 
     let labelText = "I have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere.";
     if (factoryReset === false) {
-     labelText = "I have removed this Crownstone from the Cloud and your Sphere. I could not reset it back to setup mode though.. You'll need to recover it to put it back into setup mode."
+     labelText = "I have removed this Crownstone from the Cloud and your Sphere. I could not reset it back to setup mode though.. You'll need to factory reset it to put it back into setup mode."
     }
 
     Alert.alert("Success!", labelText,
@@ -605,13 +604,13 @@ export class DeviceEdit extends Component<any, any> {
           this.setState({refreshingStoneVersions: true});
           let promises = [];
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware')
-            .then((firmwareVersion) => {
+            .then((firmwareVersion : {data: string}) => {
               this.props.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
                 stoneId: this.props.stoneId,
                 sphereId: this.props.sphereId,
                 data: {
-                  firmwareVersion: firmwareVersion,
+                  firmwareVersion: firmwareVersion.data,
                 }
               })
               .catch((err) => {
@@ -620,13 +619,13 @@ export class DeviceEdit extends Component<any, any> {
               });
             }));
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware')
-            .then((hardwareVersion) => {
+            .then((hardwareVersion : {data: string}) => {
               this.props.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
                 stoneId: this.props.stoneId,
                 sphereId: this.props.sphereId,
                 data: {
-                  hardwareVersion: hardwareVersion,
+                  hardwareVersion: hardwareVersion.data,
                 }
               })
               .catch((err) => {

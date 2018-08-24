@@ -40,25 +40,25 @@ class FirmwareWatcherClass {
       if (!stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck  ||
           !stone.config.hardwareVersion || stone.config.hardwareVersion === '0') {
         BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},100, 'from checkFirmware in Firmware Watcher')
-          .then((firmwareVersion) => {
+          .then((firmwareVersion : {data: string}) => {
             this.store.dispatch({
               type: "UPDATE_STONE_CONFIG",
               stoneId: stoneId,
               sphereId: sphereId,
               data: {
-                firmwareVersion: firmwareVersion
+                firmwareVersion: firmwareVersion.data
               }
             });
           })
           .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
         BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'}, {},100, 'from checkFirmware in Firmware Watcher')
-          .then((hardwareVersion) => {
+          .then((hardwareVersion : {data: string}) => {
             this.store.dispatch({
               type: "UPDATE_STONE_CONFIG",
               stoneId: stoneId,
               sphereId: sphereId,
               data: {
-                hardwareVersion: hardwareVersion
+                hardwareVersion: hardwareVersion.data
               }
             });
           })

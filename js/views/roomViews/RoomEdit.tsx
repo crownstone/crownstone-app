@@ -74,9 +74,7 @@ export class RoomEdit extends Component<any, any> {
 
       let state = store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
-        if (this.deleting === false) {
-          BackAction();
-        }
+        console.log("ROOM EDIT: sphere gone!")
         return;
       }
 
@@ -141,7 +139,7 @@ export class RoomEdit extends Component<any, any> {
 
         // jump back to root
         this.props.eventBus.emit('hideLoading');
-
+        console.log("HERE")
         BackAction('sphereOverview');
 
         // reload fingerprints.
@@ -336,6 +334,7 @@ export class RoomEdit extends Component<any, any> {
   }
 
   render() {
+    console.log("RENDERING ROOM EDIT")
     const store = this.props.store;
     const state = store.getState();
     this.viewingRemotely = state.spheres[this.props.sphereId].state.present === false;

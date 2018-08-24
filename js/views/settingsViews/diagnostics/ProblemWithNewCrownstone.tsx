@@ -124,7 +124,7 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
   }
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{"You're in your Sphere!"}</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{"Problem with new Crownstone..."}</Text>
   }
 
   _getTests() {
