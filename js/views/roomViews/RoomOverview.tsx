@@ -64,6 +64,7 @@ export class RoomOverview extends Component<any, any> {
     }
   };
 
+  navBarCalback : any = null;
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
@@ -178,6 +179,11 @@ export class RoomOverview extends Component<any, any> {
     BatchCommandHandler.closeKeptOpenConnection();
     NAVBAR_PARAMS_CACHE = null;
 
+    if (this.navBarCalback) {
+      this.navBarCalback();
+      this.navBarCalback = null
+    }
+
   }
 
   _renderer(item, index, stoneId) {
@@ -286,9 +292,15 @@ export class RoomOverview extends Component<any, any> {
 
 
   _updateNavBar() {
-    let state = this.props.store.getState();
-    let params = getNavBarParams(state, this.props, this.viewingRemotely);
-    this.props.navigation.setParams(params)
+    if (this.navBarCalback) {
+      this.navBarCalback();
+      this.navBarCalback = null
+    }
+    this.navBarCalback = Scheduler.scheduleCallback(() => {
+      let state = this.props.store.getState();
+      let params = getNavBarParams(state, this.props, this.viewingRemotely);
+      this.props.navigation.setParams(params)
+    } , 0)
   }
 
 

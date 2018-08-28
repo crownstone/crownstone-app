@@ -186,7 +186,7 @@ export class Login extends Component<any, any> {
   }
 
   render() {
-    let factor = 0.25;
+    let factor = 0.24;
     if (screenHeight < 500) {
       factor = 0.15
     }
@@ -229,9 +229,8 @@ export class Login extends Component<any, any> {
                 <Icon name={'md-eye'} color={Platform.OS === 'ios' ? (this.state.passwordSecureDisplay ? colors.lightGray2.hex : colors.darkGray2.hex) : colors.lightGray2.hex} size={20} />
               </TouchableOpacity>
             </View>
-            <TouchableHighlight style={{borderRadius:20, height:50, width:screenWidth*0.6, paddingBottom: 10, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
-              <Text style={{color: '#93cfff'}}>Forgot Password?</Text>
-            </TouchableHighlight>
+            <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
+            <Text style={{color: '#93cfff'}}>Forgot Password?</Text></TouchableHighlight>
             <LoginButton loginCallback={() => {this.attemptLogin()}} />
             <View style={{flex: 1, width:screenWidth, minHeight:30}} />
           </View>

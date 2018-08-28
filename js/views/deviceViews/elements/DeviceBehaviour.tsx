@@ -13,11 +13,11 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {colors, screenWidth} from '../../styles'
-import {Util} from "../../../util/Util";
-import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../util/DataUtil";
-import {BEHAVIOUR_TYPES} from "../../../router/store/reducers/stones";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import { colors, screenWidth }              from '../../styles'
+import { Util }                             from "../../../util/Util";
+import { canUseIndoorLocalizationInSphere } from "../../../util/DataUtil";
+import { BEHAVIOUR_TYPES }                  from "../../../router/store/reducers/stones";
+import { Permissions }                      from "../../../backgroundProcesses/PermissionManager";
 
 
 let DISABLED_COLOR = colors.gray.hex;
@@ -114,7 +114,8 @@ export class DeviceBehaviour extends Component<any, any> {
 
     let canChangeBehaviour = Permissions.inSphere(this.props.sphereId).changeBehaviour && state.app.indoorLocalizationEnabled;
 
-    let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId) && stone.config.locationId !== null;
+    let canDoIndoorLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId) && stone.config.locationId !== null;
+
     let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null && element.behaviour.onAway.active === true && element.behaviour.onNear.active === true;
 
     return (

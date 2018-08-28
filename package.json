@@ -22,7 +22,7 @@
     "react-native-image-resizer": "~1.0.0",
     "react-native-keep-awake": "^3.0.1",
     "react-native-push-notification": "~3.0.1",
-    "react-native-router-flux": "https://github.com/aksonov/react-native-router-flux#141796f89a51108d5659c7d49a8cfec75f4adbe4",
+    "react-native-router-flux": "4.0.0-beta.31",
     "react-native-same-toast": "^1.0.1",
     "react-native-sentry": "^0.34.0",
     "react-native-splash-screen": "3.0.6",

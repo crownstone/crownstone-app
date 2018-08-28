@@ -30,7 +30,9 @@ class ToonIntegrationClass {
       // if the app is open, update the user locations every 10 seconds
       Scheduler.loadCallback(CHECK_TOON_SCHEDULE_TRIGGER, () => {
         this._evaluateSchedule();
-      });
+      }, true);
+
+
     }
   }
 
@@ -60,7 +62,7 @@ class ToonIntegrationClass {
             // cloud has already changed the program
           }
           else {
-            CLOUD.thirdParty.forToon(toonId).setToonToHome(deviceId)
+            CLOUD.forToon(toonId).thirdParty.toon.setToonToHome(deviceId)
               .catch((err) => {
                 if (err && err.statusCode == 405 && err.model) {
                   return err.model;
@@ -99,9 +101,10 @@ class ToonIntegrationClass {
       scheduleObj = JSON.parse(scheduleString);
     }
     catch (err) {
-      LOGe.info("ToonIntegration: Schedule is not a valid json object.")
+      LOGe.info("ToonIntegration: Schedule is not a valid json object.", scheduleString)
       return false;
     }
+
 
     let day    = currentDate.getDay(); // 0 for Sunday, ... 6 Saturday
     let dayMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -141,7 +144,7 @@ class ToonIntegrationClass {
         // evaluate if the schedule is currently set to "AWAY"
         let activeProgram = this._getActiveProgram(toon.schedule)
         if (activeProgram.program === 'away') {
-          CLOUD.thirdParty.forToon(toonId).setToonToAway(deviceId)
+          CLOUD.forToon(toonId).thirdParty.toon.setToonToAway(deviceId)
             .catch((err) => {
               if (err && err.statusCode == 405 && err.model) {
                 return err.model;

@@ -31,6 +31,7 @@ export class Router_IOS extends Component {
     return (
       <View style={{flex:1}}>
         <Router
+          createReducer={reducerCreate}
           store={this.props.store}
           {...navBarStyle}
           backgrounds={this.props.backgrounds}

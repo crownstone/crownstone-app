@@ -678,7 +678,7 @@ class BatchCommandHandlerClass {
       objectsToScan.forEach((topic) => {
         // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
         unsubscribeListeners.push( eventBus.on(topic.topic, (data) => {
-          LOGd.bch("BatchCommandHandler: Got an event:", data);
+          LOGd.bch("BatchCommandHandler: Got an event:", data.id, data.rssi, data.handle);
           if (rssiThreshold === null || data.rssi > rssiThreshold) {
             // remove the listeners
             cleanup();

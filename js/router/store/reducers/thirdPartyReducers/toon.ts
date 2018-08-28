@@ -29,6 +29,7 @@ let toonReducer = (state = defaultSettings, action : any = {}) => {
         let newState = {...state};
         newState.toonAgreementId = update(action.data.toonAgreementId,     newState.toonAgreementId);
         newState.toonAddress     = update(action.data.toonAddress,         newState.toonAddress);
+        newState.schedule        = update(action.data.schedule,            newState.schedule);
         newState.enabled         = update(action.data.enabled,             newState.enabled);
 
         newState.cloudChangedProgram     = update(action.data.cloudChangedProgram,     newState.cloudChangedProgram);

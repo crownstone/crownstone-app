@@ -113,6 +113,8 @@ class KeepAliveHandlerClass {
             return;
           }
 
+          let stoneUsesRoomLevel = useRoomLevel && stone.config.locationId !== null;
+
           let behaviourHomeExit = element.behaviour[BEHAVIOUR_TYPES.HOME_EXIT];
           let behaviourRoomExit = element.behaviour[BEHAVIOUR_TYPES.ROOM_EXIT];
           let behaviourAway = element.behaviour[BEHAVIOUR_TYPES.AWAY];
@@ -123,8 +125,8 @@ class KeepAliveHandlerClass {
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
           if      (behaviourHomeExit.active === true)                   { behaviour = behaviourHomeExit; }
-          else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; delay = determineDelay(behaviour.delay); }
-          else if (behaviourAway.active     === true && !useRoomLevel)  { behaviour = behaviourAway;     delay = determineDelay(behaviour.delay); }
+          else if (behaviourRoomExit.active === true && stoneUsesRoomLevel)   { behaviour = behaviourRoomExit; delay = determineDelay(behaviour.delay); }
+          else if (behaviourAway.active     === true && !stoneUsesRoomLevel)  { behaviour = behaviourAway;     delay = determineDelay(behaviour.delay); }
 
           if (stone.config.handle) {
             this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, behaviour, delay, element, keepAliveId);

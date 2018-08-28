@@ -15,7 +15,7 @@ import { Background }                  from '../components/Background'
 import { ListEditableItems }           from '../components/ListEditableItems'
 import { Util, addDistanceToRssi }     from '../../util/Util'
 import { NativeBus }                   from '../../native/libInterface/NativeBus'
-import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import {canUseIndoorLocalizationInSphere, enoughCrownstonesInLocationsForIndoorLocalization} from '../../util/DataUtil'
 import {BehaviourUtil} from "../../util/BehaviourUtil";
 import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
@@ -417,10 +417,11 @@ export class DeviceBehaviourEdit extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
-    this.canDoIndoorLocalization = canDoIndoorLocalization;
-
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+
+    let canDoIndoorLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId) && stone.config.locationId !== null;
+
+    this.canDoIndoorLocalization = canDoIndoorLocalization;
 
     let options = [];
     if (stone.config.applianceId) {

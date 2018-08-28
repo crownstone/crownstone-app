@@ -55,7 +55,7 @@ export const toon = {
   setToonToHome: function(deviceId, background = true) {
     return this._setupRequest(
       'POST',
-      '/Toons/{id}/',
+      '/Toons/{id}/setProgram',
       { data: {program: 'home', ignoreDeviceId: deviceId }, background: background},
       'query'
     )
@@ -64,7 +64,7 @@ export const toon = {
   setToonToAway: function(deviceId, background = true) {
     return this._setupRequest(
       'POST',
-      '/Toons/{id}/',
+      '/Toons/{id}/setProgram',
       { data: {program: 'away', ignoreDeviceId: deviceId }, background: background},
       'query'
     )
