@@ -6,6 +6,7 @@ import {
   Image,
   Linking,
   Platform,
+  ScrollView,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
@@ -18,7 +19,7 @@ import { AnimatedBackground }       from '../components/animated/AnimatedBackgro
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
 import { LOG }                      from '../../logging/Log'
-import { colors, OrangeLine }       from '../styles'
+import {availableScreenHeight, colors, OrangeLine, screenHeight} from '../styles'
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
@@ -28,6 +29,17 @@ import { topBarStyle }              from "../components/topbar/TopbarStyles";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
 import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
+import {SphereLevel} from "./SphereLevel";
+import {IconButton} from "../components/IconButton";
+import {OverlayBox} from "../components/overlays/OverlayBox";
+import {WNStyles} from "../overlays/WhatsNew/WhatsNewStyles";
+import {ZoomInstructionOverlay} from "./ZoomInstructionOverlay";
+
+
+const ZOOM_LEVELS = {
+  sphere: 'sphere',
+  room: 'room'
+}
 
 export class SphereOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -87,7 +99,7 @@ export class SphereOverview extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = { menuOpen: true };
+    this.state = { zoomLevel: ZOOM_LEVELS.room, zoomInstructionsVisible: false };
     this._setActiveSphere();
   }
 
@@ -146,16 +158,6 @@ export class SphereOverview extends Component<any, any> {
     if (activeSphere === null && sphereIds.length > 0) {
       this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
     }
-    //
-    // let sphere = state.spheres[activeSphere];
-    // let stoneIds = Object.keys(sphere.stones);
-    // stoneIds.forEach((stoneId) => {
-    //   this.props.store.dispatch({
-    //     type:     'DELETE_ACTIVITY_LOG_CLOUD_IDS',
-    //     sphereId: activeSphere,
-    //     stoneId:  stoneId
-    //   });
-    // })
 
     this._updateNavBar();
   }
@@ -165,6 +167,80 @@ export class SphereOverview extends Component<any, any> {
     let state = this.props.store.getState();
     let params = getNavBarParams(state, this.props);
     this.props.navigation.setParams(params)
+  }
+
+  _getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) {
+    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
+      if (amountOfSpheres > 1) {
+        return <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} onPress={() => {
+          let newState = {zoomLevel: ZOOM_LEVELS.sphere};
+
+          if (state.app.hasZoomedOutForSphereOverview === false || true) {
+            newState["zoomInstructionsVisible"] = true;
+          }
+          this.setState(newState);
+        }}/>;
+      }
+    }
+  }
+
+  _getAddItemButton(viewingRemotely, activeSphereId) {
+    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
+      if (Permissions.inSphere(activeSphereId).addRoom) {
+         return <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} />;
+      }
+    }
+  }
+
+  _getContent(state, amountOfSpheres, activeSphereId) {
+    let zoomOutCallback = () => {
+      if (amountOfSpheres > 1) {
+        if (this.state.zoomLevel === ZOOM_LEVELS.room) {
+          // tell the app the user has done this and we don't need to tell him any more.
+          if (state.app.hasZoomedOutForSphereOverview === false) {
+            this.props.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {hasZoomedOutForSphereOverview:true}})
+          }
+
+          this.setState({zoomLevel: ZOOM_LEVELS.sphere})
+        }
+        else { // this is for convenience, it's not accurate but it'll do
+          this.setState({zoomLevel: ZOOM_LEVELS.room})
+        }
+      }
+    }
+
+    let zoomInCallback = () => {
+      if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
+        this.setState({zoomLevel: ZOOM_LEVELS.room})
+      }
+    }
+
+    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
+      return <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} zoomOutCallback={zoomOutCallback} />
+    }
+    else {
+      return (
+        <SphereLevel
+          selectSphere={(sphereId) => {
+            this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: { activeSphere:sphereId }});
+            this.setState({zoomLevel:ZOOM_LEVELS.room});
+          }}
+          zoomInCallback={zoomInCallback}
+          zoomOutCallback={zoomOutCallback}
+          store={this.props.store}
+          eventBus={this.props.eventBus}
+        />
+      );
+    }
+  }
+
+  _getInstructionScreen(state) {
+    return (
+      <ZoomInstructionOverlay
+        visible={this.state.zoomInstructionsVisible}
+        closeCallback={() => { this.setState({zoomInstructionsVisible: false})}}
+      />
+    )
   }
 
   render() {
@@ -192,12 +268,17 @@ export class SphereOverview extends Component<any, any> {
         background = this.props.backgrounds.mainRemoteNotConnected;
       }
 
+      if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
+        background = require("../../images/sphereBackground.png");
+      }
+
       return (
         <AnimatedBackground image={background}>
           <OrangeLine/>
-          <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
-          { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
-          { Permissions.inSphere(activeSphereId).addRoom ? <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
+          { this._getContent(state, amountOfSpheres, activeSphereId) }
+          { this._getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) }
+          { this._getAddItemButton(viewingRemotely, activeSphereId) }
+          { this._getInstructionScreen(state) }
         </AnimatedBackground>
       );
     }

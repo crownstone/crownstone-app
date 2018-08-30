@@ -91,6 +91,7 @@ export class SettingsMeshDebug extends Component<any, any> {
     let evaluateRefreshProgress = () => {
       this.refreshCount += 1
       if (this.refreshCount >= this.refreshAmountRequired) {
+        Alert.alert("All done!", "This went very well!", [{text:'Nice.'}])
         this.props.eventBus.emit('updateProgress', {progress:1, progressText:"Done"});
         setTimeout(() => { this.props.eventBus.emit("hideProgress");}, 500);
         const store = this.props.store;

@@ -55,7 +55,7 @@ class ToonIntegrationClass {
       if (toon.enabled) {
         // evaluate if the schedule is currently set to "AWAY"
         let activeProgram = this._getActiveProgram(toon.schedule)
-        if (activeProgram.program === 'away') {
+        if (activeProgram && activeProgram.program === 'away') {
           // if the schedule is away BUT I am home, the toon should be on too!
           let timestampOfStartProgram = new Date(new Date().setHours(activeProgram.start.hour)).setMinutes(activeProgram.start.minute);
           if (timestampOfStartProgram < toon.cloudChangedProgramTime && toon.cloudChangedProgram === 'home') {
@@ -102,9 +102,8 @@ class ToonIntegrationClass {
     }
     catch (err) {
       LOGe.info("ToonIntegration: Schedule is not a valid json object.", scheduleString)
-      return false;
+      return null;
     }
-
 
     let day    = currentDate.getDay(); // 0 for Sunday, ... 6 Saturday
     let dayMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -112,7 +111,7 @@ class ToonIntegrationClass {
     let hours   = currentDate.getHours();
     let minutes = currentDate.getMinutes();
 
-    let minutesSinceMidnight = hours*60 + minutes;
+    let minutesSinceMidnight = hours * 60 + minutes;
 
     let scheduleToday = scheduleObj[dayMap[day]];
     for ( let i = 0; i < scheduleToday.length; i++ ) {
@@ -143,7 +142,7 @@ class ToonIntegrationClass {
       if (toon.enabled) {
         // evaluate if the schedule is currently set to "AWAY"
         let activeProgram = this._getActiveProgram(toon.schedule)
-        if (activeProgram.program === 'away') {
+        if (activeProgram && activeProgram.program === 'away') {
           CLOUD.forToon(toonId).thirdParty.toon.setToonToAway(deviceId)
             .catch((err) => {
               if (err && err.statusCode == 405 && err.model) {

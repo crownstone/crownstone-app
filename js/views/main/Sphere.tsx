@@ -79,7 +79,14 @@ export class Sphere extends Component<any, any> {
     return (
       <View style={{width: screenWidth, height: availableScreenHeight}}>
         <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} opacity={0.5}  />
-        <RoomLayer store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} multipleSpheres={this.props.multipleSpheres} />
+        <RoomLayer
+          store={store}
+          sphereId={currentSphere}
+          viewingRemotely={viewingRemotely}
+          eventBus={this.props.eventBus}
+          multipleSpheres={this.props.multipleSpheres}
+          zoomOutCallback={this.props.zoomOutCallback}
+        />
         <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} opacity={0.5} />
       </View>
     );

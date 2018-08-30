@@ -25,7 +25,7 @@ export class SphereChangeButton extends Component<any, any> {
           alignItems:'center',
           justifyContent:'center',
         }}
-        onPress={() => { eventBus.emit('showSphereSelectionOverlay'); }}
+        onPress={() => { this.props.onPress(); }}
       >
         <View style={{
           width: outerRadius,

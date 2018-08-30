@@ -16,7 +16,6 @@ import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupSt
 import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
-import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
 import { LockOverlay }               from "../views/overlays/LockOverlay";
 import { Views }                     from './Views'
@@ -125,7 +124,6 @@ export class Router_IOS extends Component {
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />
-        <SphereSelectionOverlay store={this.props.store} />
         <LocationPermissionOverlay />
         <BleStateOverlay />
         <ErrorOverlay store={this.props.store} />

@@ -22,6 +22,7 @@ interface overlayBoxProps {
   canClose?:           boolean,
   closeCallback?:      any,
   style?:              any
+  wrapperStyle?:       any
 }
 
 // Set prop "overrideBackButton" to override the (android) back button when the overlay box is visible.
@@ -74,7 +75,8 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
       <HiddenFadeInView
         style={[
           styles.fullscreen,
-          {backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2), justifyContent:'center', alignItems:'center', overflow:'hidden'}
+          {backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2), justifyContent:'center', alignItems:'center', overflow:'hidden'},
+          this.props.wrapperStyle
         ]}
         height={screenHeight}
         duration={200}

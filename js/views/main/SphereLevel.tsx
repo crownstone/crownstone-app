@@ -21,9 +21,9 @@ import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {Util} from "../../util/Util";
-import {Sphere} from "./Sphere";
+import {SphereCircle} from "../components/SphereCircle";
 
-export class RoomLayer extends Component<any, any> {
+export class SphereLevel extends Component<any, any> {
   state:any; // used to avoid warnings for setting state values
 
   _baseRadius;
@@ -50,15 +50,6 @@ export class RoomLayer extends Component<any, any> {
     };
 
     this.unsubscribeSetupEvents = [];
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on('setupStarting',  reloadSolverOnDemand));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on('setupCleanedUp', reloadSolverOnDemand));
-
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on('setupStonesDetected',  () => {
-      reloadSolverOnDemand();
-    }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on('noSetupStonesVisible', () => {
-      reloadSolverOnDemand();
-    }));
 
     this.unsubscribeStoreEvents = this.props.eventBus.on('databaseChange', (data) => {
       let change = data.change;
@@ -85,53 +76,37 @@ export class RoomLayer extends Component<any, any> {
   }
 
 
-  _renderRoom(locationId, nodePosition) {
+  _renderRoom(sphereId, nodePosition) {
     // variables to pass to the room overview
     return (
-      <RoomCircle
+      <SphereCircle
         viewId={this.viewId}
         eventBus={this.props.eventBus}
-        locationId={locationId}
-        sphereId={this.props.sphereId}
+        sphereId={sphereId}
         radius={this._baseRadius}
         store={this.props.store}
         pos={{x: nodePosition.x, y: nodePosition.y}}
-        seeStonesInSetupMode={SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone}
-        viewingRemotely={this.props.viewingRemotely}
-        key={locationId || 'floating'}
+        key={sphereId}
+        selectSphere={() => { this.props.selectSphere(sphereId) }}
       />
     );
   }
 
   render() {
-    if (this.props.sphereId === null) {
-      return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
-    }
-    else {
-      let showSetupCrownstones = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone;
-      let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), this.props.sphereId, showSetupCrownstones);
-      return (
-        <ForceDirectedView
-          viewId={this.viewId}
-          topOffset={0.3*this._baseRadius}
-          bottomOffset={Permissions.inSphere(this.props.sphereId).addRoom ? 0.3*this._baseRadius : 0}
-          drawToken={this.props.sphereId}
-          nodeIds={roomData.roomIdArray}
-          initialPositions={roomData.initialPositions}
-          enablePhysics={roomData.usePhysics}
-          nodeRadius={this._baseRadius}
-          allowDrag={false}
-          zoomOutCallback={this.props.zoomOutCallback}
-          zoomInCallback={this.props.zoomInCallback}
-          renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}>
-          <UserLayer
-            store={this.props.store}
-            eventBus={this.props.eventBus}
-            sphereId={this.props.sphereId}
-            nodeRadius={this._baseRadius}
-          />
-        </ForceDirectedView>
-      );
-    }
+    let state = this.props.store.getState()
+    return (
+      <ForceDirectedView
+        viewId={this.viewId}
+        topOffset={0.3*this._baseRadius}
+        bottomOffset={Permissions.inSphere(this.props.sphereId).addRoom ? 0.3*this._baseRadius : 0}
+        drawToken={this.props.sphereId}
+        nodeIds={Object.keys(state.spheres)}
+        enablePhysics={true}
+        nodeRadius={this._baseRadius}
+        allowDrag={false}
+        zoomInCallback={ this.props.zoomInCallback }
+        zoomOutCallback={ this.props.zoomOutCallback }
+        renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }} />
+    );
   }
 }

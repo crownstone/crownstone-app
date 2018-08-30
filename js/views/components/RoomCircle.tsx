@@ -57,6 +57,8 @@ class RoomCircleClass extends Component<any, any> {
   unsubscribeControlEvents = []
   renderState: any;
 
+  scaledUp = true;
+
   constructor(props) {
     super(props);
 
@@ -152,6 +154,10 @@ class RoomCircleClass extends Component<any, any> {
         this.forceUpdate();
       }
     });
+
+    this.unsubscribeControlEvents.push(this.props.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
+      this.handleTouchReleased(data);
+    }));
 
     this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTap(data);
@@ -424,9 +430,11 @@ class RoomCircleClass extends Component<any, any> {
   }
 
   handleTouch(data) {
-    // top any animation this node was doing.
+    // stop any animation this node was doing.
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();
+
+    this.scaledUp = true;
 
     let tapAnimations = [];
     tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70 }));
@@ -435,20 +443,26 @@ class RoomCircleClass extends Component<any, any> {
   }
 
   handleTouchReleased(data) {
-    // top any animation this node was doing.
-    this.state.scale.stopAnimation();
-    this.state.opacity.stopAnimation();
+    if (this.scaledUp) {
+      // stop any animation this node was doing.
+      this.state.scale.stopAnimation();
+      this.state.opacity.stopAnimation();
 
-    let revertAnimations = [];
-    revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
-    revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
-    Animated.parallel(revertAnimations).start();
+      this.scaledUp = false;
+
+      let revertAnimations = [];
+      revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
+      revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
+      Animated.parallel(revertAnimations).start();
+    }
   }
 
   handleDragging(data) {
-    // top any animation this node was doing.
+    // stop any animation this node was doing.
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();
+
+    this.scaledUp = false;
 
     let revertAnimations = [];
     revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
@@ -457,6 +471,7 @@ class RoomCircleClass extends Component<any, any> {
   }
 
   handleTap(data) {
+    this.scaledUp = false;
     let handled = false;
 
     this.state.scale.stopAnimation();
