@@ -19,7 +19,7 @@ import { AnimatedBackground }       from '../components/animated/AnimatedBackgro
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
 import { LOG }                      from '../../logging/Log'
-import {availableScreenHeight, colors, OrangeLine, screenHeight} from '../styles'
+import {availableScreenHeight, colors, OrangeLine, screenHeight, screenWidth} from '../styles'
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
@@ -52,13 +52,13 @@ export class SphereOverview extends Component<any, any> {
         paramsToUse = NAVBAR_PARAMS_CACHE;
       }
       else {
-        paramsToUse = getNavBarParams(params.store.getState(), params);
+        paramsToUse = getNavBarParams(params.store.getState(), params, {});
       }
     }
 
     let returnData = {
       title: paramsToUse.title,
-      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem} />
+      headerRight: paramsToUse.rightLabel ? <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem} /> : undefined
       // headerTitle: <Component /> // used to insert custom header Title component
       // headerLeft:  <Component /> // used to insert custom header Title component
       // headerBackImage: require("path to image") // customize back button image
@@ -165,7 +165,7 @@ export class SphereOverview extends Component<any, any> {
 
   _updateNavBar() {
     let state = this.props.store.getState();
-    let params = getNavBarParams(state, this.props);
+    let params = getNavBarParams(state, this.props, this.state);
     this.props.navigation.setParams(params)
   }
 
@@ -175,10 +175,10 @@ export class SphereOverview extends Component<any, any> {
         return <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} onPress={() => {
           let newState = {zoomLevel: ZOOM_LEVELS.sphere};
 
-          if (state.app.hasZoomedOutForSphereOverview === false || true) {
+          if (state.app.hasZoomedOutForSphereOverview === false) {
             newState["zoomInstructionsVisible"] = true;
           }
-          this.setState(newState);
+          this.setState(newState, () => { this._updateNavBar(); })
         }}/>;
       }
     }
@@ -200,18 +200,17 @@ export class SphereOverview extends Component<any, any> {
           if (state.app.hasZoomedOutForSphereOverview === false) {
             this.props.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {hasZoomedOutForSphereOverview:true}})
           }
-
-          this.setState({zoomLevel: ZOOM_LEVELS.sphere})
+          this.setState({zoomLevel: ZOOM_LEVELS.sphere}, () => { this._updateNavBar(); })
         }
         else { // this is for convenience, it's not accurate but it'll do
-          this.setState({zoomLevel: ZOOM_LEVELS.room})
+          this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); })
         }
       }
     }
 
     let zoomInCallback = () => {
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        this.setState({zoomLevel: ZOOM_LEVELS.room})
+        this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); })
       }
     }
 
@@ -284,7 +283,7 @@ export class SphereOverview extends Component<any, any> {
     }
     else {
       return (
-        <AnimatedBackground image={background}>
+        <AnimatedBackground image={background} hasTopBar={false} safeView={true}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
             <Text style={overviewStyles.mainText}>No Spheres available.</Text>
@@ -296,31 +295,44 @@ export class SphereOverview extends Component<any, any> {
   }
 }
 
-function getNavBarParams(state, props) {
+function getNavBarParams(state, props, viewState) {
   LOG.info("UPDATING SPHERE OVERVIEW NAV BAR");
-  let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
-  if (sphereId === null) {
+  if (viewState.zoomLevel === ZOOM_LEVELS.sphere) {
     NAVBAR_PARAMS_CACHE = {
-      title: "Hello there!",
+      title: "Sphere Overview",
+      showMailIcon: false,
       showFinalizeNavigationButton: false,
-      rightLabel:'Edit',
-      rightAction: () => { Actions.sphereEdit() },
+      showFinalizeIndoorNavigationCallback: false,
+      rightLabel: null,
+      rightAction: () => {},
     }
   }
   else {
-    let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
-    let newMailAvailable = SphereUtil.newMailAvailable(state);
+    let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
+    if (sphereId === null) {
+      NAVBAR_PARAMS_CACHE = {
+        title: "Hello there!",
+        showFinalizeNavigationButton: false,
+        rightLabel:'Edit',
+        rightAction: () => { Actions.sphereEdit() },
+      }
+    }
+    else {
+      let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
+      let newMailAvailable = SphereUtil.newMailAvailable(state);
 
-    NAVBAR_PARAMS_CACHE = {
-      title: sphere.config.name,
-      showMailIcon: newMailAvailable,
-      showFinalizeNavigationButton: finalizeLocalization.showItem,
-      showFinalizeIndoorNavigationCallback: finalizeLocalization.action,
-      rightLabel:'Edit',
-      rightAction: () => { Actions.sphereEdit({sphereId: sphereId}) },
-      activeSphereId: sphereId,
+      NAVBAR_PARAMS_CACHE = {
+        title: sphere.config.name,
+        showMailIcon: newMailAvailable,
+        showFinalizeNavigationButton: finalizeLocalization.showItem,
+        showFinalizeIndoorNavigationCallback: finalizeLocalization.action,
+        rightLabel:'Edit',
+        rightAction: () => { Actions.sphereEdit({sphereId: sphereId}) },
+        activeSphereId: sphereId,
+      }
     }
   }
+
 
   return NAVBAR_PARAMS_CACHE;
 

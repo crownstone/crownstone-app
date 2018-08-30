@@ -35,20 +35,20 @@ export class ZoomInstructionOverlay extends Component<any, any> {
         style={{padding:0}}
         closeCallback={this.props.closeCallback}
       >
-        <Text style={{
-          fontSize: 17,
-          fontWeight:'bold',
-          backgroundColor:'transparent',
-          color:colors.csBlue.hex,
-          textAlign:'center',
-          paddingLeft:30, paddingRight:30,
-          marginTop:25,
-          marginBottom:25,
-          overflow:'hidden'
-        }}>You can go to the sphere overview just by zooming out!</Text>
         <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
           <ScrollView style={{}}>
             <View style={WNStyles.innerScrollView}>
+              <Text style={{
+                fontSize: 17,
+                fontWeight:'bold',
+                backgroundColor:'transparent',
+                color:colors.csBlue.hex,
+                textAlign:'center',
+                paddingLeft:30, paddingRight:30,
+                marginTop:25,
+                marginBottom:25,
+                overflow:'hidden'
+              }}>You can go to the sphere overview just by zooming out!</Text>
               <Image source={require('../../images/tutorial/zoomForSphereOverview.png')} style={{width:564*size, height:851*size}} />
               <View style={{height:30}} />
               <Text style={WNStyles.detail}>{

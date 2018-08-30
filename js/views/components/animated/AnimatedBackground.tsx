@@ -62,7 +62,8 @@ export class AnimatedBackground extends Component<any, any> {
         <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>
           <BackgroundImage height={height} image={this.animatedImage} />
         </Animated.View>
-          {this.props.children}
+        { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}
+        { this.props.safeView ? <SafeAreaView style={{flex:1}}>{this.props.children}</SafeAreaView> : this.props.children }
       </View>
     );
   }
