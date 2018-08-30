@@ -222,7 +222,7 @@ export class SphereOverview extends Component<any, any> {
         <SphereLevel
           selectSphere={(sphereId) => {
             this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: { activeSphere:sphereId }});
-            this.setState({zoomLevel:ZOOM_LEVELS.room});
+            this.setState({zoomLevel:ZOOM_LEVELS.room}, () => {  this._updateNavBar(); });
           }}
           zoomInCallback={zoomInCallback}
           zoomOutCallback={zoomOutCallback}
