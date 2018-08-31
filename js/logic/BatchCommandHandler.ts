@@ -52,7 +52,7 @@ class BatchCommandHandlerClass {
    * @param { number } attempts           // amount of times to try this command before failing
    * @param { string } label              // explain where the command comes from,
    */
-  load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') {
+  load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') : Promise<bchReturnType> {
     LOGv.bch("BatchCommandHandler: Loading Command, sphereId:",sphereId," stoneId:", stoneId, stone.config.name, command, label);
     return this._commandHandler.load(stone, stoneId, sphereId, command, false,  attempts, options );
   }
@@ -66,7 +66,7 @@ class BatchCommandHandlerClass {
    * @param { number } attempts           // amount of times to try this command before failing
    * @param { string } label              // explain where the command comes from,
    */
-  loadPriority(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') {
+  loadPriority(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') : Promise<bchReturnType>  {
     LOGv.bch("BatchCommandHandler: Loading High Priority Command, sphereId:",sphereId," stoneId", stoneId, stone.config.name, command, label);
     return this._commandHandler.load(stone, stoneId, sphereId, command, true, attempts, options );
   }

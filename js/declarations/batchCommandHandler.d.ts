@@ -1,3 +1,9 @@
+interface bchReturnType {
+  data: any,
+  viaMesh?: boolean
+}
+
+
 interface keepAlivePayload {
   attempts: number,
   stoneId: string,

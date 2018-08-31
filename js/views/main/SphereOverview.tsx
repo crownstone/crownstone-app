@@ -198,19 +198,19 @@ export class SphereOverview extends Component<any, any> {
         if (this.state.zoomLevel === ZOOM_LEVELS.room) {
           // tell the app the user has done this and we don't need to tell him any more.
           if (state.app.hasZoomedOutForSphereOverview === false) {
-            this.props.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {hasZoomedOutForSphereOverview:true}})
+            this.props.store.dispatch({type: "UPDATE_APP_SETTINGS", data: { hasZoomedOutForSphereOverview: true }});
           }
-          this.setState({zoomLevel: ZOOM_LEVELS.sphere}, () => { this._updateNavBar(); })
+          this.setState({zoomLevel: ZOOM_LEVELS.sphere}, () => { this._updateNavBar(); });
         }
         else { // this is for convenience, it's not accurate but it'll do
-          this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); })
+          this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
         }
       }
     }
 
     let zoomInCallback = () => {
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); })
+        this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
       }
     }
 
@@ -233,7 +233,7 @@ export class SphereOverview extends Component<any, any> {
     }
   }
 
-  _getInstructionScreen(state) {
+  _getInstructionScreen() {
     return (
       <ZoomInstructionOverlay
         visible={this.state.zoomInstructionsVisible}
@@ -277,7 +277,7 @@ export class SphereOverview extends Component<any, any> {
           { this._getContent(state, amountOfSpheres, activeSphereId) }
           { this._getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) }
           { this._getAddItemButton(viewingRemotely, activeSphereId) }
-          { this._getInstructionScreen(state) }
+          { this._getInstructionScreen() }
         </AnimatedBackground>
       );
     }

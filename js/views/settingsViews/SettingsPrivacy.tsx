@@ -113,7 +113,7 @@ export class SettingsPrivacy extends Component<any, any> {
       });
       if (user.uploadHighFrequencyPowerUsage) {
         items.push({
-          label: 'The power usage data collected by the app will be sent to the cloud every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster and is generally used for hubs.',
+          label: 'The power usage data collected by the app will be sent to the cloud every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster.',
           type: 'explanation',
           below: true,
         });
@@ -121,7 +121,7 @@ export class SettingsPrivacy extends Component<any, any> {
       else {
         items.push({
           label: 'The power usage data collected by the app will be sent to the cloud during sync every ' + Math.round(SYNC_INTERVAL/60) + ' minutes.' +
-          '\n\nIf Upload frequently is enabled, it will upload every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster and is generally used for hubs.',
+          '\n\nIf Upload frequently is enabled, it will upload every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster.',
           type: 'explanation',
           below: true,
         });

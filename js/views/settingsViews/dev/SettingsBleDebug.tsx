@@ -45,15 +45,18 @@ export class SettingsBleDebug extends Component<any, any> {
     else if (stone && stone.reachability.disabled) {
       backgroundColor = colors.gray.hex;
     }
-    items.push({
+
+    let rssiData = stone && stone.reachability.rssi > -1000 ? (stone.reachability.rssi + " in ") : '';
+
+      items.push({
       mediumIcon: <IconCircle
         icon={element ? element.config.icon : 'ios-analytics'}
         size={52}
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: element ? element.config.name : "Any",
-      subtext: subtext,
+      label: (element ? element.config.name : "Any"),
+      subtext: rssiData + subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',
       callback: () => {

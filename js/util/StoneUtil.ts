@@ -74,7 +74,7 @@ export const StoneUtil = {
     return StoneUtil.timestampToCrownstoneTime(new Date().valueOf())
   },
 
-  checkFirmwareVersion: function(sphereId, stoneId, stone) {
+  checkFirmwareVersion: function(sphereId, stoneId, stone) : Promise<bchReturnType>  {
     let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from checkFirmware');
     BatchCommandHandler.executePriority();
     return promise;

@@ -13,7 +13,7 @@ import mesh from "../../router/store/reducers/stoneSubReducers/mesh";
 export class CommandManager {
   commands  : batchCommands = {};
 
-  load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number, options: batchCommandEntryOptions) {
+  load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number, options: batchCommandEntryOptions) : Promise<bchReturnType> {
     if (stone.config.locked === true && command.commandName === "multiSwitch") {
       return new Promise((resolve, reject) => { reject({code: errorCodes.STONE_IS_LOCKED, message:"Stone is Locked"}); });
     }
