@@ -13,20 +13,16 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { CancelButton } from "../../components/topbar/CancelButton";
-import { TopbarButton } from "../../components/topbar/TopbarButton";
-import { BackAction } from "../../../util/Back";
 import { Background } from "../../components/Background";
-import { ListEditableItems } from "../../components/ListEditableItems";
 import { colors, OrangeLine, screenHeight, screenWidth, tabBarHeight } from "../../styles";
 import { deviceStyles } from "../../deviceViews/DeviceOverview";
-import { IconButton } from "../../components/IconButton";
 import { toonConfig } from "../../../sensitiveData/toonConfig";
 import { NativeBus } from "../../../native/libInterface/NativeBus";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { Actions } from 'react-native-router-flux';
-import {request} from "../../../cloud/cloudCore";
 import {ScaledImage} from "../../components/ScaledImage";
+import {TextEditInput} from "../../components/editComponents/TextEditInput";
+import {LOGe} from "../../../logging/Log";
 
 
 export class ToonAdd extends Component<any, any> {
@@ -43,13 +39,16 @@ export class ToonAdd extends Component<any, any> {
     this.state = {
       processing: false,
       failed:     false,
-      success:     false,
+      success:    false,
+      manualCodeInput: false,
+      code:       null,
+      codeInput:  '',
     }
 
     this.unsubscribeNativeEvent = NativeBus.on(NativeBus.topics.callbackUrlInvoked, (url) => {
       this.setState({processing: true});
       this.process(url);
-    })
+    });
 
   }
 
@@ -61,6 +60,10 @@ export class ToonAdd extends Component<any, any> {
 
     let code = result[1];
 
+    this.pairWithToon(code);
+  }
+
+  pairWithToon(code) {
     let accessTokens : any = {};
     let agreementIds : any = {};
     CLOUD.thirdParty.toon.getAccessToken(code)
@@ -70,7 +73,7 @@ export class ToonAdd extends Component<any, any> {
           return CLOUD.thirdParty.toon.getToonIds(accessTokens.access_token);
         }
         else {
-          throw "Failed";
+          throw {code: 1, message: "Failed to get AccessToken"};
         }
       })
       .then((data) => {
@@ -81,19 +84,19 @@ export class ToonAdd extends Component<any, any> {
           return CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud(false)
         }
         else {
-          throw "Failed to get agreementIds";
+          throw  {code: 1, message: "Failed to get agreementIds"};
         }
       })
       .then(() => {
-          let actions = [];
-          let promises = [];
-          agreementIds.forEach((agreementId) => {
-            promises.push(
-              CLOUD.forSphere(this.props.sphereId).thirdParty.toon.createToonInCrownstoneCloud({
-                refreshToken: accessTokens.refresh_token,
-                toonAgreementId: agreementId.agreementId,
-                toonAddress: agreementId.street + " " + agreementId.houseNumber
-              }, false)
+        let actions = [];
+        let promises = [];
+        agreementIds.forEach((agreementId) => {
+          promises.push(
+            CLOUD.forSphere(this.props.sphereId).thirdParty.toon.createToonInCrownstoneCloud({
+              refreshToken: accessTokens.refresh_token,
+              toonAgreementId: agreementId.agreementId,
+              toonAddress: agreementId.street + " " + agreementId.houseNumber
+            }, false)
               .then((toon) => {
                 actions.push({
                   type: "ADD_TOON",
@@ -107,8 +110,8 @@ export class ToonAdd extends Component<any, any> {
                   }
                 })
               })
-            )
-          })
+          )
+        })
         return Promise.all(promises).then(() => { this.props.store.batchDispatch(actions) })
       })
       .then(() => {
@@ -129,7 +132,15 @@ export class ToonAdd extends Component<any, any> {
         }
       })
       .catch((err) => {
-        Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
+        LOGe.info("ToonAdd: Error while adding Toon.", err);
+        if (err && typeof err === 'object' && err.code) {
+          if (err.code === 1 && this.state.code) {
+            Alert.alert("Whoops", "The provided code seems to be incorrect.", [{text:'OK'}]);
+            return;
+          }
+        }
+
+        Alert.alert("Whoops", "Something went wrong... Please try again later.", [{text:'OK'}]);
       })
   }
 
@@ -150,11 +161,14 @@ export class ToonAdd extends Component<any, any> {
     else if (this.state.success) {
       text = "Success!"
     }
+    else if (this.state.manualCodeInput && this.state.code === null) {
+      text = "Paste the code from the Crownstone website in the box above and press submit.";
+    }
     else if (this.state.processing) {
-      text = "Connecting to Toon... This shouldn't take long!"
+      text = "Connecting to Toon... This shouldn't take long!";
     }
     else {
-      text =  "When you integrate your Toon with Crownstone, you can use the indoor localization together with your heating!"
+      text =  "When you integrate your Toon with Crownstone, you can use the indoor localization together with your heating!";
     }
 
     return (
@@ -166,10 +180,32 @@ export class ToonAdd extends Component<any, any> {
     if (this.state.failed || this.state.success) {
       return null;
     }
+    if (this.state.manualCodeInput && this.state.code === null) {
+      return (
+        <TouchableOpacity onPress={() => { this.setState({code: this.state.codeInput }); this.pairWithToon(this.state.codeInput); }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
+          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{"Submit"}</Text>
+        </TouchableOpacity>
+      );
+    }
+    else if (this.state.processing && this.state.code !== null) {
+      return (
+        <View style={{alignItems:'center', justifyContent:'center'}}>
+          <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
+            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{"Working...."}</Text>
+          </View>
+        </View>
+      );
+    }
     else if (this.state.processing) {
       return (
-        <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{"Working...."}</Text>
+        <View style={{alignItems:'center', justifyContent:'center'}}>
+          <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
+            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{"Working...."}</Text>
+          </View>
+
+          <TouchableOpacity style={{paddingTop:15}} onPress={() => { this.setState({ manualCodeInput:true })}}>
+            <Text style={{fontSize:15, color: colors.menuBackground.rgba(0.3), textAlign:'center'}}>{"If something went wrong, tap here if you want to manually input the code."}</Text>
+          </TouchableOpacity>
         </View>
       )
     }
@@ -180,7 +216,7 @@ export class ToonAdd extends Component<any, any> {
         }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
           <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{"Connect with Toon!"}</Text>
         </TouchableOpacity>
-      )
+      );
     }
   }
 
@@ -195,9 +231,33 @@ export class ToonAdd extends Component<any, any> {
   }
 
   render() {
-    return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={true}>
-        <OrangeLine/>
+    let content;
+    if (this.state.manualCodeInput) {
+      content = (
+        <View style={{flex:1, alignItems:'center', padding: 20}}>
+          <View style={{flex:1}} />
+          <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
+          <View style={{flex:0.75}} />
+          <View style={{width: 250, height: 60, backgroundColor:"#fff", borderRadius:20, borderWidth: 2, borderColor: colors.gray.rgba(0.5), alignItems:'center', justifyContent:'center'}}>
+            <TextEditInput
+              style={{width: 0.8*screenWidth, padding:10, fontSize:26, fontWeight:'bold', textAlign:"center"}}
+              placeholder='paste code'
+              placeholderTextColor='#ccc'
+              autoCorrect={false}
+              value={this.state.codeInput}
+              callback={(newValue) => { this.setState({codeInput:newValue});}}
+            />
+          </View>
+          <View style={{flex:0.75}} />
+          { this._getText() }
+          <View style={{flex:0.75}} />
+          { this._getButton() }
+          <View style={{flex:0.5}} />
+        </View>
+      );
+    }
+    else {
+      content = (
         <View style={{flex:1, alignItems:'center', padding: 20}}>
           <View style={{flex:1}} />
           <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
@@ -211,6 +271,13 @@ export class ToonAdd extends Component<any, any> {
           { this._getButton() }
           <View style={{flex:0.5}} />
         </View>
+      );
+    }
+
+    return (
+      <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={true}>
+        <OrangeLine/>
+        { content }
       </Background>
     );
   }

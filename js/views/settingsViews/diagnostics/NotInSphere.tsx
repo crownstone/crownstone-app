@@ -121,6 +121,15 @@ export class NotInSphere extends Component<any, any> {
   }
 
   _getResults() {
+    let state = this.props.store.getState();
+    let spheres = state.spheres;
+    let keysLoaded = false;
+    Object.keys(spheres).forEach((sphereId) => {
+      if (spheres[sphereId].state.present === true) {
+        keysLoaded = true;
+      }
+    })
+
     if (this.state.scanningFinished) {
       if (this.state.ibeacons && this.state.verifiedAdvertisements === false && !this.props.canSetupStones) {
         return (
@@ -176,16 +185,27 @@ export class NotInSphere extends Component<any, any> {
         );
       }
       else if (this.state.anyCrownstoneAdvertisements && this.props.canSetupStones && this.state.userInputVisitingSphere === false) {
-        return (
-          <DiagSingleButtonHelp
-            visible={this.state.visible}
-            header={
-              "I can hear a Crownstone, but it does not seem to belong to your Sphere.\n\n" +
-              "If it does belong to you, you can try to factory reset it."
-            }
-            explanation={"Tap the button below to go to help and tap on 'I need to factory reset a Crownstone'."}
-          />
-        );
+        if (!keysLoaded) {
+          return (
+            <DiagSingleBleTroubleshooter
+              visible={this.state.visible}
+              header={"I can hear a Crownstone but the app does not think you're in a Sphere."}
+              explanation={"In this case, you can try to restart the app, Bluetooth and/or your phone.\n\nTap the button below to start the troubleshooter."}
+            />
+          );
+        }
+        else {
+          return (
+            <DiagSingleButtonHelp
+              visible={this.state.visible}
+              header={
+                "I can hear a Crownstone, but it does not seem to belong to your Sphere.\n\n" +
+                "If it does belong to you, you can try to factory reset it."
+              }
+              explanation={"Tap the button below to go to help and tap on 'I need to factory reset a Crownstone'."}
+            />
+          );
+        }
       }
       else if (this.state.anyCrownstoneAdvertisements && !this.props.canSetupStones && this.state.userInputVisitingSphere === false) {
         return (
