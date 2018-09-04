@@ -173,10 +173,10 @@ export class SettingsMeshTopology extends Component<any, any> {
 
     if (stoneIds.length === 0) {
       return (
-        <Background image={this.props.backgrounds.detailsDark}>
+        <Background image={this.props.backgrounds.menu}>
           <OrangeLine/>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Text style={{color:colors.white.hex, fontWeight:'bold'}}>{'No Crownstones in Sphere "' + sphere.config.name + '" yet.'}</Text>
+            <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{'No Crownstones in Sphere "' + sphere.config.name + '" yet.'}</Text>
           </View>
           <TouchableOpacity
             onPress={() => { Actions.settingsMeshTopologyHelp() }}

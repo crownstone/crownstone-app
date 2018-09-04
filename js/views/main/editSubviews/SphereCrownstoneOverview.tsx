@@ -47,7 +47,6 @@ export class SphereCrownstoneOverview extends Component<any, any> {
   }
 
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId) {
-
     items.push({
       __item: <DeviceEntry
         eventBus={this.props.eventBus}
