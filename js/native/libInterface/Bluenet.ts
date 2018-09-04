@@ -19,7 +19,6 @@ const BluenetAPI = {
   keepAlive: () => {},
   requestBleState: () => {},
 
-  forceClearActiveRegion: () => {},
   startIndoorLocalization: () => {},
   stopIndoorLocalization: () => {},
 

@@ -263,6 +263,10 @@ export class SettingsDeveloper extends Component<any, any> {
           type: 'SET_LOGGING',
           data: {logging: false}
         });
+        store.dispatch({
+          type: 'SET_DEVELOPER_MODE',
+          data: {developer: false}
+        });
 
         clearAllLogs();
         Bluenet.enableLoggingToFile(false);

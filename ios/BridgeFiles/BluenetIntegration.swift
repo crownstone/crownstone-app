@@ -440,11 +440,6 @@ open class BluenetJS: RCTEventEmitter {
     
   }
   
-  @objc func forceClearActiveRegion() -> Void {
-    LOGGER.info("BluenetBridge: Called forceClearActiveRegion")
-    GLOBAL_BLUENET!.bluenetLocalization.forceClearActiveRegion()
-  }
-  
   @objc func pauseTracking() -> Void {
     LOGGER.info("BluenetBridge: Called pauseTracking")
     GLOBAL_BLUENET!.bluenetLocalization.pauseTracking()

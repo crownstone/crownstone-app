@@ -199,6 +199,20 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 
+
+  _getExplanationText(state) {
+    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12}
+
+    if (this.props.hideExplanation !== true && (this.props.locationId === null || state.app.hasSeenDeviceSettings === false)) {
+      return (
+        <SlideFadeInView height={15} visible={!this.state.showViaMesh}>
+          <Text style={explanationStyle}>Tap me for more!</Text>
+        </SlideFadeInView>
+      );
+    }
+  }
+
+
   render() {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
@@ -209,8 +223,6 @@ export class DeviceEntry extends Component<any, any> {
       inputRange: [0,10],
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
     });
-
-    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12}
 
     let WrapperElement = TouchableOpacity;
     if (this.props.touchable === false) {
@@ -238,7 +250,7 @@ export class DeviceEntry extends Component<any, any> {
                 tap2toggleThreshold={Util.data.getTapToToggleCalibration(state)}
                 tap2toggleEnabled={state.app.tapToToggleEnabled}
               />
-              { this.props.locationId === null || state.app.hasSeenDeviceSettings === false ? <SlideFadeInView height={15} visible={!this.state.showViaMesh}><Text style={explanationStyle}>Tap me for more!</Text></SlideFadeInView> : undefined}
+              { this._getExplanationText(state) }
               <SlideFadeInView height={15} visible={this.state.showViaMesh}>
                 <Text style={{ color: colors.csOrange.hex, fontSize: 12}}>Sent via mesh!</Text>
               </SlideFadeInView>

@@ -56,6 +56,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
         sphereId={sphereId}
         touchable={false}
         viewingRemotely={false}
+        hideExplanation={true}
       />
     });
   }
