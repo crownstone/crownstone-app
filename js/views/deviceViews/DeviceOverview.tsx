@@ -84,7 +84,10 @@ export class DeviceOverview extends Component<any, any> {
       }
       else  if (panAvailable === false && this.state.swipeEnabled === true) {
         // this is used to move the view back if the user swiped it accidentally
-        (this.refs['deviceSwiper'] as any).scrollBy(this.summaryIndex);
+        if (this.refs['deviceSwiper']) {
+          (this.refs['deviceSwiper'] as any).scrollBy(this.summaryIndex);
+        }
+
         this.setState({swipeEnabled: false});
       }
     }));
