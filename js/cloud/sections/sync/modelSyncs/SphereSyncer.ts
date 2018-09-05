@@ -162,12 +162,12 @@ export class SphereSyncer extends SyncingBase {
       else if (Permissions.inSphere(localId).canSetPositionInCloud) {
         if (!sphere_from_cloud.floatingLocationPosition) {
           this.transferPromises.push(
-            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition(localSphere.layout.floatingLocation)
+            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition({x:localSphere.layout.floatingLocation.x, y: localSphere.layout.floatingLocation.y})
           )
         }
         else if (shouldUpdateInCloud(localSphere.layout.floatingLocation, sphere_from_cloud.floatingLocationPosition)) {
           this.transferPromises.push(
-            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition(localSphere.layout.floatingLocation)
+            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition({x:localSphere.layout.floatingLocation.x, y: localSphere.layout.floatingLocation.y})
           )
         }
       }

@@ -120,12 +120,12 @@ export class LocationSyncer extends SyncingSphereItemBase {
       else if (Permissions.inSphere(this.localSphereId).canSetPositionInCloud) {
         if (!location_from_cloud.sphereOverviewPosition) {
           this.transferPromises.push(
-            CLOUD.forLocation(location_from_cloud.id).updateLocationPosition(localLocation.layout)
+            CLOUD.forLocation(location_from_cloud.id).updateLocationPosition({x: localLocation.layout.x, y: localLocation.layout.y})
           );
         }
         else if (shouldUpdateInCloud(localLocation.layout, location_from_cloud.sphereOverviewPosition)) {
           this.transferPromises.push(
-            CLOUD.forLocation(location_from_cloud.id).updateLocationPosition(localLocation.layout)
+            CLOUD.forLocation(location_from_cloud.id).updateLocationPosition({x: localLocation.layout.x, y: localLocation.layout.y})
           );
         }
       }
