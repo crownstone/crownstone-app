@@ -48,7 +48,7 @@ export const sync = {
       }
     }, 30000);
 
-    LOG.info("SYNC: Start Syncing.");
+    LOG.info("Sync: Start Syncing.");
     this.__currentlySyncing = true;
 
     // set the authentication tokens
@@ -136,7 +136,7 @@ export const sync = {
       })
       // FINISHED SYNCING
       .then(() => {
-        LOG.info("SYNC: Finished. Dispatching ", actions.length, " actions!");
+        LOG.info("Sync: Finished. Dispatching ", actions.length, " actions!");
         let reloadTrackingRequired = false;
 
         actions.forEach((action) => {
@@ -189,7 +189,7 @@ export const sync = {
 
       })
       .catch((err) => {
-        LOG.info("SYNC: Failed... Could dispatch ", actions.length, " actions!", actions);
+        LOG.info("Sync: Failed... Could dispatch ", actions.length, " actions!", actions);
         actions.forEach((action) => {
           action.triggeredBySync = true;
         });
@@ -210,7 +210,7 @@ export const sync = {
         this.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
         eventBus.emit("CloudSyncComplete");
-        LOGe.cloud("SYNC: error during sync:", err);
+        LOGe.cloud("Sync: error during sync:", err);
 
         throw err;
       })
@@ -234,7 +234,7 @@ let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
           return retryThisAfterRecovery();
         })
         .catch((err) => {
-          LOG.info("SYNC: COULD NOT VERIFY USER -- ERROR", err);
+          LOG.info("Sync: COULD NOT VERIFY USER -- ERROR", err);
           if (err.status === 401) {
             AppUtil.logOut(store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }

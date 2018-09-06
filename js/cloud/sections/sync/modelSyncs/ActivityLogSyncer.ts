@@ -50,17 +50,17 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
       return new Promise((resolve, reject) => { resolve([]); })
     }
 
-    let lastTimestamp = null;
+    let lastSyncTime = null;
     if (state &&
       state.spheres[this.localSphereId] &&
       state.spheres[this.localSphereId].stones &&
       state.spheres[this.localSphereId].stones[this.localStoneId]) {
-      lastTimestamp = state.spheres[this.localSphereId].stones[this.localStoneId].lastUpdated.syncedActivityLog;
+      lastSyncTime = state.spheres[this.localSphereId].stones[this.localStoneId].lastUpdated.syncedActivityLog;
     }
 
     let request = { excludeUserId: state.user.userId, yourTimestamp: new Date().valueOf() };
-    if (lastTimestamp) {
-      request['lastTimestamp'] = lastTimestamp;
+    if (lastSyncTime) {
+      request['sinceTimestamp'] = lastSyncTime;
     }
 
     return CLOUD.forStone(this.cloudStoneId).getActivityLogs(request);
