@@ -123,7 +123,7 @@ export class SphereUser extends Component<any, any> {
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture
-              value={user.picture}
+              picture={user.picture}
               size={120}
             />
           </View>

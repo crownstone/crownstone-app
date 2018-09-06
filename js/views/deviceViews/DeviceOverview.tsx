@@ -383,7 +383,12 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
     case behaviourIndex:
       if (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
         rightLabel = 'Change';
-        rightAction = () => {Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId});}
+        if (stone.config.locked === true) {
+          rightAction = () => { Alert.alert("Crownstone is Locked.","You can edit the behaviour when the Crownstone is unlocked again.",[{text:"OK"}])};
+        }
+        else {
+          rightAction = () => {Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId});}
+        }
       }
       break;
   }
