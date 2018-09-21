@@ -60,17 +60,12 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
         // the appliance does not exist locally but it does exist in the cloud.
         // we create it locally.
         localId = Util.getUUID();
-        this.transferPromises.push(
-          transferAppliances.createLocal(this.actions, {
-            localId: localId,
-            localSphereId: this.localSphereId,
-            cloudData: appliance_from_cloud
-          })
-          .then(() => {
-            this._copyBehaviourFromCloud(localId, appliance_from_cloud);
-          })
-          .catch(() => {})
-        );
+        transferAppliances.createLocal(this.actions, {
+          localId: localId,
+          localSphereId: this.localSphereId,
+          cloudData: appliance_from_cloud
+        })
+        this._copyBehaviourFromCloud(localId, appliance_from_cloud);
       }
 
       cloudIdMap[appliance_from_cloud.id] = localId;
@@ -159,14 +154,12 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
       );
     }
     else if (shouldUpdateLocally(applianceInState.config, appliance_from_cloud)) {
-      this.transferPromises.push(
-        transferAppliances.updateLocal(this.actions, {
-          localSphereId:  this.localSphereId,
-          localId:        localId,
-          cloudId:        appliance_from_cloud.id,
-          cloudData:      appliance_from_cloud
-        }).catch(() => {})
-      );
+      transferAppliances.updateLocal(this.actions, {
+        localSphereId:  this.localSphereId,
+        localId:        localId,
+        cloudId:        appliance_from_cloud.id,
+        cloudData:      appliance_from_cloud
+      })
     }
 
     if (!applianceInState.config.cloudId) {

@@ -280,3 +280,19 @@ export const rgb2hsv = function(r,g?,b?) {
   let saturation = (maxRGB - minRGB)/maxRGB;
   return {h:hue,s:saturation,v:maxRGB};
 };
+
+
+
+/**
+ * Convert HSV to hex
+ *
+ * @param h   [0..360] || object {h:[0..360],s:[0..1],v:[0..1]}
+ * @param s   [0..1]
+ * @param v   [0..1]
+ * @constructor
+ */
+export const hsv2hex = function(h, s, v) {
+  let rgb = hsv2rgb(h,s,v)
+
+  return rgb2hex(rgb)
+};

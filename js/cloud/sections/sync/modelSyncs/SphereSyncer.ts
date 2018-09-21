@@ -67,13 +67,10 @@ export class SphereSyncer extends SyncingBase {
         // we create it locally.
         localId = Util.getUUID();
         cloudIdMap[sphere_from_cloud.id] = localId;
-        this.transferPromises.push(
-          transferSpheres.createLocal(this.actions, {
-            localId: localId,
-            cloudData: sphere_from_cloud
-          })
-          .catch(() => {})
-        );
+        transferSpheres.createLocal(this.actions, {
+          localId: localId,
+          cloudData: sphere_from_cloud
+        })
       }
 
       this.syncChildren(store, localId, localId ? spheresInState[localId] : null, sphere_from_cloud);
@@ -225,12 +222,10 @@ export class SphereSyncer extends SyncingBase {
       );
     }
     else if (shouldUpdateLocally(sphereInState.config, sphere_from_cloud) || corruptData) {
-      this.transferPromises.push(
-        transferSpheres.updateLocal(this.actions, {
-          localId:   localId,
-          cloudData: sphere_from_cloud
-        }).catch(() => {})
-      );
+      transferSpheres.updateLocal(this.actions, {
+        localId:   localId,
+        cloudData: sphere_from_cloud
+      })
     }
 
     if (!sphereInState.config.cloudId) {

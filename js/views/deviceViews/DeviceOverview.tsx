@@ -239,7 +239,6 @@ export class DeviceOverview extends Component<any, any> {
       hasScheduler    = false;
     }
 
-
     let checkScrolling = (newState) => {
       if (this.state.scrolling !== newState) {
         this._updateNavBar(this.state.swiperIndex, newState);
@@ -279,8 +278,6 @@ export class DeviceOverview extends Component<any, any> {
     let content = [];
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId, eventBus: this.props.eventBus};
 
-
-
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
       return content;
@@ -311,7 +308,6 @@ export class DeviceOverview extends Component<any, any> {
     else {
       content.push(<DeviceSummary key={'summarySlide'}  {...props} />);
     }
-
 
     if (hasBehaviour) {
       content.push(<DeviceBehaviour key={'behaviourSlide'} {...props} />);
@@ -387,7 +383,7 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
           rightAction = () => { Alert.alert("Crownstone is Locked.","You can edit the behaviour when the Crownstone is unlocked again.",[{text:"OK"}])};
         }
         else {
-          rightAction = () => {Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId});}
+          rightAction = () => { Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId}); }
         }
       }
       break;

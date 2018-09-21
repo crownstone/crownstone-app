@@ -159,7 +159,7 @@ class SphereCircleClass extends Component<any, any> {
             }}>
             <Icon name={sphere.config.icon || 'c1-sphere'} size={this.iconSize} color={textColor} />
             <Text
-              style={{width: 0.75*this.innerDiameter, color: textColor, fontWeight: 'bold', fontSize: this.textSize, textAlign:'center', }}
+              style={{width: 0.75*this.innerDiameter, minHeight:20, color: textColor, fontWeight: 'bold', fontSize: this.textSize, textAlign:'center'}}
               numberOfLines={2}
               ellipsizeMode={"tail"}
               adjustsFontSizeToFit={true}

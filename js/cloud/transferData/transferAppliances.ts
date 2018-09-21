@@ -61,7 +61,7 @@ export const transferAppliances = {
   },
 
   createLocal: function( actions, data: transferToLocalData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'ADD_APPLIANCE',
       { sphereId: data.localSphereId, applianceId: data.localId },
@@ -72,7 +72,7 @@ export const transferAppliances = {
 
 
   updateLocal: function( actions, data: transferToLocalData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'UPDATE_APPLIANCE_CONFIG',
       { sphereId: data.localSphereId, applianceId: data.localId },

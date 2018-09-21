@@ -4352,12 +4352,6 @@ react-native-vector-icons@~4.5.0:
     prop-types "^15.5.10"
     yargs "^8.0.2"
 
-react-native-webgl@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/react-native-webgl/-/react-native-webgl-0.8.0.tgz#f03552c639a2a022c67ff7b9d1256bd8aa56aadc"
-  dependencies:
-    prop-types "^15.5.8"
-
 react-native@0.53.3:
   version "0.53.3"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.53.3.tgz#930d1de5d68866f32a4b55112fc0228e29784e8f"

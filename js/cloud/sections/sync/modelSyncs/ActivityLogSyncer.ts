@@ -130,14 +130,12 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
         localId = Util.getUUID();
         localActivityLogsIdsSynced[localId] = true;
         // add activityLog
-        this.transferPromises.push(
-          transferActivityLogs.createLocal(this.actions, {
-            localId: localId,
-            localSphereId: this.localSphereId,
-            localStoneId: this.localStoneId,
-            cloudData: activity_log_in_cloud
-          }).catch(() => {})
-        );
+        transferActivityLogs.createLocal(this.actions, {
+          localId: localId,
+          localSphereId: this.localSphereId,
+          localStoneId: this.localStoneId,
+          cloudData: activity_log_in_cloud
+        })
       }
 
     });

@@ -4,51 +4,29 @@ import { transferUtil } from "./shared/transferUtil";
 
 let fieldMap : fieldMap = [
   {local: 'switchedToState', cloud: 'switchedToState' },
-  {local: 'timestamp',       cloud: 'timestamp'       },
   {local: 'type',            cloud: 'type'            },
-  {local: 'intent',          cloud: 'intent'          },
+  {local: 'startTime',       cloud: 'startTime'       },
+  {local: 'lastDirectTime',  cloud: 'lastDirectTime'  },
+  {local: 'lastMeshTime',    cloud: 'lastMeshTime'    },
   {local: 'delayInCommand',  cloud: 'delayInCommand'  },
-  {local: 'viaMesh',         cloud: 'viaMesh'         },
+  {local: 'count',           cloud: 'count'           },
   {local: 'userId',          cloud: 'userId'          },
-  {local: 'commandUuid',     cloud:  'commandUuid'    },
-  {local: 'cloudId',         cloud:  'id' ,  cloudToLocalOnly: true },
+  {local: 'cloudId',         cloud: 'id' ,  cloudToLocalOnly: true },
 ];
 
 
-export const transferActivityLogs = {
+export const transferActivityRanges = {
   fieldMap: fieldMap,
-
-  createOnCloud: function( actions, data : transferNewToCloudStoneData ) {
-    let payload = {};
-    transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
-
-    return CLOUD.forStone(data.cloudStoneId).createActivityLog(payload)
-      .then((result) => {
-        // update cloudId in local database.
-        actions.push({
-          type:     'UPDATE_ACTIVITY_LOG_CLOUD_ID',
-          sphereId: data.localSphereId,
-          stoneId:  data.localStoneId,
-          logId:    data.localId,
-          data:     { cloudId: result.id }
-        });
-        return result.id;
-      })
-      .catch((err) => {
-        LOGe.cloud("Transfer-ActivityLogs: Could not create ActivityLog in cloud", err);
-        throw err;
-      });
-  },
 
   batchCreateOnCloud: function( state, actions, dataArray: transferNewToCloudStoneData[]) {
     let batch = [];
 
     let localSphereId = null;
     let localStoneId  = null;
-    let localLogId    = [];
+    let localRangeIds = [];
 
     if (dataArray.length > 0) {
-      localStoneId = dataArray[0].localStoneId;
+      localStoneId  = dataArray[0].localStoneId;
       localSphereId = dataArray[0].localSphereId;
     }
     else {
@@ -59,11 +37,11 @@ export const transferActivityLogs = {
       let data = dataArray[i];
       let payload = {};
       transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
-      localLogId.push(data.localId);
+      localRangeIds.push(data.localId);
       batch.push(payload);
     }
 
-    return CLOUD.forStone(localStoneId).batchCreateActivityLogs(batch, new Date().valueOf())
+    return CLOUD.forStone(localStoneId).batchCreateActivityRanges(batch, new Date().valueOf())
       .then((data) => {
         if (data.length > 0) {
           let sphere = state.spheres[localSphereId];
@@ -73,28 +51,61 @@ export const transferActivityLogs = {
           // we directly edit the state instead of going through action dispatching. Since activity logs add quickly,
           // this can lead up to 10.000 actions. This would slow down the UI thread for too long.
           for (let i = 0; i < data.length; i++) {
-            stone.activityLogs[localLogId[i]].cloudId = data[i].id;
+            stone.activityRanges[localRangeIds[i]].cloudId = data[i].id;
           }
 
           // We fire one action. This action will at least trigger a persist call which will persist all changes in our
           // state.
           actions.push({
-            type: 'UPDATE_ACTIVITY_LOG_CLOUD_ID',
+            type: 'UPDATE_ACTIVITY_RANGE_CLOUD_ID',
             sphereId: localSphereId,
             stoneId: localStoneId,
-            logId: localLogId[0],
+            rangeId: localRangeIds[0],
             data: {cloudId: data[0].id}
           });
         }
       })
   },
 
+  batchUpdateOnCloud: function( state, actions, dataArray: transferNewToCloudStoneData[]) {
+    let batch = [];
+
+    let localStoneId = null;
+
+    if (dataArray.length > 0) {
+      localStoneId = dataArray[0].localStoneId;
+    }
+    else {
+      return new Promise((resolve, reject) => { resolve() })
+    }
+
+    for (let i = 0; i < dataArray.length; i++) {
+      let data = dataArray[i];
+      let payload = {};
+      transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+      payload['id'] = data.localData.cloudId;
+      batch.push(payload);
+    }
+
+    return CLOUD.forStone(localStoneId).batchUpdateActivityRanges(batch, new Date().valueOf())
+  },
+
 
   createLocal: function( actions, data: transferToLocalStoneData) {
     transferUtil._handleLocal(
       actions,
-      'ADD_ACTIVITY_LOG',
-      { sphereId: data.localSphereId, stoneId: data.localStoneId, logId: data.localId },
+      'ADD_ACTIVITY_RANGE',
+      { sphereId: data.localSphereId, stoneId: data.localStoneId, rangeId: data.localId },
+      data,
+      fieldMap
+    );
+  },
+
+  updateLocal: function( actions, data: transferToLocalStoneData) {
+    transferUtil._handleLocal(
+      actions,
+      'UPDATE_ACTIVITY_RANGE',
+      { sphereId: data.localSphereId, stoneId: data.localStoneId, rangeId: data.localId },
       data,
       fieldMap
     );

@@ -39,7 +39,6 @@ import { TopbarButton }           from "../components/topbar/TopbarButton";
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { RoomDeleted }            from "../static/RoomDeleted";
 import { preparePictureURI }      from "../../util/Util";
-import { ShadedImage }            from "../components/ShadedImage";
 import { Scheduler }              from "../../logic/Scheduler";
 import { topBarStyle }            from "../components/topbar/TopbarStyles";
 
@@ -331,29 +330,7 @@ export class RoomOverview extends Component<any, any> {
       if (!location) { return <RoomDeleted /> }
 
       if (location.config.picture) {
-        if (this.viewingRemotelyInitial === false && this.viewingRemotely === false && Platform.OS === 'android') {
-          // update cache buster
-          if (this.pictureTaken !== location.config.pictureTaken) {
-            this.pictureTaken = location.config.pictureTaken;
-          }
-          
-          backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri: preparePictureURI(location.config.picture)}} />
-        }
-        else {
-          roomCustomImage = (
-            <ShadedImage
-              style={{width: screenWidth, height: screenHeight}}
-              image={location.config.picture}
-              imageTaken={location.config.pictureTaken}
-              backgroundImageSource={this.props.getBackground('main', this.viewingRemotely)}
-              r={1} g={1} b={1}
-              blendFactor={this.viewingRemotely ? 0.0 : 0.0}
-              grayScale={this.viewingRemotely ? 0.9 : 0.0}
-              ignoreBackground={Platform.OS === 'ios'}
-              enableOpacityShaderFade={Platform.OS === 'ios'}
-            />
-          );
-        }
+        // backgroundImage = <Image style={[styles.fullscreen, {resizeMode: 'cover'}]} source={{uri: preparePictureURI(location.config.picture)}} />;
       }
     }
 

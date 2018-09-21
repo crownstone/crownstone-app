@@ -159,15 +159,15 @@ export class SphereOverview extends Component<any, any> {
     let activeSphere = state.app.activeSphere;
 
     let sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
-
     // handle the case where we deleted a sphere that was active.
     if (state.spheres[activeSphere] === undefined) {
       activeSphere = null;
     }
     if (activeSphere === null && sphereIds.length > 0) {
+
       let presentSphereId = Util.data.getPresentSphereId(state);
       if (!presentSphereId) {
-        this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
+        this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: null}});
       }
       else {
         this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: presentSphereId}});
@@ -262,6 +262,7 @@ export class SphereOverview extends Component<any, any> {
   }
 
   render() {
+    console.log("RENDER OVERVIEW")
     LOG.info("RENDERING_OVERVIEW");
     const store = this.props.store;
     const state = store.getState();
@@ -274,7 +275,7 @@ export class SphereOverview extends Component<any, any> {
 
       if (!activeSphereId) {
         return (
-          <AnimatedBackground image={background}>
+          <AnimatedBackground image={require("../../images/sphereBackground.png")}>
             <OrangeLine/>
             { this._getContent(state, amountOfSpheres, activeSphereId) }
           </AnimatedBackground>

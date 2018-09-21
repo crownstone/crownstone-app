@@ -27,7 +27,13 @@ export class ActivityLogItem extends Component<any, any> {
     if (this.props.data.cancelled) {
       return colors.menuRed.hex;
     }
-    else if (this.props.data.type === "generatedResponse") {
+    else if (this.props.data.type === "rangeStart" || this.props.data.type === "rangeEnd") {
+      return colors.darkPurple.hex;
+    }
+    else if (this.props.data.type === "generatedEnter") {
+      return colors.green.hex;
+    }
+    else if (this.props.data.type === "generatedExit") {
       return colors.darkPurple.hex;
     }
     else if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState' || this.props.data.type === 'skippedHeartbeat') {
@@ -84,8 +90,19 @@ export class ActivityLogItem extends Component<any, any> {
           }
       }
     }
+    else if (this.props.data.type === 'generatedEnter') {
+      if (this.props.data.generatedFrom === 'keepAliveSphere') {
+        return 'ios-globe'
+      }
+      else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
+        return 'md-cube';
+      }
+      else if (this.props.data.generatedFrom === 'keepAliveOther') {
+        return 'md-eye-off';
+      }
+    }
 
-    return 'md-moon'
+    return 'md-moon';
   }
 
   _getTitle(canDoIndoorLocalization, roomConfig) {
@@ -104,19 +121,69 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === 'schedule') {
       return timeIndicator + " Schedule";
     }
-    else if (this.props.data.type === 'generatedResponse') {
-      if (this.props.data.generatedFrom === 'keepAliveSphere') {
-        // exit sphere
-        return timeIndicator + 'Left the Sphere.';
+    else if (this.props.data.type === 'generatedExit') {
+      if (this.props.data.isSelf) {
+        if (this.props.data.generatedFrom === 'keepAliveSphere') {
+          // exit sphere
+          return timeIndicator + 'You left the Sphere.';
+        }
+        else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
+          // exit room
+          return timeIndicator + 'You left the ' + roomConfig.name + '.';
+        }
+        else if (this.props.data.generatedFrom === 'keepAliveOther') {
+          // away
+          return timeIndicator + 'You went away.';
+        }
+
       }
-      else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
-        // exit room
-        return timeIndicator + 'Left the ' + roomConfig.name + '.';
+      else {
+        if (this.props.data.generatedFrom === 'keepAliveSphere') {
+          // exit sphere
+          return timeIndicator + 'Someone left the Sphere.';
+        }
+        else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
+          // exit room
+          return timeIndicator + 'Someone left the ' + roomConfig.name + '.';
+        }
+        else if (this.props.data.generatedFrom === 'keepAliveOther') {
+          // away
+          return timeIndicator + 'Someone is away.';
+        }
       }
-      else if (this.props.data.generatedFrom === 'keepAliveOther') {
-        // away
-        return timeIndicator + 'Away.';
+      return timeIndicator + ' ' + this.props.data.generatedFrom + this.props.data.switchedToState;
+    }
+    else if (this.props.data.type === 'generatedEnter') {
+      if (this.props.data.isSelf) {
+        if (this.props.data.generatedFrom === 'keepAliveSphere') {
+          // enter sphere
+          return timeIndicator + 'You entered the Sphere.';
+        }
+        else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
+          // enter room
+          return timeIndicator + 'You entered the ' + roomConfig.name + '.';
+        }
+        else if (this.props.data.generatedFrom === 'keepAliveOther') {
+          // near
+          return timeIndicator + 'You are near.';
+        }
       }
+      else {
+        if (this.props.data.generatedFrom === 'keepAliveSphere') {
+          // enter sphere
+          return timeIndicator + 'Someone entered the Sphere.';
+        }
+        else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
+          // enter room
+          return timeIndicator + 'Someone entered the ' + roomConfig.name + '.';
+        }
+        else if (this.props.data.generatedFrom === 'keepAliveOther') {
+          // near
+          return timeIndicator + 'Someone is near.';
+        }
+      }
+
+
       return timeIndicator + ' ' + this.props.data.generatedFrom + this.props.data.switchedToState;
     }
     else if (this.props.data.type === 'multiswitch') {
@@ -145,11 +212,14 @@ export class ActivityLogItem extends Component<any, any> {
           }
       }
     }
+
+    return timeIndicator + this.props.data.type
   }
 
 
 
   _getText(canDoIndoorLocalization, roomConfig) {
+    let currentState = (this.props.stone.state.state === 0 ? 'off' : 'on');
     let targetState = (this.props.data.switchedToState === 0 ? 'off' : 'on');
     let personPrefix = "You";
     if (this.props.data.userId !== this.props.state.user.userId && this.props.data.userId) {
@@ -185,8 +255,6 @@ export class ActivityLogItem extends Component<any, any> {
       return this.props.data.count + ' heartbeats once every ' + this.props.data.averageTime + ' seconds.';
     }
     else if (this.props.data.type === 'schedule') {
-
-
       let scheduledEndLabel = " for a scheduled action.";
       if (this.props.data.label && this.props.data.label.length > 0) {
         scheduledEndLabel = " for schedule \"" + this.props.data.label + '\".';
@@ -198,17 +266,22 @@ export class ActivityLogItem extends Component<any, any> {
         return initialLabel + targetState + scheduledEndLabel;
       }
     }
-    else if (this.props.data.type === 'generatedResponse') {
+    else if (this.props.data.type === 'generatedExit') {
       if (this.props.data.generatedFrom === 'keepAliveSphere') {
-        // exit sphere
-        if (this.props.data.switchedToState === -1) {
-          return 'Sphere heartbeat expired.';
-        }
-        else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-          return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the Sphere.";
+        if (this.props.data.otherUserPresent) {
+          return "I'm still " + currentState + " because there are still others in the Sphere.";
         }
         else {
-          return initialLabel + targetState + " because everyone left the Sphere.";
+          // exit sphere
+          if (this.props.data.switchedToState === -1) {
+            return 'Sphere heartbeat expired.';
+          }
+          else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
+            return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the Sphere.";
+          }
+          else {
+            return initialLabel + targetState + " because everyone left the Sphere.";
+          }
         }
       }
       else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
@@ -334,7 +407,6 @@ export class ActivityLogItem extends Component<any, any> {
       <View style={{flexDirection: 'row', width: screenWidth, height: this.props.height, paddingLeft:25, alignItems:"center"}}>
         <View style={{ width: screenWidth - 60, height:2, backgroundColor: colors.white.rgba(0.3), position:'absolute', top: this.props.height*0.5, left:30}} />
         <View style={{ width: 4, height:4, borderRadius:2, backgroundColor: colors.white.rgba(0.3), position:'absolute', top: this.props.height*0.5 - 1, left: screenWidth - 30}} />
-
 
         <View style={{backgroundColor:"#fff", alignItems:'center', justifyContent:"center", width: 56, height:56, borderRadius: 28}}>
           <IconButton name={this._getIcon(canDoIndoorLocalization)} size={30} buttonSize={50} radius={25} color={'#fff'} buttonStyle={{backgroundColor: this._getBackgroundColor()}}/>

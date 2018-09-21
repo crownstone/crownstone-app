@@ -475,10 +475,15 @@ class BatchCommandHandlerClass {
           resolve();
         })
         .catch((err) => {
-          BluenetPromiseWrapper.phoneDisconnect()
-            .then(() => {
+          // In case the disconnect event triggers a bug, we return this promise and reject the error in either case.
+          // This will ensure the promise manager will NEVER stall.
+          return BluenetPromiseWrapper.phoneDisconnect()
+            .then((err) => {
               reject(err);
             })
+        })
+        .catch((err) => {
+          reject(err);
         })
     });
   }

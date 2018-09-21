@@ -65,14 +65,11 @@ export class LocationSyncer extends SyncingSphereItemBase {
         // we create it locally.
 
         localId = Util.getUUID();
-        this.transferPromises.push(
-          transferLocations.createLocal(this.actions, {
-            localId: localId,
-            localSphereId: this.localSphereId,
-            cloudData: location_from_cloud
-          })
-          .catch(() => {})
-        );
+        transferLocations.createLocal(this.actions, {
+          localId: localId,
+          localSphereId: this.localSphereId,
+          cloudData: location_from_cloud
+        })
 
         // download image
         this._downloadLocationImage(localId, location_from_cloud.id, location_from_cloud.imageId);
@@ -287,13 +284,11 @@ export class LocationSyncer extends SyncingSphereItemBase {
       );
     }
     else if (shouldUpdateLocally(locationInState.config, location_from_cloud)) {
-      this.transferPromises.push(
-        transferLocations.updateLocal(this.actions, {
-          localId:   localId,
-          localSphereId: this.localSphereId,
-          cloudData: location_from_cloud
-        }).catch(() => {})
-      );
+      transferLocations.updateLocal(this.actions, {
+        localId:   localId,
+        localSphereId: this.localSphereId,
+        cloudData: location_from_cloud
+      })
     }
 
     if (!locationInState.config.cloudId) {

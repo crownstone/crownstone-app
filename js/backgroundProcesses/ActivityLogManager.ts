@@ -3,6 +3,7 @@ import {LOG} from "../logging/Log";
 import {Util} from "../util/Util";
 import {transferActivityLogs} from "../cloud/transferData/transferActivityLogs";
 import {MapProvider} from "./MapProvider";
+import {transferActivityRanges} from "../cloud/transferData/transferActivityRanges";
 
 
 class ActivityLogManagerClass {
@@ -25,7 +26,7 @@ class ActivityLogManagerClass {
 
   init() {
     if (this._initialized === false) {
-      eventBus.on("NEW_ACTIVITY_LOG", this._handleActivity.bind(this))
+      eventBus.on("NEW_ACTIVITY_LOG", (data) => { if (data.command) {this._handleActivity(data);}});
       eventBus.on("disconnect",       this._commit.bind(this));
       this._initialized = true;
 
@@ -39,7 +40,7 @@ class ActivityLogManagerClass {
       connectedTo: redux stone Id,
       target:      redux stone Id,
       timeout:     com.timeout,
-      intent:      com.timeout,
+      intent:      com.intent,
       changeState: com.changeState,
       state:       com.state
     }
@@ -47,73 +48,165 @@ class ActivityLogManagerClass {
    * @private
    */
   _handleActivity(data) {
-    if (data.command) {
-      let state = this.store.getState();
+    if (data.command === "keepAliveState" || data.command === "keepAlive") {
+      return this._handleActivityRange(data);
+    }
 
-      let action = {
-        type: "ADD_ACTIVITY_LOG",
-        sphereId: data.sphereId,
-        stoneId:  data.target,
-        logId: Util.getUUID(),
-        data: {
-          commandUuid: data.commandUuid,
-          viaMesh: data.connectedTo !== data.target,
-          type: data.command,
-          userId: state.user.userId,
-          timestamp: new Date().valueOf(),
-        }
-      }
-      let unknownAction = false;
-      switch (data.command) {
-        case 'keepAliveState':
-          action.data["delayInCommand"]  = data.timeout;
-          action.data["switchedToState"] = data.changeState ? data.state : -1;
-          break;
-        case 'multiswitch':
-        case 'tap2toggle':
-          action.data["delayInCommand"]  = data.timeout;
-          action.data["switchedToState"] = data.state;
-          action.data["intent"]          = data.intent;
-          break;
-        case 'keepAlive':
-          break;
-        default:
-          unknownAction = true;
-      }
+    let state = this.store.getState();
 
-      if (!unknownAction) {
-        this._stagedActions.push(action);
+    let action = {
+      type: "ADD_ACTIVITY_LOG",
+      sphereId: data.sphereId,
+      stoneId:  data.target,
+      logId: Util.getUUID(),
+      data: {
+        commandUuid: data.commandUuid,
+        viaMesh: data.connectedTo !== data.target,
+        type: data.command,
+        userId: state.user.userId,
+        timestamp: new Date().valueOf(),
       }
     }
+    let unknownAction = false;
+    switch (data.command) {
+      case 'keepAliveState':
+        action.data["delayInCommand"]  = data.timeout;
+        action.data["switchedToState"] = data.changeState ? data.state : -1;
+        break;
+      case 'multiswitch':
+      case 'tap2toggle':
+        action.data["delayInCommand"]  = data.timeout;
+        action.data["switchedToState"] = data.state;
+        action.data["intent"]          = data.intent;
+        break;
+      case 'keepAlive':
+        break;
+      default:
+        unknownAction = true;
+    }
+
+    if (!unknownAction) {
+      this._stagedActions.push(action);
+    }
+  }
+
+  _handleActivityRange(data) {
+    let state = this.store.getState();
+    let sphere = state.spheres[data.sphereId];
+    let stone = sphere.stones[data.target];
+
+    let ranges = stone.activityRanges;
+    let rangeIds = Object.keys(ranges);
+    let now = new Date().valueOf();
+    let activeRangeId = null;
+    let activeRange = null;
+    for (let i = 0; i < rangeIds.length; i++) {
+      let range = ranges[rangeIds[i]];
+      let delayInMs = range.delayInCommand*1000;
+
+      if (
+        (range.lastDirectTime !== null && now - range.lastDirectTime < delayInMs) ||
+        (range.lastMeshTime   !== null && now - range.lastMeshTime   < delayInMs)) {
+        // this is the active range!
+        activeRange = range;
+        activeRangeId = rangeIds[i];
+        break;
+      }
+    }
+
+
+    let viaMesh = data.connectedTo !== data.target;
+    let action = {
+      type: "ADD_ACTIVITY_RANGE",
+      sphereId: data.sphereId,
+      stoneId:  data.target,
+      rangeId: null,
+      data: {}
+    }
+    let actionData = {
+      count:           1,
+      delayInCommand:  data.timeout || sphere.config.exitDelay,
+      switchedToState: data.changeState ? data.state : -1,
+      type:            data.command,
+      cloudId:         null,
+      userId:          state.user.userId,
+    }
+    if (viaMesh) { actionData["lastMeshTime"]   = now; }
+    else         { actionData["lastDirectTime"] = now; }
+
+    if (activeRange) {
+      action.type = "UPDATE_ACTIVITY_RANGE";
+      action.rangeId = activeRangeId;
+      actionData.count = activeRange.count + 1;
+      actionData.cloudId = activeRange.cloudId;
+    }
+    else {
+      action.rangeId = Util.getUUID();
+      actionData["startTime"] = now;
+    }
+
+    action.data = actionData;
+
+    this._stagedActions.push(action);
   }
 
   _commit() {
     if (this._stagedActions.length > 0) {
       this.store.batchDispatch(this._stagedActions);
 
-      // @ts-ignore
-      let data : [transferNewToCloudStoneData] = [];
+      let logData : transferNewToCloudStoneData[] = [];
+      let newRangeData : transferNewToCloudStoneData[] = [];
+      let updatedRangeData : transferNewToCloudStoneData[] = [];
       let state = this.store.getState();
 
       for (let i = 0; i < this._stagedActions.length; i++) {
         let action = this._stagedActions[i];
         let sphere = state.spheres[action.sphereId];
         let stone = sphere.stones[action.stoneId];
-        data.push({
-          localId: action.logId,
-          localData: stone.activityLogs[action.logId],
-          localSphereId: action.sphereId,
-          localStoneId: action.stoneId,
-          cloudStoneId: MapProvider.local2cloudMap.stones[action.stoneId],
-        })
+
+        if (action.type === 'ADD_ACTIVITY_LOG') {
+          logData.push({
+            localId: action.logId,
+            localData: stone.activityLogs[action.logId],
+            localSphereId: action.sphereId,
+            localStoneId: action.stoneId,
+            cloudStoneId: MapProvider.local2cloudMap.stones[action.stoneId],
+          })
+        }
+        else if (action.type === "ADD_ACTIVITY_RANGE" || (action.type === "UPDATE_ACTIVITY_RANGE" && action.data.cloudId === null)) {
+          newRangeData.push({
+            localId: action.rangeId,
+            localData: stone.activityRanges[action.rangeId],
+            localSphereId: action.sphereId,
+            localStoneId: action.stoneId,
+            cloudStoneId: MapProvider.local2cloudMap.stones[action.stoneId],
+          })
+        }
+        else if (action.type === "UPDATE_ACTIVITY_RANGE") {
+          updatedRangeData.push({
+            localId: action.rangeId,
+            localData: stone.activityRanges[action.rangeId],
+            localSphereId: action.sphereId,
+            localStoneId: action.stoneId,
+            cloudStoneId: action.data.cloudId,
+          })
+        }
       }
 
       let actions = [];
-      transferActivityLogs.batchCreateOnCloud(state,actions, data)
+      this.store.batchDispatch(actions);
+      transferActivityLogs.batchCreateOnCloud(state, actions, logData)
+        .then(() => {
+          return transferActivityRanges.batchCreateOnCloud(state, actions, newRangeData)
+        })
+        .then(() => {
+          return transferActivityRanges.batchUpdateOnCloud(state, actions, updatedRangeData)
+        })
         .then(() => {
           this.store.batchDispatch(actions);
         })
         .catch((err) => {
+          console.log('Error in Activity Loggies', err)
           this.store.batchDispatch(actions);
         })
     }

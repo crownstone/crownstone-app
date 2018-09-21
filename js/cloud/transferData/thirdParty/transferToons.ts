@@ -58,7 +58,7 @@ export const transferToons = {
   },
 
   createLocal: function( actions, data: transferToLocalData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'ADD_TOON',
       { sphereId: data.localSphereId, toonId: data.localId },
@@ -71,7 +71,7 @@ export const transferToons = {
   updateLocal: function( actions, data: transferToLocalData) {
     // enabled is per user, do not update this field.
     delete data['enabled'];
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'UPDATE_TOON',
       { sphereId: data.localSphereId, toonId: data.localId },

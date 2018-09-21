@@ -78,18 +78,13 @@ export class StoneSyncer extends SyncingSphereItemBase {
         let cloudDataForLocal = {...stone_from_cloud};
         cloudDataForLocal['localApplianceId'] = this._getLocalApplianceId(stone_from_cloud.applianceId);
         cloudDataForLocal['localLocationId']  = this._getLocalLocationId(locationLinkId);
-        this.transferPromises.push(
-          transferStones.createLocal(this.actions, {
-            localSphereId: this.localSphereId,
-            localId: localId,
-            cloudId: stone_from_cloud.id,
-            cloudData: cloudDataForLocal
-          })
-            .then(() => {
-              this._copyBehaviourFromCloud(localId, stone_from_cloud );
-            })
-            .catch(() => {})
-        );
+        transferStones.createLocal(this.actions, {
+          localSphereId: this.localSphereId,
+          localId: localId,
+          cloudId: stone_from_cloud.id,
+          cloudData: cloudDataForLocal
+        })
+        this._copyBehaviourFromCloud(localId, stone_from_cloud );
       }
 
       cloudIdMap[stone_from_cloud.id] = localId;
@@ -215,14 +210,12 @@ export class StoneSyncer extends SyncingSphereItemBase {
       let cloudDataForLocal = {...stone_from_cloud};
       cloudDataForLocal['localApplianceId'] = localApplianceId;
       cloudDataForLocal['localLocationId']  = localLocationId;
-      this.transferPromises.push(
-        transferStones.updateLocal(this.actions, {
-          localSphereId: this.localSphereId,
-          localId: localId,
-          cloudId: stone_from_cloud.id,
-          cloudData: cloudDataForLocal
-        }).catch(() => {})
-      );
+      transferStones.updateLocal(this.actions, {
+        localSphereId: this.localSphereId,
+        localId: localId,
+        cloudId: stone_from_cloud.id,
+        cloudData: cloudDataForLocal
+      })
     };
 
     if (shouldUpdateInCloud(stoneInState.config, stone_from_cloud) && !corruptData) {

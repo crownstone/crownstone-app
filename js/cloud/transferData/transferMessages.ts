@@ -43,7 +43,7 @@ export const transferMessages = {
   },
 
   createLocal: function( actions, data: transferToLocalData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'ADD_CLOUD_MESSAGE',
       { sphereId: data.localSphereId, messageId: data.localId },
@@ -54,7 +54,7 @@ export const transferMessages = {
 
 
   updateLocal: function( actions, data: transferToLocalData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'APPEND_MESSAGE',
       { sphereId: data.localSphereId, messageId: data.localId },

@@ -60,32 +60,24 @@ export const transferUtil = {
 
 
   _handleLocal: function(actions, actionType, ids, data: any, fieldMap: fieldMap) {
-    return new Promise((resolve, reject) => {
-      if (!data.cloudData) {
-        reject("Transfer: No cloud data available! Tried: " + actionType);
-      }
+    let payload = {};
+    transferUtil.fillFieldsForLocal(payload, data.cloudData, fieldMap);
 
-      let payload = {};
-      transferUtil.fillFieldsForLocal(payload, data.cloudData, fieldMap);
+    // add optional extra fields to payload
+    if (data.extraFields) {
+      let extraFieldKeys = Object.keys(data.extraFields);
+      extraFieldKeys.forEach((extraFieldKey) => {
+        payload[extraFieldKey] = data.extraFields[extraFieldKey];
+      })
+    }
 
-      // add optional extra fields to payload
-      if (data.extraFields) {
-        let extraFieldKeys = Object.keys(data.extraFields);
-        extraFieldKeys.forEach((extraFieldKey) => {
-          payload[extraFieldKey] = data.extraFields[extraFieldKey];
-        })
-      }
+    let actionPayload = {
+      type: actionType,
+      data: payload,
+      ...ids
+    };
 
-      let actionPayload = {
-        type: actionType,
-        data: payload,
-        ...ids
-      };
-
-      actions.push(actionPayload);
-
-      resolve();
-    })
+    actions.push(actionPayload);
   }
 };
 

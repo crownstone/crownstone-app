@@ -82,14 +82,12 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
         localId = Util.getUUID();
         localScheduleIdsSynced[localId] = true;
         // add schedule
-        this.transferPromises.push(
-          transferSchedules.createLocal(this.actions, {
-            localId: localId,
-            localSphereId: this.localSphereId,
-            localStoneId: this.localStoneId,
-            cloudData: schedule_from_cloud
-          }).catch(() => {})
-        );
+        transferSchedules.createLocal(this.actions, {
+          localId: localId,
+          localSphereId: this.localSphereId,
+          localStoneId: this.localStoneId,
+          cloudData: schedule_from_cloud
+        })
       }
 
     });
@@ -142,14 +140,12 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
     }
     else if (shouldUpdateLocally(scheduleInState, schedule_from_cloud)) {
       // update local
-      this.transferPromises.push(
-        transferSchedules.updateLocal(this.actions, {
-          localSphereId: this.localSphereId,
-          localStoneId: this.localStoneId,
-          localId: localId,
-          cloudData: schedule_from_cloud
-        }).catch(() => {})
-      );
+      transferSchedules.updateLocal(this.actions, {
+        localSphereId: this.localSphereId,
+        localStoneId: this.localStoneId,
+        localId: localId,
+        cloudData: schedule_from_cloud
+      });
     }
 
     if (!scheduleInState.cloudId) {

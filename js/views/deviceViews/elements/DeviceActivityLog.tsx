@@ -29,6 +29,7 @@ import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {getGlobalIdMap} from "../../../cloud/sections/sync/modelSyncs/SyncingBase";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {textStyle} from "./DeviceBehaviour";
+import {ActivityLogStatusIndicator} from "./activityLog/ActivityLogStatusIndicator";
 
 
 export class DeviceActivityLog extends Component<any, any> {
@@ -99,11 +100,14 @@ export class DeviceActivityLog extends Component<any, any> {
 
     for (let i = 0; i < logs.length && i < this.state.showMax; i++) {
       let log = logs[i];
-      if (log.type === 'dayIndicator') {
-        items.push(<ActivityLogDayIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} />)
+      if (log.type === 'statusUpdate') {
+        items.push(<ActivityLogStatusIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} />);
+      }
+      else if (log.type === 'dayIndicator') {
+        items.push(<ActivityLogDayIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} />);
       }
       else {
-        items.push(<ActivityLogItem key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} showFullLogs={showFullLogs} />)
+        items.push(<ActivityLogItem key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} showFullLogs={showFullLogs} />);
       }
     }
 

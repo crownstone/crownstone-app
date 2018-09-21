@@ -60,14 +60,11 @@ export class ToonSyncer extends SyncingSphereItemBase {
         // the appliance does not exist locally but it does exist in the cloud.
         // we create it locally.
         localId = toon_in_cloud.toonAgreementId;
-        this.transferPromises.push(
-          transferToons.createLocal(this.actions, {
-            localId: localId,
-            localSphereId: this.localSphereId,
-            cloudData: toon_in_cloud
-          })
-          .catch(() => {})
-        );
+        transferToons.createLocal(this.actions, {
+          localId: localId,
+          localSphereId: this.localSphereId,
+          cloudData: toon_in_cloud
+        })
       }
 
       cloudIdMap[toon_in_cloud.id] = localId;
@@ -120,14 +117,12 @@ export class ToonSyncer extends SyncingSphereItemBase {
 
   syncToonDown(localId, toonInState, toon_from_cloud) {
     if (toonInState.schedule !== toon_from_cloud.schedule) {
-      this.transferPromises.push(
-        transferToons.updateLocal(this.actions, {
-          localSphereId:  this.localSphereId,
-          localId:        localId,
-          cloudId:        toon_from_cloud.id,
-          cloudData:      toon_from_cloud
-        }).catch(() => {})
-      );
+      transferToons.updateLocal(this.actions, {
+        localSphereId:  this.localSphereId,
+        localId:        localId,
+        cloudId:        toon_from_cloud.id,
+        cloudData:      toon_from_cloud
+      })
     }
 
     if (!toonInState.cloudId) {

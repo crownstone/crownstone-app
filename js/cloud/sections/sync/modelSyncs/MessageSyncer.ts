@@ -66,16 +66,13 @@ export class MessageSyncer extends SyncingSphereItemBase {
           localId = Util.getUUID();
           let cloudDataForLocal = {...message_from_cloud};
           cloudDataForLocal['localTriggerLocationId'] = this._getLocalLocationId(message_from_cloud.triggerLocationId);
-          this.transferPromises.push(
-            transferMessages.createLocal( this.actions, {
-              localSphereId: this.localSphereId,
-              localId: localId,
-              cloudId: message_from_cloud.id,
-              cloudData: cloudDataForLocal,
-              extraFields: { sent: true, sentAt: message_from_cloud['createdAt']}
-            })
-            .catch(() => {})
-          );
+          transferMessages.createLocal( this.actions, {
+            localSphereId: this.localSphereId,
+            localId: localId,
+            cloudId: message_from_cloud.id,
+            cloudData: cloudDataForLocal,
+            extraFields: { sent: true, sentAt: message_from_cloud['createdAt']}
+          })
         }
       }
     });
@@ -97,14 +94,12 @@ export class MessageSyncer extends SyncingSphereItemBase {
       // update local
       let cloudDataForLocal = {...message_from_cloud};
       cloudDataForLocal['localTriggerLocationId'] = this._getLocalLocationId(message_from_cloud.triggerLocationId);
-      this.transferPromises.push(
-        transferMessages.updateLocal( this.actions, {
-          localSphereId: this.localSphereId,
-          localId: localId,
-          cloudId: message_from_cloud.id,
-          cloudData: cloudDataForLocal
-        }).catch(() => {})
-      );
+      transferMessages.updateLocal( this.actions, {
+        localSphereId: this.localSphereId,
+        localId: localId,
+        cloudId: message_from_cloud.id,
+        cloudData: cloudDataForLocal
+      })
     }
 
     if (!messageInState.config.cloudId) {
