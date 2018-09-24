@@ -266,7 +266,7 @@ export class StoneEntity {
     // invalid measurement
     if (rssi > 0) { return; }
 
-    const BAD_CONNECTION = -150
+    const BAD_CONNECTION = -150;
 
     if (rssi === 0) {
       // One of the Crownstones says there is no connection. We check if the other one says there IS one, if not, we delete the links

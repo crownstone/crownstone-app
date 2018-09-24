@@ -121,9 +121,13 @@ export class SphereOverview extends Component<any, any> {
       }
 
 
-      if (change.changeSpheres || change.updateActiveSphere) {
-        this._setActiveSphere();
+      if (change.changeSpheres) {
+        this._setActiveSphere(true);
       }
+      else if (change.updateActiveSphere) {
+        this._setActiveSphere(false);
+      }
+
 
       if (
         change.changeMessageState   ||
@@ -153,7 +157,7 @@ export class SphereOverview extends Component<any, any> {
   }
 
 
-  _setActiveSphere() {
+  _setActiveSphere(updateStore = false) {
     // set the active sphere if needed and setup the object variables.
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
@@ -164,13 +168,14 @@ export class SphereOverview extends Component<any, any> {
       activeSphere = null;
     }
     if (activeSphere === null && sphereIds.length > 0) {
-
-      let presentSphereId = Util.data.getPresentSphereId(state);
-      if (!presentSphereId) {
-        this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: null}});
-      }
-      else {
-        this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: presentSphereId}});
+      if (updateStore) {
+        let presentSphereId = Util.data.getPresentSphereId(state);
+        if (!presentSphereId) {
+          this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: null}});
+        }
+        else {
+          this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: presentSphereId}});
+        }
       }
     }
 

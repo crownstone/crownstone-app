@@ -5,7 +5,6 @@ import {DAYS} from "../../DeviceScheduleEdit";
 
 export class ActivityLogProcessor {
 
-
   _checkIfCancelled(reference, logs, index) {
     for (let i = index+1; i < logs.length; i++) {
       let log = logs[i];
@@ -73,14 +72,6 @@ export class ActivityLogProcessor {
     let activityRangeIds = Object.keys(activityRanges);
     for (let i = 0; i < activityRangeIds.length; i++) {
       let range = activityRanges[activityRangeIds[i]];
-      logs.push({
-        timestamp: range.startTime,
-        type:      'generatedEnter',
-        generatedFrom: keepAliveType,
-        userId:    range.userId,
-        isSelf:    range.userId === userId,
-        isRange:   true,
-      })
 
       let endTime = 0
       if (range.lastDirectTime !== null && range.lastMeshTime !== null) {

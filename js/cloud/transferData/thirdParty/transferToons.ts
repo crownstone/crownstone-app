@@ -9,7 +9,8 @@ let fieldMap : fieldMap = [
   {local: 'toonAgreementId',    cloud: 'toonAgreementId'},
   {local: 'toonAddress',        cloud: 'toonAddress'},
 
-  {local: 'schedule',           cloud: 'schedule', cloudToLocalOnly: true},
+  {local: 'schedule',            cloud: 'schedule', cloudToLocalOnly: true},
+  {local: 'updatedScheduleTime', cloud: 'updatedScheduleTime', cloudToLocalOnly: true},
 
   {local: 'cloudChangedProgramTime', cloud: 'changedProgramTime', cloudToLocalOnly: true},
 

@@ -70,6 +70,15 @@ export const toon = {
     )
   },
 
+  updateToonSchedule: function(background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Toons/{id}/updateSchedule',
+      { background: background },
+      'query'
+    )
+  },
+
   deleteToonsInCrownstoneCloud: function(background = true) {
     return this._setupRequest(
       'DELETE',

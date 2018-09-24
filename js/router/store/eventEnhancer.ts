@@ -304,6 +304,7 @@ function checkAction(action, affectedIds) {
     case "ADD_TOON":
       break;
     case "TOON_UPDATE_SETTINGS":
+    case "TOON_UPDATE_SCHEDULE":
     case "REMOVE_TOON":
     case "REMOVE_ALL_TOONS":
       eventStatus['updatedToon'] = affectedIds; break;

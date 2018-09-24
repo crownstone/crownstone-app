@@ -30,6 +30,7 @@ import {getGlobalIdMap} from "../../../cloud/sections/sync/modelSyncs/SyncingBas
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {textStyle} from "./DeviceBehaviour";
 import {ActivityLogStatusIndicator} from "./activityLog/ActivityLogStatusIndicator";
+import {ActivityRangeSyncer} from "../../../cloud/sections/sync/modelSyncs/ActivityRangeSyncer";
 
 
 export class DeviceActivityLog extends Component<any, any> {
@@ -123,16 +124,21 @@ export class DeviceActivityLog extends Component<any, any> {
     const stone = sphere.stones[this.props.stoneId];
     let actions = [];
 
-    let logSyncer = new ActivityLogSyncer(actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap())
+    let logSyncer   = new ActivityLogSyncer(  actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap())
+    let rangeSyncer = new ActivityRangeSyncer(actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap())
     logSyncer.sync(this.props.store)
+      .then(() => {
+        return rangeSyncer.sync(this.props.store);
+      })
       .then(() => {
         if (actions.length > 0) {
           this.props.store.batchDispatch(actions);
-          this.processLogs()
         }
+        this.processLogs()
         this.setState({updating:false});
       })
       .catch((err) => {
+        this.processLogs()
         this.setState({updating:false})
       })
   }
@@ -144,7 +150,7 @@ export class DeviceActivityLog extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     let showFullLogs = state.user.developer && state.development.show_full_activity_log;
-
+    console.log("stoneId={'"+this.props.stoneId+"'}", "sphereId={'" + this.props.sphereId + "'}")
     return (
       <View style={{flex:1}}>
         <ScrollView

@@ -299,6 +299,7 @@ export class DeviceOverview extends Component<any, any> {
       return content;
     }
 
+
     if (deviceType === STONE_TYPES.guidestone) {
       content.push(<GuidestoneSummary key={'summarySlide'}  {...props} />);
     }

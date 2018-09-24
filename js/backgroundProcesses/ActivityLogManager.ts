@@ -154,18 +154,24 @@ class ActivityLogManagerClass {
     if (this._stagedActions.length > 0) {
       this.store.batchDispatch(this._stagedActions);
 
-      let logData : transferNewToCloudStoneData[] = [];
-      let newRangeData : transferNewToCloudStoneData[] = [];
-      let updatedRangeData : transferNewToCloudStoneData[] = [];
       let state = this.store.getState();
 
+      let stoneActions : ActivityContainer = {};
       for (let i = 0; i < this._stagedActions.length; i++) {
         let action = this._stagedActions[i];
         let sphere = state.spheres[action.sphereId];
         let stone = sphere.stones[action.stoneId];
 
+        if (stoneActions[action.stoneId] === undefined) {
+          stoneActions[action.stoneId] = {
+            logData: [],
+            newRangeData: [],
+            updatedRangeData: [],
+          }
+        }
+
         if (action.type === 'ADD_ACTIVITY_LOG') {
-          logData.push({
+          stoneActions[action.stoneId].logData.push({
             localId: action.logId,
             localData: stone.activityLogs[action.logId],
             localSphereId: action.sphereId,
@@ -174,7 +180,7 @@ class ActivityLogManagerClass {
           })
         }
         else if (action.type === "ADD_ACTIVITY_RANGE" || (action.type === "UPDATE_ACTIVITY_RANGE" && action.data.cloudId === null)) {
-          newRangeData.push({
+          stoneActions[action.stoneId].newRangeData.push({
             localId: action.rangeId,
             localData: stone.activityRanges[action.rangeId],
             localSphereId: action.sphereId,
@@ -183,7 +189,7 @@ class ActivityLogManagerClass {
           })
         }
         else if (action.type === "UPDATE_ACTIVITY_RANGE") {
-          updatedRangeData.push({
+          stoneActions[action.stoneId].updatedRangeData.push({
             localId: action.rangeId,
             localData: stone.activityRanges[action.rangeId],
             localSphereId: action.sphereId,
@@ -193,22 +199,24 @@ class ActivityLogManagerClass {
         }
       }
 
-      let actions = [];
-      this.store.batchDispatch(actions);
-      transferActivityLogs.batchCreateOnCloud(state, actions, logData)
-        .then(() => {
-          return transferActivityRanges.batchCreateOnCloud(state, actions, newRangeData)
-        })
-        .then(() => {
-          return transferActivityRanges.batchUpdateOnCloud(state, actions, updatedRangeData)
-        })
-        .then(() => {
-          this.store.batchDispatch(actions);
-        })
-        .catch((err) => {
-          console.log('Error in Activity Loggies', err)
-          this.store.batchDispatch(actions);
-        })
+      Object.keys(stoneActions).forEach((stoneId) => {
+        let actions = [];
+        this.store.batchDispatch(actions);
+        transferActivityLogs.batchCreateOnCloud(state, actions, stoneActions[stoneId].logData)
+          .then(() => {
+            return transferActivityRanges.batchCreateOnCloud(state, actions, stoneActions[stoneId].newRangeData);
+          })
+          .then(() => {
+            return transferActivityRanges.batchUpdateOnCloud(state, actions, stoneActions[stoneId].updatedRangeData);
+          })
+          .then(() => {
+            this.store.batchDispatch(actions);
+          })
+          .catch((err) => {
+            console.log('Error in Activity Loggies', err);
+            this.store.batchDispatch(actions);
+          })
+      })
     }
     this._stagedActions = [];
   }

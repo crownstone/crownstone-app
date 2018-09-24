@@ -16,11 +16,12 @@ import {
 import {BackAction} from "../../../util/Back";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import {colors, OrangeLine, screenHeight, screenWidth, tabBarHeight} from "../../styles";
+import {availableScreenHeight, colors, OrangeLine, screenHeight, screenWidth, tabBarHeight} from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {ScaledImage} from "../../components/ScaledImage";
 import {deviceStyles} from "../../deviceViews/DeviceOverview";
+import {Util} from "../../../util/Util";
 
 
 export class ToonSettings extends Component<any, any> {
@@ -54,10 +55,10 @@ export class ToonSettings extends Component<any, any> {
 
   _getItems(sphere) {
     let items = [];
-
+    let toon = sphere.thirdParty.toons[this.props.toonId];
     items.push({
       label: "Use this phone",
-      value: sphere.thirdParty.toons[this.props.toonId].enabled,
+      value: toon.enabled,
       type: 'switch',
       icon: <IconButton name="md-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
       callback: (newValue) => {
@@ -70,7 +71,43 @@ export class ToonSettings extends Component<any, any> {
       }
     });
 
-    items.push({type:'spacer'})
+    let updatedAt = toon.updatedScheduleTime ? Util.getDateTimeFormat(toon.updatedScheduleTime) : "NEVER"
+    items.push({
+      type: 'explanation',
+      label: "SCHEDULE LAST UPDATED: " + updatedAt
+    });
+    items.push({
+      label: "Update Schedule",
+      type: 'button',
+      style: {color: colors.black.hex},
+      icon: <IconButton name={'md-calendar'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+      callback: () => {
+        this.props.eventBus.emit("showLoading", "Refreshing Toon Schedule...")
+          CLOUD.forToon(this.props.toonId).thirdParty.toon.updateToonSchedule(false)
+            .then((toon) => {
+              this.props.store.dispatch({
+                type: 'TOON_UPDATE_SCHEDULE',
+                sphereId: this.props.sphereId,
+                toonId:   this.props.toonId,
+                data: {
+                  schedule:            toon.schedule,
+                  updatedScheduleTime: toon.updatedScheduleTime,
+                }
+              });
+              this.props.eventBus.emit("hideLoading")
+            })
+            .catch((err) => {
+              this.props.eventBus.emit("hideLoading")
+              Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
+            })
+      }
+    });
+    items.push({
+      type: 'explanation',
+      below: true,
+      label: "We automatically update the Toon schedule once a day. You can use this to update manually."
+    });
+
 
     if (Object.keys(sphere.thirdParty.toons).length === 1) {
       items.push({
@@ -124,23 +161,25 @@ export class ToonSettings extends Component<any, any> {
       paddingLeft: 0.075*screenWidth, paddingRight:0.075*screenWidth
     };
     return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={true}>
+      <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={false}>
         <OrangeLine/>
-        <View style={{flex:1, alignItems:'center'}}>
-          <View style={{flex:1}} />
-          <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
-          <View style={{flex:1}} />
-          <Text style={[textStyle, {fontWeight: '600', fontSize: 16}]}>{"Crownstone and Toon are connected!"}</Text>
-          <View style={{flex:1}} />
-          <Text style={textStyle}>{"Sometimes, Toon is set to \"Away\" while you're still there..."}</Text>
-          <View style={{flex:0.5}} />
-          <Text style={textStyle}>{"...but Crownstone can set it to \"Home\" as long as you're home!"}</Text>
-          <View style={{flex:1}} />
-          <Text style={textStyle}>{"Should this phone tell Toon when it's home?"}</Text>
-          <View style={{flex:0.2}} />
-          <ListEditableItems items={this._getItems(sphere)} separatorIndent={true} />
-          <View style={{flex:1}} />
-        </View>
+        <ScrollView style={{flex:1}}>
+          <View style={{flex:1, width: screenWidth, minHeight: screenHeight, alignItems:'center'}}>
+            <View style={{flex:1}} />
+            <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
+            <View style={{flex:1}} />
+            <Text style={[textStyle, {fontWeight: '600', fontSize: 16}]}>{"Crownstone and Toon are connected!"}</Text>
+            <View style={{flex:1}} />
+            <Text style={textStyle}>{"Sometimes, Toon is set to \"Away\" while you're still there..."}</Text>
+            <View style={{flex:0.5}} />
+            <Text style={textStyle}>{"...but Crownstone can set it to \"Home\" as long as you're home!"}</Text>
+            <View style={{flex:1}} />
+            <Text style={textStyle}>{"Should this phone tell Toon when it's home?"}</Text>
+            <View style={{flex:0.2}} />
+            <ListEditableItems items={this._getItems(sphere)} separatorIndent={true} />
+            <View style={{flex:1}} />
+          </View>
+        </ScrollView>
       </Background>
     );
   }

@@ -11,6 +11,7 @@ import {ScheduleSyncer} from "./ScheduleSyncer";
 import {LOGe, LOGw} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {ActivityLogSyncer} from "./ActivityLogSyncer";
+import {ActivityRangeSyncer} from "./ActivityRangeSyncer";
 
 export class StoneSyncer extends SyncingSphereItemBase {
 
@@ -102,13 +103,17 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
 
   syncChildren(localId, store, stone_from_cloud) {
-    let scheduleSyncing    = new ScheduleSyncer(   this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
-    let activityLogSyncing = new ActivityLogSyncer(this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
+    let scheduleSyncing      = new ScheduleSyncer(     this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
+    let activityLogSyncing   = new ActivityLogSyncer(  this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
+    let activityRangeSyncing = new ActivityRangeSyncer(this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
 
     this.transferPromises.push(
       scheduleSyncing.sync(store, stone_from_cloud.schedules)
         .then(() => {
           return activityLogSyncing.sync(store)
+        })
+        .then(() => {
+          return activityRangeSyncing.sync(store)
         })
     );
   }

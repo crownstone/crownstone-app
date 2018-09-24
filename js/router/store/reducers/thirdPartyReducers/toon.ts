@@ -6,6 +6,7 @@ let defaultSettings = {
   toonAddress: null,
   cloudId: null,
   schedule: "",
+  updatedScheduleTime: 0,
   enabled: false,
   cloudChangedProgram: null,
   cloudChangedProgramTime: 0,
@@ -30,6 +31,7 @@ let toonReducer = (state = defaultSettings, action : any = {}) => {
         newState.toonAgreementId = update(action.data.toonAgreementId,     newState.toonAgreementId);
         newState.toonAddress     = update(action.data.toonAddress,         newState.toonAddress);
         newState.schedule        = update(action.data.schedule,            newState.schedule);
+        newState.updatedScheduleTime = update(action.data.updatedScheduleTime, newState.updatedScheduleTime);
         newState.enabled         = update(action.data.enabled,             newState.enabled);
 
         newState.cloudChangedProgram     = update(action.data.cloudChangedProgram,     newState.cloudChangedProgram);
@@ -50,6 +52,7 @@ let toonReducer = (state = defaultSettings, action : any = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.schedule = update(action.data.schedule, newState.schedule);
+        newState.updatedScheduleTime = update(action.data.updatedScheduleTime, newState.updatedScheduleTime);
         return newState;
       }
       return state;

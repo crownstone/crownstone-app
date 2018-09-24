@@ -28,3 +28,11 @@ type stringMap = { [proptype: string] : string } | {}
 declare const module: any;
 
 type PromiseCallback = (any) => Promise<any>
+
+interface ActivityContainer {
+  [key: string]: {
+    logData : transferNewToCloudStoneData[],
+    newRangeData : transferNewToCloudStoneData[],
+    updatedRangeData : transferNewToCloudStoneData[],
+  }
+}
