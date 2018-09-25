@@ -7,7 +7,7 @@ let defaultSettings = {
   cloudId: null,
   schedule: "",
   updatedScheduleTime: 0,
-  enabled: false,
+  enabled: true,
   cloudChangedProgram: null,
   cloudChangedProgramTime: 0,
   updatedAt: 0,
