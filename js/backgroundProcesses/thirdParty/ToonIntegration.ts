@@ -54,7 +54,7 @@ class ToonIntegrationClass {
       // only use the ENABLED Toons in this sphere
       if (toon.enabled) {
         // evaluate if the schedule is currently set to "AWAY"
-        let activeProgram = this._getActiveProgram(toon.schedule)
+        let activeProgram = getActiveToonProgram(toon.schedule)
         if (activeProgram && activeProgram.program === 'away') {
           // if the schedule is away BUT I am home, the toon should be on too!
           let timestampOfStartProgram = new Date(new Date().setHours(activeProgram.start.hour)).setMinutes(activeProgram.start.minute);
@@ -94,39 +94,6 @@ class ToonIntegrationClass {
     })
   }
 
-  _getActiveProgram(scheduleString : string) {
-    let currentDate = new Date();
-    let scheduleObj = null;
-    try {
-      scheduleObj = JSON.parse(scheduleString);
-    }
-    catch (err) {
-      LOGe.info("ToonIntegration: Schedule is not a valid json object.", scheduleString)
-      return null;
-    }
-
-    let day    = currentDate.getDay(); // 0 for Sunday, ... 6 Saturday
-    let dayMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-
-    let hours   = currentDate.getHours();
-    let minutes = currentDate.getMinutes();
-
-    let minutesSinceMidnight = hours * 60 + minutes;
-
-    let scheduleToday = scheduleObj[dayMap[day]];
-    for ( let i = 0; i < scheduleToday.length; i++ ) {
-      let timeslot = scheduleToday[i];
-      if (
-        minutesSinceMidnight >= (timeslot.start.hour * 60 + timeslot.start.minute ) &&
-        minutesSinceMidnight <  (timeslot.end.hour   * 60 + timeslot.end.minute   )
-      ) {
-        return timeslot;
-      }
-    }
-    return null;
-  }
-
-
   _handleExitSphere(sphereId) {
     // find in which Sphere we are present
     let state = this.store.getState();
@@ -141,7 +108,7 @@ class ToonIntegrationClass {
       // only use the ENABLED Toons in this sphere
       if (toon.enabled) {
         // evaluate if the schedule is currently set to "AWAY"
-        let activeProgram = this._getActiveProgram(toon.schedule)
+        let activeProgram = getActiveToonProgram(toon.schedule)
         if (activeProgram && activeProgram.program === 'away') {
           CLOUD.forToon(toonId).thirdParty.toon.setToonToAway(deviceId)
             .catch((err) => {
@@ -173,6 +140,38 @@ class ToonIntegrationClass {
       }
     })
   }
+}
+
+export function getActiveToonProgram(scheduleString : string) {
+  let currentDate = new Date();
+  let scheduleObj = null;
+  try {
+    scheduleObj = JSON.parse(scheduleString);
+  }
+  catch (err) {
+    LOGe.info("ToonIntegration: Schedule is not a valid json object.", scheduleString)
+    return null;
+  }
+
+  let day    = currentDate.getDay(); // 0 for Sunday, ... 6 Saturday
+  let dayMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+  let hours   = currentDate.getHours();
+  let minutes = currentDate.getMinutes();
+
+  let minutesSinceMidnight = hours * 60 + minutes;
+
+  let scheduleToday = scheduleObj[dayMap[day]];
+  for ( let i = 0; i < scheduleToday.length; i++ ) {
+    let timeslot = scheduleToday[i];
+    if (
+      minutesSinceMidnight >= (timeslot.start.hour * 60 + timeslot.start.minute ) &&
+      minutesSinceMidnight <  (timeslot.end.hour   * 60 + timeslot.end.minute   )
+    ) {
+      return timeslot;
+    }
+  }
+  return null;
 }
 
 export const ToonIntegration = new ToonIntegrationClass();

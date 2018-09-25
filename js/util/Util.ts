@@ -133,6 +133,10 @@ export const Util = {
   data: DataUtil,
   events: EventUtil,
 
+  pad: function(str) {
+    return pad(str)
+  },
+
   getDateHourId: function(timestamp)  {
     if (timestamp === 0) {
       return 'unknown';
