@@ -41,6 +41,12 @@ export const devices = {
     );
   },
 
+  sendTestNotification: function() {
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/testNotification/'
+    );
+  },
   deleteDevice: function(deviceId) {
     return this._setupRequest(
       'DELETE',

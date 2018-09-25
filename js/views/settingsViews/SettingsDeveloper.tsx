@@ -20,6 +20,7 @@ import {clearLogs} from "../../logging/LogUtil";
 import {BackAction} from "../../util/Back";
 import {MeshUtil} from "../../util/MeshUtil";
 import {CLOUD_ADDRESS} from "../../ExternalConfig";
+import {Scheduler} from "../../logic/Scheduler";
 
 
 export class SettingsDeveloper extends Component<any, any> {
@@ -29,19 +30,19 @@ export class SettingsDeveloper extends Component<any, any> {
     }
   };
 
-  unsubscribe : any;
+  unsubscribe : any = [];
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe.push(this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings || change.stoneRssiUpdated) {
         this.forceUpdate();
       }
-    });
+    }));
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.unsubscribe.forEach((unsub) => { unsub() });
   }
 
   
@@ -102,9 +103,9 @@ export class SettingsDeveloper extends Component<any, any> {
     items.push({
       label:"Sync Now!",
       type: 'button',
-      style: {color: colors.blue.hex},
+      style: {color: colors.black.hex},
       icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
-      callback:(newValue) => {
+      callback: () => {
         if (CLOUD.__currentlySyncing === false) {
           this.props.eventBus.emit("showLoading","Syncing...");
           CLOUD.sync(store, true)
@@ -115,6 +116,49 @@ export class SettingsDeveloper extends Component<any, any> {
           Alert.alert("Sync already in progress.","There already is an active syncing process running in the background. Syncing can take a long time if there are a lot op power measurements that require syncing.", [{text:'OK'}]);
         }
     }});
+    items.push({
+      label:"Test Notifications",
+      type: 'button',
+      style: {color: colors.black.hex},
+      icon: <IconButton name="ios-jet" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
+      callback:() => {
+        this.props.eventBus.emit("showLoading", "Requesting Notifications...");
+
+        let clearScheduledTimeout = null;
+        let cleanup = null;
+        let unsubscribe = this.props.eventBus.on("NotificationReceived", (data) => {
+          if (data.type === "testNotification") {
+            Alert.alert("Notification Received!","Everything is working as it should be!",[{text:"Great!"}]);
+            cleanup()
+          }
+        });
+
+        this.unsubscribe.push(unsubscribe);
+
+        clearScheduledTimeout = Scheduler.scheduleActiveCallback(() => {
+          cleanup()
+          Alert.alert("Nothing Received...","Maybe try again?",[{text:"OK..."}]);
+        }, 4000);
+
+        cleanup = () => {
+          clearScheduledTimeout()
+          unsubscribe()
+          this.props.eventBus.emit("hideLoading");
+        }
+
+        let deviceId = Util.data.getDeviceIdFromState(state, state.user.appIdentifier)
+        if (deviceId) {
+          CLOUD.forDevice(deviceId).sendTestNotification().catch((err) => {
+            cleanup();
+            Alert.alert("Could not send Request!","There was an error. \n" + JSON.stringify(err),[{text:"Hmm.."}]);
+          });
+        }
+        else {
+          Alert.alert("No device Id!","There was an error.",[{text:"Hmm.."}]);
+          cleanup()
+        }
+      }});
+
 
 
     // let deviceId = Util.data.getCurrentDeviceId(state);
@@ -274,7 +318,7 @@ export class SettingsDeveloper extends Component<any, any> {
         BackAction();
     }});
 
-    items.push({label: 'CLOUD URL:' + CLOUD_ADDRESS, type: 'explanation'});
+    items.push({label: 'CLOUD URL: ' + CLOUD_ADDRESS, type: 'explanation'});
     items.push({type: 'spacer'});
     items.push({type: 'spacer'});
 
