@@ -284,11 +284,12 @@ export class ForceDirectedView extends Component<{
             this._pressedNodeData = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
             if (this._pressedNodeData !== false) {
               // do nothing
-              if (this.props.allowDrag)
-                eventBus.emit('nodeDragging'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
+              if (this.props.allowDrag) {
+                eventBus.emit('nodeDragging' + this.props.viewId + this._pressedNodeData.nodeId, this._pressedNodeData);
                 this._draggingNode = this._pressedNodeData;
                 this._dragInitialX = this.nodes[this._pressedNodeData.nodeId].x;
                 this._dragInitialY = this.nodes[this._pressedNodeData.nodeId].y;
+              }
             }
             else {
               return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
@@ -394,6 +395,7 @@ export class ForceDirectedView extends Component<{
           // calculate all bounding box properties once after drag.
           this._getBoundingBox();
         }
+
 
         if (!this._draggingNode && !this._validTap) {
           if (this._currentScale > 1.5) {
