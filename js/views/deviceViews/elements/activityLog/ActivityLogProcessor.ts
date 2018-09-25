@@ -313,34 +313,19 @@ export class ActivityLogProcessor {
     // convert object to array.
     let logs = [];
     // dont show times older than 1.5 day
-    let earliestDateAllowed = new Date().valueOf() - 1.5*24*3600000;
-    if (showFullLogs) {
-      // developers get to keep 10 days of logs! Jay!
-      earliestDateAllowed = new Date().valueOf() - 10*24*3600000;
-    }
     let minAvailable = new Date().valueOf();
-    let deleteActions = [];
     for ( let i = 0; i < logIds.length; i++ ) {
       let log = rawLogs[logIds[i]]
-      if (log.timestamp > earliestDateAllowed) {
-        if (state.development.show_only_own_activity_log) {
-          if (log.userId === userId) {
-            minAvailable = Math.min(log.timestamp, minAvailable);
-            logs.push({...log});
-          }
-        }
-        else {
+      if (state.development.show_only_own_activity_log) {
+        if (log.userId === userId) {
           minAvailable = Math.min(log.timestamp, minAvailable);
           logs.push({...log});
         }
       }
       else {
-        deleteActions.push({type:"REMOVE_ACTIVITY_LOG", sphereId: sphereId, stoneId: stoneId, logId: logIds[i]})
+        minAvailable = Math.min(log.timestamp, minAvailable);
+        logs.push({...log});
       }
-    }
-
-    if (deleteActions.length > 0) {
-      store.batchDispatch(deleteActions);
     }
 
     for ( let i = 0; i < scheduleId.length; i++ ) {

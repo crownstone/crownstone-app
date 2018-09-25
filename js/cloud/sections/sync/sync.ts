@@ -16,7 +16,8 @@ import { KeySyncer }                from "./modelSyncs/KeySyncer";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 import { Sentry }                   from "react-native-sentry";
-import {PreferenceSyncer} from "./modelSyncs/PreferencesSyncer";
+import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
+import { cleanupActivity }          from "./cleanActivityLogs";
 
 
 
@@ -133,6 +134,11 @@ export const sync = {
         LOG.info("Sync: DONE syncPowerUsage.");
         LOG.info("Sync: START cleanupPowerUsage.");
         return cleanupPowerUsage(state, actions);
+      })
+      .then(() => {
+        LOG.info("Sync: DONE cleanupPowerUsage.");
+        LOG.info("Sync: START cleanupActivityLog.");
+        return cleanupActivity(state, actions);
       })
       // FINISHED SYNCING
       .then(() => {

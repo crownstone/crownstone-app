@@ -125,6 +125,19 @@ class SphereCircleClass extends Component<any, any> {
     this.unsubscribeStoreEvents();
   }
 
+  getSphereName(name, color) {
+    let a = 16; let b = 0.6;
+    let textSize = Math.max(Math.min(this.textSize, ((a - name.length)/a + b)*this.textSize ), 0.75*this.textSize)
+
+    return (
+      <Text
+        style={{width: 0.85*this.innerDiameter, height:20, color: color, fontWeight: 'bold', fontSize: textSize, textAlign:'center', paddingTop:2}}
+        numberOfLines={1}
+        ellipsizeMode={"tail"}
+        // adjustsFontSizeToFit={true} this does not work together with ellipse size mode
+      >{name}</Text>
+    )
+  }
   getCircle(sphere) {
     let backgroundColor = colors.green.hex;
     // let textColor = colors.menuBackground.hex;
@@ -133,7 +146,6 @@ class SphereCircleClass extends Component<any, any> {
     if (sphere.state.present === false) {
       backgroundColor = colors.csBlue.hex;
     }
-
 
     let innerOffset = 0.5*(this.outerDiameter - this.innerDiameter);
     return (
@@ -158,12 +170,7 @@ class SphereCircleClass extends Component<any, any> {
               margin:   0,
             }}>
             <Icon name={sphere.config.icon || 'c1-sphere'} size={this.iconSize} color={textColor} />
-            <Text
-              style={{width: 0.75*this.innerDiameter, minHeight:20, color: textColor, fontWeight: 'bold', fontSize: this.textSize, textAlign:'center'}}
-              numberOfLines={2}
-              ellipsizeMode={"tail"}
-              adjustsFontSizeToFit={true}
-            >{sphere.config.name}</Text>
+            { this.getSphereName(sphere.config.name, textColor) }
           </AnimatedCircle>
         </View>
       </View>
