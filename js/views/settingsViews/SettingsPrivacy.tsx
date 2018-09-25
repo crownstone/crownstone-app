@@ -56,6 +56,7 @@ export class SettingsPrivacy extends Component<any, any> {
       type: 'largeExplanation',
       style:{paddingTop:15, paddingBottom:15}
     });
+
     items.push({
       label:"Share location",
       value: user.uploadLocation,
@@ -64,6 +65,7 @@ export class SettingsPrivacy extends Component<any, any> {
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadLocation: newValue} });
     }});
+
     items.push({
       label: 'Show the other people in your Sphere in which room you are!',
       type: 'explanation',
@@ -77,7 +79,7 @@ export class SettingsPrivacy extends Component<any, any> {
       icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadSwitchState: newValue} });
-      }});
+    }});
     items.push({
       label: 'Show the other people in your sphere if the Crownstone is on or off!',
       type: 'explanation',
@@ -90,9 +92,23 @@ export class SettingsPrivacy extends Component<any, any> {
       icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkBackground.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadDiagnostics: newValue} });
-      }});
+    }});
     items.push({
       label: 'Help us gather statistics on the health of your Crownstones!',
+      type: 'explanation',
+      below: true
+    });
+
+    items.push({
+      label:"Share acitvity logs",
+      value: user.uploadActivityLogs,
+      type: 'switch',
+      icon: <IconButton name="md-calendar" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({ type: 'USER_UPDATE', data: {uploadActivityLogs: newValue} });
+      }});
+    items.push({
+      label: 'Activity logs are used to show you why a Crownstone is on or off. We make a coherent list per Crownstone using your localization events, manual switches and scheduled actions. If others in your Sphere choose not to share their activity logs, the inferred state might be wrong...',
       type: 'explanation',
       below: true
     });
@@ -141,7 +157,7 @@ export class SettingsPrivacy extends Component<any, any> {
       label:"Share phone type details",
       value: user.uploadDeviceDetails,
       type: 'switch',
-      icon: <IconButton name="ios-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+      icon: <IconButton name="ios-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
       callback:(newValue) => {
         if (newValue === false) {
           let deviceId = Util.data.getCurrentDeviceId(state);

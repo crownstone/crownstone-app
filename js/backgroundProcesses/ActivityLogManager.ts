@@ -1,5 +1,5 @@
 import {eventBus} from "../util/EventBus";
-import {LOG} from "../logging/Log";
+import {LOG, LOGe} from "../logging/Log";
 import {Util} from "../util/Util";
 import {transferActivityLogs} from "../cloud/transferData/transferActivityLogs";
 import {MapProvider} from "./MapProvider";
@@ -201,22 +201,23 @@ class ActivityLogManagerClass {
 
       Object.keys(stoneActions).forEach((stoneId) => {
         let actions = [];
-        this.store.batchDispatch(actions);
-        transferActivityLogs.batchCreateOnCloud(state, actions, stoneActions[stoneId].logData)
-          .then(() => {
-            return transferActivityRanges.batchCreateOnCloud(state, actions, stoneActions[stoneId].newRangeData);
-          })
-          .then(() => {
-            return transferActivityRanges.batchUpdateOnCloud(state, actions, stoneActions[stoneId].updatedRangeData);
-          })
-          .then(() => {
-            this.store.batchDispatch(actions);
-          })
-          .catch((err) => {
-            console.log('Error in Activity Loggies', err);
-            this.store.batchDispatch(actions);
-          })
-      })
+        if (state.user.uploadActivityLogs) {
+          transferActivityLogs.batchCreateOnCloud(state, actions, stoneActions[stoneId].logData)
+            .then(() => {
+              return transferActivityRanges.batchCreateOnCloud(state, actions, stoneActions[stoneId].newRangeData);
+            })
+            .then(() => {
+              return transferActivityRanges.batchUpdateOnCloud(state, actions, stoneActions[stoneId].updatedRangeData);
+            })
+            .then(() => {
+              this.store.batchDispatch(actions);
+            })
+            .catch((err) => {
+              LOGe.cloud("ActivityLogManager: Error in activity log uploading:", err);
+              this.store.batchDispatch(actions);
+            })
+          }
+        })
     }
     this._stagedActions = [];
   }

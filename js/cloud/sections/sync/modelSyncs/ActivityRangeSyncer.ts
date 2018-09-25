@@ -83,22 +83,27 @@ export class ActivityRangeSyncer extends SyncingSphereItemBase {
 
   sync(store) {
     let state = store.getState();
-    return this.download(state)
-      .then((activity_ranges_in_cloud) => {
-        let activityRangesInState = this._getLocalData(store);
-        let localActivityRangeIdsSynced = this.syncDown(activityRangesInState, activity_ranges_in_cloud);
+    if (state.user.uploadActivityLogs) {
+      return this.download(state)
+        .then((activity_ranges_in_cloud) => {
+          let activityRangesInState = this._getLocalData(store);
+          let localActivityRangeIdsSynced = this.syncDown(activityRangesInState, activity_ranges_in_cloud);
 
-        this.syncUp(activityRangesInState, localActivityRangeIdsSynced);
-        if ( this.activityRangeCreateBatch.length > 0) {
-          this.transferPromises.push(transferActivityRanges.batchCreateOnCloud(state, this.actions, this.activityRangeCreateBatch));
-        }
+          this.syncUp(activityRangesInState, localActivityRangeIdsSynced);
+          if (this.activityRangeCreateBatch.length > 0) {
+            this.transferPromises.push(transferActivityRanges.batchCreateOnCloud(state, this.actions, this.activityRangeCreateBatch));
+          }
 
-        if (this.activityRangeUpdateBatch.length > 0) {
-          this.transferPromises.push(transferActivityRanges.batchUpdateOnCloud(state, this.actions, this.activityRangeUpdateBatch));
-        }
+          if (this.activityRangeUpdateBatch.length > 0) {
+            this.transferPromises.push(transferActivityRanges.batchUpdateOnCloud(state, this.actions, this.activityRangeUpdateBatch));
+          }
 
-        return Promise.all(this.transferPromises);
-      })
+          return Promise.all(this.transferPromises);
+        })
+    }
+    else {
+      return new Promise((resolve, reject) => { resolve(); })
+    }
   }
 
   syncDown(activityRangesInState, activity_ranges_in_cloud) : object {

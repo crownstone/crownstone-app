@@ -80,32 +80,37 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
 
   sync(store) {
     let state = store.getState();
-    return this.download(state)
-      .then((activity_logs_in_cloud) => {
-        let activityLogsInState = this._getLocalData(store);
-        let localActivityLogIdsSynced = this.syncDown(activityLogsInState, activity_logs_in_cloud);
+    if (state.user.uploadActivityLogs) {
+      return this.download(state)
+        .then((activity_logs_in_cloud) => {
+          let activityLogsInState = this._getLocalData(store);
+          let localActivityLogIdsSynced = this.syncDown(activityLogsInState, activity_logs_in_cloud);
 
-        this.syncUp(activityLogsInState, localActivityLogIdsSynced);
-        if (this.activityLogUploadBatch.length > 0) {
-          let uploadCounter = 0;
-          this.transferPromises.push(
-            Util.promiseBatchPerformer(this.activityLogUploadBatch, (uploadBatch) => {
-              uploadCounter++;
-              LOG.info("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');
-              // console.log("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');
-              return transferActivityLogs.batchCreateOnCloud(store.getState(), this.actions, uploadBatch);
-            })
-          )
-        }
+          this.syncUp(activityLogsInState, localActivityLogIdsSynced);
+          if (this.activityLogUploadBatch.length > 0) {
+            let uploadCounter = 0;
+            this.transferPromises.push(
+              Util.promiseBatchPerformer(this.activityLogUploadBatch, (uploadBatch) => {
+                uploadCounter++;
+                LOG.info("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length, ' which has ', uploadBatch.length, ' data points');
+                // console.log("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');
+                return transferActivityLogs.batchCreateOnCloud(store.getState(), this.actions, uploadBatch);
+              })
+            )
+          }
 
-        this.actions.push({
-          type:'UPDATE_SYNC_ACTIVITY_TIME',
-          sphereId: this.localSphereId,
-          stoneId: this.localStoneId
+          this.actions.push({
+            type: 'UPDATE_SYNC_ACTIVITY_TIME',
+            sphereId: this.localSphereId,
+            stoneId: this.localStoneId
+          })
+
+          return Promise.all(this.transferPromises);
         })
-
-        return Promise.all(this.transferPromises);
-      })
+    }
+    else {
+      return new Promise((resolve, reject) => { resolve(); })
+    }
   }
 
   syncDown(activityLogsInState, activity_logs_in_cloud) : object {

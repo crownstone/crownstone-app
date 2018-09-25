@@ -81,7 +81,16 @@ export class DeviceActivityLog extends Component<any, any> {
     items.push(<View key={"topspacer"} style={{height:30}} />);
     items.push(<Text key={"title"}     style={deviceStyles.header}>{"Activity Log"}</Text>);
     items.push(<Text key={"explanation"}  style={[deviceStyles.text, {padding:20}]}>{"In this log you can see why the Crownstone is being switched. The newest entries are at the top. This data is stored for 24 hours."}</Text>);
-
+    if (state.user.uploadActivityLogs === false) {
+      items.push(
+        <Text
+          key={"explanation_no_log"}
+          style={[deviceStyles.text, {padding: 20}]}
+        >
+          {"If you do not share your activity logs, other users in your Sphere may get an incorrect activity log."}
+        </Text>
+      );
+    }
 
     items.push(<View key={"longWhiteLine"} style={{position:'absolute', top: 186, left: 52, width:2, backgroundColor:colors.white.rgba(0.5), height: itemHeight*logs.length + 30}} />);
     items.push(<View key={"longWhiteLine_topCap"} style={{position:'absolute', top: 180, left: 50, width:6, backgroundColor:colors.white.rgba(0.5), height: 6, borderRadius:3}} />);
@@ -150,7 +159,6 @@ export class DeviceActivityLog extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     let showFullLogs = state.user.developer && state.development.show_full_activity_log;
-    console.log("stoneId={'"+this.props.stoneId+"'}", "sphereId={'" + this.props.sphereId + "'}")
     return (
       <View style={{flex:1}}>
         <ScrollView
