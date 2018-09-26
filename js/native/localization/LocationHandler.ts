@@ -181,8 +181,8 @@ class LocationHandlerClass {
       let timeLastSeen = 0;
       stoneIds.forEach((stoneId) => {
         // get the most recent time.
-        if (stones[stoneId].config.lastSeen && timeLastSeen < stones[stoneId].config.lastSeen) {
-          timeLastSeen = stones[stoneId].config.lastSeen;
+        if (stones[stoneId].reachability.lastSeen && timeLastSeen < stones[stoneId].reachability.lastSeen) {
+          timeLastSeen = stones[stoneId].reachability.lastSeen;
         }
       });
 

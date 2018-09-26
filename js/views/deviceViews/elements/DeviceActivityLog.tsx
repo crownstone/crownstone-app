@@ -80,7 +80,7 @@ export class DeviceActivityLog extends Component<any, any> {
     let itemHeight = 100;
     items.push(<View key={"topspacer"} style={{height:30}} />);
     items.push(<Text key={"title"}     style={deviceStyles.header}>{"Activity Log"}</Text>);
-    items.push(<Text key={"explanation"}  style={[deviceStyles.text, {padding:20}]}>{"In this log you can see why the Crownstone is being switched. The newest entries are at the top. This data is stored for 24 hours."}</Text>);
+    items.push(<Text key={"explanation"}  style={[deviceStyles.text, {padding:20}]}>{"In this log you can see why the Crownstone was switched. The newest entries are at the top. This data is stored for 24 hours."}</Text>);
     if (state.user.uploadActivityLogs === false) {
       items.push(
         <Text
@@ -159,6 +159,7 @@ export class DeviceActivityLog extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     let showFullLogs = state.user.developer && state.development.show_full_activity_log;
+    console.log("sphereId={'" + this.props.sphereId + "'} stoneId={'" + this.props.stoneId + "'}")
     return (
       <View style={{flex:1}}>
         <ScrollView

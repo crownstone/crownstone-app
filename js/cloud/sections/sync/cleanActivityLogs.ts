@@ -34,8 +34,8 @@ export const cleanupActivity = function(state, actions) {
 
       for (let k = 0; k < activityRangeIds.length; k++) {
         if (
-          stone.activityRanges[activityRangeIds[k]].lastDirectTime < deleteHistoryThreshold &&
-          stone.activityRanges[activityRangeIds[k]].lastMeshTime   < deleteHistoryThreshold
+            stone.activityRanges[activityRangeIds[k]].lastDirectTime < deleteHistoryThreshold &&
+            stone.activityRanges[activityRangeIds[k]].lastMeshTime   < deleteHistoryThreshold
            ) {
           actions.push({
             type: 'REMOVE_ACTIVITY_RANGE',

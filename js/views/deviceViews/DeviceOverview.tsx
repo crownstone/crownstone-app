@@ -291,14 +291,17 @@ export class DeviceOverview extends Component<any, any> {
     if (canUpdate) {
       content.push(<DeviceUpdate key={'updateSlide'} mandatory={false} canUpdate={canUpdate} {...props} />);
     }
+
     if (showWhatsNew) {
       content.push(<DeviceWhatsNew key={'deviceWhatsNewSlide'} {...props} />);
     }
 
+    // content.push(<DeviceActivityLog key={'activityLogSlide'} {...props} />);
+    // return content;
+
     if (stoneConfig.dfuResetRequired) {
       return content;
     }
-
 
     if (deviceType === STONE_TYPES.guidestone) {
       content.push(<GuidestoneSummary key={'summarySlide'}  {...props} />);

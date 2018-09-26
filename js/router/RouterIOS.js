@@ -47,7 +47,7 @@ export class Router_IOS extends Component {
             <Tabs key="tabBar" showLabel={false} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} backToInitial={true} initial={this.props.loggedIn}>
               <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                 <Scene key="sphereOverview"             component={Views.SphereOverview}             />
-                <Scene key="deviceOverview"             component={Views.DeviceOverview}             />
+                <Scene key="deviceOverview"             component={Views.DeviceOverview}      sphereId={'9a71b7cf-2dec-61e1-f819-6634829dbfb9'} stoneId={'5ba8d5848c1c021229dfc88c'}     />
                 <Scene key="roomOverview"               component={Views.RoomOverview}               />
               </Scene>
               <Scene key="messages"  tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >

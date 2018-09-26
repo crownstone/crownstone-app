@@ -58,9 +58,6 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === 'tap2toggle') {
       return 'md-switch';
     }
-    else if (this.props.data.type === 'skippedHeartbeat') {
-      return 'ios-more';
-    }
     else if (this.props.data.type === 'schedule') {
       return 'md-calendar';
     }
@@ -125,7 +122,7 @@ export class ActivityLogItem extends Component<any, any> {
       if (this.props.data.isSelf) {
         if (this.props.data.generatedFrom === 'keepAliveSphere') {
           // exit sphere
-          return timeIndicator + 'You left the Sphere.';
+          return timeIndicator + "You're out of range.";
         }
         else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
           // exit room
@@ -274,7 +271,7 @@ export class ActivityLogItem extends Component<any, any> {
         else {
           // exit sphere
           if (this.props.data.switchedToState === -1) {
-            return 'Sphere heartbeat expired.';
+            return 'Last heartbeat sent at ' + Util.getTimeFormat(this.props.data.endTime) + ".";
           }
           else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
             return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the Sphere.";

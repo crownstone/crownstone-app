@@ -102,6 +102,11 @@ class ActivityLogManagerClass {
     let activeRange = null;
     for (let i = 0; i < rangeIds.length; i++) {
       let range = ranges[rangeIds[i]];
+
+      // ONLY USE YOUR OWN RANGES TO UPDATE!
+      if (range.userId !== state.user.userId) { continue; }
+
+
       let delayInMs = range.delayInCommand*1000;
 
       if (

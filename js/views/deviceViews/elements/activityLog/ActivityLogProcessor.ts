@@ -72,6 +72,18 @@ export class ActivityLogProcessor {
     let activityRangeIds = Object.keys(activityRanges);
     for (let i = 0; i < activityRangeIds.length; i++) {
       let range = activityRanges[activityRangeIds[i]];
+      // console.log(range.userId === userId, new Date(range.startTime), new Date(range.lastDirectTime), new Date(range.lastMeshTime), range)
+      // logs.push({
+      //   timestamp: range.startTime,
+      //   generatedFrom: keepAliveType,
+      //   type:      'startRange s:' + (range.userId === userId),
+      //   startTime: range.startTime,
+      //   count:     range.count,
+      //   userId:    range.userId,
+      //   isSelf:    range.userId === userId,
+      //   switchedToState: range.switchedToState,
+      //   isRange:   true,
+      // });
 
       let endTime = 0
       if (range.lastDirectTime !== null && range.lastMeshTime !== null) {
@@ -130,6 +142,7 @@ export class ActivityLogProcessor {
           type:   'generatedExit',
           userId: range.userId,
           count:  range.count,
+          endTime: endTime,
           isSelf: range.userId === userId,
           switchedToState:  range.switchedToState,
           otherUserPresent: otherUserPresent,
@@ -328,6 +341,10 @@ export class ActivityLogProcessor {
       }
     }
 
+
+
+
+
     for ( let i = 0; i < scheduleId.length; i++ ) {
       let schedule = schedules[scheduleId[i]];
       let time = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.time))
@@ -367,6 +384,7 @@ export class ActivityLogProcessor {
 
     // first remove all the mesh duplicates
     logs = this._removeMeshDuplicates(logs);
+
     // add day markers
     logs = this._addDateIndicators(logs)
 

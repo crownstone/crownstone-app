@@ -9,6 +9,7 @@ import {NativeBus} from "../native/libInterface/NativeBus";
 import {CLOUD} from "../cloud/cloudAPI";
 import {Util} from "./Util";
 import { Sentry } from "react-native-sentry";
+import {Scheduler} from "../logic/Scheduler";
 
 export const AppUtil = {
   quit: function() {
@@ -24,7 +25,10 @@ export const AppUtil = {
   resetDatabase(store, eventBus) {
     eventBus.emit("showLoading", "Preparing for download...")
     let clearDB = () => {
-      eventBus.emit("showLoading", "Clearing database...")
+      NativeBus.clearAllEvents();
+      Scheduler.reset();
+
+      eventBus.emit("showLoading", "Clearing database...");
 
       let state = store.getState();
       let sphereIds = Object.keys(state.spheres);
@@ -43,11 +47,11 @@ export const AppUtil = {
         .then(() => {
           eventBus.emit("showLoading", "Finalizing...");
           return new Promise((resolve, reject) => {
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 5 seconds.\n\nReopen the app to finalize the process."); }, 1000)
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 4 seconds.\n\nReopen the app to finalize the process."); }, 2000)
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 3 seconds.\n\nReopen the app to finalize the process."); }, 3000)
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 2 seconds.\n\nReopen the app to finalize the process."); }, 4000)
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 1 second. \n\nReopen the app to finalize the process."); }, 5000)
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 5 seconds.\n\nReopen the app to finalize the process."); }, 1000);
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 4 seconds.\n\nReopen the app to finalize the process."); }, 2000);
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 3 seconds.\n\nReopen the app to finalize the process."); }, 3000);
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 2 seconds.\n\nReopen the app to finalize the process."); }, 4000);
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 1 second. \n\nReopen the app to finalize the process."); }, 5000);
             setTimeout(() => { Bluenet.quitApp(); resolve(true); }, 6000)
           })
         })
@@ -57,11 +61,11 @@ export const AppUtil = {
         })
         .then((success) => {
           if (!success) {
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 5 seconds.\n\nLog in again to finalize the process."); }, 1000)
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 4 seconds.\n\nLog in again to finalize the process."); }, 2000)
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 3 seconds.\n\nLog in again to finalize the process."); }, 3000)
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 2 seconds.\n\nLog in again to finalize the process."); }, 4000)
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 1 second. \n\nLog in again to finalize the process."); }, 5000)
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 5 seconds.\n\nLog in again to finalize the process."); }, 1000);
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 4 seconds.\n\nLog in again to finalize the process."); }, 2000);
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 3 seconds.\n\nLog in again to finalize the process."); }, 3000);
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 2 seconds.\n\nLog in again to finalize the process."); }, 4000);
+            setTimeout(() => { eventBus.emit("showLoading", "App will close in 1 second. \n\nLog in again to finalize the process."); }, 5000);
             setTimeout(() => { Bluenet.quitApp(); }, 6000)
           }
         })
@@ -72,8 +76,7 @@ export const AppUtil = {
 
     if (CLOUD.__currentlySyncing) {
       let unsub = eventBus.on('CloudSyncComplete', () => {
-        clearDB();
-        unsub();
+        setTimeout(() => { unsub(); clearDB(); }, 200);
       })
     }
     else {
