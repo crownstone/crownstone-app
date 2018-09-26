@@ -479,7 +479,6 @@ open class BluenetJS: RCTEventEmitter {
     LOGGER.info("BluenetBridge: Called finalizeFingerprint \(sphereId) \(locationId)")
     
     let stringifiedFingerprint = GLOBAL_BLUENET!.trainingHelper.finishCollectingTrainingData()
-    
     if (stringifiedFingerprint != nil) {
       GLOBAL_BLUENET!.classifier.loadTrainingData(locationId, referenceId: sphereId, trainingData: stringifiedFingerprint!)
       callback([["error" : false, "data": stringifiedFingerprint!]])

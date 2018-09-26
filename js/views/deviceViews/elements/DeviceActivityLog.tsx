@@ -103,25 +103,28 @@ export class DeviceActivityLog extends Component<any, any> {
         items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 22, marginTop:-6}]}>{"Nothing yet..."}</Text>);
       }
       else {
-        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 22, marginTop:-6}]}>{"Only members and admins can see the activity logs..."}</Text>);
+        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 18, marginTop:-6}]}>{"Only members and admins can see the activity logs..."}</Text>);
+        return items;
       }
     }
-
 
     for (let i = 0; i < logs.length && i < this.state.showMax; i++) {
       let log = logs[i];
       if (log.type === 'statusUpdate') {
-        items.push(<ActivityLogStatusIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} />);
+        items.push(<ActivityLogStatusIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state}
+                                               stone={stone} sphereId={this.props.sphereId} height={itemHeight}/>);
       }
       else if (log.type === 'dayIndicator') {
-        items.push(<ActivityLogDayIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} />);
+        items.push(<ActivityLogDayIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state}
+                                            stone={stone} sphereId={this.props.sphereId} height={itemHeight}/>);
       }
       else {
-        items.push(<ActivityLogItem key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} showFullLogs={showFullLogs} />);
+        items.push(<ActivityLogItem key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone}
+                                    sphereId={this.props.sphereId} height={itemHeight} showFullLogs={showFullLogs}/>);
       }
     }
 
-    items.push(<View key={"bottomspacer"} style={{height:120}} />);
+    items.push(<View key={"bottomspacer"} style={{height: 120}}/>);
 
     return items;
   }

@@ -13,6 +13,11 @@ import {eventBus} from "../../util/EventBus";
 const Swiper = require("react-native-swiper");
 import { Awesome } from "./WhatsNew/Awesome";
 import {BugsFixedAndroid} from "./WhatsNew/2.1.2/BugsFixedAndroid";
+import {ActivityLog} from "./WhatsNew/2.2.0/ActivityLog";
+import {Diagnostics} from "./WhatsNew/2.2.0/Diagnostics";
+import {ToonIsNew} from "./WhatsNew/2.2.0/ToonIsNew";
+import {NewSphereSettings} from "./WhatsNew/2.2.0/NewSphereSettings";
+import {MoveRooms} from "./WhatsNew/2.2.0/MoveRooms";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -42,7 +47,11 @@ export class WhatsNewOverlay extends Component<any, any> {
     let size = {height: height-10, width: width};
 
     if (Platform.OS === 'ios') {
-      // content.push(<Switchcraft key="Switchcraft"  {...size}/>);
+      content.push(<ToonIsNew key="ToonIsNew"  {...size}/>);
+      content.push(<NewSphereSettings key="Switchcraft"  {...size}/>);
+      content.push(<MoveRooms key="MoveRooms"  {...size}/>);
+      content.push(<ActivityLog key="ActivityLog"  {...size}/>);
+      content.push(<Diagnostics key="Diagnostics"  {...size}/>);
     }
     if (Platform.OS === 'android') {
       // content.push(<Switchcraft key="Switchcraft"  {...size}/>);

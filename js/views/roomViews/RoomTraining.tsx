@@ -98,7 +98,7 @@ export class RoomTraining extends Component<any, any> {
       let defaultAction = () => { BackAction('sphereOverview'); };
       Alert.alert(
         "No Crownstones in range...",
-        "To be able to identify this room, I need to see at least 3 Crownstones in but I can't see any from here... Try to reposition your Crownstones so I can see more of them.",
+        "To be able to identify this room, I need to see at least 3 Crownstones, but I can't see any from here... Try to reposition your Crownstones so I can see more of them.",
         [{text:"OK", onPress: defaultAction}],
         { onDismiss: defaultAction }
       )
