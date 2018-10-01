@@ -309,7 +309,6 @@ export class RoomOverview extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted/> }
     let location = null;
-    let roomCustomImage = null;
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
@@ -330,7 +329,7 @@ export class RoomOverview extends Component<any, any> {
       if (!location) { return <RoomDeleted /> }
 
       if (location.config.picture) {
-        // backgroundImage = <Image style={[styles.fullscreen, {resizeMode: 'cover'}]} source={{uri: preparePictureURI(location.config.picture)}} />;
+        backgroundImage = { uri: preparePictureURI(location.config.picture) };
       }
     }
 
@@ -362,7 +361,7 @@ export class RoomOverview extends Component<any, any> {
     }
 
     return (
-      <Background image={backgroundImage} topImage={roomCustomImage}>
+      <Background image={backgroundImage}>
         <OrangeLine/>
         <RoomBanner
           presentUsers={users}

@@ -33,9 +33,9 @@ export class SphereIntegrations extends Component<any, any> {
 
     items.push({label:'Thermostats:',  type:'largeExplanation'});
     items.push({
-      label: 'Toon®',
+      label: 'Toon',
       type: 'navigation',
-      largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/toonLogoSmall.png')} targetWidth={45} targetHeight={45} sourceWidth={500} sourceHeight={500} />,
+      largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={65} targetHeight={45} sourceWidth={1000} sourceHeight={237}/>,
       callback: () => {
         let state = this.props.store.getState();
         let sphere = state.spheres[this.props.sphereId];

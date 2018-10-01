@@ -168,7 +168,10 @@ export class SphereOverview extends Component<any, any> {
       activeSphere = null;
     }
     if (activeSphere === null && sphereIds.length > 0) {
-      if (updateStore) {
+      if (sphereIds.length === 1) {
+        this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
+      }
+      else if (updateStore) {
         let presentSphereId = Util.data.getPresentSphereId(state);
         if (!presentSphereId) {
           this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: null}});

@@ -18,9 +18,9 @@ export class Diagnostics extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>Diagnostics</Text>
+            <Text style={WNStyles.text}>Crownstone Diagnostics</Text>
             <View style={{height:30}} />
-            <Image source={require('../../../../images/whatsNew/2.2.0/diagnostics.png')} style={{width:564*size, height:815*size}} />
+            <Image source={require('../../../../images/whatsNew/2.2.0/diagnostics.png')} style={{width:569*size, height:853*size}} />
             <View style={{height:30}} />
             <Text style={WNStyles.detail}>{
               "Sometimes, things don't seem to work as they should...\n\n" +

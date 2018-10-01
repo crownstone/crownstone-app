@@ -230,13 +230,27 @@ export class ToonAdd extends Component<any, any> {
     }
   }
 
+  _getDisclaimer() {
+      if (!this.state.success && !this.state.processing && !this.state.failed) {
+       return (
+         <Text style={{
+           textAlign: 'center',
+           fontSize: 12,
+           color: colors.black.rgba(0.6),
+           paddingTop: 10
+         }} >{"This application uses the Toon API, follows the guiding principles for using the Toon API, but has not been developed by Toon."}
+         </Text>
+       )
+      }
+    }
+
   render() {
     let content;
     if (this.state.manualCodeInput) {
       content = (
         <View style={{flex:1, alignItems:'center', padding: 20}}>
           <View style={{flex:1}} />
-          <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
+          <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           <View style={{flex:0.75}} />
           <View style={{width: 250, height: 60, backgroundColor:"#fff", borderRadius:20, borderWidth: 2, borderColor: colors.gray.rgba(0.5), alignItems:'center', justifyContent:'center'}}>
             <TextEditInput
@@ -260,7 +274,7 @@ export class ToonAdd extends Component<any, any> {
       content = (
         <View style={{flex:1, alignItems:'center', padding: 20}}>
           <View style={{flex:1}} />
-          <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
+          <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           { this.state.processing ?  <View style={{paddingTop:50, alignItems:'center', justifyContent:'center'}}><ActivityIndicator animating={true} size="large" /></View> : undefined}
           <View style={{flex:1}} />
           { this._getText() }
@@ -269,6 +283,7 @@ export class ToonAdd extends Component<any, any> {
 
           {!this.state.processing && !this.state.failed ? <View style={{flex:1}} /> : <View style={{flex:0.5}} /> }
           { this._getButton() }
+          { this._getDisclaimer() }
           <View style={{flex:0.5}} />
         </View>
       );

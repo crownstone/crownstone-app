@@ -18,14 +18,14 @@ export class ToonIsNew extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>Integation with Toon!</Text>
+            <Text style={WNStyles.text}>Crownstone works with Toon</Text>
             <View style={{height:30}} />
-            <Image source={require('../../../../images/whatsNew/2.2.0/Toon.png')} style={{width:592*size, height:742*size}} />
+            <Image source={require('../../../../images/whatsNew/2.2.0/whatsNewToon.png')} style={{width:576*size, height:926*size}} />
             <View style={{height:30}} />
             <Text style={WNStyles.detail}>{
               "Sometimes, Toon is set to \"Away\" while you're still there...\n\n" +
               "...but Crownstone can set it to \"Home\" as long as you're home!\n\n" +
-              "Let this phone tell Toon when it's home!\n\n\n"
+              "Let your phone tell Toon when it's home!\n\n\n"
             }</Text>
           </View>
         </ScrollView>

@@ -2,6 +2,10 @@ import {LOG, LOGe, LOGi, LOGv} from '../logging/Log'
 import { Util } from './Util'
 
 
+const EXCLUDE_FROM_CLEAR = {
+  showLoading: true,
+}
+
 export class EventBusClass {
   _topics : object;
   _topicIds : object;
@@ -78,9 +82,23 @@ export class EventBusClass {
 
 
   clearAllEvents() {
-    LOG.event("Clearing all event listeners.");
+    LOG.info("EventBus: Clearing all event listeners.");
     this._topics = {};
     this._topicIds = {};
+  }
+
+
+  /**
+   * This will only be used at clearing the database.
+   */
+  clearMostEvents() {
+    LOG.info("EventBus: Clearing most event listeners.");
+    let topics = Object.keys(this._topics);
+    for (let i = 0; i < topics.length; i++) {
+      if (EXCLUDE_FROM_CLEAR[topics[i]] !== true) {
+        delete this._topics[topics[i]];
+      }
+    }
   }
 }
 

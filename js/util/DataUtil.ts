@@ -200,7 +200,10 @@ export const DataUtil = {
 
 
   userHasPlugsInSphere: function(state, sphereId) {
-    let stones = state.spheres[sphereId].stones;
+    let sphere = state.spheres[sphereId];
+    if (!sphere) { return false }
+
+    let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
 
     for (let i = 0; i < stoneIds.length; i++) {

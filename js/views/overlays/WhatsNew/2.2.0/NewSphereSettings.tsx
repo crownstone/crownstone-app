@@ -23,7 +23,7 @@ export class NewSphereSettings extends Component<any, any> {
             <Image source={require('../../../../images/whatsNew/2.2.0/newSphereMenu.png')} style={{width:602*size, height:968*size}} />
             <View style={{height:30}} />
             <Text style={WNStyles.detail}>{
-              "Press Edit in the top left corner of the Sphere overview, to customize your Sphere!\n\n"
+              "Press Edit in the top right corner of the Sphere overview and customize your Sphere!\n\n"
             }</Text>
           </View>
         </ScrollView>

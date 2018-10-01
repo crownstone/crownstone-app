@@ -20,12 +20,12 @@ export class ActivityLog extends Component<any, any> {
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>Activity Log!</Text>
             <View style={{height:30}} />
-            <Image source={require('../../../../images/whatsNew/2.2.0/activityLogs.png')} style={{width:560*size, height:744*size}} />
+            <Image source={require('../../../../images/whatsNew/2.2.0/activityLogs.png')} style={{width:602*size, height:968*size}} />
             <View style={{height:30}} />
             <Text style={WNStyles.detail}>{
               "Ever wonder why a Crownstone switched? Why is it on?\n\n" +
               "In the new Activity Log, you can see exactly why this is!\n\n" +
-              "You can find it in the Crownstone settings (by tapping on a Crownstone icon in a room) and navigating to the left.\n\n"
+              "You can find the new log in the Crownstone settings (by tapping on a Crownstone icon in a room) and navigating to the right.\n\n"
             }</Text>
           </View>
         </ScrollView>

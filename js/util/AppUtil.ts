@@ -25,6 +25,7 @@ export const AppUtil = {
   resetDatabase(store, eventBus) {
     eventBus.emit("showLoading", "Preparing for download...")
     let clearDB = () => {
+      eventBus.clearMostEvents();
       NativeBus.clearAllEvents();
       Scheduler.reset();
 

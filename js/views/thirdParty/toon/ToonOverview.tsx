@@ -113,7 +113,7 @@ export class ToonOverview extends Component<any, any> {
         <OrangeLine/>
         <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
-          <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
+          <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           <View style={{flex:1}} />
           <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex, paddingLeft: 15, paddingRight:15}]}>{"There are multiple Toon's on your account.\n\nPick one to configure it!"}</Text>
           <View style={{flex:1}} />

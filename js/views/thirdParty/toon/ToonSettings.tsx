@@ -155,9 +155,6 @@ export class ToonSettings extends Component<any, any> {
         below: true,
         label: "This will remove the Toon integration for all users in your Sphere."
       });
-
-      items.push({type: 'spacer'});
-
     }
     return items;
   }
@@ -180,7 +177,7 @@ export class ToonSettings extends Component<any, any> {
           <View style={{flex:1, width: screenWidth, minHeight: screenHeight, alignItems:'center' }}>
             <View style={{height:375, alignItems:'center'}}>
               <View style={{flex:1}} />
-              <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
+              <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
               <View style={{flex:1}} />
               <Text style={[textStyle, {fontWeight: '600', fontSize: 16}]}>{"Crownstone and Toon are connected!"}</Text>
               <View style={{flex:1}} />
@@ -192,7 +189,14 @@ export class ToonSettings extends Component<any, any> {
               <View style={{flex:0.2}} />
             </View>
             <ListEditableItems items={this._getItems(sphere)} separatorIndent={true} />
-            <View style={{flex:1}} />
+            <Text style={{
+              textAlign: 'center',
+              fontSize: 12,
+              color: colors.black.rgba(0.6),
+              padding:5
+            }} >{"This application uses the Toon API, follows the guiding principles for using the Toon API, but has not been developed by Toon."}
+            </Text>
+            <View style={{flex:1, minHeight:40}} />
           </View>
         </ScrollView>
       </Background>
