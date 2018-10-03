@@ -79,5 +79,6 @@ sentry.properties
 LocalConfig.ts
 toonConfig.ts
 
+!autoTextExtractor.js
 
 __prototypes
