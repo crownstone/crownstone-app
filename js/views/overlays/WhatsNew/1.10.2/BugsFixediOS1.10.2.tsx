@@ -10,7 +10,7 @@ import {screenWidth} from "../../../styles";
 import {WNStyles} from "../WhatsNewStyles";
 
 
-export class BugsFixediOS extends Component<any, any> {
+export class BugsFixediOS1102 extends Component<any, any> {
   render() {
     let factor = 0.0001*screenWidth;
     let size = 9*factor;

@@ -20,7 +20,7 @@ export class ToonIsNew extends Component<any, any> {
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>Crownstone works with Toon</Text>
             <View style={{height:30}} />
-            <Image source={require('../../../../images/whatsNew/2.2.0/whatsNewToon.png')} style={{width:576*size, height:926*size}} />
+            <Image source={require('../../../../images/whatsNew/2.2.0/whatsNewToon.png')} style={{width:576*size, height:906*size}} />
             <View style={{height:30}} />
             <Text style={WNStyles.detail}>{
               "Sometimes, Toon is set to \"Away\" while you're still there...\n\n" +

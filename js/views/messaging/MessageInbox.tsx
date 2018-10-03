@@ -225,9 +225,7 @@ export class MessageInbox extends Component<any, any> {
                 <View style={{height: 0.4*iconSize}} />
                 { iconButton }
                 <View style={{height: 0.6*iconSize}} />
-                <Text style={messageExplanationStyle}>
-                  Tap the envelope icon to create a new message!
-                </Text>
+                <Text style={messageExplanationStyle}>Tap the envelope icon to create a new message!</Text>
                 <View style={{flex:2}} />
               </View>
             </ScrollView>

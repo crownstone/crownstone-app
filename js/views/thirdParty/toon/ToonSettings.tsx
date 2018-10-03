@@ -194,7 +194,7 @@ export class ToonSettings extends Component<any, any> {
               fontSize: 12,
               color: colors.black.rgba(0.6),
               padding:5
-            }} >{"This application uses the Toon API, follows the guiding principles for using the Toon API, but has not been developed by Toon."}
+            }}>{"This application uses the Toon API, follows the guiding principles for using the Toon API, but has not been developed by Toon."}
             </Text>
             <View style={{flex:1, minHeight:40}} />
           </View>
@@ -205,7 +205,6 @@ export class ToonSettings extends Component<any, any> {
 }
 
 class ToonSchedule extends Component<any, any> {
-
 
   padding = 20;
   availableWidth = screenWidth - 2*this.padding;
