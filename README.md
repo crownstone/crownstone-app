@@ -153,6 +153,12 @@ Xcode menu -> Product -> Edit Scheme...
 Environment Variables -> Add -> Name: "OS_ACTIVITY_MODE", Value:"disable"
 ```
 
+
+If you get a compilation issues in xcode 10,
+"config.h not found"
+copy the ios-configure-glog.sh from /node_modules/react-native/scripts to /node_modules/react-native/thirdParty/glog and run the script. Clean and rebuild
+
+
 ## Copyrights
 
 The copyrights (2014-2017) belongs to the team of Crownstone B.V. and are provided under an noncontagious open-source license:

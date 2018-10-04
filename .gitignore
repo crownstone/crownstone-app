@@ -80,5 +80,6 @@ LocalConfig.ts
 toonConfig.ts
 
 !autoTextExtractor.js
+!prettify.js
 
 __prototypes

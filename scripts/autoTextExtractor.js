@@ -161,10 +161,10 @@ function extractAlert(match, filename, filePath, contentData) {
   let textSplitCounter = 1;
   if (buttonLeftData.result) {
     remainder = ',';
-    remainder += '[{text:' + textSplit[textSplitCounter].replace(buttonLeftData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonLeftKey + '\")()');
+    remainder += '\n[{text:' + textSplit[textSplitCounter].replace(buttonLeftData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonLeftKey + '\")()');
     textSplitCounter++
     if (buttonRightData.result) {
-      remainder += 'text:' + textSplit[textSplitCounter].replace(buttonRightData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonRightKey + '\")()');
+      remainder += '\ntext:' + textSplit[textSplitCounter].replace(buttonRightData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonRightKey + '\")()');
       textSplitCounter++;
     }
 
@@ -175,8 +175,8 @@ function extractAlert(match, filename, filePath, contentData) {
     }
   }
 
-  let replacement = match[0].replace(headerResult.parsedText,'Languages.alert("' + filename + '", "' + headerTextKey + '")' + headerFunctionCall)
-  replacement = replacement.replace(bodyResult.parsedText,'Languages.alert("' + filename + '", "' + bodyTextKey + '")' + bodyFunctionCall )
+  let replacement = match[0].replace(headerResult.parsedText,'\nLanguages.alert("' + filename + '", "' + headerTextKey + '")' + headerFunctionCall)
+  replacement = replacement.replace(bodyResult.parsedText,'\nLanguages.alert("' + filename + '", "' + bodyTextKey + '")' + bodyFunctionCall )
   replacement = replacement.replace(fullMatchRemainder,remainder)
 
   contentData.content = contentData.content.replace(match[0], replacement);
@@ -249,9 +249,10 @@ function createTranslationFileAndReplaceContents(filename, filePath, extractData
   }
 
   let textKey = prepareTextKey(target, filename, extractData.pureText);
-  if (textKey === '') {
-    return
+  if (textKey === '' || textKey === "_") {
+    return;
   }
+
   target[filename][textKey] = "() => { return " + extractData.text + " }";
 
   let functionCall = getFunctionCall(extractData);
@@ -536,7 +537,7 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
           continue;
         }
         else if (gotOperator === false) {
-          if (candidate === "=" || candidate === ">" || candidate === "<") {
+          if (candidate === "=" || candidate === ">" || candidate === "<" || candidate === "!") {
             startedGettingOperator = true;
             chunks.pop();
           }
@@ -589,7 +590,7 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
         chunks.push("&");
         parameterAddedWhileClosed = false
       }
-      else if (letter === "=" || letter === ">" || letter === "<") { // add these so the conditional parser will be able to remove the query
+      else if (letter === "=" || letter === ">" || letter === "<" || letter === "!") { // add these so the conditional parser will be able to remove the query
         chunks.push(letter);
         parameterAddedWhileClosed = false
       }

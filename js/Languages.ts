@@ -1,12 +1,14 @@
+import { localization_en_us } from "./localization/en/us/en";
 
 const DEFAULT_STRING = "TRANSLATION_IN_PROGRESS"
 
 class LanguageManager {
 
-  locale = 'en'
+  locale = 'en';
+  textSource = null;
 
   constructor() {
-
+    this._applyLocale()
   }
 
   setLocale(locale) {
@@ -33,7 +35,7 @@ class LanguageManager {
 
 
   _applyLocale() {
-
+    this.textSource = localization_en_us;
   }
 }
 
