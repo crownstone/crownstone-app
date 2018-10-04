@@ -15,19 +15,19 @@ class LanguageManager {
     this._applyLocale()
   }
 
-  alert(file, key) {
+  alert(file, key) : (any?) => string {
     return () => { return DEFAULT_STRING; }
   }
 
-  text(file, key) {
+  text(file, key) : (any?) => string{
     return () => { return DEFAULT_STRING; }
   }
 
-  title(file, key) {
+  title(file, key) : (any?) => string {
     return () => { return DEFAULT_STRING; }
   }
 
-  label(file, key) {
+  label(file, key) : (any?) => string {
     return () => { return DEFAULT_STRING; }
   }
 
