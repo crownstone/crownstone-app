@@ -2,15 +2,21 @@ let fs = require( 'fs' );
 let path = require( 'path' );
 let startPath = "../js";
 
+const EXCLUSIONS = {
+  'DebugIconSelection': true,
+  'IconDebug': true
+}
+
+
 const KEY_SIZE = 25;
 
-let textTots = []
-let alertTots = []
-let labelTots = []
-let titleTots = []
+let textTots  = [];
+let alertTots = [];
+let labelTots = [];
+let titleTots = [];
 let translationAlertData = {};
 let translationLabelData = {};
-let translationTextData = {};
+let translationTextData  = {};
 let translationTitleData = {};
 
 let parsePath = function(dirPath) {
@@ -41,8 +47,8 @@ let parseFile = function(filePath) {
   let textRegex  = /<Text[^>]*?>([^<]*?)<\/Text>/gm
   // let alertRegex = /Alert\.alert\(([\s\S]*?)\)/gm
   let alertRegex = /Alert\.alert\(([\s\S]*?),[\s\S]*?,[\s\S]*?\][\s\S]*?\)/gm
-  let labelRegex = /{.*?label:([^}]*)/gm
-  let titleRegex = /navigationOptions[\s\S]*title:(.*)[\s^}]*/gm
+  let labelRegex = /{[^{]*?abel:([^}]*)/gm
+  let titleRegex = /title:(.*)[\s^}]*/gm
 
   let textMatches  = content.match(textRegex);
   let alertMatches = content.match(alertRegex);
@@ -52,9 +58,11 @@ let parseFile = function(filePath) {
   let filenameArr = filePath.split("/");
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
 
-  // if (filename !== "Login") {
-  //   return;
-  // }
+  if (EXCLUSIONS[filename]) { return }
+
+  if (filename !== "DeviceBehaviourEdit") {
+    return;
+  }
 
   let importLine = 'import { Languages } from "';
   let pathArr = filePath.split("/");
@@ -113,7 +121,7 @@ let parseFile = function(filePath) {
   }
 
   // console.log(contentData)
-  fs.writeFileSync(filePath, contentData.content);
+  // fs.writeFileSync(filePath, contentData.content);
 }
 
 function extractAlert(match, filename, filePath, contentData) {
@@ -187,7 +195,7 @@ function extractTitle(match, filename, filePath, contentData) {
 
   let extractData = extractAndConvert(content, true, true, true);
 
-  createTranslationFileAndReplaceContents( filename, filePath, extractData, translationTitleData, 'title', contentData )
+  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationTitleData, 'title', contentData);
 }
 
 function extractLabel(match, filename, filePath, contentData) {
@@ -196,7 +204,9 @@ function extractLabel(match, filename, filePath, contentData) {
   // let label = _extractStringWithParameters(content);
   let extractData = extractAndConvert(content, true, true, true);
 
-  createTranslationFileAndReplaceContents( filename, filePath, extractData, translationLabelData, 'label', contentData )
+  // console.log("match", content, extractData)
+
+  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationLabelData, 'label', contentData);
 }
 
 
@@ -347,7 +357,7 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
   let parserSymbols = {
     '"' : {closing: '"', getMode: (prevLetter) => { return "string"; }, acceptIfInMode: { logic: true, block: true }},
     "'" : {closing: "'", getMode: (prevLetter) => { return "string"; }, acceptIfInMode: { logic: true, block: true }},
-    "(" : {closing: ")", getMode: (prevLetter) => { return textLetters.indexOf(prevLetter) === -1 ? "block" : 'arguments'; }, acceptIfInMode: { block: true, logic: true}},
+    "(" : {closing: ")", getMode: (prevLetter) => { return textLetters.indexOf(prevLetter) === -1 ? "block" : 'arguments'; }, acceptIfInMode: { arguments: true, block: true, logic: true}},
     "{" : {closing: "}", getMode: (prevLetter) => { return "logic";  }, acceptIfInMode: { void:  true, block: true}},
   };
 
@@ -411,6 +421,7 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
   for (let i = 0; i < content.length; i++) {
     let letter = content[i];
     let activeMode = activeModes[activeModes.length - 1];
+    // console.log("Letter", letter, activeMode, activeModes.length)
 
     if (letter === ',' && stopOnComma === true) {
       if (activeMode === modes.void || activeMode === modes.logic) {
@@ -665,11 +676,11 @@ console.log('labelTots', labelTots.length);
 console.log('titleTots', titleTots.length);
 
 //util
-let padd = function (x) {
+let padd = function (x, size) {
   if (x === "__filename:") {
     return x;
   }
-  while (x.length < KEY_SIZE + 2) {
+  while (x.length < size) {
     x += " ";
   }
   return x
@@ -680,24 +691,34 @@ function stringifyData(translationData, filename) {
   let indent = "  "
   let keys = Object.keys(translationData);
   keys.sort();
+
+  let keySizeMax = 0;
+  keys.forEach((key) => {
+    let source = translationData[key]
+    let subKeys = Object.keys(source);
+    subKeys.forEach((subKey) => {
+      keySizeMax = Math.max(keySizeMax, subKey.length)
+    })
+  })
+
   keys.forEach((key) => {
     resultString += indent + key + ":{\n"
     let source = translationData[key]
     let subKeys = Object.keys(source);
     subKeys.forEach((subKey) => {
-      resultString += indent + indent + padd(subKey + ":" ) + " " + source[subKey] + ",\n"
+      resultString += indent + indent + padd(subKey + ":", keySizeMax + 1) + " " + source[subKey] + ",\n"
     })
     resultString += indent + "},\n"
   })
 
   resultString += "}";
-  fs.writeFileSync(filename + ".js", resultString)
+  fs.writeFileSync(filename + ".ts", resultString)
 }
 
-stringifyData(translationLabelData, 'labels')
-stringifyData(translationTextData,  'texts')
-stringifyData(translationTitleData, 'titles')
-stringifyData(translationAlertData, 'alerts')
+stringifyData(translationLabelData, 'labels_en_us')
+stringifyData(translationTextData,  'texts_en_us')
+stringifyData(translationTitleData, 'titles_en_us')
+stringifyData(translationAlertData, 'alerts_en_us')
 
 
 // console.log(resultString)

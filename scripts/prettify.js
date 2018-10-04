@@ -45,7 +45,8 @@ let parseFile = function(filePath) {
   let prettyContent = prettier.format(content, options)
   // console.log(prettyContent)
   fs.writeFileSync(filePath, content);
-  console.log("Finished", filePath)
+  console.log("Finished", counter++, filePath)
 }
 
+let counter = 0;
 parsePath(startPath)
