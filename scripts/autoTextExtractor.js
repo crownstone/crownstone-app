@@ -52,13 +52,13 @@ let parseFile = function(filePath) {
   let filenameArr = filePath.split("/");
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
 
-  // if (filename !== "SphereUser") {
-  //   return;
-  // }
+  if (filename !== "ToonSettings") {
+    return;
+  }
 
   let importLine = 'import { Languages } from "';
   let pathArr = filePath.split("/");
-  for (let i = 0; i < pathArr.length - 2; i++) {
+  for (let i = 0; i < pathArr.length - 3; i++) {
     importLine += '../'
   }
   importLine += 'Languages"\n'
@@ -113,9 +113,8 @@ let parseFile = function(filePath) {
     titleTots = titleTots.concat(titleMatches);
   }
 
-  console.log(contentData)
-
-  // fs.writeFileSync(filePath, content);
+  // console.log(contentData)
+  fs.writeFileSync(filePath, contentData.content);
 }
 
 function extractAlert(match, filename, filePath, contentData) {
@@ -128,6 +127,7 @@ function extractAlert(match, filename, filePath, contentData) {
   let bodyResult = extractAndConvert(fullMatchBody, true, true, true)
 
   let body = bodyResult.text;
+  let fullMatchRemainder = fullMatchBody.substr(bodyResult.parsedText.length)
   let textSplit = fullMatch.split("text:");
 
   let buttonLeftData = grabString(textSplit[1]);
@@ -147,14 +147,15 @@ function extractAlert(match, filename, filePath, contentData) {
 
   translationAlertData[filename][headerTextKey] = "() => { return " + headerResult.text + " }";
   translationAlertData[filename][bodyTextKey]   = "() => { return " + bodyResult.text + " }";
-
+  let buttonLeftKey
+  let buttonRightKey
   if (buttonLeftData.result) {
-    let buttonLeftKey      = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_left');
+    buttonLeftKey      = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_left');
     translationAlertData[filename][buttonLeftKey]   = "() => { return \"" + buttonLeftData.result + "\" }";
   }
 
   if (buttonRightData.result) {
-    let buttonRightKey     = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_right');
+    buttonRightKey     = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_right');
     translationAlertData[filename][buttonRightKey]   = "() => { return \"" + buttonRightData.result + "\" }";
   }
 
@@ -162,19 +163,20 @@ function extractAlert(match, filename, filePath, contentData) {
   let remainder = ')'
   if (buttonLeftData.result) {
     remainder = ',';
-    remainder += '[{text:' + textSplit[1].replace(buttonLeftData.resultString, "arguments[" + (headerResult.parameters.length + bodyResult.parameters.length) +"]");
+    remainder += '[{text:' + textSplit[1].replace(buttonLeftData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonLeftKey + '\")()');
 
     if (buttonRightData.result) {
-      remainder += 'text:' + textSplit[2].replace(buttonRightData.resultString, "arguments[" + (headerResult.parameters.length + bodyResult.parameters.length + 1) +"]");
+      remainder += 'text:' + textSplit[2].replace(buttonRightData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonRightKey + '\")()');
     }
   }
+  // let replacementContent = 'Alert.alert({\nLanguages.alert(\"' + filename + '\", \"' + headerTextKey + '\")' + headerFunctionCall + ",\n" +
+  //   'Languages.alert(\"' + filename + '\", \"' + bodyTextKey   + '\")' + bodyFunctionCall + "\n" + remainder;
 
-  let replacementContent = 'Alert.alert({\nLanguages.alert(\"' + filename + '\", \"' + headerTextKey + '\")' + headerFunctionCall + ",\n" +
-    'Languages.alert(\"' + filename + '\", \"' + bodyTextKey   + '\")' + bodyFunctionCall + "\n" + remainder;
+  let replacement = match[0].replace(headerResult.parsedText,'Languages.alert("' + filename + '", "' + headerTextKey + '")' + headerFunctionCall + ',')
+  replacement = replacement.replace(bodyResult.parsedText,'Languages.alert("' + filename + '", "' + bodyTextKey + '")' + bodyFunctionCall )
+  replacement = replacement.replace(fullMatchRemainder,remainder)
 
-  // console.log("REPLACING", match[0], "\nWITH", replacementContent)
-  contentData.content.replace(match[0], replacementContent);
-  // console.log(contentData.content)
+  contentData.content = contentData.content.replace(match[0], replacement);
 }
 
 function extractTitle(match, filename, filePath, contentData) {
@@ -252,7 +254,8 @@ function createTranslationFileAndReplaceContents(filename, filePath, extractData
   if (openWithCurly) { replacementContent += '{'; }
   replacementContent += 'Languages.' + targetType + '("' + filename + '", "' + textKey + '")' + functionCall;
   if (openWithCurly) { replacementContent += '}'; }
-  contentData.content.replace(extractData.parsedText, replacementContent);
+
+  contentData.content = contentData.content.replace(extractData.parsedText, replacementContent);
 }
 
 
