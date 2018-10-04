@@ -37,24 +37,24 @@ let parsePath = function(dirPath) {
 }
 
 let parseFile = function(filePath) {
-  let content = fs.readFileSync(filePath, "utf8")
-  let textRegex = /<Text[^>]*?>([^<]*?)<\/Text>/gm
-  let alertRegex = /Alert\.alert\(([\s\S]*?)\)/gm
-  let labelRegex = /{.*label:(.*),.*}/gm
+  let content    = fs.readFileSync(filePath, "utf8")
+  let textRegex  = /<Text[^>]*?>([^<]*?)<\/Text>/gm
+  // let alertRegex = /Alert\.alert\(([\s\S]*?)\)/gm
+  let alertRegex = /Alert\.alert\(([\s\S]*?),[\s\S]*?,[\s\S]*?\][\s\S]*?\)/gm
+  let labelRegex = /{.*?label:([^}]*)/gm
   let titleRegex = /navigationOptions[\s\S]*title:(.*)[\s^}]*/gm
 
-  let textMatches = content.match(textRegex);
+  let textMatches  = content.match(textRegex);
   let alertMatches = content.match(alertRegex);
   let labelMatches = content.match(labelRegex);
   let titleMatches = content.match(titleRegex);
 
-  let filenameArr = filePath.split("/")
+  let filenameArr = filePath.split("/");
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
 
-  // if (filename !== "Sphere") {
-  //   return
+  // if (filename !== "SphereUser") {
+  //   return;
   // }
-
 
   let importLine = 'import { Languages } from "';
   let pathArr = filePath.split("/");
@@ -65,7 +65,7 @@ let parseFile = function(filePath) {
 
   if (content.indexOf(importLine) === -1) {
     content = importLine + content;
-    // fs.writeFileSync(filePath, content);
+    //
   }
 
   let contentData = {content: content};
@@ -112,24 +112,86 @@ let parseFile = function(filePath) {
     }
     titleTots = titleTots.concat(titleMatches);
   }
+
+  console.log(contentData)
+
+  // fs.writeFileSync(filePath, content);
 }
 
+function extractAlert(match, filename, filePath, contentData) {
+  let fullMatch = match[0].replace("Alert.alert(",'');
+
+  let headerResult = extractAndConvert(fullMatch, true, true, true)
+  let header = headerResult.text;
+
+  let fullMatchBody = fullMatch.substr(headerResult.parsedText.length)
+  let bodyResult = extractAndConvert(fullMatchBody, true, true, true)
+
+  let body = bodyResult.text;
+  let textSplit = fullMatch.split("text:");
+
+  let buttonLeftData = grabString(textSplit[1]);
+  let buttonRightData = grabString(textSplit[2]);
+
+
+  if (translationAlertData[filename] === undefined) {
+    translationAlertData[filename] = {__filename: '"' + filePath + '"'}
+  }
+
+  let headerTextKey      = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_header');
+  let bodyTextKey        = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_body');
+
+  let headerFunctionCall = getFunctionCall(headerResult);
+  let bodyFunctionCall   = getFunctionCall(bodyResult);
+
+
+  translationAlertData[filename][headerTextKey] = "() => { return " + headerResult.text + " }";
+  translationAlertData[filename][bodyTextKey]   = "() => { return " + bodyResult.text + " }";
+
+  if (buttonLeftData.result) {
+    let buttonLeftKey      = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_left');
+    translationAlertData[filename][buttonLeftKey]   = "() => { return \"" + buttonLeftData.result + "\" }";
+  }
+
+  if (buttonRightData.result) {
+    let buttonRightKey     = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_right');
+    translationAlertData[filename][buttonRightKey]   = "() => { return \"" + buttonRightData.result + "\" }";
+  }
+
+  // write remainder; this is the part with the buttons
+  let remainder = ')'
+  if (buttonLeftData.result) {
+    remainder = ',';
+    remainder += '[{text:' + textSplit[1].replace(buttonLeftData.resultString, "arguments[" + (headerResult.parameters.length + bodyResult.parameters.length) +"]");
+
+    if (buttonRightData.result) {
+      remainder += 'text:' + textSplit[2].replace(buttonRightData.resultString, "arguments[" + (headerResult.parameters.length + bodyResult.parameters.length + 1) +"]");
+    }
+  }
+
+  let replacementContent = 'Alert.alert({\nLanguages.alert(\"' + filename + '\", \"' + headerTextKey + '\")' + headerFunctionCall + ",\n" +
+    'Languages.alert(\"' + filename + '\", \"' + bodyTextKey   + '\")' + bodyFunctionCall + "\n" + remainder;
+
+  // console.log("REPLACING", match[0], "\nWITH", replacementContent)
+  contentData.content.replace(match[0], replacementContent);
+  // console.log(contentData.content)
+}
 
 function extractTitle(match, filename, filePath, contentData) {
   let content = match[1];
 
-  let {pureText, text} = extractAndConvert(content, true, true, true);
+  let extractData = extractAndConvert(content, true, true, true);
 
-  console.log(filename, "title:" , text)
+  createTranslationFileAndReplaceContents( filename, filePath, extractData, translationTitleData, 'title', contentData )
 }
 
 function extractLabel(match, filename, filePath, contentData) {
   let content = match[1];
 
   // let label = _extractStringWithParameters(content);
-  let {pureText, text} = extractAndConvert(content, true, true);
+  let extractData = extractAndConvert(content, true, true, true);
 
-  console.log(filename, "label:" , text)
+  createTranslationFileAndReplaceContents( filename, filePath, extractData, translationLabelData, 'label', contentData )
 }
 
 
@@ -168,23 +230,28 @@ function extractFromText(match, filename, filePath, contentData) {
   let extractData = extractAndConvert(content);
 
   if (extractData.pureText) {
-    createTranslationFileAndReplaceContents(filename, filePath, extractData, translationTextData, 'text', contentData)
+    createTranslationFileAndReplaceContents(filename, filePath, extractData, translationTextData, 'text', contentData, true)
   }
 }
 
 
-function createTranslationFileAndReplaceContents(filename, filePath, extractData, target, targetType, contentData) {
+function createTranslationFileAndReplaceContents(filename, filePath, extractData, target, targetType, contentData, openWithCurly = false) {
   if (target[filename] === undefined) {
     target[filename] = {__filename: '"' + filePath + '"'}
   }
 
   let textKey = prepareTextKey(target, filename, extractData.pureText);
+  if (textKey === '') {
+    return
+  }
   target[filename][textKey] = "() => { return " + extractData.text + " }";
 
   let functionCall = getFunctionCall(extractData);
 
-  let replacementContent = '{ Languages.' + targetType + '("' + filename + '", "' + textKey + '")' + functionCall + ' }';
-
+  let replacementContent = '';
+  if (openWithCurly) { replacementContent += '{'; }
+  replacementContent += 'Languages.' + targetType + '("' + filename + '", "' + textKey + '")' + functionCall;
+  if (openWithCurly) { replacementContent += '}'; }
   contentData.content.replace(extractData.parsedText, replacementContent);
 }
 
@@ -221,71 +288,6 @@ function prepareTextKey(target, filename, inputText, postfix = '') {
 }
 
 
-function extractAlert(match, filename, filePath, contentData) {
-  let fullMatch = match[0].replace("Alert.alert(",'');
-
-  let headerResult = extractAndConvert(fullMatch, true, true, true)
-  let header = headerResult.text;
-
-  let fullMatchBody = fullMatch.substr(headerResult.parsedText.length)
-  let bodyResult = extractAndConvert(fullMatchBody, true, true, true)
-
-  let body = bodyResult.text;
-  let textSplit = fullMatch.split("text:");
-
-  let buttonLeftData = grabString(textSplit[1]);
-  let buttonRightData = grabString(textSplit[2]);
-
-
-  if (translationAlertData[filename] === undefined) {
-    translationAlertData[filename] = {__filename: '"' + filePath + '"'}
-  }
-
-  let headerTextKey      = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'header');
-  let bodyTextKey        = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'body');
-
-  let headerFunctionCall = getFunctionCall(headerResult);
-  let bodyFunctionCall   = getFunctionCall(bodyResult);
-
-
-  translationAlertData[filename][headerTextKey] = "() => { return " + headerResult.text + " }";
-  translationAlertData[filename][bodyTextKey]   = "() => { return " + bodyResult.text + " }";
-
-  if (buttonLeftData.result) {
-    let buttonLeftKey      = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'left');
-    translationAlertData[filename][buttonLeftKey]   = "() => { return \"" + buttonLeftData.result + "\" }";
-  }
-
-  if (buttonRightData.result) {
-    let buttonRightKey     = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'right');
-    translationAlertData[filename][buttonRightKey]   = "() => { return \"" + buttonRightData.result + "\" }";
-  }
-
-
-
-
-
-  console.log(fullMatch, textSplit)
-  let remainder = ')'
-  if (buttonLeftData.result) {
-    remainder = ',';
-    remainder += '[{text:' + textSplit[1].replace(buttonLeftData.resultString, "LEFT_TEST");
-
-    if (buttonRightData.result) {
-      remainder += 'text:' + textSplit[2].replace(buttonRightData.resultString, "RIGHT_TEST");
-    }
-    console.log("remainder", remainder)
-  }
-
-  // console.log('textSplit', grabString(textSplit[1]), grabString(textSplit[2]))
-  // console.log(filename, "header:" + header, 'body:' + body, 'buttonLeftText:' + buttonLeftText, 'buttonRighText:' + buttonRightText);
-
-  console.log('Alert.alert({ Languages.alert(\"' + filename + '\", \"' + headerTextKey + '\")' + headerFunctionCall + "," +
-                            'Languages.alert(\"' + filename + '\", \"' + bodyTextKey   + '\")' + bodyFunctionCall   + remainder);
-
-
-  // createTranslationFileAndReplaceContents(filename, filePath, extractData, translationFileData, 'text', contentData)
-}
 
 
 function grabString(str) {
@@ -304,9 +306,11 @@ function grabString(str) {
       result += letter
     }
 
-    if (letter === '"' || letter === "'") {
-      stringMatcher = letter;
-      stringOpen = true;
+    if (!stringOpen) {
+      if (letter === '"' || letter === "'") {
+        stringMatcher = letter;
+        stringOpen = true;
+      }
     }
   }
   let resultString = stringMatcher + result + stringMatcher
@@ -492,6 +496,9 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
       let gotSubject = false
       for (let j = chunks.length - 1; j >= 0; j--) {
         if (popCount > 0) {
+          if (chunks[j].indexOf("arguments[") !== -1) {
+            parameterCounter--;
+          }
           chunks.pop();
           popCount--;
         }
@@ -500,9 +507,15 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
           // is string;
           if (candidate === '"' || candidate === "'") {
             popCount = 2;
+            if (chunks[j].indexOf("arguments[") !== -1) {
+              parameterCounter--;
+            }
             chunks.pop();
           }
           else {
+            if (chunks[j].indexOf("arguments[") !== -1) {
+              parameterCounter--;
+            }
             chunks.pop();
           }
           gotArgument = true;
@@ -515,19 +528,24 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
           }
           else if (startedGettingOperator) {
             if (gotSubject === false) {
+              if (chunks[j].indexOf("arguments[") !== -1) {
+                parameterCounter--;
+              }
               chunks.pop();
               break;
             }
           }
         }
         else if (gotSubject === false) {
+          if (chunks[j].indexOf("arguments[") !== -1) {
+            parameterCounter--;
+          }
           chunks.pop();
           break;
         }
       }
 
       // with the query removed, we will be able to add a new conditional.
-      parameterCounter--;
       chunks.push("arguments[" + parameterCounter +"] ? ");
       parameterCounter++;
       parameterAddedWhileClosed = false
@@ -580,6 +598,7 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
 
     prevLetter = letter;
   }
+
 
   // for when only void is avaible
   if (chunk !== '') {
@@ -636,26 +655,38 @@ let padd = function (x) {
   return x
 }
 
-let resultString = 'export const language = {\n';
-let indent = "  "
-let keys = Object.keys(translationTextData);
-keys.sort();
-keys.forEach((key) => {
-  resultString += indent + key + ":{\n"
-  let source = translationTextData[key]
-  let subKeys = Object.keys(source);
-  subKeys.forEach((subKey) => {
-    resultString += indent + indent + padd(subKey + ":" ) + " " + source[subKey] + ",\n"
+function stringifyData(translationData, filename) {
+  let resultString = 'export const languageData = {\n';
+  let indent = "  "
+  let keys = Object.keys(translationData);
+  keys.sort();
+  keys.forEach((key) => {
+    resultString += indent + key + ":{\n"
+    let source = translationData[key]
+    let subKeys = Object.keys(source);
+    subKeys.forEach((subKey) => {
+      resultString += indent + indent + padd(subKey + ":" ) + " " + source[subKey] + ",\n"
+    })
+    resultString += indent + "},\n"
   })
-  resultString += indent + "},\n"
-})
 
-resultString += "}"
+  resultString += "}";
+  fs.writeFileSync(filename + ".js", resultString)
+}
+
+stringifyData(translationLabelData, 'labels')
+stringifyData(translationTextData,  'texts')
+stringifyData(translationTitleData, 'titles')
+stringifyData(translationAlertData, 'alerts')
+
 
 // console.log(resultString)
-console.log(translationAlertData)
+// console.log(translationTitleData)
+// console.log(translationTextData)
+// console.log(translationLabelData)
+// console.log(translationAlertData)
 
-fs.writeFileSync("__testtranslationFile.js", resultString)
+
 
 
 
