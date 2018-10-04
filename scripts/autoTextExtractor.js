@@ -52,9 +52,9 @@ let parseFile = function(filePath) {
   let filenameArr = filePath.split("/");
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
 
-  if (filename !== "ToonSettings") {
-    return;
-  }
+  // if (filename !== "SphereEdit") {
+  //   return;
+  // }
 
   let importLine = 'import { Languages } from "';
   let pathArr = filePath.split("/");
@@ -65,7 +65,6 @@ let parseFile = function(filePath) {
 
   if (content.indexOf(importLine) === -1) {
     content = importLine + content;
-    //
   }
 
   let contentData = {content: content};
@@ -232,12 +231,12 @@ function extractFromText(match, filename, filePath, contentData) {
   let extractData = extractAndConvert(content);
 
   if (extractData.pureText) {
-    createTranslationFileAndReplaceContents(filename, filePath, extractData, translationTextData, 'text', contentData, true)
+    createTranslationFileAndReplaceContents(filename, filePath, extractData, translationTextData, 'text', contentData, true, false)
   }
 }
 
 
-function createTranslationFileAndReplaceContents(filename, filePath, extractData, target, targetType, contentData, openWithCurly = false) {
+function createTranslationFileAndReplaceContents(filename, filePath, extractData, target, targetType, contentData, openWithCurly = false, closeWithComma = true) {
   if (target[filename] === undefined) {
     target[filename] = {__filename: '"' + filePath + '"'}
   }
@@ -252,8 +251,9 @@ function createTranslationFileAndReplaceContents(filename, filePath, extractData
 
   let replacementContent = '';
   if (openWithCurly) { replacementContent += '{'; }
-  replacementContent += 'Languages.' + targetType + '("' + filename + '", "' + textKey + '")' + functionCall;
-  if (openWithCurly) { replacementContent += '}'; }
+  replacementContent += ' Languages.' + targetType + '("' + filename + '", "' + textKey + '")' + functionCall;
+  if (openWithCurly) { replacementContent += ' }'; }
+  if (closeWithComma) { replacementContent += ", "}
 
   contentData.content = contentData.content.replace(extractData.parsedText, replacementContent);
 }
