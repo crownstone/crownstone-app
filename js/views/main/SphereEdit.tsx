@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -35,7 +36,7 @@ export class SphereEdit extends Component<any, any> {
     }
 
     return {
-      title: "Welcome!"
+      title:Languages.title("SphereEdit", "Welcome_")()
     }
   };
 
@@ -64,7 +65,7 @@ export class SphereEdit extends Component<any, any> {
     let state = this.props.store.getState();
 
     if (!this.props.sphereId || !state.spheres[this.props.sphereId]) {
-      items.push({label:'What can I help you with?',  type:'largeExplanation'});
+      items.push({label:Languages.label("SphereEdit", "What_can_I_help_you_with_")()  type:'largeExplanation'});
 
       let radius = 12;
 
@@ -83,13 +84,13 @@ export class SphereEdit extends Component<any, any> {
             });
         }
       });
-      items.push({label:'A Sphere contains your Crownstones, Rooms and preferences. You can add others to your Sphere so they may also use your Crownstones!',  type:'explanation', below: true});
+      items.push({label:Languages.label("SphereEdit", "A_Sphere_contains_your_Cr")()  type:'explanation', below: true});
       return items;
     }
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    items.push({label:'What can I help you with?',  type:'largeExplanation'});
+    items.push({label:Languages.label("SphereEdit", "What_can_I_help_you_with_")()  type:'largeExplanation'});
     
     let radius = 12;
 
