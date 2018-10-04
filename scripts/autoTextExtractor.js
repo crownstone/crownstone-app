@@ -52,7 +52,7 @@ let parseFile = function(filePath) {
   let filenameArr = filePath.split("/");
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
 
-  // if (filename !== "ToonSettings") {
+  // if (filename !== "Login") {
   //   return;
   // }
 
@@ -363,7 +363,6 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
   let ignoreVoid = false;
   let escaping = false;
 
-  content = content.replace(/(\(\))/g,"");
   let prevLetter = null;
 
   if (assumeLogicIsOpen === false) {
@@ -422,7 +421,6 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
         break;
       }
     }
-
 
     parsedText += letter;
 
@@ -587,6 +585,10 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
         chunks.push("|");
         parameterAddedWhileClosed = false
       }
+      else if (letter === "&") {
+        chunks.push("&");
+        parameterAddedWhileClosed = false
+      }
       else if (letter === "=" || letter === ">" || letter === "<") { // add these so the conditional parser will be able to remove the query
         chunks.push(letter);
         parameterAddedWhileClosed = false
@@ -631,6 +633,7 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
 
   // add spaces to ||
   text = text.replace(/(\|\|)/g," || ")
+  text = text.replace(/(&&)/g," && ")
 
   let keywords = {new: true}
   let parsedParameters = [];
