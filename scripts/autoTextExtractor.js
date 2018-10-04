@@ -52,7 +52,7 @@ let parseFile = function(filePath) {
   let filenameArr = filePath.split("/");
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
 
-  // if (filename !== "SphereEdit") {
+  // if (filename !== "ToonSettings") {
   //   return;
   // }
 
@@ -122,16 +122,14 @@ function extractAlert(match, filename, filePath, contentData) {
   let headerResult = extractAndConvert(fullMatch, true, true, true)
   let header = headerResult.text;
 
-  let fullMatchBody = fullMatch.substr(headerResult.parsedText.length)
+  let fullMatchBody = fullMatch.substr(headerResult.parsedText.length + 1) // +1 to swallow the comma
   let bodyResult = extractAndConvert(fullMatchBody, true, true, true)
-
   let body = bodyResult.text;
   let fullMatchRemainder = fullMatchBody.substr(bodyResult.parsedText.length)
   let textSplit = fullMatch.split("text:");
 
   let buttonLeftData = grabString(textSplit[1]);
   let buttonRightData = grabString(textSplit[2]);
-
 
   if (translationAlertData[filename] === undefined) {
     translationAlertData[filename] = {__filename: '"' + filePath + '"'}
@@ -160,18 +158,24 @@ function extractAlert(match, filename, filePath, contentData) {
 
   // write remainder; this is the part with the buttons
   let remainder = ')'
+  let textSplitCounter = 1;
   if (buttonLeftData.result) {
     remainder = ',';
-    remainder += '[{text:' + textSplit[1].replace(buttonLeftData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonLeftKey + '\")()');
-
+    remainder += '[{text:' + textSplit[textSplitCounter].replace(buttonLeftData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonLeftKey + '\")()');
+    textSplitCounter++
     if (buttonRightData.result) {
-      remainder += 'text:' + textSplit[2].replace(buttonRightData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonRightKey + '\")()');
+      remainder += 'text:' + textSplit[textSplitCounter].replace(buttonRightData.resultString, 'Languages.alert(\"' + filename + '\", \"' + buttonRightKey + '\")()');
+      textSplitCounter++;
+    }
+
+    if (textSplitCounter < textSplit.length) {
+      for ( let i = textSplitCounter; i < textSplit.length; i++) {
+        remainder += "text:" + textSplit[i]
+      }
     }
   }
-  // let replacementContent = 'Alert.alert({\nLanguages.alert(\"' + filename + '\", \"' + headerTextKey + '\")' + headerFunctionCall + ",\n" +
-  //   'Languages.alert(\"' + filename + '\", \"' + bodyTextKey   + '\")' + bodyFunctionCall + "\n" + remainder;
 
-  let replacement = match[0].replace(headerResult.parsedText,'Languages.alert("' + filename + '", "' + headerTextKey + '")' + headerFunctionCall + ',')
+  let replacement = match[0].replace(headerResult.parsedText,'Languages.alert("' + filename + '", "' + headerTextKey + '")' + headerFunctionCall)
   replacement = replacement.replace(bodyResult.parsedText,'Languages.alert("' + filename + '", "' + bodyTextKey + '")' + bodyFunctionCall )
   replacement = replacement.replace(fullMatchRemainder,remainder)
 
@@ -228,15 +232,18 @@ function extractFromText(match, filename, filePath, contentData) {
   let content = manuallyParsedContent;
 
 
+
   let extractData = extractAndConvert(content);
 
+  let paddingArray = match[0].split(extractData.parsedText);
+
   if (extractData.pureText) {
-    createTranslationFileAndReplaceContents(filename, filePath, extractData, translationTextData, 'text', contentData, true, false)
+    createTranslationFileAndReplaceContents(filename, filePath, extractData, translationTextData, 'text', contentData, true, paddingArray)
   }
 }
 
 
-function createTranslationFileAndReplaceContents(filename, filePath, extractData, target, targetType, contentData, openWithCurly = false, closeWithComma = true) {
+function createTranslationFileAndReplaceContents(filename, filePath, extractData, target, targetType, contentData, openWithCurly = false, paddingArray = null) {
   if (target[filename] === undefined) {
     target[filename] = {__filename: '"' + filePath + '"'}
   }
@@ -253,9 +260,13 @@ function createTranslationFileAndReplaceContents(filename, filePath, extractData
   if (openWithCurly) { replacementContent += '{'; }
   replacementContent += ' Languages.' + targetType + '("' + filename + '", "' + textKey + '")' + functionCall;
   if (openWithCurly) { replacementContent += ' }'; }
-  if (closeWithComma) { replacementContent += ", "}
 
-  contentData.content = contentData.content.replace(extractData.parsedText, replacementContent);
+  if (Array.isArray(paddingArray) && paddingArray.length == 2) {
+    contentData.content = contentData.content.replace(paddingArray[0]+extractData.parsedText+paddingArray[1], paddingArray[0]+replacementContent+paddingArray[1]);
+  }
+  else {
+    contentData.content = contentData.content.replace(extractData.parsedText, replacementContent);
+  }
 }
 
 
@@ -399,8 +410,21 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
   // parse text
   for (let i = 0; i < content.length; i++) {
     let letter = content[i];
-    parsedText += letter;
     let activeMode = activeModes[activeModes.length - 1];
+
+    if (letter === ',' && stopOnComma === true) {
+      if (activeMode === modes.void || activeMode === modes.logic) {
+        break;
+      }
+    }
+    if (letter === '}' && stopOnCurlyBracket === true) {
+      if (activeMode === modes.void || activeMode === modes.logic) {
+        break;
+      }
+    }
+
+
+    parsedText += letter;
 
     if (letter === '\\') {
       escaping = true
@@ -421,17 +445,6 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
         escaping = false;
         prevLetter = letter;
         continue;
-      }
-    }
-
-    if (letter === ',' && stopOnComma === true) {
-      if (activeMode === modes.void || activeMode === modes.logic) {
-        break;
-      }
-    }
-    if (letter === '}' && stopOnCurlyBracket === true) {
-      if (activeMode === modes.void || activeMode === modes.logic) {
-        break;
       }
     }
 
