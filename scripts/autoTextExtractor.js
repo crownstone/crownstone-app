@@ -47,7 +47,7 @@ let parseFile = function(filePath) {
   let textRegex  = /<Text[^>]*?>([^<]*?)<\/Text>/gm
   // let alertRegex = /Alert\.alert\(([\s\S]*?)\)/gm
   let alertRegex = /Alert\.alert\(([\s\S]*?),[\s\S]*?,[\s\S]*?\][\s\S]*?\)/gm
-  let labelRegex = /{[^{]*?abel:([^}]*)/gm
+  let labelRegex = /{[^{]*?(abel:([^}]*))/gm
   let titleRegex = /title:(.*)[\s^}]*/gm
 
   let textMatches  = content.match(textRegex);
@@ -60,9 +60,9 @@ let parseFile = function(filePath) {
 
   if (EXCLUSIONS[filename]) { return }
 
-  if (filename !== "DeviceBehaviourEdit") {
-    return;
-  }
+  // if (filename !== "SettingConstructor") {
+  //   return;
+  // }
 
   let importLine = 'import { Languages } from "';
   let pathArr = filePath.split("/");
@@ -121,7 +121,7 @@ let parseFile = function(filePath) {
   }
 
   // console.log(contentData)
-  // fs.writeFileSync(filePath, contentData.content);
+  fs.writeFileSync(filePath, contentData.content);
 }
 
 function extractAlert(match, filename, filePath, contentData) {
@@ -199,14 +199,13 @@ function extractTitle(match, filename, filePath, contentData) {
 }
 
 function extractLabel(match, filename, filePath, contentData) {
-  let content = match[1];
+  let content = match[2];
 
   // let label = _extractStringWithParameters(content);
   let extractData = extractAndConvert(content, true, true, true);
+  let prefix = match[1].substr(0,match[1].indexOf(match[2]))
 
-  // console.log("match", content, extractData)
-
-  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationLabelData, 'label', contentData);
+  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationLabelData, 'label', contentData, false, [prefix,'']);
 }
 
 
