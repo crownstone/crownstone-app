@@ -30,7 +30,6 @@ export default {
     Switch_:                       () => { return "Switch." },
     Entered_the_Sphere_:           () => { return "Entered the Sphere." },
     Left_the_Sphere_:              () => { return "Left the Sphere." },
-
     Entered_room_:                 () => { return "Entered room." },
     Moved_near_:                   () => { return "Moved near." },
     Left_the_room_:                () => { return "Left the room." },
@@ -43,6 +42,28 @@ export default {
     _heartbeats_once_every_:       () => { return arguments[0] + " heartbeats once every " + arguments[1] + " seconds." },
     Im_still__because_there_a:     () => { return "I'm still " + arguments[0] + " because there are still others in the Sphere." },
     Last_heartbeat_sent_at_:       () => { return "Last heartbeat sent at " + arguments[0] + ".";},
+    ___because_everyone_left_:     () => { return arguments[0] + arguments[1] + " % because everyone left the Sphere." },
+    _because_everyone_left_th:     () => { return arguments[0] + arguments[1] + " because everyone left the Sphere." },
+    Sphere_heartbeat_expired_:     () => { return "Sphere heartbeat expired." },
+    Thereby_cancelling_the_pr:     () => { return "Thereby cancelling the previous command." },
+    The_Crownstone_switched_:      () => { return "The Crownstone switched " + arguments[0] + "."},
+    Dimmed_to_arg:                 () => { return "Dimmed to " + arguments[0] + "%."},
+
+    _told_another_Crownstone_after:() => { return arguments[0] + " told another Crownstone to switch this one " + arguments[1] + "after" },
+    _told_this_Crownstone_after:() => { return arguments[0] + " told this Crownstone to switch this one " + arguments[1] + "after" },
+    _minutes:                      () => { return arguments[0] + " minutes" },
+    _seconds:                      () => { return arguments[0] + " seconds" },
+    _because_everyone_is_away:     () => { return arguments[0] + arguments[1] + " because everyone is away from this Crownstone." },
+    ___because_everyone_is_away:   () => { return arguments[0] + arguments[1] + " % because everyone is away from this Crownstone." },
+    _because_everyone_left_room:   () => { return arguments[0] + arguments[1] + " because everyone left the " + arguments[2] + '.' },
+    _because_everyone_left_dim_room: () => { return arguments[0] + arguments[1] + " % because everyone left the " + arguments[2] + '.' },
+
+
+
+
+
+
+
 
 
 

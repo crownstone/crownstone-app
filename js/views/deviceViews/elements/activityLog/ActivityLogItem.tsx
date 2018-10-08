@@ -273,33 +273,33 @@ export class ActivityLogItem extends Component<any, any> {
             return Languages.label("DeviceBehaviour","Last_heartbeat_sent_at_")(Util.getTimeFormat(this.props.data.endTime));
           }
           else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-            return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the Sphere.";
+            return Languages.label("DeviceBehaviour","___because_everyone_left_")(initialLabel, Math.round((this.props.data.switchedToState/0.99)*100));
           }
           else {
-            return initialLabel + targetState + " because everyone left the Sphere.";
+            return Languages.label("DeviceBehaviour","_because_everyone_left_th")(initialLabel, targetState);
           }
         }
       }
       else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
         if (this.props.data.switchedToState === -1) {
-          return 'Sphere heartbeat expired.';
+          return Languages.label("DeviceBehaviour","Sphere_heartbeat_expired_")();
         }
         else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-          return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the " + roomConfig.name + '.';
+          return Languages.label("DeviceBehaviour","_because_everyone_left_room")(initialLabel, Math.round((this.props.data.switchedToState/0.99)*100), roomConfig.name);
         }
         else {
-          return initialLabel + targetState + " because everyone left the " + roomConfig.name + '.';
+          return Languages.label("DeviceBehaviour","_because_everyone_left_room")(initialLabel, targetState, roomConfig.name);
         }
       }
       else if (this.props.data.generatedFrom === 'keepAliveOther') {
         if (this.props.data.switchedToState === -1) {
-          return 'Sphere heartbeat expired.';
+          return Languages.label("DeviceBehaviour","Sphere_heartbeat_expired_");
         }
         else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-          return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone is away from this Crownstone.";
+          return Languages.label("DeviceBehaviour","___because_everyone_is_away")(initialLabel, Math.round((this.props.data.switchedToState/0.99)*100));
         }
         else {
-          return initialLabel + targetState + " because everyone is away from this Crownstone.";
+          return Languages.label("DeviceBehaviour","_because_everyone_is_away")(initialLabel, targetState);
         }
       }
     }
@@ -307,17 +307,17 @@ export class ActivityLogItem extends Component<any, any> {
       let label = '';
       if ( this.props.data.delayInCommand > 0) {
         if (this.props.data.viaMesh) {
-          label = personPrefix + ' told another Crownstone to switch this one ' + targetState + " after "
+          label = Languages.label("DeviceBehaviour","_told_another_Crownstone_after")(personPrefix, targetState)
         }
         else {
-          label = personPrefix + ' told this the Crownstone to switch ' + targetState + " after "
+          label = Languages.label("DeviceBehaviour","_told_this_Crownstone_after")(personPrefix, targetState)
         }
 
         if (this.props.data.delayInCommand > 60) {
-          label += Math.round(this.props.data.delayInCommand/60) + " minutes"
+          label += Languages.label("DeviceBehaviour","_minutes")(Math.round(this.props.data.delayInCommand/60))
         }
         else {
-          label += this.props.data.delayInCommand + " seconds"
+          label += Languages.label("DeviceBehaviour","_seconds")(this.props.data.delayInCommand)
         }
 
       }
@@ -332,7 +332,7 @@ export class ActivityLogItem extends Component<any, any> {
       switch (this.props.data.intent) {
         case INTENTS.manual:
           if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-            return "Dimmed to " + Math.round((this.props.data.switchedToState/0.99)*100) + " %.";
+            return Languages.label("DeviceBehaviour","Dimmed_to_arg")(Math.round((this.props.data.switchedToState/0.99)*100));
           }
           else {
             return label + ".";
@@ -342,10 +342,10 @@ export class ActivityLogItem extends Component<any, any> {
           return label + '.';
         case INTENTS.enter:
           if (this.props.data.cancelled) {
-            return "Thereby cancelling the previous command."
+            return Languages.label("DeviceBehaviour","Thereby_cancelling_the_pr")()
           }
           else {
-            return "The Crownstone switched " + targetState + ".";
+            return Languages.label("DeviceBehaviour","The_Crownstone_switched_")(targetState);
           }
         case INTENTS.exit:
           if (this.props.data.cancelled) {
