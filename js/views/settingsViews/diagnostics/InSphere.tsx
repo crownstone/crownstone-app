@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -55,16 +56,16 @@ export class InSphere extends Component<any, any> {
   }
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{"You're in your Sphere!"}</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("InSphere", "Youre_in_your_Sphere_")() }</Text>
   }
 
   _getTests() {
     return (
       <SlideFadeInView visible={this.state.userInputProblemType !== 'localization'} height={180}>
-        <TestResult label={"Database is healthy"}          state={ true } />
-        <TestResult label={"Scanning is enabled"}          state={ true } />
-        <TestResult label={"Receiving Sphere beacons"}     state={ true } />
-        <TestResult label={"Receiving Crownstone data"}    state={ true } />
+        <TestResult label={ Languages.label("InSphere", "Database_is_healthy")()}          state={ true } />
+        <TestResult label={ Languages.label("InSphere", "Scanning_is_enabled")()}          state={ true } />
+        <TestResult label={ Languages.label("InSphere", "Receiving_Sphere_beacons")()}     state={ true } />
+        <TestResult label={ Languages.label("InSphere", "Receiving_Crownstone_data")()}    state={ true } />
       </SlideFadeInView>
     )
   }
@@ -75,8 +76,8 @@ export class InSphere extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={'Perhaps the Help menu can help you further.'}
-          explanation={"Alternatively you can send us an email at team@crownstone.rocks and we'll do our best to help you!"}
+          header={ Languages.label("InSphere", "Perhaps_the_Help_menu_can")()}
+          explanation={Languages.label("InSphere", "Alternatively_you_can_send")()}
         />
       );
     }
@@ -84,8 +85,8 @@ export class InSphere extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"Everything is working properly."}
-          explanation={"You can close the diagnostics now.\n\nPress the button below to go back."}
+          header={ Languages.label("InSphere", "Everything_is_working_pro")()}
+          explanation={ Languages.label("InSphere", "You_can_close_the_diagnos")()}
         />
       );
     }
@@ -93,13 +94,13 @@ export class InSphere extends Component<any, any> {
       return (
         <DiagOptions
           visible={this.state.visible}
-          header={"What are you having problems with?"}
-          subExplanation={"Scroll down to see all options."}
+          header={ Languages.label("InSphere", "What_are_you_having_probl")()}
+          subExplanation={ Languages.label("InSphere", "Scroll_down_to_see_all_op")()}
           labels={[
-            "A Crownstone.",
-            "The indoor localization.",
-            "Inviting users.",
-            "Other..."
+            Languages.label("InSphere", "aCrownstone")(),
+            Languages.label("InSphere", "theIndoorLocalization")(),
+            Languages.label("InSphere", "invitingUsers")(),
+            Languages.label("InSphere", "other___")(),
           ]}
           pressHandlers={[
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'crownstone'   }); }); },
@@ -114,8 +115,8 @@ export class InSphere extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={"You're in your Sphere, and scanning is working as it should be."}
-          explanation={"Are you experiencing any problems?"}
+          header={Languages.label("InSphere", "You_re_in_your_sphere_and")()}
+          explanation={ Languages.label("InSphere", "Are_you_experiencing_any_")() }
           onPressNo={() => { this._changeContent(() => { this.setState({userInputProblems: false}); }); }}
           onPressYes={() => {this._changeContent(() => { this.setState({userInputProblems: true }); }); }}
         />
@@ -147,8 +148,8 @@ export class InSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={"You do not have permission to invite users to this Sphere...."}
-            explanation={"You will have to ask a member or an admin to invite other users."}
+            header={ Languages.label("InSphere", "You_do_not_have_permissio")()}
+            explanation={ Languages.label("InSphere", "You_will_have_to_ask_a_me")()}
           />
         );
       }
@@ -156,8 +157,8 @@ export class InSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={"You can add people to this Sphere by tapping on the '+' button in the lower right hand corner of the Sphere overview."}
-            explanation={"Alternatively, you can tap 'Edit' in the top right hand corner of the Sphere overview."}
+            header={Languages.label("InSphere", "You_can_add_people_to_thi")()}
+            explanation={Languages.label("InSphere", "Alternatively_you_can_tap")()}
           />
         );
       }

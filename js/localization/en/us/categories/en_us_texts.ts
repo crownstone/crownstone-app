@@ -72,10 +72,6 @@ export default {
     Only_store_data_on_your_p:  () => { return "Only store data on your phone" },
     If_you_are_the_only_user_:  () => { return "If you are the only user, you can run everything locally. If you uninstall your app, you'll need to physically reset all your Crownstones." },
   },
-  DebugIconSelection:{
-    __filename: "../js/views/development/DebugIconSelection.tsx",
-    _o__:                       () => { return arguments[0] + " o:" + arguments[1] + "," + arguments[2] },
-  },
   DeviceActivityLog:{
     __filename: "../js/views/deviceViews/elements/DeviceActivityLog.tsx",
     Activity_Log:               () => { return "Activity Log" },

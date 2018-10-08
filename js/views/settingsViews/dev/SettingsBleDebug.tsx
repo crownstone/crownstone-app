@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -18,7 +19,7 @@ const Actions = require('react-native-router-flux').Actions;
 export class SettingsBleDebug extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "BLE Debug",
+      title: Languages.title("SettingsBleDebug", "BLE_Debug")(),
     }
   };
 
@@ -55,7 +56,7 @@ export class SettingsBleDebug extends Component<any, any> {
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: (element ? element.config.name : "Any"),
+      label: Languages.label("SettingsBleDebug", "Any")(element,element.config.name),
       subtext: rssiData + subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',
@@ -71,7 +72,7 @@ export class SettingsBleDebug extends Component<any, any> {
     const store = this.props.store;
     let state = store.getState();
     let sphereId = Util.data.getPresentSphereId(state);
-    if (!sphereId) { return [{label: "You have to be in a sphere in order to debug BLE", type: 'largeExplanation'}]; }
+    if (!sphereId) { return [{label: Languages.label("SettingsBleDebug", "You_have_to_be_in_a_spher")(), type: 'largeExplanation'}]; }
     let sphere = state.spheres[sphereId];
     let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
@@ -80,7 +81,7 @@ export class SettingsBleDebug extends Component<any, any> {
       let stone = stones[stoneId];
       let location = Util.data.getLocationFromStone(sphere, stone);
       let locationColor = colors.gray.hex;
-      let locationTitle = 'Floating...';
+      let locationTitle =  Languages.label("SettingsBleDebug", "Floating___")();
       if (location) {
         locationTitle = location.config.name;
         locationColor = colors.iosBlue.hex;

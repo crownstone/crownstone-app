@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicatorIOS,
@@ -44,7 +45,7 @@ export class ApplianceEntry extends Component<any, any> {
         </TouchableOpacity>
         <TouchableOpacity style={{flex:1, flexDirection:'row', alignItems:'center', height:0.8*height}} onPress={() => {this.props.select();}}>
           <Text style={{fontSize: 18, fontWeight: '300'}}>{this.props.name}</Text>
-          { this.props.current ? <Text style={{fontSize: 15, fontWeight: '100', color: colors.blue.hex, position:'relative', top:1, paddingLeft:5}}>(current)</Text> : undefined }
+          { this.props.current ? <Text style={{fontSize: 15, fontWeight: '100', color: colors.blue.hex, position:'relative', top:1, paddingLeft:5}}>{ Languages.text("ApplianceEntry", "_current_")() }</Text> : undefined }
         </TouchableOpacity>
         { this.props.delete ? <DoubleTapDelete key={this.id} callback={this.props.delete} /> : undefined }
       </View>

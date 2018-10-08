@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -48,12 +49,10 @@ export class ZoomInstructionOverlay extends Component<any, any> {
                 marginTop:25,
                 marginBottom:25,
                 overflow:'hidden'
-              }}>You can go to the sphere overview just by zooming out!</Text>
+              }}>{ Languages.text("ZoomInstructionOverlay", "You_can_go_to_the_sphere_")() }</Text>
               <Image source={require('../../images/tutorial/zoomForSphereOverview.png')} style={{width:564*size, height:851*size}} />
               <View style={{height:30}} />
-              <Text style={WNStyles.detail}>{
-                "You'll have to do this once to get rid of this pop up!"
-              }</Text>
+              <Text style={WNStyles.detail}>{ Languages.text("ZoomInstructionOverlay", "Youll_have_to_do_this_onc")() }</Text>
               <View style={{height:30}} />
               <TouchableOpacity
                 onPress={() => { this.props.closeCallback(); }}
@@ -65,7 +64,7 @@ export class ZoomInstructionOverlay extends Component<any, any> {
                   borderColor: colors.blue.rgba(0.5),
                 }]}
               >
-                <Text style={{fontSize: 15, color: colors.blue.hex}}>{"I'll try it!"}</Text>
+                <Text style={{fontSize: 15, color: colors.blue.hex}}>{ Languages.text("ZoomInstructionOverlay", "Ill_try_it_")() }</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

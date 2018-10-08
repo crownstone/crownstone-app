@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -24,7 +25,7 @@ import { NotificationHandler } from "../../backgroundProcesses/NotificationHandl
 
 export class SettingsProfile extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "My Account" }
+    return { title: Languages.title("SettingsProfile", "My_Account")()}
   };
 
   unsubscribe : any;
@@ -65,7 +66,7 @@ export class SettingsProfile extends Component<any, any> {
 
     items.push({type:'spacer'});
     items.push({
-      label:'First Name',
+      label: Languages.label("SettingsProfile", "First_Name")(),
       type: 'textEdit',
       value: this.state.firstName,
       validation:{minLength:1, numbers:{allowed:false}},
@@ -80,12 +81,15 @@ export class SettingsProfile extends Component<any, any> {
           sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{firstName: newText}}); });
         }
         else {
-          Alert.alert('First name must be at least 1 letter long', 'No numbers allowed either.', [{text: 'OK'}]);
+          Alert.alert(
+Languages.alert("SettingsProfile", "_First_name_must_be_at_le_header")(),
+Languages.alert("SettingsProfile", "_First_name_must_be_at_le_body")(),
+[{text: Languages.alert("SettingsProfile", "_First_name_must_be_at_le_left")()}]);
         }
       }
     });
     items.push({
-      label:'Last Name', 
+      label: Languages.label("SettingsProfile", "Last_Name")(), 
       type: 'textEdit',
       value: this.state.lastName,
       validation:{minLength:1, numbers:{allowed:false}},
@@ -101,27 +105,30 @@ export class SettingsProfile extends Component<any, any> {
 
         }
         else {
-          Alert.alert('Last name must be at least 1 letter long', 'No numbers allowed either.', [{text: 'OK'}]);
+          Alert.alert(
+Languages.alert("SettingsProfile", "_Last_name_must_be_at_lea_header")(),
+Languages.alert("SettingsProfile", "_Last_name_must_be_at_lea_body")(),
+[{text: Languages.alert("SettingsProfile", "_Last_name_must_be_at_lea_left")()}]);
         }
       }
     });
 
     items.push({
-      label:'Email',
+      label: Languages.label("SettingsProfile", "Email")(),
       type: 'info',
       value: user.email,
     });
     items.push({
-      label:'Change Password',
+      label: Languages.label("SettingsProfile", "Change_Password")(),
       type: 'button',
       style: {color:colors.blue.hex},
       callback: () => {
         Alert.alert(
-          'Are you sure you want to reset your password?',
-          'You will receive a password reset email with instructions at \'' + user.email + '\'. You will be logged out when the email has been sent.',
-          [
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'OK', onPress: () => {this.requestPasswordResetEmail(user.email)}}
+Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_header")(),
+Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_body")(user.email),
+[{text: Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_left")(), style: 'cancel'},
+            {
+text: Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_right")(), onPress: () => {this.requestPasswordResetEmail(user.email)}}
           ]
         )
       }
@@ -131,7 +138,7 @@ export class SettingsProfile extends Component<any, any> {
 
     if (user.developer !== true) {
       items.push({
-        label:'Enable Developer Mode',
+        label: Languages.label("SettingsProfile", "Enable_Developer_Mode")(),
         value: false,
         icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
         type: 'switch',
@@ -144,11 +151,11 @@ export class SettingsProfile extends Component<any, any> {
           });
         }, 300)
       }});
-      items.push({label: 'This will enable certain features that are useful for developers. Only use if you know what you\'re doing.', type: 'explanation', below: true});
+      items.push({label: Languages.label("SettingsProfile", "This_will_enable_certain_")(), type: 'explanation', below: true});
     }
     else {
       items.push({
-        label:'Developer Menu',
+        label: Languages.label("SettingsProfile", "Developer_Menu")(),
         icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
         type: 'navigation',
         callback:() => { Actions.settingsDeveloper(); }
@@ -169,15 +176,18 @@ export class SettingsProfile extends Component<any, any> {
           AppUtil.logOut(this.props.store);
         };
         Alert.alert(
-          'Reset email has been sent',
-          'You will now be logged out. Follow the instructions in the email and log in with your new password.',
-          [{text: 'OK', onPress: defaultAction}],
+Languages.alert("SettingsProfile", "_Reset_email_has_been_sen_header")(),
+Languages.alert("SettingsProfile", "_Reset_email_has_been_sen_body")(),
+[{text: Languages.alert("SettingsProfile", "_Reset_email_has_been_sen_left")(), onPress: defaultAction}],
           { onDismiss: defaultAction }
         )
       })
       .catch((reply) => {
         let defaultAction = () => {this.props.eventBus.emit('hideLoading'); };
-        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction });
+        Alert.alert(
+Languages.alert("SettingsProfile", "_Cannot_Send_Email_argume_header")(),
+Languages.alert("SettingsProfile", "_Cannot_Send_Email_argume_body")(reply.data),
+[{text: Languages.alert("SettingsProfile", "_Cannot_Send_Email_argume_left")(), onPress: defaultAction}], { onDismiss: defaultAction });
       });
   }
 

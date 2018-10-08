@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,14 +19,11 @@ export class MoveRooms extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>Custom screen positions!</Text>
+            <Text style={WNStyles.text}>{ Languages.text("MoveRooms", "Custom_screen_positions_")() }</Text>
             <View style={{height:30}} />
             <Image source={require('../../../../images/whatsNew/2.2.0/roomPositions.png')} style={{width:560*size, height:744*size}} />
             <View style={{height:30}} />
-            <Text style={WNStyles.detail}>{
-              "You can now choose where you want your rooms to be placed!\n\n" +
-              "You can find this in the new Sphere menu, under rooms!\n\n"
-            }</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("MoveRooms", "You_can_now_choose_where_")() }</Text>
           </View>
         </ScrollView>
       </View>

@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -28,7 +29,7 @@ export class SphereEditSettings extends Component<any, any> {
       let state = params.store.getState();
       let sphere = state.spheres[params.sphereId];
       return {
-        title: 'Edit ' + sphere.config.name,
+        title: Languages.title("SphereEditSettings", "Edit_")(sphere.config.name),
       }
     }
   };
@@ -75,12 +76,12 @@ export class SphereEditSettings extends Component<any, any> {
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    items.push({label:'SPHERE DETAILS',  type:'explanation', below:false});
+    items.push({label: Languages.label("SphereEditSettings", "SPHERE_DETAILS")(),  type:'explanation', below:false});
     if (spherePermissions.editSphere) {
       let sphereSettings = state.spheres[this.props.sphereId].config;
       items.push({
         type:'textEdit',
-        label:'Name',
+        label: Languages.label("SphereEditSettings", "Name")(),
         value: this.state.sphereName,
         validation:{minLength:2},
         validationCallback: (result) => {this.validationState.sphereName = result;},
@@ -101,7 +102,10 @@ export class SphereEditSettings extends Component<any, any> {
                 })
             }
             else {
-              Alert.alert('Sphere name must be at least 2 letters long', 'Please try again.', [{text: 'OK'}]);
+              Alert.alert(
+Languages.alert("SphereEditSettings", "_Sphere_name_must_be_at_l_header")(),
+Languages.alert("SphereEditSettings", "_Sphere_name_must_be_at_l_body")(),
+[{text: Languages.alert("SphereEditSettings", "_Sphere_name_must_be_at_l_left")()}]);
             }
           }
         }
@@ -110,14 +114,14 @@ export class SphereEditSettings extends Component<any, any> {
     else {
       items.push({
         type:'info',
-        label:'Name',
+        label: Languages.label("SphereEditSettings", "Name")(),
         value: this.state.sphereName,
       });
     }
 
     let ai = Util.data.getAiData(state, this.props.sphereId);
 
-    items.push({label:'PERSONAL ARTIFICIAL INTELLIGENCE',  type:'explanation', below:false});
+    items.push({label: Languages.label("SphereEditSettings", "PERSONAL_ARTIFICIAL_INTEL")(),  type:'explanation', below:false});
     items.push({
       label: ai.name,
       type: spherePermissions.editSphere ? 'navigation' : 'info',
@@ -126,11 +130,11 @@ export class SphereEditSettings extends Component<any, any> {
         Actions.aiStart({sphereId: this.props.sphereId, canGoBack: true});
       }
     });
-    items.push({label: ai.name + ' will do ' + ai.his + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
+    items.push({label: Languages.label("SphereEditSettings", "_will_do__very_best_help_")(ai.name,ai.his),  type:'explanation', style:{paddingBottom:0}, below:true});
 
-    items.push({label:'DANGER',  type:'explanation', below: false});
+    items.push({label: Languages.label("SphereEditSettings", "DANGER")(),  type:'explanation', below: false});
     items.push({
-      label: 'Leave Sphere',
+      label: Languages.label("SphereEditSettings", "Leave_Sphere")(),
       icon: <IconButton name="md-exit" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,
       style: {color:colors.menuRed.hex},
       type: 'button',
@@ -140,7 +144,7 @@ export class SphereEditSettings extends Component<any, any> {
     });
     if (spherePermissions.deleteSphere) {
       items.push({
-        label: 'Delete Sphere',
+        label: Languages.label("SphereEditSettings", "Delete_Sphere")(),
         icon: <IconButton name="md-exit" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkRed.hex}}/>,
         style: {color: colors.darkRed.hex},
         type: 'button',
@@ -149,7 +153,7 @@ export class SphereEditSettings extends Component<any, any> {
         }
       });
     }
-    items.push({label:'This cannot be undone!',  type:'explanation', below: true});
+    items.push({label: Languages.label("SphereEditSettings", "This_cannot_be_undone_")(),  type:'explanation', below: true});
 
     items.push({type:'spacer'});
     items.push({type:'spacer'});
@@ -161,20 +165,20 @@ export class SphereEditSettings extends Component<any, any> {
 
   _leaveSphere(state) {
     Alert.alert(
-      "Are you sure you want to leave this Sphere?",
-      "If you are the Sphere owner, you will have to transfer ownership first.",
-      [
-        {text:'No'},
-        {text:'Yes', onPress:() => {
+Languages.alert("SphereEditSettings", "_Are_you_sure_you_want_to_header")(),
+Languages.alert("SphereEditSettings", "_Are_you_sure_you_want_to_body")(),
+[{text:Languages.alert("SphereEditSettings", "_Are_you_sure_you_want_to_left")()},
+        {
+text:Languages.alert("SphereEditSettings", "_Are_you_sure_you_want_to_right")(), onPress:() => {
             this.props.eventBus.emit('showLoading','Removing you from this Sphere in the Cloud.');
             CLOUD.forUser(state.user.userId).leaveSphere(this.props.sphereId)
               .then(() => {
                 this._processLocalDeletion()
               })
               .catch((err) => {
-                let explanation = "Please try again later.";
+                let explanation =  Languages.label("SphereEditSettings", "Please_try_again_later_")();
                 if (err && err.data && err.data.error && err.data.error.message === "can't exit from sphere where user with id is the owner") {
-                  explanation = "You are the owner of this Sphere. You cannot leave without transferring ownership to another user.";
+                  explanation =  Languages.label("SphereEditSettings", "You_are_the_owner_of_this")();
                 }
 
                 this.props.eventBus.emit('hideLoading');
@@ -204,11 +208,11 @@ export class SphereEditSettings extends Component<any, any> {
 
   _deleteSphere(state) {
     Alert.alert(
-      "Are you sure you want to delete this Sphere?",
-      "This is only possible if you have removed all Crownstones from this Sphere.",
-      [
-        {text:'No'},
-        {text:'Yes', onPress:() => {
+Languages.alert("SphereEditSettings", "_Are_you_sure_you_want_to__header")(),
+Languages.alert("SphereEditSettings", "_Are_you_sure_you_want_to__body")(),
+[{text:Languages.alert("SphereEditSettings", "_Are_you_sure_you_want_to__left")()},
+        {
+text:Languages.alert("SphereEditSettings", "_Are_you_sure_you_want_to__right")(), onPress:() => {
           let stones = getStonesAndAppliancesInSphere(state, this.props.sphereId);
           let stoneIds = Object.keys(stones);
           if (stoneIds.length > 0) {
@@ -226,7 +230,10 @@ export class SphereEditSettings extends Component<any, any> {
               })
               .catch((err) => {
                 this.props.eventBus.emit('hideLoading');
-                Alert.alert("Could not delete Sphere!", "Please try again later.", [{text:"OK"}]);
+                Alert.alert(
+Languages.alert("SphereEditSettings", "_Could_not_delete_Sphere__header")(),
+Languages.alert("SphereEditSettings", "_Could_not_delete_Sphere__body")(),
+[{text:Languages.alert("SphereEditSettings", "_Could_not_delete_Sphere__left")()}]);
               })
           }
         }}

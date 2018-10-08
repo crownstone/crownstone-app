@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -21,7 +22,7 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 
 export class SphereUser extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Sphere User" }
+    return { title: Languages.title("SphereUser", "Sphere_User")()}
   };
 
   deleting : boolean = false;
@@ -44,20 +45,20 @@ export class SphereUser extends Component<any, any> {
   _getItems(user) {
     const store = this.props.store;
 
-    let availablePermissions = [{label:'Member'},{label:"Guest"}];
+    let availablePermissions = [{label: Languages.label("SphereUser", "Member")()},{label: Languages.label("SphereUser", "Guest")()}];
     if (Permissions.inSphere(this.props.sphereId).inviteAdminToSphere) {
-      availablePermissions = [{label:"Admin"},{label:'Member'},{label:"Guest"}];
+      availablePermissions = [{label: Languages.label("SphereUser", "Admin")()},{label: Languages.label("SphereUser", "Member")()},{label: Languages.label("SphereUser", "Guest")()}];
     }
 
     let items = [];
     // room Name:
     items.push({type:'spacer'});
-    items.push({label:'User',  type: 'info', value: user.firstName + ' ' + user.lastName});
-    items.push({label:'Email',  type: 'info', value: user.email});
+    items.push({label: Languages.label("SphereUser", "User")(),  type: 'info', value: user.firstName + ' ' + user.lastName});
+    items.push({label: Languages.label("SphereUser", "Email")(),  type: 'info', value: user.email});
     items.push({
       type:'dropdown',
       buttons: true,
-      label:'Access Level',
+      label: Languages.label("SphereUser", "Access_Level")(),
       dropdownHeight:150,
       value: user.accessLevel[0].toUpperCase() + user.accessLevel.substring(1),
       items: availablePermissions,
@@ -70,7 +71,10 @@ export class SphereUser extends Component<any, any> {
             store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: this.props.sphereId, userId: this.props.userId, data:{accessLevel: permission}});
           })
           .catch((err) => {
-            Alert.alert("Something went wrong", "Please try again later.", [{text:"OK"}]);
+            Alert.alert(
+Languages.alert("SphereUser", "_Something_went_wrong__Pl_header")(),
+Languages.alert("SphereUser", "_Something_went_wrong__Pl_body")(),
+[{text:Languages.alert("SphereUser", "_Something_went_wrong__Pl_left")()}]);
             this.props.eventBus.emit('hideLoading');
             LOGe.info("Something went wrong during Updating user permissions.", err);
           })
@@ -78,12 +82,13 @@ export class SphereUser extends Component<any, any> {
       }
     );
 
-    items.push({type:'explanation', label:'REVOKE PERMISSIONS'});
-    items.push({label:'Remove from Sphere', type:'button', callback: () => {
+    items.push({type:'explanation', label: Languages.label("SphereUser", "REVOKE_PERMISSIONS")()});
+    items.push({label: Languages.label("SphereUser", "Remove_from_Sphere")(), type:'button', callback: () => {
       Alert.alert(
-        "Are you sure you want to remove this user from the sphere?",
-        "User's permissions will be revoked the next time he/she logs into the app.",
-      [{text:'No'}, {text:'Yes', onPress: () => {
+Languages.alert("SphereUser", "_Are_you_sure_you_want_to_header")(),
+Languages.alert("SphereUser", "_Are_you_sure_you_want_to_body")(),
+[{text:Languages.alert("SphereUser", "_Are_you_sure_you_want_to_left")()}, {
+text:Languages.alert("SphereUser", "_Are_you_sure_you_want_to_right")(), onPress: () => {
         this.deleting = true;
         this.props.eventBus.emit('showLoading', 'Removing user from Sphere...');
         CLOUD.forSphere(this.props.sphereId).deleteUserFromSphere(this.props.userId)
@@ -101,7 +106,10 @@ export class SphereUser extends Component<any, any> {
           .catch((err) => {
             this.deleting = false;
             this.props.eventBus.emit('hideLoading');
-            Alert.alert("Something went wrong", "Please try again later.", [{text:"OK"}]);
+            Alert.alert(
+Languages.alert("SphereUser", "_Something_went_wrong__Ple_header")(),
+Languages.alert("SphereUser", "_Something_went_wrong__Ple_body")(),
+[{text:Languages.alert("SphereUser", "_Something_went_wrong__Ple_left")()}]);
             LOGe.info("Something went wrong during Updating user permissions.", err);
           })
 

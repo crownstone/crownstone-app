@@ -10,6 +10,7 @@ const EXCLUSIONS = {
 
 const KEY_SIZE = 25;
 
+let reactLabelTots  = [];
 let textTots  = [];
 let alertTots = [];
 let labelTots = [];
@@ -31,9 +32,7 @@ let parsePath = function(dirPath) {
     let ext = elementPath.substr(elementPath.length - 3);
 
     if (stat.isFile() && (ext === "tsx")) {
-      if (parseFile(elementPath)) {
-        break;
-      }
+      parseFile(elementPath);
     }
     else if (stat.isDirectory()) {
       // console.log( "'%s' is a directory.", elementPath );
@@ -42,6 +41,7 @@ let parsePath = function(dirPath) {
   };
 }
 
+
 let parseFile = function(filePath) {
   let content    = fs.readFileSync(filePath, "utf8")
   let textRegex  = /<Text[^>]*?>([^<]*?)<\/Text>/gm
@@ -49,18 +49,23 @@ let parseFile = function(filePath) {
   let alertRegex = /Alert\.alert\(([\s\S]*?),[\s\S]*?,[\s\S]*?\][\s\S]*?\)/gm
   let labelRegex = /{[^{]*?(abel:([^}]*))/gm
   let titleRegex = /title:(.*)[\s^}]*/gm
+  let reactLabelRegex = /[\s]([^\s=]*?)={(["'][^"']*?["'])}/gm
+  // let equalsStringCheck = /[^=!<>][:=]\s?([^}].*)/gm
 
   let textMatches  = content.match(textRegex);
   let alertMatches = content.match(alertRegex);
   let labelMatches = content.match(labelRegex);
   let titleMatches = content.match(titleRegex);
+  let reactLabelMatches = content.match(reactLabelRegex);
+  // let equalsStringMatches = content.match(reactLabelRegex);
+
 
   let filenameArr = filePath.split("/");
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
 
   if (EXCLUSIONS[filename]) { return }
 
-  // if (filename !== "SettingConstructor") {
+  // if (filename !== "StatusCommunication") {
   //   return;
   // }
 
@@ -76,6 +81,27 @@ let parseFile = function(filePath) {
   }
 
   let contentData = {content: content};
+
+  if (reactLabelMatches !== null) {
+    let ignoreFields = {key: true, color: true, ellipsizeMode: true, returnKeyType: true, autoCapitalize: true}
+    for ( let i = 0; i < reactLabelMatches.length; i++) {
+      let match = reactLabelMatches[i];
+      let resultArray = [];
+      while ((resultArray = reactLabelRegex.exec(match)) !== null) {
+        if (ignoreFields[resultArray[1]] === undefined) {
+          let f3 = resultArray[2].substr(1,3);
+          let f4 = resultArray[2].substr(1,4);
+          if (f3 === "c1-" || f3 === "c2-" || f3 === "c3-" || f3 === "md-" || f4 === "ios-") {
+
+          }
+          else {
+            extractReactLabel(resultArray, filename, filePath, contentData);
+            reactLabelTots.push(resultArray)
+          }
+        }
+      }
+    }
+  }
 
   if (textMatches !== null) {
     for ( let i = 0; i < textMatches.length; i++) {
@@ -208,6 +234,17 @@ function extractLabel(match, filename, filePath, contentData) {
   createTranslationFileAndReplaceContents(filename, filePath, extractData, translationLabelData, 'label', contentData, false, [prefix,'']);
 }
 
+function extractReactLabel(match, filename, filePath, contentData) {
+  let content = match[2];
+
+  // let label = _extractStringWithParameters(content);
+  let extractData = extractAndConvert(content, true, true, true);
+  let prefix = match[1] + "={"
+
+
+  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationLabelData, 'label', contentData, false, [prefix,'}']);
+}
+
 
 function extractFromText(match, filename, filePath, contentData) {
   // this will ignore any > in the styles
@@ -310,8 +347,6 @@ function prepareTextKey(target, filename, inputText, postfix = '') {
   }
   return textKeyNoSpaces;
 }
-
-
 
 
 function grabString(str) {
@@ -636,6 +671,10 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
     chunks.push('"' + chunk + '"');
   }
 
+  if (parameter !== '') {
+    parameters.push(parameter);
+  }
+
   let text = chunks.join('');
 
   if (text.substr(text.length-2,2) === "+ ") {
@@ -646,7 +685,7 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
   text = text.replace(/(\|\|)/g," || ")
   text = text.replace(/(&&)/g," && ")
 
-  let keywords = {new: true}
+  let keywords = {new: true};
   let parsedParameters = [];
   let cache = ''
   for (let i = 0; i < parameters.length; i++) {
@@ -672,6 +711,7 @@ parsePath(startPath)
 console.log('textTots', textTots.length);
 console.log('alertTots', alertTots.length);
 console.log('labelTots', labelTots.length);
+console.log('reactLabelTots', reactLabelTots.length);
 console.log('titleTots', titleTots.length);
 
 //util
@@ -686,7 +726,7 @@ let padd = function (x, size) {
 }
 
 function stringifyData(translationData, filename) {
-  let resultString = 'export const languageData = {\n';
+  let resultString = 'export default {\n';
   let indent = "  "
   let keys = Object.keys(translationData);
   keys.sort();
@@ -714,12 +754,270 @@ function stringifyData(translationData, filename) {
   fs.writeFileSync(filename + ".ts", resultString)
 }
 
-stringifyData(translationLabelData, 'labels_en_us')
-stringifyData(translationTextData,  'texts_en_us')
-stringifyData(translationTitleData, 'titles_en_us')
-stringifyData(translationAlertData, 'alerts_en_us')
+stringifyData(translationTextData,  'en_us_texts')
+stringifyData(translationTitleData, 'en_us_titles')
+stringifyData(translationAlertData, 'en_us_alerts')
 
 
+let stringTots  = [];
+
+let parsePathInteractive = function(dirPath) {
+  let files = fs.readdirSync( dirPath )
+
+  for (let i = 0; i < files.length; i++) {
+    let file = files[i];
+
+    // Make one pass and make the file complete
+    let elementPath = path.join( dirPath, file );
+    let stat = fs.statSync(elementPath)
+    let ext = elementPath.substr(elementPath.length - 3);
+
+    if (stat.isFile() && (ext === "tsx")) {
+      parseFileInteractive(elementPath)
+    }
+    else if (stat.isDirectory()) {
+      // console.log( "'%s' is a directory.", elementPath );
+      parsePathInteractive(elementPath)
+    }
+  };
+}
+
+
+
+let parseFileInteractive = function(filePath, ) {
+  let content    = fs.readFileSync(filePath, "utf8")
+  let equalsStringCheck = /(\S*?[^=<>!])\s?[:=]\s?(['"^}][\s\S]*?)[};]/gm
+  let equalsStringMatches = content.match(equalsStringCheck);
+
+  let filenameArr = filePath.split("/");
+  let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
+
+  if (EXCLUSIONS[filename]) { return }
+
+  // if (filename !== "OptionPopup") {
+  //   return;
+  // }
+
+  let contentData = {content: content};
+
+  if (equalsStringMatches !== null) {
+    let ignoreFields = {key: true, color: true, ellipsizeMode: true, returnKeyType: true, autoCapitalize: true}
+    for ( let i = 0; i < equalsStringMatches.length; i++) {
+      let match = equalsStringMatches[i];
+      let resultArray = [];
+      while ((resultArray = equalsStringCheck.exec(match)) !== null) {
+        if (ignoreFields[resultArray[1]] === undefined) {
+          parseInteractive(resultArray, filename, filePath, contentData)
+        }
+      }
+      stringTots = stringTots.concat(equalsStringMatches);
+    }
+  }
+
+
+  // console.log(contentData)
+  fs.writeFileSync(filePath, contentData.content);
+}
+
+let ignoreWords = [
+  'bold',
+  'center',
+  'row',
+  '#',
+  'transparent',
+  'flex-start',
+  'flex-end',
+  'c1-',
+  'c2-',
+  'c3-',
+  'md-',
+  'ios-',
+  '100',
+  '200',
+  '300',
+  '400',
+  '500',
+  '600',
+  '700',
+  '800',
+  '900',
+]
+let ignoreKeys = [
+  '{',
+  'sun',
+  'alignItems',
+  '{position',
+  'position',
+  'textAlign',
+  'type',
+  '{key',
+  'size',
+  'type',
+  'flex',
+  'Actions',
+  '{Actions',
+  'placeholderText',
+  'keyboardShouldPersistTaps',
+  'backgroundColor',
+  '{name',
+  'name',
+  'style',
+  'levels',
+  'items.push',
+  'this.props.',
+  'this.state.',
+  'this.setState',
+  'overflow',
+  'Sidebar',
+  'textAnchor',
+  'commandName',
+  'SessionMemory',
+  'notificationType',
+  'rotation',
+  'Util',
+  'id',
+  'stopOpacity',
+  'stroke',
+  'fontStyle',
+  'offset',
+  'fill',
+  'mode',
+  '"_Zindex',
+  'Linking.openURL',
+  'strokeLinecap',
+  'store.dispatch',
+  '[commandName',
+  '[{commandName',
+  "sphere",
+  "cameraSide",
+  "flashMode",
+  "resizeMode",
+  "borderColor",
+  "icons",
+  "stringifiedError",
+  "permission",
+  "picture",
+  "on",
+  "c",
+  "null",
+  "'on'",
+  "[styles",
+  "parametrization",
+  "orientation",
+  "linePath",
+  "largeLabel",
+  "fontSize",
+  "stone",
+  "LOGe",
+  "unknownString",
+  "handle",
+  "text",
+  "ERROR",
+  "TYPE",
+  "error",
+  "xField",
+  "match",
+  "DFU",
+  "triggerEvent",
+  "using",
+  "'navigation'",
+  "'heartbeats'",
+  "assetType",
+  "validationMethod",
+  "value",
+  "category",
+]
+
+let counter = 0;
+
+let keyMatcher = {};
+function parseInteractive(resultArray, filename, filePath, contentData) {
+  // console.log("key", resultArray[1], "value", resultArray[2])
+
+  let content = resultArray[2];
+  for (let i = 0; i < ignoreWords.length; i++) {
+    let part = content.substr(0,ignoreWords[i].length + 1);
+    if (part === '"' + ignoreWords[i] || part === "'" + ignoreWords[i]) {
+      // console.log("ignore")
+      return;
+    }
+  }
+
+  for (let i = 0; i < ignoreKeys.length; i++) {
+    let part = resultArray[1].substr(0,ignoreKeys[i].length + 1);
+    if (part === '"' + ignoreKeys[i] || part === "'" + ignoreKeys[i] || part.substr(0,ignoreKeys[i].length) === ignoreKeys[i]) {
+      // console.log("ignore KEY", resultArray[1], part)
+      return;
+    }
+  }
+
+
+  let extractData =  extractAndConvert(content, true, true, true);
+  let letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  let hazLetters = false;
+  let hasSpaces = false;
+  let hasUnderscores = false;
+  for (let i = 0; i < extractData.text.length; i++) {
+    let l = extractData.text[i]
+    if (l === '_') { hasUnderscores = true; }
+    if (l === ' ') {
+      hasSpaces = true;
+    }
+    if (letters.indexOf(l) !== -1) {
+      hazLetters = true;
+    }
+  }
+
+  if (hazLetters === false || hasUnderscores === true && hasSpaces === false) {
+    return
+  }
+
+  if (extractData.text === extractData.text.toUpperCase()) {
+    // console.log("CAPS")
+    return
+  }
+
+  let lastSmall = false;
+  for (let i = 0; i < extractData.text.length; i++) {
+    let l = extractData.text[i];
+
+    if (letters.indexOf(l) !== -1) {
+      if (l === l.toUpperCase()) {
+        if (lastSmall === true) {
+          // console.log("CamelCase", match)
+          return;
+        }
+        lastSmall = false;
+      }
+      if (l === l.toLowerCase()) {
+        lastSmall = true;
+      }
+    }
+    else {
+      lastSmall = false;
+    }
+  }
+
+  if (keyMatcher[resultArray[1]] === undefined) {
+    keyMatcher[resultArray[1]] = {t:[],c:0}
+  }
+  keyMatcher[resultArray[1]].c++;
+  keyMatcher[resultArray[1]].t.push(extractData.text);
+
+
+  counter++;
+
+  let prefix = resultArray[0].split(extractData.parsedText)[0]
+  // console.log(prefix)
+
+  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationLabelData, 'label', contentData, false, [prefix,''])
+}
+
+parsePathInteractive(startPath)
+
+
+
+stringifyData(translationLabelData, 'en_us_labels')
 // console.log(resultString)
 // console.log(translationTitleData)
 // console.log(translationTextData)

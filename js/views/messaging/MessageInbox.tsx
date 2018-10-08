@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -33,10 +34,10 @@ export class MessageInbox extends Component<any, any> {
     let state = params.store.getState();
     let activeSphere = state.app.activeSphere;
 
-    let title = "Messages";
+    let title =  Languages.label("MessageInbox", "Messages")();
     if (activeSphere && state.spheres[activeSphere]) {
       let sphere = state.spheres[activeSphere];
-      title += " in " +  sphere.config.name;
+      title +=  Languages.label("MessageInbox", "_in_")(sphere.config.name);
     }
 
     return {
@@ -123,7 +124,7 @@ export class MessageInbox extends Component<any, any> {
 
     let messageIds = Object.keys(sphere.messages);
     if (messageIds.length > 0) {
-      items.push({label:'MESSAGES', type: 'lightExplanation',  below:false});
+      items.push({label: Languages.label("MessageInbox", "MESSAGES")(), type: 'lightExplanation',  below:false});
 
       let messages = [];
 
@@ -198,7 +199,7 @@ export class MessageInbox extends Component<any, any> {
           </TouchableOpacity>
         );
 
-        let headerText = <Text style={textStyle.specification}>{'You can leave messages in a Sphere or room for your friends to find!'}</Text>;
+        let headerText = <Text style={textStyle.specification}>{ Languages.text("MessageInbox", "You_can_leave_messages_in")() }</Text>;
 
         let scrollView;
         if (items.length > 0) {
@@ -225,7 +226,7 @@ export class MessageInbox extends Component<any, any> {
                 <View style={{height: 0.4*iconSize}} />
                 { iconButton }
                 <View style={{height: 0.6*iconSize}} />
-                <Text style={messageExplanationStyle}>Tap the envelope icon to create a new message!</Text>
+                <Text style={messageExplanationStyle}>{ Languages.text("MessageInbox", "Tap_the_envelope_icon_to_")() }</Text>
                 <View style={{flex:2}} />
               </View>
             </ScrollView>
@@ -244,7 +245,7 @@ export class MessageInbox extends Component<any, any> {
           <Background image={this.props.backgrounds.detailsDark}>
             <OrangeLine/>
             <View style={{flex:1}} />
-            <Text style={messageExplanationStyle}>Add some Crownstones to use messages!</Text>
+            <Text style={messageExplanationStyle}>{ Languages.text("MessageInbox", "Add_some_Crownstones_to_u")() }</Text>
             <View style={{flex:1}} />
           </Background>
         );
@@ -255,7 +256,7 @@ export class MessageInbox extends Component<any, any> {
         <Background image={this.props.backgrounds.detailsDark}>
           <OrangeLine/>
           <View style={{flex:1}} />
-          <Text style={messageExplanationStyle}>Add a Sphere to use messages!</Text>
+          <Text style={messageExplanationStyle}>{ Languages.text("MessageInbox", "Add_a_Sphere_to_use_messa")() }</Text>
           <View style={{flex:1}} />
         </Background>
       );

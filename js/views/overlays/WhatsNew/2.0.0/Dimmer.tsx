@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,10 +19,10 @@ export class Dimmer extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={[WNStyles.outerScrollView,{width: this.props.width}]}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>Dimmer is Here!</Text>
+            <Text style={WNStyles.text}>{ Languages.text("Dimmer", "Dimmer_is_Here_")() }</Text>
             <Image source={require('../../../../images/whatsNew/2.0.0/dimmer.png')} style={{width:602*size, height:957*size}} />
-            <Text style={[WNStyles.detail,{fontWeight:'bold'}]}>You can enable dimming per Crownstone in its settings.</Text>
-            <Text style={WNStyles.detail}>Set the mood just right! </Text>
+            <Text style={[WNStyles.detail,{fontWeight:'bold'}]}>{ Languages.text("Dimmer", "You_can_enable_dimming_pe")() }</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("Dimmer", "Set_the_mood_just_right__")() }</Text>
           </View>
         </ScrollView>
       </View>

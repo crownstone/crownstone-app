@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -31,10 +32,10 @@ export class RoomEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Edit Room",
+      title: Languages.title("RoomEdit", "Edit_Room")(),
       headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : BackAction() }}/>,
       headerRight: <TopbarButton
-        text={"Save"}
+        text={ Languages.label("RoomEdit", "Save")()}
         onPress={() => {
           params.rightAction ? params.rightAction() : () => {}
         }}
@@ -146,9 +147,10 @@ export class RoomEdit extends Component<any, any> {
       .catch((err) => {
         this.deleting = false;
         let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
-        Alert.alert("Encountered Cloud Issue.",
-          "We cannot delete this Room in the Cloud. Please try again later.",
-          [{text:'OK', onPress: defaultAction }],
+        Alert.alert(
+Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__header")(),
+Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__body")(),
+[{text:Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__left")(), onPress: defaultAction }],
           { onDismiss: defaultAction }
         )
       });
@@ -164,9 +166,9 @@ export class RoomEdit extends Component<any, any> {
 
     let items = [];
 
-    items.push({label:'ROOM SETTINGS',  type:'explanation', below:false});
+    items.push({label: Languages.label("RoomEdit", "ROOM_SETTINGS")(),  type:'explanation', below:false});
     items.push({
-      label:'Room Name',
+      label: Languages.label("RoomEdit", "Room_Name")(),
       type: 'textEdit',
       value: this.state.name,
       callback: (newText) => {
@@ -177,7 +179,7 @@ export class RoomEdit extends Component<any, any> {
         this.setState({name: newText});
       }
     });
-    items.push({label:'Icon', type: 'icon', value: this.state.icon, callback: () => {
+    items.push({label: Languages.label("RoomEdit", "Icon")(), type: 'icon', value: this.state.icon, callback: () => {
       Actions.roomIconSelection({
         icon: this.state.icon,
         callback: (newIcon) => {
@@ -186,7 +188,7 @@ export class RoomEdit extends Component<any, any> {
       })
     }});
     items.push({
-      label: 'Picture',
+      label: Languages.label("RoomEdit", "Picture")(),
       type:  'picture',
       value: this.state.picture,
       forceAspectRatio: false,
@@ -204,56 +206,61 @@ export class RoomEdit extends Component<any, any> {
     if (state.app.indoorLocalizationEnabled) {
       let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
       if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
-        items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
+        items.push({label: Languages.label("RoomEdit", "INDOOR_LOCALIZATION")(), type: 'explanation',  below:false});
         // if a fingerprint is already present:
         if (room.config.fingerprintRaw) {
-          items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
-            Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
-              {text: 'Cancel', style: 'cancel'},
-              {text: 'OK', onPress: () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
+          items.push({label: Languages.label("RoomEdit", "Retrain_Room")(), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
+            Alert.alert(
+Languages.alert("RoomEdit", "_Retrain_Room__Only_do_th_header")(),
+Languages.alert("RoomEdit", "_Retrain_Room__Only_do_th_body")(),
+[{text: Languages.alert("RoomEdit", "_Retrain_Room__Only_do_th_left")(), style: 'cancel'},
+              {
+text: Languages.alert("RoomEdit", "_Retrain_Room__Only_do_th_right")(), onPress: () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
             ])
           }});
-          items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
-          'you can retrain this room so ' + ai + ' can find you again!', type: 'explanation',  below:true});
+          items.push({label: Languages.label("RoomEdit", "If_the_indoor_localizatio")(ai), type: 'explanation',  below:true});
         }
         else {
-          items.push({label:'Teach ' + ai + ' to find you!', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
+          items.push({label: Languages.label("RoomEdit", "Teach__to_find_you_")(ai), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
             Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
           }});
-          items.push({label:'Teach ' + ai + ' to identify when you\'re in this room by walking around in it.', type: 'explanation',  below:true});
+          items.push({label: Languages.label("RoomEdit", "Teach__to_identify_when_y")(ai), type: 'explanation',  below:true});
         }
       }
       else if (canDoIndoorLocalization === true && this.viewingRemotely === true) {
-        items.push({label:'You can only train this room if you are in this Sphere.', type: 'explanation',  below:false});
+        items.push({label: Languages.label("RoomEdit", "You_can_only_train_this_r")(), type: 'explanation',  below:false});
         items.push({type: 'spacer', height:30});
       }
       else {
-        items.push({label:'Indoor localization on room-level is only possible when you have 4 or more Crownstones registered and placed in rooms.', type: 'explanation',  below:false});
+        items.push({label: Languages.label("RoomEdit", "Indoor_localization_on_ro")(), type: 'explanation',  below:false});
         items.push({type: 'spacer', height:30});
       }
     }
     else {
-      items.push({label:'Enable indoor localization in the app settings to be able to train this room.', type: 'explanation',  below:false});
+      items.push({label: Languages.label("RoomEdit", "Enable_indoor_localizatio")(), type: 'explanation',  below:false});
       items.push({type: 'spacer', height:30});
     }
 
 
     if (Permissions.inSphere(this.props.sphereId).removeRoom) {
       items.push({
-        label: 'Remove Room',
+        label: Languages.label("RoomEdit", "Remove_Room")(),
         type: 'button',
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
         callback: () => {
-          Alert.alert("Are you sure?", "Removing this Room will make all contained Crownstones floating.",
-            [{text: "Cancel", style: 'cancel'}, {
-              text: 'Remove',
+          Alert.alert(
+Languages.alert("RoomEdit", "_Are_you_sure___Removing__header")(),
+Languages.alert("RoomEdit", "_Are_you_sure___Removing__body")(),
+[{text: Languages.alert("RoomEdit", "_Are_you_sure___Removing__left")(), style: 'cancel'}, {
+              
+text: Languages.alert("RoomEdit", "_Are_you_sure___Removing__right")(),
               style: 'destructive',
               onPress: this._removeRoom.bind(this)
             }])
         }
       });
       items.push({
-        label: 'Removing this Room will make all contained Crownstones floating.',
+        label: Languages.label("RoomEdit", "Removing_this_Room_will_m")(),
         type: 'explanation',
         below: true
       });

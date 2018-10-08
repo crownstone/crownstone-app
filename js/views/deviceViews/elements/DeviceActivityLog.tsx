@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -79,16 +80,14 @@ export class DeviceActivityLog extends Component<any, any> {
     let items = [];
     let itemHeight = 100;
     items.push(<View key={"topspacer"} style={{height:30}} />);
-    items.push(<Text key={"title"}     style={deviceStyles.header}>{"Activity Log"}</Text>);
-    items.push(<Text key={"explanation"}  style={[deviceStyles.text, {padding:20}]}>{"In this log you can see why the Crownstone was switched. The newest entries are at the top. This data is stored for 24 hours."}</Text>);
+    items.push(<Text key={"title"}     style={deviceStyles.header}>{ Languages.text("DeviceActivityLog", "Activity_Log")() }</Text>);
+    items.push(<Text key={"explanation"}  style={[deviceStyles.text, {padding:20}]}>{ Languages.text("DeviceActivityLog", "In_this_log_you_can_see_w")() }</Text>);
     if (state.user.uploadActivityLogs === false) {
       items.push(
         <Text
           key={"explanation_no_log"}
           style={[deviceStyles.text, {padding: 20}]}
-        >
-          {"If you do not share your activity logs, other users in your Sphere may get an incorrect activity log."}
-        </Text>
+        >{ Languages.text("DeviceActivityLog", "If_you_do_not_share_your_")() }</Text>
       );
     }
 
@@ -100,10 +99,10 @@ export class DeviceActivityLog extends Component<any, any> {
 
     if (logs.length === 0) {
       if (Permissions.inSphere(this.props.sphereId).seeActivityLogs) {
-        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 22, marginTop:-6}]}>{"Nothing yet..."}</Text>);
+        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 22, marginTop:-6}]}>{ Languages.text("DeviceActivityLog", "Nothing_yet___")() }</Text>);
       }
       else {
-        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 18, marginTop:-6}]}>{"Only members and admins can see the activity logs..."}</Text>);
+        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 18, marginTop:-6}]}>{ Languages.text("DeviceActivityLog", "Only_members_and_admins_c")() }</Text>);
         return items;
       }
     }
@@ -177,7 +176,7 @@ export class DeviceActivityLog extends Component<any, any> {
           <RefreshControl
             refreshing={false}
             onRefresh={() => { this.updateLogs() }}
-            title={"Syncing with the other users..."}
+            title={ Languages.label("DeviceActivityLog", "Syncing_with_the_other_us")()}
             titleColor={colors.white.hex}
             colors={[colors.white.hex]}
             tintColor={colors.white.hex}

@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -376,15 +377,18 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
   switch (swiperIndex) {
     case summaryIndex:
       if (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) {
-        rightLabel = 'Edit';
+        rightLabel =  Languages.label("DeviceOverview", "Edit")();
         rightAction = () => {Actions.deviceEdit({sphereId: props.sphereId, stoneId: props.stoneId})};
       }
       break;
     case behaviourIndex:
       if (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
-        rightLabel = 'Change';
+        rightLabel =  Languages.label("DeviceOverview", "Change")();
         if (stone.config.locked === true) {
-          rightAction = () => { Alert.alert("Crownstone is Locked.","You can edit the behaviour when the Crownstone is unlocked again.",[{text:"OK"}])};
+          rightAction = () => { Alert.alert(
+Languages.alert("DeviceOverview", "_Crownstone_is_Locked___Y_header")(),
+Languages.alert("DeviceOverview", "_Crownstone_is_Locked___Y_body")(),
+[{text:Languages.alert("DeviceOverview", "_Crownstone_is_Locked___Y_left")()}])};
         }
         else {
           rightAction = () => { Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId}); }

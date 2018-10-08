@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -35,7 +36,7 @@ export class SphereEdit extends Component<any, any> {
     }
 
     return {
-      title: "Welcome!"
+      title: Languages.title("SphereEdit", "Welcome_")()
     }
   };
 
@@ -64,12 +65,12 @@ export class SphereEdit extends Component<any, any> {
     let state = this.props.store.getState();
 
     if (!this.props.sphereId || !state.spheres[this.props.sphereId]) {
-      items.push({label:'What can I help you with?',  type:'largeExplanation'});
+      items.push({label: Languages.label("SphereEdit", "What_can_I_help_you_with_")(),  type:'largeExplanation'});
 
       let radius = 12;
 
       items.push({
-        label: 'Create Sphere',
+        label: Languages.label("SphereEdit", "Create_Sphere")(),
         type: 'navigation',
         largeIcon: <IconButton name='c1-sphere' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
         callback: () => {
@@ -83,18 +84,18 @@ export class SphereEdit extends Component<any, any> {
             });
         }
       });
-      items.push({label:'A Sphere contains your Crownstones, Rooms and preferences. You can add others to your Sphere so they may also use your Crownstones!',  type:'explanation', below: true});
+      items.push({label: Languages.label("SphereEdit", "A_Sphere_contains_your_Cr")(),  type:'explanation', below: true});
       return items;
     }
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    items.push({label:'What can I help you with?',  type:'largeExplanation'});
+    items.push({label: Languages.label("SphereEdit", "What_can_I_help_you_with_")(),  type:'largeExplanation'});
 
     let radius = 12;
 
     items.push({
-      label: 'Rooms',
+      label: Languages.label("SphereEdit", "Rooms")(),
       type: 'navigation',
       largeIcon: <IconButton name='md-cube' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
@@ -104,7 +105,7 @@ export class SphereEdit extends Component<any, any> {
 
 
     items.push({
-      label: 'Crownstones',
+      label: Languages.label("SphereEdit", "Crownstones")(),
       type: 'navigation',
       largeIcon: <IconButton name='c2-pluginFilled' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
       callback: () => {
@@ -115,7 +116,7 @@ export class SphereEdit extends Component<any, any> {
 
 
     items.push({
-      label: 'Users',
+      label: Languages.label("SphereEdit", "Users")(),
       type: 'navigation',
       largeIcon: <IconButton name='c1-people' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
       callback: () => {
@@ -125,7 +126,7 @@ export class SphereEdit extends Component<any, any> {
 
     if (spherePermissions.editSphere) {
       items.push({
-        label: 'Behaviour',
+        label: Languages.label("SphereEdit", "Behaviour")(),
         type: 'navigation',
         largeIcon: <IconButton name='c1-brain' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft: 3, marginRight: 7}}/>,
         callback: () => {
@@ -135,7 +136,7 @@ export class SphereEdit extends Component<any, any> {
     }
 
     items.push({
-      label: 'Integrations',
+      label: Languages.label("SphereEdit", "Integrations")(),
       type: 'navigation',
       largeIcon: <IconButton name='ios-link' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkBackground.hex}}/>,
       callback: () => {
@@ -145,7 +146,7 @@ export class SphereEdit extends Component<any, any> {
 
     items.push({type:'spacer'});
     items.push({
-      label: 'Settings',
+      label: Languages.label("SphereEdit", "Settings")(),
       largeIcon: <IconButton name="ios-cog" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,
       type: 'navigation',
       callback: () => {
@@ -170,7 +171,7 @@ export class SphereEdit extends Component<any, any> {
           <RefreshControl
             refreshing={this.state.syncing}
             onRefresh={() => { this.setState({syncing: true}); CLOUD.sync(this.props.store, true) }}
-            title={"Syncing with the Cloud..."}
+            title={ Languages.label("SphereEdit", "Syncing_with_the_Cloud___")()}
             titleColor={colors.darkGray.hex}
             colors={[colors.csBlue.hex]}
             tintColor={colors.csBlue.hex}

@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -17,17 +18,17 @@ const Actions = require('react-native-router-flux').Actions;
 
 
 let categories = [
-  {key: 'hallway', label: 'Hallway'},
-  {key: 'livingRoom', label: 'Living Room'},
-  {key: 'kitchen', label: 'Kitchen'},
-  {key: 'bathroom', label: 'Bathroom'},
-  {key: 'office', label: 'Office'},
-  {key: 'bedRoom', label: 'Bedroom'},
-  {key: 'garage', label: 'Garage'},
-  {key: 'play', label: 'Play Room'},
-  {key: 'music', label: 'Music Room'},
-  {key: 'nature', label: 'Nature / Outside'},
-  {key: 'miscellaneous', label: 'Miscellaneous'},
+  {key: 'hallway', label: Languages.label("RoomIconSelection", "Hallway")()},
+  {key: 'livingRoom', label: Languages.label("RoomIconSelection", "Living_Room")()},
+  {key: 'kitchen', label: Languages.label("RoomIconSelection", "Kitchen")()},
+  {key: 'bathroom', label: Languages.label("RoomIconSelection", "Bathroom")()},
+  {key: 'office', label: Languages.label("RoomIconSelection", "Office")()},
+  {key: 'bedRoom', label: Languages.label("RoomIconSelection", "Bedroom")()},
+  {key: 'garage', label: Languages.label("RoomIconSelection", "Garage")()},
+  {key: 'play', label: Languages.label("RoomIconSelection", "Play_Room")()},
+  {key: 'music', label: Languages.label("RoomIconSelection", "Music_Room")()},
+  {key: 'nature', label: Languages.label("RoomIconSelection", "Nature___Outside")()},
+  {key: 'miscellaneous', label: Languages.label("RoomIconSelection", "Miscellaneous")()},
 ];
 
 let listOfIcons = {
@@ -208,7 +209,7 @@ export const getRandomRoomIcon = () => {
 export class RoomIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Pick an Icon",
+      title: Languages.title("RoomIconSelection", "Pick_an_Icon")(),
     }
   };
 

@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -20,7 +21,7 @@ import {BackAction} from "../../../util/Back";
 
 export class SphereUserInvite extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Invite" }
+    return { title: Languages.title("SphereUserInvite", "Invite")()}
   };
 
   inputStates : any;
@@ -41,7 +42,7 @@ export class SphereUserInvite extends Component<any, any> {
     let items = [];
     items.push({type:'spacer'});
     items.push({
-      label: 'Email',
+      label: Languages.label("SphereUserInvite", "Email")(),
       type: 'textEdit',
       autoCapitalize: 'none',
       validation:'email',
@@ -58,13 +59,13 @@ export class SphereUserInvite extends Component<any, any> {
     if (spherePermissions.inviteMemberToSphere || spherePermissions.inviteAdminToSphere) {
       // generate permission items
       let dropDownItems = [];
-      if (spherePermissions.inviteAdminToSphere ) { dropDownItems.push({label:'Admin' }); }
-      if (spherePermissions.inviteMemberToSphere) { dropDownItems.push({label:'Member'}); }
-      dropDownItems.push({label:'Guest'});
+      if (spherePermissions.inviteAdminToSphere ) { dropDownItems.push({label: Languages.label("SphereUserInvite", "Admin")()}); }
+      if (spherePermissions.inviteMemberToSphere) { dropDownItems.push({label: Languages.label("SphereUserInvite", "Member")()}); }
+      dropDownItems.push({label: Languages.label("SphereUserInvite", "Guest")()});
 
       items.push({
         type:'dropdown',
-        label:'Access Level',
+        label: Languages.label("SphereUserInvite", "Access_Level")(),
         buttons: false,
         value: this.state.permission,
         dropdownHeight:130,
@@ -75,19 +76,19 @@ export class SphereUserInvite extends Component<any, any> {
       });
     }
     else if (spherePermissions.inviteGuestToSphere) {
-      items.push({type:'info', label:'Access level', value:'Guest'});
+      items.push({type:'info', label: Languages.label("SphereUserInvite", "Access_level")(), value:'Guest'});
     }
 
     if (this.state.permission == 'Member') {
-      items.push({label:'Members can configure Crownstones.', type:'explanation', below:true});
+      items.push({label: Languages.label("SphereUserInvite", "Members_can_configure_Cro")(), type:'explanation', below:true});
     }
     else if (this.state.permission == 'Guest') {
-      items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', type:'explanation', below:true});
+      items.push({label: Languages.label("SphereUserInvite", "Guests_can_control_Crowns")(), type:'explanation', below:true});
     }
 
 
     items.push({
-      label: 'Send invitation!',
+      label: Languages.label("SphereUserInvite", "Send_invitation_")(),
       type:  'button',
       style: {color:colors.blue.hex},
       callback: () => {this.validateAndContinue(state);}
@@ -98,11 +99,17 @@ export class SphereUserInvite extends Component<any, any> {
 
   validateAndContinue(state) {
     if (!this.state.email) {
-      Alert.alert("Please provide an email address","",[{text:'OK'}]);
+      Alert.alert(
+Languages.alert("SphereUserInvite", "_Please_provide_an_email__header")(),
+Languages.alert("SphereUserInvite", "_Please_provide_an_email__body")(),
+[{text:Languages.alert("SphereUserInvite", "_Please_provide_an_email__left")()}]);
       return;
     }
     else if (!this.inputStates.email) {
-      Alert.alert("Please provide a valid email address","",[{text:'OK'}]);
+      Alert.alert(
+Languages.alert("SphereUserInvite", "_Please_provide_a_valid_e_header")(),
+Languages.alert("SphereUserInvite", "_Please_provide_a_valid_e_body")(),
+[{text:Languages.alert("SphereUserInvite", "_Please_provide_a_valid_e_left")()}]);
       return;
     }
 
@@ -112,7 +119,10 @@ export class SphereUserInvite extends Component<any, any> {
     let userIds = Object.keys(users);
     for (let i = 0; i < userIds.length; i++) {
       if (users[userIds[i]].email.toLowerCase() === this.state.email.toLowerCase()) {
-        Alert.alert("User already in Sphere","A user with this email address is already in the Sphere.", [{text:'OK'}]);
+        Alert.alert(
+Languages.alert("SphereUserInvite", "_User_already_in_Sphere___header")(),
+Languages.alert("SphereUserInvite", "_User_already_in_Sphere___body")(),
+[{text:Languages.alert("SphereUserInvite", "_User_already_in_Sphere___left")()}]);
         return;
       }
     }
@@ -129,12 +139,18 @@ export class SphereUserInvite extends Component<any, any> {
           data: { email: this.state.email.toLowerCase(), invitationPending: true, accessLevel: this.state.permission.toLowerCase()}
         });
         let defaultAction = () => { BackAction(); };
-        Alert.alert("Invite has been sent!","An email has been sent to " + this.state.email + ".", [{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction })
+        Alert.alert(
+Languages.alert("SphereUserInvite", "_Invite_has_been_sent___A_header")(),
+Languages.alert("SphereUserInvite", "_Invite_has_been_sent___A_body")(this.state.email),
+[{text:Languages.alert("SphereUserInvite", "_Invite_has_been_sent___A_left")(), onPress: defaultAction}], { onDismiss: defaultAction })
       })
       .catch((err) => {
         this.props.eventBus.emit('hideLoading');
         LOGe.info("Error when inviting using:",err);
-        Alert.alert("Could not send invite..","Please try again later.", [{text:'OK'}])
+        Alert.alert(
+Languages.alert("SphereUserInvite", "_Could_not_send_invite____header")(),
+Languages.alert("SphereUserInvite", "_Could_not_send_invite____body")(),
+[{text:Languages.alert("SphereUserInvite", "_Could_not_send_invite____left")()}])
       })
   }
 

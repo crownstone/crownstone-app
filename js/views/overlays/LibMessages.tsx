@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -23,6 +24,7 @@ export class LibMessages extends Component<any, any> {
       header: null,
       body: null,
       type: null,
+      buttonText: null,
     };
     this.unsubscribe = [];
   }
@@ -33,7 +35,10 @@ export class LibMessages extends Component<any, any> {
     }));
 
     this.unsubscribe.push(NativeBus.on(NativeBus.topics.libAlert, (data) => {
-      Alert.alert(data.header, data.body, [{text: data.buttonText || 'OK'}])
+      Alert.alert(
+        Languages.alert("LibMessages", "arguments___arguments___O_header")(data.header),
+        Languages.alert("LibMessages", "arguments___arguments___O_body")(data.body),
+        [{text: data.buttonText || Languages.alert("LibMessages", "arguments___arguments___O_left")()}])
     }));
   }
 
@@ -69,7 +74,7 @@ export class LibMessages extends Component<any, any> {
             borderColor: colors.blue.rgba(0.5),
           }]}
         >
-          <Text style={{fontSize: 14, color: colors.blue.hex}}>{this.state.buttonText || 'OK'}</Text>
+          <Text style={{fontSize: 14, color: colors.blue.hex}}>{ Languages.text("LibMessages", "OK")(this.state.buttonText) }</Text>
         </TouchableOpacity>
         <View style={{flex:0.5}} />
       </OverlayBox>

@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -53,16 +54,16 @@ export class ProblemWithCrownstone extends Component<any, any> {
   }
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{"You're in your Sphere!"}</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ProblemWithCrownstone", "Youre_in_your_Sphere_")() }</Text>
   }
 
   _getTests() {
     return (
       <View>
-        <TestResult label={"Database is healthy"}          state={ true } />
-        <TestResult label={"Scanning is enabled"}          state={ true } />
-        <TestResult label={"Receiving Sphere beacons"}     state={ true } />
-        <TestResult label={"Receiving Crownstone data"}    state={ true } />
+        <TestResult label={ Languages.label("ProblemWithCrownstone", "Database_is_healthy")()}          state={ true } />
+        <TestResult label={ Languages.label("ProblemWithCrownstone", "Scanning_is_enabled")()}          state={ true } />
+        <TestResult label={ Languages.label("ProblemWithCrownstone", "Receiving_Sphere_beacons")()}     state={ true } />
+        <TestResult label={ Languages.label("ProblemWithCrownstone", "Receiving_Crownstone_data")()}    state={ true } />
       </View>
     )
   }
@@ -84,7 +85,7 @@ export class ProblemWithCrownstone extends Component<any, any> {
           {this._getTests()}
           <DiagOptions
             visible={this.state.visible}
-            header={"Is the problem with a new or an existing Crownstone?"}
+            header={ Languages.label("ProblemWithCrownstone", "Is_the_problem_with_a_new")()}
             labels={[
               "new",
               "existing",

@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -14,14 +15,8 @@ import {
 import {diagnosticStyles} from "../SettingsDiagnostics";
 import {colors, screenWidth} from "../../styles";
 import {FadeInView, HiddenFadeInView} from "../../components/animated/FadeInView";
-import {BackAction} from "../../../util/Back";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {Actions} from "react-native-router-flux";
-import {AppUtil} from "../../../util/AppUtil";
 import {
   DiagSingleBleTroubleshooter,
-  DiagSingleButton,
   DiagSingleButtonHelp,
   DiagSingleButtonGoBack,
   DiagSingleButtonQuit, DiagSingleButtonToOverview, DiagYesNo, TestResult
@@ -90,13 +85,13 @@ export class NotInSphere extends Component<any, any> {
 
   _getHeader() {
     if (this.state.shouldBeInSphere === true && this.state.scanningFinished) {
-      return <Text style={diagnosticStyles.headerStyle}>{"Sphere tests completed!"}</Text>
+      return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NotInSphere", "Sphere_tests_completed_")() }</Text>
     }
     else if (this.state.shouldBeInSphere === true && !this.state.scanningFinished) {
-      return <Text style={diagnosticStyles.headerStyle}>{"Running Sphere tests..."}</Text>
+      return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NotInSphere", "Running_Sphere_tests___")() }</Text>
     }
     else {
-      return <Text style={diagnosticStyles.headerStyle}>{"Initial tests completed!"}</Text>
+      return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NotInSphere", "Initial_tests_completed_")() }</Text>
     }
   }
 
@@ -104,17 +99,17 @@ export class NotInSphere extends Component<any, any> {
     if (this.state.shouldBeInSphere === true) {
       return (
         <View>
-          <TestResult label={"Database is healthy"}       state={ this.props.databaseHealth   } />
-          <TestResult label={"Scanning is enabled"}       state={ this.props.isMonitoring     } />
-          <TestResult label={"Listening for Crownstones"} state={ this.state.scanningFinished } />
+          <TestResult label={ Languages.label("NotInSphere", "Database_is_healthy")()}       state={ this.props.databaseHealth   } />
+          <TestResult label={ Languages.label("NotInSphere", "Scanning_is_enabled")()}       state={ this.props.isMonitoring     } />
+          <TestResult label={ Languages.label("NotInSphere", "Listening_for_Crownstones")()} state={ this.state.scanningFinished } />
         </View>
       );
     }
     else {
       return (
         <View>
-          <TestResult label={"Database is healthy"} state={ this.props.databaseHealth } />
-          <TestResult label={"Scanning is enabled"} state={ this.props.isMonitoring   } />
+          <TestResult label={ Languages.label("NotInSphere", "Database_is_healthy")()} state={ this.props.databaseHealth } />
+          <TestResult label={ Languages.label("NotInSphere", "Scanning_is_enabled")()} state={ this.props.isMonitoring   } />
         </View>
       )
     }
@@ -135,11 +130,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={"I'm picking up beacon signals from your Sphere, but no data from your Crownstones."}
-            explanation={
-              "This can happen if someone has removed a Crownstone from your Sphere without telling it to forget your Sphere.\n\n" +
-              "You should ask the admin of your Sphere to factory reset this Crownstone."
-            }
+            header={Languages.label("NotInSphere","Im_picking_up_beacon_sign")()}
+            explanation={ Languages.label("NotInSphere","This_can_happen_if_someon")() }
           />
         );
       }
@@ -147,12 +139,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonHelp
             visible={this.state.visible}
-            header={"I'm picking up beacon signals from your Sphere, but no data from your Crownstones."}
-            explanation={
-              "This can be bad timing or this can happen if someone has removed a Crownstone from your Sphere without telling it to forget your Sphere.\n\n" +
-              "If this happens more often, you can factory reset the Crownstone that was wrongly removed.\n\n" +
-              "To do this, tap the button below to go to the Help menu and tap on 'I need to factory reset a Crownstone'."
-            }
+            header={Languages.label("NotInSphere","Im_picking_up_beacon_sign")()}
+            explanation={ Languages.label("NotInSphere","This_can_be_bad_timing_or")() }
           />
         );
       }
@@ -160,8 +148,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonQuit
             visible={this.state.visible}
-            header={"I'm picking up data from your Crownstones, but no beacon signals from your Sphere."}
-            explanation={"This can happen if there is a miscommunication between your phone and the app. Try restarting both to fix this problem."}
+            header={ Languages.label("NotInSphere","Im_picking_up_data_from_y")()}
+            explanation={ Languages.label("NotInSphere", "This_can_happen_if_there_")()}
           />
         );
       }
@@ -169,9 +157,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonToOverview
             visible={this.state.visible}
-            header={"I can't hear any of your Crownstones, nor beacon signals from your Sphere. But there is a Crownstone in setup mode nearby!"}
-            explanation={"You can add it to your Sphere by going to the overview.\n\n" +
-            "Tap the button below to go there now!"}
+            header={Languages.label("NotInSphere","I_cant_hear_any_of_your_Cr_adm")()}
+            explanation={Languages.label("NotInSphere","You_can_add_it_to_your_Sph")()}
           />
         );
       }
@@ -179,8 +166,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={"I can't hear any of your Crownstones, nor beacon signals from your Sphere.\n\nThere is a Crownstone in setup mode nearby. However, you do not have any Spheres in which you are an Admin."}
-            explanation={"Only admins can setup Crownstones."}
+            header={ Languages.label("NotInSphere","I_cant_hear_any_of_your_Cr")()}
+            explanation={ Languages.label("NotInSphere", "Only_admins_can_setup_Cro")()}
           />
         );
       }
@@ -189,8 +176,8 @@ export class NotInSphere extends Component<any, any> {
           return (
             <DiagSingleBleTroubleshooter
               visible={this.state.visible}
-              header={"I can hear a Crownstone but the app does not think you're in a Sphere."}
-              explanation={"In this case, you can try to restart the app, Bluetooth and/or your phone.\n\nTap the button below to start the troubleshooter."}
+              header={Languages.label("NotInSphere","I_can_hear_a_Crownstone_bu")()}
+              explanation={ Languages.label("NotInSphere", "In_this_case__you_can_try")()}
             />
           );
         }
@@ -199,10 +186,9 @@ export class NotInSphere extends Component<any, any> {
             <DiagSingleButtonHelp
               visible={this.state.visible}
               header={
-                "I can hear a Crownstone, but it does not seem to belong to your Sphere.\n\n" +
-                "If it does belong to you, you can try to factory reset it."
+                Languages.label("NotInSphere","I_can_hear_a_Crownstone__noAdm")()
               }
-              explanation={"Tap the button below to go to help and tap on 'I need to factory reset a Crownstone'."}
+              explanation={Languages.label("NotInSphere","Tap_the_button_below_to_go")()}
             />
           );
         }
@@ -211,9 +197,7 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={"I can hear a Crownstone, but it does not seem to belong to your Sphere.\n\n" +
-            "Since you are not an admin in any Sphere, you cannot setup Crownstones.\n\n" +
-            "This means you can't see them while they are in setup mode."}
+            header={Languages.label("NotInSphere","I_can_hear_a_Crownstone__b")()}
           />
         );
       }
@@ -221,8 +205,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={"If you want to join a friend's Sphere, they will need to invite you."}
-            explanation={"Once they invite you, you can use their Crownstones!."}
+            header={Languages.label("NotInSphere","If_you_want_to_join_a_frie")()}
+            explanation={ Languages.label("NotInSphere", "Once_they_invite_you__you")()}
           />
         );
       }
@@ -230,8 +214,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagYesNo
             visible={this.state.visible}
-            header={"I can hear a Crownstone, but it does not seem to belong to your Sphere."}
-            explanation={"Are you visiting a friend's Sphere?"}
+            header={ Languages.label("NotInSphere", "I_can_hear_a_Crownstone__")()}
+            explanation={Languages.label("NotInSphere","Are_you_visiting_a_friends")()}
             onPressNo={ () => { this._changeContent(() => { this.setState({userInputVisitingSphere: false}); }); }}
             onPressYes={() => { this._changeContent(() => { this.setState({userInputVisitingSphere: true}); }); }}
           />
@@ -241,9 +225,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonQuit
             visible={this.state.visible}
-            header={"I'm not picking up any Crownstones, but I am receiving other Bluetooth advertisements so my scanning should be working fine."}
-            explanation={"This can happen if there is a miscommunication between your phone and the app. Try restarting both to fix this problem.\n\n" +
-            "If this persists, your Crownstones may be unpowered or defective. Contact us at team@crownstone.rocks for more assistance."}
+            header={Languages.label("NotInSphere","Im_not_picking_up_any_Crow")()}
+            explanation={Languages.label("NotInSphere","This_can_happen_if_there_i")()}
           />
         );
       }
@@ -251,8 +234,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleBleTroubleshooter
             visible={this.state.visible}
-            header={"I'm not picking up anything on my Bluetooth scan, Crownstone or otherwise."}
-            explanation={"It could be that your phone's scanning has stopped.\n\nTap the button below to start the troubleshooter."}
+            header={ Languages.label("NotInSphere", "I_m_not_picking_up_anythi")()}
+            explanation={ Languages.label("NotInSphere", "It_could_be_that_your_phone")()}
           />
         );
       }
@@ -262,10 +245,8 @@ export class NotInSphere extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"In that case, everything seems to be working as it should be!"}
-          explanation={
-            "If you have any questions you can take a look at the Help menu, or run the diagnostic again when you're in your Sphere."
-          }
+          header={ Languages.label("NotInSphere", "In_that_case__everything_")()}
+          explanation={ Languages.label("NotInSphere", "If_you_have_any_questions")()}
         />
       );
     }
@@ -274,7 +255,7 @@ export class NotInSphere extends Component<any, any> {
         <View style={{flex:1}}>
           <View style={{flex:1}} />
           <FadeInView visible={this.state.visible} style={{width:screenWidth}}>
-            <Text style={diagnosticStyles.headerStyle}>{"Let me run a few more tests..."}</Text>
+            <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NotInSphere", "Let_me_run_a_few_more_tes")() }</Text>
           </FadeInView>
           <View style={{flex:1}} />
         </View>
@@ -284,8 +265,8 @@ export class NotInSphere extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={"So far so good!\n\nAre you in a Sphere right now?"}
-          subExplanation={"(close to your Crownstones)"}
+          header={ Languages.label("NotInSphere", "So_far_so_good__n_nAre_yo")()}
+          subExplanation={ Languages.label("NotInSphere", "_close_to_your_Crownstone")()}
           onPressNo={() => { this._changeContent(() => { this.setState({shouldBeInSphere: false}); }); }}
           onPressYes={() => {
             this._changeContent(() => {

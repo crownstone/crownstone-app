@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -12,12 +13,6 @@ import {
   View
 } from 'react-native';
 import {diagnosticStyles} from "../SettingsDiagnostics";
-import {colors, screenWidth} from "../../styles";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
-import {FadeInView, HiddenFadeInView} from "../../components/animated/FadeInView";
-import {Actions} from "react-native-router-flux";
-import {BackAction} from "../../../util/Back";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {
   DiagSingleBleTroubleshooter, DiagSingleButtonHelp,
   DiagSingleButtonGoBack,
@@ -78,8 +73,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"If the Crownstone has power, and my scanning is working fine... You can try to take the power off the Crownstone and restarting your phone."}
-          explanation={"If none of these work, this Crownstone may be broken.\n\nContact us at team@crownstone.rocks and we'll do our best to help you!"}
+          header={ Languages.label("NoStones", "If_the_Crownstone_has_pow")()}
+          explanation={ Languages.label("NoStones", "If_none_of_these_work_this")()}
         />
       );
     }
@@ -87,8 +82,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"The Crownstone needs power to work."}
-          explanation={"Please ensure the Crownstone is powered and rerun the diagnostic if you still can't see it."}
+          header={ Languages.label("NoStones", "The_Crownstone_needs_powe")()}
+          explanation={ Languages.label("NoStones", "Please_ensure_the_Crownstone")()}
         />
       );
     }
@@ -96,7 +91,7 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={"\"You're near a Crownstone but I can't hear it. I am picking up other Bluetooth signals however. Are you sure the Crownstone has power?"}
+          header={Languages.label("NoStones", "You_re_near_a_Crownstone_but")()}
           onPressNo={ () => { this._changeContent(() => { this.setState({userInputHasPower: false}); }); }}
           onPressYes={() => { this._changeContent(() => { this.setState({userInputHasPower: true}); }); }}
         />
@@ -106,8 +101,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleBleTroubleshooter
           visible={this.state.visible}
-          header={"You're near a Crownstone and I'm not detecting any BLE signals, Crownstones or otherwise..."}
-          explanation={"It could be that your phone's scanning has stopped.\n\nTap the button below to start the troubleshooter."}
+          header={Languages.label("NoStones", "You_re_near_a_crownstone_")()}
+          explanation={Languages.label("NoStones", "It_could_be_that_your_phone")()}
         />
       );
     }
@@ -115,7 +110,7 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"I'm not detecting anything and you're not near any Crownstones, everything should be OK!"}
+          header={Languages.label("NoStones", "I_m_not_detecting_anythin")()}
         />
       );
     }
@@ -123,9 +118,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonToOverview
           visible={this.state.visible}
-          header={"There is a Crownstone in setup mode nearby!"}
-          explanation={ "You can add it to your Sphere by going to the overview.\n\n" +
-          "Tap the button below to go there now!"}
+          header={ Languages.label("NoStones", "There_is_a_Crownstone_in_")()}
+          explanation={ Languages.label("NoStones", "You_can_add_it_to_your_sphere")()}
         />
       );
     }
@@ -133,8 +127,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"There is a Crownstone in setup mode nearby. However, you do not have any Spheres in which you are an admin."}
-          explanation={"Only admins can setup Crownstones."}
+          header={ Languages.label("NoStones", "There_is_a_Crownstone_in_s")()}
+          explanation={ Languages.label("NoStones", "Only_admins_can_setup_Cro")()}
         />
       );
     }
@@ -142,9 +136,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"I can hear a Crownstone, but it does not seem to belong to your Sphere."}
-          explanation={ "Since you are not an admin in any Sphere, you cannot setup Crownstones.\n\n" +
-          "This means you can't see them while they are in setup mode."}
+          header={ Languages.label("NoStones", "I_can_hear_a_Crownstone__")()}
+          explanation={ Languages.label("NoStones", "Since_you_are_not_an_admin")()}
         />
       );
     }
@@ -152,9 +145,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={"I can hear a Crownstone, but it does not seem to belong to your Sphere."}
-          explanation={"If it does belong to you, you can try to factory reset it.\n\n" +
-          "Tap the button below to go to help and tap on 'I need to factory reset a Crownstone'."}
+          header={ Languages.label("NoStones", "I_can_hear_a_Crownstone__")()}
+          explanation={ Languages.label("NoStones", "if_it_does_belong_to_you")()}
         />
       );
     }
@@ -162,8 +154,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"If you want to join a friend's Sphere, they will need to invite you."}
-          explanation={"Once they invite you, you can use their Crownstones!."}
+          header={ Languages.label("NoStones", "If_you_want_to_join_a_friend")()}
+          explanation={ Languages.label("NoStones", "Once_they_invite_you__you")()}
         />
       );
     }
@@ -171,10 +163,10 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={"I can hear a Crownstone, but it does not seem to belong to your Sphere."}
-          explanation={"Are you visiting a friend's Sphere?"}
+          header={ Languages.label("NoStones", "I_can_hear_a_Crownstone__")()}
+          explanation={ Languages.label("NoStones", "Are_you_visiting_a_friends")()}
           onPressNo={ () => { this._changeContent(() => { this.setState({userInputVisitingSphere: false}); }); }}
-          onPressYes={() => { this._changeContent(() => { this.setState({userInputVisitingSphere: true}); }); }}
+          onPressYes={() => { this._changeContent(() => { this.setState({userInputVisitingSphere: true});  }); }}
         />
       );
     }
@@ -182,8 +174,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={"I'm not picking up any Crownstones, but I am receiving other Bluetooth advertisements so my scanning should be working fine."}
-          explanation={"Are you near a Crownstone?"}
+          header={  Languages.label("NoStones", "Im_not_picking_up_any")()}
+          explanation={ Languages.label("NoStones", "Are_you_near_a_Crownstone")()}
           onPressNo={() => { this._changeContent(() => { this.setState({userInputNearCrownstone: false}); }); }}
           onPressYes={() => { this._changeContent(() => { this.setState({userInputNearCrownstone: true}); }); }}
         />
@@ -193,8 +185,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={"I'm not picking up anything on my Bluetooth scan, Crownstone or otherwise."}
-          explanation={"Are you near a Crownstone?"}
+          header={Languages.label("NoStones", "Im_not_picking_up_anything")()}
+          explanation={ Languages.label("NoStones", "Are_you_near_a_Crownstone")()}
           onPressNo={ () => { this._changeContent(() => { this.setState({userInputNearCrownstone: false}); }); }}
           onPressYes={() => { this._changeContent(() => { this.setState({userInputNearCrownstone: true}); }); }}
         />
@@ -205,11 +197,11 @@ export class NoStones extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-        <Text style={diagnosticStyles.headerStyle}>{"You don't have any Crownstones yet..."}</Text>
+        <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NoStones", "You_dont_have_any_Crownst")() }</Text>
         <View>
-          <TestResult label={"Database is healthy"} state={ this.props.databaseHealth } />
-          <TestResult label={"Scanning is enabled"} state={ this.props.iBeaconScanningEnabled } />
-          <TestResult label={"Searching for Crownstones"}  state={ this.state.scanningFinished } />
+          <TestResult label={ Languages.label("NoStones", "Database_is_healthy")()} state={ this.props.databaseHealth } />
+          <TestResult label={ Languages.label("NoStones", "Scanning_is_enabled")()} state={ this.props.iBeaconScanningEnabled } />
+          <TestResult label={ Languages.label("NoStones", "Searching_for_Crownstones")()}  state={ this.state.scanningFinished } />
         </View>
         { this._getResults() }
       </View>

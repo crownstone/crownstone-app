@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   
@@ -90,7 +91,7 @@ export class SeparatedItemList extends Component<any, any> {
       });
     }
     else {
-      return <Text>UNKNOWN TYPE</Text>
+      return <Text>{ Languages.text("SeparatedItemList", "UNKNOWN_TYPE")() }</Text>
     }
 
     return renderItems;

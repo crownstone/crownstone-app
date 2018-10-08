@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -434,9 +435,9 @@ function getNavBarRightItem(state, enoughCrownstonesInLocations, label, props, v
     let aiName = state.spheres[props.sphereId].config.aiName;
     props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
     Alert.alert(
-      "Lets teach " + aiName + " how to identify this room!",
-      "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
-      [{text: "OK"}]
+Languages.alert("RoomOverview", "_Lets_teach_____arguments_header")(aiName),
+Languages.alert("RoomOverview", "_Lets_teach_____arguments_body")(aiName),
+[{text: Languages.alert("RoomOverview", "_Lets_teach_____arguments_left")()}]
     );
   }
   let iconSize = 25;
@@ -466,7 +467,7 @@ function getNavBarParams(state, props, viewingRemotely) {
     title = state.spheres[props.sphereId].locations[props.locationId].config.name;
   }
   else {
-    title = "Floating";
+    title =  Languages.label("RoomOverview", "Floating")();
   }
 
   let rightLabel = undefined;
@@ -474,14 +475,17 @@ function getNavBarParams(state, props, viewingRemotely) {
   let spherePermissions = Permissions.inSphere(props.sphereId);
 
   if (spherePermissions.editRoom === true && props.locationId !== null) {
-    rightLabel = 'Edit';
+    rightLabel =  Languages.label("RoomOverview", "Edit")();
     rightAction = () => { Actions.roomEdit({sphereId: props.sphereId, locationId: props.locationId}); };
   }
   else if (spherePermissions.editRoom === false && props.locationId !== null && enoughCrownstonesInLocations === true) {
-    rightLabel = 'Train';
+    rightLabel =  Languages.label("RoomOverview", "Train")();
     rightAction = () => {
       if (viewingRemotely === true) {
-        Alert.alert("You're not in the Sphere", "Training is only possible if you're in the Sphere. Try again when you are.", [{text:"OK"}])
+        Alert.alert(
+Languages.alert("RoomOverview", "_Youre_not_in_the_Sphere__header")(),
+Languages.alert("RoomOverview", "_Youre_not_in_the_Sphere__body")(),
+[{text:Languages.alert("RoomOverview", "_Youre_not_in_the_Sphere__left")()}])
       }
       else {
         Actions.roomTraining_roomSize({sphereId: props.sphereId, locationId: props.locationId});

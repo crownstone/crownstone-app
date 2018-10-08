@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -19,7 +20,7 @@ import {BackAction} from "../../util/Back";
 export class CameraRollView extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Choose a Picture",
+      title: Languages.title("CameraRollView", "Choose_a_Picture")(),
     }
   };
 
@@ -69,9 +70,9 @@ export class CameraRollView extends Component<any, any> {
         if (err.code === "E_UNABLE_TO_LOAD") {
           let defaultActions = () => {BackAction();};
           Alert.alert(
-            "I do not have access to your pictures...",
-            "You can give me access by going to the settings on your phone, select Crownstone and enable the picture permissions.",
-            [{text:"OK", onPress: defaultActions }],
+Languages.alert("CameraRollView", "_I_do_not_have_access_to__header")(),
+Languages.alert("CameraRollView", "_I_do_not_have_access_to__body")(),
+[{text:Languages.alert("CameraRollView", "_I_do_not_have_access_to__left")(), onPress: defaultActions }],
             { onDismiss: defaultActions}
           );
         }

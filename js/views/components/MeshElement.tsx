@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -248,7 +249,10 @@ class MeshElementClass extends Component<any, any> {
     let supportedFirmware = Util.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.2');
     if (!supportedFirmware && data) {
       if (data.dx > this.props.radius && data.dy > -this.props.radius) {
-        Alert.alert("Update Required", "The firmware of this Crownstone must be updated before it can show connections.", [{text: 'OK'}]);
+        Alert.alert(
+Languages.alert("MeshElement", "_Update_Required__The_fir_header")(),
+Languages.alert("MeshElement", "_Update_Required__The_fir_body")(),
+[{text: Languages.alert("MeshElement", "_Update_Required__The_fir_left")()}]);
       }
     }
 

@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -28,7 +29,7 @@ export class ToonOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Toon"
+      title: Languages.title("ToonOverview", "Toon")()
     }
   };
 
@@ -71,11 +72,15 @@ export class ToonOverview extends Component<any, any> {
     items.push({type:'spacer'})
 
     items.push({
-      label: "Disconnect from Toon",
+      label: Languages.label("ToonOverview", "Disconnect_from_Toon")(),
       type: 'button',
       icon: <IconButton name={'md-log-out'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor:colors.menuRed.hex}}/>,
       callback: () => {
-        Alert.alert("Are you sure", "You will have to add Toon again to undo this.",[{text:"Cancel", style:'cancel'},{text:"Yes", onPress:() => {
+        Alert.alert(
+Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_header")(),
+Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_body")(),
+[{text:Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_left")(), style:'cancel'},{
+text:Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_right")(), onPress:() => {
             this.props.eventBus.emit("showLoading","Removing the integration with Toon...")
             this.deleting = true;
             CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud()
@@ -96,8 +101,7 @@ export class ToonOverview extends Component<any, any> {
     items.push({
       type:'explanation',
       below: true,
-      label: "This will remove the Toon integration for all users in your Sphere."
-    })
+      label: Languages.label("ToonOverview", "This_will_remove_the_Toon")()})
     items.push({type:'spacer'})
 
     return items;
@@ -115,7 +119,7 @@ export class ToonOverview extends Component<any, any> {
           <View style={{flex:1}} />
           <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           <View style={{flex:1}} />
-          <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex, paddingLeft: 15, paddingRight:15}]}>{"There are multiple Toon's on your account.\n\nPick one to configure it!"}</Text>
+          <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex, paddingLeft: 15, paddingRight:15}]}>{ Languages.text("ToonOverview", "There_are_multiple_Toons_")() }</Text>
           <View style={{flex:1}} />
           <ListEditableItems items={this._getItems(sphere)} separatorIndent={true} />
           <View style={{flex:1}} />

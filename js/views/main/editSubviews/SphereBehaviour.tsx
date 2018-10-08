@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -18,7 +19,7 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 export class SphereBehaviour extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Sphere behaviour',
+      title: Languages.title("SphereBehaviour", "Sphere_behaviour")(),
     }
   };
 
@@ -65,14 +66,14 @@ export class SphereBehaviour extends Component<any, any> {
 
     if (spherePermissions.editSphere) {
       let options = [];
-      options.push({label: '5 Minutes', value: 300});
-      options.push({label: '10 Minutes', value: 600});
-      options.push({label: '15 Minutes', value: 900});
-      options.push({label: '30 Minutes', value: 1800});
-      items.push({label: 'SPHERE EXIT DELAY', type: 'explanation', below: false});
+      options.push({label: Languages.label("SphereBehaviour", "__Minutes")(), value: 300});
+      options.push({label: Languages.label("SphereBehaviour", "___Minutes")(), value: 600});
+      options.push({label: Languages.label("SphereBehaviour", "___Minutes")(), value: 900});
+      options.push({label: Languages.label("SphereBehaviour", "___Minutes")(), value: 1800});
+      items.push({label: Languages.label("SphereBehaviour", "SPHERE_EXIT_DELAY")(), type: 'explanation', below: false});
       items.push({
         type: 'dropdown',
-        label: 'Delay',
+        label: Languages.label("SphereBehaviour", "Delay")(),
         value: Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), // max to allow older versions of the app that have a timeout of 2 minutes to also turn off at 5
         valueLabel: this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),
         dropdownHeight: 130,
@@ -88,7 +89,7 @@ export class SphereBehaviour extends Component<any, any> {
         }
       });
       items.push({
-        label: 'If nobody is left in the sphere, the Crownstones that are configured to switch when you leave the sphere will do so after this delay.',
+        label: Languages.label("SphereBehaviour", "If_nobody_is_left_in_the_")(),
         type: 'explanation',
         below: true,
         style: {paddingBottom: 0}

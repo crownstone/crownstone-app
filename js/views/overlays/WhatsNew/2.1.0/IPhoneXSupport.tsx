@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,11 +19,9 @@ export class IPhoneXSupport extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={[WNStyles.outerScrollView,{width: this.props.width}]}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>iPhone X support!</Text>
+            <Text style={WNStyles.text}>{ Languages.text("IPhoneXSupport", "iPhone_X_support_")() }</Text>
             <Image source={require('../../../../images/whatsNew/2.1.0/iphoneXSupport.png')} style={{width:602*size, height:968*size, marginTop:10, marginBottom: 10}} />
-            <Text style={WNStyles.detail}>{
-              "Enjoy the Crownstone app in all it's glory on the large screen of the iPhone X!"
-            }</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("IPhoneXSupport", "Enjoy_the_Crownstone_app_")() }</Text>
           </View>
         </ScrollView>
       </View>

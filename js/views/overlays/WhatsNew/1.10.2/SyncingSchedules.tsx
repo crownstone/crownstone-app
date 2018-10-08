@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,11 +19,11 @@ export class SyncingSchedules extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>You can now download the schedules from the Crownstone.</Text>
+            <Text style={WNStyles.text}>{ Languages.text("SyncingSchedules", "You_can_now_download_the_")() }</Text>
             <View style={{height:15}} />
-            <Text style={WNStyles.important}>IMPORTANT: ALL EXISTING SCHEDULES NEED TO BE SYNCED UPDATED.</Text>
+            <Text style={WNStyles.important}>{ Languages.text("SyncingSchedules", "IMPORTANT__ALL_EXISTING_S")() }</Text>
             <Image source={require('../../../../images/whatsNew/1.10.2/syncScheduler.png')} style={{width:602*size, height:821*size}} />
-            <Text style={WNStyles.detail}>Use this to change or delete schedules on the Crownstone if they are not in the app.</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("SyncingSchedules", "Use_this_to_change_or_del")() }</Text>
           </View>
         </ScrollView>
       </View>

@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 const sha1 = require('sha-1');
 import {
@@ -21,15 +22,15 @@ import { colors } from '../styles'
 import { SessionMemory } from '../../util/SessionMemory'
 
 // these will inform the user of possible issues with the passwords.
-let passwordStateNeutral = 'Your password must not be empty.';
-let passwordStateConflict = 'Passwords do not match.';
+let passwordStateNeutral =  Languages.label("Register", "Your_password_must_not_be")();
+let passwordStateConflict =  Languages.label("Register", "Passwords_do_not_match_")();
 let passwordStateOK = '';
 
 export class Register extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Register",
+      title: Languages.title("Register", "Register")(),
     }
   };
 
@@ -86,10 +87,10 @@ export class Register extends Component<any, any> {
   getItems() {
     return [
       {
-        label: 'ACCOUNT INFORMATION', type: 'explanation', below: false
+        label: Languages.label("Register", "ACCOUNT_INFORMATION")(), type: 'explanation', below: false
       },
       {
-        label: 'Email',
+        label: Languages.label("Register", "Email")(),
         type: 'textEdit',
         validation:'email',
         validationMethod:'icons',
@@ -101,7 +102,7 @@ export class Register extends Component<any, any> {
         callback: (newValue) => { this.setState({email: newValue}); }
       },
       {
-        label: 'Password',
+        label: Languages.label("Register", "Password")(),
         type: 'textEdit',
         validation:'password',
         validationMethod:'icons',
@@ -121,10 +122,10 @@ export class Register extends Component<any, any> {
         below: true
       },
       {
-        label: 'PROFILE INFORMATION', type: 'explanation', below: false
+        label: Languages.label("Register", "PROFILE_INFORMATION")(), type: 'explanation', below: false
       },
       {
-        label: 'First Name',
+        label: Languages.label("Register", "First_Name")(),
         type: 'textEdit',
         value: this.state.firstName,
         validation:{minLength:2,numbers:{allowed:false}},
@@ -134,7 +135,7 @@ export class Register extends Component<any, any> {
         callback: (newValue) => {this.setState({firstName: newValue})}
       },
       {
-        label: 'Last Name',
+        label: Languages.label("Register", "Last_Name")(),
         type: 'textEdit',
         value: this.state.lastName,
         validation:{minLength:2,numbers:{allowed:false}},
@@ -144,7 +145,7 @@ export class Register extends Component<any, any> {
         callback: (newValue) => { this.setState({lastName: newValue })}
       },
       {
-        label: 'Picture',
+        label: Languages.label("Register", "Picture")(),
         type:  'picture',
         value: this.state.picture,
         placeholderText: 'Optional',
@@ -152,7 +153,7 @@ export class Register extends Component<any, any> {
         removePicture:() => {this.setState({picture:undefined});}
       },
       {
-        label: 'Your picture is used so other people can see your face when you\'re in a room.',
+        label: Languages.label("Register", "Your_picture_is_used_so_o")(),
         type:  'explanation',
         below: true
       },
@@ -161,24 +162,24 @@ export class Register extends Component<any, any> {
         __item: (
           <View style={{backgroundColor:'transparent',padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12}}>
             <View style={{flexDirection:'row', flexWrap: 'wrap'}}>
-              <Text style={{fontSize:11, color:'#444'}}>By registering, you agree to our </Text>
+              <Text style={{fontSize:11, color:'#444'}}>{ Languages.text("Register", "By_registering__you_agree")() }</Text>
               <TouchableHighlight onPress={() => {
                 Linking.openURL('https://crownstone.rocks/terms-of-service/').catch((err) => {})
               }}>
-                <Text style={{fontSize:11, color:colors.blue.hex}}>terms </Text>
+                <Text style={{fontSize:11, color:colors.blue.hex}}>{ Languages.text("Register", "terms_")() }</Text>
               </TouchableHighlight>
-              <Text style={{fontSize:11, color:'#444'}}>{"& "}</Text>
+              <Text style={{fontSize:11, color:'#444'}}>{ Languages.text("Register", "__")() }</Text>
               <TouchableHighlight onPress={() => {
                 Linking.openURL('https://crownstone.rocks/privacy-policy/').catch(err => {})
               }}>
-                <Text style={{fontSize:11, color:colors.blue.hex}}>privacy policy</Text>
+                <Text style={{fontSize:11, color:colors.blue.hex}}>{ Languages.text("Register", "privacy_policy")() }</Text>
               </TouchableHighlight>
             </View>
           </View>
         )
       },
       {
-        label: 'Next',
+        label: Languages.label("Register", "Next")(),
         type:  'button',
         style: {color:colors.blue.hex},
         callback: this.validateAndContinue.bind(this)
@@ -205,15 +206,30 @@ export class Register extends Component<any, any> {
     }
     else {
       if (this.inputStates.email !== 'valid')
-        Alert.alert("Invalid Email Address", "Please double check the supplied email address.", [{text:'OK'}]);
+        Alert.alert(
+Languages.alert("Register", "_Invalid_Email_Address__P_header")(),
+Languages.alert("Register", "_Invalid_Email_Address__P_body")(),
+[{text:Languages.alert("Register", "_Invalid_Email_Address__P_left")()}]);
       else if (this.inputStates.password === 'errorNoMatch')
-        Alert.alert("Check the Verification Password.", passwordStateConflict, [{text:'OK'}]);
+        Alert.alert(
+Languages.alert("Register", "_Check_the_Verification_P_header")(),
+Languages.alert("Register", "_Check_the_Verification_P_body")(passwordStateConflict),
+[{text:Languages.alert("Register", "_Check_the_Verification_P_left")()}]);
       else if (this.inputStates.password !== 'valid')
-        Alert.alert("Invalid Password", passwordStateNeutral, [{text:'OK'}]);
+        Alert.alert(
+Languages.alert("Register", "_Invalid_Password_argumen_header")(),
+Languages.alert("Register", "_Invalid_Password_argumen_body")(passwordStateNeutral),
+[{text:Languages.alert("Register", "_Invalid_Password_argumen_left")()}]);
       else if (this.inputStates.firstName !== 'valid')
-        Alert.alert("You Must Enter a First Name.", 'Without numbers and at least 2 letters.', [{text:'OK'}]);
+        Alert.alert(
+Languages.alert("Register", "_You_Must_Enter_a_First_N_header")(),
+Languages.alert("Register", "_You_Must_Enter_a_First_N_body")(),
+[{text:Languages.alert("Register", "_You_Must_Enter_a_First_N_left")()}]);
       else if (this.inputStates.lastName !== 'valid')
-        Alert.alert("You Must Enter a Last Name.", 'Without numbers and at least 2 letters.', [{text:'OK'}]);
+        Alert.alert(
+Languages.alert("Register", "_You_Must_Enter_a_Last_Na_header")(),
+Languages.alert("Register", "_You_Must_Enter_a_Last_Na_body")(),
+[{text:Languages.alert("Register", "_You_Must_Enter_a_Last_Na_left")()}]);
     }
   }
 
@@ -240,7 +256,10 @@ export class Register extends Component<any, any> {
           let message = reply.data.error.message.split("` ");
           message = message[message.length - 1];
           let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
-          Alert.alert("Registration Error", message, [{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+          Alert.alert(
+Languages.alert("Register", "_Registration_Error_argum_header")(),
+Languages.alert("Register", "_Registration_Error_argum_body")(message),
+[{text: Languages.alert("Register", "_Registration_Error_argum_left")(), onPress: defaultAction}], { onDismiss: defaultAction});
         }
         return false;
       })

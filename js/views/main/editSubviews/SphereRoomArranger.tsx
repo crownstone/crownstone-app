@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -32,10 +33,10 @@ export class SphereRoomArranger extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: 'Drag it around!',
+      title: Languages.title("SphereRoomArranger", "Drag_it_around_")(),
       headerLeft: <CancelButton onPress={BackAction} />,
       headerRight: <TopbarButton
-        text={"Save"}
+        text={ Languages.label("SphereRoomArranger", "Save")()}
         onPress={() => {
           params.rightAction ? params.rightAction() : () => {}
         }}
@@ -135,7 +136,7 @@ export class SphereRoomArranger extends Component<any, any> {
         <View style={{position:'absolute', bottom: tabBarHeight, left:0, width:screenWidth, height: 1, backgroundColor: colors.csBlue.hex}} />
         <TouchableOpacity style={{flexDirection:'row', alignItems:'center', justifyContent:'center', width: screenWidth, height: 40}} onPress={() => { this.props.eventBus.emit('physicsRun'+this.viewId, 150)}}>
           <Icon name={'md-radio-button-on'} size={35} color={colors.csBlue.hex} />
-          <Text style={{color: colors.csBlue.hex, fontWeight:'bold', paddingLeft:15, paddingRight:15, fontSize:16, textAlign:'center'}}>Solve Positions</Text>
+          <Text style={{color: colors.csBlue.hex, fontWeight:'bold', paddingLeft:15, paddingRight:15, fontSize:16, textAlign:'center'}}>{ Languages.text("SphereRoomArranger", "Solve_Positions")() }</Text>
         </TouchableOpacity>
         <View style={{height: 0.5*tabBarMargin, width: screenWidth}} />
       </View>

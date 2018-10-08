@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -89,53 +90,53 @@ export class StatusCommunication extends Component<any, any> {
     if (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
       return (
         <View style={[generalStyle, {alignItems: 'center', justifyContent: 'center'}]}>
-          <Text style={overviewStyles.bottomText}>{'New Crownstone Detected! Tap on it!'}</Text>
+          <Text style={overviewStyles.bottomText}>{ Languages.text("StatusCommunication", "New_Crownstone_Detected__")() }</Text>
         </View>
       );
     }
     else if (this.props.viewingRemotely === true) {
       return (
         <View style={generalStyle}>
-          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex} ]}>{'No Crownstones in range.'}</Text>
+          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex} ]}>{ Languages.text("StatusCommunication", "No_Crownstones_in_range_")() }</Text>
         </View>
       );
     }
     else if (amountOfVisible >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
-          <Text style={descriptionTextStyle}>{'I see ' + amountOfVisible}</Text>
+          <Text style={descriptionTextStyle}>{ Languages.text("StatusCommunication", "I_see_")(amountOfVisible) }</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          <Text style={descriptionTextStyle}>{' so the indoor localization is running.'}</Text>
+          <Text style={descriptionTextStyle}>{ Languages.text("StatusCommunication", "_so_the_indoor_localizati")() }</Text>
         </View>
       )
     }
     else if (amountOfVisible > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
-          <Text style={descriptionTextStyle}>{'I see only ' + amountOfVisible}</Text>
+          <Text style={descriptionTextStyle}>{ Languages.text("StatusCommunication", "I_see_only_")(amountOfVisible) }</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          <Text style={descriptionTextStyle}>{' so I paused the indoor localization.'}</Text>
+          <Text style={descriptionTextStyle}>{ Languages.text("StatusCommunication", "_so_I_paused_the_indoor_l")() }</Text>
         </View>
       )
     }
     else if (enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]}>
-          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained so I can\'t do indoor localization.'}</Text>
+          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ Languages.text("StatusCommunication", "Not_all_rooms_have_been_t")() }</Text>
         </View>
       )
     }
     else if (!enoughForLocalizationInLocations && enoughForLocalization) {
       return (
         <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]}>
-          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not enough Crownstones placed in rooms to do indoor localization.'}</Text>
+          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ Languages.text("StatusCommunication", "Not_enough_Crownstones_pl")() }</Text>
         </View>
       )
     }
     else if (amountOfVisible > 0) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I can see ' + amountOfVisible}</Text>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{ Languages.text("StatusCommunication", "I_can_see_")(amountOfVisible) }</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
         </View>
       )
@@ -143,7 +144,7 @@ export class StatusCommunication extends Component<any, any> {
     else { //if (amountOfVisible === 0) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
-          <Text style={overviewStyles.bottomText}>{"Looking for Crownstones..."}</Text>
+          <Text style={overviewStyles.bottomText}>{ Languages.text("StatusCommunication", "Looking_for_Crownstones__")() }</Text>
         </View>
       )
     }

@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -31,7 +32,7 @@ export class NewLocalizationSettings extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>There are new settings to allow you to use the Crownstone App without localization.</Text>
+            <Text style={WNStyles.text}>{ Languages.text("NewLocalizationSettings", "There_are_new_settings_to")() }</Text>
             <Image source={require('../../../../images/whatsNew/1.10.0/newSettings.png')} style={{width:713*size, height:523*size, marginTop:40, marginBottom:40}}/>
             <Text style={WNStyles.detail}>{text }</Text>
           </View>

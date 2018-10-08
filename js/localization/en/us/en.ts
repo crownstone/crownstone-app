@@ -6,7 +6,7 @@ import TITLES from './categories/en_us_titles'
 
 export const localization_en_us = {
   alert:  ALERTS,
-  labels: LABELS,
-  texts:  TEXTS,
-  titles: TITLES,
+  label: LABELS,
+  text:  TEXTS,
+  title: TITLES,
 }

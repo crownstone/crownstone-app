@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Icon } from './Icon'
@@ -23,7 +24,7 @@ export class IconButton extends Component<any, any> {
           left: 0.5*plusSize,
           top: 0.2*plusSize
         }, styles.centered, this.props.buttonStyle]}>
-          {this.props.showLoadingIcon ? <ActivityIndicator animating={true} size={this.props.buttonSize > 50 ? 'large' : 'small'}  /> : <Icon {...this.props} /> }
+          {this.props.showLoadingIcon ? <ActivityIndicator animating={true} size={this.props.buttonSize > 50 ? 'large' :  Languages.label("IconButton", "small")()}  /> : <Icon {...this.props} /> }
         </View>
         <View style={[{
           width:plusSize,
@@ -53,7 +54,7 @@ export class IconButton extends Component<any, any> {
           margin:0,
           }, styles.centered, this.props.buttonStyle
         ]}>
-          {this.props.showLoadingIcon ? <ActivityIndicator animating={true} size={this.props.buttonSize > 50 ? 'large' : 'small'}  /> : <Icon {...this.props} /> }
+          {this.props.showLoadingIcon ? <ActivityIndicator animating={true} size={this.props.buttonSize > 50 ? 'large' :  Languages.label("IconButton", "small")()}  /> : <Icon {...this.props} /> }
         </View>
       )
     }

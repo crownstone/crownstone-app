@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -55,8 +56,8 @@ export class Sphere extends Component<any, any> {
         return (
           <View style={viewStyle}>
             <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
-            <Text style={overviewStyles.mainText}>{"No Crownstones added yet!"}</Text>
-            <Text style={overviewStyles.subText}>{"Ask the admin of this Sphere to add some!"}</Text>
+            <Text style={overviewStyles.mainText}>{ Languages.text("Sphere", "No_Crownstones_added_yet_")() }</Text>
+            <Text style={overviewStyles.subText}>{ Languages.text("Sphere", "Ask_the_admin_of_this_Sph")() }</Text>
           </View>
         )
       }
@@ -65,11 +66,9 @@ export class Sphere extends Component<any, any> {
         return (
           <View style={viewStyle}>
             <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
-            <Text style={overviewStyles.mainText}>{"No Crownstones added yet!"}</Text>
-            <Text style={overviewStyles.subText}>{"Get close to a new Crownstone and it will appear here automatically!"}</Text>
-            <Text style={overviewStyles.subTextSmall}>{"If nothing happens, ensure the Crownstone is powered on and not paired with another user.\n\n" +
-            (Platform.OS === 'android' ? "More help is available under 'help' in the side menu." : "More help is available in the help menu in the settings.")
-            }</Text>
+            <Text style={overviewStyles.mainText}>{ Languages.text("Sphere", "No_Crownstones_added_yet_")() }</Text>
+            <Text style={overviewStyles.subText}>{ Languages.text("Sphere", "Get_close_to_a_new_Crowns")() }</Text>
+            <Text style={overviewStyles.subTextSmall}>{ Languages.text("Sphere", "If_nothing_happens__ensur")(Platform.OS) }</Text>
           </View>
         )
       }

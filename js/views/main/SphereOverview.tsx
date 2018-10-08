@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -324,8 +325,8 @@ export class SphereOverview extends Component<any, any> {
         <AnimatedBackground image={background} hasTopBar={false} safeView={true}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
-            <Text style={overviewStyles.mainText}>No Spheres available.</Text>
-            <Text style={overviewStyles.subText}>Press Edit in the upper right corner to create your own Sphere or wait to be added to those of others.</Text>
+            <Text style={overviewStyles.mainText}>{ Languages.text("SphereOverview", "No_Spheres_available_")() }</Text>
+            <Text style={overviewStyles.subText}>{ Languages.text("SphereOverview", "Press_Edit_in_the_upper_r")() }</Text>
           </View>
         </AnimatedBackground>
       );
@@ -337,7 +338,7 @@ function getNavBarParams(state, props, viewState) {
   LOG.info("UPDATING SPHERE OVERVIEW NAV BAR");
   if (viewState.zoomLevel === ZOOM_LEVELS.sphere) {
     NAVBAR_PARAMS_CACHE = {
-      title: "Sphere Overview",
+      title: Languages.title("SphereOverview", "Sphere_Overview")(),
       showMailIcon: false,
       showFinalizeNavigationButton: false,
       showFinalizeIndoorNavigationCallback: false,
@@ -349,9 +350,9 @@ function getNavBarParams(state, props, viewState) {
     let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
     if (sphereId === null) {
       NAVBAR_PARAMS_CACHE = {
-        title: "Hello there!",
+        title: Languages.title("SphereOverview", "Hello_there_")(),
         showFinalizeNavigationButton: false,
-        rightLabel:'Edit',
+        rightLabel: Languages.label("SphereOverview", "Edit")(),
         rightAction: () => { Actions.sphereEdit() },
       }
     }
@@ -364,7 +365,7 @@ function getNavBarParams(state, props, viewState) {
         showMailIcon: newMailAvailable,
         showFinalizeNavigationButton: finalizeLocalization.showItem,
         showFinalizeIndoorNavigationCallback: finalizeLocalization.action,
-        rightLabel:'Edit',
+        rightLabel: Languages.label("SphereOverview", "Edit")(),
         rightAction: () => { Actions.sphereEdit({sphereId: sphereId}) },
         activeSphereId: sphereId,
       }

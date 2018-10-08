@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -23,7 +24,7 @@ export class TutorialBehaviour extends Component<any, any> {
     return (
       <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}}>
         <View style={{flex:1, alignItems:'center', padding: 30}}>
-          <Text style={tutorialStyle.header}>Behaviour</Text>
+          <Text style={tutorialStyle.header}>{ Languages.text("TutorialBehaviour", "Behaviour")() }</Text>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <Icon
             name="c1-brain"
@@ -31,11 +32,7 @@ export class TutorialBehaviour extends Component<any, any> {
             color={colors.white.hex}
           />
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
-          <Text style={tutorialStyle.text}>{'Behaviour of Crownstones indicates how it responds to your location.' +
-          '\n\nYou can tell the Crownstone to turn on or off when you... ' +
-          '\n\n- Enter or exit the sphere.' +
-          '\n- Get near or move away from it.' +
-          '\n- Enter or exit a room (with 4 or more).'}</Text>
+          <Text style={tutorialStyle.text}>{ Languages.text("TutorialBehaviour", "Behaviour_of_Crownstones_")() }</Text>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />
         </View>
       </ScrollView>

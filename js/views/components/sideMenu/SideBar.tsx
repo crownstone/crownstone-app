@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -75,7 +76,7 @@ export class SideBar extends Component<any, any> {
     if (finalizeLocalization.showItem) {
       actionItems.push({
         id: 'finalizeLocalization',
-        label: 'Setup localization',
+        label: Languages.label("SideBar", "Setup_localization")(),
         icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
         callback: () => {
           Actions.drawerClose()
@@ -94,7 +95,7 @@ export class SideBar extends Component<any, any> {
 
     menuItems.push({
       id: 'messages',
-      label: highlight ? '* New Message *' : 'Messages',
+      label: Languages.label("SideBar", "__New_Message__Messages")(highlight),
       icon: <Icon
         name={"ios-mail"}
         size={ highlight ? 32 : 25}
@@ -116,12 +117,15 @@ export class SideBar extends Component<any, any> {
 
     settingItems.push({
       id: 'quit',
-      label: 'Force Quit',
+      label: Languages.label("SideBar", "Force_Quit")(),
       icon: <Icon name={"md-remove-circle"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       callback: () => {
-        Alert.alert('Are you sure?','Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either.',[
-          {text: 'Cancel', style: 'cancel'},
-          {text: 'OK', onPress: () => {
+        Alert.alert(
+Languages.alert("SideBar", "_Are_you_sure___Crownston_header")(),
+Languages.alert("SideBar", "_Are_you_sure___Crownston_body")(),
+[{text: Languages.alert("SideBar", "_Are_you_sure___Crownston_left")(), style: 'cancel'},
+          {
+text: Languages.alert("SideBar", "_Are_you_sure___Crownston_right")(), onPress: () => {
             try {
               AppUtil.quit();
             }
@@ -192,7 +196,7 @@ class MenuTopBar extends Component<any, any> {
       <View style={{width: screenWidth*FACTOR - BLUE_PADDING, height: topBarHeight}}>
         <View style={{width: screenWidth*FACTOR - BLUE_PADDING, height: topBarHeight, backgroundColor: colors.menuBackground.hex, justifyContent:'center'}}>
           {/*<Icon name="c2-crownstone" color="#fff" size={60} style={{marginTop:3, marginLeft: 3}} />*/}
-          <Text style={{paddingLeft: 10, fontSize:20, fontWeight:'500', color: colors.white.hex}}>Crownstone</Text>
+          <Text style={{paddingLeft: 10, fontSize:20, fontWeight:'500', color: colors.white.hex}}>{ Languages.text("SideBar", "Crownstone")() }</Text>
         </View>
       </View>
     );

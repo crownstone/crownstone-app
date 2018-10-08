@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -332,17 +333,17 @@ export class LocalizationSetupStep1 extends Component<any, any> {
 
         <Animated.View style={{position:'absolute',top: 0.24*this.h, opacity: this.state.textOpacity, width:this.w, height: this.h - 0.24*this.h, justifyContent:'center', alignItems:'center', padding:10}}>
           <View style={{flex:1}} />
-          <Text style={{fontSize: 0.1*this.w, color: contentColor, fontWeight:'800', paddingBottom:0.04*this.h, textAlign:'center', backgroundColor:'transparent'}}>Congratulations!</Text>
-          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>You have added 4 Crownstones to your Sphere! We can now use the indoor localization at room level!</Text>
+          <Text style={{fontSize: 0.1*this.w, color: contentColor, fontWeight:'800', paddingBottom:0.04*this.h, textAlign:'center', backgroundColor:'transparent'}}>{ Languages.text("LocalizationSetupStep1", "Congratulations_")() }</Text>
+          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ Languages.text("LocalizationSetupStep1", "You_have_added___Crownsto")() }</Text>
           <View style={{flex:1}} />
-          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{"We've added this button to your overview:"}</Text>
+          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ Languages.text("LocalizationSetupStep1", "Weve_added_this_button_to")() }</Text>
             <View style={{flex:1}} />
             <FinalizeLocalizationIcon />
             <View style={{flex:1}} />
-            <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{"Once you've added all your Crownstones, tap that button to start teaching Crownstone about your home!"}</Text>
+            <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ Languages.text("LocalizationSetupStep1", "Once_youve_added_all_your")() }</Text>
               <View style={{flex:1}} />
               <TouchableOpacity onPress={() => {this.setState({visible: false});}} style={{borderWidth:2, borderRadius:0.04*this.h, borderColor: contentColor, width:0.3*this.w, height:0.08*this.h, justifyContent:'center', alignItems:'center'}}>
-                <Text style={{fontSize: 20, fontWeight:'800', color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>OK!</Text>
+                <Text style={{fontSize: 20, fontWeight:'800', color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ Languages.text("LocalizationSetupStep1", "OK_")() }</Text>
               </TouchableOpacity>
               <View style={{flex:1}} />
         </Animated.View>

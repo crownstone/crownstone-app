@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,13 +19,11 @@ export class NewSphereSettings extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>New Sphere menu!</Text>
+            <Text style={WNStyles.text}>{ Languages.text("NewSphereSettings", "New_Sphere_menu_")() }</Text>
             <View style={{height:30}} />
             <Image source={require('../../../../images/whatsNew/2.2.0/newSphereMenu.png')} style={{width:602*size, height:968*size}} />
             <View style={{height:30}} />
-            <Text style={WNStyles.detail}>{
-              "Press Edit in the top right corner of the Sphere overview and customize your Sphere!\n\n"
-            }</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("NewSphereSettings", "Press_Edit_in_the_top_rig")() }</Text>
           </View>
         </ScrollView>
       </View>

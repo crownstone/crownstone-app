@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import { Platform } from 'react-native';
 import {SettingsBleTroubleshootingAndroid} from "./troubleshooting/SettingsBleTroubleshootingAndroid";
@@ -7,7 +8,7 @@ import {SettingsBleTroubleshootingIOS} from "./troubleshooting/SettingsBleTroubl
 
 export class SettingsBleTroubleshooting extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "BLE Troubleshooting" }
+    return { title: Languages.title("SettingsBleTroubleshooting", "BLE_Troubleshooting")()}
   };
 
   render() {

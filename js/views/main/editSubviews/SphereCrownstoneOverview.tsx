@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -27,7 +28,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
     let state = params.store.getState();
     let sphere = state.spheres[params.sphereId] ;
     return {
-      title: "Crownstones in " + sphere.config.name,
+      title: Languages.title("SphereCrownstoneOverview", "Crownstones_in_")(sphere.config.name),
     }
   };
 
@@ -71,7 +72,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
     let stoneIds = Object.keys(stones);
 
     if (stoneIds.length == 0) {
-      items.push({label:"There are no Crownstones in this Sphere yet!",  type:'largeExplanation', below:false});
+      items.push({label: Languages.label("SphereCrownstoneOverview", "There_are_no_Crownstones_")(),  type:'largeExplanation', below:false});
       return items;
     }
 
@@ -85,7 +86,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
       if (stoneIdsInRoom.length > 0) {
         let label = "CROWNSTONES NOT IN A ROOM";
         if (roomId !== null) {
-          label = "CROWNSTONES IN " + rooms[roomId].config.name.toUpperCase();
+          label =  Languages.label("SphereCrownstoneOverview", "CROWNSTONES_IN_")(rooms[roomId].config.name.toUpperCase());
         }
 
         items.push({label: label, type:'explanation', below:false});
@@ -110,11 +111,11 @@ export class SphereCrownstoneOverview extends Component<any, any> {
 
     renderStonesInRoom(null)
 
-    items.push({label: "This is an overview of all your Crownstones. To access the settings of these Crownstones, go to their rooms and tap on them there.", type:'explanation', below:true});
+    items.push({label: Languages.label("SphereCrownstoneOverview", "This_is_an_overview_of_al")(), type:'explanation', below:true});
 
 
     items.push({
-      label: 'Add a Crownstone',
+      label: Languages.label("SphereCrownstoneOverview", "Add_a_Crownstone")(),
       largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
       style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
       type: 'button',
@@ -123,7 +124,10 @@ export class SphereCrownstoneOverview extends Component<any, any> {
           addCrownstoneExplanationAlert(() => { BackAction('sphereOverview'); } )
         }
         else {
-          Alert.alert("Ask your Sphere Admin","Admins can add new Crownstones to Spheres. If you have a new Crownstone you'd like to add, ask the sphere Admin.",[{text:"OK"}]);
+          Alert.alert(
+Languages.alert("SphereCrownstoneOverview", "_Ask_your_Sphere_Admin__A_header")(),
+Languages.alert("SphereCrownstoneOverview", "_Ask_your_Sphere_Admin__A_body")(),
+[{text:Languages.alert("SphereCrownstoneOverview", "_Ask_your_Sphere_Admin__A_left")()}]);
         }
       }
     });

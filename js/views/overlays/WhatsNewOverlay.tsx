@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -92,7 +93,7 @@ export class WhatsNewOverlay extends Component<any, any> {
           marginTop:25,
           marginBottom:25,
           overflow:'hidden'
-        }}>Your App was updated!</Text>
+        }}>{ Languages.text("WhatsNewOverlay", "Your_App_was_updated_")() }</Text>
         <Swiper style={{}} showsPagination={true} height={height-80} width={width}
           loadMinimal={true}
           loadMinimalSize={2}

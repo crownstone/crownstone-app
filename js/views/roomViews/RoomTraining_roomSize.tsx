@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -103,7 +104,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
             fontWeight:'600',
             color: colors.white.hex,
             textAlign:'center'
-          }}>{"To let " + ai.name + " find you in " + roomName + ", we need to help " + ai.him + " a little!"}</Text>
+          }}>{ Languages.text("RoomTraining_roomSize", "To_let__find_you_in___we_")(ai.name,roomName,ai.him) }</Text>
 
           <View style={{flex:2}} />
           <Text style={{
@@ -112,7 +113,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
             fontWeight:'600',
             color: colors.white.hex,
             textAlign:'center',
-          }}>{"How large is this room?"}</Text>
+          }}>{ Languages.text("RoomTraining_roomSize", "How_large_is_this_room_")() }</Text>
 
           <View style={{flex:1}} />
           <Text style={{
@@ -121,8 +122,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
             fontWeight:'300',
             color: colors.white.hex,
             textAlign:'center',
-          }}>Large rooms take a bit more time to learn about than small rooms.
-          </Text>
+          }}>{ Languages.text("RoomTraining_roomSize", "Large_rooms_take_a_bit_mo")() }</Text>
 
           <View style={{flex:3}} />
           {this._getButton(30, Math.min(0.06*screenHeight,0.10*screenWidth), 'Small (up to 20 m', "small")}
@@ -140,7 +140,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
 function getNavBarParams(state, props, viewingRemotely) {
   let ai = Util.data.getAiData(state, props.sphereId);
-  NAVBAR_PARAMS_CACHE = {title: 'Teaching ' + ai.name};
+  NAVBAR_PARAMS_CACHE = {title: Languages.title("RoomTraining_roomSize", "Teaching_")(ai.name)};
   return NAVBAR_PARAMS_CACHE;
 }
 

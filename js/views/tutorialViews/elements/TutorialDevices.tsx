@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -25,7 +26,7 @@ export class TutorialDevices extends Component<any, any> {
   render() {
     return (
         <View style={{flex:1, alignItems:'center', padding: 30}}>
-          <Text style={tutorialStyle.header}>Device Types</Text>
+          <Text style={tutorialStyle.header}>{ Languages.text("TutorialDevices", "Device_Types")() }</Text>
           <View style={{flex:1}} />
           <Icon
             name="c1-tvSetup"
@@ -33,8 +34,7 @@ export class TutorialDevices extends Component<any, any> {
             color={colors.white.hex}
           />
           <View style={{flex:1}} />
-          <Text style={tutorialStyle.text}>{'You can add a device type to a Crownstone. These device types have behaviour, icons and names.' +
-          '\n\nYou can add a single device type to multiple Crownstones. Behaviour of device types will overrule behaviour of Crownstones.'}</Text>
+          <Text style={tutorialStyle.text}>{ Languages.text("TutorialDevices", "You_can_add_a_device_type")() }</Text>
           <View style={{flex:1}} />
           <TouchableOpacity
             onPress={() => {
@@ -75,7 +75,7 @@ export class TutorialDevices extends Component<any, any> {
               borderColor: colors.white.hex,
               backgroundColor: colors.csBlue.rgba(0.5)
             }]}>
-            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{"Got it!"}</Text>
+            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ Languages.text("TutorialDevices", "Got_it_")() }</Text>
           </TouchableOpacity>
           <View style={{flex:1}} />
         </View>

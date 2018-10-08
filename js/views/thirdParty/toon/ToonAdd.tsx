@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -27,7 +28,7 @@ import {LOGe} from "../../../logging/Log";
 
 export class ToonAdd extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Toon" }
+    return { title: Languages.title("ToonAdd", "Toon")()}
   };
 
 
@@ -116,7 +117,10 @@ export class ToonAdd extends Component<any, any> {
       })
       .then(() => {
         if (agreementIds.length === 0) {
-          Alert.alert("No Toon Found","This account does not seem to have a Toon we can use....",[{text:'OK'}])
+          Alert.alert(
+Languages.alert("ToonAdd", "_No_Toon_Found__This_acco_header")(),
+Languages.alert("ToonAdd", "_No_Toon_Found__This_acco_body")(),
+[{text:Languages.alert("ToonAdd", "_No_Toon_Found__This_acco_left")()}])
         }
         else {
           this.setState({success:true, processing:false}, () => {
@@ -135,12 +139,18 @@ export class ToonAdd extends Component<any, any> {
         LOGe.info("ToonAdd: Error while adding Toon.", err);
         if (err && typeof err === 'object' && err.code) {
           if (err.code === 1 && this.state.code) {
-            Alert.alert("Whoops", "The provided code seems to be incorrect.", [{text:'OK'}]);
+            Alert.alert(
+Languages.alert("ToonAdd", "_Whoops__The_provided_cod_header")(),
+Languages.alert("ToonAdd", "_Whoops__The_provided_cod_body")(),
+[{text:Languages.alert("ToonAdd", "_Whoops__The_provided_cod_left")()}]);
             return;
           }
         }
 
-        Alert.alert("Whoops", "Something went wrong... Please try again later.", [{text:'OK'}]);
+        Alert.alert(
+Languages.alert("ToonAdd", "_Whoops__Something_went_w_header")(),
+Languages.alert("ToonAdd", "_Whoops__Something_went_w_body")(),
+[{text:Languages.alert("ToonAdd", "_Whoops__Something_went_w_left")()}]);
       })
   }
 
@@ -183,7 +193,7 @@ export class ToonAdd extends Component<any, any> {
     if (this.state.manualCodeInput && this.state.code === null) {
       return (
         <TouchableOpacity onPress={() => { this.setState({code: this.state.codeInput }); this.pairWithToon(this.state.codeInput); }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{"Submit"}</Text>
+          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ Languages.text("ToonAdd", "Submit")() }</Text>
         </TouchableOpacity>
       );
     }
@@ -191,7 +201,7 @@ export class ToonAdd extends Component<any, any> {
       return (
         <View style={{alignItems:'center', justifyContent:'center'}}>
           <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
-            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{"Working...."}</Text>
+            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{ Languages.text("ToonAdd", "Working____")() }</Text>
           </View>
         </View>
       );
@@ -200,11 +210,11 @@ export class ToonAdd extends Component<any, any> {
       return (
         <View style={{alignItems:'center', justifyContent:'center'}}>
           <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
-            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{"Working...."}</Text>
+            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{ Languages.text("ToonAdd", "Working____")() }</Text>
           </View>
 
           <TouchableOpacity style={{paddingTop:15}} onPress={() => { this.setState({ manualCodeInput:true })}}>
-            <Text style={{fontSize:15, color: colors.menuBackground.rgba(0.3), textAlign:'center'}}>{"If something went wrong, tap here if you want to manually input the code."}</Text>
+            <Text style={{fontSize:15, color: colors.menuBackground.rgba(0.3), textAlign:'center'}}>{ Languages.text("ToonAdd", "If_something_went_wrong__")() }</Text>
           </TouchableOpacity>
         </View>
       )
@@ -214,7 +224,7 @@ export class ToonAdd extends Component<any, any> {
         <TouchableOpacity onPress={() => {
           Linking.openURL('https://api.toon.eu/authorize?response_type=code&client_id=' + toonConfig.clientId).catch(() => {})
         }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{"Connect with Toon!"}</Text>
+          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ Languages.text("ToonAdd", "Connect_with_Toon_")() }</Text>
         </TouchableOpacity>
       );
     }
@@ -223,9 +233,7 @@ export class ToonAdd extends Component<any, any> {
   _getExplanation() {
     if (!this.state.success && !this.state.processing && !this.state.failed) {
      return (
-       <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{
-         "Sometimes, Toon is set to \"Away\" while you're still there...\n\n... but Crownstone can ensure that it is set to \"Home\" as long as you're home!"
-       }</Text>
+       <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{ Languages.text("ToonAdd", "Sometimes__Toon_is_set_to")() }</Text>
      )
     }
   }
@@ -238,8 +246,7 @@ export class ToonAdd extends Component<any, any> {
            fontSize: 12,
            color: colors.black.rgba(0.6),
            paddingTop: 10
-         }} >{"This application uses the Toon API, follows the guiding principles for using the Toon API, but has not been developed by Toon."}
-         </Text>
+         }} >{ Languages.text("ToonAdd", "This_application_uses_the")() }</Text>
        )
       }
     }
@@ -255,7 +262,7 @@ export class ToonAdd extends Component<any, any> {
           <View style={{width: 250, height: 60, backgroundColor:"#fff", borderRadius:20, borderWidth: 2, borderColor: colors.gray.rgba(0.5), alignItems:'center', justifyContent:'center'}}>
             <TextEditInput
               style={{width: 0.8*screenWidth, padding:10, fontSize:26, fontWeight:'bold', textAlign:"center"}}
-              placeholder='paste code'
+              placeholder={Languages.label("ToonAdd", "paste_code_ccc")()}
               placeholderTextColor='#ccc'
               autoCorrect={false}
               value={this.state.codeInput}

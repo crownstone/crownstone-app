@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -10,7 +11,7 @@ import {OrangeLine, styles} from "../styles";
 export class RoomDeleted extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Deleted",
+      title: Languages.title("RoomDeleted", "Deleted")(),
     }
   };
 
@@ -18,7 +19,7 @@ export class RoomDeleted extends Component<any, any> {
     return (
       <Background image={require('../../images/mainBackgroundLightNotConnected.png')}>
         <OrangeLine/>
-        <Text>Room Deleted.</Text>
+        <Text>{ Languages.text("RoomDeleted", "Room_Deleted_")() }</Text>
       </Background>
     )
   }

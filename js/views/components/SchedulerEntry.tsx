@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -28,7 +29,7 @@ export class SchedulerEntry extends Component<any, any> {
     let wrapperStyle = {height: 50, justifyContent:'center'};
     let headerStyle = {fontSize: 16, fontWeight:'500', paddingTop: 15, color: active ? colors.black.hex : colors.darkGray2.hex};
     let timeText = (this.props.schedule.switchState > 0 ? "Turn on" : "Turn off") + ' at ' + Util.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.props.schedule.time), false);
-    let activeText = active ? '' : ' (disabled)';
+    let activeText = active ? '' :  Languages.label("SchedulerEntry", "__disabled_")();
     if (this.props.schedule.label) {
       return (
         <View style={wrapperStyle}>

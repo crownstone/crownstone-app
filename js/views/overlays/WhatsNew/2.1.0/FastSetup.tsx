@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -19,7 +20,7 @@ export class FastSetup extends Component<any, any> {
         <ScrollView style={[WNStyles.outerScrollView,{width: this.props.width}]}>
           <View style={WNStyles.innerScrollView}>
             <Image source={require('../../../../images/whatsNew/2.1.0/fastSetup.png')} style={{width:475*size, height:571*size, marginTop:15, marginBottom: 25}} />
-            <Text style={WNStyles.detail}>By speeding up the setup process in the new 2.1.2 firmware, we’ve fixed issues with certain android phones.</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("FastSetup", "By_speeding_up_the_setup_")() }</Text>
           </View>
         </ScrollView>
       </View>

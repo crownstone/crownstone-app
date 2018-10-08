@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -132,7 +133,7 @@ export class LockedStateUI extends Component<any, any> {
             size={this.props.size*0.3}
             color={colors.white.hex}
           />
-          <Text style={textStyle}>{"Ask an admin\nto unlock me!"}</Text>
+          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Ask_an_admin_nto_unlock_m")() }</Text>
         </View>
       )
     }
@@ -141,7 +142,7 @@ export class LockedStateUI extends Component<any, any> {
       return (
         <View style={viewStyle}>
           <ActivityIndicator animating={true} size='large' color={colors.white.hex} />
-          <Text style={textStyle}>{"Unlocking..."}</Text>
+          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Unlocking___")() }</Text>
         </View>
       )
     }
@@ -153,7 +154,7 @@ export class LockedStateUI extends Component<any, any> {
             size={this.props.size*0.3}
             color="#fff"
           />
-          <Text style={textStyle}>{"Done"}</Text>
+          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Done")() }</Text>
         </View>
       )
     }
@@ -165,7 +166,7 @@ export class LockedStateUI extends Component<any, any> {
             size={this.props.size*0.3}
             color={colors.red.hex}
           />
-          <Text style={textStyle}>{"Couldn't unlock...\nYou must be near."}</Text>
+          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Couldnt_unlock____nYou_mu")() }</Text>
         </View>
       )
     }
@@ -177,7 +178,7 @@ export class LockedStateUI extends Component<any, any> {
             size={this.props.size*0.3}
             color={colors.white.hex}
           />
-          <Text style={textStyle}>{"Press and hold\nto unlock!"}</Text>
+          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Press_and_hold_nto_unlock")() }</Text>
         </View>
       )
     }

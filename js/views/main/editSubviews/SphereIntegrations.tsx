@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -21,7 +22,7 @@ import {ScaledImage} from "../../components/ScaledImage";
 export class SphereIntegrations extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Integrations',
+      title: Languages.title("SphereIntegrations", "Integrations")(),
     }
   };
 
@@ -29,11 +30,11 @@ export class SphereIntegrations extends Component<any, any> {
   _getItemsAlternative() {
     let items = [];
 
-    items.push({label:'Here you can integrate with different services. We\'re hard at work to add more!',  type:'largeExplanation'});
+    items.push({label: Languages.label("SphereIntegrations", "Here_you_can_integrate_wi")(),  type:'largeExplanation'});
 
-    items.push({label:'Thermostats:',  type:'largeExplanation'});
+    items.push({label: Languages.label("SphereIntegrations", "Thermostats_")(),  type:'largeExplanation'});
     items.push({
-      label: 'Toon',
+      label: Languages.label("SphereIntegrations", "Toon")(),
       type: 'navigation',
       largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={65} targetHeight={45} sourceWidth={1000} sourceHeight={237}/>,
       callback: () => {
@@ -52,18 +53,21 @@ export class SphereIntegrations extends Component<any, any> {
       }
     });
 
-    items.push({label:'Coming Soon:',  type:'largeExplanation'});
+    items.push({label: Languages.label("SphereIntegrations", "Coming_Soon_")(),  type:'largeExplanation'});
 
 
     items.push({
-      label: 'Philips Hue',
+      label: Languages.label("SphereIntegrations", "Philips_Hue")(),
       type: 'navigation',
       largeIcon:
         <View style={{width:55, height:55, borderRadius:12, alignItems:"center", justifyContent:"center", overflow:'hidden'}}>
           <ScaledImage source={require("../../../images/thirdParty/logo/philipsHue.png")} targetWidth={55} targetHeight={55} sourceWidth={600} sourceHeight={600} />
         </View>,
       callback: () => {
-        Alert.alert("Working on it!", "Support for Philips Hue will be added in a future update.", [{text:"OK"}])
+        Alert.alert(
+Languages.alert("SphereIntegrations", "_Working_on_it___Support__header")(),
+Languages.alert("SphereIntegrations", "_Working_on_it___Support__body")(),
+[{text:Languages.alert("SphereIntegrations", "_Working_on_it___Support__left")()}])
       }
     });
 

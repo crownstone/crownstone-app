@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -20,7 +21,7 @@ import {clearLogs} from "../../../logging/LogUtil";
 export class SettingsLogging extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Logging",
+      title: Languages.title("SettingsLogging", "Logging")(),
     }
   };
   unsubscribe;
@@ -47,20 +48,20 @@ export class SettingsLogging extends Component<any, any> {
 
     items.push({
       type:'explanation',
-      label:"SET LOGGING LEVELS",
+      label: Languages.label("SettingsLogging", "SET_LOGGING_LEVELS")(),
     })
 
     let logLevelsData = {
-      log_info:          { label: 'General',         explanation: ''},
-      log_native:        { label: 'Native',          explanation: ''},
-      log_mesh:          { label: 'Mesh',            explanation: ''},
-      log_notifications: { label: 'Notifications',   explanation: ''},
-      log_scheduler:     { label: 'Scheduler',       explanation: ''},
-      log_ble:           { label: 'BLE',             explanation: ''},
-      log_bch:           { label: 'Batch C Handler', explanation: ''},
-      log_events:        { label: 'Events',          explanation: ''},
-      log_store:         { label: 'Store',           explanation: ''},
-      log_cloud:         { label: 'Cloud',           explanation: ''},
+      log_info:          { label: Languages.label("SettingsLogging", "General")(),         explanation: ''},
+      log_native:        { label: Languages.label("SettingsLogging", "Native")(),          explanation: ''},
+      log_mesh:          { label: Languages.label("SettingsLogging", "Mesh")(),            explanation: ''},
+      log_notifications: { label: Languages.label("SettingsLogging", "Notifications")(),   explanation: ''},
+      log_scheduler:     { label: Languages.label("SettingsLogging", "Scheduler")(),       explanation: ''},
+      log_ble:           { label: Languages.label("SettingsLogging", "BLE")(),             explanation: ''},
+      log_bch:           { label: Languages.label("SettingsLogging", "Batch_C_Handler")(), explanation: ''},
+      log_events:        { label: Languages.label("SettingsLogging", "Events")(),          explanation: ''},
+      log_store:         { label: Languages.label("SettingsLogging", "Store")(),           explanation: ''},
+      log_cloud:         { label: Languages.label("SettingsLogging", "Cloud")(),           explanation: ''},
     };
 
     let logLevels = Object.keys(logLevelsData);
@@ -74,12 +75,12 @@ export class SettingsLogging extends Component<any, any> {
     levels[LOG_LEVEL.none] = "none";
 
     let values = [
-      {label: 'disabled', value: LOG_LEVEL.none},
-      {label: 'error',    value: LOG_LEVEL.error},
-      {label: 'warning',  value: LOG_LEVEL.warning},
-      {label: 'info',     value: LOG_LEVEL.info},
-      {label: 'debug',    value: LOG_LEVEL.debug},
-      {label: 'verbose',  value: LOG_LEVEL.verbose},
+      {label: Languages.label("SettingsLogging", "disabled")(), value: LOG_LEVEL.none},
+      {label: Languages.label("SettingsLogging", "error")(),    value: LOG_LEVEL.error},
+      {label: Languages.label("SettingsLogging", "warning")(),  value: LOG_LEVEL.warning},
+      {label: Languages.label("SettingsLogging", "info")(),     value: LOG_LEVEL.info},
+      {label: Languages.label("SettingsLogging", "debug")(),    value: LOG_LEVEL.debug},
+      {label: Languages.label("SettingsLogging", "verbose")(),  value: LOG_LEVEL.verbose},
     ]
 
     logLevels.forEach((level) => {
@@ -105,11 +106,11 @@ export class SettingsLogging extends Component<any, any> {
 
     items.push({
       type:'explanation',
-      label:"NATIVE EXTENDED LOGGING",
+      label: Languages.label("SettingsLogging", "NATIVE_EXTENDED_LOGGING")(),
     });
 
     items.push({
-      label: "Native Extended Logging",
+      label: Languages.label("SettingsLogging", "Native_Extended_Logging")(),
       value: state.development.nativeExtendedLogging,
       type: 'switch',
       icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
@@ -124,20 +125,20 @@ export class SettingsLogging extends Component<any, any> {
     });
     items.push({
       type:'explanation',
-      label:"Basic native logging is already enabled when logging is enabled in the developer menu.",
+      label: Languages.label("SettingsLogging", "Basic_native_logging_is_a")(),
       below:true,
     });
 
     items.push({
       type:'explanation',
-      label:"DISABLE LOGGING",
+      label: Languages.label("SettingsLogging", "DISABLE_LOGGING")(),
       alreadyPadded: true
     });
 
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
     items.push({
-      label:"Disable Logging",
+      label: Languages.label("SettingsLogging", "Disable_Logging")(),
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:(newValue) => {

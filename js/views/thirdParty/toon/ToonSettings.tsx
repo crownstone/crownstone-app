@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -16,7 +17,7 @@ import {
 import {BackAction} from "../../../util/Back";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import {availableScreenHeight, colors, OrangeLine, screenHeight, screenWidth, tabBarHeight} from "../../styles";
+import {colors, OrangeLine, screenHeight, screenWidth} from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {ScaledImage} from "../../components/ScaledImage";
@@ -28,7 +29,7 @@ export class ToonSettings extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Toon"
+      title: Languages.title("ToonSettings", "Toon")()
     }
   };
 
@@ -58,7 +59,7 @@ export class ToonSettings extends Component<any, any> {
     let items = [];
     let toon = sphere.thirdParty.toons[this.props.toonId];
     items.push({
-      label: "Use this phone",
+      label: Languages.label("ToonSettings", "Use_this_phone")(),
       value: toon.enabled,
       type: 'switch',
       icon: <IconButton name="md-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
@@ -75,7 +76,7 @@ export class ToonSettings extends Component<any, any> {
     let updatedAt = toon.updatedScheduleTime ? Util.getDateTimeFormat(toon.updatedScheduleTime) : "NEVER"
     items.push({
       type: 'explanation',
-      label: "LAST SCHEDULE UPDATE: " + updatedAt,
+      label: Languages.label("ToonSettings", "LAST_SCHEDULE_UPDATE__")(updatedAt),
     });
     items.push({
       __item: <ToonSchedule toon={toon} />
@@ -83,11 +84,10 @@ export class ToonSettings extends Component<any, any> {
 
     items.push({
       type: 'explanation',
-      label: "MANUAL UPDATE"
-    });
+      label: Languages.label("ToonSettings", "MANUAL_UPDATE")()});
 
     items.push({
-      label: "Update Schedule",
+      label: Languages.label("ToonSettings", "Update_Schedule")(),
       type: 'button',
       style: {color: colors.black.hex},
       icon: <IconButton name={'md-calendar'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green2.hex}}/>,
@@ -108,53 +108,55 @@ export class ToonSettings extends Component<any, any> {
             })
             .catch((err) => {
               this.props.eventBus.emit("hideLoading")
-              Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
+              Alert.alert(
+Languages.alert("ToonSettings", "_Whoops__Something_went_w_header")(),
+Languages.alert("ToonSettings", "_Whoops__Something_went_w_body")(),
+[{text:Languages.alert("ToonSettings", "_Whoops__Something_went_w_left")()}])
             })
       }
     });
     items.push({
       type: 'explanation',
       below: true,
-      label: "We automatically update the Toon schedule once a day. You can use this to update manually."
-    });
+      label: Languages.label("ToonSettings", "We_automatically_update_t")()});
 
 
 
     if (Object.keys(sphere.thirdParty.toons).length === 1) {
       items.push({
-        label: "Disconnect from Toon",
+        label: Languages.label("ToonSettings", "Disconnect_from_Toon")(),
         type: 'button',
         icon: <IconButton name={'md-log-out'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
         callback: () => {
-          Alert.alert("Are you sure", "You will have to add Toon again to undo this.", [{
-            text: "Cancel",
-            style: 'cancel'
-          }, {
-            text: "Yes", onPress: () => {
-              this.props.eventBus.emit("showLoading", "Removing the integration with Toon...")
-              this.deleting = true;
-              CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud(false)
-                .then(() => {
-                  this.props.store.dispatch({
-                    type: 'REMOVE_ALL_TOONS',
-                    sphereId: this.props.sphereId,
-                  });
-                  BackAction('sphereIntegrations')
-                  this.props.eventBus.emit("hideLoading")
-                })
-                .catch((err) => {
-                  this.props.eventBus.emit("hideLoading")
-                  Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
-                })
-            }
-          }])
+          Alert.alert(
+            Languages.alert("ToonSettings", "_Are_you_sure__You_will_h_header")(),
+            Languages.alert("ToonSettings", "_Are_you_sure__You_will_h_body")(),
+            [
+              {text: Languages.alert("ToonSettings", "_Are_you_sure__You_will_h_left")(), style: 'cancel'},
+              {text: Languages.alert("ToonSettings", "_Are_you_sure__You_will_h_right")(), onPress: () => {
+                this.props.eventBus.emit("showLoading", "Removing the integration with Toon...")
+                this.deleting = true;
+                CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud(false)
+                  .then(() => {
+                    this.props.store.dispatch({
+                      type: 'REMOVE_ALL_TOONS',
+                      sphereId: this.props.sphereId,
+                    });
+                    BackAction('sphereIntegrations')
+                    this.props.eventBus.emit("hideLoading")
+                  })
+                  .catch((err) => {
+                    this.props.eventBus.emit("hideLoading")
+                    Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
+                  })
+              }}
+            ])
         }
       });
       items.push({
         type: 'explanation',
         below: true,
-        label: "This will remove the Toon integration for all users in your Sphere."
-      });
+        label: Languages.label("ToonSettings", "This_will_remove_the_Toon")()});
     }
     return items;
   }
@@ -179,13 +181,13 @@ export class ToonSettings extends Component<any, any> {
               <View style={{flex:1}} />
               <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
               <View style={{flex:1}} />
-              <Text style={[textStyle, {fontWeight: '600', fontSize: 16}]}>{"Crownstone and Toon are connected!"}</Text>
+              <Text style={[textStyle, {fontWeight: '600', fontSize: 16}]}>{ Languages.text("ToonSettings", "Crownstone_and_Toon_are_c")() }</Text>
               <View style={{flex:1}} />
-              <Text style={textStyle}>{"Sometimes, Toon is set to \"Away\" while you're still there..."}</Text>
+              <Text style={textStyle}>{ Languages.text("ToonSettings", "Sometimes__Toon_is_set_to")() }</Text>
               <View style={{flex:0.5}} />
-              <Text style={textStyle}>{"...but Crownstone can set it to \"Home\" as long as you're home!"}</Text>
+              <Text style={textStyle}>{ Languages.text("ToonSettings", "___but_Crownstone_can_set")() }</Text>
               <View style={{flex:1}} />
-              <Text style={textStyle}>{"Should this phone tell Toon when it's home?"}</Text>
+              <Text style={textStyle}>{ Languages.text("ToonSettings", "Should_this_phone_tell_To")() }</Text>
               <View style={{flex:0.2}} />
             </View>
             <ListEditableItems items={this._getItems(sphere)} separatorIndent={true} />
@@ -194,8 +196,7 @@ export class ToonSettings extends Component<any, any> {
               fontSize: 12,
               color: colors.black.rgba(0.6),
               padding:5
-            }}>{"This application uses the Toon API, follows the guiding principles for using the Toon API, but has not been developed by Toon."}
-            </Text>
+            }}>{ Languages.text("ToonSettings", "This_application_uses_the")() }</Text>
             <View style={{flex:1, minHeight:40}} />
           </View>
         </ScrollView>

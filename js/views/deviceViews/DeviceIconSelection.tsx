@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -18,18 +19,18 @@ const Actions = require('react-native-router-flux').Actions;
 
 
 let categories = [
-  // {key: '__new', label: '__new'},
-  {key: 'lights', label: 'Lights'},
-  {key: 'tech', label: 'Tech'},
-  {key: 'furniture', label: 'Furniture'},
-  {key: 'bathroom', label: 'Bathroom'},
-  {key: 'office', label: 'Office'},
-  {key: 'bedRoom', label: 'Bedroom'},
-  {key: 'tools', label: 'Tools'},
-  {key: 'kitchen', label: 'Kitchen'},
-  {key: 'outside', label: 'Outside'},
-  {key: 'rides', label: 'Rides'},
-  {key: 'miscellaneous', label: 'Miscellaneous'},
+  // {key: '__new', label: Languages.label("DeviceIconSelection", "__new")()},
+  {key: 'lights', label: Languages.label("DeviceIconSelection", "Lights")()},
+  {key: 'tech', label: Languages.label("DeviceIconSelection", "Tech")()},
+  {key: 'furniture', label: Languages.label("DeviceIconSelection", "Furniture")()},
+  {key: 'bathroom', label: Languages.label("DeviceIconSelection", "Bathroom")()},
+  {key: 'office', label: Languages.label("DeviceIconSelection", "Office")()},
+  {key: 'bedRoom', label: Languages.label("DeviceIconSelection", "Bedroom")()},
+  {key: 'tools', label: Languages.label("DeviceIconSelection", "Tools")()},
+  {key: 'kitchen', label: Languages.label("DeviceIconSelection", "Kitchen")()},
+  {key: 'outside', label: Languages.label("DeviceIconSelection", "Outside")()},
+  {key: 'rides', label: Languages.label("DeviceIconSelection", "Rides")()},
+  {key: 'miscellaneous', label: Languages.label("DeviceIconSelection", "Miscellaneous")()},
 ];
 
 let listOfIcons = {
@@ -273,7 +274,7 @@ let listOfIcons = {
 export class DeviceIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Pick an Icon",
+      title: Languages.title("DeviceIconSelection", "Pick_an_Icon")(),
     }
   };
 

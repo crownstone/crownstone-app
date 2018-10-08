@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react';
 import { Dimensions, PixelRatio, StyleSheet } from 'react-native'
 import { screenWidth} from '../styles'

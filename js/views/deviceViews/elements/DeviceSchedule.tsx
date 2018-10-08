@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -61,7 +62,7 @@ export class DeviceSchedule extends Component<any, any> {
 
     let scheduleIds = Object.keys(schedules);
     if (scheduleIds.length > 0) {
-      items.push({label:'SCHEDULED ACTIONS', type: 'lightExplanation',  below:false});
+      items.push({label: Languages.label("DeviceSchedule", "SCHEDULED_ACTIONS")(), type: 'lightExplanation',  below:false});
 
       scheduleIds.forEach((scheduleId) => {
         let schedule = schedules[scheduleId];
@@ -101,9 +102,9 @@ export class DeviceSchedule extends Component<any, any> {
           onPress={() => {
           if (stone.reachability.disabled === true) {
             Alert.alert(
-              "Can't see Crownstone!",
-              "You cannot sync schedules from Crownstone if I can't see it...",
-              [{text:"OK"}]
+Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___Yo_header")(),
+Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___Yo_body")(),
+[{text:Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___Yo_left")()}]
             );
           }
           else {
@@ -111,7 +112,7 @@ export class DeviceSchedule extends Component<any, any> {
           }
         }}>
           <Icon name="md-sync" size={20} color={colors.darkBackground.hex} style={{padding:5, paddingLeft:0}} />
-          <Text style={{color: colors.darkBackground.hex}}>Sync schedules from Crownstone</Text>
+          <Text style={{color: colors.darkBackground.hex}}>{ Languages.text("DeviceSchedule", "Sync_schedules_from_Crown")() }</Text>
         </TouchableOpacity>
       )
     }
@@ -180,9 +181,9 @@ export class DeviceSchedule extends Component<any, any> {
         eventBus.emit("hideLoading");
         LOGe.info("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
         Alert.alert(
-          "Could not Sync",
-          "Move closer to the Crownstone and try again!",
-          [{text:"OK"}]
+Languages.alert("DeviceSchedule", "_Could_not_Sync__Move_clo_header")(),
+Languages.alert("DeviceSchedule", "_Could_not_Sync__Move_clo_body")(),
+[{text:Languages.alert("DeviceSchedule", "_Could_not_Sync__Move_clo_left")()}]
         );
       });
 
@@ -191,7 +192,7 @@ export class DeviceSchedule extends Component<any, any> {
 
   _getHeader(state, iconSize, customLabel = null) {
     let AI = Util.data.getAiData(state, this.props.sphereId);
-    let label = 'You can tell ' + AI.name + ' to switch this Crownstone on or off at a certain time.';
+    let label =  Languages.label("DeviceSchedule", "You_can_tell__to_switch_t")(AI.name);
 
     if (customLabel) {
       label = customLabel;
@@ -200,7 +201,7 @@ export class DeviceSchedule extends Component<any, any> {
     return (
       <View style={{ width: screenWidth, alignItems:'center' }}>
         <View style={{height: 30}} />
-        <Text style={[deviceStyles.header]}>Schedule</Text>
+        <Text style={[deviceStyles.header]}>{ Languages.text("DeviceSchedule", "Schedule")() }</Text>
         <View style={{height: 0.2*iconSize}} />
         <Text style={textStyle.specification}>{label}</Text>
       </View>
@@ -226,9 +227,9 @@ export class DeviceSchedule extends Component<any, any> {
         <TouchableOpacity onPress={() => {
             if (stone.reachability.disabled === true) {
               Alert.alert(
-                "Can't see Crownstone!",
-                "You cannot add schedules without being near to the Crownstone.",
-                [{text:"OK"}]
+Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___You_header")(),
+Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___You_body")(),
+[{text:Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___You_left")()}]
               );
             }
             else {
@@ -307,13 +308,7 @@ export class DeviceSchedule extends Component<any, any> {
             paddingRight: 30,
             fontWeight: 'bold',
             fontStyle:'italic'
-          }}>
-            {
-              Permissions.inSphere(this.props.sphereId).canAddSchedule ?
-                "Add your first scheduled action by tapping on the big icon in the center!" :
-                "You do not have permission to create schedules."
-            }
-          </Text>
+          }}>{ Languages.text("DeviceSchedule", "Add_your_first_scheduled_")(Permissions.inSphere(this.props.sphereId).canAddSchedule) }</Text>
           <View style={{flex: 2}} />
           { this._getSyncOption(stone) }
         </View>

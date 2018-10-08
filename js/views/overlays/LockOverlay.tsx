@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -73,7 +74,10 @@ export class LockOverlay extends Component<any, any> {
       })
       .catch((err) => {
         eventBus.emit("hideLoading");
-        Alert.alert("I'm sorry..", "Something went wrong while locking this Crownstone. Make sure you're near the Crownstone that you want to lock.",[{text:'OK'}]);
+        Alert.alert(
+Languages.alert("LockOverlay", "_Im_sorry____Something_we_header")(),
+Languages.alert("LockOverlay", "_Im_sorry____Something_we_body")(),
+[{text:Languages.alert("LockOverlay", "_Im_sorry____Something_we_left")()}]);
         this.setState({visible: false, sphereId: null});
       });
     BatchCommandHandler.executePriority();
@@ -91,7 +95,7 @@ export class LockOverlay extends Component<any, any> {
             borderWidth: 2,
             borderColor: colors.darkBackground.rgba(0.5),
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>OK...</Text>
+            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ Languages.text("LockOverlay", "OK___")() }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
         </View>
@@ -108,7 +112,7 @@ export class LockOverlay extends Component<any, any> {
             borderWidth: 2,
             borderColor: colors.darkBackground.rgba(0.5),
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>Cancel</Text>
+            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ Languages.text("LockOverlay", "Cancel")() }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
           <TouchableOpacity onPress={() => { this._lockCrownstone(stone); }} style={[styles.centered, {
@@ -118,7 +122,7 @@ export class LockOverlay extends Component<any, any> {
             borderWidth: 3,
             borderColor: colors.darkBackground.hex,
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.hex, fontWeight: 'bold'}}>Lock!</Text>
+            <Text style={{fontSize: 14, color: colors.darkBackground.hex, fontWeight: 'bold'}}>{ Languages.text("LockOverlay", "Lock_")() }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
         </View>
@@ -147,7 +151,7 @@ export class LockOverlay extends Component<any, any> {
           style={{position:'relative', top:0}}
         />
         <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{"Locking a Crownstone"}</Text>
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{ Languages.text("LockOverlay", "Locking_a_Crownstone")() }</Text>
         <Text style={{fontSize: 12, fontWeight: '400',  color: colors.darkBackground.hex, padding:15, textAlign:'center'}}>{this._getText(stone)}</Text>
         <View style={{flex:1}} />
         { this._getButtons(stone) }

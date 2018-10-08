@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,16 +19,11 @@ export class Diagnostics extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>Crownstone Diagnostics</Text>
+            <Text style={WNStyles.text}>{ Languages.text("Diagnostics", "Crownstone_Diagnostics")() }</Text>
             <View style={{height:30}} />
             <Image source={require('../../../../images/whatsNew/2.2.0/diagnostics.png')} style={{width:569*size, height:853*size}} />
             <View style={{height:30}} />
-            <Text style={WNStyles.detail}>{
-              "Sometimes, things don't seem to work as they should...\n\n" +
-              "Since everything works via invisible signals, it's difficult to determine what the problem is!\n\n" +
-              "The Diagnostics are here to help you discover what the problem could be!\n\n" +
-              "You can find them in the settings menu!\n\n"
-            }</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("Diagnostics", "Sometimes__things_dont_se")() }</Text>
           </View>
         </ScrollView>
       </View>

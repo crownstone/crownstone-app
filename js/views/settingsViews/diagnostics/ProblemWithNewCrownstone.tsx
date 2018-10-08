@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -14,20 +15,15 @@ import {
 import {diagnosticStyles} from "../SettingsDiagnostics";
 import {colors, screenWidth} from "../../styles";
 import {FadeInView} from "../../components/animated/FadeInView";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {
-  DiagOptions,
-  DiagSingleBleTroubleshooter, DiagSingleButton,
+  DiagSingleButton,
   DiagSingleButtonHelp,
   DiagSingleButtonGoBack,
   DiagSingleButtonQuit, DiagSingleButtonToOverview, DiagYesNo, TestResult
 } from "./DiagnosticUtil";
-import {SlideInView} from "../../components/animated/SlideInView";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {TestRunner} from "./TestRunner";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
-import {Util} from "../../../util/Util";
 
 
 export class ProblemWithNewCrownstone extends Component<any, any> {
@@ -124,21 +120,21 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
   }
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{"Problem with new Crownstone..."}</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ProblemWithNewCrownstone", "Problem_with_new_Crownsto")() }</Text>
   }
 
   _getTests() {
     return (
       <View>
         <SlideFadeInView visible={!this.state.newTestsVisible} height={180}>
-          <TestResult label={"Database is healthy"}          state={ true } />
-          <TestResult label={"Scanning is enabled"}          state={ true } />
-          <TestResult label={"Receiving Sphere beacons"}     state={ true } />
-          <TestResult label={"Receiving Crownstone data"}    state={ true } />
+          <TestResult label={ Languages.label("ProblemWithNewCrownstone", "Database_is_healthy")()}          state={ true } />
+          <TestResult label={ Languages.label("ProblemWithNewCrownstone", "Scanning_is_enabled")()}          state={ true } />
+          <TestResult label={ Languages.label("ProblemWithNewCrownstone", "Receiving_Sphere_beacons")()}     state={ true } />
+          <TestResult label={ Languages.label("ProblemWithNewCrownstone", "Receiving_Crownstone_data")()}    state={ true } />
         </SlideFadeInView>
         <SlideFadeInView visible={this.state.newTestsVisible} height={90}>
-          <TestResult label={"Checking nearest Crownstone"}    state={ this.state.nearestSuccess } />
-          <TestResult label={"Looking for setup Crownstones"}    state={ this.state.stonesInSetupMode } />
+          <TestResult label={ Languages.label("ProblemWithNewCrownstone", "Checking_nearest_Crownsto")()}    state={ this.state.nearestSuccess } />
+          <TestResult label={ Languages.label("ProblemWithNewCrownstone", "Looking_for_setup_Crownst")()}    state={ this.state.stonesInSetupMode } />
         </SlideFadeInView>
       </View>
     )
@@ -150,9 +146,9 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
       return (
         <DiagSingleButton
           visible={this.state.visible}
-          header={"In order to check what may the the problem, your phone should be nearly touching this Crownstone and it should be powered on."}
-          explanation={"Press the button below once everything is ready."}
-          label={"Ready to Test!"}
+          header={ Languages.label("ProblemWithNewCrownstone", "In_order_to_check_what_ma")()}
+          explanation={ Languages.label("ProblemWithNewCrownstone", "Press_the_button_below_on")()}
+          label={ Languages.label("ProblemWithNewCrownstone", "Ready_to_Test_")()}
           onPress={() => { this._changeContent(() => {
             this.setState({userInputPhoneIsClose: true  });
             this._runNewCrownstoneTests();
@@ -164,9 +160,8 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonToOverview
           visible={this.state.visible}
-          header={"The nearest Crownstone is in setup mode!"}
-          explanation={ "You can add it to your Sphere by going to the overview.\n\n" +
-          "Tap the button below to go there now!"}
+          header={ Languages.label("ProblemWithNewCrownstone", "The_nearest_Crownstone_is")()}
+          explanation={Languages.label("ProblemWithNewCrownstone","You_can_add_it_to_your_Sp")()}
         />
       );
     }
@@ -174,8 +169,8 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"The nearest Crownstone is in setup mode! However, you do not have any Spheres in which you are an admin."}
-          explanation={"Only admins can setup Crownstones."}
+          header={ Languages.label("ProblemWithNewCrownstone", "The_nearest_Crownstone_is_")()}
+          explanation={ Languages.label("ProblemWithNewCrownstone", "Only_admins_can_setup_Cro")()}
         />
       );
     }
@@ -183,9 +178,8 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonToOverview
           visible={this.state.visible}
-          header={"There is a Crownstone in setup mode nearby!"}
-          explanation={"You can add it to your Sphere by going to the overview.\n\n" +
-          "Tap the button below to go there now!"}
+          header={ Languages.label("ProblemWithNewCrownstone", "There_is_a_Crownstone_in_")()}
+          explanation={Languages.label("ProblemWithNewCrownstone","You_can_add_it_to_your_Sp")()}
         />
       );
     }
@@ -193,24 +187,24 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"There is a Crownstone in setup mode nearby! However, you do not have any Spheres in which you are an admin."}
-          explanation={"Only admins can setup Crownstones."}
+          header={ Languages.label("ProblemWithNewCrownstone", "There_is_a_Crownstone_in_s")()}
+          explanation={ Languages.label("ProblemWithNewCrownstone", "Only_admins_can_setup_Crow")()}
         />
       );
     }
     else if (this.state.nearestVerified === true) {
       let name = "'" + this.state.nearestStoneObject.name + "'";
       if (this.state.nearestStoneObject.applianceName) {
-        name +=  " with device '" + this.state.nearestStoneObject.applianceName + "'";
+        name +=  Languages.label("ProblemWithNewCrownstone","_with_device_")() + this.state.nearestStoneObject.applianceName + "'";
       }
       if (this.state.nearestStoneObject.locationName) {
-        name += " in '" + this.state.nearestStoneObject.locationName + "'";
+        name +=  Languages.label("ProblemWithNewCrownstone", "_in_")(this.state.nearestStoneObject.locationName);
       }
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"The nearest stone I can find is " + name + '.' }
-          explanation={"Please ensure that the Crownstone you're near is in fact a new one."}
+          header={Languages.label("ProblemWithNewCrownstone","The_nearest_stone_I_can_f")(name) }
+          explanation={Languages.label("ProblemWithNewCrownstone","Please_ensure_that_the_Cr")()}
         />
       );
     }
@@ -218,9 +212,8 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={"I can hear a Crownstone near, but it does not seem to belong to your Sphere."}
-          explanation={"If it does belong to you, you can try to factory reset it.\n\n" +
-          "Tap the button below to go to help and tap on 'I need to factory reset a Crownstone'."}
+          header={ Languages.label("ProblemWithNewCrownstone", "I_can_hear_a_Crownstone_n")()}
+          explanation={Languages.label("ProblemWithNewCrownstone","If_it_does_belong_to_you_")()}
         />
       );
     }
@@ -228,9 +221,8 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"I can hear a Crownstone near , but it does not seem to belong to your Sphere."}
-          explanation={ "Since you are not an admin in any Sphere, you cannot setup Crownstones.\n\n" +
-          "This means you can't see them while they are in setup mode."}
+          header={ Languages.label("ProblemWithNewCrownstone", "I_can_hear_a_Crownstone_ne")()}
+          explanation={Languages.label("ProblemWithNewCrownstone","Since_you_are_not_an_admi")()}
         />
       );
     }
@@ -239,7 +231,7 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
         <View style={{flex:1}}>
           <View style={{flex:1}} />
           <FadeInView visible={this.state.visible} style={{width:screenWidth}}>
-            <Text style={diagnosticStyles.headerStyle}>{"Let me run a few more tests..."}</Text>
+            <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ProblemWithNewCrownstone", "Let_me_run_a_few_more_tes")() }</Text>
           </FadeInView>
           <View style={{flex:1}} />
         </View>

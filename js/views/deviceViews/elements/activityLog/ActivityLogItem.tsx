@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -103,49 +104,49 @@ export class ActivityLogItem extends Component<any, any> {
   }
 
   _getTitle(canDoIndoorLocalization, roomConfig) {
-    let targetState = (this.props.data.switchedToState === 0 ? 'off' : 'on');
+    let targetState = (this.props.data.switchedToState === 0 ? Languages.label("ActivityLogItem", "off")() :  Languages.label("ActivityLogItem", "on")());
 
     let timeIndicator = Util.getTimeFormat(this.props.data.timestamp) + ' - ';
     if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState') {
-      return timeIndicator + 'Heartbeat.';
+      return timeIndicator + Languages.label("DeviceBehaviour","Heartbeat_")();
     }
     else if (this.props.data.type === 'tap2toggle') {
-      return timeIndicator + 'Tap to Toggle: '+ targetState;
+      return timeIndicator + Languages.label("DeviceBehaviour","Tap_to_Toggle__")()+ targetState;
     }
     else if (this.props.data.type === 'skippedHeartbeat') {
-      return this.props.data.count + ' heartbeats.';
+      return this.props.data.count + Languages.label("DeviceBehaviour","_heartbeats_")();
     }
     else if (this.props.data.type === 'schedule') {
-      return timeIndicator + " Schedule";
+      return timeIndicator + Languages.label("DeviceBehaviour","_Schedule")();
     }
     else if (this.props.data.type === 'generatedExit') {
       if (this.props.data.isSelf) {
         if (this.props.data.generatedFrom === 'keepAliveSphere') {
           // exit sphere
-          return timeIndicator + "You're out of range.";
+          return timeIndicator + Languages.label("DeviceBehaviour","Youre_out_of_range_")();
         }
         else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
           // exit room
-          return timeIndicator + 'You left the ' + roomConfig.name + '.';
+          return timeIndicator + Languages.label("DeviceBehaviour","You_left_the_")(roomConfig.name);
         }
         else if (this.props.data.generatedFrom === 'keepAliveOther') {
           // away
-          return timeIndicator + 'You went away.';
+          return timeIndicator + Languages.label("DeviceBehaviour","You_went_away_")();
         }
 
       }
       else {
         if (this.props.data.generatedFrom === 'keepAliveSphere') {
           // exit sphere
-          return timeIndicator + 'Someone left the Sphere.';
+          return timeIndicator + Languages.label("DeviceBehaviour","Someone_left_the_Sphere_")();
         }
         else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
           // exit room
-          return timeIndicator + 'Someone left the ' + roomConfig.name + '.';
+          return timeIndicator + Languages.label("DeviceBehaviour","Someone_left_the_")(roomConfig.name);
         }
         else if (this.props.data.generatedFrom === 'keepAliveOther') {
           // away
-          return timeIndicator + 'Someone is away.';
+          return timeIndicator + Languages.label("DeviceBehaviour","Someone_is_away_")();
         }
       }
       return timeIndicator + ' ' + this.props.data.generatedFrom + this.props.data.switchedToState;
@@ -154,29 +155,29 @@ export class ActivityLogItem extends Component<any, any> {
       if (this.props.data.isSelf) {
         if (this.props.data.generatedFrom === 'keepAliveSphere') {
           // enter sphere
-          return timeIndicator + 'You entered the Sphere.';
+          return timeIndicator + Languages.label("DeviceBehaviour","You_entered_the_Sphere_")();
         }
         else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
           // enter room
-          return timeIndicator + 'You entered the ' + roomConfig.name + '.';
+          return timeIndicator + Languages.label("DeviceBehaviour","You_entered_the_")(roomConfig.name);
         }
         else if (this.props.data.generatedFrom === 'keepAliveOther') {
           // near
-          return timeIndicator + 'You are near.';
+          return timeIndicator + Languages.label("DeviceBehaviour","You_are_near_")();
         }
       }
       else {
         if (this.props.data.generatedFrom === 'keepAliveSphere') {
           // enter sphere
-          return timeIndicator + 'Someone entered the Sphere.';
+          return timeIndicator + Languages.label("DeviceBehaviour","Someone_entered_the_Spher")();
         }
         else if (this.props.data.generatedFrom === 'keepAliveOther' && canDoIndoorLocalization) {
           // enter room
-          return timeIndicator + 'Someone entered the ' + roomConfig.name + '.';
+          return timeIndicator + Languages.label("DeviceBehaviour","Someone_entered_the_")(roomConfig.name);
         }
         else if (this.props.data.generatedFrom === 'keepAliveOther') {
           // near
-          return timeIndicator + 'Someone is near.';
+          return timeIndicator + Languages.label("DeviceBehaviour","Someone_is_near_")();
         }
       }
 
@@ -186,26 +187,26 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === 'multiswitch') {
       switch (this.props.data.intent) {
         case INTENTS.manual:
-          return timeIndicator + 'Switch.'
+          return timeIndicator + Languages.label("DeviceBehaviour","Switch_")()
         case INTENTS.sphereEnter:
-          return timeIndicator + 'Entered the Sphere.'
+          return timeIndicator + Languages.label("DeviceBehaviour","Entered_the_Sphere_")()
         case INTENTS.sphereExit:
-          return timeIndicator + 'Left the Sphere.'
+          return timeIndicator + Languages.label("DeviceBehaviour","Left_the_Sphere_")()
         case INTENTS.enter:
           // check if we have room or near
           if (canDoIndoorLocalization) {
-            return timeIndicator + 'Entered room.';
+            return timeIndicator + Languages.label("DeviceBehaviour","Entered_room_")();
           }
           else {
-            return timeIndicator + 'Moved near.';
+            return timeIndicator + Languages.label("DeviceBehaviour","Moved_near_")();
           }
         case INTENTS.exit:
           // check if we have room or near
           if (canDoIndoorLocalization) {
-            return timeIndicator + 'Left the room.';
+            return timeIndicator + Languages.label("DeviceBehaviour","Left_the_room_")();
           }
           else {
-            return timeIndicator + 'Moved away.';
+            return timeIndicator + Languages.label("DeviceBehaviour","Moved_away_")();
           }
       }
     }
@@ -216,45 +217,43 @@ export class ActivityLogItem extends Component<any, any> {
 
 
   _getText(canDoIndoorLocalization, roomConfig) {
-    let currentState = (this.props.stone.state.state === 0 ? 'off' : 'on');
-    let targetState = (this.props.data.switchedToState === 0 ? 'off' : 'on');
-    let personPrefix = "You";
+    let currentState = (this.props.stone.state.state === 0 ?    Languages.label("ActivityLogItem", "off")() :  Languages.label("ActivityLogItem", "on")());
+    let targetState =  (this.props.data.switchedToState === 0 ? Languages.label("ActivityLogItem", "off")() :  Languages.label("ActivityLogItem", "on")());
+    let personPrefix =  Languages.label("ActivityLogItem", "You")();
     if (this.props.data.userId !== this.props.state.user.userId && this.props.data.userId) {
-      personPrefix = "Someone else"
-    }
-    let initialLabel = 'Switched ';
+      personPrefix =  Languages.label("ActivityLogItem", "Someone_else")()}
+    let initialLabel =  Languages.label("ActivityLogItem", "Switched_")();
     if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
       targetState = Math.round((this.props.data.switchedToState/0.99)*100) + " %"
-      initialLabel = "Dimmed to ";
+      initialLabel =  Languages.label("ActivityLogItem", "Dimmed_to_")();
     }
     if (this.props.data.presumedDuplicate) {
-      initialLabel = "Already "
-    }
+      initialLabel =  Languages.label("ActivityLogItem", "Already_")()}
 
     if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState') {
       if (this.props.data.viaMesh) {
         if (this.props.data.switchedToState === -1) {
-          return personPrefix + ' told another Crownstone to tell this one that it should not change if no more heartbeats come in.'
+          return Languages.label("DeviceBehaviour","_told_another_Crownstone_")(personPrefix)
         }
-        return personPrefix + ' told another Crownstone to turn ' + targetState + ' this one after ' + Math.floor(this.props.data.delayInCommand / 60) + ' minutes if no more heartbeats come in.';
+        return  Languages.label("DeviceBehaviour","_told_another_Crownstone_switch")(personPrefix, targetState, Math.floor(this.props.data.delayInCommand / 60));
       }
       else {
         if (this.props.data.switchedToState === -1) {
-          return 'It will not change if no more heartbeats come in.'
+          return Languages.label("DeviceBehaviour","It_will_not_change_if_no_")()
         }
-        return 'It will turn ' + targetState + ' after ' + Math.floor(this.props.data.delayInCommand / 60) + ' minutes if no more heartbeats come in.';
+        return Languages.label("DeviceBehaviour","It_will_change_if_no_")(targetState, Math.floor(this.props.data.delayInCommand / 60));
       }
     }
     else if (this.props.data.type === 'tap2toggle') {
-      return personPrefix + ' held the phone so close to the Crownstone that ' + personPrefix.toLowerCase() + ' triggered Tap-to-Toggle!';
+      return Languages.label("DeviceBehaviour","_held_the_phone_so_close_")(personPrefix, personPrefix.toLowerCase());
     }
     else if (this.props.data.type === 'skippedHeartbeat') {
-      return this.props.data.count + ' heartbeats once every ' + this.props.data.averageTime + ' seconds.';
+      return Languages.label("DeviceBehaviour","_heartbeats_once_every_")(this.props.data.count, this.props.data.averageTime);
     }
     else if (this.props.data.type === 'schedule') {
-      let scheduledEndLabel = " for a scheduled action.";
+      let scheduledEndLabel =  Languages.label("ActivityLogItem", "_for_a_scheduled_action_")();
       if (this.props.data.label && this.props.data.label.length > 0) {
-        scheduledEndLabel = " for schedule \"" + this.props.data.label + '\".';
+        scheduledEndLabel =  Languages.label("ActivityLogItem", "_for_schedule______")(this.props.data.label);
       }
       if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
         return initialLabel + targetState + scheduledEndLabel;
@@ -266,12 +265,12 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === 'generatedExit') {
       if (this.props.data.generatedFrom === 'keepAliveSphere') {
         if (this.props.data.otherUserPresent) {
-          return "I'm still " + currentState + " because there are still others in the Sphere.";
+          return Languages.label("DeviceBehaviour","Im_still__because_there_a")(currentState);
         }
         else {
           // exit sphere
           if (this.props.data.switchedToState === -1) {
-            return 'Last heartbeat sent at ' + Util.getTimeFormat(this.props.data.endTime) + ".";
+            return Languages.label("DeviceBehaviour","Last_heartbeat_sent_at_")(Util.getTimeFormat(this.props.data.endTime));
           }
           else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
             return initialLabel + Math.round((this.props.data.switchedToState/0.99)*100) + " % because everyone left the Sphere.";
@@ -350,8 +349,7 @@ export class ActivityLogItem extends Component<any, any> {
           }
         case INTENTS.exit:
           if (this.props.data.cancelled) {
-            return label += ", but it was cancelled by a later event."
-          }
+            return label +=  Languages.label("ActivityLogItem", "__but_it_was_cancelled_by")()}
           else {
             return label + '.';
           }

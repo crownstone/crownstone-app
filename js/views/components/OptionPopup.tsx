@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -88,7 +89,7 @@ export class OptionPopup extends Component<any, any> {
 
     buttons.push(
       <TouchableHighlight style={styles.buttonAndroid} onPress={() => { eventBus.emit("hidePopup");}} key={'option_button_cancel'}>
-        <Text style={styles.buttonTextAndroid}>Cancel</Text>
+        <Text style={styles.buttonTextAndroid}>{ Languages.text("OptionPopup", "Cancel")() }</Text>
       </TouchableHighlight>
     );
 
@@ -124,7 +125,7 @@ export class OptionPopup extends Component<any, any> {
             visible={this.state.visible}>
             {this.getChildrenIOS()}
             <TouchableOpacity style={styles.button} onPress={() => { eventBus.emit("hidePopup");}}>
-              <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>Cancel</Text>
+              <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>{ Languages.text("OptionPopup", "Cancel")() }</Text>
             </TouchableOpacity>
           </SlideInFromBottomView>
         </HiddenFadeInView>

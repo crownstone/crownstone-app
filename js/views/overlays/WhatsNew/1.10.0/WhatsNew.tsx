@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -16,11 +17,11 @@ export class WhatsNew extends Component<any, any> {
     return (
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <View style={{flex:0.5}} />
-        <Text style={WNStyles.text}>One of the new things is the What's New popup!</Text>
+        <Text style={WNStyles.text}>{ Languages.text("WhatsNew", "One_of_the_new_things_is_")() }</Text>
         <View style={{flex:1}} />
         <Image source={require('../../../../images/whatsNew/1.10.0/swipeLeft.png')} style={{width:567*size, height:604*size}}/>
         <View style={{flex:1}} />
-        <Text style={WNStyles.text}>Swipe left to see more of the new features.</Text>
+        <Text style={WNStyles.text}>{ Languages.text("WhatsNew", "Swipe_left_to_see_more_of")() }</Text>
       </View>
     );
   }

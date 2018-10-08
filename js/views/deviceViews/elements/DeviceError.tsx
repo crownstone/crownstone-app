@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -38,12 +39,12 @@ export class DeviceError extends Component<any, any> {
             borderColor: colors.red.hex,
             backgroundColor: colors.white.hex
           }]}>
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{"Reset Error"}</Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{ Languages.text("DeviceError", "Reset_Error")() }</Text>
         </TouchableOpacity>
       )
     }
     else {
-      return <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, textAlign:'center'}}>{"Notify an admin of your Sphere to resolve this error."}</Text>
+      return <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, textAlign:'center'}}>{ Languages.text("DeviceError", "Notify_an_admin_of_your_S")() }</Text>
     }
   }
 
@@ -53,7 +54,7 @@ export class DeviceError extends Component<any, any> {
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     return (
       <View style={{flex:1, alignItems:'center', padding: 30}}>
-        <Text style={deviceStyles.header}>Error Detected</Text>
+        <Text style={deviceStyles.header}>{ Languages.text("DeviceError", "Error_Detected")() }</Text>
         <View style={{flex:1}} />
         <IconButton
           name="ios-warning"

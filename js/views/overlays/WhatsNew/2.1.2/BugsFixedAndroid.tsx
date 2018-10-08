@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,15 +19,11 @@ export class BugsFixedAndroid extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>Bug fixes.</Text>
+            <Text style={WNStyles.text}>{ Languages.text("BugsFixedAndroid", "Bug_fixes_")() }</Text>
             <View style={{height:30}} />
             <Image source={require('../../../../images/whatsNew/1.10.2/bugsFixed.png')} style={{width:479*size, height:480*size}} />
             <View style={{height:30}} />
-            <Text style={WNStyles.detail}>{
-              "- Fixed bug that caused indoor localization not to work.\n\n" +
-              "- Fixed near/far triggers.\n\n" +
-              "- Fixed switching as hub."
-            }</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("BugsFixedAndroid", "__Fixed_bug_that_caused_i")() }</Text>
           </View>
         </ScrollView>
       </View>

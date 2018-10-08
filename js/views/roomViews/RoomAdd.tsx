@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -32,10 +33,10 @@ export class RoomAdd extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Create Room",
+      title: Languages.title("RoomAdd", "Create_Room")(),
       headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : BackAction() }}/>,
       headerRight: <TopbarButton
-        text={"Create"}
+        text={ Languages.label("RoomAdd", "Create")()}
         onPress={() => {
           params.rightAction ? params.rightAction() : () => {}
         }}
@@ -105,11 +106,11 @@ export class RoomAdd extends Component<any, any> {
 
   _getItems(floatingStones) {
     let items = [];
-    items.push({label:'NEW ROOM', type:'explanation', below:false});
-    items.push({label:'Room Name', type: 'textEdit', placeholder:'My New Room', value: this.state.name, callback: (newText) => {
+    items.push({label: Languages.label("RoomAdd", "NEW_ROOM")(), type:'explanation', below:false});
+    items.push({label: Languages.label("RoomAdd", "Room_Name")(), type: 'textEdit', placeholder:'My New Room', value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
-    items.push({label:'Icon', type: 'icon', value: this.state.icon,
+    items.push({label: Languages.label("RoomAdd", "Icon")(), type: 'icon', value: this.state.icon,
       callback: () => {
         Actions.roomIconSelection({
           icon: this.state.icon,
@@ -119,7 +120,7 @@ export class RoomAdd extends Component<any, any> {
       )}
     });
     items.push({
-      label: 'Picture',
+      label: Languages.label("RoomAdd", "Picture")(),
       type:  'picture',
       value: this.state.picture,
       forceAspectRatio: false,
@@ -137,7 +138,7 @@ export class RoomAdd extends Component<any, any> {
 
     let shownMovingStone = false;
     if (floatingStoneIds.length > 0) {
-      items.push({label:'ADD CROWNSTONES TO ROOM', type:'explanation', below:false});
+      items.push({label: Languages.label("RoomAdd", "ADD_CROWNSTONES_TO_ROOM")(), type:'explanation', below:false});
       let nearestId = this._getNearestStone(floatingStoneIds, floatingStones);
       floatingStoneIds.forEach((stoneId) => {
         // check if we have already shown the moving stone
@@ -151,11 +152,11 @@ export class RoomAdd extends Component<any, any> {
 
         this._pushCrownstoneItem(items, device, stone, stoneId, subtext);
       });
-      items.push({label:'You can select floating Crownstones to immediately add them to this new room!', type:'explanation', below: true, style:{paddingBottom:0}});
+      items.push({label: Languages.label("RoomAdd", "You_can_select_floating_C")(), type:'explanation', below: true, style:{paddingBottom:0}});
     }
 
     if (shownMovingStone === false && this.props.movingCrownstone !== undefined) {
-      items.push({label:'CURRENTLY MOVING CROWNSTONE', type:'explanation', below:false});
+      items.push({label: Languages.label("RoomAdd", "CURRENTLY_MOVING_CROWNSTO")(), type:'explanation', below:false});
       let stoneId = this.props.movingCrownstone;
       let state = this.props.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[stoneId];
@@ -196,9 +197,9 @@ export class RoomAdd extends Component<any, any> {
 
     if (this.state.name.length === 0) {
       Alert.alert(
-        'Room name must be at least 1 character long.',
-        'Please change the name and try again.',
-        [{text:'OK'}]
+Languages.alert("RoomAdd", "_Room_name_must_be_at_lea_header")(),
+Languages.alert("RoomAdd", "_Room_name_must_be_at_lea_body")(),
+[{text:Languages.alert("RoomAdd", "_Room_name_must_be_at_lea_left")()}]
       )
     }
     else {
@@ -259,14 +260,17 @@ export class RoomAdd extends Component<any, any> {
           .catch((err) => {
             LOGe.info("RoomAdd: Something went wrong with creation of rooms", err);
             let defaultActions = () => {this.props.eventBus.emit('hideLoading');};
-            Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: defaultActions}], { onDismiss: defaultActions })
+            Alert.alert(
+Languages.alert("RoomAdd", "_Whoops___Something_went__header")(),
+Languages.alert("RoomAdd", "_Whoops___Something_went__body")(),
+[{text:Languages.alert("RoomAdd", "_Whoops___Something_went__left")(), onPress: defaultActions}], { onDismiss: defaultActions })
           })
       }
       else {
         Alert.alert(
-          'Room already exists.',
-          'Please change the name and try again.',
-          [{text:'OK'}]
+Languages.alert("RoomAdd", "_Room_already_exists___Pl_header")(),
+Languages.alert("RoomAdd", "_Room_already_exists___Pl_body")(),
+[{text:Languages.alert("RoomAdd", "_Room_already_exists___Pl_left")()}]
         );
       }
     }

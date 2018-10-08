@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -11,7 +12,7 @@ import {OrangeLine, styles} from "../styles";
 export class StoneDeleted extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Deleted",
+      title: Languages.title("StoneDeleted", "Deleted")(),
     }
   };
 
@@ -19,7 +20,7 @@ export class StoneDeleted extends Component<any, any> {
     return (
       <Background image={require('../../images/stoneDetails.png')}>
         <OrangeLine/>
-        <Text>Stone Deleted.</Text>
+        <Text>{ Languages.text("StoneDeleted", "Stone_Deleted_")() }</Text>
       </Background>
     )
   }

@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -36,7 +37,7 @@ export class ApplianceSelection extends Component<{
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Select Device Type",
+      title: Languages.title("ApplianceSelection", "Select_Device_Type")(),
     }
   };
 
@@ -71,15 +72,18 @@ export class ApplianceSelection extends Component<{
     let appliances = state.spheres[this.props.sphereId].appliances;
     let applianceIds = Object.keys(appliances);
     if (applianceIds.length > 0) {
-      items.push({label:'ALL DEVICES', type: 'lightExplanation',  below:false});
+      items.push({label: Languages.label("ApplianceSelection", "ALL_DEVICES")(), type: 'lightExplanation',  below:false});
 
       applianceIds.forEach((applianceId) => {
         let appliance = appliances[applianceId];
 
         let selectCallback = () => { this.props.callback(applianceId); BackAction(); };
         let deleteCallback = () => {
-          Alert.alert("Are you sure?","We will be automatically remove \"" + appliance.config.name + "\" from any Crownstones using it.",
-            [{text:'Cancel', style: 'cancel'}, {text:'Delete', style: 'destructive', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
+          Alert.alert(
+Languages.alert("ApplianceSelection", "_Are_you_sure___We_will_b_header")(),
+Languages.alert("ApplianceSelection", "_Are_you_sure___We_will_b_body")(appliance.config.name),
+[{text:Languages.alert("ApplianceSelection", "_Are_you_sure___We_will_b_left")(), style: 'cancel'}, {
+text:Languages.alert("ApplianceSelection", "_Are_you_sure___We_will_b_right")(), style: 'destructive', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
         };
 
         items.push({__item:
@@ -102,9 +106,9 @@ export class ApplianceSelection extends Component<{
     }
 
 
-    items.push({label:'ADD DEVICE TYPES', type: 'lightExplanation', below:false});
+    items.push({label: Languages.label("ApplianceSelection", "ADD_DEVICE_TYPES")(), type: 'lightExplanation', below:false});
     items.push({
-      label: 'Add a device type',
+      label: Languages.label("ApplianceSelection", "Add_a_device_type")(),
       largeIcon: <Icon name="ios-add-circle" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
       style: {color:colors.blue.hex},
       type: 'button',
@@ -120,7 +124,7 @@ export class ApplianceSelection extends Component<{
     });
 
     items.push({
-      label: 'No device type assigned',
+      label: Languages.label("ApplianceSelection", "No_device_type_assigned")(),
       largeIcon: <Icon name="md-cube" size={45} color={colors.menuBackground.hex} />,
       style: {color:colors.blue.hex},
       type: 'button',
@@ -150,9 +154,10 @@ export class ApplianceSelection extends Component<{
       })
       .catch((err) => {
         let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
-        Alert.alert("Encountered Cloud Issue.",
-          "We cannot delete this Appliance in the Cloud. Please try again later.",
-          [{text:'OK', onPress: defaultAction }],
+        Alert.alert(
+Languages.alert("ApplianceSelection", "_Encountered_Cloud_Issue__header")(),
+Languages.alert("ApplianceSelection", "_Encountered_Cloud_Issue__body")(),
+[{text:Languages.alert("ApplianceSelection", "_Encountered_Cloud_Issue__left")(), onPress: defaultAction }],
           { onDismiss: defaultAction }
         )
       });

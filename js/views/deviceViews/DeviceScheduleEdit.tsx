@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -40,12 +41,11 @@ export class DeviceScheduleEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
-    let title = 'Add Schedule';
-    let rightLabel = 'Create';
+    let title =  Languages.label("DeviceScheduleEdit", "Add_Schedule")();
+    let rightLabel =  Languages.label("DeviceScheduleEdit", "Create")();
     if (params.scheduleId) {
-      title = 'Edit Schedule';
-      rightLabel = 'Save'
-    }
+      title =  Languages.label("DeviceScheduleEdit", "Edit_Schedule")();
+      rightLabel =  Languages.label("DeviceScheduleEdit", "Save")()}
 
     return {
       title: title,
@@ -120,7 +120,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    items.push({type:'lightExplanation', label:'TAP THE TIME TO CHANGE IT', below: false});
+    items.push({type:'lightExplanation', label: Languages.label("DeviceScheduleEdit", "TAP_THE_TIME_TO_CHANGE_IT")(), below: false});
     items.push({__item:
       <TouchableOpacity style={{
         flexDirection:'row',
@@ -159,7 +159,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    items.push({label:'PICK A TIME', type: 'lightExplanation',  below:false});
+    items.push({label: Languages.label("DeviceScheduleEdit", "PICK_A_TIME")(), type: 'lightExplanation',  below:false});
     items.push({__item:
       <UncontrolledDatePickerIOS
         ref={(x) => { this.datePickerReference = x; }}
@@ -175,60 +175,64 @@ export class DeviceScheduleEdit extends Component<any, any> {
   }
 
   _addSharedUIToItems(items, stone) {
-    items.push({label:'Label', type: 'textEdit', placeholder:'(optional)', value: this.state.label, callback: (newText) => {
+    items.push({label: Languages.label("DeviceScheduleEdit", "Label")(), type: 'textEdit', placeholder:'(optional)', value: this.state.label, callback: (newText) => {
       this.setState({label:newText});
     }});
-    items.push({label:'ACTION', type: 'lightExplanation',  below:false});
+    items.push({label: Languages.label("DeviceScheduleEdit", "ACTION")(), type: 'lightExplanation',  below:false});
     items.push({
       type: 'dropdown',
-      label: 'Turn the Crownstone: ',
+      label: Languages.label("DeviceScheduleEdit", "Turn_the_Crownstone__")(),
       dropdownHeight: 130,
       valueRight: true,
       buttons: 2,
       valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
       value: this.state.switchState,
-      items: [{label:'On', value:1}, {label:'Off', value:0}],
+      items: [{label: Languages.label("DeviceScheduleEdit", "On")(), value:1}, {label: Languages.label("DeviceScheduleEdit", "Off")(), value:0}],
       callback: (newValue) => {
         this.setState({switchState: newValue})
       }
     });
 
 
-    items.push({label:'REPEAT', type: 'lightExplanation',  below:false});
+    items.push({label: Languages.label("DeviceScheduleEdit", "REPEAT")(), type: 'lightExplanation',  below:false});
     items.push({__item:
       <RepeatWeekday data={this.state.activeDays} onChange={(newData) => { this.setState({activeDays: newData}); }} />
     });
 
     if (this.props.scheduleId !== null && this.props.scheduleId !== undefined) {
-      items.push({label:'SCHEDULING OPTIONS', type: 'lightExplanation',  below:false});
-      items.push({label:'Schedule active', type: 'switch', value: this.state.active, callback: (newValue) => {
+      items.push({label: Languages.label("DeviceScheduleEdit", "SCHEDULING_OPTIONS")(), type: 'lightExplanation',  below:false});
+      items.push({label: Languages.label("DeviceScheduleEdit", "Schedule_active")(), type: 'switch', value: this.state.active, callback: (newValue) => {
         this.setState({active: newValue});
       }});
 
       items.push({
-        label: 'Remove',
+        label: Languages.label("DeviceScheduleEdit", "Remove")(),
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
           if (Permissions.inSphere(this.props.sphereId).canDeleteSchedule === false) {
-            Alert.alert("Permission Denied.", "You do not have permission to delete a scheduled action. Only members and admins of this Sphere are allowed to do that.",[{text:'OK'}]);
+            Alert.alert(
+Languages.alert("DeviceScheduleEdit", "_Permission_Denied___You__header")(),
+Languages.alert("DeviceScheduleEdit", "_Permission_Denied___You__body")(),
+[{text:Languages.alert("DeviceScheduleEdit", "_Permission_Denied___You__left")()}]);
             return;
           }
 
 
           if (stone.reachability.disabled === true) {
             Alert.alert(
-              "Can't see Crownstone",
-              "You cannot remove the schedule without being near to the Crownstone",
-              [{text:"OK"}]
+Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You_header")(),
+Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You_body")(),
+[{text:Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You_left")()}]
             );
             return;
           }
           else if (stone.schedules[this.props.scheduleId].active === false) {
             Alert.alert(
-              "Are you sure?",
-              "Remove scheduled action?",
-              [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
+Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Remove_sc_header")(),
+Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Remove_sc_body")(),
+[{text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Remove_sc_left")(), style: 'cancel'}, {
+text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Remove_sc_right")(), style:'destructive', onPress: () => {
                 BackAction();
                 this.props.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
               }}]
@@ -236,9 +240,10 @@ export class DeviceScheduleEdit extends Component<any, any> {
           }
           else {
             Alert.alert(
-              "Are you sure?",
-              "Removing a scheduled action will also remove it from the Crownstone. You can disable the action to temporarily stop it.",
-              [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
+Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Removing__header")(),
+Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Removing__body")(),
+[{text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Removing__left")(), style: 'cancel'}, {
+text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Removing__right")(), style:'destructive', onPress: () => {
                 let state = this.props.store.getState();
                 let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
                 let schedule = stone.schedules[this.props.scheduleId];
@@ -262,7 +267,10 @@ export class DeviceScheduleEdit extends Component<any, any> {
     }
 
     if (activeDay === false) {
-      Alert.alert("Pick a day!","You need to select at least one day where this action will be scheduled for!", [{text:'OK'}]);
+      Alert.alert(
+Languages.alert("DeviceScheduleEdit", "_Pick_a_day___You_need_to_header")(),
+Languages.alert("DeviceScheduleEdit", "_Pick_a_day___You_need_to_body")(),
+[{text:Languages.alert("DeviceScheduleEdit", "_Pick_a_day___You_need_to_left")()}]);
     }
     return activeDay;
   }
@@ -289,8 +297,8 @@ export class DeviceScheduleEdit extends Component<any, any> {
         stone,
         this._getBridgeFormat(null),
         {
-          loadingLabel: 'Setting the Schedule on the Crownstone!',
-          alertLabel: 'I could not set the Schedule on the Crownstone... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press no, you will have to add it again later.',
+          loadingLabel: Languages.label("DeviceScheduleEdit", "Setting_the_Schedule_on_t")(),
+          alertLabel:  Languages.label("DeviceScheduleEdit", "I_could_not_set_the_Sched")(),
           fullLabel: 'You can\'t have any more scheduled actions. Please remove or deactivate an existing one to add this one.',
           actionType: 'ADD_STONE_SCHEDULE',
           scheduleId: Util.getUUID(),
@@ -327,9 +335,9 @@ export class DeviceScheduleEdit extends Component<any, any> {
       if (changed) {
         if (stone.reachability.disabled === true) {
           Alert.alert(
-            "Can't see Crownstone",
-            "You cannot change the schedule without being near to the Crownstone.",
-            [{text:"OK", onPress: () => { BackAction();}}],
+Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You__header")(),
+Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You__body")(),
+[{text:Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You__left")(), onPress: () => { BackAction();}}],
             {cancelable: false}
           );
           return;
@@ -344,8 +352,8 @@ export class DeviceScheduleEdit extends Component<any, any> {
             stone,
             this._getBridgeFormat(null),
             {
-              loadingLabel: 'Activating the Schedule on the Crownstone!',
-              alertLabel: 'I could not activate the Schedule on the Crownstone... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press no, your changes will be reverted.',
+              loadingLabel: Languages.label("DeviceScheduleEdit", "Activating_the_Schedule_o")(),
+              alertLabel:  Languages.label("DeviceScheduleEdit", "I_could_not_activate_the_")(),
               fullLabel: 'You can\'t have any more active scheduled actions. Please remove or deactivate one to activate this action.',
               actionType: 'UPDATE_STONE_SCHEDULE',
               scheduleId: this.props.scheduleId,
@@ -425,17 +433,19 @@ export class DeviceScheduleEdit extends Component<any, any> {
       .catch((err) => {
         if (err === "NO_SCHEDULE_ENTRIES_AVAILABLE")  {
           Alert.alert(
-            "Schedules are full!",
-            config.fullLabel,
-            [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
+Languages.alert("DeviceScheduleEdit", "_Schedules_are_full__argu_header")(),
+Languages.alert("DeviceScheduleEdit", "_Schedules_are_full__argu_body")(config.fullLabel),
+[{text:Languages.alert("DeviceScheduleEdit", "_Schedules_are_full__argu_left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
+text:Languages.alert("DeviceScheduleEdit", "_Schedules_are_full__argu_right")(), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
         }
         else {
           Alert.alert(
-            "Whoops!",
-            config.alertLabel,
-            [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
+Languages.alert("DeviceScheduleEdit", "_Whoops__arguments___No___header")(),
+Languages.alert("DeviceScheduleEdit", "_Whoops__arguments___No___body")(config.alertLabel),
+[{text:Languages.alert("DeviceScheduleEdit", "_Whoops__arguments___No___left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
+text:Languages.alert("DeviceScheduleEdit", "_Whoops__arguments___No___right")(), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
         }
@@ -463,9 +473,10 @@ export class DeviceScheduleEdit extends Component<any, any> {
       })
       .catch((err) => {
         Alert.alert(
-          "Whoops!",
-          'I could not tell this Crownstone to update the Schedule... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press No, your changes will be reverted. ',
-          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {text:"OK", onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
+Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tel_header")(),
+Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tel_body")(),
+[{text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tel_left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
+text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tel_right")(), onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
           {cancelable: false}
         )
       });
@@ -492,9 +503,10 @@ export class DeviceScheduleEdit extends Component<any, any> {
       })
       .catch(() => {
         Alert.alert(
-          "Whoops!",
-          "I could not tell the Crownstone to disable this scheduled action. Would you like to try again? Make sure you're in range of the Crownstone!",
-          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {text:"OK", onPress: () => { this._disableSchedule(stone, schedule); } }],
+Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell_header")(),
+Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell_body")(),
+[{text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell_left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {
+text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell_right")(), onPress: () => { this._disableSchedule(stone, schedule); } }],
           {cancelable: false}
         )
       });
@@ -514,9 +526,10 @@ export class DeviceScheduleEdit extends Component<any, any> {
       })
       .catch(() => {
         Alert.alert(
-          "Whoops!",
-          "I could not tell the Crownstone to remove this scheduled action. Would you like to try again? Make sure you're in range of the Crownstone!",
-          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {text:"OK", onPress: () => { this._deleteSchedule(stone, schedule); } }],
+Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell__header")(),
+Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell__body")(),
+[{text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell__left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {
+text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell__right")(), onPress: () => { this._deleteSchedule(stone, schedule); } }],
           {cancelable: false}
         )
       });

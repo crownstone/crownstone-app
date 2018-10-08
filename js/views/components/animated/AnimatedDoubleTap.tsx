@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -102,10 +103,10 @@ export class AnimatedDoubleTap extends Component<any, any> {
     return (
       <View style={base}>
         <Animated.View style={[base, {opacity: this.state.oneOpacity}]}>
-          <Text style={textStyle}>1 x..</Text>
+          <Text style={textStyle}>{ Languages.text("AnimatedDoubleTap", "__x__")() }</Text>
         </Animated.View>
         <Animated.View style={[base, {opacity: this.state.twoOpacity}]}>
-          <Text style={[textStyle, {top:-35, left: 43}]}>2 x!</Text>
+          <Text style={[textStyle, {top:-35, left: 43}]}>{ Languages.text("AnimatedDoubleTap", "__x_")() }</Text>
         </Animated.View>
         <Animated.View style={[base, {opacity: this.state.firstTapOpacity}]}>
           <Animated.View style={{width:this.state.firstTapSize, height: this.state.firstTapSize,  borderRadius: this.state.firstTapSize, backgroundColor: 'transparent', borderWidth: 5, borderColor: colors.white.rgba(0.75), position:'relative', left:-8, top:-50}} />

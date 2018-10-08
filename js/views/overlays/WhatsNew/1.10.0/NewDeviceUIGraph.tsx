@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,12 +19,9 @@ export class NewDeviceUIGraph extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>You can now see a running graph of the power usage of a Crownstone. Scroll down for more.</Text>
+            <Text style={WNStyles.text}>{ Languages.text("NewDeviceUIGraph", "You_can_now_see_a_running")() }</Text>
             <Image source={require('../../../../images/whatsNew/1.10.0/powerUsageGraph.png')} style={{width:602*size, height:968*size}}/>
-            <Text style={WNStyles.detail}>{
-              "You access it by swiping left on the new Crownstone UI.\n\nThis graph is a preview of what we've been working on. " +
-              "In future versions you'll be able to navigate it freely, as well as having one overview for the entire Sphere."
-            }</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("NewDeviceUIGraph", "You_access_it_by_swiping_")() }</Text>
           </View>
         </ScrollView>
       </View>

@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -19,7 +20,7 @@ const DeviceInfo = require('react-native-device-info');
 export class SettingsOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Settings",
+      title: Languages.title("SettingsOverview", "Settings")(),
     }
   };
 
@@ -57,13 +58,13 @@ export class SettingsOverview extends Component<any, any> {
       __item: (
         <View style={{backgroundColor:'transparent'}}>
           <View style={{flexDirection:'row', padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12, justifyContent:'center'}}>
-            <Text style={{fontSize:12, color:'#444'}}>Crownstone </Text>
+            <Text style={{fontSize:12, color:'#444'}}>{ Languages.text("SettingsOverview", "Crownstone_")() }</Text>
             <TouchableHighlight onPress={() => { Linking.openURL('https://crownstone.rocks/terms-of-service/').catch(err => {})}}>
-              <Text style={{fontSize:12, color:colors.blue.hex}}>terms </Text>
+              <Text style={{fontSize:12, color:colors.blue.hex}}>{ Languages.text("SettingsOverview", "terms_")() }</Text>
             </TouchableHighlight>
-            <Text style={{fontSize:12, color:'#444'}}>{"& "}</Text>
+            <Text style={{fontSize:12, color:'#444'}}>{ Languages.text("SettingsOverview", "__")() }</Text>
             <TouchableHighlight onPress={() => { Linking.openURL('https://crownstone.rocks/privacy-policy/').catch(err => {}) }}>
-              <Text style={{fontSize:12, color:colors.blue.hex}}>privacy policy</Text>
+              <Text style={{fontSize:12, color:colors.blue.hex}}>{ Languages.text("SettingsOverview", "privacy_policy")() }</Text>
             </TouchableHighlight>
           </View>
         </View>
@@ -79,7 +80,7 @@ export class SettingsOverview extends Component<any, any> {
         <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
-          <Text style={[styles.version,{paddingBottom: 20}]}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
+          <Text style={[styles.version,{paddingBottom: 20}]}>{ Languages.text("SettingsOverview", "version__")(DeviceInfo.getReadableVersion()) }</Text>
         </ScrollView>
       </Background>
     );

@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -115,10 +116,10 @@ export class DeviceSummary extends Component<any, any> {
 
   _getButton(stone) {
     let currentState = stone.state.state;
-    let label = 'Turn On';
+    let label =  Languages.label("DeviceSummary", "Turn_On")();
     let stateColor = colors.green.hex;
     if (currentState > 0) {
-      label = 'Turn Off';
+      label =  Languages.label("DeviceSummary", "Turn_Off")();
       stateColor = colors.menuBackground.hex;
     }
     let size = 0.22*screenHeight;
@@ -130,9 +131,9 @@ export class DeviceSummary extends Component<any, any> {
       return (
         <View style={{width:0.75*screenWidth, height:size*1.05, alignItems:'center'}}>
           <View style={{flex:2}} />
-          <Text style={deviceStyles.text}>{'Searching...'}</Text>
+          <Text style={deviceStyles.text}>{ Languages.text("DeviceSummary", "Searching___")() }</Text>
           <View style={{flex:1}} />
-          <Text style={deviceStyles.subText}>{'Once I hear from this Crownstone, the button will reappear.'}</Text>
+          <Text style={deviceStyles.subText}>{ Languages.text("DeviceSummary", "Once_I_hear_from_this_Cro")() }</Text>
           <View style={{flex:1}} />
           <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
           <View style={{flex:2}} />
@@ -249,16 +250,16 @@ export class DeviceSummary extends Component<any, any> {
     // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let locationLabel = "Location:";
-    let locationName = "Not in room";
+    let locationLabel =  Languages.label("DeviceSummary", "Location_")();
+    let locationName =  Languages.label("DeviceSummary", "Not_in_room")();
     if (location) {
-      locationLabel = "Located in:";
+      locationLabel =  Languages.label("DeviceSummary", "Located_in_")();
       locationName = location.config.name;
     }
 
     // make sure it doesnt say tap here to move me if you're not allowed to move it.
     if (spherePermissions.moveCrownstone) {
-      locationLabel = "Tap here to move me!";
+      locationLabel =  Languages.label("DeviceSummary", "Tap_here_to_move_me_")();
     }
 
     let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && stone.reachability.disabled === false;
@@ -266,7 +267,7 @@ export class DeviceSummary extends Component<any, any> {
     return (
       <View style={{flex:1, paddingBottom: 35}}>
         <DeviceInformation
-          left={"Energy Usage:"}
+          left={ Languages.label("DeviceSummary", "Energy_Usage_")()}
           leftValue={stone.state.currentUsage + ' W'}
           right={locationLabel}
           rightValue={locationName}
@@ -283,7 +284,7 @@ export class DeviceSummary extends Component<any, any> {
           />
         </View>
         <View style={{flex:1}} />
-        <Text style={deviceStyles.explanation}>{Util.spreadString(showDimmingText ? "The dimmer is starting up!\nI'll dim as soon as I can!" : 'tap icon to set device type')}</Text>
+        <Text style={deviceStyles.explanation}>{Util.spreadString(showDimmingText ? Languages.label("DeviceSummary","The_dimmer_is_starting_up")() : Languages.label("DeviceSummary","tap_icon_to_set_device_ty")())}</Text>
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />

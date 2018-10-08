@@ -1,3 +1,4 @@
+import { Languages } from "../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -23,7 +24,7 @@ import {BackAction} from "../../util/Back";
 export class RoomSelection extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Move where?",
+      title: Languages.title("RoomSelection", "Move_where_")(),
     }
   };
 
@@ -78,14 +79,14 @@ export class RoomSelection extends Component<any, any> {
     let rooms = state.spheres[this.props.sphereId].locations;
     let roomIds = Object.keys(rooms);
     roomIds.sort((a,b) => { return rooms[a].config.name > rooms[b].config.name ? 1 : -1 })
-    items.push({label:"ROOMS IN CURRENT SPHERE",  type:'explanation', below:false});
+    items.push({label: Languages.label("RoomSelection", "ROOMS_IN_CURRENT_SPHERE")(),  type:'explanation', below:false});
     roomIds.forEach((roomId) => {
       let room = rooms[roomId];
       items.push({__item: this._getRoomItem(state, roomId, room)});
     });
 
     items.push({
-      label: 'Add a room',
+      label: Languages.label("RoomSelection", "Add_a_room")(),
       largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position:'relative', top:2}} />,
       style: {color:colors.blue.hex, fontWeight:'bold'},
       type: 'navigation',
@@ -94,9 +95,9 @@ export class RoomSelection extends Component<any, any> {
       }
     });
 
-    items.push({label:"DECOUPLE THIS CROWNSTONE",  type:'explanation', below: false});
+    items.push({label: Languages.label("RoomSelection", "DECOUPLE_THIS_CROWNSTONE")(),  type:'explanation', below: false});
     items.push({
-      label: 'Not in a specific room',
+      label: Languages.label("RoomSelection", "Not_in_a_specific_room")(),
       largeIcon: <Icon name="md-cube" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
       style: {color:colors.blue.hex, fontWeight:'bold'},
       type: 'navigation',
@@ -104,7 +105,7 @@ export class RoomSelection extends Component<any, any> {
         this._moveCrownstone( null );
       }
     });
-    items.push({label:"If you do not add the Crownstone to a room, it can not be used for indoor localization purposes.",  type:'explanation', below: true});
+    items.push({label: Languages.label("RoomSelection", "If_you_do_not_add_the_Cro")(),  type:'explanation', below: true});
 
     return items;
   }

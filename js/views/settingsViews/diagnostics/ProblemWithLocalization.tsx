@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -12,9 +13,6 @@ import {
   View
 } from 'react-native';
 import {diagnosticStyles} from "../SettingsDiagnostics";
-import {colors, screenWidth} from "../../styles";
-import {FadeInView} from "../../components/animated/FadeInView";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {
   DiagOptions,
@@ -23,10 +21,7 @@ import {
   DiagSingleButtonGoBack,
   DiagSingleButtonQuit, DiagSingleButtonToOverview, DiagYesNo, TestResult, DiagListOfStones
 } from "./DiagnosticUtil";
-import {SlideInView} from "../../components/animated/SlideInView";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
-import {TestRunner} from "./TestRunner";
-import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {Util} from "../../../util/Util";
 import {
   enoughCrownstonesForIndoorLocalization,
@@ -68,20 +63,20 @@ export class ProblemWithLocalization extends Component<any, any> {
   }
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{"Problem with localization..."}</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ProblemWithLocalization", "Problem_with_localization")() }</Text>
   }
 
   _getTests() {
     return (
       <View>
         <SlideFadeInView visible={this.state.sphereTestsVisible} height={180}>
-          <TestResult label={"Database is healthy"}       state={ true } />
-          <TestResult label={"Scanning is enabled"}       state={ true } />
-          <TestResult label={"Receiving Sphere beacons"}  state={ true } />
-          <TestResult label={"Receiving Crownstone data"} state={ true } />
+          <TestResult label={ Languages.label("ProblemWithLocalization", "Database_is_healthy")()}       state={ true } />
+          <TestResult label={ Languages.label("ProblemWithLocalization", "Scanning_is_enabled")()}       state={ true } />
+          <TestResult label={ Languages.label("ProblemWithLocalization", "Receiving_Sphere_beacons")()}  state={ true } />
+          <TestResult label={ Languages.label("ProblemWithLocalization", "Receiving_Crownstone_data")()} state={ true } />
         </SlideFadeInView>
         <SlideFadeInView visible={this.state.beaconTestVisible} height={45}>
-          <TestResult label={"Checking for Beacons"} state={ this.state.canSeeBeacons } />
+          <TestResult label={ Languages.label("ProblemWithLocalization", "Checking_for_Beacons")()} state={ this.state.canSeeBeacons } />
         </SlideFadeInView>
       </View>
     );
@@ -131,16 +126,14 @@ export class ProblemWithLocalization extends Component<any, any> {
       if (inAccurate) {
         if (ldata.enoughVisible) {
           let header = '';
-          let explanation = "Make sure the Crownstones are spread around the space evenly! If they're all side by side, it's very difficult to pinpoint you.\n\n" +
-            "Alternatively you can try to retrain your rooms. You can do this by tapping on a room bubble in the overview, then tapping on the button in the top right corner.\n\n" +
-            "Finally, we're working on brand new algorithms that will make this much more reliable! You'll get these as a free update when they're available!";
+          let explanation =  Languages.label("ProblemWithLocalization", "Make_sure_the_Crownstones")();
           if (ldata.amountOfStones > 10) {
-            header = "You have a good amount of Crownstones! If you have a large area to cover, you'll need more Crownstones as well.";
+            header =  Languages.label("ProblemWithLocalization", "You_have_a_good_amount_of")();
           }
           else {
-            header = "The more Crownstones you have, the better the indoor localization will be.";
+            header =  Languages.label("ProblemWithLocalization", "The_more_Crownstones_you_")();
           }
-          header += "\n\nApart from the amount, the spread of Crownstones is important too!";
+          header += Languages.label("ProblemWithLocalization","__Apart_from_the_amount__")();
           // does not work right here
           return (
             <DiagSingleButtonGoBack
@@ -152,16 +145,14 @@ export class ProblemWithLocalization extends Component<any, any> {
         }
         else {
           let header = '';
-          let explanation = "Make sure the Crownstones are spread around the space evenly! If they're all side by side, it's very difficult to pinpoint you.\n\n" +
-            "Alternatively you can try to retrain your rooms. You can do this by tapping on a room bubble in the overview, then tapping on the button in the top right corner.\n\n" +
-            "Finally, we're working on brand new algorithms that will make this much more reliable! You'll get these as a free update when they're available!";
+          let explanation =  Languages.label("ProblemWithLocalization", "Make_sure_the_Crownstones_")();
           if (ldata.amountOfStones > 10) {
-            header = "Even thought you have a good amount of Crownstones, if you have a large area to cover, you'll need more Crownstones as well.\n\nWhere you are right now, I can't see at least 3 Crownstones to do the indoor localization.";
+            header = Languages.label("ProblemWithLocalization","Even_thought_you_have_a_g")();
           }
           else {
-            header = "The more Crownstones you have, the better the indoor localization will be. If you have a large area to cover, you'll need more Crownstones as well.\n\nWhere you are right now, I can't see at least 3 Crownstones to do the indoor localization."
+            header = Languages.label("ProblemWithLocalization","The_more_Crownstones_you_expl")()
           }
-          header += "\n\nApart from the amount, the spread of Crownstones is important too!";
+          header += Languages.label("ProblemWithLocalization","__Apart_from_the_amount__")()
           // does not work right here
           return (
             <DiagSingleButtonGoBack
@@ -182,8 +173,8 @@ export class ProblemWithLocalization extends Component<any, any> {
                 return (
                   <DiagSingleButtonGoBack
                     visible={this.state.visible}
-                    header={"Indoor localization is running!"}
-                    explanation={"You can see your face on the room bubbles showing where the app thinks you are!"}
+                    header={ Languages.label("ProblemWithLocalization", "Indoor_localization_is_ru")()}
+                    explanation={ Languages.label("ProblemWithLocalization", "You_can_see_your_face_on_")()}
                   />
                 );
               }
@@ -192,8 +183,8 @@ export class ProblemWithLocalization extends Component<any, any> {
                 return (
                   <DiagSingleButtonGoBack
                     visible={this.state.visible}
-                    header={"There are not enough Crownstones in range at the moment to do the indoor localization. We need at least 3."}
-                    explanation={"Since the radio field is radially symmetric, we require at least 3 Crownstones in range to determine where you are."}
+                    header={ Languages.label("ProblemWithLocalization", "There_are_not_enough_Crow")()}
+                    explanation={ Languages.label("ProblemWithLocalization", "Since_the_radio_field_is_")()}
                   />
                 );
               }
@@ -203,8 +194,8 @@ export class ProblemWithLocalization extends Component<any, any> {
               return (
                 <DiagSingleButtonGoBack
                   visible={this.state.visible}
-                  header={"Indoor localization is disabled by you."}
-                  explanation={"You can enable this in the 'App Settings' which you can find in the " + (Platform.OS === 'android' ? 'Sidebar' : 'settings menu') + '.'}
+                  header={ Languages.label("ProblemWithLocalization", "Indoor_localization_is_di")()}
+                  explanation={ Languages.label("ProblemWithLocalization", "You_can_enable_this_in_th2")(Platform.OS === 'android')}
                 />
               );
             }
@@ -214,8 +205,8 @@ export class ProblemWithLocalization extends Component<any, any> {
             return (
               <DiagSingleButtonGoBack
                 visible={this.state.visible}
-                header={"You need to train the rooms before the localization can run."}
-                explanation={"You can do this by tapping on the location icon in the top right corner of the room and following the instructions."}
+                header={ Languages.label("ProblemWithLocalization", "You_need_to_train_the_roo")()}
+                explanation={ Languages.label("ProblemWithLocalization", "You_can_do_this_by_tappin")()}
               />
             );
           }
@@ -225,9 +216,8 @@ export class ProblemWithLocalization extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={"You need to have at least 4 Crownstoens places in rooms. Take the ones that are 'Floating' and assign a room to them!"}
-              explanation={"Not all rooms in the app require Crownstones inside of them.\n\n" +
-              "As long as you pick up a signal from at least 3 Crownstones in a room, it can be used for localization. Even if the Crownstones that send the signals are in other rooms."}
+              header={Languages.label("ProblemWithLocalization","You_need_to_have_at_least")()}
+              explanation={Languages.label("ProblemWithLocalization","Not_all_rooms_in_the_app_")()}
             />
           );
         }
@@ -238,8 +228,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"Room level localization is only available if you have 4 or more Crownstones in your Sphere."}
-          explanation={"This is required to be able to pinpoint you in a room. The more Crownstones you have, the better the localization will be!"}
+          header={ Languages.label("ProblemWithLocalization", "Room_level_localization_i")()}
+          explanation={ Languages.label("ProblemWithLocalization", "This_is_required_to_be_ab")()}
         />
       );
     }
@@ -253,8 +243,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"Indoor localization is disabled by you."}
-          explanation={"You can enable this in the 'App Settings' which you can find in the " + (Platform.OS === 'android' ? 'Sidebar' : 'settings menu') + '.'}
+          header={ Languages.label("ProblemWithLocalization", "Indoor_localization_is_dis")()}
+          explanation={ Languages.label("ProblemWithLocalization", "You_can_enable_this_in_th2")(Platform.OS === 'android')}
         />
       );
     }
@@ -286,8 +276,8 @@ export class ProblemWithLocalization extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={"When indoor localization at room-level is available, we do not use near/further away."}
-            explanation={"This is a design choice, not a bug. We're working on smarter behaviour though, which will allow you to incorporate near/further away together with room-level localization."}
+            header={ Languages.label("ProblemWithLocalization", "When_indoor_localization_")()}
+            explanation={Languages.label("ProblemWithLocalization","This_is_a_design_choice__")()}
           />
         );
       }
@@ -296,8 +286,8 @@ export class ProblemWithLocalization extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={"You will need to train the distance of what exactly is near. This differs from phone to phone so everyone using this will have to train it."}
-              explanation={"Tap on the room, tap on the Crownstone icon, navigate to the right and tap edit on the Behaviour menu. You can train the distance there."}
+              header={ Languages.label("ProblemWithLocalization", "You_will_need_to_train_th")()}
+              explanation={ Languages.label("ProblemWithLocalization", "Tap_on_the_room__tap_on_t")()}
             />
           );
         }
@@ -305,8 +295,8 @@ export class ProblemWithLocalization extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={"Near/further away behaviour has not been configured by you."}
-              explanation={"Tap on the room, tap on the Crownstone icon, navigate to the right and tap edit on the Behaviour menu. Tell me what you'd like me to do when you get near and move further away and train the distance."}
+              header={ Languages.label("ProblemWithLocalization", "Near_further_away_behavio")()}
+              explanation={Languages.label("ProblemWithLocalization","Tap_on_the_room__tap_on_t2")()}
             />
           );
         }
@@ -315,9 +305,8 @@ export class ProblemWithLocalization extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={"Near/further away is configured correctly on this Crownstone."}
-            explanation={"You can retrain where you want 'near' to be by editing the behaviour.\n\nTap on the room, tap on the Crownstone icon, navigate to the right and tap edit on the Behaviour menu. You can train the distance there.\n\n" +
-            "Keep in mind, since human beings are essentially big sacks of water, if you sit between your phone and the Crownstone it will think it's further away than it really is!"}
+            header={ Languages.label("ProblemWithLocalization", "Near_further_away_is_conf")()}
+            explanation={Languages.label("ProblemWithLocalization","You_can_retrain_where_you")()}
           />
         );
       }
@@ -331,8 +320,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"Tap-to-toggle is disabled."}
-          explanation={"You can enable this in the 'App Settings' which you can find in the " + (Platform.OS === 'android' ? 'Sidebar' : 'settings menu') + '.'}
+          header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_disabled")()}
+          explanation={Languages.label("ProblemWithLocalization","You_can_enable_this_in_th2")(Platform.OS === 'android')}
         />
       );
     }
@@ -341,8 +330,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"Tap-to-toggle is not configured yet!"}
-          explanation={"You can enable this in the in the " + (Platform.OS === 'android' ? 'Sidebar' : 'settings menu') + " by tapping on 'Calibrate Tap-to-Toggle'."}
+          header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_not_conf")()}
+          explanation={Languages.label("ProblemWithLocalization","You_can_enable_this_in_th")(Platform.OS === 'android')}
         />
       );
     }
@@ -371,9 +360,8 @@ export class ProblemWithLocalization extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={"Tap-to-toggle is configured correctly on this Crownstone."}
-              explanation={"If it's not working as you'd like, try recalibrating the distance.\n\n" +
-              "You can do this in the in the \" + (Platform.OS === 'android' ? 'Sidebar' : 'settings menu') + \" by tapping on 'Calibrate Tap-to-Toggle'."}
+              header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_configur")()}
+              explanation={Languages.label("ProblemWithLocalization","If_its_not_working_as_you")(Platform.OS === 'android')}
             />
           );
         }
@@ -382,8 +370,8 @@ export class ProblemWithLocalization extends Component<any, any> {
             return (
               <DiagSingleButtonGoBack
                 visible={this.state.visible}
-                header={"Tap-to-toggle is disabled on this Crownstone."}
-                explanation={"You can enable it by tapping on the room, tapping on the Crownstone icon, tapping edit in the top right corner and enabling it there."}
+                header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_disabled_")()}
+                explanation={ Languages.label("ProblemWithLocalization", "You_can_enable_it_by_tapp")()}
               />
             );
           }
@@ -391,8 +379,8 @@ export class ProblemWithLocalization extends Component<any, any> {
             return (
               <DiagSingleButtonGoBack
                 visible={this.state.visible}
-                header={"Tap-to-toggle is disabled on this Crownstone."}
-                explanation={"You will have to ask an admin in your Sphere to enable this."}
+                header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_disabled_o")()}
+                explanation={ Languages.label("ProblemWithLocalization", "You_will_have_to_ask_an_a")()}
               />
             );
           }
@@ -402,9 +390,9 @@ export class ProblemWithLocalization extends Component<any, any> {
         return (
           <DiagSingleButton
             visible={this.state.visible}
-            header={"We don't generally recommend using tap-to-toggle on built-ins. Calibrating tap-to-toggle for built-ins can cause issues with tap-to-toggle on plugs."}
-            explanation={"Press the button to continue, or close the diagnostic menu."}
-            label={"Continue"}
+            header={Languages.label("ProblemWithLocalization","We_dont_generally_recomme")()}
+            explanation={ Languages.label("ProblemWithLocalization", "Press_the_button_to_conti")()}
+            label={ Languages.label("ProblemWithLocalization", "Continue")()}
             onPress={() => { this._changeContent(() => { this.setState({ stoneTypeWarningRead: true }); }); }}
           />
         );
@@ -413,8 +401,8 @@ export class ProblemWithLocalization extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={"Tap-to-toggle does not work on a device that can't toggle anything."}
-            explanation={"I can't help you with this."}
+            header={Languages.label("ProblemWithLocalization","Tap_to_toggle_does_not_wo2")()}
+            explanation={Languages.label("ProblemWithLocalization","I_cant_help_you_with_this")()}
           />
         );
       }
@@ -432,9 +420,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"We have recently added an Activity Log just for this! For room events, like room exit, I can't take multiple users into account yet.\n\n" +
-          "I'm working on this!"}
-          explanation={"You can find the Activity Log in the stone properties: tap on the room, tap on the Crownstone icon and navigate to the right until you see it."}
+          header={Languages.label("ProblemWithLocalization","We_have_recently_added_an2")()}
+          explanation={ Languages.label("ProblemWithLocalization", "You_can_find_the_Activity")()}
         />
       );
     }
@@ -442,8 +429,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={"We have recently added an Activity Log just for this!"}
-          explanation={"You can find it in the stone properties: tap on the room, tap on the Crownstone icon and navigate to the right until you see it."}
+          header={ Languages.label("ProblemWithLocalization", "We_have_recently_added_an")()}
+          explanation={ Languages.label("ProblemWithLocalization", "You_can_find_it_in_the_st")()}
         />
       );
     }
@@ -454,8 +441,8 @@ export class ProblemWithLocalization extends Component<any, any> {
     return (
       <DiagSingleButtonGoBack
         visible={this.state.visible}
-        header={"This is currently unavoidable for the room events. However, the Sphere Exit event does work with multiple users."}
-        explanation={"We are working on new behaviour that will combine the schedules and the behaviour to facilitate this!"}
+        header={ Languages.label("ProblemWithLocalization", "This_is_currently_unavoid")()}
+        explanation={ Languages.label("ProblemWithLocalization", "We_are_working_on_new_beh")()}
       />
     );
   }
@@ -464,9 +451,8 @@ export class ProblemWithLocalization extends Component<any, any> {
     return (
       <DiagSingleButtonGoBack
         visible={this.state.visible}
-        header={"Only turn on when dark will only suppress the action the moment you enter a room or enter your Sphere."}
-        explanation={"It will not turn on at a later time if you don't re-enter your room or Sphere.\n\n" +
-        "We are working on new behaviour that will combine the schedules and the behaviour to facilitate this!"}
+        header={ Languages.label("ProblemWithLocalization", "Only_turn_on_when_dark_wi")()}
+        explanation={Languages.label("ProblemWithLocalization","It_will_not_turn_on_at_a_")()}
       />
     );
   }
@@ -476,17 +462,17 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagOptions
           visible={this.state.visible}
-          header={"What's wrong with the Localization?"}
-          subExplanation={"Scroll down to see all options."}
+          header={Languages.label("ProblemWithLocalization","Whats_wrong_with_the_Loca")()}
+          subExplanation={ Languages.label("ProblemWithLocalization", "Scroll_down_to_see_all_op")()}
           labels={[
-            "It does not do room-level localization.",
-            "Room-level localization is inaccurate.",
-            "Near/far does not work.",
-            "Tap to toggle does not work.",
-            "Things turn off while I'm still there.",
-            "If I leave the room but someone is still there, Crownstones still turn off.",
-            "'Only on when dark' does not turn on.",
-            "Other..."
+            Languages.label("ProblemWithLocalization","It_does_not_do_room_level")(),
+            Languages.label("ProblemWithLocalization","Room_level_localization_is")(),
+            Languages.label("ProblemWithLocalization","Near_far_does_not_work_")(),
+            Languages.label("ProblemWithLocalization","Tap_to_toggle_does_not_wo")(),
+            Languages.label("ProblemWithLocalization","Things_turn_off_while_Im_")(),
+            Languages.label("ProblemWithLocalization","If_I_leave_the_room_but_s")(),
+            Languages.label("ProblemWithLocalization","Only_on_when_dark_does_no")(),
+            Languages.label("ProblemWithLocalization","Other___")(),
           ]}
           pressHandlers={[
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'no_room_level'}); }); },
@@ -526,8 +512,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={'Perhaps the Help menu can help you further.'}
-          explanation={"Alternatively you can send us an email at team@crownstone.rocks and we'll do our best to help you!"}
+          header={ Languages.label("ProblemWithLocalization", "Perhaps_the_Help_menu_can")()}
+          explanation={Languages.label("ProblemWithLocalization","Alternatively_you_can_sen")()}
         />
       );
     }

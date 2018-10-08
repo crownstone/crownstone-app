@@ -1,3 +1,4 @@
+import { Languages } from "../../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,9 +19,9 @@ export class Messages extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>You can now leave a message for others or yourself!</Text>
+            <Text style={WNStyles.text}>{ Languages.text("Messages", "You_can_now_leave_a_messa")() }</Text>
             <Image source={require('../../../../images/whatsNew/1.11.0/messages.png')} style={{width:489*size, height:593*size}} />
-            <Text style={WNStyles.detail}>It's like you leave a digital sticky note in a room or in a Sphere.</Text>
+            <Text style={WNStyles.detail}>{ Languages.text("Messages", "Its_like_you_leave_a_digi")() }</Text>
           </View>
         </ScrollView>
       </View>

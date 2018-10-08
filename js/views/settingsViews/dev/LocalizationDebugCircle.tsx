@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -135,8 +136,8 @@ class LocalizationDebugCircleClass extends Component<any, any> {
               justifyContent:'center'
             }}>
               {this.getIcon()}
-              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{"P: " + p}</Text>
-              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize - 2}}>{"S: " + (this.props.probabilityData.sampleSize || '...') + ("; M: " + this.consecutiveMatches) }</Text>
+              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{ Languages.text("LocalizationDebugCircle", "P__")(p) }</Text>
+              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize - 2}}>{ Languages.text("LocalizationDebugCircle", "S_______M__")(this.props.probabilityData.sampleSize,this.consecutiveMatches) }</Text>
             </View>
         </View>
       </View>

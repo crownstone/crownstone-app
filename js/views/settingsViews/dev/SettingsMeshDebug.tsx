@@ -1,3 +1,4 @@
+import { Languages } from "../../../Languages"
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -20,7 +21,7 @@ const Actions = require('react-native-router-flux').Actions;
 export class SettingsMeshDebug extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Mesh Debug",
+      title: Languages.title("SettingsMeshDebug", "Mesh_Debug")(),
     }
   };
 
@@ -56,7 +57,7 @@ export class SettingsMeshDebug extends Component<any, any> {
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: element ? element.config.name : "Any",
+      label: Languages.label("SettingsMeshDebug", "Any")(element,element.config.name),
       subtext: subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',
@@ -73,7 +74,7 @@ export class SettingsMeshDebug extends Component<any, any> {
     const store = this.props.store;
     let state = store.getState();
     let sphereId = Util.data.getPresentSphereId(state);
-    if (!sphereId) { return [{label: "You have to be in a sphere in order to debug Mesh", type: 'largeExplanation'}]; }
+    if (!sphereId) { return [{label: Languages.label("SettingsMeshDebug", "You_have_to_be_in_a_spher")(), type: 'largeExplanation'}]; }
     let sphere = state.spheres[sphereId];
     let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
@@ -91,8 +92,11 @@ export class SettingsMeshDebug extends Component<any, any> {
     let evaluateRefreshProgress = () => {
       this.refreshCount += 1
       if (this.refreshCount >= this.refreshAmountRequired) {
-        Alert.alert("All done!", "This went very well!", [{text:'Nice.'}])
-        this.props.eventBus.emit('updateProgress', {progress:1, progressText:"Done"});
+        Alert.alert(
+Languages.alert("SettingsMeshDebug", "_All_done___This_went_ver_header")(),
+Languages.alert("SettingsMeshDebug", "_All_done___This_went_ver_body")(),
+[{text:Languages.alert("SettingsMeshDebug", "_All_done___This_went_ver_left")()}])
+        this.props.eventBus.emit('updateProgress', {progress:1, progressText: Languages.label("SettingsMeshDebug", "Done")()});
         setTimeout(() => { this.props.eventBus.emit("hideProgress");}, 500);
         const store = this.props.store;
         const state = store.getState();
@@ -100,7 +104,7 @@ export class SettingsMeshDebug extends Component<any, any> {
         MeshUtil.clearMeshNetworkIds(store, sphereId);
       }
       else {
-        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText:'Setting Mesh Channels\n\n('+this.refreshCount+' out of '+ this.refreshAmountRequired+")"});
+        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: Languages.label("SettingsMeshDebug", "Setting_Mesh_Channels_n_n")(this.refreshCount,this.refreshAmountRequired)});
       }
     }
 
@@ -115,7 +119,10 @@ export class SettingsMeshDebug extends Component<any, any> {
             evaluateRefreshProgress()
           })
           .catch(() => {
-            Alert.alert("Missed one", "I could not change " + stone.config.name, [{text:'OK'}])
+            Alert.alert(
+Languages.alert("SettingsMeshDebug", "_Missed_one__I_could_not__header")(),
+Languages.alert("SettingsMeshDebug", "_Missed_one__I_could_not__body")(stone.config.name),
+[{text:Languages.alert("SettingsMeshDebug", "_Missed_one__I_could_not__left")()}])
             evaluateRefreshProgress()
           })
       }
@@ -129,21 +136,21 @@ export class SettingsMeshDebug extends Component<any, any> {
     const store = this.props.store;
     let state = store.getState();
     let sphereId = Util.data.getPresentSphereId(state);
-    if (!sphereId) { return [{label: "You have to be in a sphere in order to debug Mesh", type: 'largeExplanation'}]; }
+    if (!sphereId) { return [{label: Languages.label("SettingsMeshDebug", "You_have_to_be_in_a_sphere")(), type: 'largeExplanation'}]; }
     let sphere = state.spheres[sphereId];
     let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
 
     items.push({
       type:'explanation',
-      label:"VISIBLE STONES",
+      label: Languages.label("SettingsMeshDebug", "VISIBLE_STONES")(),
     })
 
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
       let location = Util.data.getLocationFromStone(sphere, stone);
       let locationColor = colors.gray.hex;
-      let locationTitle = 'Floating...';
+      let locationTitle =  Languages.label("SettingsMeshDebug", "Floating___")();
       if (location) {
         locationTitle = location.config.name;
         locationColor = colors.iosBlue.hex;
@@ -156,26 +163,26 @@ export class SettingsMeshDebug extends Component<any, any> {
 
     items.push({
       type:'explanation',
-      label:"ACTIONS",
+      label: Languages.label("SettingsMeshDebug", "ACTIONS")(),
     })
 
     items.push({
       type:'button',
-      label:"Set to Channel 37",
+      label: Languages.label("SettingsMeshDebug", "Set_to_Channel___")(),
       callback: () => {
         this._setChannel(37)
       }
     })
     items.push({
       type:'button',
-      label:"Set to Channel 38",
+      label: Languages.label("SettingsMeshDebug", "Set_to_Channel___")(),
       callback: () => {
         this._setChannel(38)
       }
     })
     items.push({
       type:'button',
-      label:"Set to Channel 39",
+      label: Languages.label("SettingsMeshDebug", "Set_to_Channel___")(),
       callback: () => {
         this._setChannel(39)
       }
