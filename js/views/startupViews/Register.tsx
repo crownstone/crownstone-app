@@ -153,7 +153,7 @@ export class Register extends Component<any, any> {
         label: lang("Picture"),
         type:  'picture',
         value: this.state.picture,
-        placeholderText: 'Optional',
+        placeholderText: lang("Optional"),
         callback:(image) => {this.setState({picture:image});},
         removePicture:() => {this.setState({picture:undefined});}
       },

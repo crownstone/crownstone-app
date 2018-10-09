@@ -46,15 +46,15 @@ export class Router_IOS extends Component {
             <Scene key="register"                       component={Views.Register}                   />
             <Scene key="registerConclusion"             component={Views.RegisterConclusion}         type="reset" />
             <Tabs key="tabBar" showLabel={false} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} backToInitial={true} initial={this.props.loggedIn}>
-              <Scene key="overview" tabTitle={Languages.label("Tabs","Overview")()} icon={TabIcon} iconString="ios-color-filter-outline" >
+              <Scene key="overview" tabTitle={Languages.get("Tabs","Overview")()} icon={TabIcon} iconString="ios-color-filter-outline" >
                 <Scene key="sphereOverview"             component={Views.SphereOverview}             />
                 <Scene key="deviceOverview"             component={Views.DeviceOverview}      sphereId={'9a71b7cf-2dec-61e1-f819-6634829dbfb9'} stoneId={'5ba8d5848c1c021229dfc88c'}     />
                 <Scene key="roomOverview"               component={Views.RoomOverview}               />
               </Scene>
-              <Scene key="messages"  tabTitle={Languages.label("Tabs","Messages")()} icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
+              <Scene key="messages"  tabTitle={Languages.get("Tabs","Messages")()} icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
                 <Scene key="messageInbox"               component={Views.MessageInbox}    />
               </Scene>
-              <Scene key="settings" tabTitle={Languages.label("Tabs","Settings")()} icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
+              <Scene key="settings" tabTitle={Languages.get("Tabs","Settings")()} icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}           />
                 <Scene key="settingsBleTroubleshooting" component={Views.SettingsBleTroubleshooting} />
                 <Scene key="settingsDiagnostics"        component={Views.SettingsDiagnostics}        />

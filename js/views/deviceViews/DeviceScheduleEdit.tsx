@@ -557,7 +557,7 @@ text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSch
 
 class RepeatWeekday extends Component<any, any> {
   _getDays(size) {
-    let localizedDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    let localizedDays = [lang("Mon"), lang("Tue"), lang("Wed"), lang("Thu"), lang("Fri"), lang("Sat"), lang("Sun")];
     let items = [];
 
     items.push(<View key={'selectableDayFlexStart'} style={{flex:1}} />);

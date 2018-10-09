@@ -19,16 +19,10 @@ class LanguageManager {
 
 
   get(file, key) : (a?,b?,c?,d?,e?) => string{
-    return () => {
-      console.log("alert", file, key)
-      console.log("alert", this.textSource.label)
-      console.log("alert", this.textSource.label[file])
-      let str = this.textSource[file][key].apply(this, arguments)
-      console.log("alert value:", str)
-      if (str && str.substr) {
-        return key + str.substr(0,10);
-      }
-      return key;
+    return (a,b,c,d,e) => {
+      let str = this.textSource[file][key](a,b,c,d,e)
+      // return str
+      return "$$$" + str
     }
   }
 

@@ -112,7 +112,7 @@ export class RoomAdd extends Component<any, any> {
   _getItems(floatingStones) {
     let items = [];
     items.push({label: lang("NEW_ROOM"), type:'explanation', below:false});
-    items.push({label: lang("Room_Name"), type: 'textEdit', placeholder:'My New Room', value: this.state.name, callback: (newText) => {
+    items.push({label: lang("Room_Name"), type: 'textEdit', placeholder: lang("My_New_Room"), value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
     items.push({label: lang("Icon"), type: 'icon', value: this.state.icon,
@@ -129,7 +129,7 @@ export class RoomAdd extends Component<any, any> {
       type:  'picture',
       value: this.state.picture,
       forceAspectRatio: false,
-      placeholderText: 'Optional',
+      placeholderText: lang("Optional"),
       callback:(image) => {
         this.setState({picture:image}); },
       removePicture:() => {

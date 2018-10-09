@@ -119,7 +119,7 @@ export class RoomEdit extends Component<any, any> {
     if (sphere) { location = sphere.locations[this.props.locationId]; }
 
     this.deleting = true;
-    this.props.eventBus.emit('showLoading','Removing this room in the Cloud...');
+    this.props.eventBus.emit('showLoading', lang("Removing_this_room_in_the"));
     CLOUD.forSphere(this.props.sphereId).deleteLocation(this.props.locationId)
       .then(() => {
         let removeActions = [];
@@ -197,7 +197,7 @@ lang("_Encountered_Cloud_Issue__body"),
       type:  'picture',
       value: this.state.picture,
       forceAspectRatio: false,
-      placeholderText: 'Optional',
+      placeholderText: lang("Optional"),
       callback:(image) => {
         this.pictureTaken = true; this.setState({picture:image}); },
       removePicture:() => {

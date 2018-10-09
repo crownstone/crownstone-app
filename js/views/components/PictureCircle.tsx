@@ -37,12 +37,12 @@ export class PictureCircle extends Component<any, any> {
   showOptions() {
     let buttons = [];
     if (Platform.OS === 'android') {
-      buttons.push({ text: 'Take Photo', callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
-      buttons.push({ text: 'Choose from Gallery', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Photo"), callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
     }
     else {
-      buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
-      buttons.push({ text: 'Choose Existing', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Picture"), callback: () => { Actions.pictureView({selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
+      buttons.push({ text: lang("Choose_Existing"), callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
     }
     eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
   }
