@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ReviewInitialTests", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -57,17 +62,17 @@ export class ReviewInitialTests extends Component<any, any> {
     if (this.props.databaseHealth === false) {
       return (
         <View style={{flex:1, alignItems:'center'}}>
-          <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ReviewInitialTests", "Problems_found__")() }</Text>
-          <TestResult label={ Languages.label("ReviewInitialTests", "Problem_in_database__")()} state={ this.props.databaseHealth } />
+          <Text style={diagnosticStyles.headerStyle}>{ lang("Problems_found__") }</Text>
+          <TestResult label={ lang("Problem_in_database__")} state={ this.props.databaseHealth } />
           <SlideInView visible={this.state.visible} height={100} duration={500}>
-            <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ReviewInitialTests", "To_fix_this_well_have_to_")() }</Text>
+            <Text style={diagnosticStyles.headerStyle}>{ lang("To_fix_this_well_have_to_") }</Text>
           </SlideInView>
-          <TestResult label={ Languages.label("ReviewInitialTests", "Scanning_is_enabled")()} state={ this.props.isMonitoring } />
+          <TestResult label={ lang("Scanning_is_enabled")} state={ this.props.isMonitoring } />
           <View style={{flex:1}}>
             <View style={{flex:1}} />
             <FadeInView visible={this.state.visible} delay={750}>
               <TouchableOpacity onPress={() => { AppUtil.resetDatabase(this.props.store, eventBus); }} style={diagnosticStyles.buttonStyle}>
-                <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ Languages.text("ReviewInitialTests", "Restore_database")() }</Text>
+                <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Restore_database") }</Text>
               </TouchableOpacity>
             </FadeInView>
           </View>
@@ -77,17 +82,17 @@ export class ReviewInitialTests extends Component<any, any> {
     else if (this.props.isMonitoring === false) {
       return (
         <View style={{flex:1, alignItems:'center'}}>
-          <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ReviewInitialTests", "Problems_found__")() }</Text>
-          <TestResult label={ Languages.label("ReviewInitialTests", "Database_is_healthy")()}     state={ this.props.databaseHealth } />
-          <TestResult label={ Languages.label("ReviewInitialTests", "Scanning_is_disabled___")()} state={ this.props.isMonitoring } />
+          <Text style={diagnosticStyles.headerStyle}>{ lang("Problems_found__") }</Text>
+          <TestResult label={ lang("Database_is_healthy")}     state={ this.props.databaseHealth } />
+          <TestResult label={ lang("Scanning_is_disabled___")} state={ this.props.isMonitoring } />
           <SlideInView visible={this.state.visible} height={250} duration={500}>
-            <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ReviewInitialTests", "Your_phone_is_currently_n")() }</Text>
+            <Text style={diagnosticStyles.headerStyle}>{ lang("Your_phone_is_currently_n") }</Text>
           </SlideInView>
           <View style={{flex:1}}>
             <View style={{flex:1}} />
             <FadeInView visible={this.state.visible} delay={750}>
               <TouchableOpacity onPress={() => { AppUtil.quit(); }} style={diagnosticStyles.buttonStyle}>
-                <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ Languages.text("ReviewInitialTests", "Quit_app_now")() }</Text>
+                <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Quit_app_now") }</Text>
               </TouchableOpacity>
             </FadeInView>
           </View>
@@ -98,13 +103,13 @@ export class ReviewInitialTests extends Component<any, any> {
       // check for incoming ibeacons messages.
       return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ReviewInitialTests", "Running_initial_tests___")() }</Text>
+          <Text style={diagnosticStyles.headerStyle}>{ lang("Running_initial_tests___") }</Text>
           <View>
-            <TestResult label={ Languages.label("ReviewInitialTests", "Database_is_healthy")()}          state={ this.props.databaseHealth }         />
-            <TestResult label={ Languages.label("ReviewInitialTests", "Scanning_is_enabled")()}          state={ this.props.isMonitoring }           />
+            <TestResult label={ lang("Database_is_healthy")}          state={ this.props.databaseHealth }         />
+            <TestResult label={ lang("Scanning_is_enabled")}          state={ this.props.isMonitoring }           />
             <SlideInView visible={this.state.visible} height={90} duration={500}>
-              <TestResult label={ Languages.label("ReviewInitialTests", "Receiving_Sphere_beacons")()}     state={ this.state.ibeacons }               />
-              <TestResult label={ Languages.label("ReviewInitialTests", "Receiving_Crownstone_data")()}    state={ this.state.verifiedAdvertisements } />
+              <TestResult label={ lang("Receiving_Sphere_beacons")}     state={ this.state.ibeacons }               />
+              <TestResult label={ lang("Receiving_Crownstone_data")}    state={ this.state.verifiedAdvertisements } />
             </SlideInView>
           </View>
           <View style={{flex:1}} />

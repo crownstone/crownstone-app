@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsProfile", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -25,7 +30,7 @@ import { NotificationHandler } from "../../backgroundProcesses/NotificationHandl
 
 export class SettingsProfile extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: Languages.title("SettingsProfile", "My_Account")()}
+    return { title: lang("My_Account")}
   };
 
   unsubscribe : any;
@@ -66,7 +71,7 @@ export class SettingsProfile extends Component<any, any> {
 
     items.push({type:'spacer'});
     items.push({
-      label: Languages.label("SettingsProfile", "First_Name")(),
+      label: lang("First_Name"),
       type: 'textEdit',
       value: this.state.firstName,
       validation:{minLength:1, numbers:{allowed:false}},
@@ -82,14 +87,14 @@ export class SettingsProfile extends Component<any, any> {
         }
         else {
           Alert.alert(
-Languages.alert("SettingsProfile", "_First_name_must_be_at_le_header")(),
-Languages.alert("SettingsProfile", "_First_name_must_be_at_le_body")(),
-[{text: Languages.alert("SettingsProfile", "_First_name_must_be_at_le_left")()}]);
+lang("_First_name_must_be_at_le_header"),
+lang("_First_name_must_be_at_le_body"),
+[{text: lang("_First_name_must_be_at_le_left")}]);
         }
       }
     });
     items.push({
-      label: Languages.label("SettingsProfile", "Last_Name")(), 
+      label: lang("Last_Name"), 
       type: 'textEdit',
       value: this.state.lastName,
       validation:{minLength:1, numbers:{allowed:false}},
@@ -106,29 +111,29 @@ Languages.alert("SettingsProfile", "_First_name_must_be_at_le_body")(),
         }
         else {
           Alert.alert(
-Languages.alert("SettingsProfile", "_Last_name_must_be_at_lea_header")(),
-Languages.alert("SettingsProfile", "_Last_name_must_be_at_lea_body")(),
-[{text: Languages.alert("SettingsProfile", "_Last_name_must_be_at_lea_left")()}]);
+lang("_Last_name_must_be_at_lea_header"),
+lang("_Last_name_must_be_at_lea_body"),
+[{text: lang("_Last_name_must_be_at_lea_left")}]);
         }
       }
     });
 
     items.push({
-      label: Languages.label("SettingsProfile", "Email")(),
+      label: lang("Email"),
       type: 'info',
       value: user.email,
     });
     items.push({
-      label: Languages.label("SettingsProfile", "Change_Password")(),
+      label: lang("Change_Password"),
       type: 'button',
       style: {color:colors.blue.hex},
       callback: () => {
         Alert.alert(
-Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_header")(),
-Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_body")(user.email),
-[{text: Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_left")(), style: 'cancel'},
+lang("_Are_you_sure_you_want_to_header"),
+lang("_Are_you_sure_you_want_to_body",user.email),
+[{text: lang("_Are_you_sure_you_want_to_left"), style: 'cancel'},
             {
-text: Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_right")(), onPress: () => {this.requestPasswordResetEmail(user.email)}}
+text: lang("_Are_you_sure_you_want_to_right"), onPress: () => {this.requestPasswordResetEmail(user.email)}}
           ]
         )
       }
@@ -138,7 +143,7 @@ text: Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_right")(), o
 
     if (user.developer !== true) {
       items.push({
-        label: Languages.label("SettingsProfile", "Enable_Developer_Mode")(),
+        label: lang("Enable_Developer_Mode"),
         value: false,
         icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
         type: 'switch',
@@ -151,11 +156,11 @@ text: Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_right")(), o
           });
         }, 300)
       }});
-      items.push({label: Languages.label("SettingsProfile", "This_will_enable_certain_")(), type: 'explanation', below: true});
+      items.push({label: lang("This_will_enable_certain_"), type: 'explanation', below: true});
     }
     else {
       items.push({
-        label: Languages.label("SettingsProfile", "Developer_Menu")(),
+        label: lang("Developer_Menu"),
         icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
         type: 'navigation',
         callback:() => { Actions.settingsDeveloper(); }
@@ -176,18 +181,18 @@ text: Languages.alert("SettingsProfile", "_Are_you_sure_you_want_to_right")(), o
           AppUtil.logOut(this.props.store);
         };
         Alert.alert(
-Languages.alert("SettingsProfile", "_Reset_email_has_been_sen_header")(),
-Languages.alert("SettingsProfile", "_Reset_email_has_been_sen_body")(),
-[{text: Languages.alert("SettingsProfile", "_Reset_email_has_been_sen_left")(), onPress: defaultAction}],
+lang("_Reset_email_has_been_sen_header"),
+lang("_Reset_email_has_been_sen_body"),
+[{text: lang("_Reset_email_has_been_sen_left"), onPress: defaultAction}],
           { onDismiss: defaultAction }
         )
       })
       .catch((reply) => {
         let defaultAction = () => {this.props.eventBus.emit('hideLoading'); };
         Alert.alert(
-Languages.alert("SettingsProfile", "_Cannot_Send_Email_argume_header")(),
-Languages.alert("SettingsProfile", "_Cannot_Send_Email_argume_body")(reply.data),
-[{text: Languages.alert("SettingsProfile", "_Cannot_Send_Email_argume_left")(), onPress: defaultAction}], { onDismiss: defaultAction });
+lang("_Cannot_Send_Email_argume_header"),
+lang("_Cannot_Send_Email_argume_body",reply.data),
+[{text: lang("_Cannot_Send_Email_argume_left"), onPress: defaultAction}], { onDismiss: defaultAction });
       });
   }
 

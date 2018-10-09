@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Login", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -49,18 +54,18 @@ export class Login extends Component<any, any> {
   resetPopup() {
     if (emailChecker(this.state.email) === false) {
       Alert.alert(
-        Languages.alert("Login", "_Check_Email_Address__Ple_header")(),
-        Languages.alert("Login", "_Check_Email_Address__Ple_body")(),
-        [{text: Languages.alert("Login", "_Check_Email_Address__Ple_left")()}
+        lang("_Check_Email_Address__Ple_header"),
+        lang("_Check_Email_Address__Ple_body"),
+        [{text: lang("_Check_Email_Address__Ple_left")}
       ]);
     }
     else {
       Alert.alert(
-        Languages.alert("Login", "_Send_Password_Reset_Emai_header")(),
-        Languages.alert("Login", "_Send_Password_Reset_Emai_body")(this.state.email.toLowerCase()),
+        lang("_Send_Password_Reset_Emai_header"),
+        lang("_Send_Password_Reset_Emai_body",this.state.email.toLowerCase()),
         [
-          {text: Languages.alert("Login", "_Send_Password_Reset_Emai_left")(),  style: 'cancel'},
-          {text: Languages.alert("Login", "_Send_Password_Reset_Emai_right")(), onPress: () => { this.requestPasswordResetEmail(); }}
+          {text: lang("_Send_Password_Reset_Emai_left"),  style: 'cancel'},
+          {text: lang("_Send_Password_Reset_Emai_right"), onPress: () => { this.requestPasswordResetEmail(); }}
         ]
       );
     }
@@ -72,14 +77,14 @@ export class Login extends Component<any, any> {
       .then(() => {
         SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
-        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: Languages.title("Login", "Verification_Email_Sent")()});
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: lang("Verification_Email_Sent")});
       })
       .catch((reply) => {
         let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
         Alert.alert(
-Languages.alert("Login", "_Cannot_Send_Email_argume_header")(),
-Languages.alert("Login", "_Cannot_Send_Email_argume_body")(reply.data),
-[{text: Languages.alert("Login", "_Cannot_Send_Email_argume_left")(), onPress: defaultAction}], { onDismiss: defaultAction });
+lang("_Cannot_Send_Email_argume_header"),
+lang("_Cannot_Send_Email_argume_body",reply.data),
+[{text: lang("_Cannot_Send_Email_argume_left"), onPress: defaultAction}], { onDismiss: defaultAction });
       });
   }
 
@@ -89,16 +94,16 @@ Languages.alert("Login", "_Cannot_Send_Email_argume_body")(reply.data),
       .then(() => {
         SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
-        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: Languages.title("Login", "Reset_Email_Sent")(), passwordReset:true});
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: lang("Reset_Email_Sent"), passwordReset:true});
       })
       .catch((reply) => {
         let content = "Please try again.";
-        let title =  Languages.label("Login", "Cannot_Send_Email")();
+        let title =  lang("Cannot_Send_Email");
         let validationLink = false;
         if (reply.data && reply.data.error) {
           if (reply.data.error.code == "EMAIL_NOT_FOUND") {
             content = "This email is not registered in the Cloud. Please register to create an account.";
-            title =  Languages.label("Login", "Unknown_Email")();
+            title =  lang("Unknown_Email");
           }
           else if (reply.data.error.code == 'RESET_FAILED_EMAIL_NOT_VERIFIED') {
             validationLink = true;
@@ -108,18 +113,18 @@ Languages.alert("Login", "_Cannot_Send_Email_argume_body")(reply.data),
 
         if (validationLink) {
           Alert.alert(
-Languages.alert("Login", "_Your_email_address_has_n_header")(),
-Languages.alert("Login", "_Your_email_address_has_n_body")(),
-[{text: Languages.alert("Login", "_Your_email_address_has_n_left")(), style:'cancel', onPress: () => this.requestVerificationEmail()},
+lang("_Your_email_address_has_n_header"),
+lang("_Your_email_address_has_n_body"),
+[{text: lang("_Your_email_address_has_n_left"), style:'cancel', onPress: () => this.requestVerificationEmail()},
             {
-text: Languages.alert("Login", "_Your_email_address_has_n_right")(), onPress: defaultAction}
+text: lang("_Your_email_address_has_n_right"), onPress: defaultAction}
           ], { onDismiss: defaultAction });
         }
         else {
           Alert.alert(
-Languages.alert("Login", "arguments___arguments___O_header")(title),
-Languages.alert("Login", "arguments___arguments___O_body")(content),
-[{text: Languages.alert("Login", "arguments___arguments___O_left")(), onPress: defaultAction}], {onDismiss: defaultAction});
+lang("arguments___arguments___O_header",title),
+lang("arguments___arguments___O_body",content),
+[{text: lang("arguments___arguments___O_left"), onPress: defaultAction}], {onDismiss: defaultAction});
         }
       });
   }
@@ -127,29 +132,29 @@ Languages.alert("Login", "arguments___arguments___O_body")(content),
   attemptLogin() {
     if (this.state.email === '' || this.state.password === '') {
       Alert.alert(
-Languages.alert("Login", "_Almost_there___Please_in_header")(),
-Languages.alert("Login", "_Almost_there___Please_in_body")(),
-[{text: Languages.alert("Login", "_Almost_there___Please_in_left")()}]);
+lang("_Almost_there___Please_in_header"),
+lang("_Almost_there___Please_in_body"),
+[{text: lang("_Almost_there___Please_in_left")}]);
       return;
     }
 
-    this.props.eventBus.emit('showLoading', Languages.label("Login","Logging_in___")());
+    this.props.eventBus.emit('showLoading', lang("Logging_in___"));
     let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
     let unverifiedEmailCallback = () => {
       Alert.alert(
-Languages.alert("Login", "_Your_email_address_has_no_header")(),
-Languages.alert("Login", "_Your_email_address_has_no_body")(),
-[{text: Languages.alert("Login", "_Your_email_address_has_no_left")(), onPress: () => this.requestVerificationEmail()},
+lang("_Your_email_address_has_no_header"),
+lang("_Your_email_address_has_no_body"),
+[{text: lang("_Your_email_address_has_no_left"), onPress: () => this.requestVerificationEmail()},
         {
-text: Languages.alert("Login", "_Your_email_address_has_no_right")(), onPress: defaultAction}
+text: lang("_Your_email_address_has_no_right"), onPress: defaultAction}
       ],
       { onDismiss: defaultAction });
     };
     let invalidLoginCallback = () => {
       Alert.alert(
-Languages.alert("Login", "_Incorrect_Email_or_Passw_header")(),
-Languages.alert("Login", "_Incorrect_Email_or_Passw_body")(),
-[{text: Languages.alert("Login", "_Incorrect_Email_or_Passw_left")(), onPress: defaultAction}], { onDismiss: defaultAction });
+lang("_Incorrect_Email_or_Passw_header"),
+lang("_Incorrect_Email_or_Passw_body"),
+[{text: lang("_Incorrect_Email_or_Passw_left"), onPress: defaultAction}], { onDismiss: defaultAction });
     };
 
     CLOUD.login({
@@ -183,9 +188,9 @@ Languages.alert("Login", "_Incorrect_Email_or_Passw_body")(),
               this.props.eventBus.emit('hideLoading')
             };
             Alert.alert(
-Languages.alert("Login", "_Connection_Problem__Coul_header")(),
-Languages.alert("Login", "_Connection_Problem__Coul_body")(),
-[{text: Languages.alert("Login", "_Connection_Problem__Coul_left")(), onPress: defaultAction}],
+lang("_Connection_Problem__Coul_header"),
+lang("_Connection_Problem__Coul_body"),
+[{text: lang("_Connection_Problem__Coul_left"), onPress: defaultAction}],
               {onDismiss: defaultAction}
             );
           }
@@ -225,7 +230,7 @@ Languages.alert("Login", "_Connection_Problem__Coul_body")(),
               <TextEditInput
                 ref={(input) => { this.emailInputRef = input; }}
                 style={{width: 0.8*screenWidth, padding:10}}
-                placeholder={Languages.label("Login", "emailemail_address")()}
+                placeholder={lang("emailemail_address")}
                 keyboardType='email-address'
                 autocorrect={false}
                 autoCapitalize="none"
@@ -242,7 +247,7 @@ Languages.alert("Login", "_Connection_Problem__Coul_body")(),
                 style={{width: 0.8*screenWidth, padding:10}}
                 secureTextEntry={Platform.OS === 'android' ? true : this.state.passwordSecureDisplay  }
                 visiblePassword={Platform.OS === 'android' ? !this.state.passwordSecureDisplay : false }
-                placeholder={Languages.label("Login", "password____")()}
+                placeholder={lang("password____")}
                 placeholderTextColor='#888'
                 autoCorrect={false}
                 value={this.state.password}
@@ -253,7 +258,7 @@ Languages.alert("Login", "_Connection_Problem__Coul_body")(),
               </TouchableOpacity>
             </View>
             <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
-            <Text style={{color: '#93cfff'}}>{ Languages.text("Login", "Forgot_Password_")() }</Text></TouchableHighlight>
+            <Text style={{color: '#93cfff'}}>{ lang("Forgot_Password_") }</Text></TouchableHighlight>
             <LoginButton loginCallback={() => {this.attemptLogin()}} />
             <View style={{flex: 1, width:screenWidth, minHeight:30}} />
           </View>
@@ -309,7 +314,7 @@ Languages.alert("Login", "_Connection_Problem__Coul_body")(),
 
   finalizeLogin(accessToken, userId) {
     this.progress = 0;
-    this.props.eventBus.emit('showProgress', {progress: 0, progressText: Languages.label("Login", "Getting_user_data_")()});
+    this.props.eventBus.emit('showProgress', {progress: 0, progressText: lang("Getting_user_data_")});
 
     // give the access token and the userId to the cloud api 
     CLOUD.setAccess(accessToken);
@@ -346,7 +351,7 @@ Languages.alert("Login", "_Connection_Problem__Coul_body")(),
             updatedAt : userData.updatedAt
           }});
           this.progress += parts;
-          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: Languages.label("Login", "Received_user_data_")()});
+          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Received_user_data_")});
         })
     );
 
@@ -374,7 +379,7 @@ Languages.alert("Login", "_Connection_Problem__Coul_body")(),
         LOG.info("Login: step 2");
         store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
         this.progress += parts;
-        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: Languages.label("Login", "Handle_profile_picture_")()});
+        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Handle_profile_picture_")});
       })
       .catch((err) => {
         // likely a 404, ignore
@@ -383,37 +388,37 @@ Languages.alert("Login", "_Connection_Problem__Coul_body")(),
       .then(() => {
         LOG.info("Login: step 3");
         this.progress += parts;
-        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: Languages.label("Login", "Syncing_with_the_Cloud_")()});
+        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
         return CLOUD.sync(store, false);
       })
       .then(() => {
         LOG.info("Login: step 4");
         this.progress += parts;
-        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: Languages.label("Login", "Syncing_with_the_Cloud_")()});
+        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
         let state = store.getState();
         if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
-          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: Languages.label("Login", "Creating_first_Sphere_")()});
+          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Creating_first_Sphere_")});
           return CLOUD.createNewSphere(store, state.user.firstName + "'s Sphere", this.props.eventBus);
         }
         else {
-          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: Languages.label("Login", "Sphere_available_")()});
+          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Sphere_available_")});
         }
       })
       .catch((err) => {
         LOGe.info("Login: Failed to login.", err);
         let defaultAction = () => {this.props.eventBus.emit('hideProgress')};
         Alert.alert(
-Languages.alert("Login", "_Whoops___An_error_has_oc_header")(),
-Languages.alert("Login", "_Whoops___An_error_has_oc_body")(),
-[{text:Languages.alert("Login", "_Whoops___An_error_has_oc_left")(), onPress: defaultAction}], { onDismiss: defaultAction});
+lang("_Whoops___An_error_has_oc_header"),
+lang("_Whoops___An_error_has_oc_body"),
+[{text:lang("_Whoops___An_error_has_oc_left"), onPress: defaultAction}], { onDismiss: defaultAction});
 
 
         if (DEBUG_MODE_ENABLED) {
           let stringifiedError = '' + JSON.stringify(err);
           Alert.alert(
-Languages.alert("Login", "_DEBUG__err__arguments____header")(),
-Languages.alert("Login", "_DEBUG__err__arguments____body")(stringifiedError),
-[{text:Languages.alert("Login", "_DEBUG__err__arguments____left")()}]);
+lang("_DEBUG__err__arguments____header"),
+lang("_DEBUG__err__arguments____body",stringifiedError),
+[{text:lang("_DEBUG__err__arguments____left")}]);
         }
 
         throw err;
@@ -432,7 +437,7 @@ Languages.alert("Login", "_DEBUG__err__arguments____body")(stringifiedError),
         });
 
         LOG.info("Login: finished promises");
-        this.props.eventBus.emit('updateProgress', {progress: 1, progressText: Languages.label("Login", "Done")()});
+        this.props.eventBus.emit('updateProgress', {progress: 1, progressText: lang("Done")});
 
         // finalize the login due to successful download of data. Enables persistence.
         StoreManager.finalizeLogIn(userId).catch(() => {});
@@ -483,7 +488,7 @@ class LoginButton extends Component<any, any> {
         <View style={{flex:1, minHeight: 130}}>
           <View style={{flex:1}} />
           <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
-            <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ Languages.text("Login", "Log_In")() }</Text></View>
+            <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ lang("Log_In") }</Text></View>
           </TouchableOpacity>
           <View style={{flex:1.5}} />
         </View>
@@ -508,7 +513,7 @@ class LoginButton extends Component<any, any> {
                 color:'white',
                 fontSize:18,
                 fontWeight:'bold'
-              }}>{ Languages.text("Login", "Log_In")() }</Text>
+              }}>{ lang("Log_In") }</Text>
             </View>
           </TouchableOpacity>
           <View style={{flex:1}} />

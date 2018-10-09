@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("NotInSphere", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -85,13 +90,13 @@ export class NotInSphere extends Component<any, any> {
 
   _getHeader() {
     if (this.state.shouldBeInSphere === true && this.state.scanningFinished) {
-      return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NotInSphere", "Sphere_tests_completed_")() }</Text>
+      return <Text style={diagnosticStyles.headerStyle}>{ lang("Sphere_tests_completed_") }</Text>
     }
     else if (this.state.shouldBeInSphere === true && !this.state.scanningFinished) {
-      return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NotInSphere", "Running_Sphere_tests___")() }</Text>
+      return <Text style={diagnosticStyles.headerStyle}>{ lang("Running_Sphere_tests___") }</Text>
     }
     else {
-      return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NotInSphere", "Initial_tests_completed_")() }</Text>
+      return <Text style={diagnosticStyles.headerStyle}>{ lang("Initial_tests_completed_") }</Text>
     }
   }
 
@@ -99,17 +104,17 @@ export class NotInSphere extends Component<any, any> {
     if (this.state.shouldBeInSphere === true) {
       return (
         <View>
-          <TestResult label={ Languages.label("NotInSphere", "Database_is_healthy")()}       state={ this.props.databaseHealth   } />
-          <TestResult label={ Languages.label("NotInSphere", "Scanning_is_enabled")()}       state={ this.props.isMonitoring     } />
-          <TestResult label={ Languages.label("NotInSphere", "Listening_for_Crownstones")()} state={ this.state.scanningFinished } />
+          <TestResult label={ lang("Database_is_healthy")}       state={ this.props.databaseHealth   } />
+          <TestResult label={ lang("Scanning_is_enabled")}       state={ this.props.isMonitoring     } />
+          <TestResult label={ lang("Listening_for_Crownstones")} state={ this.state.scanningFinished } />
         </View>
       );
     }
     else {
       return (
         <View>
-          <TestResult label={ Languages.label("NotInSphere", "Database_is_healthy")()} state={ this.props.databaseHealth } />
-          <TestResult label={ Languages.label("NotInSphere", "Scanning_is_enabled")()} state={ this.props.isMonitoring   } />
+          <TestResult label={ lang("Database_is_healthy")} state={ this.props.databaseHealth } />
+          <TestResult label={ lang("Scanning_is_enabled")} state={ this.props.isMonitoring   } />
         </View>
       )
     }
@@ -130,8 +135,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={Languages.label("NotInSphere","Im_picking_up_beacon_sign")()}
-            explanation={ Languages.label("NotInSphere","This_can_happen_if_someon")() }
+            header={lang("Im_picking_up_beacon_sign")}
+            explanation={ lang("This_can_happen_if_someon") }
           />
         );
       }
@@ -139,8 +144,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonHelp
             visible={this.state.visible}
-            header={Languages.label("NotInSphere","Im_picking_up_beacon_sign")()}
-            explanation={ Languages.label("NotInSphere","This_can_be_bad_timing_or")() }
+            header={lang("Im_picking_up_beacon_sign")}
+            explanation={ lang("This_can_be_bad_timing_or") }
           />
         );
       }
@@ -148,8 +153,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonQuit
             visible={this.state.visible}
-            header={ Languages.label("NotInSphere","Im_picking_up_data_from_y")()}
-            explanation={ Languages.label("NotInSphere", "This_can_happen_if_there_")()}
+            header={ lang("Im_picking_up_data_from_y")}
+            explanation={ lang("This_can_happen_if_there_")}
           />
         );
       }
@@ -157,8 +162,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonToOverview
             visible={this.state.visible}
-            header={Languages.label("NotInSphere","I_cant_hear_any_of_your_Cr_adm")()}
-            explanation={Languages.label("NotInSphere","You_can_add_it_to_your_Sph")()}
+            header={lang("I_cant_hear_any_of_your_Cr_adm")}
+            explanation={lang("You_can_add_it_to_your_Sph")}
           />
         );
       }
@@ -166,8 +171,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={ Languages.label("NotInSphere","I_cant_hear_any_of_your_Cr")()}
-            explanation={ Languages.label("NotInSphere", "Only_admins_can_setup_Cro")()}
+            header={ lang("I_cant_hear_any_of_your_Cr")}
+            explanation={ lang("Only_admins_can_setup_Cro")}
           />
         );
       }
@@ -176,8 +181,8 @@ export class NotInSphere extends Component<any, any> {
           return (
             <DiagSingleBleTroubleshooter
               visible={this.state.visible}
-              header={Languages.label("NotInSphere","I_can_hear_a_Crownstone_bu")()}
-              explanation={ Languages.label("NotInSphere", "In_this_case__you_can_try")()}
+              header={lang("I_can_hear_a_Crownstone_bu")}
+              explanation={ lang("In_this_case__you_can_try")}
             />
           );
         }
@@ -186,9 +191,9 @@ export class NotInSphere extends Component<any, any> {
             <DiagSingleButtonHelp
               visible={this.state.visible}
               header={
-                Languages.label("NotInSphere","I_can_hear_a_Crownstone__noAdm")()
+                lang("I_can_hear_a_Crownstone__noAdm")
               }
-              explanation={Languages.label("NotInSphere","Tap_the_button_below_to_go")()}
+              explanation={lang("Tap_the_button_below_to_go")}
             />
           );
         }
@@ -197,7 +202,7 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={Languages.label("NotInSphere","I_can_hear_a_Crownstone__b")()}
+            header={lang("I_can_hear_a_Crownstone__b")}
           />
         );
       }
@@ -205,8 +210,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={Languages.label("NotInSphere","If_you_want_to_join_a_frie")()}
-            explanation={ Languages.label("NotInSphere", "Once_they_invite_you__you")()}
+            header={lang("If_you_want_to_join_a_frie")}
+            explanation={ lang("Once_they_invite_you__you")}
           />
         );
       }
@@ -214,8 +219,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagYesNo
             visible={this.state.visible}
-            header={ Languages.label("NotInSphere", "I_can_hear_a_Crownstone__")()}
-            explanation={Languages.label("NotInSphere","Are_you_visiting_a_friends")()}
+            header={ lang("I_can_hear_a_Crownstone__")}
+            explanation={lang("Are_you_visiting_a_friends")}
             onPressNo={ () => { this._changeContent(() => { this.setState({userInputVisitingSphere: false}); }); }}
             onPressYes={() => { this._changeContent(() => { this.setState({userInputVisitingSphere: true}); }); }}
           />
@@ -225,8 +230,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleButtonQuit
             visible={this.state.visible}
-            header={Languages.label("NotInSphere","Im_not_picking_up_any_Crow")()}
-            explanation={Languages.label("NotInSphere","This_can_happen_if_there_i")()}
+            header={lang("Im_not_picking_up_any_Crow")}
+            explanation={lang("This_can_happen_if_there_i")}
           />
         );
       }
@@ -234,8 +239,8 @@ export class NotInSphere extends Component<any, any> {
         return (
           <DiagSingleBleTroubleshooter
             visible={this.state.visible}
-            header={ Languages.label("NotInSphere", "I_m_not_picking_up_anythi")()}
-            explanation={ Languages.label("NotInSphere", "It_could_be_that_your_phone")()}
+            header={ lang("I_m_not_picking_up_anythi")}
+            explanation={ lang("It_could_be_that_your_phone")}
           />
         );
       }
@@ -245,8 +250,8 @@ export class NotInSphere extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("NotInSphere", "In_that_case__everything_")()}
-          explanation={ Languages.label("NotInSphere", "If_you_have_any_questions")()}
+          header={ lang("In_that_case__everything_")}
+          explanation={ lang("If_you_have_any_questions")}
         />
       );
     }
@@ -255,7 +260,7 @@ export class NotInSphere extends Component<any, any> {
         <View style={{flex:1}}>
           <View style={{flex:1}} />
           <FadeInView visible={this.state.visible} style={{width:screenWidth}}>
-            <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NotInSphere", "Let_me_run_a_few_more_tes")() }</Text>
+            <Text style={diagnosticStyles.headerStyle}>{ lang("Let_me_run_a_few_more_tes") }</Text>
           </FadeInView>
           <View style={{flex:1}} />
         </View>
@@ -265,8 +270,8 @@ export class NotInSphere extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={ Languages.label("NotInSphere", "So_far_so_good__n_nAre_yo")()}
-          subExplanation={ Languages.label("NotInSphere", "_close_to_your_Crownstone")()}
+          header={ lang("So_far_so_good__n_nAre_yo")}
+          subExplanation={ lang("_close_to_your_Crownstone")}
           onPressNo={() => { this._changeContent(() => { this.setState({shouldBeInSphere: false}); }); }}
           onPressYes={() => {
             this._changeContent(() => {

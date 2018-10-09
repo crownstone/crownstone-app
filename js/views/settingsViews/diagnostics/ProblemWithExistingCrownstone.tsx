@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ProblemWithExistingCrownstone", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -153,29 +158,29 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
 
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ProblemWithExistingCrownstone", "Problem_with_existing_Cro")() }</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{ lang("Problem_with_existing_Cro") }</Text>
   }
 
   _getTests() {
     return (
       <View>
         <SlideFadeInView visible={!this.state.existingTestsVisible && !this.state.existingMeshTestsVisible && !this.state.switchTestVisible} height={180}>
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Database_is_healthy")()}       state={ true } />
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Scanning_is_enabled")()}       state={ true } />
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Receiving_Sphere_beacons")()}  state={ true } />
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Receiving_Crownstone_data")()} state={ true } />
+          <TestResult label={ lang("Database_is_healthy")}       state={ true } />
+          <TestResult label={ lang("Scanning_is_enabled")}       state={ true } />
+          <TestResult label={ lang("Receiving_Sphere_beacons")}  state={ true } />
+          <TestResult label={ lang("Receiving_Crownstone_data")} state={ true } />
         </SlideFadeInView>
         <SlideFadeInView visible={this.state.existingTestsVisible && !this.state.existingMeshTestsVisible && !this.state.switchTestVisible} height={180}>
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Looking_for_beacon")()}    state={ this.state.canSeeCrownstoneBeacon   } />
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Looking_for_data")()}      state={ this.state.canSeeCrownstoneDirectly } />
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Looking_for_mesh")()}      state={ this.state.canSeeCrownstoneViaMesh || this.state.canSeeThisCrownstoneMesh } />
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Looking_for_address")()}   state={ this.state.canSeeCrownstoneAddress  } />
+          <TestResult label={ lang("Looking_for_beacon")}    state={ this.state.canSeeCrownstoneBeacon   } />
+          <TestResult label={ lang("Looking_for_data")}      state={ this.state.canSeeCrownstoneDirectly } />
+          <TestResult label={ lang("Looking_for_mesh")}      state={ this.state.canSeeCrownstoneViaMesh || this.state.canSeeThisCrownstoneMesh } />
+          <TestResult label={ lang("Looking_for_address")}   state={ this.state.canSeeCrownstoneAddress  } />
         </SlideFadeInView>
         <SlideFadeInView visible={this.state.existingMeshTestsVisible && !this.state.switchTestVisible} height={45}>
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Checking_mesh")()}  state={ this.state.canSeeCrownstoneViaMesh || this.state.canSeeThisCrownstoneMesh } />
+          <TestResult label={ lang("Checking_mesh")}  state={ this.state.canSeeCrownstoneViaMesh || this.state.canSeeThisCrownstoneMesh } />
         </SlideFadeInView>
         <SlideFadeInView visible={this.state.switchTestVisible} height={45}>
-          <TestResult label={ Languages.label("ProblemWithExistingCrownstone", "Switching_Crownstone")()}  state={ this.state.switchedCrownstone } />
+          <TestResult label={ lang("Switching_Crownstone")}  state={ this.state.switchedCrownstone } />
         </SlideFadeInView>
       </View>
     )
@@ -190,9 +195,9 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
 
 
   _handleNotInRange() {
-    let helpPlace =  Languages.label("ProblemWithExistingCrownstone", "Settings")();
+    let helpPlace =  lang("Settings");
     if (Platform.OS === 'android') {
-      helpPlace =  Languages.label("ProblemWithExistingCrownstone", "Sidebar_")();
+      helpPlace =  lang("Sidebar_");
     }
 
     // not in range
@@ -200,8 +205,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","I_can_hear_a_Crownstone_w")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","You_can_try_to_factory_re")()}
+          header={lang("I_can_hear_a_Crownstone_w")}
+          explanation={lang("You_can_try_to_factory_re")}
         />
       );
     }
@@ -209,8 +214,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "I_cant_hear_this_Crowns_atAll")()}
-          explanation={ Languages.label("ProblemWithExistingCrownstone", "Are_you_close_to_it_")()}
+          header={ lang("I_cant_hear_this_Crowns_atAll")}
+          explanation={ lang("Are_you_close_to_it_")}
           onPressNo={() => { this._changeContent(() => { this.setState({userInputPhoneIsClose: false}); }); }}
           onPressYes={() => {this._changeContent(() => { this.setState({userInputPhoneIsClose: true }); }); }}
         />
@@ -220,9 +225,9 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButton
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "It_could_just_be_out_of_r")()}
-          explanation={ Languages.label("ProblemWithExistingCrownstone", "Press_the_button_to_conti")()}
-          label={ Languages.label("ProblemWithExistingCrownstone","Im_near_now_")()}
+          header={ lang("It_could_just_be_out_of_r")}
+          explanation={ lang("Press_the_button_to_conti")}
+          label={ lang("Im_near_now_")}
           onPress={() => { this._changeContent(() => { this.setState({
             canSeeCrownstoneNotInSphere: null,
             canSeeCrownstoneAddress: null,
@@ -243,8 +248,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "OK__we_can_do_it_later_")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","Run_the_diagnostic_again_")(helpPlace)}
+          header={ lang("OK__we_can_do_it_later_")}
+          explanation={lang("Run_the_diagnostic_again_",helpPlace)}
         />
       );
     }
@@ -252,8 +257,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonToOverview
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "Crownstone_successfully_r")()}
-          explanation={ Languages.label("ProblemWithExistingCrownstone", "It_will_be_in_setup_mode_")()}
+          header={ lang("Crownstone_successfully_r")}
+          explanation={ lang("It_will_be_in_setup_mode_")}
         />
       );
     }
@@ -261,13 +266,13 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "Failed_to_reset_Crownston")()}
-          explanation={ Languages.label("ProblemWithExistingCrownstone","Something_went_wrong_duri")()}
+          header={ lang("Failed_to_reset_Crownston")}
+          explanation={ lang("Something_went_wrong_duri")}
         />
       );
     }
     else if (this.state.userInputResetCrownstoneNow === true) {
-      return <DiagWaiting visible={this.state.visible} header={ Languages.label("ProblemWithExistingCrownstone", "Factory_resetting_your_lo")()}/>;
+      return <DiagWaiting visible={this.state.visible} header={ lang("Factory_resetting_your_lo")}/>;
     }
     else if (this.state.userInputCycledPower === null) {
       let nearCrownstones = this.state.nearestCheck;
@@ -280,20 +285,20 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         }
       });
 
-      let header =  Languages.label("ProblemWithExistingCrownstone", "I_cant_hear_this_Crownsto")();
-      let explanation =  Languages.label("ProblemWithExistingCrownstone", "Try_disconnecting_its_pow")();
+      let header =  lang("I_cant_hear_this_Crownsto");
+      let explanation =  lang("Try_disconnecting_its_pow");
 
       if (nearest) {
         let noun = null;
         if (nearest.rssi > -55) {
-          noun =  Languages.label("ProblemWithExistingCrownstone", "very")();
+          noun =  lang("very");
         }
         else if (nearest.rssi > -65) {
-          noun =  Languages.label("ProblemWithExistingCrownstone", "pretty")()}
+          noun =  lang("pretty")}
         else if (nearest.rssi > -75) {
-          noun =  Languages.label("ProblemWithExistingCrownstone", "somewhat")()}
+          noun =  lang("somewhat")}
         else if (nearest.rssi > -85) {
-          noun =  Languages.label("ProblemWithExistingCrownstone", "not_that")()}
+          noun =  lang("not_that")}
 
         let nearSummary = MapProvider.stoneHandleMap[nearest.handle];
         if (!nearSummary) {
@@ -302,8 +307,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
               return (
                 <DiagYesNo
                   visible={this.state.visible}
-                  header={Languages.label("ProblemWithExistingCrownstone","The_nearest_Crownstone_be")(noun)}
-                  explanation={ Languages.label("ProblemWithExistingCrownstone", "This_can_happen_when_some")()}
+                  header={lang("The_nearest_Crownstone_be",noun)}
+                  explanation={ lang("This_can_happen_when_some")}
                   onPressNo={ () => { this._changeContent(() => { this.setState({userInputResetCrownstoneNow: false }); }) }}
                   onPressYes={() => { this._changeContent(() => { this.setState({userInputResetCrownstoneNow: true  }); this._factoryResetMyLostCrownstone(nearest.handle) }) }}
                 />
@@ -313,8 +318,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
               return (
                 <DiagSingleButtonGoBack
                   visible={this.state.visible}
-                  header={Languages.label("ProblemWithExistingCrownstone","The_nearest_Crownstone_be")(noun)}
-                  explanation={ Languages.label("ProblemWithExistingCrownstone","This_can_happen_when_some_noAdm")() }
+                  header={lang("The_nearest_Crownstone_be",noun)}
+                  explanation={ lang("This_can_happen_when_some_noAdm") }
                 />
               );
             }
@@ -323,8 +328,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             return (
               <DiagSingleButtonHelp
                 visible={this.state.visible}
-                header={Languages.label("ProblemWithExistingCrownstone","The_nearest_Crownstone_is")(noun)}
-                explanation={Languages.label("ProblemWithExistingCrownstone","If_youre_sure_its_one_of_")()}
+                header={lang("The_nearest_Crownstone_is",noun)}
+                explanation={lang("If_youre_sure_its_one_of_")}
               />
             );
           }
@@ -334,8 +339,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             // nearest Crownstone is not the selected one.
             let name = nameFromSummary(nearSummary);
             if (noun) {
-              header =  Languages.label("ProblemWithExistingCrownstone", "The_nearest_Crownstone_I_")(name,noun);
-              explanation =  Languages.label("ProblemWithExistingCrownstone", "If_youre_sure_youre_near_")()}
+              header =  lang("The_nearest_Crownstone_I_",name,noun);
+              explanation =  lang("If_youre_sure_youre_near_")}
           }
 
           // phone is close
@@ -344,7 +349,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
               visible={this.state.visible}
               header={header}
               explanation={explanation}
-              label={ Languages.label("ProblemWithExistingCrownstone", "OK__done_")()}
+              label={ lang("OK__done_")}
               onPress={() => { this._changeContent(() => { this.setState({
                 canSeeCrownstoneNotInSphere: null,
                 canSeeCrownstoneAddress: null,
@@ -369,9 +374,9 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         return (
           <DiagSingleButton
             visible={this.state.visible}
-            header={Languages.label("ProblemWithExistingCrownstone","I_cant_hear_this_Crowns_atAll")()}
-            explanation={Languages.label("ProblemWithExistingCrownstone","Try_disconnecting_its_pow")()}
-            label={ Languages.label("ProblemWithExistingCrownstone", "Power_has_been_cycled_")()}
+            header={lang("I_cant_hear_this_Crowns_atAll")}
+            explanation={lang("Try_disconnecting_its_pow")}
+            label={ lang("Power_has_been_cycled_")}
             onPress={() => { this._changeContent(() => { this.setState({
               canSeeCrownstoneNotInSphere: null,
               canSeeCrownstoneAddress: null,
@@ -395,8 +400,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","I_still_cant_hear_this_Cr")()}
-          explanation={ Languages.label("ProblemWithExistingCrownstone", "Contact_us_at_team_crowns")()}
+          header={lang("I_still_cant_hear_this_Cr")}
+          explanation={ lang("Contact_us_at_team_crowns")}
         />
       );
     }
@@ -412,18 +417,18 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
 
       let explanation = null;
       if (inMesh === true) {
-        explanation =  Languages.label("ProblemWithExistingCrownstone", "I_didnt_hear_it_via_the_o")()}
+        explanation =  lang("I_didnt_hear_it_via_the_o")}
       else {
         if (this.state.amountOfIBeacons <= 1) {
-          explanation =  Languages.label("ProblemWithExistingCrownstone", "I_didnt_hear_it_via_the_m")()}
+          explanation =  lang("I_didnt_hear_it_via_the_m")}
         else {
-          explanation =  Languages.label("ProblemWithExistingCrownstone", "I_didnt_hear_it_via_the_me")()}
+          explanation =  lang("I_didnt_hear_it_via_the_me")}
       }
 
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","I_can_hear_the_directly")()}
+          header={lang("I_can_hear_the_directly")}
           explanation={explanation}
         />
       );
@@ -434,18 +439,18 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
 
       let explanation = null;
       if (inMesh === true) {
-        explanation =  Languages.label("ProblemWithExistingCrownstone", "I_didnt_hear_it_via_the_mes")()}
+        explanation =  lang("I_didnt_hear_it_via_the_mes")}
       else {
         if (this.state.amountOfIBeacons <= 1) {
-          explanation =  Languages.label("ProblemWithExistingCrownstone", "I_didnt_hear_it_via_the_mesh")()}
+          explanation =  lang("I_didnt_hear_it_via_the_mesh")}
         else {
-          explanation =  Languages.label("ProblemWithExistingCrownstone", "I_didnt_hear_it_via_the_mesh_")()}
+          explanation =  lang("I_didnt_hear_it_via_the_mesh_")}
       }
 
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","I_can_hear_the_directly")()}
+          header={lang("I_can_hear_the_directly")}
           explanation={explanation}
         />
       );
@@ -454,8 +459,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","I_can_hear_the_Crown_mesh")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","Since_I_cant_hear_this_Cr")()}
+          header={lang("I_can_hear_the_Crown_mesh")}
+          explanation={lang("Since_I_cant_hear_this_Cr")}
         />
       );
     }
@@ -464,8 +469,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone","I_can_hear_the_Crownstone")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","You_can_try_to_take_the_p2")()}
+          header={ lang("I_can_hear_the_Crownstone")}
+          explanation={lang("You_can_try_to_take_the_p2")}
         />
       );
     }
@@ -474,8 +479,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "I_can_see_this_Crownstone")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","It_is_not_on_Searching___")()}
+          header={ lang("I_can_see_this_Crownstone")}
+          explanation={lang("It_is_not_on_Searching___")}
         />
       );
     }
@@ -484,8 +489,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","I_can_hear_this_Crownston2")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","You_can_try_to_take_the_p")()}
+          header={lang("I_can_hear_this_Crownston2")}
+          explanation={lang("You_can_try_to_take_the_p")}
         />
       );
     }
@@ -494,8 +499,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","I_can_hear_this_Crownston2")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","You_can_try_to_take_the_p")()}
+          header={lang("I_can_hear_this_Crownston2")}
+          explanation={lang("You_can_try_to_take_the_p")}
         />
       );
     }
@@ -512,61 +517,61 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       let explanation = null;
       if (this.state.amountOfIBeacons <= 1) {
         if (inMesh) {
-          explanation =  Languages.label("ProblemWithExistingCrownstone", "I_cant_hear_it_via_the_me")();
+          explanation =  lang("I_cant_hear_it_via_the_me");
         }
         else {
-          explanation =  Languages.label("ProblemWithExistingCrownstone", "I_cant_hear_it_via_the_mes")();
+          explanation =  lang("I_cant_hear_it_via_the_mes");
         }
       }
       else {
-        explanation =  Languages.label("ProblemWithExistingCrownstone", "I_cant_hear_it_via_the_mesh")();
+        explanation =  lang("I_cant_hear_it_via_the_mesh");
       }
-      explanation +=  Languages.label("ProblemWithExistingCrownstone", "You_can_try_moving_it_clo")();
+      explanation +=  lang("You_can_try_moving_it_clo");
       if (Platform.OS === 'android') {
-        explanation +=  Languages.label("ProblemWithExistingCrownstone", "Sidebar_")();
+        explanation +=  lang("Sidebar_");
       }
       else {
-          explanation +=  Languages.label("ProblemWithExistingCrownstone", "Settings_")();
+          explanation +=  lang("Settings_");
       }
 
       return (
         <DiagSingleButtonMeshTopology
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "I_see_what_you_mean__")()}
+          header={ lang("I_see_what_you_mean__")}
           explanation={explanation}
         />
       );
     }
     else if (this.state.canSeeCrownstoneViaMesh === true) {
       // everything is perfect
-      let explanation =  Languages.label("ProblemWithExistingCrownstone", "It_is_in_the_mesh__You_ca")();
+      let explanation =  lang("It_is_in_the_mesh__You_ca");
       if (Platform.OS === 'android') {
-        explanation +=  Languages.label("ProblemWithExistingCrownstone", "Sidebar_")();
+        explanation +=  lang("Sidebar_");
       }
       else {
-        explanation +=  Languages.label("ProblemWithExistingCrownstone", "Settings_")();
+        explanation +=  lang("Settings_");
       }
       return (
         <DiagSingleButtonMeshTopology
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "I_can_hear_other_Crownsto")()}
+          header={ lang("I_can_hear_other_Crownsto")}
           explanation={explanation}
         />
       );
     }
     else if (this.state.canSeeThisCrownstoneMesh === true) {
       // everything is perfect
-      let explanation =  Languages.label("ProblemWithExistingCrownstone", "It_is_in_the_mesh__You_can")();
+      let explanation =  lang("It_is_in_the_mesh__You_can");
       if (Platform.OS === 'android') {
-        explanation +=  Languages.label("ProblemWithExistingCrownstone", "Sidebar_")();
+        explanation +=  lang("Sidebar_");
       }
       else {
-        explanation +=  Languages.label("ProblemWithExistingCrownstone", "Settings_")();
+        explanation +=  lang("Settings_");
       }
       return (
         <DiagSingleButtonMeshTopology
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "I_can_hear_this_Crownston")()}
+          header={ lang("I_can_hear_this_Crownston")}
           explanation={explanation}
         />
       );
@@ -579,8 +584,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "This_is_usually_because_t")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","It_can_happen_that_messag")()}
+          header={ lang("This_is_usually_because_t")}
+          explanation={lang("It_can_happen_that_messag")}
         />
       );
     }
@@ -588,8 +593,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","Youre_probably_out_of_ran")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","A_Crownstone_does_not_swi")()}
+          header={lang("Youre_probably_out_of_ran")}
+          explanation={lang("A_Crownstone_does_not_swi")}
         />
       );
     }
@@ -653,8 +658,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithExistingCrownstone", "Something_went_wrong_")()}
-            explanation={ Languages.label("ProblemWithExistingCrownstone", "Please_restart_the_diagno")()}
+            header={ lang("Something_went_wrong_")}
+            explanation={ lang("Please_restart_the_diagno")}
           />
         );
       }
@@ -664,8 +669,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithExistingCrownstone", "This_Crownstone_seems_to_")()}
-            explanation={Languages.label("ProblemWithExistingCrownstone","This_does_not_mean_your_d")()}
+            header={ lang("This_Crownstone_seems_to_")}
+            explanation={lang("This_does_not_mean_your_d")}
           />
         );
       }
@@ -676,8 +681,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={ Languages.label("ProblemWithExistingCrownstone", "Someone_has_locked_this_C")()}
-              explanation={ Languages.label("ProblemWithExistingCrownstone", "A_Crownstone_can_be_locke")()}
+              header={ lang("Someone_has_locked_this_C")}
+              explanation={ lang("A_Crownstone_can_be_locke")}
             />
           );
         }
@@ -685,8 +690,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={ Languages.label("ProblemWithExistingCrownstone", "Someone_has_locked_this_Cr")()}
-              explanation={Languages.label("ProblemWithExistingCrownstone","A_Crownstone_can_be_locke_noAdm")()}
+              header={ lang("Someone_has_locked_this_Cr")}
+              explanation={lang("A_Crownstone_can_be_locke_noAdm")}
             />
           );
         }
@@ -696,8 +701,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         return (
           <DiagYesNo
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithExistingCrownstone", "Let_me_try_to_switch_this")()}
-            explanation={ Languages.label("ProblemWithExistingCrownstone", "Is_that_OK__Its_currently")(currentState > 0)}
+            header={ lang("Let_me_try_to_switch_this")}
+            explanation={ lang("Is_that_OK__Its_currently",currentState > 0)}
             onPressNo={() => { this._changeContent(() => { this.setState({userInputAllowedToSwitch: false}); }); }}
             onPressYes={() => {this._changeContent(() => { this._tryToSwitchCrownstone(); this.setState({userInputAllowedToSwitch: true, switchTestVisible:true }); }); }}
           />
@@ -707,8 +712,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithExistingCrownstone", "No_problem__maybe_next_ti")()}
-            explanation={Languages.label("ProblemWithExistingCrownstone","Rerun_the_diagnostic_once")()}
+            header={ lang("No_problem__maybe_next_ti")}
+            explanation={lang("Rerun_the_diagnostic_once")}
           />
         );
       }
@@ -716,7 +721,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         if (this.state.switchedCrownstone === null) {
           // switching...
           let name = nameFromSummary(this.state.problemStoneSummary);
-          return <DiagWaiting visible={this.state.visible} header={Languages.label("ProblemWithExistingCrownstone","Trying_to_switch____")(name)}/>;
+          return <DiagWaiting visible={this.state.visible} header={lang("Trying_to_switch____",name)}/>;
         }
         else if (this.state.switchedCrownstone === false) {
           if (this.state.userInputOnlyThisCrownstone === null) {
@@ -725,9 +730,9 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
               return (
                 <DiagSingleButton
                   visible={this.state.visible}
-                  header={Languages.label("ProblemWithExistingCrownstone","I_couldnt_hear_any_messag")()}
-                  explanation={Languages.label("ProblemWithExistingCrownstone","Could_you_try_moving_a_li")()}
-                  label={ Languages.label("ProblemWithExistingCrownstone", "OK")()}
+                  header={lang("I_couldnt_hear_any_messag")}
+                  explanation={lang("Could_you_try_moving_a_li")}
+                  label={ lang("OK")}
                   onPress={() => {this._changeContent(() => { this._tryToSwitchCrownstone(); this.setState({ switchedCrownstone: null, userInputOnlyThisCrownstone: null, switchedCrownstoneNotNear: null }); }); }}
                 />
               );
@@ -737,8 +742,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
               return (
                 <DiagYesNo
                   visible={this.state.visible}
-                  header={ Languages.label("ProblemWithExistingCrownstone", "I_see____It_failed_to_swi")()}
-                  explanation={ Languages.label("ProblemWithExistingCrownstone", "It_could_be_this_Crownsto")()}
+                  header={ lang("I_see____It_failed_to_swi")}
+                  explanation={ lang("It_could_be_this_Crownsto")}
                   onPressNo={() => { this._changeContent(() => { this.setState({ userInputOnlyThisCrownstone: false}); }); }}
                   onPressYes={() => {this._changeContent(() => { this.setState({ userInputOnlyThisCrownstone: true }); }); }}
                 />
@@ -747,16 +752,16 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           }
           else if (this.state.userInputOnlyThisCrownstone === false) {
             // ble troubleshooter
-            return <DiagSingleBleTroubleshooter visible={this.state.visible} header={Languages.label("ProblemWithExistingCrownstone","In_that_case__its_probabl")()}/>
+            return <DiagSingleBleTroubleshooter visible={this.state.visible} header={lang("In_that_case__its_probabl")}/>
           }
           else if (this.state.userInputOnlyThisCrownstone === true) {
             // power on / off
             return (
               <DiagSingleButton
                 visible={this.state.visible}
-                header={ Languages.label("ProblemWithExistingCrownstone", "Could_you_try_restarting_")()}
-                explanation={Languages.label("ProblemWithExistingCrownstone","Try_disconnecting_its_pow")()}
-                label={ Languages.label("ProblemWithExistingCrownstone", "OK__done_")()}
+                header={ lang("Could_you_try_restarting_")}
+                explanation={lang("Try_disconnecting_its_pow")}
+                label={ lang("OK__done_")}
                 onPress={() => {this._changeContent(() => { this._tryToSwitchCrownstone(); this.setState({ switchedCrownstone: null, userInputOnlyThisCrownstone: null, switchedCrownstoneNotNear: null }); }) }}
               />
             );
@@ -767,8 +772,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             return (
               <DiagYesNo
                 visible={this.state.visible}
-                header={ Languages.label("ProblemWithExistingCrownstone", "It_looks_like_I_can_switc")()}
-                explanation={ Languages.label("ProblemWithExistingCrownstone", "Did_it_switch_successfull")()}
+                header={ lang("It_looks_like_I_can_switc")}
+                explanation={ lang("Did_it_switch_successfull")}
                 onPressNo={() => { this._changeContent(() => { this.setState({switchSuccessful: false}); }); }}
                 onPressYes={() => {this._changeContent(() => { this.setState({switchSuccessful: true }); }); }}
               />
@@ -779,8 +784,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
               return (
                 <DiagYesNo
                   visible={this.state.visible}
-                  header={ Languages.label("ProblemWithExistingCrownstone", "It_could_be_that_the_conn")()}
-                  explanation={ Languages.label("ProblemWithExistingCrownstone", "If_you_try_it_with_a_simp")()}
+                  header={ lang("It_could_be_that_the_conn")}
+                  explanation={ lang("If_you_try_it_with_a_simp")}
                   onPressNo={() => { this._changeContent(() => { this.setState({switchSuccessfulVerified: false}); }); }}
                   onPressYes={() => {this._changeContent(() => { this.setState({switchSuccessfulVerified: true }); }); }}
                 />
@@ -791,8 +796,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
               return (
                 <DiagSingleButtonGoBack
                   visible={this.state.visible}
-                  header={ Languages.label("ProblemWithExistingCrownstone", "Glad_it_works_now_")()}
-                  explanation={Languages.label("ProblemWithExistingCrownstone","If_theres_anything_else__")()}
+                  header={ lang("Glad_it_works_now_")}
+                  explanation={lang("If_theres_anything_else__")}
                 />
               );
             }
@@ -801,8 +806,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
               return (
                 <DiagSingleButtonGoBack
                   visible={this.state.visible}
-                  header={ Languages.label("ProblemWithExistingCrownstone", "In_that_case__this_Crowns")()}
-                  explanation={ Languages.label("ProblemWithExistingCrownstone", "Contact_us_at_team_crownst")()}
+                  header={ lang("In_that_case__this_Crowns")}
+                  explanation={ lang("Contact_us_at_team_crownst")}
                 />
               );
             }
@@ -811,8 +816,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             return (
               <DiagSingleButtonGoBack
                 visible={this.state.visible}
-                header={ Languages.label("ProblemWithExistingCrownstone", "Glad_it_works_")()}
-                explanation={Languages.label("ProblemWithExistingCrownstone","If_theres_anything_else__")()}
+                header={ lang("Glad_it_works_")}
+                explanation={lang("If_theres_anything_else__")}
               />
             );
           }
@@ -823,8 +828,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","I_cant_hear_this_Crownsto2")()}
-          explanation={ Languages.label("ProblemWithExistingCrownstone", "Are_you_close_to_it_")()}
+          header={lang("I_cant_hear_this_Crownsto2")}
+          explanation={ lang("Are_you_close_to_it_")}
           onPressNo={() => { this._changeContent(() => { this.setState({userInputPhoneIsClose: false}); }); }}
           onPressYes={() => {this._changeContent(() => { this.setState({userInputPhoneIsClose: true }); }); }}
         />
@@ -834,8 +839,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButton
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "It_could_just_be_out_of_ra")()}
-          explanation={ Languages.label("ProblemWithExistingCrownstone", "Press_the_button_to_contin")()}
+          header={ lang("It_could_just_be_out_of_ra")}
+          explanation={ lang("Press_the_button_to_contin")}
           label={"I'm near now!"}
           onPress={() => { this._changeContent(() => { this.setState({
             canSeeCrownstoneNotInSphere: null,
@@ -861,19 +866,19 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
   _getSwitchCraftExplanation(state) {
     if (Permissions.inSphere(this.state.problemStoneSummary.sphereId).editCrownstone) {
       if (state.user.betaAccess) {
-        return Languages.label("ProblemWithExistingCrownstone","You_can_disable_Switchcra")();
+        return lang("You_can_disable_Switchcra");
       }
       else {
         if (state.user.developer) {
-          return  Languages.label("ProblemWithExistingCrownstone","The_option_for_Switchcraf_dev")();
+          return  lang("The_option_for_Switchcraf_dev");
         }
         else {
-          return  Languages.label("ProblemWithExistingCrownstone","The_option_for_Switchcraf")();
+          return  lang("The_option_for_Switchcraf");
         }
       }
     }
     else {
-      return Languages.label("ProblemWithExistingCrownstone","You_can_ask_an_Admin_to_d")();
+      return lang("You_can_ask_an_Admin_to_d");
     }
   }
 
@@ -899,16 +904,16 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagOptions
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","Whats_wrong_with__")(name)}
-          subExplanation={ Languages.label("ProblemWithExistingCrownstone", "Scroll_down_to_see_all_op")()}
+          header={lang("Whats_wrong_with__",name)}
+          subExplanation={ lang("Scroll_down_to_see_all_op")}
           labels={[
-            Languages.label("ProblemWithExistingCrownstone","The_app_says_Searching___")(),
-            Languages.label("ProblemWithExistingCrownstone","I_cant_get_it_to_switch_")(),
-            Languages.label("ProblemWithExistingCrownstone","It_is_not_in_the_mesh_")(),
-            Languages.label("ProblemWithExistingCrownstone","It_switches_unexpectedly_")(),
-            Languages.label("ProblemWithExistingCrownstone","It_only_switches_when_Im_")(),
-            Languages.label("ProblemWithExistingCrownstone","Its_behaviour_is_weird_")(),
-            Languages.label("ProblemWithExistingCrownstone","Other___")()
+            lang("The_app_says_Searching___"),
+            lang("I_cant_get_it_to_switch_"),
+            lang("It_is_not_in_the_mesh_"),
+            lang("It_switches_unexpectedly_"),
+            lang("It_only_switches_when_Im_"),
+            lang("Its_behaviour_is_weird_"),
+            lang("Other___")
           ]}
           pressHandlers={[
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'searching'      }); }); },
@@ -940,12 +945,12 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
     else if (this.state.crownstoneProblemType === 'unexpected_switches') {
       if (this.state.problemStoneSummary.stoneConfig.switchCraftEnabled) {
-        let explanation =  Languages.label("ProblemWithExistingCrownstone", "To_find_the_Activity_Log_")();
+        let explanation =  lang("To_find_the_Activity_Log_");
         explanation += this._getSwitchCraftExplanation(state);
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithExistingCrownstone", "You_can_look_at_the_Activ")()}
+            header={ lang("You_can_look_at_the_Activ")}
             explanation={explanation}
           />
         );
@@ -954,8 +959,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithExistingCrownstone", "We_have_recently_added_an")()}
-            explanation={ Languages.label("ProblemWithExistingCrownstone", "You_can_find_it_in_the_st")()}
+            header={ lang("We_have_recently_added_an")}
+            explanation={ lang("You_can_find_it_in_the_st")}
           />
         );
       }
@@ -966,12 +971,12 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagOptions
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "Weird_how_")()}
+          header={ lang("Weird_how_")}
           labels={[
-            Languages.label("ProblemWithExistingCrownstone","I_think_it_should_react_d")(),
-            Languages.label("ProblemWithExistingCrownstone","It_switches_unexpectedly_")(),
-            Languages.label("ProblemWithExistingCrownstone","It_does_not_work_if_the_a")(),
-            Languages.label("ProblemWithExistingCrownstone","Other___")()
+            lang("I_think_it_should_react_d"),
+            lang("It_switches_unexpectedly_"),
+            lang("It_does_not_work_if_the_a"),
+            lang("Other___")
           ]}
           pressHandlers={[
             () => { this._changeContent(() => { this.setState({ weirdType: 'unexpected_behaviour'      }); }); },
@@ -986,8 +991,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","Its_very_possible_that_so")()}
-          explanation={ Languages.label("ProblemWithExistingCrownstone", "You_can_take_a_look_at_th")()}
+          header={lang("Its_very_possible_that_so")}
+          explanation={ lang("You_can_take_a_look_at_th")}
         />
       );
     }
@@ -995,8 +1000,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleBleTroubleshooter
           visible={this.state.visible}
-          header={Languages.label("ProblemWithExistingCrownstone","Sometimes_the_background_")()}
-          explanation={ Languages.label("ProblemWithExistingCrownstone", "This_differs_from_phone_t")()}
+          header={lang("Sometimes_the_background_")}
+          explanation={ lang("This_differs_from_phone_t")}
         />
       );
     }
@@ -1004,8 +1009,8 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithExistingCrownstone", "Perhaps_the_Help_menu_can")()}
-          explanation={Languages.label("ProblemWithExistingCrownstone","Alternatively_you_can_sen")()}
+          header={ lang("Perhaps_the_Help_menu_can")}
+          explanation={lang("Alternatively_you_can_sen")}
         />
       );
     }

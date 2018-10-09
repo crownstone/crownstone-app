@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsFactoryResetStep2", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -28,7 +33,7 @@ import {BackAction} from "../../util/Back";
 
 export class SettingsFactoryResetStep2 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: Languages.title("SettingsFactoryResetStep2", "Resettings")()}
+    return { title: lang("Resettings")}
   };
 
   lookingForCrownstone : boolean = true;
@@ -115,10 +120,10 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
           let description = this._getDescription(map[nearestNormal.handle]);
           if (nearestNormal.rssi > -60) {
             Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_body")(description),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_left")(), style: 'cancel', onPress: () => { BackAction(); }},{
-text:Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_right")(), onPress: () => {
+lang("_Crownstone_in_Setup_mode_header"),
+lang("_Crownstone_in_Setup_mode_body",description),
+[{text:lang("_Crownstone_in_Setup_mode_left"), style: 'cancel', onPress: () => { BackAction(); }},{
+text:lang("_Crownstone_in_Setup_mode_right"), onPress: () => {
                 this._removeOwnedCrownstone(nearestNormal.handle);
               }}],
               { cancelable: false }
@@ -127,9 +132,9 @@ text:Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_rig
           else {
             let defaultAction = () => { BackAction(); };
             Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode__header")(),
-Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode__body")(description),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode__left")(), onPress: defaultAction }],
+lang("_Crownstone_in_Setup_mode__header"),
+lang("_Crownstone_in_Setup_mode__body",description),
+[{text:lang("_Crownstone_in_Setup_mode__left"), onPress: defaultAction }],
               { cancelable: false }
             );
           }
@@ -138,19 +143,19 @@ Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode__body")(
           // both setup AND normal in range.
           if (nearestNormal.rssi > -60) {
             Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_n_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_n_body")(),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_n_left")(), style: 'cancel', onPress: () => { BackAction(); }},{
-text:Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode__right")(), onPress: () => { this.recoverStone(nearestNormal.handle); }}],
+lang("_Crownstone_in_Setup_mode_n_header"),
+lang("_Crownstone_in_Setup_mode_n_body"),
+[{text:lang("_Crownstone_in_Setup_mode_n_left"), style: 'cancel', onPress: () => { BackAction(); }},{
+text:lang("_Crownstone_in_Setup_mode__right"), onPress: () => { this.recoverStone(nearestNormal.handle); }}],
               { cancelable: false }
             );
           }
           else {
             Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_ne_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_ne_body")(),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_ne_left")(), style: 'cancel', onPress: () => { BackAction(); }},{
-text:Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_n_right")(), onPress: () => { this.recoverStone(nearestNormal.handle); }}],
+lang("_Crownstone_in_Setup_mode_ne_header"),
+lang("_Crownstone_in_Setup_mode_ne_body"),
+[{text:lang("_Crownstone_in_Setup_mode_ne_left"), style: 'cancel', onPress: () => { BackAction(); }},{
+text:lang("_Crownstone_in_Setup_mode_n_right"), onPress: () => { this.recoverStone(nearestNormal.handle); }}],
               { cancelable: false }
             );
           }
@@ -165,10 +170,10 @@ text:Languages.alert("SettingsFactoryResetStep2", "_Crownstone_in_Setup_mode_n_r
             let description = this._getDescription(map[nearestNormal.handle]);
             if (nearestNormal.rssi > -60) {
               Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_No_unknown_Crownstone_ne_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_No_unknown_Crownstone_ne_body")(description),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_No_unknown_Crownstone_ne_left")(), style: 'cancel', onPress: () => { BackAction(); BackAction(); }},{
-text:Languages.alert("SettingsFactoryResetStep2", "_No_unknown_Crownstone_ne_right")(), onPress: () => {
+lang("_No_unknown_Crownstone_ne_header"),
+lang("_No_unknown_Crownstone_ne_body",description),
+[{text:lang("_No_unknown_Crownstone_ne_left"), style: 'cancel', onPress: () => { BackAction(); BackAction(); }},{
+text:lang("_No_unknown_Crownstone_ne_right"), onPress: () => {
                   this._removeOwnedCrownstone(nearestNormal.handle);
                 }}],
                 { cancelable: false }
@@ -176,9 +181,9 @@ text:Languages.alert("SettingsFactoryResetStep2", "_No_unknown_Crownstone_ne_rig
             }
             else {
               Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_No_unknown_Crownstones_f_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_No_unknown_Crownstones_f_body")(description),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_No_unknown_Crownstones_f_left")(), onPress: defaultAction }],
+lang("_No_unknown_Crownstones_f_header"),
+lang("_No_unknown_Crownstones_f_body",description),
+[{text:lang("_No_unknown_Crownstones_f_left"), onPress: defaultAction }],
                 { cancelable: false }
               );
             }
@@ -189,9 +194,9 @@ Languages.alert("SettingsFactoryResetStep2", "_No_unknown_Crownstones_f_body")(d
             }
             else {
               Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_No_Crownstones_near___We_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_No_Crownstones_near___We_body")(),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_No_Crownstones_near___We_left")(), onPress: defaultAction }],
+lang("_No_Crownstones_near___We_header"),
+lang("_No_Crownstones_near___We_body"),
+[{text:lang("_No_Crownstones_near___We_left"), onPress: defaultAction }],
                 { cancelable: false }
               );
             }
@@ -199,17 +204,17 @@ Languages.alert("SettingsFactoryResetStep2", "_No_Crownstones_near___We_body")()
         }
         else if (nearestSetup !== undefined && nearestNormal === undefined) {
           Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_Recovery_might_not_be_ne_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_Recovery_might_not_be_ne_body")(),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_Recovery_might_not_be_ne_left")(), onPress: defaultAction }],
+lang("_Recovery_might_not_be_ne_header"),
+lang("_Recovery_might_not_be_ne_body"),
+[{text:lang("_Recovery_might_not_be_ne_left"), onPress: defaultAction }],
             { cancelable: false }
           )
         }
         else {
           Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_No_nearby_Crownstones____header")(),
-Languages.alert("SettingsFactoryResetStep2", "_No_nearby_Crownstones____body")(),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_No_nearby_Crownstones____left")(), onPress: defaultAction }],
+lang("_No_nearby_Crownstones____header"),
+lang("_No_nearby_Crownstones____body"),
+[{text:lang("_No_nearby_Crownstones____left"), onPress: defaultAction }],
             { cancelable: false }
           )
         }
@@ -231,9 +236,9 @@ Languages.alert("SettingsFactoryResetStep2", "_No_nearby_Crownstones____body")()
           BackAction();
         };
         Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_Success___This_Crownston_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_Success___This_Crownston_body")(),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_Success___This_Crownston_left")(), onPress: defaultAction}],
+lang("_Success___This_Crownston_header"),
+lang("_Success___This_Crownston_body"),
+[{text:lang("_Success___This_Crownston_left"), onPress: defaultAction}],
           { cancelable: false }
         )
       })
@@ -242,17 +247,17 @@ Languages.alert("SettingsFactoryResetStep2", "_Success___This_Crownston_body")()
         let defaultAction = () => { BackAction(); };
         if (err === "NOT_IN_RECOVERY_MODE") {
           Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_Not_in_Factory_Reset_mod_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_Not_in_Factory_Reset_mod_body")(),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_Not_in_Factory_Reset_mod_left")(), onPress: defaultAction}],
+lang("_Not_in_Factory_Reset_mod_header"),
+lang("_Not_in_Factory_Reset_mod_body"),
+[{text:lang("_Not_in_Factory_Reset_mod_left"), onPress: defaultAction}],
             { cancelable: false }
           )
         }
         else {
           Alert.alert(
-Languages.alert("SettingsFactoryResetStep2", "_Error_during_Factory_Res_header")(),
-Languages.alert("SettingsFactoryResetStep2", "_Error_during_Factory_Res_body")(),
-[{text:Languages.alert("SettingsFactoryResetStep2", "_Error_during_Factory_Res_left")(), onPress: defaultAction}],
+lang("_Error_during_Factory_Res_header"),
+lang("_Error_during_Factory_Res_body"),
+[{text:lang("_Error_during_Factory_Res_left"), onPress: defaultAction}],
             { cancelable: false }
           )
         }
@@ -266,7 +271,7 @@ Languages.alert("SettingsFactoryResetStep2", "_Error_during_Factory_Res_body")()
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} safeView={true}>
         <OrangeLine/>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
-          <Text style={[setupStyle.text, {color:colors.white.hex}]}>{ Languages.text("SettingsFactoryResetStep2", "Hold_your_phone_next_to_t")() }</Text>
+          <Text style={[setupStyle.text, {color:colors.white.hex}]}>{ lang("Hold_your_phone_next_to_t") }</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={[setupStyle.information, {color:colors.white.hex}]}>{this.state.text}</Text>
           <View style={{flex:1}} />

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining_explanation", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -30,7 +35,7 @@ export class RoomTraining_explanation extends Component<any, any> {
             fontWeight:'600',
             color: colors.white.hex,
             textAlign:'center'
-          }}>{ Languages.text("RoomTraining_explanation", "OK__so_its_a__room__Lets_")(this.props.roomSize,this.props.roomName) }</Text>
+          }}>{ lang("OK__so_its_a__room__Lets_",this.props.roomSize,this.props.roomName) }</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
@@ -38,7 +43,7 @@ export class RoomTraining_explanation extends Component<any, any> {
             color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,
-          }}>{ Languages.text("RoomTraining_explanation", "Walk_around_the_room_with")(this.props.sampleSize) }</Text>
+          }}>{ lang("Walk_around_the_room_with",this.props.sampleSize) }</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
@@ -47,7 +52,7 @@ export class RoomTraining_explanation extends Component<any, any> {
             textAlign:'center',
             paddingTop:20,
             paddingBottom:20,
-          }}>{ Languages.text("RoomTraining_explanation", "Press_the_button_below_to")() }</Text>
+          }}>{ lang("Press_the_button_below_to") }</Text>
 
           <View style={{flex:1}} />
           <TouchableOpacity

@@ -65,20 +65,54 @@ let parseFile = function(filePath) {
 
   if (EXCLUSIONS[filename]) { return }
 
-  // if (filename !== "StatusCommunication") {
+  // if (filename !== "ActivityLogItem") {
   //   return;
   // }
 
-  let importLine = 'import { Languages } from "';
-  let pathArr = filePath.split("/");
-  for (let i = 0; i < pathArr.length - 3; i++) {
-    importLine += '../'
-  }
-  importLine += 'Languages"\n'
+//   let importLine = 'import { Languages } from "';
+//   let pathArr = filePath.split("/");
+//   for (let i = 0; i < pathArr.length - 3; i++) {
+//     importLine += '../'
+//   }
+//   importLine += 'Languages"\n'
+//
+//   let functionConstruction = `
+// ${importLine}
+// function lang(key,a?,b?,c?,d?,e?) {
+//   return Languages.get("${filename}", key)(a,b,c,d,e);
+// }
+// `;
 
-  if (content.indexOf(importLine) === -1) {
-    content = importLine + content;
-  }
+  // content = content.replace(importLine, functionConstruction)
+
+  let parserRegex = /(Languages\.([^)]*?)\(\s?([^,]*),\s?([^\)]*)\s?\)\(([^\)]*)\))/gm;
+  let parserMatches  = content.match(parserRegex);
+
+  if (parserMatches !== null) {
+      for ( let i = 0; i < parserMatches.length; i++) {
+        let match = parserMatches[i];
+        let resultArray = [];
+        while ((resultArray = parserRegex.exec(match)) !== null) {
+          if (resultArray[2] !== "get") {
+            console.log(resultArray);
+            let newString = "lang("+resultArray[4];
+            if (resultArray[5]) {
+              newString += "," + resultArray[5]
+            }
+            newString += ")"
+            console.log(newString)
+            console.log("\n\n")
+            content = content.replace(resultArray[0], newString)
+          }
+        }
+
+      }
+    }
+
+  //
+  // if (content.indexOf(importLine) === -1) {
+  //   content = importLine + content;
+  // }
 
   let contentData = {content: content};
 
@@ -147,7 +181,7 @@ let parseFile = function(filePath) {
   }
 
   // console.log(contentData)
-  fs.writeFileSync(filePath, contentData.content);
+  // fs.writeFileSync(filePath, content);
 }
 
 function extractAlert(match, filename, filePath, contentData) {
@@ -293,6 +327,8 @@ function createTranslationFileAndReplaceContents(filename, filePath, extractData
   if (target[filename] === undefined) {
     target[filename] = {__filename: '"' + filePath + '"'}
   }
+
+  console.log("FILENAME", filename, extractData.parsedText)
 
   let textKey = prepareTextKey(target, filename, extractData.pureText);
   if (textKey === '' || textKey === "_") {
@@ -754,9 +790,9 @@ function stringifyData(translationData, filename) {
   fs.writeFileSync(filename + ".ts", resultString)
 }
 
-stringifyData(translationTextData,  'en_us_texts')
-stringifyData(translationTitleData, 'en_us_titles')
-stringifyData(translationAlertData, 'en_us_alerts')
+// stringifyData(translationTextData,  'en_us_texts')
+// stringifyData(translationTitleData, 'en_us_titles')
+// stringifyData(translationAlertData, 'en_us_alerts')
 
 
 let stringTots  = [];
@@ -816,7 +852,7 @@ let parseFileInteractive = function(filePath, ) {
 
 
   // console.log(contentData)
-  fs.writeFileSync(filePath, contentData.content);
+  // fs.writeFileSync(filePath, contentData.content);
 }
 
 let ignoreWords = [
@@ -1017,7 +1053,7 @@ parsePathInteractive(startPath)
 
 
 
-stringifyData(translationLabelData, 'en_us_labels')
+// stringifyData(translationLabelData, 'en_us_labels')
 // console.log(resultString)
 // console.log(translationTitleData)
 // console.log(translationTextData)

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LockedStateUI", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -133,7 +138,7 @@ export class LockedStateUI extends Component<any, any> {
             size={this.props.size*0.3}
             color={colors.white.hex}
           />
-          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Ask_an_admin_nto_unlock_m")() }</Text>
+          <Text style={textStyle}>{ lang("Ask_an_admin_nto_unlock_m") }</Text>
         </View>
       )
     }
@@ -142,7 +147,7 @@ export class LockedStateUI extends Component<any, any> {
       return (
         <View style={viewStyle}>
           <ActivityIndicator animating={true} size='large' color={colors.white.hex} />
-          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Unlocking___")() }</Text>
+          <Text style={textStyle}>{ lang("Unlocking___") }</Text>
         </View>
       )
     }
@@ -154,7 +159,7 @@ export class LockedStateUI extends Component<any, any> {
             size={this.props.size*0.3}
             color="#fff"
           />
-          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Done")() }</Text>
+          <Text style={textStyle}>{ lang("Done") }</Text>
         </View>
       )
     }
@@ -166,7 +171,7 @@ export class LockedStateUI extends Component<any, any> {
             size={this.props.size*0.3}
             color={colors.red.hex}
           />
-          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Couldnt_unlock____nYou_mu")() }</Text>
+          <Text style={textStyle}>{ lang("Couldnt_unlock____nYou_mu") }</Text>
         </View>
       )
     }
@@ -178,7 +183,7 @@ export class LockedStateUI extends Component<any, any> {
             size={this.props.size*0.3}
             color={colors.white.hex}
           />
-          <Text style={textStyle}>{ Languages.text("LockedStateUI", "Press_and_hold_nto_unlock")() }</Text>
+          <Text style={textStyle}>{ lang("Press_and_hold_nto_unlock") }</Text>
         </View>
       )
     }

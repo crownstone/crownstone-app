@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceBehaviourEdit", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -23,28 +28,28 @@ const Actions = require('react-native-router-flux').Actions;
 
 
 let toggleOptions = [];
-toggleOptions.push({label: Languages.label("DeviceBehaviourEdit", "turn_on")(),    value: 1});
-toggleOptions.push({label: Languages.label("DeviceBehaviourEdit", "turn_off")(),   value: 0});
-toggleOptions.push({label: Languages.label("DeviceBehaviourEdit", "do_nothing")(), value: null});
+toggleOptions.push({label: lang("turn_on"),    value: 1});
+toggleOptions.push({label: lang("turn_off"),   value: 0});
+toggleOptions.push({label: lang("do_nothing"), value: null});
 
 let timeOptions = [];
-timeOptions.push({label: Languages.label("DeviceBehaviourEdit", "__seconds")(),    value: 2});
+timeOptions.push({label: lang("__seconds"),    value: 2});
 
 let timeOptionsV2 = [];
-timeOptionsV2.push({label: Languages.label("DeviceBehaviourEdit", "__seconds")(),    value: 2});
-timeOptionsV2.push({label: Languages.label("DeviceBehaviourEdit", "___seconds")(),   value: 10});
-timeOptionsV2.push({label: Languages.label("DeviceBehaviourEdit", "___seconds")(),   value: 30});
-timeOptionsV2.push({label: Languages.label("DeviceBehaviourEdit", "__minute")(),     value: 60});
-timeOptionsV2.push({label: Languages.label("DeviceBehaviourEdit", "__minutes")(),    value: 120});
-timeOptionsV2.push({label: Languages.label("DeviceBehaviourEdit", "__minutes")(),    value: 300});
-timeOptionsV2.push({label: Languages.label("DeviceBehaviourEdit", "___minutes")(),   value: 600});
-timeOptionsV2.push({label: Languages.label("DeviceBehaviourEdit", "___minutes")(),   value: 900});
-timeOptionsV2.push({label: Languages.label("DeviceBehaviourEdit", "___minutes")(),   value: 1800});
+timeOptionsV2.push({label: lang("__seconds"),    value: 2});
+timeOptionsV2.push({label: lang("___seconds"),   value: 10});
+timeOptionsV2.push({label: lang("___seconds"),   value: 30});
+timeOptionsV2.push({label: lang("__minute"),     value: 60});
+timeOptionsV2.push({label: lang("__minutes"),    value: 120});
+timeOptionsV2.push({label: lang("__minutes"),    value: 300});
+timeOptionsV2.push({label: lang("___minutes"),   value: 600});
+timeOptionsV2.push({label: lang("___minutes"),   value: 900});
+timeOptionsV2.push({label: lang("___minutes"),   value: 1800});
 
 export class DeviceBehaviourEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("DeviceBehaviourEdit", "Behaviour")(),
+      title: lang("Behaviour"),
     }
   };
 
@@ -105,11 +110,11 @@ export class DeviceBehaviourEdit extends Component<any, any> {
           (this.element.behaviour['onNear'].active === true || this.element.behaviour['onAway'].active === true) &&
           this.stone.config.nearThreshold === null) {
       Alert.alert(
-Languages.alert("DeviceBehaviourEdit", "_Near_behaviour_disabled__header")(),
-Languages.alert("DeviceBehaviourEdit", "_Near_behaviour_disabled__body")(),
-[{text:Languages.alert("DeviceBehaviourEdit", "_Near_behaviour_disabled__left")()},
+lang("_Near_behaviour_disabled__header"),
+lang("_Near_behaviour_disabled__body"),
+[{text:lang("_Near_behaviour_disabled__left")},
           {
-text:Languages.alert("DeviceBehaviourEdit", "_Near_behaviour_disabled__right")(), onPress: () => {Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.viewingRemotely});}}
+text:lang("_Near_behaviour_disabled__right"), onPress: () => {Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.viewingRemotely});}}
         ]);
     }
 
@@ -137,9 +142,9 @@ text:Languages.alert("DeviceBehaviourEdit", "_Near_behaviour_disabled__right")()
       Vibration.vibrate(400, false);
 
       Alert.alert(
-Languages.alert("DeviceBehaviourEdit", "_Im_not_sure_yet_____I_co_header")(),
-Languages.alert("DeviceBehaviourEdit", "_Im_not_sure_yet_____I_co_body")(),
-[{text:Languages.alert("DeviceBehaviourEdit", "_Im_not_sure_yet_____I_co_left")(), onPress: () => {
+lang("_Im_not_sure_yet_____I_co_header"),
+lang("_Im_not_sure_yet_____I_co_body"),
+[{text:lang("_Im_not_sure_yet_____I_co_left"), onPress: () => {
         this.props.eventBus.emit("hideLoading");
         this.props.eventBus.emit("useTriggers");
       }}], { cancelable: false });
@@ -189,9 +194,9 @@ Languages.alert("DeviceBehaviourEdit", "_Im_not_sure_yet_____I_co_body")(),
         Vibration.vibrate(400, false);
 
         Alert.alert(
-Languages.alert("DeviceBehaviourEdit", "_Great___Ill_make_sure_to_header")(),
-Languages.alert("DeviceBehaviourEdit", "_Great___Ill_make_sure_to_body")(),
-[{text: Languages.alert("DeviceBehaviourEdit", "_Great___Ill_make_sure_to_left")(), onPress: () => {
+lang("_Great___Ill_make_sure_to_header"),
+lang("_Great___Ill_make_sure_to_body"),
+[{text: lang("_Great___Ill_make_sure_to_left"), onPress: () => {
             this.props.eventBus.emit("hideLoading");
             this.props.eventBus.emit("useTriggers");
           }
@@ -232,11 +237,11 @@ Languages.alert("DeviceBehaviourEdit", "_Great___Ill_make_sure_to_body")(),
               data: {delay: timeOptionsV2[0].value}
             });
           }
-          explanation =  Languages.label("DeviceBehaviourEdit", "More_delay_options_will_b")();
+          explanation =  lang("More_delay_options_will_b");
         }
       }
       else {
-        explanation =  Languages.label("DeviceBehaviourEdit", "More_delay_options_will_be")();
+        explanation =  lang("More_delay_options_will_be");
       }
 
       items.push({
@@ -287,23 +292,23 @@ Languages.alert("DeviceBehaviourEdit", "_Great___Ill_make_sure_to_body")(),
     };
 
     let toggleOptions = [];
-    toggleOptions.push({label: Languages.label("DeviceBehaviourEdit", "turn_on")(),    value: 1});
-    toggleOptions.push({label: Languages.label("DeviceBehaviourEdit", "turn_off")(),   value: 0});
-    toggleOptions.push({label: Languages.label("DeviceBehaviourEdit", "do_nothing")(), value: -1});
+    toggleOptions.push({label: lang("turn_on"),    value: 1});
+    toggleOptions.push({label: lang("turn_off"),   value: 0});
+    toggleOptions.push({label: lang("do_nothing"), value: -1});
 
     let toggleOptionsExitSphere = [];
-    toggleOptionsExitSphere.push({label: Languages.label("DeviceBehaviourEdit", "turn_on_after_")(Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))),  value: 1});
-    toggleOptionsExitSphere.push({label: Languages.label("DeviceBehaviourEdit", "turn_off_after_")(Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))), value: 0});
-    toggleOptionsExitSphere.push({label: Languages.label("DeviceBehaviourEdit", "do_nothing")(), value: -1});
+    toggleOptionsExitSphere.push({label: lang("turn_on_after_",Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))),  value: 1});
+    toggleOptionsExitSphere.push({label: lang("turn_off_after_",Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))), value: 0});
+    toggleOptionsExitSphere.push({label: lang("do_nothing"), value: -1});
 
     let toggleOptionsExit = [];
-    toggleOptionsExit.push({label: Languages.label("DeviceBehaviourEdit", "turn_on_with_delay")(),   value: 1});
-    toggleOptionsExit.push({label: Languages.label("DeviceBehaviourEdit", "turn_off_with_delay")(), value: 0});
-    toggleOptionsExit.push({label: Languages.label("DeviceBehaviourEdit", "do_nothing")(), value: -1});
+    toggleOptionsExit.push({label: lang("turn_on_with_delay"),   value: 1});
+    toggleOptionsExit.push({label: lang("turn_off_with_delay"), value: 0});
+    toggleOptionsExit.push({label: lang("do_nothing"), value: -1});
 
     // Behaviour for onHomeEnter event
     let eventLabel = 'onHomeEnter';
-    items.push({label: Languages.label("DeviceBehaviourEdit", "WHEN_YOU____")(), type: 'explanation', style: styles.topExplanation, below:false});
+    items.push({label: lang("WHEN_YOU____"), type: 'explanation', style: styles.topExplanation, below:false});
     items.push(generateDropdown(eventLabel, 'Enter Sphere', toggleOptions));
 
     // hide exit event if there is no keepAlive.
@@ -312,7 +317,7 @@ Languages.alert("DeviceBehaviourEdit", "_Great___Ill_make_sure_to_body")(),
       items.push(generateDropdown(eventLabel, 'Leave Sphere', toggleOptionsExitSphere));
       if (element.behaviour[eventLabel].active === true) {
         items.push({
-          label: Languages.label("DeviceBehaviourEdit", "Leaving_the_sphere_will_b")(Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true)),
+          label: lang("Leaving_the_sphere_will_b",Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true)),
           style: {paddingBottom: 5},
           type: 'explanation',
           below: true
@@ -324,7 +329,7 @@ Languages.alert("DeviceBehaviourEdit", "_Great___Ill_make_sure_to_body")(),
 
     if (canDoIndoorLocalization === false) {
       eventLabel = 'onNear';
-      items.push({label: Languages.label("DeviceBehaviourEdit", "WHEN_YOU____")(), type: 'explanation', style: styles.topExplanation, below:false});
+      items.push({label: lang("WHEN_YOU____"), type: 'explanation', style: styles.topExplanation, below:false});
       items.push(generateDropdown(eventLabel, 'Get near', toggleOptions));
 
       eventLabel = 'onAway';
@@ -337,9 +342,9 @@ Languages.alert("DeviceBehaviourEdit", "_Great___Ill_make_sure_to_body")(),
 
       // only show the define button when the feature is being used.
       if (element.behaviour['onNear'].active === true || element.behaviour['onAway'].active === true) {
-        let defineNearLabel =  Languages.label("DeviceBehaviourEdit", "Define_the___near___dista")();
+        let defineNearLabel =  lang("Define_the___near___dista");
         if (stone.config.nearThreshold === null) {
-          defineNearLabel =  Languages.label("DeviceBehaviourEdit", "Tap_here_to_define___near")()}
+          defineNearLabel =  lang("Tap_here_to_define___near")}
 
         items.push({
           type: 'button',
@@ -350,11 +355,11 @@ Languages.alert("DeviceBehaviourEdit", "_Great___Ill_make_sure_to_body")(),
             let iBeaconUUID = state.spheres[this.props.sphereId].config.iBeaconUUID;
 
             Alert.alert(
-Languages.alert("DeviceBehaviourEdit", "_How_near_is_near___You_c_header")(),
-Languages.alert("DeviceBehaviourEdit", "_How_near_is_near___You_c_body")(),
-[{text: Languages.alert("DeviceBehaviourEdit", "_How_near_is_near___You_c_left")(), style: 'cancel'}, {
+lang("_How_near_is_near___You_c_header"),
+lang("_How_near_is_near___You_c_body"),
+[{text: lang("_How_near_is_near___You_c_left"), style: 'cancel'}, {
                 
-text: Languages.alert("DeviceBehaviourEdit", "_How_near_is_near___You_c_right")(), onPress: () => {
+text: lang("_How_near_is_near___You_c_right"), onPress: () => {
                   // show loading bar
                   this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
                   this.pocketTimeout = setTimeout(() => {
@@ -367,7 +372,7 @@ text: Languages.alert("DeviceBehaviourEdit", "_How_near_is_near___You_c_right")(
 
         if (stone.config.nearThreshold === null) {
           items.push({
-            label: Languages.label("DeviceBehaviourEdit", "You_need_to_define_the_ne")(),
+            label: lang("You_need_to_define_the_ne"),
             style: {paddingBottom: 0},
             type: 'explanation',
             below: true
@@ -380,7 +385,7 @@ text: Languages.alert("DeviceBehaviourEdit", "_How_near_is_near___You_c_right")(
     else {
       if (stone.config.locationId !== null) {
         eventLabel = 'onRoomEnter';
-        items.push({label: Languages.label("DeviceBehaviourEdit", "WHEN_YOU____")(), type: 'explanation', style: styles.topExplanation, below:false});
+        items.push({label: lang("WHEN_YOU____"), type: 'explanation', style: styles.topExplanation, below:false});
         items.push(generateDropdown(eventLabel, 'Enter room', toggleOptions));
 
 
@@ -395,7 +400,7 @@ text: Languages.alert("DeviceBehaviourEdit", "_How_near_is_near___You_c_right")(
 
         if (element.behaviour[eventLabel].active === true) {
           // items.push({
-          //   label: Languages.label("DeviceBehaviourEdit", "If_there_are_people__from")(),
+          //   label: lang("If_there_are_people__from"),
           //   style: {paddingBottom: 0},
           //   type: 'explanation',
           //   below: true
@@ -403,18 +408,18 @@ text: Languages.alert("DeviceBehaviourEdit", "_How_near_is_near___You_c_right")(
         }
       }
       else if (canDoIndoorLocalization === true) {
-        items.push({label: Languages.label("DeviceBehaviourEdit", "Since_this_Crownstone_is_")(), style:{paddingBottom:0}, type: 'explanation', below: true});
+        items.push({label: lang("Since_this_Crownstone_is_"), style:{paddingBottom:0}, type: 'explanation', below: true});
       }
     }
 
-    items.push({label: Languages.label("DeviceBehaviourEdit", "EXCEPTIONS")(), type: 'explanation', style: styles.topExplanation, below:false});
-    items.push({label: Languages.label("DeviceBehaviourEdit", "Only_turn_on_if_it_s_dark")(), style:{fontSize:15}, type: 'switch', value: element.config.onlyOnWhenDark === true, callback: (newValue) => {
+    items.push({label: lang("EXCEPTIONS"), type: 'explanation', style: styles.topExplanation, below:false});
+    items.push({label: lang("Only_turn_on_if_it_s_dark"), style:{fontSize:15}, type: 'switch', value: element.config.onlyOnWhenDark === true, callback: (newValue) => {
       this.props.store.dispatch({type: 'UPDATE_'+dataTypeString+'_CONFIG', ...requiredData, data: { onlyOnWhenDark : newValue } })
     }});
 
     let times = BehaviourUtil.getEveningTimes(state.spheres[this.props.sphereId]);
 
-    items.push({label: Languages.label("DeviceBehaviourEdit", "Today__for_this_Sphere__i")(times.eveningReadable,times.morningReadable), type: 'explanation', below:true});
+    items.push({label: lang("Today__for_this_Sphere__i",times.eveningReadable,times.morningReadable), type: 'explanation', below:true});
     items.push({type:  'spacer'});
 
     return items;

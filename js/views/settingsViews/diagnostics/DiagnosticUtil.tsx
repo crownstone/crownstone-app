@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DiagnosticUtil", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -124,11 +129,11 @@ export class DiagYesNo extends Component<{
             <View style={{flexDirection: 'row', width: screenWidth}}>
               <View style={{flex: 1}}/>
               <TouchableOpacity onPress={() => {this.props.onPressNo()}} style={diagnosticStyles.smallButtonStyle}>
-                <Text style={diagnosticStyles.labelStyle}>{ Languages.text("DiagnosticUtil", "No")() }</Text>
+                <Text style={diagnosticStyles.labelStyle}>{ lang("No") }</Text>
               </TouchableOpacity>
               <View style={{flex: 1}}/>
               <TouchableOpacity onPress={() => {this.props.onPressYes()}} style={diagnosticStyles.smallButtonStyle}>
-                <Text style={diagnosticStyles.labelStyle}>{ Languages.text("DiagnosticUtil", "Yes")() }</Text>
+                <Text style={diagnosticStyles.labelStyle}>{ lang("Yes") }</Text>
               </TouchableOpacity>
               <View style={{flex: 1}}/>
             </View>
@@ -218,7 +223,7 @@ export class DiagSingleButtonMeshTopology extends Component<{
         visible={this.props.visible}
         header={ this.props.header }
         explanation={ this.props.explanation }
-        label={ Languages.label("DiagnosticUtil", "To_Mesh_Topology")()}
+        label={ lang("To_Mesh_Topology")}
         onPress={() => { Actions.settingsMeshTopology(); }}
       />
     );
@@ -239,7 +244,7 @@ export class DiagSingleButtonGoBack extends Component<{
         visible={this.props.visible}
         header={ this.props.header }
         explanation={ this.props.explanation }
-        label={ Languages.label("DiagnosticUtil", "OK")()}
+        label={ lang("OK")}
         onPress={() => { BackAction(); }}
       />
     );
@@ -258,7 +263,7 @@ export class DiagSingleButtonToOverview extends Component<{
         visible={this.props.visible}
         header={ this.props.header }
         explanation={ this.props.explanation }
-        label={ Languages.label("DiagnosticUtil", "Go_to_Overview")()}
+        label={ lang("Go_to_Overview")}
         onPress={() => { Actions.jump("overview") }}
       />
     );
@@ -278,7 +283,7 @@ export class DiagSingleButtonQuit extends Component<{
         visible={this.props.visible}
         header={ this.props.header }
         explanation={ this.props.explanation }
-        label={ Languages.label("DiagnosticUtil", "Quit_app_now")()}
+        label={ lang("Quit_app_now")}
         onPress={() => { AppUtil.quit(); }}
       />
     );
@@ -298,7 +303,7 @@ export class DiagSingleBleTroubleshooter extends Component<{
         visible={this.props.visible}
         header={ this.props.header }
         explanation={ this.props.explanation }
-        label={ Languages.label("DiagnosticUtil", "Open_Troubleshooter")()}
+        label={ lang("Open_Troubleshooter")}
         onPress={() => { Actions.settingsBleTroubleshooting(); }}
       />
     );
@@ -317,7 +322,7 @@ export class DiagSingleButtonHelp extends Component<{
         visible={this.props.visible}
         header={ this.props.header }
         explanation={ this.props.explanation }
-        label={ Languages.label("DiagnosticUtil", "To_Help_screen")()}
+        label={ lang("To_Help_screen")}
         onPress={() => { Actions.settingsFAQ(); }}
       />
     );
@@ -352,8 +357,8 @@ export class DiagListOfStones extends Component<{
     return (
       <DiagOptions
         visible={this.props.visible}
-        header={ Languages.label("DiagnosticUtil", "Which_Crownstone_is_givin")()}
-        subExplanation={ Languages.label("DiagnosticUtil", "Scroll_down_to_see_all_of")()}
+        header={ lang("Which_Crownstone_is_givin")}
+        subExplanation={ lang("Scroll_down_to_see_all_of")}
         labels={labels}
         pressHandlers={pressHandlers}
       />
@@ -370,7 +375,7 @@ export class TestResult extends Component<any, any> {
         visible={this.props.visble === undefined ? true : this.props.visible}
         style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-start', width: screenWidth - 30, padding:10, height: 45}}
       >
-        <Text style={testResult}>{ Languages.text("DiagnosticUtil", "____")(this.props.label,this.props.state,null) }</Text>
+        <Text style={testResult}>{ lang("____",this.props.label,this.props.state,null) }</Text>
         <View style={{flex:1}} />
         { this.props.state === null  || this.props.state === undefined  ? <ActivityIndicator animating={true} size="small" /> : undefined }
         { this.props.state === true  ? <IconButton name="md-analytics" buttonSize={25} size={17} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />: undefined }
@@ -385,6 +390,6 @@ export class TestResult extends Component<any, any> {
 export function nameFromSummary(summary) {
   let name = summary.name;
   if (summary.applianceName) { name =  summary.applianceName;         }
-  if (summary.locationName ) { name +=  Languages.label("DiagnosticUtil", "_in_")(summary.locationName); }
+  if (summary.locationName ) { name +=  lang("_in_",summary.locationName); }
   return name;
 }

@@ -1,4 +1,9 @@
+
 import { Languages } from "../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("styles", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import { Dimensions, PixelRatio, Platform, StyleSheet, View } from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'

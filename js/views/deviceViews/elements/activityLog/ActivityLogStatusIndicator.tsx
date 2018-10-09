@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ActivityLogStatusIndicator", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -45,7 +50,7 @@ export class ActivityLogStatusIndicator extends Component<any, any> {
         <View style={{ width: 4,  height:4,  borderRadius:2,  backgroundColor: colors.white.rgba(0.3), position:'absolute', top: this.props.height*0.25 - 1,  left: 25}} />
 
         <View style={{position:'absolute', top: this.props.height * 0.04, left: 55}}>
-          <Text style={{color:colors.white.hex, fontWeight:'bold', paddingLeft:10,  marginBottom:10}}>{ Languages.text("ActivityLogStatusIndicator", "Im_in_range_")() }</Text>
+          <Text style={{color:colors.white.hex, fontWeight:'bold', paddingLeft:10,  marginBottom:10}}>{ lang("Im_in_range_") }</Text>
           <Text style={{color:colors.white.hex, fontWeight:'bold', paddingLeft:10,  marginBottom:10}}>{this.getLabel()}</Text>
         </View>
       </View>

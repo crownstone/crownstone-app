@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("StoneDeleted", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -12,7 +17,7 @@ import {OrangeLine, styles} from "../styles";
 export class StoneDeleted extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("StoneDeleted", "Deleted")(),
+      title: lang("Deleted"),
     }
   };
 
@@ -20,7 +25,7 @@ export class StoneDeleted extends Component<any, any> {
     return (
       <Background image={require('../../images/stoneDetails.png')}>
         <OrangeLine/>
-        <Text>{ Languages.text("StoneDeleted", "Stone_Deleted_")() }</Text>
+        <Text>{ lang("Stone_Deleted_") }</Text>
       </Background>
     )
   }

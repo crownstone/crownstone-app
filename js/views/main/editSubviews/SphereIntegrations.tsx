@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereIntegrations", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -22,7 +27,7 @@ import {ScaledImage} from "../../components/ScaledImage";
 export class SphereIntegrations extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("SphereIntegrations", "Integrations")(),
+      title: lang("Integrations"),
     }
   };
 
@@ -30,11 +35,11 @@ export class SphereIntegrations extends Component<any, any> {
   _getItemsAlternative() {
     let items = [];
 
-    items.push({label: Languages.label("SphereIntegrations", "Here_you_can_integrate_wi")(),  type:'largeExplanation'});
+    items.push({label: lang("Here_you_can_integrate_wi"),  type:'largeExplanation'});
 
-    items.push({label: Languages.label("SphereIntegrations", "Thermostats_")(),  type:'largeExplanation'});
+    items.push({label: lang("Thermostats_"),  type:'largeExplanation'});
     items.push({
-      label: Languages.label("SphereIntegrations", "Toon")(),
+      label: lang("Toon"),
       type: 'navigation',
       largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={65} targetHeight={45} sourceWidth={1000} sourceHeight={237}/>,
       callback: () => {
@@ -53,11 +58,11 @@ export class SphereIntegrations extends Component<any, any> {
       }
     });
 
-    items.push({label: Languages.label("SphereIntegrations", "Coming_Soon_")(),  type:'largeExplanation'});
+    items.push({label: lang("Coming_Soon_"),  type:'largeExplanation'});
 
 
     items.push({
-      label: Languages.label("SphereIntegrations", "Philips_Hue")(),
+      label: lang("Philips_Hue"),
       type: 'navigation',
       largeIcon:
         <View style={{width:55, height:55, borderRadius:12, alignItems:"center", justifyContent:"center", overflow:'hidden'}}>
@@ -65,9 +70,9 @@ export class SphereIntegrations extends Component<any, any> {
         </View>,
       callback: () => {
         Alert.alert(
-Languages.alert("SphereIntegrations", "_Working_on_it___Support__header")(),
-Languages.alert("SphereIntegrations", "_Working_on_it___Support__body")(),
-[{text:Languages.alert("SphereIntegrations", "_Working_on_it___Support__left")()}])
+lang("_Working_on_it___Support__header"),
+lang("_Working_on_it___Support__body"),
+[{text:lang("_Working_on_it___Support__left")}])
       }
     });
 

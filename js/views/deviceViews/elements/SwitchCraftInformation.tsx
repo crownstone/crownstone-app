@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SwitchCraftInformation", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -24,7 +29,7 @@ import {ScaledImage} from "../../components/ScaledImage";
 export class SwitchCraftInformation extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("SwitchCraftInformation", "Switchcraft")(),
+      title: lang("Switchcraft"),
     }
   };
   // "SwitchCraft is a new, experimental feature of the Crownstone that allows you to switch your lights with both Crownstone and an existing wall switch." +
@@ -43,28 +48,28 @@ export class SwitchCraftInformation extends Component<any, any> {
             <View style={{height:40}} />
             <IconButton name="md-power" buttonSize={80} size={60} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
             <View style={{height:10}} />
-            <Text style={explanationStyle}>{ Languages.text("SwitchCraftInformation", "Switchcraft_is_a_new__exp")() }</Text>
+            <Text style={explanationStyle}>{ lang("Switchcraft_is_a_new__exp") }</Text>
             <ScaledImage source={require('../../../images/switchCraft/switchCraft_normal_before.png')} sourceWidth={752} sourceHeight={563} targetWidth={0.75*screenWidth} />
-            <Text style={explanationStyle}>{ Languages.text("SwitchCraftInformation", "The_symbols_shown_have_th")() }</Text>
+            <Text style={explanationStyle}>{ lang("The_symbols_shown_have_th") }</Text>
             <View style={{flexDirection:'row', paddingTop:20}}>
               <View style={{flex:1}} />
-              <View style={legendViewStyle}><ScaledImage source={require('../../../images/switchCraft/legend/lamp.png')} sourceWidth={97} sourceHeight={97} targetWidth={0.1*screenWidth} /><Text style={legendTextStyles}>{ Languages.text("SwitchCraftInformation", "Lamp")() }</Text></View>
+              <View style={legendViewStyle}><ScaledImage source={require('../../../images/switchCraft/legend/lamp.png')} sourceWidth={97} sourceHeight={97} targetWidth={0.1*screenWidth} /><Text style={legendTextStyles}>{ lang("Lamp") }</Text></View>
               <View style={{flex:1}} />
-              <View style={legendViewStyle}><ScaledImage source={require('../../../images/switchCraft/legend/powerSupply.png')} sourceWidth={81} sourceHeight={81} targetWidth={0.1*screenWidth} /><Text style={legendTextStyles}>{ Languages.text("SwitchCraftInformation", "Mains")() }</Text></View>
+              <View style={legendViewStyle}><ScaledImage source={require('../../../images/switchCraft/legend/powerSupply.png')} sourceWidth={81} sourceHeight={81} targetWidth={0.1*screenWidth} /><Text style={legendTextStyles}>{ lang("Mains") }</Text></View>
               <View style={{flex:1}} />
-              <View style={legendViewStyle}><ScaledImage source={require('../../../images/switchCraft/legend/switch.png')} sourceWidth={110} sourceHeight={110} targetWidth={0.1*screenWidth} /><Text style={legendTextStyles}>{ Languages.text("SwitchCraftInformation", "Switch")() }</Text></View>
+              <View style={legendViewStyle}><ScaledImage source={require('../../../images/switchCraft/legend/switch.png')} sourceWidth={110} sourceHeight={110} targetWidth={0.1*screenWidth} /><Text style={legendTextStyles}>{ lang("Switch") }</Text></View>
               <View style={{flex:1}} />
-              <View style={legendViewStyle}><ScaledImage source={require('../../../images/switchCraft/legend/builtinCrownstone.png')} sourceWidth={119} sourceHeight={73} targetWidth={0.1*screenWidth} /><Text style={legendTextStyles}>{ Languages.text("SwitchCraftInformation", "Built_in_nCrownstone")() }</Text></View>
+              <View style={legendViewStyle}><ScaledImage source={require('../../../images/switchCraft/legend/builtinCrownstone.png')} sourceWidth={119} sourceHeight={73} targetWidth={0.1*screenWidth} /><Text style={legendTextStyles}>{ lang("Built_in_nCrownstone") }</Text></View>
               <View style={{flex:1}} />
             </View>
-            <Text style={explanationStyle}>{ Languages.text("SwitchCraftInformation", "After_installing_the_buil")() }</Text>
+            <Text style={explanationStyle}>{ lang("After_installing_the_buil") }</Text>
             <ScaledImage source={require('../../../images/switchCraft/switchCraft_normal_after.png')} sourceWidth={1001} sourceHeight={590} targetWidth={0.85*screenWidth} />
-            <Text style={explanationStyle}>{ Languages.text("SwitchCraftInformation", "The_adaptation_in_the_ima")() }</Text>
+            <Text style={explanationStyle}>{ lang("The_adaptation_in_the_ima") }</Text>
             <ScaledImage source={require('../../../images/switchCraft/pre_sluusje_edit_small.png')} sourceWidth={1031} sourceHeight={1000} targetWidth={0.8*screenWidth} />
-            <Text style={explanationStyle}>{ Languages.text("SwitchCraftInformation", "At_the_top__where_the_bro")() }</Text>
+            <Text style={explanationStyle}>{ lang("At_the_top__where_the_bro") }</Text>
             <ScaledImage source={require('../../../images/switchCraft/post_sluusje_edit_small.png')} sourceWidth={1262} sourceHeight={1000} targetWidth={0.8*screenWidth} />
-            <Text style={explanationStyle}>{ Languages.text("SwitchCraftInformation", "Thats_all__When_youre_goi")() }</Text>
-            <Text style={headerStyle}>{ Languages.text("SwitchCraftInformation", "Enjoy_Switchcraft_")() }</Text>
+            <Text style={explanationStyle}>{ lang("Thats_all__When_youre_goi") }</Text>
+            <Text style={headerStyle}>{ lang("Enjoy_Switchcraft_") }</Text>
             <View style={{height:100}} />
           </View>
         </ScrollView>

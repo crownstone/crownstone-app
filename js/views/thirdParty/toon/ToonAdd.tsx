@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ToonAdd", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -28,7 +33,7 @@ import {LOGe} from "../../../logging/Log";
 
 export class ToonAdd extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: Languages.title("ToonAdd", "Toon")()}
+    return { title: lang("Toon")}
   };
 
 
@@ -118,9 +123,9 @@ export class ToonAdd extends Component<any, any> {
       .then(() => {
         if (agreementIds.length === 0) {
           Alert.alert(
-Languages.alert("ToonAdd", "_No_Toon_Found__This_acco_header")(),
-Languages.alert("ToonAdd", "_No_Toon_Found__This_acco_body")(),
-[{text:Languages.alert("ToonAdd", "_No_Toon_Found__This_acco_left")()}])
+lang("_No_Toon_Found__This_acco_header"),
+lang("_No_Toon_Found__This_acco_body"),
+[{text:lang("_No_Toon_Found__This_acco_left")}])
         }
         else {
           this.setState({success:true, processing:false}, () => {
@@ -140,17 +145,17 @@ Languages.alert("ToonAdd", "_No_Toon_Found__This_acco_body")(),
         if (err && typeof err === 'object' && err.code) {
           if (err.code === 1 && this.state.code) {
             Alert.alert(
-Languages.alert("ToonAdd", "_Whoops__The_provided_cod_header")(),
-Languages.alert("ToonAdd", "_Whoops__The_provided_cod_body")(),
-[{text:Languages.alert("ToonAdd", "_Whoops__The_provided_cod_left")()}]);
+lang("_Whoops__The_provided_cod_header"),
+lang("_Whoops__The_provided_cod_body"),
+[{text:lang("_Whoops__The_provided_cod_left")}]);
             return;
           }
         }
 
         Alert.alert(
-Languages.alert("ToonAdd", "_Whoops__Something_went_w_header")(),
-Languages.alert("ToonAdd", "_Whoops__Something_went_w_body")(),
-[{text:Languages.alert("ToonAdd", "_Whoops__Something_went_w_left")()}]);
+lang("_Whoops__Something_went_w_header"),
+lang("_Whoops__Something_went_w_body"),
+[{text:lang("_Whoops__Something_went_w_left")}]);
       })
   }
 
@@ -193,7 +198,7 @@ Languages.alert("ToonAdd", "_Whoops__Something_went_w_body")(),
     if (this.state.manualCodeInput && this.state.code === null) {
       return (
         <TouchableOpacity onPress={() => { this.setState({code: this.state.codeInput }); this.pairWithToon(this.state.codeInput); }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ Languages.text("ToonAdd", "Submit")() }</Text>
+          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Submit") }</Text>
         </TouchableOpacity>
       );
     }
@@ -201,7 +206,7 @@ Languages.alert("ToonAdd", "_Whoops__Something_went_w_body")(),
       return (
         <View style={{alignItems:'center', justifyContent:'center'}}>
           <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
-            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{ Languages.text("ToonAdd", "Working____")() }</Text>
+            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{ lang("Working____") }</Text>
           </View>
         </View>
       );
@@ -210,11 +215,11 @@ Languages.alert("ToonAdd", "_Whoops__Something_went_w_body")(),
       return (
         <View style={{alignItems:'center', justifyContent:'center'}}>
           <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
-            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{ Languages.text("ToonAdd", "Working____")() }</Text>
+            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{ lang("Working____") }</Text>
           </View>
 
           <TouchableOpacity style={{paddingTop:15}} onPress={() => { this.setState({ manualCodeInput:true })}}>
-            <Text style={{fontSize:15, color: colors.menuBackground.rgba(0.3), textAlign:'center'}}>{ Languages.text("ToonAdd", "If_something_went_wrong__")() }</Text>
+            <Text style={{fontSize:15, color: colors.menuBackground.rgba(0.3), textAlign:'center'}}>{ lang("If_something_went_wrong__") }</Text>
           </TouchableOpacity>
         </View>
       )
@@ -224,7 +229,7 @@ Languages.alert("ToonAdd", "_Whoops__Something_went_w_body")(),
         <TouchableOpacity onPress={() => {
           Linking.openURL('https://api.toon.eu/authorize?response_type=code&client_id=' + toonConfig.clientId).catch(() => {})
         }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ Languages.text("ToonAdd", "Connect_with_Toon_")() }</Text>
+          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Connect_with_Toon_") }</Text>
         </TouchableOpacity>
       );
     }
@@ -233,7 +238,7 @@ Languages.alert("ToonAdd", "_Whoops__Something_went_w_body")(),
   _getExplanation() {
     if (!this.state.success && !this.state.processing && !this.state.failed) {
      return (
-       <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{ Languages.text("ToonAdd", "Sometimes__Toon_is_set_to")() }</Text>
+       <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{ lang("Sometimes__Toon_is_set_to") }</Text>
      )
     }
   }
@@ -246,7 +251,7 @@ Languages.alert("ToonAdd", "_Whoops__Something_went_w_body")(),
            fontSize: 12,
            color: colors.black.rgba(0.6),
            paddingTop: 10
-         }} >{ Languages.text("ToonAdd", "This_application_uses_the")() }</Text>
+         }} >{ lang("This_application_uses_the") }</Text>
        )
       }
     }
@@ -262,7 +267,7 @@ Languages.alert("ToonAdd", "_Whoops__Something_went_w_body")(),
           <View style={{width: 250, height: 60, backgroundColor:"#fff", borderRadius:20, borderWidth: 2, borderColor: colors.gray.rgba(0.5), alignItems:'center', justifyContent:'center'}}>
             <TextEditInput
               style={{width: 0.8*screenWidth, padding:10, fontSize:26, fontWeight:'bold', textAlign:"center"}}
-              placeholder={Languages.label("ToonAdd", "paste_code_ccc")()}
+              placeholder={lang("paste_code_ccc")}
               placeholderTextColor='#ccc'
               autoCorrect={false}
               value={this.state.codeInput}

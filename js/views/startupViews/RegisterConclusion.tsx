@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RegisterConclusion", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -21,7 +26,7 @@ import loginStyles from './LoginStyles'
 
 export class RegisterConclusion extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: Languages.title("RegisterConclusion", "Almost_Done_")()}
+    return { title: lang("Almost_Done_")}
   };
 
   render() {
@@ -30,19 +35,19 @@ export class RegisterConclusion extends Component<any, any> {
         <View style={{flex:1}}>
           <View style={{flex:4}} />
           <View style={style.viewContainer}>
-            <Text style={style.text}>{ Languages.text("RegisterConclusion", "An_email_has_been_sent_to")() }</Text>
+            <Text style={style.text}>{ lang("An_email_has_been_sent_to") }</Text>
           </View>
           <View style={[style.viewContainer]}>
             <Text style={[style.text, {fontSize:21, fontWeight:'500'}]}>{this.props.email}</Text>
           </View>
           <View style={[style.viewContainer]}>
-            <Text style={style.text}>{ Languages.text("RegisterConclusion", "Please_click_the_link_in_")(this.props.passwordReset) }</Text>
-            <Text style={style.smallText}>{ Languages.text("RegisterConclusion", "It_can_take_up_to_a_minut")() }</Text>
+            <Text style={style.text}>{ lang("Please_click_the_link_in_",this.props.passwordReset) }</Text>
+            <Text style={style.smallText}>{ lang("It_can_take_up_to_a_minut") }</Text>
           </View>
           <View style={{flex:0.5}} />
           <View style={{alignItems:'center', justifyContent:'center', paddingBottom: 30}}>
             <TouchableOpacity onPress={ () => { Actions.login() }}>
-              <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ Languages.text("RegisterConclusion", "OK")() }</Text></View>
+              <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ lang("OK") }</Text></View>
             </TouchableOpacity>
           </View>
         </View>

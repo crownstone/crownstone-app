@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ToonOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -29,7 +34,7 @@ export class ToonOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: Languages.title("ToonOverview", "Toon")()
+      title: lang("Toon")
     }
   };
 
@@ -72,15 +77,15 @@ export class ToonOverview extends Component<any, any> {
     items.push({type:'spacer'})
 
     items.push({
-      label: Languages.label("ToonOverview", "Disconnect_from_Toon")(),
+      label: lang("Disconnect_from_Toon"),
       type: 'button',
       icon: <IconButton name={'md-log-out'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor:colors.menuRed.hex}}/>,
       callback: () => {
         Alert.alert(
-Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_header")(),
-Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_body")(),
-[{text:Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_left")(), style:'cancel'},{
-text:Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_right")(), onPress:() => {
+lang("_Are_you_sure__You_will_h_header"),
+lang("_Are_you_sure__You_will_h_body"),
+[{text:lang("_Are_you_sure__You_will_h_left"), style:'cancel'},{
+text:lang("_Are_you_sure__You_will_h_right"), onPress:() => {
             this.props.eventBus.emit("showLoading","Removing the integration with Toon...")
             this.deleting = true;
             CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud()
@@ -101,7 +106,7 @@ text:Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_right")(), onPre
     items.push({
       type:'explanation',
       below: true,
-      label: Languages.label("ToonOverview", "This_will_remove_the_Toon")()})
+      label: lang("This_will_remove_the_Toon")})
     items.push({type:'spacer'})
 
     return items;
@@ -119,7 +124,7 @@ text:Languages.alert("ToonOverview", "_Are_you_sure__You_will_h_right")(), onPre
           <View style={{flex:1}} />
           <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           <View style={{flex:1}} />
-          <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex, paddingLeft: 15, paddingRight:15}]}>{ Languages.text("ToonOverview", "There_are_multiple_Toons_")() }</Text>
+          <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex, paddingLeft: 15, paddingRight:15}]}>{ lang("There_are_multiple_Toons_") }</Text>
           <View style={{flex:1}} />
           <ListEditableItems items={this._getItems(sphere)} separatorIndent={true} />
           <View style={{flex:1}} />

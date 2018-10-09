@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Tutorial", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -32,7 +37,7 @@ Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
 
 export class Tutorial extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: Languages.title("Tutorial", "Welcome_")()}
+    return { title: lang("Welcome_")}
   };
 
   unsubscribeSwipeEvent : any;

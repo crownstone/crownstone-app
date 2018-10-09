@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ShadedImage", key)(a,b,c,d,e);
+}
 // import * as React from 'react'; import { Component } from 'react';
 // import {
 //   AppState,

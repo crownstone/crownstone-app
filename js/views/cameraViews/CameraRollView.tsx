@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("CameraRollView", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -20,7 +25,7 @@ import {BackAction} from "../../util/Back";
 export class CameraRollView extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("CameraRollView", "Choose_a_Picture")(),
+      title: lang("Choose_a_Picture"),
     }
   };
 
@@ -70,9 +75,9 @@ export class CameraRollView extends Component<any, any> {
         if (err.code === "E_UNABLE_TO_LOAD") {
           let defaultActions = () => {BackAction();};
           Alert.alert(
-Languages.alert("CameraRollView", "_I_do_not_have_access_to__header")(),
-Languages.alert("CameraRollView", "_I_do_not_have_access_to__body")(),
-[{text:Languages.alert("CameraRollView", "_I_do_not_have_access_to__left")(), onPress: defaultActions }],
+lang("_I_do_not_have_access_to__header"),
+lang("_I_do_not_have_access_to__body"),
+[{text:lang("_I_do_not_have_access_to__left"), onPress: defaultActions }],
             { onDismiss: defaultActions}
           );
         }

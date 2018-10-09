@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceSchedule", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -62,7 +67,7 @@ export class DeviceSchedule extends Component<any, any> {
 
     let scheduleIds = Object.keys(schedules);
     if (scheduleIds.length > 0) {
-      items.push({label: Languages.label("DeviceSchedule", "SCHEDULED_ACTIONS")(), type: 'lightExplanation',  below:false});
+      items.push({label: lang("SCHEDULED_ACTIONS"), type: 'lightExplanation',  below:false});
 
       scheduleIds.forEach((scheduleId) => {
         let schedule = schedules[scheduleId];
@@ -102,9 +107,9 @@ export class DeviceSchedule extends Component<any, any> {
           onPress={() => {
           if (stone.reachability.disabled === true) {
             Alert.alert(
-Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___Yo_header")(),
-Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___Yo_body")(),
-[{text:Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___Yo_left")()}]
+lang("_Cant_see_Crownstone___Yo_header"),
+lang("_Cant_see_Crownstone___Yo_body"),
+[{text:lang("_Cant_see_Crownstone___Yo_left")}]
             );
           }
           else {
@@ -112,7 +117,7 @@ Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___Yo_body")(),
           }
         }}>
           <Icon name="md-sync" size={20} color={colors.darkBackground.hex} style={{padding:5, paddingLeft:0}} />
-          <Text style={{color: colors.darkBackground.hex}}>{ Languages.text("DeviceSchedule", "Sync_schedules_from_Crown")() }</Text>
+          <Text style={{color: colors.darkBackground.hex}}>{ lang("Sync_schedules_from_Crown") }</Text>
         </TouchableOpacity>
       )
     }
@@ -181,9 +186,9 @@ Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___Yo_body")(),
         eventBus.emit("hideLoading");
         LOGe.info("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
         Alert.alert(
-Languages.alert("DeviceSchedule", "_Could_not_Sync__Move_clo_header")(),
-Languages.alert("DeviceSchedule", "_Could_not_Sync__Move_clo_body")(),
-[{text:Languages.alert("DeviceSchedule", "_Could_not_Sync__Move_clo_left")()}]
+lang("_Could_not_Sync__Move_clo_header"),
+lang("_Could_not_Sync__Move_clo_body"),
+[{text:lang("_Could_not_Sync__Move_clo_left")}]
         );
       });
 
@@ -192,7 +197,7 @@ Languages.alert("DeviceSchedule", "_Could_not_Sync__Move_clo_body")(),
 
   _getHeader(state, iconSize, customLabel = null) {
     let AI = Util.data.getAiData(state, this.props.sphereId);
-    let label =  Languages.label("DeviceSchedule", "You_can_tell__to_switch_t")(AI.name);
+    let label =  lang("You_can_tell__to_switch_t",AI.name);
 
     if (customLabel) {
       label = customLabel;
@@ -201,7 +206,7 @@ Languages.alert("DeviceSchedule", "_Could_not_Sync__Move_clo_body")(),
     return (
       <View style={{ width: screenWidth, alignItems:'center' }}>
         <View style={{height: 30}} />
-        <Text style={[deviceStyles.header]}>{ Languages.text("DeviceSchedule", "Schedule")() }</Text>
+        <Text style={[deviceStyles.header]}>{ lang("Schedule") }</Text>
         <View style={{height: 0.2*iconSize}} />
         <Text style={textStyle.specification}>{label}</Text>
       </View>
@@ -227,9 +232,9 @@ Languages.alert("DeviceSchedule", "_Could_not_Sync__Move_clo_body")(),
         <TouchableOpacity onPress={() => {
             if (stone.reachability.disabled === true) {
               Alert.alert(
-Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___You_header")(),
-Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___You_body")(),
-[{text:Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___You_left")()}]
+lang("_Cant_see_Crownstone___You_header"),
+lang("_Cant_see_Crownstone___You_body"),
+[{text:lang("_Cant_see_Crownstone___You_left")}]
               );
             }
             else {
@@ -308,7 +313,7 @@ Languages.alert("DeviceSchedule", "_Cant_see_Crownstone___You_body")(),
             paddingRight: 30,
             fontWeight: 'bold',
             fontStyle:'italic'
-          }}>{ Languages.text("DeviceSchedule", "Add_your_first_scheduled_")(Permissions.inSphere(this.props.sphereId).canAddSchedule) }</Text>
+          }}>{ lang("Add_your_first_scheduled_",Permissions.inSphere(this.props.sphereId).canAddSchedule) }</Text>
           <View style={{flex: 2}} />
           { this._getSyncOption(stone) }
         </View>

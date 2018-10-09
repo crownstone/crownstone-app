@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LoginSplash", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -41,11 +46,11 @@ export class LoginSplash extends Component<any, any> {
             <View style={{flexDirection:'row'}}>
               <View style={{flex:1}} />
               <TouchableOpacity onPress={() => {Actions.register()}} >
-                <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ Languages.text("LoginSplash", "Register")() }</Text></View>
+                <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ lang("Register") }</Text></View>
               </TouchableOpacity>
               <View style={{flex:1}} />
               <TouchableOpacity onPress={() => {Actions.login()}} >
-                <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ Languages.text("LoginSplash", "Log_In")() }</Text></View>
+                <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ lang("Log_In") }</Text></View>
               </TouchableOpacity>
               <View style={{flex:1}} />
             </View>
@@ -68,9 +73,9 @@ export class LoginSplash extends Component<any, any> {
               fontStyle:'italic',
               textDecorationLine: 'underline',
               backgroundColor:'transparent'
-            }}>{ Languages.text("LoginSplash", "Buy_Crownstones_")() }</Text>
+            }}>{ lang("Buy_Crownstones_") }</Text>
           </TouchableOpacity>
-          <Text style={versionStyle}>{ Languages.text("LoginSplash", "version__")(DeviceInfo.getReadableVersion()) }</Text>
+          <Text style={versionStyle}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
         </View>
       </Background>
     )

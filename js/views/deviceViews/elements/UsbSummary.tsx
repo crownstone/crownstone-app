@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("UsbSummary", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -73,10 +78,10 @@ export class UsbSummary extends Component<any, any> {
     // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let locationLabel =  Languages.label("UsbSummary", "Tap_here_to_move_me_")();
-    let locationName =  Languages.label("UsbSummary", "Not_in_room")();
+    let locationLabel =  lang("Tap_here_to_move_me_");
+    let locationName =  lang("Not_in_room");
     if (location) {
-      locationLabel =  Languages.label("UsbSummary", "Located_in_")();
+      locationLabel =  lang("Located_in_");
       locationName = location.config.name;
     }
 

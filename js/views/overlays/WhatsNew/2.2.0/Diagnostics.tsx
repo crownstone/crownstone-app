@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Diagnostics", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -19,11 +24,11 @@ export class Diagnostics extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>{ Languages.text("Diagnostics", "Crownstone_Diagnostics")() }</Text>
+            <Text style={WNStyles.text}>{ lang("Crownstone_Diagnostics") }</Text>
             <View style={{height:30}} />
             <Image source={require('../../../../images/whatsNew/2.2.0/diagnostics.png')} style={{width:569*size, height:853*size}} />
             <View style={{height:30}} />
-            <Text style={WNStyles.detail}>{ Languages.text("Diagnostics", "Sometimes__things_dont_se")() }</Text>
+            <Text style={WNStyles.detail}>{ lang("Sometimes__things_dont_se") }</Text>
           </View>
         </ScrollView>
       </View>

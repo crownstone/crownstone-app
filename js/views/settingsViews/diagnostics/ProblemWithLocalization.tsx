@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ProblemWithLocalization", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -63,20 +68,20 @@ export class ProblemWithLocalization extends Component<any, any> {
   }
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ProblemWithLocalization", "Problem_with_localization")() }</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{ lang("Problem_with_localization") }</Text>
   }
 
   _getTests() {
     return (
       <View>
         <SlideFadeInView visible={this.state.sphereTestsVisible} height={180}>
-          <TestResult label={ Languages.label("ProblemWithLocalization", "Database_is_healthy")()}       state={ true } />
-          <TestResult label={ Languages.label("ProblemWithLocalization", "Scanning_is_enabled")()}       state={ true } />
-          <TestResult label={ Languages.label("ProblemWithLocalization", "Receiving_Sphere_beacons")()}  state={ true } />
-          <TestResult label={ Languages.label("ProblemWithLocalization", "Receiving_Crownstone_data")()} state={ true } />
+          <TestResult label={ lang("Database_is_healthy")}       state={ true } />
+          <TestResult label={ lang("Scanning_is_enabled")}       state={ true } />
+          <TestResult label={ lang("Receiving_Sphere_beacons")}  state={ true } />
+          <TestResult label={ lang("Receiving_Crownstone_data")} state={ true } />
         </SlideFadeInView>
         <SlideFadeInView visible={this.state.beaconTestVisible} height={45}>
-          <TestResult label={ Languages.label("ProblemWithLocalization", "Checking_for_Beacons")()} state={ this.state.canSeeBeacons } />
+          <TestResult label={ lang("Checking_for_Beacons")} state={ this.state.canSeeBeacons } />
         </SlideFadeInView>
       </View>
     );
@@ -126,14 +131,14 @@ export class ProblemWithLocalization extends Component<any, any> {
       if (inAccurate) {
         if (ldata.enoughVisible) {
           let header = '';
-          let explanation =  Languages.label("ProblemWithLocalization", "Make_sure_the_Crownstones")();
+          let explanation =  lang("Make_sure_the_Crownstones");
           if (ldata.amountOfStones > 10) {
-            header =  Languages.label("ProblemWithLocalization", "You_have_a_good_amount_of")();
+            header =  lang("You_have_a_good_amount_of");
           }
           else {
-            header =  Languages.label("ProblemWithLocalization", "The_more_Crownstones_you_")();
+            header =  lang("The_more_Crownstones_you_");
           }
-          header += Languages.label("ProblemWithLocalization","__Apart_from_the_amount__")();
+          header += lang("__Apart_from_the_amount__");
           // does not work right here
           return (
             <DiagSingleButtonGoBack
@@ -145,14 +150,14 @@ export class ProblemWithLocalization extends Component<any, any> {
         }
         else {
           let header = '';
-          let explanation =  Languages.label("ProblemWithLocalization", "Make_sure_the_Crownstones_")();
+          let explanation =  lang("Make_sure_the_Crownstones_");
           if (ldata.amountOfStones > 10) {
-            header = Languages.label("ProblemWithLocalization","Even_thought_you_have_a_g")();
+            header = lang("Even_thought_you_have_a_g");
           }
           else {
-            header = Languages.label("ProblemWithLocalization","The_more_Crownstones_you_expl")()
+            header = lang("The_more_Crownstones_you_expl")
           }
-          header += Languages.label("ProblemWithLocalization","__Apart_from_the_amount__")()
+          header += lang("__Apart_from_the_amount__")
           // does not work right here
           return (
             <DiagSingleButtonGoBack
@@ -173,8 +178,8 @@ export class ProblemWithLocalization extends Component<any, any> {
                 return (
                   <DiagSingleButtonGoBack
                     visible={this.state.visible}
-                    header={ Languages.label("ProblemWithLocalization", "Indoor_localization_is_ru")()}
-                    explanation={ Languages.label("ProblemWithLocalization", "You_can_see_your_face_on_")()}
+                    header={ lang("Indoor_localization_is_ru")}
+                    explanation={ lang("You_can_see_your_face_on_")}
                   />
                 );
               }
@@ -183,8 +188,8 @@ export class ProblemWithLocalization extends Component<any, any> {
                 return (
                   <DiagSingleButtonGoBack
                     visible={this.state.visible}
-                    header={ Languages.label("ProblemWithLocalization", "There_are_not_enough_Crow")()}
-                    explanation={ Languages.label("ProblemWithLocalization", "Since_the_radio_field_is_")()}
+                    header={ lang("There_are_not_enough_Crow")}
+                    explanation={ lang("Since_the_radio_field_is_")}
                   />
                 );
               }
@@ -194,8 +199,8 @@ export class ProblemWithLocalization extends Component<any, any> {
               return (
                 <DiagSingleButtonGoBack
                   visible={this.state.visible}
-                  header={ Languages.label("ProblemWithLocalization", "Indoor_localization_is_di")()}
-                  explanation={ Languages.label("ProblemWithLocalization", "You_can_enable_this_in_th2")(Platform.OS === 'android')}
+                  header={ lang("Indoor_localization_is_di")}
+                  explanation={ lang("You_can_enable_this_in_th2",Platform.OS === 'android')}
                 />
               );
             }
@@ -205,8 +210,8 @@ export class ProblemWithLocalization extends Component<any, any> {
             return (
               <DiagSingleButtonGoBack
                 visible={this.state.visible}
-                header={ Languages.label("ProblemWithLocalization", "You_need_to_train_the_roo")()}
-                explanation={ Languages.label("ProblemWithLocalization", "You_can_do_this_by_tappin")()}
+                header={ lang("You_need_to_train_the_roo")}
+                explanation={ lang("You_can_do_this_by_tappin")}
               />
             );
           }
@@ -216,8 +221,8 @@ export class ProblemWithLocalization extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={Languages.label("ProblemWithLocalization","You_need_to_have_at_least")()}
-              explanation={Languages.label("ProblemWithLocalization","Not_all_rooms_in_the_app_")()}
+              header={lang("You_need_to_have_at_least")}
+              explanation={lang("Not_all_rooms_in_the_app_")}
             />
           );
         }
@@ -228,8 +233,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithLocalization", "Room_level_localization_i")()}
-          explanation={ Languages.label("ProblemWithLocalization", "This_is_required_to_be_ab")()}
+          header={ lang("Room_level_localization_i")}
+          explanation={ lang("This_is_required_to_be_ab")}
         />
       );
     }
@@ -243,8 +248,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithLocalization", "Indoor_localization_is_dis")()}
-          explanation={ Languages.label("ProblemWithLocalization", "You_can_enable_this_in_th2")(Platform.OS === 'android')}
+          header={ lang("Indoor_localization_is_dis")}
+          explanation={ lang("You_can_enable_this_in_th2",Platform.OS === 'android')}
         />
       );
     }
@@ -276,8 +281,8 @@ export class ProblemWithLocalization extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithLocalization", "When_indoor_localization_")()}
-            explanation={Languages.label("ProblemWithLocalization","This_is_a_design_choice__")()}
+            header={ lang("When_indoor_localization_")}
+            explanation={lang("This_is_a_design_choice__")}
           />
         );
       }
@@ -286,8 +291,8 @@ export class ProblemWithLocalization extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={ Languages.label("ProblemWithLocalization", "You_will_need_to_train_th")()}
-              explanation={ Languages.label("ProblemWithLocalization", "Tap_on_the_room__tap_on_t")()}
+              header={ lang("You_will_need_to_train_th")}
+              explanation={ lang("Tap_on_the_room__tap_on_t")}
             />
           );
         }
@@ -295,8 +300,8 @@ export class ProblemWithLocalization extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={ Languages.label("ProblemWithLocalization", "Near_further_away_behavio")()}
-              explanation={Languages.label("ProblemWithLocalization","Tap_on_the_room__tap_on_t2")()}
+              header={ lang("Near_further_away_behavio")}
+              explanation={lang("Tap_on_the_room__tap_on_t2")}
             />
           );
         }
@@ -305,8 +310,8 @@ export class ProblemWithLocalization extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithLocalization", "Near_further_away_is_conf")()}
-            explanation={Languages.label("ProblemWithLocalization","You_can_retrain_where_you")()}
+            header={ lang("Near_further_away_is_conf")}
+            explanation={lang("You_can_retrain_where_you")}
           />
         );
       }
@@ -320,8 +325,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_disabled")()}
-          explanation={Languages.label("ProblemWithLocalization","You_can_enable_this_in_th2")(Platform.OS === 'android')}
+          header={ lang("Tap_to_toggle_is_disabled")}
+          explanation={lang("You_can_enable_this_in_th2",Platform.OS === 'android')}
         />
       );
     }
@@ -330,8 +335,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_not_conf")()}
-          explanation={Languages.label("ProblemWithLocalization","You_can_enable_this_in_th")(Platform.OS === 'android')}
+          header={ lang("Tap_to_toggle_is_not_conf")}
+          explanation={lang("You_can_enable_this_in_th",Platform.OS === 'android')}
         />
       );
     }
@@ -360,8 +365,8 @@ export class ProblemWithLocalization extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_configur")()}
-              explanation={Languages.label("ProblemWithLocalization","If_its_not_working_as_you")(Platform.OS === 'android')}
+              header={ lang("Tap_to_toggle_is_configur")}
+              explanation={lang("If_its_not_working_as_you",Platform.OS === 'android')}
             />
           );
         }
@@ -370,8 +375,8 @@ export class ProblemWithLocalization extends Component<any, any> {
             return (
               <DiagSingleButtonGoBack
                 visible={this.state.visible}
-                header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_disabled_")()}
-                explanation={ Languages.label("ProblemWithLocalization", "You_can_enable_it_by_tapp")()}
+                header={ lang("Tap_to_toggle_is_disabled_")}
+                explanation={ lang("You_can_enable_it_by_tapp")}
               />
             );
           }
@@ -379,8 +384,8 @@ export class ProblemWithLocalization extends Component<any, any> {
             return (
               <DiagSingleButtonGoBack
                 visible={this.state.visible}
-                header={ Languages.label("ProblemWithLocalization", "Tap_to_toggle_is_disabled_o")()}
-                explanation={ Languages.label("ProblemWithLocalization", "You_will_have_to_ask_an_a")()}
+                header={ lang("Tap_to_toggle_is_disabled_o")}
+                explanation={ lang("You_will_have_to_ask_an_a")}
               />
             );
           }
@@ -390,9 +395,9 @@ export class ProblemWithLocalization extends Component<any, any> {
         return (
           <DiagSingleButton
             visible={this.state.visible}
-            header={Languages.label("ProblemWithLocalization","We_dont_generally_recomme")()}
-            explanation={ Languages.label("ProblemWithLocalization", "Press_the_button_to_conti")()}
-            label={ Languages.label("ProblemWithLocalization", "Continue")()}
+            header={lang("We_dont_generally_recomme")}
+            explanation={ lang("Press_the_button_to_conti")}
+            label={ lang("Continue")}
             onPress={() => { this._changeContent(() => { this.setState({ stoneTypeWarningRead: true }); }); }}
           />
         );
@@ -401,8 +406,8 @@ export class ProblemWithLocalization extends Component<any, any> {
         return (
           <DiagSingleButtonGoBack
             visible={this.state.visible}
-            header={Languages.label("ProblemWithLocalization","Tap_to_toggle_does_not_wo2")()}
-            explanation={Languages.label("ProblemWithLocalization","I_cant_help_you_with_this")()}
+            header={lang("Tap_to_toggle_does_not_wo2")}
+            explanation={lang("I_cant_help_you_with_this")}
           />
         );
       }
@@ -420,8 +425,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("ProblemWithLocalization","We_have_recently_added_an2")()}
-          explanation={ Languages.label("ProblemWithLocalization", "You_can_find_the_Activity")()}
+          header={lang("We_have_recently_added_an2")}
+          explanation={ lang("You_can_find_the_Activity")}
         />
       );
     }
@@ -429,8 +434,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithLocalization", "We_have_recently_added_an")()}
-          explanation={ Languages.label("ProblemWithLocalization", "You_can_find_it_in_the_st")()}
+          header={ lang("We_have_recently_added_an")}
+          explanation={ lang("You_can_find_it_in_the_st")}
         />
       );
     }
@@ -441,8 +446,8 @@ export class ProblemWithLocalization extends Component<any, any> {
     return (
       <DiagSingleButtonGoBack
         visible={this.state.visible}
-        header={ Languages.label("ProblemWithLocalization", "This_is_currently_unavoid")()}
-        explanation={ Languages.label("ProblemWithLocalization", "We_are_working_on_new_beh")()}
+        header={ lang("This_is_currently_unavoid")}
+        explanation={ lang("We_are_working_on_new_beh")}
       />
     );
   }
@@ -451,8 +456,8 @@ export class ProblemWithLocalization extends Component<any, any> {
     return (
       <DiagSingleButtonGoBack
         visible={this.state.visible}
-        header={ Languages.label("ProblemWithLocalization", "Only_turn_on_when_dark_wi")()}
-        explanation={Languages.label("ProblemWithLocalization","It_will_not_turn_on_at_a_")()}
+        header={ lang("Only_turn_on_when_dark_wi")}
+        explanation={lang("It_will_not_turn_on_at_a_")}
       />
     );
   }
@@ -462,17 +467,17 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagOptions
           visible={this.state.visible}
-          header={Languages.label("ProblemWithLocalization","Whats_wrong_with_the_Loca")()}
-          subExplanation={ Languages.label("ProblemWithLocalization", "Scroll_down_to_see_all_op")()}
+          header={lang("Whats_wrong_with_the_Loca")}
+          subExplanation={ lang("Scroll_down_to_see_all_op")}
           labels={[
-            Languages.label("ProblemWithLocalization","It_does_not_do_room_level")(),
-            Languages.label("ProblemWithLocalization","Room_level_localization_is")(),
-            Languages.label("ProblemWithLocalization","Near_far_does_not_work_")(),
-            Languages.label("ProblemWithLocalization","Tap_to_toggle_does_not_wo")(),
-            Languages.label("ProblemWithLocalization","Things_turn_off_while_Im_")(),
-            Languages.label("ProblemWithLocalization","If_I_leave_the_room_but_s")(),
-            Languages.label("ProblemWithLocalization","Only_on_when_dark_does_no")(),
-            Languages.label("ProblemWithLocalization","Other___")(),
+            lang("It_does_not_do_room_level"),
+            lang("Room_level_localization_is"),
+            lang("Near_far_does_not_work_"),
+            lang("Tap_to_toggle_does_not_wo"),
+            lang("Things_turn_off_while_Im_"),
+            lang("If_I_leave_the_room_but_s"),
+            lang("Only_on_when_dark_does_no"),
+            lang("Other___"),
           ]}
           pressHandlers={[
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'no_room_level'}); }); },
@@ -512,8 +517,8 @@ export class ProblemWithLocalization extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={ Languages.label("ProblemWithLocalization", "Perhaps_the_Help_menu_can")()}
-          explanation={Languages.label("ProblemWithLocalization","Alternatively_you_can_sen")()}
+          header={ lang("Perhaps_the_Help_menu_can")}
+          explanation={lang("Alternatively_you_can_sen")}
         />
       );
     }

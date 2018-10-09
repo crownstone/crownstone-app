@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomList", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicatorIOS,
@@ -34,7 +39,7 @@ export class RoomList extends Component<any, any> {
         <View style={{flex:1}}>
           <View style={{flexDirection:'column'}}>
             <Text style={{fontSize:16, fontWeight:'500'}}>{this.props.name}</Text>
-            { this.props.hideSubtitle !== true ? <Text style={{fontSize:14, fontWeight:'100', paddingTop:3}}>{ Languages.text("RoomList", "Number_of_Crownstones__")(this.props.stoneCount) }</Text> : undefined }
+            { this.props.hideSubtitle !== true ? <Text style={{fontSize:14, fontWeight:'100', paddingTop:3}}>{ lang("Number_of_Crownstones__",this.props.stoneCount) }</Text> : undefined }
           </View>
         </View>
         {this.props.navigation ? <Icon name="ios-arrow-forward" size={18} color={'#888'} /> : undefined}

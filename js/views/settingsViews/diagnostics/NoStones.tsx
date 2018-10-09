@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("NoStones", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -73,8 +78,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("NoStones", "If_the_Crownstone_has_pow")()}
-          explanation={ Languages.label("NoStones", "If_none_of_these_work_this")()}
+          header={ lang("If_the_Crownstone_has_pow")}
+          explanation={ lang("If_none_of_these_work_this")}
         />
       );
     }
@@ -82,8 +87,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("NoStones", "The_Crownstone_needs_powe")()}
-          explanation={ Languages.label("NoStones", "Please_ensure_the_Crownstone")()}
+          header={ lang("The_Crownstone_needs_powe")}
+          explanation={ lang("Please_ensure_the_Crownstone")}
         />
       );
     }
@@ -91,7 +96,7 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={Languages.label("NoStones", "You_re_near_a_Crownstone_but")()}
+          header={lang("You_re_near_a_Crownstone_but")}
           onPressNo={ () => { this._changeContent(() => { this.setState({userInputHasPower: false}); }); }}
           onPressYes={() => { this._changeContent(() => { this.setState({userInputHasPower: true}); }); }}
         />
@@ -101,8 +106,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleBleTroubleshooter
           visible={this.state.visible}
-          header={Languages.label("NoStones", "You_re_near_a_crownstone_")()}
-          explanation={Languages.label("NoStones", "It_could_be_that_your_phone")()}
+          header={lang("You_re_near_a_crownstone_")}
+          explanation={lang("It_could_be_that_your_phone")}
         />
       );
     }
@@ -110,7 +115,7 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("NoStones", "I_m_not_detecting_anythin")()}
+          header={lang("I_m_not_detecting_anythin")}
         />
       );
     }
@@ -118,8 +123,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonToOverview
           visible={this.state.visible}
-          header={ Languages.label("NoStones", "There_is_a_Crownstone_in_")()}
-          explanation={ Languages.label("NoStones", "You_can_add_it_to_your_sphere")()}
+          header={ lang("There_is_a_Crownstone_in_")}
+          explanation={ lang("You_can_add_it_to_your_sphere")}
         />
       );
     }
@@ -127,8 +132,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("NoStones", "There_is_a_Crownstone_in_s")()}
-          explanation={ Languages.label("NoStones", "Only_admins_can_setup_Cro")()}
+          header={ lang("There_is_a_Crownstone_in_s")}
+          explanation={ lang("Only_admins_can_setup_Cro")}
         />
       );
     }
@@ -136,8 +141,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("NoStones", "I_can_hear_a_Crownstone__")()}
-          explanation={ Languages.label("NoStones", "Since_you_are_not_an_admin")()}
+          header={ lang("I_can_hear_a_Crownstone__")}
+          explanation={ lang("Since_you_are_not_an_admin")}
         />
       );
     }
@@ -145,8 +150,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonHelp
           visible={this.state.visible}
-          header={ Languages.label("NoStones", "I_can_hear_a_Crownstone__")()}
-          explanation={ Languages.label("NoStones", "if_it_does_belong_to_you")()}
+          header={ lang("I_can_hear_a_Crownstone__")}
+          explanation={ lang("if_it_does_belong_to_you")}
         />
       );
     }
@@ -154,8 +159,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={ Languages.label("NoStones", "If_you_want_to_join_a_friend")()}
-          explanation={ Languages.label("NoStones", "Once_they_invite_you__you")()}
+          header={ lang("If_you_want_to_join_a_friend")}
+          explanation={ lang("Once_they_invite_you__you")}
         />
       );
     }
@@ -163,8 +168,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={ Languages.label("NoStones", "I_can_hear_a_Crownstone__")()}
-          explanation={ Languages.label("NoStones", "Are_you_visiting_a_friends")()}
+          header={ lang("I_can_hear_a_Crownstone__")}
+          explanation={ lang("Are_you_visiting_a_friends")}
           onPressNo={ () => { this._changeContent(() => { this.setState({userInputVisitingSphere: false}); }); }}
           onPressYes={() => { this._changeContent(() => { this.setState({userInputVisitingSphere: true});  }); }}
         />
@@ -174,8 +179,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={  Languages.label("NoStones", "Im_not_picking_up_any")()}
-          explanation={ Languages.label("NoStones", "Are_you_near_a_Crownstone")()}
+          header={  lang("Im_not_picking_up_any")}
+          explanation={ lang("Are_you_near_a_Crownstone")}
           onPressNo={() => { this._changeContent(() => { this.setState({userInputNearCrownstone: false}); }); }}
           onPressYes={() => { this._changeContent(() => { this.setState({userInputNearCrownstone: true}); }); }}
         />
@@ -185,8 +190,8 @@ export class NoStones extends Component<any, any> {
       return (
         <DiagYesNo
           visible={this.state.visible}
-          header={Languages.label("NoStones", "Im_not_picking_up_anything")()}
-          explanation={ Languages.label("NoStones", "Are_you_near_a_Crownstone")()}
+          header={lang("Im_not_picking_up_anything")}
+          explanation={ lang("Are_you_near_a_Crownstone")}
           onPressNo={ () => { this._changeContent(() => { this.setState({userInputNearCrownstone: false}); }); }}
           onPressYes={() => { this._changeContent(() => { this.setState({userInputNearCrownstone: true}); }); }}
         />
@@ -197,11 +202,11 @@ export class NoStones extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-        <Text style={diagnosticStyles.headerStyle}>{ Languages.text("NoStones", "You_dont_have_any_Crownst")() }</Text>
+        <Text style={diagnosticStyles.headerStyle}>{ lang("You_dont_have_any_Crownst") }</Text>
         <View>
-          <TestResult label={ Languages.label("NoStones", "Database_is_healthy")()} state={ this.props.databaseHealth } />
-          <TestResult label={ Languages.label("NoStones", "Scanning_is_enabled")()} state={ this.props.iBeaconScanningEnabled } />
-          <TestResult label={ Languages.label("NoStones", "Searching_for_Crownstones")()}  state={ this.state.scanningFinished } />
+          <TestResult label={ lang("Database_is_healthy")} state={ this.props.databaseHealth } />
+          <TestResult label={ lang("Scanning_is_enabled")} state={ this.props.iBeaconScanningEnabled } />
+          <TestResult label={ lang("Searching_for_Crownstones")}  state={ this.state.scanningFinished } />
         </View>
         { this._getResults() }
       </View>

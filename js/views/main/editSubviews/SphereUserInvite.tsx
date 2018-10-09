@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereUserInvite", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -21,7 +26,7 @@ import {BackAction} from "../../../util/Back";
 
 export class SphereUserInvite extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: Languages.title("SphereUserInvite", "Invite")()}
+    return { title: lang("Invite")}
   };
 
   inputStates : any;
@@ -42,7 +47,7 @@ export class SphereUserInvite extends Component<any, any> {
     let items = [];
     items.push({type:'spacer'});
     items.push({
-      label: Languages.label("SphereUserInvite", "Email")(),
+      label: lang("Email"),
       type: 'textEdit',
       autoCapitalize: 'none',
       validation:'email',
@@ -59,13 +64,13 @@ export class SphereUserInvite extends Component<any, any> {
     if (spherePermissions.inviteMemberToSphere || spherePermissions.inviteAdminToSphere) {
       // generate permission items
       let dropDownItems = [];
-      if (spherePermissions.inviteAdminToSphere ) { dropDownItems.push({label: Languages.label("SphereUserInvite", "Admin")()}); }
-      if (spherePermissions.inviteMemberToSphere) { dropDownItems.push({label: Languages.label("SphereUserInvite", "Member")()}); }
-      dropDownItems.push({label: Languages.label("SphereUserInvite", "Guest")()});
+      if (spherePermissions.inviteAdminToSphere ) { dropDownItems.push({label: lang("Admin")}); }
+      if (spherePermissions.inviteMemberToSphere) { dropDownItems.push({label: lang("Member")}); }
+      dropDownItems.push({label: lang("Guest")});
 
       items.push({
         type:'dropdown',
-        label: Languages.label("SphereUserInvite", "Access_Level")(),
+        label: lang("Access_Level"),
         buttons: false,
         value: this.state.permission,
         dropdownHeight:130,
@@ -76,19 +81,19 @@ export class SphereUserInvite extends Component<any, any> {
       });
     }
     else if (spherePermissions.inviteGuestToSphere) {
-      items.push({type:'info', label: Languages.label("SphereUserInvite", "Access_level")(), value:'Guest'});
+      items.push({type:'info', label: lang("Access_level"), value:'Guest'});
     }
 
     if (this.state.permission == 'Member') {
-      items.push({label: Languages.label("SphereUserInvite", "Members_can_configure_Cro")(), type:'explanation', below:true});
+      items.push({label: lang("Members_can_configure_Cro"), type:'explanation', below:true});
     }
     else if (this.state.permission == 'Guest') {
-      items.push({label: Languages.label("SphereUserInvite", "Guests_can_control_Crowns")(), type:'explanation', below:true});
+      items.push({label: lang("Guests_can_control_Crowns"), type:'explanation', below:true});
     }
 
 
     items.push({
-      label: Languages.label("SphereUserInvite", "Send_invitation_")(),
+      label: lang("Send_invitation_"),
       type:  'button',
       style: {color:colors.blue.hex},
       callback: () => {this.validateAndContinue(state);}
@@ -100,16 +105,16 @@ export class SphereUserInvite extends Component<any, any> {
   validateAndContinue(state) {
     if (!this.state.email) {
       Alert.alert(
-Languages.alert("SphereUserInvite", "_Please_provide_an_email__header")(),
-Languages.alert("SphereUserInvite", "_Please_provide_an_email__body")(),
-[{text:Languages.alert("SphereUserInvite", "_Please_provide_an_email__left")()}]);
+lang("_Please_provide_an_email__header"),
+lang("_Please_provide_an_email__body"),
+[{text:lang("_Please_provide_an_email__left")}]);
       return;
     }
     else if (!this.inputStates.email) {
       Alert.alert(
-Languages.alert("SphereUserInvite", "_Please_provide_a_valid_e_header")(),
-Languages.alert("SphereUserInvite", "_Please_provide_a_valid_e_body")(),
-[{text:Languages.alert("SphereUserInvite", "_Please_provide_a_valid_e_left")()}]);
+lang("_Please_provide_a_valid_e_header"),
+lang("_Please_provide_a_valid_e_body"),
+[{text:lang("_Please_provide_a_valid_e_left")}]);
       return;
     }
 
@@ -120,9 +125,9 @@ Languages.alert("SphereUserInvite", "_Please_provide_a_valid_e_body")(),
     for (let i = 0; i < userIds.length; i++) {
       if (users[userIds[i]].email.toLowerCase() === this.state.email.toLowerCase()) {
         Alert.alert(
-Languages.alert("SphereUserInvite", "_User_already_in_Sphere___header")(),
-Languages.alert("SphereUserInvite", "_User_already_in_Sphere___body")(),
-[{text:Languages.alert("SphereUserInvite", "_User_already_in_Sphere___left")()}]);
+lang("_User_already_in_Sphere___header"),
+lang("_User_already_in_Sphere___body"),
+[{text:lang("_User_already_in_Sphere___left")}]);
         return;
       }
     }
@@ -140,17 +145,17 @@ Languages.alert("SphereUserInvite", "_User_already_in_Sphere___body")(),
         });
         let defaultAction = () => { BackAction(); };
         Alert.alert(
-Languages.alert("SphereUserInvite", "_Invite_has_been_sent___A_header")(),
-Languages.alert("SphereUserInvite", "_Invite_has_been_sent___A_body")(this.state.email),
-[{text:Languages.alert("SphereUserInvite", "_Invite_has_been_sent___A_left")(), onPress: defaultAction}], { onDismiss: defaultAction })
+lang("_Invite_has_been_sent___A_header"),
+lang("_Invite_has_been_sent___A_body",this.state.email),
+[{text:lang("_Invite_has_been_sent___A_left"), onPress: defaultAction}], { onDismiss: defaultAction })
       })
       .catch((err) => {
         this.props.eventBus.emit('hideLoading');
         LOGe.info("Error when inviting using:",err);
         Alert.alert(
-Languages.alert("SphereUserInvite", "_Could_not_send_invite____header")(),
-Languages.alert("SphereUserInvite", "_Could_not_send_invite____body")(),
-[{text:Languages.alert("SphereUserInvite", "_Could_not_send_invite____left")()}])
+lang("_Could_not_send_invite____header"),
+lang("_Could_not_send_invite____body"),
+[{text:lang("_Could_not_send_invite____left")}])
       })
   }
 

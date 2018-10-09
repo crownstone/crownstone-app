@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LoginStyles", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import { Dimensions, PixelRatio, StyleSheet } from 'react-native'
 import { screenWidth} from '../styles'

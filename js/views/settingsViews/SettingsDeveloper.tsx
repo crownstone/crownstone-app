@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsDeveloper", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -27,7 +32,7 @@ import {Scheduler} from "../../logic/Scheduler";
 export class SettingsDeveloper extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("SettingsDeveloper", "Developer")(),
+      title: lang("Developer"),
     }
   };
 
@@ -56,10 +61,10 @@ export class SettingsDeveloper extends Component<any, any> {
     let items = [];
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
-    items.push({label: Languages.label("SettingsDeveloper", "LOGGING")(), type: 'explanation', below: false});
+    items.push({label: lang("LOGGING"), type: 'explanation', below: false});
     if (!dev.logging_enabled) {
       items.push({
-        label: Languages.label("SettingsDeveloper", "Enable_Logging")(),
+        label: lang("Enable_Logging"),
         value: dev.logging_enabled,
         type: 'switch',
         icon: <IconButton name="ios-create" size={22} button={true} color="#fff"
@@ -75,11 +80,11 @@ export class SettingsDeveloper extends Component<any, any> {
           Bluenet.enableLoggingToFile(newValue);
         }
       });
-      items.push({label: Languages.label("SettingsDeveloper", "Logging_will_keep_a_histo")(), type: 'explanation', below: true});
+      items.push({label: lang("Logging_will_keep_a_histo"), type: 'explanation', below: true});
     }
     else {
       items.push({
-        label: Languages.label("SettingsDeveloper", "Logging_Configuration")(),
+        label: lang("Logging_Configuration"),
         type: 'navigation',
         icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         callback: () => {
@@ -87,26 +92,26 @@ export class SettingsDeveloper extends Component<any, any> {
         }
       });
       items.push({
-        label: Languages.label("SettingsDeveloper", "Clear_Logs_")(),
+        label: lang("Clear_Logs_"),
         type: 'button',
         style: {color: colors.menuBackground.hex},
         icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
         callback: () => {
           Alert.alert(
-Languages.alert("SettingsDeveloper", "_Clear_all_Logs___Press_O_header")(),
-Languages.alert("SettingsDeveloper", "_Clear_all_Logs___Press_O_body")(),
-[{text:Languages.alert("SettingsDeveloper", "_Clear_all_Logs___Press_O_left")(), style: 'cancel'},{
-text: Languages.alert("SettingsDeveloper", "_Clear_all_Logs___Press_O_right")(), onPress: () => {clearAllLogs();}}])
+lang("_Clear_all_Logs___Press_O_header"),
+lang("_Clear_all_Logs___Press_O_body"),
+[{text:lang("_Clear_all_Logs___Press_O_left"), style: 'cancel'},{
+text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}])
         }
       });
-      items.push({label: Languages.label("SettingsDeveloper", "Logging_will_keep_a_histor")(), type: 'explanation', below: true});
+      items.push({label: lang("Logging_will_keep_a_histor"), type: 'explanation', below: true});
     }
 
 
 
-    items.push({label: Languages.label("SettingsDeveloper", "CLOUD")(), type: 'explanation', below: false, alreadyPadded: true});
+    items.push({label: lang("CLOUD"), type: 'explanation', below: false, alreadyPadded: true});
     items.push({
-      label: Languages.label("SettingsDeveloper", "Sync_Now_")(),
+      label: lang("Sync_Now_"),
       type: 'button',
       style: {color: colors.black.hex},
       icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
@@ -116,19 +121,19 @@ text: Languages.alert("SettingsDeveloper", "_Clear_all_Logs___Press_O_right")(),
           CLOUD.sync(store, true)
             .then(() => { this.props.eventBus.emit("showLoading","Done!"); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
             .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert(
-Languages.alert("SettingsDeveloper", "_Error_during_sync__argum_header")(),
-Languages.alert("SettingsDeveloper", "_Error_during_sync__argum_body")(err,err.message,JSON.stringify(err)),
-[{text:Languages.alert("SettingsDeveloper", "_Error_during_sync__argum_left")()}]) })
+lang("_Error_during_sync__argum_header"),
+lang("_Error_during_sync__argum_body",err,err.message,JSON.stringify(err)),
+[{text:lang("_Error_during_sync__argum_left")}]) })
         }
         else {
           Alert.alert(
-Languages.alert("SettingsDeveloper", "_Sync_already_in_progress_header")(),
-Languages.alert("SettingsDeveloper", "_Sync_already_in_progress_body")(),
-[{text:Languages.alert("SettingsDeveloper", "_Sync_already_in_progress_left")()}]);
+lang("_Sync_already_in_progress_header"),
+lang("_Sync_already_in_progress_body"),
+[{text:lang("_Sync_already_in_progress_left")}]);
         }
     }});
     items.push({
-      label: Languages.label("SettingsDeveloper", "Test_Notifications")(),
+      label: lang("Test_Notifications"),
       type: 'button',
       style: {color: colors.black.hex},
       icon: <IconButton name="ios-jet" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
@@ -140,9 +145,9 @@ Languages.alert("SettingsDeveloper", "_Sync_already_in_progress_body")(),
         let unsubscribe = this.props.eventBus.on("NotificationReceived", (data) => {
           if (data.type === "testNotification") {
             Alert.alert(
-Languages.alert("SettingsDeveloper", "_Notification_Received____header")(),
-Languages.alert("SettingsDeveloper", "_Notification_Received____body")(),
-[{text:Languages.alert("SettingsDeveloper", "_Notification_Received____left")()}]);
+lang("_Notification_Received____header"),
+lang("_Notification_Received____body"),
+[{text:lang("_Notification_Received____left")}]);
             cleanup()
           }
         });
@@ -152,9 +157,9 @@ Languages.alert("SettingsDeveloper", "_Notification_Received____body")(),
         clearScheduledTimeout = Scheduler.scheduleActiveCallback(() => {
           cleanup()
           Alert.alert(
-Languages.alert("SettingsDeveloper", "_Nothing_Received_____May_header")(),
-Languages.alert("SettingsDeveloper", "_Nothing_Received_____May_body")(),
-[{text:Languages.alert("SettingsDeveloper", "_Nothing_Received_____May_left")()}]);
+lang("_Nothing_Received_____May_header"),
+lang("_Nothing_Received_____May_body"),
+[{text:lang("_Nothing_Received_____May_left")}]);
         }, 4000);
 
         cleanup = () => {
@@ -168,16 +173,16 @@ Languages.alert("SettingsDeveloper", "_Nothing_Received_____May_body")(),
           CLOUD.forDevice(deviceId).sendTestNotification().catch((err) => {
             cleanup();
             Alert.alert(
-Languages.alert("SettingsDeveloper", "_Could_not_send_Request___header")(),
-Languages.alert("SettingsDeveloper", "_Could_not_send_Request___body")(JSON.stringify(err)),
-[{text:Languages.alert("SettingsDeveloper", "_Could_not_send_Request___left")()}]);
+lang("_Could_not_send_Request___header"),
+lang("_Could_not_send_Request___body",JSON.stringify(err)),
+[{text:lang("_Could_not_send_Request___left")}]);
           });
         }
         else {
           Alert.alert(
-Languages.alert("SettingsDeveloper", "_No_device_Id___There_was_header")(),
-Languages.alert("SettingsDeveloper", "_No_device_Id___There_was_body")(),
-[{text:Languages.alert("SettingsDeveloper", "_No_device_Id___There_was_left")()}]);
+lang("_No_device_Id___There_was_header"),
+lang("_No_device_Id___There_was_body"),
+[{text:lang("_No_device_Id___There_was_left")}]);
           cleanup()
         }
       }});
@@ -186,25 +191,25 @@ Languages.alert("SettingsDeveloper", "_No_device_Id___There_was_body")(),
 
     // let deviceId = Util.data.getCurrentDeviceId(state);
     // let device = deviceId && state.devices[deviceId] || null;
-    items.push({label: Languages.label("SettingsDeveloper", "DEBUG_VIEWS")(), type: 'explanation'});
+    items.push({label: lang("DEBUG_VIEWS"), type: 'explanation'});
     items.push({
-      label: Languages.label("SettingsDeveloper", "BLE_Debug")(),
+      label: lang("BLE_Debug"),
       type: 'navigation',
       icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightBlue2.hex}} />,
       callback:() => {
         Actions.settingsBleDebug()
       }});
     items.push({
-      label: Languages.label("SettingsDeveloper", "Localization_Debug")(),
+      label: lang("Localization_Debug"),
       type: 'navigation',
       icon: <IconButton name="md-locate" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback:() => {
         Actions.settingsLocalizationDebug()
       }});
 
-    items.push({label: Languages.label("SettingsDeveloper", "ACTIVITY_LOGS")(), type: 'explanation'});
+    items.push({label: lang("ACTIVITY_LOGS"), type: 'explanation'});
     items.push({
-      label: Languages.label("SettingsDeveloper", "Show_Full_Activity_Log")(),
+      label: lang("Show_Full_Activity_Log"),
       value: dev.show_full_activity_log,
       type: 'switch',
       icon: <IconButton name="md-calendar" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
@@ -213,7 +218,7 @@ Languages.alert("SettingsDeveloper", "_No_device_Id___There_was_body")(),
       }});
     if (dev.show_full_activity_log) {
       items.push({
-        label: Languages.label("SettingsDeveloper", "Show_only_own_activity")(),
+        label: lang("Show_only_own_activity"),
         value: dev.show_only_own_activity_log,
         type: 'switch',
         icon: <IconButton name="c1-people" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkerPurple.hex}} />,
@@ -222,9 +227,9 @@ Languages.alert("SettingsDeveloper", "_No_device_Id___There_was_body")(),
         }});
     }
 
-    items.push({label: Languages.label("SettingsDeveloper", "DO_NOT_USE")(), type: 'explanation'});
+    items.push({label: lang("DO_NOT_USE"), type: 'explanation'});
     items.push({
-      label: Languages.label("SettingsDeveloper", "Use_Advertisement_RSSI")(),
+      label: lang("Use_Advertisement_RSSI"),
       value: dev.use_advertisement_rssi_too,
       type: 'switch',
       icon: <IconButton name="md-git-network" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
@@ -240,28 +245,28 @@ Languages.alert("SettingsDeveloper", "_No_device_Id___There_was_body")(),
 
         if (newValue === true) {
           Alert.alert(
-Languages.alert("SettingsDeveloper", "_Are_you_sure___Only_enab_header")(),
-Languages.alert("SettingsDeveloper", "_Are_you_sure___Only_enab_body")(),
-[{text:Languages.alert("SettingsDeveloper", "_Are_you_sure___Only_enab_left")()}, {
-text:Languages.alert("SettingsDeveloper", "_Are_you_sure___Only_enab_right")(), onPress: execute}])
+lang("_Are_you_sure___Only_enab_header"),
+lang("_Are_you_sure___Only_enab_body"),
+[{text:lang("_Are_you_sure___Only_enab_left")}, {
+text:lang("_Are_you_sure___Only_enab_right"), onPress: execute}])
         }
         else {
           execute();
         }
       }});
-    items.push({label: Languages.label("SettingsDeveloper", "By_default_we_use_iBeacon")(), type: 'explanation', below: true});
+    items.push({label: lang("By_default_we_use_iBeacon"), type: 'explanation', below: true});
 
 
-    items.push({label: Languages.label("SettingsDeveloper", "MESH")(), type: 'explanation', below: false, alreadyPadded: true});
+    items.push({label: lang("MESH"), type: 'explanation', below: false, alreadyPadded: true});
     items.push({
-      label: Languages.label("SettingsDeveloper", "Change_Channels")(),
+      label: lang("Change_Channels"),
       type: 'navigation',
       icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
       callback:() => {
         Actions.settingsMeshDebug()
       }});
     items.push({
-      label: Languages.label("SettingsDeveloper", "Show_RSSI_in_Topology")(),
+      label: lang("Show_RSSI_in_Topology"),
       value: dev.show_rssi_values_in_mesh,
       type: 'switch',
       icon: <IconButton name="ios-calculator" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightGreen.hex}} />,
@@ -269,38 +274,38 @@ text:Languages.alert("SettingsDeveloper", "_Are_you_sure___Only_enab_right")(), 
         store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_rssi_values_in_mesh: newValue }});
       }});
     items.push({
-      label: Languages.label("SettingsDeveloper", "Reset_networks")(),
+      label: lang("Reset_networks"),
       type:  'button',
       style: {color: colors.black.hex},
       icon:  <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkGreen.hex}} />,
       callback:() => {
         Alert.alert(
-Languages.alert("SettingsDeveloper", "_Are_you_sure___This_will_header")(),
-Languages.alert("SettingsDeveloper", "_Are_you_sure___This_will_body")(),
-[{text:Languages.alert("SettingsDeveloper", "_Are_you_sure___This_will_left")(), onPress: () => {
+lang("_Are_you_sure___This_will_header"),
+lang("_Are_you_sure___This_will_body"),
+[{text:lang("_Are_you_sure___This_will_left"), onPress: () => {
               const store = this.props.store;
               const state = store.getState();
               let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
               MeshUtil.clearMeshNetworkIds(store, sphereId);
               MeshUtil.clearTopology(store, sphereId);
               Alert.alert(
-Languages.alert("SettingsDeveloper", "_Reset_Done__Rediscovery__header")(),
-Languages.alert("SettingsDeveloper", "_Reset_Done__Rediscovery__body")(),
-[{text:Languages.alert("SettingsDeveloper", "_Reset_Done__Rediscovery__left")()}]);
-            }},{text: Languages.label("SettingsDeveloper", "Cancel")()}
+lang("_Reset_Done__Rediscovery__header"),
+lang("_Reset_Done__Rediscovery__body"),
+[{text:lang("_Reset_Done__Rediscovery__left")}]);
+            }},{text: lang("Cancel")}
           ]
         )
       }
     });
 
     if (user.betaAccess) {
-      items.push({label: Languages.label("SettingsDeveloper", "ALPHA_FEATURES_WILL_LOOK_")(), type: 'explanation', below: false});
+      items.push({label: lang("ALPHA_FEATURES_WILL_LOOK_"), type: 'explanation', below: false});
     }
     else {
-      items.push({label: Languages.label("SettingsDeveloper", "EXPERIMENTAL_FEATURES")(), type: 'explanation', below: false});
+      items.push({label: lang("EXPERIMENTAL_FEATURES"), type: 'explanation', below: false});
     }
     items.push({
-      label: Languages.label("SettingsDeveloper", "Join_Alpha_Program")(),
+      label: lang("Join_Alpha_Program"),
       value: user.betaAccess,
       experimental: user.betaAccess,
       icon: <IconButton name={"ios-flask"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
@@ -314,22 +319,22 @@ Languages.alert("SettingsDeveloper", "_Reset_Done__Rediscovery__body")(),
         }
         if (newValue) {
           Alert.alert(
-Languages.alert("SettingsDeveloper", "_EXPERIMENTAL___Switchcra_header")(),
-Languages.alert("SettingsDeveloper", "_EXPERIMENTAL___Switchcra_body")(),
-[{text:Languages.alert("SettingsDeveloper", "_EXPERIMENTAL___Switchcra_left")(), style:'cancel'}, {
-text:Languages.alert("SettingsDeveloper", "_EXPERIMENTAL___Switchcra_right")(), onPress: storeIt}]
+lang("_EXPERIMENTAL___Switchcra_header"),
+lang("_EXPERIMENTAL___Switchcra_body"),
+[{text:lang("_EXPERIMENTAL___Switchcra_left"), style:'cancel'}, {
+text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
           );
         }
         else {
           storeIt();
         }
       }});
-    items.push({label: Languages.label("SettingsDeveloper", "This_will_give_you_early_")(), type: 'explanation', below: true});
+    items.push({label: lang("This_will_give_you_early_"), type: 'explanation', below: true});
 
 
-    items.push({label: Languages.label("SettingsDeveloper", "RESET_DEVELOPER_STATE")(), type: 'explanation', alreadyPadded: true});
+    items.push({label: lang("RESET_DEVELOPER_STATE"), type: 'explanation', alreadyPadded: true});
     items.push({
-      label: Languages.label("SettingsDeveloper", "Disable_Developer_Mode")(),
+      label: lang("Disable_Developer_Mode"),
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:() => {
@@ -348,7 +353,7 @@ text:Languages.alert("SettingsDeveloper", "_EXPERIMENTAL___Switchcra_right")(), 
         BackAction();
     }});
 
-    items.push({label: Languages.label("SettingsDeveloper", "CLOUD_URL__")(CLOUD_ADDRESS), type: 'explanation'});
+    items.push({label: lang("CLOUD_URL__",CLOUD_ADDRESS), type: 'explanation'});
     items.push({type: 'spacer'});
     items.push({type: 'spacer'});
 

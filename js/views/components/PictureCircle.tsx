@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("PictureCircle", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -39,7 +44,7 @@ export class PictureCircle extends Component<any, any> {
       buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
       buttons.push({ text: 'Choose Existing', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
     }
-    eventBus.emit('showPopup', {title: Languages.title("PictureCircle", "Profile_Picture")(), buttons: buttons} );
+    eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
   }
 
   render() {
@@ -51,10 +56,10 @@ export class PictureCircle extends Component<any, any> {
       return (
         <TouchableOpacity
           onPress={() => { Alert.alert(
-Languages.alert("PictureCircle", "_Delete_this_picture__arg_header")(),
-Languages.alert("PictureCircle", "_Delete_this_picture__arg_body")(undefined),
-[{text:Languages.alert("PictureCircle", "_Delete_this_picture__arg_left")()}, {
-text:Languages.alert("PictureCircle", "_Delete_this_picture__arg_right")(), onPress:() => { this.props.removePicture(); }}])}}
+lang("_Delete_this_picture__arg_header"),
+lang("_Delete_this_picture__arg_body",undefined),
+[{text:lang("_Delete_this_picture__arg_left")}, {
+text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); }}])}}
           style={{
             height:size,
             width:size,
@@ -109,11 +114,11 @@ text:Languages.alert("PictureCircle", "_Delete_this_picture__arg_right")(), onPr
           else if (grantedPreviously === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
             return new Promise(
               (resolve,reject) => {
-                let reason =  Languages.label("PictureCircle", "Can_t_make_a_picture_with")();
+                let reason =  lang("Can_t_make_a_picture_with");
                 Alert.alert(
-Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_header")(),
-Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_body")(reason),
-[{text: Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_left")(), onPress: () => { reject(reason) }}],
+lang("_Sorry_arguments___OKnull_header"),
+lang("_Sorry_arguments___OKnull_body",reason),
+[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) } }
                 );
               }
@@ -127,11 +132,11 @@ Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_body")(reason),
           if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
             return new Promise(
               (resolve,reject) => { 
-                let reason =  Languages.label("PictureCircle", "Cant_take_a_picture_witho")();
+                let reason =  lang("Cant_take_a_picture_witho");
                 Alert.alert(
-Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_header")(),
-Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_body")(reason),
-[{text: Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_left")(), onPress: () => { reject(reason) }}],
+lang("_Sorry_arguments___OKnull_header"),
+lang("_Sorry_arguments___OKnull_body",reason),
+[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) }}
                 );
               }
@@ -145,11 +150,11 @@ Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_body")(reason),
           if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
             return new Promise(
               (resolve,reject) => { 
-                let reason =  Languages.label("PictureCircle", "Can_t_read_a_stored_pictu")();
+                let reason =  lang("Can_t_read_a_stored_pictu");
                 Alert.alert(
-Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_header")(),
-Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_body")(reason),
-[{text: Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_left")(), onPress: () => { reject(reason) }}],
+lang("_Sorry_arguments___OKnull_header"),
+lang("_Sorry_arguments___OKnull_body",reason),
+[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) } }
                 );
               }
@@ -163,11 +168,11 @@ Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_body")(reason),
           if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
             return new Promise(
               (resolve,reject) => { 
-                let reason =  Languages.label("PictureCircle", "Can_t_store_a_captured_pi")();
+                let reason =  lang("Can_t_store_a_captured_pi");
                 Alert.alert(
-Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_header")(),
-Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_body")(reason),
-[{text: Languages.alert("PictureCircle", "_Sorry_arguments___OKnull_left")(), onPress: () => { reject(reason) }}],
+lang("_Sorry_arguments___OKnull_header"),
+lang("_Sorry_arguments___OKnull_body",reason),
+[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) } }
                 );
               }

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomIconSelection", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -18,17 +23,17 @@ const Actions = require('react-native-router-flux').Actions;
 
 
 let categories = [
-  {key: 'hallway', label: Languages.label("RoomIconSelection", "Hallway")()},
-  {key: 'livingRoom', label: Languages.label("RoomIconSelection", "Living_Room")()},
-  {key: 'kitchen', label: Languages.label("RoomIconSelection", "Kitchen")()},
-  {key: 'bathroom', label: Languages.label("RoomIconSelection", "Bathroom")()},
-  {key: 'office', label: Languages.label("RoomIconSelection", "Office")()},
-  {key: 'bedRoom', label: Languages.label("RoomIconSelection", "Bedroom")()},
-  {key: 'garage', label: Languages.label("RoomIconSelection", "Garage")()},
-  {key: 'play', label: Languages.label("RoomIconSelection", "Play_Room")()},
-  {key: 'music', label: Languages.label("RoomIconSelection", "Music_Room")()},
-  {key: 'nature', label: Languages.label("RoomIconSelection", "Nature___Outside")()},
-  {key: 'miscellaneous', label: Languages.label("RoomIconSelection", "Miscellaneous")()},
+  {key: 'hallway', label: lang("Hallway")},
+  {key: 'livingRoom', label: lang("Living_Room")},
+  {key: 'kitchen', label: lang("Kitchen")},
+  {key: 'bathroom', label: lang("Bathroom")},
+  {key: 'office', label: lang("Office")},
+  {key: 'bedRoom', label: lang("Bedroom")},
+  {key: 'garage', label: lang("Garage")},
+  {key: 'play', label: lang("Play_Room")},
+  {key: 'music', label: lang("Music_Room")},
+  {key: 'nature', label: lang("Nature___Outside")},
+  {key: 'miscellaneous', label: lang("Miscellaneous")},
 ];
 
 let listOfIcons = {
@@ -209,7 +214,7 @@ export const getRandomRoomIcon = () => {
 export class RoomIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("RoomIconSelection", "Pick_an_Icon")(),
+      title: lang("Pick_an_Icon"),
     }
   };
 

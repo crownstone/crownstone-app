@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceError", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -39,12 +44,12 @@ export class DeviceError extends Component<any, any> {
             borderColor: colors.red.hex,
             backgroundColor: colors.white.hex
           }]}>
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{ Languages.text("DeviceError", "Reset_Error")() }</Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{ lang("Reset_Error") }</Text>
         </TouchableOpacity>
       )
     }
     else {
-      return <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, textAlign:'center'}}>{ Languages.text("DeviceError", "Notify_an_admin_of_your_S")() }</Text>
+      return <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, textAlign:'center'}}>{ lang("Notify_an_admin_of_your_S") }</Text>
     }
   }
 
@@ -54,7 +59,7 @@ export class DeviceError extends Component<any, any> {
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     return (
       <View style={{flex:1, alignItems:'center', padding: 30}}>
-        <Text style={deviceStyles.header}>{ Languages.text("DeviceError", "Error_Detected")() }</Text>
+        <Text style={deviceStyles.header}>{ lang("Error_Detected") }</Text>
         <View style={{flex:1}} />
         <IconButton
           name="ios-warning"

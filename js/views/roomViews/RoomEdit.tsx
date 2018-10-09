@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomEdit", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -32,10 +37,10 @@ export class RoomEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: Languages.title("RoomEdit", "Edit_Room")(),
+      title: lang("Edit_Room"),
       headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : BackAction() }}/>,
       headerRight: <TopbarButton
-        text={ Languages.label("RoomEdit", "Save")()}
+        text={ lang("Save")}
         onPress={() => {
           params.rightAction ? params.rightAction() : () => {}
         }}
@@ -148,9 +153,9 @@ export class RoomEdit extends Component<any, any> {
         this.deleting = false;
         let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
         Alert.alert(
-Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__header")(),
-Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__body")(),
-[{text:Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__left")(), onPress: defaultAction }],
+lang("_Encountered_Cloud_Issue__header"),
+lang("_Encountered_Cloud_Issue__body"),
+[{text:lang("_Encountered_Cloud_Issue__left"), onPress: defaultAction }],
           { onDismiss: defaultAction }
         )
       });
@@ -166,9 +171,9 @@ Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__body")(),
 
     let items = [];
 
-    items.push({label: Languages.label("RoomEdit", "ROOM_SETTINGS")(),  type:'explanation', below:false});
+    items.push({label: lang("ROOM_SETTINGS"),  type:'explanation', below:false});
     items.push({
-      label: Languages.label("RoomEdit", "Room_Name")(),
+      label: lang("Room_Name"),
       type: 'textEdit',
       value: this.state.name,
       callback: (newText) => {
@@ -179,7 +184,7 @@ Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__body")(),
         this.setState({name: newText});
       }
     });
-    items.push({label: Languages.label("RoomEdit", "Icon")(), type: 'icon', value: this.state.icon, callback: () => {
+    items.push({label: lang("Icon"), type: 'icon', value: this.state.icon, callback: () => {
       Actions.roomIconSelection({
         icon: this.state.icon,
         callback: (newIcon) => {
@@ -188,7 +193,7 @@ Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__body")(),
       })
     }});
     items.push({
-      label: Languages.label("RoomEdit", "Picture")(),
+      label: lang("Picture"),
       type:  'picture',
       value: this.state.picture,
       forceAspectRatio: false,
@@ -206,61 +211,61 @@ Languages.alert("RoomEdit", "_Encountered_Cloud_Issue__body")(),
     if (state.app.indoorLocalizationEnabled) {
       let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
       if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
-        items.push({label: Languages.label("RoomEdit", "INDOOR_LOCALIZATION")(), type: 'explanation',  below:false});
+        items.push({label: lang("INDOOR_LOCALIZATION"), type: 'explanation',  below:false});
         // if a fingerprint is already present:
         if (room.config.fingerprintRaw) {
-          items.push({label: Languages.label("RoomEdit", "Retrain_Room")(), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
+          items.push({label: lang("Retrain_Room"), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
             Alert.alert(
-Languages.alert("RoomEdit", "_Retrain_Room__Only_do_th_header")(),
-Languages.alert("RoomEdit", "_Retrain_Room__Only_do_th_body")(),
-[{text: Languages.alert("RoomEdit", "_Retrain_Room__Only_do_th_left")(), style: 'cancel'},
+lang("_Retrain_Room__Only_do_th_header"),
+lang("_Retrain_Room__Only_do_th_body"),
+[{text: lang("_Retrain_Room__Only_do_th_left"), style: 'cancel'},
               {
-text: Languages.alert("RoomEdit", "_Retrain_Room__Only_do_th_right")(), onPress: () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
+text: lang("_Retrain_Room__Only_do_th_right"), onPress: () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
             ])
           }});
-          items.push({label: Languages.label("RoomEdit", "If_the_indoor_localizatio")(ai), type: 'explanation',  below:true});
+          items.push({label: lang("If_the_indoor_localizatio",ai), type: 'explanation',  below:true});
         }
         else {
-          items.push({label: Languages.label("RoomEdit", "Teach__to_find_you_")(ai), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
+          items.push({label: lang("Teach__to_find_you_",ai), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
             Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
           }});
-          items.push({label: Languages.label("RoomEdit", "Teach__to_identify_when_y")(ai), type: 'explanation',  below:true});
+          items.push({label: lang("Teach__to_identify_when_y",ai), type: 'explanation',  below:true});
         }
       }
       else if (canDoIndoorLocalization === true && this.viewingRemotely === true) {
-        items.push({label: Languages.label("RoomEdit", "You_can_only_train_this_r")(), type: 'explanation',  below:false});
+        items.push({label: lang("You_can_only_train_this_r"), type: 'explanation',  below:false});
         items.push({type: 'spacer', height:30});
       }
       else {
-        items.push({label: Languages.label("RoomEdit", "Indoor_localization_on_ro")(), type: 'explanation',  below:false});
+        items.push({label: lang("Indoor_localization_on_ro"), type: 'explanation',  below:false});
         items.push({type: 'spacer', height:30});
       }
     }
     else {
-      items.push({label: Languages.label("RoomEdit", "Enable_indoor_localizatio")(), type: 'explanation',  below:false});
+      items.push({label: lang("Enable_indoor_localizatio"), type: 'explanation',  below:false});
       items.push({type: 'spacer', height:30});
     }
 
 
     if (Permissions.inSphere(this.props.sphereId).removeRoom) {
       items.push({
-        label: Languages.label("RoomEdit", "Remove_Room")(),
+        label: lang("Remove_Room"),
         type: 'button',
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
         callback: () => {
           Alert.alert(
-Languages.alert("RoomEdit", "_Are_you_sure___Removing__header")(),
-Languages.alert("RoomEdit", "_Are_you_sure___Removing__body")(),
-[{text: Languages.alert("RoomEdit", "_Are_you_sure___Removing__left")(), style: 'cancel'}, {
+lang("_Are_you_sure___Removing__header"),
+lang("_Are_you_sure___Removing__body"),
+[{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
               
-text: Languages.alert("RoomEdit", "_Are_you_sure___Removing__right")(),
+text: lang("_Are_you_sure___Removing__right"),
               style: 'destructive',
               onPress: this._removeRoom.bind(this)
             }])
         }
       });
       items.push({
-        label: Languages.label("RoomEdit", "Removing_this_Room_will_m")(),
+        label: lang("Removing_this_Room_will_m"),
         type: 'explanation',
         below: true
       });

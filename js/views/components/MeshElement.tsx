@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("MeshElement", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -250,9 +255,9 @@ class MeshElementClass extends Component<any, any> {
     if (!supportedFirmware && data) {
       if (data.dx > this.props.radius && data.dy > -this.props.radius) {
         Alert.alert(
-Languages.alert("MeshElement", "_Update_Required__The_fir_header")(),
-Languages.alert("MeshElement", "_Update_Required__The_fir_body")(),
-[{text: Languages.alert("MeshElement", "_Update_Required__The_fir_left")()}]);
+lang("_Update_Required__The_fir_header"),
+lang("_Update_Required__The_fir_body"),
+[{text: lang("_Update_Required__The_fir_left")}]);
       }
     }
 

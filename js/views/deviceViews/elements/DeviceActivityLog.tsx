@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceActivityLog", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -80,14 +85,14 @@ export class DeviceActivityLog extends Component<any, any> {
     let items = [];
     let itemHeight = 100;
     items.push(<View key={"topspacer"} style={{height:30}} />);
-    items.push(<Text key={"title"}     style={deviceStyles.header}>{ Languages.text("DeviceActivityLog", "Activity_Log")() }</Text>);
-    items.push(<Text key={"explanation"}  style={[deviceStyles.text, {padding:20}]}>{ Languages.text("DeviceActivityLog", "In_this_log_you_can_see_w")() }</Text>);
+    items.push(<Text key={"title"}     style={deviceStyles.header}>{ lang("Activity_Log") }</Text>);
+    items.push(<Text key={"explanation"}  style={[deviceStyles.text, {padding:20}]}>{ lang("In_this_log_you_can_see_w") }</Text>);
     if (state.user.uploadActivityLogs === false) {
       items.push(
         <Text
           key={"explanation_no_log"}
           style={[deviceStyles.text, {padding: 20}]}
-        >{ Languages.text("DeviceActivityLog", "If_you_do_not_share_your_")() }</Text>
+        >{ lang("If_you_do_not_share_your_") }</Text>
       );
     }
 
@@ -99,10 +104,10 @@ export class DeviceActivityLog extends Component<any, any> {
 
     if (logs.length === 0) {
       if (Permissions.inSphere(this.props.sphereId).seeActivityLogs) {
-        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 22, marginTop:-6}]}>{ Languages.text("DeviceActivityLog", "Nothing_yet___")() }</Text>);
+        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 22, marginTop:-6}]}>{ lang("Nothing_yet___") }</Text>);
       }
       else {
-        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 18, marginTop:-6}]}>{ Languages.text("DeviceActivityLog", "Only_members_and_admins_c")() }</Text>);
+        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 18, marginTop:-6}]}>{ lang("Only_members_and_admins_c") }</Text>);
         return items;
       }
     }
@@ -176,7 +181,7 @@ export class DeviceActivityLog extends Component<any, any> {
           <RefreshControl
             refreshing={false}
             onRefresh={() => { this.updateLogs() }}
-            title={ Languages.label("DeviceActivityLog", "Syncing_with_the_other_us")()}
+            title={ lang("Syncing_with_the_other_us")}
             titleColor={colors.white.hex}
             colors={[colors.white.hex]}
             tintColor={colors.white.hex}

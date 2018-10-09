@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceIconSelection", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -19,18 +24,18 @@ const Actions = require('react-native-router-flux').Actions;
 
 
 let categories = [
-  // {key: '__new', label: Languages.label("DeviceIconSelection", "__new")()},
-  {key: 'lights', label: Languages.label("DeviceIconSelection", "Lights")()},
-  {key: 'tech', label: Languages.label("DeviceIconSelection", "Tech")()},
-  {key: 'furniture', label: Languages.label("DeviceIconSelection", "Furniture")()},
-  {key: 'bathroom', label: Languages.label("DeviceIconSelection", "Bathroom")()},
-  {key: 'office', label: Languages.label("DeviceIconSelection", "Office")()},
-  {key: 'bedRoom', label: Languages.label("DeviceIconSelection", "Bedroom")()},
-  {key: 'tools', label: Languages.label("DeviceIconSelection", "Tools")()},
-  {key: 'kitchen', label: Languages.label("DeviceIconSelection", "Kitchen")()},
-  {key: 'outside', label: Languages.label("DeviceIconSelection", "Outside")()},
-  {key: 'rides', label: Languages.label("DeviceIconSelection", "Rides")()},
-  {key: 'miscellaneous', label: Languages.label("DeviceIconSelection", "Miscellaneous")()},
+  // {key: '__new', label: lang("__new")},
+  {key: 'lights', label: lang("Lights")},
+  {key: 'tech', label: lang("Tech")},
+  {key: 'furniture', label: lang("Furniture")},
+  {key: 'bathroom', label: lang("Bathroom")},
+  {key: 'office', label: lang("Office")},
+  {key: 'bedRoom', label: lang("Bedroom")},
+  {key: 'tools', label: lang("Tools")},
+  {key: 'kitchen', label: lang("Kitchen")},
+  {key: 'outside', label: lang("Outside")},
+  {key: 'rides', label: lang("Rides")},
+  {key: 'miscellaneous', label: lang("Miscellaneous")},
 ];
 
 let listOfIcons = {
@@ -274,7 +279,7 @@ let listOfIcons = {
 export class DeviceIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("DeviceIconSelection", "Pick_an_Icon")(),
+      title: lang("Pick_an_Icon"),
     }
   };
 

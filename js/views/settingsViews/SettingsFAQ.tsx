@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsFAQ", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Platform,
@@ -23,97 +28,97 @@ import { Sentry } from "react-native-sentry";
 export class SettingsFAQ extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("SettingsFAQ", "FAQ")(),
+      title: lang("FAQ"),
     }
   };
 
   _getItems() {
     let items = [];
 
-    let appStoreLabel =  Languages.label("SettingsFAQ", "App_Store")();
+    let appStoreLabel =  lang("App_Store");
     if (Platform.OS === 'android') {
-      appStoreLabel =  Languages.label("SettingsFAQ", "Play_Store")();
+      appStoreLabel =  lang("Play_Store");
     }
 
     items.push({
       type:'largeExplanation',
-      label: Languages.label("SettingsFAQ", "Frequently_Asked_Question")(),
+      label: lang("Frequently_Asked_Question"),
     });
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____add_a_Crownstone_")(),
-      content:Languages.label("SettingsFAQ","You_just_have_to_hold_it_")(),
+      label: lang("____add_a_Crownstone_"),
+      content:lang("You_just_have_to_hold_it_"),
       contentHeight: 175
     });
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____add_someone_to_my_Sph")(),
-      content:Languages.label("SettingsFAQ","If_youre_an_Admin_or_Memb")(),
+      label: lang("____add_someone_to_my_Sph"),
+      content:lang("If_youre_an_Admin_or_Memb"),
       contentHeight: 145
     });
 
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____create_a_room_")(),
-      content: Languages.label("SettingsFAQ","You_need_to_be_an_admin_o")(),
+      label: lang("____create_a_room_"),
+      content: lang("You_need_to_be_an_admin_o"),
       contentHeight: 175
     });
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____move_a_Crownstone_to_")(),
-      content: Languages.label("SettingsFAQ","Moving_the_Crownstone_is_")(),
+      label: lang("____move_a_Crownstone_to_"),
+      content: lang("Moving_the_Crownstone_is_"),
       contentHeight: 175
     });
 
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____dim_with_my_Crownston")(),
-      content:Languages.label("SettingsFAQ","Make_sure_dimming_is_enab")(),
+      label: lang("____dim_with_my_Crownston"),
+      content:lang("Make_sure_dimming_is_enab"),
       contentHeight: 200
     });
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____use_indoor_localizati")(),
-      content:Languages.label("SettingsFAQ","Indoor_localization_on_ro")(),
+      label: lang("____use_indoor_localizati"),
+      content:lang("Indoor_localization_on_ro"),
       contentHeight: 235
     });
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____use_schedules_")(),
-      content:Languages.label("SettingsFAQ","These_can_be_found_in_the")(),
+      label: lang("____use_schedules_"),
+      content:lang("These_can_be_found_in_the"),
       contentHeight: 175
     });
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____use_Switchcraft_")(),
-      content: Languages.label("SettingsFAQ","Switchcraft_is_currently_")(),
+      label: lang("____use_Switchcraft_"),
+      content: lang("Switchcraft_is_currently_"),
       contentHeight: 275
     });
 
 
     items.push({
       type:'largeExplanation',
-      label: Languages.label("SettingsFAQ", "What_to_do_if____")(),
+      label: lang("What_to_do_if____"),
     });
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____a_new_Crownstone_wont")(),
-      content:Languages.label("SettingsFAQ","Make_sure_the_Crownstone_")(),
+      label: lang("____a_new_Crownstone_wont"),
+      content:lang("Make_sure_the_Crownstone_"),
       contentHeight: 175
     });
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____a_Crownstone_is_on_Se")(),
+      label: lang("____a_Crownstone_is_on_Se"),
       content:"Ensure there is power on the Crownstone and that you can reach it.\n\n" +
       "If you're near (within a meter) and it is still on 'Searching' you may want to try the factory reset procedure (see 'what to do if I need to factory reset a Crownstone' below).",
       contentHeight: 155
@@ -121,13 +126,13 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____I_want_to_have_a_clea")(),
+      label: lang("____I_want_to_have_a_clea"),
       contentItem:
         <View style={{flex:1}}>
-          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ Languages.text("SettingsFAQ", "Sometimes_something_goes_")() }</Text>
+          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ lang("Sometimes_something_goes_") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
-            label={ Languages.label("SettingsFAQ", "Revert_to_Cloud_Data")()}
+            label={ lang("Revert_to_Cloud_Data")}
             icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
               Actions.settingsRedownloadFromCloud()
@@ -140,13 +145,13 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____my_Sphere_name_is_gon")(),
+      label: lang("____my_Sphere_name_is_gon"),
       contentItem:
         <View style={{flex:1}}>
-          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ Languages.text("SettingsFAQ", "Sometimes_something_goes_w")() }</Text>
+          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ lang("Sometimes_something_goes_w") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
-            label={ Languages.label("SettingsFAQ", "Revert_to_Cloud_Data")()}
+            label={ lang("Revert_to_Cloud_Data")}
             icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
               Actions.settingsRedownloadFromCloud()
@@ -159,13 +164,13 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____it_always_says_No_Cro")(),
+      label: lang("____it_always_says_No_Cro"),
       contentItem:
         <View style={{flex:1}}>
-          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ Languages.text("SettingsFAQ", "It_could_be_that_youre_no")() }</Text>
+          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ lang("It_could_be_that_youre_no") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
-            label={ Languages.label("SettingsFAQ", "Revert_to_Cloud_Data")()}
+            label={ lang("Revert_to_Cloud_Data")}
             icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
               Actions.settingsRedownloadFromCloud()
@@ -176,34 +181,34 @@ export class SettingsFAQ extends Component<any, any> {
       contentHeight: 275
     });
 
-    let label =  Languages.label("SettingsFAQ", "If_that_fails__quit_the_a")();
+    let label =  lang("If_that_fails__quit_the_a");
     if (Platform.OS === 'android') {
-      label =  Languages.label("SettingsFAQ", "If_that_fails__quit_the_ap")();
+      label =  lang("If_that_fails__quit_the_ap");
     }
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____the_setup_process_fai")(),
-      content: Languages.label("SettingsFAQ","Retry_a_few_times___If_th")(label, appStoreLabel),
+      label: lang("____the_setup_process_fai"),
+      content: lang("Retry_a_few_times___If_th",label, appStoreLabel),
       contentHeight: 245
     });
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____a_Crownstone_toggles_")(),
-      content:Languages.label("SettingsFAQ","This_could_happen_due_to_")(),
+      label: lang("____a_Crownstone_toggles_"),
+      content:lang("This_could_happen_due_to_"),
       contentHeight: 225
     });
 
 
     items.push({
       type:'collapsable',
-      label: Languages.label("SettingsFAQ", "____I_need_to_factory_res")(),
+      label: lang("____I_need_to_factory_res"),
       contentItem:
         <View style={{flex:1}}>
-          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ Languages.text("SettingsFAQ", "Only_use_this_as_a_last_r")() }</Text>
+          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{ lang("Only_use_this_as_a_last_r") }</Text>
           <View style={{flex:1}} />
           <NavigationBar
-            label={ Languages.label("SettingsFAQ", "Reset_Crownstone")()}
+            label={ lang("Reset_Crownstone")}
             icon={<IconButton name={'ios-build'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
               Actions.settingsFactoryResetStep1()
@@ -216,12 +221,12 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'largeExplanation',
-      label: Languages.label("SettingsFAQ", "Solve_most_BLE_issues")(),
+      label: lang("Solve_most_BLE_issues"),
     });
 
     items.push({
       id:'Troubleshooting',
-      label: Languages.label("SettingsFAQ", "BLE_Troubleshooting")(),
+      label: lang("BLE_Troubleshooting"),
       type:'navigation',
       icon: <IconButton name={'ios-bluetooth'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex }}/>,
       callback: () => {
@@ -230,12 +235,12 @@ export class SettingsFAQ extends Component<any, any> {
     });
     items.push({
       type:'largeExplanation',
-      label: Languages.label("SettingsFAQ", "More_help_is_available_on")(),
+      label: lang("More_help_is_available_on"),
     });
 
     items.push({
       id:'Help',
-      label: Languages.label("SettingsFAQ", "Help")(),
+      label: lang("Help"),
       type:'navigation',
       icon: <IconButton name={'ios-cloudy'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green.hex }}/>,
       callback: () => {

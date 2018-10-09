@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SwitchBar", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -109,7 +114,7 @@ export class SwitchBar extends Component<any, any> {
         <View style={{height: navBarHeight , width: screenWidth, backgroundColor: colors.menuBackground.hex}}>
           <Animated.View style={{position:'absolute', top:0, left:0, overflow:'hidden', height: navBarHeight, width: screenWidth, opacity: this.state.opacity}}>
             <Animated.View style={{position:'absolute', top: Platform.OS === 'android' ? -24 : -17, left: this.state.leftPos}}>
-              <Text style={{color:colors.white.rgba(0.1), fontSize:70, fontWeight:'900', fontStyle:'italic', width: 540}}>{ Languages.text("SwitchBar", "EXPERIMENTAL")(this.props.experimentalLabel) }</Text>
+              <Text style={{color:colors.white.rgba(0.1), fontSize:70, fontWeight:'900', fontStyle:'italic', width: 540}}>{ lang("EXPERIMENTAL",this.props.experimentalLabel) }</Text>
             </Animated.View>
           </Animated.View>
           { this._getButton(navBarHeight, fontColor) }

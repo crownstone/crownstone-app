@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsMeshOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -21,7 +26,7 @@ let FLOATING_NETWORK_KEY = '__null';
 
 export class SettingsMeshOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: Languages.title("SettingsMeshOverview", "Mesh_Overview")()}
+    return { title: lang("Mesh_Overview")}
   };
 
   unsubscribeStoreEvents : any;
@@ -52,7 +57,7 @@ export class SettingsMeshOverview extends Component<any, any> {
     networksAvailable.forEach((networkKey) => {
       networkElements.push(<Network
         key={networkKey}
-        label={networkKey === FLOATING_NETWORK_KEY ? Languages.title("SettingsMeshOverview", "not_in_mesh")() : 'Network #' + networkKey + ':'}
+        label={networkKey === FLOATING_NETWORK_KEY ? lang("not_in_mesh") : 'Network #' + networkKey + ':'}
         data={networks[networkKey]}
         connected={networkKey !== FLOATING_NETWORK_KEY}
       />)
@@ -134,7 +139,7 @@ export class SettingsMeshOverview extends Component<any, any> {
             color: colors.white.hex,
             textAlign:'center',
             padding:20,
-          }}>{ Languages.text("SettingsMeshOverview", "Here_you_can_see_which_Cr")() }</Text>
+          }}>{ lang("Here_you_can_see_which_Cr") }</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:14,
@@ -144,7 +149,7 @@ export class SettingsMeshOverview extends Component<any, any> {
             padding:20,
             paddingTop:0,
             paddingBottom:10,
-          }}>{ Languages.text("SettingsMeshOverview", "It_can_take_some_time_for")() }</Text>
+          }}>{ lang("It_can_take_some_time_for") }</Text>
           { networkKeys.length === 1 && networkKeys[0] === FLOATING_NETWORK_KEY ? undefined :
             <Text style={{
               backgroundColor:'transparent',
@@ -154,7 +159,7 @@ export class SettingsMeshOverview extends Component<any, any> {
               textAlign:'center',
               paddingTop:0,
               paddingBottom:5,
-            }}>{ Languages.text("SettingsMeshOverview", "Mesh_Networks_")() }</Text>
+            }}>{ lang("Mesh_Networks_") }</Text>
           }
           { this.getNetworks(networks) }
         </ScrollView>

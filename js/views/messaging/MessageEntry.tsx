@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("MessageEntry", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -44,7 +49,7 @@ export class MessageEntry extends Component<{
         userArray.push({id: senderId, picture: sphereMember.picture, label: sphereMember.firstName})
       }
       else { // unknown member
-        userArray.push({id: senderId, icon:'ios-help-circle', label: Languages.label("MessageEntry", "Unknown_User")()})
+        userArray.push({id: senderId, icon:'ios-help-circle', label: lang("Unknown_User")})
       }
     }
     else {
@@ -53,19 +58,19 @@ export class MessageEntry extends Component<{
 
       recipientIds.forEach((memberId) => {
         if (memberId === this.props.self.userId) { // its you!
-          userArray.push({id: memberId, picture: this.props.self.picture, label: Languages.label("MessageEntry", "You")(), color: colors.menuTextSelected.hex})
+          userArray.push({id: memberId, picture: this.props.self.picture, label: lang("You"), color: colors.menuTextSelected.hex})
         }
         else if (this.props.sphere.users[memberId]) {  // existing member
           let sphereMember = this.props.sphere.users[memberId];
           userArray.push({id: memberId, picture: sphereMember.picture, label: sphereMember.firstName})
         }
         else { // unknown member
-          userArray.push({id: memberId, icon:'ios-help-circle', label: Languages.label("MessageEntry", "Unknown_User")()})
+          userArray.push({id: memberId, icon:'ios-help-circle', label: lang("Unknown_User")})
         }
       });
 
       if (this.props.message.config.everyoneInSphere) {
-        userArray.push({icon: 'ios-people', label: Languages.label("MessageEntry", "Everyone_in_")(this.props.sphere.config.name)})
+        userArray.push({icon: 'ios-people', label: lang("Everyone_in_",this.props.sphere.config.name)})
       }
 
     }
@@ -125,10 +130,10 @@ export class MessageEntry extends Component<{
     }
     let label = recipients[0].label;
     for (let i = 1; i < recipients.length - 1; i++) {
-      label +=  Languages.label("MessageEntry", "__")(recipients[i].label)}
+      label +=  lang("__",recipients[i].label)}
 
     if (recipients.length > 1) {
-      label +=  Languages.label("MessageEntry", "_and_")(recipients[recipients.length - 1].label);
+      label +=  lang("_and_",recipients[recipients.length - 1].label);
     }
 
     return label;
@@ -137,13 +142,13 @@ export class MessageEntry extends Component<{
 
   _getSubText() {
     if (this.props.message.config.sendFailed) {
-      return <Text numberOfLines={1} style={{fontWeight:'700',  fontSize:12, color: colors.red.hex}}>{ Languages.text("MessageEntry", "Failed_to_send__tap_to_re")() }</Text>
+      return <Text numberOfLines={1} style={{fontWeight:'700',  fontSize:12, color: colors.red.hex}}>{ lang("Failed_to_send__tap_to_re") }</Text>
     }
     else if (this.props.message.config.sendFailed === false && this.props.message.config.sent === false) {
       return (
         <View style={{flexDirection:"row", alignItems:'center'}}>
           <ActivityIndicator size="small" />
-          <Text numberOfLines={1} style={{fontWeight:'500', paddingLeft:10, fontSize:12, color: colors.black.rgba(0.5)}}>{ Languages.text("MessageEntry", "Sending_message___")() }</Text>
+          <Text numberOfLines={1} style={{fontWeight:'500', paddingLeft:10, fontSize:12, color: colors.black.rgba(0.5)}}>{ lang("Sending_message___") }</Text>
         </View>
       )
     }

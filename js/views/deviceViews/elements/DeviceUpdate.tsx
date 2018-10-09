@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceUpdate", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -120,7 +125,7 @@ export class DeviceUpdate extends Component<any, any> {
             borderColor: colors.white.hex,
             backgroundColor: colors.csBlue.rgba(0.5)
           }]}>
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ Languages.text("DeviceUpdate", "Lets_get_started_")() }</Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("Lets_get_started_") }</Text>
         </TouchableOpacity>}
         <View style={{flex:1}} />
       </View>

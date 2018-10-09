@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsBleTroubleshootingIOS", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -35,27 +40,27 @@ export class SettingsBleTroubleshootingIOS extends Component<any, any> {
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
-            <Text style={titleStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "Troubleshooting")() }</Text>
+            <Text style={titleStyle}>{ lang("Troubleshooting") }</Text>
             <View style={{height:20}} />
             <IconButton name="ios-bluetooth" buttonSize={80} size={60} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />
             <View style={{height:20}} />
-            <Text style={headerStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "Sometimes__the_Bluetooth_")() }</Text>
-            <Text style={explanationStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "Unfortunately__sometimes_")() }</Text>
-            <Text style={explanationStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "Im_sure_youre_all_familia")() }</Text>
+            <Text style={headerStyle}>{ lang("Sometimes__the_Bluetooth_") }</Text>
+            <Text style={explanationStyle}>{ lang("Unfortunately__sometimes_") }</Text>
+            <Text style={explanationStyle}>{ lang("Im_sure_youre_all_familia") }</Text>
             <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosControlCenter.png')} sourceWidth={500} sourceHeight={588} targetWidth={imageWidth} style={imageStyle} />
-            <Text style={explanationStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "There_is_a_Bluetooth_icon")() }</Text>
+            <Text style={explanationStyle}>{ lang("There_is_a_Bluetooth_icon") }</Text>
             <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosControlCenterBleOff.png')} sourceWidth={500} sourceHeight={243} targetWidth={imageWidth} style={imageStyle}  />
-            <Text style={explanationStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "To_reset_Bluetooth_the_ri")() }</Text>
+            <Text style={explanationStyle}>{ lang("To_reset_Bluetooth_the_ri") }</Text>
             <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosSettingsButton.png')} sourceWidth={500} sourceHeight={139} targetWidth={imageWidth} style={imageStyle}  />
-            <Text style={explanationStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "In_the_settings_overview_")() }</Text>
+            <Text style={explanationStyle}>{ lang("In_the_settings_overview_") }</Text>
             <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosSettingsOverview.png')} sourceWidth={500} sourceHeight={677} targetWidth={imageWidth} style={imageStyle}  />
-            <Text style={explanationStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "Finally__in_the_Bluetooth")() }</Text>
+            <Text style={explanationStyle}>{ lang("Finally__in_the_Bluetooth") }</Text>
             <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosSettingsBluetooth.png')} sourceWidth={500} sourceHeight={403} targetWidth={imageWidth} style={imageStyle}  />
-            <Text style={explanationStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "The_result_should_be_")() }</Text>
+            <Text style={explanationStyle}>{ lang("The_result_should_be_") }</Text>
             <ScaledImage source={require('../../../images/bleTroubleshooter/ios/iosSettingsBluetoothOff.png')} sourceWidth={500} sourceHeight={403} targetWidth={imageWidth} style={imageStyle}  />
-            <Text style={explanationStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "You_wait_for_a_few_second")() }</Text>
+            <Text style={explanationStyle}>{ lang("You_wait_for_a_few_second") }</Text>
             <View style={{height:50}} />
-            <Text style={headerStyle}>{ Languages.text("SettingsBleTroubleshootingIOS", "Enjoy_using_your_Crownsto")() }</Text>
+            <Text style={headerStyle}>{ lang("Enjoy_using_your_Crownsto") }</Text>
             <View style={{height:100}} />
           </View>
         </ScrollView>

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsApp", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -24,7 +29,7 @@ import {LocationHandler} from "../../native/localization/LocationHandler";
 
 export class SettingsApp extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: Languages.title("SettingsApp", "App_Settings")()}
+    return { title: lang("App_Settings")}
   };
 
   unsubscribe : any;
@@ -74,9 +79,9 @@ export class SettingsApp extends Component<any, any> {
     let state = store.getState();
 
     let items = [];
-    items.push({label: Languages.label("SettingsApp", "FEATURES")(), type: 'explanation', below: false});
+    items.push({label: lang("FEATURES"), type: 'explanation', below: false});
     items.push({
-      label: Languages.label("SettingsApp", "Use_Tap_To_Toggle")(),
+      label: lang("Use_Tap_To_Toggle"),
       value: state.app.tapToToggleEnabled,
       type: 'switch',
       icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
@@ -97,16 +102,16 @@ export class SettingsApp extends Component<any, any> {
         }
     }});
     if (state.app.indoorLocalizationEnabled) {
-      items.push({label: Languages.label("SettingsApp", "Tap_to_toggle_allows_you_")(), type: 'explanation', below: true});
+      items.push({label: lang("Tap_to_toggle_allows_you_"), type: 'explanation', below: true});
     }
     else {
-      items.push({label: Languages.label("SettingsApp", "If_indoor_localization_is")(), type: 'explanation', below: true});
+      items.push({label: lang("If_indoor_localization_is"), type: 'explanation', below: true});
     }
 
 
-    items.push({label: Languages.label("SettingsApp", "BATTERY_USAGE")(), type: 'explanation', alreadyPadded: true, below: false});
+    items.push({label: lang("BATTERY_USAGE"), type: 'explanation', alreadyPadded: true, below: false});
     items.push({
-      label: Languages.label("SettingsApp", "Use_Heartbeat")(),
+      label: lang("Use_Heartbeat"),
       value: state.app.keepAlivesEnabled && state.app.indoorLocalizationEnabled,
       disabled: !state.app.indoorLocalizationEnabled,
       type: 'switch',
@@ -118,16 +123,16 @@ export class SettingsApp extends Component<any, any> {
         });
       }});
     if (state.app.indoorLocalizationEnabled) {
-      items.push({label: Languages.label("SettingsApp", "The_heartbeat_is_part_of_")(),
+      items.push({label: lang("The_heartbeat_is_part_of_"),
         type: 'explanation', below: true});
     }
     else {
-      items.push({label: Languages.label("SettingsApp", "The_heartbeat_is_part_of_t")(),
+      items.push({label: lang("The_heartbeat_is_part_of_t"),
         type: 'explanation', below: true});
     }
 
     items.push({
-      label: Languages.label("SettingsApp", "Use_Indoor_localization")(),
+      label: lang("Use_Indoor_localization"),
       value: state.app.indoorLocalizationEnabled,
       type: 'switch',
       icon: <IconButton name="c1-locationPin1" size={18} button={true} color="#fff"
@@ -151,7 +156,7 @@ export class SettingsApp extends Component<any, any> {
       }
     });
     items.push({
-      label: Languages.label("SettingsApp", "Indoor_localization_allow")(),
+      label: lang("Indoor_localization_allow"),
       type: 'explanation',
       below: true
     });

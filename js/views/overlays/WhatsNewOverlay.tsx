@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("WhatsNewOverlay", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -93,7 +98,7 @@ export class WhatsNewOverlay extends Component<any, any> {
           marginTop:25,
           marginBottom:25,
           overflow:'hidden'
-        }}>{ Languages.text("WhatsNewOverlay", "Your_App_was_updated_")() }</Text>
+        }}>{ lang("Your_App_was_updated_") }</Text>
         <Swiper style={{}} showsPagination={true} height={height-80} width={width}
           loadMinimal={true}
           loadMinimalSize={2}

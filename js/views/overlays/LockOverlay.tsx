@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LockOverlay", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -75,9 +80,9 @@ export class LockOverlay extends Component<any, any> {
       .catch((err) => {
         eventBus.emit("hideLoading");
         Alert.alert(
-Languages.alert("LockOverlay", "_Im_sorry____Something_we_header")(),
-Languages.alert("LockOverlay", "_Im_sorry____Something_we_body")(),
-[{text:Languages.alert("LockOverlay", "_Im_sorry____Something_we_left")()}]);
+lang("_Im_sorry____Something_we_header"),
+lang("_Im_sorry____Something_we_body"),
+[{text:lang("_Im_sorry____Something_we_left")}]);
         this.setState({visible: false, sphereId: null});
       });
     BatchCommandHandler.executePriority();
@@ -95,7 +100,7 @@ Languages.alert("LockOverlay", "_Im_sorry____Something_we_body")(),
             borderWidth: 2,
             borderColor: colors.darkBackground.rgba(0.5),
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ Languages.text("LockOverlay", "OK___")() }</Text>
+            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ lang("OK___") }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
         </View>
@@ -112,7 +117,7 @@ Languages.alert("LockOverlay", "_Im_sorry____Something_we_body")(),
             borderWidth: 2,
             borderColor: colors.darkBackground.rgba(0.5),
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ Languages.text("LockOverlay", "Cancel")() }</Text>
+            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ lang("Cancel") }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
           <TouchableOpacity onPress={() => { this._lockCrownstone(stone); }} style={[styles.centered, {
@@ -122,7 +127,7 @@ Languages.alert("LockOverlay", "_Im_sorry____Something_we_body")(),
             borderWidth: 3,
             borderColor: colors.darkBackground.hex,
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.hex, fontWeight: 'bold'}}>{ Languages.text("LockOverlay", "Lock_")() }</Text>
+            <Text style={{fontSize: 14, color: colors.darkBackground.hex, fontWeight: 'bold'}}>{ lang("Lock_") }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
         </View>
@@ -151,7 +156,7 @@ Languages.alert("LockOverlay", "_Im_sorry____Something_we_body")(),
           style={{position:'relative', top:0}}
         />
         <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{ Languages.text("LockOverlay", "Locking_a_Crownstone")() }</Text>
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{ lang("Locking_a_Crownstone") }</Text>
         <Text style={{fontSize: 12, fontWeight: '400',  color: colors.darkBackground.hex, padding:15, textAlign:'center'}}>{this._getText(stone)}</Text>
         <View style={{flex:1}} />
         { this._getButtons(stone) }

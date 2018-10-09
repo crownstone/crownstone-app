@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereBehaviour", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -19,7 +24,7 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 export class SphereBehaviour extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("SphereBehaviour", "Sphere_behaviour")(),
+      title: lang("Sphere_behaviour"),
     }
   };
 
@@ -66,14 +71,14 @@ export class SphereBehaviour extends Component<any, any> {
 
     if (spherePermissions.editSphere) {
       let options = [];
-      options.push({label: Languages.label("SphereBehaviour", "__Minutes")(), value: 300});
-      options.push({label: Languages.label("SphereBehaviour", "___Minutes")(), value: 600});
-      options.push({label: Languages.label("SphereBehaviour", "___Minutes")(), value: 900});
-      options.push({label: Languages.label("SphereBehaviour", "___Minutes")(), value: 1800});
-      items.push({label: Languages.label("SphereBehaviour", "SPHERE_EXIT_DELAY")(), type: 'explanation', below: false});
+      options.push({label: lang("__Minutes"), value: 300});
+      options.push({label: lang("___Minutes"), value: 600});
+      options.push({label: lang("___Minutes"), value: 900});
+      options.push({label: lang("___Minutes"), value: 1800});
+      items.push({label: lang("SPHERE_EXIT_DELAY"), type: 'explanation', below: false});
       items.push({
         type: 'dropdown',
-        label: Languages.label("SphereBehaviour", "Delay")(),
+        label: lang("Delay"),
         value: Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), // max to allow older versions of the app that have a timeout of 2 minutes to also turn off at 5
         valueLabel: this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),
         dropdownHeight: 130,
@@ -89,7 +94,7 @@ export class SphereBehaviour extends Component<any, any> {
         }
       });
       items.push({
-        label: Languages.label("SphereBehaviour", "If_nobody_is_left_in_the_")(),
+        label: lang("If_nobody_is_left_in_the_"),
         type: 'explanation',
         below: true,
         style: {paddingBottom: 0}

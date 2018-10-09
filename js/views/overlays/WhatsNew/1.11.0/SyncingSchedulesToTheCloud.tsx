@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SyncingSchedulesToTheCloud", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -19,10 +24,10 @@ export class SyncingSchedulesToTheCloud extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>{ Languages.text("SyncingSchedulesToTheCloud", "Schedules_are_now_synchro")() }</Text>
+            <Text style={WNStyles.text}>{ lang("Schedules_are_now_synchro") }</Text>
             <View style={{height:15}} />
             <Image source={require('../../../../images/whatsNew/1.11.0/syncSchedules.png')} style={{width:621*size, height:804*size}} />
-            <Text style={WNStyles.detail}>{ Languages.text("SyncingSchedulesToTheCloud", "This_happens_automaticall")() }</Text>
+            <Text style={WNStyles.detail}>{ lang("This_happens_automaticall") }</Text>
           </View>
         </ScrollView>
       </View>

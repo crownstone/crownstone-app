@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereDeleted", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -12,7 +17,7 @@ import {OrangeLine, styles} from "../styles";
 export class SphereDeleted extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("SphereDeleted", "Deleted")(),
+      title: lang("Deleted"),
     }
   };
 
@@ -20,7 +25,7 @@ export class SphereDeleted extends Component<any, any> {
     return (
       <Background image={require('../../images/mainBackgroundLightNotConnected.png')}>
         <OrangeLine/>
-        <Text>{ Languages.text("SphereDeleted", "Sphere_Deleted_")() }</Text>
+        <Text>{ lang("Sphere_Deleted_") }</Text>
       </Background>
     )
   }

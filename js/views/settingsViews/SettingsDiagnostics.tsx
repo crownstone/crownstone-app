@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsDiagnostics", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -85,7 +90,7 @@ export const DiagnosticStates = {
 export class SettingsDiagnostics extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("SettingsDiagnostics", "Diagnostics")(),
+      title: lang("Diagnostics"),
     }
   };
 
@@ -171,12 +176,12 @@ export class SettingsDiagnostics extends Component<any, any> {
         <View style={{flex:1}} />
         <IconButton name="md-analytics" buttonSize={0.27*screenWidth} size={0.21*screenWidth} radius={0.05*screenWidth} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
         <View style={{flex:0.5}} />
-        <Text style={diagnosticStyles.headerStyle}>{ Languages.text("SettingsDiagnostics", "Since_everything_communic")() }</Text>
+        <Text style={diagnosticStyles.headerStyle}>{ lang("Since_everything_communic") }</Text>
         <View style={{flex:0.5}} />
-        <Text style={diagnosticStyles.explanationStyle}>{ Languages.text("SettingsDiagnostics", "I_can_run_a_few_tests_to_")() }</Text>
+        <Text style={diagnosticStyles.explanationStyle}>{ lang("I_can_run_a_few_tests_to_") }</Text>
         <View style={{flex:1}} />
         <TouchableOpacity onPress={() => { this.startInitialTest() }} style={diagnosticStyles.buttonStyle}>
-          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ Languages.text("SettingsDiagnostics", "Run_diagnostics")() }</Text>
+          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Run_diagnostics") }</Text>
         </TouchableOpacity>
       </Animated.View>
     );
@@ -186,10 +191,10 @@ export class SettingsDiagnostics extends Component<any, any> {
   getInitialTests() {
     return (
       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-        <Text style={diagnosticStyles.headerStyle}>{ Languages.text("SettingsDiagnostics", "Running_initial_tests___")() }</Text>
+        <Text style={diagnosticStyles.headerStyle}>{ lang("Running_initial_tests___") }</Text>
         <View>
-          <TestResult label={ Languages.label("SettingsDiagnostics", "Database_is_healthy")()}    state={ this.state.databaseHealth }         />
-          <TestResult label={ Languages.label("SettingsDiagnostics", "Scanning_is_enabled")()}    state={ this.state.iBeaconScanningEnabled } />
+          <TestResult label={ lang("Database_is_healthy")}    state={ this.state.databaseHealth }         />
+          <TestResult label={ lang("Scanning_is_enabled")}    state={ this.state.iBeaconScanningEnabled } />
         </View>
         <View style={{flex:1}} />
       </View>
@@ -257,7 +262,7 @@ export class SettingsDiagnostics extends Component<any, any> {
         <OrangeLine/>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center'}}>
-            <Text style={diagnosticStyles.titleStyle}>{ Languages.text("SettingsDiagnostics", "Diagnostics")() }</Text>
+            <Text style={diagnosticStyles.titleStyle}>{ lang("Diagnostics") }</Text>
           </View>
           <View style={{width: screenWidth, alignItems:'center', justifyContent:'center', minHeight: availableScreenHeight-63}}>
             { this.getContent() }

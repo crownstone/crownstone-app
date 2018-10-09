@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsMeshTopology", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -31,9 +36,9 @@ let MESH_TIMEOUT = 3*24*3600*1000;
 
 export class SettingsMeshTopology extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: Languages.title("SettingsMeshTopology", "Mesh_Topology")(), headerRight:
+    return { title: lang("Mesh_Topology"), headerRight:
       <TopbarButton
-        text={ Languages.label("SettingsMeshTopology", "Networks")()}
+        text={ lang("Networks")}
         style={{width:100}}
         onPress={() => { Actions.settingsMeshOverview(); }}
       />
@@ -134,7 +139,7 @@ export class SettingsMeshTopology extends Component<any, any> {
         MeshUtil.clearMeshNetworkIds(store, sphereId);
       }
       else {
-        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: Languages.label("SettingsMeshTopology", "Refreshing_Mesh_Topology_")(this.refreshCount,this.refreshAmountRequired)});
+        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: lang("Refreshing_Mesh_Topology_",this.refreshCount,this.refreshAmountRequired)});
       }
     }
 
@@ -177,7 +182,7 @@ export class SettingsMeshTopology extends Component<any, any> {
         <Background image={this.props.backgrounds.menu}>
           <OrangeLine/>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{ Languages.text("SettingsMeshTopology", "No_Crownstones_in_Sphere_")(sphere.config.name) }</Text>
+            <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{ lang("No_Crownstones_in_Sphere_",sphere.config.name) }</Text>
           </View>
           <TouchableOpacity
             onPress={() => { Actions.settingsMeshTopologyHelp() }}
@@ -195,7 +200,7 @@ export class SettingsMeshTopology extends Component<any, any> {
 
 
       let location = Util.data.getLocationFromStone(sphere, stone);
-      let locationTitle =  Languages.label("SettingsMeshTopology", "Floating___")();
+      let locationTitle =  lang("Floating___");
       let locationIcon = 'c2-pluginFilled';
       if (location) {
         locationIcon = location.config.icon;
@@ -267,10 +272,10 @@ export class SettingsMeshTopology extends Component<any, any> {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => { Alert.alert(
-Languages.alert("SettingsMeshTopology", "_Refresh_Topology__While__header")(),
-Languages.alert("SettingsMeshTopology", "_Refresh_Topology__While__body")(),
-[{text:Languages.alert("SettingsMeshTopology", "_Refresh_Topology__While__left")(),style:  Languages.label("SettingsMeshTopology", "cancel")()}, {
-text:Languages.alert("SettingsMeshTopology", "_Refresh_Topology__While__right")(), onPress: () => { this._refreshMesh(sphereId, stones); }}]) }}
+lang("_Refresh_Topology__While__header"),
+lang("_Refresh_Topology__While__body"),
+[{text:lang("_Refresh_Topology__While__left"),style:  lang("cancel")}, {
+text:lang("_Refresh_Topology__While__right"), onPress: () => { this._refreshMesh(sphereId, stones); }}]) }}
           style={{position:'absolute', bottom:0, right:40, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
           <Icon name={'md-refresh-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
         </TouchableOpacity>

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomBanner", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -26,11 +31,11 @@ export class RoomBanner extends Component<any, any> {
       return <Text style={styles.roomImageText}>{this.props.overlayText}</Text>;
     }
     else if (this.props.viewingRemotely === true) {
-      return <Text style={styles.roomImageText}>{ Languages.text("RoomBanner", "Not_in_Sphere")() }</Text>;
+      return <Text style={styles.roomImageText}>{ lang("Not_in_Sphere") }</Text>;
     }
     else if (this.props.canDoLocalization === true) {
       if (this.props.presentUsers.length === 0) {
-        return <Text style={styles.roomImageText}>{ Languages.text("RoomBanner", "Nobody_Present")() }</Text>;
+        return <Text style={styles.roomImageText}>{ lang("Nobody_Present") }</Text>;
       }
       else {
         let users = [];
@@ -66,13 +71,13 @@ export class RoomBanner extends Component<any, any> {
       }
     }
     else if (this.props.amountOfStonesInRoom === 0) {
-      return <Text style={styles.roomImageText}>{ Languages.text("RoomBanner", "No_Crownstones_in_this_ro")() }</Text>;
+      return <Text style={styles.roomImageText}>{ lang("No_Crownstones_in_this_ro") }</Text>;
     }
     else if (this.props.amountOfStonesInRoom === 1) {
-      return <Text style={styles.roomImageText}>{ Languages.text("RoomBanner", "_Crownstone")(this.props.amountOfStonesInRoom) }</Text>;
+      return <Text style={styles.roomImageText}>{ lang("_Crownstone",this.props.amountOfStonesInRoom) }</Text>;
     }
     else {
-      return <Text style={styles.roomImageText}>{ Languages.text("RoomBanner", "_Crownstones")(this.props.amountOfStonesInRoom) }</Text>;
+      return <Text style={styles.roomImageText}>{ lang("_Crownstones",this.props.amountOfStonesInRoom) }</Text>;
     }
   }
 
@@ -81,7 +86,7 @@ export class RoomBanner extends Component<any, any> {
       return <Icon name="ios-cloudy-night" size={30} color="#fff" style={{backgroundColor:"transparent"}} />
     }
     else if (this.props.usage !== undefined) {
-      return <Text style={bannerStyles.roomImageText}>{ Languages.text("RoomBanner", "_W")(this.props.usage) }</Text>
+      return <Text style={bannerStyles.roomImageText}>{ lang("_W",this.props.usage) }</Text>
     }
     else {
       return <Icon name="c2-crownstone" size={45} color="#fff" style={{backgroundColor:"transparent"}} />

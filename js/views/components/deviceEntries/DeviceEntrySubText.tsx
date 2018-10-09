@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceEntrySubText", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -52,48 +57,48 @@ export class DeviceEntrySubText extends Component<any, any> {
       if (this.props.nearestInSphere === true) {
         return (
           <View style={{flexDirection:'row'}}>
-            <Text style={{fontSize: 12}}>{ Languages.text("DeviceEntrySubText", "_W")(currentUsage) }</Text>
-            <Text style={{fontSize: 12, color: color}}>{ Languages.text("DeviceEntrySubText", "__Nearest_")() }</Text>
+            <Text style={{fontSize: 12}}>{ lang("_W",currentUsage) }</Text>
+            <Text style={{fontSize: 12, color: color}}>{ lang("__Nearest_") }</Text>
           </View>
         )
       }
       else if (this.props.nearestInRoom === true) {
         return (
           <View style={{flexDirection:'row'}}>
-            <Text style={{fontSize: 12}}>{ Languages.text("DeviceEntrySubText", "_W")(currentUsage) }</Text>
-            <Text style={{fontSize: 12, color: color}}>{ Languages.text("DeviceEntrySubText", "__Nearest_in_room_")() }</Text>
+            <Text style={{fontSize: 12}}>{ lang("_W",currentUsage) }</Text>
+            <Text style={{fontSize: 12, color: color}}>{ lang("__Nearest_in_room_") }</Text>
           </View>
         )
       }
       else if (rssi > -60) {
         return (
           <View style={{flexDirection:'row'}}>
-            <Text style={{fontSize: 12}}>{ Languages.text("DeviceEntrySubText", "_W")(currentUsage) }</Text>
-            <Text style={{fontSize: 12, color: color}}>{ Languages.text("DeviceEntrySubText", "__Very_near_")() }</Text>
+            <Text style={{fontSize: 12}}>{ lang("_W",currentUsage) }</Text>
+            <Text style={{fontSize: 12, color: color}}>{ lang("__Very_near_") }</Text>
           </View>
         )
       }
       else if (rssi > -70) {
         return (
           <View style={{flexDirection:'row'}}>
-            <Text style={{fontSize: 12}}>{ Languages.text("DeviceEntrySubText", "_W")(currentUsage) }</Text>
-            <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{ Languages.text("DeviceEntrySubText", "__Near_")() }</Text>
+            <Text style={{fontSize: 12}}>{ lang("_W",currentUsage) }</Text>
+            <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{ lang("__Near_") }</Text>
           </View>
         )
       }
       else {
-        return <Text style={{fontSize: 12}}>{ Languages.text("DeviceEntrySubText", "_W")(currentUsage) }</Text>
+        return <Text style={{fontSize: 12}}>{ lang("_W",currentUsage) }</Text>
       }
     }
     else if (disabled === false) {
       if (this.props.nearest === true) {
-        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{ Languages.text("DeviceEntrySubText", "_Nearest_")() }</Text>
+        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{ lang("_Nearest_") }</Text>
       }
       else if (rssi > -60) {
-        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{ Languages.text("DeviceEntrySubText", "_Very_near_")() }</Text>
+        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{ lang("_Very_near_") }</Text>
       }
       else if (rssi > -70) {
-        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{ Languages.text("DeviceEntrySubText", "_Near_")() }</Text>
+        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{ lang("_Near_") }</Text>
       }
       else {
         return <View />
@@ -101,7 +106,7 @@ export class DeviceEntrySubText extends Component<any, any> {
     }
     else if (disabled === true) {
       return (
-        <Text style={{fontSize: 12}}>{ Languages.text("DeviceEntrySubText", "Please_wait_until_the_set")(SetupStateHandler.isSetupInProgress()) }</Text>
+        <Text style={{fontSize: 12}}>{ lang("Please_wait_until_the_set",SetupStateHandler.isSetupInProgress()) }</Text>
       );
     }
     else {

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -98,9 +103,9 @@ export class RoomTraining extends Component<any, any> {
 
       let defaultAction = () => { BackAction('sphereOverview'); };
       Alert.alert(
-Languages.alert("RoomTraining", "_No_Crownstones_in_range__header")(),
-Languages.alert("RoomTraining", "_No_Crownstones_in_range__body")(),
-[{text:Languages.alert("RoomTraining", "_No_Crownstones_in_range__left")(), onPress: defaultAction}],
+lang("_No_Crownstones_in_range__header"),
+lang("_No_Crownstones_in_range__body"),
+[{text:lang("_No_Crownstones_in_range__left"), onPress: defaultAction}],
         { onDismiss: defaultAction }
       )
     },4000);
@@ -139,9 +144,9 @@ Languages.alert("RoomTraining", "_No_Crownstones_in_range__body")(),
 
       let defaultAction = () => { BackAction('sphereOverview'); };
       Alert.alert(
-Languages.alert("RoomTraining", "_I_can_not_see_enough_Cro_header")(),
-Languages.alert("RoomTraining", "_I_can_not_see_enough_Cro_body")(averageAmountOfMeasurements),
-[{text:Languages.alert("RoomTraining", "_I_can_not_see_enough_Cro_left")(), onPress: defaultAction}],
+lang("_I_can_not_see_enough_Cro_header"),
+lang("_I_can_not_see_enough_Cro_body",averageAmountOfMeasurements),
+[{text:lang("_I_can_not_see_enough_Cro_left"), onPress: defaultAction}],
         { onDismiss: defaultAction }
       )
     }
@@ -204,11 +209,11 @@ Languages.alert("RoomTraining", "_I_can_not_see_enough_Cro_body")(averageAmountO
     let cancelMethod = () => {
       FingerprintManager.pauseCollectingFingerprint();
       Alert.alert(
-Languages.alert("RoomTraining", "_Do_you_want_to_cancel_tr_header")(),
-Languages.alert("RoomTraining", "_Do_you_want_to_cancel_tr_body")(),
-[{text:Languages.alert("RoomTraining", "_Do_you_want_to_cancel_tr_left")(), onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
+lang("_Do_you_want_to_cancel_tr_header"),
+lang("_Do_you_want_to_cancel_tr_body"),
+[{text:lang("_Do_you_want_to_cancel_tr_left"), onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
           {
-text:Languages.alert("RoomTraining", "_Do_you_want_to_cancel_tr_right")(), onPress: () => { this.stop(true); BackAction('sphereOverview'); }}
+text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); BackAction('sphereOverview'); }}
         ],
         { cancelable : false }
       )
@@ -238,7 +243,7 @@ text:Languages.alert("RoomTraining", "_Do_you_want_to_cancel_tr_right")(), onPre
           ai={ai}
           next={() => {
             this.setState({phase:2});
-            this.props.navigation.setParams({topBarSettings:{title: Languages.title("RoomTraining", "All_Done_")(), leftAction: undefined }})
+            this.props.navigation.setParams({topBarSettings:{title: lang("All_Done_"), leftAction: undefined }})
           }}
           progress={this.state.progress}
           opacity={this.state.opacity}
@@ -262,7 +267,7 @@ text:Languages.alert("RoomTraining", "_Do_you_want_to_cancel_tr_right")(), onPre
 
 function getNavBarParams(state, props, viewingRemotely) {
   let ai = Util.data.getAiData(state, props.sphereId);
-  NAVBAR_PARAMS_CACHE = {title: Languages.title("RoomTraining", "Teaching_")(ai.name)};
+  NAVBAR_PARAMS_CACHE = {title: lang("Teaching_",ai.name)};
   return NAVBAR_PARAMS_CACHE;
 }
 

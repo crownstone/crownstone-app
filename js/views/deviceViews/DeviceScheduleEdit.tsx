@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceScheduleEdit", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -41,11 +46,11 @@ export class DeviceScheduleEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
-    let title =  Languages.label("DeviceScheduleEdit", "Add_Schedule")();
-    let rightLabel =  Languages.label("DeviceScheduleEdit", "Create")();
+    let title =  lang("Add_Schedule");
+    let rightLabel =  lang("Create");
     if (params.scheduleId) {
-      title =  Languages.label("DeviceScheduleEdit", "Edit_Schedule")();
-      rightLabel =  Languages.label("DeviceScheduleEdit", "Save")()}
+      title =  lang("Edit_Schedule");
+      rightLabel =  lang("Save")}
 
     return {
       title: title,
@@ -120,7 +125,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    items.push({type:'lightExplanation', label: Languages.label("DeviceScheduleEdit", "TAP_THE_TIME_TO_CHANGE_IT")(), below: false});
+    items.push({type:'lightExplanation', label: lang("TAP_THE_TIME_TO_CHANGE_IT"), below: false});
     items.push({__item:
       <TouchableOpacity style={{
         flexDirection:'row',
@@ -159,7 +164,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    items.push({label: Languages.label("DeviceScheduleEdit", "PICK_A_TIME")(), type: 'lightExplanation',  below:false});
+    items.push({label: lang("PICK_A_TIME"), type: 'lightExplanation',  below:false});
     items.push({__item:
       <UncontrolledDatePickerIOS
         ref={(x) => { this.datePickerReference = x; }}
@@ -175,64 +180,64 @@ export class DeviceScheduleEdit extends Component<any, any> {
   }
 
   _addSharedUIToItems(items, stone) {
-    items.push({label: Languages.label("DeviceScheduleEdit", "Label")(), type: 'textEdit', placeholder:'(optional)', value: this.state.label, callback: (newText) => {
+    items.push({label: lang("Label"), type: 'textEdit', placeholder:'(optional)', value: this.state.label, callback: (newText) => {
       this.setState({label:newText});
     }});
-    items.push({label: Languages.label("DeviceScheduleEdit", "ACTION")(), type: 'lightExplanation',  below:false});
+    items.push({label: lang("ACTION"), type: 'lightExplanation',  below:false});
     items.push({
       type: 'dropdown',
-      label: Languages.label("DeviceScheduleEdit", "Turn_the_Crownstone__")(),
+      label: lang("Turn_the_Crownstone__"),
       dropdownHeight: 130,
       valueRight: true,
       buttons: 2,
       valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
       value: this.state.switchState,
-      items: [{label: Languages.label("DeviceScheduleEdit", "On")(), value:1}, {label: Languages.label("DeviceScheduleEdit", "Off")(), value:0}],
+      items: [{label: lang("On"), value:1}, {label: lang("Off"), value:0}],
       callback: (newValue) => {
         this.setState({switchState: newValue})
       }
     });
 
 
-    items.push({label: Languages.label("DeviceScheduleEdit", "REPEAT")(), type: 'lightExplanation',  below:false});
+    items.push({label: lang("REPEAT"), type: 'lightExplanation',  below:false});
     items.push({__item:
       <RepeatWeekday data={this.state.activeDays} onChange={(newData) => { this.setState({activeDays: newData}); }} />
     });
 
     if (this.props.scheduleId !== null && this.props.scheduleId !== undefined) {
-      items.push({label: Languages.label("DeviceScheduleEdit", "SCHEDULING_OPTIONS")(), type: 'lightExplanation',  below:false});
-      items.push({label: Languages.label("DeviceScheduleEdit", "Schedule_active")(), type: 'switch', value: this.state.active, callback: (newValue) => {
+      items.push({label: lang("SCHEDULING_OPTIONS"), type: 'lightExplanation',  below:false});
+      items.push({label: lang("Schedule_active"), type: 'switch', value: this.state.active, callback: (newValue) => {
         this.setState({active: newValue});
       }});
 
       items.push({
-        label: Languages.label("DeviceScheduleEdit", "Remove")(),
+        label: lang("Remove"),
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
           if (Permissions.inSphere(this.props.sphereId).canDeleteSchedule === false) {
             Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Permission_Denied___You__header")(),
-Languages.alert("DeviceScheduleEdit", "_Permission_Denied___You__body")(),
-[{text:Languages.alert("DeviceScheduleEdit", "_Permission_Denied___You__left")()}]);
+lang("_Permission_Denied___You__header"),
+lang("_Permission_Denied___You__body"),
+[{text:lang("_Permission_Denied___You__left")}]);
             return;
           }
 
 
           if (stone.reachability.disabled === true) {
             Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You_header")(),
-Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You_body")(),
-[{text:Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You_left")()}]
+lang("_Cant_see_Crownstone__You_header"),
+lang("_Cant_see_Crownstone__You_body"),
+[{text:lang("_Cant_see_Crownstone__You_left")}]
             );
             return;
           }
           else if (stone.schedules[this.props.scheduleId].active === false) {
             Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Remove_sc_header")(),
-Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Remove_sc_body")(),
-[{text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Remove_sc_left")(), style: 'cancel'}, {
-text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Remove_sc_right")(), style:'destructive', onPress: () => {
+lang("_Are_you_sure___Remove_sc_header"),
+lang("_Are_you_sure___Remove_sc_body"),
+[{text: lang("_Are_you_sure___Remove_sc_left"), style: 'cancel'}, {
+text: lang("_Are_you_sure___Remove_sc_right"), style:'destructive', onPress: () => {
                 BackAction();
                 this.props.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
               }}]
@@ -240,10 +245,10 @@ text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Remove_sc_right")()
           }
           else {
             Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Removing__header")(),
-Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Removing__body")(),
-[{text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Removing__left")(), style: 'cancel'}, {
-text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Removing__right")(), style:'destructive', onPress: () => {
+lang("_Are_you_sure___Removing__header"),
+lang("_Are_you_sure___Removing__body"),
+[{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
+text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
                 let state = this.props.store.getState();
                 let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
                 let schedule = stone.schedules[this.props.scheduleId];
@@ -268,9 +273,9 @@ text: Languages.alert("DeviceScheduleEdit", "_Are_you_sure___Removing__right")()
 
     if (activeDay === false) {
       Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Pick_a_day___You_need_to_header")(),
-Languages.alert("DeviceScheduleEdit", "_Pick_a_day___You_need_to_body")(),
-[{text:Languages.alert("DeviceScheduleEdit", "_Pick_a_day___You_need_to_left")()}]);
+lang("_Pick_a_day___You_need_to_header"),
+lang("_Pick_a_day___You_need_to_body"),
+[{text:lang("_Pick_a_day___You_need_to_left")}]);
     }
     return activeDay;
   }
@@ -297,9 +302,9 @@ Languages.alert("DeviceScheduleEdit", "_Pick_a_day___You_need_to_body")(),
         stone,
         this._getBridgeFormat(null),
         {
-          loadingLabel: Languages.label("DeviceScheduleEdit", "Setting_the_Schedule_on_t")(),
-          alertLabel:  Languages.label("DeviceScheduleEdit", "I_could_not_set_the_Sched")(),
-          fullLabel: 'You can\'t have any more scheduled actions. Please remove or deactivate an existing one to add this one.',
+          loadingLabel: lang("Setting_the_Schedule_on_t"),
+          alertLabel:  lang("I_could_not_set_the_Sched"),
+          fullLabel: lang("You_cant_have_any_more_sc"),
           actionType: 'ADD_STONE_SCHEDULE',
           scheduleId: Util.getUUID(),
         }
@@ -335,9 +340,9 @@ Languages.alert("DeviceScheduleEdit", "_Pick_a_day___You_need_to_body")(),
       if (changed) {
         if (stone.reachability.disabled === true) {
           Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You__header")(),
-Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You__body")(),
-[{text:Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You__left")(), onPress: () => { BackAction();}}],
+lang("_Cant_see_Crownstone__You__header"),
+lang("_Cant_see_Crownstone__You__body"),
+[{text:lang("_Cant_see_Crownstone__You__left"), onPress: () => { BackAction();}}],
             {cancelable: false}
           );
           return;
@@ -352,9 +357,9 @@ Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You__body")(),
             stone,
             this._getBridgeFormat(null),
             {
-              loadingLabel: Languages.label("DeviceScheduleEdit", "Activating_the_Schedule_o")(),
-              alertLabel:  Languages.label("DeviceScheduleEdit", "I_could_not_activate_the_")(),
-              fullLabel: 'You can\'t have any more active scheduled actions. Please remove or deactivate one to activate this action.',
+              loadingLabel: lang("Activating_the_Schedule_o"),
+              alertLabel:  lang("I_could_not_activate_the_"),
+              fullLabel: lang("You_cant_have_any_more_sc"),
               actionType: 'UPDATE_STONE_SCHEDULE',
               scheduleId: this.props.scheduleId,
             }
@@ -433,19 +438,19 @@ Languages.alert("DeviceScheduleEdit", "_Cant_see_Crownstone__You__body")(),
       .catch((err) => {
         if (err === "NO_SCHEDULE_ENTRIES_AVAILABLE")  {
           Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Schedules_are_full__argu_header")(),
-Languages.alert("DeviceScheduleEdit", "_Schedules_are_full__argu_body")(config.fullLabel),
-[{text:Languages.alert("DeviceScheduleEdit", "_Schedules_are_full__argu_left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
-text:Languages.alert("DeviceScheduleEdit", "_Schedules_are_full__argu_right")(), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
+lang("_Schedules_are_full__argu_header"),
+lang("_Schedules_are_full__argu_body",config.fullLabel),
+[{text:lang("_Schedules_are_full__argu_left"), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
+text:lang("_Schedules_are_full__argu_right"), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
         }
         else {
           Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Whoops__arguments___No___header")(),
-Languages.alert("DeviceScheduleEdit", "_Whoops__arguments___No___body")(config.alertLabel),
-[{text:Languages.alert("DeviceScheduleEdit", "_Whoops__arguments___No___left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
-text:Languages.alert("DeviceScheduleEdit", "_Whoops__arguments___No___right")(), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
+lang("_Whoops__arguments___No___header"),
+lang("_Whoops__arguments___No___body",config.alertLabel),
+[{text:lang("_Whoops__arguments___No___left"), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
+text:lang("_Whoops__arguments___No___right"), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
         }
@@ -473,10 +478,10 @@ text:Languages.alert("DeviceScheduleEdit", "_Whoops__arguments___No___right")(),
       })
       .catch((err) => {
         Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tel_header")(),
-Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tel_body")(),
-[{text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tel_left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
-text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tel_right")(), onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
+lang("_Whoops___I_could_not_tel_header"),
+lang("_Whoops___I_could_not_tel_body"),
+[{text:lang("_Whoops___I_could_not_tel_left"), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
+text:lang("_Whoops___I_could_not_tel_right"), onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
           {cancelable: false}
         )
       });
@@ -503,10 +508,10 @@ text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tel_right")(),
       })
       .catch(() => {
         Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell_header")(),
-Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell_body")(),
-[{text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell_left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {
-text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell_right")(), onPress: () => { this._disableSchedule(stone, schedule); } }],
+lang("_Whoops___I_could_not_tell_header"),
+lang("_Whoops___I_could_not_tell_body"),
+[{text:lang("_Whoops___I_could_not_tell_left"), onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {
+text:lang("_Whoops___I_could_not_tell_right"), onPress: () => { this._disableSchedule(stone, schedule); } }],
           {cancelable: false}
         )
       });
@@ -526,10 +531,10 @@ text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell_right")()
       })
       .catch(() => {
         Alert.alert(
-Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell__header")(),
-Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell__body")(),
-[{text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell__left")(), onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {
-text:Languages.alert("DeviceScheduleEdit", "_Whoops___I_could_not_tell__right")(), onPress: () => { this._deleteSchedule(stone, schedule); } }],
+lang("_Whoops___I_could_not_tell__header"),
+lang("_Whoops___I_could_not_tell__body"),
+[{text:lang("_Whoops___I_could_not_tell__left"), onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {
+text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSchedule(stone, schedule); } }],
           {cancelable: false}
         )
       });

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AddItemsToSphere", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -31,11 +36,11 @@ let iconSize = 100;
 
 export const addCrownstoneExplanationAlert = (actionOnOK = () => {}) => {
   Alert.alert(
-Languages.alert("AddItemsToSphere", "_Adding_a_Crownstone__Plu_header")(),
-Languages.alert("AddItemsToSphere", "_Adding_a_Crownstone__Plu_body")(),
-[{text: Languages.alert("AddItemsToSphere", "_Adding_a_Crownstone__Plu_left")(), style:'cancel',onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},
+lang("_Adding_a_Crownstone__Plu_header"),
+lang("_Adding_a_Crownstone__Plu_body"),
+[{text: lang("_Adding_a_Crownstone__Plu_left"), style:'cancel',onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},
       {
-text: Languages.alert("AddItemsToSphere", "_Adding_a_Crownstone__Plu_right")(), onPress: () => { actionOnOK() }}]
+text: lang("_Adding_a_Crownstone__Plu_right"), onPress: () => { actionOnOK() }}]
   );
 }
 
@@ -45,7 +50,7 @@ export class AddItemsToSphere extends Component<any, any> {
     if (params === undefined) { return }
 
     return {
-      title: Languages.title("AddItemsToSphere", "Add_to_Sphere")(),
+      title: lang("Add_to_Sphere"),
     }
   };
 
@@ -56,7 +61,7 @@ export class AddItemsToSphere extends Component<any, any> {
         <ScrollView>
           <View style={{ width: screenWidth, alignItems:'center' }}>
             <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ Languages.text("AddItemsToSphere", "Add_to_your_Sphere")() }</Text>
+            <Text style={[deviceStyles.header]}>{ lang("Add_to_your_Sphere") }</Text>
             <View style={{height: 0.2*iconSize}} />
             <IconButton
               name="c1-sphere"
@@ -66,15 +71,15 @@ export class AddItemsToSphere extends Component<any, any> {
               buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
             />
             <View style={{height: 0.2*iconSize}} />
-            <Text style={textStyle.specification}>{ Languages.text("AddItemsToSphere", "You_can_add_Rooms__People")() }</Text>
+            <Text style={textStyle.specification}>{ lang("You_can_add_Rooms__People") }</Text>
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row'}}>
-              <AddItem icon={'md-cube'} label={ Languages.label("AddItemsToSphere", "Room")()} callback={() => { Actions.roomAdd({sphereId: this.props.sphereId }); }} />
-              <AddItem icon={'c2-crownstone'} label={ Languages.label("AddItemsToSphere", "Crownstone")()} callback={() => { addCrownstoneExplanationAlert(() => { BackAction(); }); }} />
+              <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => { Actions.roomAdd({sphereId: this.props.sphereId }); }} />
+              <AddItem icon={'c2-crownstone'} label={ lang("Crownstone")} callback={() => { addCrownstoneExplanationAlert(() => { BackAction(); }); }} />
             </View>
             <View  style={{flexDirection:'row'}}>
-              <AddItem icon={'ios-body'} label={ Languages.label("AddItemsToSphere", "Person")()} callback={() => { Actions.sphereUserInvite({sphereId: this.props.sphereId}) }} />
-              <AddItem icon={'ios-link'} label={ Languages.label("AddItemsToSphere", "Something_else_")()} callback={() => { Actions.sphereIntegrations({sphereId: this.props.sphereId}) }} />
+              <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => { Actions.sphereUserInvite({sphereId: this.props.sphereId}) }} />
+              <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => { Actions.sphereIntegrations({sphereId: this.props.sphereId}) }} />
             </View>
           </View>
           <View style={{height: 30}} />

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Sphere", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -56,8 +61,8 @@ export class Sphere extends Component<any, any> {
         return (
           <View style={viewStyle}>
             <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
-            <Text style={overviewStyles.mainText}>{ Languages.text("Sphere", "No_Crownstones_added_yet_")() }</Text>
-            <Text style={overviewStyles.subText}>{ Languages.text("Sphere", "Ask_the_admin_of_this_Sph")() }</Text>
+            <Text style={overviewStyles.mainText}>{ lang("No_Crownstones_added_yet_") }</Text>
+            <Text style={overviewStyles.subText}>{ lang("Ask_the_admin_of_this_Sph") }</Text>
           </View>
         )
       }
@@ -66,9 +71,9 @@ export class Sphere extends Component<any, any> {
         return (
           <View style={viewStyle}>
             <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
-            <Text style={overviewStyles.mainText}>{ Languages.text("Sphere", "No_Crownstones_added_yet_")() }</Text>
-            <Text style={overviewStyles.subText}>{ Languages.text("Sphere", "Get_close_to_a_new_Crowns")() }</Text>
-            <Text style={overviewStyles.subTextSmall}>{ Languages.text("Sphere", "If_nothing_happens__ensur")(Platform.OS) }</Text>
+            <Text style={overviewStyles.mainText}>{ lang("No_Crownstones_added_yet_") }</Text>
+            <Text style={overviewStyles.subText}>{ lang("Get_close_to_a_new_Crowns") }</Text>
+            <Text style={overviewStyles.subTextSmall}>{ lang("If_nothing_happens__ensur",Platform.OS) }</Text>
           </View>
         )
       }

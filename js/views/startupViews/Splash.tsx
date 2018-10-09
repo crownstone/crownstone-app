@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Splash", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -32,7 +37,7 @@ export class Splash extends Component<any, any> {
           <View style={{flex:0.5}} />
           <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
           <View style={{flex:2}} />
-          <Text style={versionStyle}>{ Languages.text("Splash", "version__")(DeviceInfo.getReadableVersion()) }</Text>
+          <Text style={versionStyle}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
           <View style={{flex:0.5}} />
         </View>
       </Background>

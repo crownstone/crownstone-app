@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsRedownloadFromCloud", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -20,7 +25,7 @@ import {AppUtil} from "../../util/AppUtil";
 export class SettingsRedownloadFromCloud extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: Languages.title("SettingsRedownloadFromCloud", "Reset_from_Cloud")(),
+      title: lang("Reset_from_Cloud"),
     }
   };
 
@@ -28,7 +33,7 @@ export class SettingsRedownloadFromCloud extends Component<any, any> {
     return (
       <Background image={this.props.backgrounds.menu}  hasNavBar={false} safeView={true}>
         <View style={{flex:1, alignItems:'center', padding: 20}}>
-          <Text style={[deviceStyles.header,{color:colors.menuBackground.hex}]}>{ Languages.text("SettingsRedownloadFromCloud", "Replace_local_data_with_C")() }</Text>
+          <Text style={[deviceStyles.header,{color:colors.menuBackground.hex}]}>{ lang("Replace_local_data_with_C") }</Text>
           <View style={{flex:1}} />
           <IconButton
             name="md-cloud-download"
@@ -38,10 +43,10 @@ export class SettingsRedownloadFromCloud extends Component<any, any> {
             style={{position:'relative'}}
           />
           <View style={{flex:1}} />
-          <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{ Languages.text("SettingsRedownloadFromCloud", "To_restore_your_local_dat")() }</Text>
+          <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{ lang("To_restore_your_local_dat") }</Text>
           <View style={{flex:1}} />
           <TouchableOpacity onPress={() => { AppUtil.resetDatabase(this.props.store, this.props.eventBus) }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
-            <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ Languages.text("SettingsRedownloadFromCloud", "Im_sure__do_it_")() }</Text>
+            <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Im_sure__do_it_") }</Text>
           </TouchableOpacity>
         </View>
       </Background>

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -377,18 +382,18 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
   switch (swiperIndex) {
     case summaryIndex:
       if (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) {
-        rightLabel =  Languages.label("DeviceOverview", "Edit")();
+        rightLabel =  lang("Edit");
         rightAction = () => {Actions.deviceEdit({sphereId: props.sphereId, stoneId: props.stoneId})};
       }
       break;
     case behaviourIndex:
       if (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
-        rightLabel =  Languages.label("DeviceOverview", "Change")();
+        rightLabel =  lang("Change");
         if (stone.config.locked === true) {
           rightAction = () => { Alert.alert(
-Languages.alert("DeviceOverview", "_Crownstone_is_Locked___Y_header")(),
-Languages.alert("DeviceOverview", "_Crownstone_is_Locked___Y_body")(),
-[{text:Languages.alert("DeviceOverview", "_Crownstone_is_Locked___Y_left")()}])};
+lang("_Crownstone_is_Locked___Y_header"),
+lang("_Crownstone_is_Locked___Y_body"),
+[{text:lang("_Crownstone_is_Locked___Y_left")}])};
         }
         else {
           rightAction = () => { Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId}); }

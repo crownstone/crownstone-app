@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ErrorOverlay", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -97,7 +102,7 @@ export class ErrorOverlay extends Component<any, any> {
           borderWidth: 2,
           borderColor: colors.red.hex,
         }]}>
-        <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.red.hex}}>{ Languages.text("ErrorOverlay", "Find_Crownstone")() }</Text>
+        <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.red.hex}}>{ lang("Find_Crownstone") }</Text>
       </TouchableOpacity>
     );
   }
@@ -125,11 +130,11 @@ export class ErrorOverlay extends Component<any, any> {
           style={{position:'relative',}}
         />
         <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, padding:15, textAlign:'center'}}>{ Languages.text("ErrorOverlay", "Crownstone_Hardware_Error")() }</Text>
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, padding:15, textAlign:'center'}}>{ lang("Crownstone_Hardware_Error") }</Text>
         <Text style={{fontSize: 12, fontWeight: '500',  color: colors.red.hex, padding:15, paddingBottom: 0, textAlign:'center'}}>
           {this._getText(stone)}
         </Text>
-        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.red.hex, padding:15, paddingTop:5, alignSelf:'flex-end', fontStyle:'italic'}}>{ Languages.text("ErrorOverlay", "__Yours__")(aiData.name) }</Text>
+        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.red.hex, padding:15, paddingTop:5, alignSelf:'flex-end', fontStyle:'italic'}}>{ lang("__Yours__",aiData.name) }</Text>
         <View style={{flex:1}} />
         {this._getButton(stone)}
         <View style={{flex:1}} />

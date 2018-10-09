@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("TapToToggleCalibration", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -48,17 +53,17 @@ export class TapToToggleCalibration extends Component<any, any> {
 
   learnDistance(attempt = 0) {
     // show loading screen
-    eventBus.emit("showLoading", "Waiting to start learning...");
+    eventBus.emit("showLoading", lang("Waiting_to_start_learning"));
 
     // make sure we don't strangely trigger stuff while doing this.
     eventBus.emit("ignoreTriggers");
 
     let learnDistancePromise = () => {
       return new Promise((resolve, reject) => {
-        eventBus.emit("showLoading", "Finding Tap-to-Toggle distance...");
+        eventBus.emit("showLoading", lang("Finding_Tap_to_Toggle_dis"));
         // timeout for the user to put his phone on the
         setTimeout(() => {
-          eventBus.emit("showLoading", "Learning Tap-to-Toggle distance...");
+          eventBus.emit("showLoading", lang("Learning_Tap_to_Toggle_di"));
           // waiting for the data to be collected. We use the RSSI updates through the iBeacon messages which come in at
           // StoneStateHandler.js ~ line 35
           setTimeout(() => {
@@ -100,7 +105,7 @@ export class TapToToggleCalibration extends Component<any, any> {
             deviceId: deviceId,
             data: { tapToToggleCalibration: rssiAddedDistance }
           });
-          eventBus.emit("showLoading", Languages.title("TapToToggleCalibration", "Great_")());
+          eventBus.emit("showLoading", lang("Great_"));
 
           setTimeout(() => {
             eventBus.emit("hideLoading");
@@ -111,16 +116,16 @@ export class TapToToggleCalibration extends Component<any, any> {
           eventBus.emit("hideLoading");
           if (attempt === 2) {
             Alert.alert(
-Languages.alert("TapToToggleCalibration", "_Thats_a_bit_far_away___M_header")(),
-Languages.alert("TapToToggleCalibration", "_Thats_a_bit_far_away___M_body")(),
-[{text:Languages.alert("TapToToggleCalibration", "_Thats_a_bit_far_away___M_left")()}])
+lang("_Thats_a_bit_far_away___M_header"),
+lang("_Thats_a_bit_far_away___M_body"),
+[{text:lang("_Thats_a_bit_far_away___M_left")}])
           }
           else {
             let defaultAction = () => {this.learnDistance(attempt + 1)};
             Alert.alert(
-Languages.alert("TapToToggleCalibration", "_Thats_a_bit_far_away___T_header")(),
-Languages.alert("TapToToggleCalibration", "_Thats_a_bit_far_away___T_body")(),
-[{text:Languages.alert("TapToToggleCalibration", "_Thats_a_bit_far_away___T_left")(), onPress: defaultAction }], { onDismiss: defaultAction })
+lang("_Thats_a_bit_far_away___T_header"),
+lang("_Thats_a_bit_far_away___T_body"),
+[{text:lang("_Thats_a_bit_far_away___T_left"), onPress: defaultAction }], { onDismiss: defaultAction })
           }
 
         }
@@ -129,9 +134,9 @@ Languages.alert("TapToToggleCalibration", "_Thats_a_bit_far_away___T_body")(),
         LOGe.info("TapToToggleCalibration error:", err);
         eventBus.emit("hideLoading");
         Alert.alert(
-Languages.alert("TapToToggleCalibration", "_Something_went_wrong__Ma_header")(),
-Languages.alert("TapToToggleCalibration", "_Something_went_wrong__Ma_body")(),
-[{text:Languages.alert("TapToToggleCalibration", "_Something_went_wrong__Ma_left")()}])
+lang("_Something_went_wrong__Ma_header"),
+lang("_Something_went_wrong__Ma_body"),
+[{text:lang("_Something_went_wrong__Ma_left")}])
       })
   }
 
@@ -143,72 +148,72 @@ Languages.alert("TapToToggleCalibration", "_Something_went_wrong__Ma_body")(),
     switch(this.state.step) {
       case 0:
         props = {
-          title: Languages.title("TapToToggleCalibration", "Using_Tap_to_Toggle")(),
+          title: lang("Using_Tap_to_Toggle"),
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
-          header:  Languages.label("TapToToggleCalibration", "Now_that_youve_added_a_Cr")(),
-          explanation: "Tap-to-toggle means you can switch the Crownstone just by holding your phone really close to it!",
+          header:  lang("Now_that_youve_added_a_Cr"),
+          explanation: lang("Tap_to_toggle_means_you_c"),
           back: false,
           nextCallback: () => {this.setState({step:1});},
-          nextLabel: Languages.label("TapToToggleCalibration", "Next")()};
+          nextLabel: lang("Next")};
         break;
       case 1:
         props = {
-          title: Languages.title("TapToToggleCalibration", "Setting_it_up")(),
+          title: lang("Setting_it_up"),
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
-          header:  Languages.label("TapToToggleCalibration", "In_order_to_use_tap_to_to")(),
-          explanation: "This will only take a minute and will only have to be done once. Hold your phone really close to a Crownstone and press 'Next'.",
+          header:  lang("In_order_to_use_tap_to_to"),
+          explanation: lang("This_will_only_take_a_min"),
           back: true,
           backCallback: () => {this.setState({step:0});},
           nextCallback: () => {this.learnDistance()},
-          nextLabel: Languages.label("TapToToggleCalibration", "Next")()};
+          nextLabel: lang("Next")};
         if (this.state.tutorial === false) {
-          props.title =  Languages.label("TapToToggleCalibration", "Calibration")();
-          props.header =  Languages.label("TapToToggleCalibration", "To_start_calibrating_tap_")();
-          props.explanation =  Languages.label("TapToToggleCalibration", "The_new_distance_will_be_")();
+          props.title =  lang("Calibration");
+          props.header =  lang("To_start_calibrating_tap_");
+          props.explanation =  lang("The_new_distance_will_be_");
           props.back = false;
-          props.nextLabel =  Languages.label("TapToToggleCalibration", "Start")();
+          props.nextLabel =  lang("Start");
         }
         break;
       case 2:
         props = {
-          title:  Languages.label("TapToToggleCalibration", "Great_")(),
+          title:  lang("Great_"),
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkToggle.png'),
-          header: "Now that I can recognise it with your phone, let's try tap-to-toggle!",
-          explanation: "After you click 'Next' I'll enable tap-to-toggle and you can try it out! You can recalibrate your tap-to-toggle in the settings.",
+          header: lang("Now_that_I_can_recognise_"),
+          explanation: lang("After_you_click_Next_Ill_"),
           back: true,
           backCallback: () => {this.setState({step:1});},
           nextCallback: () => {eventBus.emit("useTriggers"); this.setState({step:3})},
-          nextLabel: Languages.label("TapToToggleCalibration", "Next")()};
+          nextLabel: lang("Next")};
 
         if (this.state.tutorial === false) {
-          props.title =  Languages.label("TapToToggleCalibration", "Done_")();
-          props.header =  Languages.label("TapToToggleCalibration", "The_new_distance_has_been")();
-          props.explanation =  Languages.label("TapToToggleCalibration", "Once_you_press_Done_the_n")();
+          props.title =  lang("Done_");
+          props.header =  lang("The_new_distance_has_been");
+          props.explanation =  lang("Once_you_press_Done_the_n");
           props.nextCallback = () => {eventBus.emit("useTriggers"); this.setState({visible: false})},
-          props.nextLabel =  Languages.label("TapToToggleCalibration", "Done")()}
+          props.nextLabel =  lang("Done")}
         break;
       case 3:
         props = {
-          title: Languages.title("TapToToggleCalibration", "Lets_give_it_a_try_")(),
+          title: lang("Lets_give_it_a_try_"),
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkToggle.png'),
-          header:  Languages.label("TapToToggleCalibration", "Touch_your_phone_to_the_C")(),
-          explanation: "Once the phone vibrates, it will start to toggle. If you're trying this on a built-in, make sure you enable tap-to-toggle in it's settings (Room overview -> Crownstone Overview -> Edit).",
+          header:  lang("Touch_your_phone_to_the_C"),
+          explanation: lang("Once_the_phone_vibrates__"),
           back: true,
           backCallback: () => {this.setState({step:1});},
           nextCallback: () => {this.setState({visible: false});},
-          nextLabel: Languages.label("TapToToggleCalibration", "Finish_")()};
+          nextLabel: lang("Finish_")};
         break;
     }
 
     if (!presentSphereId) {
       props = {
-        title: Languages.title("TapToToggleCalibration", "Training_Tap_to_Toggle")(),
+        title: lang("Training_Tap_to_Toggle"),
         image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
-        header:  Languages.label("TapToToggleCalibration", "Tap_to_toggle_can_only_be")(),
-        explanation: 'Try it again later when you\'re in your Sphere',
+        header:  lang("Tap_to_toggle_can_only_be"),
+        explanation: lang("Try_it_again_later_when_y"),
         back: false,
         nextCallback: () => { this.setState({visible: false});},
-        nextLabel: Languages.label("TapToToggleCalibration", "OK")()};
+        nextLabel: lang("OK")};
     }
 
     return (
@@ -228,7 +233,7 @@ Languages.alert("TapToToggleCalibration", "_Something_went_wrong__Ma_body")(),
               borderWidth: 2,
               borderColor: colors.blue.rgba(0.2),
             }]}>
-              <Text style={{fontSize: 14, color: colors.blue.rgba(0.6)}}>{ Languages.text("TapToToggleCalibration", "Back")() }</Text>
+              <Text style={{fontSize: 14, color: colors.blue.rgba(0.6)}}>{ lang("Back") }</Text>
             </TouchableOpacity>
             <View style={{flex: 1}}/>
             <TouchableOpacity onPress={props.nextCallback} style={[styles.centered, {
@@ -259,14 +264,14 @@ Languages.alert("TapToToggleCalibration", "_Something_went_wrong__Ma_body")(),
   abortCloseCallback() {
     // when closed without training, tell the user where to find the calibration button.
     if (this.state.tutorial === true) {
-      let explanationLabel =  Languages.label("TapToToggleCalibration", "You_can_calibrate_tap_to_")();
+      let explanationLabel =  lang("You_can_calibrate_tap_to_");
       if (Platform.OS === 'android') {
-        explanationLabel =  Languages.label("TapToToggleCalibration", "You_can_calibrate_tap_to_t")();
+        explanationLabel =  lang("You_can_calibrate_tap_to_t");
       }
       Alert.alert(
-Languages.alert("TapToToggleCalibration", "_Training_Tap_to_Toggle_L_header")(),
-Languages.alert("TapToToggleCalibration", "_Training_Tap_to_Toggle_L_body")(explanationLabel),
-[{text:Languages.alert("TapToToggleCalibration", "_Training_Tap_to_Toggle_L_left")()}])
+lang("_Training_Tap_to_Toggle_L_header"),
+lang("_Training_Tap_to_Toggle_L_body",explanationLabel),
+[{text:lang("_Training_Tap_to_Toggle_L_left")}])
     }
     eventBus.emit("useTriggers");
     this.setState({visible: false});

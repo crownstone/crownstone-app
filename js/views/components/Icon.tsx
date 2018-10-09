@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Icon", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import { View } from 'react-native';
 import { Component } from 'react';

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DfuOverlay", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -50,8 +55,8 @@ stepSearchingTypes[STEP_TYPES.SEARCHING] = true;
 stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_CLOSER] = true;
 stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER] = true;
 
-let RELEASE_NOTES_ERROR =  Languages.label("DfuOverlay", "Could_not_download_releas")();
-let RELEASE_NOTES_NA =  Languages.label("DfuOverlay", "Release_notes_not_availab")();
+let RELEASE_NOTES_ERROR = lang("Could_not_download_releas");
+let RELEASE_NOTES_NA    = lang("Release_notes_not_availab");
 
 let HEIGHT = Math.min(500, 0.95 * screenHeight);
 let WIDTH = Math.max(0.85*screenWidth, Math.min(0.95*screenWidth, 295));
@@ -79,7 +84,7 @@ export class DfuOverlay extends Component<any, any> {
       stoneId: null,
       sphereId: null,
       progress: 0,
-      phaseDescription:  Languages.label("DfuOverlay", "determining___")(),
+      phaseDescription:  lang("determining___"),
       currentPhase: 0,
       phasesRequired: null,
       detail: '',
@@ -260,7 +265,7 @@ export class DfuOverlay extends Component<any, any> {
         return false;
       }
 
-      this.setState({ step: STEP_TYPES.GET_BOOTLOADER_VERSION, phaseDescription: Languages.label("DfuOverlay", "setting_up___")(), detail:'putting Crownstone in update mode...' });
+      this.setState({ step: STEP_TYPES.GET_BOOTLOADER_VERSION, phaseDescription: lang("setting_up___"), detail: lang("putting_Crownstone_in_upd") });
       return this.helper.putInDFU(data);
     })
     .then((shouldGetFirmwareVersions) => {
@@ -540,10 +545,10 @@ export class DfuOverlay extends Component<any, any> {
       this.paused = true;
       let defaultAction = () => { this.paused = false; };
       Alert.alert(
-Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_header")(),
-Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_body")(),
-[{text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_left")(), onPress: defaultAction }, {
-text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress: () => {
+lang("_Are_you_sure___You_can_a_header"),
+lang("_Are_you_sure___You_can_a_body"),
+[{text:lang("_Are_you_sure___You_can_a_left"), onPress: defaultAction }, {
+text:lang("_Are_you_sure___You_can_a_right"), onPress: () => {
           this._searchCleanup();
           eventBus.emit("updateCrownstoneFirmwareEnded");
           this.setState({visible: false});
@@ -562,13 +567,13 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
       case STEP_TYPES.UPDATE_AVAILABLE:
         return <OverlayContent
           height={HEIGHT}
-          title={ Languages.label("DfuOverlay", "Update_Available")()}
+          title={ lang("Update_Available")}
           icon={'c1-update-arrow'}
           iconSize={0.35*screenWidth}
-          header={ Languages.label("DfuOverlay", "There_is_an_update_availa")()}
-          text={ Languages.label("DfuOverlay", "This_process_may_take_a_f")()}
+          header={ lang("There_is_an_update_availa")}
+          text={ lang("This_process_may_take_a_f")}
           buttonCallback={() => { this.setState({step: STEP_TYPES.RELEASE_NOTES}) } }
-          buttonLabel={ Languages.label("DfuOverlay", "Next")()}
+          buttonLabel={ lang("Next")}
         />;
       case STEP_TYPES.RELEASE_NOTES:
         return <OverlayContent
@@ -580,7 +585,7 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
           text={this.state.releaseNotes ? this.state.releaseNotes : null}
           buttonCallback={() => { this.startProcess();} }
           scrollable={true}
-          buttonLabel={ Languages.label("DfuOverlay", "Next")()}
+          buttonLabel={ lang("Next")}
         >
           <ActivityIndicator animating={true} size="large" />
           <View style={{flexGrow:1}} />
@@ -589,9 +594,9 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
         return (
           <OverlayContent
             height={HEIGHT}
-            title={ Languages.label("DfuOverlay", "Downloading_Updates")()}
+            title={ lang("Downloading_Updates")}
             icon={'md-cloud-download'}
-            header={ Languages.label("DfuOverlay", "Downloading_updates_from_")()}
+            header={ lang("Downloading_updates_from_")}
           >
             <ActivityIndicator animating={true} size="large" />
             <View style={{flexGrow:1}} />
@@ -601,21 +606,21 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
         return (
           <OverlayContent
             height={HEIGHT}
-            title={ Languages.label("DfuOverlay", "Download_Complete")()}
+            title={ lang("Download_Complete")}
             icon={'md-cloud-done'}
-            header={ Languages.label("DfuOverlay", "Downloading_complete_")()}
-            text={ Languages.label("DfuOverlay", "Moving_on_")()}
+            header={ lang("Downloading_complete_")}
+            text={ lang("Moving_on_")}
           />
         );
       case STEP_TYPES.SEARCHING:
         return (
           <OverlayContent
-            title={ Languages.label("DfuOverlay", "Searching")()}
+            title={ lang("Searching")}
             icon={'c2-crownstone'}
             height={HEIGHT}
-            header={ Languages.label("DfuOverlay", "Looking_for_Crownstone__")()}
+            header={ lang("Looking_for_Crownstone__")}
             buttonCallback={abort}
-            buttonLabel={ Languages.label("DfuOverlay", "Abort")()}
+            buttonLabel={ lang("Abort")}
           >
             <ActivityIndicator animating={true} size="large" />
             <View style={{flexGrow:1}} />
@@ -624,12 +629,12 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
       case STEP_TYPES.SEARCHING_MOVE_CLOSER:
         return (
           <OverlayContent
-            title={ Languages.label("DfuOverlay", "Searching")()}
+            title={ lang("Searching")}
             icon={'c2-crownstone'}
             height={HEIGHT}
-            header={ Languages.label("DfuOverlay", "Please_move_a_little_clos")()}
+            header={ lang("Please_move_a_little_clos")}
             buttonCallback={abort}
-            buttonLabel={ Languages.label("DfuOverlay", "Abort")()}
+            buttonLabel={ lang("Abort")}
           >
             <ActivityIndicator animating={true} size="large" />
             <View style={{flexGrow:1}} />
@@ -639,11 +644,11 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
         return (
             <OverlayContent
               height={HEIGHT}
-              title={ Languages.label("DfuOverlay", "Searching")()}
+              title={ lang("Searching")}
               icon={'c2-crownstone'}
-              header={ Languages.label("DfuOverlay", "Please_hold_your_phone_as")()}
+              header={ lang("Please_hold_your_phone_as")}
               buttonCallback={abort}
-              buttonLabel={ Languages.label("DfuOverlay", "Abort")()}
+              buttonLabel={ lang("Abort")}
             >
               <ActivityIndicator animating={true} size="large" />
               <View style={{flexGrow:1}} />
@@ -653,11 +658,11 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
         return (
             <OverlayContent
               height={HEIGHT}
-              title={ Languages.label("DfuOverlay", "Searching")()}
+              title={ lang("Searching")}
               icon={'c2-crownstone'}
               header={'Please hold your phone as close to it as possible!\nIf that doesn\'t work, try turning your Bluetooth off and on.'}
               buttonCallback={abort}
-              buttonLabel={ Languages.label("DfuOverlay", "Abort")()}
+              buttonLabel={ lang("Abort")}
             >
               <ActivityIndicator animating={true} size="large" />
               <View style={{flexGrow:1}} />
@@ -666,7 +671,7 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
       case STEP_TYPES.GET_BOOTLOADER_VERSION:
         return (
           <OverlayContent
-            title={ Languages.label("DfuOverlay", "Preparing_Crownstone")()}
+            title={ lang("Preparing_Crownstone")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -681,13 +686,13 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
                   <ActivityIndicator animating={true} size="large" style={{position:'relative', top:2,left:2}} />
                 </View>
               </View>}
-            header={ Languages.label("DfuOverlay", "Putting_the_Crownstone_in")()}
+            header={ lang("Putting_the_Crownstone_in")}
           />
         );
       case STEP_TYPES.UPDATE_PROGRESS:
         return (
           <OverlayContent
-            title={ Languages.label("DfuOverlay", "Updating_Crownstone")()}
+            title={ lang("Updating_Crownstone")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -707,19 +712,19 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
                     absolute={true}
                   /> : undefined }
                   { this.state.progress > 0 ?
-                    <Text style={{fontSize: 25, paddingBottom: 10}}>{ Languages.text("DfuOverlay", "__")(Math.floor(100 * this.state.progress)) }</Text> :
+                    <Text style={{fontSize: 25, paddingBottom: 10}}>{ lang("__",Math.floor(100 * this.state.progress)) }</Text> :
                     <ActivityIndicator animating={true} size="large" style={{position:'relative', top:2,left:2}} />
                   }
                   <Text style={{fontSize:13}}>{this.state.phaseDescription}</Text>
                 </View>
               </View>}
-            header={ Languages.label("DfuOverlay", "Update_is_in_progress__Pl")()}
+            header={ lang("Update_is_in_progress__Pl")}
           />
         );
       case STEP_TYPES.UPDATE_SUCCESS:
         return (
           <OverlayContent
-            title={ Languages.label("DfuOverlay", "Updating_Done_")()}
+            title={ lang("Updating_Done_")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -734,15 +739,15 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
                   <Icon name="md-checkmark" size={radius} color={colors.green.hex} style={{position:'relative', left:0, top:0.05*radius}} />
                 </TouchableOpacity>
               </View>}
-            header={ Languages.label("DfuOverlay", "Everything_is_finished__e")()}
+            header={ lang("Everything_is_finished__e")}
             buttonCallback={closeOverlay}
-            buttonLabel={ Languages.label("DfuOverlay", "Thanks_")()}
+            buttonLabel={ lang("Thanks_")}
           />
         );
       case STEP_TYPES.UPDATE_FAILED:
         return (
           <OverlayContent
-            title={ Languages.label("DfuOverlay", "Update_failed___")()}
+            title={ lang("Update_failed___")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -759,13 +764,13 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
               </View>}
             header={'We\'re sorry. The update failed.\nThis might happen because the smartphone was not close enough. Please keep an eye at the update process.'}
             buttonCallback={closeOverlay}
-            buttonLabel={ Languages.label("DfuOverlay", "OK")()}
+            buttonLabel={ lang("OK")}
           />
         );
       case STEP_TYPES.DOWNLOAD_FAILED:
         return (
           <OverlayContent
-            title={ Languages.label("DfuOverlay", "Update_failed___")()}
+            title={ lang("Update_failed___")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -780,15 +785,15 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
                   <Icon name="ios-cloudy-night" size={radius} color={colors.csBlue.hex} style={{position:'relative', left:0, top:0.05*radius}} />
                 </View>
               </View>}
-            header={ Languages.label("DfuOverlay", "We_could_not_download_the")()}
+            header={ lang("We_could_not_download_the")}
             buttonCallback={closeOverlay}
-            buttonLabel={ Languages.label("DfuOverlay", "OK")()}
+            buttonLabel={ lang("OK")}
           />
         );
       case STEP_TYPES.SETUP_FAILED:
         return (
           <OverlayContent
-            title={ Languages.label("DfuOverlay", "Success__But___")()}
+            title={ lang("Success__But___")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -803,9 +808,9 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
                   <Icon name="md-information-circle" size={radius} color={colors.csBlue.hex} style={{position:'relative', left:0, top:0.05*radius}} />
                 </View>
               </View>}
-            header={ Languages.label("DfuOverlay", "The_update_was_successful")()}
+            header={ lang("The_update_was_successful")}
             buttonCallback={closeOverlay}
-            buttonLabel={ Languages.label("DfuOverlay", "OK_")()}
+            buttonLabel={ lang("OK_")}
           />
         );
     }
@@ -848,11 +853,11 @@ text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_a_right")(), onPress
         height={HEIGHT}
         closeCallback={() => {
           Alert.alert(
-Languages.alert("DfuOverlay", "_Are_you_sure___You_can_al_header")(),
-Languages.alert("DfuOverlay", "_Are_you_sure___You_can_al_body")(),
-[{text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_al_left")()},
+lang("_Are_you_sure___You_can_al_header"),
+lang("_Are_you_sure___You_can_al_body"),
+[{text:lang("_Are_you_sure___You_can_al_left")},
               {
-text:Languages.alert("DfuOverlay", "_Are_you_sure___You_can_al_right")(), onPress: () => {
+text:lang("_Are_you_sure___You_can_al_right"), onPress: () => {
                 this._searchCleanup();
                 eventBus.emit("updateCrownstoneFirmwareEnded");
                 this.setState({visible: false});

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceEdit", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -40,10 +45,10 @@ export class DeviceEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: Languages.title("DeviceEdit", "Edit_Device")(),
+      title: lang("Edit_Device"),
       headerLeft: <CancelButton onPress={BackAction} />,
       headerRight: <TopbarButton
-        text={ Languages.label("DeviceEdit", "Save")()}
+        text={ lang("Save")}
         onPress={() => {
           params.rightAction ? params.rightAction() : () => {}
         }}
@@ -125,9 +130,9 @@ export class DeviceEdit extends Component<any, any> {
     let hasAppliance = canSwitch && this.state.applianceId;
 
     if (this.state.applianceId && hasAppliance) {
-      items.push({label: Languages.label("DeviceEdit", "PLUGGED_IN_DEVICE_TYPE")(), type: 'explanation',  below:false});
+      items.push({label: lang("PLUGGED_IN_DEVICE_TYPE"), type: 'explanation',  below:false});
       items.push({
-        label: Languages.label("DeviceEdit", "Device_Type")(),
+        label: lang("Device_Type"),
         type: 'textEdit',
         placeholder:'Pick a name',
         value: this.state.applianceName,
@@ -138,7 +143,7 @@ export class DeviceEdit extends Component<any, any> {
 
       // icon picker
       items.push({
-        label: Languages.label("DeviceEdit", "Icon")(),
+        label: lang("Icon"),
         type: 'icon',
         value: this.state.applianceIcon,
         callback: () => {
@@ -153,7 +158,7 @@ export class DeviceEdit extends Component<any, any> {
 
       // unplug device
       items.push({
-        label: Languages.label("DeviceEdit", "Decouple_Device_Type")(),
+        label: lang("Decouple_Device_Type"),
         type: 'button',
         icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
         style: {color: colors.blue.hex},
@@ -161,16 +166,16 @@ export class DeviceEdit extends Component<any, any> {
           this.setState({showStone:true, applianceId: null});
         }
       });
-      items.push({label: Languages.label("DeviceEdit", "This_Crownstone_is_curren")(), type: 'explanation',  below:true, style:{paddingBottom:0}});
+      items.push({label: lang("This_Crownstone_is_curren"), type: 'explanation',  below:true, style:{paddingBottom:0}});
 
-      items.push({label: Languages.label("DeviceEdit", "CURRENT_CROWNSTONE_USING_")(), type: 'explanation', below: false});
+      items.push({label: lang("CURRENT_CROWNSTONE_USING_"), type: 'explanation', below: false});
     }
     else {
-      items.push({label: Languages.label("DeviceEdit", "CROWNSTONE")(), type: 'explanation', below: false});
+      items.push({label: lang("CROWNSTONE"), type: 'explanation', below: false});
     }
 
     items.push({
-      label: Languages.label("DeviceEdit", "Name")(),
+      label: lang("Name"),
       type: 'textEdit',
       placeholder:'Pick a name',
       value: this.state.stoneName,
@@ -182,7 +187,7 @@ export class DeviceEdit extends Component<any, any> {
 
     if (canSwitch) {
       items.push({
-        label: Languages.label("DeviceEdit", "Allow_Dimming")(),
+        label: lang("Allow_Dimming"),
         type: 'switch',
         icon: <IconButton name="ios-sunny" size={22} button={true} color="#fff"
                           buttonStyle={{backgroundColor: colors.lightCsOrange.hex}}/>,
@@ -193,20 +198,20 @@ export class DeviceEdit extends Component<any, any> {
           }
           else {
             Alert.alert(
-Languages.alert("DeviceEdit", "_Permission_Required__Onl_header")(),
-Languages.alert("DeviceEdit", "_Permission_Required__Onl_body")(),
-[{text: Languages.alert("DeviceEdit", "_Permission_Required__Onl_left")()}])
+lang("_Permission_Required__Onl_header"),
+lang("_Permission_Required__Onl_body"),
+[{text: lang("_Permission_Required__Onl_left")}])
           }
         }
       });
 
       items.push({
-        label: Languages.label("DeviceEdit", "View_Dimming_Compatibilit")(), type: 'navigation', callback: () => {
+        label: lang("View_Dimming_Compatibilit"), type: 'navigation', callback: () => {
           Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {})
         }
       });
       items.push({
-        label: Languages.label("DeviceEdit", "Dimming_can_be_enabled_pe")(),
+        label: lang("Dimming_can_be_enabled_pe"),
         type: 'explanation',
         below: true
       });
@@ -214,7 +219,7 @@ Languages.alert("DeviceEdit", "_Permission_Required__Onl_body")(),
 
       if (state.app.tapToToggleEnabled) {
         items.push({
-          label: Languages.label("DeviceEdit", "Tap_to_toggle")(),
+          label: lang("Tap_to_toggle"),
           icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff"
                             buttonStyle={{backgroundColor: colors.green2.hex}}/>,
           type: 'switch',
@@ -224,17 +229,17 @@ Languages.alert("DeviceEdit", "_Permission_Required__Onl_body")(),
           }
         });
 
-        items.push({label: Languages.label("DeviceEdit", "Tap_to_toggle_can_be_enab")(), type: 'explanation', below: true});
+        items.push({label: lang("Tap_to_toggle_can_be_enab"), type: 'explanation', below: true});
       }
       else {
         items.push({
-          label: Languages.label("DeviceEdit", "Tap_to_toggle_is_disabled")(),
+          label: lang("Tap_to_toggle_is_disabled"),
           type: 'disabledInfo',
           icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff"
                             buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         });
         items.push({
-          label: Languages.label("DeviceEdit", "To_use_tap_to_toggle__you")(),
+          label: lang("To_use_tap_to_toggle__you"),
           type: 'explanation',
           below: true,
         });
@@ -243,7 +248,7 @@ Languages.alert("DeviceEdit", "_Permission_Required__Onl_body")(),
       if (state.user.betaAccess && this.state.stoneType === STONE_TYPES.builtin) {
         if (Util.versions.canIUse(stone.config.firmwareVersion, '2.1.0')) {
           items.push({
-            label: Languages.label("DeviceEdit", "Enable_Switchcraft")(),
+            label: lang("Enable_Switchcraft"),
             type: 'switch',
             experimental: true, hasHelp: true, onHelp: () => {
               Actions.switchCraftInformation()
@@ -256,21 +261,21 @@ Languages.alert("DeviceEdit", "_Permission_Required__Onl_body")(),
             }
           });
           items.push({
-            label: Languages.label("DeviceEdit", "Use_modified_wall_switche")(),
+            label: lang("Use_modified_wall_switche"),
             type: 'explanation',
             below: true
           });
         }
         else {
-          items.push({label: Languages.label("DeviceEdit", "SWITCHCRAFT")(), type: 'explanation', below: false, alreadyPadded: true});
+          items.push({label: lang("SWITCHCRAFT"), type: 'explanation', below: false, alreadyPadded: true});
           items.push({
-            label: Languages.label("DeviceEdit", "Firmware_update_required_")(),
+            label: lang("Firmware_update_required_"),
             type: 'disabledInfo',
             icon: <IconButton name="md-power" size={22} button={true} color="#fff"
                               buttonStyle={{backgroundColor: colors.purple.hex}}/>,
           });
           items.push({
-            label: Languages.label("DeviceEdit", "Use_modified_wall_switches")(),
+            label: lang("Use_modified_wall_switches"),
             type: 'explanation',
             below: true
           });
@@ -283,9 +288,9 @@ Languages.alert("DeviceEdit", "_Permission_Required__Onl_body")(),
 
 
     if (hasAppliance) {
-      items.push({label: Languages.label("DeviceEdit", "SELECT_WHICH_DEVICE_TYPE_")(), type: 'explanation', below: false, style:{paddingTop:0}});
+      items.push({label: lang("SELECT_WHICH_DEVICE_TYPE_"), type: 'explanation', below: false, style:{paddingTop:0}});
       items.push({
-        label: Languages.label("DeviceEdit", "Select___")(), type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
+        label: lang("Select___"), type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
           Actions.applianceSelection({
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
@@ -297,7 +302,7 @@ Languages.alert("DeviceEdit", "_Permission_Required__Onl_body")(),
         }
       });
       items.push({
-        label: Languages.label("DeviceEdit", "A_Device_Type_has_it_s_ow")(),
+        label: lang("A_Device_Type_has_it_s_ow"),
         type: 'explanation',
         below: true
       });
@@ -305,15 +310,15 @@ Languages.alert("DeviceEdit", "_Permission_Required__Onl_body")(),
 
     if (Permissions.inSphere(this.props.sphereId).removeCrownstone) {
       items.push({
-        label: Languages.label("DeviceEdit", "Remove_from_Sphere")(),
+        label: lang("Remove_from_Sphere"),
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
           Alert.alert(
-Languages.alert("DeviceEdit", "_Are_you_sure___Removing__header")(),
-Languages.alert("DeviceEdit", "_Are_you_sure___Removing__body")(),
-[{text: Languages.alert("DeviceEdit", "_Are_you_sure___Removing__left")(), style: 'cancel'}, {
-text: Languages.alert("DeviceEdit", "_Are_you_sure___Removing__right")(), style:'destructive', onPress: () => {
+lang("_Are_you_sure___Removing__header"),
+lang("_Are_you_sure___Removing__body"),
+[{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
+text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
               if (stone.reachability.disabled === true) {
                 Alert.alert("Can't see this one!",
                   "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
@@ -329,7 +334,7 @@ text: Languages.alert("DeviceEdit", "_Are_you_sure___Removing__right")(), style:
           )
         }
       });
-      items.push({label: Languages.label("DeviceEdit", "Removing_this_Crownstone_")(),  type:'explanation', below:true});
+      items.push({label: lang("Removing_this_Crownstone_"),  type:'explanation', below:true});
     }
 
     return items;
@@ -348,11 +353,11 @@ text: Languages.alert("DeviceEdit", "_Are_you_sure___Removing__right")(), style:
         })
         .catch((err) => {
           Alert.alert(
-Languages.alert("DeviceEdit", "_Cant_see_this_one___We_c_header")(),
-Languages.alert("DeviceEdit", "_Cant_see_this_one___We_c_body")(),
-[{text:Languages.alert("DeviceEdit", "_Cant_see_this_one___We_c_left")(), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+lang("_Cant_see_this_one___We_c_header"),
+lang("_Cant_see_this_one___We_c_body"),
+[{text:lang("_Cant_see_this_one___We_c_left"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
               {
-text:Languages.alert("DeviceEdit", "_Cant_see_this_one___We_c_right")(),style:  Languages.label("DeviceEdit", "cancel")(), onPress: () => {this.props.eventBus.emit('hideLoading');}}])
+text:lang("_Cant_see_this_one___We_c_right"),style:  lang("cancel"), onPress: () => {this.props.eventBus.emit('hideLoading');}}])
         })
     })
   }
@@ -379,9 +384,9 @@ text:Languages.alert("DeviceEdit", "_Cant_see_this_one___We_c_right")(),style:  
         LOG.info("error while asking the cloud to remove this crownstone", err);
         this.props.eventBus.emit('hideLoading');
         Alert.alert(
-Languages.alert("DeviceEdit", "_Encountered_Cloud_Issue__header")(),
-Languages.alert("DeviceEdit", "_Encountered_Cloud_Issue__body")(),
-[{text:Languages.alert("DeviceEdit", "_Encountered_Cloud_Issue__left")()}])
+lang("_Encountered_Cloud_Issue__header"),
+lang("_Encountered_Cloud_Issue__body"),
+[{text:lang("_Encountered_Cloud_Issue__left")}])
       })
   }
 
@@ -409,9 +414,9 @@ Languages.alert("DeviceEdit", "_Encountered_Cloud_Issue__body")(),
           .catch((err) => {
             LOGe.info("ERROR:",err);
             Alert.alert(
-Languages.alert("DeviceEdit", "_Encountered_a_problem____header")(),
-Languages.alert("DeviceEdit", "_Encountered_a_problem____body")(),
-[{text:Languages.alert("DeviceEdit", "_Encountered_a_problem____left")(), onPress: () => {
+lang("_Encountered_a_problem____header"),
+lang("_Encountered_a_problem____body"),
+[{text:lang("_Encountered_a_problem____left"), onPress: () => {
                 this.props.eventBus.emit('hideLoading');
                 BackAction('roomOverview');
               }}]
@@ -424,9 +429,9 @@ Languages.alert("DeviceEdit", "_Encountered_a_problem____body")(),
       .catch((err) => {
         LOG.info("error while asking the cloud to remove this crownstone", err);
         Alert.alert(
-Languages.alert("DeviceEdit", "_Encountered_Cloud_Issue___header")(),
-Languages.alert("DeviceEdit", "_Encountered_Cloud_Issue___body")(),
-[{text:Languages.alert("DeviceEdit", "_Encountered_Cloud_Issue___left")(), onPress: () => {
+lang("_Encountered_Cloud_Issue___header"),
+lang("_Encountered_Cloud_Issue___body"),
+[{text:lang("_Encountered_Cloud_Issue___left"), onPress: () => {
             this.props.eventBus.emit('hideLoading');}
           }])
       })
@@ -437,14 +442,14 @@ Languages.alert("DeviceEdit", "_Encountered_Cloud_Issue___body")(),
     // deleting makes sure we will not draw this page again if we delete it's source from the database.
     this.deleting = true;
 
-    let labelText =  Languages.label("DeviceEdit", "I_have_removed_this_Crown")();
+    let labelText =  lang("I_have_removed_this_Crown");
     if (factoryReset === false) {
-     labelText =  Languages.label("DeviceEdit", "I_have_removed_this_Crowns")()}
+     labelText =  lang("I_have_removed_this_Crowns")}
 
     Alert.alert(
-Languages.alert("DeviceEdit", "_Success__arguments___OKn_header")(),
-Languages.alert("DeviceEdit", "_Success__arguments___OKn_body")(labelText),
-[{text:Languages.alert("DeviceEdit", "_Success__arguments___OKn_left")(), onPress: () => {
+lang("_Success__arguments___OKn_header"),
+lang("_Success__arguments___OKn_body",labelText),
+[{text:lang("_Success__arguments___OKn_left"), onPress: () => {
         this.props.eventBus.emit('hideLoading');
         BackAction('roomOverview');
         this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
@@ -516,16 +521,16 @@ Languages.alert("DeviceEdit", "_Success__arguments___OKn_body")(labelText),
     if (stone.config.dimmingEnabled !== this.state.dimmingEnabled) {
       if (stone.config.locked) {
         Alert.alert(
-Languages.alert("DeviceEdit", "_Crownstone_Locked__You_h_header")(),
-Languages.alert("DeviceEdit", "_Crownstone_Locked__You_h_body")(this.state.dimmingEnabled),
-[{text:Languages.alert("DeviceEdit", "_Crownstone_Locked__You_h_left")()}]);
+lang("_Crownstone_Locked__You_h_header"),
+lang("_Crownstone_Locked__You_h_body",this.state.dimmingEnabled),
+[{text:lang("_Crownstone_Locked__You_h_left")}]);
         return;
       }
       if (stone.reachability.disabled) {
         Alert.alert(
-Languages.alert("DeviceEdit", "_Cant_see_this_Crownstone_header")(),
-Languages.alert("DeviceEdit", "_Cant_see_this_Crownstone_body")(this.state.dimmingEnabled),
-[{text:Languages.alert("DeviceEdit", "_Cant_see_this_Crownstone_left")()}]);
+lang("_Cant_see_this_Crownstone_header"),
+lang("_Cant_see_this_Crownstone_body",this.state.dimmingEnabled),
+[{text:lang("_Cant_see_this_Crownstone_left")}]);
         return;
       }
 
@@ -542,9 +547,9 @@ Languages.alert("DeviceEdit", "_Cant_see_this_Crownstone_body")(this.state.dimmi
           .catch((err) => {
             LOGe.info("DeviceEdit: Could not disable dimming on Crownstone", err);
             Alert.alert(
-Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_d_header")(),
-Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_d_body")(),
-[{text:Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_d_left")()}])
+lang("_Im_sorry_____I_couldnt_d_header"),
+lang("_Im_sorry_____I_couldnt_d_body"),
+[{text:lang("_Im_sorry_____I_couldnt_d_left")}])
           }));
       }
       else {
@@ -554,9 +559,9 @@ Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_d_body")(),
           .catch((err) => {
             LOGe.info("DeviceEdit: Could not enable dimming on Crownstone", err);
             Alert.alert(
-Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_e_header")(),
-Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_e_body")(),
-[{text:Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_e_left")()}])
+lang("_Im_sorry_____I_couldnt_e_header"),
+lang("_Im_sorry_____I_couldnt_e_body"),
+[{text:lang("_Im_sorry_____I_couldnt_e_left")}])
           }));
       }
       BatchCommandHandler.executePriority();
@@ -581,9 +586,9 @@ Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_e_body")(),
 
       if (stone.reachability.disabled) {
         Alert.alert(
-Languages.alert("DeviceEdit", "_Cant_see_this_Crownstone__header")(),
-Languages.alert("DeviceEdit", "_Cant_see_this_Crownstone__body")(this.state.dimmingEnabled),
-[{text:Languages.alert("DeviceEdit", "_Cant_see_this_Crownstone__left")()}]);
+lang("_Cant_see_this_Crownstone__header"),
+lang("_Cant_see_this_Crownstone__body",this.state.dimmingEnabled),
+[{text:lang("_Cant_see_this_Crownstone__left")}]);
         return;
       }
 
@@ -601,9 +606,9 @@ Languages.alert("DeviceEdit", "_Cant_see_this_Crownstone__body")(this.state.dimm
         .catch((err) => {
           LOGe.info("DeviceEdit: Could not configure Switchcraft on Crownstone", this.state.switchCraft, err);
           Alert.alert(
-Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_c_header")(),
-Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_c_body")(),
-[{text:Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_c_left")()}])
+lang("_Im_sorry_____I_couldnt_c_header"),
+lang("_Im_sorry_____I_couldnt_c_body"),
+[{text:lang("_Im_sorry_____I_couldnt_c_left")}])
         });
       BatchCommandHandler.executePriority();
       return changePromise;
@@ -617,7 +622,7 @@ Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_c_body")(),
     if (this.state.refreshingStoneVersions) {
       return (
         <View style={{paddingTop:15, paddingBottom:30}}>
-          <Text style={[styles.version,{paddingBottom:4}]}>{ Languages.text("DeviceEdit", "Checking_versions____")() }</Text>
+          <Text style={[styles.version,{paddingBottom:4}]}>{ lang("Checking_versions____") }</Text>
           <ActivityIndicator animating={true} size='small' color={colors.darkGray2.hex} />
         </View>
       );
@@ -627,9 +632,9 @@ Languages.alert("DeviceEdit", "_Im_sorry_____I_couldnt_c_body")(),
         <TouchableOpacity style={{paddingTop:15, paddingBottom:30}} onPress={() => {
           if (stone.reachability.disabled) {
             return Alert.alert(
-Languages.alert("DeviceEdit", "_Cant_see_this_stone___I__header")(),
-Languages.alert("DeviceEdit", "_Cant_see_this_stone___I__body")(),
-[{text:Languages.alert("DeviceEdit", "_Cant_see_this_stone___I__left")()}]);
+lang("_Cant_see_this_stone___I__header"),
+lang("_Cant_see_this_stone___I__body"),
+[{text:lang("_Cant_see_this_stone___I__left")}]);
           }
 
           this.setState({refreshingStoneVersions: true});
@@ -646,9 +651,9 @@ Languages.alert("DeviceEdit", "_Cant_see_this_stone___I__body")(),
               })
               .catch((err) => {
                 Alert.alert(
-Languages.alert("DeviceEdit", "_Whoops___I_could_not_get_header")(),
-Languages.alert("DeviceEdit", "_Whoops___I_could_not_get_body")(),
-[{text:Languages.alert("DeviceEdit", "_Whoops___I_could_not_get_left")()}]);
+lang("_Whoops___I_could_not_get_header"),
+lang("_Whoops___I_could_not_get_body"),
+[{text:lang("_Whoops___I_could_not_get_left")}]);
                 throw err;
               });
             }));
@@ -664,9 +669,9 @@ Languages.alert("DeviceEdit", "_Whoops___I_could_not_get_body")(),
               })
               .catch((err) => {
                 Alert.alert(
-Languages.alert("DeviceEdit", "_Whoops___I_could_not_get__header")(),
-Languages.alert("DeviceEdit", "_Whoops___I_could_not_get__body")(),
-[{text:Languages.alert("DeviceEdit", "_Whoops___I_could_not_get__left")()}]);
+lang("_Whoops___I_could_not_get__header"),
+lang("_Whoops___I_could_not_get__body"),
+[{text:lang("_Whoops___I_could_not_get__left")}]);
                 throw err;
               });
             }));
@@ -681,11 +686,11 @@ Languages.alert("DeviceEdit", "_Whoops___I_could_not_get__body")(),
               this.setState({refreshingStoneVersions: false});
             });
         }}>
-          <Text style={styles.version}>{ Languages.text("DeviceEdit", "address__")(stone.config.macAddress,unknownString) }</Text>
-          <Text style={styles.version}>{ Languages.text("DeviceEdit", "hardware_id__")(stone.config.hardwareVersion,unknownString) }</Text>
-          <Text style={styles.version}>{ Languages.text("DeviceEdit", "bootloader__")(stone.config.bootloaderVersion,unknownString) }</Text>
-          <Text style={styles.version}>{ Languages.text("DeviceEdit", "firmware__")(stone.config.firmwareVersion,unknownString) }</Text>
-          <Text style={styles.version}>{ Languages.text("DeviceEdit", "crownstone_id__")(stone.config.crownstoneId,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("address__",stone.config.macAddress,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("hardware_id__",stone.config.hardwareVersion,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("bootloader__",stone.config.bootloaderVersion,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("firmware__",stone.config.firmwareVersion,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("crownstone_id__",stone.config.crownstoneId,unknownString) }</Text>
         </TouchableOpacity>
       );
     }

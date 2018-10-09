@@ -1,4 +1,9 @@
+
 import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SeparatedItemList", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   
@@ -91,7 +96,7 @@ export class SeparatedItemList extends Component<any, any> {
       });
     }
     else {
-      return <Text>{ Languages.text("SeparatedItemList", "UNKNOWN_TYPE")() }</Text>
+      return <Text>{ lang("UNKNOWN_TYPE") }</Text>
     }
 
     return renderItems;

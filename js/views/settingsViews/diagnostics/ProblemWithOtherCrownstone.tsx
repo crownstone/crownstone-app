@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ProblemWithOtherCrownstone", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -73,7 +78,7 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
   }
 
   _getHeader() {
-    return <Text style={diagnosticStyles.headerStyle}>{ Languages.text("ProblemWithOtherCrownstone", "Problem_with_missing_Crow")() }</Text>
+    return <Text style={diagnosticStyles.headerStyle}>{ lang("Problem_with_missing_Crow") }</Text>
   }
 
   _runOtherCrownstoneTests() {
@@ -97,13 +102,13 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
     return (
       <View>
         <SlideFadeInView visible={!this.state.otherTestsVisible} height={180}>
-          <TestResult label={ Languages.label("ProblemWithOtherCrownstone", "Database_is_healthy")()}          state={ true } />
-          <TestResult label={ Languages.label("ProblemWithOtherCrownstone", "Scanning_is_enabled")()}          state={ true } />
-          <TestResult label={ Languages.label("ProblemWithOtherCrownstone", "Receiving_Sphere_beacons")()}     state={ true } />
-          <TestResult label={ Languages.label("ProblemWithOtherCrownstone", "Receiving_Crownstone_data")()}    state={ true } />
+          <TestResult label={ lang("Database_is_healthy")}          state={ true } />
+          <TestResult label={ lang("Scanning_is_enabled")}          state={ true } />
+          <TestResult label={ lang("Receiving_Sphere_beacons")}     state={ true } />
+          <TestResult label={ lang("Receiving_Crownstone_data")}    state={ true } />
         </SlideFadeInView>
         <SlideFadeInView visible={this.state.otherTestsVisible} height={180}>
-          <TestResult label={ Languages.label("ProblemWithOtherCrownstone", "Scanning_for_nearby_Crown")()} state={ this.state.canSeeNearbyCrownstones } />
+          <TestResult label={ lang("Scanning_for_nearby_Crown")} state={ this.state.canSeeNearbyCrownstones } />
         </SlideFadeInView>
       </View>
     )
@@ -114,8 +119,8 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
       return (
         <DiagSingleButton
           visible={this.state.visible}
-          header={Languages.label("ProblemWithOtherCrownstone","It_can_sometimes_happen_t")()}
-          explanation={ Languages.label("ProblemWithOtherCrownstone", "If_you_think_this_is_the_")()}
+          header={lang("It_can_sometimes_happen_t")}
+          explanation={ lang("If_you_think_this_is_the_")}
           label={"I'm near it!"}
           onPress={() => {
             this._changeContent(() => {
@@ -127,14 +132,14 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
       );
     }
     else if (this.state.canSeeNearbyCrownstones === null) {
-      return <DiagWaiting visible={this.state.visible} header={ Languages.label("ProblemWithOtherCrownstone", "Checking_for_nearby_Crown")()}/>
+      return <DiagWaiting visible={this.state.visible} header={ lang("Checking_for_nearby_Crown")}/>
     }
     else if (this.state.canSeeNearbyCrownstones === false) {
       return (
         <DiagSingleButtonGoBack
           visible={this.state.visible}
-          header={Languages.label("ProblemWithOtherCrownstone","I_cant_detect_any_Crownst")()}
-          explanation={Languages.label("ProblemWithOtherCrownstone","If_this_keeps_happening__")()}
+          header={lang("I_cant_detect_any_Crownst")}
+          explanation={lang("If_this_keeps_happening__")}
         />
       );
     }
@@ -143,8 +148,8 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
         return (
           <DiagSingleButtonToOverview
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithOtherCrownstone", "Crownstone_successfully_r")()}
-            explanation={ Languages.label("ProblemWithOtherCrownstone", "It_will_be_in_setup_mode_")()}
+            header={ lang("Crownstone_successfully_r")}
+            explanation={ lang("It_will_be_in_setup_mode_")}
           />
         );
       }
@@ -152,13 +157,13 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
         return (
           <DiagSingleButtonHelp
             visible={this.state.visible}
-            header={ Languages.label("ProblemWithOtherCrownstone", "Failed_to_reset_Crownston")()}
-            explanation={Languages.label("ProblemWithOtherCrownstone","Something_went_wrong_duri")()}
+            header={ lang("Failed_to_reset_Crownston")}
+            explanation={lang("Something_went_wrong_duri")}
           />
         );
       }
       else if (this.state.userInputResetCrownstoneNow === true) {
-        return <DiagWaiting visible={this.state.visible} header={ Languages.label("ProblemWithOtherCrownstone", "Factory_resetting_your_lo")()}/>;
+        return <DiagWaiting visible={this.state.visible} header={ lang("Factory_resetting_your_lo")}/>;
       }
       else {
         let nearCrownstones = this.state.nearestCheck;
@@ -174,14 +179,14 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
         if (nearest) {
           let noun = null;
           if (nearest.rssi > -55) {
-            noun =  Languages.label("ProblemWithOtherCrownstone", "very")();
+            noun =  lang("very");
           }
           else if (nearest.rssi > -65) {
-            noun =  Languages.label("ProblemWithOtherCrownstone", "pretty")()}
+            noun =  lang("pretty")}
           else if (nearest.rssi > -75) {
-            noun =  Languages.label("ProblemWithOtherCrownstone", "somewhat")()}
+            noun =  lang("somewhat")}
           else if (nearest.rssi > -85) {
-            noun =  Languages.label("ProblemWithOtherCrownstone", "not_that")()}
+            noun =  lang("not_that")}
           let state = this.props.store.getState();
           let sphereId = Util.data.getPresentSphereId(state);
           let nearSummary = MapProvider.stoneHandleMap[nearest.handle];
@@ -191,8 +196,8 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
                 return (
                   <DiagYesNo
                     visible={this.state.visible}
-                    header={Languages.label("ProblemWithOtherCrownstone","The_nearest_Crownstone_be")(noun)}
-                    explanation={ Languages.label("ProblemWithOtherCrownstone", "This_can_happen_when_some")()}
+                    header={lang("The_nearest_Crownstone_be",noun)}
+                    explanation={ lang("This_can_happen_when_some")}
                     onPressNo={() => {
                       this._changeContent(() => {
                         this.setState({userInputResetCrownstoneNow: false});
@@ -211,8 +216,8 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
                 return (
                   <DiagSingleButtonGoBack
                     visible={this.state.visible}
-                    header={Languages.label("ProblemWithOtherCrownstone","The_nearest_Crownstone_be")(noun)}
-                    explanation={ Languages.label("ProblemWithOtherCrownstone","This_can_happen_when_some_noAdm")()}
+                    header={lang("The_nearest_Crownstone_be",noun)}
+                    explanation={ lang("This_can_happen_when_some_noAdm")}
                   />
                 );
               }
@@ -221,8 +226,8 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
               return (
                 <DiagSingleButtonHelp
                   visible={this.state.visible}
-                  header={Languages.label("ProblemWithOtherCrownstone","The_nearest_Crownstone_is")(noun)}
-                  explanation={Languages.label("ProblemWithOtherCrownstone","If_youre_sure_its_one_of_")()}
+                  header={lang("The_nearest_Crownstone_is",noun)}
+                  explanation={lang("If_youre_sure_its_one_of_")}
                 />
               );
             }
@@ -233,8 +238,8 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
             return (
               <DiagSingleButtonGoBack
                 visible={this.state.visible}
-                header={Languages.label("ProblemWithOtherCrownstone","The_nearest_Crownstone_I_")(name, noun)}
-                explanation={Languages.label("ProblemWithOtherCrownstone","If_this_is_not_the_one_yo")()
+                header={lang("The_nearest_Crownstone_I_",name, noun)}
+                explanation={lang("If_this_is_not_the_one_yo")
                 }
               />
             );
@@ -244,8 +249,8 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
           return (
             <DiagSingleButtonGoBack
               visible={this.state.visible}
-              header={ Languages.label("ProblemWithOtherCrownstone", "Something_went_wrong___")()}
-              explanation={ Languages.label("ProblemWithOtherCrownstone", "Please_restart_the_diagno")()}
+              header={ lang("Something_went_wrong___")}
+              explanation={ lang("Please_restart_the_diagno")}
             />
           );
         }

@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DevicePowerCurve", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -58,13 +63,13 @@ export class DevicePowerCurve extends Component<any, any> {
 
     return (
       <View style={{flex:1, flexDirection: 'column', alignItems:'center', paddingTop:30}}>
-        <Text style={deviceStyles.header}>{ Languages.text("DevicePowerCurve", "Power_Usage")() }</Text>
+        <Text style={deviceStyles.header}>{ lang("Power_Usage") }</Text>
         <View style={{flex:0.75}} />
         <Graph width={screenWidth} height={availableScreenHeight/2} data={dataStream} xField="timestamp" yField="power"/>
         <View style={{flex:5}}>
           <ScrollView style={{flex:1}}>
-            <Text style={[textStyle.explanation, {fontWeight:'bold'}]}>{ Languages.text("DevicePowerCurve", "Sneak_preview_of_the_dyna")() }</Text>
-            <Text style={textStyle.explanation}>{ Languages.text("DevicePowerCurve", "Stand_near_the_Crownstone")() }</Text>
+            <Text style={[textStyle.explanation, {fontWeight:'bold'}]}>{ lang("Sneak_preview_of_the_dyna") }</Text>
+            <Text style={textStyle.explanation}>{ lang("Stand_near_the_Crownstone") }</Text>
           </ScrollView>
         </View>
       </View>

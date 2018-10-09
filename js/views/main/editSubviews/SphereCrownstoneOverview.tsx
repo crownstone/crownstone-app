@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereCrownstoneOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -28,7 +33,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
     let state = params.store.getState();
     let sphere = state.spheres[params.sphereId] ;
     return {
-      title: Languages.title("SphereCrownstoneOverview", "Crownstones_in_")(sphere.config.name),
+      title: lang("Crownstones_in_",sphere.config.name),
     }
   };
 
@@ -72,7 +77,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
     let stoneIds = Object.keys(stones);
 
     if (stoneIds.length == 0) {
-      items.push({label: Languages.label("SphereCrownstoneOverview", "There_are_no_Crownstones_")(),  type:'largeExplanation', below:false});
+      items.push({label: lang("There_are_no_Crownstones_"),  type:'largeExplanation', below:false});
       return items;
     }
 
@@ -86,7 +91,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
       if (stoneIdsInRoom.length > 0) {
         let label = "CROWNSTONES NOT IN A ROOM";
         if (roomId !== null) {
-          label =  Languages.label("SphereCrownstoneOverview", "CROWNSTONES_IN_")(rooms[roomId].config.name.toUpperCase());
+          label =  lang("CROWNSTONES_IN_",rooms[roomId].config.name.toUpperCase());
         }
 
         items.push({label: label, type:'explanation', below:false});
@@ -111,11 +116,11 @@ export class SphereCrownstoneOverview extends Component<any, any> {
 
     renderStonesInRoom(null)
 
-    items.push({label: Languages.label("SphereCrownstoneOverview", "This_is_an_overview_of_al")(), type:'explanation', below:true});
+    items.push({label: lang("This_is_an_overview_of_al"), type:'explanation', below:true});
 
 
     items.push({
-      label: Languages.label("SphereCrownstoneOverview", "Add_a_Crownstone")(),
+      label: lang("Add_a_Crownstone"),
       largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
       style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
       type: 'button',
@@ -125,9 +130,9 @@ export class SphereCrownstoneOverview extends Component<any, any> {
         }
         else {
           Alert.alert(
-Languages.alert("SphereCrownstoneOverview", "_Ask_your_Sphere_Admin__A_header")(),
-Languages.alert("SphereCrownstoneOverview", "_Ask_your_Sphere_Admin__A_body")(),
-[{text:Languages.alert("SphereCrownstoneOverview", "_Ask_your_Sphere_Admin__A_left")()}]);
+lang("_Ask_your_Sphere_Admin__A_header"),
+lang("_Ask_your_Sphere_Admin__A_body"),
+[{text:lang("_Ask_your_Sphere_Admin__A_left")}]);
         }
       }
     });

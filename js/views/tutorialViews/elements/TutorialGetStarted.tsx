@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("TutorialGetStarted", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -22,7 +27,7 @@ export class TutorialGetStarted extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1, alignItems:'center', padding: 30}}>
-        <Text style={deviceStyles.header}>{ Languages.text("TutorialGetStarted", "Let_s_get_started_")() }</Text>
+        <Text style={deviceStyles.header}>{ lang("Let_s_get_started_") }</Text>
         <View style={{flex:1}} />
         <Icon
           name="c2-crownstone"
@@ -30,7 +35,7 @@ export class TutorialGetStarted extends Component<any, any> {
           color={colors.white.hex}
         />
         <View style={{flex:1}} />
-        <Text style={deviceStyles.text}>{ Languages.text("TutorialGetStarted", "In_this_introduction_we_w")() }</Text>
+        <Text style={deviceStyles.text}>{ lang("In_this_introduction_we_w") }</Text>
         <View style={{flex:2}} />
       </View>
     )

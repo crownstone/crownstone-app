@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DfuDeviceEntry", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -33,7 +38,7 @@ export class DfuDeviceEntry extends Component<any, any> {
     this.baseHeight = props.height || 80;
     this.state = {
       name: props.name || 'DFU Crownstone',
-      subtext:  Languages.label("DfuDeviceEntry", "Tap_here_to_configure_me_")(),
+      subtext:  lang("Tap_here_to_configure_me_"),
       showRssi: false,
       rssi: null
     };
@@ -108,9 +113,9 @@ export class DfuDeviceEntry extends Component<any, any> {
     }
     else {
       Alert.alert(
-Languages.alert("DfuDeviceEntry", "_You_dont_have_permission_header")(),
-Languages.alert("DfuDeviceEntry", "_You_dont_have_permission_body")(),
-[{text: Languages.alert("DfuDeviceEntry", "_You_dont_have_permission_left")()}])
+lang("_You_dont_have_permission_header"),
+lang("_You_dont_have_permission_body"),
+[{text: lang("_You_dont_have_permission_left")}])
     }
   }
 
@@ -119,31 +124,31 @@ Languages.alert("DfuDeviceEntry", "_You_dont_have_permission_body")(),
       if (this.state.rssi > -40) {
         return <View style={{flexDirection: 'column'}}>
           <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
-          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ Languages.text("DfuDeviceEntry", "_Very_Near_")() }</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ lang("_Very_Near_") }</Text>
         </View>;
       }
       if (this.state.rssi > -60) {
         return <View style={{flexDirection: 'column'}}>
           <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
-          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ Languages.text("DfuDeviceEntry", "_Near_")() }</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ lang("_Near_") }</Text>
         </View>;
       }
       else if (this.state.rssi > -80) {
         return <View style={{flexDirection: 'column'}}>
           <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
-          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ Languages.text("DfuDeviceEntry", "_Visible_")() }</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ lang("_Visible_") }</Text>
         </View>;
       }
       else if (this.state.rssi > -90) {
         return <View style={{flexDirection: 'column'}}>
           <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
-          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ Languages.text("DfuDeviceEntry", "_Barely_visible_")() }</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ lang("_Barely_visible_") }</Text>
         </View>;
       }
       else {
         return <View style={{flexDirection: 'column'}}>
           <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
-          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ Languages.text("DfuDeviceEntry", "_Too_far_away_")() }</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ lang("_Too_far_away_") }</Text>
         </View>;
       }
     }

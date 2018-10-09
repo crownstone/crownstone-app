@@ -1,4 +1,9 @@
+
 import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceEntry", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -207,7 +212,7 @@ export class DeviceEntry extends Component<any, any> {
     if (this.props.hideExplanation !== true && (this.props.locationId === null || state.app.hasSeenDeviceSettings === false)) {
       return (
         <SlideFadeInView height={15} visible={!this.state.showViaMesh}>
-          <Text style={explanationStyle}>{ Languages.text("DeviceEntry", "Tap_me_for_more_")() }</Text>
+          <Text style={explanationStyle}>{ lang("Tap_me_for_more_") }</Text>
         </SlideFadeInView>
       );
     }
@@ -253,7 +258,7 @@ export class DeviceEntry extends Component<any, any> {
               />
               { this._getExplanationText(state) }
               <SlideFadeInView height={15} visible={this.state.showViaMesh}>
-                <Text style={{ color: colors.csOrange.hex, fontSize: 12}}>{ Languages.text("DeviceEntry", "Sent_via_mesh_")() }</Text>
+                <Text style={{ color: colors.csOrange.hex, fontSize: 12}}>{ lang("Sent_via_mesh_") }</Text>
               </SlideFadeInView>
             </View>
           </WrapperElement>
