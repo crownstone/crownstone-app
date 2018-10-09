@@ -2220,15 +2220,6 @@ export default {
     After_you_click_Next_Ill_:           () => { return "After you click 'Next' I'll enable tap-to-toggle and you can try it out! You can recalibrate your tap-to-toggle in the settings." },
     Once_the_phone_vibrates__:           () => { return "Once the phone vibrates, it will start to toggle. If you're trying this on a built-in, make sure you enable tap-to-toggle in it's settings (Room overview -> Crownstone Overview -> Edit)." },
     Try_it_again_later_when_y:           () => { return "Try it again later when you're in your Sphere" },
-
-
-
-
-
-
-
-
-
     _Thats_a_bit_far_away___M_header:    () => { return "That's a bit far away." },
     _Thats_a_bit_far_away___M_body:      () => { return "Maybe try again later." },
     _Thats_a_bit_far_away___M_left:      () => { return "OK" },
@@ -2311,6 +2302,7 @@ export default {
     __filename: "../js/views/thirdParty/toon/ToonSettings.tsx",
     _Whoops__Something_went_w_header:    () => { return "Whoops" },
     _Whoops__Something_went_w_body:      () => { return "Something went wrong..." },
+    No_schedule_available:               () => { return "No schedule available..." },
     _Whoops__Something_went_w_left:      () => { return "OK" },
     _Are_you_sure__You_will_h_header:    () => { return "Are you sure" },
     _Are_you_sure__You_will_h_body:      () => { return "You will have to add Toon again to undo this." },

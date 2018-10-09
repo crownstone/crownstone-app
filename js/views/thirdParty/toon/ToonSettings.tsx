@@ -243,7 +243,12 @@ class ToonSchedule extends Component<any, any> {
     let currentDay  = currentDate.getDay(); // 0 for Sunday, ... 6 Saturday
     let isToday = currentDay === dayNumber;
     let minutesToday = currentDate.getHours()*60 + currentDate.getMinutes();
-    let activeProgram = getActiveToonProgram(this.props.toon.schedule)
+    let activeProgram = getActiveToonProgram(this.props.toon.schedule);
+
+    if (activeProgram === null) {
+      return <Text style={{fontSize:10, height:10}}>{lang("No_schedule_available")}}</Text>
+    }
+
 
     let radius = 4;
     for ( let i = 0; i < amountOfEntries; i++ ) {
