@@ -20,6 +20,12 @@ class LanguageManager {
 
   get(file, key) : (a?,b?,c?,d?,e?) => string{
     return (a,b,c,d,e) => {
+      // this will avoid 1000 "Back" references
+      if (this.textSource[file] === undefined || this.textSource[file][key] === undefined) {
+        let str = this.textSource['__UNIVERSAL'][key](a,b,c,d,e)
+        // return str
+        return "$$$" + str;
+      }
       let str = this.textSource[file][key](a,b,c,d,e)
       // return str
       return "$$$" + str

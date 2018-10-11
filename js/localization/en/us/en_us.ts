@@ -145,6 +145,18 @@ export default {
     No_device_type_assigned:             function() { return "No device type assigned" },
     Select_Device_Type:                  function() { return "Select Device Type" },
   },
+  AppUtil: {
+    __filename: "../js/util/AppUtil",
+    Preparing_for_download___:           function() { return "Preparing for download..." },
+    Clearing_database___:                function() { return "Clearing database..." },
+    Getting_new_data___:                 function() { return "Getting new data..." },
+    Finalizing___:                       function() { return "Finalizing..." },
+    App_will_close_in___secon:           function() { return "App will close in " + arguments[0] + " seconds.\n\nReopen the app to finalize the process." },
+    Data_reset_failed___:                function() { return "Data reset failed..." },
+    Something_went_wrong_in_t:           function() { return "Something went wrong in the data reset process. The best way to solve this is to remove the app from your phone, reinstall it and log into you account" },
+    OK:                                  function() { return "OK" },
+    Logging_out_and_closing_a:           function() { return "Logging out and closing app..." },
+  },
   AutomaticRecentering:{
     __filename: "../js/views/overlays/WhatsNew/1.10.2/AutomaticRecentering.tsx",
     If_you_scroll_too_far_in_:           function() { return "If you scroll too far in the Sphere overview, I will now recenter your view and show the double tap shortcut!" },
@@ -724,6 +736,17 @@ export default {
   },
   LockOverlay:{
     __filename: "../js/views/overlays/LockOverlay.tsx",
+
+    Only_Admins_have_permissi:           function() { return "Only Admins have permission to lock Crownstones..." },
+    You_can_only_lock_Crownst:           function() { return "You can only lock Crownstones that do not have dimming enabled." },
+    You_can_lock_this_Crownst_off:       function() { return "You can lock this Crownstone so it will not turn off without someone unlocking it first." },
+    You_can_lock_this_Crownst:           function() { return "You can lock this Crownstone so it will not turn on without someone unlocking it first." },
+
+    Locking_Crownstone___:               function() { return "Locking Crownstone..." },
+
+
+
+
     _Im_sorry____Something_we_header:    function() { return "I'm sorry.." },
     _Im_sorry____Something_we_body:      function() { return "Something went wrong while locking this Crownstone. Make sure you're near the Crownstone that you want to lock." },
     _Im_sorry____Something_we_left:      function() { return "OK" },
@@ -748,6 +771,7 @@ export default {
   },
   Login:{
     __filename: "../js/views/startupViews/Login.tsx",
+    Back:                                function() { return "Back" },
     _Check_Email_Address__Ple_header:    function() { return "Check Email Address" },
     _Check_Email_Address__Ple_body:      function() { return "Please input a valid email address in the form and press the Forgot Password button again." },
     _Check_Email_Address__Ple_left:      function() { return "OK" },
@@ -826,6 +850,7 @@ export default {
   },
   MessageAdd:{
     __filename: "../js/views/messaging/MessageAdd.tsx",
+    Back:                                function() { return "Back" },
     _Message_is_empty____I_ca_header:    function() { return "Message is empty.." },
     _Message_is_empty____I_ca_body:      function() { return "I can't send an empty message." },
     _Message_is_empty____I_ca_left:      function() { return "Right" },
@@ -869,6 +894,7 @@ export default {
     __filename: "../js/views/messaging/MessageInbox.tsx",
     MESSAGES:                            function() { return "MESSAGES" },
     Messages:                            function() { return "Messages" },
+    Back:                                function() { return "Back" },
     _in_:                                function() { return " in " + arguments[0] },
     You_can_leave_messages_in:           function() { return "You can leave messages in a Sphere or room for your friends to find!" },
     Tap_the_envelope_icon_to_:           function() { return "Tap the envelope icon to create a new message!" },
@@ -1019,6 +1045,14 @@ export default {
     Done:                                function() { return "Done" },
     Cancel:                              function() { return "Cancel" },
     Take_Picture:                        function() { return "Take Picture" },
+
+    Retry:                               function() { return "Retry" },
+    Select:                              function() { return "Select" },
+
+
+
+
+
   },
   ProblemWithCrownstone:{
     __filename: "../js/views/settingsViews/diagnostics/ProblemWithCrownstone.tsx",
@@ -1361,6 +1395,7 @@ export default {
   },
   RoomAdd:{
     __filename: "../js/views/roomViews/RoomAdd.tsx",
+    Creating_room___:                    function() { return "Creating room..." },
     _Room_name_must_be_at_lea_header:    function() { return "Room name must be at least 1 character long." },
     _Room_name_must_be_at_lea_body:      function() { return "Please change the name and try again." },
     _Room_name_must_be_at_lea_left:      function() { return "OK" },
@@ -1555,7 +1590,7 @@ export default {
     Log_Out:                             function() { return "Log Out" },
   },
   SettingsApp:{
-    __filename: "../js/views/settingsViews/SettingsApp.tsx",
+      __filename: "../js/views/settingsViews/SettingsApp.tsx",
     FEATURES:                            function() { return "FEATURES" },
     Use_Tap_To_Toggle:                   function() { return "Use Tap To Toggle" },
     Tap_to_toggle_allows_you_:           function() { return "Tap to toggle allows you to hold your phone against a Crownstone to toggle it automatically!" },
@@ -1645,6 +1680,9 @@ export default {
     _EXPERIMENTAL___Switchcra_body:      function() { return "Switchcraft is currently in the experimental phase. It will not detect all switches, " + "it might switch accidentally or your Built-in Crownstone might be unsupported.\n\n" + "Use this at your own risk! Are you sure?" },
     _EXPERIMENTAL___Switchcra_left:      function() { return "I'll wait." },
     _EXPERIMENTAL___Switchcra_right:     function() { return "Yes." },
+    Syncing___:                          function() { return "Syncing..." },
+    Done_:                               function() { return "Done!" },
+    Requesting_Notifications_:           function() { return "Requesting Notifications..." },
     LOGGING:                             function() { return "LOGGING" },
     Enable_Logging:                      function() { return "Enable Logging" },
     Logging_will_keep_a_histo:           function() { return "Logging will keep a history of what the app is doing for the last 3 days." },
@@ -1840,6 +1878,7 @@ export default {
   },
   SettingsMeshOverview:{
     __filename: "../js/views/settingsViews/SettingsMeshOverview.tsx",
+    network:                             function() { return "Network #" + arguments[0] + ":" },
     not_in_mesh:                         function() { return "Not in Mesh:" },
     Here_you_can_see_which_Cr:           function() { return "Here you can see which Crownstones in your Sphere are connected via the Mesh." },
     It_can_take_some_time_for:           function() { return "It can take some time for me to hear what is connected to what. Make sure your phone is near Crownstones to hear they are connected to. If one Crownstone cannot see the others, try moving it closer to the nearest one." },
@@ -1858,6 +1897,7 @@ export default {
     cancel:                              function() { return "cancel" },
     No_Crownstones_in_Sphere_:           function() { return "No Crownstones in Sphere \"" + arguments[0] + "\" yet." },
     Mesh_Topology:                       function() { return "Mesh Topology" },
+    Refreshing_Mesh_Topology_Start:      function() { return "Refreshing Mesh Topology\n\nStarting..." },
   },
   SettingsMeshTopologyHelp:{
     __filename: "../js/views/settingsViews/SettingsMeshTopologyHelp.tsx",
@@ -1872,6 +1912,7 @@ export default {
   SettingsOverview:{
     __filename: "../js/views/settingsViews/SettingsOverview.tsx",
     Crownstone_:                         function() { return "Crownstone" },
+    Back:                                function() { return "Back" },
     terms_:                              function() { return "terms" },
     __:                                  function() { return "& " },
     privacy_policy:                      function() { return "privacy policy" },
@@ -1988,8 +2029,10 @@ export default {
   },
   SphereBehaviour:{
     __filename: "../js/views/main/editSubviews/SphereBehaviour.tsx",
-    __Minutes:                           function() { return "5 Minutes" },
-    ___Minutes:                          function() { return "30 Minutes" },
+    _5_Minutes:                          function() { return "5 Minutes" },
+    _10_Minutes:                         function() { return "10 Minutes" },
+    _15_Minutes:                         function() { return "15 Minutes" },
+    _30_Minutes:                         function() { return "30 Minutes" },
     SPHERE_EXIT_DELAY:                   function() { return "SPHERE EXIT DELAY" },
     Delay:                               function() { return "Delay" },
     If_nobody_is_left_in_the_:           function() { return "If nobody is left in the sphere, the Crownstones that are configured to switch when you leave the sphere will do so after this delay." },
@@ -2027,6 +2070,14 @@ export default {
   },
   SphereEditSettings:{
     __filename: "../js/views/main/editSubviews/SphereEditSettings.tsx",
+    Changing_sphere_name___:             function() { return "Changing sphere name..." },
+    Removing_you_from_this_Sp:           function() { return "Removing you from this Sphere in the Cloud." },
+    Still_Crownstones_detecte:           function() { return "Still Crownstones detected in Sphere" },
+    You_can_remove_then_by_go:           function() { return "You can remove then by going to them in their rooms, tap them, click on the settings -> edit and press remove." },
+
+
+
+
     _Sphere_name_must_be_at_l_header:    function() { return "Sphere name must be at least 2 letters long" },
     _Sphere_name_must_be_at_l_body:      function() { return "Please try again." },
     _Sphere_name_must_be_at_l_left:      function() { return "OK" },
@@ -2094,6 +2145,7 @@ export default {
     Press_Edit_in_the_upper_r:           function() { return "Press Edit in the upper right corner to create your own Sphere or wait to be added to those of others." },
     Sphere_Overview:                     function() { return "Sphere Overview" },
     Hello_there_:                        function() { return "Hello there!" },
+    Back:                                function() { return "Back" },
   },
   SphereRoomArranger:{
     __filename: "../js/views/main/editSubviews/SphereRoomArranger.tsx",
@@ -2172,6 +2224,20 @@ export default {
     navigation:                          function() { return "navigation" },
     Users_in_:                           function() { return "Users in " + arguments[0] },
   },
+  StoneUtil: {
+    __filename: "../js/util/StoneUtil.ts",
+    Attempting_to_Reset_Error:           function() { return "Attempting to Reset Error..." },
+    Success_:                            function() { return "Success!" },
+    The_Error_has_been_reset_:           function() { return "The Error has been reset. Normal functionality is re-enabled." },
+    Failed_to_reset_error___:            function() { return "Failed to reset error :(" },
+    You_can_move_closer_and_t:           function() { return "You can move closer and try again or ignore the error for now." },
+
+
+
+
+
+
+  },
   Splash:{
     __filename: "../js/views/startupViews/Splash.tsx",
     version__:                           function() { return "version: " + arguments[0] },
@@ -2233,6 +2299,7 @@ export default {
     Overview:                            function() { return "Overview" },
     Messages:                            function() { return "Messages" },
     Settings:                            function() { return "Settings" },
+    Back:                                function() { return "Back" },
   },
   TapToToggleCalibration:{
     __filename: "../js/views/overlays/TapToToggleCalibration.tsx",
@@ -2398,4 +2465,7 @@ export default {
     Youll_have_to_do_this_onc:           function() { return "You'll have to do this once to get rid of this pop up!" },
     Ill_try_it_:                         function() { return "I'll try it!" },
   },
+  __UNIVERSAL: {
+    Back:                                function() { return "Back" },
+  }
 }

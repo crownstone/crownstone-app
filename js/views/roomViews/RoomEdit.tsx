@@ -44,7 +44,8 @@ export class RoomEdit extends Component<any, any> {
         onPress={() => {
           params.rightAction ? params.rightAction() : () => {}
         }}
-      />
+      />,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 

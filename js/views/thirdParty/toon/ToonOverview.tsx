@@ -34,7 +34,8 @@ export class ToonOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: lang("Toon")
+      title: lang("Toon"),
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 

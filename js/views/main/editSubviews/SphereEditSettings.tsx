@@ -35,6 +35,7 @@ export class SphereEditSettings extends Component<any, any> {
       let sphere = state.spheres[params.sphereId];
       return {
         title: lang("Edit_",sphere.config.name),
+        headerTruncatedBackTitle: lang("Back"),
       }
     }
   };
@@ -96,7 +97,7 @@ export class SphereEditSettings extends Component<any, any> {
         endCallback: (newText) => {
           if (sphereSettings.name !== newText) {
             if (this.validationState.sphereName === 'valid' && newText.trim().length >= 2) {
-              this.props.eventBus.emit('showLoading', 'Changing sphere name...');
+              this.props.eventBus.emit('showLoading', lang("Changing_sphere_name___"));
               CLOUD.forSphere(this.props.sphereId).changeSphereName(newText)
                 .then((result) => {
                   store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: this.props.sphereId,  data: {name: newText}});
@@ -175,7 +176,7 @@ lang("_Are_you_sure_you_want_to_body"),
 [{text:lang("_Are_you_sure_you_want_to_left")},
         {
 text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
-            this.props.eventBus.emit('showLoading','Removing you from this Sphere in the Cloud.');
+            this.props.eventBus.emit('showLoading',lang("Removing_you_from_this_Sp"));
             CLOUD.forUser(state.user.userId).leaveSphere(this.props.sphereId)
               .then(() => {
                 this._processLocalDeletion()
@@ -222,13 +223,13 @@ text:lang("_Are_you_sure_you_want_to__right"), onPress:() => {
           let stoneIds = Object.keys(stones);
           if (stoneIds.length > 0) {
             Alert.alert(
-              "Still Crownstones detected in Sphere",
-              "You can remove then by going to them in their rooms, tap them, click on the settings -> edit and press remove.",
+              lang("Still_Crownstones_detecte"),
+              lang("You_can_remove_then_by_go"),
               [{text:'OK'}]
             );
           }
           else {
-            this.props.eventBus.emit('showLoading','Removing this Sphere in the Cloud.');
+            this.props.eventBus.emit('showLoading',lang("Removing_you_from_this_Sp"));
             CLOUD.forSphere(this.props.sphereId).deleteSphere()
               .then(() => {
                 this._processLocalDeletion();

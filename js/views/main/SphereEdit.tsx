@@ -36,12 +36,14 @@ export class SphereEdit extends Component<any, any> {
       if (sphere) {
         return {
           title: sphere.config.name,
+          headerTruncatedBackTitle: lang("Back"),
         }
       }
     }
 
     return {
-      title: lang("Welcome_")
+      title: lang("Welcome_"),
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 

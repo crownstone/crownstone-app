@@ -33,6 +33,7 @@ export class SettingsDeveloper extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Developer"),
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 
@@ -117,13 +118,13 @@ text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}
       icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback: () => {
         if (CLOUD.__currentlySyncing === false) {
-          this.props.eventBus.emit("showLoading","Syncing...");
+          this.props.eventBus.emit("showLoading", lang("Syncing___"));
           CLOUD.sync(store, true)
-            .then(() => { this.props.eventBus.emit("showLoading","Done!"); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
+            .then(() => { this.props.eventBus.emit("showLoading",lang("Done_")); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
             .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert(
-lang("_Error_during_sync__argum_header"),
-lang("_Error_during_sync__argum_body",err,err.message,JSON.stringify(err)),
-[{text:lang("_Error_during_sync__argum_left")}]) })
+              lang("_Error_during_sync__argum_header"),
+              lang("_Error_during_sync__argum_body",err,err.message,JSON.stringify(err)),
+              [{text:lang("_Error_during_sync__argum_left")}]) })
         }
         else {
           Alert.alert(
@@ -138,7 +139,7 @@ lang("_Sync_already_in_progress_body"),
       style: {color: colors.black.hex},
       icon: <IconButton name="ios-jet" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
       callback:() => {
-        this.props.eventBus.emit("showLoading", "Requesting Notifications...");
+        this.props.eventBus.emit("showLoading", lang("Requesting_Notifications_"));
 
         let clearScheduledTimeout = null;
         let cleanup = null;

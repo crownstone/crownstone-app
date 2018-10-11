@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
-import {LOG, LOGe} from '../logging/Log'
+import { LOGe } from '../logging/Log'
 import { STONE_TYPES } from '../router/store/reducers/stones'
 
 import { Alert } from 'react-native';

@@ -47,6 +47,7 @@ export class MessageInbox extends Component<any, any> {
 
     return {
       title: title,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 

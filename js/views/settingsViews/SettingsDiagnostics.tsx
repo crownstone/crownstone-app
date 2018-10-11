@@ -20,18 +20,14 @@ import {
 } from 'react-native';
 
 import { Background } from '../components/Background'
-import { ListEditableItems } from '../components/ListEditableItems'
 import {availableScreenHeight, colors, OrangeLine, screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
-import {ActivityLogDayIndicator} from "../deviceViews/elements/activityLog/ActivityLogDayIndicator";
-import {BackgroundProcessHandler} from "../../backgroundProcesses/BackgroundProcessHandler";
-import {NativeBus} from "../../native/libInterface/NativeBus";
 import {Bluenet} from "../../native/libInterface/Bluenet";
-import {BluenetPromise, BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
+import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
 import {ReviewInitialTests} from "./diagnostics/ReviewInitialTests";
 import {NotInSphere} from "./diagnostics/NotInSphere";
 import {NoStones} from "./diagnostics/NoStones";
-import {DiagOptionsItem, TestResult} from "./diagnostics/DiagnosticUtil";
+import {TestResult} from "./diagnostics/DiagnosticUtil";
 import {InSphere} from "./diagnostics/InSphere";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 

@@ -80,8 +80,8 @@ export class PictureView extends Component<any, any> {
           actions={{
             rightButtonText: lang("Done"),
             leftButtonText: lang("Cancel"),
-            leftCaptureRetakeButtonText:'Retry',
-            rightCaptureRetakeButtonText:'Select'
+            leftCaptureRetakeButtonText:lang("Retry"),
+            rightCaptureRetakeButtonText:lang("Select")
           }}
           onBottomButtonPressed={(event) => this.onBottomButtonPressed(event)}
           flashImages={{

@@ -51,23 +51,23 @@ export class LockOverlay extends Component<any, any> {
     }
 
     if (!Permissions.inSphere(this.state.sphereId).canLockCrownstone) {
-      return "Only Admins have permission to lock Crownstones...";
+      return lang("Only_Admins_have_permissi");
     }
 
     if (stone.config.dimmingEnabled) {
-      return "You can only lock Crownstones that do not have dimming enabled.";
+      return lang("You_can_only_lock_Crownst");
     }
 
     if (stone.state.state > 0) {
-      return "You can lock this Crownstone so it will not turn off without someone unlocking it first.";
+      return lang("You_can_lock_this_Crownst_off");
     }
     else {
-      return "You can lock this Crownstone so it will not turn on without someone unlocking it first.";
+      return lang("You_can_lock_this_Crownst");
     }
   }
 
   _lockCrownstone(stone) {
-    eventBus.emit("showLoading", "Locking Crownstone...");
+    eventBus.emit("showLoading", lang("Locking_Crownstone___"));
     BatchCommandHandler.loadPriority(stone, this.state.stoneId, this.state.sphereId, { commandName : 'lockSwitch', value: true })
       .then(() => {
         eventBus.emit("showLoading", "Done!");
@@ -80,9 +80,9 @@ export class LockOverlay extends Component<any, any> {
       .catch((err) => {
         eventBus.emit("hideLoading");
         Alert.alert(
-lang("_Im_sorry____Something_we_header"),
-lang("_Im_sorry____Something_we_body"),
-[{text:lang("_Im_sorry____Something_we_left")}]);
+          lang("_Im_sorry____Something_we_header"),
+          lang("_Im_sorry____Something_we_body"),
+          [{text:lang("_Im_sorry____Something_we_left")}]);
         this.setState({visible: false, sphereId: null});
       });
     BatchCommandHandler.executePriority();

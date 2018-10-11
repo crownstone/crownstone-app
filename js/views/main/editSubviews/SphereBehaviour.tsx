@@ -71,10 +71,10 @@ export class SphereBehaviour extends Component<any, any> {
 
     if (spherePermissions.editSphere) {
       let options = [];
-      options.push({label: lang("__Minutes"), value: 300});
-      options.push({label: lang("___Minutes"), value: 600});
-      options.push({label: lang("___Minutes"), value: 900});
-      options.push({label: lang("___Minutes"), value: 1800});
+      options.push({label: lang("_5_Minutes"), value: 300});
+      options.push({label: lang("_10_Minutes"), value: 600});
+      options.push({label: lang("_15_Minutes"), value: 900});
+      options.push({label: lang("_30_Minutes"), value: 1800});
       items.push({label: lang("SPHERE_EXIT_DELAY"), type: 'explanation', below: false});
       items.push({
         type: 'dropdown',

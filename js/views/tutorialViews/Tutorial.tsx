@@ -1,4 +1,3 @@
-
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -18,7 +17,7 @@ import {
   View
 } from 'react-native';
 
-import {colors, screenWidth, screenHeight, topBarHeight, OrangeLine} from '../styles'
+import {colors, screenHeight, topBarHeight, OrangeLine} from '../styles'
 import { Background } from '../components/Background'
 const Swiper = require("react-native-swiper");
 import { eventBus } from "../../util/EventBus";
@@ -134,27 +133,3 @@ let swiperStyles = StyleSheet.create({
   }
 });
 
-let textColor = colors.white;
-export const tutorialStyle = StyleSheet.create({
-  header: {
-    color: textColor.hex,
-    fontSize: 25,
-    fontWeight:'800'
-  },
-  text: {
-    color: textColor.hex,
-    fontSize: 16,
-    textAlign:'center',
-    fontWeight:'500'
-  },
-  subText: {
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-  },
-  explanation: {
-    width: screenWidth,
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-    textAlign:'center'
-  }
-});

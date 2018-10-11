@@ -65,10 +65,12 @@ export class SphereOverview extends Component<any, any> {
 
     let returnData = {
       title: paramsToUse.title,
-      headerRight: paramsToUse.rightLabel ? <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem} /> : undefined
+      headerRight: paramsToUse.rightLabel ? <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem} /> : undefined,
+      headerTruncatedBackTitle: lang("Back"),
       // headerTitle: <Component /> // used to insert custom header Title component
       // headerLeft:  <Component /> // used to insert custom header Title component
       // headerBackImage: require("path to image") // customize back button image
+
     }
 
     if (paramsToUse.showFinalizeNavigationButton || paramsToUse.showMailIcon) {

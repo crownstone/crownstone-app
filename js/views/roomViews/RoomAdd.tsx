@@ -211,7 +211,7 @@ lang("_Room_name_must_be_at_lea_body"),
       // check if the room name is unique.
       let existingLocations = getLocationNamesInSphere(state, this.props.sphereId);
       if (existingLocations[this.state.name] === undefined) {
-        this.props.eventBus.emit('showLoading', 'Creating room...');
+        this.props.eventBus.emit('showLoading', lang("Creating_room___"));
         let actions = [];
         let localId = Util.getUUID();
 
@@ -266,16 +266,16 @@ lang("_Room_name_must_be_at_lea_body"),
             LOGe.info("RoomAdd: Something went wrong with creation of rooms", err);
             let defaultActions = () => {this.props.eventBus.emit('hideLoading');};
             Alert.alert(
-lang("_Whoops___Something_went__header"),
-lang("_Whoops___Something_went__body"),
-[{text:lang("_Whoops___Something_went__left"), onPress: defaultActions}], { onDismiss: defaultActions })
+              lang("_Whoops___Something_went__header"),
+              lang("_Whoops___Something_went__body"),
+              [{text:lang("_Whoops___Something_went__left"), onPress: defaultActions}], { onDismiss: defaultActions })
           })
       }
       else {
         Alert.alert(
-lang("_Room_already_exists___Pl_header"),
-lang("_Room_already_exists___Pl_body"),
-[{text:lang("_Room_already_exists___Pl_left")}]
+          lang("_Room_already_exists___Pl_header"),
+          lang("_Room_already_exists___Pl_body"),
+          [{text:lang("_Room_already_exists___Pl_left")}]
         );
       }
     }

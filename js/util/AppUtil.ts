@@ -1,3 +1,9 @@
+import { Languages } from "../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AppUtil", key)(a, b, c, d, e);
+}
+
 import { Alert, Platform }       from 'react-native';
 import { StoreManager }          from '../router/store/storeManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise'
@@ -23,13 +29,13 @@ export const AppUtil = {
   },
 
   resetDatabase(store, eventBus) {
-    eventBus.emit("showLoading", "Preparing for download...")
+    eventBus.emit("showLoading", lang("Preparing_for_download___"))
     let clearDB = () => {
       eventBus.clearMostEvents();
       NativeBus.clearAllEvents();
       Scheduler.reset();
 
-      eventBus.emit("showLoading", "Clearing database...");
+      eventBus.emit("showLoading", lang("Clearing_database___"));
 
       let state = store.getState();
       let sphereIds = Object.keys(state.spheres);
@@ -42,17 +48,17 @@ export const AppUtil = {
       actions.push({__purelyLocal: true, __noEvents: true, type:'RESET_APP_SETTINGS'})
 
       store.batchDispatch(actions);
-      eventBus.emit("showLoading", "Getting new data...")
+      eventBus.emit("showLoading", lang("Getting_new_data___"))
       CLOUD.__syncTriggerDatabaseEvents = false;
       CLOUD.sync(store)
         .then(() => {
-          eventBus.emit("showLoading", "Finalizing...");
+          eventBus.emit("showLoading", lang("Finalizing___"));
           return new Promise((resolve, reject) => {
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 5 seconds.\n\nReopen the app to finalize the process."); }, 1000);
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 4 seconds.\n\nReopen the app to finalize the process."); }, 2000);
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 3 seconds.\n\nReopen the app to finalize the process."); }, 3000);
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 2 seconds.\n\nReopen the app to finalize the process."); }, 4000);
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 1 second. \n\nReopen the app to finalize the process."); }, 5000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",5)); }, 1000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",4)); }, 2000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",3)); }, 3000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",2)); }, 4000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",1)); }, 5000);
             setTimeout(() => { Bluenet.quitApp(); resolve(true); }, 6000)
           })
         })
@@ -62,16 +68,16 @@ export const AppUtil = {
         })
         .then((success) => {
           if (!success) {
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 5 seconds.\n\nLog in again to finalize the process."); }, 1000);
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 4 seconds.\n\nLog in again to finalize the process."); }, 2000);
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 3 seconds.\n\nLog in again to finalize the process."); }, 3000);
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 2 seconds.\n\nLog in again to finalize the process."); }, 4000);
-            setTimeout(() => { eventBus.emit("showLoading", "App will close in 1 second. \n\nLog in again to finalize the process."); }, 5000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",5)); }, 1000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",4)); }, 2000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",3)); }, 3000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",2)); }, 4000);
+            setTimeout(() => { eventBus.emit("showLoading", lang("App_will_close_in___secon",1)); }, 5000);
             setTimeout(() => { Bluenet.quitApp(); }, 6000)
           }
         })
         .catch((err) => {
-          Alert.alert("Data reset failed...", "Something went wrong in the data reset process. The best way to solve this is to remove the app from your phone, reinstall it and log into you account",[{text:"OK"}])
+          Alert.alert(lang("Data_reset_failed___"), lang("Something_went_wrong_in_t"),[{text: lang("OK")}])
         })
     }
 
@@ -113,7 +119,7 @@ export const AppUtil = {
       }
     });
 
-    eventBus.emit("showLoading", {text:"Logging out and closing app...", opacity:0.25});
+    eventBus.emit("showLoading", {text:lang("Logging_out_and_closing_a"), opacity:0.25});
 
     // clear position for this device.
     let state = store.getState();

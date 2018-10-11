@@ -23,8 +23,8 @@ const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth, screenHeight} from '../../styles'
 import {Icon} from "../../components/Icon";
 import {eventBus} from "../../../util/EventBus";
-import {tutorialStyle} from "../Tutorial";
 import {Util} from "../../../util/Util";
+import { tutorialStyle } from "../TutorialStyle";
 
 
 export class TutorialDevices extends Component<any, any> {

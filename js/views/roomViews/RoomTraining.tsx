@@ -53,6 +53,7 @@ export class RoomTraining extends Component<any, any> {
     return {
       title: params.title ? params.title : paramsToUse.title,
       headerLeft: params.topBarSettings ? <CancelButton onPress={params.topBarSettings.leftAction} /> : undefined,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 

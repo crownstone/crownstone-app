@@ -40,6 +40,7 @@ export class MessageAdd extends Component<any, any> {
     const { params } = navigation.state;
     return {
       title: lang("New_Message"),
+      headerTruncatedBackTitle: lang("Back"),
       headerLeft: <CancelButton onPress={BackAction} />,
       headerRight: <TopbarButton
         text={ lang("Create")}

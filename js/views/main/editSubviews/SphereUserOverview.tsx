@@ -31,6 +31,7 @@ export class SphereUserOverview extends Component<any, any> {
     let sphere = state.spheres[params.sphereId] ;
     return {
       title: lang("Users_in_",sphere.config.name),
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 

@@ -41,7 +41,8 @@ export class SettingsMeshTopology extends Component<any, any> {
         text={ lang("Networks")}
         style={{width:100}}
         onPress={() => { Actions.settingsMeshOverview(); }}
-      />
+      />,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 
@@ -127,7 +128,7 @@ export class SettingsMeshTopology extends Component<any, any> {
     this.refreshAmountRequired = stoneIds.length;
     this.refreshCount = 0;
 
-    this.props.eventBus.emit('showProgress', {progress: 0, progressText:'Refreshing Mesh Topology\n\nStarting...'});
+    this.props.eventBus.emit('showProgress', {progress: 0, progressText: lang("Refreshing_Mesh_Topology_Start")});
 
     let evaluateRefreshProgress = () => {
       this.refreshCount += 1
@@ -272,10 +273,10 @@ export class SettingsMeshTopology extends Component<any, any> {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => { Alert.alert(
-lang("_Refresh_Topology__While__header"),
-lang("_Refresh_Topology__While__body"),
-[{text:lang("_Refresh_Topology__While__left"),style:  lang("cancel")}, {
-text:lang("_Refresh_Topology__While__right"), onPress: () => { this._refreshMesh(sphereId, stones); }}]) }}
+            lang("_Refresh_Topology__While__header"),
+            lang("_Refresh_Topology__While__body"),
+            [{text:lang("_Refresh_Topology__While__left"),style:  lang("cancel")}, {
+            text:lang("_Refresh_Topology__While__right"), onPress: () => { this._refreshMesh(sphereId, stones); }}]) }}
           style={{position:'absolute', bottom:0, right:40, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
           <Icon name={'md-refresh-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
         </TouchableOpacity>

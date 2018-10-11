@@ -63,7 +63,8 @@ export class DeviceOverview extends Component<any, any> {
 
     return {
       title: paramsToUse.title,
-      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>
+      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 

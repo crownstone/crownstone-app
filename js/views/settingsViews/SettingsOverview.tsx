@@ -26,6 +26,7 @@ export class SettingsOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Settings"),
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 

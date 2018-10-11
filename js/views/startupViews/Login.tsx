@@ -188,9 +188,9 @@ lang("_Incorrect_Email_or_Passw_body"),
               this.props.eventBus.emit('hideLoading')
             };
             Alert.alert(
-lang("_Connection_Problem__Coul_header"),
-lang("_Connection_Problem__Coul_body"),
-[{text: lang("_Connection_Problem__Coul_left"), onPress: defaultAction}],
+              lang("_Connection_Problem__Coul_header"),
+              lang("_Connection_Problem__Coul_body"),
+              [{text: lang("_Connection_Problem__Coul_left"), onPress: defaultAction}],
               {onDismiss: defaultAction}
             );
           }
@@ -198,6 +198,7 @@ lang("_Connection_Problem__Coul_body"),
         throw err;
       })
       .then((response) => {
+        console.log("This is the reponse from the cloud", response);
         return new Promise((resolve, reject) => {
           // start the login process from the store manager.
           StoreManager.userLogIn(response.userId)
@@ -208,6 +209,7 @@ lang("_Connection_Problem__Coul_body"),
         })
       })
       .then((response) => {
+        console.log("This is the reponse from the SM", response);
         this.finalizeLogin(response.id, response.userId);
       })
       .catch((err) => { LOGe.info("Error during login.", err); })
@@ -220,7 +222,7 @@ lang("_Connection_Problem__Coul_body"),
     }
     return (
       <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true} safeView={true}>
-        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent', paddingTop:0}} />
+        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
             <View style={{flex:2, width:screenWidth}} />
@@ -339,6 +341,7 @@ lang("_Connection_Problem__Coul_body"),
     let parts = 1/5;
 
     let promises = [];
+    console.log("DOING USER ID", userId)
 
     // get more data on the user
     promises.push(

@@ -75,6 +75,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
     return {
       title: paramsToUse.title,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 

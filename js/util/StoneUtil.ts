@@ -1,3 +1,8 @@
+import { Languages } from "../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("StoneUtil", key)(a,b,c,d,e);
+}
 
 import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 import {INTENTS} from "../native/libInterface/Constants";
@@ -101,7 +106,7 @@ export const StoneUtil = {
       overCurrent:        true,
     };
 
-    eventBus.emit("showLoading", "Attempting to Reset Error...");
+    eventBus.emit("showLoading", lang("Attempting_to_Reset_Error"));
     BatchCommandHandler.loadPriority(
       stone,
       stoneId,
@@ -112,25 +117,25 @@ export const StoneUtil = {
       'from _getButton in ErrorOverlay'
     )
       .then(() => {
-        eventBus.emit("showLoading", "Success!");
+        eventBus.emit("showLoading", lang("Success_"));
         store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: {
-            dimmerOnFailure:    false,
-            dimmerOffFailure:   false,
-            temperatureDimmer:  false,
-            temperatureChip:    false,
-            overCurrentDimmer:  false,
-            overCurrent:        false,
+          dimmerOnFailure:    false,
+          dimmerOffFailure:   false,
+          temperatureDimmer:  false,
+          temperatureChip:    false,
+          overCurrentDimmer:  false,
+          overCurrent:        false,
         }});
         return Scheduler.delay(500);
       })
       .then(() => {
         eventBus.emit("hideLoading");
-        Alert.alert("Success!","The Error has been reset. Normal functionality is re-enabled.",[{text:'OK'}]);
+        Alert.alert(lang("Success_"), lang("The_Error_has_been_reset_"),[{text:'OK'}]);
       })
       .catch((err) => {
         LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err);
         let defaultAction = () => { eventBus.emit("hideLoading"); };
-        Alert.alert("Failed to reset error :(","You can move closer and try again or ignore the error for now.",[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+        Alert.alert(lang("Failed_to_reset_error___"), lang("You_can_move_closer_and_t"),[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
       });
 
     BatchCommandHandler.executePriority()
