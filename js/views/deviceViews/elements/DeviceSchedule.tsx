@@ -107,9 +107,9 @@ export class DeviceSchedule extends Component<any, any> {
           onPress={() => {
           if (stone.reachability.disabled === true) {
             Alert.alert(
-lang("_Cant_see_Crownstone___Yo_header"),
-lang("_Cant_see_Crownstone___Yo_body"),
-[{text:lang("_Cant_see_Crownstone___Yo_left")}]
+              lang("_Cant_see_Crownstone___Yo_header"),
+              lang("_Cant_see_Crownstone___Yo_body"),
+              [{text:lang("_Cant_see_Crownstone___Yo_left")}]
             );
           }
           else {
@@ -145,7 +145,7 @@ lang("_Cant_see_Crownstone___Yo_body"),
         },
       }
     };
-    eventBus.emit("showLoading", "Downloading schedules from Crownstone...");
+    eventBus.emit("showLoading", lang("Downloading_schedules_fro"));
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSchedules'}, {},1, 'sync schedules from DeviceSchedule')
       .then((stoneSchedules : {data: [bridgeScheduleEntry]}) => {
         let dbSchedules = stone.schedules;
@@ -179,16 +179,16 @@ lang("_Cant_see_Crownstone___Yo_body"),
         }
 
         this.props.store.batchDispatch(syncActions);
-        eventBus.emit("showLoading", "Done!");
+        eventBus.emit("showLoading", lang("Done_"));
         Scheduler.scheduleCallback(() => { eventBus.emit("hideLoading"); }, 400);
       })
       .catch((err) => {
         eventBus.emit("hideLoading");
         LOGe.info("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
         Alert.alert(
-lang("_Could_not_Sync__Move_clo_header"),
-lang("_Could_not_Sync__Move_clo_body"),
-[{text:lang("_Could_not_Sync__Move_clo_left")}]
+          lang("_Could_not_Sync__Move_clo_header"),
+          lang("_Could_not_Sync__Move_clo_body"),
+          [{text:lang("_Could_not_Sync__Move_clo_left")}]
         );
       });
 
@@ -232,9 +232,9 @@ lang("_Could_not_Sync__Move_clo_body"),
         <TouchableOpacity onPress={() => {
             if (stone.reachability.disabled === true) {
               Alert.alert(
-lang("_Cant_see_Crownstone___You_header"),
-lang("_Cant_see_Crownstone___You_body"),
-[{text:lang("_Cant_see_Crownstone___You_left")}]
+                lang("_Cant_see_Crownstone___You_header"),
+                lang("_Cant_see_Crownstone___You_body"),
+                [{text:lang("_Cant_see_Crownstone___You_left")}]
               );
             }
             else {
@@ -268,21 +268,21 @@ lang("_Cant_see_Crownstone___You_body"),
     if (!spherePermissions.canSeeSchedules) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
-          { this._getHeader(state, iconSize, "You do not have permission to see or set the Schedules in this Sphere.") }
+          { this._getHeader(state, iconSize, lang("You_do_not_have_permissio")) }
         </View>
       )
     }
     else if (!Util.versions.canIUse(stone.config.firmwareVersion, '1.5.0')) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
-          { this._getHeader(state, iconSize, "This Crownstone needs to be updated in order to use the Schedule feature.") }
+          { this._getHeader(state, iconSize, lang("This_Crownstone_needs_to_")) }
         </View>
       )
     }
     else if (stone.config.locked === true) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
-          { this._getHeader(state, iconSize, "This Crownstone is locked so Schedules are disabled.") }
+          { this._getHeader(state, iconSize, lang("This_Crownstone_is_locked")) }
         </View>
       )
     }

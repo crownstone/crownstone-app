@@ -92,15 +92,15 @@ export class SettingsMeshDebug extends Component<any, any> {
     });
 
 
-    this.props.eventBus.emit('showProgress', {progress: 0, progressText:'Setting Mesh Channels\n\nStarting...'});
+    this.props.eventBus.emit('showProgress', {progress: 0, progressText: lang("Setting_Mesh_Channels__St")});
 
     let evaluateRefreshProgress = () => {
       this.refreshCount += 1
       if (this.refreshCount >= this.refreshAmountRequired) {
         Alert.alert(
-lang("_All_done___This_went_ver_header"),
-lang("_All_done___This_went_ver_body"),
-[{text:lang("_All_done___This_went_ver_left")}])
+          lang("_All_done___This_went_ver_header"),
+          lang("_All_done___This_went_ver_body"),
+          [{text:lang("_All_done___This_went_ver_left")}])
         this.props.eventBus.emit('updateProgress', {progress:1, progressText: lang("Done")});
         setTimeout(() => { this.props.eventBus.emit("hideProgress");}, 500);
         const store = this.props.store;
@@ -186,14 +186,12 @@ lang("_Missed_one__I_could_not__body",stone.config.name),
       }
     })
     items.push({
-      type:'button',
+      type: 'button',
       label: lang("Set_to_Channel___"),
       callback: () => {
         this._setChannel(39)
       }
     })
-
-
 
     return items;
   }

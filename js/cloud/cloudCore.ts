@@ -56,6 +56,7 @@ export function request(
       if (response && response._bodyBlob && response._bodyBlob.size === 0) {
         return '';
       }
+      // this part: responseHeaders[0].substr(0,16) === 'application/json' is legacy. It's ugly and imprecise, but we will keep it for legacy for now.
       else if (responseHeaders[0].substr(0,16) === 'application/json' || responseHeaders.indexOf("application/json") !== -1) {
         if (response.headers.map['content-length'] &&
           response.headers.map['content-length'].length > 0 &&

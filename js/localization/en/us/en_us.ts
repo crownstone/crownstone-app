@@ -216,13 +216,13 @@ export default {
     Only_members_and_admins_c:           function() { return "Only members and admins can see the activity logs..." },
   },
   DeviceBehaviour:{
+    __filename: "../js/views/deviceViews/elements/DeviceBehaviour.tsx",
     When_you_enter_the_Sphere:           function() { return "When you enter the Sphere" },
     When_you_leave_the_Sphere:           function() { return "When you leave the Sphere" },
     When_you_enter_the_Room:             function() { return "When you enter the Room" },
     When_you_leave_the_Room:             function() { return "When you leave the Room" },
     When_you_get_near_to_Me:             function() { return "When you get near to Me" },
     When_you_move_away_from_M:           function() { return "When you move away from Me" },
-    __filename: "../js/views/deviceViews/elements/DeviceBehaviour.tsx",
     This_Crownstone_is_locked:           function() { return "This Crownstone is locked so the behaviour is disabled." },
     Behaviour_is_disabled_in_:           function() { return "Behaviour is disabled in the App Settings. Re-enable indoor localization to use the behaviour." },
     Heartbeat_is_disabled_in_:           function() { return "Heartbeat is disabled in the App Settings. Re-enable the Heartbeat to use the exit behaviour." },
@@ -437,6 +437,18 @@ export default {
     Sync_schedules_from_Crown:           function() { return "Sync schedules from Crownstone" },
     Schedule:                            function() { return "Schedule" },
     Add_your_first_scheduled_:           function() { return arguments[0] ? "Add your first scheduled action by tapping on the big icon in the center!" : "You do not have permission to create schedules." },
+
+    Downloading_schedules_fro:           function() { return "Downloading schedules from Crownstone..." },
+    Done_:                               function() { return "Done!" },
+    You_do_not_have_permissio:           function() { return "You do not have permission to see or set the Schedules in this Sphere." },
+    This_Crownstone_needs_to_:           function() { return "This Crownstone needs to be updated in order to use the Schedule feature." },
+    This_Crownstone_is_locked:           function() { return "This Crownstone is locked so Schedules are disabled." },
+
+
+
+
+
+
   },
   DeviceScheduleEdit:{
     __filename: "../js/views/deviceViews/DeviceScheduleEdit.tsx",
@@ -733,6 +745,28 @@ export default {
   LocationPermissionOverlay:{
     __filename: "../js/views/overlays/LocationPermissionOverlay.tsx",
     Request_Permission:                  function() { return "Request Permission" },
+  },
+  LocationHandler: {
+    __filename: "../js/native/localization/LocationHandler.ts",
+    Could_not_set_Keys_:                 function() { return "Could not set Keys!" },
+    This_should_not_happen__M:           function() { return "This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!" },
+    OK___:                               function() { return "OK..." },
+    Warning__Multiple_Active_:           function() { return "Warning: Multiple Active Spheres Detected!" },
+    I_can_see__Spheres_from_h:           function() { return "I can see " + arguments[0] + " Spheres from here. This is not supported and can cause all sorts of serious issues. Please make sure there are no overlapping Spheres for now." },
+    OK:                                  function() { return "OK" },
+    Please_forgive_me___:                function() { return "Please forgive me :(" },
+    Due_to_many_improvements_:           function() { return "Due to many improvements in the localization you will have to train your rooms again..." },
+    Setting_Mesh_Channels__St:           function() { return "Setting Mesh Channels\n\nStarting..." },
+
+
+
+
+
+
+
+
+
+
   },
   LockOverlay:{
     __filename: "../js/views/overlays/LockOverlay.tsx",
@@ -1564,6 +1598,14 @@ export default {
   SchedulerEntry:{
     __filename: "../js/views/components/SchedulerEntry.tsx",
     __disabled_:                         function() { return " (disabled)" },
+    Do_X_at:                             function() { return (arguments[0] ? "Turn on" : "Turn off") + " at " + arguments[1] },
+    Mon_day_first_letter:                function() { return "M" },
+    Tue_day_first_letter:                function() { return "T" },
+    Wed_day_first_letter:                function() { return "W" },
+    Thu_day_first_letter:                function() { return "T" },
+    Fri_day_first_letter:                function() { return "F" },
+    Sat_day_first_letter:                function() { return "S" },
+    Sun_day_first_letter:                function() { return "S" },
   },
   SeparatedItemList:{
     __filename: "../js/views/components/SeparatedItemList.tsx",

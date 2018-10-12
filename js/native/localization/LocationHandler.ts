@@ -1,3 +1,9 @@
+import { Languages } from "../../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocationHandler", key)(a,b,c,d,e);
+}
+
 import { Alert }                    from 'react-native';
 
 import { NativeBus }                from '../libInterface/NativeBus';
@@ -69,7 +75,7 @@ class LocationHandlerClass {
         LOG.info("Set Settings.", bluenetSettings);
         BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
           LOGe.info("LocationHandler: Could not set Settings!", err);
-          Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
+          Alert.alert(lang("Could_not_set_Keys_"),lang("This_should_not_happen__M"), [{text:lang("OK___")}]);
         });
       })
     }
@@ -117,7 +123,7 @@ class LocationHandlerClass {
     LOG.info("Set Settings.", bluenetSettings);
     BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
       LOGe.info("LocationHandler: Could not set Settings!", err);
-      Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
+      Alert.alert(lang("Could_not_set_Keys_"),lang("This_should_not_happen__M"), [{text:lang("OK___")}]);
     });
 
 
@@ -138,7 +144,7 @@ class LocationHandlerClass {
       });
 
       if (otherSpherePresentCount > 0) {
-        Alert.alert("Warning: Multiple Active Spheres Detected!","I can see " + (otherSpherePresentCount + 1) + " Spheres from here. This is not supported and can cause all sorts of serious issues. Please make sure there are no overlapping Spheres for now.",[{text:'OK'}])
+        Alert.alert(lang("Warning__Multiple_Active_"),lang("I_can_see__Spheres_from_h" ,(otherSpherePresentCount + 1)),[{text:lang("OK")}])
       }
 
 
@@ -431,9 +437,9 @@ class LocationHandlerClass {
           }
 
           Alert.alert(
-            'Please forgive me :(',
-            'Due to many improvements in the localization you will have to train your rooms again...',
-            [{text:'OK'}]
+            lang("Please_forgive_me___"),
+            lang("Due_to_many_improvements_"),
+            [{text:lang("OK")}]
           );
         }
       })
@@ -473,7 +479,4 @@ class LocationHandlerClass {
 }
 
 
-
-
 export const LocationHandler = new LocationHandlerClass();
-
