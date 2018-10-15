@@ -61,7 +61,7 @@ export class SettingsBleDebug extends Component<any, any> {
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: lang("Any",element,element.config.name),
+      label: lang("Any", element, element && element.config.name),
       subtext: rssiData + subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',

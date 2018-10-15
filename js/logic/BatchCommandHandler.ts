@@ -428,7 +428,7 @@ class BatchCommandHandlerClass {
   _connectAndHandleCommands(crownstoneToHandle : connectionInfo, highPriorityActive: boolean, relayOnlyUsed: boolean) {
     return new Promise((resolve, reject) => {
       LOGi.bch("BatchCommandHandler: connecting to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
-      BluenetPromiseWrapper.connect(crownstoneToHandle.handle, highPriorityActive)
+      BluenetPromiseWrapper.connect(crownstoneToHandle.handle, crownstoneToHandle.sphereId, highPriorityActive)
         .then(() => {
           LOGi.bch("BatchCommandHandler: Connected to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
           return this._handleAllCommandsForStone(crownstoneToHandle, {}, relayOnlyUsed);

@@ -1,8 +1,8 @@
 interface BluenetPromiseWrapperProtocol {
-  clearTrackedBeacons()                         : Promise< void >,
-  commandFactoryReset()                         : Promise< void >,
-  connect(handle: string, highPriority?: boolean): Promise< void >,
-  disconnectCommand()                           : Promise< void >,
+  clearTrackedBeacons()                                               : Promise< void >,
+  commandFactoryReset()                                               : Promise< void >,
+  connect(handle: string, referenceId: string, highPriority?: boolean): Promise< void >,
+  disconnectCommand()                                                 : Promise< void >,
   getMACAddress()                               : Promise< string >,
   getFirmwareVersion()                          : Promise< string >,
   getBootloaderVersion()                        : Promise< string >,
@@ -14,10 +14,10 @@ interface BluenetPromiseWrapperProtocol {
   phoneDisconnect()                             : Promise< void >,
   toggleSwitchState(stateForOn)                 : Promise< number >,
   setupCrownstone(dataObject)                   : Promise< void >,
-  setSettings(dataObject)                       : Promise< void >,
   requestLocation()                             : Promise< locationType >,
   recover(handle: string)                       : Promise< void >,
   clearFingerprintsPromise()                    : Promise< void >,
+  setKeySets(keySets)                           : Promise< void >,
 
   // Mesh
   meshKeepAlive()                                                 : Promise< void >,
@@ -154,4 +154,15 @@ interface nearestStone  {
   setupMode : boolean
   dfuMode   : boolean
   verified  : boolean
+}
+
+
+interface keySets  {
+  [referenceId: string] : keySet
+}
+
+interface keySet  {
+  adminKey:  string,
+  memberKey: string,
+  guestKey:  string,
 }

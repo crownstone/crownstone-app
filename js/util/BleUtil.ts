@@ -122,8 +122,13 @@ export const BleUtil = {
     })
   },
 
-  getProxy: function (bleHandle) {
-    return new DirectCommand(bleHandle);
+  /**
+   *
+   * @param bleHandle     Handle used to connect to Crownstone
+   * @param referenceId   Id of the matching keyset. This is usually a SphereId in our app.
+   */
+  getProxy: function (bleHandle : string, referenceId : string) {
+    return new DirectCommand(bleHandle, referenceId);
   },
 
   /**

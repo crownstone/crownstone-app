@@ -1,9 +1,9 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
 import { DISABLE_NATIVE } from '../../ExternalConfig'
-import {LOG, LOGi} from '../../logging/Log'
-import { Bluenet } from './Bluenet'
-import { eventBus }  from '../../util/EventBus'
-import {Sentry} from "react-native-sentry";
+import { LOG, LOGi }      from '../../logging/Log'
+import { Bluenet }        from './Bluenet'
+import { eventBus }       from '../../util/EventBus'
+import { Sentry }         from "react-native-sentry";
 
 export const BluenetPromise : any = function(functionName, param, param2, param3, param4, param5) {
   return new Promise((resolve, reject) => {
@@ -15,6 +15,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
         category: 'ble',
         data: {
           functionCalled: functionName,
+          t: new Date().valueOf(),
           state: 'started',
         }
       });
@@ -26,6 +27,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
             category: 'ble',
             data: {
               functionCalled: functionName,
+              t: new Date().valueOf(),
               state: 'failed',
               err: result.data
             }
@@ -37,6 +39,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
             category: 'ble',
             data: {
               functionCalled: functionName,
+              t: new Date().valueOf(),
               state: 'success',
             }
           });
@@ -61,13 +64,13 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
 export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
-  connect:             (handle, highPriority = true) => {
+  connect:             (handle, referenceId, highPriority = true) => {
     // tell the app that something is connecting.
     eventBus.emit("connecting", handle, " with priority:", highPriority);
 
     // connect
     if (handle) {
-      return BluenetPromise('connect', handle)
+      return BluenetPromise('connect', handle, referenceId)
         .then(() => {
           eventBus.emit("connected", handle);
         })
@@ -98,7 +101,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   keepAlive:            ()           => { return BluenetPromise('keepAlive');                   },
   getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },
   setupCrownstone:      (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
-  setSettings:          (dataObject) => { return BluenetPromise('setSettings',     dataObject); },
+  setKeySets:           (dataObject) => { return BluenetPromise('setKeySets',      dataObject); },
   requestLocation:      ()           => { return BluenetPromise('requestLocation');             },
   recover:              (handle)     => { return BluenetPromise('recover', handle);             },
   finalizeFingerprint:  (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.

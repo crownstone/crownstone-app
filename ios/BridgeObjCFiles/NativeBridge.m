@@ -13,7 +13,7 @@
 @interface RCT_EXTERN_MODULE(BluenetJS, RCTEventEmitter)
 
 
-RCT_EXTERN_METHOD(setSettings:(NSDictionary *)settings callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setKeySets:(NSDictionary *)keySets callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(isReady:(RCTResponseSenderBlock)callback)
 
 RCT_EXTERN_METHOD(rerouteEvents)
@@ -23,7 +23,7 @@ RCT_EXTERN_METHOD(startScanningForCrownstonesUniqueOnly)
 RCT_EXTERN_METHOD(stopScanning)
 
 // Bluenet
-RCT_EXTERN_METHOD(connect:(NSString *)uuid callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(connect:(NSString *)uuid referenceId:(NSString *)referenceId callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(disconnectCommand:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(phoneDisconnect:(RCTResponseSenderBlock)callback)
 // nonnull IS REQUIRED FOR ALL NUMBER ENTREES
@@ -72,7 +72,6 @@ RCT_EXTERN_METHOD(clearFingerprintsPromise:(RCTResponseSenderBlock)callback)
 
 
 // MISC
-
 RCT_EXTERN_METHOD(enableLoggingToFile:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(enableExtendedLogging:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(clearLogs)
@@ -89,7 +88,6 @@ RCT_EXTERN_METHOD(lockSwitch:(nonnull NSNumber *)lock callback:(RCTResponseSende
 RCT_EXTERN_METHOD(setSwitchCraft:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 
 // MESH
-
 RCT_EXTERN_METHOD(meshSetTime:(nonnull NSNumber *)time callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(meshKeepAlive:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAlivePackets:(NSArray *)stoneKeepAlivePackets callback:(RCTResponseSenderBlock)callback)
@@ -97,7 +95,6 @@ RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCT
 RCT_EXTERN_METHOD(setMeshChannel:(nonnull NSNumber *)channel callback:(RCTResponseSenderBlock)callback)
 
 // DFU
-
 RCT_EXTERN_METHOD(putInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupPutInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *)uri callback:(RCTResponseSenderBlock)callback)

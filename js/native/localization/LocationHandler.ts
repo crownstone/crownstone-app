@@ -25,15 +25,11 @@ import {FingerprintManager} from "./FingerprintManager";
 class LocationHandlerClass {
   _initialized : boolean;
   store : any;
-  _uuid : string;
   _readyForLocalization = false;
 
   constructor() {
     this._initialized = false;
     this.store = undefined;
-
-    this._uuid = Util.getUUID();
-
 
     // subscribe to iBeacons when the spheres in the cloud change.
     eventBus.on('CloudSyncComplete_spheresChanged', () => {
@@ -62,22 +58,6 @@ class LocationHandlerClass {
       NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });
       NativeBus.on(NativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
       NativeBus.on(NativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
-
-      eventBus.on("KEYS_UPDATED", (data) => {
-        let bluenetSettings = {
-          encryptionEnabled: ENCRYPTION_ENABLED,
-          adminKey:    data.keys.adminKey,
-          memberKey:   data.keys.memberKey,
-          guestKey:    data.keys.guestKey,
-          referenceId: data.sphereId,
-        };
-
-        LOG.info("Set Settings.", bluenetSettings);
-        BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
-          LOGe.info("LocationHandler: Could not set Settings!", err);
-          Alert.alert(lang("Could_not_set_Keys_"),lang("This_should_not_happen__M"), [{text:lang("OK___")}]);
-        });
-      })
     }
   }
 
@@ -98,15 +78,6 @@ class LocationHandlerClass {
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the
     // right settings in the lib.
 
-    // prepare the settings for this sphere and pass them onto the bluenet lib
-    let bluenetSettings = {
-      encryptionEnabled: ENCRYPTION_ENABLED,
-      adminKey:  sphere.config.adminKey,
-      memberKey: sphere.config.memberKey,
-      guestKey:  sphere.config.guestKey,
-      referenceId: enteringSphereId
-    };
-
     if (canUseIndoorLocalizationInSphere(state, enteringSphereId) === true) {
       LOG.info('LocationHandler: Starting indoor localization for sphere', enteringSphereId);
       Bluenet.startIndoorLocalization();
@@ -118,13 +89,6 @@ class LocationHandlerClass {
 
     // scan for crownstones on entering a sphere.
     BatterySavingUtil.startNormalUsage(enteringSphereId);
-
-
-    LOG.info("Set Settings.", bluenetSettings);
-    BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
-      LOGe.info("LocationHandler: Could not set Settings!", err);
-      Alert.alert(lang("Could_not_set_Keys_"),lang("This_should_not_happen__M"), [{text:lang("OK___")}]);
-    });
 
 
     // make sure we only do the following once per sphere

@@ -64,7 +64,7 @@ export class SetupHelper {
     let setupPromise = () => {
       return new Promise((resolve, reject) => {
         eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
-        BluenetPromiseWrapper.connect(this.handle)
+        BluenetPromiseWrapper.connect(this.handle, sphereId)
           .then(() => {
             LOG.info("setup progress: connected");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
@@ -300,7 +300,7 @@ export class SetupHelper {
     });
 
     return new Promise((resolve, reject) => {
-      BluenetPromiseWrapper.connect(this.handle)
+      BluenetPromiseWrapper.connect(this.handle, sphereId)
         .then(() => {
           return BluenetPromiseWrapper.setupCrownstone(data);
         })

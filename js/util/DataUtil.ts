@@ -92,6 +92,26 @@ export const DataUtil = {
     return null;
   },
 
+  getReferenceId: function(state) {
+    let sphereIds = Object.keys(state.spheres);
+    let activeSphereId = state.app.activeSphere;
+    if (activeSphereId && state.spheres[activeSphereId] && state.spheres[activeSphereId].state.present) {
+      return activeSphereId;
+    }
+
+    for (let i = 0; i < sphereIds.length; i++ ) {
+      if (state.spheres[sphereIds[i]].state.present === true) {
+        return sphereIds[i];
+      }
+    }
+
+    if (sphereIds.length > 0) {
+      return sphereIds[0];
+    }
+
+    return 'unknown';
+  },
+
   getStonesInLocation: function(state : any, sphereId : string, locationId?) : object {
     let filteredStones = {};
     if (sphereId !== undefined) {

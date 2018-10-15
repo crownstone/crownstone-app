@@ -37,7 +37,6 @@ typealias voidCallback = () -> Void
     // use the accelerometer.
     // self.bluenetMotion = BluenetMotion()
     
-    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown")
     self.bluenetLocalization = BluenetLocalization(backgroundEnabled: true)
     
     // insert the classifier that will be used for room-level localization.

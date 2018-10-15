@@ -64,7 +64,8 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
   }
 
   _factoryResetMyLostCrownstone(handle) {
-    let proxy = BleUtil.getProxy(handle);
+    let referenceId = Util.data.getReferenceId(this.props.store.getState());
+    let proxy = BleUtil.getProxy(handle, referenceId);
     return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
       .then(() => { this.setState({factoryResetSuccess: true}); })
       .catch(() => { this.setState({factoryResetSuccess: false}); })

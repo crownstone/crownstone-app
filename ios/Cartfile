@@ -1,3 +1,6 @@
 # BluenetLibIOS
 
 github "crownstone/bluenet-ios-lib"
+
+# Custom Image Processing
+github "crownstone/image-processing-ios"

@@ -60,13 +60,13 @@ open class BluenetJS: RCTEventEmitter {
       // forward the event streams to react native
       globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {
-          if (castData.isSetupPackage()) {
+          if (castData.operationMode == .setup) {
             self.sendEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
             
             
             //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
           }
-          else if (castData.isDFUPackage()) {
+          else if (castData.operationMode == .dfu) {
             self.sendEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
             
             //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
@@ -90,8 +90,7 @@ open class BluenetJS: RCTEventEmitter {
         }
       })
       
-      
-      // we will not forward the unverified events
+     
       globalBluenet.bluenetOn("unverifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {
           self.sendEvent(withName: "unverifiedAdvertisementData", body: castData.getDictionary())
@@ -224,12 +223,37 @@ open class BluenetJS: RCTEventEmitter {
     
     if let encryptionEnabled = settings["encryptionEnabled"] as? Bool {
       print("BluenetBridge: SETTING SETTINGS adminKey: \(String(describing: adminKey)) memberKey: \(String(describing: memberKey)) guestKey: \(String(describing: guestKey)) referenceId: \(String(describing: referenceId))")
-      GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
+      let set = KeySet(adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
+      GLOBAL_BLUENET!.bluenet.loadKeysets(encryptionEnabled: true, keySets: [set])
       callback([["error" : false]])
     }
     else {
       callback([["error" : true, "data": "Missing the encryptionEnabled data field required for Bluenet Settings."]])
     }
+  }
+  
+  @objc func setKeySets(_ keySets: NSDictionary, callback: RCTResponseSenderBlock) {
+    LOGGER.info("BluenetBridge: Called setKeySets")
+    var sets : [KeySet] = []
+    
+    if let convertedSets = keySets as? [String:NSDictionary] {
+      for (referenceId, keySet) in convertedSets {
+        let adminKey  = keySet["adminKey"]  as? String
+        let memberKey = keySet["memberKey"] as? String
+        let guestKey  = keySet["guestKey"]  as? String
+        if (adminKey == nil && memberKey == nil && guestKey == nil) {
+          callback([["error" : true, "data": "Missing the Keys required for Bluenet Settings. At least one of the following should be provided: adminKey, memberKey or guestKey."]])
+          return
+        }
+        sets.append(KeySet(adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId))
+      }
+    }
+    else {
+      callback([["error" : true, "data": "Invalid keyset types"]])
+    }
+    
+    GLOBAL_BLUENET!.bluenet.loadKeysets(encryptionEnabled: true, keySets: sets)
+    callback([["error" : false]])
   }
   
   @objc func isReady(_ callback: @escaping RCTResponseSenderBlock) {
@@ -250,9 +274,9 @@ open class BluenetJS: RCTEventEmitter {
   }
 
 
-  @objc func connect(_ handle: String, callback: @escaping RCTResponseSenderBlock) {
+  @objc func connect(_ handle: String, referenceId: String, callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called connect")
-    GLOBAL_BLUENET!.bluenet.connect(handle)
+    GLOBAL_BLUENET!.bluenet.connect(handle, referenceId: referenceId)
       .then{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {

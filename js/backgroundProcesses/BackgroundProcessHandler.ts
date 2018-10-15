@@ -34,6 +34,7 @@ import { MeshUtil }              from "../util/MeshUtil";
 import { Sentry }                from "react-native-sentry";
 import {ActivityLogManager} from "./ActivityLogManager";
 import {ToonIntegration} from "./thirdParty/ToonIntegration";
+import { EncryptionManager } from "../native/libInterface/Encryption";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -418,6 +419,7 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
+    EncryptionManager.loadStore(this.store);
     BatchCommandHandler.loadStore(this.store);
     MapProvider.loadStore(this.store);
     LogProcessor.loadStore(this.store);
