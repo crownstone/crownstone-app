@@ -4,16 +4,13 @@
  *
  */
 
-import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {CLOUD} from "../../../cloudAPI";
 import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
-import {transferLocations} from "../../../transferData/transferLocations";
-import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
-import {LOGe} from "../../../../logging/Log";
 
 export class PresenceSyncer extends SyncingSphereItemBase {
   userId: string;
+  deviceId: string;
 
   download(deviceId) {
     return CLOUD.forSphere(this.cloudSphereId).getPresentPeople(deviceId);
@@ -30,8 +27,8 @@ export class PresenceSyncer extends SyncingSphereItemBase {
   sync(store) {
     let userInState = store.getState().user;
     this.userId = userInState.userId;
-
-    return this.download(deviceId)
+    this.deviceId = Util.data.getCurrentDeviceId(store.getState());
+    return this.download(this.deviceId)
       .then((presentPeopleInCloud) => {
         let locationsInSphere = this._getLocalData(store);
         this.syncDown(locationsInSphere, presentPeopleInCloud);
@@ -40,61 +37,63 @@ export class PresenceSyncer extends SyncingSphereItemBase {
       .then(() => { return this.actions });
   }
 
-  syncDown(locationsInSphere, presentPeopleInCloud) : object {
-    let localLocationIdsSynced = {};
+  syncDown(locationsInSphere, presentPeopleInCloud) {
     let cloudIdMap = this._getCloudIdMap(locationsInSphere);
 
     // go through all locations in the cloud.
+    let usersByLocation = {};
     presentPeopleInCloud.forEach((user_in_cloud) => { // underscores so its visually different from locationInState
+      let userId = user_in_cloud.userId;
       if (user_in_cloud.locations && user_in_cloud.locations.length > 0) {
-
+        user_in_cloud.locations.forEach((locationCloudId) => {
+          let localId = cloudIdMap[locationCloudId];
+          if (localId) {
+            if (usersByLocation[localId] === undefined) {
+              usersByLocation[localId] = [];
+            }
+            usersByLocation[localId].push(userId);
+          }
+        });
       }
     });
 
-    this.globalSphereMap.locations = {...this.globalSphereMap.locations, ...cloudIdMap}
-    this.globalCloudIdMap.locations = {...this.globalCloudIdMap.locations, ...cloudIdMap};
-    return localLocationIdsSynced;
-  }
+    Object.keys(locationsInSphere).forEach((localLocationId) => {
+      // check if the data from the cloud is already in the location;
+      if (usersByLocation[localLocationId] === undefined) {
+        // nobody here! PURGE!'
+        locationsInSphere[localLocationId].presentUsers.forEach((userId) => {
+          if (userId === this.userId) { return; }
 
+          this.actions.push({
+            type:       'USER_EXIT_LOCATION',
+            sphereId:   this.localSphereId,
+            locationId: localLocationId,
+            data:       { userId: userId }
+          });
+        })
+      }
+      else {
+        // we ARE NOT in the location according to our DB, but are according to the CLOUD.
+        usersByLocation[localLocationId].forEach((userId) => {
+          if (userId === this.userId) { return; }
 
-
-
-  syncUsersInLocation(localLocationId, localLocation, location_from_cloud) {
-    // put the present users from the cloud into the location.
-    let peopleInCloudLocations = {};
-    if (Array.isArray(location_from_cloud.presentPeople) && location_from_cloud.presentPeople.length > 0) {
-      location_from_cloud.presentPeople.forEach((person) => {
-        if (peopleInCloudLocations[person.id] === undefined) {
-          peopleInCloudLocations[person.id] = true;
-          // check if the person exists in our sphere and if we are not that person. Also check if this user is already in the room.
-
-          if (person.id !== this.userId && this.globalCloudIdMap.users[person.id] !== undefined) {
-            // if no local location exists, or if it does and it has a present user.
-            if (!localLocation || localLocation && localLocation.presentUsers && localLocation.presentUsers.indexOf(person.id) === -1) {
-              this.actions.push({
-                type:       'USER_ENTER_LOCATION',
-                sphereId:   this.localSphereId,
-                locationId: localLocationId,
-                data:       { userId: person.id }
-              });
-            }
+          if (locationsInSphere[localLocationId].presentUsers.indexOf(userId) === -1) {
+            // enter user into the location!
+            this.actions.push({
+              type:       'USER_ENTER_LOCATION',
+              sphereId:   this.localSphereId,
+              locationId: localLocationId,
+              data:       { userId: userId }
+            });
           }
-        }
-      });
-    }
+        })
 
+        // we ARE in the location according to our DB, but are NOT according to the CLOUD.
+        locationsInSphere[localLocationId].presentUsers.forEach((userId) => {
+          if (userId === this.userId) { return; }
 
-    // remove the users from this location that are not in the cloud and that are not the current user
-    let peopleInCurrentLocation = {};
-    if (localLocation && localLocation.presentUsers) {
-      localLocation.presentUsers.forEach((userId) => {
-        // remove duplicates
-        if (peopleInCurrentLocation[userId] === undefined) {
-          // once is OK
-          peopleInCurrentLocation[userId] = true;
-
-          // if this person is not in the location anymore (according to the cloud) and is not the current user, we remove him from the room.
-          if (peopleInCloudLocations[userId] === undefined && userId !== this.userId) {
+          if (usersByLocation[localLocationId].indexOf(userId) === -1) {
+            // exit user from the location
             this.actions.push({
               type:       'USER_EXIT_LOCATION',
               sphereId:   this.localSphereId,
@@ -102,50 +101,10 @@ export class PresenceSyncer extends SyncingSphereItemBase {
               data:       { userId: userId }
             });
           }
-        }
-        else {
-          // if we're here, that means a userId is in this location more than once. We cannot have that.
-          this.actions.push({
-            type:       'USER_EXIT_LOCATION',
-            sphereId:   this.localSphereId,
-            locationId: localLocationId,
-            data:       { userId: userId }
-          });
-        }
-      })
-    }
-  };
-
-
-  syncLocalLocationDown(localId, locationInState, location_from_cloud) {
-
-    if (shouldUpdateInCloud(locationInState.config, location_from_cloud)) {
-
-      if (!Permissions.inSphere(this.localSphereId).canUploadLocations) { return }
-
-      this.transferPromises.push(
-        transferLocations.updateOnCloud({
-          localId:   localId,
-          localData: locationInState,
-          localSphereId: this.localSphereId,
-          cloudSphereId: this.cloudSphereId,
-          cloudId:   location_from_cloud.id,
         })
-        .catch(() => {})
-      );
-    }
-    else if (shouldUpdateLocally(locationInState.config, location_from_cloud)) {
-      transferLocations.updateLocal(this.actions, {
-        localId:   localId,
-        localSphereId: this.localSphereId,
-        cloudData: location_from_cloud
-      })
-    }
-
-    if (!locationInState.config.cloudId) {
-      this.actions.push({type:'UPDATE_LOCATION_CLOUD_ID', sphereId: this.localSphereId, locationId: localId, data:{cloudId: location_from_cloud.id}})
-    }
-  };
+      }
+    })
+  }
 
 
   _getCloudIdMap(locationsInState) {
@@ -161,15 +120,5 @@ export class PresenceSyncer extends SyncingSphereItemBase {
     return cloudIdMap;
   }
 
-  _searchForLocalMatch(locationsInState, locationInCloud) {
-    let locationIds = Object.keys(locationsInState);
-    for (let i = 0; i < locationIds.length; i++) {
-      if (locationIds[i] === locationInCloud.id) {
-        return locationIds[i];
-      }
-    }
-
-    return null;
-  }
 
 }
