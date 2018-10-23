@@ -59,5 +59,47 @@ export const devices = {
       'DELETE',
       '/users/{id}/deleteAllDevices'
     );
-  }
+  },
+
+  enterSphere: function (localSphereId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/enterSphere/',
+      { data: {sphereId:cloudSphereId}, background: background },
+      'query'
+    );
+  },
+
+  enterLocation: function (localSphereId, localLocationId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/enterLocation/',
+      { data: {sphereId:cloudSphereId, locationId:cloudLocationId }, background: background },
+      'query'
+    );
+  },
+
+  exitLocation: function (localSphereId, localLocationId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/exitLocation/',
+      { data: {sphereId:cloudSphereId, locationId:cloudLocationId }, background: background },
+      'query'
+    );
+  },
+
+  exitSphere: function (localSphereId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/exitLocation/',
+      { data: {sphereId:cloudSphereId}, background: background },
+      'query'
+    );
+  },
 };
