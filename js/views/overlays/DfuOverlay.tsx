@@ -174,6 +174,7 @@ export class DfuOverlay extends Component<any, any> {
     this.unsubscribe = [];
   }
 
+
   initializeProcess() {
     FirmwareHandler.dfuInProgress = true;
     this.killProcess = false;
@@ -182,6 +183,7 @@ export class DfuOverlay extends Component<any, any> {
       BackHandler.addEventListener('hardwareBackPress', this.backButtonFunction);
     }
   }
+
 
   startProcess() {
     this.initializeProcess();

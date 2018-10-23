@@ -24,11 +24,11 @@ class LanguageManager {
       if (this.textSource[file] === undefined || this.textSource[file][key] === undefined) {
         let str = this.textSource['__UNIVERSAL'][key](a,b,c,d,e)
         // return str
-        return "$$$" + str;
+        return "#" + str;
       }
       let str = this.textSource[file][key](a,b,c,d,e)
       // return str
-      return "$$$" + str
+      return "#" + str
     }
   }
 

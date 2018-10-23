@@ -76,7 +76,7 @@ export class SettingsBleDebug extends Component<any, any> {
 
     const store = this.props.store;
     let state = store.getState();
-    let sphereId = Util.data.getPresentSphereId(state);
+    let sphereId = Util.data.getReferenceId(state);
     if (!sphereId) { return [{label: lang("You_have_to_be_in_a_spher"), type: 'largeExplanation'}]; }
     let sphere = state.spheres[sphereId];
     let stones = sphere.stones;

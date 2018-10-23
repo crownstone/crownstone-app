@@ -180,7 +180,7 @@ export class SettingsLocalizationDebug extends Component<any, any> {
   render() {
     const store = this.props.store;
     let state = store.getState();
-    let sphereId = Util.data.getPresentSphereId(state);
+    let sphereId = Util.data.getReferenceId(state);
     this.sphereId = sphereId;
 
     if (sphereId === null) {

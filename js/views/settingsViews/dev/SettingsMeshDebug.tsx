@@ -14,13 +14,13 @@ import {
   View
 } from 'react-native';
 
-import { Background } from '../../components/Background'
-import { ListEditableItems } from '../../components/ListEditableItems'
-import {colors, OrangeLine} from '../../styles'
-import {Util} from "../../../util/Util";
-import {IconCircle} from "../../components/IconCircle";
-import {MeshUtil} from "../../../util/MeshUtil";
-import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
+import { Background }          from '../../components/Background'
+import { ListEditableItems }   from '../../components/ListEditableItems'
+import { colors, OrangeLine }  from '../../styles'
+import { Util }                from "../../../util/Util";
+import { IconCircle }          from "../../components/IconCircle";
+import { MeshUtil }            from "../../../util/MeshUtil";
+import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsMeshDebug extends Component<any, any> {
@@ -78,8 +78,9 @@ export class SettingsMeshDebug extends Component<any, any> {
 
     const store = this.props.store;
     let state = store.getState();
-    let sphereId = Util.data.getPresentSphereId(state);
-    if (!sphereId) { return [{label: lang("You_have_to_be_in_a_spher"), type: 'largeExplanation'}]; }
+    let sphereId = Util.data.getReferenceId(state);
+    if (!sphereId) { return [{label: lang("You_have_to_be_in_a_sphere"), type: 'largeExplanation'}]; }
+
     let sphere = state.spheres[sphereId];
     let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
@@ -92,7 +93,7 @@ export class SettingsMeshDebug extends Component<any, any> {
     });
 
 
-    this.props.eventBus.emit('showProgress', {progress: 0, progressText: lang("Setting_Mesh_Channels__St")});
+    this.props.eventBus.emit('showProgress', {progress: 0, progressText: lang("Setting_Mesh_Channels__St", channel)});
 
     let evaluateRefreshProgress = () => {
       this.refreshCount += 1
@@ -100,16 +101,15 @@ export class SettingsMeshDebug extends Component<any, any> {
         Alert.alert(
           lang("_All_done___This_went_ver_header"),
           lang("_All_done___This_went_ver_body"),
-          [{text:lang("_All_done___This_went_ver_left")}])
-        this.props.eventBus.emit('updateProgress', {progress:1, progressText: lang("Done")});
+          [{text:lang("_All_done___This_went_ver_left")}]
+        );
+        this.props.eventBus.emit('updateProgress', { progress: 1, progressText: lang("Done") });
         setTimeout(() => { this.props.eventBus.emit("hideProgress");}, 500);
-        const store = this.props.store;
-        const state = store.getState();
-        let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
+
         MeshUtil.clearMeshNetworkIds(store, sphereId);
       }
       else {
-        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: lang("Setting_Mesh_Channels_n_n",this.refreshCount,this.refreshAmountRequired)});
+        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: lang("Setting_Mesh_Channels_n_n",channel,this.refreshCount,this.refreshAmountRequired)});
       }
     }
 
@@ -125,9 +125,9 @@ export class SettingsMeshDebug extends Component<any, any> {
           })
           .catch(() => {
             Alert.alert(
-lang("_Missed_one__I_could_not__header"),
-lang("_Missed_one__I_could_not__body",stone.config.name),
-[{text:lang("_Missed_one__I_could_not__left")}])
+              lang("_Missed_one__I_could_not__header"),
+              lang("_Missed_one__I_could_not__body",stone.config.name),
+              [{text:lang("_Missed_one__I_could_not__left")}])
             evaluateRefreshProgress()
           })
       }
@@ -140,7 +140,7 @@ lang("_Missed_one__I_could_not__body",stone.config.name),
 
     const store = this.props.store;
     let state = store.getState();
-    let sphereId = Util.data.getPresentSphereId(state);
+    let sphereId = Util.data.getReferenceId(state);
     if (!sphereId) { return [{label: lang("You_have_to_be_in_a_sphere"), type: 'largeExplanation'}]; }
     let sphere = state.spheres[sphereId];
     let stones = sphere.stones;
@@ -149,7 +149,7 @@ lang("_Missed_one__I_could_not__body",stone.config.name),
     items.push({
       type:'explanation',
       label: lang("VISIBLE_STONES"),
-    })
+    });
 
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
@@ -169,29 +169,25 @@ lang("_Missed_one__I_could_not__body",stone.config.name),
     items.push({
       type:'explanation',
       label: lang("ACTIONS"),
-    })
+    });
 
     items.push({
       type:'button',
-      label: lang("Set_to_Channel___"),
-      callback: () => {
-        this._setChannel(37)
-      }
-    })
+      label: lang("Set_to_Channel___", 37),
+      callback: () => { this._setChannel(37); }
+    });
+
     items.push({
       type:'button',
-      label: lang("Set_to_Channel___"),
-      callback: () => {
-        this._setChannel(38)
-      }
-    })
+      label: lang("Set_to_Channel___", 38),
+      callback: () => { this._setChannel(38); }
+    });
+
     items.push({
       type: 'button',
-      label: lang("Set_to_Channel___"),
-      callback: () => {
-        this._setChannel(39)
-      }
-    })
+      label: lang("Set_to_Channel___", 39),
+      callback: () => { this._setChannel(39); }
+    });
 
     return items;
   }

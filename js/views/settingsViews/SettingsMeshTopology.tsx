@@ -244,7 +244,7 @@ export class SettingsMeshTopology extends Component<any, any> {
       edges.push(connections[edgeId]);
 
       // used for comparative measurements.
-      // this._debugPrints(sphereId, connections, edgeId, stones);
+      this._debugPrints(sphereId, connections, edgeId, stones);
     });
 
     return (

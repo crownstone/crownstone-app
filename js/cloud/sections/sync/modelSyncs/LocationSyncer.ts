@@ -85,7 +85,6 @@ export class LocationSyncer extends SyncingSphereItemBase {
   }
 
   syncChildren(localId, localLocation, location_from_cloud) {
-    this.syncUsersInLocation(localId, localLocation, location_from_cloud)
     this.syncLayoutPosition(localId, localLocation, location_from_cloud);
   }
 
@@ -136,62 +135,6 @@ export class LocationSyncer extends SyncingSphereItemBase {
   }
 
 
-  syncUsersInLocation(localLocationId, localLocation, location_from_cloud) {
-    // put the present users from the cloud into the location.
-    let peopleInCloudLocations = {};
-    if (Array.isArray(location_from_cloud.presentPeople) && location_from_cloud.presentPeople.length > 0) {
-      location_from_cloud.presentPeople.forEach((person) => {
-        if (peopleInCloudLocations[person.id] === undefined) {
-          peopleInCloudLocations[person.id] = true;
-          // check if the person exists in our sphere and if we are not that person. Also check if this user is already in the room.
-
-          if (person.id !== this.userId && this.globalCloudIdMap.users[person.id] !== undefined) {
-            // if no local location exists, or if it does and it has a present user.
-            if (!localLocation || localLocation && localLocation.presentUsers && localLocation.presentUsers.indexOf(person.id) === -1) {
-              this.actions.push({
-                type:       'USER_ENTER_LOCATION',
-                sphereId:   this.localSphereId,
-                locationId: localLocationId,
-                data:       { userId: person.id }
-              });
-            }
-          }
-        }
-      });
-    }
-
-
-    // remove the users from this location that are not in the cloud and that are not the current user
-    let peopleInCurrentLocation = {};
-    if (localLocation && localLocation.presentUsers) {
-      localLocation.presentUsers.forEach((userId) => {
-        // remove duplicates
-        if (peopleInCurrentLocation[userId] === undefined) {
-          // once is OK
-          peopleInCurrentLocation[userId] = true;
-
-          // if this person is not in the location anymore (according to the cloud) and is not the current user, we remove him from the room.
-          if (peopleInCloudLocations[userId] === undefined && userId !== this.userId) {
-            this.actions.push({
-              type:       'USER_EXIT_LOCATION',
-              sphereId:   this.localSphereId,
-              locationId: localLocationId,
-              data:       { userId: userId }
-            });
-          }
-        }
-        else {
-          // if we're here, that means a userId is in this location more than once. We cannot have that.
-          this.actions.push({
-            type:       'USER_EXIT_LOCATION',
-            sphereId:   this.localSphereId,
-            locationId: localLocationId,
-            data:       { userId: userId }
-          });
-        }
-      })
-    }
-  };
 
   syncUp(store, locationsInState, localLocationIdsSynced) {
     let localLocationIds = Object.keys(locationsInState);

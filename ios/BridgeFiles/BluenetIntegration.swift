@@ -42,14 +42,14 @@ open class BluenetJS: RCTEventEmitter {
       print("BluenetBridge: ----- BLUENET BRIDGE: Rerouting events")
       
       _ = globalBluenet.classifier.subscribe("__classifierProbabilities", callback:{ (data) -> Void in
-        print("__classifierProbabilities",data)
+        //print("__classifierProbabilities",data)
         if let dict = data as? NSDictionary {
           self.sendEvent(withName: "classifierProbabilities", body: dict)
         }
       })
       
       _ = globalBluenet.classifier.subscribe("__classifierResult", callback: { (data) -> Void in
-        print("__classifierResult",data)
+        //print("__classifierResult",data)
         if let dict = data as? NSDictionary {
           self.sendEvent(withName: "classifierResult", body: dict)
         }

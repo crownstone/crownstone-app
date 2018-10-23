@@ -99,19 +99,6 @@ class LocationHandlerClass {
 
     // update location of the sphere, start the keepAlive and check if we have to perform an enter sphere behaviour trigger.
     if (sphere !== undefined) {
-      let sphereIds = Object.keys(state.spheres);
-      let otherSpherePresentCount = 0;
-      sphereIds.forEach((checkSphereId) => {
-        if (state.spheres[checkSphereId].state.present === true && checkSphereId !== enteringSphereId) {
-          otherSpherePresentCount += 1;
-        }
-      });
-
-      if (otherSpherePresentCount > 0) {
-        Alert.alert(lang("Warning__Multiple_Active_"),lang("I_can_see__Spheres_from_h" ,(otherSpherePresentCount + 1)),[{text:lang("OK")}])
-      }
-
-
       LOG.info('LocationHandler: ENTER SPHERE', enteringSphereId);
 
       BluenetPromiseWrapper.requestLocation()
