@@ -150,7 +150,7 @@ export class SettingsApp extends Component<any, any> {
           // REMOVE USER FROM ALL SPHERES AND ALL LOCATIONS.
           let deviceId = Util.data.getCurrentDeviceId(state);
           if (deviceId) {
-            CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });  // will also clear location
+            CLOUD.forDevice(deviceId).exitSphere("*").catch(() => { });  // will also clear location
           }
         }
       }

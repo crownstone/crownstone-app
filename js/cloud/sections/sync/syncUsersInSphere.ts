@@ -2,6 +2,7 @@ import {LOG, LOGe} from "../../../logging/Log";
 import {LocationSyncer} from "./modelSyncs/LocationSyncer";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
+import { PresenceSyncer } from "./modelSyncs/PresenceSyncer";
 
 export const syncUsersInSphere = {
 
@@ -31,8 +32,8 @@ export const syncUsersInSphere = {
         return;
       }
 
-      let locationSyncer = new LocationSyncer(actions, [], activeSphereId, sphere.config.cloudId || activeSphereId, MapProvider.cloud2localMap, getGlobalIdMap());
-      locationSyncer.sync(store)
+      let presenceSyncer = new PresenceSyncer(actions, [], activeSphereId, sphere.config.cloudId || activeSphereId, MapProvider.cloud2localMap, getGlobalIdMap());
+      presenceSyncer.sync(store)
         .then(() => {
           if (actions.length > 0) {
             store.batchDispatch(actions);

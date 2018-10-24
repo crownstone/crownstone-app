@@ -18,6 +18,7 @@ import { MessageSyncer }      from "./MessageSyncer";
 import {LOG} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {ToonSyncer} from "./thirdParty/ToonSyncer";
+import { PresenceSyncer } from "./PresenceSyncer";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;
@@ -91,6 +92,7 @@ export class SphereSyncer extends SyncingBase {
     let stoneSyncer       = new StoneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let toonSyncer        = new ToonSyncer(       this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    let presenceSyncer    = new PresenceSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
 
     // sync sphere users
     LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");
@@ -104,6 +106,12 @@ export class SphereSyncer extends SyncingBase {
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE locationSyncer sync.");
+        LOG.info("SphereSync ",localId,": START presenceSyncer sync.");
+        // sync appliances
+        return presenceSyncer.sync(store);
+      })
+      .then(() => {
+        LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
         LOG.info("SphereSync ",localId,": START applianceSyncer sync.");
         // sync appliances
         return applianceSyncer.sync(store);
