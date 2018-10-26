@@ -26,6 +26,7 @@ import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {IconCircle} from "./IconCircle";
+import { AlternatingContent } from "./animated/AlternatingContent";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -50,17 +51,11 @@ class RoomCircleClass extends Component<any, any> {
   animatedMoving: boolean;
 
   previousCircle: any;
-  moveAnimationTimeout: any;
-  wiggleEnabled = false;
   color: any;
 
-  movementDuration: number;
-  jumpDuration: number;
-  fadeDuration: number;
-
-  unsubscribeSetupEvents = []
+  unsubscribeSetupEvents = [];
   unsubscribeStoreEvents: any;
-  unsubscribeControlEvents = []
+  unsubscribeControlEvents = [];
   renderState: any;
 
   scaledUp = true;
@@ -102,11 +97,6 @@ class RoomCircleClass extends Component<any, any> {
     this.animatedMoving = false;
 
     this.previousCircle = undefined;
-    this.moveAnimationTimeout = undefined;
-
-    this.movementDuration = 400;
-    this.jumpDuration = 400;
-    this.fadeDuration = this.movementDuration;
 
     this.unsubscribeSetupEvents = [];
 
@@ -131,7 +121,7 @@ class RoomCircleClass extends Component<any, any> {
     }
 
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("dfuStoneChange", () => {
-      this.forceUpdate()
+      this.forceUpdate();
     }));
 
 
@@ -182,43 +172,12 @@ class RoomCircleClass extends Component<any, any> {
     }));
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID) { return }
 
-    if (this.props.seeStonesInSetupMode !== prevProps.seeStonesInSetupMode) {
-      if (this.props.seeStonesInSetupMode) {
-        if (this.wiggleEnabled === false) {
-          this.wiggleEnabled = true;
-          this._startWiggle();
-        }
-      }
-      else {
-        this._stopWiggle();
-      }
-    }
-  }
-
-
-  _startWiggle() {
-    if (!this.wiggleEnabled) { return; }
-    this.state.scale.stopAnimation();
-    Animated.spring(this.state.scale, { toValue: Math.random() * 0.4 + 0.8, friction: 3, tension: 60 }).start(() => {
-      this._startWiggle();
-    });
-  }
-
-  _stopWiggle() {
-    this.state.scale.stopAnimation();
-    this.state.scale.setValue(1);
-    this.wiggleEnabled = false;
-  }
 
   componentWillUnmount() {
-    clearTimeout(this.moveAnimationTimeout);
     this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeControlEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
-    this._stopWiggle();
   }
 
 
@@ -276,12 +235,21 @@ class RoomCircleClass extends Component<any, any> {
 
     if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
       let smallSize = this.iconSize*1.1*0.6;
+
       return (
-        <View style={{width:this.iconSize*1.1, height: this.iconSize}}>
-          <Icon name="ios-sunny" size={smallSize} color={colors.blinkColor2.hex} style={{position:'absolute', top:-smallSize*0.024, left:smallSize*0.46}} />
-          <Icon name="c2-crownstone" size={this.iconSize*1.1} color='#ffffff' style={{position:'absolute', top:this.iconSize*0.15, left:0}} />
-        </View>
-      )
+        <AlternatingContent
+          style={{width:this.iconSize*1.1, height: this.iconSize, justifyContent:'center', alignItems:'center'}}
+          fadeDuration={500}
+          switchDuration={2000}
+          contentArray={[
+            <View style={{width:this.iconSize*1.1, height: this.iconSize}}>
+              <Icon name="ios-sunny" size={smallSize} color={colors.blinkColor2.hex} style={{position:'absolute', top:-smallSize*0.024, left:smallSize*0.465}} />
+              <Icon name="c2-crownstone" size={this.iconSize*1.1} color='#ffffff' style={{position:'absolute', top:this.iconSize*0.15, left:0}} />
+            </View>,
+            <Icon name="c1-tap" size={this.iconSize*0.9} style={{paddingLeft:0.1*this.iconSize}} color='#ffffff'/>,
+            <Icon name="c3-addRounded" size={this.iconSize*0.9} color='#ffffff'/>
+          ]} />
+      );
     }
     else if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID) {
       return <Icon name="c2-pluginFilled" size={this.iconSize} color='#ffffff'/>;

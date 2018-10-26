@@ -293,7 +293,7 @@ class BatchCommandHandlerClass {
       let state = this.store.getState();
 
       let nearestDirect = RssiLogger.getNearestStoneId(directTargets, 2, rssiScanThreshold);
-      if (!nearestDirect && rssiScanThreshold !== null) { nearestDirect = RssiLogger.getNearestStoneId(directTargets,    2);                    }
+      if (!nearestDirect && rssiScanThreshold !== null) { nearestDirect = RssiLogger.getNearestStoneId(directTargets,    2); }
 
       let foundId = nearestDirect;
       let foundSphereId = directTargets[nearestDirect];
@@ -318,6 +318,7 @@ class BatchCommandHandlerClass {
         });
       }
 
+      LOGv.bch("BatchCommandHandler:", this._commandHandler.commands)
       reject({code: errorCodes.NO_STONES_FOUND, message:"No stones found in connection target obtaining"});
     });
   }

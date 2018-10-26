@@ -191,7 +191,7 @@ export class SetupHelper {
                   if (Util.data.getTapToToggleCalibration(state) === null) {
                     Scheduler.scheduleCallback(() => {
                       if (SetupStateHandler.isSetupInProgress() === false) {
-                        eventBus.emit("CalibrateTapToToggle")
+                        eventBus.emit("CalibrateTapToToggle");
                       }
                     }, 1500, 'setup t2t timeout');
                   }

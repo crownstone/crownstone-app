@@ -35,7 +35,6 @@ export class StatusCommunication extends Component<any, any> {
   componentDidMount() {
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => { this.forceUpdate(); }));
 
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
