@@ -1,5 +1,5 @@
 import {request, download, downloadFile} from '../cloudCore'
-import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
+import { DEBUG, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD } from "../../ExternalConfig";
 import { preparePictureURI } from '../../util/Util'
 import {LOG, LOGe, LOGi} from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -88,13 +88,18 @@ export const cloudApiBase = {
   downloadFile: function(url, targetPath, callbacks) {
     return downloadFile(url, targetPath, callbacks);
   },
-  _handleNetworkError: function (error, options, endpoint, promiseBody, reject) {
+  _handleNetworkError: function (error, options, endpoint, promiseBody, reject, startTime) {
     // this will eliminate all cloud requests.
     if (SILENCE_CLOUD === true)
       return;
 
     if (options.background !== true) {
-      this._networkErrorHandler(error);
+      // make sure we do not show this popup when too much time has passed.
+      // this can happen when the app starts to sleep and wakes up much later, resulting in the user encountering an error message on app open.
+      if (new Date().valueOf()  - startTime < 1.5*NETWORK_REQUEST_TIMEOUT) {
+        this._networkErrorHandler(error);
+      }
+
       reject(error);
     }
     else {
@@ -145,6 +150,7 @@ export const cloudApiBase = {
 
   _finalizeRequest: function(promise, options, endpoint, promiseBody) {
     return new Promise((resolve, reject) => {
+      let startTime = new Date().valueOf();
       promise
         .then((reply) => {
           if (reply.status === 200 || reply.status === 204)
@@ -154,7 +160,7 @@ export const cloudApiBase = {
         })
         .catch((error) => {
           //console.trace(error, this);
-          this._handleNetworkError(error, options, endpoint, promiseBody, reject);
+          this._handleNetworkError(error, options, endpoint, promiseBody, reject, startTime);
         })
     });
   },

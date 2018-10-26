@@ -23,30 +23,13 @@ export const devices = {
     );
   },
 
-  updateDeviceLocation: function (localLocationId, background = true) {
-    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
-      'PUT',
-      '/Devices/{id}/currentLocation/' + cloudLocationId,
-      { background: background }
-    );
-  },
-
-  updateDeviceSphere: function (localSphereId, background = true) {
-    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
-      'PUT',
-      '/Devices/{id}/currentSphere/' + cloudSphereId,
-      { background: background }
-    );
-  },
-
   sendTestNotification: function() {
     return this._setupRequest(
       'POST',
       '/Devices/{id}/testNotification/'
     );
   },
+
   deleteDevice: function(deviceId) {
     return this._setupRequest(
       'DELETE',
