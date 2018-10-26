@@ -4,11 +4,15 @@ import { AppState } from 'react-native';
 export class LiveComponent<a, b> extends Component<a, b> {
   ___subscribedToAppState = false;
   ___shouldForceUpdate = false;
+  ___hasOverriddenUnmount = false;
 
   constructor(props) {
     super(props);
-    super.componentWillUnmount = () => {
 
+    let unmounter = this.componentWillUnmount;
+    this.componentWillUnmount = () => {
+      this.___cleanup();
+      unmounter.call(this)
     }
   }
 
@@ -35,7 +39,7 @@ export class LiveComponent<a, b> extends Component<a, b> {
     }
   }
 
-  componentWillUnmount() {
+  ___cleanup() {
     if (this.___subscribedToAppState) {
       AppState.removeEventListener('change', this.__appStateSubscription)
     }
