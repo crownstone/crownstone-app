@@ -47,9 +47,10 @@ import { RoomDeleted }            from "../static/RoomDeleted";
 import { preparePictureURI }      from "../../util/Util";
 import { Scheduler }              from "../../logic/Scheduler";
 import { topBarStyle }            from "../components/topbar/TopbarStyles";
+import { LiveComponent }          from "../LiveComponent";
 
 
-export class RoomOverview extends Component<any, any> {
+export class RoomOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
