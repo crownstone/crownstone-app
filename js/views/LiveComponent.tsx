@@ -17,7 +17,7 @@ export class LiveComponent<a, b> extends Component<a, b> {
   }
 
   forceUpdate() {
-    if (AppState.currentState === 'background') {
+    if (AppState.currentState !== 'active') {
       this.___shouldForceUpdate = true;
       if (this.___subscribedToAppState === false) {
         this.___subscribedToAppState = true;
