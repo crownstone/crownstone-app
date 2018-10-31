@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -26,7 +27,7 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
-export class SphereRoomOverview extends Component<any, any> {
+export class SphereRoomOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     let state = params.store.getState();

@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -27,7 +28,7 @@ import {eventBus} from "../../../util/EventBus";
 import {textStyle} from "./DeviceBehaviour";
 
 
-export class DevicePowerCurve extends Component<any, any> {
+export class DevicePowerCurve extends LiveComponent<any, any> {
   unsubscribeStoreEvents;
   // debugInterval;
 

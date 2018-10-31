@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -34,7 +35,7 @@ let ALERT_TYPES = {
 
 const FLOATING_CROWNSTONE_LOCATION_ID = null;
 
-class RoomCircleClass extends Component<any, any> {
+class RoomCircleClass extends LiveComponent<any, any> {
   initializedPosition: any;
   energyLevels: any;
   usage: any;

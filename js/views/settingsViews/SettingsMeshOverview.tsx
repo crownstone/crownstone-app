@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -24,7 +25,7 @@ import { IconCircle } from "../components/IconCircle";
 
 let FLOATING_NETWORK_KEY = '__null';
 
-export class SettingsMeshOverview extends Component<any, any> {
+export class SettingsMeshOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: lang("Mesh_Overview")}
   };

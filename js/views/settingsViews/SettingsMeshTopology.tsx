@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -34,7 +35,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
 
-export class SettingsMeshTopology extends Component<any, any> {
+export class SettingsMeshTopology extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: lang("Mesh_Topology"), headerRight:
       <TopbarButton

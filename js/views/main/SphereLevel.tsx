@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -29,7 +30,7 @@ import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedVi
 import {Util} from "../../util/Util";
 import {SphereCircle} from "../components/SphereCircle";
 
-export class SphereLevel extends Component<any, any> {
+export class SphereLevel extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
 
   _baseRadius;

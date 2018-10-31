@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -27,7 +28,7 @@ import {getPresentUsersInLocation} from "../../../util/DataUtil";
 import {AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION} from "../../../ExternalConfig";
 
 
-export class SettingsLocalizationDebug extends Component<any, any> {
+export class SettingsLocalizationDebug extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Localization_Debug"),

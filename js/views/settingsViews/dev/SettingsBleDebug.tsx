@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -21,7 +22,7 @@ import {Util} from "../../../util/Util";
 import {IconCircle} from "../../components/IconCircle";
 const Actions = require('react-native-router-flux').Actions;
 
-export class SettingsBleDebug extends Component<any, any> {
+export class SettingsBleDebug extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("BLE_Debug"),

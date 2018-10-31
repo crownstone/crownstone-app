@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import { AppState } from 'react-native';
 
+
 export class LiveComponent<a, b> extends Component<a, b> {
   ___subscribedToAppState = false;
   ___shouldForceUpdate = false;

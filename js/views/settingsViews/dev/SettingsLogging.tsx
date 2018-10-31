@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -23,7 +24,7 @@ import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
 import {clearLogs} from "../../../logging/LogUtil";
 
-export class SettingsLogging extends Component<any, any> {
+export class SettingsLogging extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Logging"),

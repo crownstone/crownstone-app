@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -22,7 +23,7 @@ import {UserPicture} from "../components/animated/UserPicture";
 import {TextCircle} from "../components/animated/TextCircle";
 
 
-export class UserLayer extends Component<any, any> {
+export class UserLayer extends LiveComponent<any, any> {
   unsubscribeStoreEvents;
   users: any;
   maxUsersShownOnRoom : number;

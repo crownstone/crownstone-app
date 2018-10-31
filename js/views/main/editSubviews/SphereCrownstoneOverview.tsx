@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -27,7 +28,7 @@ import {BackAction} from "../../../util/Back";
 
 const Actions = require('react-native-router-flux').Actions;
 
-export class SphereCrownstoneOverview extends Component<any, any> {
+export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     let state = params.store.getState();

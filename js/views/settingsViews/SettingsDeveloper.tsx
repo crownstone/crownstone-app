@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -29,7 +30,7 @@ import {CLOUD_ADDRESS} from "../../ExternalConfig";
 import {Scheduler} from "../../logic/Scheduler";
 
 
-export class SettingsDeveloper extends Component<any, any> {
+export class SettingsDeveloper extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Developer"),

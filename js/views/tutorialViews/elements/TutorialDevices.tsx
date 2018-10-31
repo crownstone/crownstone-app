@@ -49,11 +49,9 @@ export class TutorialDevices extends Component<any, any> {
 
               let goToSphereOverview = () => {
                 if (Platform.OS === 'android') {
-                  eventBus.emit("userLoggedInFinished");
                   Actions.drawer({type: 'reset'});
                 }
                 else {
-                  eventBus.emit("userLoggedInFinished");
                   Actions.tabBar({type: 'reset'});
                 }
               };

@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -27,7 +28,7 @@ import {KeepAliveHandler} from "../../backgroundProcesses/KeepAliveHandler";
 import {LocationHandler} from "../../native/localization/LocationHandler";
 
 
-export class SettingsApp extends Component<any, any> {
+export class SettingsApp extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: lang("App_Settings")}
   };

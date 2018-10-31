@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -48,7 +49,7 @@ const ZOOM_LEVELS = {
   room: 'room'
 }
 
-export class SphereOverview extends Component<any, any> {
+export class SphereOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     if (params === undefined) { return }

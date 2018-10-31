@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -46,7 +47,7 @@ timeOptionsV2.push({label: lang("___minutes"),   value: 600});
 timeOptionsV2.push({label: lang("___minutes"),   value: 900});
 timeOptionsV2.push({label: lang("___minutes"),   value: 1800});
 
-export class DeviceBehaviourEdit extends Component<any, any> {
+export class DeviceBehaviourEdit extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Behaviour"),

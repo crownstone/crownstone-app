@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -29,7 +30,7 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {EventBusClass} from "../../util/EventBus";
 import {BackAction} from "../../util/Back";
 
-export class ApplianceSelection extends Component<{
+export class ApplianceSelection extends LiveComponent<{
   sphereId: string,
   applianceId: string,
   stoneId: string,

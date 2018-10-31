@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -28,7 +29,7 @@ import {Icon} from "./Icon";
 import {AnimatedIconCircle} from "./animated/AnimatedIconCircle";
 
 
-class MeshElementClass extends Component<any, any> {
+class MeshElementClass extends LiveComponent<any, any> {
   usage : any;
   borderWidth : number;
   animating : boolean;

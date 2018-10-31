@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../../LiveComponent";
 
 import { Languages } from "../../../../Languages"
 
@@ -19,7 +20,7 @@ import {
 import { Util } from "../../../../util/Util";
 import { TimeStep } from './TimeStep'
 
-export class GraphTimeline extends Component<any, any> {
+export class GraphTimeline extends LiveComponent<any, any> {
   timePaddingFactor = 2;
   startTimeStamp = 0;
   endTimeStamp = 0;

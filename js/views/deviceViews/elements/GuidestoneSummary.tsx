@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -25,7 +26,7 @@ import {Util} from "../../../util/Util";
 import {DeviceInformation} from "./DeviceSummary";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
-export class GuidestoneSummary extends Component<any, any> {
+export class GuidestoneSummary extends LiveComponent<any, any> {
   unsubscribeStoreEvents
   componentDidMount() {
     // tell the component exactly when it should redraw

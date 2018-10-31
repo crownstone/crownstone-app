@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -38,7 +39,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {ScheduleUtil} from "../../../util/ScheduleUtil";
 
 
-export class DeviceSchedule extends Component<any, any> {
+export class DeviceSchedule extends LiveComponent<any, any> {
 
   unsubscribeStoreEvents
   componentDidMount() {

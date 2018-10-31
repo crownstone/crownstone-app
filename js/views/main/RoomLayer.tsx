@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -29,7 +30,7 @@ import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedVi
 import {Util} from "../../util/Util";
 import {Sphere} from "./Sphere";
 
-export class RoomLayer extends Component<any, any> {
+export class RoomLayer extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
 
   _baseRadius;

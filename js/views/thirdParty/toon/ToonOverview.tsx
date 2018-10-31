@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -30,7 +31,7 @@ import {ScaledImage} from "../../components/ScaledImage";
 import {deviceStyles} from "../../deviceViews/DeviceOverview";
 
 
-export class ToonOverview extends Component<any, any> {
+export class ToonOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
@@ -38,7 +39,6 @@ export class ToonOverview extends Component<any, any> {
       headerTruncatedBackTitle: lang("Back"),
     }
   };
-
 
   unsubscribe;
   deleting;

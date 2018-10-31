@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -32,7 +33,7 @@ import {MessageEntry} from "./MessageEntry";
 import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 
 
-export class MessageInbox extends Component<any, any> {
+export class MessageInbox extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 

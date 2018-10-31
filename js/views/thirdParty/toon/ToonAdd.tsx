@@ -110,6 +110,7 @@ export class ToonAdd extends Component<any, any> {
                   toonId: agreementId.agreementId,
                   data: {
                     enabled: true,
+                    cloudId: toon.id,
                     toonAgreementId: agreementId.agreementId,
                     toonAddress: agreementId.street + " " + agreementId.houseNumber,
                     schedule: toon.schedule
@@ -118,14 +119,16 @@ export class ToonAdd extends Component<any, any> {
               })
           )
         })
-        return Promise.all(promises).then(() => { this.props.store.batchDispatch(actions) })
+        return Promise.all(promises).then(() => {
+          console.log("Dispatching", actions);
+          this.props.store.batchDispatch(actions) })
       })
       .then(() => {
         if (agreementIds.length === 0) {
           Alert.alert(
-lang("_No_Toon_Found__This_acco_header"),
-lang("_No_Toon_Found__This_acco_body"),
-[{text:lang("_No_Toon_Found__This_acco_left")}])
+            lang("_No_Toon_Found__This_acco_header"),
+            lang("_No_Toon_Found__This_acco_body"),
+            [{text:lang("_No_Toon_Found__This_acco_left")}])
         }
         else {
           this.setState({success:true, processing:false}, () => {
@@ -145,17 +148,17 @@ lang("_No_Toon_Found__This_acco_body"),
         if (err && typeof err === 'object' && err.code) {
           if (err.code === 1 && this.state.code) {
             Alert.alert(
-lang("_Whoops__The_provided_cod_header"),
-lang("_Whoops__The_provided_cod_body"),
-[{text:lang("_Whoops__The_provided_cod_left")}]);
+              lang("_Whoops__The_provided_cod_header"),
+              lang("_Whoops__The_provided_cod_body"),
+              [{text:lang("_Whoops__The_provided_cod_left")}]);
             return;
           }
         }
 
         Alert.alert(
-lang("_Whoops__Something_went_w_header"),
-lang("_Whoops__Something_went_w_body"),
-[{text:lang("_Whoops__Something_went_w_left")}]);
+          lang("_Whoops__Something_went_w_header"),
+          lang("_Whoops__Something_went_w_body"),
+          [{text:lang("_Whoops__Something_went_w_left")}]);
       })
   }
 

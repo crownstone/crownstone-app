@@ -301,8 +301,8 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_MESSAGES":
       break;
     case "UPDATE_SYNC_ACTIVITY_TIME":
-    case "ADD_TOON":
       break;
+    case "ADD_TOON":
     case "TOON_UPDATE_SETTINGS":
     case "TOON_UPDATE_SCHEDULE":
     case "REMOVE_TOON":

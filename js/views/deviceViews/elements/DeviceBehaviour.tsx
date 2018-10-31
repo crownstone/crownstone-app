@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -29,7 +30,7 @@ import { Permissions }                      from "../../../backgroundProcesses/P
 let DISABLED_COLOR = colors.gray.hex;
 let WARNING_COLOR = colors.csOrange.hex;
 
-export class DeviceBehaviour extends Component<any, any> {
+export class DeviceBehaviour extends LiveComponent<any, any> {
 
   unsubscribeStoreEvents
   componentDidMount() {

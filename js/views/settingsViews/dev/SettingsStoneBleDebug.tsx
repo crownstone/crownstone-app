@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -23,7 +24,7 @@ import {Scheduler} from "../../../logic/Scheduler";
 
 const triggerId = "SettingsStoneBleDebug";
 
-export class SettingsStoneBleDebug extends Component<any, any> {
+export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   unsubscribeNative : any[] = [];
   _crownstoneId : number;
   _ibeaconUuid : string;

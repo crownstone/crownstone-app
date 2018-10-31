@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -30,7 +31,7 @@ import {Util} from "../../../util/Util";
 import {getActiveToonProgram} from "../../../backgroundProcesses/thirdParty/ToonIntegration";
 
 
-export class ToonSettings extends Component<any, any> {
+export class ToonSettings extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
@@ -89,7 +90,8 @@ export class ToonSettings extends Component<any, any> {
 
     items.push({
       type: 'explanation',
-      label: lang("MANUAL_UPDATE")});
+      label: lang("MANUAL_UPDATE")
+    });
 
     items.push({
       label: lang("Update_Schedule"),
@@ -98,7 +100,7 @@ export class ToonSettings extends Component<any, any> {
       icon: <IconButton name={'md-calendar'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green2.hex}}/>,
       callback: () => {
         this.props.eventBus.emit("showLoading", "Refreshing Toon Schedule...")
-          CLOUD.forToon(this.props.toonId).thirdParty.toon.updateToonSchedule(false)
+          CLOUD.forToon(toon.cloudId).thirdParty.toon.updateToonSchedule(false)
             .then((toon) => {
               this.props.store.dispatch({
                 type: 'TOON_UPDATE_SCHEDULE',
@@ -114,18 +116,18 @@ export class ToonSettings extends Component<any, any> {
             .catch((err) => {
               this.props.eventBus.emit("hideLoading")
               Alert.alert(
-lang("_Whoops__Something_went_w_header"),
-lang("_Whoops__Something_went_w_body"),
-[{text:lang("_Whoops__Something_went_w_left")}])
+                lang("_Whoops__Something_went_w_header"),
+                lang("_Whoops__Something_went_w_body"),
+                [{text:lang("_Whoops__Something_went_w_left")}
+              ]);
             })
       }
     });
     items.push({
       type: 'explanation',
       below: true,
-      label: lang("We_automatically_update_t")});
-
-
+      label: lang("We_automatically_update_t")
+    });
 
     if (Object.keys(sphere.thirdParty.toons).length === 1) {
       items.push({
@@ -245,11 +247,6 @@ class ToonSchedule extends Component<any, any> {
     let minutesToday = currentDate.getHours()*60 + currentDate.getMinutes();
     let activeProgram = getActiveToonProgram(this.props.toon.schedule);
 
-    if (activeProgram === null) {
-      return <Text style={{fontSize:10, height:10}}>{lang("No_schedule_available")}}</Text>
-    }
-
-
     let radius = 4;
     for ( let i = 0; i < amountOfEntries; i++ ) {
       let entry = dayData[i];
@@ -295,22 +292,41 @@ class ToonSchedule extends Component<any, any> {
   }
 
   render() {
-    return (
-      <View style={{
-        width: screenWidth,
-        height: 7*44 + this.padding,
-        paddingLeft:0,
-        padding: 0.4*this.padding,
-        backgroundColor: colors.white.hex,
-      }}>
-        { this.getDay(1) }
-        { this.getDay(2) }
-        { this.getDay(3) }
-        { this.getDay(4) }
-        { this.getDay(5) }
-        { this.getDay(6) }
-        { this.getDay(0) }
-      </View>
-    )
+    let activeProgram = getActiveToonProgram(this.props.toon.schedule);
+
+    if (activeProgram === null) {
+      return (
+        <View style={{
+          width: screenWidth,
+          height: 40,
+          paddingLeft:0,
+          padding: 0.4*this.padding,
+          backgroundColor: colors.white.hex,
+          alignItems:'center',
+          justifyContent:'center'
+        }}>
+          <Text style={{fontSize:14}}>{lang("No_schedule_available")}</Text>
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={{
+          width: screenWidth,
+          height: 7*44 + this.padding,
+          paddingLeft:0,
+          padding: 0.4*this.padding,
+          backgroundColor: colors.white.hex,
+        }}>
+          { this.getDay(1) }
+          { this.getDay(2) }
+          { this.getDay(3) }
+          { this.getDay(4) }
+          { this.getDay(5) }
+          { this.getDay(6) }
+          { this.getDay(0) }
+        </View>
+      );
+    }
   }
 }

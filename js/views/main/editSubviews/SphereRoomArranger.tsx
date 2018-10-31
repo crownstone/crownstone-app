@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -34,7 +35,7 @@ import {BackAction} from "../../../util/Back";
 
 let Actions = require('react-native-router-flux').Actions;
 
-export class SphereRoomArranger extends Component<any, any> {
+export class SphereRoomArranger extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {

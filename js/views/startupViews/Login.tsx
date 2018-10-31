@@ -465,13 +465,10 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
           if (state.user.isNew !== false) {
             Actions.tutorial({type: 'reset'});
           }
-          else if (Platform.OS === 'android') {
-            this.props.eventBus.emit("userLoggedInFinished");
-            Actions.drawer({type: 'reset'});
-          }
           else {
             this.props.eventBus.emit("userLoggedInFinished");
-            Actions.tabBar({type: 'reset'});
+            if (Platform.OS === 'android') { Actions.drawer({type: 'reset'}); }
+            else                           { Actions.tabBar({type: 'reset'}); }
           }
         }, 100);
       })

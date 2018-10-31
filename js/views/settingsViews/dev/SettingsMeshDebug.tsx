@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -23,7 +24,7 @@ import { MeshUtil }            from "../../../util/MeshUtil";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 const Actions = require('react-native-router-flux').Actions;
 
-export class SettingsMeshDebug extends Component<any, any> {
+export class SettingsMeshDebug extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Mesh_Debug"),

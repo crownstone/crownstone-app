@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -32,7 +33,7 @@ import { EventBusClass}        from "../../../util/EventBus";
 import { LockedStateUI}        from "../../components/LockedStateUI";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 
-export class DeviceSummary extends Component<any, any> {
+export class DeviceSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
   unsubscribeStoreEvents
 

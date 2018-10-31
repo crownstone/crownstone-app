@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -28,7 +29,7 @@ import { SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
-export class StatusCommunication extends Component<any, any> {
+export class StatusCommunication extends LiveComponent<any, any> {
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
 

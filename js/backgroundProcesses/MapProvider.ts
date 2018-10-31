@@ -64,12 +64,12 @@ class MapProviderClass {
           change.changeStoneSchedule ||
           change.changeStoneHandle   ||
           change.changeDeviceData    ||
+          change.updatedToon         ||
           change.updateStoneConfig   ||
           change.changeMessage
         ) {
           this.refreshAll();
         }
-
       });
 
       this.refreshAll();

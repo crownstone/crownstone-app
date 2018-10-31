@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -28,7 +29,7 @@ import {colors, screenWidth, OrangeLine} from './../styles'
 import { IconButton } from "../components/IconButton";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 
-export class SettingsProfile extends Component<any, any> {
+export class SettingsProfile extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: lang("My_Account")}
   };

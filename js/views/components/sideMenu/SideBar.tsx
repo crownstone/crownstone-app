@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -35,7 +36,7 @@ const DeviceInfo = require('react-native-device-info');
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
 
-export class SideBar extends Component<any, any> {
+export class SideBar extends LiveComponent<any, any> {
   unsubscribe : any = [];
   store = null;
   

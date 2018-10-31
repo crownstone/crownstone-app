@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -25,7 +26,7 @@ import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
-export class SettingsPrivacy extends Component<any, any> {
+export class SettingsPrivacy extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: lang("Privacy")}
   };

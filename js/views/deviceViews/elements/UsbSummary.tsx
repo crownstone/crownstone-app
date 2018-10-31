@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -33,7 +34,7 @@ import { LockedStateUI}        from "../../components/LockedStateUI";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import {DeviceButton, DeviceInformation} from "./DeviceSummary";
 
-export class UsbSummary extends Component<any, any> {
+export class UsbSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
   unsubscribeStoreEvents;
 

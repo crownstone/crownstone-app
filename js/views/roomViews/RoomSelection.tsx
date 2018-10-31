@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -26,7 +27,7 @@ import { RoomList } from '../components/RoomList';
 import { Icon } from '../components/Icon';
 import {BackAction} from "../../util/Back";
 
-export class RoomSelection extends Component<any, any> {
+export class RoomSelection extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Move_where_"),

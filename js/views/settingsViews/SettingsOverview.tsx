@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -22,7 +23,7 @@ import { SettingConstructor } from '../../util/SettingConstructor'
 
 const DeviceInfo = require('react-native-device-info');
 
-export class SettingsOverview extends Component<any, any> {
+export class SettingsOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Settings"),

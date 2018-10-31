@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -27,7 +28,7 @@ import {getStonesAndAppliancesInSphere} from "../../../util/DataUtil";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 
-export class SphereEditSettings extends Component<any, any> {
+export class SphereEditSettings extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     if (params.sphereId) {

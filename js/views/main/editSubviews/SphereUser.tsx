@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -25,7 +26,7 @@ import {ProfilePicture} from "../../components/ProfilePicture";
 import {ListEditableItems} from "../../components/ListEditableItems";
 
 
-export class SphereUser extends Component<any, any> {
+export class SphereUser extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: lang("Sphere_User")}
   };

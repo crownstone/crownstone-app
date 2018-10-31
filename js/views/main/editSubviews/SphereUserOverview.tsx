@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -24,7 +25,7 @@ import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 
 
-export class SphereUserOverview extends Component<any, any> {
+export class SphereUserOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     let state = params.store.getState();

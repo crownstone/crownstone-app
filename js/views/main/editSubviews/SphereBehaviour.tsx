@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -21,7 +22,7 @@ import {LOG} from "../../../logging/Log";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 
-export class SphereBehaviour extends Component<any, any> {
+export class SphereBehaviour extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Sphere_behaviour"),

@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -33,7 +34,7 @@ import {eventBus} from "../../util/EventBus";
 
 
 
-export class RoomEdit extends Component<any, any> {
+export class RoomEdit extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {

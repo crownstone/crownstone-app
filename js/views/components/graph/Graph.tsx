@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../../LiveComponent";
 
 import { Languages } from "../../../Languages"
 
@@ -27,7 +28,7 @@ import { GraphAxis }      from "./GraphComponents/GraphAxis";
 let RANGE = 40000; // ms
 let OVERSHOOT = 4000; // ms
 
-export class Graph extends Component<any, any> {
+export class Graph extends LiveComponent<any, any> {
   data : any[] = [];
   options : any;
   interval : any;
