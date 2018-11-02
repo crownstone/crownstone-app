@@ -13,7 +13,9 @@ export class LiveComponent<a, b> extends Component<a, b> {
     let unmounter = this.componentWillUnmount;
     this.componentWillUnmount = () => {
       this.___cleanup();
-      unmounter.call(this)
+      if (unmounter) {
+        unmounter.call(this)
+      }
     }
   }
 
