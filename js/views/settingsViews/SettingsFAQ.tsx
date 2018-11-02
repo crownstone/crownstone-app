@@ -96,13 +96,12 @@ export class SettingsFAQ extends Component<any, any> {
       contentHeight: 175
     });
 
-    items.push({
-      type:'collapsable',
-      label: lang("____use_Switchcraft_"),
-      content: lang("Switchcraft_is_currently_"),
-      contentHeight: 275
-    });
-
+    // items.push({
+    //   type:'collapsable',
+    //   label: lang("____use_Switchcraft_"),
+    //   content: lang("Switchcraft_is_currently_"),
+    //   contentHeight: 275
+    // });
 
     items.push({
       type:'largeExplanation',
