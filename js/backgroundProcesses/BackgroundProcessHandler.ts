@@ -35,6 +35,7 @@ import { Sentry }                from "react-native-sentry";
 import { ActivityLogManager }    from "./ActivityLogManager";
 import { ToonIntegration }       from "./thirdParty/ToonIntegration";
 import { EncryptionManager }     from "../native/libInterface/Encryption";
+import { SessionMemory } from "../util/SessionMemory";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -60,6 +61,10 @@ class BackgroundProcessHandlerClass {
       // start the BLE things.
       // route the events to React Native
       Bluenet.rerouteEvents();
+
+      BluenetPromiseWrapper.isDevelopmentEnvironment().then((result) => {
+        SessionMemory.developmentEnvironment = result;
+      })
 
       // if there is a badge number, remove it on opening the app.
       this._clearBadge();

@@ -98,7 +98,6 @@ export class Router_Android extends Component {
             <Scene key="switchCraftInformation"      component={Views.SwitchCraftInformation}      />
             <Scene key="settingsLocalizationDebug"   component={Views.SettingsLocalizationDebug}   />
 
-            <Scene key="toonAdd"                    component={Views.ToonAdd}   initial={false}  />
             <Scene key="sphereEdit"                 component={Views.SphereEdit}                 panHandlers={null} />
             <Scene key="sphereEditSettings"         component={Views.SphereEditSettings}         panHandlers={null} />
             <Scene key="sphereRoomOverview"         component={Views.SphereRoomOverview}         panHandlers={null} />
@@ -110,6 +109,8 @@ export class Router_Android extends Component {
             <Scene key="sphereUser"                 component={Views.SphereUser}                 panHandlers={null} />
             <Scene key="sphereBehaviour"            component={Views.SphereBehaviour}            panHandlers={null} />
             <Scene key="sphereIntegrations"         component={Views.SphereIntegrations}         panHandlers={null} />
+
+            <Scene key="alexaOverview"              component={Views.AlexaOverview}              panHandlers={null} />
 
             <Scene key="toonAdd"                    component={Views.ToonAdd}                    panHandlers={null} />
             <Scene key="toonSettings"               component={Views.ToonSettings}               panHandlers={null} />

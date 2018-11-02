@@ -58,6 +58,16 @@ export class SphereIntegrations extends Component<any, any> {
       }
     });
 
+    items.push({label: lang("Smart_assistants"),  type:'largeExplanation'});
+    items.push({
+      label: lang("Amazon_Alexa"),
+      type: 'navigation',
+      largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/amazonAlexa.png')} targetWidth={52} targetHeight={52} sourceWidth={264} sourceHeight={265}/>,
+      callback: () => {
+        Actions.alexaOverview({sphereId: this.props.sphereId});
+      }
+    });
+
     items.push({label: lang("Coming_Soon_"),  type:'largeExplanation'});
 
 

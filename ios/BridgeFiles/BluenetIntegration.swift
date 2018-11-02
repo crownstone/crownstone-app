@@ -1284,6 +1284,12 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
+  @objc func isDevelopmentEnvironment(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called isDevelopmentEnvironment")
+    callback([["error" : false, "data": GLOBAL_BLUENET!.devEnvironment ]])
+  }
+  
+  
   @objc func viewsInitialized() {
     LOGGER.info("BluenetBridge: Called viewsInitialized")
   }

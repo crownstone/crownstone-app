@@ -1,3 +1,5 @@
+import { AlexaOverview }               from "../views/thirdParty/alexa/AlexaOverview";
+
 import { AiStart }                     from '../views/startupViews/AiStart'
 import { ApplianceSelection }          from '../views/deviceViews/ApplianceSelection'
 import { ApplianceAdd }                from '../views/deviceViews/ApplianceAdd'
@@ -66,6 +68,8 @@ import { ToonSettings }                from "../views/thirdParty/toon/ToonSettin
 import { ToonOverview }                from "../views/thirdParty/toon/ToonOverview";
 
 export const Views = {
+  AlexaOverview,
+
   AddItemsToSphere,
   AiStart,
   SelectFromList,

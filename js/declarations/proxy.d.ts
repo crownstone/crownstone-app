@@ -55,6 +55,7 @@ interface BluenetPromiseWrapperProtocol {
   setMeshChannel(channel)                       : Promise< void >,
 
   getTrackingState()                            : Promise< trackingState >,
+  isDevelopmentEnvironment()                    : Promise< boolean >,
 }
 
 

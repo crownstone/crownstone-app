@@ -29,3 +29,5 @@
       isRanging:    boolean,
     }
     ```
+
+- added isDevelopmentEnvironment method to bridge. Does not receive arguments other than a callback. Returns true or false. Important for iOS but nice to have for Android.

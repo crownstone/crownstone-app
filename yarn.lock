@@ -5416,12 +5416,12 @@ react-lifecycles-compat@^1.0.2:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-1.1.4.tgz#fc005c72849b7ed364de20a0f64ff58ebdc2009a"
   integrity sha512-g3pdexIqkn+CVvSpYIoyON8zUbF9kgfhp672gyz7wQ7PQyXVmJtah+GDYqpHpOrdwex3F77iv+alq79iux9HZw==
 
-"react-native-camera-kit@https://github.com/AlexDM0/react-native-camera-kit#master":
-  version "5.3.11"
-  resolved "https://github.com/AlexDM0/react-native-camera-kit#4e95c68dba72635576078b460f2f6f1e662a04fa"
+react-native-camera-kit@^6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-camera-kit/-/react-native-camera-kit-6.3.0.tgz#b771f2567b966a5dc89af1b56142b3fbe7ab3e16"
+  integrity sha512-Cb+ASowhnxTbK8CPYJScHf3LOU15OeH+v6VoE1CgACetyy4Se+RMr3masXBF0xARODAJKbWA8YMng6XWvVPBZw==
   dependencies:
     lodash "^4.14.2"
-    prop-types "^15.5.10"
 
 react-native-cli@^2.0.1:
   version "2.0.1"

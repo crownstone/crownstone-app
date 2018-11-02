@@ -279,7 +279,6 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
   render() {
-    console.log("RENDER OVERVIEW")
     LOG.info("RENDERING_OVERVIEW");
     const store = this.props.store;
     const state = store.getState();

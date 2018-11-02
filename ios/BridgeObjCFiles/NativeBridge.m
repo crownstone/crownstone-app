@@ -33,6 +33,8 @@ RCT_EXTERN_METHOD(getSwitchState:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAliveState:(nonnull NSNumber *)changeState state:(nonnull NSNumber *)state timeout:(nonnull NSNumber *)timeout callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAlive:(RCTResponseSenderBlock)callback)
 
+RCT_EXTERN_METHOD(isDevelopmentEnvironment:(RCTResponseSenderBlock)callback)
+
 RCT_EXTERN_METHOD(commandFactoryReset:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(recover:(NSString *)crownstoneUUID callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupCrownstone:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
