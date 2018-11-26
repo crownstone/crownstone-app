@@ -74,7 +74,7 @@ export class CollapsableBar extends Component<any, any> {
           </View>
           <SlideInView visible={this.state.open} height={this.props.contentHeight || 100} duration={200} style={{backgroundColor: colors.white.hex }}>
             <Separator fullLength={true} color={colors.black.rgba(0.15)}/>
-            {this.props.contentItem ? this.props.contentItem : <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{this.props.content}</Text>}
+            {this.props.contentItem ? this.props.contentItem : <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}} allowFontScaling={false}>{this.props.content}</Text>}
           </SlideInView>
         </View>
       </TouchableHighlight>

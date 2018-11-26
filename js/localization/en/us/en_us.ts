@@ -45,7 +45,7 @@ export default {
     It_will_change_if_no_:               function () { return "It will turn " + arguments[0] + " after " + arguments[1] + " minutes if no more heartbeats come in."; },
     _held_the_phone_so_close_:           function () { return arguments[0] + ' held the phone so close to the Crownstone that ' + arguments[1] + ' triggered Tap-to-Toggle!' },
     _heartbeats_once_every_:             function () { return arguments[0] + " heartbeats once every " + arguments[1] + " seconds." },
-    Im_still__because_there_a:           function () { return "I'm still " + arguments[0] + " because there are still others in the Sphere." },
+    Im_still__because_there_a:           function () { return "I didn't switch because there are still others in the Sphere." },
     Last_heartbeat_sent_at_:             function () { return "Last heartbeat sent at " + arguments[0] + ".";},
     ___because_everyone_left_:           function () { return arguments[0] + arguments[1] + " % because everyone left the Sphere." },
     _because_everyone_left_th:           function () { return arguments[0] + arguments[1] + " because everyone left the Sphere." },

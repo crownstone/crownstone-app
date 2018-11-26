@@ -46,6 +46,8 @@ export class DeviceSummary extends LiveComponent<any, any> {
     const stone = sphere.stones[props.stoneId];
     this.storedSwitchState = stone.state.state;
   }
+
+
   componentDidMount() {
     const { store } = this.props;
     // tell the component exactly when it should redraw

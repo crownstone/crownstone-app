@@ -270,7 +270,7 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === 'generatedExit') {
       if (this.props.data.generatedFrom === 'keepAliveSphere') {
         if (this.props.data.otherUserPresent) {
-          return lang("Im_still__because_there_a",currentState);
+          return lang("Im_still__because_there_a");
         }
         else {
           // exit sphere

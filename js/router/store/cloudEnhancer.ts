@@ -318,7 +318,7 @@ function handleSphereStateOnDevice(action, state) {
   if (deviceId) {
     if (state.user.uploadLocation === true) {
       if (action.data.present === true) {
-        CLOUD.forDevice(deviceId).enterSphere(action.sphereId).catch(() => {});
+        CLOUD.forDevice(deviceId).inSphere(action.sphereId).catch(() => {});
       }
       else {
         CLOUD.forDevice(deviceId).exitSphere(action.sphereId).catch(() => { });  // will also clear location
@@ -337,7 +337,7 @@ function handleUserLocationEnter(action, state) {
     if (state.user.uploadLocation === true) {
       let deviceId = Util.data.getCurrentDeviceId(state);
       if (deviceId) {
-        CLOUD.forDevice(deviceId).enterLocation(action.sphereId, action.locationId).catch(() => {});
+        CLOUD.forDevice(deviceId).inLocation(action.sphereId, action.locationId).catch(() => {});
       }
     }
   }

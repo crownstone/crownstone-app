@@ -290,10 +290,10 @@ export class DeviceSyncer extends SyncingBase {
 
             if (cloudLocationId === null) {
               this.transferPromises.push( CLOUD.forDevice(deviceId).exitLocation(cloudSphereId,"*").catch((err) => {}) );
-              this.transferPromises.push( CLOUD.forDevice(deviceId).enterSphere( cloudSphereId).catch((err) => {}) );
+              this.transferPromises.push( CLOUD.forDevice(deviceId).inSphere( cloudSphereId).catch((err) => {}) );
             }
             else {
-              this.transferPromises.push( CLOUD.forDevice(deviceId).enterLocation(cloudSphereId, cloudLocationId).catch((err) => {}) );
+              this.transferPromises.push( CLOUD.forDevice(deviceId).inLocation(cloudSphereId, cloudLocationId).catch((err) => {}) );
             }
           });
         }

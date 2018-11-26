@@ -44,22 +44,22 @@ export const devices = {
     );
   },
 
-  enterSphere: function (localSphereId, background = true) {
+  inSphere: function (localSphereId, background = true) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'POST',
-      '/Devices/{id}/enterSphere/',
+      '/Devices/{id}/inSphere/',
       { data: {sphereId:cloudSphereId}, background: background },
       'query'
     );
   },
 
-  enterLocation: function (localSphereId, localLocationId, background = true) {
+  inLocation: function (localSphereId, localLocationId, background = true) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'POST',
-      '/Devices/{id}/enterLocation/',
+      '/Devices/{id}/inLocation/',
       { data: {sphereId:cloudSphereId, locationId:cloudLocationId }, background: background },
       'query'
     );

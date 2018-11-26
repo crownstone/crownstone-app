@@ -266,7 +266,7 @@ lang("_Incorrect_Email_or_Passw_body"),
           </View>
         </ScrollView>
       </Background>
-    )
+    );
   }
   
   checkForRegistrationPictureUpload(userId, filename) {

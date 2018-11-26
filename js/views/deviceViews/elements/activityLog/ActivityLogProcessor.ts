@@ -66,6 +66,7 @@ export class ActivityLogProcessor {
   }
 
   _addEventsForActivityRanges(logs, activityRanges, keepAliveType, userId) {
+    console.log("activityRanges", activityRanges)
     // add an enter event on the start, and a leave event at the last time
     // do this for your used, then check if the other users did something?
     let now = new Date().valueOf();
@@ -115,9 +116,8 @@ export class ActivityLogProcessor {
         let otherUserPresent = false;
         for (let j = 0; j < activityRangeIds.length; j++) {
           let referenceRange = activityRanges[activityRangeIds[j]];
-
           // only compare with other users.
-          if (referenceRange.userId == userId) { continue; }
+          if (referenceRange.userId == range.userId) { continue; }
 
           let referenceEndTime = 0;
           if (referenceRange.lastDirectTime !== null && referenceRange.lastMeshTime !== null) {
@@ -135,6 +135,19 @@ export class ActivityLogProcessor {
             break;
           }
         }
+
+        console.log("GENERATED EXIT:", new Date(expirationTime), range, {
+          timestamp: expirationTime,
+          generatedFrom: keepAliveType,
+          type:   'generatedExit',
+          userId: range.userId,
+          count:  range.count,
+          endTime: endTime,
+          isSelf: range.userId === userId,
+          switchedToState:  range.switchedToState,
+          otherUserPresent: otherUserPresent,
+          isRange: true,
+        })
 
         logs.push({
           timestamp: expirationTime,

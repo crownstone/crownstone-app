@@ -35,7 +35,6 @@ export class LoginSplash extends Component<any, any> {
   render() {
     let factor = 0.25;
 
-
     return (
       <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true} safeView={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>

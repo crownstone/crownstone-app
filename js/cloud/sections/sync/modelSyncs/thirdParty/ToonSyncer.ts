@@ -92,25 +92,9 @@ export class ToonSyncer extends SyncingSphereItemBase {
 
   syncLocalToonUp(store, localToon, localToonId, hasSyncedDown = false) {
     // if the object does not have a cloudId, it does not exist in the cloud but we have it locally.
+    // We cannot create a toon in the cloud during syncing. This must be explicitly done during Toon Add.
     if (!hasSyncedDown) {
-      if (localToon.config.cloudId) {
-        this.actions.push({ type: 'REMOVE_TOON', sphereId: this.localSphereId, toonId: localToonId });
-      }
-      else {
-        if (!Permissions.inSphere(this.localSphereId).setToonInCloud) { return; }
-
-        this.transferPromises.push(
-          transferToons.createOnCloud(this.actions, {
-            localId: localToonId,
-            localSphereId: this.localSphereId,
-            cloudSphereId: this.cloudSphereId,
-            localData: localToon
-          })
-          .then((cloudId) => {
-            this.globalCloudIdMap.toons[cloudId] = localToonId;
-          })
-        );
-      }
+      this.actions.push({ type: 'REMOVE_TOON', sphereId: this.localSphereId, toonId: localToonId });
     }
   }
 

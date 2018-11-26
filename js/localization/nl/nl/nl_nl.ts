@@ -45,7 +45,7 @@ export default {
     It_will_change_if_no_:               function() { return "Het zal veranderen " + arguments[0] + " nar " + arguments[1] + " minuten, als er geen hartslagen meer binnen komen."; },
     _held_the_phone_so_close_:           function() { return arguments[0] + ' hield de telefoon zo dichtbij de Crownstone dat het ' + arguments[1] + ' het Tap-to-Toggle in werking heeft gezet!' },
     _heartbeats_once_every_:             function() { return arguments[0] + " hartslagen iedere " + arguments[1] + " seconden." },
-    Im_still__because_there_a:           function() { return "Ik ben nog steeds " + arguments[0] + " omdat er nog steeds anderen in de sfeer zijn." }, //todo
+    Im_still__because_there_a:           function() { return "Ik heb niet geschakeld omdat er nog steeds anderen in de sfeer zijn." }, //todo
     Last_heartbeat_sent_at_:             function() { return "Laatste hartslag verzonden om " + arguments[0] + ".";},
     ___because_everyone_left_:           function() { return arguments[0] + arguments[1] + " % omdat iedereen de sfeer heeft verlaten." }, //todo
     _because_everyone_left_th:           function() { return arguments[0] + arguments[1] + " omdat iedereen de sfeer heeft verlaten." }, //todo
