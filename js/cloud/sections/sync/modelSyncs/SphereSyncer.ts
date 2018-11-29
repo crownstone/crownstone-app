@@ -18,6 +18,7 @@ import { MessageSyncer }      from "./MessageSyncer";
 import {LOG} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {ToonSyncer} from "./thirdParty/ToonSyncer";
+import { PresenceSyncer } from "./PresenceSyncer";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;
@@ -67,13 +68,10 @@ export class SphereSyncer extends SyncingBase {
         // we create it locally.
         localId = Util.getUUID();
         cloudIdMap[sphere_from_cloud.id] = localId;
-        this.transferPromises.push(
-          transferSpheres.createLocal(this.actions, {
-            localId: localId,
-            cloudData: sphere_from_cloud
-          })
-          .catch(() => {})
-        );
+        transferSpheres.createLocal(this.actions, {
+          localId: localId,
+          cloudData: sphere_from_cloud
+        })
       }
 
       this.syncChildren(store, localId, localId ? spheresInState[localId] : null, sphere_from_cloud);
@@ -94,6 +92,7 @@ export class SphereSyncer extends SyncingBase {
     let stoneSyncer       = new StoneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let toonSyncer        = new ToonSyncer(       this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    let presenceSyncer    = new PresenceSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
 
     // sync sphere users
     LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");
@@ -107,6 +106,12 @@ export class SphereSyncer extends SyncingBase {
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE locationSyncer sync.");
+        LOG.info("SphereSync ",localId,": START presenceSyncer sync.");
+        // sync appliances
+        return presenceSyncer.sync(store);
+      })
+      .then(() => {
+        LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
         LOG.info("SphereSync ",localId,": START applianceSyncer sync.");
         // sync appliances
         return applianceSyncer.sync(store);
@@ -162,12 +167,12 @@ export class SphereSyncer extends SyncingBase {
       else if (Permissions.inSphere(localId).canSetPositionInCloud) {
         if (!sphere_from_cloud.floatingLocationPosition) {
           this.transferPromises.push(
-            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition(localSphere.layout.floatingLocation)
+            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition({x:localSphere.layout.floatingLocation.x, y: localSphere.layout.floatingLocation.y})
           )
         }
         else if (shouldUpdateInCloud(localSphere.layout.floatingLocation, sphere_from_cloud.floatingLocationPosition)) {
           this.transferPromises.push(
-            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition(localSphere.layout.floatingLocation)
+            CLOUD.forSphere(sphere_from_cloud.id).updateFloatingLocationPosition({x:localSphere.layout.floatingLocation.x, y: localSphere.layout.floatingLocation.y})
           )
         }
       }
@@ -225,12 +230,10 @@ export class SphereSyncer extends SyncingBase {
       );
     }
     else if (shouldUpdateLocally(sphereInState.config, sphere_from_cloud) || corruptData) {
-      this.transferPromises.push(
-        transferSpheres.updateLocal(this.actions, {
-          localId:   localId,
-          cloudData: sphere_from_cloud
-        }).catch(() => {})
-      );
+      transferSpheres.updateLocal(this.actions, {
+        localId:   localId,
+        cloudData: sphere_from_cloud
+      })
     }
 
     if (!sphereInState.config.cloudId) {

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LockOverlay", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -45,23 +51,23 @@ export class LockOverlay extends Component<any, any> {
     }
 
     if (!Permissions.inSphere(this.state.sphereId).canLockCrownstone) {
-      return "Only Admins have permission to lock Crownstones...";
+      return lang("Only_Admins_have_permissi");
     }
 
     if (stone.config.dimmingEnabled) {
-      return "You can only lock Crownstones that do not have dimming enabled.";
+      return lang("You_can_only_lock_Crownst");
     }
 
     if (stone.state.state > 0) {
-      return "You can lock this Crownstone so it will not turn off without someone unlocking it first.";
+      return lang("You_can_lock_this_Crownst_off");
     }
     else {
-      return "You can lock this Crownstone so it will not turn on without someone unlocking it first.";
+      return lang("You_can_lock_this_Crownst");
     }
   }
 
   _lockCrownstone(stone) {
-    eventBus.emit("showLoading", "Locking Crownstone...");
+    eventBus.emit("showLoading", lang("Locking_Crownstone___"));
     BatchCommandHandler.loadPriority(stone, this.state.stoneId, this.state.sphereId, { commandName : 'lockSwitch', value: true })
       .then(() => {
         eventBus.emit("showLoading", "Done!");
@@ -73,7 +79,10 @@ export class LockOverlay extends Component<any, any> {
       })
       .catch((err) => {
         eventBus.emit("hideLoading");
-        Alert.alert("I'm sorry..", "Something went wrong while locking this Crownstone. Make sure you're near the Crownstone that you want to lock.",[{text:'OK'}]);
+        Alert.alert(
+          lang("_Im_sorry____Something_we_header"),
+          lang("_Im_sorry____Something_we_body"),
+          [{text:lang("_Im_sorry____Something_we_left")}]);
         this.setState({visible: false, sphereId: null});
       });
     BatchCommandHandler.executePriority();
@@ -91,7 +100,7 @@ export class LockOverlay extends Component<any, any> {
             borderWidth: 2,
             borderColor: colors.darkBackground.rgba(0.5),
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>OK...</Text>
+            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ lang("OK___") }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
         </View>
@@ -108,7 +117,7 @@ export class LockOverlay extends Component<any, any> {
             borderWidth: 2,
             borderColor: colors.darkBackground.rgba(0.5),
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>Cancel</Text>
+            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ lang("Cancel") }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
           <TouchableOpacity onPress={() => { this._lockCrownstone(stone); }} style={[styles.centered, {
@@ -118,7 +127,7 @@ export class LockOverlay extends Component<any, any> {
             borderWidth: 3,
             borderColor: colors.darkBackground.hex,
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.hex, fontWeight: 'bold'}}>Lock!</Text>
+            <Text style={{fontSize: 14, color: colors.darkBackground.hex, fontWeight: 'bold'}}>{ lang("Lock_") }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
         </View>
@@ -147,7 +156,7 @@ export class LockOverlay extends Component<any, any> {
           style={{position:'relative', top:0}}
         />
         <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{"Locking a Crownstone"}</Text>
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{ lang("Locking_a_Crownstone") }</Text>
         <Text style={{fontSize: 12, fontWeight: '400',  color: colors.darkBackground.hex, padding:15, textAlign:'center'}}>{this._getText(stone)}</Text>
         <View style={{flex:1}} />
         { this._getButtons(stone) }

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("TutorialDevices", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -17,15 +23,15 @@ const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth, screenHeight} from '../../styles'
 import {Icon} from "../../components/Icon";
 import {eventBus} from "../../../util/EventBus";
-import {tutorialStyle} from "../Tutorial";
 import {Util} from "../../../util/Util";
+import { tutorialStyle } from "../TutorialStyle";
 
 
 export class TutorialDevices extends Component<any, any> {
   render() {
     return (
         <View style={{flex:1, alignItems:'center', padding: 30}}>
-          <Text style={tutorialStyle.header}>Device Types</Text>
+          <Text style={tutorialStyle.header}>{ lang("Device_Types") }</Text>
           <View style={{flex:1}} />
           <Icon
             name="c1-tvSetup"
@@ -33,8 +39,7 @@ export class TutorialDevices extends Component<any, any> {
             color={colors.white.hex}
           />
           <View style={{flex:1}} />
-          <Text style={tutorialStyle.text}>{'You can add a device type to a Crownstone. These device types have behaviour, icons and names.' +
-          '\n\nYou can add a single device type to multiple Crownstones. Behaviour of device types will overrule behaviour of Crownstones.'}</Text>
+          <Text style={tutorialStyle.text}>{ lang("You_can_add_a_device_type") }</Text>
           <View style={{flex:1}} />
           <TouchableOpacity
             onPress={() => {
@@ -44,11 +49,9 @@ export class TutorialDevices extends Component<any, any> {
 
               let goToSphereOverview = () => {
                 if (Platform.OS === 'android') {
-                  eventBus.emit("userLoggedInFinished");
                   Actions.drawer({type: 'reset'});
                 }
                 else {
-                  eventBus.emit("userLoggedInFinished");
                   Actions.tabBar({type: 'reset'});
                 }
               };
@@ -75,7 +78,7 @@ export class TutorialDevices extends Component<any, any> {
               borderColor: colors.white.hex,
               backgroundColor: colors.csBlue.rgba(0.5)
             }]}>
-            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{"Got it!"}</Text>
+            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("Got_it_") }</Text>
           </TouchableOpacity>
           <View style={{flex:1}} />
         </View>

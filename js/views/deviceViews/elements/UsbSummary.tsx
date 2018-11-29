@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("UsbSummary", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -27,7 +34,7 @@ import { LockedStateUI}        from "../../components/LockedStateUI";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import {DeviceButton, DeviceInformation} from "./DeviceSummary";
 
-export class UsbSummary extends Component<any, any> {
+export class UsbSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
   unsubscribeStoreEvents;
 
@@ -72,10 +79,10 @@ export class UsbSummary extends Component<any, any> {
     // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let locationLabel = "Tap here to move me!";
-    let locationName = "Not in room";
+    let locationLabel =  lang("Tap_here_to_move_me_");
+    let locationName =  lang("Not_in_room");
     if (location) {
-      locationLabel = "Located in:";
+      locationLabel =  lang("Located_in_");
       locationName = location.config.name;
     }
 

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Awesome", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,7 +24,7 @@ export class Awesome extends Component<any, any> {
     return (
       <View style={{flex:1, paddingBottom:45, padding:10, alignItems:'center', justifyContent:'center'}}>
         <View style={{flex:0.5}} />
-        <Text style={WNStyles.text}>That's it for this update!</Text>
+        <Text style={WNStyles.text}>{ lang("Thats_it_for_this_update_") }</Text>
         <View style={{flex:0.5}} />
         <TouchableOpacity
           onPress={() => { this.props.closeCallback(); }}
@@ -33,7 +39,7 @@ export class Awesome extends Component<any, any> {
           <Icon name="md-checkmark" size={radius} color={colors.green.hex} style={{position:'relative', left:0, top:0.05*radius}} />
         </TouchableOpacity>
         <View style={{flex:0.5}} />
-        <Text style={WNStyles.text}>Enjoy the new version!</Text>
+        <Text style={WNStyles.text}>{ lang("Enjoy_the_new_version_") }</Text>
         <View style={{flex:1}} />
         <TouchableOpacity
           onPress={() => { this.props.closeCallback(); }}
@@ -45,7 +51,7 @@ export class Awesome extends Component<any, any> {
             borderColor: colors.blue.rgba(0.5),
           }]}
         >
-          <Text style={{fontSize: 14, color: colors.blue.hex}}>{'Thanks!'}</Text>
+          <Text style={{fontSize: 14, color: colors.blue.hex}}>{ lang("Thanks_") }</Text>
         </TouchableOpacity>
         <View style={{flex:0.5}} />
       </View>

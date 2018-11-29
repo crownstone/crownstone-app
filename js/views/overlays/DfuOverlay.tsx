@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DfuOverlay", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -49,8 +55,8 @@ stepSearchingTypes[STEP_TYPES.SEARCHING] = true;
 stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_CLOSER] = true;
 stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER] = true;
 
-let RELEASE_NOTES_ERROR = "Could not download release notes.";
-let RELEASE_NOTES_NA = "Release notes not available.";
+let RELEASE_NOTES_ERROR = lang("Could_not_download_releas");
+let RELEASE_NOTES_NA    = lang("Release_notes_not_availab");
 
 let HEIGHT = Math.min(500, 0.95 * screenHeight);
 let WIDTH = Math.max(0.85*screenWidth, Math.min(0.95*screenWidth, 295));
@@ -78,7 +84,7 @@ export class DfuOverlay extends Component<any, any> {
       stoneId: null,
       sphereId: null,
       progress: 0,
-      phaseDescription: 'determining...',
+      phaseDescription:  lang("determining___"),
       currentPhase: 0,
       phasesRequired: null,
       detail: '',
@@ -168,6 +174,7 @@ export class DfuOverlay extends Component<any, any> {
     this.unsubscribe = [];
   }
 
+
   initializeProcess() {
     FirmwareHandler.dfuInProgress = true;
     this.killProcess = false;
@@ -176,6 +183,7 @@ export class DfuOverlay extends Component<any, any> {
       BackHandler.addEventListener('hardwareBackPress', this.backButtonFunction);
     }
   }
+
 
   startProcess() {
     this.initializeProcess();
@@ -259,7 +267,7 @@ export class DfuOverlay extends Component<any, any> {
         return false;
       }
 
-      this.setState({ step: STEP_TYPES.GET_BOOTLOADER_VERSION, phaseDescription:'setting up...', detail:'putting Crownstone in update mode...' });
+      this.setState({ step: STEP_TYPES.GET_BOOTLOADER_VERSION, phaseDescription: lang("setting_up___"), detail: lang("putting_Crownstone_in_upd") });
       return this.helper.putInDFU(data);
     })
     .then((shouldGetFirmwareVersions) => {
@@ -539,9 +547,10 @@ export class DfuOverlay extends Component<any, any> {
       this.paused = true;
       let defaultAction = () => { this.paused = false; };
       Alert.alert(
-        "Are you sure?",
-        "You can always update this Crownstone later by tapping on it again.",
-        [{text:'Not yet', onPress: defaultAction }, {text:'OK', onPress: () => {
+lang("_Are_you_sure___You_can_a_header"),
+lang("_Are_you_sure___You_can_a_body"),
+[{text:lang("_Are_you_sure___You_can_a_left"), onPress: defaultAction }, {
+text:lang("_Are_you_sure___You_can_a_right"), onPress: () => {
           this._searchCleanup();
           eventBus.emit("updateCrownstoneFirmwareEnded");
           this.setState({visible: false});
@@ -560,13 +569,13 @@ export class DfuOverlay extends Component<any, any> {
       case STEP_TYPES.UPDATE_AVAILABLE:
         return <OverlayContent
           height={HEIGHT}
-          title={'Update Available'}
+          title={ lang("Update_Available")}
           icon={'c1-update-arrow'}
           iconSize={0.35*screenWidth}
-          header={'There is an update available for your Crownstone!'}
-          text={'This process may take a few minutes. Please stay close to the Crownstone until it is finished. Tap next to see whats new!'}
+          header={ lang("There_is_an_update_availa")}
+          text={ lang("This_process_may_take_a_f")}
           buttonCallback={() => { this.setState({step: STEP_TYPES.RELEASE_NOTES}) } }
-          buttonLabel={'Next'}
+          buttonLabel={ lang("Next")}
         />;
       case STEP_TYPES.RELEASE_NOTES:
         return <OverlayContent
@@ -578,7 +587,7 @@ export class DfuOverlay extends Component<any, any> {
           text={this.state.releaseNotes ? this.state.releaseNotes : null}
           buttonCallback={() => { this.startProcess();} }
           scrollable={true}
-          buttonLabel={'Next'}
+          buttonLabel={ lang("Next")}
         >
           <ActivityIndicator animating={true} size="large" />
           <View style={{flexGrow:1}} />
@@ -587,9 +596,9 @@ export class DfuOverlay extends Component<any, any> {
         return (
           <OverlayContent
             height={HEIGHT}
-            title={'Downloading Updates'}
+            title={ lang("Downloading_Updates")}
             icon={'md-cloud-download'}
-            header={'Downloading updates from cloud...'}
+            header={ lang("Downloading_updates_from_")}
           >
             <ActivityIndicator animating={true} size="large" />
             <View style={{flexGrow:1}} />
@@ -599,21 +608,21 @@ export class DfuOverlay extends Component<any, any> {
         return (
           <OverlayContent
             height={HEIGHT}
-            title={'Download Complete'}
+            title={ lang("Download_Complete")}
             icon={'md-cloud-done'}
-            header={'Downloading complete!'}
-            text={'Moving on!'}
+            header={ lang("Downloading_complete_")}
+            text={ lang("Moving_on_")}
           />
         );
       case STEP_TYPES.SEARCHING:
         return (
           <OverlayContent
-            title={'Searching'}
+            title={ lang("Searching")}
             icon={'c2-crownstone'}
             height={HEIGHT}
-            header={'Looking for Crownstone..'}
+            header={ lang("Looking_for_Crownstone__")}
             buttonCallback={abort}
-            buttonLabel={'Abort'}
+            buttonLabel={ lang("Abort")}
           >
             <ActivityIndicator animating={true} size="large" />
             <View style={{flexGrow:1}} />
@@ -622,12 +631,12 @@ export class DfuOverlay extends Component<any, any> {
       case STEP_TYPES.SEARCHING_MOVE_CLOSER:
         return (
           <OverlayContent
-            title={'Searching'}
+            title={ lang("Searching")}
             icon={'c2-crownstone'}
             height={HEIGHT}
-            header={'Please move a little closer to it!'}
+            header={ lang("Please_move_a_little_clos")}
             buttonCallback={abort}
-            buttonLabel={'Abort'}
+            buttonLabel={ lang("Abort")}
           >
             <ActivityIndicator animating={true} size="large" />
             <View style={{flexGrow:1}} />
@@ -637,11 +646,11 @@ export class DfuOverlay extends Component<any, any> {
         return (
             <OverlayContent
               height={HEIGHT}
-              title={'Searching'}
+              title={ lang("Searching")}
               icon={'c2-crownstone'}
-              header={'Please hold your phone as close to it as possible!'}
+              header={ lang("Please_hold_your_phone_as")}
               buttonCallback={abort}
-              buttonLabel={'Abort'}
+              buttonLabel={ lang("Abort")}
             >
               <ActivityIndicator animating={true} size="large" />
               <View style={{flexGrow:1}} />
@@ -651,11 +660,11 @@ export class DfuOverlay extends Component<any, any> {
         return (
             <OverlayContent
               height={HEIGHT}
-              title={'Searching'}
+              title={ lang("Searching")}
               icon={'c2-crownstone'}
               header={'Please hold your phone as close to it as possible!\nIf that doesn\'t work, try turning your Bluetooth off and on.'}
               buttonCallback={abort}
-              buttonLabel={'Abort'}
+              buttonLabel={ lang("Abort")}
             >
               <ActivityIndicator animating={true} size="large" />
               <View style={{flexGrow:1}} />
@@ -664,7 +673,7 @@ export class DfuOverlay extends Component<any, any> {
       case STEP_TYPES.GET_BOOTLOADER_VERSION:
         return (
           <OverlayContent
-            title={'Preparing Crownstone'}
+            title={ lang("Preparing_Crownstone")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -679,13 +688,13 @@ export class DfuOverlay extends Component<any, any> {
                   <ActivityIndicator animating={true} size="large" style={{position:'relative', top:2,left:2}} />
                 </View>
               </View>}
-            header={'Putting the Crownstone in update mode now...'}
+            header={ lang("Putting_the_Crownstone_in")}
           />
         );
       case STEP_TYPES.UPDATE_PROGRESS:
         return (
           <OverlayContent
-            title={'Updating Crownstone'}
+            title={ lang("Updating_Crownstone")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -705,19 +714,19 @@ export class DfuOverlay extends Component<any, any> {
                     absolute={true}
                   /> : undefined }
                   { this.state.progress > 0 ?
-                    <Text style={{fontSize: 25, paddingBottom: 10}}>{Math.floor(100 * this.state.progress) + ' %'}</Text> :
+                    <Text style={{fontSize: 25, paddingBottom: 10}}>{ lang("__",Math.floor(100 * this.state.progress)) }</Text> :
                     <ActivityIndicator animating={true} size="large" style={{position:'relative', top:2,left:2}} />
                   }
                   <Text style={{fontSize:13}}>{this.state.phaseDescription}</Text>
                 </View>
               </View>}
-            header={'Update is in progress. Please stay close to the Crownstone.'}
+            header={ lang("Update_is_in_progress__Pl")}
           />
         );
       case STEP_TYPES.UPDATE_SUCCESS:
         return (
           <OverlayContent
-            title={'Updating Done!'}
+            title={ lang("Updating_Done_")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -732,15 +741,15 @@ export class DfuOverlay extends Component<any, any> {
                   <Icon name="md-checkmark" size={radius} color={colors.green.hex} style={{position:'relative', left:0, top:0.05*radius}} />
                 </TouchableOpacity>
               </View>}
-            header={'Everything is finished, enjoy the new version!'}
+            header={ lang("Everything_is_finished__e")}
             buttonCallback={closeOverlay}
-            buttonLabel={"Thanks!"}
+            buttonLabel={ lang("Thanks_")}
           />
         );
       case STEP_TYPES.UPDATE_FAILED:
         return (
           <OverlayContent
-            title={'Update failed...'}
+            title={ lang("Update_failed___")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -757,13 +766,13 @@ export class DfuOverlay extends Component<any, any> {
               </View>}
             header={'We\'re sorry. The update failed.\nThis might happen because the smartphone was not close enough. Please keep an eye at the update process.'}
             buttonCallback={closeOverlay}
-            buttonLabel={"OK"}
+            buttonLabel={ lang("OK")}
           />
         );
       case STEP_TYPES.DOWNLOAD_FAILED:
         return (
           <OverlayContent
-            title={'Update failed...'}
+            title={ lang("Update_failed___")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -778,15 +787,15 @@ export class DfuOverlay extends Component<any, any> {
                   <Icon name="ios-cloudy-night" size={radius} color={colors.csBlue.hex} style={{position:'relative', left:0, top:0.05*radius}} />
                 </View>
               </View>}
-            header={'We could not download the requested firmware version from the Cloud. Please try again later.'}
+            header={ lang("We_could_not_download_the")}
             buttonCallback={closeOverlay}
-            buttonLabel={"OK"}
+            buttonLabel={ lang("OK")}
           />
         );
       case STEP_TYPES.SETUP_FAILED:
         return (
           <OverlayContent
-            title={'Success, But...'}
+            title={ lang("Success__But___")}
             height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
@@ -801,9 +810,9 @@ export class DfuOverlay extends Component<any, any> {
                   <Icon name="md-information-circle" size={radius} color={colors.csBlue.hex} style={{position:'relative', left:0, top:0.05*radius}} />
                 </View>
               </View>}
-            header={'The update was successful but something went wrong with the setup phase afterwards. You can just setup it like a normal Crownstone to finalize the process.'}
+            header={ lang("The_update_was_successful")}
             buttonCallback={closeOverlay}
-            buttonLabel={"OK!"}
+            buttonLabel={ lang("OK_")}
           />
         );
     }
@@ -846,11 +855,11 @@ export class DfuOverlay extends Component<any, any> {
         height={HEIGHT}
         closeCallback={() => {
           Alert.alert(
-            "Are you sure?",
-            "You can always update this Crownstone later.",
-            [
-              {text:'No'},
-              {text:'Yes', onPress: () => {
+lang("_Are_you_sure___You_can_al_header"),
+lang("_Are_you_sure___You_can_al_body"),
+[{text:lang("_Are_you_sure___You_can_al_left")},
+              {
+text:lang("_Are_you_sure___You_can_al_right"), onPress: () => {
                 this._searchCleanup();
                 eventBus.emit("updateCrownstoneFirmwareEnded");
                 this.setState({visible: false});

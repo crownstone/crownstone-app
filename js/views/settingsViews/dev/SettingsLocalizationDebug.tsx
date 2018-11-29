@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsLocalizationDebug", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -21,10 +28,10 @@ import {getPresentUsersInLocation} from "../../../util/DataUtil";
 import {AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION} from "../../../ExternalConfig";
 
 
-export class SettingsLocalizationDebug extends Component<any, any> {
+export class SettingsLocalizationDebug extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Localization Debug',
+      title: lang("Localization_Debug"),
     }
   };
 
@@ -174,11 +181,11 @@ export class SettingsLocalizationDebug extends Component<any, any> {
   render() {
     const store = this.props.store;
     let state = store.getState();
-    let sphereId = Util.data.getPresentSphereId(state);
+    let sphereId = Util.data.getReferenceId(state);
     this.sphereId = sphereId;
 
     if (sphereId === null) {
-      return <View style={{flex: 1}} ><Text>You have to be in a Sphere</Text></View>;
+      return <View style={{flex: 1}} ><Text>{ lang("You_have_to_be_in_a_Spher") }</Text></View>;
     }
     else {
       let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), sphereId);
@@ -192,9 +199,7 @@ export class SettingsLocalizationDebug extends Component<any, any> {
             <Text style={{
               color: colors.white.hex,
               fontSize:17, fontWeight:'bold'}}
-            >
-            {this._amountOfStones + " Crownstone" + (this._amountOfStones !== 1 ? "s" : '') + " in vector"}
-            </Text>
+            >{ lang("_Crownstones_in_vector",this._amountOfStones,this._amountOfStones,1) }</Text>
           </View>
           <ForceDirectedView
             ref={this.refName}

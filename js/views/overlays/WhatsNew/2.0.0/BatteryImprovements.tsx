@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("BatteryImprovements", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,9 +24,9 @@ export class BatteryImprovements extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={[WNStyles.outerScrollView,{width: this.props.width}]}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>Battery Improvements!</Text>
+            <Text style={WNStyles.text}>{ lang("Battery_Improvements_") }</Text>
             <Image source={require('../../../../images/whatsNew/2.0.0/batteryImprovements.png')} style={{width:539*size, height:543*size}} />
-            <Text style={WNStyles.detail}>The Crownstone app will now use less power in the background for the localization features! The more Crownstones you have, the more efficient it becomes!</Text>
+            <Text style={WNStyles.detail}>{ lang("The_Crownstone_app_will_n") }</Text>
           </View>
         </ScrollView>
       </View>

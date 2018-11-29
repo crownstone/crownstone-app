@@ -52,6 +52,33 @@ export const toon = {
     )
   },
 
+  setToonToHome: function(deviceId, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Toons/{id}/setProgram',
+      { data: {program: 'home', ignoreDeviceId: deviceId }, background: background},
+      'query'
+    )
+  },
+
+  setToonToAway: function(deviceId, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Toons/{id}/setProgram',
+      { data: {program: 'away', ignoreDeviceId: deviceId }, background: background},
+      'query'
+    )
+  },
+
+  updateToonSchedule: function(background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Toons/{id}/updateSchedule',
+      { background: background },
+      'query'
+    )
+  },
+
   deleteToonsInCrownstoneCloud: function(background = true) {
     return this._setupRequest(
       'DELETE',

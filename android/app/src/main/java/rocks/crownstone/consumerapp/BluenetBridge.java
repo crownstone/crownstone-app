@@ -2454,7 +2454,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	@ReactMethod
 	public void meshKeepAliveState(int timeout, ReadableArray keepAliveItems, final Callback callback) {
 		// keepAliveItems = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}, {}, ...]
-		BleLog.getInstance().LOGd(TAG, "keepAliveState: " + keepAliveItems.toString());
+		BleLog.getInstance().LOGd(TAG, "meshKeepAliveState: " + "timeout=" + timeout + " " + keepAliveItems.toString());
 		if (!checkBleExt(callback)) {
 			return;
 		}
@@ -3088,7 +3088,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 
 	@Override
 	public void onBeaconScanned(BleDevice device) {
-		String beaconId = device.getProximityUuid().toString() + ".Maj:" + device.getMajor() + ".Min:" + device.getMinor();
+		String beaconId = device.getProximityUuid().toString() + "_Maj:" + device.getMajor() + "_Min:" + device.getMinor();
 		BleLog.getInstance().LOGv(TAG, "event scanned beacon: " + device.getAddress());
 		if (_isTraingingLocalization && !_isTraingingLocalizationPaused) {
 			_localization.feedMeasurement(device.getRssi(), beaconId, null, null);

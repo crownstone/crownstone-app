@@ -266,7 +266,7 @@ export class StoneEntity {
     // invalid measurement
     if (rssi > 0) { return; }
 
-    const BAD_CONNECTION = -150
+    const BAD_CONNECTION = -150;
 
     if (rssi === 0) {
       // One of the Crownstones says there is no connection. We check if the other one says there IS one, if not, we delete the links
@@ -639,6 +639,17 @@ export class StoneEntity {
       changed = true;
       transient = false;
       changeData.switchCraft = advertisement.serviceData.switchCraftEnabled;
+    }
+
+    if (stone.state.timeSet !== advertisement.serviceData.timeSet) {
+      this.store.dispatch({
+        type: 'UPDATE_STONE_TIME_STATE',
+        sphereId: this.sphereId,
+        stoneId: this.stoneId,
+        data: {
+          timeSet: advertisement.serviceData.timeSet
+        }
+      })
     }
 
 

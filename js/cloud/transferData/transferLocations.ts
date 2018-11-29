@@ -54,7 +54,7 @@ export const transferLocations = {
   },
 
   createLocal: function( actions, data: transferToLocalData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'ADD_LOCATION',
       { sphereId: data.localSphereId, locationId: data.localId },
@@ -65,7 +65,7 @@ export const transferLocations = {
 
 
   updateLocal: function( actions, data: transferToLocalData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'UPDATE_LOCATION_CONFIG',
       { sphereId: data.localSphereId, locationId: data.localId },

@@ -9,10 +9,14 @@ let fieldMap : fieldMap = [
   {local: 'toonAgreementId',    cloud: 'toonAgreementId'},
   {local: 'toonAddress',        cloud: 'toonAddress'},
 
-  {local: 'schedule',           cloud: 'schedule', cloudToLocalOnly: true},
+  {local: 'schedule',            cloud: 'schedule', cloudToLocalOnly: true},
+  {local: 'updatedScheduleTime', cloud: 'updatedScheduleTime', cloudToLocalOnly: true},
+
+  {local: 'cloudChangedProgramTime', cloud: 'changedProgramTime', cloudToLocalOnly: true},
 
   // used for local config
-  {local: 'cloudId',            cloud: 'id' ,  cloudToLocalOnly: true }
+  {local: 'cloudId',            cloud: 'id' ,  cloudToLocalOnly: true },
+  {local: 'updatedAt',          cloud: 'updatedAt'},
 ];
 
 export const transferToons = {
@@ -55,7 +59,7 @@ export const transferToons = {
   },
 
   createLocal: function( actions, data: transferToLocalData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'ADD_TOON',
       { sphereId: data.localSphereId, toonId: data.localId },
@@ -68,7 +72,7 @@ export const transferToons = {
   updateLocal: function( actions, data: transferToLocalData) {
     // enabled is per user, do not update this field.
     delete data['enabled'];
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'UPDATE_TOON',
       { sphereId: data.localSphereId, toonId: data.localId },

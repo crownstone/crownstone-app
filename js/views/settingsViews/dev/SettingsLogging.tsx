@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsLogging", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -17,10 +24,10 @@ import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
 import {clearLogs} from "../../../logging/LogUtil";
 
-export class SettingsLogging extends Component<any, any> {
+export class SettingsLogging extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Logging",
+      title: lang("Logging"),
     }
   };
   unsubscribe;
@@ -47,20 +54,20 @@ export class SettingsLogging extends Component<any, any> {
 
     items.push({
       type:'explanation',
-      label:"SET LOGGING LEVELS",
+      label: lang("SET_LOGGING_LEVELS"),
     })
 
     let logLevelsData = {
-      log_info:          {label: 'General', explanation: 'test'},
-      log_native:        {label: 'Native', explanation: 'test'},
-      log_mesh:          {label: 'Mesh', explanation: 'test'},
-      log_notifications: {label: 'Notifications', explanation: 'test'},
-      log_scheduler:     {label: 'Scheduler', explanation: 'test'},
-      log_ble:           {label: 'BLE', explanation: 'test'},
-      log_bch:           {label: 'Batch C Handler', explanation: 'test'},
-      log_events:        {label: 'Events', explanation: 'test'},
-      log_store:         {label: 'Store', explanation: 'test'},
-      log_cloud:         {label: 'Cloud', explanation: 'test'},
+      log_info:          { label: lang("General"),         explanation: ''},
+      log_native:        { label: lang("Native"),          explanation: ''},
+      log_mesh:          { label: lang("Mesh"),            explanation: ''},
+      log_notifications: { label: lang("Notifications"),   explanation: ''},
+      log_scheduler:     { label: lang("Scheduler"),       explanation: ''},
+      log_ble:           { label: lang("BLE"),             explanation: ''},
+      log_bch:           { label: lang("Batch_C_Handler"), explanation: ''},
+      log_events:        { label: lang("Events"),          explanation: ''},
+      log_store:         { label: lang("Store"),           explanation: ''},
+      log_cloud:         { label: lang("Cloud"),           explanation: ''},
     };
 
     let logLevels = Object.keys(logLevelsData);
@@ -74,12 +81,12 @@ export class SettingsLogging extends Component<any, any> {
     levels[LOG_LEVEL.none] = "none";
 
     let values = [
-      {label: 'disabled', value: LOG_LEVEL.none},
-      {label: 'error', value: LOG_LEVEL.error},
-      {label: 'warning', value: LOG_LEVEL.warning},
-      {label: 'info', value: LOG_LEVEL.info},
-      {label: 'debug', value: LOG_LEVEL.debug},
-      {label: 'verbose', value: LOG_LEVEL.verbose},
+      {label: lang("disabled"), value: LOG_LEVEL.none},
+      {label: lang("error"),    value: LOG_LEVEL.error},
+      {label: lang("warning"),  value: LOG_LEVEL.warning},
+      {label: lang("info"),     value: LOG_LEVEL.info},
+      {label: lang("debug"),    value: LOG_LEVEL.debug},
+      {label: lang("verbose"),  value: LOG_LEVEL.verbose},
     ]
 
     logLevels.forEach((level) => {
@@ -105,11 +112,11 @@ export class SettingsLogging extends Component<any, any> {
 
     items.push({
       type:'explanation',
-      label:"NATIVE EXTENDED LOGGING",
+      label: lang("NATIVE_EXTENDED_LOGGING"),
     });
 
     items.push({
-      label: "Native Extended Logging",
+      label: lang("Native_Extended_Logging"),
       value: state.development.nativeExtendedLogging,
       type: 'switch',
       icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
@@ -124,20 +131,20 @@ export class SettingsLogging extends Component<any, any> {
     });
     items.push({
       type:'explanation',
-      label:"Basic native logging is already enabled when logging is enabled in the developer menu.",
+      label: lang("Basic_native_logging_is_a"),
       below:true,
     });
 
     items.push({
       type:'explanation',
-      label:"DISABLE LOGGING",
+      label: lang("DISABLE_LOGGING"),
       alreadyPadded: true
     });
 
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
     items.push({
-      label:"Disable Logging",
+      label: lang("Disable_Logging"),
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:(newValue) => {

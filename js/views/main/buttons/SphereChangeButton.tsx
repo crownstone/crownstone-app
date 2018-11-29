@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereChangeButton", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
@@ -25,7 +31,7 @@ export class SphereChangeButton extends Component<any, any> {
           alignItems:'center',
           justifyContent:'center',
         }}
-        onPress={() => { eventBus.emit('showSphereSelectionOverlay'); }}
+        onPress={() => { this.props.onPress(); }}
       >
         <View style={{
           width: outerRadius,

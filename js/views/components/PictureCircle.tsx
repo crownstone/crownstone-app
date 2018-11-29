@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("PictureCircle", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -31,14 +37,14 @@ export class PictureCircle extends Component<any, any> {
   showOptions() {
     let buttons = [];
     if (Platform.OS === 'android') {
-      buttons.push({ text: 'Take Photo', callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
-      buttons.push({ text: 'Choose from Gallery', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Photo"), callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
     }
     else {
-      buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
-      buttons.push({ text: 'Choose Existing', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Picture"), callback: () => { Actions.pictureView({selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
+      buttons.push({ text: lang("Choose_Existing"), callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
     }
-    eventBus.emit('showPopup', {title:'Profile Picture', buttons: buttons} );
+    eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
   }
 
   render() {
@@ -49,7 +55,11 @@ export class PictureCircle extends Component<any, any> {
       let innerSize = size - 2*borderWidth;
       return (
         <TouchableOpacity
-          onPress={() => { Alert.alert("Delete this picture?", undefined, [{text:'No'}, {text:'Yes', onPress:() => { this.props.removePicture(); }}])}}
+          onPress={() => { Alert.alert(
+lang("_Delete_this_picture__arg_header"),
+lang("_Delete_this_picture__arg_body",undefined),
+[{text:lang("_Delete_this_picture__arg_left")}, {
+text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); }}])}}
           style={{
             height:size,
             width:size,
@@ -104,11 +114,11 @@ export class PictureCircle extends Component<any, any> {
           else if (grantedPreviously === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
             return new Promise(
               (resolve,reject) => {
-                let reason = "Can\'t make a picture without camera permission. You'll need to enable this in the Android settings menu (of your phone, not in the app)!";
+                let reason =  lang("Can_t_make_a_picture_with");
                 Alert.alert(
-                  "Sorry",
-                  reason,
-                  [{text: 'OK', onPress: () => { reject(reason) }}],
+lang("_Sorry_arguments___OKnull_header"),
+lang("_Sorry_arguments___OKnull_body",reason),
+[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) } }
                 );
               }
@@ -122,11 +132,11 @@ export class PictureCircle extends Component<any, any> {
           if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
             return new Promise(
               (resolve,reject) => { 
-                let reason = "Can't take a picture without permission!";
+                let reason =  lang("Cant_take_a_picture_witho");
                 Alert.alert(
-                  "Sorry",
-                  reason,
-                  [{text: 'OK', onPress: () => { reject(reason) }}],
+lang("_Sorry_arguments___OKnull_header"),
+lang("_Sorry_arguments___OKnull_body",reason),
+[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) }}
                 );
               }
@@ -140,11 +150,11 @@ export class PictureCircle extends Component<any, any> {
           if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
             return new Promise(
               (resolve,reject) => { 
-                let reason = "Can\'t read a stored picture without permission!";
+                let reason =  lang("Can_t_read_a_stored_pictu");
                 Alert.alert(
-                  "Sorry",
-                  reason,
-                  [{text: 'OK', onPress: () => { reject(reason) }}],
+lang("_Sorry_arguments___OKnull_header"),
+lang("_Sorry_arguments___OKnull_body",reason),
+[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) } }
                 );
               }
@@ -158,11 +168,11 @@ export class PictureCircle extends Component<any, any> {
           if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
             return new Promise(
               (resolve,reject) => { 
-                let reason = "Can\'t store a captured picture without permission!";
+                let reason =  lang("Can_t_store_a_captured_pi");
                 Alert.alert(
-                  "Sorry",
-                  reason,
-                  [{text: 'OK', onPress: () => { reject(reason) }}],
+lang("_Sorry_arguments___OKnull_header"),
+lang("_Sorry_arguments___OKnull_body",reason),
+[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) } }
                 );
               }

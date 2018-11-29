@@ -1,8 +1,8 @@
 interface BluenetPromiseWrapperProtocol {
-  clearTrackedBeacons()                         : Promise< void >,
-  commandFactoryReset()                         : Promise< void >,
-  connect(handle: string, highPriority?: boolean): Promise< void >,
-  disconnectCommand()                           : Promise< void >,
+  clearTrackedBeacons()                                               : Promise< void >,
+  commandFactoryReset()                                               : Promise< void >,
+  connect(handle: string, referenceId: string, highPriority?: boolean): Promise< void >,
+  disconnectCommand()                                                 : Promise< void >,
   getMACAddress()                               : Promise< string >,
   getFirmwareVersion()                          : Promise< string >,
   getBootloaderVersion()                        : Promise< string >,
@@ -13,12 +13,11 @@ interface BluenetPromiseWrapperProtocol {
   keepAliveState(changeState : boolean, state : number, timeout: number): Promise< void >,
   phoneDisconnect()                             : Promise< void >,
   toggleSwitchState(stateForOn)                 : Promise< number >,
-  setSwitchState(state: number)                 : Promise< void >,
   setupCrownstone(dataObject)                   : Promise< void >,
-  setSettings(dataObject)                       : Promise< void >,
   requestLocation()                             : Promise< locationType >,
   recover(handle: string)                       : Promise< void >,
   clearFingerprintsPromise()                    : Promise< void >,
+  setKeySets(keySets)                           : Promise< void >,
 
   // Mesh
   meshKeepAlive()                                                 : Promise< void >,
@@ -54,6 +53,9 @@ interface BluenetPromiseWrapperProtocol {
   sendNoOp()                                    : Promise< void >,
   sendMeshNoOp()                                : Promise< void >,
   setMeshChannel(channel)                       : Promise< void >,
+
+  getTrackingState()                            : Promise< trackingState >,
+  isDevelopmentEnvironment()                    : Promise< boolean >,
 }
 
 
@@ -138,4 +140,30 @@ interface clearErrorData {
 interface locationType {
   latitude:  number,
   longitude: number,
+}
+
+
+interface trackingState {
+  isMonitoring: boolean,
+  isRanging:    boolean,
+}
+
+interface nearestStone  {
+  name      : string,
+  handle    : string,
+  rssi      : number,
+  setupMode : boolean
+  dfuMode   : boolean
+  verified  : boolean
+}
+
+
+interface keySets  {
+  [referenceId: string] : keySet
+}
+
+interface keySet  {
+  adminKey:  string,
+  memberKey: string,
+  guestKey:  string,
 }

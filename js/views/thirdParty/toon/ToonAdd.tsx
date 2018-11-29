@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ToonAdd", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -13,25 +19,21 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { CancelButton } from "../../components/topbar/CancelButton";
-import { TopbarButton } from "../../components/topbar/TopbarButton";
-import { BackAction } from "../../../util/Back";
 import { Background } from "../../components/Background";
-import { ListEditableItems } from "../../components/ListEditableItems";
 import { colors, OrangeLine, screenHeight, screenWidth, tabBarHeight } from "../../styles";
 import { deviceStyles } from "../../deviceViews/DeviceOverview";
-import { IconButton } from "../../components/IconButton";
 import { toonConfig } from "../../../sensitiveData/toonConfig";
 import { NativeBus } from "../../../native/libInterface/NativeBus";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { Actions } from 'react-native-router-flux';
-import {request} from "../../../cloud/cloudCore";
 import {ScaledImage} from "../../components/ScaledImage";
+import {TextEditInput} from "../../components/editComponents/TextEditInput";
+import {LOGe} from "../../../logging/Log";
 
 
 export class ToonAdd extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Toon" }
+    return { title: lang("Toon")}
   };
 
 
@@ -43,13 +45,16 @@ export class ToonAdd extends Component<any, any> {
     this.state = {
       processing: false,
       failed:     false,
-      success:     false,
+      success:    false,
+      manualCodeInput: false,
+      code:       null,
+      codeInput:  '',
     }
 
     this.unsubscribeNativeEvent = NativeBus.on(NativeBus.topics.callbackUrlInvoked, (url) => {
       this.setState({processing: true});
       this.process(url);
-    })
+    });
 
   }
 
@@ -61,6 +66,10 @@ export class ToonAdd extends Component<any, any> {
 
     let code = result[1];
 
+    this.pairWithToon(code);
+  }
+
+  pairWithToon(code) {
     let accessTokens : any = {};
     let agreementIds : any = {};
     CLOUD.thirdParty.toon.getAccessToken(code)
@@ -70,7 +79,7 @@ export class ToonAdd extends Component<any, any> {
           return CLOUD.thirdParty.toon.getToonIds(accessTokens.access_token);
         }
         else {
-          throw "Failed";
+          throw {code: 1, message: "Failed to get AccessToken"};
         }
       })
       .then((data) => {
@@ -78,22 +87,22 @@ export class ToonAdd extends Component<any, any> {
           agreementIds = data.data;
           this.props.store.dispatch({type:"REMOVE_ALL_TOONS", sphereId: this.props.sphereId});
 
-          return CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud()
+          return CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud(false)
         }
         else {
-          throw "Failed to get agreementIds";
+          throw  {code: 1, message: "Failed to get agreementIds"};
         }
       })
       .then(() => {
-          let actions = [];
-          let promises = [];
-          agreementIds.forEach((agreementId) => {
-            promises.push(
-              CLOUD.forSphere(this.props.sphereId).thirdParty.toon.createToonInCrownstoneCloud({
-                refreshToken: accessTokens.refresh_token,
-                toonAgreementId: agreementId.agreementId,
-                toonAddress: agreementId.street + " " + agreementId.houseNumber
-              })
+        let actions = [];
+        let promises = [];
+        agreementIds.forEach((agreementId) => {
+          promises.push(
+            CLOUD.forSphere(this.props.sphereId).thirdParty.toon.createToonInCrownstoneCloud({
+              refreshToken: accessTokens.refresh_token,
+              toonAgreementId: agreementId.agreementId,
+              toonAddress: agreementId.street + " " + agreementId.houseNumber
+            }, false)
               .then((toon) => {
                 actions.push({
                   type: "ADD_TOON",
@@ -101,19 +110,25 @@ export class ToonAdd extends Component<any, any> {
                   toonId: agreementId.agreementId,
                   data: {
                     enabled: true,
+                    cloudId: toon.id,
                     toonAgreementId: agreementId.agreementId,
                     toonAddress: agreementId.street + " " + agreementId.houseNumber,
                     schedule: toon.schedule
                   }
                 })
               })
-            )
-          })
-        return Promise.all(promises).then(() => { this.props.store.batchDispatch(actions) })
+          )
+        })
+        return Promise.all(promises).then(() => {
+          console.log("Dispatching", actions);
+          this.props.store.batchDispatch(actions) })
       })
       .then(() => {
         if (agreementIds.length === 0) {
-          Alert.alert("No Toon Found","This account does not seem to have a Toon we can use....",[{text:'OK'}])
+          Alert.alert(
+            lang("_No_Toon_Found__This_acco_header"),
+            lang("_No_Toon_Found__This_acco_body"),
+            [{text:lang("_No_Toon_Found__This_acco_left")}])
         }
         else {
           this.setState({success:true, processing:false}, () => {
@@ -129,8 +144,21 @@ export class ToonAdd extends Component<any, any> {
         }
       })
       .catch((err) => {
-        console.log("ERROR:", err);
-        Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
+        LOGe.info("ToonAdd: Error while adding Toon.", err);
+        if (err && typeof err === 'object' && err.code) {
+          if (err.code === 1 && this.state.code) {
+            Alert.alert(
+              lang("_Whoops__The_provided_cod_header"),
+              lang("_Whoops__The_provided_cod_body"),
+              [{text:lang("_Whoops__The_provided_cod_left")}]);
+            return;
+          }
+        }
+
+        Alert.alert(
+          lang("_Whoops__Something_went_w_header"),
+          lang("_Whoops__Something_went_w_body"),
+          [{text:lang("_Whoops__Something_went_w_left")}]);
       })
   }
 
@@ -151,11 +179,14 @@ export class ToonAdd extends Component<any, any> {
     else if (this.state.success) {
       text = "Success!"
     }
+    else if (this.state.manualCodeInput && this.state.code === null) {
+      text = "Paste the code from the Crownstone website in the box above and press submit.";
+    }
     else if (this.state.processing) {
-      text = "Connecting to Toon... This shouldn't take long!"
+      text = "Connecting to Toon... This shouldn't take long!";
     }
     else {
-      text =  "When you integrate your Toon with Crownstone, you can use the indoor localization together with your heating!"
+      text =  "When you integrate your Toon with Crownstone, you can use the indoor localization together with your heating!";
     }
 
     return (
@@ -164,13 +195,35 @@ export class ToonAdd extends Component<any, any> {
   }
 
   _getButton() {
-    if (this.state.failed) {
+    if (this.state.failed || this.state.success) {
       return null;
+    }
+    if (this.state.manualCodeInput && this.state.code === null) {
+      return (
+        <TouchableOpacity onPress={() => { this.setState({code: this.state.codeInput }); this.pairWithToon(this.state.codeInput); }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
+          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Submit") }</Text>
+        </TouchableOpacity>
+      );
+    }
+    else if (this.state.processing && this.state.code !== null) {
+      return (
+        <View style={{alignItems:'center', justifyContent:'center'}}>
+          <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
+            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{ lang("Working____") }</Text>
+          </View>
+        </View>
+      );
     }
     else if (this.state.processing) {
       return (
-        <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{"Working...."}</Text>
+        <View style={{alignItems:'center', justifyContent:'center'}}>
+          <View style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.rgba(0.3), alignItems:'center', justifyContent:'center'}}>
+            <Text style={{fontSize:18, color: colors.menuBackground.rgba(0.3), fontWeight: 'bold'}}>{ lang("Working____") }</Text>
+          </View>
+
+          <TouchableOpacity style={{paddingTop:15}} onPress={() => { this.setState({ manualCodeInput:true })}}>
+            <Text style={{fontSize:15, color: colors.menuBackground.rgba(0.3), textAlign:'center'}}>{ lang("If_something_went_wrong__") }</Text>
+          </TouchableOpacity>
         </View>
       )
     }
@@ -179,29 +232,64 @@ export class ToonAdd extends Component<any, any> {
         <TouchableOpacity onPress={() => {
           Linking.openURL('https://api.toon.eu/authorize?response_type=code&client_id=' + toonConfig.clientId).catch(() => {})
         }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{"Connect with Toon!"}</Text>
+          <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Connect_with_Toon_") }</Text>
         </TouchableOpacity>
-      )
+      );
     }
   }
 
   _getExplanation() {
     if (!this.state.success && !this.state.processing && !this.state.failed) {
      return (
-       <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{
-         "Sometimes, Toon is set to \"Away\" while you're still there...\n\n... but Crownstone can ensure that it is set to \"Home\" as long as you're home!"
-       }</Text>
+       <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{ lang("Sometimes__Toon_is_set_to") }</Text>
      )
     }
   }
 
+  _getDisclaimer() {
+      if (!this.state.success && !this.state.processing && !this.state.failed) {
+       return (
+         <Text style={{
+           textAlign: 'center',
+           fontSize: 12,
+           color: colors.black.rgba(0.6),
+           paddingTop: 10
+         }} >{ lang("This_application_uses_the") }</Text>
+       )
+      }
+    }
+
   render() {
-    return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={true}>
-        <OrangeLine/>
+    let content;
+    if (this.state.manualCodeInput) {
+      content = (
         <View style={{flex:1, alignItems:'center', padding: 20}}>
           <View style={{flex:1}} />
-          <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
+          <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
+          <View style={{flex:0.75}} />
+          <View style={{width: 250, height: 60, backgroundColor:"#fff", borderRadius:20, borderWidth: 2, borderColor: colors.gray.rgba(0.5), alignItems:'center', justifyContent:'center'}}>
+            <TextEditInput
+              style={{width: 0.8*screenWidth, padding:10, fontSize:26, fontWeight:'bold', textAlign:"center"}}
+              placeholder={lang("paste_code_ccc")}
+              placeholderTextColor='#ccc'
+              autoCorrect={false}
+              value={this.state.codeInput}
+              callback={(newValue) => { this.setState({codeInput:newValue});}}
+            />
+          </View>
+          <View style={{flex:0.75}} />
+          { this._getText() }
+          <View style={{flex:0.75}} />
+          { this._getButton() }
+          <View style={{flex:0.5}} />
+        </View>
+      );
+    }
+    else {
+      content = (
+        <View style={{flex:1, alignItems:'center', padding: 20}}>
+          <View style={{flex:1}} />
+          <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           { this.state.processing ?  <View style={{paddingTop:50, alignItems:'center', justifyContent:'center'}}><ActivityIndicator animating={true} size="large" /></View> : undefined}
           <View style={{flex:1}} />
           { this._getText() }
@@ -210,8 +298,16 @@ export class ToonAdd extends Component<any, any> {
 
           {!this.state.processing && !this.state.failed ? <View style={{flex:1}} /> : <View style={{flex:0.5}} /> }
           { this._getButton() }
+          { this._getDisclaimer() }
           <View style={{flex:0.5}} />
         </View>
+      );
+    }
+
+    return (
+      <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={true}>
+        <OrangeLine/>
+        { content }
       </Background>
     );
   }

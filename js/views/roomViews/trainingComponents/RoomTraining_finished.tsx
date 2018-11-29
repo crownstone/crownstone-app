@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining_finished", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -29,7 +35,7 @@ export class RoomTraining_finished extends Component<any, any> {
             fontWeight:'600',
             color: colors.white.hex,
             textAlign:'center'
-          }}>{"Finished learning about this room!"}</Text>
+          }}>{ lang("Finished_learning_about_t") }</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
@@ -37,9 +43,7 @@ export class RoomTraining_finished extends Component<any, any> {
             color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,
-          }}>{
-            "Once you have taught " + this.props.ai.name + " all the rooms, " + this.props.ai.he + " will start doing " + this.props.ai.his + " best to determine in which room you are!\n\nPress the button below to go back!"}
-          </Text>
+          }}>{ lang("Once_you_have_taught__all",this.props.ai.name,this.props.ai.he,this.props.ai.his) }</Text>
           <View style={{flex:1}} />
           <TouchableOpacity
             style={[

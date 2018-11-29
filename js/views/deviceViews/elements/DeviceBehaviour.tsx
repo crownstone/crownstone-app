@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceBehaviour", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -13,17 +20,17 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {colors, screenWidth} from '../../styles'
-import {Util} from "../../../util/Util";
-import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../util/DataUtil";
-import {BEHAVIOUR_TYPES} from "../../../router/store/reducers/stones";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import { colors, screenWidth }              from '../../styles'
+import { Util }                             from "../../../util/Util";
+import { canUseIndoorLocalizationInSphere } from "../../../util/DataUtil";
+import { BEHAVIOUR_TYPES }                  from "../../../router/store/reducers/stones";
+import { Permissions }                      from "../../../backgroundProcesses/PermissionManager";
 
 
 let DISABLED_COLOR = colors.gray.hex;
 let WARNING_COLOR = colors.csOrange.hex;
 
-export class DeviceBehaviour extends Component<any, any> {
+export class DeviceBehaviour extends LiveComponent<any, any> {
 
   unsubscribeStoreEvents
   componentDidMount() {
@@ -60,7 +67,7 @@ export class DeviceBehaviour extends Component<any, any> {
           style={{flexDirection: 'row'}}
           onPress={() => { Actions.settingsApp(); }}
         >
-          <Text style={textStyle.softWarning}>{'This Crownstone is locked so the behaviour is disabled.'}</Text>
+          <Text style={textStyle.softWarning}>{ lang("This_Crownstone_is_locked") }</Text>
         </View>
       );
     }
@@ -72,7 +79,7 @@ export class DeviceBehaviour extends Component<any, any> {
           style={{flexDirection: 'row'}}
           onPress={() => { Actions.settingsApp(); }}
         >
-          <Text style={textStyle.warning}>{'Behaviour is disabled in the App Settings. Re-enable indoor localization to use the behaviour.'}</Text>
+          <Text style={textStyle.warning}>{ lang("Behaviour_is_disabled_in_") }</Text>
         </TouchableOpacity>
       );
     }
@@ -84,7 +91,7 @@ export class DeviceBehaviour extends Component<any, any> {
           style={{flexDirection: 'row'}}
           onPress={() => { Actions.settingsApp(); }}
         >
-          <Text style={textStyle.warning}>{'Heartbeat is disabled in the App Settings. Re-enable the Heartbeat to use the exit behaviour.'}</Text>
+          <Text style={textStyle.warning}>{ lang("Heartbeat_is_disabled_in_") }</Text>
         </TouchableOpacity>
       );
     }
@@ -97,7 +104,7 @@ export class DeviceBehaviour extends Component<any, any> {
           style={{flexDirection: 'row'}}
           onPress={() => {Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});}}
         >
-          <Text style={textStyle.warning}>{'Near/away is disabled until you define where near is. Press change at the top to do this now.'}</Text>
+          <Text style={textStyle.warning}>{ lang("Near_away_is_disabled_unt") }</Text>
         </TouchableOpacity>
       );
     }
@@ -114,14 +121,15 @@ export class DeviceBehaviour extends Component<any, any> {
 
     let canChangeBehaviour = Permissions.inSphere(this.props.sphereId).changeBehaviour && state.app.indoorLocalizationEnabled;
 
-    let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId) && stone.config.locationId !== null;
+    let canDoIndoorLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId) && stone.config.locationId !== null;
+
     let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null && element.behaviour.onAway.active === true && element.behaviour.onNear.active === true;
 
     return (
       <View style={{flex:1, flexDirection: 'column', alignItems:'center'}}>
         <View style={{flex: 1.5}} />
-        <Text style={textStyle.title}>Behaviour</Text>
-        <Text style={textStyle.explanation}>This is how I respond to your location:</Text>
+        <Text style={textStyle.title}>{ lang("Behaviour") }</Text>
+        <Text style={textStyle.explanation}>{ lang("This_is_how_I_respond_to_") }</Text>
         <View style={{flex: 1.5}} />
         <BehaviourResponse data={element.behaviour} type={BEHAVIOUR_TYPES.HOME_ENTER} stone={stone} appSettings={state.app} canChangeBehaviour={canChangeBehaviour} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
         <View style={{flex:0.8}} />
@@ -145,10 +153,10 @@ export class DeviceBehaviour extends Component<any, any> {
         <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {
           Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
         }}>
-          <Text style={textStyle.value}>I will </Text>
-          <Text style={[textStyle.value,{fontStyle: 'italic'}]}>only </Text>
-          <Text style={[textStyle.value,{color: colors.green.hex}]}> TURN ON</Text>
-          <Text style={textStyle.value}> if it is dark outside.</Text>
+          <Text style={textStyle.value}>{ lang("I_will_") }</Text>
+          <Text style={[textStyle.value,{fontStyle: 'italic'}]}>{ lang("only_") }</Text>
+          <Text style={[textStyle.value,{color: colors.green.hex}]}>{ lang("_TURN_ON") }</Text>
+          <Text style={textStyle.value}>{ lang("_if_it_is_dark_outside_") }</Text>
         </TouchableOpacity> : undefined }
         <View style={{flex:2}} />
         <View style={{height:30, width: screenWidth, backgroundColor:'transparent'}} />
@@ -169,31 +177,32 @@ class BehaviourResponse extends Component<any, any> {
 
   _getValue(responseStyle) {
     if (this.props.data[this.props.type].state > 0) {
-      return <Text style={[textStyle.value,responseStyle]}>TURN ON</Text>
+      return <Text style={[textStyle.value,responseStyle]}>{ lang("TURN_ON") }</Text>
     }
     else {
-      return <Text style={[textStyle.value,responseStyle]}>TURN OFF</Text>
+      return <Text style={[textStyle.value,responseStyle]}>{ lang("TURN_OFF") }</Text>
     }
   }
 
   _getTitle() {
     switch (this.props.type) {
       case 'onHomeEnter':
-        return 'When you enter the Sphere';
+        return lang("When_you_enter_the_Sphere");
       case 'onHomeExit':
-        return 'When you leave the Sphere';
+        return lang("When_you_leave_the_Sphere");
       case 'onRoomEnter':
-        return 'When you enter the Room';
+        return lang("When_you_enter_the_Room");
       case 'onRoomExit':
-        return 'When you leave the Room';
+        return lang("When_you_leave_the_Room");
       case 'onNear':
-        return 'When you get near to Me';
+        return lang("When_you_get_near_to_Me");
       case 'onAway':
-        return 'When you move away from Me';
+        return lang("When_you_move_away_from_M");
       default:
         return "UNKNOWN TYPE:" + this.props.type
     }
   }
+
 
   _getResponseStyle(isDisabled: boolean, active : boolean) {
     if (isDisabled) {
@@ -252,7 +261,7 @@ class BehaviourResponse extends Component<any, any> {
         <View>
           <Text style={[textStyle.case, responseStyle]}>{this._getTitle()}</Text>
           <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'center'}}>
-            {this.props.prefixItem ? this.props.prefixItem :   <Text style={[textStyle.value, responseStyle]}>{this.props.prefix || 'I will '}</Text>}
+            {this.props.prefixItem ? this.props.prefixItem :   <Text style={[textStyle.value, responseStyle]}>{ lang("I_will_",this.props.prefix) }</Text>}
             {this._getValue(this._getValueStyle(isDisabled, active, this.props.data[this.props.type].state > 0))}
             {this.props.postfixItem ? this.props.postfixItem : <Text style={[textStyle.value, responseStyle]}>{this._getDelay()}</Text>}
           </View>
@@ -263,7 +272,7 @@ class BehaviourResponse extends Component<any, any> {
       content = (
         <View>
           <Text style={[textStyle.case, responseStyle]}>{this._getTitle()}</Text>
-          <Text style={[textStyle.value, {color: colors.white.rgba(0.4), fontWeight:'400', fontStyle:'italic'}, responseStyle]}>{"I won't do anything..."}</Text>
+          <Text style={[textStyle.value, {color: colors.white.rgba(0.4), fontWeight:'400', fontStyle:'italic'}, responseStyle]}>{ lang("I_wont_do_anything___") }</Text>
         </View>
       );
     }

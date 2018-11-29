@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsApp", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -21,9 +28,9 @@ import {KeepAliveHandler} from "../../backgroundProcesses/KeepAliveHandler";
 import {LocationHandler} from "../../native/localization/LocationHandler";
 
 
-export class SettingsApp extends Component<any, any> {
+export class SettingsApp extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "App Settings" }
+    return { title: lang("App_Settings")}
   };
 
   unsubscribe : any;
@@ -73,9 +80,9 @@ export class SettingsApp extends Component<any, any> {
     let state = store.getState();
 
     let items = [];
-    items.push({label: "FEATURES", type: 'explanation', below: false});
+    items.push({label: lang("FEATURES"), type: 'explanation', below: false});
     items.push({
-      label:"Use Tap To Toggle",
+      label: lang("Use_Tap_To_Toggle"),
       value: state.app.tapToToggleEnabled,
       type: 'switch',
       icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
@@ -96,16 +103,16 @@ export class SettingsApp extends Component<any, any> {
         }
     }});
     if (state.app.indoorLocalizationEnabled) {
-      items.push({label: "Tap to toggle allows you to hold your phone against a Crownstone to toggle it automatically!", type: 'explanation', below: true});
+      items.push({label: lang("Tap_to_toggle_allows_you_"), type: 'explanation', below: true});
     }
     else {
-      items.push({label: "If indoor localization is disabled, tap to toggle does only work when the app is on the screen.", type: 'explanation', below: true});
+      items.push({label: lang("If_indoor_localization_is"), type: 'explanation', below: true});
     }
 
 
-    items.push({label: "BATTERY USAGE", type: 'explanation', alreadyPadded: true, below: false});
+    items.push({label: lang("BATTERY_USAGE"), type: 'explanation', alreadyPadded: true, below: false});
     items.push({
-      label:"Use Heartbeat",
+      label: lang("Use_Heartbeat"),
       value: state.app.keepAlivesEnabled && state.app.indoorLocalizationEnabled,
       disabled: !state.app.indoorLocalizationEnabled,
       type: 'switch',
@@ -117,20 +124,16 @@ export class SettingsApp extends Component<any, any> {
         });
       }});
     if (state.app.indoorLocalizationEnabled) {
-      items.push({label: "The heartbeat is part of the indoor localization process. Every now and then, the app will tell the Crownstones that you're still there." +
-      "\n\nThis is used for the following behaviours:" +
-      "\n  - Exit Sphere" +
-      "\n  - Exit Room" +
-      "\n\nIf you disable the heartbeat and another user is using it with the exit events, the Crownstones can turn off when that user leaves the house (according to their behaviour).",
+      items.push({label: lang("The_heartbeat_is_part_of_"),
         type: 'explanation', below: true});
     }
     else {
-      items.push({label: "The heartbeat is part of the indoor localization process. If indoor localization is disabled, the heartbeat will also be disabled.",
+      items.push({label: lang("The_heartbeat_is_part_of_t"),
         type: 'explanation', below: true});
     }
 
     items.push({
-      label: "Use Indoor localization",
+      label: lang("Use_Indoor_localization"),
       value: state.app.indoorLocalizationEnabled,
       type: 'switch',
       icon: <IconButton name="c1-locationPin1" size={18} button={true} color="#fff"
@@ -148,19 +151,13 @@ export class SettingsApp extends Component<any, any> {
           // REMOVE USER FROM ALL SPHERES AND ALL LOCATIONS.
           let deviceId = Util.data.getCurrentDeviceId(state);
           if (deviceId) {
-            CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });  // will also clear location
+            CLOUD.forDevice(deviceId).exitSphere("*").catch(() => { });  // will also clear location
           }
         }
       }
     });
     items.push({
-      label: "Indoor localization allows the Crownstones to react to: " +
-      "\n  - Enter/Exit Sphere" +
-      "\n  - Enter/Exit Room" +
-      "\n  - Your distance to the Crownstone (Near and Away) " +
-      "\n  - Tap to Toggle" +
-      "\n\nTo do this, the app has to run in the background. If you are in the Sphere, this can use more power than an average app." +
-      "\n\nIf you do not wish to make use of any of the behaviours listed above, you can disable Indoor Localization and use the app as a remote control.\n\n",
+      label: lang("Indoor_localization_allow"),
       type: 'explanation',
       below: true
     });

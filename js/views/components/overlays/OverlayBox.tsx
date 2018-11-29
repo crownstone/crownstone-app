@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("OverlayBox", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   BackHandler,
@@ -8,7 +14,7 @@ import {
   View,
 } from 'react-native';
 
-import { FadeInView }   from '../animated/FadeInView'
+import { HiddenFadeInView }   from '../animated/FadeInView'
 import { Icon }         from '../Icon'
 import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../../styles'
 
@@ -22,6 +28,7 @@ interface overlayBoxProps {
   canClose?:           boolean,
   closeCallback?:      any,
   style?:              any
+  wrapperStyle?:       any
 }
 
 // Set prop "overrideBackButton" to override the (android) back button when the overlay box is visible.
@@ -71,10 +78,11 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
 
   render() {
     return (
-      <FadeInView
+      <HiddenFadeInView
         style={[
           styles.fullscreen,
-          {backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2), justifyContent:'center', alignItems:'center', overflow:'hidden'}
+          {backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2), justifyContent:'center', alignItems:'center', overflow:'hidden'},
+          this.props.wrapperStyle
         ]}
         height={screenHeight}
         duration={200}
@@ -93,7 +101,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
               <Icon name="md-close" size={30} color="#fff" style={{position:'relative', top:1, right:0}}/>
             </TouchableOpacity> : undefined}
         </View>
-      </FadeInView>
+      </HiddenFadeInView>
     );
   }
 }

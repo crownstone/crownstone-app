@@ -45,7 +45,7 @@ export class UserSyncer extends SyncingBase {
     }
 
     if (shouldUpdateLocally(userInState, userInCloud)) {
-      this.transferPromises.push(transferUser.updateLocal(this.actions, {cloudData: userInCloud}));
+      transferUser.updateLocal(this.actions, {cloudData: userInCloud});
     }
     else if (shouldUpdateInCloud(userInState, userInCloud)) {
       this.transferPromises.push(transferUser.updateOnCloud({localData: userInState, cloudId: userInCloud.id}));

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("PhysicsBasedSphereUI", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,11 +24,11 @@ export class PhysicsBasedSphereUI extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>The Sphere overview now positions the rooms automatically. Scroll down for more.</Text>
+            <Text style={WNStyles.text}>{ lang("The_Sphere_overview_now_p") }</Text>
             <View style={{flex:1}} />
             <Image source={require('../../../../images/whatsNew/1.10.0/physicsBasedSphereUI.png')} style={{width:529*size, height:1162*size}}/>
             <View style={{flex:1}} />
-            <Text style={WNStyles.detail}>You can move it around as well as zoom in. Double tap the background to reset the camera.</Text>
+            <Text style={WNStyles.detail}>{ lang("You_can_move_it_around_as") }</Text>
           </View>
         </ScrollView>
       </View>

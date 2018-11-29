@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -39,12 +45,12 @@ import { TopbarButton }           from "../components/topbar/TopbarButton";
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { RoomDeleted }            from "../static/RoomDeleted";
 import { preparePictureURI }      from "../../util/Util";
-import { ShadedImage }            from "../components/ShadedImage";
 import { Scheduler }              from "../../logic/Scheduler";
 import { topBarStyle }            from "../components/topbar/TopbarStyles";
+import { LiveComponent }          from "../LiveComponent";
 
 
-export class RoomOverview extends Component<any, any> {
+export class RoomOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
@@ -60,10 +66,12 @@ export class RoomOverview extends Component<any, any> {
 
     return {
       title: paramsToUse.title,
-      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>
+      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 
+  navBarCalback : any = null;
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
@@ -72,7 +80,6 @@ export class RoomOverview extends Component<any, any> {
   pictureTaken : any = null
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
-  navBarCalback : any = null;
 
   constructor(props) {
     super(props);
@@ -183,6 +190,7 @@ export class RoomOverview extends Component<any, any> {
       this.navBarCalback();
       this.navBarCalback = null
     }
+
   }
 
   _renderer(item, index, stoneId) {
@@ -295,7 +303,6 @@ export class RoomOverview extends Component<any, any> {
       this.navBarCalback();
       this.navBarCalback = null
     }
-
     this.navBarCalback = Scheduler.scheduleCallback(() => {
       let state = this.props.store.getState();
       let params = getNavBarParams(state, this.props, this.viewingRemotely);
@@ -303,13 +310,13 @@ export class RoomOverview extends Component<any, any> {
     } , 0)
   }
 
+
   render() {
     const store = this.props.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted/> }
     let location = null;
-    let roomCustomImage = null;
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
@@ -330,29 +337,7 @@ export class RoomOverview extends Component<any, any> {
       if (!location) { return <RoomDeleted /> }
 
       if (location.config.picture) {
-        if (this.viewingRemotelyInitial === false && this.viewingRemotely === false && Platform.OS === 'android') {
-          // update cache buster
-          if (this.pictureTaken !== location.config.pictureTaken) {
-            this.pictureTaken = location.config.pictureTaken;
-          }
-          
-          backgroundImage = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={{uri: preparePictureURI(location.config.picture)}} />
-        }
-        else {
-          roomCustomImage = (
-            <ShadedImage
-              style={{width: screenWidth, height: screenHeight}}
-              image={location.config.picture}
-              imageTaken={location.config.pictureTaken}
-              backgroundImageSource={this.props.getBackground('main', this.viewingRemotely)}
-              r={1} g={1} b={1}
-              blendFactor={this.viewingRemotely ? 0.0 : 0.0}
-              grayScale={this.viewingRemotely ? 0.9 : 0.0}
-              ignoreBackground={Platform.OS === 'ios'}
-              enableOpacityShaderFade={Platform.OS === 'ios'}
-            />
-          );
-        }
+        backgroundImage = { uri: preparePictureURI(location.config.picture) };
       }
     }
 
@@ -384,7 +369,7 @@ export class RoomOverview extends Component<any, any> {
     }
 
     return (
-      <Background image={backgroundImage} topImage={roomCustomImage}>
+      <Background image={backgroundImage}>
         <OrangeLine/>
         <RoomBanner
           presentUsers={users}
@@ -457,9 +442,9 @@ function getNavBarRightItem(state, enoughCrownstonesInLocations, label, props, v
     let aiName = state.spheres[props.sphereId].config.aiName;
     props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
     Alert.alert(
-      "Lets teach " + aiName + " how to identify this room!",
-      "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
-      [{text: "OK"}]
+lang("_Lets_teach_____arguments_header",aiName),
+lang("_Lets_teach_____arguments_body",aiName),
+[{text: lang("_Lets_teach_____arguments_left")}]
     );
   }
   let iconSize = 25;
@@ -489,7 +474,7 @@ function getNavBarParams(state, props, viewingRemotely) {
     title = state.spheres[props.sphereId].locations[props.locationId].config.name;
   }
   else {
-    title = "Floating";
+    title =  lang("Floating");
   }
 
   let rightLabel = undefined;
@@ -497,14 +482,17 @@ function getNavBarParams(state, props, viewingRemotely) {
   let spherePermissions = Permissions.inSphere(props.sphereId);
 
   if (spherePermissions.editRoom === true && props.locationId !== null) {
-    rightLabel = 'Edit';
+    rightLabel =  lang("Edit");
     rightAction = () => { Actions.roomEdit({sphereId: props.sphereId, locationId: props.locationId}); };
   }
   else if (spherePermissions.editRoom === false && props.locationId !== null && enoughCrownstonesInLocations === true) {
-    rightLabel = 'Train';
+    rightLabel =  lang("Train");
     rightAction = () => {
       if (viewingRemotely === true) {
-        Alert.alert("You're not in the Sphere", "Training is only possible if you're in the Sphere. Try again when you are.", [{text:"OK"}])
+        Alert.alert(
+lang("_Youre_not_in_the_Sphere__header"),
+lang("_Youre_not_in_the_Sphere__body"),
+[{text:lang("_Youre_not_in_the_Sphere__left")}])
       }
       else {
         Actions.roomTraining_roomSize({sphereId: props.sphereId, locationId: props.locationId});

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocationPermissionOverlay", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -95,7 +101,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
               borderWidth: 2,
               borderColor: colors.blue.rgba(0.5),
             }]}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue.hex}}>{"Request Permission"}</Text>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue.hex}}>{ lang("Request_Permission") }</Text>
           </TouchableOpacity>
         );
     }

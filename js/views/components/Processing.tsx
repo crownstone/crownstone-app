@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Processing", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   
@@ -10,7 +16,7 @@ import {
 
 import { AnimatedLogo }       from './animated/AnimatedLogo'
 import { AnimatedLoadingBar } from './animated/AnimatedLoadingBar'
-import { FadeInView }         from './animated/FadeInView'
+import { HiddenFadeInView }         from './animated/FadeInView'
 import { styles, colors , screenHeight} from './../styles'
 import { eventBus } from '../../util/EventBus'
 
@@ -89,7 +95,7 @@ export class Processing extends Component<any, any> {
 
   render() {
     return (
-      <FadeInView
+      <HiddenFadeInView
         style={[styles.fullscreen, {backgroundColor:colors.black.rgba(this.state.opacity || 0.75),justifyContent:'center', alignItems:'center'}]}
         height={screenHeight}
         duration={200}
@@ -100,7 +106,7 @@ export class Processing extends Component<any, any> {
         {this.state.text ? <Text style={[styles.menuText,{fontWeight:'bold', paddingLeft:20, paddingRight:20, textAlign:'center'}]}>{this.state.text}</Text> : undefined}
         {this.state.progress !== undefined ? <AnimatedLoadingBar progress={this.state.progress} /> : undefined}
         {this.state.progressText ? <Text style={[styles.menuText,{fontSize:15, fontWeight:'400', fontStyle:'italic', textAlign:'center'}]}>{this.state.progressText}</Text> : undefined}
-      </FadeInView>
+      </HiddenFadeInView>
     );
   }
 }

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Background", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -9,7 +15,7 @@ import { styles, screenHeight, topBarHeight, tabBarHeight} from '../styles'
 import {BackgroundImage} from "./BackgroundImage";
 
 
-export class Background extends Component<{hasNavBar?: boolean, fullScreen?: boolean, hasTopBar?: boolean, image: any, topImage?: any, shadedStatusBar?: boolean, safeView?: boolean}, any> {
+export class Background extends Component<{hasNavBar?: boolean, fullScreen?: boolean, hasTopBar?: boolean, image: any, topImage?: any, shadedStatusBar?: boolean, safeView?: boolean, statusBarStyle?:any}, any> {
   render() {
     let height = screenHeight;
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {
@@ -23,7 +29,7 @@ export class Background extends Component<{hasNavBar?: boolean, fullScreen?: boo
         <BackgroundImage height={height} image={this.props.image} />
         {this.props.topImage ? <View style={[styles.fullscreen, {height:height, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
         <View style={[styles.fullscreen, {height:height}]} >
-          { this.props.shadedStatusBar === true ? <View style={styles.shadedStatusBar} /> : undefined}
+          { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}
           { this.props.safeView ? <SafeAreaView style={{flex:1}}>{this.props.children}</SafeAreaView> : this.props.children }
         </View>
       </View>

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomIconSelection", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -17,17 +23,17 @@ const Actions = require('react-native-router-flux').Actions;
 
 
 let categories = [
-  {key: 'hallway', label: 'Hallway'},
-  {key: 'livingRoom', label: 'Living Room'},
-  {key: 'kitchen', label: 'Kitchen'},
-  {key: 'bathroom', label: 'Bathroom'},
-  {key: 'office', label: 'Office'},
-  {key: 'bedRoom', label: 'Bedroom'},
-  {key: 'garage', label: 'Garage'},
-  {key: 'play', label: 'Play Room'},
-  {key: 'music', label: 'Music Room'},
-  {key: 'nature', label: 'Nature / Outside'},
-  {key: 'miscellaneous', label: 'Miscellaneous'},
+  {key: 'hallway', label: lang("Hallway")},
+  {key: 'livingRoom', label: lang("Living_Room")},
+  {key: 'kitchen', label: lang("Kitchen")},
+  {key: 'bathroom', label: lang("Bathroom")},
+  {key: 'office', label: lang("Office")},
+  {key: 'bedRoom', label: lang("Bedroom")},
+  {key: 'garage', label: lang("Garage")},
+  {key: 'play', label: lang("Play_Room")},
+  {key: 'music', label: lang("Music_Room")},
+  {key: 'nature', label: lang("Nature___Outside")},
+  {key: 'miscellaneous', label: lang("Miscellaneous")},
 ];
 
 let listOfIcons = {
@@ -208,7 +214,7 @@ export const getRandomRoomIcon = () => {
 export class RoomIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Pick an Icon",
+      title: lang("Pick_an_Icon"),
     }
   };
 

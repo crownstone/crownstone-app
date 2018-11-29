@@ -40,7 +40,7 @@ export const transferActivityLogs = {
       });
   },
 
-  batchCreateOnCloud: function( state, actions, dataArray: [transferNewToCloudStoneData]) {
+  batchCreateOnCloud: function( state, actions, dataArray: transferNewToCloudStoneData[]) {
     let batch = [];
 
     let localSphereId = null;
@@ -50,6 +50,9 @@ export const transferActivityLogs = {
     if (dataArray.length > 0) {
       localStoneId = dataArray[0].localStoneId;
       localSphereId = dataArray[0].localSphereId;
+    }
+    else {
+      return new Promise((resolve, reject) => { resolve() })
     }
 
     for (let i = 0; i < dataArray.length; i++) {
@@ -88,7 +91,7 @@ export const transferActivityLogs = {
 
 
   createLocal: function( actions, data: transferToLocalStoneData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'ADD_ACTIVITY_LOG',
       { sphereId: data.localSphereId, stoneId: data.localStoneId, logId: data.localId },

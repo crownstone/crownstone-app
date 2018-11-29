@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceWhatsNew", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -78,8 +84,8 @@ export class DeviceWhatsNew extends Component<any, any> {
 
     return (
       <View style={{flex:1, alignItems:'center', padding: 30}}>
-        <Text style={deviceStyles.header}>{"Update Complete!"}</Text>
-        <Text style={deviceStyles.subHeader}>{"What's New"}</Text>
+        <Text style={deviceStyles.header}>{ lang("Update_Complete_") }</Text>
+        <Text style={deviceStyles.subHeader}>{ lang("Whats_New") }</Text>
         <View style={{flex:1}} />
         <IconButton
           name="c1-present"

@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereCrownstoneOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -21,13 +28,13 @@ import {BackAction} from "../../../util/Back";
 
 const Actions = require('react-native-router-flux').Actions;
 
-export class SphereCrownstoneOverview extends Component<any, any> {
+export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     let state = params.store.getState();
     let sphere = state.spheres[params.sphereId] ;
     return {
-      title: "Crownstones in " + sphere.config.name,
+      title: lang("Crownstones_in_",sphere.config.name),
     }
   };
 
@@ -47,7 +54,6 @@ export class SphereCrownstoneOverview extends Component<any, any> {
   }
 
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId) {
-
     items.push({
       __item: <DeviceEntry
         eventBus={this.props.eventBus}
@@ -56,6 +62,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
         sphereId={sphereId}
         touchable={false}
         viewingRemotely={false}
+        hideExplanation={true}
       />
     });
   }
@@ -71,7 +78,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
     let stoneIds = Object.keys(stones);
 
     if (stoneIds.length == 0) {
-      items.push({label:"There are no Crownstones in this Sphere yet!",  type:'largeExplanation', below:false});
+      items.push({label: lang("There_are_no_Crownstones_"),  type:'largeExplanation', below:false});
       return items;
     }
 
@@ -85,7 +92,7 @@ export class SphereCrownstoneOverview extends Component<any, any> {
       if (stoneIdsInRoom.length > 0) {
         let label = "CROWNSTONES NOT IN A ROOM";
         if (roomId !== null) {
-          label = "CROWNSTONES IN " + rooms[roomId].config.name.toUpperCase();
+          label =  lang("CROWNSTONES_IN_",rooms[roomId].config.name.toUpperCase());
         }
 
         items.push({label: label, type:'explanation', below:false});
@@ -110,11 +117,11 @@ export class SphereCrownstoneOverview extends Component<any, any> {
 
     renderStonesInRoom(null)
 
-    items.push({label: "This is an overview of all your Crownstones. To access the settings of these Crownstones, go to their rooms and tap on them there.", type:'explanation', below:true});
+    items.push({label: lang("This_is_an_overview_of_al"), type:'explanation', below:true});
 
 
     items.push({
-      label: 'Add a Crownstone',
+      label: lang("Add_a_Crownstone"),
       largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
       style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
       type: 'button',
@@ -123,7 +130,10 @@ export class SphereCrownstoneOverview extends Component<any, any> {
           addCrownstoneExplanationAlert(() => { BackAction('sphereOverview'); } )
         }
         else {
-          Alert.alert("Ask your Sphere Admin","Admins can add new Crownstones to Spheres. If you have a new Crownstone you'd like to add, ask the sphere Admin.",[{text:"OK"}]);
+          Alert.alert(
+lang("_Ask_your_Sphere_Admin__A_header"),
+lang("_Ask_your_Sphere_Admin__A_body"),
+[{text:lang("_Ask_your_Sphere_Admin__A_left")}]);
         }
       }
     });

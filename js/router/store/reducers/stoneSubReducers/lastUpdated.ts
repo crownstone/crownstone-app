@@ -4,7 +4,7 @@ import { update, getTime, refreshDefaults } from '../reducerUtil'
 
 let dataState = {
   stoneTime: 0,
-  syncedActivityLog: 0
+  syncedActivityLog: 0,
 };
 
 // lastUpdatedReducer

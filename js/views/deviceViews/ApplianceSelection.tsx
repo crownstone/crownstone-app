@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ApplianceSelection", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -23,7 +30,7 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {EventBusClass} from "../../util/EventBus";
 import {BackAction} from "../../util/Back";
 
-export class ApplianceSelection extends Component<{
+export class ApplianceSelection extends LiveComponent<{
   sphereId: string,
   applianceId: string,
   stoneId: string,
@@ -36,7 +43,7 @@ export class ApplianceSelection extends Component<{
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Select Device Type",
+      title: lang("Select_Device_Type"),
     }
   };
 
@@ -71,15 +78,18 @@ export class ApplianceSelection extends Component<{
     let appliances = state.spheres[this.props.sphereId].appliances;
     let applianceIds = Object.keys(appliances);
     if (applianceIds.length > 0) {
-      items.push({label:'ALL DEVICES', type: 'lightExplanation',  below:false});
+      items.push({label: lang("ALL_DEVICES"), type: 'lightExplanation',  below:false});
 
       applianceIds.forEach((applianceId) => {
         let appliance = appliances[applianceId];
 
         let selectCallback = () => { this.props.callback(applianceId); BackAction(); };
         let deleteCallback = () => {
-          Alert.alert("Are you sure?","We will be automatically remove \"" + appliance.config.name + "\" from any Crownstones using it.",
-            [{text:'Cancel', style: 'cancel'}, {text:'Delete', style: 'destructive', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
+          Alert.alert(
+lang("_Are_you_sure___We_will_b_header"),
+lang("_Are_you_sure___We_will_b_body",appliance.config.name),
+[{text:lang("_Are_you_sure___We_will_b_left"), style: 'cancel'}, {
+text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
         };
 
         items.push({__item:
@@ -102,9 +112,9 @@ export class ApplianceSelection extends Component<{
     }
 
 
-    items.push({label:'ADD DEVICE TYPES', type: 'lightExplanation', below:false});
+    items.push({label: lang("ADD_DEVICE_TYPES"), type: 'lightExplanation', below:false});
     items.push({
-      label: 'Add a device type',
+      label: lang("Add_a_device_type"),
       largeIcon: <Icon name="ios-add-circle" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
       style: {color:colors.blue.hex},
       type: 'button',
@@ -120,7 +130,7 @@ export class ApplianceSelection extends Component<{
     });
 
     items.push({
-      label: 'No device type assigned',
+      label: lang("No_device_type_assigned"),
       largeIcon: <Icon name="md-cube" size={45} color={colors.menuBackground.hex} />,
       style: {color:colors.blue.hex},
       type: 'button',
@@ -150,9 +160,10 @@ export class ApplianceSelection extends Component<{
       })
       .catch((err) => {
         let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
-        Alert.alert("Encountered Cloud Issue.",
-          "We cannot delete this Appliance in the Cloud. Please try again later.",
-          [{text:'OK', onPress: defaultAction }],
+        Alert.alert(
+lang("_Encountered_Cloud_Issue__header"),
+lang("_Encountered_Cloud_Issue__body"),
+[{text:lang("_Encountered_Cloud_Issue__left"), onPress: defaultAction }],
           { onDismiss: defaultAction }
         )
       });

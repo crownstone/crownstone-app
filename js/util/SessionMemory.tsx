@@ -1,5 +1,7 @@
+
 export let SessionMemory = {
   loginEmail: null,
   cameraSide: 'front',
-  cacheBusterUniqueElement: Math.random()
+  cacheBusterUniqueElement: Math.random(),
+  developmentEnvironment: false,
 };

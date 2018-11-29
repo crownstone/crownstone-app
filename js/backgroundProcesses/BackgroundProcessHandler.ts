@@ -26,13 +26,16 @@ import { BatchUploader }         from "./BatchUploader";
 import { MessageCenter }         from "./MessageCenter";
 import { CloudEventHandler }     from "./CloudEventHandler";
 import { Permissions }           from "./PermissionManager";
-import {LOG, LOGe, LOGw} from "../logging/Log";
+import { LOG, LOGe, LOGw }       from "../logging/Log";
 import { LogProcessor }          from "../logging/LogProcessor";
 import { BleLogger }             from "../native/advertisements/BleLogger";
 import { StoneManager }          from "../native/advertisements/StoneManager";
 import { MeshUtil }              from "../util/MeshUtil";
 import { Sentry }                from "react-native-sentry";
-import {ActivityLogManager} from "./ActivityLogManager";
+import { ActivityLogManager }    from "./ActivityLogManager";
+import { ToonIntegration }       from "./thirdParty/ToonIntegration";
+import { EncryptionManager }     from "../native/libInterface/Encryption";
+import { SessionMemory } from "../util/SessionMemory";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -58,6 +61,10 @@ class BackgroundProcessHandlerClass {
       // start the BLE things.
       // route the events to React Native
       Bluenet.rerouteEvents();
+
+      BluenetPromiseWrapper.isDevelopmentEnvironment().then((result) => {
+        SessionMemory.developmentEnvironment = result;
+      })
 
       // if there is a badge number, remove it on opening the app.
       this._clearBadge();
@@ -88,15 +95,18 @@ class BackgroundProcessHandlerClass {
           return Bluenet.startScanningForCrownstonesUniqueOnly();
         });
 
+        // initialize logging to file if this is required.
         this.setupLogging();
 
         this.userLoggedIn = true;
-
       });
 
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
       eventBus.on('userLoggedInFinished', () => {
+        // init behaviour based on if we are in the foreground or the background.
+        this._applyAppStateOnScanning(AppState.currentState);
+
         let state = this.store.getState();
         // this should have been covered by the naming of the AI. This is a fallback and it's for users who are not admins.
         if (state.user.accessToken !== null && state.user.isNew !== false) {
@@ -106,10 +116,10 @@ class BackgroundProcessHandlerClass {
         LOG.info("BackgroundProcessHandler: received userLoggedInFinished event.");
         LocationHandler.initializeTracking();
 
-        // if we use this device as a hub, make sure we request permission for notifications.
         LOG.info("Sync: Requesting notification permissions during Login.");
         NotificationHandler.request();
 
+        // this will check if a whats-new overlay needs to be shown. Only happens on first boot of a new version.
         this.showWhatsNew();
       });
 
@@ -133,10 +143,14 @@ class BackgroundProcessHandlerClass {
         LocationHandler.applySphereStateFromStore();
 
         this.setupLogging();
+
+        // init behaviour based on if we are in the foreground or the background.
+        this._applyAppStateOnScanning(AppState.currentState);
       });
 
       // Create the store from local storage. If there is no local store yet (first open), this is synchronous
       this.startStore();
+
     }
     this.started = true;
   }
@@ -272,53 +286,58 @@ class BackgroundProcessHandlerClass {
           state: appState,
         }
       });
-      // in the foreground: start scanning!
-      if (appState === "active" && this.userLoggedIn) {
-        BatterySavingUtil.startNormalUsage();
 
-        // clear all mesh network ids in all spheres on opening the app.
-        MeshUtil.clearMeshNetworkIds(this.store);
-
-        // remove any badges from the app icon on the phone.
-        this._clearBadge();
-
-        // restore tracking state if required. An independent check for the indoorlocalization state is not required.
-        if (this.cancelPauseTrackingCallback !== null) {
-          this.cancelPauseTrackingCallback();
-          this.cancelPauseTrackingCallback = null;
-        }
-        if (this.trackingPaused) {
-          Bluenet.resumeTracking();
-          BluenetPromiseWrapper.isReady().then(() => {
-            LOG.info("BackgroundProcessHandler: Start Scanning after inactive.");
-            return Bluenet.startScanningForCrownstonesUniqueOnly();
-          });
-          this.trackingPaused = false;
-        }
-
-        // if the app is open, update the user locations every 10 seconds
-        Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
-      }
-      else if (appState === 'background') {
-        // in the background: stop scanning to save battery!
-        BatterySavingUtil.startBatterySaving();
-
-        // check if we require indoor localization, pause tracking if we dont.
-        let state = this.store.getState();
-        if (state.app.indoorLocalizationEnabled === false) {
-          this.cancelPauseTrackingCallback = Scheduler.scheduleCallback(() => {
-            // stop all scanning and tracking to save battery. This will only happen if the app lives in the background for 5 minutes when it shouldnt.
-            Bluenet.pauseTracking();
-            Bluenet.stopScanning();
-            this.cancelPauseTrackingCallback = null;
-            this.trackingPaused = true;
-          }, 5*60*1000, 'pauseTracking');
-        }
-
-        // remove the user sync so it won't use battery in the background
-        Scheduler.pauseTrigger(BACKGROUND_USER_SYNC_TRIGGER);
-      }
+      this._applyAppStateOnScanning(appState);
     });
+  }
+
+  _applyAppStateOnScanning(appState) {
+    // in the foreground: start scanning!
+    if (appState === "active" && this.userLoggedIn) {
+      BatterySavingUtil.startNormalUsage();
+
+      // clear all mesh network ids in all spheres on opening the app.
+      MeshUtil.clearMeshNetworkIds(this.store);
+
+      // remove any badges from the app icon on the phone.
+      this._clearBadge();
+
+      // restore tracking state if required. An independent check for the indoorlocalization state is not required.
+      if (this.cancelPauseTrackingCallback !== null) {
+        this.cancelPauseTrackingCallback();
+        this.cancelPauseTrackingCallback = null;
+      }
+      if (this.trackingPaused) {
+        Bluenet.resumeTracking();
+        BluenetPromiseWrapper.isReady().then(() => {
+          LOG.info("BackgroundProcessHandler: Start Scanning after inactive.");
+          return Bluenet.startScanningForCrownstonesUniqueOnly();
+        });
+        this.trackingPaused = false;
+      }
+
+      // if the app is open, update the user locations every 10 seconds
+      Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
+    }
+    else if (appState === 'background') {
+      // in the background: stop scanning to save battery!
+      BatterySavingUtil.startBatterySaving();
+
+      // check if we require indoor localization, pause tracking if we dont.
+      let state = this.store.getState();
+      if (state.app.indoorLocalizationEnabled === false) {
+        this.cancelPauseTrackingCallback = Scheduler.scheduleCallback(() => {
+          // stop all scanning and tracking to save battery. This will only happen if the app lives in the background for 5 minutes when it shouldnt.
+          Bluenet.pauseTracking();
+          Bluenet.stopScanning();
+          this.cancelPauseTrackingCallback = null;
+          this.trackingPaused = true;
+        }, 5*60*1000, 'pauseTracking');
+      }
+
+      // remove the user sync so it won't use battery in the background
+      Scheduler.pauseTrigger(BACKGROUND_USER_SYNC_TRIGGER);
+    }
   }
 
   _clearBadge() {
@@ -406,10 +425,10 @@ class BackgroundProcessHandlerClass {
           }
         });
       eventBus.emit("userLoggedIn");
+      eventBus.emit("storePrepared", {userLoggedIn: true});
       if (state.user.isNew === false) {
         eventBus.emit("userLoggedInFinished");
       }
-      eventBus.emit("storePrepared", {userLoggedIn: true});
     }
     else {
       eventBus.emit("storePrepared", {userLoggedIn: false});
@@ -418,6 +437,7 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
+    EncryptionManager.loadStore(this.store);
     BatchCommandHandler.loadStore(this.store);
     MapProvider.loadStore(this.store);
     LogProcessor.loadStore(this.store);
@@ -436,6 +456,7 @@ class BackgroundProcessHandlerClass {
     CloudEventHandler.loadStore(this.store);
     Permissions.loadStore(this.store, this.userLoggedIn);
     ActivityLogManager.loadStore(this.store);
+    ToonIntegration.loadStore(this.store);
 
     BleLogger.init();
   }

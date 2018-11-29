@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("UserLayer", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -16,7 +23,7 @@ import {UserPicture} from "../components/animated/UserPicture";
 import {TextCircle} from "../components/animated/TextCircle";
 
 
-export class UserLayer extends Component<any, any> {
+export class UserLayer extends LiveComponent<any, any> {
   unsubscribeStoreEvents;
   users: any;
   maxUsersShownOnRoom : number;

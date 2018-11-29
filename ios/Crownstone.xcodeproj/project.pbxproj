@@ -50,7 +50,7 @@
 		FA0177D61FC46385001C8FD6 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D51FC46385001C8FD6 /* Logger.swift */; };
 		FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D71FC46412001C8FD6 /* EventEmitter.swift */; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
-		FA5459D8209B14A80062E4DC /* libRNWebGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5459D6209B12E60062E4DC /* libRNWebGL.a */; };
+		FA53A0A02174D5EA0007FB68 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA53A09F2174D5EA0007FB68 /* BluenetLib.framework */; };
 		FA570EA91EAE30F9001C625D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */; };
 		FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA31EAE30F9001C625D /* BluenetShared.framework */; };
 		FA570EAC1EAE30F9001C625D /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA41EAE30F9001C625D /* CryptoSwift.framework */; };
@@ -69,7 +69,6 @@
 		FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DCE020F3AD70002A795E /* EventBus.swift */; };
 		FA60DD1820F3ADA7002A795E /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DD1720F3ADA7002A795E /* Util.swift */; };
 		FA6FBC6B20A98EBD00EEEF18 /* Crownstone2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */; };
-		FA80B06C1ECDBCE600CE3474 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA80B06B1ECDBCE600CE3474 /* BluenetLib.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -325,13 +324,6 @@
 			remoteGlobalIDString = 94DDAC5C1F3D024300EED511;
 			remoteInfo = "RNSVG-tvOS";
 		};
-		FA5459D5209B12E60062E4DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DF9C89DE9E1C46899814B249 /* RNWebGL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4107012F1ACB723B00C6AA39;
-			remoteInfo = RNWebGL;
-		};
 		FA5459E7209B17AB0062E4DC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA5459E2209B17AB0062E4DC /* RNDeviceInfo.xcodeproj */;
@@ -503,7 +495,6 @@
 		D42EDABA9EFB4156A87226CD /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		DEB1FEE0EEBB4A408A7AD560 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		DECEB9CC79AB448890DC6C27 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
-		DF9C89DE9E1C46899814B249 /* RNWebGL.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNWebGL.xcodeproj; path = "../node_modules/react-native-webgl/ios/RNWebGL.xcodeproj"; sourceTree = "<group>"; };
 		E197A1027E624661986DE5C3 /* RCTToast.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTToast.xcodeproj; path = "../node_modules/react-native-same-toast/RCTToast.xcodeproj"; sourceTree = "<group>"; };
 		EC36535A5433491E89F826E6 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
 		F1D30CA378FA4421A1BFF9D6 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -514,6 +505,7 @@
 		FA0177D51FC46385001C8FD6 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		FA0177D71FC46412001C8FD6 /* EventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmitter.swift; sourceTree = "<group>"; };
 		FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = imageAssets.xcassets; sourceTree = "<group>"; };
+		FA53A09F2174D5EA0007FB68 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FA5459E2209B17AB0062E4DC /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
 		FA570EA31EAE30F9001C625D /* BluenetShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetShared.framework; path = Carthage/Build/iOS/BluenetShared.framework; sourceTree = "<group>"; };
@@ -535,7 +527,6 @@
 		FA60DCE020F3AD70002A795E /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		FA60DD1720F3ADA7002A795E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone2.ttf; path = ../js/fonts/Crownstone2.ttf; sourceTree = "<group>"; };
-		FA80B06B1ECDBCE600CE3474 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -562,7 +553,6 @@
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
-				FA80B06C1ECDBCE600CE3474 /* BluenetLib.framework in Frameworks */,
 				FA570EB01EAE30F9001C625D /* Zip.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
@@ -570,9 +560,9 @@
 				FA570EA91EAE30F9001C625D /* BluenetBasicLocalization.framework in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				FA570EAF1EAE30F9001C625D /* SwiftyJSON.framework in Frameworks */,
+				FA53A0A02174D5EA0007FB68 /* BluenetLib.framework in Frameworks */,
 				FA570EAD1EAE30F9001C625D /* iOSDFULibrary.framework in Frameworks */,
 				FA570EAE1EAE30F9001C625D /* PromiseKit.framework in Frameworks */,
-				FA5459D8209B14A80062E4DC /* libRNWebGL.a in Frameworks */,
 				C1770742DC1E48B386AA917E /* libRNDeviceInfo.a in Frameworks */,
 				5D0DDA5E1C014AB38EC2AD63 /* libRNFS.a in Frameworks */,
 				FA570EAC1EAE30F9001C625D /* CryptoSwift.framework in Frameworks */,
@@ -757,7 +747,6 @@
 				969FFDEEBF7844A78DCE0CB0 /* RNUncontrolledDatePickerIOS.xcodeproj */,
 				EC36535A5433491E89F826E6 /* SplashScreen.xcodeproj */,
 				BE7F7941F0184BBFAA66528C /* ReactNativeCameraKit.xcodeproj */,
-				DF9C89DE9E1C46899814B249 /* RNWebGL.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -778,7 +767,7 @@
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
 				FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
-				FA80B06B1ECDBCE600CE3474 /* BluenetLib.framework */,
+				FA53A09F2174D5EA0007FB68 /* BluenetLib.framework */,
 				FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
@@ -854,14 +843,6 @@
 				FA570EB61EAE320F001C625D /* NativeBridge.m */,
 			);
 			path = BridgeObjCFiles;
-			sourceTree = "<group>";
-		};
-		FA5459D2209B12E60062E4DC /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				FA5459D6209B12E60062E4DC /* libRNWebGL.a */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		FA5459D7209B14A80062E4DC /* Frameworks */ = {
@@ -1172,10 +1153,6 @@
 					ProjectRef = D42EDABA9EFB4156A87226CD /* RNVectorIcons.xcodeproj */;
 				},
 				{
-					ProductGroup = FA5459D2209B12E60062E4DC /* Products */;
-					ProjectRef = DF9C89DE9E1C46899814B249 /* RNWebGL.xcodeproj */;
-				},
-				{
 					ProductGroup = FAB0B1AD1FA75AAC005649C3 /* Products */;
 					ProjectRef = EC36535A5433491E89F826E6 /* SplashScreen.xcodeproj */;
 				},
@@ -1434,13 +1411,6 @@
 			remoteRef = FA20B0991FB35DE700926366 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FA5459D6209B12E60062E4DC /* libRNWebGL.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNWebGL.a;
-			remoteRef = FA5459D5209B12E60062E4DC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FA5459E8209B17AB0062E4DC /* libRNDeviceInfo.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1608,7 +1578,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport NODE_BINARY=node\n../node_modules/sentry-cli-binary/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport NODE_BINARY=node\n../node_modules/sentry-cli-binary/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		9FEBB1779000454B8AE96738 /* Upload Debug Symbols to Sentry */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1622,7 +1592,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/sentry-cli-binary/bin/sentry-cli upload-dsym";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/sentry-cli-binary/bin/sentry-cli upload-dsym\n";
 		};
 		FA570EB11EAE3131001C625D /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1644,7 +1614,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1841,7 +1811,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("TutorialSphere", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -15,7 +21,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import {colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
 import {Icon} from "../../components/Icon";
-import {tutorialStyle} from "../Tutorial";
+import { tutorialStyle } from "../TutorialStyle";
 
 
 export class TutorialSphere extends Component<any, any> {
@@ -23,7 +29,7 @@ export class TutorialSphere extends Component<any, any> {
     return (
       <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}}>
         <View style={{flex:1, alignItems:'center', padding: 30}}>
-          <Text style={tutorialStyle.header}>Spheres</Text>
+          <Text style={tutorialStyle.header}>{ lang("Spheres") }</Text>
             <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <Icon
             name="c1-sphere"
@@ -31,9 +37,7 @@ export class TutorialSphere extends Component<any, any> {
             color={colors.white.hex}
           />
             <View style={{width: screenWidth, height: 0.06*screenHeight}} />
-          <Text style={tutorialStyle.text}>{'Your sphere is your collection of Crownstones. This is usually your house, office or personal space.' +
-          '\n\nOnly one sphere can be active at a time. It contains rooms, Crownstones, device types and possibly other users.' +
-          '\n\nYou can invite other people (as admins, members or guests) to your sphere so they can use your Crownstones.'}</Text>
+          <Text style={tutorialStyle.text}>{ lang("Your_sphere_is_your_colle") }</Text>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />
         </View>
       </ScrollView>

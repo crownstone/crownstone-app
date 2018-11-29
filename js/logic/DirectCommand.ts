@@ -3,10 +3,12 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import {LOG, LOGe} from '../logging/Log'
 
 export class DirectCommand {
-  handle   : any;
+  handle      : any;
+  referenceId : any;
 
-  constructor(handle) {
+  constructor(handle, referenceId) {
     this.handle = handle;
+    this.referenceId = referenceId;
   }
 
   /**
@@ -29,11 +31,11 @@ export class DirectCommand {
   performCommand(action, props = [], priorityCommand) {
     let actionPromise = () => {
       if (this.handle) {
-        return BluenetPromiseWrapper.connect(this.handle)
+        return BluenetPromiseWrapper.connect(this.handle, this.referenceId)
           .then(() => { LOG.info("DirectCommand: connected, performing: ", action, props); return action.apply(this, props); })
           .catch((err) => {
             if (err === 'NOT_CONNECTED') {
-              return BluenetPromiseWrapper.connect(this.handle)
+              return BluenetPromiseWrapper.connect(this.handle, this.referenceId)
                 .then(() => { LOG.info("DirectCommand: second attempt, performing: ", action, props); return action.apply(this, props); })
             }
           })
@@ -81,7 +83,7 @@ export class DirectCommand {
             .catch((err) => {
               if (err === 'NOT_CONNECTED' && retryCount < retryLimit) {
                 retryCount++;
-                return BluenetPromiseWrapper.connect(this.handle)
+                return BluenetPromiseWrapper.connect(this.handle, this.referenceId)
               }
 
               throw err;
@@ -104,7 +106,7 @@ export class DirectCommand {
 
     let actionPromise = () => {
       if (this.handle) {
-        return BluenetPromiseWrapper.connect(this.handle)
+        return BluenetPromiseWrapper.connect(this.handle, this.referenceId)
           .then(() => {
             return actionStep(undefined);
           })

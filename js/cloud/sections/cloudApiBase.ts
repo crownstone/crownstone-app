@@ -1,5 +1,5 @@
 import {request, download, downloadFile} from '../cloudCore'
-import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
+import { DEBUG, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD } from "../../ExternalConfig";
 import { preparePictureURI } from '../../util/Util'
 import {LOG, LOGe, LOGi} from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -31,16 +31,18 @@ type requestType = 'query' | 'body';
  * When the responses come back successfully, the convenience wrappers allow callbacks for relevant scenarios.
  */
 export const cloudApiBase = {
-  _accessToken: undefined,
-  _userId: undefined,
-  _deviceId: undefined,
+  _accessToken:    undefined,
+  _applianceId:    undefined,
+  _deviceId:       undefined,
+  _eventId:        undefined,
   _installationId: undefined,
-  _eventId: undefined,
-  _sphereId: undefined,
-  _locationId: undefined,
-  _stoneId: undefined,
-  _applianceId: undefined,
-  _messageId: undefined,
+  _locationId:     undefined,
+  _messageId:      undefined,
+  _sphereId:       undefined,
+  _stoneId:        undefined,
+  _toonId:         undefined,
+  _userId:         undefined,
+
   _networkErrorHandler: () => {},
 
   _post: function(options) {
@@ -86,13 +88,18 @@ export const cloudApiBase = {
   downloadFile: function(url, targetPath, callbacks) {
     return downloadFile(url, targetPath, callbacks);
   },
-  _handleNetworkError: function (error, options, endpoint, promiseBody, reject) {
+  _handleNetworkError: function (error, options, endpoint, promiseBody, reject, startTime) {
     // this will eliminate all cloud requests.
     if (SILENCE_CLOUD === true)
       return;
 
     if (options.background !== true) {
-      this._networkErrorHandler(error);
+      // make sure we do not show this popup when too much time has passed.
+      // this can happen when the app starts to sleep and wakes up much later, resulting in the user encountering an error message on app open.
+      if (new Date().valueOf()  - startTime < 1.5*NETWORK_REQUEST_TIMEOUT) {
+        this._networkErrorHandler(error);
+      }
+
       reject(error);
     }
     else {
@@ -143,6 +150,7 @@ export const cloudApiBase = {
 
   _finalizeRequest: function(promise, options, endpoint, promiseBody) {
     return new Promise((resolve, reject) => {
+      let startTime = new Date().valueOf();
       promise
         .then((reply) => {
           if (reply.status === 200 || reply.status === 204)
@@ -152,7 +160,7 @@ export const cloudApiBase = {
         })
         .catch((error) => {
           //console.trace(error, this);
-          this._handleNetworkError(error, options, endpoint, promiseBody, reject);
+          this._handleNetworkError(error, options, endpoint, promiseBody, reject, startTime);
         })
     });
   },
@@ -174,6 +182,7 @@ export const cloudApiBase = {
   forLocation:        function(localLocationId)  { this._locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return this; },
   forAppliance:       function(localApplianceId) { this._applianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; return this; },
   forMessage:         function(localMessageId)   { this._messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return this; },
+  forToon:            function(localToonId)      { this._toonId      = MapProvider.local2cloudMap.toons[localToonId]           || localToonId;      return this; },
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
@@ -221,5 +230,9 @@ function _getId(url, obj) : string {
   let messagesLocation = url.indexOf('Messages');
   if (messagesLocation !== -1 && messagesLocation < 3)
     return obj._messageId;
+
+  let toonsLocation = url.indexOf('Toons');
+  if (toonsLocation !== -1 && toonsLocation < 3)
+    return obj._toonId;
 }
 

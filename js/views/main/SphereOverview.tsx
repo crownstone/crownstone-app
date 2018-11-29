@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -6,6 +13,7 @@ import {
   Image,
   Linking,
   Platform,
+  ScrollView,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
@@ -18,7 +26,7 @@ import { AnimatedBackground }       from '../components/animated/AnimatedBackgro
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
 import { LOG }                      from '../../logging/Log'
-import { colors, OrangeLine }       from '../styles'
+import {availableScreenHeight, colors, OrangeLine, screenHeight, screenWidth} from '../styles'
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
@@ -28,8 +36,20 @@ import { topBarStyle }              from "../components/topbar/TopbarStyles";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
 import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
+import {SphereLevel} from "./SphereLevel";
+import {IconButton} from "../components/IconButton";
+import {OverlayBox} from "../components/overlays/OverlayBox";
+import {WNStyles} from "../overlays/WhatsNew/WhatsNewStyles";
+import {ZoomInstructionOverlay} from "./ZoomInstructionOverlay";
+import {Util} from "../../util/Util";
 
-export class SphereOverview extends Component<any, any> {
+
+const ZOOM_LEVELS = {
+  sphere: 'sphere',
+  room: 'room'
+}
+
+export class SphereOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     if (params === undefined) { return }
@@ -40,16 +60,18 @@ export class SphereOverview extends Component<any, any> {
         paramsToUse = NAVBAR_PARAMS_CACHE;
       }
       else {
-        paramsToUse = getNavBarParams(params.store.getState(), params);
+        paramsToUse = getNavBarParams(params.store.getState(), params, {});
       }
     }
 
     let returnData = {
       title: paramsToUse.title,
-      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem} />
+      headerRight: paramsToUse.rightLabel ? <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem} /> : undefined,
+      headerTruncatedBackTitle: lang("Back"),
       // headerTitle: <Component /> // used to insert custom header Title component
       // headerLeft:  <Component /> // used to insert custom header Title component
       // headerBackImage: require("path to image") // customize back button image
+
     }
 
     if (paramsToUse.showFinalizeNavigationButton || paramsToUse.showMailIcon) {
@@ -87,7 +109,7 @@ export class SphereOverview extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = { menuOpen: true };
+    this.state = { zoomLevel: ZOOM_LEVELS.room, zoomInstructionsVisible: false };
     this._setActiveSphere();
   }
 
@@ -100,9 +122,21 @@ export class SphereOverview extends Component<any, any> {
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if (change.changeSpheres || change.updateActiveSphere) {
-        this._setActiveSphere();
+
+      if (change.removeSphere) {
+        this.props.store.dispatch({type:"CLEAR_ACTIVE_SPHERE"})
+        this.setState({zoomLevel: ZOOM_LEVELS.sphere})
+        return;
       }
+
+
+      if (change.changeSpheres) {
+        this._setActiveSphere(true);
+      }
+      else if (change.updateActiveSphere) {
+        this._setActiveSphere(false);
+      }
+
 
       if (
         change.changeMessageState   ||
@@ -132,30 +166,30 @@ export class SphereOverview extends Component<any, any> {
   }
 
 
-  _setActiveSphere() {
+  _setActiveSphere(updateStore = false) {
     // set the active sphere if needed and setup the object variables.
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
 
     let sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
-
     // handle the case where we deleted a sphere that was active.
     if (state.spheres[activeSphere] === undefined) {
       activeSphere = null;
     }
     if (activeSphere === null && sphereIds.length > 0) {
-      this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
+      if (sphereIds.length === 1) {
+        this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
+      }
+      else if (updateStore) {
+        let presentSphereId = Util.data.getPresentSphereId(state);
+        if (!presentSphereId) {
+          this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: null}});
+        }
+        else {
+          this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: presentSphereId}});
+        }
+      }
     }
-    //
-    // let sphere = state.spheres[activeSphere];
-    // let stoneIds = Object.keys(sphere.stones);
-    // stoneIds.forEach((stoneId) => {
-    //   this.props.store.dispatch({
-    //     type:     'DELETE_ACTIVITY_LOG_CLOUD_IDS',
-    //     sphereId: activeSphere,
-    //     stoneId:  stoneId
-    //   });
-    // })
 
     this._updateNavBar();
   }
@@ -163,8 +197,85 @@ export class SphereOverview extends Component<any, any> {
 
   _updateNavBar() {
     let state = this.props.store.getState();
-    let params = getNavBarParams(state, this.props);
+    let params = getNavBarParams(state, this.props, this.state);
     this.props.navigation.setParams(params)
+  }
+
+  _getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) {
+    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
+      if (amountOfSpheres > 1) {
+        return <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} onPress={() => {
+          let newState = {zoomLevel: ZOOM_LEVELS.sphere};
+
+          if (state.app.hasZoomedOutForSphereOverview === false) {
+            newState["zoomInstructionsVisible"] = true;
+          }
+          this.setState(newState, () => { this._updateNavBar(); })
+        }}/>;
+      }
+    }
+  }
+
+  _getAddItemButton(viewingRemotely, activeSphereId) {
+    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
+      if (Permissions.inSphere(activeSphereId).addRoom) {
+         return <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} />;
+      }
+    }
+  }
+
+  _getContent(state, amountOfSpheres, activeSphereId) {
+    let zoomOutCallback = () => {
+      if (!activeSphereId) { return; }
+
+      if (amountOfSpheres > 1) {
+        if (this.state.zoomLevel === ZOOM_LEVELS.room) {
+          // tell the app the user has done this and we don't need to tell him any more.
+          if (state.app.hasZoomedOutForSphereOverview === false) {
+            this.props.store.dispatch({type: "UPDATE_APP_SETTINGS", data: { hasZoomedOutForSphereOverview: true }});
+          }
+          this.setState({zoomLevel: ZOOM_LEVELS.sphere}, () => { this._updateNavBar(); });
+        }
+        else { // this is for convenience, it's not accurate but it'll do
+          this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
+        }
+      }
+    }
+
+    let zoomInCallback = () => {
+      if (!activeSphereId) { return; }
+
+      if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
+        this.setState({zoomLevel: ZOOM_LEVELS.room}, () => { this._updateNavBar(); });
+      }
+    }
+
+    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere && activeSphereId) {
+      return <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} zoomOutCallback={zoomOutCallback} />
+    }
+    else {
+      return (
+        <SphereLevel
+          selectSphere={(sphereId) => {
+            this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: { activeSphere:sphereId }});
+            this.setState({zoomLevel:ZOOM_LEVELS.room}, () => {  this._updateNavBar(); });
+          }}
+          zoomInCallback={zoomInCallback}
+          zoomOutCallback={zoomOutCallback}
+          store={this.props.store}
+          eventBus={this.props.eventBus}
+        />
+      );
+    }
+  }
+
+  _getInstructionScreen() {
+    return (
+      <ZoomInstructionOverlay
+        visible={this.state.zoomInstructionsVisible}
+        closeCallback={() => { this.setState({zoomInstructionsVisible: false})}}
+      />
+    )
   }
 
   render() {
@@ -177,6 +288,16 @@ export class SphereOverview extends Component<any, any> {
     let background = this.props.backgrounds.main;
 
     if (amountOfSpheres > 0) {
+
+      if (!activeSphereId) {
+        return (
+          <AnimatedBackground image={require("../../images/sphereBackground.png")}>
+            <OrangeLine/>
+            { this._getContent(state, amountOfSpheres, activeSphereId) }
+          </AnimatedBackground>
+        );
+      }
+
       let activeSphere = state.spheres[activeSphereId];
       let sphereIsPresent = activeSphere.state.present;
 
@@ -192,22 +313,27 @@ export class SphereOverview extends Component<any, any> {
         background = this.props.backgrounds.mainRemoteNotConnected;
       }
 
+      if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
+        background = require("../../images/sphereBackground.png");
+      }
+
       return (
         <AnimatedBackground image={background}>
           <OrangeLine/>
-          <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
-          { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
-          { Permissions.inSphere(activeSphereId).addRoom ? <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
+          { this._getContent(state, amountOfSpheres, activeSphereId) }
+          { this._getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) }
+          { this._getAddItemButton(viewingRemotely, activeSphereId) }
+          { this._getInstructionScreen() }
         </AnimatedBackground>
       );
     }
     else {
       return (
-        <AnimatedBackground image={background}>
+        <AnimatedBackground image={background} hasTopBar={false} safeView={true}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Icon name="c1-house" size={150} color={colors.blue.hex}/>
-            <Text style={overviewStyles.mainText}>No Spheres available.</Text>
-            <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
+            <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
+            <Text style={overviewStyles.mainText}>{ lang("No_Spheres_available_") }</Text>
+            <Text style={overviewStyles.subText}>{ lang("Press_Edit_in_the_upper_r") }</Text>
           </View>
         </AnimatedBackground>
       );
@@ -215,29 +341,44 @@ export class SphereOverview extends Component<any, any> {
   }
 }
 
-function getNavBarParams(state, props) {
+function getNavBarParams(state, props, viewState) {
   LOG.info("UPDATING SPHERE OVERVIEW NAV BAR");
-  let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
-  if (sphereId === null) {
+  if (viewState.zoomLevel === ZOOM_LEVELS.sphere) {
     NAVBAR_PARAMS_CACHE = {
-      title: "Hello there!",
+      title: lang("Sphere_Overview"),
+      showMailIcon: false,
       showFinalizeNavigationButton: false,
+      showFinalizeIndoorNavigationCallback: false,
+      rightLabel: null,
+      rightAction: () => {},
     }
   }
   else {
-    let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
-    let newMailAvailable = SphereUtil.newMailAvailable(state);
+    let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
+    if (sphereId === null) {
+      NAVBAR_PARAMS_CACHE = {
+        title: lang("Hello_there_"),
+        showFinalizeNavigationButton: false,
+        rightLabel: lang("Edit"),
+        rightAction: () => { Actions.sphereEdit() },
+      }
+    }
+    else {
+      let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
+      let newMailAvailable = SphereUtil.newMailAvailable(state);
 
-    NAVBAR_PARAMS_CACHE = {
-      title: sphere.config.name,
-      showMailIcon: newMailAvailable,
-      showFinalizeNavigationButton: finalizeLocalization.showItem,
-      showFinalizeIndoorNavigationCallback: finalizeLocalization.action,
-      rightLabel:'Edit',
-      rightAction: () => { Actions.sphereEdit({sphereId: sphereId}) },
-      activeSphereId: sphereId,
+      NAVBAR_PARAMS_CACHE = {
+        title: sphere.config.name,
+        showMailIcon: newMailAvailable,
+        showFinalizeNavigationButton: finalizeLocalization.showItem,
+        showFinalizeIndoorNavigationCallback: finalizeLocalization.action,
+        rightLabel: lang("Edit"),
+        rightAction: () => { Actions.sphereEdit({sphereId: sphereId}) },
+        activeSphereId: sphereId,
+      }
     }
   }
+
 
   return NAVBAR_PARAMS_CACHE;
 

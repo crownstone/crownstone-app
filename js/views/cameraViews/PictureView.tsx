@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("PictureView", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   CameraRoll,
@@ -18,7 +24,7 @@ import {BackAction} from "../../util/Back";
 export class PictureView extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Take Picture",
+      title: lang("Take_Picture"),
     }
   };
 
@@ -72,10 +78,10 @@ export class PictureView extends Component<any, any> {
           }}
           allowCaptureRetake={true}
           actions={{
-            rightButtonText: 'Done',
-            leftButtonText: 'Cancel',
-            leftCaptureRetakeButtonText:'Retry',
-            rightCaptureRetakeButtonText:'Select'
+            rightButtonText: lang("Done"),
+            leftButtonText: lang("Cancel"),
+            leftCaptureRetakeButtonText:lang("Retry"),
+            rightCaptureRetakeButtonText:lang("Select")
           }}
           onBottomButtonPressed={(event) => this.onBottomButtonPressed(event)}
           flashImages={{

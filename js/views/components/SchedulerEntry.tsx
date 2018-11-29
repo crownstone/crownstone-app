@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SchedulerEntry", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -27,8 +33,8 @@ export class SchedulerEntry extends Component<any, any> {
   _getHeader(active) {
     let wrapperStyle = {height: 50, justifyContent:'center'};
     let headerStyle = {fontSize: 16, fontWeight:'500', paddingTop: 15, color: active ? colors.black.hex : colors.darkGray2.hex};
-    let timeText = (this.props.schedule.switchState > 0 ? "Turn on" : "Turn off") + ' at ' + Util.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.props.schedule.time), false);
-    let activeText = active ? '' : ' (disabled)';
+    let timeText = lang('Do_X_at',this.props.schedule.switchState > 0, Util.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.props.schedule.time), false));
+    let activeText = active ? '' :  lang("__disabled_");
     if (this.props.schedule.label) {
       return (
         <View style={wrapperStyle}>
@@ -51,7 +57,15 @@ export class SchedulerEntry extends Component<any, any> {
 
   _getActiveDays(size, active) {
     let days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-    let localizedDays = ['M','T','W','T','F','S','S'];
+    let localizedDays = [
+      lang("Mon_day_first_letter"),
+      lang("Tue_day_first_letter"),
+      lang("Wed_day_first_letter"),
+      lang("Thu_day_first_letter"),
+      lang("Fri_day_first_letter"),
+      lang("Sat_day_first_letter"),
+      lang("Sun_day_first_letter"),
+    ]
     let items = [];
 
     let activeColor = colors.green.hex;

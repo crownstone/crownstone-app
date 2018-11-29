@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -47,6 +53,7 @@ export class RoomTraining extends Component<any, any> {
     return {
       title: params.title ? params.title : paramsToUse.title,
       headerLeft: params.topBarSettings ? <CancelButton onPress={params.topBarSettings.leftAction} /> : undefined,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 
@@ -97,9 +104,9 @@ export class RoomTraining extends Component<any, any> {
 
       let defaultAction = () => { BackAction('sphereOverview'); };
       Alert.alert(
-        "No Crownstones in range...",
-        "To be able to identify this room, I need to see at least 3 Crownstones in but I can't see any from here... Try to reposition your Crownstones so I can see more of them.",
-        [{text:"OK", onPress: defaultAction}],
+lang("_No_Crownstones_in_range__header"),
+lang("_No_Crownstones_in_range__body"),
+[{text:lang("_No_Crownstones_in_range__left"), onPress: defaultAction}],
         { onDismiss: defaultAction }
       )
     },4000);
@@ -138,10 +145,9 @@ export class RoomTraining extends Component<any, any> {
 
       let defaultAction = () => { BackAction('sphereOverview'); };
       Alert.alert(
-        "I can not see enough Crownstones...",
-        "To be able to identify this room, I need to see at least 3 Crownstones but I see only " + averageAmountOfMeasurements + "." +
-        "Try to reposition your Crownstones so I can see more of them.",
-        [{text:"OK", onPress: defaultAction}],
+lang("_I_can_not_see_enough_Cro_header"),
+lang("_I_can_not_see_enough_Cro_body",averageAmountOfMeasurements),
+[{text:lang("_I_can_not_see_enough_Cro_left"), onPress: defaultAction}],
         { onDismiss: defaultAction }
       )
     }
@@ -204,11 +210,11 @@ export class RoomTraining extends Component<any, any> {
     let cancelMethod = () => {
       FingerprintManager.pauseCollectingFingerprint();
       Alert.alert(
-        "Do you want to cancel training?",
-        "Cancelling this process will revert it to the way it was before.",
-        [
-          {text:'No', onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
-          {text:'Yes', onPress: () => { this.stop(true); BackAction('sphereOverview'); }}
+lang("_Do_you_want_to_cancel_tr_header"),
+lang("_Do_you_want_to_cancel_tr_body"),
+[{text:lang("_Do_you_want_to_cancel_tr_left"), onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
+          {
+text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); BackAction('sphereOverview'); }}
         ],
         { cancelable : false }
       )
@@ -238,7 +244,7 @@ export class RoomTraining extends Component<any, any> {
           ai={ai}
           next={() => {
             this.setState({phase:2});
-            this.props.navigation.setParams({topBarSettings:{title: "All Done!", leftAction: undefined }})
+            this.props.navigation.setParams({topBarSettings:{title: lang("All_Done_"), leftAction: undefined }})
           }}
           progress={this.state.progress}
           opacity={this.state.opacity}
@@ -262,7 +268,7 @@ export class RoomTraining extends Component<any, any> {
 
 function getNavBarParams(state, props, viewingRemotely) {
   let ai = Util.data.getAiData(state, props.sphereId);
-  NAVBAR_PARAMS_CACHE = {title: 'Teaching ' + ai.name};
+  NAVBAR_PARAMS_CACHE = {title: lang("Teaching_",ai.name)};
   return NAVBAR_PARAMS_CACHE;
 }
 

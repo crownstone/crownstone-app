@@ -1,3 +1,8 @@
+import { Languages } from "../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("StoneUtil", key)(a,b,c,d,e);
+}
 
 import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 import {INTENTS} from "../native/libInterface/Constants";
@@ -15,8 +20,8 @@ export const StoneUtil = {
       stone : any,
       newState : number,
       store : any,
-      options = {},
-      finalize = (err) => {},
+      options : batchCommandEntryOptions = {},
+      finalize = (err, result?: any) => {},
       intent = INTENTS.manual,
       attempts : number = 1,
       label : string = 'from StoneUtil'
@@ -31,24 +36,24 @@ export const StoneUtil = {
       stoneId,
       sphereId,
       {commandName:'multiSwitch', state: newState, intent: intent, timeout: 0},
-      {},
+      options,
       attempts,
       label
     )
-      .then(() => {
+      .then((result) => {
         store.dispatch({
           type: 'UPDATE_STONE_SWITCH_STATE',
           sphereId: sphereId,
           stoneId: stoneId,
           data: data
         });
-        finalize(null);
+        finalize(null, result);
       })
       .catch((err) => {
         finalize(err);
       });
 
-    BatchCommandHandler.executePriority();
+    BatchCommandHandler.executePriority(options);
   },
 
 
@@ -74,7 +79,7 @@ export const StoneUtil = {
     return StoneUtil.timestampToCrownstoneTime(new Date().valueOf())
   },
 
-  checkFirmwareVersion: function(sphereId, stoneId, stone) {
+  checkFirmwareVersion: function(sphereId, stoneId, stone) : Promise<bchReturnType>  {
     let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from checkFirmware');
     BatchCommandHandler.executePriority();
     return promise;
@@ -82,8 +87,8 @@ export const StoneUtil = {
 
   refreshFirmwareAndHardwareVersion: function(sphereId, stoneId, stone) {
     let results = {hardwareVersion: null, firmwareVersion: null};
-    let promiseFW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware').then((result) => { results.hardwareVersion = result; });
-    let promiseHW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware').then((result) => { results.firmwareVersion = result; });
+    let promiseFW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware').then((result : {data: string}) => { results.hardwareVersion = result.data; });
+    let promiseHW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware').then((result : {data: string}) => { results.firmwareVersion = result.data; });
     BatchCommandHandler.executePriority();
     return Promise.all([promiseFW, promiseHW])
       .then(() => {
@@ -101,7 +106,7 @@ export const StoneUtil = {
       overCurrent:        true,
     };
 
-    eventBus.emit("showLoading", "Attempting to Reset Error...");
+    eventBus.emit("showLoading", lang("Attempting_to_Reset_Error"));
     BatchCommandHandler.loadPriority(
       stone,
       stoneId,
@@ -112,25 +117,25 @@ export const StoneUtil = {
       'from _getButton in ErrorOverlay'
     )
       .then(() => {
-        eventBus.emit("showLoading", "Success!");
+        eventBus.emit("showLoading", lang("Success_"));
         store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: {
-            dimmerOnFailure:    false,
-            dimmerOffFailure:   false,
-            temperatureDimmer:  false,
-            temperatureChip:    false,
-            overCurrentDimmer:  false,
-            overCurrent:        false,
+          dimmerOnFailure:    false,
+          dimmerOffFailure:   false,
+          temperatureDimmer:  false,
+          temperatureChip:    false,
+          overCurrentDimmer:  false,
+          overCurrent:        false,
         }});
         return Scheduler.delay(500);
       })
       .then(() => {
         eventBus.emit("hideLoading");
-        Alert.alert("Success!","The Error has been reset. Normal functionality is re-enabled.",[{text:'OK'}]);
+        Alert.alert(lang("Success_"), lang("The_Error_has_been_reset_"),[{text:'OK'}]);
       })
       .catch((err) => {
         LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err);
         let defaultAction = () => { eventBus.emit("hideLoading"); };
-        Alert.alert("Failed to reset error :(","You can move closer and try again or ignore the error for now.",[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+        Alert.alert(lang("Failed_to_reset_error___"), lang("You_can_move_closer_and_t"),[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
       });
 
     BatchCommandHandler.executePriority()

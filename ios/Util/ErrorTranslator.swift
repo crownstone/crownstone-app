@@ -141,5 +141,9 @@ func getBleErrorString(_ err: BleError) -> String {
     return "UNKNOWN_PROCESS_TYPE"
   case .INVALID_INPUT:
     return "INVALID_INPUT"
+  case .INVALID_SESSION_REFERENCE_ID:
+    return "INVALID_SESSION_REFERENCE_ID"
+  case .SETUP_FAILED:
+    return "SETUP_FAILED"
   }
 }

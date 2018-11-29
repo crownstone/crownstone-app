@@ -219,7 +219,7 @@ export class DebugIconSelection extends Component<any, any> {
             </View>
           </TouchableOpacity>
 
-          <Text style={{position:'absolute', top: h + sh + 10, fontSize:14, color: colors.white.hex}}>{icons[iconIndex] + " o:" + topOffsetLabel.toFixed(3) + ',' +  + leftOffsetLabel.toFixed(3)}</Text>
+          <Text style={{position:'absolute', top: h + sh + 10, fontSize:14, color: colors.white.hex}}>{icons[iconIndex] + " o:" + topOffsetLabel.toFixed(3) + ',' + leftOffsetLabel.toFixed(3)}</Text>
         </View>
       );
     }

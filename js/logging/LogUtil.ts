@@ -1,11 +1,6 @@
 import { Platform } from 'react-native';
-import {
-  LOG_TO_FILE,
-  } from '../ExternalConfig'
 import { safeDeleteFile, Util } from '../util/Util'
-import {LogProcessor} from "./LogProcessor";
 
-const DeviceInfo = require('react-native-device-info');
 const RNFS = require('react-native-fs');
 
 function getFilename(timestamp) {
@@ -59,29 +54,27 @@ export function clearLogs() {
 
 
 export function logToFile() {
-  if (LOG_TO_FILE || LogProcessor.writeToFile === true) {
-    // create a path you want to write to
-    let logPath = Util.getPath();
+  // create a path you want to write to
+  let logPath = Util.getPath();
 
-    // generate filename based on current date.
-    let filename = getFilename(new Date().valueOf());
-    let filePath = logPath + '/' + filename;
+  // generate filename based on current date.
+  let filename = getFilename(new Date().valueOf());
+  let filePath = logPath + '/' + filename;
 
-    // create string
-    let str = '' + new Date().valueOf() + ' - ' + new Date() + " -";
-    for (let i = 0; i < arguments.length; i++) {
-      if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
-        str += " " + JSON.stringify(arguments[i])
-      }
-      else {
-        str += " " + arguments[i]
-      }
+  // create string
+  let str = '' + new Date().valueOf() + ' - ' + new Date() + " -";
+  for (let i = 0; i < arguments.length; i++) {
+    if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
+      str += " " + JSON.stringify(arguments[i])
     }
-    str += " \n";
-
-    // write the file
-    RNFS.appendFile(filePath, str, 'utf8')
-      .then((success) => {})
-      .catch((err) => {})
+    else {
+      str += " " + arguments[i]
+    }
   }
+  str += " \n";
+
+  // write the file
+  RNFS.appendFile(filePath, str, 'utf8')
+    .then((success) => {})
+    .catch((err) => {})
 }

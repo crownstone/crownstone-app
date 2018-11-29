@@ -11,7 +11,6 @@ const BluenetAPI = {
   disconnectCommand: () => {},          // called through BluenetPromiseWrapper --> must be promise.
   phoneDisconnect: () => {},            // called through BluenetPromiseWrapper --> must be promise.
   resetBle: () => {},
-  setSwitchState: () => {},             // called through BluenetPromiseWrapper --> must be promise.
   startScanning: () => {},
   startScanningForCrownstones: () => {},
   startScanningForCrownstonesUniqueOnly: () => {},
@@ -20,7 +19,6 @@ const BluenetAPI = {
   keepAlive: () => {},
   requestBleState: () => {},
 
-  forceClearActiveRegion: () => {},
   startIndoorLocalization: () => {},
   stopIndoorLocalization: () => {},
 
@@ -85,11 +83,12 @@ const BluenetAPI = {
   putInDFU:() => {},
   performDFU:() => {},
   restartCrownstone:() => {},
-  setSettings:() => {},
+  setKeySets:() => {},
   setupFactoryReset:() => {},
   setupPutInDFU: () => {},
   toggleSwitchState:() => {},
   setMeshChannel:(channel) => {},
+  getTrackingState:() => {},
 }
 
 if (DISABLE_NATIVE === true) {

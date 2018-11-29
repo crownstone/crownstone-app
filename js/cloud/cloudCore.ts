@@ -45,10 +45,19 @@ export function request(
       response.headers.map &&
       response.headers.map['content-type'] &&
       response.headers.map['content-type'].length > 0) {
+
+      // since RN 0.57, the response seems to have changed from what it was before. Presumably due to changes in Fetch.
+      // This could also be part of our cloud changes, this will work for both types of data now.
+      let responseHeaders = response.headers.map['content-type'];
+      if (!Array.isArray(responseHeaders) && typeof responseHeaders === 'string') {
+        responseHeaders = responseHeaders.split("; ");
+      }
+
       if (response && response._bodyBlob && response._bodyBlob.size === 0) {
         return '';
       }
-      else if (response.headers.map['content-type'][0].substr(0,16) === 'application/json') {
+      // this part: responseHeaders[0].substr(0,16) === 'application/json' is legacy. It's ugly and imprecise, but we will keep it for legacy for now.
+      else if (responseHeaders[0].substr(0,16) === 'application/json' || responseHeaders.indexOf("application/json") !== -1) {
         if (response.headers.map['content-length'] &&
           response.headers.map['content-length'].length > 0 &&
           response.headers.map['content-length'][0] == 0) {
@@ -57,6 +66,9 @@ export function request(
         }
         // LOGd.info("JSON CONTENT", response);
         return response.json(); // this is a promise
+      }
+      else {
+        return response.text();
       }
     }
     return response.text(); // this is a promise

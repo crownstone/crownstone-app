@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomCircle", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -20,6 +27,7 @@ import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {IconCircle} from "./IconCircle";
+import { AlternatingContent } from "./animated/AlternatingContent";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -27,7 +35,7 @@ let ALERT_TYPES = {
 
 const FLOATING_CROWNSTONE_LOCATION_ID = null;
 
-class RoomCircleClass extends Component<any, any> {
+class RoomCircleClass extends LiveComponent<any, any> {
   initializedPosition: any;
   energyLevels: any;
   usage: any;
@@ -44,18 +52,14 @@ class RoomCircleClass extends Component<any, any> {
   animatedMoving: boolean;
 
   previousCircle: any;
-  moveAnimationTimeout: any;
-  wiggleEnabled = false;
   color: any;
 
-  movementDuration: number;
-  jumpDuration: number;
-  fadeDuration: number;
-
-  unsubscribeSetupEvents = []
+  unsubscribeSetupEvents = [];
   unsubscribeStoreEvents: any;
-  unsubscribeControlEvents = []
+  unsubscribeControlEvents = [];
   renderState: any;
+
+  scaledUp = true;
 
   constructor(props) {
     super(props);
@@ -94,11 +98,6 @@ class RoomCircleClass extends Component<any, any> {
     this.animatedMoving = false;
 
     this.previousCircle = undefined;
-    this.moveAnimationTimeout = undefined;
-
-    this.movementDuration = 400;
-    this.jumpDuration = 400;
-    this.fadeDuration = this.movementDuration;
 
     this.unsubscribeSetupEvents = [];
 
@@ -123,7 +122,7 @@ class RoomCircleClass extends Component<any, any> {
     }
 
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("dfuStoneChange", () => {
-      this.forceUpdate()
+      this.forceUpdate();
     }));
 
 
@@ -153,6 +152,10 @@ class RoomCircleClass extends Component<any, any> {
       }
     });
 
+    this.unsubscribeControlEvents.push(this.props.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
+      this.handleTouchReleased(data);
+    }));
+
     this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTap(data);
     }));
@@ -170,43 +173,12 @@ class RoomCircleClass extends Component<any, any> {
     }));
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID) { return }
 
-    if (this.props.seeStonesInSetupMode !== prevProps.seeStonesInSetupMode) {
-      if (this.props.seeStonesInSetupMode) {
-        if (this.wiggleEnabled === false) {
-          this.wiggleEnabled = true;
-          this._startWiggle();
-        }
-      }
-      else {
-        this._stopWiggle();
-      }
-    }
-  }
-
-
-  _startWiggle() {
-    if (!this.wiggleEnabled) { return; }
-    this.state.scale.stopAnimation();
-    Animated.spring(this.state.scale, { toValue: Math.random() * 0.4 + 0.8, friction: 3, tension: 60 }).start(() => {
-      this._startWiggle();
-    });
-  }
-
-  _stopWiggle() {
-    this.state.scale.stopAnimation();
-    this.state.scale.setValue(1);
-    this.wiggleEnabled = false;
-  }
 
   componentWillUnmount() {
-    clearTimeout(this.moveAnimationTimeout);
     this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeControlEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
-    this._stopWiggle();
   }
 
 
@@ -264,12 +236,21 @@ class RoomCircleClass extends Component<any, any> {
 
     if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
       let smallSize = this.iconSize*1.1*0.6;
+
       return (
-        <View style={{width:this.iconSize*1.1, height: this.iconSize}}>
-          <Icon name="ios-sunny" size={smallSize} color={colors.blinkColor2.hex} style={{position:'absolute', top:-smallSize*0.024, left:smallSize*0.46}} />
-          <Icon name="c2-crownstone" size={this.iconSize*1.1} color='#ffffff' style={{position:'absolute', top:this.iconSize*0.15, left:0}} />
-        </View>
-      )
+        <AlternatingContent
+          style={{width:this.iconSize*1.1, height: this.iconSize, justifyContent:'center', alignItems:'center'}}
+          fadeDuration={500}
+          switchDuration={2000}
+          contentArray={[
+            <View style={{width:this.iconSize*1.1, height: this.iconSize}}>
+              <Icon name="ios-sunny" size={smallSize} color={colors.blinkColor2.hex} style={{position:'absolute', top:-smallSize*0.024, left:smallSize*0.465}} />
+              <Icon name="c2-crownstone" size={this.iconSize*1.1} color='#ffffff' style={{position:'absolute', top:this.iconSize*0.15, left:0}} />
+            </View>,
+            <Icon name="c1-tap" size={this.iconSize*0.9} style={{paddingLeft:0.1*this.iconSize}} color='#ffffff'/>,
+            <Icon name="c3-addRounded" size={this.iconSize*0.9} color='#ffffff'/>
+          ]} />
+      );
     }
     else if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID) {
       return <Icon name="c2-pluginFilled" size={this.iconSize} color='#ffffff'/>;
@@ -309,7 +290,7 @@ class RoomCircleClass extends Component<any, any> {
             <View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
             {this.getIcon()}
             </View>
-            {this.props.viewingRemotely ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{this.usage + " W"}</Text>}
+            {this.props.viewingRemotely ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{ lang("_W",this.usage) }</Text>}
           </AnimatedCircle>
         </View>
       </View>
@@ -424,9 +405,11 @@ class RoomCircleClass extends Component<any, any> {
   }
 
   handleTouch(data) {
-    // top any animation this node was doing.
+    // stop any animation this node was doing.
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();
+
+    this.scaledUp = true;
 
     let tapAnimations = [];
     tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70 }));
@@ -435,20 +418,26 @@ class RoomCircleClass extends Component<any, any> {
   }
 
   handleTouchReleased(data) {
-    // top any animation this node was doing.
-    this.state.scale.stopAnimation();
-    this.state.opacity.stopAnimation();
+    if (this.scaledUp) {
+      // stop any animation this node was doing.
+      this.state.scale.stopAnimation();
+      this.state.opacity.stopAnimation();
 
-    let revertAnimations = [];
-    revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
-    revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
-    Animated.parallel(revertAnimations).start();
+      this.scaledUp = false;
+
+      let revertAnimations = [];
+      revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
+      revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
+      Animated.parallel(revertAnimations).start();
+    }
   }
 
   handleDragging(data) {
-    // top any animation this node was doing.
+    // stop any animation this node was doing.
     this.state.scale.stopAnimation();
     this.state.opacity.stopAnimation();
+
+    this.scaledUp = false;
 
     let revertAnimations = [];
     revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
@@ -457,6 +446,7 @@ class RoomCircleClass extends Component<any, any> {
   }
 
   handleTap(data) {
+    this.scaledUp = false;
     let handled = false;
 
     this.state.scale.stopAnimation();

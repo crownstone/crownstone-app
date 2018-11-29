@@ -1,6 +1,12 @@
+
+import { Languages } from "../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("styles", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import { Dimensions, PixelRatio, Platform, StyleSheet, View } from 'react-native'
-import {hex2rgb, rgb2hex} from '../util/ColorConverters'
+import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 const DeviceInfo = require('react-native-device-info');
 
 export const deviceModel = DeviceInfo.getModel();
@@ -29,6 +35,7 @@ export const NORMAL_ROW_SIZE = 50;
 export let colors : any = {
   darkBackground: {hex:'#4f6b84'},
   csBlue: {hex:'#003E52'},
+  csBlueLight: {hex:'#006f84'},
   csOrange: {hex:'#ff8400'},
   darkCsOrange: {hex:'#d97500'},
   lightCsOrange: {hex:'#ffa94d'},
@@ -66,32 +73,40 @@ export let colors : any = {
 
 for (let color in colors) {
   if (colors.hasOwnProperty(color)) {
-    let clr = colors[color];
-    clr.name = color;
-    clr.rgb = hex2rgb(clr.hex);
-    clr.rgba = (opacity) => { opacity = Math.min(1,opacity); return 'rgba(' + clr.rgb.r + ',' + clr.rgb.g + ',' + clr.rgb.b + ',' + opacity + ')'};
-    /**
-     * Factor 0 means fully initial color, 1 means fully other color
-     * @param otherColor
-     * @param factor
-     * @returns {{name: string; hex: string; rgb: {r: number; g: number; b: number}; rgba: (opacity) => string}}
-     */
-    clr.blend = (otherColor, factor) => {
-      let red   = Math.floor((1-factor) * clr.rgb.r + factor * otherColor.rgb.r);
-      let green = Math.floor((1-factor) * clr.rgb.g + factor * otherColor.rgb.g);
-      let blue  = Math.floor((1-factor) * clr.rgb.b + factor * otherColor.rgb.b);
-      return {
-        name: 'blend:'+color+"_"+otherColor.name+"_"+factor,
-        hex: rgb2hex(red, green, blue),
-        rgb: {r: red, g: green, b: blue},
-        rgba: (opacity) => { opacity = Math.min(1,opacity); return 'rgba(' + red + ',' + green + ',' + blue + ',' + opacity + ')'}
-      };
-    };
-    
-    // clr.hsv = rgb2hsv(clr.rgb.r,clr.rgb.g,clr.rgb.b);
-    // clr.hsl = rgb2hsl(clr.rgb.r,clr.rgb.g,clr.rgb.b);
-    // clr.hcl = rgb2hcl(clr.rgb.r,clr.rgb.g,clr.rgb.b);
+    populateColorObject(colors[color], color)
   }
+}
+
+function populateColorObject(clr, color) {
+  clr.name = color;
+  clr.rgb = hex2rgb(clr.hex);
+  clr.hsv = rgb2hsv(clr.rgb.r,clr.rgb.g,clr.rgb.b);
+  clr.rgba = (opacity) => { opacity = Math.min(1,opacity); return 'rgba(' + clr.rgb.r + ',' + clr.rgb.g + ',' + clr.rgb.b + ',' + opacity + ')'};
+  /**
+   * Factor 0 means fully initial color, 1 means fully other color
+   * @param otherColor
+   * @param factor
+   * @returns {{name: string; hex: string; rgb: {r: number; g: number; b: number}; rgba: (opacity) => string}}
+   */
+  clr.blend = (otherColor, factor) => {
+    let red   = Math.floor((1-factor) * clr.rgb.r + factor * otherColor.rgb.r);
+    let green = Math.floor((1-factor) * clr.rgb.g + factor * otherColor.rgb.g);
+    let blue  = Math.floor((1-factor) * clr.rgb.b + factor * otherColor.rgb.b);
+    return populateColorObject({hex:rgb2hex(red, green, blue)},'blend:'+color+"_"+otherColor.name+"_"+factor)
+  };
+  clr.hsvBlend = (otherColor, factor) => {
+    let h = (1-factor) * clr.hsv.h + factor * otherColor.hsv.h;
+    let s = (1-factor) * clr.hsv.s + factor * otherColor.hsv.s;
+    let v = (1-factor) * clr.hsv.v + factor * otherColor.hsv.v;
+
+    let newColor = hsv2hex(h,s,v);
+    return populateColorObject({hex:newColor},'hsv_blend:'+color+"_"+otherColor.name+"_"+factor)
+  };
+
+  // clr.hsl = rgb2hsl(clr.rgb.r,clr.rgb.g,clr.rgb.b);
+  // clr.hcl = rgb2hcl(clr.rgb.r,clr.rgb.g,clr.rgb.b);
+
+  return clr;
 }
 
 export const styles = StyleSheet.create({

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomTraining_training", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -33,7 +39,7 @@ export class RoomTraining_training extends Component<any, any> {
               fontWeight:'600',
               color: colors.white.hex,
               textAlign:'center'
-            }}>{"Walk around the room so " + this.props.ai.name + " can learn to locate you within it. Each beat " + this.props.ai.he + " learns a bit more about the room!"}</Text>
+            }}>{ lang("Walk_around_the_room_so__",this.props.ai.name,this.props.ai.he) }</Text>
           </View>
           <View style={{flex:1}} />
           <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:-40}} >

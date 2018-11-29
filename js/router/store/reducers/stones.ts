@@ -5,22 +5,23 @@ import powerUsageReducer from './stoneSubReducers/powerUsage'
 import scheduleReducer   from './stoneSubReducers/schedule'
 import meshReducer       from './stoneSubReducers/mesh'
 import activityLogsReducer from './stoneSubReducers/activityLog'
+import activityRangesReducer from './stoneSubReducers/activityRange'
 import reachabilityReducer from './stoneSubReducers/reachability'
 import lastUpdatedReducer from './stoneSubReducers/lastUpdated'
 
 export let BEHAVIOUR_TYPES = {
-  NEAR: 'onNear',
-  AWAY: 'onAway',
+  NEAR:       'onNear',
+  AWAY:       'onAway',
   HOME_ENTER: 'onHomeEnter',
-  HOME_EXIT: 'onHomeExit',
+  HOME_EXIT:  'onHomeExit',
   ROOM_ENTER: 'onRoomEnter',
-  ROOM_EXIT: 'onRoomExit',
+  ROOM_EXIT:  'onRoomExit',
 };
 
 export let STONE_TYPES = {
-  plug: "PLUG",
-  builtin: "BUILTIN",
-  guidestone: "GUIDESTONE",
+  plug:          "PLUG",
+  builtin:       "BUILTIN",
+  guidestone:    "GUIDESTONE",
   crownstoneUSB: "CROWNSTONE_USB"
 };
 
@@ -57,6 +58,7 @@ let defaultSettings = {
     stoneTime: 0,
   },
   state: {
+    timeSet: false,
     state: 0.0,
     previousState: 0.0,
     currentUsage: 0,
@@ -64,11 +66,11 @@ let defaultSettings = {
     updatedAt: 1
   },
   reachability: {
-    // disabled: true,
-    // lastSeen: null,
-    // lastSeenViaMesh: null,
-    // lastSeenTemperature: null,
-    // rssi: -1000,
+    disabled: true,
+    lastSeen: null,
+    lastSeenViaMesh: null,
+    lastSeenTemperature: null,
+    rssi: -1000,
   },
   schedules: { // this schedule will be overruled by the appliance if applianceId is not undefined.
     updatedAt: 1
@@ -94,6 +96,12 @@ let defaultSettings = {
     //day as string: 2017-05-01 : { cloud: {...}, data: [] }
   },
   mesh: {
+
+  },
+  activityLogs: {
+
+  },
+  activityRanges: {
 
   }
 };
@@ -212,6 +220,19 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
       newState.currentUsage = 0;
       newState.updatedAt    = getTime();
       return newState;
+    case 'UPDATE_STONE_TIME_STATE':
+      if (action.data) {
+        let newState     = {...state};
+        newState.timeSet = update(action.data.timeSet,  newState.timeSet);
+        return newState;
+      }
+      return state;
+    case 'UPDATED_STONE_TIME':
+      if (state.timeSet !== true) {
+        let newState = {...state};
+        return newState;
+      }
+      return state;
     case 'UPDATE_STONE_STATE':
     case 'UPDATE_STONE_SWITCH_STATE': // this duplicate call will allow the cloudEnhancer to differentiate.
     case 'UPDATE_STONE_SWITCH_STATE_TRANSIENT': // this duplicate call will allow the cloudEnhancer to differentiate.
@@ -376,9 +397,10 @@ let combinedStoneReducer = combineReducers({
   errors:     stoneErrorsReducer,
   powerUsage: powerUsageReducer,
   mesh:       meshReducer,
-  lastUpdated:  lastUpdatedReducer,
-  activityLogs: activityLogsReducer,
-  reachability:  reachabilityReducer,
+  lastUpdated:    lastUpdatedReducer,
+  activityLogs:   activityLogsReducer,
+  activityRanges: activityRangesReducer,
+  reachability:   reachabilityReducer,
 });
 
 // stonesReducer

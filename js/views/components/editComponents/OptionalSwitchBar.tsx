@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("OptionalSwitchBar", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   
@@ -23,7 +29,7 @@ export class OptionalSwitchBar extends Component<any, any> {
             onValueChange={(newValue) => {this.props.setActiveElement(); this.props.callback(newValue)}}
           />
             :
-          <Text>NULL</Text>
+          <Text>{ lang("NULL") }</Text>
         }
 
         <TouchableOpacity style={{paddingLeft:15, height:this.props.barHeight, paddingRight:15, justifyContent:'center'}} onPress={() => {this.props.callback(null)}}>

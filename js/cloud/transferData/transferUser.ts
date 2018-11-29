@@ -61,7 +61,7 @@ export const transferUser = {
   },
 
   updateLocal: function( actions, data: transferUserToLocalData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'USER_UPDATE',
       {},

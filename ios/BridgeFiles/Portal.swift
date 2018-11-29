@@ -24,6 +24,8 @@ typealias voidCallback = () -> Void
   open var trainingHelper : TrainingHelper!
   open var classifier : CrownstoneBasicClassifier!
   
+  open var devEnvironment = false
+  
   var subscriptions = [voidCallback]()
   
   init(viewController: UIViewController) {
@@ -37,7 +39,6 @@ typealias voidCallback = () -> Void
     // use the accelerometer.
     // self.bluenetMotion = BluenetMotion()
     
-    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown")
     self.bluenetLocalization = BluenetLocalization(backgroundEnabled: true)
     
     // insert the classifier that will be used for room-level localization.
@@ -45,6 +46,9 @@ typealias voidCallback = () -> Void
     
     self.trainingHelper = TrainingHelper(bluenetLocalization: self.bluenetLocalization)
     
+    // store the environment so the app can request it. This is used to determine which notification key we should use in our installation model in the cloud.
+    self.devEnvironment = isDevelopmentEnvironment()
+
     GLOBAL_BLUENET = self
   }
   
@@ -84,4 +88,22 @@ typealias voidCallback = () -> Void
       unsubscribeCallback()
     }
   }
+}
+
+
+func isDevelopmentEnvironment() -> Bool {
+  guard let filePath = Bundle.main.path(forResource: "embedded", ofType:"mobileprovision") else {
+    return false
+  }
+  do {
+    let url = URL(fileURLWithPath: filePath)
+    let data = try Data(contentsOf: url)
+    guard let string = String(data: data, encoding: .ascii) else {
+      return false
+    }
+    if string.contains("<key>aps-environment</key>\n\t\t<string>development</string>") {
+      return true
+    }
+  } catch {}
+  return false
 }

@@ -70,7 +70,6 @@ let mergeStates = (targetState, oneOver) => {
   }
 }
 
-let t = new Date().valueOf()
 
 export const reducerCreate = (params) => {
   const defaultReducer = Reducer(params, {});

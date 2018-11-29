@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AiStart", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -26,7 +32,7 @@ import {BackAction} from "../../util/Back";
 export class AiStart extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Your AI",
+      title: lang("Your_AI"),
     }
   };
 
@@ -116,21 +122,21 @@ export class AiStart extends Component<any, any> {
           <View style={{flex:1}} />
           <Icon name="c1-house" size={0.26*availableHeight} color={colors.white.hex} />
           <View style={{flex:1}} />
-          <Text style={aiStyle.largeText}>{"Welcome " + userFirstName + "!"}</Text>
-          <Text style={aiStyle.boldText}>{"I'm your house!"}</Text>
+          <Text style={aiStyle.largeText}>{ lang("Welcome__",userFirstName) }</Text>
+          <Text style={aiStyle.boldText}>{ lang("Im_your_house_") }</Text>
           <View style={{flex:1}} />
-          <Text style={aiStyle.text}>{"What would you like to call me?"}</Text>
+          <Text style={aiStyle.text}>{ lang("What_would_you_like_to_ca") }</Text>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput
               style={{width: 0.8*screenWidth, padding:10}}
-              placeholder='Name your house!'
+              placeholder={lang("Name_your_house_")}
               autocorrect={false}
               placeholderTextColor='#888'
               value={this.state.aiName}
               callback={(newValue) => {this.setState({aiName:newValue});}} />
           </View>
           <View style={{flex:1}} />
-          <Text style={aiStyle.text}>{"What's my gender?"}</Text>
+          <Text style={aiStyle.text}>{ lang("Whats_my_gender_") }</Text>
           <View style={{flexDirection:'row', paddingBottom:10}}>
             <View style={{flex:1}} />
             <TouchableOpacity onPress={() => {this.setState({aiSex:'male'});}} style={{justifyContent:'center'}} >
@@ -144,7 +150,7 @@ export class AiStart extends Component<any, any> {
           </View>
           <View style={{flex:1}} />
           <TouchableOpacity style={aiStyle.button} onPress={() => { this.handleAnswer(userFirstName); }}>
-            <Text style={aiStyle.boldText}>{"OK"}</Text>
+            <Text style={aiStyle.boldText}>{ lang("OK") }</Text>
           </TouchableOpacity>
           <View style={{flex:1}} />
         </View>
@@ -156,30 +162,34 @@ export class AiStart extends Component<any, any> {
     let name = this.state.aiName.trim();
 
     if (name.length === 0) {
-      Alert.alert("Ehmm " + userFirstName + ".. :(", "I'd really like a name... Could you give me one please?", [{text:"Right Away!"}])
+      Alert.alert(
+        lang("_Ehmm_____arguments_______header",userFirstName),
+        lang("_Ehmm_____arguments_______body"),
+        [{text:lang("_Ehmm_____arguments_______left")}]
+      );
     }
     else {
       let state = this.props.store.getState();
       let sphereId = this.props.sphereId || Object.keys(state.spheres)[0];
-      let title = "Thank you!";
-      let detail = "It's nice to finally meet you!";
-      let button = "Let's get started!";
+      let title =  lang("Thank_you_");
+      let detail =  lang("Its_nice_to_finally_meet_");
+      let button =  lang("Lets_get_started_");
       if (this.props.canGoBack === true) {
         if (this.state.aiName === state.spheres[sphereId].config.aiName && this.state.aiSex === state.spheres[sphereId].config.aiSex) {
-          detail = "I think my name and gender describe me perfectly too!";
-          button = "You're right!";
+          detail =  lang("I_think_my_name_and_gende");
+          button =  lang("Youre_right_");
         }
         else if (this.state.aiName !== state.spheres[sphereId].config.aiName && this.state.aiSex === state.spheres[sphereId].config.aiSex) {
-          detail = "This name is much better, great choice!";
-          button = "It suits you!";
+          detail =  lang("This_name_is_much_better_");
+          button =  lang("It_suits_you_");
         }
         else if (this.state.aiName === state.spheres[sphereId].config.aiName && this.state.aiSex !== state.spheres[sphereId].config.aiSex) {
-          detail = "You're right! I feel much more like myself as a " + (this.state.aiSex === 'male' ? 'man' : 'woman') + '!';
-          button = "I thought so too!";
+          detail =  lang("Youre_right__I_feel_much_",this.state.aiSex);
+          button =  lang("I_thought_so_too_");
         }
         else {
-          detail = "I'm a like whole new person now! Hi! It's great to meet you!";
-          button = "Nice to meet you too!";
+          detail =  lang("Im_a_like_whole_new_perso");
+          button =  lang("Nice_to_meet_you_too_");
         }
       }
       let defaultAction = () => {

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("FirmwareUpdateFix", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,11 +24,11 @@ export class FirmwareUpdateFix extends Component<any, any> {
       <View style={{flex:1, padding:10, paddingBottom:0, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={[WNStyles.innerScrollView, {minHeight: 400}]}>
-            <Text style={WNStyles.text}>Issues that caused the app to crash when the firmware update was finished are now resolved.</Text>
+            <Text style={WNStyles.text}>{ lang("Issues_that_caused_the_ap") }</Text>
             <View style={{height:15}} />
             <Image source={require('../../../../images/whatsNew/1.10.2/fixedUpdate.png')} style={{width:511*size, height:666*size}} />
             <View style={{height:15}} />
-            <Text style={WNStyles.detail}>You can safely update all Crownstones now :)</Text>
+            <Text style={WNStyles.detail}>{ lang("You_can_safely_update_all") }</Text>
           </View>
         </ScrollView>
       </View>

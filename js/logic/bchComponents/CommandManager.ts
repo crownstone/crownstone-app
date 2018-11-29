@@ -3,6 +3,8 @@ import { Util }                  from '../../util/Util'
 import {LOGd, LOGe}         from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {MeshUtil} from "../../util/MeshUtil";
+import {errorCodes} from "../BatchCommandHandler";
+import mesh from "../../router/store/reducers/stoneSubReducers/mesh";
 
 
 /**
@@ -11,9 +13,9 @@ import {MeshUtil} from "../../util/MeshUtil";
 export class CommandManager {
   commands  : batchCommands = {};
 
-  load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number, options: batchCommandEntryOptions) {
+  load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number, options: batchCommandEntryOptions) : Promise<bchReturnType> {
     if (stone.config.locked === true && command.commandName === "multiSwitch") {
-      return new Promise((resolve, reject) => { reject("Stone is Locked"); });
+      return new Promise((resolve, reject) => { reject({code: errorCodes.STONE_IS_LOCKED, message:"Stone is Locked"}); });
     }
     else {
       return new Promise((resolve, reject) => {
@@ -32,7 +34,7 @@ export class CommandManager {
           options:  options,
           timestamp: new Date().valueOf(),
           cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
-          promise:  { resolve: resolve, reject: reject, pending: false}
+          promise:  { resolve: resolve, reject: reject, pending: false }
         };
         eventBus.emit("BatchCommandHandlerLoadAction");
       });
@@ -194,10 +196,9 @@ export class CommandManager {
    * @returns directCommadns
    * @private
    */
-  extractMeshCommands(state, targetStoneId : string = null, targetNetworkId : string = null) {
+  extractMeshCommands(state, targetStoneId : string = null, targetNetworkId : string = null, allowRelayOnly : boolean = false) {
     // This will determine if there are high priority commands to filter for, and if so return only those. If not, returns all.
     let commandsToHandle = this._getCommandsToHandle(state);
-
     let meshCommands : sphereMeshNetworks = {};
 
     let uuids = Object.keys(commandsToHandle);
@@ -207,6 +208,11 @@ export class CommandManager {
         continue;
       }
       this._extractMeshCommand(state, todo, targetNetworkId, targetStoneId, meshCommands)
+    }
+
+
+    if (allowRelayOnly) {
+      return meshCommands;
     }
 
     // at this point, we only perform mesh commands if this is a direct connection as well. This will change in the future.
@@ -230,10 +236,8 @@ export class CommandManager {
       }
     }
 
-    return {};
-
     // we only return the mesh commands in the check above (the evil looking loops).
-    // return meshCommands;
+    return {};
   }
 
   extractConnectionTargets(state) {
@@ -358,7 +362,7 @@ export class CommandManager {
   forceCleanAllCommands() {
     let uuids = Object.keys(this.commands);
     for (let i = 0; i < uuids.length; i++) {
-      this.commands[uuids[i]].promise.resolve();
+      this.commands[uuids[i]].promise.resolve({ data: null });
       this.commands[uuids[i]].cleanup();
     }
   }

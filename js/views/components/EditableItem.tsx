@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("EditableItem", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   
@@ -147,7 +153,7 @@ export class EditableItem extends Component<any, any> {
         return (
           <View>
             <View style={[styles.listView, {NORMAL_ROW_SIZE, flex:1} ]}>
-              <Text>{this.props.label + ' - UNHANDLED for ' + this.props.type}</Text>
+              <Text>{ lang("___UNHANDLED_for_",this.props.label,this.props.type) }</Text>
             </View>
           </View>
         );

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("GraphAxis", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -45,7 +51,7 @@ export class GraphAxis extends Component<any, any> {
     elements.push(<Line key="sideGridBarOrange"            x1={minX-2  } y1={minY    } x2={minX-2}        y2={maxY}     stroke={accentColor}  strokeOpacity={1   } />);
     elements.push(<Line key="sideGridBar"                  x1={minX    } y1={minY    } x2={minX}          y2={maxY}     stroke={baseColor}    strokeOpacity={1   } />);
 
-    elements.push(<Text key={'UNIT'} x={options.padding} y={11} originX={0} fontSize={11} fontWeight="bold" fill={colors.white.hex} textAnchor="end" >{'(W)'}</Text>);
+    elements.push(<Text key={'UNIT'} x={options.padding} y={11} originX={0} fontSize={11} fontWeight="bold" fill={colors.white.hex} textAnchor="end" >{ lang("_W_") }</Text>);
 
     return (
       <View style={{position:'absolute', top:0, left:0}}>

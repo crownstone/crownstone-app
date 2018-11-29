@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomLayer", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -21,8 +28,9 @@ import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {Util} from "../../util/Util";
+import {Sphere} from "./Sphere";
 
-export class RoomLayer extends Component<any, any> {
+export class RoomLayer extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
 
   _baseRadius;
@@ -120,6 +128,8 @@ export class RoomLayer extends Component<any, any> {
           enablePhysics={roomData.usePhysics}
           nodeRadius={this._baseRadius}
           allowDrag={false}
+          zoomOutCallback={this.props.zoomOutCallback}
+          zoomInCallback={this.props.zoomInCallback}
           renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}>
           <UserLayer
             store={this.props.store}

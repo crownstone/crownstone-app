@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsMeshTopology", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -28,14 +35,15 @@ const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
 
-export class SettingsMeshTopology extends Component<any, any> {
+export class SettingsMeshTopology extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Mesh Topology", headerRight:
+    return { title: lang("Mesh_Topology"), headerRight:
       <TopbarButton
-        text={"Networks"}
+        text={ lang("Networks")}
         style={{width:100}}
         onPress={() => { Actions.settingsMeshOverview(); }}
-      />
+      />,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 
@@ -121,7 +129,7 @@ export class SettingsMeshTopology extends Component<any, any> {
     this.refreshAmountRequired = stoneIds.length;
     this.refreshCount = 0;
 
-    this.props.eventBus.emit('showProgress', {progress: 0, progressText:'Refreshing Mesh Topology\n\nStarting...'});
+    this.props.eventBus.emit('showProgress', {progress: 0, progressText: lang("Refreshing_Mesh_Topology_Start")});
 
     let evaluateRefreshProgress = () => {
       this.refreshCount += 1
@@ -133,7 +141,7 @@ export class SettingsMeshTopology extends Component<any, any> {
         MeshUtil.clearMeshNetworkIds(store, sphereId);
       }
       else {
-        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText:'Refreshing Mesh Topology\n\n('+this.refreshCount+' out of '+ this.refreshAmountRequired+")"});
+        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: lang("Refreshing_Mesh_Topology_",this.refreshCount,this.refreshAmountRequired)});
       }
     }
 
@@ -152,13 +160,13 @@ export class SettingsMeshTopology extends Component<any, any> {
     let stoneName0 = stones[connections[edgeId].from].config.name
     let stoneName1 = stones[connections[edgeId].to].config.name
 
-    let names = [element1.config.name, element2.config.name].sort()
+    let names = [stoneName0, stoneName1].sort()
 
     let n0 = stoneName0.split(":")
     let n1 = stoneName1.split(":")
 
     if (n0[1] !== n1[1]) {
-      console.log("'"+names[0], '-', names[1], ';', connections[edgeId].rssi+"',")
+      console.log("meshDebug: '"+names[0], '-', names[1], ';', connections[edgeId].rssi+"',")
     }
   }
 
@@ -173,10 +181,10 @@ export class SettingsMeshTopology extends Component<any, any> {
 
     if (stoneIds.length === 0) {
       return (
-        <Background image={this.props.backgrounds.detailsDark}>
+        <Background image={this.props.backgrounds.menu}>
           <OrangeLine/>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Text style={{color:colors.white.hex, fontWeight:'bold'}}>{'No Crownstones in Sphere "' + sphere.config.name + '" yet.'}</Text>
+            <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{ lang("No_Crownstones_in_Sphere_",sphere.config.name) }</Text>
           </View>
           <TouchableOpacity
             onPress={() => { Actions.settingsMeshTopologyHelp() }}
@@ -194,7 +202,7 @@ export class SettingsMeshTopology extends Component<any, any> {
 
 
       let location = Util.data.getLocationFromStone(sphere, stone);
-      let locationTitle = 'Floating...';
+      let locationTitle =  lang("Floating___");
       let locationIcon = 'c2-pluginFilled';
       if (location) {
         locationIcon = location.config.icon;
@@ -237,7 +245,7 @@ export class SettingsMeshTopology extends Component<any, any> {
       edges.push(connections[edgeId]);
 
       // used for comparative measurements.
-      // this._debugPrints(sphereId, connections, edgeId, stones);
+      this._debugPrints(sphereId, connections, edgeId, stones);
     });
 
     return (
@@ -265,8 +273,11 @@ export class SettingsMeshTopology extends Component<any, any> {
           <Icon name={'ios-help-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => { Alert.alert("Refresh Topology", "While the topology updates automatically, if you move a Crownstone out of range of the others " +
-            "it will take a while for the connection to time out. Manually refreshing like this will speed up this process.", [{text:'Cancel',style: 'cancel'}, {text:"OK", onPress: () => { this._refreshMesh(sphereId, stones); }}]) }}
+          onPress={() => { Alert.alert(
+            lang("_Refresh_Topology__While__header"),
+            lang("_Refresh_Topology__While__body"),
+            [{text:lang("_Refresh_Topology__While__left"),style:  lang("cancel")}, {
+            text:lang("_Refresh_Topology__While__right"), onPress: () => { this._refreshMesh(sphereId, stones); }}]) }}
           style={{position:'absolute', bottom:0, right:40, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
           <Icon name={'md-refresh-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
         </TouchableOpacity>

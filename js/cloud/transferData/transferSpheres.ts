@@ -79,7 +79,7 @@ export const transferSpheres = {
   createLocal: function( actions, data: transferNewSphereToLocalData) {
     // TODO: fix lat/long
 
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'ADD_SPHERE',
       { sphereId: data.localId },
@@ -91,7 +91,7 @@ export const transferSpheres = {
   updateLocal: function( actions, data: transferSphereToLocalData) {
     // TODO: fix lat/long
 
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'UPDATE_SPHERE_CONFIG',
       { sphereId: data.localId },

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomExplanation", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -45,26 +51,23 @@ export class RoomExplanation extends Component<any, any> {
 
     // In case we see a crownstone in setup mode:
     if (canSeeSetupCrownstones && explanation === undefined && seeStoneInSetupMode === true && locationId === null) {
-      explanation = "Crownstones in setup mode have a blue icon."
-    }
+      explanation =  lang("Crownstones_in_setup_mode")}
 
     // in case there are no crownstones in the room.
     else if (explanation === undefined && amountOfStonesInRoom === 0) {
       // in floating Crownstones
       if (locationId === null) {
-        explanation = "No Crownstones found."
-      }
+        explanation =  lang("No_Crownstones_found_")}
       // there are no crownstones in the sphere
       else if (Object.keys(state.spheres[sphereId].stones).length === 0 && canSeeSetupCrownstones) {
-        explanation = "To add a Crownstones to your sphere, hold your phone really close to a new one!"
-      }
+        explanation =  lang("To_add_a_Crownstones_to_y")}
       // there are floating crownstones
       else if (getFloatingStones(state, sphereId).length > 0) {
-        explanation = "Tap here to see all Crownstones without rooms!";
+        explanation =  lang("Tap_here_to_see_all_Crown");
         buttonCallback = () => { BackAction(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
       }
       else {
-        explanation = "No Crownstones in this room.";
+        explanation =  lang("No_Crownstones_in_this_ro");
       }
     }
 

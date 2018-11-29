@@ -45,18 +45,19 @@ export class PermissionManagerClass {
     }
   }
 
+
+  /**
+   * This method will only create permission classes for each available Sphere and set the active Sphere
+   * @param state
+   * @private
+   */
   _update(state) {
-    if (!state) {
-      return;
-    }
+    if (!state) { return; }
 
     this._activeSphereId = state.app.activeSphere;
 
-    let spheres = state.spheres;
-    let sphereIds = Object.keys(spheres);
-
     // we don't clean up removed spheres since it does not really matter memory wise
-    sphereIds.forEach((sphereId) => {
+    Object.keys(state.spheres).forEach((sphereId) => {
       if (this.permissionClasses[sphereId] === undefined) {
         LOG.info("PermissionManager: Creating PermissionClass for ", sphereId);
         this.permissionClasses[sphereId] = new PermissionClass(this._store, sphereId, this._userAlreadyLoggedIn);

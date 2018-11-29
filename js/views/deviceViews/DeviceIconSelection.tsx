@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceIconSelection", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -18,18 +24,18 @@ const Actions = require('react-native-router-flux').Actions;
 
 
 let categories = [
-  // {key: '__new', label: '__new'},
-  {key: 'lights', label: 'Lights'},
-  {key: 'tech', label: 'Tech'},
-  {key: 'furniture', label: 'Furniture'},
-  {key: 'bathroom', label: 'Bathroom'},
-  {key: 'office', label: 'Office'},
-  {key: 'bedRoom', label: 'Bedroom'},
-  {key: 'tools', label: 'Tools'},
-  {key: 'kitchen', label: 'Kitchen'},
-  {key: 'outside', label: 'Outside'},
-  {key: 'rides', label: 'Rides'},
-  {key: 'miscellaneous', label: 'Miscellaneous'},
+  // {key: '__new', label: lang("__new")},
+  {key: 'lights', label: lang("Lights")},
+  {key: 'tech', label: lang("Tech")},
+  {key: 'furniture', label: lang("Furniture")},
+  {key: 'bathroom', label: lang("Bathroom")},
+  {key: 'office', label: lang("Office")},
+  {key: 'bedRoom', label: lang("Bedroom")},
+  {key: 'tools', label: lang("Tools")},
+  {key: 'kitchen', label: lang("Kitchen")},
+  {key: 'outside', label: lang("Outside")},
+  {key: 'rides', label: lang("Rides")},
+  {key: 'miscellaneous', label: lang("Miscellaneous")},
 ];
 
 let listOfIcons = {
@@ -273,7 +279,7 @@ let listOfIcons = {
 export class DeviceIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Pick an Icon",
+      title: lang("Pick_an_Icon"),
     }
   };
 

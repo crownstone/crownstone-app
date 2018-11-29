@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ApplianceAdd", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -29,10 +35,10 @@ export class ApplianceAdd extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Add Device Type",
+      title: lang("Add_Device_Type"),
       headerLeft: <CancelButton onPress={BackAction} />,
       headerRight: <TopbarButton
-        text={"Create"}
+        text={ lang("Create")}
         onPress={() => {
           params.rightAction ? params.rightAction() : () => {}
         }}
@@ -52,18 +58,18 @@ export class ApplianceAdd extends Component<any, any> {
 
   _getItems() {
     let items = [];
-    items.push({label:'NEW DEVICE', type:'explanation', below:false});
-    items.push({label:'Type Name', type: 'textEdit', placeholder:'My device name', value: this.state.name, callback: (newText) => {
+    items.push({label: lang("NEW_DEVICE"), type:'explanation', below:false});
+    items.push({label: lang("Type_Name"), type: 'textEdit', placeholder:'My device name', value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
-    items.push({label:'Icon', type: 'icon', value: this.state.icon, callback: () => {
+    items.push({label: lang("Icon"), type: 'icon', value: this.state.icon, callback: () => {
         Actions.deviceIconSelection({
           icon: this.state.icon,
           callback: (newIcon) => { this.setState({icon:newIcon}); }
         }
       )}
     });
-    items.push({label:'The properties of device types are shared among all Crownstones that have this device plugged in. Device type behaviour overrules the Crownstone behaviour.', type:'largeExplanation', centered: true});
+    items.push({label: lang("The_properties_of_device_"), type:'largeExplanation', centered: true});
 
     return items;
   }
@@ -78,9 +84,9 @@ export class ApplianceAdd extends Component<any, any> {
   _createDevice() {
     if (this.state.name.length === 0) {
       Alert.alert(
-        'Device name must be at least 1 character long.',
-        'Please change the name and try again.',
-        [{text:'OK'}]
+lang("_Device_name_must_be_at_l_header"),
+lang("_Device_name_must_be_at_l_body"),
+[{text:lang("_Device_name_must_be_at_l_left")}]
       )
     }
     else {
@@ -108,9 +114,10 @@ export class ApplianceAdd extends Component<any, any> {
         })
         .catch((err) => {
           let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
-          Alert.alert("Encountered Cloud Issue.",
-            "We cannot create an Appliance in the Cloud. Please try again later.",
-            [{ text:'OK', onPress: defaultAction }],
+          Alert.alert(
+lang("_Encountered_Cloud_Issue__header"),
+lang("_Encountered_Cloud_Issue__body"),
+[{text:lang("_Encountered_Cloud_Issue__left"), onPress: defaultAction }],
             { onDismiss: defaultAction }
           )
         });

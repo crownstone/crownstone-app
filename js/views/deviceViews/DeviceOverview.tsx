@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -41,7 +48,7 @@ Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
 };
 
-export class DeviceOverview extends Component<any, any> {
+export class DeviceOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
@@ -57,11 +64,12 @@ export class DeviceOverview extends Component<any, any> {
 
     return {
       title: paramsToUse.title,
-      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>
+      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>,
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 
-  navBarCalback : any = null;
+  navBarCalback : any = null
   unsubscribeStoreEvents : any;
   unsubscribeSwiperEvents : any = [];
   touchEndTimeout: any;
@@ -84,7 +92,10 @@ export class DeviceOverview extends Component<any, any> {
       }
       else  if (panAvailable === false && this.state.swipeEnabled === true) {
         // this is used to move the view back if the user swiped it accidentally
-        (this.refs['deviceSwiper'] as any).scrollBy(this.summaryIndex);
+        if (this.refs['deviceSwiper']) {
+          (this.refs['deviceSwiper'] as any).scrollBy(this.summaryIndex);
+        }
+
         this.setState({swipeEnabled: false});
       }
     }));
@@ -106,6 +117,11 @@ export class DeviceOverview extends Component<any, any> {
 
   componentDidMount() {
     const { store } = this.props;
+    let state = store.getState();
+    if (state.app.hasSeenDeviceSettings === false) {
+      store.dispatch({type: 'UPDATE_APP_SETTINGS', data: {hasSeenDeviceSettings: true}})
+    }
+
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -179,13 +195,16 @@ export class DeviceOverview extends Component<any, any> {
       this.navBarCalback();
       this.navBarCalback = null
     }
-
     this.navBarCalback = Scheduler.scheduleCallback(() => {
       let state = this.props.store.getState();
       let params = getNavBarParams(this.props.store, state, this.props, swiperIndex, scrolling);
       this.props.navigation.setParams(params)
     } , 0)
 
+
+    let state = this.props.store.getState();
+    let params = getNavBarParams(this.props.store, state, this.props, swiperIndex, scrolling);
+    this.props.navigation.setParams(params)
   }
 
 
@@ -228,7 +247,6 @@ export class DeviceOverview extends Component<any, any> {
       hasScheduler    = false;
     }
 
-
     let checkScrolling = (newState) => {
       if (this.state.scrolling !== newState) {
         this._updateNavBar(this.state.swiperIndex, newState);
@@ -268,8 +286,6 @@ export class DeviceOverview extends Component<any, any> {
     let content = [];
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId, eventBus: this.props.eventBus};
 
-
-
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
       return content;
@@ -283,9 +299,13 @@ export class DeviceOverview extends Component<any, any> {
     if (canUpdate) {
       content.push(<DeviceUpdate key={'updateSlide'} mandatory={false} canUpdate={canUpdate} {...props} />);
     }
+
     if (showWhatsNew) {
       content.push(<DeviceWhatsNew key={'deviceWhatsNewSlide'} {...props} />);
     }
+
+    // content.push(<DeviceActivityLog key={'activityLogSlide'} {...props} />);
+    // return content;
 
     if (stoneConfig.dfuResetRequired) {
       return content;
@@ -300,7 +320,6 @@ export class DeviceOverview extends Component<any, any> {
     else {
       content.push(<DeviceSummary key={'summarySlide'}  {...props} />);
     }
-
 
     if (hasBehaviour) {
       content.push(<DeviceBehaviour key={'behaviourSlide'} {...props} />);
@@ -365,14 +384,22 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
   switch (swiperIndex) {
     case summaryIndex:
       if (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) {
-        rightLabel = 'Edit';
+        rightLabel =  lang("Edit");
         rightAction = () => {Actions.deviceEdit({sphereId: props.sphereId, stoneId: props.stoneId})};
       }
       break;
     case behaviourIndex:
       if (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
-        rightLabel = 'Change';
-        rightAction = () => {Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId});}
+        rightLabel =  lang("Change");
+        if (stone.config.locked === true) {
+          rightAction = () => { Alert.alert(
+lang("_Crownstone_is_Locked___Y_header"),
+lang("_Crownstone_is_Locked___Y_body"),
+[{text:lang("_Crownstone_is_Locked___Y_left")}])};
+        }
+        else {
+          rightAction = () => { Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId}); }
+        }
       }
       break;
   }

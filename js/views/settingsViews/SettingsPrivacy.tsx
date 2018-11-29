@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsPrivacy", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -19,9 +26,9 @@ import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
-export class SettingsPrivacy extends Component<any, any> {
+export class SettingsPrivacy extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Privacy" }
+    return { title: lang("Privacy")}
   };
 
   unsubscribe : any;
@@ -51,53 +58,68 @@ export class SettingsPrivacy extends Component<any, any> {
 
 
     items.push({
-      label: "You can choose what you want to share with the cloud and what you prefer to keep on your phone.\n\n" +
-      "If you have multiple users in a Sphere, sharing location is required to see them in the overview.",
+      label: lang("You_can_choose_what_you_w"),
       type: 'largeExplanation',
       style:{paddingTop:15, paddingBottom:15}
     });
+
     items.push({
-      label:"Share location",
+      label: lang("Share_location"),
       value: user.uploadLocation,
       type: 'switch',
       icon: <IconButton name="ios-pin" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadLocation: newValue} });
     }});
+
     items.push({
-      label: 'Show the other people in your Sphere in which room you are!',
+      label: lang("Show_the_other_people_in_"),
       type: 'explanation',
       below: true
     });
 
     items.push({
-      label:"Share switch state",
+      label: lang("Share_switch_state"),
       value: user.uploadSwitchState,
       type: 'switch',
       icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadSwitchState: newValue} });
-      }});
+    }});
     items.push({
-      label: 'Show the other people in your sphere if the Crownstone is on or off!',
+      label: lang("Show_the_other_people_in_y"),
       type: 'explanation',
       below: true
     });
     items.push({
-      label:"Share diagnostics",
+      label: lang("Share_diagnostics"),
       value: user.uploadDiagnostics,
       type: 'switch',
       icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkBackground.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadDiagnostics: newValue} });
+    }});
+    items.push({
+      label: lang("Help_us_gather_statistics"),
+      type: 'explanation',
+      below: true
+    });
+
+    items.push({
+      label: lang("Share_acitvity_logs"),
+      value: user.uploadActivityLogs,
+      type: 'switch',
+      icon: <IconButton name="md-calendar" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({ type: 'USER_UPDATE', data: {uploadActivityLogs: newValue} });
       }});
     items.push({
-      label: 'Help us gather statistics on the health of your Crownstones!',
+      label: lang("Activity_logs_are_used_to"),
       type: 'explanation',
       below: true
     });
     items.push({
-      label: "Share power usage",
+      label: lang("Share_power_usage"),
       value: user.uploadPowerUsage,
       type: 'switch',
       icon: <IconButton name="ios-flash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
@@ -105,7 +127,7 @@ export class SettingsPrivacy extends Component<any, any> {
     });
     if (user.uploadPowerUsage) {
       items.push({
-        label: "Upload frequently",
+        label: lang("Upload_frequently"),
         value: user.uploadHighFrequencyPowerUsage,
         type: 'switch',
         icon: <IconButton name="ios-cloud" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkPurple.hex}}/>,
@@ -113,15 +135,14 @@ export class SettingsPrivacy extends Component<any, any> {
       });
       if (user.uploadHighFrequencyPowerUsage) {
         items.push({
-          label: 'The power usage data collected by the app will be sent to the cloud every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster and is generally used for hubs.',
+          label: lang("The_power_usage_data_coll",CLOUD_BATCH_UPDATE_INTERVAL),
           type: 'explanation',
           below: true,
         });
       }
       else {
         items.push({
-          label: 'The power usage data collected by the app will be sent to the cloud during sync every ' + Math.round(SYNC_INTERVAL/60) + ' minutes.' +
-          '\n\nIf Upload frequently is enabled, it will upload every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster and is generally used for hubs.',
+          label: lang("The_power_usage_data_colle",Math.round(SYNC_INTERVAL/60),CLOUD_BATCH_UPDATE_INTERVAL),
           type: 'explanation',
           below: true,
         });
@@ -130,7 +151,7 @@ export class SettingsPrivacy extends Component<any, any> {
     }
     else {
       items.push({
-        label: 'If sharing power usage is enabled, all updates in power usage gathered by the app will be sent to the cloud.',
+        label: lang("If_sharing_power_usage_is"),
         type: 'explanation',
         below: true,
       });
@@ -138,10 +159,10 @@ export class SettingsPrivacy extends Component<any, any> {
 
 
     items.push({
-      label:"Share phone type details",
+      label: lang("Share_phone_type_details"),
       value: user.uploadDeviceDetails,
       type: 'switch',
-      icon: <IconButton name="ios-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+      icon: <IconButton name="ios-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
       callback:(newValue) => {
         if (newValue === false) {
           let deviceId = Util.data.getCurrentDeviceId(state);
@@ -165,12 +186,18 @@ export class SettingsPrivacy extends Component<any, any> {
                   model: null,
                   locale: null
                 }});
-                Alert.alert("Phone Details Removed", "We have removed your phone details from the Cloud.", [{text:'OK'}]);
+                Alert.alert(
+lang("_Phone_Details_Removed__W_header"),
+lang("_Phone_Details_Removed__W_body"),
+[{text:lang("_Phone_Details_Removed__W_left")}]);
               }, 500);
             })
             .catch((err) => {
               this.props.eventBus.emit("hideLoading");
-              Alert.alert("Whoops!", "We could not remove your phone details from the Cloud. Please try again later.", [{text:'OK'}]);
+              Alert.alert(
+lang("_Whoops___We_could_not_re_header"),
+lang("_Whoops___We_could_not_re_body"),
+[{text:lang("_Whoops___We_could_not_re_left")}]);
             })
         }
         else {
@@ -178,13 +205,13 @@ export class SettingsPrivacy extends Component<any, any> {
         }
       }});
     items.push({
-      label: 'Help us improve your experience by sharing what type of phone you have!',
+      label: lang("Help_us_improve_your_expe"),
       type: 'explanation',
       below: true
     });
 
     items.push({
-      label:'Privacy Policy',
+      label: lang("Privacy_Policy"),
       type:'navigation',
       icon: <IconButton name={'ios-cloudy'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green.hex }}/>,
       callback: () => {

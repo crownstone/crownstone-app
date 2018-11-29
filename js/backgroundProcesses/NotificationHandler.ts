@@ -12,6 +12,7 @@ import {MessageCenter} from "./MessageCenter";
 import {MapProvider} from "./MapProvider";
 import {SphereUserSyncer} from "../cloud/sections/sync/modelSyncs/SphereUserSyncer";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
+import {eventBus} from "../util/EventBus";
 
 class NotificationHandlerClass {
   store: any = {};
@@ -96,7 +97,6 @@ class NotificationHandlerClass {
             });
           }
         }
-
       },
 
       // (required) Called when a remote or local notification is opened or received
@@ -167,6 +167,8 @@ class NotificationParserClass {
     if (messageData && messageData.type && messageData.source === 'localNotification') {
       this._handleLocalNotifications(messageData);
     }
+
+    eventBus.emit("NotificationReceived", messageData);
   }
 
   _handleLocalNotifications(messageData) {

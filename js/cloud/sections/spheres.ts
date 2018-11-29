@@ -141,6 +141,13 @@ export const spheres = {
     return this._setupRequest('GET', '/Spheres/{id}/Toons', { background : background });
   },
 
+  getPresentPeople: function (ignoreDeviceId, background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/PresentPeople', {
+      data: { ignoreDeviceId: ignoreDeviceId },
+      background : background
+    }, 'query');
+  },
+
 
   /**
    * @param data

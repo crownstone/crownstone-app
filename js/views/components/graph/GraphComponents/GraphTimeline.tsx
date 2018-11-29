@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../../LiveComponent";
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("GraphTimeline", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -13,7 +20,7 @@ import {
 import { Util } from "../../../../util/Util";
 import { TimeStep } from './TimeStep'
 
-export class GraphTimeline extends Component<any, any> {
+export class GraphTimeline extends LiveComponent<any, any> {
   timePaddingFactor = 2;
   startTimeStamp = 0;
   endTimeStamp = 0;

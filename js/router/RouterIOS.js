@@ -16,16 +16,14 @@ import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupSt
 import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
-import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
 import { LockOverlay }               from "../views/overlays/LockOverlay";
+import { Languages }                 from '../Languages'
 import { Views }                     from './Views'
 import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
 import { LibMessages }               from "../views/overlays/LibMessages";
-import {SettingsLogging} from "../views/settingsViews/dev/SettingsLogging";
-
 
 export class Router_IOS extends Component {
   render() {
@@ -47,28 +45,30 @@ export class Router_IOS extends Component {
             <Scene key="register"                       component={Views.Register}                   />
             <Scene key="registerConclusion"             component={Views.RegisterConclusion}         type="reset" />
             <Tabs key="tabBar" showLabel={false} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} backToInitial={true} initial={this.props.loggedIn}>
-              <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
+              <Scene key="overview" tabTitle={Languages.get("Tabs","Overview")()} icon={TabIcon} iconString="ios-color-filter-outline" >
                 <Scene key="sphereOverview"             component={Views.SphereOverview}             />
-                <Scene key="deviceOverview"             component={Views.DeviceOverview}        sphereId={"165796f4-3dfe-4447-5cb8-aad82b29de68"} stoneId={"d27ff2d2-27cd-d1ed-1ff4-6d0f24bca6b"} />
                 <Scene key="roomOverview"               component={Views.RoomOverview}               />
+                <Scene key="deviceOverview"             component={Views.DeviceOverview}      sphereId={'a316fd99-de06-960b-d492-9a8dbb859c68'} stoneId={'f4872889-1c2a-e463-3b23-a3dcd3bf2af1'}    />
               </Scene>
-              <Scene key="messages"  tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
+              <Scene key="messages"  tabTitle={Languages.get("Tabs","Messages")()} icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
                 <Scene key="messageInbox"               component={Views.MessageInbox}    />
               </Scene>
-              <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
-                <Scene key="settingsOverview"           component={Views.SettingsOverview}          />
-                <Scene key="settingsProfile"            component={Views.SettingsProfile}           />
-                <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           />
-                <Scene key="settingsApp"                component={Views.SettingsApp}               />
-                <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      />
-                <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
-                <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}      />
-                <Scene key="settingsLogging"            component={Views.SettingsLogging}           />
-                <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
-                <Scene key="settingsMeshDebug"          component={Views.SettingsMeshDebug}         />
-                <Scene key="settingsLocalizationDebug"  component={Views.SettingsLocalizationDebug} />
-                <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         />
-                <Scene key="settingsFAQ"                component={Views.SettingsFAQ}               />
+              <Scene key="settings" tabTitle={Languages.get("Tabs","Settings")()} icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
+                <Scene key="settingsOverview"           component={Views.SettingsOverview}           />
+                <Scene key="settingsBleTroubleshooting" component={Views.SettingsBleTroubleshooting} />
+                <Scene key="settingsDiagnostics"        component={Views.SettingsDiagnostics}        />
+                <Scene key="settingsProfile"            component={Views.SettingsProfile}            />
+                <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}            />
+                <Scene key="settingsApp"                component={Views.SettingsApp}                />
+                <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}       />
+                <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}      />
+                <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}       />
+                <Scene key="settingsLogging"            component={Views.SettingsLogging}            />
+                <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}           />
+                <Scene key="settingsMeshDebug"          component={Views.SettingsMeshDebug}          />
+                <Scene key="settingsLocalizationDebug"  component={Views.SettingsLocalizationDebug}  />
+                <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          />
+                <Scene key="settingsFAQ"                component={Views.SettingsFAQ}                />
               </Scene>
             </Tabs>
             <Scene key="pictureView"                    component={Views.PictureView}                />
@@ -81,7 +81,7 @@ export class Router_IOS extends Component {
             <Scene key="roomAdd"                        component={Views.RoomAdd}                    />
             <Scene key="addItemsToSphere"               component={Views.AddItemsToSphere}           />
             <Scene key="roomEdit"                       component={Views.RoomEdit}                   />
-            <Scene key="toonAdd"                        component={Views.ToonAdd}   initial={false}  />
+            <Scene key="toonAdd"                        component={Views.ToonAdd}                    />
 
             <Scene key="sphereEdit"                     component={Views.SphereEdit}                 panHandlers={null} />
             <Scene key="sphereEditSettings"             component={Views.SphereEditSettings}         panHandlers={null} />
@@ -94,6 +94,8 @@ export class Router_IOS extends Component {
             <Scene key="sphereUser"                     component={Views.SphereUser}                 panHandlers={null} />
             <Scene key="sphereBehaviour"                component={Views.SphereBehaviour}            panHandlers={null} />
             <Scene key="sphereIntegrations"             component={Views.SphereIntegrations}         panHandlers={null} />
+
+            <Scene key="alexaOverview"                  component={Views.AlexaOverview}              panHandlers={null} />
 
             <Scene key="toonAdd"                        component={Views.ToonAdd}                    panHandlers={null} />
             <Scene key="toonSettings"                   component={Views.ToonSettings}               panHandlers={null} />
@@ -124,7 +126,6 @@ export class Router_IOS extends Component {
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />
-        <SphereSelectionOverlay store={this.props.store} />
         <LocationPermissionOverlay />
         <BleStateOverlay />
         <ErrorOverlay store={this.props.store} />
@@ -234,7 +235,7 @@ let navBarStyle = {
     color: colors.menuTextSelected.hex,
     fontWeight: 'bold',
     fontSize: 14
-  }
+  },
 };
 
 

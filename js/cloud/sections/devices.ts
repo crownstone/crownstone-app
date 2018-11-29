@@ -23,21 +23,10 @@ export const devices = {
     );
   },
 
-  updateDeviceLocation: function (localLocationId, background = true) {
-    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
+  sendTestNotification: function() {
     return this._setupRequest(
-      'PUT',
-      '/Devices/{id}/currentLocation/' + cloudLocationId,
-      { background: background }
-    );
-  },
-
-  updateDeviceSphere: function (localSphereId, background = true) {
-    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
-      'PUT',
-      '/Devices/{id}/currentSphere/' + cloudSphereId,
-      { background: background }
+      'POST',
+      '/Devices/{id}/testNotification/'
     );
   },
 
@@ -53,5 +42,47 @@ export const devices = {
       'DELETE',
       '/users/{id}/deleteAllDevices'
     );
-  }
+  },
+
+  inSphere: function (localSphereId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/inSphere/',
+      { data: {sphereId:cloudSphereId}, background: background },
+      'query'
+    );
+  },
+
+  inLocation: function (localSphereId, localLocationId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/inLocation/',
+      { data: {sphereId:cloudSphereId, locationId:cloudLocationId }, background: background },
+      'query'
+    );
+  },
+
+  exitLocation: function (localSphereId, localLocationId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/exitLocation/',
+      { data: {sphereId:cloudSphereId, locationId:cloudLocationId }, background: background },
+      'query'
+    );
+  },
+
+  exitSphere: function (localSphereId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/exitLocation/',
+      { data: {sphereId:cloudSphereId}, background: background },
+      'query'
+    );
+  },
 };

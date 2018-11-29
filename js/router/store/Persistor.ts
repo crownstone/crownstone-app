@@ -438,7 +438,6 @@ export class Persistor {
   _checkPersistQueue() {
     if (this.persistQueue.length > 0) {
       if (this.processPending !== true) {
-        console.log("found queued persist request")
         this._persist(this.lastPersistedState, this.store.getState(), false).then(() => {
           // on next tick.
           this.persistQueue.forEach((queue) => {

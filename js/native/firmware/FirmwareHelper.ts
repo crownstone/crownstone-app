@@ -119,7 +119,7 @@ export class FirmwareHelper {
 
   _putInDFU(stoneIsInSetupMode : boolean) {
     return new Promise((resolve, reject) => {
-      BluenetPromiseWrapper.connect(this.handle)
+      BluenetPromiseWrapper.connect(this.handle, this.sphereId)
         .then(() => {
           LOG.info("FirmwareHelper: DFU progress: Connected.");
           if (stoneIsInSetupMode) {
@@ -151,7 +151,7 @@ export class FirmwareHelper {
   getBootloaderVersion() {
     let setupPromise = () => {
       return new Promise((resolve, reject) => {
-        BluenetPromiseWrapper.connect(this.handle)
+        BluenetPromiseWrapper.connect(this.handle, this.sphereId)
           .then(() => {
             LOG.info("FirmwareHelper: DFU progress: Reconnected.");
             return BluenetPromiseWrapper.getBootloaderVersion();
@@ -278,7 +278,7 @@ export class FirmwareHelper {
         });
       }
       else {
-        return BluenetPromiseWrapper.connect(this.handle)
+        return BluenetPromiseWrapper.connect(this.handle, this.sphereId)
           .then(() => {
             eventBus.emit("updateDfuProgress", 0.25);
             LOG.info("FirmwareHelper: DFU progress: Reconnected.");

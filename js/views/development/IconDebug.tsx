@@ -113,6 +113,8 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "ios-more",
     ]
     let ioniconsMdList = [
+      "md-arrow-dropright",
+      "md-analytics",
       "md-switch",
       "md-add",
       "md-add-circle",

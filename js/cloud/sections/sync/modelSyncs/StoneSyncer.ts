@@ -11,6 +11,7 @@ import {ScheduleSyncer} from "./ScheduleSyncer";
 import {LOGe, LOGw} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {ActivityLogSyncer} from "./ActivityLogSyncer";
+import {ActivityRangeSyncer} from "./ActivityRangeSyncer";
 
 export class StoneSyncer extends SyncingSphereItemBase {
 
@@ -54,7 +55,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
     // go through all stones in the cloud.
     return Util.promiseBatchPerformer(stonesInCloud, (stone_from_cloud) => { // underscores so its visually different from stoneInState
-      console.log("Syncing Stone", stone_from_cloud.name)
       this.transferPromises = [];
 
       let localId = cloudIdMap[stone_from_cloud.id];
@@ -79,18 +79,13 @@ export class StoneSyncer extends SyncingSphereItemBase {
         let cloudDataForLocal = {...stone_from_cloud};
         cloudDataForLocal['localApplianceId'] = this._getLocalApplianceId(stone_from_cloud.applianceId);
         cloudDataForLocal['localLocationId']  = this._getLocalLocationId(locationLinkId);
-        this.transferPromises.push(
-          transferStones.createLocal(this.actions, {
-            localSphereId: this.localSphereId,
-            localId: localId,
-            cloudId: stone_from_cloud.id,
-            cloudData: cloudDataForLocal
-          })
-            .then(() => {
-              this._copyBehaviourFromCloud(localId, stone_from_cloud );
-            })
-            .catch(() => {})
-        );
+        transferStones.createLocal(this.actions, {
+          localSphereId: this.localSphereId,
+          localId: localId,
+          cloudId: stone_from_cloud.id,
+          cloudData: cloudDataForLocal
+        })
+        this._copyBehaviourFromCloud(localId, stone_from_cloud );
       }
 
       cloudIdMap[stone_from_cloud.id] = localId;
@@ -108,13 +103,17 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
 
   syncChildren(localId, store, stone_from_cloud) {
-    let scheduleSyncing    = new ScheduleSyncer(   this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
-    let activityLogSyncing = new ActivityLogSyncer(this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
+    let scheduleSyncing      = new ScheduleSyncer(     this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
+    let activityLogSyncing   = new ActivityLogSyncer(  this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
+    let activityRangeSyncing = new ActivityRangeSyncer(this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
 
     this.transferPromises.push(
       scheduleSyncing.sync(store, stone_from_cloud.schedules)
         .then(() => {
           return activityLogSyncing.sync(store)
+        })
+        .then(() => {
+          return activityRangeSyncing.sync(store)
         })
     );
   }
@@ -216,14 +215,12 @@ export class StoneSyncer extends SyncingSphereItemBase {
       let cloudDataForLocal = {...stone_from_cloud};
       cloudDataForLocal['localApplianceId'] = localApplianceId;
       cloudDataForLocal['localLocationId']  = localLocationId;
-      this.transferPromises.push(
-        transferStones.updateLocal(this.actions, {
-          localSphereId: this.localSphereId,
-          localId: localId,
-          cloudId: stone_from_cloud.id,
-          cloudData: cloudDataForLocal
-        }).catch(() => {})
-      );
+      transferStones.updateLocal(this.actions, {
+        localSphereId: this.localSphereId,
+        localId: localId,
+        cloudId: stone_from_cloud.id,
+        cloudData: cloudDataForLocal
+      })
     };
 
     if (shouldUpdateInCloud(stoneInState.config, stone_from_cloud) && !corruptData) {

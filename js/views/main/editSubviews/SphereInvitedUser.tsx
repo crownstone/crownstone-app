@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereInvitedUser", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -23,7 +29,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 export class SphereInvitedUser extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Invited User" }
+    return { title: lang("Invited_User")}
   };
 
   deleting : boolean;
@@ -39,20 +45,21 @@ export class SphereInvitedUser extends Component<any, any> {
     let items = [];
     // room Name:
     items.push({type:'spacer'});
-    items.push({type:'explanation', label:'INVITE WAS SENT TO'});
+    items.push({type:'explanation', label: lang("INVITE_WAS_SENT_TO")});
     items.push({label:user.email, type: 'info', labelStyle:{width:screenWidth}});
 
-    items.push({type:'explanation', label:'MANAGE INVITE'});
+    items.push({type:'explanation', label: lang("MANAGE_INVITE")});
     items.push({
-      label:'Resend Invitation',
+      label: lang("Resend_Invitation"),
       type:'button',
       style:{color:colors.iosBlue.hex},
       icon: <IconButton name="ios-mail" size={23} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback: () => {
         Alert.alert(
-          "Let's remind someone!",
-          "Would you like me to send another invitation email?.",
-          [{text:'No'}, {text:'Yes', onPress: () => {
+lang("_Lets_remind_someone___Wo_header"),
+lang("_Lets_remind_someone___Wo_body"),
+[{text:lang("_Lets_remind_someone___Wo_left")}, {
+text:lang("_Lets_remind_someone___Wo_right"), onPress: () => {
             this.props.eventBus.emit('showLoading', 'Resending Email...');
             CLOUD.forSphere(this.props.sphereId).resendInvite(user.email)
               .then(() => {
@@ -61,7 +68,10 @@ export class SphereInvitedUser extends Component<any, any> {
               })
               .catch((err) => {
                 this.props.eventBus.emit('hideLoading');
-                Alert.alert("Could not resend email..", "Please try again later.", [{text:"OK"}]);
+                Alert.alert(
+lang("_Could_not_resend_email___header"),
+lang("_Could_not_resend_email___body"),
+[{text:lang("_Could_not_resend_email___left")}]);
                 LOGe.info("Could not resend email", err);
               })
         }}], { cancelable : false });
@@ -73,15 +83,16 @@ export class SphereInvitedUser extends Component<any, any> {
          user.accessLevel === 'member' && spherePermissions.inviteMemberToSphere ||
          user.accessLevel === 'guest'  && spherePermissions.inviteGuestToSphere  ) {
       items.push({
-        label: 'Revoke Invite',
+        label: lang("Revoke_Invite"),
         type: 'button',
         icon: <IconButton name="md-trash" size={22} color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
         callback: () => {
           Alert.alert(
-            "Are you sure?",
-            "Shall I revoke the invitation?",
-            [{text: 'No'}, {
-              text: 'Yes', onPress: () => {
+lang("_Are_you_sure___Shall_I_r_header"),
+lang("_Are_you_sure___Shall_I_r_body"),
+[{text: lang("_Are_you_sure___Shall_I_r_left")}, {
+              
+text: lang("_Are_you_sure___Shall_I_r_right"), onPress: () => {
                 this.props.eventBus.emit('showLoading', 'Revoking Invitation...');
                 this.deleting = true;
                 CLOUD.forSphere(this.props.sphereId).revokeInvite(user.email)
@@ -103,7 +114,10 @@ export class SphereInvitedUser extends Component<any, any> {
                   .catch((err) => {
                     this.deleting = false;
                     this.props.eventBus.emit('hideLoading');
-                    Alert.alert("Could not revoke invitation..", "Please try again later.", [{text: "OK"}]);
+                    Alert.alert(
+lang("_Could_not_revoke_invitat_header"),
+lang("_Could_not_revoke_invitat_body"),
+[{text: lang("_Could_not_revoke_invitat_left")}]);
                     LOGe.info("Could not revoke invitation", err);
                   })
               }

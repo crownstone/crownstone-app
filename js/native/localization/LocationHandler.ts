@@ -1,3 +1,9 @@
+import { Languages } from "../../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocationHandler", key)(a,b,c,d,e);
+}
+
 import { Alert }                    from 'react-native';
 
 import { NativeBus }                from '../libInterface/NativeBus';
@@ -19,15 +25,11 @@ import {FingerprintManager} from "./FingerprintManager";
 class LocationHandlerClass {
   _initialized : boolean;
   store : any;
-  _uuid : string;
   _readyForLocalization = false;
 
   constructor() {
     this._initialized = false;
     this.store = undefined;
-
-    this._uuid = Util.getUUID();
-
 
     // subscribe to iBeacons when the spheres in the cloud change.
     eventBus.on('CloudSyncComplete_spheresChanged', () => {
@@ -56,22 +58,6 @@ class LocationHandlerClass {
       NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });
       NativeBus.on(NativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
       NativeBus.on(NativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
-
-      eventBus.on("KEYS_UPDATED", (data) => {
-        let bluenetSettings = {
-          encryptionEnabled: ENCRYPTION_ENABLED,
-          adminKey:    data.keys.adminKey,
-          memberKey:   data.keys.memberKey,
-          guestKey:    data.keys.guestKey,
-          referenceId: data.sphereId,
-        };
-
-        LOG.info("Set Settings.", bluenetSettings);
-        BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
-          LOGe.info("LocationHandler: Could not set Settings!", err);
-          Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
-        });
-      })
     }
   }
 
@@ -92,15 +78,6 @@ class LocationHandlerClass {
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the
     // right settings in the lib.
 
-    // prepare the settings for this sphere and pass them onto the bluenet lib
-    let bluenetSettings = {
-      encryptionEnabled: ENCRYPTION_ENABLED,
-      adminKey:  sphere.config.adminKey,
-      memberKey: sphere.config.memberKey,
-      guestKey:  sphere.config.guestKey,
-      referenceId: enteringSphereId
-    };
-
     if (canUseIndoorLocalizationInSphere(state, enteringSphereId) === true) {
       LOG.info('LocationHandler: Starting indoor localization for sphere', enteringSphereId);
       Bluenet.startIndoorLocalization();
@@ -114,13 +91,6 @@ class LocationHandlerClass {
     BatterySavingUtil.startNormalUsage(enteringSphereId);
 
 
-    LOG.info("Set Settings.", bluenetSettings);
-    BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
-      LOGe.info("LocationHandler: Could not set Settings!", err);
-      Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
-    });
-
-
     // make sure we only do the following once per sphere
     if (sphere && sphere.state && sphere.state.present === true) {
       LOG.info('LocationHandler: IGNORE ENTER SPHERE because I\'m already in the Sphere.');
@@ -129,19 +99,6 @@ class LocationHandlerClass {
 
     // update location of the sphere, start the keepAlive and check if we have to perform an enter sphere behaviour trigger.
     if (sphere !== undefined) {
-      let sphereIds = Object.keys(state.spheres);
-      let otherSpherePresentCount = 0;
-      sphereIds.forEach((checkSphereId) => {
-        if (state.spheres[checkSphereId].state.present === true && checkSphereId !== enteringSphereId) {
-          otherSpherePresentCount += 1;
-        }
-      });
-
-      if (otherSpherePresentCount > 0) {
-        Alert.alert("Warning: Multiple Active Spheres Detected!","I can see " + (otherSpherePresentCount + 1) + " Spheres from here. This is not supported and can cause all sorts of serious issues. Please make sure there are no overlapping Spheres for now.",[{text:'OK'}])
-      }
-
-
       LOG.info('LocationHandler: ENTER SPHERE', enteringSphereId);
 
       BluenetPromiseWrapper.requestLocation()
@@ -181,8 +138,8 @@ class LocationHandlerClass {
       let timeLastSeen = 0;
       stoneIds.forEach((stoneId) => {
         // get the most recent time.
-        if (stones[stoneId].config.lastSeen && timeLastSeen < stones[stoneId].config.lastSeen) {
-          timeLastSeen = stones[stoneId].config.lastSeen;
+        if (stones[stoneId].reachability.lastSeen && timeLastSeen < stones[stoneId].reachability.lastSeen) {
+          timeLastSeen = stones[stoneId].reachability.lastSeen;
         }
       });
 
@@ -236,6 +193,8 @@ class LocationHandlerClass {
       }
 
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
+
+      eventBus.emit('exitSphere', sphereId);
     }
   }
 
@@ -429,9 +388,9 @@ class LocationHandlerClass {
           }
 
           Alert.alert(
-            'Please forgive me :(',
-            'Due to many improvements in the localization you will have to train your rooms again...',
-            [{text:'OK'}]
+            lang("Please_forgive_me___"),
+            lang("Due_to_many_improvements_"),
+            [{text:lang("OK")}]
           );
         }
       })
@@ -461,7 +420,7 @@ class LocationHandlerClass {
 
         });
       })
-      .catch((err) => {})
+      .catch((err) => { LOGe.info("Tracking Spheres Failed", err); })
   }
 
   initializeTracking() {
@@ -471,7 +430,4 @@ class LocationHandlerClass {
 }
 
 
-
-
 export const LocationHandler = new LocationHandlerClass();
-

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SetupShared", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { Icon } from '../components/Icon';
@@ -151,7 +157,7 @@ export class NextButton extends Component<any, any> {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingRight:20, flexDirection:'row', height:30}}>
-        <Text style={[setupStyle.buttonText, {color:this.props.dark ? colors.menuBackground.hex : '#fff'}]}>Next</Text>
+        <Text style={[setupStyle.buttonText, {color:this.props.dark ? colors.menuBackground.hex : '#fff'}]}>{ lang("Next") }</Text>
         <Icon name="ios-arrow-forward" size={30} color={this.props.dark ? colors.menuBackground.hex : '#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
       </View>
     </TouchableOpacity>
@@ -161,7 +167,7 @@ export class StartButton extends Component<any, any> {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingRight:20, flexDirection:'row', height:30}}>
-        <Text style={[setupStyle.buttonText]}>Start setup</Text>
+        <Text style={[setupStyle.buttonText]}>{ lang("Start_setup") }</Text>
         <Icon name="ios-arrow-forward" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
       </View>
     </TouchableOpacity>
@@ -173,7 +179,7 @@ export class SkipButton extends Component<any, any> {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
         <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
-        <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>Skip</Text>
+        <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>{ lang("Skip") }</Text>
       </View>
     </TouchableOpacity>
   }
@@ -184,7 +190,7 @@ export class CancelButton extends Component<any, any> {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
         <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
-        <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>Cancel</Text>
+        <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>{ lang("Cancel") }</Text>
       </View>
     </TouchableOpacity>
   }

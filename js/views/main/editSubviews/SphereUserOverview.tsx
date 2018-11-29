@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereUserOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -18,13 +25,14 @@ import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 
 
-export class SphereUserOverview extends Component<any, any> {
+export class SphereUserOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     let state = params.store.getState();
     let sphere = state.spheres[params.sphereId] ;
     return {
-      title: "Users in " + sphere.config.name,
+      title: lang("Users_in_",sphere.config.name),
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 
@@ -57,7 +65,7 @@ export class SphereUserOverview extends Component<any, any> {
           if (users[userId].invitationPending === true) {
             result.push({
               label: users[userId].email,
-              type: (userId === state.user.userId || spherePermissions.manageUsers === false) ? 'info' : 'navigation',
+              type: (userId === state.user.userId || spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
               icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
                 Actions.sphereInvitedUser({
@@ -72,7 +80,7 @@ export class SphereUserOverview extends Component<any, any> {
           else {
             result.push({
               label: users[userId].firstName + " " + users[userId].lastName,
-              type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' : 'navigation',
+              type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
               icon: <ProfilePicture picture={users[userId].picture} borderless={false} />,
               callback: () => {
                 Actions.sphereUser({
@@ -96,29 +104,29 @@ export class SphereUserOverview extends Component<any, any> {
     const store = this.props.store;
     const state = store.getState();
 
-    items.push({label:'ADMINS',  type:'explanation', below:false});
+    items.push({label: lang("ADMINS"),  type:'explanation', below:false});
     items = items.concat(this._getUsersWithAccess(state,'admin'));
-    items.push({label:'Admins can add, configure and remove Crownstones and Rooms.', style:{paddingBottom:0}, type:'explanation', below:true});
+    items.push({label: lang("Admins_can_add__configure"), style:{paddingBottom:0}, type:'explanation', below:true});
 
     let members = this._getUsersWithAccess(state,'member');
     if (members.length > 0) {
-      items.push({label:'MEMBERS',  type: 'explanation', below: false});
+      items.push({label: lang("MEMBERS"),  type: 'explanation', below: false});
       items = items.concat(members);
-      items.push({label:'Members can configure Crownstones.', style:{paddingBottom:0}, type:'explanation', below:true});
+      items.push({label: lang("Members_can_configure_Cro"), style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
     let guest = this._getUsersWithAccess(state, 'guest');
     if (guest.length > 0) {
-      items.push({label:'GUESTS',  type:'explanation', below: false});
+      items.push({label: lang("GUESTS"),  type:'explanation', below: false});
       items = items.concat(guest);
-      items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', style:{paddingBottom:0}, type:'explanation', below:true});
+      items.push({label: lang("Guests_can_control_Crowns"), style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
     if (spherePermissions.inviteGuestToSphere || spherePermissions.inviteMemberToSphere || spherePermissions.inviteAdminToSphere) {
-      items.push({label:'ADD MORE PEOPLE',  type:'explanation', below: false});
+      items.push({label: lang("ADD_MORE_PEOPLE"),  type:'explanation', below: false});
       items.push({
-        label: 'Invite someone new!', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
+        label: lang("Invite_someone_new_"), // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
         type: 'navigation',
         labelStyle: {color: colors.menuTextSelected.hex, fontWeight:'bold'},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft: 3, marginRight: 7}}/>,

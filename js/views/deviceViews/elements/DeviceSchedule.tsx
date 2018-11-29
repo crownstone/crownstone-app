@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceSchedule", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -32,7 +39,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {ScheduleUtil} from "../../../util/ScheduleUtil";
 
 
-export class DeviceSchedule extends Component<any, any> {
+export class DeviceSchedule extends LiveComponent<any, any> {
 
   unsubscribeStoreEvents
   componentDidMount() {
@@ -61,7 +68,7 @@ export class DeviceSchedule extends Component<any, any> {
 
     let scheduleIds = Object.keys(schedules);
     if (scheduleIds.length > 0) {
-      items.push({label:'SCHEDULED ACTIONS', type: 'lightExplanation',  below:false});
+      items.push({label: lang("SCHEDULED_ACTIONS"), type: 'lightExplanation',  below:false});
 
       scheduleIds.forEach((scheduleId) => {
         let schedule = schedules[scheduleId];
@@ -101,9 +108,9 @@ export class DeviceSchedule extends Component<any, any> {
           onPress={() => {
           if (stone.reachability.disabled === true) {
             Alert.alert(
-              "Can't see Crownstone!",
-              "You cannot sync schedules from Crownstone if I can't see it...",
-              [{text:"OK"}]
+              lang("_Cant_see_Crownstone___Yo_header"),
+              lang("_Cant_see_Crownstone___Yo_body"),
+              [{text:lang("_Cant_see_Crownstone___Yo_left")}]
             );
           }
           else {
@@ -111,7 +118,7 @@ export class DeviceSchedule extends Component<any, any> {
           }
         }}>
           <Icon name="md-sync" size={20} color={colors.darkBackground.hex} style={{padding:5, paddingLeft:0}} />
-          <Text style={{color: colors.darkBackground.hex}}>Sync schedules from Crownstone</Text>
+          <Text style={{color: colors.darkBackground.hex}}>{ lang("Sync_schedules_from_Crown") }</Text>
         </TouchableOpacity>
       )
     }
@@ -139,13 +146,13 @@ export class DeviceSchedule extends Component<any, any> {
         },
       }
     };
-    eventBus.emit("showLoading", "Downloading schedules from Crownstone...");
+    eventBus.emit("showLoading", lang("Downloading_schedules_fro"));
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSchedules'}, {},1, 'sync schedules from DeviceSchedule')
-      .then((stoneSchedules : [bridgeScheduleEntry]) => {
+      .then((stoneSchedules : {data: [bridgeScheduleEntry]}) => {
         let dbSchedules = stone.schedules;
         let syncActions = [];
         let activeIds = {};
-        stoneSchedules.forEach((schedule) => {
+        stoneSchedules.data.forEach((schedule) => {
           let matchingId = ScheduleUtil.findMatchingScheduleId(schedule, dbSchedules);
           if (matchingId === null) {
             syncActions.push({
@@ -173,16 +180,16 @@ export class DeviceSchedule extends Component<any, any> {
         }
 
         this.props.store.batchDispatch(syncActions);
-        eventBus.emit("showLoading", "Done!");
+        eventBus.emit("showLoading", lang("Done_"));
         Scheduler.scheduleCallback(() => { eventBus.emit("hideLoading"); }, 400);
       })
       .catch((err) => {
         eventBus.emit("hideLoading");
         LOGe.info("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
         Alert.alert(
-          "Could not Sync",
-          "Move closer to the Crownstone and try again!",
-          [{text:"OK"}]
+          lang("_Could_not_Sync__Move_clo_header"),
+          lang("_Could_not_Sync__Move_clo_body"),
+          [{text:lang("_Could_not_Sync__Move_clo_left")}]
         );
       });
 
@@ -191,7 +198,7 @@ export class DeviceSchedule extends Component<any, any> {
 
   _getHeader(state, iconSize, customLabel = null) {
     let AI = Util.data.getAiData(state, this.props.sphereId);
-    let label = 'You can tell ' + AI.name + ' to switch this Crownstone on or off at a certain time.';
+    let label =  lang("You_can_tell__to_switch_t",AI.name);
 
     if (customLabel) {
       label = customLabel;
@@ -200,7 +207,7 @@ export class DeviceSchedule extends Component<any, any> {
     return (
       <View style={{ width: screenWidth, alignItems:'center' }}>
         <View style={{height: 30}} />
-        <Text style={[deviceStyles.header]}>Schedule</Text>
+        <Text style={[deviceStyles.header]}>{ lang("Schedule") }</Text>
         <View style={{height: 0.2*iconSize}} />
         <Text style={textStyle.specification}>{label}</Text>
       </View>
@@ -226,9 +233,9 @@ export class DeviceSchedule extends Component<any, any> {
         <TouchableOpacity onPress={() => {
             if (stone.reachability.disabled === true) {
               Alert.alert(
-                "Can't see Crownstone!",
-                "You cannot add schedules without being near to the Crownstone.",
-                [{text:"OK"}]
+                lang("_Cant_see_Crownstone___You_header"),
+                lang("_Cant_see_Crownstone___You_body"),
+                [{text:lang("_Cant_see_Crownstone___You_left")}]
               );
             }
             else {
@@ -262,21 +269,21 @@ export class DeviceSchedule extends Component<any, any> {
     if (!spherePermissions.canSeeSchedules) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
-          { this._getHeader(state, iconSize, "You do not have permission to see or set the Schedules in this Sphere.") }
+          { this._getHeader(state, iconSize, lang("You_do_not_have_permissio")) }
         </View>
       )
     }
     else if (!Util.versions.canIUse(stone.config.firmwareVersion, '1.5.0')) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
-          { this._getHeader(state, iconSize, "This Crownstone needs to be updated in order to use the Schedule feature.") }
+          { this._getHeader(state, iconSize, lang("This_Crownstone_needs_to_")) }
         </View>
       )
     }
     else if (stone.config.locked === true) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
-          { this._getHeader(state, iconSize, "This Crownstone is locked so Schedules are disabled.") }
+          { this._getHeader(state, iconSize, lang("This_Crownstone_is_locked")) }
         </View>
       )
     }
@@ -307,13 +314,7 @@ export class DeviceSchedule extends Component<any, any> {
             paddingRight: 30,
             fontWeight: 'bold',
             fontStyle:'italic'
-          }}>
-            {
-              Permissions.inSphere(this.props.sphereId).canAddSchedule ?
-                "Add your first scheduled action by tapping on the big icon in the center!" :
-                "You do not have permission to create schedules."
-            }
-          </Text>
+          }}>{ lang("Add_your_first_scheduled_",Permissions.inSphere(this.props.sphereId).canAddSchedule) }</Text>
           <View style={{flex: 2}} />
           { this._getSyncOption(stone) }
         </View>

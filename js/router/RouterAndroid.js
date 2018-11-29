@@ -15,7 +15,6 @@ import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupSt
 import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
 import { LockOverlay }               from '../views/overlays/LockOverlay'
 import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
-import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
 import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
@@ -57,8 +56,8 @@ export class Router_Android extends Component {
             <Scene key="roomSelection"              component={Views.RoomSelection}              />
             <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          />
             <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        />
-            <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} />
-            <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} />
+            <Scene key="settingsFactoryResetStep1"  component={Views.SettingsFactoryResetStep1}  />
+            <Scene key="settingsFactoryResetStep2"  component={Views.SettingsFactoryResetStep2}  />
             <Scene key="selectFromList"             component={Views.SelectFromList}             />
             <Drawer
               hideNavBar
@@ -83,6 +82,8 @@ export class Router_Android extends Component {
             <Scene key="settingsApp"                 component={Views.SettingsApp}                 />
             <Scene key="settingsFAQ"                 component={Views.SettingsFAQ}                 />
             <Scene key="settingsOverview"            component={Views.SettingsOverview}            />
+            <Scene key="settingsBleTroubleshooting"  component={Views.SettingsBleTroubleshooting}  />
+            <Scene key="settingsDiagnostics"         component={Views.SettingsDiagnostics}         />
             <Scene key="settingsProfile"             component={Views.SettingsProfile}             />
             <Scene key="settingsDeveloper"           component={Views.SettingsDeveloper}           />
             <Scene key="settingsBleDebug"            component={Views.SettingsBleDebug}            />
@@ -95,10 +96,8 @@ export class Router_Android extends Component {
             <Scene key="settingsRedownloadFromCloud" component={Views.SettingsRedownloadFromCloud} />
             <Scene key="settingsPrivacy"             component={Views.SettingsPrivacy}             />
             <Scene key="switchCraftInformation"      component={Views.SwitchCraftInformation}      />
+            <Scene key="settingsLocalizationDebug"   component={Views.SettingsLocalizationDebug}   />
 
-            <Scene key="settingsLocalizationDebug"   component={Views.SettingsLocalizationDebug} />
-
-            <Scene key="toonAdd"                    component={Views.ToonAdd}   initial={false}  />
             <Scene key="sphereEdit"                 component={Views.SphereEdit}                 panHandlers={null} />
             <Scene key="sphereEditSettings"         component={Views.SphereEditSettings}         panHandlers={null} />
             <Scene key="sphereRoomOverview"         component={Views.SphereRoomOverview}         panHandlers={null} />
@@ -111,7 +110,11 @@ export class Router_Android extends Component {
             <Scene key="sphereBehaviour"            component={Views.SphereBehaviour}            panHandlers={null} />
             <Scene key="sphereIntegrations"         component={Views.SphereIntegrations}         panHandlers={null} />
 
+            <Scene key="alexaOverview"              component={Views.AlexaOverview}              panHandlers={null} />
+
             <Scene key="toonAdd"                    component={Views.ToonAdd}                    panHandlers={null} />
+            <Scene key="toonSettings"               component={Views.ToonSettings}               panHandlers={null} />
+            <Scene key="toonOverview"               component={Views.ToonOverview}               panHandlers={null} />
 
             <Scene key="messageInbox"               component={Views.MessageInbox}               />
             <Scene key="messageAdd"                 component={Views.MessageAdd}                 />
@@ -127,7 +130,6 @@ export class Router_Android extends Component {
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />
-        <SphereSelectionOverlay store={this.props.store} />
         <LocationPermissionOverlay />
         <BleStateOverlay />
         <ErrorOverlay store={this.props.store} />

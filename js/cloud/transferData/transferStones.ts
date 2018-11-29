@@ -89,7 +89,7 @@ export const transferStones = {
   createLocal: function( actions, data: transferToLocalData) {
     this._injectLocationId(data);
 
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'ADD_STONE',
       { sphereId: data.localSphereId, stoneId: data.localId },
@@ -102,7 +102,7 @@ export const transferStones = {
   updateLocal: function( actions, data: transferToLocalData) {
     this._injectLocationId(data);
 
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'UPDATE_STONE_CONFIG',
       { sphereId: data.localSphereId, stoneId: data.localId },

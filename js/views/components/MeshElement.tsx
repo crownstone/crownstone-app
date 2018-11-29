@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("MeshElement", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -22,7 +29,7 @@ import {Icon} from "./Icon";
 import {AnimatedIconCircle} from "./animated/AnimatedIconCircle";
 
 
-class MeshElementClass extends Component<any, any> {
+class MeshElementClass extends LiveComponent<any, any> {
   usage : any;
   borderWidth : number;
   animating : boolean;
@@ -248,7 +255,10 @@ class MeshElementClass extends Component<any, any> {
     let supportedFirmware = Util.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.2');
     if (!supportedFirmware && data) {
       if (data.dx > this.props.radius && data.dy > -this.props.radius) {
-        Alert.alert("Update Required", "The firmware of this Crownstone must be updated before it can show connections.", [{text: 'OK'}]);
+        Alert.alert(
+lang("_Update_Required__The_fir_header"),
+lang("_Update_Required__The_fir_body"),
+[{text: lang("_Update_Required__The_fir_left")}]);
       }
     }
 

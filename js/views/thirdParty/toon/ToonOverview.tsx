@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ToonOverview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -24,14 +31,14 @@ import {ScaledImage} from "../../components/ScaledImage";
 import {deviceStyles} from "../../deviceViews/DeviceOverview";
 
 
-export class ToonOverview extends Component<any, any> {
+export class ToonOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Toon"
+      title: lang("Toon"),
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
-
 
   unsubscribe;
   deleting;
@@ -71,11 +78,15 @@ export class ToonOverview extends Component<any, any> {
     items.push({type:'spacer'})
 
     items.push({
-      label: "Disconnect from Toon",
+      label: lang("Disconnect_from_Toon"),
       type: 'button',
       icon: <IconButton name={'md-log-out'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor:colors.menuRed.hex}}/>,
       callback: () => {
-        Alert.alert("Are you sure", "You will have to add Toon again to undo this.",[{text:"Cancel", style:'cancel'},{text:"Yes", onPress:() => {
+        Alert.alert(
+lang("_Are_you_sure__You_will_h_header"),
+lang("_Are_you_sure__You_will_h_body"),
+[{text:lang("_Are_you_sure__You_will_h_left"), style:'cancel'},{
+text:lang("_Are_you_sure__You_will_h_right"), onPress:() => {
             this.props.eventBus.emit("showLoading","Removing the integration with Toon...")
             this.deleting = true;
             CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud()
@@ -89,7 +100,6 @@ export class ToonOverview extends Component<any, any> {
               })
               .catch((err) => {
                 this.props.eventBus.emit("hideLoading")
-                console.log("SOMETHING WENT WRONG", err)
               })
           }}])
       }
@@ -97,8 +107,7 @@ export class ToonOverview extends Component<any, any> {
     items.push({
       type:'explanation',
       below: true,
-      label: "This will remove the Toon integration for all users in your Sphere."
-    })
+      label: lang("This_will_remove_the_Toon")})
     items.push({type:'spacer'})
 
     return items;
@@ -114,9 +123,9 @@ export class ToonOverview extends Component<any, any> {
         <OrangeLine/>
         <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
-          <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={0.6*screenWidth} sourceWidth={1000} sourceHeight={237} />
+          <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           <View style={{flex:1}} />
-          <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex, paddingLeft: 15, paddingRight:15}]}>{"There are multiple Toon's on your account.\n\nPick one to configure it!"}</Text>
+          <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex, paddingLeft: 15, paddingRight:15}]}>{ lang("There_are_multiple_Toons_") }</Text>
           <View style={{flex:1}} />
           <ListEditableItems items={this._getItems(sphere)} separatorIndent={true} />
           <View style={{flex:1}} />

@@ -1,7 +1,10 @@
 
 import {
-  getMapOfCrownstonesBySphereByHandle, getMapOfCrownstonesInAllSpheresByCID,
-  getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByIBeacon
+  getMapOfCrownstonesBySphereByHandle,
+  getMapOfCrownstonesInAllSpheresByCID,
+  getMapOfCrownstonesInAllSpheresByHandle,
+  getMapOfCrownstonesInAllSpheresByIBeacon,
+  getMapOfCrownstonesInAllSpheresByStoneId
 } from "../util/DataUtil";
 import {eventBus} from "../util/EventBus";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
@@ -34,11 +37,12 @@ class MapProviderClass {
   _store : any;
   _initialized : boolean = false;
   stoneSphereHandleMap : StoneSphereHandleMap = {};
-  stoneHandleMap : StoneHandleMap = {};
-  stoneCIDMap : StoneCIDMap = {};
+  stoneHandleMap  : StoneHandleMap = {};
+  stoneSummaryMap : StoneSummaryMap = {};
+  stoneCIDMap     : StoneCIDMap = {};
   stoneIBeaconMap : StoneIBeaconMap = {};
-  cloud2localMap : globalIdMap = getGlobalIdMap();
-  local2cloudMap : globalIdMap = getGlobalIdMap();
+  cloud2localMap  : globalIdMap = getGlobalIdMap();
+  local2cloudMap  : globalIdMap = getGlobalIdMap();
 
   loadStore(store) {
     if (this._initialized === false) {
@@ -60,12 +64,12 @@ class MapProviderClass {
           change.changeStoneSchedule ||
           change.changeStoneHandle   ||
           change.changeDeviceData    ||
+          change.updatedToon         ||
           change.updateStoneConfig   ||
           change.changeMessage
         ) {
           this.refreshAll();
         }
-
       });
 
       this.refreshAll();
@@ -79,6 +83,7 @@ class MapProviderClass {
 
     this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(     state);
     this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle( state);
+    this.stoneSummaryMap      = getMapOfCrownstonesInAllSpheresByStoneId(state);
     this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(    state);
     this.stoneIBeaconMap      = getMapOfCrownstonesInAllSpheresByIBeacon(state);
     this._updateCloudIdMap();
@@ -115,10 +120,11 @@ class MapProviderClass {
     let sphereIds = Object.keys(state.spheres);
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
-      getFromConfig(sphere.messages,    this.cloud2localMap.messages,   this.local2cloudMap.messages);
-      getFromConfig(sphere.appliances,  this.cloud2localMap.appliances, this.local2cloudMap.appliances);
-      getFromConfig(sphere.locations,   this.cloud2localMap.locations,  this.local2cloudMap.locations);
-      getFromConfig(sphere.stones,      this.cloud2localMap.stones,     this.local2cloudMap.stones);
+      getFromConfig(sphere.messages,         this.cloud2localMap.messages,   this.local2cloudMap.messages);
+      getFromConfig(sphere.appliances,       this.cloud2localMap.appliances, this.local2cloudMap.appliances);
+      getFromConfig(sphere.locations,        this.cloud2localMap.locations,  this.local2cloudMap.locations);
+      getFromConfig(sphere.stones,           this.cloud2localMap.stones,     this.local2cloudMap.stones);
+      getFromItem(sphere.thirdParty.toons,   this.cloud2localMap.toons,      this.local2cloudMap.toons);
 
       getFromId(sphere.users,         this.cloud2localMap.users,      this.local2cloudMap.users);
 

@@ -24,13 +24,13 @@ export class MeshHelper {
     this.connectedStoneId = connectedStoneId;
   }
 
-  performAction() {
+  performAction(onlyUsedAsMeshRelay : boolean = false) {
     let actionPromise = null;
 
-    if (actionPromise === null) { actionPromise = this._handleMultiSwitchCommands(); }
-    if (actionPromise === null) { actionPromise = this._handleKeepAliveStateCommands(); }
-    if (actionPromise === null) { actionPromise = this._handleKeepAliveCommands(); }
-    if (actionPromise === null) { actionPromise = this._handleOtherCommands(); }
+    if (actionPromise === null) { actionPromise = this._handleMultiSwitchCommands(onlyUsedAsMeshRelay); }
+    if (actionPromise === null) { actionPromise = this._handleKeepAliveStateCommands(onlyUsedAsMeshRelay); }
+    if (actionPromise === null) { actionPromise = this._handleKeepAliveCommands(onlyUsedAsMeshRelay); }
+    if (actionPromise === null) { actionPromise = this._handleOtherCommands(onlyUsedAsMeshRelay); }
 
     if (actionPromise === null) {
       return actionPromise;
@@ -40,14 +40,19 @@ export class MeshHelper {
     return actionPromise
       .then((result) => {
         this._containedInstructions.forEach((instruction) => {
-          if (instruction.stoneId === this.connectedStoneId) {
-            instruction.promise.resolve(result);
+          if (instruction.stoneId === this.connectedStoneId || onlyUsedAsMeshRelay) {
+            instruction.promise.resolve({data:result, viaMesh: onlyUsedAsMeshRelay});
             instruction.cleanup();
           }
         })
       })
   }
 
+  /**
+   * This method ensures that we only send a mesh command via this Crownstone if we also have to connect to this Crownstone directly.
+   * @param commandArray
+   * @private
+   */
   _verifyDirectTarget(commandArray) {
     for (let i = 0; i < commandArray.length; i++) {
       let command = commandArray[i];
@@ -55,19 +60,21 @@ export class MeshHelper {
         return true;
       }
     }
-    LOGi.info("MeshHelper: No direct target in set, moving on.")
+    LOGi.mesh("MeshHelper: No direct target in set, moving on.")
     return false;
   }
 
 
-  _handleMultiSwitchCommands() {
+  _handleMultiSwitchCommands(onlyUsedAsMeshRelay = false) {
     if (this.meshInstruction.multiSwitch.length > 0) {
       let multiSwitchInstructions : multiSwitchPayload[] = this.meshInstruction.multiSwitch;
       // get data from set
       let multiSwitchPackets = [];
 
-      if (this._verifyDirectTarget(multiSwitchInstructions) === false) {
-        return null;
+      if (!onlyUsedAsMeshRelay) {
+        if (this._verifyDirectTarget(multiSwitchInstructions) === false) {
+          return null;
+        }
       }
 
       for (let i = 0; i < multiSwitchInstructions.length; i++) {
@@ -110,15 +117,17 @@ export class MeshHelper {
     return null;
   }
 
-  _handleKeepAliveStateCommands() {
+  _handleKeepAliveStateCommands(onlyUsedAsMeshRelay = false) {
     if (this.meshInstruction.keepAliveState.length > 0) {
       let keepAliveInstructions : keepAliveStatePayload[] = this.meshInstruction.keepAliveState;
       // get data from set
       let stoneKeepAlivePackets = [];
       let maxTimeout = 0;
 
-      if (this._verifyDirectTarget(keepAliveInstructions) === false) {
-        return null;
+      if (!onlyUsedAsMeshRelay) {
+        if (this._verifyDirectTarget(keepAliveInstructions) === false) {
+          return null;
+        }
       }
 
       keepAliveInstructions.forEach((instruction : keepAliveStatePayload) => {
@@ -161,12 +170,14 @@ export class MeshHelper {
     return null;
   }
 
-  _handleKeepAliveCommands() {
+  _handleKeepAliveCommands(onlyUsedAsMeshRelay = false) {
     if (this.meshInstruction.keepAlive.length > 0) {
       LOG.mesh('MeshHelper: Dispatching meshKeepAlive');
 
-      if (this._verifyDirectTarget(this.meshInstruction.keepAlive) === false) {
-        return null;
+      if (!onlyUsedAsMeshRelay) {
+        if (this._verifyDirectTarget(this.meshInstruction.keepAlive) === false) {
+          return null;
+        }
       }
 
       // add the promise of this part of the payload to the list that we will need to resolve or reject when the mesh message is delivered.
@@ -194,7 +205,7 @@ export class MeshHelper {
   }
 
 
-  _handleOtherCommands() {
+  _handleOtherCommands(onlyUsedAsMeshRelay = false) {
     LOGw.mesh("Other commands are not implemented in the mesh yet.");
     return null
   }

@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceEdit", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -35,14 +42,14 @@ import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
 
 
-export class DeviceEdit extends Component<any, any> {
+export class DeviceEdit extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Edit Device",
+      title: lang("Edit_Device"),
       headerLeft: <CancelButton onPress={BackAction} />,
       headerRight: <TopbarButton
-        text={"Save"}
+        text={ lang("Save")}
         onPress={() => {
           params.rightAction ? params.rightAction() : () => {}
         }}
@@ -98,7 +105,6 @@ export class DeviceEdit extends Component<any, any> {
 
       // in case the sphere is deleted
       if (state.spheres[this.props.sphereId] === undefined) {
-        BackAction();
         return;
       }
 
@@ -125,9 +131,9 @@ export class DeviceEdit extends Component<any, any> {
     let hasAppliance = canSwitch && this.state.applianceId;
 
     if (this.state.applianceId && hasAppliance) {
-      items.push({label:'PLUGGED IN DEVICE TYPE', type: 'explanation',  below:false});
+      items.push({label: lang("PLUGGED_IN_DEVICE_TYPE"), type: 'explanation',  below:false});
       items.push({
-        label: 'Device Type',
+        label: lang("Device_Type"),
         type: 'textEdit',
         placeholder:'Pick a name',
         value: this.state.applianceName,
@@ -138,7 +144,7 @@ export class DeviceEdit extends Component<any, any> {
 
       // icon picker
       items.push({
-        label:'Icon',
+        label: lang("Icon"),
         type: 'icon',
         value: this.state.applianceIcon,
         callback: () => {
@@ -153,7 +159,7 @@ export class DeviceEdit extends Component<any, any> {
 
       // unplug device
       items.push({
-        label: 'Decouple Device Type',
+        label: lang("Decouple_Device_Type"),
         type: 'button',
         icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
         style: {color: colors.blue.hex},
@@ -161,16 +167,16 @@ export class DeviceEdit extends Component<any, any> {
           this.setState({showStone:true, applianceId: null});
         }
       });
-      items.push({label:'This Crownstone is currently using the behaviour, name and icon of this device type. Decoupling it will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true, style:{paddingBottom:0}});
+      items.push({label: lang("This_Crownstone_is_curren"), type: 'explanation',  below:true, style:{paddingBottom:0}});
 
-      items.push({label: 'CURRENT CROWNSTONE USING THIS TYPE', type: 'explanation', below: false});
+      items.push({label: lang("CURRENT_CROWNSTONE_USING_"), type: 'explanation', below: false});
     }
     else {
-      items.push({label: 'CROWNSTONE', type: 'explanation', below: false});
+      items.push({label: lang("CROWNSTONE"), type: 'explanation', below: false});
     }
 
     items.push({
-      label: 'Name',
+      label: lang("Name"),
       type: 'textEdit',
       placeholder:'Pick a name',
       value: this.state.stoneName,
@@ -182,7 +188,7 @@ export class DeviceEdit extends Component<any, any> {
 
     if (canSwitch) {
       items.push({
-        label: 'Allow Dimming',
+        label: lang("Allow_Dimming"),
         type: 'switch',
         icon: <IconButton name="ios-sunny" size={22} button={true} color="#fff"
                           buttonStyle={{backgroundColor: colors.lightCsOrange.hex}}/>,
@@ -192,18 +198,21 @@ export class DeviceEdit extends Component<any, any> {
             this.setState({dimmingEnabled: newValue});
           }
           else {
-            Alert.alert("Permission Required", "Only Admins have permission to enable dimming on a Crownstone.", [{text: "OK"}])
+            Alert.alert(
+lang("_Permission_Required__Onl_header"),
+lang("_Permission_Required__Onl_body"),
+[{text: lang("_Permission_Required__Onl_left")}])
           }
         }
       });
 
       items.push({
-        label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
+        label: lang("View_Dimming_Compatibilit"), type: 'navigation', callback: () => {
           Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {})
         }
       });
       items.push({
-        label: 'Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk.',
+        label: lang("Dimming_can_be_enabled_pe"),
         type: 'explanation',
         below: true
       });
@@ -211,7 +220,7 @@ export class DeviceEdit extends Component<any, any> {
 
       if (state.app.tapToToggleEnabled) {
         items.push({
-          label: 'Tap to toggle',
+          label: lang("Tap_to_toggle"),
           icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff"
                             buttonStyle={{backgroundColor: colors.green2.hex}}/>,
           type: 'switch',
@@ -221,17 +230,17 @@ export class DeviceEdit extends Component<any, any> {
           }
         });
 
-        items.push({label: 'Tap to toggle can be enabled per Crownstone.', type: 'explanation', below: true});
+        items.push({label: lang("Tap_to_toggle_can_be_enab"), type: 'explanation', below: true});
       }
       else {
         items.push({
-          label: 'Tap to toggle is disabled.',
+          label: lang("Tap_to_toggle_is_disabled"),
           type: 'disabledInfo',
           icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff"
                             buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         });
         items.push({
-          label: 'To use tap to toggle, you have to enable it globally in the app settings.',
+          label: lang("To_use_tap_to_toggle__you"),
           type: 'explanation',
           below: true,
         });
@@ -240,7 +249,7 @@ export class DeviceEdit extends Component<any, any> {
       if (state.user.betaAccess && this.state.stoneType === STONE_TYPES.builtin) {
         if (Util.versions.canIUse(stone.config.firmwareVersion, '2.1.0')) {
           items.push({
-            label: 'Enable Switchcraft',
+            label: lang("Enable_Switchcraft"),
             type: 'switch',
             experimental: true, hasHelp: true, onHelp: () => {
               Actions.switchCraftInformation()
@@ -253,21 +262,21 @@ export class DeviceEdit extends Component<any, any> {
             }
           });
           items.push({
-            label: 'Use modified wall switches to switch both the Crownstone and the light. Tap the questionmark for more information.',
+            label: lang("Use_modified_wall_switche"),
             type: 'explanation',
             below: true
           });
         }
         else {
-          items.push({label: 'SWITCHCRAFT', type: 'explanation', below: false, alreadyPadded: true});
+          items.push({label: lang("SWITCHCRAFT"), type: 'explanation', below: false, alreadyPadded: true});
           items.push({
-            label: 'Firmware update required.',
+            label: lang("Firmware_update_required_"),
             type: 'disabledInfo',
             icon: <IconButton name="md-power" size={22} button={true} color="#fff"
                               buttonStyle={{backgroundColor: colors.purple.hex}}/>,
           });
           items.push({
-            label: 'Use modified wall switches to switch both the Crownstone and the light.',
+            label: lang("Use_modified_wall_switches"),
             type: 'explanation',
             below: true
           });
@@ -280,9 +289,9 @@ export class DeviceEdit extends Component<any, any> {
 
 
     if (hasAppliance) {
-      items.push({label: 'SELECT WHICH DEVICE TYPE IS PLUGGED IN', type: 'explanation', below: false, style:{paddingTop:0}});
+      items.push({label: lang("SELECT_WHICH_DEVICE_TYPE_"), type: 'explanation', below: false, style:{paddingTop:0}});
       items.push({
-        label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
+        label: lang("Select___"), type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
           Actions.applianceSelection({
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
@@ -294,7 +303,7 @@ export class DeviceEdit extends Component<any, any> {
         }
       });
       items.push({
-        label: 'A Device Type has it\'s own configuration and behaviour so you can set up once and quickly apply it to one or multiple Crownstones.',
+        label: lang("A_Device_Type_has_it_s_ow"),
         type: 'explanation',
         below: true
       });
@@ -302,14 +311,15 @@ export class DeviceEdit extends Component<any, any> {
 
     if (Permissions.inSphere(this.props.sphereId).removeCrownstone) {
       items.push({
-        label: 'Remove from Sphere',
+        label: lang("Remove_from_Sphere"),
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
           Alert.alert(
-            "Are you sure?",
-            "Removing a Crownstone from the sphere will revert it to it's factory default settings.",
-            [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
+lang("_Are_you_sure___Removing__header"),
+lang("_Are_you_sure___Removing__body"),
+[{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
+text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
               if (stone.reachability.disabled === true) {
                 Alert.alert("Can't see this one!",
                   "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
@@ -325,7 +335,7 @@ export class DeviceEdit extends Component<any, any> {
           )
         }
       });
-      items.push({label:'Removing this Crownstone from its Sphere will revert it back to factory defaults (and back in setup mode).',  type:'explanation', below:true});
+      items.push({label: lang("Removing_this_Crownstone_"),  type:'explanation', below:true});
     }
 
     return items;
@@ -343,10 +353,12 @@ export class DeviceEdit extends Component<any, any> {
           this._removeCloudReset(stone);
         })
         .catch((err) => {
-          Alert.alert("Can't see this one!",
-            "We can't find this Crownstone while scanning. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
-            [{text:'Delete anyway', onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
-              {text:'Cancel',style: 'cancel', onPress: () => {this.props.eventBus.emit('hideLoading');}}])
+          Alert.alert(
+lang("_Cant_see_this_one___We_c_header"),
+lang("_Cant_see_this_one___We_c_body"),
+[{text:lang("_Cant_see_this_one___We_c_left"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+              {
+text:lang("_Cant_see_this_one___We_c_right"),style:  lang("cancel"), onPress: () => {this.props.eventBus.emit('hideLoading');}}])
         })
     })
   }
@@ -372,9 +384,10 @@ export class DeviceEdit extends Component<any, any> {
       .catch((err) => {
         LOG.info("error while asking the cloud to remove this crownstone", err);
         this.props.eventBus.emit('hideLoading');
-        Alert.alert("Encountered Cloud Issue.",
-          "We cannot delete this Crownstone in the cloud. Please try again later",
-          [{text:'OK'}])
+        Alert.alert(
+lang("_Encountered_Cloud_Issue__header"),
+lang("_Encountered_Cloud_Issue__body"),
+[{text:lang("_Encountered_Cloud_Issue__left")}])
       })
   }
 
@@ -401,10 +414,10 @@ export class DeviceEdit extends Component<any, any> {
           })
           .catch((err) => {
             LOGe.info("ERROR:",err);
-            Alert.alert("Encountered a problem.",
-              "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
-              "Try deleting it again or use the recovery procedure to put it in setup mode.",
-              [{text:'OK', onPress: () => {
+            Alert.alert(
+lang("_Encountered_a_problem____header"),
+lang("_Encountered_a_problem____body"),
+[{text:lang("_Encountered_a_problem____left"), onPress: () => {
                 this.props.eventBus.emit('hideLoading');
                 BackAction('roomOverview');
               }}]
@@ -416,9 +429,10 @@ export class DeviceEdit extends Component<any, any> {
       })
       .catch((err) => {
         LOG.info("error while asking the cloud to remove this crownstone", err);
-        Alert.alert("Encountered Cloud Issue.",
-          "We cannot delete this Crownstone in the cloud. Please try again later",
-          [{text:'OK', onPress: () => {
+        Alert.alert(
+lang("_Encountered_Cloud_Issue___header"),
+lang("_Encountered_Cloud_Issue___body"),
+[{text:lang("_Encountered_Cloud_Issue___left"), onPress: () => {
             this.props.eventBus.emit('hideLoading');}
           }])
       })
@@ -429,13 +443,14 @@ export class DeviceEdit extends Component<any, any> {
     // deleting makes sure we will not draw this page again if we delete it's source from the database.
     this.deleting = true;
 
-    let labelText = "I have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere.";
+    let labelText =  lang("I_have_removed_this_Crown");
     if (factoryReset === false) {
-     labelText = "I have removed this Crownstone from the Cloud and your Sphere. I could not reset it back to setup mode though.. You'll need to recover it to put it back into setup mode."
-    }
+     labelText =  lang("I_have_removed_this_Crowns")}
 
-    Alert.alert("Success!", labelText,
-      [{text:'OK', onPress: () => {
+    Alert.alert(
+lang("_Success__arguments___OKn_header"),
+lang("_Success__arguments___OKn_body",labelText),
+[{text:lang("_Success__arguments___OKn_left"), onPress: () => {
         this.props.eventBus.emit('hideLoading');
         BackAction('roomOverview');
         this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
@@ -506,11 +521,17 @@ export class DeviceEdit extends Component<any, any> {
   _setDimState(stone) {
     if (stone.config.dimmingEnabled !== this.state.dimmingEnabled) {
       if (stone.config.locked) {
-        Alert.alert("Crownstone Locked", "You have to unlock the Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " dimming.", [{text:'OK'}]);
+        Alert.alert(
+lang("_Crownstone_Locked__You_h_header"),
+lang("_Crownstone_Locked__You_h_body",this.state.dimmingEnabled),
+[{text:lang("_Crownstone_Locked__You_h_left")}]);
         return;
       }
       if (stone.reachability.disabled) {
-        Alert.alert("Can't see this Crownstone!", "You have to be in range of Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " dimming.", [{text:'OK'}]);
+        Alert.alert(
+lang("_Cant_see_this_Crownstone_header"),
+lang("_Cant_see_this_Crownstone_body",this.state.dimmingEnabled),
+[{text:lang("_Cant_see_this_Crownstone_left")}]);
         return;
       }
 
@@ -526,7 +547,10 @@ export class DeviceEdit extends Component<any, any> {
           .then(() => { dimmingChangedSuccessfully = true; })
           .catch((err) => {
             LOGe.info("DeviceEdit: Could not disable dimming on Crownstone", err);
-            Alert.alert("I'm sorry...","I couldn't disable dimming on this Crownstone. Please move closer and try again.", [{text:'OK'}])
+            Alert.alert(
+lang("_Im_sorry_____I_couldnt_d_header"),
+lang("_Im_sorry_____I_couldnt_d_body"),
+[{text:lang("_Im_sorry_____I_couldnt_d_left")}])
           }));
       }
       else {
@@ -535,7 +559,10 @@ export class DeviceEdit extends Component<any, any> {
           .then(() => { dimmingChangedSuccessfully = true; })
           .catch((err) => {
             LOGe.info("DeviceEdit: Could not enable dimming on Crownstone", err);
-            Alert.alert("I'm sorry...","I couldn't enable dimming on this Crownstone. Please move closer and try again.", [{text:'OK'}])
+            Alert.alert(
+lang("_Im_sorry_____I_couldnt_e_header"),
+lang("_Im_sorry_____I_couldnt_e_body"),
+[{text:lang("_Im_sorry_____I_couldnt_e_left")}])
           }));
       }
       BatchCommandHandler.executePriority();
@@ -559,7 +586,10 @@ export class DeviceEdit extends Component<any, any> {
       this.props.eventBus.emit("showLoading", "Configuring Switchcraft on this Crownstone...");
 
       if (stone.reachability.disabled) {
-        Alert.alert("Can't see this Crownstone!", "You have to be in range of Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + " Switchcraft.", [{text:'OK'}]);
+        Alert.alert(
+lang("_Cant_see_this_Crownstone__header"),
+lang("_Cant_see_this_Crownstone__body",this.state.dimmingEnabled),
+[{text:lang("_Cant_see_this_Crownstone__left")}]);
         return;
       }
 
@@ -576,7 +606,10 @@ export class DeviceEdit extends Component<any, any> {
         })
         .catch((err) => {
           LOGe.info("DeviceEdit: Could not configure Switchcraft on Crownstone", this.state.switchCraft, err);
-          Alert.alert("I'm sorry...","I couldn't configure Switchcraft on this Crownstone. Please move closer and try again.", [{text:'OK'}])
+          Alert.alert(
+lang("_Im_sorry_____I_couldnt_c_header"),
+lang("_Im_sorry_____I_couldnt_c_body"),
+[{text:lang("_Im_sorry_____I_couldnt_c_left")}])
         });
       BatchCommandHandler.executePriority();
       return changePromise;
@@ -590,7 +623,7 @@ export class DeviceEdit extends Component<any, any> {
     if (this.state.refreshingStoneVersions) {
       return (
         <View style={{paddingTop:15, paddingBottom:30}}>
-          <Text style={[styles.version,{paddingBottom:4}]}>{'Checking versions... '}</Text>
+          <Text style={[styles.version,{paddingBottom:4}]}>{ lang("Checking_versions____") }</Text>
           <ActivityIndicator animating={true} size='small' color={colors.darkGray2.hex} />
         </View>
       );
@@ -599,38 +632,47 @@ export class DeviceEdit extends Component<any, any> {
       return (
         <TouchableOpacity style={{paddingTop:15, paddingBottom:30}} onPress={() => {
           if (stone.reachability.disabled) {
-            return Alert.alert("Can't see this stone!", "I have to be in range to get the firwmare version of this Crownstone.", [{text:'OK'}]);
+            return Alert.alert(
+lang("_Cant_see_this_stone___I__header"),
+lang("_Cant_see_this_stone___I__body"),
+[{text:lang("_Cant_see_this_stone___I__left")}]);
           }
 
           this.setState({refreshingStoneVersions: true});
           let promises = [];
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware')
-            .then((firmwareVersion) => {
+            .then((firmwareVersion : {data: string}) => {
               this.props.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
                 stoneId: this.props.stoneId,
                 sphereId: this.props.sphereId,
                 data: {
-                  firmwareVersion: firmwareVersion,
+                  firmwareVersion: firmwareVersion.data,
                 }
               })
               .catch((err) => {
-                Alert.alert("Whoops!", "I could not get the firmware version....", [{text:'OK'}]);
+                Alert.alert(
+lang("_Whoops___I_could_not_get_header"),
+lang("_Whoops___I_could_not_get_body"),
+[{text:lang("_Whoops___I_could_not_get_left")}]);
                 throw err;
               });
             }));
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware')
-            .then((hardwareVersion) => {
+            .then((hardwareVersion : {data: string}) => {
               this.props.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
                 stoneId: this.props.stoneId,
                 sphereId: this.props.sphereId,
                 data: {
-                  hardwareVersion: hardwareVersion,
+                  hardwareVersion: hardwareVersion.data,
                 }
               })
               .catch((err) => {
-                Alert.alert("Whoops!", "I could not get the hardware version....", [{text:'OK'}]);
+                Alert.alert(
+lang("_Whoops___I_could_not_get__header"),
+lang("_Whoops___I_could_not_get__body"),
+[{text:lang("_Whoops___I_could_not_get__left")}]);
                 throw err;
               });
             }));
@@ -645,11 +687,11 @@ export class DeviceEdit extends Component<any, any> {
               this.setState({refreshingStoneVersions: false});
             });
         }}>
-          <Text style={styles.version}>{'address: '      + (stone.config.macAddress        || unknownString)}</Text>
-          <Text style={styles.version}>{'hardware id: '  + (stone.config.hardwareVersion   || unknownString)}</Text>
-          <Text style={styles.version}>{'bootloader: '   + (stone.config.bootloaderVersion || unknownString)}</Text>
-          <Text style={styles.version}>{'firmware: '     + (stone.config.firmwareVersion   || unknownString)}</Text>
-          <Text style={styles.version}>{'crownstone id: ' + (stone.config.crownstoneId     || unknownString)}</Text>
+          <Text style={styles.version}>{ lang("address__",stone.config.macAddress,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("hardware_id__",stone.config.hardwareVersion,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("bootloader__",stone.config.bootloaderVersion,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("firmware__",stone.config.firmwareVersion,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("crownstone_id__",stone.config.crownstoneId,unknownString) }</Text>
         </TouchableOpacity>
       );
     }

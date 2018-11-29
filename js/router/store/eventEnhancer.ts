@@ -161,6 +161,7 @@ function checkAction(action, affectedIds) {
     case 'UPDATE_STONE_ERRORS':
     case 'RESET_STONE_ERRORS':
     case 'CLEAR_STONE_ERRORS':
+    case "UPDATE_STONE_CONFIG_TRANSIENT":
       eventStatus['updateStoneConfig'] = affectedIds; break;
     case 'UPDATE_STONE_LOCATION':
       eventStatus['stoneLocationUpdated'] = affectedIds; break;
@@ -300,9 +301,10 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_MESSAGES":
       break;
     case "UPDATE_SYNC_ACTIVITY_TIME":
-    case "ADD_TOON":
       break;
+    case "ADD_TOON":
     case "TOON_UPDATE_SETTINGS":
+    case "TOON_UPDATE_SCHEDULE":
     case "REMOVE_TOON":
     case "REMOVE_ALL_TOONS":
       eventStatus['updatedToon'] = affectedIds; break;
@@ -318,7 +320,6 @@ function checkAction(action, affectedIds) {
       break;
     case "UPDATE_STONE_SWITCH_STATE_TRANSIENT":
       eventStatus['stoneUsageUpdatedTransient'] = affectedIds; break;
-    case "UPDATE_STONE_CONFIG_TRANSIENT":
     case "USER_UPDATE_PICTURE":
     case "UPDATE_ACTIVITY_LOG_CLOUD_ID":
       break;

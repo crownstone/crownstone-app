@@ -1,6 +1,6 @@
 'use strict';
 import * as React from 'react'; import { Component } from 'react';
-import { Animated,  StatusBar,  View, Platform } from 'react-native';
+import { Animated, Keyboard, StatusBar,  View, Platform } from 'react-native';
 
 import { AppRouter } from './js/router/Router'
 import { eventBus } from './js/util/EventBus'
@@ -14,31 +14,56 @@ export class Root extends Component {
 
     this.state = {top: new Animated.Value(0)};
     this.unsubscribe = [];
-  }
-
-  componentWillMount() {
     BackgroundProcessHandler.start();
   }
 
   // this is used to scroll the view up when typing is active
   componentDidMount() {
     if (Platform.OS === 'ios') {
+
+
       SplashScreen.hide();
+
+      let keyboardHeight = null;
+
+
+      let moveUpForKeyboard_onKeyboardEvent = () => {};
+      let keyboardDidShow = (event) => {
+        keyboardHeight = event.endCoordinates.height;
+        moveUpForKeyboard_onKeyboardEvent();
+        moveUpForKeyboard_onKeyboardEvent = () => {};
+      }
+      let keyboardDidHide = (event) => {
+        // console.log("keyboardDidHide", event)
+      }
 
       this.focusTime = 0;
 
-      let snapBack = () => { Animated.timing(this.state.top, {toValue: 0, duration:0}).start(); };
+      let snapBack = () => {
+        this.state.top.stopAnimation()
+        Animated.timing(this.state.top, {toValue: 0, duration:0}).start();
+      };
       let snapBackKeyboard = () => {
+        this.state.top.stopAnimation()
         if (new Date().valueOf() - this.focusTime > 100) {
           Animated.timing(this.state.top, {toValue: 0, duration: 200}).start();
         }
       };
 
-      this.unsubscribe.push(eventBus.on('focus', (posY) => {
-        let keyboardHeight = 360 + 80; // 80 is to correct of that stupid autofill bar that i cant turn off.
-        let distFromBottom = screenHeight - (posY - this.state.top._value);
+      let moveUpForKeyboard = (posY_bottomTextfield) => {
+        this.state.top.stopAnimation()
+        let distFromBottom = screenHeight - ((posY_bottomTextfield + 20) - this.state.top._value); // 20 is padding
         this.focusTime = new Date().valueOf();
         Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration: 200}).start()
+      }
+
+      this.unsubscribe.push(eventBus.on('focus', (posY_bottomTextfield) => {
+        if (keyboardHeight === null) {
+          moveUpForKeyboard_onKeyboardEvent = () => { moveUpForKeyboard(posY_bottomTextfield); };
+        }
+        else {
+          moveUpForKeyboard(posY_bottomTextfield);
+        }
       }));
       this.unsubscribe.push(eventBus.on('hidePopup', snapBackKeyboard));
       this.unsubscribe.push(eventBus.on('showPopup', snapBackKeyboard));
@@ -49,11 +74,15 @@ export class Root extends Component {
       this.unsubscribe.push(eventBus.on('showProgress', snapBack));
       this.unsubscribe.push(eventBus.on('hideLoading',  snapBack));
       this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
+      this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+      this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
     }
   }
 
 
   componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
     this.unsubscribe.forEach((callback) => { callback() });
     this.unsubscribe = [];
   }

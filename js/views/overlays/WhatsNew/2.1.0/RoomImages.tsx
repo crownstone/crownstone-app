@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("RoomImages", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
@@ -18,9 +24,9 @@ export class RoomImages extends Component<any, any> {
       <View style={{flex:1, paddingBottom:0, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={[WNStyles.outerScrollView,{width: this.props.width}]}>
           <View style={WNStyles.innerScrollView}>
-            <Text style={WNStyles.text}>Customize Rooms!</Text>
+            <Text style={WNStyles.text}>{ lang("Customize_Rooms_") }</Text>
             <Image source={require('../../../../images/whatsNew/2.1.0/roomImages.png')} style={{width:557*size, height:639*size, marginTop:10, marginBottom: 20}} />
-            <Text style={WNStyles.detail}>If you're the admin of your Sphere, this update enables to add a picture to a room!</Text>
+            <Text style={WNStyles.detail}>{ lang("If_youre_the_admin_of_you") }</Text>
           </View>
         </ScrollView>
       </View>

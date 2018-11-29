@@ -97,7 +97,7 @@ export const transferSchedules = {
 
 
   createLocal: function( actions, data: transferToLocalStoneData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'ADD_STONE_SCHEDULE',
       { sphereId: data.localSphereId, stoneId: data.localStoneId, scheduleId: data.localId },
@@ -108,7 +108,7 @@ export const transferSchedules = {
 
 
   updateLocal: function( actions, data: transferToLocalStoneData) {
-    return transferUtil._handleLocal(
+    transferUtil._handleLocal(
       actions,
       'UPDATE_STONE_SCHEDULE',
       { sphereId: data.localSphereId, stoneId: data.localStoneId, scheduleId: data.localId },

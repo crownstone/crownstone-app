@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("TapToToggleCalibration", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -47,17 +53,17 @@ export class TapToToggleCalibration extends Component<any, any> {
 
   learnDistance(attempt = 0) {
     // show loading screen
-    eventBus.emit("showLoading", "Waiting to start learning...");
+    eventBus.emit("showLoading", lang("Waiting_to_start_learning"));
 
     // make sure we don't strangely trigger stuff while doing this.
     eventBus.emit("ignoreTriggers");
 
     let learnDistancePromise = () => {
       return new Promise((resolve, reject) => {
-        eventBus.emit("showLoading", "Finding Tap-to-Toggle distance...");
+        eventBus.emit("showLoading", lang("Finding_Tap_to_Toggle_dis"));
         // timeout for the user to put his phone on the
         setTimeout(() => {
-          eventBus.emit("showLoading", "Learning Tap-to-Toggle distance...");
+          eventBus.emit("showLoading", lang("Learning_Tap_to_Toggle_di"));
           // waiting for the data to be collected. We use the RSSI updates through the iBeacon messages which come in at
           // StoneStateHandler.js ~ line 35
           setTimeout(() => {
@@ -99,7 +105,7 @@ export class TapToToggleCalibration extends Component<any, any> {
             deviceId: deviceId,
             data: { tapToToggleCalibration: rssiAddedDistance }
           });
-          eventBus.emit("showLoading", "Great!");
+          eventBus.emit("showLoading", lang("Great_"));
 
           setTimeout(() => {
             eventBus.emit("hideLoading");
@@ -109,11 +115,17 @@ export class TapToToggleCalibration extends Component<any, any> {
         else {
           eventBus.emit("hideLoading");
           if (attempt === 2) {
-            Alert.alert("That's a bit far away.", "Maybe try again later.",[{text:"OK"}])
+            Alert.alert(
+lang("_Thats_a_bit_far_away___M_header"),
+lang("_Thats_a_bit_far_away___M_body"),
+[{text:lang("_Thats_a_bit_far_away___M_left")}])
           }
           else {
             let defaultAction = () => {this.learnDistance(attempt + 1)};
-            Alert.alert("That's a bit far away.", "Try to hold your phone really close to a Crownstone and press OK to retry!", [{text:'OK', onPress: defaultAction }], { onDismiss: defaultAction })
+            Alert.alert(
+lang("_Thats_a_bit_far_away___T_header"),
+lang("_Thats_a_bit_far_away___T_body"),
+[{text:lang("_Thats_a_bit_far_away___T_left"), onPress: defaultAction }], { onDismiss: defaultAction })
           }
 
         }
@@ -121,7 +133,10 @@ export class TapToToggleCalibration extends Component<any, any> {
       .catch((err) => {
         LOGe.info("TapToToggleCalibration error:", err);
         eventBus.emit("hideLoading");
-        Alert.alert("Something went wrong", "Maybe try again later.", [{text:'OK'}])
+        Alert.alert(
+lang("_Something_went_wrong__Ma_header"),
+lang("_Something_went_wrong__Ma_body"),
+[{text:lang("_Something_went_wrong__Ma_left")}])
       })
   }
 
@@ -133,78 +148,72 @@ export class TapToToggleCalibration extends Component<any, any> {
     switch(this.state.step) {
       case 0:
         props = {
-          title: 'Using Tap-to-Toggle',
+          title: lang("Using_Tap_to_Toggle"),
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
-          header: "Now that you've added a Crownstone, you can use tap-to-toggle!",
-          explanation: "Tap-to-toggle means you can switch the Crownstone just by holding your phone really close to it!",
+          header:  lang("Now_that_youve_added_a_Cr"),
+          explanation: lang("Tap_to_toggle_means_you_c"),
           back: false,
           nextCallback: () => {this.setState({step:1});},
-          nextLabel: 'Next'
-        };
+          nextLabel: lang("Next")};
         break;
       case 1:
         props = {
-          title: 'Setting it up',
+          title: lang("Setting_it_up"),
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
-          header: "In order to use tap-to-toggle, you need to help me a little.",
-          explanation: "This will only take a minute and will only have to be done once. Hold your phone really close to a Crownstone and press 'Next'.",
+          header:  lang("In_order_to_use_tap_to_to"),
+          explanation: lang("This_will_only_take_a_min"),
           back: true,
           backCallback: () => {this.setState({step:0});},
           nextCallback: () => {this.learnDistance()},
-          nextLabel: 'Next'
-        };
+          nextLabel: lang("Next")};
         if (this.state.tutorial === false) {
-          props.title = "Calibration";
-          props.header = "To start calibrating tap-to-toggle, hold your phone very close to a plug and press 'Start'.";
-          props.explanation = "The new distance will be used for all existing plugs.";
+          props.title =  lang("Calibration");
+          props.header =  lang("To_start_calibrating_tap_");
+          props.explanation =  lang("The_new_distance_will_be_");
           props.back = false;
-          props.nextLabel = 'Start';
+          props.nextLabel =  lang("Start");
         }
         break;
       case 2:
         props = {
-          title: "Great!",
+          title:  lang("Great_"),
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkToggle.png'),
-          header: "Now that I can recognise it with your phone, let's try tap-to-toggle!",
-          explanation: "After you click 'Next' I'll enable tap-to-toggle and you can try it out! You can recalibrate your tap-to-toggle in the settings.",
+          header: lang("Now_that_I_can_recognise_"),
+          explanation: lang("After_you_click_Next_Ill_"),
           back: true,
           backCallback: () => {this.setState({step:1});},
           nextCallback: () => {eventBus.emit("useTriggers"); this.setState({step:3})},
-          nextLabel: 'Next'
-        };
+          nextLabel: lang("Next")};
 
         if (this.state.tutorial === false) {
-          props.title = "Done!";
-          props.header = "The new distance has been stored.";
-          props.explanation = "Once you press 'Done' the new distance will be used for tap-to-toggle.";
+          props.title =  lang("Done_");
+          props.header =  lang("The_new_distance_has_been");
+          props.explanation =  lang("Once_you_press_Done_the_n");
           props.nextCallback = () => {eventBus.emit("useTriggers"); this.setState({visible: false})},
-          props.nextLabel = 'Done'
-        }
+          props.nextLabel =  lang("Done")}
         break;
       case 3:
         props = {
-          title: "Let's give it a try!",
+          title: lang("Lets_give_it_a_try_"),
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkToggle.png'),
-          header: "Touch your phone to the Crownstone to trigger tap-to-toggle!",
-          explanation: "Once the phone vibrates, it will start to toggle. If you're trying this on a built-in, make sure you enable tap-to-toggle in it's settings (Room overview -> Crownstone Overview -> Edit).",
+          header:  lang("Touch_your_phone_to_the_C"),
+          explanation: lang("Once_the_phone_vibrates__"),
           back: true,
           backCallback: () => {this.setState({step:1});},
           nextCallback: () => {this.setState({visible: false});},
-          nextLabel: 'Finish!'
-        };
+          nextLabel: lang("Finish_")};
         break;
     }
 
     if (!presentSphereId) {
       props = {
-        title: 'Training Tap-to-Toggle',
+        title: lang("Training_Tap_to_Toggle"),
         image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
-        header: "Tap-to-toggle can only be trained if you're in a Sphere.",
-        explanation: 'Try it again later when you\'re in your Sphere',
+        header:  lang("Tap_to_toggle_can_only_be"),
+        explanation: lang("Try_it_again_later_when_y"),
         back: false,
         nextCallback: () => { this.setState({visible: false});},
-        nextLabel: 'OK'
-      };
+        nextLabel: lang("OK")};
     }
 
     return (
@@ -224,7 +233,7 @@ export class TapToToggleCalibration extends Component<any, any> {
               borderWidth: 2,
               borderColor: colors.blue.rgba(0.2),
             }]}>
-              <Text style={{fontSize: 14, color: colors.blue.rgba(0.6)}}>Back</Text>
+              <Text style={{fontSize: 14, color: colors.blue.rgba(0.6)}}>{ lang("Back") }</Text>
             </TouchableOpacity>
             <View style={{flex: 1}}/>
             <TouchableOpacity onPress={props.nextCallback} style={[styles.centered, {
@@ -255,11 +264,14 @@ export class TapToToggleCalibration extends Component<any, any> {
   abortCloseCallback() {
     // when closed without training, tell the user where to find the calibration button.
     if (this.state.tutorial === true) {
-      let explanationLabel = "You can calibrate tap to toggle through the settings menu any time.";
+      let explanationLabel =  lang("You_can_calibrate_tap_to_");
       if (Platform.OS === 'android') {
-        explanationLabel = "You can calibrate tap to toggle through the side menu any time.";
+        explanationLabel =  lang("You_can_calibrate_tap_to_t");
       }
-      Alert.alert("Training Tap-to-Toggle Later", explanationLabel, [{text:'OK'}])
+      Alert.alert(
+lang("_Training_Tap_to_Toggle_L_header"),
+lang("_Training_Tap_to_Toggle_L_body",explanationLabel),
+[{text:lang("_Training_Tap_to_Toggle_L_left")}])
     }
     eventBus.emit("useTriggers");
     this.setState({visible: false});

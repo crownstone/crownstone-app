@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceUpdate", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -66,7 +72,7 @@ export class DeviceUpdate extends Component<any, any> {
     }
   }
 
-  _getIcon(stone) {
+  _getIcon() {
     let iconColor = colors.darkBackground.hex;
     if (this.props.mandatory) {
       iconColor = colors.orange.hex;
@@ -75,32 +81,11 @@ export class DeviceUpdate extends Component<any, any> {
     return (
       <TouchableOpacity
         onPress={() => {
-          if (this.state.gettingFirmwareVersion === false) {
-            this.setState({gettingFirmwareVersion: true});
-            StoneUtil.checkFirmwareVersion(this.props.sphereId, this.props.stoneId, stone)
-              .then((firmwareVersion) => {
-                this.setState({gettingFirmwareVersion: false});
-                if (stone.config.firmwareVersion !== firmwareVersion) {
-                  this.props.store.dispatch({
-                    type: "UPDATE_STONE_CONFIG",
-                    stoneId: this.props.stoneId,
-                    sphereId: this.props.sphereId,
-                    data: {
-                      firmwareVersion: firmwareVersion, //firmwareVersion,
-                    }
-                  });
-
-                  Alert.alert("Firmware Version Updated", "It seems this Crownstone has a different firmware version than I expected. I have updated it in my database.",[{text:"OK"}])
-                }
-                else {
-                  Alert.alert("No Change", "This Crownstone has the firmware I expected.",[{text:"OK"}])
-                }
-              })
-              .catch((err) => {
-                Alert.alert("Whoops!", "I could not get the firmware version....", [{text:'OK'}]);
-                this.setState({gettingFirmwareVersion: false});
-              });
-          }
+          eventBus.emit('updateCrownstoneFirmware', {
+            stoneId: this.props.stoneId,
+            sphereId: this.props.sphereId,
+            skipIntroduction: true
+          });
         }}
       >
         <IconButton
@@ -124,7 +109,7 @@ export class DeviceUpdate extends Component<any, any> {
       <View style={{flex:1, alignItems:'center', padding: 30}}>
         <Text style={deviceStyles.header}>{this._getTitle()}</Text>
         <View style={{flex:1}} />
-        { this._getIcon(stone) }
+        { this._getIcon() }
         <View style={{flex:1}} />
         <Text style={deviceStyles.text}>{this._getText(disabled)}</Text>
         <View style={{flex:1}} />
@@ -140,7 +125,7 @@ export class DeviceUpdate extends Component<any, any> {
             borderColor: colors.white.hex,
             backgroundColor: colors.csBlue.rgba(0.5)
           }]}>
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{"Let's get started!"}</Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("Lets_get_started_") }</Text>
         </TouchableOpacity>}
         <View style={{flex:1}} />
       </View>

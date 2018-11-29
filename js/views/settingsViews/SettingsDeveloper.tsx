@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../LiveComponent";
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SettingsDeveloper", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -20,28 +27,30 @@ import {clearLogs} from "../../logging/LogUtil";
 import {BackAction} from "../../util/Back";
 import {MeshUtil} from "../../util/MeshUtil";
 import {CLOUD_ADDRESS} from "../../ExternalConfig";
+import {Scheduler} from "../../logic/Scheduler";
 
 
-export class SettingsDeveloper extends Component<any, any> {
+export class SettingsDeveloper extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Developer",
+      title: lang("Developer"),
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 
-  unsubscribe : any;
+  unsubscribe : any = [];
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe.push(this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings || change.stoneRssiUpdated) {
         this.forceUpdate();
       }
-    });
+    }));
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.unsubscribe.forEach((unsub) => { unsub() });
   }
 
   
@@ -54,10 +63,10 @@ export class SettingsDeveloper extends Component<any, any> {
     let items = [];
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
-    items.push({label: "LOGGING", type: 'explanation', below: false});
+    items.push({label: lang("LOGGING"), type: 'explanation', below: false});
     if (!dev.logging_enabled) {
       items.push({
-        label: "Enable Logging",
+        label: lang("Enable_Logging"),
         value: dev.logging_enabled,
         type: 'switch',
         icon: <IconButton name="ios-create" size={22} button={true} color="#fff"
@@ -73,11 +82,11 @@ export class SettingsDeveloper extends Component<any, any> {
           Bluenet.enableLoggingToFile(newValue);
         }
       });
-      items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
+      items.push({label: lang("Logging_will_keep_a_histo"), type: 'explanation', below: true});
     }
     else {
       items.push({
-        label: "Logging Configuration",
+        label: lang("Logging_Configuration"),
         type: 'navigation',
         icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         callback: () => {
@@ -85,59 +94,124 @@ export class SettingsDeveloper extends Component<any, any> {
         }
       });
       items.push({
-        label: "Clear Logs!",
+        label: lang("Clear_Logs_"),
         type: 'button',
         style: {color: colors.menuBackground.hex},
         icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
         callback: () => {
-          Alert.alert("Clear all Logs?", "Press OK to clear logs.", [{text:'Cancel', style: 'cancel'},{text: 'OK', onPress: () => {clearAllLogs();}}])
+          Alert.alert(
+lang("_Clear_all_Logs___Press_O_header"),
+lang("_Clear_all_Logs___Press_O_body"),
+[{text:lang("_Clear_all_Logs___Press_O_left"), style: 'cancel'},{
+text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}])
         }
       });
-      items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
+      items.push({label: lang("Logging_will_keep_a_histor"), type: 'explanation', below: true});
     }
 
 
 
-    items.push({label: "CLOUD", type: 'explanation', below: false, alreadyPadded: true});
+    items.push({label: lang("CLOUD"), type: 'explanation', below: false, alreadyPadded: true});
     items.push({
-      label:"Sync Now!",
+      label: lang("Sync_Now_"),
       type: 'button',
-      style: {color: colors.blue.hex},
+      style: {color: colors.black.hex},
       icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
-      callback:(newValue) => {
+      callback: () => {
         if (CLOUD.__currentlySyncing === false) {
-          this.props.eventBus.emit("showLoading","Syncing...");
+          this.props.eventBus.emit("showLoading", lang("Syncing___"));
           CLOUD.sync(store, true)
-            .then(() => { this.props.eventBus.emit("showLoading","Done!"); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
-            .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert("Error during sync.", err && err.message || JSON.stringify(err), [{text:'OK'}]) })
+            .then(() => { this.props.eventBus.emit("showLoading",lang("Done_")); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
+            .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert(
+              lang("_Error_during_sync__argum_header"),
+              lang("_Error_during_sync__argum_body",err,err.message,JSON.stringify(err)),
+              [{text:lang("_Error_during_sync__argum_left")}]) })
         }
         else {
-          Alert.alert("Sync already in progress.","There already is an active syncing process running in the background. Syncing can take a long time if there are a lot op power measurements that require syncing.", [{text:'OK'}]);
+          Alert.alert(
+lang("_Sync_already_in_progress_header"),
+lang("_Sync_already_in_progress_body"),
+[{text:lang("_Sync_already_in_progress_left")}]);
         }
     }});
+    items.push({
+      label: lang("Test_Notifications"),
+      type: 'button',
+      style: {color: colors.black.hex},
+      icon: <IconButton name="ios-jet" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
+      callback:() => {
+        this.props.eventBus.emit("showLoading", lang("Requesting_Notifications_"));
+
+        let clearScheduledTimeout = null;
+        let cleanup = null;
+        let unsubscribe = this.props.eventBus.on("NotificationReceived", (data) => {
+          if (data.type === "testNotification") {
+            Alert.alert(
+lang("_Notification_Received____header"),
+lang("_Notification_Received____body"),
+[{text:lang("_Notification_Received____left")}]);
+            cleanup()
+          }
+        });
+
+        this.unsubscribe.push(unsubscribe);
+
+        clearScheduledTimeout = Scheduler.scheduleActiveCallback(() => {
+          cleanup()
+          Alert.alert(
+lang("_Nothing_Received_____May_header"),
+lang("_Nothing_Received_____May_body"),
+[{text:lang("_Nothing_Received_____May_left")}]);
+        }, 4000);
+
+        cleanup = () => {
+          clearScheduledTimeout()
+          unsubscribe()
+          this.props.eventBus.emit("hideLoading");
+        }
+
+        let deviceId = Util.data.getDeviceIdFromState(state, state.user.appIdentifier)
+        if (deviceId) {
+          CLOUD.forDevice(deviceId).sendTestNotification().catch((err) => {
+            cleanup();
+            Alert.alert(
+lang("_Could_not_send_Request___header"),
+lang("_Could_not_send_Request___body",JSON.stringify(err)),
+[{text:lang("_Could_not_send_Request___left")}]);
+          });
+        }
+        else {
+          Alert.alert(
+lang("_No_device_Id___There_was_header"),
+lang("_No_device_Id___There_was_body"),
+[{text:lang("_No_device_Id___There_was_left")}]);
+          cleanup()
+        }
+      }});
+
 
 
     // let deviceId = Util.data.getCurrentDeviceId(state);
     // let device = deviceId && state.devices[deviceId] || null;
-    items.push({label: "DEBUG VIEWS", type: 'explanation'});
+    items.push({label: lang("DEBUG_VIEWS"), type: 'explanation'});
     items.push({
-      label:"BLE Debug",
+      label: lang("BLE_Debug"),
       type: 'navigation',
       icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightBlue2.hex}} />,
       callback:() => {
         Actions.settingsBleDebug()
       }});
     items.push({
-      label:"Localization Debug",
+      label: lang("Localization_Debug"),
       type: 'navigation',
       icon: <IconButton name="md-locate" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback:() => {
         Actions.settingsLocalizationDebug()
       }});
 
-    items.push({label: "ACTIVITY LOGS", type: 'explanation'});
+    items.push({label: lang("ACTIVITY_LOGS"), type: 'explanation'});
     items.push({
-      label:"Show Full Activity Log",
+      label: lang("Show_Full_Activity_Log"),
       value: dev.show_full_activity_log,
       type: 'switch',
       icon: <IconButton name="md-calendar" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
@@ -146,7 +220,7 @@ export class SettingsDeveloper extends Component<any, any> {
       }});
     if (dev.show_full_activity_log) {
       items.push({
-        label:"Show only own activity",
+        label: lang("Show_only_own_activity"),
         value: dev.show_only_own_activity_log,
         type: 'switch',
         icon: <IconButton name="c1-people" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkerPurple.hex}} />,
@@ -155,9 +229,9 @@ export class SettingsDeveloper extends Component<any, any> {
         }});
     }
 
-    items.push({label: "DO NOT USE", type: 'explanation'});
+    items.push({label: lang("DO_NOT_USE"), type: 'explanation'});
     items.push({
-      label:"Use Advertisement RSSI",
+      label: lang("Use_Advertisement_RSSI"),
       value: dev.use_advertisement_rssi_too,
       type: 'switch',
       icon: <IconButton name="md-git-network" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
@@ -172,25 +246,29 @@ export class SettingsDeveloper extends Component<any, any> {
         };
 
         if (newValue === true) {
-          Alert.alert("Are you sure?", "Only enable this if you know what you're doing!",[{text:"Nevermind..."}, {text:"Do it.", onPress: execute}])
+          Alert.alert(
+lang("_Are_you_sure___Only_enab_header"),
+lang("_Are_you_sure___Only_enab_body"),
+[{text:lang("_Are_you_sure___Only_enab_left")}, {
+text:lang("_Are_you_sure___Only_enab_right"), onPress: execute}])
         }
         else {
           execute();
         }
       }});
-    items.push({label: "By default we use iBeacon RSSI values since they are averaged. When enabled, we will ALSO use the RSSI values from advertisements. Advertisment RSSI values only come in in the foreground.", type: 'explanation', below: true});
+    items.push({label: lang("By_default_we_use_iBeacon"), type: 'explanation', below: true});
 
 
-    items.push({label: "MESH", type: 'explanation', below: false, alreadyPadded: true});
+    items.push({label: lang("MESH"), type: 'explanation', below: false, alreadyPadded: true});
     items.push({
-      label:"Change Channels",
+      label: lang("Change_Channels"),
       type: 'navigation',
       icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
       callback:() => {
         Actions.settingsMeshDebug()
       }});
     items.push({
-      label:"Show RSSI in Topology",
+      label: lang("Show_RSSI_in_Topology"),
       value: dev.show_rssi_values_in_mesh,
       type: 'switch',
       icon: <IconButton name="ios-calculator" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightGreen.hex}} />,
@@ -198,34 +276,38 @@ export class SettingsDeveloper extends Component<any, any> {
         store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_rssi_values_in_mesh: newValue }});
       }});
     items.push({
-      label: 'Reset networks',
+      label: lang("Reset_networks"),
       type:  'button',
       style: {color: colors.black.hex},
       icon:  <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkGreen.hex}} />,
       callback:() => {
-        Alert.alert("Are you sure?", "This will reset all mesh networks in the current Sphere.",
-          [
-            {text:"Do it.", onPress: () => {
+        Alert.alert(
+lang("_Are_you_sure___This_will_header"),
+lang("_Are_you_sure___This_will_body"),
+[{text:lang("_Are_you_sure___This_will_left"), onPress: () => {
               const store = this.props.store;
               const state = store.getState();
               let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
               MeshUtil.clearMeshNetworkIds(store, sphereId);
               MeshUtil.clearTopology(store, sphereId);
-              Alert.alert("Reset Done", "Rediscovery will start automatically.",[{text:"OK"}]);
-            }},{text:"Cancel"}
+              Alert.alert(
+lang("_Reset_Done__Rediscovery__header"),
+lang("_Reset_Done__Rediscovery__body"),
+[{text:lang("_Reset_Done__Rediscovery__left")}]);
+            }},{text: lang("Cancel")}
           ]
         )
       }
     });
 
     if (user.betaAccess) {
-      items.push({label: 'ALPHA FEATURES WILL LOOK LIKE THIS', type: 'explanation', below: false});
+      items.push({label: lang("ALPHA_FEATURES_WILL_LOOK_"), type: 'explanation', below: false});
     }
     else {
-      items.push({label: 'EXPERIMENTAL FEATURES', type: 'explanation', below: false});
+      items.push({label: lang("EXPERIMENTAL_FEATURES"), type: 'explanation', below: false});
     }
     items.push({
-      label:'Join Alpha Program',
+      label: lang("Join_Alpha_Program"),
       value: user.betaAccess,
       experimental: user.betaAccess,
       icon: <IconButton name={"ios-flask"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
@@ -239,29 +321,32 @@ export class SettingsDeveloper extends Component<any, any> {
         }
         if (newValue) {
           Alert.alert(
-            "EXPERIMENTAL!",
-            "Switchcraft is currently in the experimental phase. It will not detect all switches, " +
-            "it might switch accidentally or your Built-in Crownstone might be unsupported.\n\n" +
-            "Use this at your own risk! Are you sure?",
-            [{text:"I'll wait.", style:'cancel'}, {text:"Yes.", onPress: storeIt}]
+lang("_EXPERIMENTAL___Switchcra_header"),
+lang("_EXPERIMENTAL___Switchcra_body"),
+[{text:lang("_EXPERIMENTAL___Switchcra_left"), style:'cancel'}, {
+text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
           );
         }
         else {
           storeIt();
         }
       }});
-    items.push({label: 'This will give you early access to new experimental features!', type: 'explanation', below: true});
+    items.push({label: lang("This_will_give_you_early_"), type: 'explanation', below: true});
 
 
-    items.push({label: "RESET DEVELOPER STATE", type: 'explanation', alreadyPadded: true});
+    items.push({label: lang("RESET_DEVELOPER_STATE"), type: 'explanation', alreadyPadded: true});
     items.push({
-      label:"Disable Developer Mode",
+      label: lang("Disable_Developer_Mode"),
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:() => {
         store.dispatch({
           type: 'SET_LOGGING',
           data: {logging: false}
+        });
+        store.dispatch({
+          type: 'SET_DEVELOPER_MODE',
+          data: {developer: false}
         });
 
         clearAllLogs();
@@ -270,7 +355,7 @@ export class SettingsDeveloper extends Component<any, any> {
         BackAction();
     }});
 
-    items.push({label: 'CLOUD URL:' + CLOUD_ADDRESS, type: 'explanation'});
+    items.push({label: lang("CLOUD_URL__",CLOUD_ADDRESS), type: 'explanation'});
     items.push({type: 'spacer'});
     items.push({type: 'spacer'});
 

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceActivityLog", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -29,6 +35,8 @@ import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {getGlobalIdMap} from "../../../cloud/sections/sync/modelSyncs/SyncingBase";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {textStyle} from "./DeviceBehaviour";
+import {ActivityLogStatusIndicator} from "./activityLog/ActivityLogStatusIndicator";
+import {ActivityRangeSyncer} from "../../../cloud/sections/sync/modelSyncs/ActivityRangeSyncer";
 
 
 export class DeviceActivityLog extends Component<any, any> {
@@ -77,9 +85,16 @@ export class DeviceActivityLog extends Component<any, any> {
     let items = [];
     let itemHeight = 100;
     items.push(<View key={"topspacer"} style={{height:30}} />);
-    items.push(<Text key={"title"}     style={deviceStyles.header}>{"Activity Log"}</Text>);
-    items.push(<Text key={"explanation"}  style={[deviceStyles.text, {padding:20}]}>{"In this log you can see why the Crownstone is being switched. The newest entries are at the top. This data is stored for 24 hours."}</Text>);
-
+    items.push(<Text key={"title"}     style={deviceStyles.header}>{ lang("Activity_Log") }</Text>);
+    items.push(<Text key={"explanation"}  style={[deviceStyles.text, {padding:20}]}>{ lang("In_this_log_you_can_see_w") }</Text>);
+    if (state.user.uploadActivityLogs === false) {
+      items.push(
+        <Text
+          key={"explanation_no_log"}
+          style={[deviceStyles.text, {padding: 20}]}
+        >{ lang("If_you_do_not_share_your_") }</Text>
+      );
+    }
 
     items.push(<View key={"longWhiteLine"} style={{position:'absolute', top: 186, left: 52, width:2, backgroundColor:colors.white.rgba(0.5), height: itemHeight*logs.length + 30}} />);
     items.push(<View key={"longWhiteLine_topCap"} style={{position:'absolute', top: 180, left: 50, width:6, backgroundColor:colors.white.rgba(0.5), height: 6, borderRadius:3}} />);
@@ -89,25 +104,31 @@ export class DeviceActivityLog extends Component<any, any> {
 
     if (logs.length === 0) {
       if (Permissions.inSphere(this.props.sphereId).seeActivityLogs) {
-        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 22, marginTop:-6}]}>{"Nothing yet..."}</Text>);
+        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 22, marginTop:-6}]}>{ lang("Nothing_yet___") }</Text>);
       }
       else {
-        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 22, marginTop:-6}]}>{"Only members and admins can see the activity logs..."}</Text>);
+        items.push(<Text key={"titleNothing"} style={[deviceStyles.header, {fontSize: 18, marginTop:-6}]}>{ lang("Only_members_and_admins_c") }</Text>);
+        return items;
       }
     }
-
 
     for (let i = 0; i < logs.length && i < this.state.showMax; i++) {
       let log = logs[i];
-      if (log.type === 'dayIndicator') {
-        items.push(<ActivityLogDayIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} />)
+      if (log.type === 'statusUpdate') {
+        items.push(<ActivityLogStatusIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state}
+                                               stone={stone} sphereId={this.props.sphereId} height={itemHeight}/>);
+      }
+      else if (log.type === 'dayIndicator') {
+        items.push(<ActivityLogDayIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state}
+                                            stone={stone} sphereId={this.props.sphereId} height={itemHeight}/>);
       }
       else {
-        items.push(<ActivityLogItem key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} showFullLogs={showFullLogs} />)
+        items.push(<ActivityLogItem key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone}
+                                    sphereId={this.props.sphereId} height={itemHeight} showFullLogs={showFullLogs}/>);
       }
     }
 
-    items.push(<View key={"bottomspacer"} style={{height:120}} />);
+    items.push(<View key={"bottomspacer"} style={{height: 120}}/>);
 
     return items;
   }
@@ -119,16 +140,21 @@ export class DeviceActivityLog extends Component<any, any> {
     const stone = sphere.stones[this.props.stoneId];
     let actions = [];
 
-    let logSyncer = new ActivityLogSyncer(actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap())
+    let logSyncer   = new ActivityLogSyncer(  actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap())
+    let rangeSyncer = new ActivityRangeSyncer(actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap())
     logSyncer.sync(this.props.store)
+      .then(() => {
+        return rangeSyncer.sync(this.props.store);
+      })
       .then(() => {
         if (actions.length > 0) {
           this.props.store.batchDispatch(actions);
-          this.processLogs()
         }
+        this.processLogs()
         this.setState({updating:false});
       })
       .catch((err) => {
+        this.processLogs()
         this.setState({updating:false})
       })
   }
@@ -140,7 +166,7 @@ export class DeviceActivityLog extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     let showFullLogs = state.user.developer && state.development.show_full_activity_log;
-
+    console.log("sphereId={'" + this.props.sphereId + "'} stoneId={'" + this.props.stoneId + "'}")
     return (
       <View style={{flex:1}}>
         <ScrollView
@@ -155,7 +181,7 @@ export class DeviceActivityLog extends Component<any, any> {
           <RefreshControl
             refreshing={false}
             onRefresh={() => { this.updateLogs() }}
-            title={"Syncing with the other users..."}
+            title={ lang("Syncing_with_the_other_us")}
             titleColor={colors.white.hex}
             colors={[colors.white.hex]}
             tintColor={colors.white.hex}

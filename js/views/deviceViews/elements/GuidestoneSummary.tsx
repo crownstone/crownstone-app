@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("GuidestoneSummary", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -19,7 +26,7 @@ import {Util} from "../../../util/Util";
 import {DeviceInformation} from "./DeviceSummary";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
-export class GuidestoneSummary extends Component<any, any> {
+export class GuidestoneSummary extends LiveComponent<any, any> {
   unsubscribeStoreEvents
   componentDidMount() {
     // tell the component exactly when it should redraw
@@ -50,10 +57,10 @@ export class GuidestoneSummary extends Component<any, any> {
     const location = Util.data.getLocationFromStone(sphere, stone);
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let locationLabel = "Tap here to move me!";
-    let locationName = "Not in room";
+    let locationLabel =  lang("Tap_here_to_move_me_");
+    let locationName =  lang("Not_in_room");
     if (location) {
-      locationLabel = "Located in:";
+      locationLabel =  lang("Located_in_");
       locationName = location.config.name;
     }
 
@@ -66,13 +73,13 @@ export class GuidestoneSummary extends Component<any, any> {
         />
         <View style={{flex:1}} />
         <View style={{alignItems:'center'}}>
-          <Text style={deviceStyles.subText}>{"Device Type:"}</Text>
-          <Text style={deviceStyles.text}>{'Guidestone'}</Text>
+          <Text style={deviceStyles.subText}>{ lang("Device_Type_") }</Text>
+          <Text style={deviceStyles.text}>{ lang("Guidestone") }</Text>
         </View>
         <View style={{flex: 0.2}} />
         <View style={{alignItems:'center'}}>
-          <Text style={deviceStyles.subText}>{"Connected to Mesh:"}</Text>
-          <Text style={deviceStyles.text}>{stone.config.meshId ? 'Yes' : 'Not Yet'}</Text>
+          <Text style={deviceStyles.subText}>{ lang("Connected_to_Mesh_") }</Text>
+          <Text style={deviceStyles.text}>{ lang("YesNot_Yet",stone.config.meshId) }</Text>
         </View>
         <View style={{flex: 0.2}} />
         <View style={{alignItems:'center'}}>
@@ -81,8 +88,8 @@ export class GuidestoneSummary extends Component<any, any> {
         </View>
         <View style={{flex: 0.2}} />
         <View style={{alignItems:'center', height: 0.2*availableScreenHeight}}>
-          <Text style={deviceStyles.subText}>{"Reachable:"}</Text>
-          <Text style={deviceStyles.text}>{stone.reachability.disabled === false ? 'Yes' : 'Searching...'}</Text>
+          <Text style={deviceStyles.subText}>{ lang("Reachable_") }</Text>
+          <Text style={deviceStyles.text}>{ lang("YesSearching___",stone.reachability.disabled,false) }</Text>
           {
             stone.reachability.disabled  ?
               <ActivityIndicator animating={true} size='small' color={colors.white.hex} style={{paddingTop:20}} />

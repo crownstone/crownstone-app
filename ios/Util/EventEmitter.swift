@@ -37,6 +37,8 @@ class EventEmitter {
     allEventNames.append("verifiedDFUAdvertisementData")
     allEventNames.append("verifiedAdvertisementData")
     allEventNames.append("anyVerifiedAdvertisementData")
+    allEventNames.append("unverifiedAdvertisementData")
+    allEventNames.append("anyAdvertisementData")
     allEventNames.append("bleStatus")
     allEventNames.append("locationStatus")
     allEventNames.append("dfuProgress")

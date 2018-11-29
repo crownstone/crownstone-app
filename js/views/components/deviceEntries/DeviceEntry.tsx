@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceEntry", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -25,6 +31,8 @@ import { Actions }                            from 'react-native-router-flux';
 import { StoneUtil }                          from "../../../util/StoneUtil";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
+import {FadeInView} from "../animated/FadeInView";
+import {SlideFadeInView} from "../animated/SlideFadeInView";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -32,6 +40,8 @@ export class DeviceEntry extends Component<any, any> {
   unsubscribe = [];
   animating = false;
   id = Util.getUUID();
+
+  showMeshMessageTimeout
 
   constructor(props) {
     super(props);
@@ -43,6 +53,7 @@ export class DeviceEntry extends Component<any, any> {
       pendingCommand:  false,
       backgroundColor: new Animated.Value(0),
       statusText:      null,
+      showViaMesh: false
     };
   }
 
@@ -60,6 +71,7 @@ export class DeviceEntry extends Component<any, any> {
 
   componentWillUnmount() { // cleanup
     this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
+    clearTimeout(this.showMeshMessageTimeout);
   }
 
 
@@ -77,7 +89,14 @@ export class DeviceEntry extends Component<any, any> {
       stone, newState,
       this.props.store,
       {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
-      () => { this.setState({pendingCommand:false}); },
+      (err, result) => {
+        let newState = {pendingCommand:false};
+        if (!err && result && result.viaMesh === true) {
+          newState['showViaMesh'] = true;
+          this.showMeshMessageTimeout = setTimeout(() => { this.setState({showViaMesh: false})}, 1000);
+        }
+        this.setState(newState);
+      },
       INTENTS.manual,
       1,
       'from _pressedDevice in DeviceEntry'
@@ -186,6 +205,20 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 
+
+  _getExplanationText(state) {
+    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12}
+
+    if (this.props.hideExplanation !== true && (this.props.locationId === null || state.app.hasSeenDeviceSettings === false)) {
+      return (
+        <SlideFadeInView height={15} visible={!this.state.showViaMesh}>
+          <Text style={explanationStyle}>{ lang("Tap_me_for_more_") }</Text>
+        </SlideFadeInView>
+      );
+    }
+  }
+
+
   render() {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
@@ -223,6 +256,10 @@ export class DeviceEntry extends Component<any, any> {
                 tap2toggleThreshold={Util.data.getTapToToggleCalibration(state)}
                 tap2toggleEnabled={state.app.tapToToggleEnabled}
               />
+              { this._getExplanationText(state) }
+              <SlideFadeInView height={15} visible={this.state.showViaMesh}>
+                <Text style={{ color: colors.csOrange.hex, fontSize: 12}}>{ lang("Sent_via_mesh_") }</Text>
+              </SlideFadeInView>
             </View>
           </WrapperElement>
           {useControl === true && Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}

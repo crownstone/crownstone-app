@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("OptionPopup", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
@@ -10,7 +16,7 @@ import {
   View
 } from 'react-native';
 
-import { FadeInView }   from './animated/FadeInView'
+import { HiddenFadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
 import { styles, screenHeight, screenWidth } from './../styles'
 import { eventBus } from '../../util/EventBus'
@@ -88,7 +94,7 @@ export class OptionPopup extends Component<any, any> {
 
     buttons.push(
       <TouchableHighlight style={styles.buttonAndroid} onPress={() => { eventBus.emit("hidePopup");}} key={'option_button_cancel'}>
-        <Text style={styles.buttonTextAndroid}>Cancel</Text>
+        <Text style={styles.buttonTextAndroid}>{ lang("Cancel") }</Text>
       </TouchableHighlight>
     );
 
@@ -103,18 +109,18 @@ export class OptionPopup extends Component<any, any> {
   render() {
     if (Platform.OS === 'android') {
       return (
-        <FadeInView
+        <HiddenFadeInView
           style={[styles.fullscreen, {backgroundColor: 'rgba(0,0,0,0.3)'}]}
           height={screenHeight}
           duration={100}
           visible={this.state.visible}>
           {this.getChildrenAndroid()}
-        </FadeInView>
+        </HiddenFadeInView>
       );
     }
     else {
       return (
-        <FadeInView
+        <HiddenFadeInView
           style={[styles.fullscreen, {backgroundColor: 'rgba(0,0,0,0.3)'}]}
           height={screenHeight}
           visible={this.state.visible}>
@@ -124,10 +130,10 @@ export class OptionPopup extends Component<any, any> {
             visible={this.state.visible}>
             {this.getChildrenIOS()}
             <TouchableOpacity style={styles.button} onPress={() => { eventBus.emit("hidePopup");}}>
-              <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>Cancel</Text>
+              <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>{ lang("Cancel") }</Text>
             </TouchableOpacity>
           </SlideInFromBottomView>
-        </FadeInView>
+        </HiddenFadeInView>
       );
     }
   }

@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Graph", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -21,7 +28,7 @@ import { GraphAxis }      from "./GraphComponents/GraphAxis";
 let RANGE = 40000; // ms
 let OVERSHOOT = 4000; // ms
 
-export class Graph extends Component<any, any> {
+export class Graph extends LiveComponent<any, any> {
   data : any[] = [];
   options : any;
   interval : any;

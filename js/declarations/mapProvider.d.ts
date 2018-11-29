@@ -21,6 +21,10 @@ interface StoneHandleMap {
   [key: string]: StoneMap
 }
 
+interface StoneSummaryMap {
+  [key: string]: StoneMap
+}
+
 interface StoneCIDMap {
   [key: string]: {
     [key: string]: StoneMap

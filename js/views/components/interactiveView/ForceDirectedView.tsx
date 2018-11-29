@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ForceDirectedView", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -43,6 +49,8 @@ export class ForceDirectedView extends Component<{
   initialPositions?: any,
   enablePhysics?: boolean,
   options? : any,
+  zoomOutCallback? : any,
+  zoomInCallback? : any,
 }, any> {
 
   state:any; // used to avoid warnings for setting state values
@@ -282,11 +290,12 @@ export class ForceDirectedView extends Component<{
             this._pressedNodeData = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
             if (this._pressedNodeData !== false) {
               // do nothing
-              if (this.props.allowDrag)
-                eventBus.emit('nodeDragging'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
+              if (this.props.allowDrag) {
+                eventBus.emit('nodeDragging' + this.props.viewId + this._pressedNodeData.nodeId, this._pressedNodeData);
                 this._draggingNode = this._pressedNodeData;
                 this._dragInitialX = this.nodes[this._pressedNodeData.nodeId].x;
                 this._dragInitialY = this.nodes[this._pressedNodeData.nodeId].y;
+              }
             }
             else {
               return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
@@ -355,7 +364,6 @@ export class ForceDirectedView extends Component<{
           }
         }
 
-        this._multiTouch = false;
 
         if (this._validTap === true) {
           if  (
@@ -375,6 +383,8 @@ export class ForceDirectedView extends Component<{
           this._lastTap = new Date().valueOf();
         }
 
+        this.state.opacity.setValue(1);
+
         if (this._pressedNodeData !== false) {
           if (this.props.allowDrag) {
             eventBus.emit('nodeWasTappedAllowDrag'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
@@ -383,14 +393,28 @@ export class ForceDirectedView extends Component<{
             eventBus.emit('nodeWasTapped'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
           }
         }
+        else {
+          eventBus.emit('viewWasTapped'+this.props.viewId, this._pressedNodeData);
+        }
 
         if (this._draggingNode !== false) {
           // calculate all bounding box properties once after drag.
           this._getBoundingBox();
         }
 
-        // reset drag
-        this._draggingNode = false
+
+        if (!this._draggingNode && !this._validTap) {
+          if (this._currentScale > 1.5) {
+            if (this.props.zoomInCallback) {
+              this.props.zoomInCallback();
+            }
+          }
+          else if (this.boundingBoxData.width * this._currentScale < 0.4 * screenWidth) {
+            if (this.props.zoomOutCallback) {
+              this.props.zoomOutCallback();
+            }
+          }
+        }
 
         if (this._currentScale > this._maxScale) {
           Animated.spring(this.state.scale, { toValue: this._maxScale, friction: 7, tension: 70 }).start(() => { this._currentScale = this._maxScale; });
@@ -399,6 +423,11 @@ export class ForceDirectedView extends Component<{
           Animated.spring(this.state.scale, { toValue: this._minScale, friction: 7, tension: 70 }).start(() => { this._currentScale = this._minScale; });
         }
 
+
+
+        // reset touch state variables
+        this._multiTouch = false;
+        this._draggingNode = false
         this._clearTap();
       },
       onPanResponderTerminate: (evt, gestureState) => {
@@ -497,7 +526,6 @@ export class ForceDirectedView extends Component<{
     }
 
     if (this.boundingBoxData.minX === undefined) {
-      this._getBoundingBox();
     }
 
     // determine offset to center everything.
@@ -821,24 +849,25 @@ export class ForceDirectedView extends Component<{
         return result
       };
 
-      edges.push(
-        <View key={"edge" + edge.from +' '+ edge.to} style={{
-          // backgroundColor: colors.red.rgba(0.4),
-          position:'absolute',
-          top:  minY - padding,
-          left: minX - padding,
-          width: width + 2*padding,
-          height: height + 2*padding,
-        }}
+
+      let edgeItem = (
+        <View
+          key={"edge" + edge.from +' '+ edge.to}
+          style={{
+            // backgroundColor: colors.red.rgba(0.4),
+            position:'absolute',
+            top:  minY - padding,
+            left: minX - padding,
+            width: width + 2*padding,
+            height: height + 2*padding,
+          }}
         >
-          <Svg
-            width={width  + 2*padding}
-            height={height + 2*padding}
-          >
+          <Svg width={width  + 2*padding} height={height + 2*padding}>
             {renderEdgeWithSettings()}
           </Svg>
         </View>
       );
+      edges.push(edgeItem);
     }
 
     return edges;

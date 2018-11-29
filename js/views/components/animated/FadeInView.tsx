@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("FadeInView", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -26,13 +32,18 @@ export class FadeInView extends Component<any, any> {
         this.pendingTimeout = setTimeout(() => {
           this.pendingTimeout = null;
           Animated.timing(this.state.viewOpacity, {
-            toValue: nextProps.maxOpacity || this.maxOpacity,
-            duration: this.props.duration || defaultDuration
+            toValue:  nextProps.maxOpacity || this.maxOpacity,
+            delay:    this.props.delay     || 0,
+            duration: this.props.duration  || defaultDuration
           }).start();
         }, 0);
       }
       else {
-        Animated.timing(this.state.viewOpacity, {toValue: 0, duration: this.props.duration || defaultDuration}).start();
+        Animated.timing(this.state.viewOpacity, {
+          toValue:  0,
+          delay:    this.props.hideDelay ? (this.props.delay || 0) : 0,
+          duration: this.props.duration || defaultDuration
+        }).start();
         this.pendingTimeout = setTimeout(() => {
           this.pendingTimeout = null;
           this.setState({show: false});
@@ -52,14 +63,32 @@ export class FadeInView extends Component<any, any> {
   }
 
   render() {
-    // this will be the processing view after initialization.
-    if (this.state.show === true) {
+    if (this.props.hidden) {
+      // this will be the processing view after initialization.
+      if (this.state.show === true) {
+        return (
+          <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]}>
+            {this.props.children}
+          </Animated.View>
+        );
+      }
+      return <View />;
+
+    }
+    else {
       return (
         <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]}>
           {this.props.children}
         </Animated.View>
       );
     }
-    return <View />;
   }
 }
+
+
+export class HiddenFadeInView extends Component<any, any> {
+  render() {
+    return <FadeInView {...this.props} hidden={true} />
+  }
+}
+

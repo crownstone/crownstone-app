@@ -204,6 +204,7 @@ class StoneManagerClass {
       return;
     }
 
+
     // check if we have a stone with this major / minor
     let ibeaconString = ibeaconPackage.uuid + '_' + ibeaconPackage.major + '_' + ibeaconPackage.minor;
     let stoneData = MapProvider.stoneIBeaconMap[ibeaconString.toLowerCase()];

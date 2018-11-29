@@ -1,3 +1,9 @@
+interface bchReturnType {
+  data: any,
+  viaMesh?: boolean
+}
+
+
 interface keepAlivePayload {
   attempts: number,
   stoneId: string,
@@ -130,4 +136,5 @@ interface batchCommandEntry {
 interface batchCommandEntryOptions {
   keepConnectionOpen?: boolean,
   keepConnectionOpenTimeout?: number, // ms
+  onlyAllowDirectCommand?: boolean,
 }

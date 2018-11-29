@@ -5,50 +5,6 @@ import {DAYS} from "../../DeviceScheduleEdit";
 
 export class ActivityLogProcessor {
 
-  _collectKeepAlives(filteredLogs, logs, index) {
-    let iValue = index;
-    let sequentialAmount = 0;
-    let dtSum = 0;
-    let timeSum = 0;
-    let lastTime = null;
-    let lastLog = null;
-
-    let uniqueLogs = [];
-    for (let i = index; i < logs.length; i++) {
-      let log = logs[i];
-      if (log.type === 'keepAliveState') {
-        // compare with the previous keepalive.
-        if (lastTime !== null) {
-          dtSum += log.timestamp - lastTime;
-        }
-        sequentialAmount++;
-        timeSum += log.timestamp;
-        lastTime = log.timestamp;
-        lastLog = log;
-        uniqueLogs.push(log);
-        iValue = i;
-      }
-      else {
-        break;
-      }
-    }
-
-    if (sequentialAmount > 3) {
-      // add a collecting ... in the middle
-      filteredLogs.push(uniqueLogs[0]);
-      filteredLogs.push({timestamp: timeSum / sequentialAmount, type:'skippedHeartbeat', count: (sequentialAmount - 2), averageTime: Math.round(0.001*(dtSum/(sequentialAmount-1)))});
-      filteredLogs.push(uniqueLogs[uniqueLogs.length - 1]);
-    }
-    else {
-      // add seperate keepalives
-      for (let i = 0; i < uniqueLogs.length; i++) {
-        filteredLogs.push(uniqueLogs[i]);
-      }
-    }
-
-    return iValue;
-  }
-
   _checkIfCancelled(reference, logs, index) {
     for (let i = index+1; i < logs.length; i++) {
       let log = logs[i];
@@ -100,13 +56,115 @@ export class ActivityLogProcessor {
     let result = [];
     for (let i = 0; i < logs.length; i++) {
       let log = logs[i];
-      if (log.type !== 'schedule')
+      if (log.type !== 'schedule' && log.isRange !== true)
       this._checkMeshDuplicates(log, logs, i);
       if (log.duplicate !== true) {
         result.push(log);
       }
     }
     return result
+  }
+
+  _addEventsForActivityRanges(logs, activityRanges, keepAliveType, userId) {
+    console.log("activityRanges", activityRanges)
+    // add an enter event on the start, and a leave event at the last time
+    // do this for your used, then check if the other users did something?
+    let now = new Date().valueOf();
+    let activityRangeIds = Object.keys(activityRanges);
+    for (let i = 0; i < activityRangeIds.length; i++) {
+      let range = activityRanges[activityRangeIds[i]];
+      // console.log(range.userId === userId, new Date(range.startTime), new Date(range.lastDirectTime), new Date(range.lastMeshTime), range)
+      // logs.push({
+      //   timestamp: range.startTime,
+      //   generatedFrom: keepAliveType,
+      //   type:      'startRange s:' + (range.userId === userId),
+      //   startTime: range.startTime,
+      //   count:     range.count,
+      //   userId:    range.userId,
+      //   isSelf:    range.userId === userId,
+      //   switchedToState: range.switchedToState,
+      //   isRange:   true,
+      // });
+
+      let endTime = 0
+      if (range.lastDirectTime !== null && range.lastMeshTime !== null) {
+        endTime = Math.max(range.lastDirectTime, range.lastMeshTime);
+      }
+      else if (range.lastDirectTime) {
+        endTime = range.lastDirectTime;
+      }
+      else {
+        endTime = range.lastMeshTime;
+      }
+
+      if (endTime + range.delayInCommand*1000 > now) {
+        logs.push({
+          timestamp: now,
+          generatedFrom: keepAliveType,
+          type:      'statusUpdate',
+          startTime: range.startTime,
+          count:     range.count,
+          userId:    range.userId,
+          isSelf:    range.userId === userId,
+          switchedToState: range.switchedToState,
+          isRange:   true,
+        })
+      }
+      else {
+        let expirationTime = endTime + range.delayInCommand*1000;
+        // we check if there were other people in the sphere at that time
+        let otherUserPresent = false;
+        for (let j = 0; j < activityRangeIds.length; j++) {
+          let referenceRange = activityRanges[activityRangeIds[j]];
+          // only compare with other users.
+          if (referenceRange.userId == range.userId) { continue; }
+
+          let referenceEndTime = 0;
+          if (referenceRange.lastDirectTime !== null && referenceRange.lastMeshTime !== null) {
+            referenceEndTime = Math.max(referenceRange.lastDirectTime, referenceRange.lastMeshTime);
+          }
+          else if (referenceRange.lastDirectTime) {
+            referenceEndTime = referenceRange.lastDirectTime;
+          }
+          else {
+            referenceEndTime = referenceRange.lastMeshTime;
+          }
+
+          if (expirationTime > referenceRange.startTime && expirationTime < referenceEndTime) {
+            otherUserPresent = true;
+            break;
+          }
+        }
+
+        console.log("GENERATED EXIT:", new Date(expirationTime), range, {
+          timestamp: expirationTime,
+          generatedFrom: keepAliveType,
+          type:   'generatedExit',
+          userId: range.userId,
+          count:  range.count,
+          endTime: endTime,
+          isSelf: range.userId === userId,
+          switchedToState:  range.switchedToState,
+          otherUserPresent: otherUserPresent,
+          isRange: true,
+        })
+
+        logs.push({
+          timestamp: expirationTime,
+          generatedFrom: keepAliveType,
+          type:   'generatedExit',
+          userId: range.userId,
+          count:  range.count,
+          endTime: endTime,
+          isSelf: range.userId === userId,
+          switchedToState:  range.switchedToState,
+          otherUserPresent: otherUserPresent,
+          isRange: true,
+        });
+      }
+    }
+
+    return logs;
   }
 
   _addDateIndicators(logs) {
@@ -122,43 +180,6 @@ export class ActivityLogProcessor {
 
     logs = logs.concat(additions);
     return logs;
-  }
-
-  _addEventsForExpiredKeepAlives(logs, keepAliveType) {
-    let sequentialAmount = 0;
-
-    let result = [];
-    let lastLog = null;
-    let lastKeepalive = null;
-    for (let i = 0; i < logs.length; i++) {
-      let log = logs[i];
-      if (log.type === 'keepAliveState') {
-        // compare with the previous keepalive.
-        if (lastLog !== null) {
-          let dt = log.timestamp - lastLog.timestamp;
-          if (dt > 1000 * lastLog.delayInCommand) {
-            result.push(this._generateExpiredTimeoutEvent(lastLog.timestamp + 1000 * lastLog.delayInCommand, lastLog.switchedToState, keepAliveType));
-          }
-        }
-        sequentialAmount++;
-        lastLog = log;
-        result.push(log);
-        lastKeepalive = log;
-      }
-      else {
-        result.push(log);
-      }
-    }
-
-    // evaluate if the last keepalive has expired
-    if (lastKeepalive !== null) {
-      let dt = new Date().valueOf() - lastKeepalive.timestamp;
-      if (dt > 1000*lastKeepalive.delayInCommand) {
-        result.push(this._generateExpiredTimeoutEvent(lastKeepalive.timestamp + 1000*lastKeepalive.delayInCommand, lastKeepalive.switchedToState, keepAliveType));
-      }
-    }
-
-    return result;
   }
 
   _addEventsForExpiredMultiswitches(logs, keepAliveType) {
@@ -198,7 +219,6 @@ export class ActivityLogProcessor {
       if (new Date().valueOf() - cancelledMultiswitchCommands[cancelledMultiswitchCommands.length - 2].timestamp < 5*60000) {
         result.push(cancelledMultiswitchCommands[cancelledMultiswitchCommands.length - 2]);
         result.push(cancelledMultiswitchCommands[cancelledMultiswitchCommands.length - 1]);
-
       }
     }
 
@@ -285,21 +305,6 @@ export class ActivityLogProcessor {
   }
 
 
-  _collapseKeepAliveLists(logs) {
-    let result = [];
-    for (let i = 0; i < logs.length; i++) {
-      let log = logs[i];
-      if (log.type === 'keepAliveState') {
-        i = this._collectKeepAlives(result, logs, i);
-      }
-      else {
-        result.push(log);
-      }
-    }
-
-    return result;
-  }
-
   _filterForUser(logs) {
     let result = [];
     for (let i = 0; i < logs.length; i++) {
@@ -324,6 +329,8 @@ export class ActivityLogProcessor {
     let userId = state.user.userId;
 
     let rawLogs = stone.activityLogs;
+    let activityRanges = stone.activityRanges;
+
     let schedules = stone.schedules;
 
     let logIds = Object.keys(rawLogs);
@@ -332,35 +339,24 @@ export class ActivityLogProcessor {
     // convert object to array.
     let logs = [];
     // dont show times older than 1.5 day
-    let earliestDateAllowed = new Date().valueOf() - 1.5*24*3600000;
-    if (showFullLogs) {
-      // developers get to keep 10 days of logs! Jey!
-      earliestDateAllowed = new Date().valueOf() - 10*24*3600000;
-    }
     let minAvailable = new Date().valueOf();
-    let deleteActions = [];
     for ( let i = 0; i < logIds.length; i++ ) {
       let log = rawLogs[logIds[i]]
-      if (log.timestamp > earliestDateAllowed) {
-        if (state.development.show_only_own_activity_log) {
-          if (log.userId === userId) {
-            minAvailable = Math.min(log.timestamp, minAvailable);
-            logs.push({...log});
-          }
-        }
-        else {
+      if (state.development.show_only_own_activity_log) {
+        if (log.userId === userId) {
           minAvailable = Math.min(log.timestamp, minAvailable);
           logs.push({...log});
         }
       }
       else {
-        deleteActions.push({type:"REMOVE_ACTIVITY_LOG", sphereId: sphereId, stoneId: stoneId, logId: logIds[i]})
+        minAvailable = Math.min(log.timestamp, minAvailable);
+        logs.push({...log});
       }
     }
 
-    if (deleteActions.length > 0) {
-      store.batchDispatch(deleteActions);
-    }
+
+
+
 
     for ( let i = 0; i < scheduleId.length; i++ ) {
       let schedule = schedules[scheduleId[i]];
@@ -393,6 +389,9 @@ export class ActivityLogProcessor {
       }
     }
 
+    // insert activity ranges here
+    logs = this._addEventsForActivityRanges(logs, activityRanges, keepAliveType, userId);
+
     // sort the array by time.
     logs.sort((a,b) => { return a.timestamp - b.timestamp} );
 
@@ -402,17 +401,11 @@ export class ActivityLogProcessor {
     // add day markers
     logs = this._addDateIndicators(logs)
 
-    // generate log entries for expired keepAlives
-    logs = this._addEventsForExpiredKeepAlives(logs, keepAliveType);
-
     // generate log entries for expired multiSwitches, this will also sort.
     logs = this._addEventsForExpiredMultiswitches(logs, keepAliveType);
 
     // hide the presumed duplicate actions.
     logs = this._markPresumedDuplicates(logs);
-
-    // collapse keepalive lists
-    logs = this._collapseKeepAliveLists(logs);
 
     // collapse keepalive lists
     if (!showFullLogs) {

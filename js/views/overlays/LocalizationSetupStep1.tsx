@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("LocalizationSetupStep1", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -11,7 +17,7 @@ import {
 
 import { FinalizeLocalizationIcon } from '../components/FinalizeLocalizationIcon'
 import { Icon }                     from '../components/Icon'
-import { FadeInView }               from '../components/animated/FadeInView'
+import { HiddenFadeInView }               from '../components/animated/FadeInView'
 import { styles, colors, screenHeight, screenWidth } from '../styles'
 import { eventBus } from '../../util/EventBus'
 
@@ -332,17 +338,17 @@ export class LocalizationSetupStep1 extends Component<any, any> {
 
         <Animated.View style={{position:'absolute',top: 0.24*this.h, opacity: this.state.textOpacity, width:this.w, height: this.h - 0.24*this.h, justifyContent:'center', alignItems:'center', padding:10}}>
           <View style={{flex:1}} />
-          <Text style={{fontSize: 0.1*this.w, color: contentColor, fontWeight:'800', paddingBottom:0.04*this.h, textAlign:'center', backgroundColor:'transparent'}}>Congratulations!</Text>
-          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>You have added 4 Crownstones to your Sphere! We can now use the indoor localization at room level!</Text>
+          <Text style={{fontSize: 0.1*this.w, color: contentColor, fontWeight:'800', paddingBottom:0.04*this.h, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Congratulations_") }</Text>
+          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("You_have_added___Crownsto") }</Text>
           <View style={{flex:1}} />
-          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{"We've added this button to your overview:"}</Text>
+          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Weve_added_this_button_to") }</Text>
             <View style={{flex:1}} />
             <FinalizeLocalizationIcon />
             <View style={{flex:1}} />
-            <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{"Once you've added all your Crownstones, tap that button to start teaching Crownstone about your home!"}</Text>
+            <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Once_youve_added_all_your") }</Text>
               <View style={{flex:1}} />
               <TouchableOpacity onPress={() => {this.setState({visible: false});}} style={{borderWidth:2, borderRadius:0.04*this.h, borderColor: contentColor, width:0.3*this.w, height:0.08*this.h, justifyContent:'center', alignItems:'center'}}>
-                <Text style={{fontSize: 20, fontWeight:'800', color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>OK!</Text>
+                <Text style={{fontSize: 20, fontWeight:'800', color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("OK_") }</Text>
               </TouchableOpacity>
               <View style={{flex:1}} />
         </Animated.View>
@@ -353,13 +359,13 @@ export class LocalizationSetupStep1 extends Component<any, any> {
 
   render() {
     return (
-      <FadeInView
+      <HiddenFadeInView
         style={[styles.fullscreen, {backgroundColor:'rgba('+ colors.menuBackground.rgb.r + ',' + colors.menuBackground.rgb.g + ',' + colors.menuBackground.rgb.b + ',' + '0.6)',justifyContent:'center', alignItems:'center'}]}
         height={screenHeight}
         duration={this.fadeInDuration}
         visible={this.state.visible}>
         {this._getContent()}
-      </FadeInView>
+      </HiddenFadeInView>
     );
   }
 }

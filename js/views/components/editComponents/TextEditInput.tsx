@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("TextEditInput", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Keyboard,
@@ -52,7 +58,7 @@ export class TextEditInput extends Component<any, any> {
     this.blurValue   = undefined;
     if (!this.props.autoFocus) {
       (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
-        eventBus.emit("focus", py);
+        eventBus.emit("focus", py+height);
         this.focusEmitted = true;
       })
     }

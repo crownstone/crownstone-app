@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
-import {LOG, LOGe} from '../logging/Log'
+import { LOGe } from '../logging/Log'
 import { STONE_TYPES } from '../router/store/reducers/stones'
 
 import { Alert } from 'react-native';
@@ -92,6 +92,26 @@ export const DataUtil = {
     return null;
   },
 
+  getReferenceId: function(state) {
+    let sphereIds = Object.keys(state.spheres);
+    let activeSphereId = state.app.activeSphere;
+    if (activeSphereId && state.spheres[activeSphereId] && state.spheres[activeSphereId].state.present) {
+      return activeSphereId;
+    }
+
+    for (let i = 0; i < sphereIds.length; i++ ) {
+      if (state.spheres[sphereIds[i]].state.present === true) {
+        return sphereIds[i];
+      }
+    }
+
+    if (sphereIds.length > 0) {
+      return sphereIds[0];
+    }
+
+    return 'unknown';
+  },
+
   getStonesInLocation: function(state : any, sphereId : string, locationId?) : object {
     let filteredStones = {};
     if (sphereId !== undefined) {
@@ -167,24 +187,19 @@ export const DataUtil = {
     }
   },
 
-  getUserLocation(state, userId) {
-    let presentSphereId = null;
-    let presentLocationId = null;
+  getUserLocations(state, userId) {
+    let presentSphereMap = {};
 
     // first we determine in which sphere we are:
     let sphereIds = Object.keys(state.spheres);
+
     for (let i = 0; i < sphereIds.length; i++) {
       if (state.spheres[sphereIds[i]].state.present === true) {
-        presentSphereId = sphereIds[i];
+        presentSphereMap[sphereIds[i]] = DataUtil.getUserLocationIdInSphere(state, sphereIds[i], userId);
       }
     }
 
-    // if the user is in a sphere, search for his location.
-    if (presentSphereId) {
-      presentLocationId = DataUtil.getUserLocationIdInSphere(state, presentSphereId, userId);
-    }
-
-    return { sphereId: presentSphereId, locationId: presentLocationId };
+    return presentSphereMap;
   },
 
   getUserLocationIdInSphere: function(state, sphereId, userId) {
@@ -200,7 +215,10 @@ export const DataUtil = {
 
 
   userHasPlugsInSphere: function(state, sphereId) {
-    let stones = state.spheres[sphereId].stones;
+    let sphere = state.spheres[sphereId];
+    if (!sphere) { return false }
+
+    let stones = sphere.stones;
     let stoneIds = Object.keys(stones);
 
     for (let i = 0; i < stoneIds.length; i++) {
@@ -481,6 +499,29 @@ export const getLocationNamesInSphere = function(state, sphereId) {
  * @param state
  * @returns {{}}
  *
+ * return dataType = { localStoneId: details }
+ *
+ * details = {
+      id:  reduxStoneId
+      cid: crownstoneId (smallId)
+      handle: handle
+      name: stone name in config
+      sphereId: sphere id that contains stone
+      stoneConfig: config of stone
+      applianceName: name of appliance
+      applianceId: applianceId in redux
+      locationName: name of location
+      locationId: locationId in redux
+    }
+ */
+export const getMapOfCrownstonesInAllSpheresByStoneId = function(state) {
+  return _getMap(state, 'STONE_ID', false);
+};
+
+/**
+ * @param state
+ * @returns {{}}
+ *
  * return dataType = { handle: details }
  *
  * details = {
@@ -632,11 +673,23 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
         locationId: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? stoneConfig.locationId : null
       };
 
-      if (sphereMap) {
-        map[sphereId][stoneConfig[requestedKey]] = data
+      if (requestedKey === "STONE_ID") {
+        if (sphereMap) {
+          map[sphereId][stoneId] = data;
+        }
+        else {
+          map[stoneId] = data;
+        }
       }
       else {
-        map[stoneConfig[requestedKey]] = data
+        if (stoneConfig[requestedKey]) {
+          if (sphereMap) {
+            map[sphereId][stoneConfig[requestedKey]] = data;
+          }
+          else {
+            map[stoneConfig[requestedKey]] = data;
+          }
+        }
       }
     }
   }

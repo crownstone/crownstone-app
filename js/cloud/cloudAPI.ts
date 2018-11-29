@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import { Util } from '../util/Util';
 
 import { activityLogs }      from './sections/activityLogs'
+import { activityRanges }    from './sections/activityRanges'
 import { appliances }        from './sections/appliances'
 import { bootloader }        from './sections/bootloader'
 import { cloudApiBase }      from './sections/cloudApiBase'
@@ -29,6 +30,7 @@ function combineSections() {
 
   // mixin all modules.
   Util.mixin(result, activityLogs,      result);
+  Util.mixin(result, activityRanges,    result);
   Util.mixin(result, appliances,        result);
   Util.mixin(result, bootloader,        result);
   Util.mixin(result, devices,           result);

@@ -1,4 +1,3 @@
-import {LOGi} from "../logging/Log";
 
 export const MeshUtil = {
 
@@ -67,7 +66,6 @@ export const MeshUtil = {
   },
 
   clearMeshNetworkIds(store, sphereId = null) {
-    LOGi.mesh("MeshUtil: Clearing the mesh network ids.");
     const state = store.getState();
     let actions = [];
 
@@ -94,7 +92,6 @@ export const MeshUtil = {
   },
 
   clearTopology(store, sphereId = null) {
-    LOGi.mesh("MeshUtil: Clearing the mesh topology.");
     const state = store.getState();
     let actions = [];
 

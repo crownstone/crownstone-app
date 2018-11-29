@@ -1,3 +1,10 @@
+import { LiveComponent }          from "../../LiveComponent";
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceSummary", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -26,7 +33,7 @@ import { EventBusClass}        from "../../../util/EventBus";
 import { LockedStateUI}        from "../../components/LockedStateUI";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 
-export class DeviceSummary extends Component<any, any> {
+export class DeviceSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
   unsubscribeStoreEvents
 
@@ -39,6 +46,8 @@ export class DeviceSummary extends Component<any, any> {
     const stone = sphere.stones[props.stoneId];
     this.storedSwitchState = stone.state.state;
   }
+
+
   componentDidMount() {
     const { store } = this.props;
     // tell the component exactly when it should redraw
@@ -115,10 +124,10 @@ export class DeviceSummary extends Component<any, any> {
 
   _getButton(stone) {
     let currentState = stone.state.state;
-    let label = 'Turn On';
+    let label =  lang("Turn_On");
     let stateColor = colors.green.hex;
     if (currentState > 0) {
-      label = 'Turn Off';
+      label =  lang("Turn_Off");
       stateColor = colors.menuBackground.hex;
     }
     let size = 0.22*screenHeight;
@@ -130,9 +139,9 @@ export class DeviceSummary extends Component<any, any> {
       return (
         <View style={{width:0.75*screenWidth, height:size*1.05, alignItems:'center'}}>
           <View style={{flex:2}} />
-          <Text style={deviceStyles.text}>{'Searching...'}</Text>
+          <Text style={deviceStyles.text}>{ lang("Searching___") }</Text>
           <View style={{flex:1}} />
-          <Text style={deviceStyles.subText}>{'Once I hear from this Crownstone, the button will reappear.'}</Text>
+          <Text style={deviceStyles.subText}>{ lang("Once_I_hear_from_this_Cro") }</Text>
           <View style={{flex:1}} />
           <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
           <View style={{flex:2}} />
@@ -249,16 +258,16 @@ export class DeviceSummary extends Component<any, any> {
     // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let locationLabel = "Location:";
-    let locationName = "Not in room";
+    let locationLabel =  lang("Location_");
+    let locationName =  lang("Not_in_room");
     if (location) {
-      locationLabel = "Located in:";
+      locationLabel =  lang("Located_in_");
       locationName = location.config.name;
     }
 
     // make sure it doesnt say tap here to move me if you're not allowed to move it.
     if (spherePermissions.moveCrownstone) {
-      locationLabel = "Tap here to move me!";
+      locationLabel =  lang("Tap_here_to_move_me_");
     }
 
     let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && stone.reachability.disabled === false;
@@ -266,7 +275,7 @@ export class DeviceSummary extends Component<any, any> {
     return (
       <View style={{flex:1, paddingBottom: 35}}>
         <DeviceInformation
-          left={"Energy Usage:"}
+          left={ lang("Energy_Usage_")}
           leftValue={stone.state.currentUsage + ' W'}
           right={locationLabel}
           rightValue={locationName}
@@ -283,7 +292,7 @@ export class DeviceSummary extends Component<any, any> {
           />
         </View>
         <View style={{flex:1}} />
-        <Text style={deviceStyles.explanation}>{Util.spreadString(showDimmingText ? "The dimmer is starting up!\nI'll dim as soon as I can!" : 'tap icon to set device type')}</Text>
+        <Text style={deviceStyles.explanation}>{Util.spreadString(showDimmingText ? lang("The_dimmer_is_starting_up") : lang("tap_icon_to_set_device_ty"))}</Text>
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />

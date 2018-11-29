@@ -16,6 +16,7 @@ import {SyncingBase} from "./SyncingBase";
 import {CLOUD} from "../../../cloudAPI";
 import {LOG, LOGe} from "../../../../logging/Log";
 import {APP_NAME} from "../../../../ExternalConfig";
+import { SessionMemory } from "../../../../util/SessionMemory";
 
 
 interface matchingSpecs {
@@ -234,11 +235,16 @@ export class DeviceSyncer extends SyncingBase {
             installationId: installation.id,
             data: {deviceToken: installation.deviceToken}
           });
+
+          // check if we have to update this installation in the cloud.
+          if (installation.developmentApp !== SessionMemory.developmentEnvironment) {
+            return CLOUD.updateInstallation(installationId, {developmentApp: SessionMemory.developmentEnvironment}).catch(() => {})
+          }
         }))
     }
     else if (deviceId && state && state.devices && state.devices[deviceId] && state.devices[deviceId].installationId === null) {
       this.transferPromises.push(
-        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS })
+        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, developmentApp: SessionMemory.developmentEnvironment })
           .then((installation) => {
             this.actions.push({
               type: 'ADD_INSTALLATION',
@@ -271,20 +277,26 @@ export class DeviceSyncer extends SyncingBase {
   _updateUserLocationInCloud(state, deviceId) {
     if (state.user.uploadLocation === true) {
       if (state.user.userId) {
-        let userLocation    = Util.data.getUserLocation(state, state.user.userId);
-        let cloudLocationId = this._getCloudLocationId(userLocation.locationId);
-        let cloudSphereId   = this._getCloudSphereId(userLocation.sphereId);
+        let userLocationMap = Util.data.getUserLocations(state, state.user.userId);
+        let presentSphereIds = Object.keys(userLocationMap);
 
-        this.transferPromises.push(
-          CLOUD.forDevice(deviceId).updateDeviceLocation(cloudLocationId).catch((err) => {
-            LOGe.cloud("DeviceSyncer: Failed to set device location in cloud :userLocation", userLocation, "cloudLocationId:", cloudLocationId, err);
-          })
-            .then(() => {
-              return CLOUD.forDevice(deviceId).updateDeviceSphere(cloudSphereId).catch((err) => {
-                LOGe.cloud("DeviceSyncer: Failed to set device sphere in cloud :userLocation", userLocation, "cloudSphereId:", cloudSphereId, err);
-              })
-            })
-        );
+        if ( presentSphereIds.length === 0 ) {
+          this.transferPromises.push(CLOUD.forDevice(deviceId).exitSphere("*").catch((err) => {}));
+        }
+        else {
+          presentSphereIds.forEach((sphereId) => {
+            let cloudSphereId = this._getCloudSphereId(sphereId);
+            let cloudLocationId = this._getCloudLocationId(userLocationMap[sphereId]);
+
+            if (cloudLocationId === null) {
+              this.transferPromises.push( CLOUD.forDevice(deviceId).exitLocation(cloudSphereId,"*").catch((err) => {}) );
+              this.transferPromises.push( CLOUD.forDevice(deviceId).inSphere( cloudSphereId).catch((err) => {}) );
+            }
+            else {
+              this.transferPromises.push( CLOUD.forDevice(deviceId).inLocation(cloudSphereId, cloudLocationId).catch((err) => {}) );
+            }
+          });
+        }
       }
     }
   };

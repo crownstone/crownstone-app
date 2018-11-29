@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DimmerButton", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -213,10 +219,10 @@ export class DimmerButton extends Component<any, any> {
 
   render() {
     let state = this.state.state;
-    let label = 'Turn On';
+    let label =  lang("Turn_On");
     let stateColor = colors.green.hex;
     if (state > 0.05) {
-      label = 'Turn Off';
+      label =  lang("Turn_Off");
       stateColor = colors.menuBackground.hex;
     }
 
@@ -321,7 +327,7 @@ export class DimmerButton extends Component<any, any> {
                   <ActivityIndicator animating={true} size='small' color={stateColor} /> :
                   <Text style={{color: stateColor, fontSize: 0.2 * innerSize, fontWeight: '600'}}>{label}</Text>
               }
-              { dimmingPending ? undefined : <Text style={{color: stateColor, fontSize:0.15*innerSize, fontWeight:'500'}}>{'(' + Math.round(100*state) + ' %)'}</Text> }
+              { dimmingPending ? undefined : <Text style={{color: stateColor, fontSize:0.15*innerSize, fontWeight:'500'}}>{ lang("____",Math.round(100*state)) }</Text> }
               { dimmingPending ? <View style={{flex: 1}} /> : <View style={{flex:0.75}} /> }
             </AnimatedCircle>
           </AnimatedCircle>
