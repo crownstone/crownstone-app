@@ -19,7 +19,6 @@ import {
   View
 } from 'react-native';
 
-
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
 import {colors, OrangeLine} from './../styles'
@@ -34,6 +33,7 @@ import {MeshUtil} from "../../util/MeshUtil";
 const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
+
 
 export class SettingsMeshTopology extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
