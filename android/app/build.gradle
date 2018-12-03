@@ -179,6 +179,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'nl.komponents.kovenant:kovenant-core:3.3.0'
+    implementation 'nl.komponents.kovenant:kovenant-android:3.3.0'
+    implementation 'nl.komponents.kovenant:kovenant-combine:3.3.0'
+    implementation 'nl.komponents.kovenant:kovenant-jvm:3.3.0'
+    implementation 'nl.komponents.kovenant:kovenant-functional:3.3.0'
+    implementation 'no.nordicsemi.android:dfu:1.8.0'
     implementation project(':bluenet')
     implementation project(':localization-lib-android')
     implementation project(':react-native-image-resizer')

@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
-import fr.greweb.rnwebgl.RNWebGLPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -47,7 +46,6 @@ public class MainApplication extends Application implements ReactApplication {
 					new SplashScreenReactPackage(),
 					new RNSentryPackage(MainApplication.this),
 					new RNDeviceInfo(),
-					new RNWebGLPackage(),
 					new ReactNativePushNotificationPackage()
 			);
 		}
