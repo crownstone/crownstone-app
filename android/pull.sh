@@ -2,7 +2,7 @@
 scriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 phoneDir="/sdcard/Android/data/rocks.crownstone.consumerapp/files/"
-localDir="${HOME}/dev/crownstone/app/app-logs/"
+localDir="${scriptPath}/../app-logs/"
 cmd="pull -a"
 
 result=0
