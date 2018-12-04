@@ -1,6 +1,10 @@
 package rocks.crownstone.consumerapp
 
+import android.util.Log
 import com.facebook.react.bridge.*
+import com.facebook.react.modules.core.DeviceEventManagerModule
+import nl.komponents.kovenant.Deferred
+import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 import rocks.crownstone.bluenet.Bluenet
@@ -9,9 +13,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private val TAG = this.javaClass.simpleName
 	private val reactContext = reactContext
 	private val bluenet = Bluenet()
+	private val initPromise: Promise<Unit, Exception>
 
 	init {
 		startKovenant() // Start thread(s)
+		initPromise = bluenet.init(reactContext)
 	}
 
 	// TODO: call this?
@@ -35,6 +41,26 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Only invoke callback once lib is ready, do not invoke on error.
 		// Only called at start of app.
 		// Can be called multiple times, and should all be invoked once ready.
+		if (bluenet.isScannerReady()) {
+			resolveCallback(callBack)
+			return
+		}
+
+		initPromise.success {
+			// TODO: makeScannerReady here
+		}
+
+		val activity = reactContext.currentActivity
+		if (activity != null) {
+			bluenet.makeScannerReady(activity)
+					.success {
+						resolveCallback(callBack)
+					}
+					.fail {
+						// Should never fail..
+						rejectCallback(callBack, it.message)
+					}
+		}
 	}
 
 	@ReactMethod
@@ -42,12 +68,64 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun viewsInitialized() {
 		// All views have been initialized
 		// This means the missing bluetooth functions can now be shown.
+//		if (_bleTurnedOff) {
+//			BleLog.getInstance().LOGd(TAG, "bluetooth off");
+//			sendEvent("bleStatus", "poweredOff");
+//		}
+//		if (_locationServiceTurnedOff) {
+//			BleLog.getInstance().LOGd(TAG, "location service off");
+//			sendEvent("locationStatus", "off");
+//		}
+//		if (_locationPermissionMissing) {
+//			BleLog.getInstance().LOGd(TAG, "location permission missing");
+//			sendEvent("locationStatus", "noPermission");
+//		}
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun setSettings(config: ReadableMap, callBack: Callback) {
 		// keys can be either in plain string or hex string format, check length to determine which
+		Log.i(TAG, "setSettings")
+		// keys can be either in plain string or hex string format, check length to determine which
+
+		var adminKey: String? = null
+		var memberKey: String? = null
+		var guestKey: String? = null
+		if (config.hasKey("adminKey")) {
+			adminKey = config.getString("adminKey")
+		}
+		if (config.hasKey("memberKey")) {
+			memberKey = config.getString("memberKey")
+		}
+		if (config.hasKey("guestKey")) {
+			guestKey = config.getString("guestKey")
+		}
+
+		adminKey = getKeyFromString(adminKey)
+		memberKey = getKeyFromString(memberKey)
+		guestKey = getKeyFromString(guestKey)
+
+
+		bluenet.loadSphereData()
+
+		if (!config.hasKey("encryptionEnabled")) {
+			rejectCallback(callBack, "missing parameter")
+			return
+		}
+		val enableEncryption = config.getBoolean("encryptionEnabled")
+		if (enableEncryption && guestKey == null && memberKey == null && adminKey == null) {
+			rejectCallback(callBack, "no key supplied")
+			return
+		}
+
+		// This is also provided, it's the same as used for the iBeacon UUID:
+		if (!config.hasKey("referenceId")) {
+			rejectCallback(callBack, "missing parameter")
+			return
+		}
+		currentSphereId = config.getString("referenceId")
+		resolveCallback(callBack)
 	}
 
 
@@ -504,5 +582,81 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun meshKeepAliveState(timeout: Int, keepAliveItems: ReadableArray, callBack: Callback) {
 
+	}
+
+
+
+
+
+
+
+
+
+
+	private fun rejectCallback(callBack: Callback, error: String?) {
+		val retVal = Arguments.createMap()
+		retVal.putString("data", error)
+		retVal.putBoolean("error", true)
+		callBack.invoke(retVal)
+	}
+
+	private fun resolveCallback(callBack: Callback) {
+		val retVal = Arguments.createMap()
+		retVal.putBoolean("error", false)
+		callBack.invoke(retVal)
+	}
+
+	private fun resolveCallback(callBack: Callback, data: String) {
+		val retVal = Arguments.createMap()
+		retVal.putString("data", data)
+		retVal.putBoolean("error", false)
+		callBack.invoke(retVal)
+	}
+
+	private fun resolveCallback(callBack: Callback, data: Int) {
+		val retVal = Arguments.createMap()
+		retVal.putInt("data", data)
+		retVal.putBoolean("error", false)
+		callBack.invoke(retVal)
+	}
+
+	private fun resolveCallback(callBack: Callback, data: Double) {
+		val retVal = Arguments.createMap()
+		retVal.putDouble("data", data)
+		retVal.putBoolean("error", false)
+		callBack.invoke(retVal)
+	}
+
+	private fun resolveCallback(callBack: Callback, data: WritableMap) {
+		val retVal = Arguments.createMap()
+		retVal.putMap("data", data)
+		retVal.putBoolean("error", false)
+		callBack.invoke(retVal)
+	}
+
+	private fun resolveCallback(callBack: Callback, data: WritableArray) {
+		val retVal = Arguments.createMap()
+		retVal.putArray("data", data)
+		retVal.putBoolean("error", false)
+		callBack.invoke(retVal)
+	}
+
+
+
+	private fun sendEvent(eventName: String, params: WritableMap?) {
+		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
+	}
+
+	private fun sendEvent(eventName: String, params: WritableArray?) {
+		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
+	}
+
+	private fun sendEvent(eventName: String, params: String?) {
+		Log.d(TAG, "sendEvent $eventName: $params")
+		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
+	}
+
+	private fun sendEvent(eventName: String, params: Int?) {
+		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
 	}
 }
