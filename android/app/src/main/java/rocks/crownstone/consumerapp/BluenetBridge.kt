@@ -9,6 +9,8 @@ import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 import rocks.crownstone.bluenet.Bluenet
 import rocks.crownstone.bluenet.encryption.KeySet
+import rocks.crownstone.bluenet.scanparsing.ScannedDevice
+import rocks.crownstone.bluenet.structs.BluenetEvent
 import rocks.crownstone.bluenet.structs.KeyData
 import rocks.crownstone.bluenet.structs.Keys
 import java.util.*
@@ -20,9 +22,18 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private val initPromise: Promise<Unit, Exception>
 	private val readyCallbacks = ArrayList<Callback>()
 
+	// Scanning
+	private var uniqueScansOnly = false
+
+	// ibeacon tracking
+	private var
+
 	init {
 		startKovenant() // Start thread(s)
 		initPromise = bluenet.init(reactContext)
+		initPromise.success {
+			bluenet.subscribe(BluenetEvent.SCAN_RESULT,::onScan)
+		}
 	}
 
 	// TODO: call this?
@@ -206,12 +217,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun startScanning() {
+		uniqueScansOnly = false
 		bluenet.startScanning()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun startScanningForCrownstones() {
+		uniqueScansOnly = false
 		bluenet.filterForCrownstones(true)
 		bluenet.startScanning()
 	}
@@ -219,13 +232,16 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun startScanningForCrownstonesUniqueOnly() {
-
+		// Validated and non validated, but unique only.
+		uniqueScansOnly = true
+		bluenet.startScanning()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun stopScanning() {
-
+		// TODO: Only stop scanning when not tracking..
+		bluenet.stopScanning()
 	}
 
 
@@ -233,32 +249,48 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun trackIBeacon(ibeaconUUID: String, sphereId: String) {
-
+	fun trackIBeacon(uuidString: String, sphereId: String) {
+		// Add the UUID to the list of tracked iBeacons, associate it with given sphereId, and start tracking.
+		val uuid = try {
+			UUID.fromString(uuidString)
+		}
+		catch (e: IllegalArgumentException) {
+			return
+		}
+		bluenet.trackIbeacon(uuid)
 	}
 
 	@ReactMethod
 	@Synchronized
-	fun stopTrackingIBeacon(ibeaconUUID: String) {
-
+	fun stopTrackingIBeacon(uuidString: String) {
+		// Remove the UUID from the list of tracked iBeacons.
+		val uuid = try {
+			UUID.fromString(uuidString)
+		}
+		catch (e: IllegalArgumentException) {
+			return
+		}
+		bluenet.stopTrackingIbeacon(uuid)
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun pauseTracking() {
+		// Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
 
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun resumeTracking() {
+		// Start tracking again, with the list that is already there.
 
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun clearTrackedBeacons(callBack: Callback) {
-
+		// Clear the list of tracked iBeacons and stop tracking.
 	}
 
 	@ReactMethod
@@ -600,6 +632,21 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 
 
+
+	private fun onScan(data: Any) {
+		val device = data as ScannedDevice
+		if (device.serviceData != null) {
+			onScanWithServiceData(device)
+		}
+	}
+
+	private fun onScanWithServiceData(device: ScannedDevice) {
+		val serviceData = device.serviceData ?: return
+		if (uniqueScansOnly && !serviceData.unique) {
+			return
+		}
+
+	}
 
 
 
