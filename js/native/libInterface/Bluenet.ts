@@ -4,7 +4,7 @@ import { DISABLE_NATIVE } from '../../ExternalConfig'
 export let Bluenet;
 
 const BluenetAPI = {
-  clearTrackedBeacons: () => {},        // called through BluenetPromiseWrapper --> must be promise.
+  clearTrackedBeacons: () => {},        // Clear the list of tracked iBeacons and stop tracking. Called through BluenetPromiseWrapper --> must be promise.
   rerouteEvents: () => {},
   isReady: () => {},                    // called through BluenetPromiseWrapper --> must be promise.
   connect: () => {},                    // called through BluenetPromiseWrapper --> must be promise.
@@ -24,10 +24,10 @@ const BluenetAPI = {
 
   requestLocation: () => {},          // called through BluenetPromiseWrapper --> must be promise.
   requestLocationPermission: () => {},
-  trackIBeacon: () => {},
-  stopTrackingIBeacon: () => {},
-  pauseTracking: () => {},
-  resumeTracking: () => {},
+  trackIBeacon: () => {},        // Add the UUID to the list of tracked iBeacons, associate it with given sphereId, and start tracking.
+  stopTrackingIBeacon: () => {}, // Remove the UUID from the list of tracked iBeacons.
+  pauseTracking: () => {},       // Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
+  resumeTracking: () => {},      // Start tracking again, with the list that is already there.
 
   startCollectingFingerprint: () => {},
   abortCollectingFingerprint: () => {},
