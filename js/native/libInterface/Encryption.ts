@@ -23,15 +23,17 @@ class EncryptionManagerClass {
   setKeySets() {
     let state = this.store.getState();
     let sphereIds = Object.keys(state.spheres);
-    let keysets : keySets = {};
+    let keysets : keySet[] = [];
 
     for (let i = 0; i < sphereIds.length; i++) {
       let sphere = state.spheres[sphereIds[i]];
-      keysets[sphereIds[i]] = {
+      keysets.push({
         adminKey:  sphere.config.adminKey,
         memberKey: sphere.config.memberKey,
         guestKey:  sphere.config.guestKey,
-      }
+        referenceId: sphereIds[i],
+        iBeaconUuid: sphere.config.ibeaon
+      });
     }
 
     BluenetPromiseWrapper.setKeySets(keysets)

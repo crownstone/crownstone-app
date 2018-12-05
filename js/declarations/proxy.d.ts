@@ -157,13 +157,10 @@ interface nearestStone  {
   verified  : boolean
 }
 
-
-interface keySets  {
-  [referenceId: string] : keySet
-}
-
 interface keySet  {
-  adminKey:  string,
-  memberKey: string,
-  guestKey:  string,
+  adminKey:    string,
+  memberKey:   string,
+  guestKey:    string,
+  referenceId: string,
+  iBeaconUuid: string,
 }

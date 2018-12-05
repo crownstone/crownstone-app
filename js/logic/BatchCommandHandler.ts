@@ -9,7 +9,8 @@ import { DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL } from '../ExternalConfig'
 import { StoneUtil }             from "../util/StoneUtil";
 import { Permissions }           from "../backgroundProcesses/PermissionManager";
 import { CommandManager }        from "./bchComponents/CommandManager";
-import {RssiLogger} from "../native/advertisements/RssiLogger";
+import { RssiLogger } from "../native/advertisements/RssiLogger";
+import { BroadcastManager } from "./BroadcastManager";
 
 
 export const errorCodes = {
@@ -54,7 +55,7 @@ class BatchCommandHandlerClass {
    */
   load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') : Promise<bchReturnType> {
     LOGv.bch("BatchCommandHandler: Loading Command, sphereId:",sphereId," stoneId:", stoneId, stone.config.name, command, label);
-    return this._commandHandler.load(stone, stoneId, sphereId, command, false,  attempts, options );
+    return this._load(stone, stoneId, sphereId, command, options, false, attempts, label);
   }
 
   /**
@@ -68,9 +69,30 @@ class BatchCommandHandlerClass {
    */
   loadPriority(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') : Promise<bchReturnType>  {
     LOGv.bch("BatchCommandHandler: Loading High Priority Command, sphereId:",sphereId," stoneId", stoneId, stone.config.name, command, label);
-    return this._commandHandler.load(stone, stoneId, sphereId, command, true, attempts, options );
+    return this._load(stone, stoneId, sphereId, command, options, true, attempts, label);
   }
 
+
+  _load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, priority: boolean, attempts: number = 1, label = '') : Promise<bchReturnType>  {
+    let commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options }
+    if (BroadcastManager.canBroadcast(commandSummary)) {
+      return BroadcastManager.broadcast(commandSummary)
+        .catch((err) => {
+          if (err && err.fatal == false) {
+            // this is a fallback to the handling in the classic batch command handler, this can happend if the user goes to the background for instance.
+            return this._commandHandler.load(stone, stoneId, sphereId, command, priority,  attempts, options );
+          }
+          else {
+            console.log(err, "Error in broadcast.")
+            throw err;
+          }
+        });
+    }
+    else {
+      // handle in classic batch command handler
+      return this._commandHandler.load(stone, stoneId, sphereId, command, priority,  attempts, options );
+    }
+  }
 
   /**
    * Convert all the todos to an array of event topics we can listen to.
