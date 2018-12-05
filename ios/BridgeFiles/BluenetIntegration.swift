@@ -204,48 +204,22 @@ open class BluenetJS: RCTEventEmitter {
      }
   }
   
-  @objc func setSettings(_ settings: NSDictionary, callback: RCTResponseSenderBlock) {
-    LOGGER.info("BluenetBridge: Called setSettings")
-    let adminKey  = settings["adminKey"]  as? String
-    let memberKey = settings["memberKey"] as? String
-    let guestKey  = settings["guestKey"]  as? String
-    let referenceId = settings["referenceId"]  as? String
-    
-    if (adminKey == nil && memberKey == nil && guestKey == nil) {
-      callback([["error" : true, "data": "Missing the Keys required for Bluenet Settings. At least one of the following should be provided: adminKey, memberKey or guestKey."]])
-      return
-    }
-    
-    if (referenceId == nil) {
-      callback([["error" : true, "data": "Missing the referenceId required for Bluenet Settings."]])
-      return
-    }
-    
-    if let encryptionEnabled = settings["encryptionEnabled"] as? Bool {
-      print("BluenetBridge: SETTING SETTINGS adminKey: \(String(describing: adminKey)) memberKey: \(String(describing: memberKey)) guestKey: \(String(describing: guestKey)) referenceId: \(String(describing: referenceId))")
-      let set = KeySet(adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
-      GLOBAL_BLUENET!.bluenet.loadKeysets(encryptionEnabled: true, keySets: [set])
-      callback([["error" : false]])
-    }
-    else {
-      callback([["error" : true, "data": "Missing the encryptionEnabled data field required for Bluenet Settings."]])
-    }
-  }
   
   @objc func setKeySets(_ keySets: NSDictionary, callback: RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called setKeySets")
     var sets : [KeySet] = []
     
-    if let convertedSets = keySets as? [String:NSDictionary] {
-      for (referenceId, keySet) in convertedSets {
-        let adminKey  = keySet["adminKey"]  as? String
-        let memberKey = keySet["memberKey"] as? String
-        let guestKey  = keySet["guestKey"]  as? String
-        if (adminKey == nil && memberKey == nil && guestKey == nil) {
-          callback([["error" : true, "data": "Missing the Keys required for Bluenet Settings. At least one of the following should be provided: adminKey, memberKey or guestKey."]])
+    if let castSets = keySets as? [NSDictionary] {
+      for keyData in castSets {
+        let adminKey     = keyData["adminKey"]  as? String
+        let memberKey    = keyData["memberKey"] as? String
+        let guestKey     = keyData["guestKey"]  as? String
+        let referenceId  = keyData["referenceId"]  as? String
+        if (adminKey == nil && memberKey == nil && guestKey == nil || referenceId == nil) {
+          callback([["error" : true, "data": "Missing the Keys required for Bluenet Settings. At least one of the following should be provided: adminKey, memberKey, guestKey and referenceId."]])
           return
         }
-        sets.append(KeySet(adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId))
+        sets.append(KeySet(adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!))
       }
     }
     else {
@@ -636,7 +610,7 @@ open class BluenetJS: RCTEventEmitter {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])
         }
         else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN getErrors"]])
+          callback([["error" : true, "data": "UNKNOWN ERROR IN clearErrors"]])
         }
     }
   }
@@ -650,7 +624,7 @@ open class BluenetJS: RCTEventEmitter {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])
         }
         else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN getErrors"]])
+          callback([["error" : true, "data": "UNKNOWN ERROR IN restartCrownstone"]])
         }
     }
   }
