@@ -8,12 +8,17 @@ import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 import rocks.crownstone.bluenet.Bluenet
+import rocks.crownstone.bluenet.encryption.KeySet
+import rocks.crownstone.bluenet.structs.KeyData
+import rocks.crownstone.bluenet.structs.Keys
+import java.util.*
 
 class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJavaModule(reactContext) {
 	private val TAG = this.javaClass.simpleName
 	private val reactContext = reactContext
 	private val bluenet = Bluenet()
 	private val initPromise: Promise<Unit, Exception>
+	private val readyCallbacks = ArrayList<Callback>()
 
 	init {
 		startKovenant() // Start thread(s)
@@ -46,20 +51,23 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			return
 		}
 
+		readyCallbacks.add(callBack)
 		initPromise.success {
-			// TODO: makeScannerReady here
-		}
-
-		val activity = reactContext.currentActivity
-		if (activity != null) {
-			bluenet.makeScannerReady(activity)
-					.success {
-						resolveCallback(callBack)
-					}
-					.fail {
-						// Should never fail..
-						rejectCallback(callBack, it.message)
-					}
+			val activity = reactContext.currentActivity
+			if (activity != null) {
+				bluenet.makeScannerReady(activity)
+						.success {
+							//						resolveCallback(callBack)
+							for (cb in readyCallbacks) {
+								resolveCallback(cb)
+							}
+							readyCallbacks.clear()
+						}
+						.fail {
+							// Should never fail..
+							Log.e(TAG, "makeScannerReady failed: ${it.message}")
+						}
+			}
 		}
 	}
 
@@ -84,47 +92,51 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun setSettings(config: ReadableMap, callBack: Callback) {
+	fun setKeySets(keySets: ReadableArray, callBack: Callback) {
+		Log.i(TAG, "setKeySets")
 		// keys can be either in plain string or hex string format, check length to determine which
-		Log.i(TAG, "setSettings")
-		// keys can be either in plain string or hex string format, check length to determine which
 
-		var adminKey: String? = null
-		var memberKey: String? = null
-		var guestKey: String? = null
-		if (config.hasKey("adminKey")) {
-			adminKey = config.getString("adminKey")
+		val keys = Keys()
+//		val iter = keySets.keySetIterator()
+//		while (iter.hasNextKey()) {
+//			val sphereId = iter.nextKey()
+//			val keySetJson = keySets.getMap(sphereId)
+		for (i in 0 until keySets.size()) {
+			val keySetJson = keySets.getMap(i)
+			if (!keySetJson.hasKey("referenceId")) {
+				rejectCallback(callBack, "Missing referenceId: $keySets")
+				return
+			}
+			val sphereId = keySetJson.getString("referenceId")
+			if (!keySetJson.hasKey("iBeaconUuid")) {
+				rejectCallback(callBack, "Missing iBeaconUuid: $keySets")
+				return
+			}
+			val ibeaconUuidString = keySetJson.getString("iBeaconUuid")
+			val ibeaconUuid = try {
+				 UUID.fromString(ibeaconUuidString)
+			}
+			catch (e: IllegalArgumentException) {
+				rejectCallback(callBack, "Invalid UUID: $ibeaconUuidString")
+				return
+			}
+			var adminKey: String? = null
+			var memberKey: String? = null
+			var guestKey: String? = null
+			if (keySetJson.hasKey("adminKey")) {
+				adminKey = keySetJson.getString("adminKey")
+			}
+			if (keySetJson.hasKey("memberKey")) {
+				memberKey = keySetJson.getString("memberKey")
+			}
+			if (keySetJson.hasKey("guestKey")) {
+				guestKey = keySetJson.getString("guestKey")
+			}
+			val keySet = KeySet(adminKey, memberKey, guestKey)
+			val keyData = KeyData(keySet, ibeaconUuid)
+			keys.put(sphereId, keyData)
 		}
-		if (config.hasKey("memberKey")) {
-			memberKey = config.getString("memberKey")
-		}
-		if (config.hasKey("guestKey")) {
-			guestKey = config.getString("guestKey")
-		}
-
-		adminKey = getKeyFromString(adminKey)
-		memberKey = getKeyFromString(memberKey)
-		guestKey = getKeyFromString(guestKey)
-
-
-		bluenet.loadSphereData()
-
-		if (!config.hasKey("encryptionEnabled")) {
-			rejectCallback(callBack, "missing parameter")
-			return
-		}
-		val enableEncryption = config.getBoolean("encryptionEnabled")
-		if (enableEncryption && guestKey == null && memberKey == null && adminKey == null) {
-			rejectCallback(callBack, "no key supplied")
-			return
-		}
-
-		// This is also provided, it's the same as used for the iBeacon UUID:
-		if (!config.hasKey("referenceId")) {
-			rejectCallback(callBack, "missing parameter")
-			return
-		}
-		currentSphereId = config.getString("referenceId")
+		bluenet.loadKeys(keys)
 		resolveCallback(callBack)
 	}
 
@@ -194,13 +206,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun startScanning() {
-
+		bluenet.startScanning()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun startScanningForCrownstones() {
-
+		bluenet.filterForCrownstones(true)
+		bluenet.startScanning()
 	}
 
 	@ReactMethod
