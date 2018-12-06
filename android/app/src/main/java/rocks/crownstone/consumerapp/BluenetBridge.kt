@@ -1,5 +1,10 @@
 package rocks.crownstone.consumerapp
 
+import android.app.Activity
+import android.app.Notification
+import android.app.PendingIntent
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -22,11 +27,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private val initPromise: Promise<Unit, Exception>
 	private val readyCallbacks = ArrayList<Callback>()
 
+	private val ONGOING_NOTIFICATION_ID = 99115
+
 	// Scanning
 	private var uniqueScansOnly = false
-
-	// ibeacon tracking
-	private var
 
 	init {
 		startKovenant() // Start thread(s)
@@ -156,7 +160,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun quitApp() {
-
+		bluenet.destroy()
+		reactContext.currentActivity?.finish()
 	}
 
 	@ReactMethod
@@ -168,13 +173,17 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun requestBleState() {
+		// Send events "bleStatus" and "locationStatus" with the current state.
 
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun requestLocationPermission() {
-
+		// Request for location permission during tutorial.
+		// TODO: check if you can't continue the tutorial before giving or denying permission.
+		val activity = reactContext.currentActivity ?: return
+		bluenet.requestLocationPermission(activity)
 	}
 
 	@ReactMethod
@@ -257,7 +266,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		catch (e: IllegalArgumentException) {
 			return
 		}
-		bluenet.trackIbeacon(uuid)
+		bluenet.iBeaconRanger.track(uuid, sphereId)
 	}
 
 	@ReactMethod
@@ -270,39 +279,51 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		catch (e: IllegalArgumentException) {
 			return
 		}
-		bluenet.stopTrackingIbeacon(uuid)
+		bluenet.iBeaconRanger.stopTracking(uuid)
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun pauseTracking() {
 		// Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
-
+		bluenet.iBeaconRanger.pause()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun resumeTracking() {
 		// Start tracking again, with the list that is already there.
-
+		bluenet.iBeaconRanger.resume()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun clearTrackedBeacons(callBack: Callback) {
 		// Clear the list of tracked iBeacons and stop tracking.
+		bluenet.iBeaconRanger.stopTracking()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun batterySaving(enable: Boolean) {
+		// Called when app goes to foreground with enable=true
+		// Called when app goes to background with enable=false
+		// When enabled, beacon ranging should still continue.
 
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun setBackgroundScanning(enable: Boolean) {
-
+		// Called after used logged in, and when changed.
+		// When disabled, no scanning has to happen in background.
+		if (enable) {
+			// This is actually a promise, but it should happen faster than it's possible to click a button.
+			bluenet.runInForeground(ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running in the background"))
+		}
+		else {
+			bluenet.runInBackground()
+		}
 	}
 
 
@@ -648,6 +669,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	}
 
+	fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+		bluenet.handlePermissionResult(requestCode, permissions, grantResults)
+	}
+
 
 
 
@@ -718,5 +743,37 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	private fun sendEvent(eventName: String, params: Int?) {
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
+	}
+
+	private fun getServiceNotification(text: String): Notification {
+		val notificationIntent = Intent(reactContext, MainActivity::class.java)
+//		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		notificationIntent.action = Intent.ACTION_MAIN
+		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+		notificationIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+
+
+//		notificationIntent.setClassName("rocks.crownstone.consumerapp", "MainActivity");
+//		notificationIntent.setAction("ACTION_MAIN");
+//		PendingIntent pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+		val pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+//		PendingIntent pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, 0);
+
+		val notification = Notification.Builder(reactContext)
+				.setContentTitle("Crownstone is running")
+				.setContentText(text)
+				.setContentIntent(pendingIntent)
+				.setSmallIcon(R.drawable.icon_notification)
+				// TODO: add action to close the app + service
+				// TODO: add action to pause the app?
+//				.addAction(android.R.drawable.ic_menu_close_clear_cancel, )
+//				.setLargeIcon()
+				.build()
+
+		if (Build.VERSION.SDK_INT >= 21) {
+			notification.visibility = Notification.VISIBILITY_PUBLIC
+		}
+		return notification
 	}
 }
