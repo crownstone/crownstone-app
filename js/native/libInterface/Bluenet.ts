@@ -17,13 +17,13 @@ const BluenetAPI = {
   stopScanning: () => {},
   keepAliveState: () => {},
   keepAlive: () => {},
-  requestBleState: () => {},
+  requestBleState: () => {},     // Send events "bleStatus" and "locationStatus" with the current state.
 
   startIndoorLocalization: () => {},
   stopIndoorLocalization: () => {},
 
-  requestLocation: () => {},          // called through BluenetPromiseWrapper --> must be promise.
-  requestLocationPermission: () => {},
+  requestLocation: () => {},           // called through BluenetPromiseWrapper --> must be promise.
+  requestLocationPermission: () => {}, // Request for location permission during tutorial. 
   trackIBeacon: () => {},        // Add the UUID to the list of tracked iBeacons, associate it with given sphereId, and start tracking.
   stopTrackingIBeacon: () => {}, // Remove the UUID from the list of tracked iBeacons.
   pauseTracking: () => {},       // Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
