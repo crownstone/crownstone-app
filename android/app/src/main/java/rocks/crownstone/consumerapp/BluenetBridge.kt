@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
+import android.os.Process
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -43,6 +44,15 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	// TODO: call this?
 	fun destroy() {
 		stopKovenant() // Stop thread(s)
+		bluenet.destroy()
+		reactContext.currentActivity?.finish()
+		reactContext.runOnUiQueueThread {
+			reactContext.destroy()
+		}
+
+		// See: http://stackoverflow.com/questions/2033914/is-quitting-an-application-frowned-upon
+//		System.exit(0); // Not recommended, seems to restart app
+//		Process.killProcess(Process.myPid()) // Not recommended either
 	}
 
 	override fun getName(): String {
@@ -160,8 +170,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun quitApp() {
-		bluenet.destroy()
-		reactContext.currentActivity?.finish()
+		destroy()
 	}
 
 	@ReactMethod
