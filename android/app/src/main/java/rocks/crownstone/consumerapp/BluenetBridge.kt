@@ -3,9 +3,14 @@ package rocks.crownstone.consumerapp
 import android.app.Activity
 import android.app.Notification
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Criteria
+import android.location.LocationManager
 import android.os.Build
 import android.os.Process
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -13,18 +18,21 @@ import nl.komponents.kovenant.Deferred
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
+import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
 import rocks.crownstone.bluenet.encryption.KeySet
 import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.BluenetEvent
 import rocks.crownstone.bluenet.structs.KeyData
 import rocks.crownstone.bluenet.structs.Keys
+import rocks.crownstone.localization.*
 import java.util.*
 
 class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJavaModule(reactContext) {
 	private val TAG = this.javaClass.simpleName
 	private val reactContext = reactContext
 	private val bluenet = Bluenet()
+	private val localization = FingerprintLocalization.getInstance()
 	private val initPromise: Promise<Unit, Exception>
 	private val readyCallbacks = ArrayList<Callback>()
 
@@ -32,6 +40,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	// Scanning
 	private var uniqueScansOnly = false
+
+	// Localization
+	private var isLocalizationTraining = false
+	private var isLocalizationTrainingPaused = false
+	private var lastLocationId: String? = null
 
 	init {
 		startKovenant() // Start thread(s)
@@ -67,6 +80,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun isReady(callBack: Callback) {
+		Log.i(TAG, "isReady")
 		// Check if bluenet lib is ready (scanner and bluetooth).
 		// Only invoke callback once lib is ready, do not invoke on error.
 		// Only called at start of app.
@@ -99,20 +113,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun viewsInitialized() {
+		Log.i(TAG, "viewsInitialized")
 		// All views have been initialized
 		// This means the missing bluetooth functions can now be shown.
-//		if (_bleTurnedOff) {
-//			BleLog.getInstance().LOGd(TAG, "bluetooth off");
-//			sendEvent("bleStatus", "poweredOff");
-//		}
-//		if (_locationServiceTurnedOff) {
-//			BleLog.getInstance().LOGd(TAG, "location service off");
-//			sendEvent("locationStatus", "off");
-//		}
-//		if (_locationPermissionMissing) {
-//			BleLog.getInstance().LOGd(TAG, "location permission missing");
-//			sendEvent("locationStatus", "noPermission");
-//		}
+		requestBleState()
 	}
 
 	@ReactMethod
@@ -170,25 +174,43 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun quitApp() {
+		Log.i(TAG, "quitApp")
 		destroy()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun resetBle() {
+		Log.i(TAG, "resetBle")
 
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun requestBleState() {
+		Log.i(TAG, "requestBleState")
 		// Send events "bleStatus" and "locationStatus" with the current state.
-
+		if (!bluenet.isLocationPermissionGranted()) {
+			sendEvent("locationStatus", "noPermission")
+		}
+		else if (!bluenet.isLocationServiceEnabled()) {
+			sendEvent("locationStatus", "off")
+		}
+		else {
+			sendEvent("locationStatus", "on")
+		}
+		if (!bluenet.isBleEnabled()) {
+			sendEvent("bleStatus", "poweredOff")
+		}
+		else {
+			sendEvent("bleStatus", "poweredOn")
+		}
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun requestLocationPermission() {
+		Log.i(TAG, "requestLocationPermission")
 		// Request for location permission during tutorial.
 		// TODO: check if you can't continue the tutorial before giving or denying permission.
 		val activity = reactContext.currentActivity ?: return
@@ -198,12 +220,45 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun requestLocation(callBack: Callback) {
+		Log.i(TAG, "requestLocation")
+		if (ContextCompat.checkSelfPermission(reactContext, "android.permission.ACCESS_COARSE_LOCATION") != PackageManager.PERMISSION_GRANTED) {
+			rejectCallback(callBack, "no permission to get location")
+			return
+		}
 
+		val locationManager = reactContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+		if (locationManager == null) {
+			rejectCallback(callBack, "no location manager")
+			return
+		}
+
+		val criteria = Criteria()
+		criteria.accuracy = Criteria.ACCURACY_COARSE
+		criteria.isAltitudeRequired = false
+		criteria.isBearingRequired = false
+		criteria.isSpeedRequired = false
+		val provider = locationManager.getBestProvider(criteria, true)
+		if (provider == null) {
+			rejectCallback(callBack, "no location provider available")
+			return
+		}
+
+		val location = locationManager.getLastKnownLocation(provider)
+		if (location == null) {
+			rejectCallback(callBack, "no location available")
+			return
+		}
+
+		val dataVal = Arguments.createMap()
+		dataVal.putDouble("latitude", location.latitude)
+		dataVal.putDouble("longitude", location.longitude)
+		resolveCallback(callBack, dataVal)
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun forceClearActiveRegion() {
+		Log.i(TAG, "forceClearActiveRegion")
 		// Forces not being in an ibeacon region (not needed for android as far as I know)
 	}
 
@@ -235,6 +290,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun startScanning() {
+		Log.i(TAG, "startScanning")
 		uniqueScansOnly = false
 		bluenet.startScanning()
 	}
@@ -242,6 +298,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun startScanningForCrownstones() {
+		Log.i(TAG, "startScanningForCrownstones")
 		uniqueScansOnly = false
 		bluenet.filterForCrownstones(true)
 		bluenet.startScanning()
@@ -250,6 +307,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun startScanningForCrownstonesUniqueOnly() {
+		Log.i(TAG, "startScanningForCrownstonesUniqueOnly")
 		// Validated and non validated, but unique only.
 		uniqueScansOnly = true
 		bluenet.startScanning()
@@ -258,6 +316,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun stopScanning() {
+		Log.i(TAG, "stopScanning")
 		// TODO: Only stop scanning when not tracking..
 		bluenet.stopScanning()
 	}
@@ -268,6 +327,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun trackIBeacon(uuidString: String, sphereId: String) {
+		Log.i(TAG, "trackIBeacon uuid=$uuidString sphere=$sphereId")
 		// Add the UUID to the list of tracked iBeacons, associate it with given sphereId, and start tracking.
 		val uuid = try {
 			UUID.fromString(uuidString)
@@ -281,6 +341,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun stopTrackingIBeacon(uuidString: String) {
+		Log.i(TAG, "stopTrackingIBeacon uuid=$uuidString")
 		// Remove the UUID from the list of tracked iBeacons.
 		val uuid = try {
 			UUID.fromString(uuidString)
@@ -294,6 +355,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun pauseTracking() {
+		Log.i(TAG, "pauseTracking")
 		// Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
 		bluenet.iBeaconRanger.pause()
 	}
@@ -301,6 +363,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun resumeTracking() {
+		Log.i(TAG, "resumeTracking")
 		// Start tracking again, with the list that is already there.
 		bluenet.iBeaconRanger.resume()
 	}
@@ -308,13 +371,16 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun clearTrackedBeacons(callBack: Callback) {
+		Log.i(TAG, "clearTrackedBeacons")
 		// Clear the list of tracked iBeacons and stop tracking.
 		bluenet.iBeaconRanger.stopTracking()
+		resolveCallback(callBack)
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun batterySaving(enable: Boolean) {
+		Log.i(TAG, "batterySaving $enable")
 		// Called when app goes to foreground with enable=true
 		// Called when app goes to background with enable=false
 		// When enabled, beacon ranging should still continue.
@@ -324,6 +390,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setBackgroundScanning(enable: Boolean) {
+		Log.i(TAG, "setBackgroundScanning $enable")
 		// Called after used logged in, and when changed.
 		// When disabled, no scanning has to happen in background.
 		if (enable) {
@@ -336,70 +403,113 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 
+	private val localizationCallback = LocalizationCallback { locationId: String? ->
+		Log.i(TAG, "locationUpdate locationId=$locationId")
 
+	}
 
 	@ReactMethod
 	@Synchronized
 	fun startIndoorLocalization() {
+		Log.i(TAG, "startIndoorLocalization")
 		// Start using the classifier
+		localization.startLocalization(localizationCallback)
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun stopIndoorLocalization() {
+		Log.i(TAG, "stopIndoorLocalization")
 		// Stop using the classifier
+		localization.stopLocalization()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun startCollectingFingerprint() {
-
+		Log.i(TAG, "startCollectingFingerprint")
+		localization.startFingerprint()
+		isLocalizationTraining = true
+		isLocalizationTrainingPaused = false
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun abortCollectingFingerprint() {
-
+		Log.i(TAG, "abortCollectingFingerprint")
+		localization.abortFingerprint()
+		isLocalizationTraining = false
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun pauseCollectingFingerprint() {
+		Log.i(TAG, "pauseCollectingFingerprint")
 		// Stop feeding scans to the localization class
-
+		isLocalizationTrainingPaused = true
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun resumeCollectingFingerprint() {
+		Log.i(TAG, "resumeCollectingFingerprint")
 		// Start feeding scans to the localization class again
-
+		isLocalizationTrainingPaused = false
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun finalizeFingerprint(sphereId: String, locationId: String, callback: Callback) {
-
+		Log.i(TAG, "finalizeFingerprint sphereId=$sphereId locationId=$locationId")
+		localization.finalizeFingerprint(sphereId, locationId, null)
+		isLocalizationTraining = false
+		val fingerprint = localization.getFingerprint(sphereId, locationId)
+		if (fingerprint != null) {
+			val samplesStr = fingerprint.samples.toString()
+			resolveCallback(callback, samplesStr)
+		}
+		else {
+			rejectCallback(callback, "")
+		}
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun loadFingerprint(sphereId: String, locationId: String, samplesStr: String) {
-
+		Log.i(TAG, "loadFingerprint sphereId=$sphereId locationId=$locationId samples=$samplesStr")
+		val fingerprint = Fingerprint()
+		fingerprint.sphereId = sphereId
+		fingerprint.locationId = locationId
+		try {
+			val samples = FingerprintSamplesMap(samplesStr)
+			if (!samples.isEmpty()) {
+				fingerprint.setSamples(samples)
+				localization.importFingerprint(sphereId, locationId, fingerprint)
+			}
+			else {
+				Log.e(TAG, "fingerprint samples empty?: $samplesStr")
+			}
+		}
+		catch (e: JSONException) {
+			Log.e(TAG, "Failed to load fingerprint samples: $samplesStr")
+			e.printStackTrace()
+		}
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun clearFingerprints() {
-
+		Log.i(TAG, "clearFingerprints")
+		localization.clear()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun clearFingerprintsPromise(callback: Callback) {
-
+		Log.i(TAG, "clearFingerprintsPromise")
+		localization.clear()
+		resolveCallback(callback)
 	}
-
 
 
 
