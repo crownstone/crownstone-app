@@ -22,7 +22,7 @@ const BluenetAPI = {
   startIndoorLocalization: () => {},
   stopIndoorLocalization: () => {},
 
-  requestLocation: () => {},           // called through BluenetPromiseWrapper --> must be promise.
+  requestLocation: () => {},           // Should return data {"latitude": number, "longitude": number}. Called through BluenetPromiseWrapper --> must be promise.
   requestLocationPermission: () => {}, // Request for location permission during tutorial. 
   trackIBeacon: () => {},        // Add the UUID to the list of tracked iBeacons, associate it with given sphereId, and start tracking.
   stopTrackingIBeacon: () => {}, // Remove the UUID from the list of tracked iBeacons.
