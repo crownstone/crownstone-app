@@ -15,6 +15,8 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
+import nl.komponents.kovenant.then
+import nl.komponents.kovenant.unwrap
 import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
 import rocks.crownstone.bluenet.encryption.KeySet
@@ -23,6 +25,7 @@ import rocks.crownstone.bluenet.packets.meshCommand.MeshControlPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchListItemPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchListPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchPacket
+import rocks.crownstone.bluenet.packets.schedule.ScheduleCommandPacket
 import rocks.crownstone.bluenet.packets.schedule.ScheduleEntryPacket
 import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
@@ -829,14 +832,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun clearErrors(clearErrorsMap: ReadableMap, callback: Callback) {
 		// clearErrorsMap, map with errors to clear. Keys: overCurrent, overCurrentDimmer, temperatureChip, temperatureDimmer, dimmerOnFailure, dimmerOffFailure
-		val errorState = ErrorState(
-				clearErrorsMap.getBoolean("overCurrent"),
-				clearErrorsMap.getBoolean("overCurrentDimmer"),
-				clearErrorsMap.getBoolean("temperatureChip"),
-				clearErrorsMap.getBoolean("temperatureDimmer"),
-				clearErrorsMap.getBoolean("dimmerOnFailure"),
-				clearErrorsMap.getBoolean("dimmerOffFailure")
-		)
+		val errorState = ErrorState()
+		errorState.overCurrent = clearErrorsMap.getBoolean("overCurrent")
+		errorState.overCurrentDimmer = clearErrorsMap.getBoolean("overCurrentDimmer")
+		errorState.chipTemperature = clearErrorsMap.getBoolean("temperatureChip")
+		errorState.dimmerTemperature = clearErrorsMap.getBoolean("temperatureDimmer")
+		errorState.dimmerOnFailure = clearErrorsMap.getBoolean("dimmerOnFailure")
+		errorState.dimmerOffFailure = clearErrorsMap.getBoolean("dimmerOffFailure")
+		errorState.calcBitMask()
 		bluenet.control.resetErrors(errorState)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -905,14 +908,32 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun addSchedule(scheduleEntryMap: ReadableMap, callback: Callback) {
 		// Adds a new entry to the schedule on an empty spot.
 		// If no empty spots: fails
-
+		val packet = parseScheduleEntryMap(scheduleEntryMap)
+		if (packet == null) {
+			rejectCallback(callback, "invalid schedule entry")
+			return
+		}
+		bluenet.state.getAvailableScheduleEntryIndex()
+				.then {
+					bluenet.control.setSchedule(ScheduleCommandPacket(Conversion.toUint8(it), packet))
+				}.unwrap()
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun setSchedule(scheduleEntryMap: ReadableMap, callback: Callback) {
 		// Overwrites a schedule entry at given index.
-//		bluenet.control.setSchedule()
+		val packet = parseScheduleEntryMap(scheduleEntryMap)
+		if (packet == null || !scheduleEntryMap.hasKey("scheduleEntryIndex")) {
+			rejectCallback(callback, "invalid schedule entry")
+			return
+		}
+		val index = Conversion.toUint8(scheduleEntryMap.getInt("scheduleEntryIndex"))
+		bluenet.control.setSchedule(ScheduleCommandPacket(index, packet))
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
@@ -938,7 +959,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	 * @param map the map.
 	 * @return the packet, or null when parsing failed.
 	 */
-/*
+
 	private fun parseScheduleEntryMap(map: ReadableMap): ScheduleEntryPacket? {
 	// scheduleEntryMap:
 	//		scheduleEntryIndex     : number, // 0 .. 9
@@ -957,74 +978,58 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	//		activeSunday           : boolean,
 		val packet = ScheduleEntryPacket()
 		try {
-			val ignoreLocationTriggers = map.getBoolean("ignoreLocationTriggers")
-			packet.overrideMask = ScheduleOverride(false, ignoreLocationTriggers).bitmask
+			packet.overrideMask.location = map.getBoolean("ignoreLocationTriggers")
 			packet.timestamp = map.getDouble("nextTime").toLong()
-			packet.dayOfWeekMask = 0
 			packet.minutes = 0
 			val repeatType = map.getString("repeatMode")
 			when (repeatType) {
 				"24h" -> {
-					packet._repeatType = ScheduleEntryPacket.REPEAT_DAY
-					if (map.getBoolean("activeSunday")) {
-						packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_SUNDAY)
-					}
-					if (map.getBoolean("activeMonday")) {
-						packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_MONDAY)
-					}
-					if (map.getBoolean("activeTuesday")) {
-						packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_TUESDAY)
-					}
-					if (map.getBoolean("activeWednesday")) {
-						packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_WEDNESDAY)
-					}
-					if (map.getBoolean("activeThursday")) {
-						packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_THURSDAY)
-					}
-					if (map.getBoolean("activeFriday")) {
-						packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_FRIDAY)
-					}
-					if (map.getBoolean("activeSaturday")) {
-						packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_SATURDAY)
-					}
+					packet.repeatType = ScheduleRepeatType.DAY
+					packet.dayOfWeekMask.sunday = map.getBoolean("activeSunday")
+					packet.dayOfWeekMask.monday = map.getBoolean("activeMonday")
+					packet.dayOfWeekMask.tuesday = map.getBoolean("activeTuesday")
+					packet.dayOfWeekMask.wednesday = map.getBoolean("activeWednesday")
+					packet.dayOfWeekMask.thursday = map.getBoolean("activeThursday")
+					packet.dayOfWeekMask.friday = map.getBoolean("activeFriday")
+					packet.dayOfWeekMask.saturday = map.getBoolean("activeSaturday")
 				}
 				"minute" -> {
-					packet._repeatType = ScheduleEntryPacket.REPEAT_MINUTES
-					packet._minutes = map.getInt("intervalInMinutes")
+					packet.repeatType = ScheduleRepeatType.MINUTES
+					packet.minutes = map.getInt("intervalInMinutes")
 				}
 				"none" -> {
-					packet._repeatType = ScheduleEntryPacket.REPEAT_ONCE
+					packet.repeatType = ScheduleRepeatType.ONCE
 				}
 				else -> {
-					BleLog.getInstance().LOGw(TAG, "Unknown repeat type")
+					Log.w(TAG, "Unknown repeat type $repeatType")
 					return null
 				}
 			}
 
-			val switchStateFloat = map.getDouble("switchState")
-			val switchState = convertSwitchVal(switchStateFloat)
-			packet._switchVal = switchState
-			packet._fadeDuration = map.getInt("fadeDuration")
-			if (packet._fadeDuration > 0) {
-				packet._actionType = ScheduleEntryPacket.ACTION_FADE
+			val switchStateDouble = map.getDouble("switchState")
+			packet.switchVal = convertSwitchVal(switchStateDouble)
+			packet.fadeDuration = map.getInt("fadeDuration")
+			if (packet.fadeDuration > 0) {
+				packet.actionType = ScheduleActionType.FADE
 			}
 			else {
-				packet._actionType = ScheduleEntryPacket.ACTION_SWITCH
+				packet.actionType = ScheduleActionType.SWITCH
 			}
 		} catch (e: NoSuchKeyException) {
-			BleLog.getInstance().LOGw(TAG, "Wrong schedule entry: " + map.toString())
+			Log.w(TAG, "Wrong schedule entry: " + map.toString())
 			return null
 		} catch (e: UnexpectedNativeTypeException) {
-			BleLog.getInstance().LOGw(TAG, "Wrong schedule entry: " + map.toString())
+			Log.w(TAG, "Wrong schedule entry: " + map.toString())
 			return null
 		}
 
-		return if (!packet.isValidPacketToSet()) {
-			null
-		}
-		else packet
+		return packet
+//		return if (!packet.isValidPacketToSet()) {
+//			null
+//		}
+//		else packet
 	}
-*/
+
 
 
 	@ReactMethod
