@@ -75,7 +75,9 @@ class BatchCommandHandlerClass {
 
   _load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, priority: boolean, attempts: number = 1, label = '') : Promise<bchReturnType>  {
     let commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options }
-    if (BroadcastManager.canBroadcast(commandSummary)) {
+    let state = this.store.getState();
+
+    if (BroadcastManager.canBroadcast(commandSummary) && state.development.broadcasting_enabled) {
       return BroadcastManager.broadcast(commandSummary)
         .catch((err) => {
           if (err && err.fatal == false) {

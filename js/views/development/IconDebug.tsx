@@ -111,6 +111,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "ios-trash",
       "ios-warning",
       "ios-more",
+      "ios-wifi",
     ]
     let ioniconsMdList = [
       "md-arrow-dropright",
@@ -154,7 +155,8 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "md-sync",
       "md-time",
       "md-trash",
-      "md-unlock"
+      "md-unlock",
+      "md-wifi",
     ]
 
     let categories = [];

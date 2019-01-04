@@ -13,11 +13,12 @@ let defaultState = {
   log_events:        LOG_LEVEL.error,
   log_store:         LOG_LEVEL.error,
   log_cloud:         LOG_LEVEL.error,
-  use_advertisement_rssi_too: false,
   show_rssi_values_in_mesh:   false,
   show_full_activity_log:     false,
   show_only_own_activity_log: false,
   nativeExtendedLogging:      false,
+
+  broadcasting_enabled: false,
 };
 
 // developmentReducer
@@ -46,8 +47,8 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_events =        update(action.data.log_events,        newState.log_events);
         newState.log_store =         update(action.data.log_store,         newState.log_store);
         newState.log_cloud =         update(action.data.log_cloud,         newState.log_cloud);
+        newState.broadcasting_enabled =       update(action.data.broadcasting_enabled,       newState.broadcasting_enabled);
         newState.nativeExtendedLogging =      update(action.data.nativeExtendedLogging,      newState.nativeExtendedLogging);
-        newState.use_advertisement_rssi_too = update(action.data.use_advertisement_rssi_too, newState.use_advertisement_rssi_too);
         newState.show_rssi_values_in_mesh =   update(action.data.show_rssi_values_in_mesh,   newState.show_rssi_values_in_mesh);
         newState.show_full_activity_log =     update(action.data.show_full_activity_log,     newState.show_full_activity_log);
         newState.show_only_own_activity_log = update(action.data.show_only_own_activity_log, newState.show_only_own_activity_log);

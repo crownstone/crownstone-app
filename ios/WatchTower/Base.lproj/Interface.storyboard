@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14460.31" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4Ox-WU-azg">
+    <device id="watch44" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment version="1072" identifier="watchOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14460.16"/>
+    </dependencies>
+    <scenes>
+        <!--Crownstone-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller identifier="Crownstone" title="Crownstone" alwaysBounce="YES" id="AgC-eL-Hgc" userLabel="Crownstone" customClass="CSInterfaceController" customModule="WatchTower_Extension">
+                    <items>
+                        <table alignment="left" id="lGs-FV-8Bb" userLabel="CsTable">
+                            <items>
+                                <tableRow identifier="SwitchRow" selectable="NO" id="Ta7-cB-3aX" customClass="SwitchRowController" customModule="WatchTower_Extension">
+                                    <group key="rootItem" width="1" height="40" alignment="left" id="dyf-UP-Xre">
+                                        <items>
+                                            <separator height="1" heightAdjustment="-4" alignment="left" verticalAlignment="center" id="ghD-NO-v1j">
+                                                <color key="color" red="0.0" green="1" blue="0.29934893559999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </separator>
+                                            <group width="1" widthAdjustment="-4" height="1" alignment="right" verticalAlignment="center" id="gye-Wf-Bfj">
+                                                <items>
+                                                    <group width="0.69999999999999996" height="1" alignment="left" id="MLM-oZ-omr">
+                                                        <items>
+                                                            <label alignment="left" verticalAlignment="center" text="Name" id="NsN-hH-T7o" userLabel="StoneName"/>
+                                                        </items>
+                                                    </group>
+                                                    <group width="0.29999999999999999" height="1" alignment="right" id="BJ1-zT-Fsh">
+                                                        <items>
+                                                            <switch height="34" alignment="right" verticalAlignment="center" value="YES" id="E89-Qe-9WH">
+                                                                <connections>
+                                                                    <action selector="switchToggled:" destination="Ta7-cB-3aX" id="VtO-xn-zpG"/>
+                                                                </connections>
+                                                            </switch>
+                                                        </items>
+                                                    </group>
+                                                </items>
+                                            </group>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="background" destination="dyf-UP-Xre" id="MAc-xw-niF"/>
+                                        <outlet property="separator" destination="ghD-NO-v1j" id="uWn-At-WCU"/>
+                                        <outlet property="stoneName" destination="NsN-hH-T7o" id="VEG-b6-sfx"/>
+                                        <outlet property="stoneSwitch" destination="E89-Qe-9WH" id="xTE-0k-wto"/>
+                                    </connections>
+                                </tableRow>
+                                <tableRow identifier="DimmerRow" selectable="NO" id="IaG-NB-r4Y" userLabel="DimmerRow" customClass="SliderRowController" customModule="WatchTower_Extension">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" id="g6y-03-gmv">
+                                        <items>
+                                            <separator height="1" heightAdjustment="-4" alignment="left" verticalAlignment="center" id="SQa-pM-Xre">
+                                                <color key="color" red="0.0" green="1" blue="0.29934893559999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </separator>
+                                            <group width="1" widthAdjustment="-4" alignment="right" layout="vertical" id="nFi-GN-S32">
+                                                <items>
+                                                    <group height="23" alignment="left" id="wuT-l7-MnV">
+                                                        <items>
+                                                            <label alignment="left" verticalAlignment="bottom" text="Name" id="ojp-Ff-jlx" userLabel="StoneName"/>
+                                                        </items>
+                                                    </group>
+                                                    <group width="1" height="38" alignment="right" layout="vertical" id="Tjp-9p-LUe">
+                                                        <items>
+                                                            <slider width="1" height="34" alignment="right" value="1" steps="6" id="xJt-bo-Vt3"/>
+                                                        </items>
+                                                    </group>
+                                                </items>
+                                            </group>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="background" destination="g6y-03-gmv" id="geJ-qa-723"/>
+                                        <outlet property="separator" destination="SQa-pM-Xre" id="uDy-zb-4Bb"/>
+                                        <outlet property="stoneName" destination="ojp-Ff-jlx" id="t6e-4x-fuy"/>
+                                        <outlet property="stoneSlider" destination="xJt-bo-Vt3" id="kg2-gD-dTZ"/>
+                                    </connections>
+                                </tableRow>
+                                <tableRow identifier="RssiRow" selectable="NO" id="h87-HI-st1" userLabel="RssiRow" customClass="RssiRowController" customModule="WatchTower_Extension">
+                                    <group key="rootItem" width="1" height="40" alignment="left" id="fph-8B-5DO">
+                                        <items>
+                                            <separator height="1" heightAdjustment="-4" alignment="left" verticalAlignment="center" id="lNU-W8-bHP">
+                                                <color key="color" red="0.0" green="1" blue="0.29934893559999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </separator>
+                                            <group width="1" widthAdjustment="-4" height="1" alignment="right" verticalAlignment="center" id="pVT-aT-XTF">
+                                                <items>
+                                                    <group width="0.69999999999999996" height="1" alignment="left" id="fgr-c8-XQe">
+                                                        <items>
+                                                            <label alignment="left" verticalAlignment="center" text="Name" id="RvV-Rn-Nvu" userLabel="StoneName"/>
+                                                        </items>
+                                                    </group>
+                                                    <group width="0.29999999999999999" alignment="right" verticalAlignment="center" id="flS-0i-oTN">
+                                                        <items>
+                                                            <label alignment="right" verticalAlignment="center" text="rssi" id="Rx8-OA-1R5"/>
+                                                        </items>
+                                                    </group>
+                                                </items>
+                                            </group>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="background" destination="fph-8B-5DO" id="NCG-Uu-6iI"/>
+                                        <outlet property="rssi" destination="Rx8-OA-1R5" id="6zk-z6-BXt"/>
+                                        <outlet property="separator" destination="lNU-W8-bHP" id="c1F-1q-e7G"/>
+                                        <outlet property="stoneName" destination="RvV-Rn-Nvu" id="DqR-45-dkT"/>
+                                    </connections>
+                                </tableRow>
+                                <tableRow identifier="EmptyRow" selectable="NO" id="Ol5-A5-0eu">
+                                    <group key="rootItem" width="1" height="40" alignment="left" alpha="0.0" id="JtT-O3-I4L"/>
+                                </tableRow>
+                            </items>
+                        </table>
+                    </items>
+                    <edgeInsets key="margins" left="1" right="1" top="0.0" bottom="0.0"/>
+                    <connections>
+                        <outlet property="csTable" destination="lGs-FV-8Bb" id="H9s-Wx-YYZ"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="497" y="343"/>
+        </scene>
+        <!--Switch-->
+        <scene sceneID="7UN-Ju-ypU">
+            <objects>
+                <controller identifier="DevStone2" title="Switch" id="4Ox-WU-azg" customClass="SwitchInterfaceController" customModule="WatchTower_Extension">
+                    <items>
+                        <table alignment="left" id="fIh-wG-Aou" userLabel="CsTable">
+                            <items>
+                                <tableRow identifier="SwitchRow" selectable="NO" id="Hkr-dk-lJF" customClass="SwitchRowController" customModule="WatchTower_Extension">
+                                    <group key="rootItem" width="1" height="40" alignment="left" id="1DD-PK-agZ">
+                                        <items>
+                                            <separator height="1" heightAdjustment="-4" alignment="left" verticalAlignment="center" id="w1I-3X-AXR">
+                                                <color key="color" red="0.0" green="1" blue="0.29934893559999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </separator>
+                                            <group width="1" widthAdjustment="-4" height="1" alignment="right" verticalAlignment="center" id="zI8-Vo-7Px">
+                                                <items>
+                                                    <label width="1" height="1" alignment="left" hidden="YES" text="Switching..." id="9Z8-gL-MOt"/>
+                                                    <group width="0.69999999999999996" height="1" alignment="left" id="ZQs-RF-ojv">
+                                                        <items>
+                                                            <label alignment="left" verticalAlignment="center" text="Name" id="wFD-Ce-uyb" userLabel="StoneName"/>
+                                                        </items>
+                                                    </group>
+                                                    <group width="0.29999999999999999" height="1" alignment="right" id="JuK-JJ-MmV">
+                                                        <items>
+                                                            <switch width="92" height="44" alignment="right" verticalAlignment="center" value="YES" id="WjY-vk-pcF">
+                                                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <connections>
+                                                                    <action selector="switchToggled:" destination="Hkr-dk-lJF" id="HqL-oa-8VJ"/>
+                                                                </connections>
+                                                            </switch>
+                                                        </items>
+                                                    </group>
+                                                </items>
+                                            </group>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="background" destination="1DD-PK-agZ" id="Gqs-7y-7T0"/>
+                                        <outlet property="loadingText" destination="9Z8-gL-MOt" id="Dtu-Cf-VXg"/>
+                                        <outlet property="separator" destination="w1I-3X-AXR" id="QTc-M7-Ixt"/>
+                                        <outlet property="stoneName" destination="wFD-Ce-uyb" id="CGL-he-u7I"/>
+                                        <outlet property="stoneSwitch" destination="WjY-vk-pcF" id="MbI-Xa-F1F"/>
+                                    </connections>
+                                </tableRow>
+                                <tableRow identifier="DimmerRow" selectable="NO" id="teZ-Ip-t7E" userLabel="DimmerRow" customClass="SliderRowController" customModule="WatchTower_Extension">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" id="oM5-fa-5um">
+                                        <items>
+                                            <separator height="1" heightAdjustment="-4" alignment="left" verticalAlignment="center" id="sjg-X5-aHJ">
+                                                <color key="color" red="0.0" green="1" blue="0.29934893559999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </separator>
+                                            <group width="1" widthAdjustment="-4" alignment="right" layout="vertical" id="GWk-Cj-ppL">
+                                                <items>
+                                                    <group height="23" alignment="left" id="fZd-Ph-66h">
+                                                        <items>
+                                                            <label alignment="left" verticalAlignment="bottom" text="Name" id="dit-tb-f2q" userLabel="StoneName"/>
+                                                        </items>
+                                                    </group>
+                                                    <group width="1" height="38" alignment="right" layout="vertical" id="goK-Wq-Fli">
+                                                        <items>
+                                                            <slider width="1" height="34" alignment="right" value="1" steps="6" id="fO1-Qw-JyD"/>
+                                                        </items>
+                                                    </group>
+                                                </items>
+                                            </group>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="background" destination="oM5-fa-5um" id="yHM-Cw-nya"/>
+                                        <outlet property="separator" destination="sjg-X5-aHJ" id="quX-DS-G3d"/>
+                                        <outlet property="stoneName" destination="dit-tb-f2q" id="oLV-pl-A1s"/>
+                                        <outlet property="stoneSlider" destination="fO1-Qw-JyD" id="Zvj-p8-2SA"/>
+                                    </connections>
+                                </tableRow>
+                                <tableRow identifier="RssiRow" selectable="NO" id="nDg-pb-TtH" userLabel="RssiRow" customClass="RssiRowController" customModule="WatchTower_Extension">
+                                    <group key="rootItem" width="1" height="40" alignment="left" id="3gU-TH-tIJ">
+                                        <items>
+                                            <separator height="1" heightAdjustment="-4" alignment="left" verticalAlignment="center" id="Hym-WN-y2k">
+                                                <color key="color" red="0.0" green="1" blue="0.29934893559999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </separator>
+                                            <group width="1" widthAdjustment="-4" height="1" alignment="right" verticalAlignment="center" id="6ux-xX-bAI">
+                                                <items>
+                                                    <group width="0.69999999999999996" height="1" alignment="left" id="lw6-DL-MdE">
+                                                        <items>
+                                                            <label alignment="left" verticalAlignment="center" text="Name" id="MTK-kI-2ya" userLabel="StoneName"/>
+                                                        </items>
+                                                    </group>
+                                                    <group width="0.29999999999999999" alignment="right" verticalAlignment="center" id="GtY-bB-u2i">
+                                                        <items>
+                                                            <label alignment="right" verticalAlignment="center" text="rssi" id="MuB-RL-G7r"/>
+                                                        </items>
+                                                    </group>
+                                                </items>
+                                            </group>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="background" destination="3gU-TH-tIJ" id="gBX-IT-Rey"/>
+                                        <outlet property="rssi" destination="MuB-RL-G7r" id="p2o-G9-Jpf"/>
+                                        <outlet property="separator" destination="Hym-WN-y2k" id="vFF-CL-ETV"/>
+                                        <outlet property="stoneName" destination="MTK-kI-2ya" id="1dX-Ib-b6w"/>
+                                    </connections>
+                                </tableRow>
+                            </items>
+                        </table>
+                    </items>
+                    <connections>
+                        <outlet property="csTable" destination="fIh-wG-Aou" id="9x3-ZV-yxk"/>
+                        <segue destination="AgC-eL-Hgc" kind="relationship" relationship="nextPage" id="fGY-y2-pH0"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="-4" y="345"/>
+        </scene>
+        <!--Static Notification Interface Controller-->
+        <scene sceneID="AEw-b0-oYE">
+            <objects>
+                <notificationController id="YCC-NB-fut">
+                    <items>
+                        <label alignment="left" text="Alert Label" numberOfLines="0" id="IdU-wH-bcW"/>
+                    </items>
+                    <notificationCategory key="notificationCategory" identifier="myCategory" id="JfB-70-Muf"/>
+                    <connections>
+                        <outlet property="notificationAlertLabel" destination="IdU-wH-bcW" id="JKC-fr-R95"/>
+                        <segue destination="4sK-HA-Art" kind="relationship" relationship="dynamicNotificationInterface" id="kXh-Jw-8B1"/>
+                        <segue destination="eXb-UN-Cd0" kind="relationship" relationship="dynamicInteractiveNotificationInterface" id="mpB-YA-K8N"/>
+                    </connections>
+                </notificationController>
+            </objects>
+            <point key="canvasLocation" x="220" y="643"/>
+        </scene>
+        <!--Notification Controller-->
+        <scene sceneID="ZPc-GJ-vnh">
+            <objects>
+                <controller id="4sK-HA-Art" customClass="NotificationController" customModule="WatchTower" customModuleProvider="target"/>
+            </objects>
+            <point key="canvasLocation" x="468" y="643"/>
+        </scene>
+        <!--Notification Controller-->
+        <scene sceneID="Niz-AI-uX2">
+            <objects>
+                <controller id="eXb-UN-Cd0" customClass="NotificationController" customModule="WatchTower" customModuleProvider="target"/>
+            </objects>
+            <point key="canvasLocation" x="220" y="974"/>
+        </scene>
+    </scenes>
+    <color key="tintColor" red="0.0" green="1" blue="0.29934893559999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+</document>

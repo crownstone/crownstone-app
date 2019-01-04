@@ -35,7 +35,8 @@ import { Sentry }                from "react-native-sentry";
 import { ActivityLogManager }    from "./ActivityLogManager";
 import { ToonIntegration }       from "./thirdParty/ToonIntegration";
 import { EncryptionManager }     from "../native/libInterface/Encryption";
-import { SessionMemory } from "../util/SessionMemory";
+import { SessionMemory }         from "../util/SessionMemory";
+import { BroadcastStateManager } from "./BroadcastStateManager";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -88,12 +89,6 @@ class BackgroundProcessHandlerClass {
 
         // disable battery saving (meaning, no BLE scans reach the app)
         Bluenet.batterySaving(false);
-
-        // start scanning when the BLE manager is ready.
-        BluenetPromiseWrapper.isReady().then(() => {
-          LOG.info("BackgroundProcessHandler: Start Scanning. now.");
-          return Bluenet.startScanningForCrownstonesUniqueOnly();
-        });
 
         // initialize logging to file if this is required.
         this.setupLogging();
@@ -457,6 +452,7 @@ class BackgroundProcessHandlerClass {
     Permissions.loadStore(this.store, this.userLoggedIn);
     ActivityLogManager.loadStore(this.store);
     ToonIntegration.loadStore(this.store);
+    BroadcastStateManager.loadStore(this.store);
 
     BleLogger.init();
   }

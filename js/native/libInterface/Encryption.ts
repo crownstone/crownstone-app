@@ -1,6 +1,7 @@
 import { Alert, AppState }       from 'react-native';
 import { eventBus } from "../../util/EventBus";
 import { BluenetPromiseWrapper } from "./BluenetPromise";
+import { Bluenet } from "./Bluenet";
 
 
 class EncryptionManagerClass {
@@ -28,16 +29,21 @@ class EncryptionManagerClass {
     for (let i = 0; i < sphereIds.length; i++) {
       let sphere = state.spheres[sphereIds[i]];
       keysets.push({
-        adminKey:  sphere.config.adminKey,
-        memberKey: sphere.config.memberKey,
-        guestKey:  sphere.config.guestKey,
+        adminKey:    sphere.config.adminKey,
+        memberKey:   sphere.config.memberKey,
+        guestKey:    sphere.config.guestKey,
         referenceId: sphereIds[i],
-        iBeaconUuid: sphere.config.ibeaon
+        iBeaconUuid: sphere.config.iBeaconUUID
       });
     }
 
-    BluenetPromiseWrapper.setKeySets(keysets)
-      .catch((err) => { console.log("Error EncryptionManager:", err);})
+    if (keysets.length == 0) {
+      Bluenet.clearKeySets()
+    }
+    else {
+      BluenetPromiseWrapper.setKeySets(keysets)
+        .catch((err) => { console.log("Error EncryptionManager:", err);})
+    }
   }
 }
 

@@ -13,10 +13,15 @@
 @interface RCT_EXTERN_MODULE(BluenetJS, RCTEventEmitter)
 
 
-RCT_EXTERN_METHOD(setKeySets:(NSDictionary *)keySets callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(clearKeySets)
+RCT_EXTERN_METHOD(setKeySets:(NSArray *)keySets callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(isReady:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(isPeripheralReady:(RCTResponseSenderBlock)callback)
 
 RCT_EXTERN_METHOD(rerouteEvents)
+RCT_EXTERN_METHOD(startAdvertising)
+RCT_EXTERN_METHOD(stopAdvertising)
+
 RCT_EXTERN_METHOD(startScanning)
 RCT_EXTERN_METHOD(startScanningForCrownstones)
 RCT_EXTERN_METHOD(startScanningForCrownstonesUniqueOnly)
@@ -116,6 +121,21 @@ RCT_EXTERN_METHOD(sendMeshNoOp:(RCTResponseSenderBlock)callback)
 
 
 RCT_EXTERN_METHOD(getTrackingState:(RCTResponseSenderBlock)callback)
+
+// Broadcast
+RCT_EXTERN_METHOD(broadcastSwitch:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId switchState:(nonnull NSNumber *)switchState callback:(RCTResponseSenderBlock)callback)
+
+
+// set states
+RCT_EXTERN_METHOD(setLocationState:(nonnull NSNumber *)sphereUID locationId:(nonnull NSNumber *)locationId profileIndex:(nonnull NSNumber *)profileIndex referenceId:(NSString *)referenceId)
+RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggle:(nonnull NSNumber *)tapToToggle)
+
+
+
+
+
+
+
 
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end

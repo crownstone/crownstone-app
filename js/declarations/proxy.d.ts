@@ -9,6 +9,7 @@ interface BluenetPromiseWrapperProtocol {
   getHardwareVersion()                          : Promise< string >,
   finalizeFingerprint(sphereId: string, locationId: string): Promise< void >,
   isReady()                                     : Promise< void >,
+  isPeripheralReady()                           : Promise< void >,
   keepAlive()                                   : Promise< void >,
   keepAliveState(changeState : boolean, state : number, timeout: number): Promise< void >,
   phoneDisconnect()                             : Promise< void >,
@@ -56,6 +57,8 @@ interface BluenetPromiseWrapperProtocol {
 
   getTrackingState()                            : Promise< trackingState >,
   isDevelopmentEnvironment()                    : Promise< boolean >,
+
+  broadcastSwitch(referenceId, stoneId, switchState):Promise< void >,
 }
 
 

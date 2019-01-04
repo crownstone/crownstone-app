@@ -13,6 +13,8 @@ import BluenetLib
 import BluenetShared
 import BluenetBasicLocalization
 
+import WatchConnectivity
+
 var GLOBAL_BLUENET : Portal?
 
 typealias voidCallback = () -> Void
@@ -25,11 +27,14 @@ typealias voidCallback = () -> Void
   open var classifier : CrownstoneBasicClassifier!
   
   open var devEnvironment = false
+  var watchBridge : WatchBridge!
   
   var subscriptions = [voidCallback]()
   
   init(viewController: UIViewController) {
     super.init()
+    self.watchBridge = WatchBridge()
+    
     BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
     BluenetLib.LOG.setTimestampPrinting(newState: true)
     self.classifier = CrownstoneBasicClassifier()
@@ -62,13 +67,13 @@ typealias voidCallback = () -> Void
   
   open func applicationDidEnterBackground() {
     // check if we have to use this to stop the scanning in the background
-    //self.bluenet.applicationDidEnterBackground()
+    self.bluenet.applicationDidEnterBackground()
     //self.bluenetLocalization.applicationDidEnterBackground()
   }
   
   open func applicationWillEnterForeground() {
     // check if we have to use this to stop the scanning in the background
-    // self.bluenet.applicationWillEnterForeground()
+     self.bluenet.applicationWillEnterForeground()
     // self.bluenetLocalization.applicationWillEnterForeground()
   }
   
@@ -106,4 +111,63 @@ func isDevelopmentEnvironment() -> Bool {
     }
   } catch {}
   return false
+}
+
+
+class WatchBridge: NSObject, WCSessionDelegate {
+  
+  override init() {
+    super.init()
+    if (WCSession.isSupported()) {
+      let session = WCSession.default()
+      session.delegate = self
+      print("Activating Session on iosApp")
+      session.activate()
+    }
+  }
+
+  func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+    print("Session. activationDidCompleteWith", activationState)
+  }
+  
+  func sessionDidBecomeInactive(_ session: WCSession) {
+    print("sessionDidBecomeInactive")
+  }
+  
+  public func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
+    print("didReceiveApplicationContext",applicationContext)
+  }
+  
+  func sessionDidDeactivate(_ session: WCSession) {
+    print("sessionDidDeactivate")
+  }
+  
+  
+  public func sessionReachabilityDidChange(_ session: WCSession) {
+    print("sessionReachabilityDidChange")
+  }
+  
+  
+  /** Called on the delegate of the receiver. Will be called on startup if the incoming message caused the receiver to launch. */
+  public func session(_ session: WCSession, didReceiveMessage message: [String : Any]){
+    print("didReceiveMessage")
+  }
+  
+  
+  /** Called on the delegate of the receiver when the sender sends a message that expects a reply. Will be called on startup if the incoming message caused the receiver to launch. */
+  public func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void){
+    print("didReceiveMessage")
+  }
+  
+  
+  /** Called on the delegate of the receiver. Will be called on startup if the incoming message data caused the receiver to launch. */
+  public func session(_ session: WCSession, didReceiveMessageData messageData: Data){
+    print("didReceiveMessageData")
+  }
+  
+  
+  /** Called on the delegate of the receiver when the sender sends message data that expects a reply. Will be called on startup if the incoming message data caused the receiver to launch. */
+  public func session(_ session: WCSession, didReceiveMessageData messageData: Data, replyHandler: @escaping (Data) -> Void){
+    print("didReceiveMessageData")
+  }
 }

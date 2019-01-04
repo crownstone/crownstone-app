@@ -9,7 +9,7 @@
 import Foundation
 import BluenetLib
 
-func getBleErrorString(_ err: BleError) -> String {
+func getBluenetErrorString(_ err: BluenetError) -> String {
   switch err {
   case .DISCONNECTED:
     return "DISCONNECTED"
@@ -145,5 +145,17 @@ func getBleErrorString(_ err: BleError) -> String {
     return "INVALID_SESSION_REFERENCE_ID"
   case .SETUP_FAILED:
     return "SETUP_FAILED"
+  case .INVALID_BROADCAST_ACCESS_LEVEL:
+    return "INVALID_BROADCAST_ACCESS_LEVEL"
+  case .INVALID_BROADCAST_LOCATION_ID:
+    return "INVALID_BROADCAST_LOCATION_ID"
+  case .INVALID_BROADCAST_PROFILE_INDEX:
+    return "INVALID_BROADCAST_PROFILE_INDEX"
+  case .INVALID_BROADCAST_PAYLOAD_SIZE:
+    return "INVALID_BROADCAST_PAYLOAD_SIZE"
+  case .BROADCAST_ERROR:
+    return "BROADCAST_ERROR"
+  case .BROADCAST_ABORTED:
+    return "BROADCAST_ABORTED"
   }
 }

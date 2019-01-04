@@ -64,6 +64,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
 export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
+  isPeripheralReady:   () => { return BluenetPromise('isPeripheralReady');    },
   connect:             (handle, referenceId, highPriority = true) => {
     // tell the app that something is connecting.
     eventBus.emit("connecting", handle, " with priority:", highPriority);
@@ -148,4 +149,5 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   getTrackingState:               () => { return BluenetPromise('getTrackingState'); },
   isDevelopmentEnvironment:       () => { return BluenetPromise('isDevelopmentEnvironment'); },
+  broadcastSwitch:                (referenceId, stoneId, switchState) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState); },
 };

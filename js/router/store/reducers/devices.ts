@@ -12,6 +12,8 @@ let defaultSettings = {
   locale: null,
   tapToToggleCalibration: null,
   installationId: null,
+
+  rssiOffset: 0,
   updatedAt: 1
 };
 
@@ -31,6 +33,13 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
         return newState;
       }
       return state;
+    case 'SET_RSSI_OFFSET':
+      if (action.data) {
+        let newState = {...state};
+        newState.rssiOffset = update(action.data.rssiOffset, newState.rssiOffset);
+        return newState;
+      }
+      return state;
     case 'ADD_DEVICE':
     case 'CLEAR_DEVICE_DETAILS':
     case 'UPDATE_DEVICE_CONFIG':
@@ -47,6 +56,7 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
         newState.locale                 = update(action.data.locale,                 newState.locale);
         newState.installationId         = update(action.data.installationId,         newState.installationId);
         newState.tapToToggleCalibration = update(action.data.tapToToggleCalibration, newState.tapToToggleCalibration);
+        newState.rssiOffset             = update(action.data.rssiOffset, newState.rssiOffset);
         newState.updatedAt              = getTime(action.data.updatedAt);
         return newState;
       }

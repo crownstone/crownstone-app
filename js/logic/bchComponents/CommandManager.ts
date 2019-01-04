@@ -178,9 +178,10 @@ export class CommandManager {
       let stoneConfig = stone.config;
 
       // we will not handle mesh commands if this crownstone is in a mesh network. (assuming mesh is globally enabled)
-      if (this.isMeshEnabledCommand(todo.command) && !addMeshEnabledCommands && stoneConfig.meshNetworkId !== null && stoneConfig.meshNetworkId !== undefined) {
-        continue;
-      }
+      // TODO: COMMENTED OUT AS CES OVERRIDE
+      // if (this.isMeshEnabledCommand(todo.command) && !addMeshEnabledCommands && stoneConfig.meshNetworkId !== null && stoneConfig.meshNetworkId !== undefined) {
+      //   continue;
+      // }
 
       this._extractDirectCommand(todo, targetStoneId, directCommands);
     }
@@ -198,44 +199,46 @@ export class CommandManager {
    * @private
    */
   extractMeshCommands(state, targetStoneId : string = null, targetNetworkId : string = null, allowRelayOnly : boolean = false) {
-    // This will determine if there are high priority commands to filter for, and if so return only those. If not, returns all.
-    let commandsToHandle = this._getCommandsToHandle(state);
-    let meshCommands : sphereMeshNetworks = {};
-
-    let uuids = Object.keys(commandsToHandle);
-    for (let i = 0; i < uuids.length; i++) {
-      let todo = commandsToHandle[uuids[i]];
-      if (!this.isMeshEnabledCommand(todo.command)) {
-        continue;
-      }
-      this._extractMeshCommand(state, todo, targetNetworkId, targetStoneId, meshCommands)
-    }
-
-
-    if (allowRelayOnly) {
-      return meshCommands;
-    }
-
-    // at this point, we only perform mesh commands if this is a direct connection as well. This will change in the future.
-    // because of this current limitation (connect directly and send full mesh payload to every node you directly connect to)
-    // we check now if there is a command for the targetStoneId in here. If not, return empty list.
-    let sphereIds = Object.keys(meshCommands);
-    for (let i = 0; i < sphereIds.length; i++) {
-      let meshNetworkIds = Object.keys(meshCommands[sphereIds[i]]);
-      for (let j = 0; j < meshNetworkIds.length; j++) {
-        let commands = meshCommands[sphereIds[i]][meshNetworkIds[j]];
-        let commandTypes = Object.keys(commands);
-        for (let k = 0; k < commandTypes.length; k++) {
-          let commandArray = commands[commandTypes[k]];
-          for (let l = 0; l < commandArray.length; l++) {
-            let command = commandArray[l];
-            if (command.stoneId === targetStoneId) {
-              return meshCommands;
-            }
-          }
-        }
-      }
-    }
+    // TODO: COMMENTED OUT AS CES OVERRIDE
+    //
+    // // This will determine if there are high priority commands to filter for, and if so return only those. If not, returns all.
+    // let commandsToHandle = this._getCommandsToHandle(state);
+    // let meshCommands : sphereMeshNetworks = {};
+    //
+    // let uuids = Object.keys(commandsToHandle);
+    // for (let i = 0; i < uuids.length; i++) {
+    //   let todo = commandsToHandle[uuids[i]];
+    //   if (!this.isMeshEnabledCommand(todo.command)) {
+    //     continue;
+    //   }
+    //   this._extractMeshCommand(state, todo, targetNetworkId, targetStoneId, meshCommands)
+    // }
+    //
+    //
+    // if (allowRelayOnly) {
+    //   return meshCommands;
+    // }
+    //
+    // // at this point, we only perform mesh commands if this is a direct connection as well. This will change in the future.
+    // // because of this current limitation (connect directly and send full mesh payload to every node you directly connect to)
+    // // we check now if there is a command for the targetStoneId in here. If not, return empty list.
+    // let sphereIds = Object.keys(meshCommands);
+    // for (let i = 0; i < sphereIds.length; i++) {
+    //   let meshNetworkIds = Object.keys(meshCommands[sphereIds[i]]);
+    //   for (let j = 0; j < meshNetworkIds.length; j++) {
+    //     let commands = meshCommands[sphereIds[i]][meshNetworkIds[j]];
+    //     let commandTypes = Object.keys(commands);
+    //     for (let k = 0; k < commandTypes.length; k++) {
+    //       let commandArray = commands[commandTypes[k]];
+    //       for (let l = 0; l < commandArray.length; l++) {
+    //         let command = commandArray[l];
+    //         if (command.stoneId === targetStoneId) {
+    //           return meshCommands;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     // we only return the mesh commands in the check above (the evil looking loops).
     return {};
