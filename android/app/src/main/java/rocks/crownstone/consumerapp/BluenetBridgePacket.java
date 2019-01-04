@@ -28,15 +28,22 @@ import java.util.List;
  * @author Bart van Vliet
  */
 public class BluenetBridgePacket implements ReactPackage {
+	private static BluenetBridge bluenetBridge = null;
+
 	@Override
 	public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
 		List<NativeModule> modules = new ArrayList<>();
-		modules.add(new BluenetBridge(reactContext));
+		bluenetBridge = new BluenetBridge(reactContext);
+		modules.add(bluenetBridge);
 		return modules;
 	}
 
 	@Override
 	public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
 		return Collections.emptyList();
+	}
+
+	public static void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		bluenetBridge.onRequestPermissionsResult(requestCode, permissions, grantResults);
 	}
 }

@@ -17,17 +17,19 @@ const BluenetAPI = {
   stopScanning:             () => { console.log("stopScanning:    ", arguments); },
   keepAliveState:           () => { console.log("keepAliveState:  ", arguments); },
   keepAlive:                () => { console.log("keepAlive:       ", arguments); },
-  requestBleState:          () => { console.log("requestBleState: ", arguments); },
+  requestBleState:          () => { console.log("requestBleState: ", arguments); },// Send events "bleStatus" and "locationStatus" with the current state.
 
   startIndoorLocalization:  () => { console.log("startIndoorLocalization: ", arguments); },
   stopIndoorLocalization:   () => { console.log("stopIndoorLocalization:  ", arguments); },
 
-  requestLocation:          () => { console.log("requestLocation:          ", arguments); },          // called through BluenetPromiseWrapper --> must be promise.
-  requestLocationPermission:() => { console.log("requestLocationPermission:", arguments); },
-  trackIBeacon:             () => { console.log("trackIBeacon:             ", arguments); },
-  stopTrackingIBeacon:      () => { console.log("stopTrackingIBeacon:      ", arguments); },
-  pauseTracking:            () => { console.log("pauseTracking:            ", arguments); },
-  resumeTracking:           () => { console.log("resumeTracking:           ", arguments); },
+  requestLocation:          () => { console.log("requestLocation:          ", arguments); },// Should return data {"latitude": number, "longitude": number}. Called through BluenetPromiseWrapper --> must be promise.
+  requestLocationPermission:() => { console.log("requestLocationPermission:", arguments); },// Request for location permission during tutorial.
+  trackIBeacon:             () => { console.log("trackIBeacon:             ", arguments); },// Add the UUID to the list of tracked iBeacons, associate it with given sphereId, and start tracking.
+  stopTrackingIBeacon:      () => { console.log("stopTrackingIBeacon:      ", arguments); },// Remove the UUID from the list of tracked iBeacons.
+  pauseTracking:            () => { console.log("pauseTracking:            ", arguments); },// Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
+  resumeTracking:           () => { console.log("resumeTracking:           ", arguments); },// Start tracking again, with the list that is already there.
+
+
 
   startCollectingFingerprint:  () => { console.log("startCollectingFingerprint:  ", arguments); },
   abortCollectingFingerprint:  () => { console.log("abortCollectingFingerprint:  ", arguments); },

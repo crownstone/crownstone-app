@@ -17,4 +17,10 @@ public class MainActivity extends ReactActivity {
     protected String getMainComponentName() {
         return "Crownstone";
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        BluenetBridgePacket.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }
