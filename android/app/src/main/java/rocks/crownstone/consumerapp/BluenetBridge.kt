@@ -940,18 +940,39 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun clearSchedule(scheduleEntryIndex: Int, callback: Callback) {
 		// Clears the schedule entry at given index.
+		bluenet.control.removeSchedule(scheduleEntryIndex.toShort())
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun getAvailableScheduleEntryIndex(callback: Callback) {
 		// Returns an empty spot in the schedule list.
+		bluenet.state.getAvailableScheduleEntryIndex()
+				.success { resolveCallback(callback, it) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun getSchedules(callback: Callback) {
 		// Returns an array of schedule entry maps.
+		bluenet.state.getScheduleList()
+				.success {
+					val scheduleArray = Arguments.createArray()
+					for (i in 0 until it.list.size) {
+						val entry = it.list[i]
+						if (!entry.isActive()) {
+							continue
+						}
+						val entryMap = exportScheduleEntryMap(entry) ?: continue
+						entryMap.putInt("scheduleEntryIndex", i)
+						scheduleArray.pushMap(entryMap)
+					}
+					resolveCallback(callback, scheduleArray)
+				}
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	/**
@@ -1028,6 +1049,76 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //			null
 //		}
 //		else packet
+	}
+
+	/**
+	 * Exports a ScheduleEntryPacket to a schedule entry map.
+	 * @param packet the packet.
+	 * @return the map, or null when inactive or when parsing failed.
+	 */
+	private fun exportScheduleEntryMap(packet: ScheduleEntryPacket): WritableMap? {
+		if (!packet.isActive()) {
+			return null
+		}
+		val map = Arguments.createMap()
+		map.putBoolean("active", true)
+		map.putDouble("nextTime", packet.timestamp.toDouble())
+		map.putBoolean("ignoreLocationTriggers", packet.overrideMask.location)
+
+		// Repeat type
+		// Always fill all values with something.
+		map.putInt("intervalInMinutes", 0)
+		map.putBoolean("activeSunday", false)
+		map.putBoolean("activeMonday", false)
+		map.putBoolean("activeTuesday", false)
+		map.putBoolean("activeWednesday", false)
+		map.putBoolean("activeThursday", false)
+		map.putBoolean("activeFriday", false)
+		map.putBoolean("activeSaturday", false)
+		when (packet.repeatType) {
+			ScheduleRepeatType.MINUTES -> {
+				map.putString("repeatMode", "minute")
+				map.putInt("intervalInMinutes", packet.minutes)
+			}
+			ScheduleRepeatType.DAY -> {
+				map.putString("repeatMode", "24h")
+				map.putBoolean("activeSunday", packet.dayOfWeekMask.sunday)
+				map.putBoolean("activeMonday", packet.dayOfWeekMask.monday)
+				map.putBoolean("activeTuesday", packet.dayOfWeekMask.tuesday)
+				map.putBoolean("activeWednesday", packet.dayOfWeekMask.wednesday)
+				map.putBoolean("activeThursday", packet.dayOfWeekMask.thursday)
+				map.putBoolean("activeFriday", packet.dayOfWeekMask.friday)
+				map.putBoolean("activeSaturday", packet.dayOfWeekMask.saturday)
+			}
+			ScheduleRepeatType.ONCE -> {
+				map.putString("repeatMode", "none")
+			}
+			else -> {
+				Log.e(TAG, "wrong schedule entry: " + packet.toString())
+				return null
+			}
+		}
+
+		// Action type
+		// Always fill all values with something invalid.
+		map.putDouble("switchState", 0.0)
+		map.putInt("fadeDuration", 0)
+		when (packet.actionType) {
+			ScheduleActionType.SWITCH -> {
+				map.putDouble("switchState", convertSwitchVal(packet.switchVal))
+			}
+			ScheduleActionType.FADE -> {
+				map.putDouble("switchState", convertSwitchVal(packet.switchVal))
+				map.putInt("fadeDuration", packet.fadeDuration)
+			}
+			ScheduleActionType.TOGGLE -> {
+				return null
+			}
+			else -> {
+				return null
+			}
+		}
+		return map
 	}
 
 
