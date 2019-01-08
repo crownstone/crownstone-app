@@ -163,6 +163,7 @@ export class Dropdown extends Component<any, any> {
             this.setState({open:!this.state.open});
           }}>
             <View style={[styles.listView, {height:this.props.barHeight}]}>
+              {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
               {this.props.valueRight === true ?
                 <Text style={[{fontSize:16}, this.props.labelStyle]}>{this.props.label}</Text>
                 :

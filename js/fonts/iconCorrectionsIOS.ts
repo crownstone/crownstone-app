@@ -380,7 +380,9 @@ const ioniconCorrectionsIOS = {
   'ios-trash':                     {change: true, top: +0.020, left: +0.000},
   'ios-warning':                   {change: true, top: -0.020, left: +0.000},
   'ios-more':                      {change: true, top: +0.045, left: +0.000},
+  'ios-wifi':                      {change: true, top: +0.045, left: +0.000},
 
+  'md-wifi':                       {change: true, top: -0.020, left: +0.005},
   'md-arrow-dropright':            {change: true, top: +0.045, left: +0.055},
   'md-analytics':                  {change: true, top: +0.045, left: +0.000},
   'md-switch':                     {change: true, top: +0.045, left: +0.000},

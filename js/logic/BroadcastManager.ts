@@ -1,5 +1,5 @@
 import { Platform, AppState } from 'react-native'
-import { BroadcastStateManager } from "./BroadcastStateManager";
+import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 
 export const BROADCAST_ERRORS = {
   CANNOT_BROADCAST:     { message: "CANNOT_BROADCAST",     fatal: false},
@@ -19,7 +19,17 @@ class BroadcastManagerClass {
   broadcast(commandData) : Promise<bchReturnType> {
     // double check here, this api should be able to be used
     if (this.canBroadcast(commandData)) {
-      return BroadcastStateManager.load(commandData);
+      // TODO: make generic
+      console.log("Switching via broadcast")
+      return BluenetPromiseWrapper.broadcastSwitch(commandData.sphereId, commandData.stone.config.crownstoneId, commandData.command.state)
+        .then(() => {
+          console.log("Success broadcast", commandData.command.state)
+          return { data: null }
+        })
+        .catch((err) => {
+          console.log("ERROR broadcast", commandData.command.state)
+          throw err
+        })
     }
     else {
       return new Promise((resolve, reject) => { reject( BROADCAST_ERRORS.CANNOT_BROADCAST ); })
@@ -27,8 +37,10 @@ class BroadcastManagerClass {
   }
 
   canBroadcast(commandData) {
+
+
     // check if this is a valid command
-    if (!(commandData && commandData.command && commandData.commandName)) {
+    if (!(commandData && commandData.command && commandData.command.commandName)) {
       return false;
     }
 

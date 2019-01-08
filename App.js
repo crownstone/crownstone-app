@@ -20,8 +20,6 @@ export class Root extends Component {
   // this is used to scroll the view up when typing is active
   componentDidMount() {
     if (Platform.OS === 'ios') {
-
-
       SplashScreen.hide();
 
       let keyboardHeight = null;

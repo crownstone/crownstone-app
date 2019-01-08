@@ -229,37 +229,45 @@ lang("_No_device_Id___There_was_body"),
         }});
     }
 
-    items.push({label: lang("DO_NOT_USE"), type: 'explanation'});
+
+    let broadcastLevels = []
+    for (let i = -16; i <= 14; i = i+2) {
+      broadcastLevels.push({value: i, label: i + " dB"});
+    }
+
+    items.push({ label: "BROADCASTING", type: 'explanation', below: false });
     items.push({
-      label: lang("Use_Advertisement_RSSI"),
-      value: dev.use_advertisement_rssi_too,
+      label: "Broadcasting",
+      value: dev.broadcasting_enabled,
       type: 'switch',
-      icon: <IconButton name="md-git-network" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+      icon: <IconButton name="md-wifi" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
       callback:(newValue) => {
-        let execute = () => {
-          store.dispatch({
-            type: 'CHANGE_DEV_SETTINGS',
-            data: {
-              use_advertisement_rssi_too: newValue,
-            }
-          });
-        };
-
-        if (newValue === true) {
-          Alert.alert(
-lang("_Are_you_sure___Only_enab_header"),
-lang("_Are_you_sure___Only_enab_body"),
-[{text:lang("_Are_you_sure___Only_enab_left")}, {
-text:lang("_Are_you_sure___Only_enab_right"), onPress: execute}])
-        }
-        else {
-          execute();
-        }
+        store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { broadcasting_enabled: newValue }});
       }});
-    items.push({label: lang("By_default_we_use_iBeacon"), type: 'explanation', below: true});
+    let deviceId = Util.data.getCurrentDeviceId(state);
+    if (deviceId) {
+      let device = state.devices[deviceId]
+      items.push({
+        type: 'dropdown',
+        label: "RSSI Offset",
+        dropdownHeight: 130,
+        valueRight: true,
+        buttons: true,
+        icon: <IconButton name="ios-wifi" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+        valueStyle: { color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15 },
+        value: device.rssiOffset,
+        items: broadcastLevels,
+        callback: (newValue) => {
+          this.props.store.dispatch({ type: "SET_RSSI_OFFSET", deviceId: deviceId, data: {rssiOffset: newValue}})
+        }
+      })
+    }
+    else {
+      items.push({ label: "No Device Available", type: 'explanation', below: false });
+    }
 
 
-    items.push({label: lang("MESH"), type: 'explanation', below: false, alreadyPadded: true});
+    items.push({label: lang("MESH"), type: 'explanation', below: false});
     items.push({
       label: lang("Change_Channels"),
       type: 'navigation',

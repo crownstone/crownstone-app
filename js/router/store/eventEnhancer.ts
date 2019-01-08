@@ -211,6 +211,7 @@ function checkAction(action, affectedIds) {
     case "ADD_DEVICE":
     case "UPDATE_DEVICE_CONFIG":
     case "CLEAR_DEVICE_DETAILS":
+    case "SET_RSSI_OFFSET":
     case "REMOVE_DEVICE":
       eventStatus['changeDeviceData'] = affectedIds; break;
     case "SET_SPHERE_MESSAGE_STATE":

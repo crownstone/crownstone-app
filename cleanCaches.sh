@@ -6,9 +6,6 @@ watchman watch-del-all
 # Remove installed modules
 rm -rf node_modules
 
-# Remove yarn meta files
-rm yarn*
-
 # Install only fresh copies
 yarn cache clean
 yarn

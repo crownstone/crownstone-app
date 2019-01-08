@@ -49,8 +49,30 @@
 		FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D31FC46359001C8FD6 /* Portal.swift */; };
 		FA0177D61FC46385001C8FD6 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D51FC46385001C8FD6 /* Logger.swift */; };
 		FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D71FC46412001C8FD6 /* EventEmitter.swift */; };
+		FA0DD9B621DE863400824ABF /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B321DE863300824ABF /* SwiftyJSON.framework */; };
+		FA0DD9B721DE863400824ABF /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B421DE863300824ABF /* PromiseKit.framework */; };
+		FA0DD9B821DE863400824ABF /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B521DE863300824ABF /* CryptoSwift.framework */; };
+		FA0DD9BC21DF642400824ABF /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B521DE863300824ABF /* CryptoSwift.framework */; };
+		FA0DD9BD21DF642400824ABF /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B521DE863300824ABF /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FA0DD9BE21DF642400824ABF /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B421DE863300824ABF /* PromiseKit.framework */; };
+		FA0DD9BF21DF642400824ABF /* PromiseKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B421DE863300824ABF /* PromiseKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FA0DD9C021DF642400824ABF /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B321DE863300824ABF /* SwiftyJSON.framework */; };
+		FA0DD9C121DF642400824ABF /* SwiftyJSON.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B321DE863300824ABF /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FA0DD9CD21DFCCED00824ABF /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0DD9CC21DFCCED00824ABF /* DataStore.swift */; };
+		FA0DD9D321DFE16C00824ABF /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D221DFE16C00824ABF /* BluenetLib.framework */; };
+		FA0DD9D521DFE17A00824ABF /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
+		FA0DD9D621DFE23D00824ABF /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
+		FA0DD9D721DFE47100824ABF /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
+		FA0DD9D821DFE47100824ABF /* BluenetWatch.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
-		FA53A0A02174D5EA0007FB68 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA53A09F2174D5EA0007FB68 /* BluenetLib.framework */; };
+		FA4722B921DE7463008795C5 /* SwitchableStone.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722B521DE7462008795C5 /* SwitchableStone.swift */; };
+		FA4722BE21DE7473008795C5 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BB21DE7473008795C5 /* Events.swift */; };
+		FA4722BF21DE7473008795C5 /* BluenetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BC21DE7473008795C5 /* BluenetManager.swift */; };
+		FA4722C021DE7474008795C5 /* SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BD21DE7473008795C5 /* SessionDelegate.swift */; };
+		FA4722C121DE7499008795C5 /* SortedCrownstoneCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6EF21CCF06B00811933 /* SortedCrownstoneCollection.swift */; };
+		FA4722C221DE74A6008795C5 /* RssiRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F321CCF07000811933 /* RssiRowController.swift */; };
+		FA4722C321DE74A8008795C5 /* SwitchRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F221CCF07000811933 /* SwitchRowController.swift */; };
+		FA4722C421DE74AB008795C5 /* SliderRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F121CCF07000811933 /* SliderRowController.swift */; };
 		FA570EA91EAE30F9001C625D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */; };
 		FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA31EAE30F9001C625D /* BluenetShared.framework */; };
 		FA570EAC1EAE30F9001C625D /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA41EAE30F9001C625D /* CryptoSwift.framework */; };
@@ -69,6 +91,17 @@
 		FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DCE020F3AD70002A795E /* EventBus.swift */; };
 		FA60DD1820F3ADA7002A795E /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DD1720F3ADA7002A795E /* Util.swift */; };
 		FA6FBC6B20A98EBD00EEEF18 /* Crownstone2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */; };
+		FA86C68221CCEECD00811933 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA86C68021CCEECD00811933 /* Interface.storyboard */; };
+		FA86C68421CCEECF00811933 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA86C68321CCEECF00811933 /* Assets.xcassets */; };
+		FA86C68B21CCEECF00811933 /* WatchTower Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FA86C69821CCEED000811933 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA86C69721CCEED000811933 /* Assets.xcassets */; };
+		FA86C69D21CCEED000811933 /* WatchTower.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = FA86C67E21CCEECD00811933 /* WatchTower.app */; };
+		FA86C6E721CCF05C00811933 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6DD21CCF04600811933 /* NotificationController.swift */; };
+		FA86C6E821CCF05C00811933 /* SwitchInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6DF21CCF04C00811933 /* SwitchInterfaceController.swift */; };
+		FA86C6EA21CCF05C00811933 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E121CCF05200811933 /* ExtensionDelegate.swift */; };
+		FA86C6EB21CCF05C00811933 /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E221CCF05500811933 /* InterfaceController.swift */; };
+		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
+		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -429,6 +462,20 @@
 			remoteGlobalIDString = CEA144EE1F3EE8E400D40E5D;
 			remoteInfo = RCTToast;
 		};
+		FA86C68C21CCEECF00811933 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA86C68921CCEECF00811933;
+			remoteInfo = "WatchTower Extension";
+		};
+		FA86C69B21CCEED000811933 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA86C67D21CCEECD00811933;
+			remoteInfo = WatchTower;
+		};
 		FAB0B1B01FA75AAC005649C3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = EC36535A5433491E89F826E6 /* SplashScreen.xcodeproj */;
@@ -444,6 +491,45 @@
 			remoteInfo = ReactNativeCameraKit;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FA0DD9C521DF642400824ABF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				FA0DD9D821DFE47100824ABF /* BluenetWatch.framework in Embed Frameworks */,
+				FA0DD9BD21DF642400824ABF /* CryptoSwift.framework in Embed Frameworks */,
+				FA0DD9BF21DF642400824ABF /* PromiseKit.framework in Embed Frameworks */,
+				FA0DD9C121DF642400824ABF /* SwiftyJSON.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86C6D721CCEED000811933 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				FA86C68B21CCEECF00811933 /* WatchTower Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86C6D921CCEED000811933 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				FA86C69D21CCEED000811933 /* WatchTower.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
@@ -504,8 +590,17 @@
 		FA0177D31FC46359001C8FD6 /* Portal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Portal.swift; sourceTree = "<group>"; };
 		FA0177D51FC46385001C8FD6 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		FA0177D71FC46412001C8FD6 /* EventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmitter.swift; sourceTree = "<group>"; };
+		FA0DD9B321DE863300824ABF /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/watchOS/SwiftyJSON.framework; sourceTree = "<group>"; };
+		FA0DD9B421DE863300824ABF /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/watchOS/PromiseKit.framework; sourceTree = "<group>"; };
+		FA0DD9B521DE863300824ABF /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/watchOS/CryptoSwift.framework; sourceTree = "<group>"; };
+		FA0DD9CC21DFCCED00824ABF /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		FA0DD9D221DFE16C00824ABF /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
+		FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetWatch.framework; path = Carthage/Build/watchOS/BluenetWatch.framework; sourceTree = "<group>"; };
 		FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = imageAssets.xcassets; sourceTree = "<group>"; };
-		FA53A09F2174D5EA0007FB68 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
+		FA4722B521DE7462008795C5 /* SwitchableStone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableStone.swift; sourceTree = "<group>"; };
+		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
+		FA4722BC21DE7473008795C5 /* BluenetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluenetManager.swift; sourceTree = "<group>"; };
+		FA4722BD21DE7473008795C5 /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
 		FA5459E2209B17AB0062E4DC /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
 		FA570EA31EAE30F9001C625D /* BluenetShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetShared.framework; path = Carthage/Build/iOS/BluenetShared.framework; sourceTree = "<group>"; };
@@ -528,6 +623,25 @@
 		FA60DD1720F3ADA7002A795E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone2.ttf; path = ../js/fonts/Crownstone2.ttf; sourceTree = "<group>"; };
 		FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
+		FA86C67E21CCEECD00811933 /* WatchTower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchTower.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA86C68121CCEECD00811933 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		FA86C68321CCEECF00811933 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FA86C68521CCEECF00811933 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "WatchTower Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA86C69721CCEED000811933 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FA86C69921CCEED000811933 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA86C69A21CCEED000811933 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
+		FA86C6DA21CCF03B00811933 /* WatchTower Extension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WatchTower Extension-Bridging-Header.h"; sourceTree = "<group>"; };
+		FA86C6DD21CCF04600811933 /* NotificationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		FA86C6DF21CCF04C00811933 /* SwitchInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchInterfaceController.swift; sourceTree = "<group>"; };
+		FA86C6E121CCF05200811933 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
+		FA86C6E221CCF05500811933 /* InterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
+		FA86C6E321CCF05900811933 /* ComplicationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
+		FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSInterfaceController.swift; sourceTree = "<group>"; };
+		FA86C6EF21CCF06B00811933 /* SortedCrownstoneCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedCrownstoneCollection.swift; sourceTree = "<group>"; };
+		FA86C6F121CCF07000811933 /* SliderRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderRowController.swift; sourceTree = "<group>"; };
+		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
+		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -560,7 +674,7 @@
 				FA570EA91EAE30F9001C625D /* BluenetBasicLocalization.framework in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				FA570EAF1EAE30F9001C625D /* SwiftyJSON.framework in Frameworks */,
-				FA53A0A02174D5EA0007FB68 /* BluenetLib.framework in Frameworks */,
+				FA0DD9D321DFE16C00824ABF /* BluenetLib.framework in Frameworks */,
 				FA570EAD1EAE30F9001C625D /* iOSDFULibrary.framework in Frameworks */,
 				FA570EAE1EAE30F9001C625D /* PromiseKit.framework in Frameworks */,
 				C1770742DC1E48B386AA917E /* libRNDeviceInfo.a in Frameworks */,
@@ -576,6 +690,29 @@
 				4A2622C0CA5640CCB446C481 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
 				F55DE0D9CEA9436186D7D431 /* libSplashScreen.a in Frameworks */,
 				201EEBBEB1084954847858C1 /* libReactNativeCameraKit.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA0DD9C421DF642400824ABF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA0DD9D621DFE23D00824ABF /* BluenetWatch.framework in Frameworks */,
+				FA0DD9BC21DF642400824ABF /* CryptoSwift.framework in Frameworks */,
+				FA0DD9BE21DF642400824ABF /* PromiseKit.framework in Frameworks */,
+				FA0DD9C021DF642400824ABF /* SwiftyJSON.framework in Frameworks */,
+				FA0DD9D721DFE47100824ABF /* BluenetWatch.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86C68721CCEECF00811933 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA0DD9D521DFE17A00824ABF /* BluenetWatch.framework in Frameworks */,
+				FA0DD9B721DE863400824ABF /* PromiseKit.framework in Frameworks */,
+				FA0DD9B621DE863400824ABF /* SwiftyJSON.framework in Frameworks */,
+				FA0DD9B821DE863400824ABF /* CryptoSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -767,7 +904,11 @@
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
 				FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
-				FA53A09F2174D5EA0007FB68 /* BluenetLib.framework */,
+				FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */,
+				FA0DD9B521DE863300824ABF /* CryptoSwift.framework */,
+				FA0DD9B421DE863300824ABF /* PromiseKit.framework */,
+				FA0DD9B321DE863300824ABF /* SwiftyJSON.framework */,
+				FA0DD9D221DFE16C00824ABF /* BluenetLib.framework */,
 				FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
@@ -778,6 +919,8 @@
 				13B07FAE1A68108700A75B9A /* Crownstone */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* CrownstoneTests */,
+				FA86C67F21CCEECD00811933 /* WatchTower */,
+				FA86C68E21CCEECF00811933 /* WatchTower Extension */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				DC38B87588674F1DBCA52964 /* Resources */,
 				FAE1EF5C1F73DF96009C1E97 /* Recovered References */,
@@ -792,6 +935,8 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* Crownstone.app */,
 				00E356EE1AD99517003FC87E /* CrownstoneTests.xctest */,
+				FA86C67E21CCEECD00811933 /* WatchTower.app */,
+				FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -843,6 +988,25 @@
 				FA570EB61EAE320F001C625D /* NativeBridge.m */,
 			);
 			path = BridgeObjCFiles;
+			sourceTree = "<group>";
+		};
+		FA4722B421DE7462008795C5 /* ContainerTypes */ = {
+			isa = PBXGroup;
+			children = (
+				FA4722B521DE7462008795C5 /* SwitchableStone.swift */,
+			);
+			path = ContainerTypes;
+			sourceTree = "<group>";
+		};
+		FA4722BA21DE7473008795C5 /* Logic */ = {
+			isa = PBXGroup;
+			children = (
+				FA4722BB21DE7473008795C5 /* Events.swift */,
+				FA4722BC21DE7473008795C5 /* BluenetManager.swift */,
+				FA4722BD21DE7473008795C5 /* SessionDelegate.swift */,
+				FA0DD9CC21DFCCED00824ABF /* DataStore.swift */,
+			);
+			path = Logic;
 			sourceTree = "<group>";
 		};
 		FA5459D7209B14A80062E4DC /* Frameworks */ = {
@@ -944,6 +1108,55 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FA86C67F21CCEECD00811933 /* WatchTower */ = {
+			isa = PBXGroup;
+			children = (
+				FA86C68021CCEECD00811933 /* Interface.storyboard */,
+				FA86C68321CCEECF00811933 /* Assets.xcassets */,
+				FA86C68521CCEECF00811933 /* Info.plist */,
+			);
+			path = WatchTower;
+			sourceTree = "<group>";
+		};
+		FA86C68E21CCEECF00811933 /* WatchTower Extension */ = {
+			isa = PBXGroup;
+			children = (
+				FA86C69721CCEED000811933 /* Assets.xcassets */,
+				FA4722BA21DE7473008795C5 /* Logic */,
+				FA4722B421DE7462008795C5 /* ContainerTypes */,
+				FA86C6E321CCF05900811933 /* ComplicationController.swift */,
+				FA86C6F021CCF07000811933 /* Rows */,
+				FA86C6EE21CCF06B00811933 /* Util */,
+				FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */,
+				FA86C6E121CCF05200811933 /* ExtensionDelegate.swift */,
+				FA86C6E221CCF05500811933 /* InterfaceController.swift */,
+				FA86C6DD21CCF04600811933 /* NotificationController.swift */,
+				FA86C6DF21CCF04C00811933 /* SwitchInterfaceController.swift */,
+				FA86C69921CCEED000811933 /* Info.plist */,
+				FA86C69A21CCEED000811933 /* PushNotificationPayload.apns */,
+				FA86C6DA21CCF03B00811933 /* WatchTower Extension-Bridging-Header.h */,
+			);
+			path = "WatchTower Extension";
+			sourceTree = "<group>";
+		};
+		FA86C6EE21CCF06B00811933 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				FA86C6EF21CCF06B00811933 /* SortedCrownstoneCollection.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		FA86C6F021CCF07000811933 /* Rows */ = {
+			isa = PBXGroup;
+			children = (
+				FA86C6F121CCF07000811933 /* SliderRowController.swift */,
+				FA86C6F221CCF07000811933 /* SwitchRowController.swift */,
+				FA86C6F321CCF07000811933 /* RssiRowController.swift */,
+			);
+			path = Rows;
+			sourceTree = "<group>";
+		};
 		FAB0B1AD1FA75AAC005649C3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1011,15 +1224,53 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				FA570EB11EAE3131001C625D /* Run Script */,
 				9FEBB1779000454B8AE96738 /* Upload Debug Symbols to Sentry */,
+				FA86C6D921CCEED000811933 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FA86C69C21CCEED000811933 /* PBXTargetDependency */,
 			);
 			name = Crownstone;
 			productName = "Hello World";
 			productReference = 13B07F961A680F5B00A75B9A /* Crownstone.app */;
 			productType = "com.apple.product-type.application";
+		};
+		FA86C67D21CCEECD00811933 /* WatchTower */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA86C6D821CCEED000811933 /* Build configuration list for PBXNativeTarget "WatchTower" */;
+			buildPhases = (
+				FA86C67C21CCEECD00811933 /* Resources */,
+				FA86C6D721CCEED000811933 /* Embed App Extensions */,
+				FA0DD9C421DF642400824ABF /* Frameworks */,
+				FA0DD9C521DF642400824ABF /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA86C68D21CCEECF00811933 /* PBXTargetDependency */,
+			);
+			name = WatchTower;
+			productName = WatchTower;
+			productReference = FA86C67E21CCEECD00811933 /* WatchTower.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		FA86C68921CCEECF00811933 /* WatchTower Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA86C6D621CCEED000811933 /* Build configuration list for PBXNativeTarget "WatchTower Extension" */;
+			buildPhases = (
+				FA86C68621CCEECF00811933 /* Sources */,
+				FA86C68721CCEECF00811933 /* Frameworks */,
+				FA86C68821CCEECF00811933 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "WatchTower Extension";
+			productName = "WatchTower Extension";
+			productReference = FA86C68A21CCEECF00811933 /* WatchTower Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -1027,6 +1278,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1010;
 				LastUpgradeCheck = 610;
 				ORGANIZATIONNAME = Crownstone;
 				TargetAttributes = {
@@ -1045,6 +1297,17 @@
 								enabled = 1;
 							};
 						};
+					};
+					FA86C67D21CCEECD00811933 = {
+						CreatedOnToolsVersion = 10.1;
+						DevelopmentTeam = 6LYJ9PNC3V;
+						ProvisioningStyle = Automatic;
+					};
+					FA86C68921CCEECF00811933 = {
+						CreatedOnToolsVersion = 10.1;
+						DevelopmentTeam = 6LYJ9PNC3V;
+						LastSwiftMigration = 1010;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -1161,6 +1424,8 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* Crownstone */,
 				00E356ED1AD99517003FC87E /* CrownstoneTests */,
+				FA86C67D21CCEECD00811933 /* WatchTower */,
+				FA86C68921CCEECF00811933 /* WatchTower Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -1563,6 +1828,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA86C67C21CCEECD00811933 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA86C68421CCEECF00811933 /* Assets.xcassets in Resources */,
+				FA86C68221CCEECD00811933 /* Interface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA86C68821CCEECF00811933 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA86C69821CCEED000811933 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -1645,6 +1927,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA86C68621CCEECF00811933 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA86C6E721CCF05C00811933 /* NotificationController.swift in Sources */,
+				FA4722C021DE7474008795C5 /* SessionDelegate.swift in Sources */,
+				FA86C6EB21CCF05C00811933 /* InterfaceController.swift in Sources */,
+				FA4722C221DE74A6008795C5 /* RssiRowController.swift in Sources */,
+				FA4722BF21DE7473008795C5 /* BluenetManager.swift in Sources */,
+				FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */,
+				FA86C6E821CCF05C00811933 /* SwitchInterfaceController.swift in Sources */,
+				FA4722C421DE74AB008795C5 /* SliderRowController.swift in Sources */,
+				FA4722C321DE74A8008795C5 /* SwitchRowController.swift in Sources */,
+				FA4722C121DE7499008795C5 /* SortedCrownstoneCollection.swift in Sources */,
+				FA4722BE21DE7473008795C5 /* Events.swift in Sources */,
+				FA86C6EA21CCF05C00811933 /* ExtensionDelegate.swift in Sources */,
+				FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */,
+				FA0DD9CD21DFCCED00824ABF /* DataStore.swift in Sources */,
+				FA4722B921DE7463008795C5 /* SwitchableStone.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1653,7 +1957,28 @@
 			target = 13B07F861A680F5B00A75B9A /* Crownstone */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
+		FA86C68D21CCEECF00811933 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA86C68921CCEECF00811933 /* WatchTower Extension */;
+			targetProxy = FA86C68C21CCEECF00811933 /* PBXContainerItemProxy */;
+		};
+		FA86C69C21CCEED000811933 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA86C67D21CCEECD00811933 /* WatchTower */;
+			targetProxy = FA86C69B21CCEED000811933 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FA86C68021CCEECD00811933 /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA86C68121CCEECD00811933 /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
@@ -1780,6 +2105,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1801,7 +2127,7 @@
 					"$(SRCROOT)/../node_modules/react-native-webgl/**",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1828,6 +2154,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1849,7 +2176,7 @@
 					"$(SRCROOT)/../node_modules/react-native-webgl/**",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1898,7 +2225,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1933,10 +2260,202 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FA86C69E21CCEED000811933 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+					"$(PROJECT_DIR)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/watchOS";
+				IBSC_MODULE = WatchTower_Extension;
+				INFOPLIST_FILE = WatchTower/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 5.0;
+			};
+			name = Debug;
+		};
+		FA86C69F21CCEED000811933 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+					"$(PROJECT_DIR)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/watchOS";
+				IBSC_MODULE = WatchTower_Extension;
+				INFOPLIST_FILE = WatchTower/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 5.0;
+			};
+			name = Release;
+		};
+		FA86C6A021CCEED000811933 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "WatchTower Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "WatchTower Extension/WatchTower Extension-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 5.0;
+			};
+			name = Debug;
+		};
+		FA86C6A121CCEED000811933 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/watchOS",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "WatchTower Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "WatchTower Extension/WatchTower Extension-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 5.0;
 			};
 			name = Release;
 		};
@@ -1966,6 +2485,24 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA86C6D621CCEED000811933 /* Build configuration list for PBXNativeTarget "WatchTower Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA86C6A021CCEED000811933 /* Debug */,
+				FA86C6A121CCEED000811933 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA86C6D821CCEED000811933 /* Build configuration list for PBXNativeTarget "WatchTower" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA86C69E21CCEED000811933 /* Debug */,
+				FA86C69F21CCEED000811933 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -401,12 +401,6 @@ export class StoneEntity {
 
     /// tell the rest of the app this stone was seen, and its meshnetwork was heard from.
     this._emitUpdateEvents(stone, advertisement.rssi); // emit
-
-    const state = this.store.getState();
-    if (state.development.use_advertisement_rssi_too) {
-      this._updateRssi(advertisement.rssi);
-      this._handleBehaviour(state, stone);
-    }
   }
 
 
@@ -418,11 +412,6 @@ export class StoneEntity {
   handleDirectAdvertisement(stone, advertisement : crownstoneAdvertisement) {
     this._updateStoneLastSeen();
 
-    const state = this.store.getState();
-    if (state.development.use_advertisement_rssi_too) {
-      this._updateRssi(advertisement.rssi);
-    }
-
     // if this crownstone was disabled, change this since we saw it directly
     this._updateDisabledState();
 
@@ -431,10 +420,6 @@ export class StoneEntity {
 
     // tell the rest of the app this stone was seen, and its meshnetwork was heard from.
     this._emitUpdateEvents(stone, advertisement.rssi); // emit
-
-    if (state.development.use_advertisement_rssi_too) {
-      this._handleBehaviour(state, stone);
-    }
   }
 
 
