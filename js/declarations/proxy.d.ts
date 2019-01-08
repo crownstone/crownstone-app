@@ -88,7 +88,7 @@ interface crownstoneServiceData {
   rssiOfExternalCrownstone  : number, // Set to 0 when not external service data.
   errorMode                 : boolean, // True when service data is of type error.
   errors                    : errorData, // Has to be correct when errorMode is true.
-  uniqueElement             : number // partial timestamp, counter, etc
+  uniqueElement             : number // Partial timestamp, counter, etc. Is this required?
 }
 
 
@@ -96,11 +96,11 @@ interface crownstoneAdvertisement {
   handle              : string,
   name                : string,
   rssi                : number,
-  referenceId         : string,
-  isCrownstoneFamily  : boolean,
+  referenceId         : string, // Only required when advertisement is validated and crownstone is in normal mode?
+  isCrownstoneFamily  : boolean, // Only known when there is serviceData ?
   isInDFUMode         : boolean,
-  serviceUUID         : string,
-  serviceData         : crownstoneServiceData
+  serviceUUID         : string, // Is this required?
+  serviceData         : crownstoneServiceData // Can be missing sometimes?
 }
 
 

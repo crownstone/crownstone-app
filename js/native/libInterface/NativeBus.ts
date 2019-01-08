@@ -20,7 +20,7 @@ class NativeBusClass {
       setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = crownstoneAdvertisement
       dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = crownstoneAdvertisement
       advertisement:        "verifiedAdvertisementData",        // data type = crownstoneAdvertisement // = from crownstone in normal operation mode.
-      anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = crownstoneAdvertisement
+      anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = crownstoneAdvertisement // Never used, so maybe remove this?
       anyAdvertisementData: "anyAdvertisementData",             // data type = crownstoneAdvertisement
       unverifiedAdvertisementData:    "unverifiedAdvertisementData",  // data type = crownstoneAdvertisement
       setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error)
