@@ -21,6 +21,9 @@ import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
 import rocks.crownstone.bluenet.encryption.KeySet
 import rocks.crownstone.bluenet.packets.ControlPacket
+import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeout
+import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeoutItem
+import rocks.crownstone.bluenet.packets.keepAlive.MultiKeepAlivePacket
 import rocks.crownstone.bluenet.packets.meshCommand.MeshControlPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchListItemPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchListPacket
@@ -1126,25 +1129,56 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun keepAlive(callback: Callback) {
-
+		// Send a keep alive message with no action.
+		bluenet.control.keepAlive()
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
 	@Synchronized
-	fun keepAliveState(action: Boolean, state: Float, timeout: Int, callback: Callback) {
-
+	fun keepAliveState(actionBool: Boolean, state: Double, timeout: Int, callback: Callback) {
+		// Send a keep alive message with optional action.
+		val action = when (actionBool) {
+			true -> KeepAliveAction.CHANGE
+			false -> KeepAliveAction.NO_CHANGE
+		}
+		val switchVal = convertSwitchVal(state)
+		bluenet.control.keepAliveState(action, switchVal, timeout)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun meshKeepAlive(callback: Callback) {
-
+		// Make the crownstone resend the last keep alive message on the mesh.
+		bluenet.control.keepAliveMeshRepeat()
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun meshKeepAliveState(timeout: Int, keepAliveItems: ReadableArray, callback: Callback) {
-
+		// Make the crownstone send a keep alive message on the mesh.
+		// keepAliveItems = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
+		val sameTimeoutPacket = KeepAliveSameTimeout(timeout)
+		for (i in 0 until keepAliveItems.size()) {
+			val entry = keepAliveItems.getMap(i)
+			val crownstoneId = Conversion.toUint8(entry.getInt("crownstoneId"))
+			val actionSwitch = KeepAliveActionSwitch()
+			if (entry.getBoolean("action")) {
+				val switchVal = convertSwitchVal(entry.getDouble("state"))
+				actionSwitch.setAction(switchVal)
+			}
+			val item = KeepAliveSameTimeoutItem(crownstoneId, actionSwitch)
+			sameTimeoutPacket.add(item)
+		}
+		val multiKeepAlivePacket = MultiKeepAlivePacket(sameTimeoutPacket)
+		bluenet.control.keepAliveMeshState(multiKeepAlivePacket)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 
