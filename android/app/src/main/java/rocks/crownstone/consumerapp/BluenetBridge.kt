@@ -30,6 +30,7 @@ import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchListPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchPacket
 import rocks.crownstone.bluenet.packets.schedule.ScheduleCommandPacket
 import rocks.crownstone.bluenet.packets.schedule.ScheduleEntryPacket
+import rocks.crownstone.bluenet.scanparsing.CrownstoneServiceData
 import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
 import rocks.crownstone.bluenet.util.Conversion
@@ -83,9 +84,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//  Generic
-////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//##################################################################################################
+//region           Generic
+//##################################################################################################
 
 	@ReactMethod
 	@Synchronized
@@ -192,7 +195,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun resetBle() {
 		Log.i(TAG, "resetBle")
-
+		// TODO
 	}
 
 	@ReactMethod
@@ -277,25 +280,29 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun enableLoggingToFile(enable: Boolean) {
-
+		Log.i(TAG, "enableLoggingToFile $enable")
+		// TODO
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun enableExtendedLogging(enable: Boolean) {
-
+		Log.i(TAG, "enableExtendedLogging $enable")
+		// TODO
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun clearLogs() {
-
+		Log.i(TAG, "clearLogs")
+		// TODO
 	}
+//endregion
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//  Scanning
-////////////////////////////////////////////////////////////////////////////////////////////////////
+//##################################################################################################
+//region           Scanning
+//##################################################################################################
 
 	@ReactMethod
 	@Synchronized
@@ -330,7 +337,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// TODO: Only stop scanning when not tracking..
 		bluenet.stopScanning()
 	}
-
 
 
 
@@ -394,7 +400,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Called when app goes to foreground with enable=true
 		// Called when app goes to background with enable=false
 		// When enabled, beacon ranging should still continue.
-
+		// TODO
 	}
 
 	@ReactMethod
@@ -411,7 +417,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			bluenet.runInBackground()
 		}
 	}
+//endregion
 
+
+//##################################################################################################
+//region           Localization
+//##################################################################################################
 
 	private val localizationCallback = LocalizationCallback { locationId: String? ->
 		Log.d(TAG, "locationUpdate locationId=$locationId")
@@ -556,16 +567,17 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		localization.clear()
 		resolveCallback(callback)
 	}
+//endregion
 
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//  Connections
-////////////////////////////////////////////////////////////////////////////////////////////////////
+//##################################################################################################
+//region           Connections
+//##################################################################################################
 
 	@ReactMethod
 	@Synchronized
 	fun connect(address: String, callback: Callback) {
+		Log.i(TAG, "connect $address")
 		bluenet.connect(address)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -574,6 +586,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun disconnectCommand(callback: Callback) {
+		Log.i(TAG, "disconnectCommand")
 		bluenet.control.disconnect()
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -582,6 +595,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun phoneDisconnect(callback: Callback) {
+		Log.i(TAG, "phoneDisconnect")
 		bluenet.disconnect(false)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -592,6 +606,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun commandFactoryReset(callback: Callback) {
+		Log.i(TAG, "factoryReset")
 		bluenet.control.factoryReset()
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -600,6 +615,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setupFactoryReset(callback: Callback) {
+		Log.i(TAG, "setupFactoryReset")
 		bluenet.control.factoryReset()
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -608,12 +624,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun recover(address: String, callback: Callback) {
+		Log.i(TAG, "recover")
 		// TODO
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun setupCrownstone(config: ReadableMap, callback: Callback) {
+		Log.i(TAG, "setupCrownstone $config")
 		// Emit events "setupProgress" to show the progress
 		// keys can be either in plain string or hex string format, check length to determine which
 
@@ -672,12 +690,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun bootloaderToNormalMode(address: String, callback: Callback) {
+		Log.i(TAG, "bootloaderToNormalMode")
 		// TODO
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun restartCrownstone(callback: Callback) {
+		Log.i(TAG, "restartCrownstone")
 		bluenet.control.reset()
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -686,6 +706,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun putInDFU(callback: Callback) {
+		Log.i(TAG, "putInDFU")
 		bluenet.control.goToDfu()
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -694,6 +715,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setupPutInDFU(callback: Callback) {
+		Log.i(TAG, "setupPutInDFU")
 		bluenet.control.goToDfu()
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -704,12 +726,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun performDFU(address: String, fileString: String, callback: Callback) {
+		Log.i(TAG, "performDFU")
 		// TODO
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun getMACAddress(callback: Callback) {
+		Log.i(TAG, "getMACAddress")
 		// Refresh services, because there is a good chance that this crownstone was just factory reset / recovered.
 		// TODO
 	}
@@ -717,6 +741,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun sendNoOp(callback: Callback) {
+		Log.i(TAG, "sendNoOp")
 		bluenet.control.noop()
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -725,6 +750,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun sendMeshNoOp(callback: Callback) {
+		Log.i(TAG, "sendMeshNoOp")
 		bluenet.control.meshCommand(MeshControlPacket(ControlPacket(ControlType.NOOP)))
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -736,6 +762,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun getSwitchState(callback: Callback) {
+		Log.i(TAG, "getSwitchState")
 		bluenet.state.getSwitchState()
 				.success {
 					resolveCallback(callback, convertSwitchState(it))
@@ -746,6 +773,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setSwitchState(switchStateDouble: Double, callback: Callback) {
+		Log.i(TAG, "setSwitchState $switchStateDouble")
 		bluenet.control.setSwitch(convertSwitchVal(switchStateDouble))
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -754,6 +782,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun toggleSwitchState(valueOnDouble: Double, callback: Callback) {
+		Log.i(TAG, "toggleSwitchState $valueOnDouble")
 		val valueOn = convertSwitchVal(valueOnDouble)
 		// TODO: bluenet.control.toggleSwitch()
 	}
@@ -761,13 +790,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun multiSwitch(switchItems: ReadableArray, callback: Callback) {
-		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
 		Log.i(TAG, "multiSwitch $switchItems")
-
+		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
 
 		val listPacket = MultiSwitchListPacket()
-
-
 		var success = true
 		for (i in 0 until switchItems.size()) {
 			val itemMap = switchItems.getMap(i)
@@ -797,18 +823,21 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun getFirmwareVersion(callback: Callback) {
+		Log.i(TAG, "getFirmwareVersion")
 		// TODO
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun getHardwareVersion(callback: Callback) {
+		Log.i(TAG, "getHardwareVersion")
 		// TODO
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun getBootloaderVersion(callback: Callback) {
+		Log.i(TAG, "getBootloaderVersion")
 		// TODO
 	}
 
@@ -817,6 +846,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun getErrors(callback: Callback) {
+		Log.i(TAG, "getErrors")
 		// return a map: { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
 		bluenet.state.getErrors()
 				.success {
@@ -834,6 +864,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun clearErrors(clearErrorsMap: ReadableMap, callback: Callback) {
+		Log.i(TAG, "clearErrors")
 		// clearErrorsMap, map with errors to clear. Keys: overCurrent, overCurrentDimmer, temperatureChip, temperatureDimmer, dimmerOnFailure, dimmerOffFailure
 		val errorState = ErrorState()
 		errorState.overCurrent = clearErrorsMap.getBoolean("overCurrent")
@@ -853,6 +884,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun lockSwitch(enable: Boolean, callback: Callback) {
+		Log.i(TAG, "lockSwitch $enable")
 		bluenet.control.lockSwitch(enable)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -861,6 +893,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun allowDimming(enable: Boolean, callback: Callback) {
+		Log.i(TAG, "allowDimming $enable")
 		bluenet.control.allowDimming(enable)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -869,6 +902,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setSwitchCraft(enable: Boolean, callback: Callback) {
+		Log.i(TAG, "setSwitchCraft $enable")
 		bluenet.control.enableSwitchCraft(enable)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -879,7 +913,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setTime(timestampDouble: Double, callback: Callback) {
-		val timestamp = timestampDouble as Long
+		Log.i(TAG, "setTime $timestampDouble")
+		val timestamp = timestampDouble.toLong()
 		bluenet.control.setTime(timestamp)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
@@ -888,7 +923,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun meshSetTime(timestampDouble: Double, callback: Callback) {
-		val timestamp = timestampDouble as Long
+		Log.i(TAG, "meshSetTime $timestampDouble")
+		val timestamp = timestampDouble.toLong()
 		// TODO: implement as single command
 		bluenet.control.meshCommand(MeshControlPacket(ControlPacket(ControlType.SET_TIME, Conversion.toByteArray(timestamp))))
 				.success { resolveCallback(callback) }
@@ -898,6 +934,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun getTime(callback: Callback) {
+		Log.i(TAG, "getTime")
 		bluenet.state.getTime()
 				.success {
 					resolveCallback(callback, it.toDouble()) // No long in react-native
@@ -909,6 +946,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun addSchedule(scheduleEntryMap: ReadableMap, callback: Callback) {
+		Log.i(TAG, "addSchedule $scheduleEntryMap")
 		// Adds a new entry to the schedule on an empty spot.
 		// If no empty spots: fails
 		val packet = parseScheduleEntryMap(scheduleEntryMap)
@@ -927,6 +965,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setSchedule(scheduleEntryMap: ReadableMap, callback: Callback) {
+		Log.i(TAG, "addSchedule $scheduleEntryMap")
 		// Overwrites a schedule entry at given index.
 		val packet = parseScheduleEntryMap(scheduleEntryMap)
 		if (packet == null || !scheduleEntryMap.hasKey("scheduleEntryIndex")) {
@@ -942,6 +981,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun clearSchedule(scheduleEntryIndex: Int, callback: Callback) {
+		Log.i(TAG, "clearSchedule $scheduleEntryIndex")
 		// Clears the schedule entry at given index.
 		bluenet.control.removeSchedule(scheduleEntryIndex.toShort())
 				.success { resolveCallback(callback) }
@@ -951,6 +991,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun getAvailableScheduleEntryIndex(callback: Callback) {
+		Log.i(TAG, "getAvailableScheduleEntryIndex")
 		// Returns an empty spot in the schedule list.
 		bluenet.state.getAvailableScheduleEntryIndex()
 				.success { resolveCallback(callback, it) }
@@ -960,6 +1001,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun getSchedules(callback: Callback) {
+		Log.i(TAG, "getSchedules")
 		// Returns an array of schedule entry maps.
 		bluenet.state.getScheduleList()
 				.success {
@@ -1129,6 +1171,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun keepAlive(callback: Callback) {
+		Log.i(TAG, "keepAlive")
 		// Send a keep alive message with no action.
 		bluenet.control.keepAlive()
 				.success { resolveCallback(callback) }
@@ -1138,6 +1181,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun keepAliveState(actionBool: Boolean, state: Double, timeout: Int, callback: Callback) {
+		Log.i(TAG, "keepAliveState action=$actionBool state=$state timeout=$timeout")
 		// Send a keep alive message with optional action.
 		val action = when (actionBool) {
 			true -> KeepAliveAction.CHANGE
@@ -1152,6 +1196,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun meshKeepAlive(callback: Callback) {
+		Log.i(TAG, "meshKeepAlive")
 		// Make the crownstone resend the last keep alive message on the mesh.
 		bluenet.control.keepAliveMeshRepeat()
 				.success { resolveCallback(callback) }
@@ -1161,6 +1206,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun meshKeepAliveState(timeout: Int, keepAliveItems: ReadableArray, callback: Callback) {
+		Log.i(TAG, "meshKeepAliveState timeout=$timeout entries: $keepAliveItems")
 		// Make the crownstone send a keep alive message on the mesh.
 		// keepAliveItems = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
 		val sameTimeoutPacket = KeepAliveSameTimeout(timeout)
@@ -1180,7 +1226,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
+//endregion
 
+
+//##################################################################################################
+//region           Events
+//##################################################################################################
 
 	@Synchronized
 	private fun onRegionEnter(data: Any) {
@@ -1188,7 +1239,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val uuid = eventData.changedRegion
 		for (region in eventData.list) {
 			if (region.key == uuid) {
-				currentSphereId = region.value
+				val referenceId = region.value
+				currentSphereId = referenceId
+				sendEvent("enterSphere", referenceId)
 			}
 		}
 	}
@@ -1196,18 +1249,29 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun onRegionExit(data: Any) {
 		val eventData = data as IbeaconRegionEventData
-//		if (eventData.list.isEmpty()) {
-//			currentSphereId = ""
-//		}
+		val uuid = eventData.changedRegion
+		for (region in eventData.list) {
+			if (region.key == uuid) {
+				val referenceId = region.value
+//				currentSphereId = ""
+				sendEvent("exitSphere", referenceId)
+			}
+		}
 	}
 
 	@Synchronized
 	private fun onScan(data: Any) {
 		val device = data as ScannedDevice
+
+		if (device.operationMode == OperationMode.DFU) {
+			sendEvent("verifiedDFUAdvertisementData", exportAdvertisementData(device, null))
+		}
+
 		if (device.serviceData != null) {
 			onScanWithServiceData(device)
 		}
 	}
+
 
 	@Synchronized
 	private fun onScanWithServiceData(device: ScannedDevice) {
@@ -1215,14 +1279,128 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		if (uniqueScansOnly && !serviceData.unique) {
 			return
 		}
+		val advertisementMap = exportAdvertisementData(device, serviceData)
 
+//		sendEvent("anyAdvertisementData", advertisementMap) // Not used
+		if (device.validated) {
+			if (device.operationMode == OperationMode.SETUP) {
+				sendEvent("verifiedSetupAdvertisementData", advertisementMap)
+			}
+			else {
+				sendEvent("verifiedAdvertisementData", advertisementMap)
+			}
+			// Clone the advertisementMap to avoid the "already consumed" error
+			val advertisementBundle = Arguments.toBundle(advertisementMap)
+			val advertisementMapCopy = Arguments.fromBundle(advertisementBundle)
+			sendEvent("anyVerifiedAdvertisementData", advertisementMapCopy)
+		}
+
+		// TODO: nearest
 	}
+
+	private fun exportAdvertisementData(device: ScannedDevice, serviceData: CrownstoneServiceData?): WritableMap {
+		// See crownstoneAdvertisement in proxy.d.ts
+		val advertisementMap = Arguments.createMap()
+		advertisementMap.putString("handle", device.address)
+		advertisementMap.putString("name", device.name)
+		advertisementMap.putInt("rssi", device.rssi)
+		val deviceType = serviceData?.deviceType ?: DeviceType.UNKNOWN
+		advertisementMap.putBoolean("isCrownstoneFamily", deviceType != DeviceType.UNKNOWN) // TODO: only known when service data is available?
+		advertisementMap.putBoolean("isInDFUMode", device.operationMode == OperationMode.DFU)
+		advertisementMap.putString("serviceUUID", "") // TODO: is this required?
+
+		// TODO: is this check correct? Maybe dfu mode as well?
+		if (device.validated && device.operationMode == OperationMode.NORMAL) {
+			advertisementMap.putString("referenceId", currentSphereId) // TODO: make this work for multisphere
+		}
+
+		val serviceDataMap = when (serviceData) {
+			null -> Arguments.createMap()
+			else -> exportServiceData(device, serviceData)
+		}
+		advertisementMap.putMap("serviceData", serviceDataMap)
+
+		return advertisementMap
+	}
+
+	private fun exportServiceData(device: ScannedDevice, serviceData: CrownstoneServiceData): WritableMap {
+		val serviceDataMap = Arguments.createMap()
+
+//		serviceDataMap.putInt("opCode", serviceData.version.num.toInt()) // Not required
+//		serviceDataMap.putInt("dataType", serviceData.type.num.toInt()) // Not required
+		serviceDataMap.putBoolean("stateOfExternalCrownstone", serviceData.flagExternalData)
+		serviceDataMap.putBoolean("hasError", serviceData.flagError)
+		serviceDataMap.putBoolean("setupMode", device.operationMode == OperationMode.SETUP)
+		serviceDataMap.putInt("crownstoneId", serviceData.crownstoneId.toInt())
+		serviceDataMap.putDouble("switchState", convertSwitchState(serviceData.switchState))
+//		serviceDataMap.putInt("flagsBitmask", 0) // Not required
+		serviceDataMap.putInt("temperature", serviceData.temperature.toInt())
+		serviceDataMap.putDouble("powerFactor", serviceData.powerFactor)
+		serviceDataMap.putDouble("powerUsageReal", serviceData.powerUsageReal)
+		serviceDataMap.putDouble("powerUsageApparent", serviceData.powerUsageApparent)
+		serviceDataMap.putDouble("accumulatedEnergy", serviceData.energyUsed.toDouble()) // TODO: should be long?
+
+		if (serviceData.version == ServiceDataVersion.V1 || serviceData.version == ServiceDataVersion.UNKNOWN) {
+			serviceDataMap.putDouble("timestamp", -1.0)
+		}
+		else if (serviceData.flagTimeSet) {
+			serviceDataMap.putDouble("timestamp", serviceData.timestamp.toDouble())
+		}
+		else {
+//			serviceDataMap.putDouble("timestamp", serviceData.changingData) // TODO: is this required?
+			serviceDataMap.putDouble("timestamp", -1.0)
+		}
+
+		serviceDataMap.putBoolean("dimmingAvailable", serviceData.flagDimmingAvailable)
+		serviceDataMap.putBoolean("dimmingAllowed", serviceData.flagDimmable)
+		serviceDataMap.putBoolean("switchLocked", serviceData.flagSwitchLocked)
+		serviceDataMap.putBoolean("timeSet", serviceData.flagTimeSet)
+		serviceDataMap.putBoolean("switchCraftEnabled", serviceData.flagSwitchCraft)
+
+		val deviceTypeString = when (serviceData.deviceType) {
+			DeviceType.CROWNSTONE_PLUG -> "plug"
+			DeviceType.CROWNSTONE_BUILTIN -> "builtin"
+			DeviceType.CROWNSTONE_DONGLE -> "crownstoneUSB"
+			DeviceType.GUIDESTONE -> "guidestone"
+			else -> "undefined"
+		}
+		serviceDataMap.putString("deviceType", deviceTypeString)
+
+		serviceDataMap.putInt("rssiOfExternalCrownstone", serviceData.externalRssi.toInt())
+
+		val errorMode = when (serviceData.type) {
+			ServiceDataType.ERROR -> true
+			ServiceDataType.EXT_ERROR -> true
+			else -> false
+		}
+		serviceDataMap.putBoolean("errorMode", errorMode)
+
+		val errorMap = Arguments.createMap()
+		errorMap.putBoolean("overCurrent", serviceData.errorOverCurrent)
+		errorMap.putBoolean("overCurrentDimmer", serviceData.errorOverCurrentDimmer)
+		errorMap.putBoolean("temperatureChip", serviceData.errorChipTemperature)
+		errorMap.putBoolean("temperatureDimmer", serviceData.errorDimmerTemperature)
+		errorMap.putBoolean("dimmerOnFailure", serviceData.errorDimmerFailureOn)
+		errorMap.putBoolean("dimmerOffFailure", serviceData.errorDimmerFailureOff)
+		errorMap.putInt("bitMask", 0) // TODO: is this required?
+		serviceDataMap.putMap("errors", errorMap)
+
+//		serviceDataMap.putString("uniqueElement", serviceData.changingData) // TODO: is this required?
+		serviceDataMap.putString("uniqueElement", "")
+		return serviceDataMap
+	}
+
 
 	@Synchronized
 	fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 		bluenet.handlePermissionResult(requestCode, permissions, grantResults)
 	}
+//endregion
 
+
+//##################################################################################################
+//region           Helper functions
+//##################################################################################################
 
 	/** Convert 0.0 .. 1.0 value to switch value (0-100).
 	 */
@@ -1232,7 +1410,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			switchValInt = 100
 		}
 		else if (switchVal > 0) {
-			switchValInt = Math.round(switchVal * 100) as Int
+			switchValInt = Math.round(switchVal * 100).toInt()
 		}
 		return Conversion.toUint8(switchValInt)
 	}
@@ -1353,3 +1531,4 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return notification
 	}
 }
+//endregion
