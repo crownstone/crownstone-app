@@ -28,7 +28,7 @@ class NativeBusClass {
       bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")
       locationStatus:       "locationStatus",                   // data type = string ("unknown", "off", "foreground", "on", "noPermission")
 
-      nearest:              "nearestCrownstone",                // data type = nearestStone // NOT VERIFIED ONLY
+      nearest:              "nearestCrownstone",                // data type = nearestStone // Any stone, validated or not, any operation mode.
       nearestSetup:         "nearestSetupCrownstone",           // data type = nearestStone
 
       iBeaconAdvertisement: "iBeaconAdvertisement",             // data type = type_beacon[]
