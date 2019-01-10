@@ -30,6 +30,7 @@ import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchListPacket
 import rocks.crownstone.bluenet.packets.multiSwitch.MultiSwitchPacket
 import rocks.crownstone.bluenet.packets.schedule.ScheduleCommandPacket
 import rocks.crownstone.bluenet.packets.schedule.ScheduleEntryPacket
+import rocks.crownstone.bluenet.scanhandling.NearestDeviceListEntry
 import rocks.crownstone.bluenet.scanparsing.CrownstoneServiceData
 import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
@@ -62,6 +63,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		initPromise.success {
 			bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
 			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
+			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
+//			bluenet.subscribe(BluenetEvent.NEAREST_UNVALIDATED, ::onNearestUnvalidated)
+//			bluenet.subscribe(BluenetEvent.NEAREST_VALIDATED, ::onNearestValidated)
+//			bluenet.subscribe(BluenetEvent.NEAREST_VALIDATED_NORMAL, ::onNearestValidatedNormal)
+//			bluenet.subscribe(BluenetEvent.NEAREST_DFU, ::onNearestDfu)
+			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
 		}
 	}
 
@@ -1260,6 +1267,31 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
+	private fun onNearestStone(data: Any) {
+		val nearest = data as NearestDeviceListEntry
+		val nearestMap = exportNearest(nearest)
+		sendEvent("nearestCrownstone", nearestMap)
+	}
+
+	@Synchronized
+	private fun onNearestSetup(data: Any) {
+		val nearest = data as NearestDeviceListEntry
+		val nearestMap = exportNearest(nearest)
+		sendEvent("nearestSetupCrownstone", nearestMap)
+	}
+
+	private fun exportNearest(nearest: NearestDeviceListEntry): WritableMap {
+		val map = Arguments.createMap()
+		map.putString("name", "Crown") // TODO: is this required?
+		map.putString("handle", nearest.deviceAddress)
+		map.putInt("rssi", nearest.rssi)
+		map.putBoolean("verified", nearest.validated)
+		map.putBoolean("setupMode", nearest.operationMode == OperationMode.SETUP)
+		map.putBoolean("dfuMode", nearest.operationMode == OperationMode.DFU)
+		return map
+	}
+
+	@Synchronized
 	private fun onScan(data: Any) {
 		val device = data as ScannedDevice
 
@@ -1287,15 +1319,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				sendEvent("verifiedSetupAdvertisementData", advertisementMap)
 			}
 			else {
-				sendEvent("verifiedAdvertisementData", advertisementMap)
+				sendEvent("verifiedAdvertisementData", advertisementMap) // TODO: DFU as well?
 			}
 			// Clone the advertisementMap to avoid the "already consumed" error
 			val advertisementBundle = Arguments.toBundle(advertisementMap)
 			val advertisementMapCopy = Arguments.fromBundle(advertisementBundle)
 			sendEvent("anyVerifiedAdvertisementData", advertisementMapCopy)
 		}
-
-		// TODO: nearest
 	}
 
 	private fun exportAdvertisementData(device: ScannedDevice, serviceData: CrownstoneServiceData?): WritableMap {
@@ -1304,8 +1334,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		advertisementMap.putString("handle", device.address)
 		advertisementMap.putString("name", device.name)
 		advertisementMap.putInt("rssi", device.rssi)
-		val deviceType = serviceData?.deviceType ?: DeviceType.UNKNOWN
-		advertisementMap.putBoolean("isCrownstoneFamily", deviceType != DeviceType.UNKNOWN) // TODO: only known when service data is available?
+		advertisementMap.putBoolean("isCrownstoneFamily", device.isStone()) // TODO: only known when service data is available?
 		advertisementMap.putBoolean("isInDFUMode", device.operationMode == OperationMode.DFU)
 		advertisementMap.putString("serviceUUID", "") // TODO: is this required?
 
