@@ -120,7 +120,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   getHardwareVersion:             () => { return BluenetPromise('getHardwareVersion'); },
   setupPutInDFU:                  () => { return BluenetPromise('setupPutInDFU'); },
-  toggleSwitchState:              (stateForOn: number) => { return BluenetPromise('toggleSwitchState', stateForOn); }, // stateForOn is a number between 0 and 1. It is the value which is written to setSwitchState. This method returns (in the promise) the value written to the setSwitchState, probably either 0 or stateForOn
+  toggleSwitchState:              (stateForOn: number) => { return BluenetPromise('toggleSwitchState', stateForOn); }, // stateForOn is a number between 0 and 1. It is the value which is written to setSwitchState. This method returns (in the promise) the value written to the setSwitchState, probably either 0 or stateForOn. TODO: don't return the value that was set.
   bootloaderToNormalMode:         ( handle ) => { return BluenetPromise('bootloaderToNormalMode', handle); },
 
   //new
