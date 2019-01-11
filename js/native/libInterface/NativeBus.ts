@@ -23,7 +23,7 @@ class NativeBusClass {
       anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = crownstoneAdvertisement // Never used, so maybe remove this?
       anyAdvertisementData: "anyAdvertisementData",             // data type = crownstoneAdvertisement
       unverifiedAdvertisementData:    "unverifiedAdvertisementData",  // data type = crownstoneAdvertisement
-      setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error)
+      setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error) // Is 0 required? Or is rejecting the promise enough?
       dfuProgress:          "dfuProgress",                      // data type = {percentage: number, part: number, totalParts: number, progress: number, currentSpeedBytesPerSecond: number, avgSpeedBytesPerSecond: number}
       bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")
       locationStatus:       "locationStatus",                   // data type = string ("unknown", "off", "foreground", "on", "noPermission")

@@ -104,7 +104,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setupCrownstone:                (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
   setKeySets:                     (dataObject) => { return BluenetPromise('setKeySets',      dataObject); },
   requestLocation:                ()           => { return BluenetPromise('requestLocation');             },
-  recover:                        (handle)     => { return BluenetPromise('recover', handle);             },
+  recover:                        (handle)     => { return BluenetPromise('recover', handle);             }, // Connect, recover, and disconnect. If stone is not in recovery mode, then return string "NOT_IN_RECOVERY_MODE" as error data.
   finalizeFingerprint:            (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
   commandFactoryReset:            ()           => { return BluenetPromise('commandFactoryReset');         },
 
