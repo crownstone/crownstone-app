@@ -37,6 +37,7 @@ import rocks.crownstone.bluenet.structs.*
 import rocks.crownstone.bluenet.util.Conversion
 import rocks.crownstone.localization.*
 import java.util.*
+import kotlin.math.round
 
 class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJavaModule(reactContext) {
 	private val TAG = this.javaClass.simpleName
@@ -49,7 +50,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private val ONGOING_NOTIFICATION_ID = 99115
 
 	// Scanning
-	private var uniqueScansOnly = false // Easier than unsubscribing and subscribing to events.
+	enum class ScannerState {
+		STOPPED,
+		UNIQUE_ONLY,
+		HIGH_POWER
+	}
+//	private var uniqueScansOnly = false // Easier than unsubscribing and subscribing to events.
+	private var scannerState = ScannerState.STOPPED
+	private var isTracking = false
 
 	// Localization
 	private var isLocalizationTraining = false
@@ -64,10 +72,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
 			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
 			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
-//			bluenet.subscribe(BluenetEvent.NEAREST_UNVALIDATED, ::onNearestUnvalidated)
-//			bluenet.subscribe(BluenetEvent.NEAREST_VALIDATED, ::onNearestValidated)
-//			bluenet.subscribe(BluenetEvent.NEAREST_VALIDATED_NORMAL, ::onNearestValidatedNormal)
-//			bluenet.subscribe(BluenetEvent.NEAREST_DFU, ::onNearestDfu)
 			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
 		}
 	}
@@ -315,17 +319,20 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun startScanning() {
 		Log.i(TAG, "startScanning")
-		uniqueScansOnly = false
-		bluenet.startScanning()
+		scannerState = ScannerState.HIGH_POWER
+		bluenet.filterForCrownstones(true) // TODO: always set this?
+//		bluenet.startScanning()
+		updateScanner()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun startScanningForCrownstones() {
 		Log.i(TAG, "startScanningForCrownstones")
-		uniqueScansOnly = false
+		scannerState = ScannerState.HIGH_POWER
 		bluenet.filterForCrownstones(true)
-		bluenet.startScanning()
+//		bluenet.startScanning()
+		updateScanner()
 	}
 
 	@ReactMethod
@@ -333,16 +340,20 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun startScanningForCrownstonesUniqueOnly() {
 		Log.i(TAG, "startScanningForCrownstonesUniqueOnly")
 		// Validated and non validated, but unique only.
-		uniqueScansOnly = true
-		bluenet.startScanning()
+		scannerState = ScannerState.UNIQUE_ONLY
+		bluenet.filterForCrownstones(true)
+//		bluenet.startScanning()
+		updateScanner()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun stopScanning() {
 		Log.i(TAG, "stopScanning")
-		// TODO: Only stop scanning when not tracking..
-		bluenet.stopScanning()
+		// Can't just stopScanning, tracking might still be on.
+		scannerState = ScannerState.STOPPED
+//		bluenet.stopScanning()
+		updateScanner()
 	}
 
 
@@ -359,6 +370,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			return
 		}
 		bluenet.iBeaconRanger.track(uuid, sphereId)
+		isTracking = true
+		updateScanner()
 	}
 
 	@ReactMethod
@@ -373,6 +386,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			return
 		}
 		bluenet.iBeaconRanger.stopTracking(uuid)
+		// TODO: change isTracking?
 	}
 
 	@ReactMethod
@@ -381,6 +395,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "pauseTracking")
 		// Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
 		bluenet.iBeaconRanger.pause()
+		isTracking = false
+		updateScanner()
 	}
 
 	@ReactMethod
@@ -389,6 +405,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "resumeTracking")
 		// Start tracking again, with the list that is already there.
 		bluenet.iBeaconRanger.resume()
+		isTracking = true
+		updateScanner()
 	}
 
 	@ReactMethod
@@ -397,6 +415,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "clearTrackedBeacons")
 		// Clear the list of tracked iBeacons and stop tracking.
 		bluenet.iBeaconRanger.stopTracking()
+		isTracking = false
+		updateScanner()
 		resolveCallback(callback)
 	}
 
@@ -422,6 +442,33 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		else {
 			bluenet.runInBackground()
+		}
+	}
+
+	private fun updateScanner() {
+		when (scannerState) {
+			ScannerState.STOPPED -> {
+				if (isTracking) {
+					bluenet.setScanInterval(ScanMode.BALANCED)
+					bluenet.startScanning()
+				}
+				else {
+					bluenet.stopScanning()
+				}
+			}
+			ScannerState.UNIQUE_ONLY -> {
+				if (isTracking) {
+					bluenet.setScanInterval(ScanMode.BALANCED)
+				}
+				else {
+					bluenet.setScanInterval(ScanMode.BALANCED)
+				}
+				bluenet.startScanning()
+			}
+			ScannerState.HIGH_POWER -> {
+				bluenet.setScanInterval(ScanMode.LOW_LATENCY)
+				bluenet.startScanning()
+			}
 		}
 	}
 //endregion
@@ -631,8 +678,17 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun recover(address: String, callback: Callback) {
-		Log.i(TAG, "recover")
-		// TODO
+		Log.i(TAG, "recover $address")
+		// Connect, recover, and disconnect.
+		// If stone is not in recovery mode, then return string "NOT_IN_RECOVERY_MODE" as error data.
+		bluenet.control.recover(address)
+				.success { resolveCallback(callback) }
+				.fail {
+					when (it) {
+						Errors.RecoveryRebootRequired() -> rejectCallback(callback, "NOT_IN_RECOVERY_MODE")
+						else -> rejectCallback(callback, it.message)
+					}
+				}
 	}
 
 	@ReactMethod
@@ -685,13 +741,24 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val keySet = KeySet(adminKey, memberKey, guestKey)
 		val ibeaconData = IbeaconData(iBeaconUuid, iBeaconMajor, iBeaconMinor, 0)
 
-		// TODO: subscribe to setup progress events
+		val subId = bluenet.subscribe(BluenetEvent.SETUP_PROGRESS, ::onSetupProgress)
 
 		// Maybe refresh services, because there is a good chance that this crownstone was just factory reset / recovered.
 		// Not sure if this is helpful, as it would've gone wrong already on connect (when session nonce is read in normal mode)
 		bluenet.setup.setup(crownstoneId, keySet, meshAccessAddress, ibeaconData)
 				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail {
+					sendEvent("setupProgress", 0) // TODO: is this required?
+					rejectCallback(callback, it.message)
+				}
+				.always { bluenet.unsubscribe(subId) }
+	}
+
+	@Synchronized
+	fun onSetupProgress(data: Any) {
+		val progressDouble = data as Double
+		val progressApp: Int = round(progressDouble * 13).toInt()
+		sendEvent("setupProgress", progressApp)
 	}
 
 	@ReactMethod
@@ -831,21 +898,27 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun getFirmwareVersion(callback: Callback) {
 		Log.i(TAG, "getFirmwareVersion")
-		// TODO
+		bluenet.deviceInfo.getFirmwareVersion()
+				.success { resolveCallback(callback, it) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun getHardwareVersion(callback: Callback) {
 		Log.i(TAG, "getHardwareVersion")
-		// TODO
+		bluenet.deviceInfo.getHardwareVersion()
+				.success { resolveCallback(callback, it) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun getBootloaderVersion(callback: Callback) {
 		Log.i(TAG, "getBootloaderVersion")
-		// TODO
+		bluenet.deviceInfo.getBootloaderVersion()
+				.success { resolveCallback(callback, it) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 
@@ -1282,7 +1355,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	private fun exportNearest(nearest: NearestDeviceListEntry): WritableMap {
 		val map = Arguments.createMap()
-		map.putString("name", "Crown") // TODO: is this required?
+		map.putString("name", nearest.name) // TODO: is this required?
 		map.putString("handle", nearest.deviceAddress)
 		map.putInt("rssi", nearest.rssi)
 		map.putBoolean("verified", nearest.validated)
@@ -1308,7 +1381,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun onScanWithServiceData(device: ScannedDevice) {
 		val serviceData = device.serviceData ?: return
-		if (uniqueScansOnly && !serviceData.unique) {
+		if (scannerState == ScannerState.UNIQUE_ONLY && !serviceData.unique) {
 			return
 		}
 		val advertisementMap = exportAdvertisementData(device, serviceData)
