@@ -858,7 +858,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun toggleSwitchState(valueOnDouble: Double, callback: Callback) {
 		Log.i(TAG, "toggleSwitchState $valueOnDouble")
 		val valueOn = convertSwitchVal(valueOnDouble)
-		// TODO: bluenet.control.toggleSwitch()
+		bluenet.control.toggleReturnValueSet(valueOn)
+				.success { resolveCallback(callback, convertSwitchVal(it)) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
