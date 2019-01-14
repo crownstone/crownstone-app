@@ -147,8 +147,8 @@ interface locationType {
 
 
 interface trackingState {
-  isMonitoring: boolean,
-  isRanging:    boolean,
+  isMonitoring: boolean, // ??
+  isRanging:    boolean, // ??
 }
 
 interface nearestStone  {
