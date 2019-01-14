@@ -1,7 +1,7 @@
 #!/bin/bash
 scriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-apkPath="${HOME}/dev/crownstone/app/android/app/build/outputs/apk/app-release.apk"
+apkPath="${HOME}/dev/app/android/app/build/outputs/apk/release/app-release.apk"
 cmd="install -r"
 
 if [ "$#" -lt 1 ]; then
