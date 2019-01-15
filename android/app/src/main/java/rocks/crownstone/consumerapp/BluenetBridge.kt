@@ -1,3 +1,10 @@
+/**
+ * Author: Crownstone Team
+ * Copyright: Crownstone (https://crownstone.rocks)
+ * Date: Jan 15, 2019
+ * License: LGPLv3+, Apache License 2.0, and/or MIT (triple-licensed)
+ */
+
 package rocks.crownstone.consumerapp
 
 import android.app.Notification
@@ -415,7 +422,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun startScanningForCrownstones() {
 		Log.i(TAG, "startScanningForCrownstones")
 		scannerState = ScannerState.HIGH_POWER
-//		bluenet.filterForCrownstones(true)
+		bluenet.filterForCrownstones(true)
+		bluenet.filterForIbeacons(true)
 		updateScanner()
 	}
 
@@ -425,7 +433,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "startScanningForCrownstonesUniqueOnly")
 		// Validated and non validated, but unique only.
 		scannerState = ScannerState.UNIQUE_ONLY
-//		bluenet.filterForCrownstones(true)
+		bluenet.filterForCrownstones(true)
+		bluenet.filterForIbeacons(true)
 		updateScanner()
 	}
 
@@ -951,7 +960,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun toggleSwitchState(valueOnDouble: Double, callback: Callback) {
 		Log.i(TAG, "toggleSwitchState $valueOnDouble")
 		val valueOn = convertSwitchVal(valueOnDouble)
-		bluenet.control.toggleReturnValueSet(valueOn)
+		bluenet.control.toggleSwitchReturnValueSet(valueOn)
 				.success { resolveCallback(callback, convertSwitchVal(it)) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1369,7 +1378,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			false -> KeepAliveAction.NO_CHANGE
 		}
 		val switchVal = convertSwitchVal(state)
-		bluenet.control.keepAliveState(action, switchVal, timeout)
+		bluenet.control.keepAliveAction(action, switchVal, timeout)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1403,7 +1412,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			sameTimeoutPacket.add(item)
 		}
 		val multiKeepAlivePacket = MultiKeepAlivePacket(sameTimeoutPacket)
-		bluenet.control.keepAliveMeshState(multiKeepAlivePacket)
+		bluenet.control.keepAliveMeshAction(multiKeepAlivePacket)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1674,8 +1683,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	/** Converts switch state (0-228) to 0.0 .. 1.0 value.
 	 */
-	private fun convertSwitchState(switchState: Uint8): Double {
-		var switchStateInt = switchState.toInt()
+	private fun convertSwitchState(switchState: SwitchState): Double {
+		var switchStateInt = switchState.state.toInt()
 		if (switchStateInt > 100) {
 			switchStateInt = 100
 		}
