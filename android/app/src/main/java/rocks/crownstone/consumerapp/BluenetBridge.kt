@@ -172,6 +172,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
+	fun isPeripheralReady(callback: Callback) {
+		Log.i(TAG, "isPeripheralReady")
+		resolveCallback(callback)
+		// TODO
+	}
+
+	@ReactMethod
+	@Synchronized
 	fun viewsInitialized() {
 		Log.i(TAG, "viewsInitialized")
 		// All views have been initialized
@@ -247,7 +255,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setLocationState(a: Int, b: Int, c: Int, enteringSphereId: String) {
-		Log.i(TAG, "setDevicePreferences a=$a b=$b c=$c enteringSphereId=$enteringSphereId")
+		Log.i(TAG, "setLocationState a=$a b=$b c=$c enteringSphereId=$enteringSphereId")
 		// TODO
 	}
 
@@ -924,7 +932,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.control.meshCommand(MeshControlPacket(ControlPacket(ControlType.NOOP)))
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
-		// TODO: implement as single command
 	}
 
 
@@ -953,6 +960,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun broadcastSwitch(referenceId: String, stoneId: String, switchValDouble: Double, callback: Callback) {
 		Log.i(TAG, "broadcastSwitch referenceId=$referenceId stoneId=$stoneId switchVal=$switchValDouble")
+		resolveCallback(callback)
+		// TODO
 	}
 
 	@ReactMethod
