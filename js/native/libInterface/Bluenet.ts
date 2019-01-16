@@ -4,94 +4,94 @@ import { DISABLE_NATIVE } from '../../ExternalConfig'
 export let Bluenet;
 
 const BluenetAPI = {
-  clearTrackedBeacons:      () => { console.log("clearTrackedBeacons: ", arguments); },        // called through BluenetPromiseWrapper --> must be promise.
-  rerouteEvents:            () => { console.log("rerouteEvents:       ", arguments); },
-  isReady:                  () => { console.log("isReady:             ", arguments); },                    // called through BluenetPromiseWrapper --> must be promise.
-  connect:                  () => { console.log("connect:             ", arguments); },                    // called through BluenetPromiseWrapper --> must be promise.
-  disconnectCommand:        () => { console.log("disconnectCommand:   ", arguments); },          // called through BluenetPromiseWrapper --> must be promise.
-  phoneDisconnect:          () => { console.log("phoneDisconnect:     ", arguments); },            // called through BluenetPromiseWrapper --> must be promise.
-  resetBle:                 () => { console.log("resetBle:            ", arguments); },
-  startScanning:            () => { console.log("startScanning:       ", arguments); },
-  startScanningForCrownstones:           () => { console.log("startScanningForCrownstones:           ", arguments); },
-  startScanningForCrownstonesUniqueOnly: () => { console.log("startScanningForCrownstonesUniqueOnly: ", arguments); },
-  stopScanning:             () => { console.log("stopScanning:    ", arguments); },
-  keepAliveState:           () => { console.log("keepAliveState:  ", arguments); },
-  keepAlive:                () => { console.log("keepAlive:       ", arguments); },
-  requestBleState:          () => { console.log("requestBleState: ", arguments); },// Send events "bleStatus" and "locationStatus" with the current state.
+  clearTrackedBeacons:      () => { console.log("BluenetAPI clearTrackedBeacons: ", arguments); },        // called through BluenetPromiseWrapper --> must be promise.
+  rerouteEvents:            () => { console.log("BluenetAPI rerouteEvents:       ", arguments); },
+  isReady:                  () => { console.log("BluenetAPI isReady:             ", arguments); },                    // called through BluenetPromiseWrapper --> must be promise.
+  connect:                  () => { console.log("BluenetAPI connect:             ", arguments); },                    // called through BluenetPromiseWrapper --> must be promise.
+  disconnectCommand:        () => { console.log("BluenetAPI disconnectCommand:   ", arguments); },          // called through BluenetPromiseWrapper --> must be promise.
+  phoneDisconnect:          () => { console.log("BluenetAPI phoneDisconnect:     ", arguments); },            // called through BluenetPromiseWrapper --> must be promise.
+  resetBle:                 () => { console.log("BluenetAPI resetBle:            ", arguments); },
+  startScanning:            () => { console.log("BluenetAPI startScanning:       ", arguments); },
+  startScanningForCrownstones:           () => { console.log("BluenetAPI startScanningForCrownstones:           ", arguments); },
+  startScanningForCrownstonesUniqueOnly: () => { console.log("BluenetAPI startScanningForCrownstonesUniqueOnly: ", arguments); },
+  stopScanning:             () => { console.log("BluenetAPI stopScanning:    ", arguments); },
+  keepAliveState:           () => { console.log("BluenetAPI keepAliveState:  ", arguments); },
+  keepAlive:                () => { console.log("BluenetAPI keepAlive:       ", arguments); },
+  requestBleState:          () => { console.log("BluenetAPI requestBleState: ", arguments); },// Send events "bleStatus" and "locationStatus" with the current state.
 
-  startIndoorLocalization:  () => { console.log("startIndoorLocalization: ", arguments); },
-  stopIndoorLocalization:   () => { console.log("stopIndoorLocalization:  ", arguments); },
+  startIndoorLocalization:  () => { console.log("BluenetAPI startIndoorLocalization: ", arguments); },
+  stopIndoorLocalization:   () => { console.log("BluenetAPI stopIndoorLocalization:  ", arguments); },
 
-  requestLocation:          () => { console.log("requestLocation:          ", arguments); },// Should return data {"latitude": number, "longitude": number}. Called through BluenetPromiseWrapper --> must be promise.
-  requestLocationPermission:() => { console.log("requestLocationPermission:", arguments); },// Request for location permission during tutorial.
-  trackIBeacon:             () => { console.log("trackIBeacon:             ", arguments); },// Add the UUID to the list of tracked iBeacons, associate it with given sphereId, and start tracking.
-  stopTrackingIBeacon:      () => { console.log("stopTrackingIBeacon:      ", arguments); },// Remove the UUID from the list of tracked iBeacons.
-  pauseTracking:            () => { console.log("pauseTracking:            ", arguments); },// Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
-  resumeTracking:           () => { console.log("resumeTracking:           ", arguments); },// Start tracking again, with the list that is already there.
+  requestLocation:          () => { console.log("BluenetAPI requestLocation:          ", arguments); },// Should return data {"latitude": number, "longitude": number}. Called through BluenetPromiseWrapper --> must be promise.
+  requestLocationPermission:() => { console.log("BluenetAPI requestLocationPermission:", arguments); },// Request for location permission during tutorial.
+  trackIBeacon:             () => { console.log("BluenetAPI trackIBeacon:             ", arguments); },// Add the UUID to the list of tracked iBeacons, associate it with given sphereId, and start tracking.
+  stopTrackingIBeacon:      () => { console.log("BluenetAPI stopTrackingIBeacon:      ", arguments); },// Remove the UUID from the list of tracked iBeacons.
+  pauseTracking:            () => { console.log("BluenetAPI pauseTracking:            ", arguments); },// Stop tracking, but keep the list of tracked iBeacon UUIDs. Stop sending any tracking events: iBeacon, enter/exit region. Assume all tracked iBeacon UUIDs are out the region.
+  resumeTracking:           () => { console.log("BluenetAPI resumeTracking:           ", arguments); },// Start tracking again, with the list that is already there.
 
 
 
-  startCollectingFingerprint:  () => { console.log("startCollectingFingerprint:  ", arguments); },
-  abortCollectingFingerprint:  () => { console.log("abortCollectingFingerprint:  ", arguments); },
-  pauseCollectingFingerprint:  () => { console.log("pauseCollectingFingerprint:  ", arguments); },
-  resumeCollectingFingerprint: () => { console.log("resumeCollectingFingerprint: ", arguments); },
-  finalizeFingerprint:         () => { console.log("finalizeFingerprint:         ", arguments); },       // called through BluenetPromiseWrapper --> must be promise. Promise return value is a stringified fingerprint
+  startCollectingFingerprint:  () => { console.log("BluenetAPI startCollectingFingerprint:  ", arguments); },
+  abortCollectingFingerprint:  () => { console.log("BluenetAPI abortCollectingFingerprint:  ", arguments); },
+  pauseCollectingFingerprint:  () => { console.log("BluenetAPI pauseCollectingFingerprint:  ", arguments); },
+  resumeCollectingFingerprint: () => { console.log("BluenetAPI resumeCollectingFingerprint: ", arguments); },
+  finalizeFingerprint:         () => { console.log("BluenetAPI finalizeFingerprint:         ", arguments); },       // called through BluenetPromiseWrapper --> must be promise. Promise return value is a stringified fingerprint
 
-  loadFingerprint:          () => { console.log("loadFingerprint:       ", arguments); },
-  getMACAddress:            () => { console.log("getMACAddress:         ", arguments); },             // called through BluenetPromiseWrapper --> must be promise.
-  commandFactoryReset:      () => { console.log("commandFactoryReset:   ", arguments); },       // called through BluenetPromiseWrapper --> must be promise.
-  recover:                  () => { console.log("recover:               ", arguments); },                   // called through BluenetPromiseWrapper --> must be promise.
-  setupCrownstone:          () => { console.log("setupCrownstone:       ", arguments); },           // called through SetupCrownstone in BLEUtil
-  quitApp:                  () => { console.log("quitApp:               ", arguments); NativeModules.BluenetJS.quitApp() },                   // Used to quit the app during logout
-  enableLoggingToFile:      () => { console.log("enableLoggingToFile:   ", arguments); },
-  enableExtendedLogging:    () => { console.log("enableExtendedLogging: ", arguments); },
-  clearLogs:                () => { console.log("clearLogs:             ", arguments); },
+  loadFingerprint:          () => { console.log("BluenetAPI loadFingerprint:       ", arguments); },
+  getMACAddress:            () => { console.log("BluenetAPI getMACAddress:         ", arguments); },             // called through BluenetPromiseWrapper --> must be promise.
+  commandFactoryReset:      () => { console.log("BluenetAPI commandFactoryReset:   ", arguments); },       // called through BluenetPromiseWrapper --> must be promise.
+  recover:                  () => { console.log("BluenetAPI recover:               ", arguments); },                   // called through BluenetPromiseWrapper --> must be promise.
+  setupCrownstone:          () => { console.log("BluenetAPI setupCrownstone:       ", arguments); },           // called through SetupCrownstone in BLEUtil
+  quitApp:                  () => { console.log("BluenetAPI quitApp:               ", arguments); NativeModules.BluenetJS.quitApp() },                   // Used to quit the app during logout
+  enableLoggingToFile:      () => { console.log("BluenetAPI enableLoggingToFile:   ", arguments); },
+  enableExtendedLogging:    () => { console.log("BluenetAPI enableExtendedLogging: ", arguments); },
+  clearLogs:                () => { console.log("BluenetAPI clearLogs:             ", arguments); },
 
   // mesh
-  meshKeepAlive:            () => { console.log("meshKeepAlive:           ", arguments); },
-  meshKeepAliveState:       () => { console.log("meshKeepAliveState:      ", arguments); },
-  multiSwitch:              () => { console.log("multiSwitch:             ", arguments); },
-  getHardwareVersion:       () => { console.log("getHardwareVersion:      ", arguments); },
-  getBootloaderVersion:     () => { console.log("getBootloaderVersion:    ", arguments); },
-  getFirmwareVersion:       () => { console.log("getFirmwareVersion:      ", arguments); },
-  bootloaderToNormalMode:   () => { console.log("bootloaderToNormalMode:  ", arguments); },
-  getErrors:                () => { console.log("getErrors:               ", arguments); },
-  clearFingerprintsPromise: () => { console.log("clearFingerprintsPromise:", arguments); },
-  clearFingerprints:        () => { console.log("clearFingerprints:       ", arguments); },
-  setTime:                  () => { console.log("setTime:                 ", arguments); },
-  meshSetTime:              () => { console.log("meshSetTime:             ", arguments); },
-  batterySaving:            () => { console.log("batterySaving:           ", arguments); },
-  setBackgroundScanning:    () => { console.log("setBackgroundScanning:   ", arguments); },
-  setSchedule:              () => { console.log("setSchedule:             ", arguments); },
-  clearSchedule:            () => { console.log("clearSchedule:           ", arguments); },
-  addSchedule:              () => { console.log("addSchedule:             ", arguments); },
-  getSchedules:             () => { console.log("getSchedules:            ", arguments); },
-  getAvailableScheduleEntryIndex: () => { console.log("getAvailableScheduleEntryIndex:", arguments); },
+  meshKeepAlive:            () => { console.log("BluenetAPI meshKeepAlive:           ", arguments); },
+  meshKeepAliveState:       () => { console.log("BluenetAPI meshKeepAliveState:      ", arguments); },
+  multiSwitch:              () => { console.log("BluenetAPI multiSwitch:             ", arguments); },
+  getHardwareVersion:       () => { console.log("BluenetAPI getHardwareVersion:      ", arguments); },
+  getBootloaderVersion:     () => { console.log("BluenetAPI getBootloaderVersion:    ", arguments); },
+  getFirmwareVersion:       () => { console.log("BluenetAPI getFirmwareVersion:      ", arguments); },
+  bootloaderToNormalMode:   () => { console.log("BluenetAPI bootloaderToNormalMode:  ", arguments); },
+  getErrors:                () => { console.log("BluenetAPI getErrors:               ", arguments); },
+  clearFingerprintsPromise: () => { console.log("BluenetAPI clearFingerprintsPromise:", arguments); },
+  clearFingerprints:        () => { console.log("BluenetAPI clearFingerprints:       ", arguments); },
+  setTime:                  () => { console.log("BluenetAPI setTime:                 ", arguments); },
+  meshSetTime:              () => { console.log("BluenetAPI meshSetTime:             ", arguments); },
+  batterySaving:            () => { console.log("BluenetAPI batterySaving:           ", arguments); },
+  setBackgroundScanning:    () => { console.log("BluenetAPI setBackgroundScanning:   ", arguments); },
+  setSchedule:              () => { console.log("BluenetAPI setSchedule:             ", arguments); },
+  clearSchedule:            () => { console.log("BluenetAPI clearSchedule:           ", arguments); },
+  addSchedule:              () => { console.log("BluenetAPI addSchedule:             ", arguments); },
+  getSchedules:             () => { console.log("BluenetAPI getSchedules:            ", arguments); },
+  getAvailableScheduleEntryIndex: () => { console.log("BluenetAPI getAvailableScheduleEntryIndex:", arguments); },
 
-  viewsInitialized:         () => { console.log("viewsInitialized:  ", arguments); },
-  lockSwitch:               () => { console.log("lockSwitch:        ", arguments); },
-  allowDimming:             () => { console.log("allowDimming:      ", arguments); },
-  setSwitchCraft:           () => { console.log("setSwitchCraft:    ", arguments); },
-  sendNoOp:                 () => { console.log("sendNoOp:          ", arguments); },
-  sendMeshNoOp:             () => { console.log("sendMeshNoOp:      ", arguments); },
+  viewsInitialized:         () => { console.log("BluenetAPI viewsInitialized:  ", arguments); },
+  lockSwitch:               () => { console.log("BluenetAPI lockSwitch:        ", arguments); },
+  allowDimming:             () => { console.log("BluenetAPI allowDimming:      ", arguments); },
+  setSwitchCraft:           () => { console.log("BluenetAPI setSwitchCraft:    ", arguments); },
+  sendNoOp:                 () => { console.log("BluenetAPI sendNoOp:          ", arguments); },
+  sendMeshNoOp:             () => { console.log("BluenetAPI sendMeshNoOp:      ", arguments); },
 
 
-  getSwitchState:           () => { console.log(" getSwitchState:   ", arguments); },
-  getTime:                  () => { console.log(" getTime:          ", arguments); },
-  putInDFU:                 () => { console.log(" putInDFU:         ", arguments); },
-  performDFU:               () => { console.log(" performDFU:       ", arguments); },
-  restartCrownstone:        () => { console.log(" restartCrownstone:", arguments); },
-  clearKeySets:             () => { console.log(" clearKeysets:     ", arguments); },
-  setKeySets:               () => { console.log(" setKeySets:       ", arguments); },
-  setupFactoryReset:        () => { console.log(" setupFactoryReset:", arguments); },
-  setupPutInDFU:            () => { console.log(" setupPutInDFU:    ", arguments); },
-  toggleSwitchState:        () => { console.log(" toggleSwitchState:", arguments); },
-  setMeshChannel:           () => { console.log(" setMeshChannel:   ", arguments); },
-  getTrackingState:         () => { console.log(" getTrackingState: ", arguments); },
-  setDevicePreferences:     () => { console.log(" setDevicePreferences: ", arguments); },
-  setLocationState:         () => { console.log(" setLocationState: ", arguments); },
-  startAdvertising:         () => { console.log(" startAdvertising: ", arguments); },
-  stopAdvertising:          () => { console.log(" stopAdvertising: ", arguments); },
+  getSwitchState:           () => { console.log("BluenetAPI getSwitchState:   ", arguments); },
+  getTime:                  () => { console.log("BluenetAPI getTime:          ", arguments); },
+  putInDFU:                 () => { console.log("BluenetAPI putInDFU:         ", arguments); },
+  performDFU:               () => { console.log("BluenetAPI performDFU:       ", arguments); },
+  restartCrownstone:        () => { console.log("BluenetAPI restartCrownstone:", arguments); },
+  clearKeySets:             () => { console.log("BluenetAPI clearKeysets:     ", arguments); },
+  setKeySets:               () => { console.log("BluenetAPI setKeySets:       ", arguments); },
+  setupFactoryReset:        () => { console.log("BluenetAPI setupFactoryReset:", arguments); },
+  setupPutInDFU:            () => { console.log("BluenetAPI setupPutInDFU:    ", arguments); },
+  toggleSwitchState:        () => { console.log("BluenetAPI toggleSwitchState:", arguments); },
+  setMeshChannel:           () => { console.log("BluenetAPI setMeshChannel:   ", arguments); },
+  getTrackingState:         () => { console.log("BluenetAPI getTrackingState: ", arguments); },
+  setDevicePreferences:     () => { console.log("BluenetAPI setDevicePreferences: ", arguments); },
+  setLocationState:         () => { console.log("BluenetAPI setLocationState: ", arguments); },
+  startAdvertising:         () => { console.log("BluenetAPI startAdvertising: ", arguments); },
+  stopAdvertising:          () => { console.log("BluenetAPI stopAdvertising: ", arguments); },
 }
 
 if (DISABLE_NATIVE === true) {
