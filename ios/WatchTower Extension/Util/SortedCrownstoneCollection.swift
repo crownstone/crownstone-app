@@ -92,7 +92,11 @@ class SortedCrownstoneCollection {
     public func removeExpired() {
         let currentTime = Date().timeIntervalSince1970
         for (handle, advertisement) in self.items {
-            if currentTime - (advertisement["updatedAt"] as! Double) > self.timeout {
+            var threshold = self.timeout
+            if advertisement["verified"] as? Bool == true {
+              threshold = 2*self.timeout
+            }
+            if currentTime - (advertisement["updatedAt"] as! Double) > threshold {
                 self.items.removeValue(forKey: handle)
             }
         }

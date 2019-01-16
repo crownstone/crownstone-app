@@ -138,6 +138,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getAvailableScheduleEntryIndex: () => { return BluenetPromise('getAvailableScheduleEntryIndex'); },             // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
   getSchedules:                   () => { return BluenetPromise('getSchedules'); },                               // must return array of bridgeScheduleEntry
 
+  setSwitchState:                 (state) => { return BluenetPromise('setSwitchState', state); },
   getSwitchState:                 () => { return BluenetPromise('getSwitchState'); },
   lockSwitch:                     (lock: boolean)   => { return BluenetPromise('lockSwitch',     lock);  },
   allowDimming:                   (allow : boolean) => { return BluenetPromise('allowDimming',   allow); },
