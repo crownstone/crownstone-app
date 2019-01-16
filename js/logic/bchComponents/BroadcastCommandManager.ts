@@ -1,5 +1,5 @@
 import { Platform, AppState } from 'react-native'
-import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
+import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 
 export const BROADCAST_ERRORS = {
   CANNOT_BROADCAST:     { message: "CANNOT_BROADCAST",     fatal: false},
@@ -9,7 +9,7 @@ export const BROADCAST_ERRORS = {
 
 
 
-class BroadcastManagerClass {
+class BroadcastCommandManagerClass {
 
   commandsToBroadcast = {
     multiSwitch: true
@@ -55,4 +55,4 @@ class BroadcastManagerClass {
 }
 
 
-export const BroadcastManager = new BroadcastManagerClass()
+export const BroadcastCommandManager = new BroadcastCommandManagerClass()

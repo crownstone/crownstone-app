@@ -806,40 +806,19 @@ open class BluenetJS: RCTEventEmitter {
           callback([["error" : true, "data": "UNKNOWN ERROR IN meshKeepAliveState \(err)"]])
         }
     }
-  }
-  
+  }  
   
   @objc func multiSwitch(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-    LOGGER.info("BluenetBridge: Called multiSwitch")
-//    print("-- Firing multiSwitch arrayOfStoneSwitchPackets: \(arrayOfStoneSwitchPackets)")
-    let inputArray = arrayOfStoneSwitchPackets as! [[String : NSNumber]]
-    if (inputArray.count > 0) {
-      let selectedStone = inputArray[0]
-      let stoneData = selectedStone as! [String: NSNumber]
-       GLOBAL_BLUENET!.bluenet.control.setSwitchState(stoneData["state"]!.floatValue)
-        .done{_ in callback([["error" : false]])}
-        .catch{err in
-          if let bleErr = err as? BluenetError {
-            callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-          }
-          else {
-            callback([["error" : true, "data": "UNKNOWN ERROR IN multiSwitch \(err)"]])
-          }
-      }
-      
+      GLOBAL_BLUENET!.bluenet.mesh.multiSwitch(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]])
+      .done{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BluenetError {
+          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN multiSwitch \(err)"]])
+        }
     }
-    
-      // original:
-//    GLOBAL_BLUENET!.bluenet.mesh.multiSwitch(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]])
-//      .done{_ in callback([["error" : false]])}
-//      .catch{err in
-//        if let bleErr = err as? BluenetError {
-//          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-//        }
-//        else {
-//          callback([["error" : true, "data": "UNKNOWN ERROR IN multiSwitch \(err)"]])
-//        }
-//    }
   }
   
   @objc func broadcastSwitch(_ referenceId: String, stoneId: NSNumber, switchState: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {

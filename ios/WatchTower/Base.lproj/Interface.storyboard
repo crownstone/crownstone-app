@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment version="1072" identifier="watchOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14460.16"/>
     </dependencies>
@@ -12,7 +11,7 @@
         <!--Crownstone-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller identifier="Crownstone" title="Crownstone" alwaysBounce="YES" id="AgC-eL-Hgc" userLabel="Crownstone" customClass="CSInterfaceController" customModule="WatchTower_Extension">
+                <controller identifier="CrownstoneScanner" title="Scanner" alwaysBounce="YES" id="AgC-eL-Hgc" userLabel="Crownstone" customClass="CSInterfaceController" customModule="WatchTower_Extension">
                     <items>
                         <table alignment="left" id="lGs-FV-8Bb" userLabel="CsTable">
                             <items>
@@ -121,10 +120,10 @@
             </objects>
             <point key="canvasLocation" x="497" y="343"/>
         </scene>
-        <!--Switch-->
+        <!--Crownstone-->
         <scene sceneID="7UN-Ju-ypU">
             <objects>
-                <controller identifier="DevStone2" title="Switch" id="4Ox-WU-azg" customClass="SwitchInterfaceController" customModule="WatchTower_Extension">
+                <controller identifier="Crownstone" title="Crownstone" id="4Ox-WU-azg" customClass="SwitchInterfaceController" customModule="WatchTower_Extension">
                     <items>
                         <table alignment="left" id="fIh-wG-Aou" userLabel="CsTable">
                             <items>

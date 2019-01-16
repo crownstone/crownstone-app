@@ -47,6 +47,7 @@ interface BluenetPromiseWrapperProtocol {
   getSchedules()                                : Promise< [bridgeScheduleEntry] >,
 
   getSwitchState()                              : Promise< number >,
+  setSwitchState(state: number)                 : Promise< void >,
   lockSwitch(lock : Boolean)                    : Promise< void >,
   allowDimming(allow: Boolean)                  : Promise< void >,
   setSwitchCraft(state: Boolean)                : Promise< void >,

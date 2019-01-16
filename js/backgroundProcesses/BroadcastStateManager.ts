@@ -29,20 +29,37 @@ class BroadcastStateManagerClass {
       eventBus.on("databaseChange", (data) => {
         let change = data.change;
         if (change.changeAppSettings || change.changeDeviceData) {
-          this._reloadDevicePreferences()
+          this._reloadDevicePreferences();
+        }
+        if (change.changeDeveloperData) {
+          this._reloadAdvertisingState();
         }
       });
-      BluenetPromiseWrapper.isPeripheralReady()
-        .then(() => {
-          console.log("Bluenet.startAdvertising()")
-          Bluenet.startAdvertising();
-        });
 
-      this._reloadDevicePreferences()
+      this._reloadAdvertisingState();
+      this._reloadDevicePreferences();
       this._initialized = true;
     }
   }
 
+
+  _reloadAdvertisingState() {
+    let state = this._store.getState();
+    if (state.development.broadcasting_enabled) {
+      BluenetPromiseWrapper.isPeripheralReady()
+        .then(() => {
+          // console.log("Bluenet.startAdvertising()")
+          Bluenet.startAdvertising();
+        });
+    }
+    else {
+      BluenetPromiseWrapper.isPeripheralReady()
+        .then(() => {
+          // console.log("Bluenet.stopAdvertising()")
+          Bluenet.stopAdvertising();
+        });
+    }
+  }
 
   _reloadDevicePreferences() {
     let state = this._store.getState();

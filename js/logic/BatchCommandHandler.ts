@@ -9,8 +9,8 @@ import { DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL } from '../ExternalConfig'
 import { StoneUtil }             from "../util/StoneUtil";
 import { Permissions }           from "../backgroundProcesses/PermissionManager";
 import { CommandManager }        from "./bchComponents/CommandManager";
-import { RssiLogger } from "../native/advertisements/RssiLogger";
-import { BroadcastManager } from "./BroadcastManager";
+import { RssiLogger }            from "../native/advertisements/RssiLogger";
+import { BroadcastCommandManager } from "./bchComponents/BroadcastCommandManager";
 
 
 export const errorCodes = {
@@ -77,8 +77,8 @@ class BatchCommandHandlerClass {
     let commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options }
     let state = this.store.getState();
 
-    if (BroadcastManager.canBroadcast(commandSummary) && state.development.broadcasting_enabled) {
-      return BroadcastManager.broadcast(commandSummary)
+    if (BroadcastCommandManager.canBroadcast(commandSummary) && state.development.broadcasting_enabled) {
+      return BroadcastCommandManager.broadcast(commandSummary)
         .catch((err) => {
           if (err && err.fatal == false) {
             // this is a fallback to the handling in the classic batch command handler, this can happend if the user goes to the background for instance.
@@ -247,7 +247,7 @@ class BatchCommandHandlerClass {
               case 'setMeshChannel':
                 actionPromise = BluenetPromiseWrapper.setMeshChannel(command.channel);
                 break;
-              case 'multiSwitch': // if it's a direct call, we just use the setSwitchState.
+              case 'multiSwitch':
                 let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, timeout: command.timeout, intent: command.intent, state: command.state};
                 actionPromise = BluenetPromiseWrapper.multiSwitch([stoneSwitchPacket]).then(() => {
                   eventBus.emit("NEW_ACTIVITY_LOG", {

@@ -32,7 +32,7 @@ class SwitchableStone {
     }
     
     func fillValues(advertisement: Advertisement, verified: Bool) {
-        self.name = advertisement.name
+        self.name = "CES Demo"//advertisement.name
         self.handle = advertisement.handle
         self.rssi = advertisement.rssi.int8Value
         self.mode = advertisement.getOperationMode()
@@ -40,18 +40,23 @@ class SwitchableStone {
       
         
         if self.verified {
-            self.referenceId = advertisement.referenceId!
+          if let refId = advertisement.referenceId {
+            self.referenceId = refId
             if advertisement.scanResponse!.stateOfExternalCrownstone == false {
-                let switchState = advertisement.scanResponse!.switchState
-                self.name = "CES Demo"
-                self.crownstoneId = advertisement.scanResponse!.crownstoneId
-                if switchState == 128 {
-                    self.switchState = 1
-                }
-                else {
-                    self.switchState = NSNumber(value: switchState).floatValue / 100.0
-                }
+              let switchState = advertisement.scanResponse!.switchState
+              self.name = "CES Demo"
+              self.crownstoneId = advertisement.scanResponse!.crownstoneId
+              if switchState == 128 {
+                self.switchState = 1
+              }
+              else {
+                self.switchState = NSNumber(value: switchState).floatValue / 100.0
+              }
             }
+          }
+          else {
+            print("verified does not have a referenceId!")
+          }
         }
     }
     

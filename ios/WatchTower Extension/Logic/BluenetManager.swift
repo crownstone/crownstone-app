@@ -42,9 +42,17 @@ class BluenetManager {
         
         self.unsubscribeArray.append(bluenet.on("verifiedAdvertisementData",   { data in self._handleScan(data, verified: true ) }))
         self.unsubscribeArray.append(bluenet.on("unverifiedAdvertisementData", { data in self._handleScan(data, verified: false) }))
+        //self.unsubscribeArray.append(bluenet.on("rawAdvertisementData", { data in self._debug(data) }))
     }
+  
+  func _debug(_ data: Any) {
+    if let castData = data as? Advertisement {
+      //print("RAW", castData.handle, castData.rssi, castData.referenceId, castData.serviceData, castData.scanResponse)
+    }
+  }
     
     func _storeKeySets(_ applicationContext: Any) {
+        //print("I have received keysets", applicationContext)
         if let context = applicationContext as? [String: Any] {
             if let keysets = context["keysets"] {
                 if let castSets = keysets as? [String: [String:String]] {
@@ -79,10 +87,10 @@ class BluenetManager {
         print("START")
         _ = bluenet.isReady().done {  _ in
             self.bluenet.startScanning()
-            delay(2.5, {
-                print("Locking the list", self.listOfCrownstones.items)
-                self.listOfCrownstones.lock = true }
-            )
+//            delay(2.5, {
+//                print("Locking the list", self.listOfCrownstones.items)
+//                self.listOfCrownstones.lock = true }
+//            )
             self.continueTasks()
         }
        
@@ -126,20 +134,21 @@ class BluenetManager {
     func _handleScan(_ data: Any, verified: Bool) {
         if let castData = data as? Advertisement {
             listOfCrownstones.load(advertisement: castData, verified: verified)
+            //print("Scan received", castData.handle, castData.rssi, castData.referenceId, castData.scanResponse, verified)
             if verified {
               if let referenceId = castData.referenceId {
                 var handleDict = dataStore.store.dictionary(forKey: "handles")
                 if var theDict = handleDict {
                   theDict[castData.handle] = true
-                  print("Storing \(theDict) in handes")
+//                  print("Storing \(theDict) in handes")
                   dataStore.store.set(theDict as Any?, forKey: "handles")
                 }
                 else {
-                  print("Storing \([castData.handle : true]) in handes")
+//                  print("Storing \([castData.handle : true]) in handes")
                   dataStore.store.set([castData.handle : true] as Any?, forKey: "handles")
                 }
                 
-                print("Storing \(referenceId) in \(castData.handle)")
+//                print("Storing \(referenceId) in \(castData.handle)")
                 dataStore.store.set(referenceId, forKey: castData.handle)
                 eventBus.emit(Event.newVerifiedAdvertisement, true)
               }
