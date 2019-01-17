@@ -7,6 +7,7 @@ import { Sentry }         from "react-native-sentry";
 
 export const BluenetPromise : any = function(functionName, param, param2, param3, param4, param5) {
   return new Promise((resolve, reject) => {
+	  let id = (Math.random() * 1e8).toString(36)
     if (DISABLE_NATIVE === true) {
       resolve()
     }
@@ -22,7 +23,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
       let bluenetArguments = [];
       let promiseResolver = (result) => {
         if (result.error === true) {
-          LOGi.bch("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data);
+          LOGi.bch("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id);
           Sentry.captureBreadcrumb({
             category: 'ble',
             data: {
@@ -35,6 +36,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
           reject(result.data);
         }
         else {
+			LOGi.bch("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id);
           Sentry.captureBreadcrumb({
             category: 'ble',
             data: {
@@ -52,7 +54,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
         bluenetArguments.push(arguments[i])
       }
 
-      LOGi.bch("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments);
+      LOGi.bch("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id);
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);
