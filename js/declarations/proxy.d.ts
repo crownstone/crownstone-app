@@ -100,11 +100,9 @@ interface crownstoneAdvertisement {
   handle              : string,
   name                : string,
   rssi                : number,
-  referenceId         : string, // Only required when advertisement is validated and crownstone is in normal mode?
-  isCrownstoneFamily  : boolean, // Only known when there is serviceData ?
+  referenceId         : string, // Only required when advertisement is validated and crownstone is in normal mode
   isInDFUMode         : boolean,
-  serviceUUID         : string, // Is this required?
-  serviceData         : crownstoneServiceData // Can be missing sometimes?
+  serviceData         : crownstoneServiceData // must always be present
 }
 
 
@@ -148,8 +146,8 @@ interface locationType {
 
 
 interface trackingState {
-  isMonitoring: boolean, // ??
-  isRanging:    boolean, // ??
+  isMonitoring: boolean, // this means that the lib thinks is it tracking ibeacons, not perse in range. Methods like pauseTracking would stop monitoring. Is used for diagnostics.
+  isRanging:    boolean, // this means at least one ibeacon (that is being monitored) is in range and should be generating ibeacon events. If true, the lib thinks it should be sending events, not if it actually is.
 }
 
 interface nearestStone  {

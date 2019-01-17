@@ -80,7 +80,7 @@ export const devices = {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'POST',
-      '/Devices/{id}/exitLocation/',
+      '/Devices/{id}/exitSphere/',
       { data: {sphereId:cloudSphereId}, background: background },
       'query'
     );

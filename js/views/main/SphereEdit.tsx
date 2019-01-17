@@ -47,7 +47,7 @@ export class SphereEdit extends Component<any, any> {
     }
   };
 
-  unsubscribe
+  unsubscribe = []
 
   constructor(props) {
     super(props);
@@ -56,15 +56,15 @@ export class SphereEdit extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe = eventBus.on("CloudSyncComplete", () => {
+    this.unsubscribe.push(eventBus.on("CloudSyncComplete", () => {
       if (this.state.syncing) {
         this.setState({syncing: false})
       }
-    });
+    }));
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.unsubscribe.forEach((unsub) => { unsub(); });
   }
 
   _getItems() {
@@ -125,6 +125,7 @@ export class SphereEdit extends Component<any, any> {
     items.push({
       label: lang("Users"),
       type: 'navigation',
+      fieldId: 'sphereEdit_users',
       largeIcon: <IconButton name='c1-people' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
       callback: () => {
         Actions.sphereUserOverview({sphereId: this.props.sphereId});
@@ -155,6 +156,15 @@ export class SphereEdit extends Component<any, any> {
     items.push({
       label: lang("Settings"),
       largeIcon: <IconButton name="ios-cog" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,
+      type: 'navigation',
+      callback: () => {
+        Actions.sphereEditSettings({sphereId: this.props.sphereId});
+      }
+    });
+
+    items.push({
+      label: lang("Create_Sphere"),
+      largeIcon: <IconButton plusSize={25} addIcon={true} name="c1-sphere" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.csBlueLight.hex}} />,
       type: 'navigation',
       callback: () => {
         Actions.sphereEditSettings({sphereId: this.props.sphereId});
