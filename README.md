@@ -161,7 +161,7 @@ copy the ios-configure-glog.sh from /node_modules/react-native/scripts to /node_
 
 If you get libfishhook.a is missing, go to RTCWebSocket and re-add the libfishhook.a in the link binary with libraries panel.
 
-
+react-transform-hmr errors: run this to start the server --> react-native start  --reset-cache
 
 ## Copyrights
 

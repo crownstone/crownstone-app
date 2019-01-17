@@ -158,11 +158,11 @@ class SetupStateHandlerClass {
   }
 
   _getTypeData(advertisement) {
-    if (advertisement.serviceData.deviceType      == 'plug'       || (advertisement.serviceData.deviceType == 'undefined' && advertisement.serviceUUID === 'C001'))
+    if (advertisement.serviceData.deviceType      == 'plug')
       return {name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:STONE_TYPES.plug,       handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'builtin'    || (advertisement.serviceData.deviceType == 'undefined' && advertisement.serviceUUID === 'C002'))
+    else if (advertisement.serviceData.deviceType == 'builtin')
       return {name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:STONE_TYPES.builtin,    handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'guidestone' || (advertisement.serviceData.deviceType == 'undefined' && advertisement.serviceUUID === 'C003'))
+    else if (advertisement.serviceData.deviceType == 'guidestone')
       return {name: 'Guidestone',         icon: 'c2-crownstone',    type:STONE_TYPES.guidestone, handle: advertisement.handle};
     else if (advertisement.serviceData.deviceType == 'crownstoneUSB')
       return {name: 'Crownstone USB',     icon: 'c1-router',        type:STONE_TYPES.crownstoneUSB, handle: advertisement.handle};

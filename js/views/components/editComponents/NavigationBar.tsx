@@ -1,4 +1,3 @@
-
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
@@ -6,6 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Animated,
   TouchableHighlight,
   Text,
   View
@@ -13,16 +13,39 @@ import {
 
 import { Icon } from '../Icon';
 import {styles, colors, screenWidth, LARGE_ROW_SIZE, MID_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
+import { eventBus } from "../../../util/EventBus";
 
 
 export class NavigationBar extends Component<any, any> {
   setActiveElement : any;
 
+  animating = false;
+  unsubscribe = [];
+
   constructor(props) {
     super(props);
     let emptyFunction = () => {};
     this.setActiveElement = props.setActiveElement || emptyFunction;
+    this.state = { backgroundColor: new Animated.Value(0) };
   }
+
+  componentDidMount() {
+    // this event makes the background of the device entry blink to incidate the error.
+    this.unsubscribe.push(eventBus.on('highlight_nav_field', (fieldId) => {
+      if (fieldId === this.props.fieldId) {
+        Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 50 }).start();
+        setTimeout(() => {
+          Animated.timing(this.state.backgroundColor, { toValue: 0, duration: 200 }).start();
+        }, 1000);
+      }
+    }));
+  }
+
+  componentWillUnmount() { // cleanup
+    this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
+  }
+
+
 
   render() {
     let navBarHeight = this.props.barHeight || NORMAL_ROW_SIZE;
@@ -33,10 +56,15 @@ export class NavigationBar extends Component<any, any> {
     else if (this.props.icon)
       navBarHeight = NORMAL_ROW_SIZE;
 
+    let backgroundColor = this.state.backgroundColor.interpolate({
+      inputRange: [0,10],
+      outputRange: ['rgba(255, 255, 255, 1.0)',  colors.green.rgba(0.8)]
+    });
+
 
     return (
       <TouchableHighlight onPress={() => {this.setActiveElement(); this.props.callback()}}>
-        <View style={[styles.listView, {height: navBarHeight}]}>
+        <Animated.View style={[styles.listView, {height: navBarHeight, backgroundColor:backgroundColor}]}>
           {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
           {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
           {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
@@ -58,7 +86,7 @@ export class NavigationBar extends Component<any, any> {
           <View style={{paddingTop:3}}>
             {this.props.arrowDown === true ? <Icon name="ios-arrow-down" size={18} color={'#888'} /> : <Icon name="ios-arrow-forward" size={18} color={'#888'} />}
           </View>
-        </View>
+        </Animated.View>
       </TouchableHighlight>
     );
   }

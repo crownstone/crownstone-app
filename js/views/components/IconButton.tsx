@@ -16,7 +16,7 @@ export class IconButton extends Component<any, any> {
   render() {
     if (this.props.addIcon) {
       let iconSize = this.props.buttonSize;
-      let plusSize = 0.3*iconSize;
+      let plusSize = this.props.plusSize || 0.3*iconSize;
       return (
         <View style={{width:iconSize+plusSize, height:iconSize+0.2*plusSize, overflow:'hidden'}}>
         <View style={[{
@@ -44,7 +44,7 @@ export class IconButton extends Component<any, any> {
           top:-iconSize,
           left:iconSize-0.25*plusSize,
         }]}>
-          <Icon name={'md-add'} size={iconSize/5} color={'#ffffff'} />
+          <Icon name={'md-add'} size={plusSize/1.5} color={'#ffffff'} />
         </View>
       </View>
       );

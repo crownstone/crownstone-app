@@ -42,9 +42,7 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
     name                : 'test',
     rssi                : -50 - Math.random()*50,
     referenceId         : sphereId,
-    isCrownstoneFamily  : true,
     isInDFUMode         : false,
-    serviceUUID         : 'c001',
     serviceData         : serviceData
   }
 }

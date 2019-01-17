@@ -14,7 +14,6 @@ const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 class KeepAliveHandlerClass {
   _initialized : any;
   store : any;
-  lastTimeFired : number = 0;
 
   constructor() {
     this._initialized = false;
@@ -25,8 +24,6 @@ class KeepAliveHandlerClass {
     LOG.info('LOADED STORE KeepAliveHandler', this._initialized);
     if (this._initialized === false) {
       this.store = store;
-      // reset last time fired to 0 so the time diff method will
-      NativeBus.on(NativeBus.topics.enterSphere, () => { this.lastTimeFired = 0; });
       this.init();
 
     }
@@ -73,8 +70,6 @@ class KeepAliveHandlerClass {
   }
 
   keepAlive() {
-    this.lastTimeFired = new Date().valueOf();
-
     const state = this.store.getState();
 
     // do not use keepAlives if the user does not want to.

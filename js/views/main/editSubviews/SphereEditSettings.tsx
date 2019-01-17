@@ -30,14 +30,9 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 
 export class SphereEditSettings extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    if (params.sphereId) {
-      let state = params.store.getState();
-      let sphere = state.spheres[params.sphereId];
-      return {
-        title: lang("Edit_",sphere.config.name),
-        headerTruncatedBackTitle: lang("Back"),
-      }
+    return {
+      title: lang("Sphere_Menu"),
+      headerTruncatedBackTitle: lang("Back"),
     }
   };
 
@@ -132,12 +127,26 @@ lang("_Sphere_name_must_be_at_l_body"),
     items.push({
       label: ai.name,
       type: spherePermissions.editSphere ? 'navigation' : 'info',
-      icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.iosBlue.hex}}/>,
+      icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
         Actions.aiStart({sphereId: this.props.sphereId, canGoBack: true});
       }
     });
     items.push({label: lang("_will_do__very_best_help_",ai.name,ai.his),  type:'explanation', style:{paddingBottom:0}, below:true});
+
+
+    items.push({label: lang("SPHERE_USERS"),  type:'explanation', below:false});
+    items.push({
+      label: lang("Manage_Sphere_Users"),
+      type: 'navigation',
+      icon: <IconButton name='c1-people' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+      callback: () => {
+        Actions.pop();
+        setTimeout(() => { this.props.eventBus.emit("highlight_nav_field", "sphereEdit_users");}, 200)
+        setTimeout(() => { Actions.sphereUserOverview({sphereId: this.props.sphereId}); }, 500);
+      }
+    });
+
 
     items.push({label: lang("DANGER"),  type:'explanation', below: false});
     items.push({
