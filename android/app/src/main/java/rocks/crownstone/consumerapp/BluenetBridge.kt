@@ -16,6 +16,7 @@ import android.location.Criteria
 import android.location.LocationManager
 import android.os.Build
 import android.os.HandlerThread
+import android.os.Looper
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.facebook.react.bridge.*
@@ -75,8 +76,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	init {
 		startKovenant() // Start thread(s)
-//		bluenet = Bluenet(Looper.myLooper()) // Current thread
-//		bluenet = Bluenet(Looper.getMainLooper()) // Main thread
+//		// Current thread
+//		Looper.prepare()
+//		Looper.loop()
+//		bluenet = Bluenet(Looper.myLooper())
+//		// Main thread
+//		bluenet = Bluenet(Looper.getMainLooper())
 		// Create thread for the bluenet library
 		val handlerThread = HandlerThread("BluenetBridge")
 		handlerThread.start()
@@ -155,25 +160,29 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 
 		readyCallbacks.add(callback)
-		initPromise.success {
-			Log.i(TAG, "isReady initPromise success")
-			val activity = reactContext.currentActivity
-			if (activity != null) {
-				bluenet.makeScannerReady(activity)
-						.success {
-							//						resolveCallback(callback)
-							for (cb in readyCallbacks) {
-								Log.i(TAG, "isReady resolved $cb")
-								resolveCallback(cb)
-							}
-							readyCallbacks.clear()
-						}
-						.fail {
-							// Should never fail..
-							Log.e(TAG, "makeScannerReady failed: ${it.message}")
-						}
-			}
-		}
+		initPromise
+				.success {
+					Log.i(TAG, "isReady initPromise success")
+					val activity = reactContext.currentActivity
+					if (activity != null) {
+						bluenet.makeScannerReady(activity)
+								.success {
+									//						resolveCallback(callback)
+									for (cb in readyCallbacks) {
+										Log.i(TAG, "isReady resolved $cb")
+										resolveCallback(cb)
+									}
+									readyCallbacks.clear()
+								}
+								.fail {
+									// Should never fail..
+									Log.e(TAG, "makeScannerReady failed: ${it.message}")
+								}
+					}
+				}
+				.fail {
+					Log.e(TAG, "initPromise failed: ${it.message}")
+				}
 	}
 
 	@ReactMethod
@@ -538,7 +547,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Called after used logged in, and when changed.
 		// When disabled, no scanning has to happen in background.
 		if (enable) {
-			// This is actually a promise, but it should happen faster than it's possible to click a button.
+			// TODO: This is actually a promise, but it should happen faster than it's possible to click a button.
 			bluenet.runInForeground(ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running in the background"))
 		}
 		else {
