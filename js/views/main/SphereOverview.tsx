@@ -275,7 +275,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         visible={this.state.zoomInstructionsVisible}
         closeCallback={() => { this.setState({zoomInstructionsVisible: false})}}
       />
-    )
+    );
   }
 
   render() {

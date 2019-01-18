@@ -80,6 +80,9 @@ export default {
     You_can_add_Rooms__People:           function () { return "You can add Rooms, People or Crownstones to your Sphere. As more devices will be integrated with the Crownstone, they will appear here as well!\n\nWhat do you want to add?" },
     Add_to_Sphere:                       function () { return "Add to Sphere" },
   },
+  AddSphereTutorial_introduction:{
+
+  },
   AiStart:{
     __filename: "../js/views/startupViews/AiStart.tsx",
     _Ehmm_____arguments_______header:    function () { return "Ehmm " + arguments[0] + ".. :(" },
@@ -2063,7 +2066,8 @@ export default {
     __filename: "../js/views/main/SphereEdit.tsx",
     Syncing_with_the_Cloud___:           function () { return "Syncing with the Cloud..." },
     What_can_I_help_you_with_:           function () { return "What can I help you with?" },
-    Create_Sphere:                       function () { return "Create New Sphere" },
+    Create_Sphere:                       function () { return "Create Sphere" },
+    Create_a_new_Sphere:                 function () { return "Create a new Sphere" },
     A_Sphere_contains_your_Cr:           function () { return "A Sphere contains your Crownstones, Rooms and preferences. You can add others to your Sphere so they may also use your Crownstones!" },
     Rooms:                               function () { return "Rooms" },
     Crownstones:                         function () { return "Crownstones" },
@@ -2071,6 +2075,8 @@ export default {
     Behaviour:                           function () { return "Behaviour" },
     Integrations:                        function () { return "Integrations" },
     Settings:                            function () { return "Settings" },
+    Sphere_Creation:                     function () { return "SPHERE CREATION" },
+    Careful_a_sphere_is_not:             function () { return "Careful! A Sphere is not a room, but a completly separated collection of Crownstones. A holiday home or office would be a second Sphere. Using multiple Spheres in the same location is not recommended." },
     Welcome_:                            function () { return "Welcome!" },
   },
   SphereEditSettings:{

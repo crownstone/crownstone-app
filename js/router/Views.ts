@@ -1,3 +1,4 @@
+import { AddSphereTutorial }           from "../views/main/AddSphereTutorial/AddSphereTutorial";
 import { AlexaOverview }               from "../views/thirdParty/alexa/AlexaOverview";
 
 import { AiStart }                     from '../views/startupViews/AiStart'
@@ -69,6 +70,7 @@ import { ToonOverview }                from "../views/thirdParty/toon/ToonOvervi
 
 export const Views = {
   AlexaOverview,
+  AddSphereTutorial,
 
   AddItemsToSphere,
   AiStart,

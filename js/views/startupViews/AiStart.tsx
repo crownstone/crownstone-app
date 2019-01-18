@@ -198,6 +198,14 @@ export class AiStart extends Component<any, any> {
         if (this.props.canGoBack === true) {
           BackAction();
         }
+        else if (this.props.resetViewStack === true) {
+          if (Platform.OS === 'android') {
+            Actions.reset("sphereOverview");
+          }
+          else {
+            Actions.reset("tabBar");
+          }
+        }
         else {
           this.restoreBackButton();
           if (Platform.OS === 'android') {
