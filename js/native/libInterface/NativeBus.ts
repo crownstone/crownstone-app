@@ -20,8 +20,8 @@ class NativeBusClass {
       setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = crownstoneAdvertisement
       dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = crownstoneAdvertisement
       advertisement:        "verifiedAdvertisementData",        // data type = crownstoneAdvertisement // = from crownstone in normal operation mode.
-      anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = crownstoneAdvertisement // Never used, so maybe remove this?
-      anyAdvertisementData: "anyAdvertisementData",             // data type = crownstoneAdvertisement
+      anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = crownstoneAdvertisement 
+      anyAdvertisementData: "anyAdvertisementData",             // data type = crownstoneAdvertisement // Never used, so maybe remove this?
       unverifiedAdvertisementData:    "unverifiedAdvertisementData",  // data type = crownstoneAdvertisement
       setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error) // Is 0 required? Or is rejecting the promise enough?
       dfuProgress:          "dfuProgress",                      // data type = {percentage: number, part: number, totalParts: number, progress: number, currentSpeedBytesPerSecond: number, avgSpeedBytesPerSecond: number}
@@ -31,7 +31,7 @@ class NativeBusClass {
       nearest:              "nearestCrownstone",                // data type = nearestStone // Any stone, validated or not, any operation mode.
       nearestSetup:         "nearestSetupCrownstone",           // data type = nearestStone
 
-      iBeaconAdvertisement: "iBeaconAdvertisement",             // data type = type_beacon[]
+      iBeaconAdvertisement: "iBeaconAdvertisement",             // data type = ibeaconPackage[]
       enterSphere:          "enterSphere",                      // data type = string (sphereId)
       exitSphere:           "exitSphere",                       // data type = string (sphereId)
       enterRoom:            "enterLocation",                    // data type = {region: sphereId, location: locationId}

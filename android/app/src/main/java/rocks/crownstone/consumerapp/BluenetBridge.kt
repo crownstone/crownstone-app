@@ -68,7 +68,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private var isTracking = false
 
 	// Localization
-	private var isLocalizationTraining = false
+	private var isLocalizationTraining = false // TODO: keep this up in localization lib.
 	private var isLocalizationTrainingPaused = false
 	private var lastLocationId: String? = null
 	private var currentSphereId = "" // TODO: get rid of this, as we should support multisphere. Currently needed because scans don't have the sphere id, nor location updates.
@@ -81,18 +81,21 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val handlerThread = HandlerThread("BluenetBridge")
 		handlerThread.start()
 		bluenet = Bluenet(handlerThread.looper)
-		initPromise = bluenet.init(reactContext)
+		initPromise = bluenet.init(reactContext) // TODO: move this to isReady()
 		initPromise.success {
-			bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
-			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
-			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
-			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
+			Log.i(TAG, "initPromise success")
 			bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
 			bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
 			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON,     { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
 			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
 			bluenet.subscribe(BluenetEvent.BLE_TURNED_ON,   { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
 			bluenet.subscribe(BluenetEvent.BLE_TURNED_OFF,  { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_OFF) })
+			bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
+			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
+			bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, ::onRegionExit)
+			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, ::onIbeaconScan)
+			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
+			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
 		}
 	}
 
@@ -140,24 +143,27 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun isReady(callback: Callback) {
-		Log.i(TAG, "isReady")
+		Log.i(TAG, "isReady $callback")
 		// Check if bluenet lib is ready (scanner and bluetooth).
 		// Only invoke callback once lib is ready, do not invoke on error.
 		// Only called at start of app.
 		// Can be called multiple times, and should all be invoked once ready.
 		if (bluenet.isScannerReady()) {
+			Log.i(TAG, "isReady already ready: resolve $callback")
 			resolveCallback(callback)
 			return
 		}
 
 		readyCallbacks.add(callback)
 		initPromise.success {
+			Log.i(TAG, "isReady initPromise success")
 			val activity = reactContext.currentActivity
 			if (activity != null) {
 				bluenet.makeScannerReady(activity)
 						.success {
 							//						resolveCallback(callback)
 							for (cb in readyCallbacks) {
+								Log.i(TAG, "isReady resolved $cb")
 								resolveCallback(cb)
 							}
 							readyCallbacks.clear()
@@ -168,6 +174,15 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 						}
 			}
 		}
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun isPeripheralReady(callback: Callback) {
+		Log.i(TAG, "isPeripheralReady")
+		// Resolve when ready to advertise.
+		resolveCallback(callback)
+		// TODO
 	}
 
 	@ReactMethod
@@ -234,7 +249,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun clearKeySets() {
 		Log.i(TAG, "clearKeySets")
-		// TODO
+		bluenet.clearKeys()
 	}
 
 	@ReactMethod
@@ -247,7 +262,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setLocationState(a: Int, b: Int, c: Int, enteringSphereId: String) {
-		Log.i(TAG, "setDevicePreferences a=$a b=$b c=$c enteringSphereId=$enteringSphereId")
+		Log.i(TAG, "setLocationState a=$a b=$b c=$c enteringSphereId=$enteringSphereId")
 		// TODO
 	}
 
@@ -316,13 +331,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun isDevelopmentEnvironment(callback: Callback) {
-		// Return boolean
+		// Return whether this is app is for development
 		Log.i(TAG, "isDevelopmentEnvironment")
-		resolveCallback(callback, false) // TODO: what does this mean?
+		resolveCallback(callback, false)
 	}
-
-
-
 
 	@ReactMethod
 	@Synchronized
@@ -413,7 +425,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun startScanning() {
 		Log.i(TAG, "startScanning")
 		scannerState = ScannerState.HIGH_POWER
-//		bluenet.filterForCrownstones(true) // TODO: always set this?
+		bluenet.filterForCrownstones(true) // TODO: always set this?
 		updateScanner()
 	}
 
@@ -423,7 +435,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "startScanningForCrownstones")
 		scannerState = ScannerState.HIGH_POWER
 		bluenet.filterForCrownstones(true)
-		bluenet.filterForIbeacons(true)
 		updateScanner()
 	}
 
@@ -434,7 +445,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Validated and non validated, but unique only.
 		scannerState = ScannerState.UNIQUE_ONLY
 		bluenet.filterForCrownstones(true)
-		bluenet.filterForIbeacons(true)
 		updateScanner()
 	}
 
@@ -537,6 +547,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun updateScanner() {
+		bluenet.filterForIbeacons(isTracking)
 		when (scannerState) {
 			ScannerState.STOPPED -> {
 				if (isTracking) {
@@ -620,7 +631,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun startIndoorLocalization() {
 		Log.i(TAG, "startIndoorLocalization")
 		// Start using the classifier
-		localization.startLocalization(localizationCallback)
+//		localization.startLocalization(localizationCallback)
 	}
 
 	@ReactMethod
@@ -628,7 +639,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun stopIndoorLocalization() {
 		Log.i(TAG, "stopIndoorLocalization")
 		// Stop using the classifier
-		localization.stopLocalization()
+//		localization.stopLocalization()
 	}
 
 	@ReactMethod
@@ -726,7 +737,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun connect(address: String, callback: Callback) {
+	fun connect(address: String, referenceId: String, callback: Callback) {
 		Log.i(TAG, "connect $address")
 		bluenet.connect(address)
 				.success { resolveCallback(callback) }
@@ -860,8 +871,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun bootloaderToNormalMode(address: String, callback: Callback) {
-		Log.i(TAG, "bootloaderToNormalMode")
-		// TODO
+		Log.i(TAG, "bootloaderToNormalMode $address")
+		bluenet.connect(address)
+				.then { bluenet.dfu.reset() }.unwrap()
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
@@ -924,7 +938,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.control.meshCommand(MeshControlPacket(ControlPacket(ControlType.NOOP)))
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
-		// TODO: implement as single command
 	}
 
 
@@ -953,6 +966,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun broadcastSwitch(referenceId: String, stoneId: String, switchValDouble: Double, callback: Callback) {
 		Log.i(TAG, "broadcastSwitch referenceId=$referenceId stoneId=$stoneId switchVal=$switchValDouble")
+		resolveCallback(callback)
+		// TODO
 	}
 
 	@ReactMethod
@@ -1096,7 +1111,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun setMeshChannel(channel: Int, callback: Callback) {
 		Log.i(TAG, "setMeshChannel $channel")
-		// TODO
+		bluenet.config.setMeshChannel(channel.toShort())
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 
@@ -1498,6 +1515,32 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
+	private fun onIbeaconScan(data: Any) {
+		val scanList = data as ScannedIbeaconList
+		if (scanList.isEmpty()) {
+			return
+		}
+		val array = Arguments.createArray()
+		for (scan in scanList) {
+			val beaconId = "${scan.ibeaconData.uuid}.Maj:${scan.ibeaconData.major}.Min:${scan.ibeaconData.minor}"
+			if (isLocalizationTraining && !isLocalizationTrainingPaused) {
+				localization.feedMeasurement(scan.rssi, beaconId, null, null)
+			}
+			localization.track(scan.rssi, beaconId, null)
+			val map = Arguments.createMap()
+			map.putString("id", beaconId)
+			map.putString("uuid", scan.ibeaconData.uuid.toString())
+			map.putInt("major", scan.ibeaconData.major)
+			map.putInt("minor", scan.ibeaconData.minor)
+			map.putInt("distance", 0) // TODO: is this required?
+			map.putInt("rssi", scan.rssi)
+			map.putString("referenceId", scan.referenceId)
+			array.pushMap(map)
+		}
+//		sendEvent("iBeaconAdvertisement", array)
+	}
+
+	@Synchronized
 	private fun onNearestStone(data: Any) {
 		val nearest = data as NearestDeviceListEntry
 		val nearestMap = exportNearest(nearest)
@@ -1544,18 +1587,19 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		val advertisementMap = exportAdvertisementData(device, serviceData)
 
-//		sendEvent("anyAdvertisementData", advertisementMap) // Not used
+//		sendEvent("anyAdvertisementData", advertisementMap) // Not used, also needs a clone of the data?
 		if (device.validated) {
-			if (device.operationMode == OperationMode.SETUP) {
-				sendEvent("verifiedSetupAdvertisementData", advertisementMap)
-			}
-			else {
-				sendEvent("verifiedAdvertisementData", advertisementMap) // TODO: DFU as well?
+			when (device.operationMode) {
+				OperationMode.SETUP -> sendEvent("verifiedSetupAdvertisementData", advertisementMap)
+				OperationMode.NORMAL -> sendEvent("verifiedAdvertisementData", advertisementMap) // TODO: normal mode only?
 			}
 			// Clone the advertisementMap to avoid the "already consumed" error
 			val advertisementBundle = Arguments.toBundle(advertisementMap)
 			val advertisementMapCopy = Arguments.fromBundle(advertisementBundle)
 			sendEvent("anyVerifiedAdvertisementData", advertisementMapCopy)
+		}
+		else {
+			// TODO: unverifiedAdvertisementData
 		}
 	}
 
@@ -1684,11 +1728,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	/** Converts switch state (0-228) to 0.0 .. 1.0 value.
 	 */
 	private fun convertSwitchState(switchState: SwitchState): Double {
-		var switchStateInt = switchState.state.toInt()
-		if (switchStateInt > 100) {
-			switchStateInt = 100
-		}
-		return switchStateInt.toDouble() / 100
+//		var switchStateInt = switchState.state.toInt()
+//		if (switchStateInt > 100) {
+//			switchStateInt = 100
+//		}
+//		return switchStateInt.toDouble() / 100
+		return switchState.value.toDouble() / 100
 	}
 
 
