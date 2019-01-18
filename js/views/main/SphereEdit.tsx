@@ -152,7 +152,7 @@ export class SphereEdit extends Component<any, any> {
       }
     });
 
-    items.push({type:'spacer'});
+    items.push({label: "SPHERE SETTINGS",  type:'explanation'});
     items.push({
       label: lang("Settings"),
       largeIcon: <IconButton name="ios-cog" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,
@@ -162,14 +162,16 @@ export class SphereEdit extends Component<any, any> {
       }
     });
 
+    items.push({label: lang("Sphere_Creation"),  type:'explanation'});
     items.push({
-      label: lang("Create_Sphere"),
+      label: lang("Create_a_new_Sphere"),
       largeIcon: <IconButton plusSize={25} addIcon={true} name="c1-sphere" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.csBlueLight.hex}} />,
       type: 'navigation',
       callback: () => {
-        Actions.sphereEditSettings({sphereId: this.props.sphereId});
+        Actions.addSphereTutorial();
       }
     });
+    items.push({label: lang("Careful_a_sphere_is_not"),  type:'explanation', below: true});
 
     items.push({type:'spacer'});
     items.push({type:'spacer'});
