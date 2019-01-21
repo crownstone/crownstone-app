@@ -15,7 +15,6 @@ import android.content.pm.PackageManager
 import android.location.Criteria
 import android.location.LocationManager
 import android.os.Build
-import android.os.HandlerThread
 import android.os.Looper
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -51,9 +50,9 @@ import kotlin.math.round
 class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJavaModule(reactContext) {
 	private val TAG = this.javaClass.simpleName
 	private val reactContext = reactContext
-	private val bluenet: Bluenet
+	private lateinit var bluenet: Bluenet
 	private val localization = FingerprintLocalization.getInstance()
-	private val initPromise: Promise<Unit, Exception>
+	private lateinit var initPromise: Promise<Unit, Exception>
 	private val readyCallbacks = ArrayList<Callback>()
 
 	private val ONGOING_NOTIFICATION_ID = 99115
@@ -76,32 +75,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	init {
 		startKovenant() // Start thread(s)
-//		// Current thread
-//		Looper.prepare()
-//		Looper.loop()
-//		bluenet = Bluenet(Looper.myLooper())
-//		// Main thread
-//		bluenet = Bluenet(Looper.getMainLooper())
-		// Create thread for the bluenet library
-		val handlerThread = HandlerThread("BluenetBridge")
-		handlerThread.start()
-		bluenet = Bluenet(handlerThread.looper)
-		initPromise = bluenet.init(reactContext) // TODO: move this to isReady()
-		initPromise.success {
-			Log.i(TAG, "initPromise success")
-			bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
-			bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
-			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON,     { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
-			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
-			bluenet.subscribe(BluenetEvent.BLE_TURNED_ON,   { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
-			bluenet.subscribe(BluenetEvent.BLE_TURNED_OFF,  { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_OFF) })
-			bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
-			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
-			bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, ::onRegionExit)
-			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, ::onIbeaconScan)
-			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
-			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
-		}
 	}
 
 	// TODO: call this?
@@ -142,7 +115,33 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// - Beacon
 		// - etc.
 		Log.i(TAG, "rerouteEvents")
-		// TODO
+
+		// Current thread
+//		Looper.prepare()
+//		Looper.loop()
+		bluenet = Bluenet(Looper.myLooper())
+//		// Main thread
+//		bluenet = Bluenet(Looper.getMainLooper())
+//		// Create thread for the bluenet library
+//		val handlerThread = HandlerThread("BluenetBridge")
+//		handlerThread.start()
+//		bluenet = Bluenet(handlerThread.looper)
+		initPromise = bluenet.init(reactContext) // TODO: move this to isReady()
+		initPromise.success {
+			Log.i(TAG, "initPromise success")
+			bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
+			bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
+			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON,     { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
+			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
+			bluenet.subscribe(BluenetEvent.BLE_TURNED_ON,   { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
+			bluenet.subscribe(BluenetEvent.BLE_TURNED_OFF,  { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_OFF) })
+			bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
+			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
+			bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, ::onRegionExit)
+			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, ::onIbeaconScan)
+			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
+			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
+		}
 	}
 
 	@ReactMethod
