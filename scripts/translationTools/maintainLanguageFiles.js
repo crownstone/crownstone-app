@@ -100,11 +100,6 @@ Object.keys(BASE).forEach((fileElement) => {
 
 })
 
-return
-
-
-
-
 
 // every localization file will be iterated to remove outdated fields and to add new fields
 // each foreign language will get a __stringSameAsBaseLanguage entry per file, each containing that file's subkeys with false. This field is also updated to match the keys.
