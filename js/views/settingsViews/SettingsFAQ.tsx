@@ -118,8 +118,7 @@ export class SettingsFAQ extends Component<any, any> {
     items.push({
       type:'collapsable',
       label: lang("____a_Crownstone_is_on_Se"),
-      content:"Ensure there is power on the Crownstone and that you can reach it.\n\n" +
-      "If you're near (within a meter) and it is still on 'Searching' you may want to try the factory reset procedure (see 'what to do if I need to factory reset a Crownstone' below).",
+      content: lang("Ensure_there_is_power_on_"),
       contentHeight: 155
     });
 

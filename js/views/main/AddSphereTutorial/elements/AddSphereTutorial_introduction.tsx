@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AddSphereTutorial_introduction", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -24,15 +30,11 @@ export class AddSphereTutorial_introduction extends Component<any, any> {
     return (
       <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}}>
         <View style={{flex:1, alignItems:'center', padding: 20}}>
-          <Text style={tutorialStyle.header}>{"What is a Sphere?"}</Text>
+          <Text style={tutorialStyle.header}>{ lang("What_is_a_Sphere_") }</Text>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <ScaledImage source={require("../../../../images/tutorial/Sphere_with_house.png")} sourceHeight={481} sourceWidth={480} targetHeight={200} />
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
-          <Text style={tutorialStyle.text}>{
-            "Spheres are individual, separated collections of Crownstones.\n\n" +
-            "Crownstones in different spheres cannot talk to eachother.\n\n" +
-            "Every sphere has it's own collection of users."
-          }</Text>
+          <Text style={tutorialStyle.text}>{ lang("Spheres_are_individual__se") }</Text>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />
         </View>
       </ScrollView>

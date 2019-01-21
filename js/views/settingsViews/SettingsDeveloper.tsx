@@ -232,12 +232,12 @@ lang("_No_device_Id___There_was_body"),
 
     let broadcastLevels = []
     for (let i = -16; i <= 14; i = i+2) {
-      broadcastLevels.push({value: i, label: i + " dB"});
+      broadcastLevels.push({value: i, label: lang("_dB",i)});
     }
 
-    items.push({ label: "BROADCASTING", type: 'explanation', below: false });
+    items.push({ label: lang("BROADCASTING"), type: 'explanation', below: false });
     items.push({
-      label: "Broadcasting",
+      label: lang("Broadcasting"),
       value: dev.broadcasting_enabled,
       type: 'switch',
       icon: <IconButton name="md-wifi" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
@@ -249,7 +249,7 @@ lang("_No_device_Id___There_was_body"),
       let device = state.devices[deviceId]
       items.push({
         type: 'dropdown',
-        label: "RSSI Offset",
+        label: lang("RSSI_Offset"),
         dropdownHeight: 130,
         valueRight: true,
         buttons: true,
@@ -263,7 +263,7 @@ lang("_No_device_Id___There_was_body"),
       })
     }
     else {
-      items.push({ label: "No Device Available", type: 'explanation', below: false });
+      items.push({ label: lang("No_Device_Available"), type: 'explanation', below: false });
     }
 
 

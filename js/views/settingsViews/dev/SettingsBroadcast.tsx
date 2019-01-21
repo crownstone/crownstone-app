@@ -27,7 +27,7 @@ import {clearLogs} from "../../../logging/LogUtil";
 export class SettingsBroadcast extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Broadcast",
+      title: lang("Broadcast"),
     }
   };
   unsubscribe;

@@ -1,26 +1,23 @@
 let fs = require( 'fs' );
 let path = require( 'path' );
-let startPath = "../js";
+let util = require("./util");
+let config = require("./config");
 
-const EXCLUSIONS = {
-  'DebugIconSelection': true,
-  'IconDebug': true
-}
+const LANGUAGE_FILE_PATH = '../../js/'
+
+
+
 
 
 const KEY_SIZE = 25;
 
-let reactLabelTots  = [];
-let textTots  = [];
-let alertTots = [];
-let labelTots = [];
-let titleTots = [];
-let translationAlertData = {};
-let translationLabelData = {};
-let translationTextData  = {};
-let translationTitleData = {};
+let translationData = {};
 
-let parsePath = function(dirPath) {
+let fileList = [];
+let fileMap = {}
+
+
+let parseFilesRecursivelyInPath = function(dirPath) {
   let files = fs.readdirSync( dirPath )
 
   for (let i = 0; i < files.length; i++) {
@@ -32,17 +29,20 @@ let parsePath = function(dirPath) {
     let ext = elementPath.substr(elementPath.length - 3);
 
     if (stat.isFile() && (ext === "tsx")) {
-      parseFile(elementPath);
+      fileList.push(elementPath)
+      parseFile(elementPath, false);
     }
     else if (stat.isDirectory()) {
       // console.log( "'%s' is a directory.", elementPath );
-      parsePath(elementPath)
+      parseFilesRecursivelyInPath(elementPath)
     }
   };
+
+  return {fileMap, fileList, translationData}
 }
 
 
-let parseFile = function(filePath) {
+let parseFile = function(filePath, allowReplace) {
   let content    = fs.readFileSync(filePath, "utf8")
   let textRegex  = /<Text[^>]*?>([^<]*?)<\/Text>/gm
   // let alertRegex = /Alert\.alert\(([\s\S]*?)\)/gm
@@ -63,56 +63,31 @@ let parseFile = function(filePath) {
   let filenameArr = filePath.split("/");
   let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
 
-  if (EXCLUSIONS[filename]) { return }
+  if (config.FILE_EXCLUSIONS[filename]) { return }
 
-  // if (filename !== "ActivityLogItem") {
-  //   return;
-  // }
+  // insert the import line if it is not already there.
+  let importLine = 'import { Languages } from "';
+  let filePathRelative = filePath.replace(LANGUAGE_FILE_PATH, "")
+  let pathArr = filePathRelative.split("/");
 
-//   let importLine = 'import { Languages } from "';
-//   let pathArr = filePath.split("/");
-//   for (let i = 0; i < pathArr.length - 3; i++) {
-//     importLine += '../'
-//   }
-//   importLine += 'Languages"\n'
-//
-//   let functionConstruction = `
-// ${importLine}
-// function lang(key,a?,b?,c?,d?,e?) {
-//   return Languages.get("${filename}", key)(a,b,c,d,e);
-// }
-// `;
+  // the last element is the filename
+  for (let i = 0; i < pathArr.length - 1; i++) {
+    importLine += '../'
+  }
+  importLine += 'Languages"\n'
 
-  // content = content.replace(importLine, functionConstruction)
-
-  let parserRegex = /(Languages\.([^)]*?)\(\s?([^,]*),\s?([^\)]*)\s?\)\(([^\)]*)\))/gm;
-  let parserMatches  = content.match(parserRegex);
-
-  if (parserMatches !== null) {
-      for ( let i = 0; i < parserMatches.length; i++) {
-        let match = parserMatches[i];
-        let resultArray = [];
-        while ((resultArray = parserRegex.exec(match)) !== null) {
-          if (resultArray[2] !== "get") {
-            console.log(resultArray);
-            let newString = "lang("+resultArray[4];
-            if (resultArray[5]) {
-              newString += "," + resultArray[5]
-            }
-            newString += ")"
-            console.log(newString)
-            console.log("\n\n")
-            content = content.replace(resultArray[0], newString)
-          }
-        }
-
-      }
+  let functionConstruction = `
+${importLine}
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("${filename}", key)(a,b,c,d,e);
+}
+`;
+  if (allowReplace) {
+    if (content.indexOf(importLine) === -1) {
+      content = importLine + content;
+      content = content.replace(importLine, functionConstruction)
     }
-
-  //
-  // if (content.indexOf(importLine) === -1) {
-  //   content = importLine + content;
-  // }
+  }
 
   let contentData = {content: content};
 
@@ -129,8 +104,10 @@ let parseFile = function(filePath) {
 
           }
           else {
-            extractReactLabel(resultArray, filename, filePath, contentData);
-            reactLabelTots.push(resultArray)
+            if (resultArray[0].indexOf("lang(\"") == -1) {
+              extractReactLabel(resultArray, filename, filePath, contentData);
+              // reactLabelTotals.push(match)
+            }
           }
         }
       }
@@ -142,10 +119,12 @@ let parseFile = function(filePath) {
       let match = textMatches[i];
       let resultArray = [];
       while ((resultArray = textRegex.exec(match)) !== null) {
-        extractFromText(resultArray, filename, filePath, contentData)
+        if (resultArray[0].indexOf("lang(\"") == -1) {
+          extractFromText(resultArray, filename, filePath, contentData)
+          // textTotals.push(match)
+        }
       }
     }
-    textTots = textTots.concat(textMatches);
   }
 
   if (alertMatches !== null) {
@@ -153,10 +132,12 @@ let parseFile = function(filePath) {
       let match = alertMatches[i];
       let resultArray = [];
       while ((resultArray = alertRegex.exec(match)) !== null) {
-        extractAlert(resultArray, filename, filePath, contentData)
+        if (resultArray[0].indexOf("lang(\"") == -1) {
+          extractAlert(resultArray, filename, filePath, contentData)
+          // alertTotals.push(match)
+        }
       }
     }
-    alertTots = alertTots.concat(alertMatches);
   }
 
   if (labelMatches !== null) {
@@ -164,24 +145,53 @@ let parseFile = function(filePath) {
       let match = labelMatches[i];
       let resultArray = [];
       while ((resultArray = labelRegex.exec(match)) !== null) {
-        extractLabel(resultArray, filename, filePath, contentData)
+        if (resultArray[0].indexOf("lang(\"") == -1) {
+          extractLabel(resultArray, filename, filePath, contentData)
+          // labelTotals.push(match)
+        }
       }
     }
-    labelTots = labelTots.concat(labelMatches);
   }
   if (titleMatches !== null) {
     for ( let i = 0; i < titleMatches.length; i++) {
       let match = titleMatches[i];
       let resultArray = [];
       while ((resultArray = titleRegex.exec(match)) !== null) {
-        extractTitle(resultArray, filename, filePath, contentData)
+        if (resultArray[0].indexOf("lang(\"") == -1) {
+          extractTitle(resultArray, filename, filePath, contentData)
+          // titleTotals.push(match)
+        }
       }
     }
-    titleTots = titleTots.concat(titleMatches);
   }
 
-  // console.log(contentData)
-  // fs.writeFileSync(filePath, content);
+  let parserRegex = /(Languages\.([^)]*?)\(\s?([^,]*),\s?([^\)]*)\s?\)\(([^\)]*)\))/gm;
+  let parserMatches = contentData.content.match(parserRegex);
+
+  if (parserMatches !== null) {
+    for ( let i = 0; i < parserMatches.length; i++) {
+      let match = parserMatches[i];
+      let resultArray = [];
+      while ((resultArray = parserRegex.exec(match)) !== null) {
+        if (resultArray[2] !== "get") {
+          // console.log(resultArray);
+          let newString = "lang("+resultArray[4];
+          if (resultArray[5]) {
+            newString += "," + resultArray[5]
+          }
+          newString += ")"
+          contentData.content = contentData.content.replace(resultArray[0], newString)
+        }
+      }
+    }
+  }
+
+  fileMap[filename] = filePath
+  if (allowReplace) {
+    fs.writeFileSync(filePath, contentData.content);
+  }
+
+  return {translationData}
 }
 
 function extractAlert(match, filename, filePath, contentData) {
@@ -192,6 +202,11 @@ function extractAlert(match, filename, filePath, contentData) {
 
   let fullMatchBody = fullMatch.substr(headerResult.parsedText.length + 1) // +1 to swallow the comma
   let bodyResult = extractAndConvert(fullMatchBody, true, true, true)
+  // there is no actual text in here. Not required to translate.
+  if (!bodyResult.pureText) {
+    return
+  }
+
   let body = bodyResult.text;
   let fullMatchRemainder = fullMatchBody.substr(bodyResult.parsedText.length)
   let textSplit = fullMatch.split("text:");
@@ -199,29 +214,29 @@ function extractAlert(match, filename, filePath, contentData) {
   let buttonLeftData = grabString(textSplit[1]);
   let buttonRightData = grabString(textSplit[2]);
 
-  if (translationAlertData[filename] === undefined) {
-    translationAlertData[filename] = {__filename: '"' + filePath + '"'}
+  if (translationData[filename] === undefined) {
+    translationData[filename] = {__filename: '"' + filePath + '"'}
   }
 
-  let headerTextKey      = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_header');
-  let bodyTextKey        = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_body');
+  let headerTextKey      = prepareTextKey(translationData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_header');
+  let bodyTextKey        = prepareTextKey(translationData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_body');
 
   let headerFunctionCall = getFunctionCall(headerResult);
   let bodyFunctionCall   = getFunctionCall(bodyResult);
 
 
-  translationAlertData[filename][headerTextKey] = "() => { return " + headerResult.text + " }";
-  translationAlertData[filename][bodyTextKey]   = "() => { return " + bodyResult.text + " }";
+  translationData[filename][headerTextKey] = "() => { return " + headerResult.text + " }";
+  translationData[filename][bodyTextKey]   = "() => { return " + bodyResult.text + " }";
   let buttonLeftKey
   let buttonRightKey
   if (buttonLeftData.result) {
-    buttonLeftKey      = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_left');
-    translationAlertData[filename][buttonLeftKey]   = "() => { return \"" + buttonLeftData.result + "\" }";
+    buttonLeftKey      = prepareTextKey(translationData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_left');
+    translationData[filename][buttonLeftKey]   = "() => { return \"" + buttonLeftData.result + "\" }";
   }
 
   if (buttonRightData.result) {
-    buttonRightKey     = prepareTextKey(translationAlertData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_right');
-    translationAlertData[filename][buttonRightKey]   = "() => { return \"" + buttonRightData.result + "\" }";
+    buttonRightKey     = prepareTextKey(translationData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_right');
+    translationData[filename][buttonRightKey]   = "() => { return \"" + buttonRightData.result + "\" }";
   }
 
   // write remainder; this is the part with the buttons
@@ -255,7 +270,7 @@ function extractTitle(match, filename, filePath, contentData) {
 
   let extractData = extractAndConvert(content, true, true, true);
 
-  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationTitleData, 'title', contentData);
+  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationData, 'title', contentData);
 }
 
 function extractLabel(match, filename, filePath, contentData) {
@@ -265,7 +280,7 @@ function extractLabel(match, filename, filePath, contentData) {
   let extractData = extractAndConvert(content, true, true, true);
   let prefix = match[1].substr(0,match[1].indexOf(match[2]))
 
-  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationLabelData, 'label', contentData, false, [prefix,'']);
+  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationData, 'label', contentData, false, [prefix,'']);
 }
 
 function extractReactLabel(match, filename, filePath, contentData) {
@@ -276,9 +291,8 @@ function extractReactLabel(match, filename, filePath, contentData) {
   let prefix = match[1] + "={"
 
 
-  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationLabelData, 'label', contentData, false, [prefix,'}']);
+  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationData, 'label', contentData, false, [prefix,'}']);
 }
-
 
 function extractFromText(match, filename, filePath, contentData) {
   // this will ignore any > in the styles
@@ -318,17 +332,16 @@ function extractFromText(match, filename, filePath, contentData) {
   let paddingArray = match[0].split(extractData.parsedText);
 
   if (extractData.pureText) {
-    createTranslationFileAndReplaceContents(filename, filePath, extractData, translationTextData, 'text', contentData, true, paddingArray)
+    createTranslationFileAndReplaceContents(filename, filePath, extractData, translationData, 'text', contentData, true, paddingArray)
   }
 }
 
-
 function createTranslationFileAndReplaceContents(filename, filePath, extractData, target, targetType, contentData, openWithCurly = false, paddingArray = null) {
   if (target[filename] === undefined) {
-    target[filename] = {__filename: '"' + filePath + '"'}
+    target[filename] = {__filename: filePath}
   }
 
-  console.log("FILENAME", filename, extractData.parsedText)
+  // console.log("FILENAME", filename, extractData.parsedText)
 
   let textKey = prepareTextKey(target, filename, extractData.pureText);
   if (textKey === '' || textKey === "_") {
@@ -351,7 +364,6 @@ function createTranslationFileAndReplaceContents(filename, filePath, extractData
     contentData.content = contentData.content.replace(extractData.parsedText, replacementContent);
   }
 }
-
 
 function getFunctionCall(extractData) {
   let functionCall = '('
@@ -384,7 +396,6 @@ function prepareTextKey(target, filename, inputText, postfix = '') {
   return textKeyNoSpaces;
 }
 
-
 function grabString(str) {
   if (!str) { return {result:null}; }
 
@@ -411,7 +422,6 @@ function grabString(str) {
   let resultString = stringMatcher + result + stringMatcher
   return {result, resultString};
 }
-
 
 function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = false, stopOnCurlyBracket = false) {
   let modes = {
@@ -743,327 +753,4 @@ function extractAndConvert(content, assumeLogicIsOpen = false, stopOnComma = fal
 }
 
 
-parsePath(startPath)
-console.log('textTots', textTots.length);
-console.log('alertTots', alertTots.length);
-console.log('labelTots', labelTots.length);
-console.log('reactLabelTots', reactLabelTots.length);
-console.log('titleTots', titleTots.length);
-
-//util
-let padd = function (x, size) {
-  if (x === "__filename:") {
-    return x;
-  }
-  while (x.length < size) {
-    x += " ";
-  }
-  return x
-}
-
-function stringifyData(translationData, filename) {
-  let resultString = 'export default {\n';
-  let indent = "  "
-  let keys = Object.keys(translationData);
-  keys.sort();
-
-  let keySizeMax = 0;
-  keys.forEach((key) => {
-    let source = translationData[key]
-    let subKeys = Object.keys(source);
-    subKeys.forEach((subKey) => {
-      keySizeMax = Math.max(keySizeMax, subKey.length)
-    })
-  })
-
-  keys.forEach((key) => {
-    resultString += indent + key + ":{\n"
-    let source = translationData[key]
-    let subKeys = Object.keys(source);
-    subKeys.forEach((subKey) => {
-      resultString += indent + indent + padd(subKey + ":", keySizeMax + 1) + " " + source[subKey] + ",\n"
-    })
-    resultString += indent + "},\n"
-  })
-
-  resultString += "}";
-  fs.writeFileSync(filename + ".ts", resultString)
-}
-
-// stringifyData(translationTextData,  'en_us_texts')
-// stringifyData(translationTitleData, 'en_us_titles')
-// stringifyData(translationAlertData, 'en_us_alerts')
-
-
-let stringTots  = [];
-
-let parsePathInteractive = function(dirPath) {
-  let files = fs.readdirSync( dirPath )
-
-  for (let i = 0; i < files.length; i++) {
-    let file = files[i];
-
-    // Make one pass and make the file complete
-    let elementPath = path.join( dirPath, file );
-    let stat = fs.statSync(elementPath)
-    let ext = elementPath.substr(elementPath.length - 3);
-
-    if (stat.isFile() && (ext === "tsx")) {
-      parseFileInteractive(elementPath)
-    }
-    else if (stat.isDirectory()) {
-      // console.log( "'%s' is a directory.", elementPath );
-      parsePathInteractive(elementPath)
-    }
-  };
-}
-
-
-
-let parseFileInteractive = function(filePath, ) {
-  let content    = fs.readFileSync(filePath, "utf8")
-  let equalsStringCheck = /(\S*?[^=<>!])\s?[:=]\s?(['"^}][\s\S]*?)[};]/gm
-  let equalsStringMatches = content.match(equalsStringCheck);
-
-  let filenameArr = filePath.split("/");
-  let filename = filenameArr[filenameArr.length-1].replace(".tsx","").replace(/[^0-9a-zA-Z]/g,'_');
-
-  if (EXCLUSIONS[filename]) { return }
-
-  // if (filename !== "OptionPopup") {
-  //   return;
-  // }
-
-  let contentData = {content: content};
-
-  if (equalsStringMatches !== null) {
-    let ignoreFields = {key: true, color: true, ellipsizeMode: true, returnKeyType: true, autoCapitalize: true}
-    for ( let i = 0; i < equalsStringMatches.length; i++) {
-      let match = equalsStringMatches[i];
-      let resultArray = [];
-      while ((resultArray = equalsStringCheck.exec(match)) !== null) {
-        if (ignoreFields[resultArray[1]] === undefined) {
-          parseInteractive(resultArray, filename, filePath, contentData)
-        }
-      }
-      stringTots = stringTots.concat(equalsStringMatches);
-    }
-  }
-
-
-  // console.log(contentData)
-  // fs.writeFileSync(filePath, contentData.content);
-}
-
-let ignoreWords = [
-  'bold',
-  'center',
-  'row',
-  '#',
-  'transparent',
-  'flex-start',
-  'flex-end',
-  'c1-',
-  'c2-',
-  'c3-',
-  'md-',
-  'ios-',
-  '100',
-  '200',
-  '300',
-  '400',
-  '500',
-  '600',
-  '700',
-  '800',
-  '900',
-]
-let ignoreKeys = [
-  '{',
-  'sun',
-  'alignItems',
-  '{position',
-  'position',
-  'textAlign',
-  'type',
-  '{key',
-  'size',
-  'type',
-  'flex',
-  'Actions',
-  '{Actions',
-  'placeholderText',
-  'keyboardShouldPersistTaps',
-  'backgroundColor',
-  '{name',
-  'name',
-  'style',
-  'levels',
-  'items.push',
-  'this.props.',
-  'this.state.',
-  'this.setState',
-  'overflow',
-  'Sidebar',
-  'textAnchor',
-  'commandName',
-  'SessionMemory',
-  'notificationType',
-  'rotation',
-  'Util',
-  'id',
-  'stopOpacity',
-  'stroke',
-  'fontStyle',
-  'offset',
-  'fill',
-  'mode',
-  '"_Zindex',
-  'Linking.openURL',
-  'strokeLinecap',
-  'store.dispatch',
-  '[commandName',
-  '[{commandName',
-  "sphere",
-  "cameraSide",
-  "flashMode",
-  "resizeMode",
-  "borderColor",
-  "icons",
-  "stringifiedError",
-  "permission",
-  "picture",
-  "on",
-  "c",
-  "null",
-  "'on'",
-  "[styles",
-  "parametrization",
-  "orientation",
-  "linePath",
-  "largeLabel",
-  "fontSize",
-  "stone",
-  "LOGe",
-  "unknownString",
-  "handle",
-  "text",
-  "ERROR",
-  "TYPE",
-  "error",
-  "xField",
-  "match",
-  "DFU",
-  "triggerEvent",
-  "using",
-  "'navigation'",
-  "'heartbeats'",
-  "assetType",
-  "validationMethod",
-  "value",
-  "category",
-]
-
-let counter = 0;
-
-let keyMatcher = {};
-function parseInteractive(resultArray, filename, filePath, contentData) {
-  // console.log("key", resultArray[1], "value", resultArray[2])
-
-  let content = resultArray[2];
-  for (let i = 0; i < ignoreWords.length; i++) {
-    let part = content.substr(0,ignoreWords[i].length + 1);
-    if (part === '"' + ignoreWords[i] || part === "'" + ignoreWords[i]) {
-      // console.log("ignore")
-      return;
-    }
-  }
-
-  for (let i = 0; i < ignoreKeys.length; i++) {
-    let part = resultArray[1].substr(0,ignoreKeys[i].length + 1);
-    if (part === '"' + ignoreKeys[i] || part === "'" + ignoreKeys[i] || part.substr(0,ignoreKeys[i].length) === ignoreKeys[i]) {
-      // console.log("ignore KEY", resultArray[1], part)
-      return;
-    }
-  }
-
-
-  let extractData =  extractAndConvert(content, true, true, true);
-  let letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  let hazLetters = false;
-  let hasSpaces = false;
-  let hasUnderscores = false;
-  for (let i = 0; i < extractData.text.length; i++) {
-    let l = extractData.text[i]
-    if (l === '_') { hasUnderscores = true; }
-    if (l === ' ') {
-      hasSpaces = true;
-    }
-    if (letters.indexOf(l) !== -1) {
-      hazLetters = true;
-    }
-  }
-
-  if (hazLetters === false || hasUnderscores === true && hasSpaces === false) {
-    return
-  }
-
-  if (extractData.text === extractData.text.toUpperCase()) {
-    // console.log("CAPS")
-    return
-  }
-
-  let lastSmall = false;
-  for (let i = 0; i < extractData.text.length; i++) {
-    let l = extractData.text[i];
-
-    if (letters.indexOf(l) !== -1) {
-      if (l === l.toUpperCase()) {
-        if (lastSmall === true) {
-          // console.log("CamelCase", match)
-          return;
-        }
-        lastSmall = false;
-      }
-      if (l === l.toLowerCase()) {
-        lastSmall = true;
-      }
-    }
-    else {
-      lastSmall = false;
-    }
-  }
-
-  if (keyMatcher[resultArray[1]] === undefined) {
-    keyMatcher[resultArray[1]] = {t:[],c:0}
-  }
-  keyMatcher[resultArray[1]].c++;
-  keyMatcher[resultArray[1]].t.push(extractData.text);
-
-
-  counter++;
-
-  let prefix = resultArray[0].split(extractData.parsedText)[0]
-  // console.log(prefix)
-
-  createTranslationFileAndReplaceContents(filename, filePath, extractData, translationLabelData, 'label', contentData, false, [prefix,''])
-}
-
-parsePathInteractive(startPath)
-
-
-
-// stringifyData(translationLabelData, 'en_us_labels')
-// console.log(resultString)
-// console.log(translationTitleData)
-// console.log(translationTextData)
-// console.log(translationLabelData)
-// console.log(translationAlertData)
-
-
-
-
-
-
-
-
+module.exports = {parseFile, parseFilesRecursivelyInPath}
