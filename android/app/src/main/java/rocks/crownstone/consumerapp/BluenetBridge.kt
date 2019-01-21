@@ -15,7 +15,7 @@ import android.content.pm.PackageManager
 import android.location.Criteria
 import android.location.LocationManager
 import android.os.Build
-import android.os.HandlerThread
+import android.os.Looper
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.facebook.react.bridge.*
@@ -50,9 +50,9 @@ import kotlin.math.round
 class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJavaModule(reactContext) {
 	private val TAG = this.javaClass.simpleName
 	private val reactContext = reactContext
-	private val bluenet: Bluenet
+	private lateinit var bluenet: Bluenet
 	private val localization = FingerprintLocalization.getInstance()
-	private val initPromise: Promise<Unit, Exception>
+	private lateinit var initPromise: Promise<Unit, Exception>
 	private val readyCallbacks = ArrayList<Callback>()
 
 	private val ONGOING_NOTIFICATION_ID = 99115
@@ -75,28 +75,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	init {
 		startKovenant() // Start thread(s)
-//		bluenet = Bluenet(Looper.myLooper()) // Current thread
-//		bluenet = Bluenet(Looper.getMainLooper()) // Main thread
-		// Create thread for the bluenet library
-		val handlerThread = HandlerThread("BluenetBridge")
-		handlerThread.start()
-		bluenet = Bluenet(handlerThread.looper)
-		initPromise = bluenet.init(reactContext) // TODO: move this to isReady()
-		initPromise.success {
-			Log.i(TAG, "initPromise success")
-			bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
-			bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
-			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON,     { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
-			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
-			bluenet.subscribe(BluenetEvent.BLE_TURNED_ON,   { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
-			bluenet.subscribe(BluenetEvent.BLE_TURNED_OFF,  { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_OFF) })
-			bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
-			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
-			bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, ::onRegionExit)
-			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, ::onIbeaconScan)
-			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
-			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
-		}
 	}
 
 	// TODO: call this?
@@ -137,7 +115,33 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// - Beacon
 		// - etc.
 		Log.i(TAG, "rerouteEvents")
-		// TODO
+
+		// Current thread
+//		Looper.prepare()
+//		Looper.loop()
+		bluenet = Bluenet(Looper.myLooper())
+//		// Main thread
+//		bluenet = Bluenet(Looper.getMainLooper())
+//		// Create thread for the bluenet library
+//		val handlerThread = HandlerThread("BluenetBridge")
+//		handlerThread.start()
+//		bluenet = Bluenet(handlerThread.looper)
+		initPromise = bluenet.init(reactContext) // TODO: move this to isReady()
+		initPromise.success {
+			Log.i(TAG, "initPromise success")
+			bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
+			bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
+			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON,     { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
+			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
+			bluenet.subscribe(BluenetEvent.BLE_TURNED_ON,   { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
+			bluenet.subscribe(BluenetEvent.BLE_TURNED_OFF,  { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_OFF) })
+			bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
+			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
+			bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, ::onRegionExit)
+			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, ::onIbeaconScan)
+			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
+			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
+		}
 	}
 
 	@ReactMethod
@@ -155,25 +159,29 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 
 		readyCallbacks.add(callback)
-		initPromise.success {
-			Log.i(TAG, "isReady initPromise success")
-			val activity = reactContext.currentActivity
-			if (activity != null) {
-				bluenet.makeScannerReady(activity)
-						.success {
-							//						resolveCallback(callback)
-							for (cb in readyCallbacks) {
-								Log.i(TAG, "isReady resolved $cb")
-								resolveCallback(cb)
-							}
-							readyCallbacks.clear()
-						}
-						.fail {
-							// Should never fail..
-							Log.e(TAG, "makeScannerReady failed: ${it.message}")
-						}
-			}
-		}
+		initPromise
+				.success {
+					Log.i(TAG, "isReady initPromise success")
+					val activity = reactContext.currentActivity
+					if (activity != null) {
+						bluenet.makeScannerReady(activity)
+								.success {
+									//						resolveCallback(callback)
+									for (cb in readyCallbacks) {
+										Log.i(TAG, "isReady resolved $cb")
+										resolveCallback(cb)
+									}
+									readyCallbacks.clear()
+								}
+								.fail {
+									// Should never fail..
+									Log.e(TAG, "makeScannerReady failed: ${it.message}")
+								}
+					}
+				}
+				.fail {
+					Log.e(TAG, "initPromise failed: ${it.message}")
+				}
 	}
 
 	@ReactMethod
@@ -538,7 +546,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Called after used logged in, and when changed.
 		// When disabled, no scanning has to happen in background.
 		if (enable) {
-			// This is actually a promise, but it should happen faster than it's possible to click a button.
+			// TODO: This is actually a promise, but it should happen faster than it's possible to click a button.
 			bluenet.runInForeground(ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running in the background"))
 		}
 		else {
