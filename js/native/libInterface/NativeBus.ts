@@ -18,11 +18,10 @@ class NativeBusClass {
   constructor() {
     this.topics = {
       setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = crownstoneAdvertisement
-      dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = crownstoneAdvertisement
+      dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = crownstoneBaseAdvertisement
       advertisement:        "verifiedAdvertisementData",        // data type = crownstoneAdvertisement // = from crownstone in normal operation mode.
-      anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = crownstoneAdvertisement 
-      anyAdvertisementData: "anyAdvertisementData",             // data type = crownstoneAdvertisement // Never used, so maybe remove this?
-      unverifiedAdvertisementData:    "unverifiedAdvertisementData",  // data type = crownstoneAdvertisement
+      crownstoneAdvertisementReceived: "crownstoneAdvertisementReceived",   // data type = string, this is only the handle
+      unverifiedAdvertisementData:     "unverifiedAdvertisementData",       // data type = crownstoneAdvertisement
       setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error) // Is 0 required? Or is rejecting the promise enough?
       dfuProgress:          "dfuProgress",                      // data type = {percentage: number, part: number, totalParts: number, progress: number, currentSpeedBytesPerSecond: number, avgSpeedBytesPerSecond: number}
       bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")

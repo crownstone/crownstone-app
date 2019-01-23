@@ -108,10 +108,6 @@ export class SettingsDiagnostics extends Component<any, any> {
     };
   }
 
-  evaluateTestProcess() {
-
-  }
-
   startInitialTest() {
     Animated.timing(this.state.leftOffset, {toValue: -screenWidth, duration:300}).start();
     Animated.timing(this.state.opacity,    {toValue: 0, duration:200}).start();
@@ -252,7 +248,6 @@ export class SettingsDiagnostics extends Component<any, any> {
 
 
   render() {
-    this.evaluateTestProcess();
     return (
       <Background image={this.props.backgrounds.menu}>
         <OrangeLine/>

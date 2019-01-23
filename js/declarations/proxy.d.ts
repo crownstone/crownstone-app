@@ -106,6 +106,15 @@ interface crownstoneAdvertisement {
 }
 
 
+interface crownstoneBaseAdvertisement {
+  handle              : string,
+  name                : string,
+  rssi                : number,
+  referenceId         : string, // Only required when advertisement is validated and crownstone is in normal mode
+  isInDFUMode         : boolean,
+}
+
+
 interface ibeaconPackage {
   id    : string, // uuid + "_Maj:" + string(major) + "_Min:" + string(minor)
   uuid  : string, // this is the iBeacon UUID in uppercase: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F"
@@ -150,7 +159,6 @@ interface trackingState {
 }
 
 interface nearestStone  {
-  name      : string,
   handle    : string,
   rssi      : number,
   setupMode : boolean
@@ -164,4 +172,9 @@ interface keySet  {
   guestKey:    string,
   referenceId: string,
   iBeaconUuid: string,
+}
+
+interface crownstoneModes {
+  setupMode: boolean,
+  dfuMode: boolean,
 }

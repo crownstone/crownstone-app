@@ -77,9 +77,7 @@ open class BluenetJS: RCTEventEmitter {
             self.sendEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
             //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
           }
-
-          self.sendEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
-          
+    
           //self.bridge.eventDispatcher().sendAppEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
         }
       })
@@ -106,10 +104,10 @@ open class BluenetJS: RCTEventEmitter {
         }
       })
       
-//      we will not forward the unverified events
+
       globalBluenet.bluenetOn("advertisementData", {data -> Void in
         if let castData = data as? Advertisement {
-          self.sendEvent(withName: "anyAdvertisementData", body: castData.getDictionary())
+          self.sendEvent(withName: "crownstoneAdvertisementReceived", body: castData.handle)
         }
       })
 

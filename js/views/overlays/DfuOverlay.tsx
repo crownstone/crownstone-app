@@ -32,6 +32,7 @@ import {Scheduler} from "../../logic/Scheduler";
 import {Bluenet} from "../../native/libInterface/Bluenet";
 import KeepAwake from 'react-native-keep-awake';
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
+import { FirmwareHelper } from "../../native/firmware/FirmwareHelper";
 
 let STEP_TYPES = {
   UPDATE_AVAILABLE:           'UPDATE_AVAILABLE',
@@ -66,7 +67,7 @@ export class DfuOverlay extends Component<any, any> {
   processSubscriptions = [];
   processReject : any = null;
   paused : boolean = false;
-  helper : any = null;
+  helper : FirmwareHelper = null;
   cancelShowTimeout : any = null;
   cancelMoveCloserTimeout : any = null;
   cancelMoveEvenCloserTimeout : any = null;
@@ -222,7 +223,7 @@ export class DfuOverlay extends Component<any, any> {
         if (this.state.step !== STEP_TYPES.DOWNLOAD_FAILED) {
           if (this.helper) {
             // this means that DFU was successful but we failed at performing setup.
-            if (this.helper.dfuSuccessful === true) {
+            if (this.helper.resetRequired === false) {
               this.props.store.dispatch({
                 type: "UPDATE_STONE_DFU_RESET",
                 stoneId: this.state.stoneId,
@@ -349,7 +350,7 @@ export class DfuOverlay extends Component<any, any> {
     LOG.info("DfuOverlay: Handling phase:", phase + 1, " out of ", phasesRequired);
     return new Promise((resolve, reject) => {
       this._searchForCrownstone(0)
-        .then((data) => {
+        .then((modes) => {
 
           // update phase info to state
           this.setState({
@@ -361,7 +362,7 @@ export class DfuOverlay extends Component<any, any> {
             firmwareUpdatedInStore: this.helper.dfuSegmentFinishedAtPhase(phase)
           });
 
-          this.helper.performPhase(phase, data)
+          this.helper.performPhase(phase, modes)
             .then((completedProcess) => {
 
               // ==== store progress in in database ====
@@ -404,7 +405,7 @@ export class DfuOverlay extends Component<any, any> {
     })
   }
 
-  _searchForCrownstone(minimumTimeVisibleWhenShown = 2000) : Promise<any> {
+  _searchForCrownstone(minimumTimeVisibleWhenShown = 2000) : Promise<crownstoneModes> {
     if (this.killProcess === true) {
       throw "DFU Aborted.";
     }
@@ -451,10 +452,8 @@ export class DfuOverlay extends Component<any, any> {
 
       // this will show the user that he has to move closer to the crownstone or resolve if the user is close enough.
       let rssiResolver = (data, setupMode, dfuMode) => {
-        data.setupMode = setupMode || false;
-        data.dfuMode = dfuMode || false;
         LOGd.info("DfuOverlay: Found match:", data);
-        if ((data.setupMode && data.rssi < -99) || (data.rssi < -80)) {
+        if ((setupMode && data.rssi < -99) || (data.rssi < -80)) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         }
         else if (this.paused === false) {
@@ -466,10 +465,10 @@ export class DfuOverlay extends Component<any, any> {
           this._searchCleanup();
           if (timeSeenView < minimumTimeVisibleWhenShown && stepSearchingTypes[this.state.step]) {
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-            Scheduler.scheduleCallback(() => { resolve(data) }, minimumTimeVisibleWhenShown - timeSeenView, 'rssiResolver timeout');
+            Scheduler.scheduleCallback(() => { resolve({setupMode, dfuMode}) }, minimumTimeVisibleWhenShown - timeSeenView, 'rssiResolver timeout');
           }
           else {
-            resolve(data);
+            resolve({setupMode, dfuMode});
           }
         }
       };
