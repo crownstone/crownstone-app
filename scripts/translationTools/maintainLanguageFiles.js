@@ -92,7 +92,6 @@ Object.keys(BASE).forEach((fileElement) => {
           else {
             console.log("There is a line entry ", util.padd(linekey,35)," for file ", util.padd(fileElement,20), " but it is not used in the file. Run this script again with --deleteLines true to remove this from the language files.")
           }
-
         }
       }
     })

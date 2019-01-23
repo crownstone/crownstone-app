@@ -107,11 +107,10 @@ interface crownstoneAdvertisement {
 
 
 interface ibeaconPackage {
-  id    : string,
-  uuid  : string,
-  major : string, // Why string?
-  minor : string, // Why string?
-  distance  : number, // What is this for?
+  id    : string, // uuid + "_Maj:" + string(major) + "_Min:" + string(minor)
+  uuid  : string, // this is the iBeacon UUID in uppercase: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F"
+  major : string, // string because it is an ID that can get string operations, never calculations
+  minor : string, // string because it is an ID that can get string operations, never calculations
   rssi  : number,
   referenceId  : string,
 }
