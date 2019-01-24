@@ -1,4 +1,4 @@
-import { AddSphereTutorial }           from "../views/main/AddSphereTutorial/AddSphereTutorial";
+import { AddSphereTutorial }           from "../views/main/addSphereTutorial/AddSphereTutorial";
 import { AlexaOverview }               from "../views/thirdParty/alexa/AlexaOverview";
 
 import { AiStart }                     from '../views/startupViews/AiStart'

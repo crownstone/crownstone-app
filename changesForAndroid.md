@@ -40,3 +40,4 @@ Added bridge functions
 - startAdvertising
 - stopAdvertising
 - isPeripheralReady
+- setCrownstoneNames

@@ -59,6 +59,25 @@ class SessionDelegate: NSObject, WCSessionDelegate {
     func session(_ session: WCSession, didReceiveMessageData messageData: Data, replyHandler: @escaping (Data) -> Void) {
         print("didReceiveMessageData_wReplyHandler", messageData)
     }
-    
-    
+  
+    func getName(crownstoneId: String, referenceId: String?) -> String {
+      if (referenceId != nil) {
+        if (self.applicationContext["crownstoneNames"] != nil) {
+          if let referenceDict = self.applicationContext["crownstoneNames"] as? [String: Any] {
+            if let stoneMap = referenceDict[referenceId!] as? [String: String] {
+              if let name = stoneMap[crownstoneId] {
+                return name
+              }
+              print("GETTING NAME X FOR", crownstoneId, type(of: crownstoneId), stoneMap[crownstoneId], stoneMap["20"])
+              return "Unknown StoneId"
+            }
+            return "Unknown ReferenceId"
+          }
+          return "Invalid name map"
+        }
+        return "No name map"
+      }
+      return "Not validated"
+    }
+
 }

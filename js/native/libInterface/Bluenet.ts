@@ -90,6 +90,8 @@ const BluenetAPI = {
   setLocationState:         () => { console.log("BluenetBridgeCall:  setLocationState: "); },
   startAdvertising:         () => { console.log("BluenetBridgeCall:  startAdvertising: "); },
   stopAdvertising:          () => { console.log("BluenetBridgeCall:  stopAdvertising: "); },
+
+  setCrownstoneNames:       () => { console.log("BluenetBridgeCall:  stopAdvertising: "); },
 }
 
 if (DISABLE_NATIVE === true) {

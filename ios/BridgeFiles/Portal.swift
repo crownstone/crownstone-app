@@ -25,6 +25,8 @@ typealias voidCallback = () -> Void
   open var bluenetMotion : BluenetMotion!
   open var trainingHelper : TrainingHelper!
   open var classifier : CrownstoneBasicClassifier!
+  var watchStateManager: WatchStateManager!
+  
   
   open var devEnvironment = false
   var watchBridge : WatchBridge!
@@ -34,6 +36,7 @@ typealias voidCallback = () -> Void
   init(viewController: UIViewController) {
     super.init()
     self.watchBridge = WatchBridge()
+    self.watchStateManager = WatchStateManager()
     
     BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
     BluenetLib.LOG.setTimestampPrinting(newState: true)

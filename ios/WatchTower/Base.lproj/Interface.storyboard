@@ -138,7 +138,9 @@
                                                     <label width="1" height="1" alignment="left" hidden="YES" text="Switching..." id="9Z8-gL-MOt"/>
                                                     <group width="0.69999999999999996" height="1" alignment="left" id="ZQs-RF-ojv">
                                                         <items>
-                                                            <label alignment="left" verticalAlignment="center" text="Name" id="wFD-Ce-uyb" userLabel="StoneName"/>
+                                                            <label alignment="left" verticalAlignment="center" text="Name" minimumScaleFactor="0.69999999999999996" id="wFD-Ce-uyb" userLabel="StoneName">
+                                                                <fontDescription key="font" type="system" pointSize="15"/>
+                                                            </label>
                                                         </items>
                                                     </group>
                                                     <group width="0.29999999999999999" height="1" alignment="right" id="JuK-JJ-MmV">
@@ -173,7 +175,9 @@
                                                 <items>
                                                     <group height="23" alignment="left" id="fZd-Ph-66h">
                                                         <items>
-                                                            <label alignment="left" verticalAlignment="bottom" text="Name" id="dit-tb-f2q" userLabel="StoneName"/>
+                                                            <label alignment="left" verticalAlignment="bottom" text="Name" minimumScaleFactor="0.69999999999999996" id="dit-tb-f2q" userLabel="StoneName">
+                                                                <fontDescription key="font" type="system" pointSize="15"/>
+                                                            </label>
                                                         </items>
                                                     </group>
                                                     <group width="1" height="38" alignment="right" layout="vertical" id="goK-Wq-Fli">
@@ -202,7 +206,9 @@
                                                 <items>
                                                     <group width="0.69999999999999996" height="1" alignment="left" id="lw6-DL-MdE">
                                                         <items>
-                                                            <label alignment="left" verticalAlignment="center" text="Name" id="MTK-kI-2ya" userLabel="StoneName"/>
+                                                            <label alignment="left" verticalAlignment="center" text="Name" minimumScaleFactor="0.69999999999999996" id="MTK-kI-2ya" userLabel="StoneName">
+                                                                <fontDescription key="font" type="system" pointSize="15"/>
+                                                            </label>
                                                         </items>
                                                     </group>
                                                     <group width="0.29999999999999999" alignment="right" verticalAlignment="center" id="GtY-bB-u2i">
