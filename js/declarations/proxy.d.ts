@@ -109,9 +109,8 @@ interface crownstoneAdvertisement {
 interface ibeaconPackage {
   id    : string,
   uuid  : string,
-  major : string, // Why string?
-  minor : string, // Why string?
-  distance  : number, // What is this for?
+  major : string, // Can be int as well
+  minor : string, // Can be int as well
   rssi  : number,
   referenceId  : string,
 }
