@@ -68,7 +68,6 @@ class SessionDelegate: NSObject, WCSessionDelegate {
               if let name = stoneMap[crownstoneId] {
                 return name
               }
-              print("GETTING NAME X FOR", crownstoneId, type(of: crownstoneId), stoneMap[crownstoneId], stoneMap["20"])
               return "Unknown StoneId"
             }
             return "Unknown ReferenceId"

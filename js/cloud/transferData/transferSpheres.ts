@@ -22,21 +22,21 @@ type transferSphereToLocalData = {
 }
 
 let fieldMap : fieldMap = [
-  {local:'name',                cloud: 'name'},
-  {local:'aiName',              cloud: 'aiName'},
-  {local:'aiSex',               cloud: 'aiSex'},
-  {local:'exitDelay',           cloud: 'exitDelay'},
-  {local:'iBeaconUUID',         cloud: 'uuid'},
-  {local:'meshAccessAddress',   cloud: 'meshAccessAddress'},
-  {local:'updatedAt',           cloud: 'updatedAt'},
+  {local:'name',               cloud: 'name'},
+  {local:'aiName',             cloud: 'aiName'},
+  {local:'aiSex',              cloud: 'aiSex'},
+  {local:'exitDelay',          cloud: 'exitDelay'},
+  {local:'iBeaconUUID',        cloud: 'uuid',             },
+  {local:'meshAccessAddress',  cloud: 'meshAccessAddress',},
+  {local:'updatedAt',          cloud: 'updatedAt'},
 
   // keys are set elsewhere
-  {local:'adminKey',            cloud:  null },
-  {local:'memberKey',           cloud:  null },
-  {local:'guestKey',            cloud:  null },
+  {local:'adminKey',           cloud:  null },
+  {local:'memberKey',          cloud:  null },
+  {local:'guestKey',           cloud:  null },
 
   // used for local
-  {local:'cloudId',             cloud:  'id',  cloudToLocalOnly: true  },
+  {local:'cloudId',            cloud:  'id',  cloudToLocalOnly: true  },
 ];
 
 export const transferSpheres = {

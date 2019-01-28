@@ -56,7 +56,7 @@ class SwitchableStone {
             }
           }
           else {
-            print("verified does not have a referenceId!")
+            //print("verified does not have a referenceId!")
           }
         }
       
