@@ -41,7 +41,7 @@ class DfuStateHandlerClass {
     if (this._initialized === false) {
       this._initialized = true;
 
-      let handleDfuAdvertisement = (data) => {
+      let handleDfuAdvertisement = (data : crownstoneBaseAdvertisement) => {
         let handle = data.handle;
         let emitDiscovery = false;
 
@@ -98,7 +98,7 @@ class DfuStateHandlerClass {
       });
 
       // handle DFU events
-      NativeBus.on(NativeBus.topics.dfuAdvertisement, (data) => {
+      NativeBus.on(NativeBus.topics.dfuAdvertisement, (data : crownstoneBaseAdvertisement) => {
         if (this._ignoreDuringDfuOverlay) { return; }
 
         handleDfuAdvertisement(data);

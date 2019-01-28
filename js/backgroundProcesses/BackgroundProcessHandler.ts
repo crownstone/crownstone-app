@@ -37,6 +37,7 @@ import { ToonIntegration }       from "./thirdParty/ToonIntegration";
 import { EncryptionManager }     from "../native/libInterface/Encryption";
 import { SessionMemory }         from "../util/SessionMemory";
 import { BroadcastStateManager } from "./BroadcastStateManager";
+import { WatchStateManager } from "./WatchStateManager";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -453,6 +454,7 @@ class BackgroundProcessHandlerClass {
     ActivityLogManager.loadStore(this.store);
     ToonIntegration.loadStore(this.store);
     BroadcastStateManager.loadStore(this.store);
+    WatchStateManager.loadStore(this.store);
 
     BleLogger.init();
   }

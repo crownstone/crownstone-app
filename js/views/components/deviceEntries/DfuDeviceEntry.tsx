@@ -48,7 +48,7 @@ export class DfuDeviceEntry extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.dfuEvents.push(NativeBus.on(NativeBus.topics.dfuAdvertisement, (data) => {
+    this.dfuEvents.push(NativeBus.on(NativeBus.topics.dfuAdvertisement, (data : crownstoneBaseAdvertisement) => {
       if (data.handle === this.props.handle) {
         if (data.rssi < 0) {
           if (this.state.rssi === null) {

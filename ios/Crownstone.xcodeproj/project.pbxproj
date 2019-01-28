@@ -95,6 +95,7 @@
 		FA86C6EB21CCF05C00811933 /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E221CCF05500811933 /* InterfaceController.swift */; };
 		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
+		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FABB8A0121E0E4FA007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 /* End PBXBuildFile section */
@@ -623,6 +624,7 @@
 		FA86C6F121CCF07000811933 /* SliderRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderRowController.swift; sourceTree = "<group>"; };
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
+		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -957,6 +959,7 @@
 			children = (
 				FA0177D31FC46359001C8FD6 /* Portal.swift */,
 				FA570EB31EAE320F001C625D /* BluenetIntegration.swift */,
+				FAA4252621F9D26400EF7772 /* WatchStateManager.swift */,
 			);
 			path = BridgeFiles;
 			sourceTree = "<group>";
@@ -1924,6 +1927,7 @@
 				FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */,
 				FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */,
 				FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */,

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AddSphereTutorial", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -27,7 +33,7 @@ Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
 
 export class AddSphereTutorial extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "New Sphere"}
+    return { title: lang("New_Sphere")}
   };
 
   unsubscribeSwipeEvent : any;

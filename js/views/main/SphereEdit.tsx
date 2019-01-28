@@ -152,7 +152,7 @@ export class SphereEdit extends Component<any, any> {
       }
     });
 
-    items.push({label: "SPHERE SETTINGS",  type:'explanation'});
+    items.push({label: lang("SPHERE_SETTINGS"),  type:'explanation'});
     items.push({
       label: lang("Settings"),
       largeIcon: <IconButton name="ios-cog" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,

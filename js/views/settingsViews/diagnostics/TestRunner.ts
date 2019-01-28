@@ -32,7 +32,7 @@ class TestRunnerClass {
       verifiedCrownstones: NativeBus.topics.advertisement,
       anyCrownstones:      NativeBus.topics.unverifiedAdvertisementData,
       setupCrownstones:    NativeBus.topics.nearestSetup,
-      anyAdvertisement:    NativeBus.topics.anyAdvertisementData,
+      anyAdvertisement:    NativeBus.topics.crownstoneAdvertisementReceived,
       nearestCrownstone:   NativeBus.topics.nearest,
     };
 

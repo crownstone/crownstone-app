@@ -30,10 +30,6 @@ const resetAfterUpdate = "PERFORM_FACTORY_RESET";
 const setupAfterUpdate = "PERFORM_SETUP";
 
 
-interface crownstoneModes {
-  setupMode: boolean,
-  dfuMode: boolean,
-}
 
 export class FirmwareHelper {
   handle : any;
@@ -177,7 +173,7 @@ export class FirmwareHelper {
     return BlePromiseManager.registerPriority(setupPromise, {from: 'Setup: determining bootloader version: ' + this.handle});
   }
 
-  performPhase(phaseNumber, crownstoneMode: crownstoneModes) {
+  performPhase(phaseNumber, crownstoneMode: crownstoneModes) : Promise<any> {
     if (this.phases.length < phaseNumber - 1) {
       return new Promise((resolve, reject) => {
         reject("This phase does not exist in the queue" + JSON.stringify(this.phases));

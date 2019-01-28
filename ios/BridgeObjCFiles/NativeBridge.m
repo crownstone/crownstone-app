@@ -126,11 +126,11 @@ RCT_EXTERN_METHOD(getTrackingState:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(broadcastSwitch:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId switchState:(nonnull NSNumber *)switchState callback:(RCTResponseSenderBlock)callback)
 
 
-// set states
+// set states for watch
 RCT_EXTERN_METHOD(setLocationState:(nonnull NSNumber *)sphereUID locationId:(nonnull NSNumber *)locationId profileIndex:(nonnull NSNumber *)profileIndex referenceId:(NSString *)referenceId)
 RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggle:(nonnull NSNumber *)tapToToggle)
 
-
+RCT_EXTERN_METHOD(setCrownstoneNames:(NSDictionary *)names)
 
 
 

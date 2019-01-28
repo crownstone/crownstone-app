@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AddSphereTutorial_intended", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -26,7 +32,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
     return (
       <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}}>
         <View style={{flex:1, alignItems:'center', padding: 20}}>
-          <Text style={tutorialStyle.header}>{"One Sphere per House"}</Text>
+          <Text style={tutorialStyle.header}>{ lang("One_Sphere_per_House") }</Text>
           <View style={{width: screenWidth, height: 0.07*screenHeight}} />
           <View style={{flexDirection:'row'}}>
             <View style={{flex:0.5}} />
@@ -36,10 +42,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
             <View style={{flex:0.5}} />
           </View>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
-          <Text style={tutorialStyle.text}>{
-            "Using only one sphere per individual building (like house, office or holiday home), you can add up to 20 spheres!\n\n" +
-            "If you want to create a new sphere, tap the button below.\n\nIf you do not need a new sphere after all, press back in the top left corner!"
-          }</Text>
+          <Text style={tutorialStyle.text}>{ lang("Using_only_one_sphere_per_") }</Text>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <TouchableOpacity
             onPress={() => {
@@ -61,7 +64,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
               borderColor: colors.white.hex,
               backgroundColor: colors.csBlue.rgba(0.5)
             }]}>
-            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{"I understand!"}</Text>
+            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("I_understand_") }</Text>
           </TouchableOpacity>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />
         </View>

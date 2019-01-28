@@ -87,10 +87,10 @@ class BluenetManager {
         print("START")
         _ = bluenet.isReady().done {  _ in
             self.bluenet.startScanning()
-//            delay(2.5, {
-//                print("Locking the list", self.listOfCrownstones.items)
-//                self.listOfCrownstones.lock = true }
-//            )
+            delay(2.5, {
+                print("Locking the list", self.listOfCrownstones.items)
+                self.listOfCrownstones.lock = true
+            })
             self.continueTasks()
         }
        

@@ -77,9 +77,7 @@ open class BluenetJS: RCTEventEmitter {
             self.sendEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
             //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
           }
-
-          self.sendEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
-          
+    
           //self.bridge.eventDispatcher().sendAppEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
         }
       })
@@ -106,10 +104,10 @@ open class BluenetJS: RCTEventEmitter {
         }
       })
       
-//      we will not forward the unverified events
+
       globalBluenet.bluenetOn("advertisementData", {data -> Void in
         if let castData = data as? Advertisement {
-          self.sendEvent(withName: "anyAdvertisementData", body: castData.getDictionary())
+          self.sendEvent(withName: "crownstoneAdvertisementReceived", body: castData.handle)
         }
       })
 
@@ -239,13 +237,9 @@ open class BluenetJS: RCTEventEmitter {
     }
     
     GLOBAL_BLUENET!.bluenet.loadKeysets(encryptionEnabled: true, keySets: sets)
-    do {
-      print("Sending keys to the Watch")
-      try WCSession.default().updateApplicationContext(["keysets": watchSets])
-    }
-    catch {
-      print("ios ERro",error)
-    }
+    
+    GLOBAL_BLUENET!.watchStateManager.loadState("keysets", watchSets)
+   
     callback([["error" : false]])
   }
   
@@ -1327,14 +1321,18 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   @objc func setLocationState(_ sphereUID: NSNumber, locationId: NSNumber, profileIndex: NSNumber, referenceId: String) {
-    
-    print("SETTING LOCATION STATE \(sphereUID) \(locationId) \(profileIndex) referenceId:\(referenceId)" )
+    print("BluenetBridge: Called setLocationState \(sphereUID) \(locationId) \(profileIndex) referenceId:\(referenceId)" )
     GLOBAL_BLUENET!.bluenet.setLocationState(sphereUID: sphereUID.uint8Value, locationId: locationId.uint8Value, profileIndex: profileIndex.uint8Value, referenceId: referenceId)
   }
   
   @objc func setDevicePreferences(_ rssiOffset: NSNumber, tapToToggle: NSNumber) {
-    print("SETTING DEVICE PREFERENCES STATE \(rssiOffset) \(tapToToggle)")
+    print("BluenetBridge: Called setDevicePreferences \(rssiOffset) \(tapToToggle)")
     GLOBAL_BLUENET!.bluenet.setDevicePreferences(rssiOffset: rssiOffset.int8Value, tapToToggle: tapToToggle.boolValue)
+  }
+  
+  @objc func setCrownstoneNames(_ names: NSDictionary) {
+    print("BluenetBridge: Called SETTING setCrownstoneNames")
+    GLOBAL_BLUENET!.watchStateManager.loadState("crownstoneNames", names)
   }
   
 }
