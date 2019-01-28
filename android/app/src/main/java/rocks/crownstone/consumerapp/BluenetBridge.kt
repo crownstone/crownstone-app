@@ -149,6 +149,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, ::onIbeaconScan)
 			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
 			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
+			bluenet.subscribe(BluenetEvent.DFU_PROGRESS, ::onDfuProgress)
 		}
 		initPromise
 				.success {
@@ -1631,6 +1632,18 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		map.putBoolean("setupMode", nearest.operationMode == OperationMode.SETUP)
 		map.putBoolean("dfuMode", nearest.operationMode == OperationMode.DFU)
 		return map
+	}
+
+	@Synchronized
+	private fun onDfuProgress(data: Any) {
+		val progress = data as DfuProgress
+		val map = Arguments.createMap()
+		map.putInt("progress", progress.percentage)
+		map.putDouble("currentSpeedBytesPerSecond", progress.currentSpeed.toDouble())
+		map.putDouble("avgSpeedBytesPerSecond", progress.avgSpeed.toDouble())
+		map.putInt("part", progress.currentPart)
+		map.putInt("totalParts", progress.totalParts)
+		sendEvent("dfuProgress", map)
 	}
 
 	@Synchronized
