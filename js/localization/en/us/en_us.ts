@@ -1737,7 +1737,7 @@ export default {
     CLOUD_URL__:                         function() { return "CLOUD URL: " + arguments[0] },
     Cancel:                              function() { return "Cancel" },
     Developer:                           function() { return "Developer" },
-    _dB:                                 () => { return arguments[0] + " dB" },
+    _dB:                                 function() { return arguments[0] + " dB" },
     BROADCASTING:                        () => { return "BROADCASTING" },
     Broadcasting:                        () => { return "Broadcasting" },
     RSSI_Offset:                         () => { return "RSSI Offset" },
