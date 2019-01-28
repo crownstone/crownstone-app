@@ -55,7 +55,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private lateinit var bluenet: Bluenet
 	private val localization = FingerprintLocalization.getInstance()
 	private lateinit var initPromise: Promise<Unit, Exception>
-//	private val readyCallbacks = ArrayList<Callback>()
 	private lateinit var handler: Handler
 
 	private val ONGOING_NOTIFICATION_ID = 99115
@@ -157,11 +156,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					if (activity != null) {
 						bluenet.makeScannerReady(activity)
 								.success {
-//									for (cb in readyCallbacks) {
-//										Log.i(TAG, "isReady resolved $cb")
-//										resolveCallback(cb)
-//									}
-//									readyCallbacks.clear()
+
 								}
 								.fail {
 									// Should never fail..
@@ -184,59 +179,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Can be called multiple times, and should all be invoked once ready.
 		bluenet.isReadyPromise()
 				.success { resolveCallback(callback) }
-//		checkReady(callback)
-
-//		if (bluenet.isScannerReady()) {
-//			Log.i(TAG, "isReady already ready: resolve $callback")
-//			resolveCallback(callback)
-//			return
-//		}
-//
-//		readyCallbacks.add(callback)
-
-
-//		handler.postDelayed(() -> {}, 100)
-//		initPromise
-//				.success {
-//					Log.i(TAG, "isReady initPromise success")
-//					val activity = reactContext.currentActivity
-//					if (activity != null) {
-//						bluenet.makeScannerReady(activity)
-//								.success {
-//									//						resolveCallback(callback)
-//									for (cb in readyCallbacks) {
-//										Log.i(TAG, "isReady resolved $cb")
-//										resolveCallback(cb)
-//									}
-//									readyCallbacks.clear()
-//								}
-//								.fail {
-//									// Should never fail..
-//									Log.e(TAG, "makeScannerReady failed: ${it.message}")
-//								}
-//					}
-//				}
-//				.fail {
-//					Log.e(TAG, "initPromise failed: ${it.message}")
-//				}
 	}
-
-//	@Synchronized
-//	private val checkReadyRunnable = Runnable {
-//		if (blue)
-//	}
-
-//	@Synchronized
-//	private fun checkReady(callback: Callback) {
-//		Log.i(TAG, "checkReady $callback")
-//		if (bluenet.isScannerReady()) {
-//			Log.i(TAG, "resolve isReady $callback")
-//			resolveCallback(callback)
-//			return
-//		}
-//		Util.waitPromise(100, handler)
-//				.success { checkReady(callback) }
-//	}
 
 	@ReactMethod
 	@Synchronized
@@ -396,6 +339,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Return whether this is app is for development
 		Log.i(TAG, "isDevelopmentEnvironment")
 		resolveCallback(callback, false)
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun setCrownstoneNames(map: ReadableMap) {
+		// Only for iOS.
 	}
 
 	@ReactMethod
