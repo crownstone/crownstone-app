@@ -309,7 +309,7 @@ export class DfuOverlay extends Component<any, any> {
 
       if (phasesRequired > 0) {
         // if the first phase expects the Crownstone to be in normal mode, check if we are in DFU and switch back from DFU if required.
-        if (this.helper.dfuSegmentFinishedAtPhase(0) === true && didGetBootloaderVersion === false) {
+        if (this.helper.dfuSegmentFinishedAtPhase(0) === true && didGetBootloaderVersion === true) {
           return this.helper.restartInAppMode()
             .then(() => {
               return this.handlePhase(0, phasesRequired);
