@@ -91,7 +91,7 @@ const BluenetAPI = {
   startAdvertising:         () => { console.log("BluenetBridgeCall:  startAdvertising: "); },
   stopAdvertising:          () => { console.log("BluenetBridgeCall:  stopAdvertising: "); },
 
-  setCrownstoneNames:       () => { console.log("BluenetBridgeCall:  stopAdvertising: "); },
+  setCrownstoneNames:       () => { console.log("BluenetBridgeCall:  setCrownstoneNames: "); },
 }
 
 if (DISABLE_NATIVE === true) {
