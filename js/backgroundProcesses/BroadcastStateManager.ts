@@ -70,9 +70,8 @@ class BroadcastStateManagerClass {
     // get device for rssi offset
     let device = Util.data.getDevice(state);
     if (device) {
-      rssiOffset = device.rssiOffset;
+      rssiOffset = device.rssiOffset || 0;
     }
-
     Bluenet.setDevicePreferences(rssiOffset, tapToToggleEnabled);
   }
 

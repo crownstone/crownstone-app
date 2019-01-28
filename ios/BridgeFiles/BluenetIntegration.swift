@@ -100,7 +100,6 @@ open class BluenetJS: RCTEventEmitter {
       globalBluenet.bluenetLocalizationOn("locationStatus", {data -> Void in
         if let castData = data as? String {
           self.sendEvent(withName: "locationStatus", body: castData)
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "locationStatus", body: castData)
         }
       })
       
@@ -120,14 +119,12 @@ open class BluenetJS: RCTEventEmitter {
           // data["currentSpeedBytesPerSecond"] = NSNumber(value: currentSpeedBytesPerSecond)
           // data["avgSpeedBytesPerSecond"]     = NSNumber(value: avgSpeedBytesPerSecond)
           self.sendEvent(withName: "dfuProgress", body: castData)
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "dfuProgress", body: castData)
         }
       })
       
       globalBluenet.bluenetOn("setupProgress", {data -> Void in
         if let castData = data as? NSNumber {
           self.sendEvent(withName: "setupProgress", body: castData)
-//          self.bridge.eventDispatcher().sendAppEvent(withName: "setupProgress", body: castData)
         }
       })
 
@@ -135,14 +132,12 @@ open class BluenetJS: RCTEventEmitter {
       globalBluenet.bluenetOn("nearestSetupCrownstone", {data -> Void in
         if let castData = data as? NearestItem {
           self.sendEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
         }
       })
       
       globalBluenet.bluenetOn("nearestCrownstone", {data -> Void in
         if let castData = data as? NearestItem {
           self.sendEvent(withName: "nearestCrownstone", body: castData.getDictionary())
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "nearestCrownstone", body: castData.getDictionary())
         }
       })
       
