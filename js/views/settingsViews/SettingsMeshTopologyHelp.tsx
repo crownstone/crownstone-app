@@ -42,7 +42,7 @@ export class SettingsMeshTopologyHelp extends Component<any, any> {
     let headerStyle = {...explanationStyle, fontSize:18, fontWeight:'bold'};
     let titleStyle = {...explanationStyle, fontSize:30, fontWeight:'bold'};
 
-    let mockData = {deviceIcon: 'c1-studiolight', locationIcon: 'c1-cinema', locationTitle: 'Movie Room', element:{config:{name:'Device'}}, stone:{config:{name:'Device', firmwareVersion: '2.3.0'}}};
+    let mockData = {deviceIcon: 'c1-studiolight', locationIcon: 'c1-cinema', locationTitle: lang("Movie_Room"), element:{config:{name:lang("Device")}}, stone:{config:{name:'Device', firmwareVersion: '2.3.0'}}};
     return (
       <Background hasNavBar={false} image={this.props.backgrounds.menu}>
         <OrangeLine/>

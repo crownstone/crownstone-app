@@ -1,13 +1,1 @@
-module.exports = {
-  'de2d77f03e2b5aeca9e0fc4db4f0db8ee19f4e0c':true,
-  'f3e98c1efd5e0f11940d2e433c2d500107758139':true,
-  '2ec12993d558a6809beb8dc6afb66aa61a287fdd':true,
-  '308a2f8e2b44484f5bd7c0b5bace0f773e904221':true,
-  '63b57342a90e1784105ddcf64f2e51c35cf0cd0b':true,
-  '63b57342a90e1784105ddcf64f2e51c35cf0cd0b':true,
-  'c45e8f40a540e01d195ebeb930852c39e4f608bb':true,
-  '4228355451d33b7b6b665c97c0ee03bd6cb755a6':true,
-  '8ee1a9b917038cbc45037504814237f5b65fdc80':true,
-  '4769ec4029d97dad536e25e8876babb14efd2679':true,
-  '86d6427a93a550e7878e9acdb64314eda977dde6':true,
-}
+module.exports = {}

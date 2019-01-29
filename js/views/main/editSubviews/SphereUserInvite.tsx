@@ -54,7 +54,7 @@ export class SphereUserInvite extends Component<any, any> {
       validationMethod:'icons',
       keyboardType: 'email-address',
       value: this.state.email,
-      placeholder: 'Send email to...',
+      placeholder: lang("Send_email_to___"),
       validationCallback: (newState) => {this.inputStates.email = newState},
       alwaysShowState: false,
       callback: (newValue) => { this.setState({email:newValue}); }

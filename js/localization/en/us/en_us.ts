@@ -166,6 +166,7 @@ export default {
     Icon:                                function() { return "Icon" },
     The_properties_of_device_:           function() { return "The properties of device types are shared among all Crownstones that have this device plugged in. Device type behaviour overrules the Crownstone behaviour." },
     Add_Device_Type:                     function() { return "Add Device Type" },
+    My_device_name:                      function() { return "My device name" },
   },
   ApplianceEntry:{
     __filename: "../js/views/components/ApplianceEntry.tsx",
@@ -396,6 +397,8 @@ export default {
     firmware__:                          function() { return "firmware: " + (arguments[0] || arguments[1]) },
     crownstone_id__:                     function() { return "crownstone id: " + (arguments[0] || arguments[1]) },
     Edit_Device:                         function() { return "Edit Device" },
+    Pick_a_name:                         function() { return "Pick a name" },
+    Delete_anyway:                       function() { return "Delete anyway" },
   },
   DeviceEntry:{
     __filename: "../js/views/components/deviceEntries/DeviceEntry.tsx",
@@ -534,6 +537,7 @@ export default {
     I_could_not_set_the_Sched:           function() { return "I could not set the Schedule on the Crownstone... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press no, you will have to add it again later." },
     I_could_not_activate_the_:           function() { return "I could not activate the Schedule on the Crownstone... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press no, your changes will be reverted." },
     You_cant_have_any_more_sc:           function() { return "You can't have any more scheduled actions. Please remove or deactivate an existing one to add this one." },
+    _optional_:                          function() { return "(optional)" },
   },
   DeviceSmartBehaviour:{
     __filename: "../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour.tsx",
@@ -1929,6 +1933,8 @@ export default {
     The_connectivity_among_Cr:           function() { return "The connectivity among Crownstones can only be heard directly. If there are unconnected Crownstones in the overview and " + "you want to check how well they are connected to rest of the network, you'll have to be in range of that Crownstone to check." + "\n\nAs an alternative, you can press the 'Networks' button in the top right to see which Crownstones are in which network." + "\n\nThese networks will be cleared and rediscovered every time you reopen the app as an ensurance that the mesh networks are always up te date." },
     Enjoy_the_Mesh_:                     function() { return "Enjoy the Mesh!" },
     Mesh_Help:                           function() { return "Mesh Help" },
+    Movie_Room:                          function() { return "Movie Room" },
+    Device:                              function() { return "Device" },
   },
   SettingsOverview:{
     __filename: "../js/views/settingsViews/SettingsOverview.tsx",
@@ -2040,6 +2046,9 @@ export default {
     __New_Message__Messages:             function() { return arguments[0] ? "* New Message *" : "Messages" },
     Force_Quit:                          function() { return "Force Quit" },
     Crownstone:                          function() { return "Crownstone" },
+    Actions:                             function() { return "Actions" },
+    Categories:                          function() { return "Categories" },
+    Settings:                            function() { return "Settings" },
   },
   Sphere:{
     __filename: "../js/views/main/Sphere.tsx",
@@ -2235,6 +2244,7 @@ export default {
     Guests_can_control_Crowns:           function() { return "Guests can control Crownstones and devices will remain on if they are the last one in the room." },
     Send_invitation_:                    function() { return "Send invitation!" },
     Invite:                              function() { return "Invite" },
+    Send_email_to___:                    function() { return "Send email to..." },
   },
   SphereUserOverview:{
     __filename: "../js/views/main/editSubviews/SphereUserOverview.tsx",
@@ -2486,20 +2496,19 @@ export default {
   },
   __UNIVERSAL:{
     Back:                                function() { return "Back" },
-    DAY_Mon: function() { return "Mon"},
-    DAY_Tue: function() { return "Tue"},
-    DAY_Wed: function() { return "Wed"},
-    DAY_Thu: function() { return "Thu"},
-    DAY_Fri: function() { return "Fri"},
-    DAY_Sat: function() { return "Sat"},
-    DAY_Sun: function() { return "Sun"},
-
-    DAY_Monday:     function() { return "Monday"  },
-    DAY_Tuesday:    function() { return "Tuesday" },
-    DAY_Wednesday:  function() { return "Wednesday"},
-    DAY_Thursday:   function() { return "Thursday"},
-    DAY_Friday:     function() { return "Friday"},
-    DAY_Saturday:   function() { return "Saturday"},
-    DAY_Sunday:     function() { return "Sunday"},
-  }
+    DAY_Mon:                             function() { return "Mon"},
+    DAY_Tue:                             function() { return "Tue"},
+    DAY_Wed:                             function() { return "Wed"},
+    DAY_Thu:                             function() { return "Thu"},
+    DAY_Fri:                             function() { return "Fri"},
+    DAY_Sat:                             function() { return "Sat"},
+    DAY_Sun:                             function() { return "Sun"},
+    DAY_Monday:                          function() { return "Monday"  },
+    DAY_Tuesday:                         function() { return "Tuesday" },
+    DAY_Wednesday:                       function() { return "Wednesday"},
+    DAY_Thursday:                        function() { return "Thursday"},
+    DAY_Friday:                          function() { return "Friday"},
+    DAY_Saturday:                        function() { return "Saturday"},
+    DAY_Sunday:                          function() { return "Sunday"},
+  },
 }

@@ -156,19 +156,19 @@ text: lang("_Are_you_sure___Crownston_right"), onPress: () => {
     let content = [];
     let actions = this._getActions();
     if (actions.length > 0) {
-      content.push(<MenuSegmentSeparator key="actionLabel" label="Actions"/>);
+      content.push(<MenuSegmentSeparator key="actionLabel" label={lang("Actions")} />);
       this._fillItemList(content, actions);
     }
     let menuItems = this._getMenuItems();
     // only show menu items when there's actually something to choose.
     if (menuItems.length > 0) {
-      content.push(<MenuSegmentSeparator key="categoriesLabel" label="Categories"/>);
+      content.push(<MenuSegmentSeparator key="categoriesLabel" label={lang("Categories")} />);
       this._fillItemList(content, menuItems);
     }
 
     let settingsItems = this._getSettingsItems();
     if (settingsItems.length > 0) {
-      content.push(<MenuSegmentSeparator key="settingsLabel" label="Settings"/>);
+      content.push(<MenuSegmentSeparator key="settingsLabel" label={lang("Settings")} />);
       this._fillItemList(content, settingsItems);
     }
     content.push(<MenuSegmentSeparator key="version" label={"Version: " + DeviceInfo.getReadableVersion()} smallText={true}/>);
