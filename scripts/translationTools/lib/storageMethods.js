@@ -51,7 +51,12 @@ function getTranslationFileAsData(path) {
 
   Object.keys(__dataBlob).forEach((file) => {
     Object.keys(__dataBlob[file]).forEach((key) => {
-      __dataBlob[file][key] = String(__dataBlob[file][key]).replace("function ()", "function()")
+      if (typeof __dataBlob[file][key] === "function") {
+        __dataBlob[file][key] = String(__dataBlob[file][key]).replace("function ()", "function()")
+      }
+      else {
+        // __dataBlob[file][key] = JSON.stringify()
+      }
     })
   });
 

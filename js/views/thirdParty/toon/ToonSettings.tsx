@@ -232,13 +232,13 @@ class ToonSchedule extends Component<any, any> {
       comfort: colors.menuTextSelected.hex
     };
     let labels = {
-      sun: "Sunday",
-      mon: "Monday",
-      tue: "Tuesday",
-      wed: "Wednesday",
-      thu: "Thursday",
-      fri: "Friday",
-      sat: "Saturday",
+      mon: lang("DAY_Monday"),
+      tue: lang("DAY_Tuesday"),
+      wed: lang("DAY_Wednesday"),
+      thu: lang("DAY_Thursday"),
+      fri: lang("DAY_Friday"),
+      sat: lang("DAY_Saturday"),
+      sun: lang("DAY_Sunday"),
     };
 
     let currentDate = new Date();

@@ -26,6 +26,6 @@ if (affectedFiles.length > 0) {
       }
     })
   })
-
+  console.log("CHANGING THE BASE FILE", affectedFiles)
   storageMethods.stringifyAndStore(__dataBlob, config.ENGLISH_BASE_LANGUAGE_PATH)
 }

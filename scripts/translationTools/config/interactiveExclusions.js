@@ -94,7 +94,7 @@ const ignoreKeys = [
   "strokeLinecap",
   "style",
   "style",
-  "sun",
+  // "sun",
   "text",
   "textAlign",
   "textAnchor",

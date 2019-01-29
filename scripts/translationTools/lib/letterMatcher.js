@@ -81,7 +81,7 @@ function parseInteractive(resultArray, filename, filePath, contentData) {
   for (let i = 0; i < ignore.words.length; i++) {
     let part = content.substr(0,ignore.words[i].length + 1);
     if (part === '"' + ignore.words[i] || part === "'" + ignore.words[i]) {
-      // console.log("ignore")
+      // console.log("ignore words")
       return;
     }
   }
@@ -173,7 +173,7 @@ function createTranslationFileAndReplaceContents(filename, filePath, extractData
 
   let replacementContent = '';
   if (openWithCurly) { replacementContent += '{'; }
-  replacementContent += ' Languages.' + targetType + '("' + filename + '", "' + textKey + '")' + functionCall;
+  replacementContent += 'Languages.' + targetType + '("' + filename + '", "' + textKey + '")' + functionCall;
   if (openWithCurly) { replacementContent += ' }'; }
 
 
@@ -189,11 +189,11 @@ function createTranslationFileAndReplaceContents(filename, filePath, extractData
   if (ignoreHashes[authHash] !== true) {
     console.log(authHash, textToPrint)
 
-    if (translationEntries[filename] === undefined) {
-      translationEntries[filename] = {}
-    }
-    translationEntries[filename][textKey] = target[filename][textKey];
     if (replacementHashes[authHash] == true) {
+      if (translationEntries[filename] === undefined) {
+        translationEntries[filename] = {}
+      }
+      translationEntries[filename][textKey] = target[filename][textKey];
       console.log("ACTUALLY REPLACING ", textToPrint)
       contentData.content = contentData.content.replace(src, targ);
     }

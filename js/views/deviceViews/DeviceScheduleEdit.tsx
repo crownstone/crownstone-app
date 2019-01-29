@@ -39,8 +39,7 @@ import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 
-export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-export let DAYS_FULL = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; // these are keys
 
 export class DeviceScheduleEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -557,7 +556,7 @@ text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSch
 
 class RepeatWeekday extends Component<any, any> {
   _getDays(size) {
-    let localizedDays = [lang("Mon"), lang("Tue"), lang("Wed"), lang("Thu"), lang("Fri"), lang("Sat"), lang("Sun")];
+    let localizedDays = [lang("DAY_Mon"), lang("DAY_Tue"), lang("DAY_Wed"), lang("DAY_Thu"), lang("DAY_Fri"), lang("DAY_Sat"), lang("DAY_Sun")];
     let items = [];
 
     items.push(<View key={'selectableDayFlexStart'} style={{flex:1}} />);

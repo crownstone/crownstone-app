@@ -534,13 +534,6 @@ export default {
     I_could_not_set_the_Sched:           function() { return "I could not set the Schedule on the Crownstone... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press no, you will have to add it again later." },
     I_could_not_activate_the_:           function() { return "I could not activate the Schedule on the Crownstone... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press no, your changes will be reverted." },
     You_cant_have_any_more_sc:           function() { return "You can't have any more scheduled actions. Please remove or deactivate an existing one to add this one." },
-    Mon:                                 function() { return "Mon" },
-    Tue:                                 function() { return "Tue" },
-    Wed:                                 function() { return "Wed" },
-    Thu:                                 function() { return "Thu" },
-    Fri:                                 function() { return "Fri" },
-    Sat:                                 function() { return "Sat" },
-    Sun:                                 function() { return "Sun" },
   },
   DeviceSmartBehaviour:{
     __filename: "../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour.tsx",
@@ -2493,5 +2486,20 @@ export default {
   },
   __UNIVERSAL:{
     Back:                                function() { return "Back" },
-  },
+    DAY_Mon: function() { return "Mon"},
+    DAY_Tue: function() { return "Tue"},
+    DAY_Wed: function() { return "Wed"},
+    DAY_Thu: function() { return "Thu"},
+    DAY_Fri: function() { return "Fri"},
+    DAY_Sat: function() { return "Sat"},
+    DAY_Sun: function() { return "Sun"},
+
+    DAY_Monday:     function() { return "Monday"  },
+    DAY_Tuesday:    function() { return "Tuesday" },
+    DAY_Wednesday:  function() { return "Wednesday"},
+    DAY_Thursday:   function() { return "Thursday"},
+    DAY_Friday:     function() { return "Friday"},
+    DAY_Saturday:   function() { return "Saturday"},
+    DAY_Sunday:     function() { return "Sunday"},
+  }
 }
