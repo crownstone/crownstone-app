@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const config = require("./config");
+const config = require("../config/config");
 
 let fileList = [];
 let fileMap = {};

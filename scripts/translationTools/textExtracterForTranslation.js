@@ -1,24 +1,18 @@
 let fs = require( 'fs' );
 
-let ENGLISH_BASE_LANGUAGE_PATH = "../../js/localization/en/us/en_us.ts"
-let BASE_CODE_PATH = "../../js"
-
 let extractionMethods = require("./lib/textExtractorMethods")
 let storageMethods = require("./lib/storageMethods")
 let util = require("./lib/util")
+let config = require("./config/config")
 
+let __dataBlob = storageMethods.getTranslationFileAsData(config.ENGLISH_BASE_LANGUAGE_PATH);
 
-let __dataBlob = {};
-let content = fs.readFileSync(ENGLISH_BASE_LANGUAGE_PATH, "utf8");
-content = content.replace("export default {", "__dataBlob = {");
-
-eval(content);
 console.log("------------------------------------------")
 console.log("Scanning files for translatable strings...")
 console.log("------------------------------------------")
 
 // parse all files in js folder
-let {fileMap, fileList, translationData} = extractionMethods.parseFilesRecursivelyInPath(BASE_CODE_PATH)
+let {fileMap, fileList, translationData} = extractionMethods.parseFilesRecursivelyInPath(config.BASE_CODE_PATH)
 
 
 console.log("Done! Searched ", fileList.length, " files. Parsing results...")
@@ -83,7 +77,7 @@ console.log("Done!")
 
 console.log("\nWriting translation file to disk...")
 console.log("------------------------------------------")
-storageMethods.stringifyAndStore(__dataBlob, ENGLISH_BASE_LANGUAGE_PATH);
+storageMethods.stringifyAndStore(__dataBlob, config.ENGLISH_BASE_LANGUAGE_PATH);
 
 console.log("Finished!")
 

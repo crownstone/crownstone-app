@@ -43,5 +43,20 @@ function stringifyAndStore(translationData, filename) {
   fs.writeFileSync(filename, resultString);
 }
 
+function getTranslationFileAsData(path) {
+  let __dataBlob = {};
+  let content = fs.readFileSync(path, "utf8");
+  content = content.replace("export default {", "__dataBlob = {");
+  eval(content);
 
-module.exports = {stringifyAndStore}
+  Object.keys(__dataBlob).forEach((file) => {
+    Object.keys(__dataBlob[file]).forEach((key) => {
+      __dataBlob[file][key] = String(__dataBlob[file][key]).replace("function ()", "function()")
+    })
+  });
+
+  return __dataBlob
+}
+
+
+module.exports = {stringifyAndStore, getTranslationFileAsData}

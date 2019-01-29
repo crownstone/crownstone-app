@@ -2,9 +2,8 @@ const fs = require("fs")
 let storageMethods = require("./lib/storageMethods")
 let keyMatcher = require("./lib/keyMatcher")
 let util = require("./lib/util")
-let config = require("./lib/config")
+let config = require("./config/config")
 
-const LOCALIZATION_BASE_PATH = "../../js/localization";
 
 const BASE_LANGUAGE = ['en','us']
 const TRANSLATED_LANGUAGES = [
@@ -41,25 +40,22 @@ function getPathFromLanguage(language) {
   return getBasePathFromLanguage(language) + getFilenameFromLanguage(language)
 }
 function getBasePathFromLanguage(language) {
-  return LOCALIZATION_BASE_PATH + "/" + language[0] + "/" + language[1] + "/"
+  return config.LOCALIZATION_BASE_PATH + "/" + language[0] + "/" + language[1] + "/"
 }
 function loadFile(language) {
   if (!fs.existsSync(getPathFromLanguage(language))) {
     console.log("Creating new file for", language)
     createFile(language)
   }
-  let content = fs.readFileSync(getPathFromLanguage(language), "utf8");
-  content = content.replace("export default {", "DATA['" + getLabelFromLanguage(language) + "'] = {");
-  eval(content)
+
+  DATA[getLabelFromLanguage(language)] = storageMethods.getTranslationFileAsData(getPathFromLanguage(language));
 }
 function createFile(language) {
   fs.mkdirSync(getBasePathFromLanguage(language), {recursive: true})
   fs.writeFileSync(getPathFromLanguage(language), "export default {}")
 }
 function loadBaseLanguageFile() {
-  let content = fs.readFileSync(getPathFromLanguage(BASE_LANGUAGE), "utf8");
-  content = content.replace("export default {", "BASE = {");
-  eval(content)
+  BASE = storageMethods.getTranslationFileAsData(getPathFromLanguage(BASE_LANGUAGE));
 }
 
 // load base file and load the localization files, this creates the required files as well.
