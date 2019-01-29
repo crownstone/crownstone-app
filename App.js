@@ -79,8 +79,10 @@ export class Root extends Component {
 
 
   componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    if (Platform.OS === 'ios') {
+      this.keyboardDidShowListener.remove();
+      this.keyboardDidHideListener.remove();
+    }
     this.unsubscribe.forEach((callback) => { callback() });
     this.unsubscribe = [];
   }
