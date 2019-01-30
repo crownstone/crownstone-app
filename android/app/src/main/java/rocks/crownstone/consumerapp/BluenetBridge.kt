@@ -18,7 +18,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import nl.komponents.kovenant.Promise
@@ -44,6 +43,7 @@ import rocks.crownstone.bluenet.scanparsing.CrownstoneServiceData
 import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
 import rocks.crownstone.bluenet.util.Conversion
+import rocks.crownstone.bluenet.util.Log
 import rocks.crownstone.bluenet.util.Util
 import rocks.crownstone.localization.*
 import java.util.*
