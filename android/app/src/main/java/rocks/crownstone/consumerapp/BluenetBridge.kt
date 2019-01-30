@@ -1602,13 +1602,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun onScan(data: Any) {
 		val device = data as ScannedDevice
 
+		if (device.isStone()) {
+			sendEvent("crownstoneAdvertisementReceived", device.address) // Any advertisement, verified and unverified from crownstones.
+		}
+
 		if (device.operationMode == OperationMode.DFU) {
 			val advertisementMap = exportAdvertisementData(device, null)
-			// Clone the advertisementMap to avoid the error: com.facebook.react.bridge.ObjectAlreadyConsumedException: Map already consumed
-			val advertisementBundle = Arguments.toBundle(advertisementMap)
 			sendEvent("verifiedDFUAdvertisementData", advertisementMap)
-			sendEvent("anyVerifiedAdvertisementData", Arguments.fromBundle(advertisementBundle))
-			sendEvent("anyAdvertisementData", Arguments.fromBundle(advertisementBundle))
 			return
 		}
 
@@ -1628,19 +1628,19 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			return
 		}
 		val advertisementMap = exportAdvertisementData(device, serviceData) // Any advertisement, verified and unverified from crownstones.
-		// Clone the advertisementMap to avoid the error: com.facebook.react.bridge.ObjectAlreadyConsumedException: Map already consumed
-		val advertisementBundle = Arguments.toBundle(advertisementMap)
+//		// Clone the advertisementMap to avoid the error: com.facebook.react.bridge.ObjectAlreadyConsumedException: Map already consumed
+//		val advertisementBundle = Arguments.toBundle(advertisementMap)
+//		// Then send: Arguments.fromBundle(advertisementBundle)
 
-		sendEvent("anyAdvertisementData", advertisementMap) // Any advertisement, verified and unverified from crownstones.
 		if (device.validated) {
 			when (device.operationMode) {
-				OperationMode.SETUP -> sendEvent("verifiedSetupAdvertisementData", Arguments.fromBundle(advertisementBundle))
-				OperationMode.NORMAL -> sendEvent("verifiedAdvertisementData", Arguments.fromBundle(advertisementBundle)) // TODO: normal mode only?
+				OperationMode.SETUP -> sendEvent("verifiedSetupAdvertisementData", advertisementMap)
+				OperationMode.NORMAL -> sendEvent("verifiedAdvertisementData", advertisementMap) // Any verfied advertisement, only normal operation mode.
 			}
-			sendEvent("anyVerifiedAdvertisementData", Arguments.fromBundle(advertisementBundle)) // Any verfied advertisement, normal, setup and dfu mode.
+//			sendEvent("anyVerifiedAdvertisementData", Arguments.fromBundle(advertisementBundle)) // Any verfied advertisement, normal, setup and dfu mode.
 		}
 		else {
-			sendEvent("unverifiedAdvertisementData", Arguments.fromBundle(advertisementBundle))
+			sendEvent("unverifiedAdvertisementData", advertisementMap)
 		}
 	}
 
@@ -1650,19 +1650,21 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		advertisementMap.putString("handle", device.address)
 		advertisementMap.putString("name", device.name)
 		advertisementMap.putInt("rssi", device.rssi)
-//		advertisementMap.putBoolean("isCrownstoneFamily", device.isStone()) // TODO: only known when service data is available?
 		advertisementMap.putBoolean("isInDFUMode", device.operationMode == OperationMode.DFU)
-//		advertisementMap.putString("serviceUUID", "") // TODO: is this required?
 
 		if (device.validated && device.operationMode == OperationMode.NORMAL) {
 			advertisementMap.putString("referenceId", currentSphereId) // TODO: make this work for multisphere
 		}
 
-		val serviceDataMap = when (serviceData) {
-			null -> Arguments.createMap()
-			else -> exportServiceData(device, serviceData)
+//		val serviceDataMap = when (serviceData) {
+//			null -> Arguments.createMap()
+//			else -> exportServiceData(device, serviceData)
+//		}
+//		advertisementMap.putMap("serviceData", serviceDataMap)
+		if (serviceData != null) {
+			val serviceDataMap = exportServiceData(device, serviceData)
+			advertisementMap.putMap("serviceData", serviceDataMap)
 		}
-		advertisementMap.putMap("serviceData", serviceDataMap)
 
 		return advertisementMap
 	}
