@@ -17,6 +17,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.Process
 import android.support.v4.content.ContextCompat
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -89,8 +90,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 
 		// See: http://stackoverflow.com/questions/2033914/is-quitting-an-application-frowned-upon
-//		System.exit(0); // Not recommended, seems to restart app
-//		Process.killProcess(Process.myPid()) // Not recommended either
+//		System.exit(0) // Not recommended, seems to restart app
+		Process.killProcess(Process.myPid()) // Not recommended either
 	}
 
 	override fun getName(): String {
