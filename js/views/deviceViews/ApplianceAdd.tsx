@@ -59,7 +59,7 @@ export class ApplianceAdd extends Component<any, any> {
   _getItems() {
     let items = [];
     items.push({label: lang("NEW_DEVICE"), type:'explanation', below:false});
-    items.push({label: lang("Type_Name"), type: 'textEdit', placeholder:'My device name', value: this.state.name, callback: (newText) => {
+    items.push({label: lang("Type_Name"), type: 'textEdit', placeholder:lang("My_device_name"), value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
     items.push({label: lang("Icon"), type: 'icon', value: this.state.icon, callback: () => {

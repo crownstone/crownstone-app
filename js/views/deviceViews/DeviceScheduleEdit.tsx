@@ -39,8 +39,16 @@ import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 
-export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-export let DAYS_FULL = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; // these are keys
+export let DAYS_FULL = [
+  lang('DAY_Monday'),
+  lang('DAY_Tuesday'),
+  lang('DAY_Wednesday'),
+  lang('DAY_Thursday'),
+  lang('DAY_Friday'),
+  lang('DAY_Saturday'),
+  lang('DAY_Sunday'),
+];
 
 export class DeviceScheduleEdit extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -180,7 +188,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
   }
 
   _addSharedUIToItems(items, stone) {
-    items.push({label: lang("Label"), type: 'textEdit', placeholder:'(optional)', value: this.state.label, callback: (newText) => {
+    items.push({label: lang("Label"), type: 'textEdit', placeholder:lang("_optional_"), value: this.state.label, callback: (newText) => {
       this.setState({label:newText});
     }});
     items.push({label: lang("ACTION"), type: 'lightExplanation',  below:false});
@@ -557,7 +565,7 @@ text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSch
 
 class RepeatWeekday extends Component<any, any> {
   _getDays(size) {
-    let localizedDays = [lang("Mon"), lang("Tue"), lang("Wed"), lang("Thu"), lang("Fri"), lang("Sat"), lang("Sun")];
+    let localizedDays = [lang("DAY_Mon"), lang("DAY_Tue"), lang("DAY_Wed"), lang("DAY_Thu"), lang("DAY_Fri"), lang("DAY_Sat"), lang("DAY_Sun")];
     let items = [];
 
     items.push(<View key={'selectableDayFlexStart'} style={{flex:1}} />);

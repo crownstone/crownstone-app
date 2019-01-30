@@ -135,7 +135,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
       items.push({
         label: lang("Device_Type"),
         type: 'textEdit',
-        placeholder:'Pick a name',
+        placeholder:lang("Pick_a_name"),
         value: this.state.applianceName,
         callback: (newText) => {
           this.setState({applianceName: newText});
@@ -178,7 +178,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     items.push({
       label: lang("Name"),
       type: 'textEdit',
-      placeholder:'Pick a name',
+      placeholder:lang("Pick_a_name"),
       value: this.state.stoneName,
       callback: (newText) => {
         this.setState({stoneName: newText})
@@ -323,7 +323,7 @@ text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () 
               if (stone.reachability.disabled === true) {
                 Alert.alert("Can't see this one!",
                   "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
-                  [{text:'Delete anyway', onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+                  [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
                     {text:'Cancel',style: 'cancel', onPress: () => {this.props.eventBus.emit('hideLoading');}}]
                 )
               }
