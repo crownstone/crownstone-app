@@ -98,28 +98,30 @@ export class Router_Android extends Component {
             <Scene key="switchCraftInformation"      component={Views.SwitchCraftInformation}      />
             <Scene key="settingsLocalizationDebug"   component={Views.SettingsLocalizationDebug}   />
 
-            <Scene key="sphereEdit"                 component={Views.SphereEdit}                 panHandlers={null} />
-            <Scene key="sphereEditSettings"         component={Views.SphereEditSettings}         panHandlers={null} />
-            <Scene key="sphereRoomOverview"         component={Views.SphereRoomOverview}         panHandlers={null} />
-            <Scene key="sphereCrownstoneOverview"   component={Views.SphereCrownstoneOverview}   panHandlers={null} />
-            <Scene key="sphereRoomArranger"         component={Views.SphereRoomArranger}         panHandlers={null} />
-            <Scene key="sphereUserOverview"         component={Views.SphereUserOverview}         panHandlers={null} />
-            <Scene key="sphereUserInvite"           component={Views.SphereUserInvite}           panHandlers={null} />
-            <Scene key="sphereInvitedUser"          component={Views.SphereInvitedUser}          panHandlers={null} />
-            <Scene key="sphereUser"                 component={Views.SphereUser}                 panHandlers={null} />
-            <Scene key="sphereBehaviour"            component={Views.SphereBehaviour}            panHandlers={null} />
-            <Scene key="sphereIntegrations"         component={Views.SphereIntegrations}         panHandlers={null} />
+            <Scene key="addSphereTutorial"           component={Views.AddSphereTutorial}          panHandlers={null} />
 
-            <Scene key="alexaOverview"              component={Views.AlexaOverview}              panHandlers={null} />
+            <Scene key="sphereEdit"                  component={Views.SphereEdit}                 panHandlers={null} />
+            <Scene key="sphereEditSettings"          component={Views.SphereEditSettings}         panHandlers={null} />
+            <Scene key="sphereRoomOverview"          component={Views.SphereRoomOverview}         panHandlers={null} />
+            <Scene key="sphereCrownstoneOverview"    component={Views.SphereCrownstoneOverview}   panHandlers={null} />
+            <Scene key="sphereRoomArranger"          component={Views.SphereRoomArranger}         panHandlers={null} />
+            <Scene key="sphereUserOverview"          component={Views.SphereUserOverview}         panHandlers={null} />
+            <Scene key="sphereUserInvite"            component={Views.SphereUserInvite}           panHandlers={null} />
+            <Scene key="sphereInvitedUser"           component={Views.SphereInvitedUser}          panHandlers={null} />
+            <Scene key="sphereUser"                  component={Views.SphereUser}                 panHandlers={null} />
+            <Scene key="sphereBehaviour"             component={Views.SphereBehaviour}            panHandlers={null} />
+            <Scene key="sphereIntegrations"          component={Views.SphereIntegrations}         panHandlers={null} />
 
-            <Scene key="toonAdd"                    component={Views.ToonAdd}                    panHandlers={null} />
-            <Scene key="toonSettings"               component={Views.ToonSettings}               panHandlers={null} />
-            <Scene key="toonOverview"               component={Views.ToonOverview}               panHandlers={null} />
+            <Scene key="alexaOverview"               component={Views.AlexaOverview}              panHandlers={null} />
 
-            <Scene key="messageInbox"               component={Views.MessageInbox}               />
-            <Scene key="messageAdd"                 component={Views.MessageAdd}                 />
+            <Scene key="toonAdd"                     component={Views.ToonAdd}                    panHandlers={null} />
+            <Scene key="toonSettings"                component={Views.ToonSettings}               panHandlers={null} />
+            <Scene key="toonOverview"                component={Views.ToonOverview}               panHandlers={null} />
 
-            <Scene key="iconDebug"                  component={Views.IconDebug}  initial={false} />
+            <Scene key="messageInbox"                component={Views.MessageInbox}               />
+            <Scene key="messageAdd"                  component={Views.MessageAdd}                 />
+
+            <Scene key="iconDebug"                   component={Views.IconDebug}  initial={false} />
           </Modal>
         </Router>
 
