@@ -8,6 +8,7 @@
 package rocks.crownstone.consumerapp
 
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -18,6 +19,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
+import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -1848,12 +1850,30 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun getServiceNotification(text: String): Notification {
+		val notificationChannelId = "Crownstone" // The id of the notification channel. Must be unique per package. The value may be truncated if it is too long.
+//		val icon = BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_background)
+
 		val notificationIntent = Intent(reactContext, MainActivity::class.java)
 //		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 //		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 		notificationIntent.action = Intent.ACTION_MAIN
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER)
 		notificationIntent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+
+		if (Build.VERSION.SDK_INT >= 26) {
+			// Create the notification channel, must be done before posting any notification.
+			// It's safe to call this repeatedly because creating an existing notification channel performs no operation.
+			val name = "Crownstone" // The user visible name of the channel. The recommended maximum length is 40 characters; the value may be truncated if it is too long.
+//			val importance = android.app.NotificationManager.IMPORTANCE_NONE
+			val importance = android.app.NotificationManager.IMPORTANCE_MIN
+//			val importance = android.app.NotificationManager.IMPORTANCE_LOW
+			val channel = NotificationChannel(notificationChannelId, name, importance)
+//			channel.description = "description" // The recommended maximum length is 300 characters; the value may be truncated if it is too long.
+
+			// Register the channel with the system; you can't change the importance or other notification behaviors after this
+			val notificationManager = reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+			notificationManager.createNotificationChannel(channel)
+		}
 
 
 //		notificationIntent.setClassName("rocks.crownstone.consumerapp", "MainActivity");
@@ -1862,20 +1882,20 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 //		PendingIntent pendingIntent = PendingIntent.getActivity(reactContext, 0, notificationIntent, 0);
 
-		val notification = Notification.Builder(reactContext)
+		val notification = NotificationCompat.Builder(reactContext, notificationChannelId)
+				.setSmallIcon(R.drawable.icon_notification)
 				.setContentTitle("Crownstone is running")
 				.setContentText(text)
 				.setContentIntent(pendingIntent)
-				.setSmallIcon(R.drawable.icon_notification)
+				.setOngoing(true)
+				.setPriority(NotificationCompat.PRIORITY_LOW)
+				.setVisibility(Notification.VISIBILITY_PUBLIC)
 				// TODO: add action to close the app + service
 				// TODO: add action to pause the app?
 //				.addAction(android.R.drawable.ic_menu_close_clear_cancel, )
 //				.setLargeIcon()
 				.build()
 
-		if (Build.VERSION.SDK_INT >= 21) {
-			notification.visibility = Notification.VISIBILITY_PUBLIC
-		}
 		return notification
 	}
 }
