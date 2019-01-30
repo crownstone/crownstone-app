@@ -135,7 +135,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //		val handlerThread = HandlerThread("BluenetBridge")
 //		handlerThread.start()
 //		bluenet = Bluenet(handlerThread.looper)
-		initPromise = bluenet.init(reactContext) // TODO: move this to isReady()
+		initPromise = bluenet.init(reactContext, ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running in the background"))
 		initPromise.success {
 			// TODO: this might be called again when app opens.
 			Log.i(TAG, "initPromise success")
