@@ -657,7 +657,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun startIndoorLocalization() {
 		Log.i(TAG, "startIndoorLocalization")
 		// Start using the classifier
-//		localization.startLocalization(localizationCallback)
+		localization.startLocalization(localizationCallback)
 	}
 
 	@ReactMethod
@@ -665,7 +665,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun stopIndoorLocalization() {
 		Log.i(TAG, "stopIndoorLocalization")
 		// Stop using the classifier
-//		localization.stopLocalization()
+		localization.stopLocalization()
 	}
 
 	@ReactMethod
@@ -724,8 +724,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val fingerprint = Fingerprint()
 		fingerprint.sphereId = sphereId
 		fingerprint.locationId = locationId
+		val fixedSamlesStr = samplesStr.replace("[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}".toRegex()) { it.value.toUpperCase() }
+		Log.d(TAG, "fixed: $fixedSamlesStr")
 		try {
-			val samples = FingerprintSamplesMap(samplesStr)
+			val samples = FingerprintSamplesMap(fixedSamlesStr)
 			if (!samples.isEmpty()) {
 				fingerprint.setSamples(samples)
 				localization.importFingerprint(sphereId, locationId, fingerprint)
