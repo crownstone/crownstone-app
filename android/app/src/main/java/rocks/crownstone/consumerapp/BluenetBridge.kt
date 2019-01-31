@@ -49,6 +49,7 @@ import rocks.crownstone.bluenet.util.Conversion
 import rocks.crownstone.bluenet.util.Log
 import rocks.crownstone.bluenet.util.Util
 import rocks.crownstone.localization.*
+import java.io.File
 import java.util.*
 import kotlin.math.round
 
@@ -152,6 +153,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
 			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
 			bluenet.subscribe(BluenetEvent.DFU_PROGRESS, ::onDfuProgress)
+			val logLevel =     if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.VERBOSE else Log.Level.ERROR
+			val logLevelFile = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.DEBUG else Log.Level.INFO
+			bluenet.setLogLevel(logLevel)
+			bluenet.setFileLogLevel(logLevelFile)
 		}
 		initPromise
 				.success {
@@ -411,21 +416,28 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun enableLoggingToFile(enable: Boolean) {
 		Log.i(TAG, "enableLoggingToFile $enable")
-		// TODO
+		if (enable) {
+			bluenet.initFileLogging(reactContext.currentActivity)
+		}
+		bluenet.enableFileLogging(enable)
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun enableExtendedLogging(enable: Boolean) {
 		Log.i(TAG, "enableExtendedLogging $enable")
-		// TODO
+		when (enable) {
+			true -> bluenet.setFileLogLevel(Log.Level.DEBUG)
+			false -> bluenet.setFileLogLevel(Log.Level.INFO)
+		}
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun clearLogs() {
 		Log.i(TAG, "clearLogs")
-		// TODO
+		bluenet.initFileLogging(reactContext.currentActivity)
+		bluenet.clearLogFiles()
 	}
 //endregion
 
@@ -1843,7 +1855,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun sendEvent(eventName: String, params: String?) {
-		Log.d(TAG, "sendEvent $eventName: $params")
 		reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(eventName, params)
 	}
 
