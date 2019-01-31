@@ -15,7 +15,8 @@ class EncryptionManagerClass {
       this.store = store;
       this._initialized = true;
 
-      eventBus.on("KEYS_UPDATED", () => { this.setKeySets(); });
+      eventBus.on("KEYS_UPDATED",         () => { this.setKeySets(); });
+      eventBus.on('userLoggedInFinished', () => { this.setKeySets() });
 
       this.setKeySets();
     }
