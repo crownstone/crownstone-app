@@ -93,11 +93,12 @@ carthage bootstrap --platform iOS --no-use-binaries
 
         yarn
 
-2. Clone the bluenet lib for android:
+2. Clone the bluenet lib for android to another dir, and copy the `bluenet` module to the `android` dir of the app:
 
-        cd android
-        git clone https://github.com/crownstone/bluenet-lib-android.git bluenet
         cd ..
+        git clone https://github.com/crownstone/bluenet-lib-android.git
+        cp -r bluenet-lib-android/bluenet CrownstoneApp/android
+        cd CrownstoneApp
 
 2. Import the project in Android Studio
 
@@ -105,17 +106,6 @@ carthage bootstrap --platform iOS --no-use-binaries
 
     Choose the android dir.
 
-3. Clone the dfu lib for android:
-
-        cd android
-        git clone https://github.com/NordicSemiconductor/Android-DFU-Library.git
-        cd ..
-
-4. Modify the build tools version of the dfu lib in _Android-DFU-Library/dfu/build.gradle_:
-    - `compileSdkVersion 23`
-    - `buildToolsVersion '23.0.1'`
-    - `targetSdkVersion 23`
-    - `compile 'com.android.support:support-v4:23.0.1'`
 
 ## Commands
 
