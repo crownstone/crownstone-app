@@ -48,7 +48,7 @@ class WatchStateManagerClass {
         }
 
         nameObject[sphereId][stone.config.crownstoneId] = name;
-      })
+      });
     });
 
     Bluenet.setCrownstoneNames(nameObject);

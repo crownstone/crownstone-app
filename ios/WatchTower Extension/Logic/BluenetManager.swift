@@ -104,7 +104,7 @@ class BluenetManager {
                 }
                 
                 self.performingStone = self.pendingTasks[0].handleSession
-                print("EXECUTING", self.pendingTasks[0].label, self.pendingTasks[0].handleSession)
+//                print("EXECUTING", self.pendingTasks[0].label, self.pendingTasks[0].handleSession)
                 self.pendingTasks[0].started = true
                 _ = self.pendingTasks[0].execute()
                     .done {
@@ -140,11 +140,10 @@ class BluenetManager {
                 var handleDict = dataStore.store.dictionary(forKey: "handles")
                 if var theDict = handleDict {
                   theDict[castData.handle] = true
-//                  print("Storing \(theDict) in handes")
+
                   dataStore.store.set(theDict as Any?, forKey: "handles")
                 }
                 else {
-//                  print("Storing \([castData.handle : true]) in handes")
                   dataStore.store.set([castData.handle : true] as Any?, forKey: "handles")
                 }
                 

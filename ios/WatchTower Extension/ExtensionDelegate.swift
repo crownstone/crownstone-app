@@ -15,8 +15,9 @@ var bluenetManager  = BluenetManager()
 var sessionDelegate = SessionDelegate()
 var dataStore       = DataStore()
 
+
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
-    
+  
     override init() {
         super.init()
         print("ExtentionDelegate INIT")
@@ -29,33 +30,29 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         WCSession.default.delegate = sessionDelegate
         WCSession.default.activate()
       
+        
         let handleDict = dataStore.store.dictionary(forKey: "handles")
         print("I GOT THIS \(handleDict)")
-      if let theDict = handleDict {
-          
-          for (handle, _) in theDict {
-            let refId = dataStore.store.string(forKey: handle)
-            if let theRefId = refId {
-              print("Loading \(handle) \(theRefId) into bluenet")
-              bluenetManager.bluenet.setKnownValidatedHandle(handle: handle, referenceId: theRefId)
+        if let theDict = handleDict {
+            for (handle, _) in theDict {
+                let refId = dataStore.store.string(forKey: handle)
+                if let theRefId = refId {
+                    print("Loading \(handle) \(theRefId) into bluenet")
+                    bluenetManager.bluenet.setKnownValidatedHandle(handle: handle, referenceId: theRefId)
+                }
             }
-          }
         }
-      
     }
     
 
     func applicationDidFinishLaunching() {
         print("ExtentionDelegate applicationDidFinishLaunching")
-        
-        
         // Perform any final initialization of your application.
     }
 
     func applicationDidBecomeActive() {
         print("ExtentionDelegate applicationDidBecomeActive")
         bluenetManager.start()
-        
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
 
@@ -63,7 +60,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         print("ExtentionDelegate applicationWillResignActive")
         bluenetManager.pause()
         
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions
+        // (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, etc.
     }
 
