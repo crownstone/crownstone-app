@@ -96,8 +96,8 @@ carthage bootstrap --platform iOS --no-use-binaries
 2. Clone the bluenet lib for android to another dir, and copy the `bluenet` module to the `android` dir of the app:
 
         cd ..
-        git clone https://github.com/crownstone/bluenet-lib-android.git
-        cp -r bluenet-lib-android/bluenet CrownstoneApp/android
+        git clone https://github.com/crownstone/bluenet-android-lib.git
+        cp -r bluenet-android-lib/bluenet CrownstoneApp/android
         cd CrownstoneApp
 
 2. Import the project in Android Studio
