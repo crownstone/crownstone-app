@@ -17,7 +17,7 @@ class SwitchableStone {
     public var rssi : Int8 = -67
     public var verified = false
     public var referenceId = "unknown"
-  public var crownstoneId : UInt8 = 0
+    public var crownstoneId : UInt8 = 0
     
     public var mode = CrownstoneMode.unknown
     
@@ -32,37 +32,43 @@ class SwitchableStone {
     }
     
     func fillValues(advertisement: Advertisement, verified: Bool) {
-      
         self.handle = advertisement.handle
         self.rssi = advertisement.rssi.int8Value
         self.mode = advertisement.getOperationMode()
         self.verified = verified
-      
+        
         var nameSet = false
         if self.verified {
-          if let refId = advertisement.referenceId {
-            self.referenceId = refId
-            if advertisement.scanResponse!.stateOfExternalCrownstone == false {
-              self.name = sessionDelegate.getName(crownstoneId: NSNumber(value:advertisement.scanResponse!.crownstoneId).stringValue, referenceId: advertisement.referenceId)
-              nameSet = true
-              let switchState = advertisement.scanResponse!.switchState
-              self.crownstoneId = advertisement.scanResponse!.crownstoneId
-              if switchState == 128 {
-                self.switchState = 1
-              }
-              else {
-                self.switchState = NSNumber(value: switchState).floatValue / 100.0
-              }
+            if let refId = advertisement.referenceId {
+                self.referenceId = refId
+                if advertisement.scanResponse!.stateOfExternalCrownstone == false {
+                    
+                    nameSet = true
+                    let switchState = advertisement.scanResponse!.switchState
+                    self.crownstoneId = advertisement.scanResponse!.crownstoneId
+                    self.name = sessionDelegate.getName(crownstoneId: NSNumber(value: self.crownstoneId).stringValue, referenceId: advertisement.referenceId)
+                    dataStore.storeNameForHandle(advertisement.handle, name: self.name)
+                    if switchState == 128 {
+                        self.switchState = 1
+                    }
+                    else {
+                        self.switchState = NSNumber(value: switchState).floatValue / 100.0
+                    }
+                }
             }
-          }
-          else {
-            //print("verified does not have a referenceId!")
-          }
+            else {
+                //print("verified does not have a referenceId!")
+            }
         }
-      
-      if nameSet == false {
-        self.name = "Unknown stone"
-      }
+        
+        if nameSet == false {
+            if let storedName = dataStore.getNameFromHandle(advertisement.handle) {
+                self.name = storedName
+            }
+            else {
+                self.name = "Scanning..."
+            }
+        }
     }
     
     public func getState() -> Bool {

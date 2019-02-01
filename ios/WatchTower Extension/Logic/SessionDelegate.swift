@@ -78,5 +78,4 @@ class SessionDelegate: NSObject, WCSessionDelegate {
       }
       return "Not validated"
     }
-
 }
