@@ -44,7 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
 					new KCKeepAwakePackage(),
 					new RNCameraKitPackage(),
 					new SplashScreenReactPackage(),
-					new RNSentryPackage(MainApplication.this),
+					new RNSentryPackage(),
 					new RNDeviceInfo(),
 					new ReactNativePushNotificationPackage()
 			);

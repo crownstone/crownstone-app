@@ -19,7 +19,6 @@ import {
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
 
 import {colors, screenWidth} from '../styles'
 import { Svg, Circle} from 'react-native-svg';
@@ -75,8 +74,10 @@ export class DimmerButton extends Component<any, any> {
     let getStateFromGesture = (gestureState) => {
       let x = ((gestureState.x0 + gestureState.dx) - 0.5*screenWidth);
       let y = (gestureState.y0 + gestureState.dy - (this.startY+ 0.5*this.props.size));
+
       let angle = Math.atan2(y,x);
       let radius = x/Math.cos(angle);
+
 
       let correctedAngle = ((-angle/this.deg2Rad) + 450)% 360;
       let state = (this.angleMin - correctedAngle)/this.angleRange;
@@ -93,7 +94,7 @@ export class DimmerButton extends Component<any, any> {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderTerminationRequest: (evt, gestureState) => false,
       onPanResponderGrant: (evt, gestureState) => {
-        if (this.startY === 0) {
+        if (this.startY === 0 || !this.startY) {
           (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
             this.startY = py;
           });
@@ -126,6 +127,7 @@ export class DimmerButton extends Component<any, any> {
       },
 
       onPanResponderRelease: (evt, gestureState) => {
+        console.log("onPanResponderRelease")
         this.controlling = false;
         eventBus.emit("UIGestureControl", true)
       },
@@ -235,7 +237,7 @@ export class DimmerButton extends Component<any, any> {
 
     // The view HAS to have opacity:1 in order for the .measure method to work on android. Yes. Seriously.
     return (
-      <View style={{width: screenWidth, height: this.props.size, alignItems:'center'}}>
+      <View style={{width: screenWidth, height: this.props.size, alignItems:'center', opacity: 1}} collapsable={false}>
       <View {...this._panResponder.panHandlers}  ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center', position:'absolute', top:0, left:0, opacity:1}}>
         <Svg width={screenWidth} height={this.props.size}>
           <Circle
