@@ -94,18 +94,25 @@ export class DimmerButton extends Component<any, any> {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderTerminationRequest: (evt, gestureState) => false,
       onPanResponderGrant: (evt, gestureState) => {
+        let checkForControl = () => {
+          let data = getStateFromGesture(gestureState);
+          if (
+            data.state > this.state.state - 0.2 &&
+            data.state < this.state.state + 0.2
+          ) {
+            this.controlling = true;
+            eventBus.emit("UIGestureControl", false);
+          }
+        }
+
         if (this.startY === 0 || !this.startY) {
           (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
             this.startY = py;
+            checkForControl();
           });
         }
-        let data = getStateFromGesture(gestureState);
-        if (
-          data.state > this.state.state - 0.2 &&
-          data.state < this.state.state + 0.2
-        ) {
-          this.controlling = true;
-          eventBus.emit("UIGestureControl", false);
+        else {
+          checkForControl();
         }
       },
       onPanResponderMove: (evt, gestureState) => {
@@ -127,7 +134,6 @@ export class DimmerButton extends Component<any, any> {
       },
 
       onPanResponderRelease: (evt, gestureState) => {
-        console.log("onPanResponderRelease")
         this.controlling = false;
         eventBus.emit("UIGestureControl", true)
       },
@@ -235,10 +241,20 @@ export class DimmerButton extends Component<any, any> {
     let indicatorX = this.xCenter + this.correctedRadius*Math.sin(angle);
     let indicatorY = this.yCenter + this.correctedRadius*Math.cos(angle);
 
-    // The view HAS to have opacity:1 in order for the .measure method to work on android. Yes. Seriously.
+    // The inner view with the reponder HAS to have opacity:1 in order for the .measure method to work on android. Yes. Seriously. Oh. And a background color. Must have that.
     return (
-      <View style={{width: screenWidth, height: this.props.size, alignItems:'center', opacity: 1}} collapsable={false}>
-      <View {...this._panResponder.panHandlers}  ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center', position:'absolute', top:0, left:0, opacity:1}}>
+      <View style={{width: screenWidth, height: this.props.size, alignItems:'center'}} collapsable={false}>
+      <View
+        {...this._panResponder.panHandlers}
+        ref={this.refName}
+        style={{
+          width: screenWidth,
+          height: this.props.size,
+          backgroundColor:"transparent",
+          alignItems:'center',
+          position:'absolute', top:0, left:0,
+          opacity:1
+        }}>
         <Svg width={screenWidth} height={this.props.size}>
           <Circle
             r={this.correctedRadius}
