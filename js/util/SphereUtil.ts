@@ -1,4 +1,9 @@
-import * as React from 'react'; import { Component } from 'react';
+import { Languages } from "../Languages";
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereUtil", key)(a,b,c,d,e);
+}
+
 import {
   Alert,
   Animated,
@@ -65,15 +70,15 @@ export const SphereUtil = {
     let showFinalizeIndoorNavigationCallback = () => {
       if (!sphereIsPresent) {
         Alert.alert(
-          "You'll have to be in the Sphere to continue.",
-          "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!",
+          lang("Youll_have_to_be_in_the_S"),
+          lang("If_youre_in_range_of_any_"),
           [{text: 'OK'}]
         );
       }
       else if (noRooms) {
         Alert.alert(
-          "Let's create some rooms!",
-          "Tap the icon on the bottom-right to add a room!",
+          lang("Lets_create_some_rooms_"),
+          lang("Tap_the_icon_on_the_botto"),
           [{text: 'OK'}]
         );
       }
@@ -84,11 +89,11 @@ export const SphereUtil = {
         Actions.roomOverview({
           sphereId: sphereId,
           locationId: null,
-          title: 'First things first :)',
+          title: lang("First_things_first___"),
           hideRight: true,
           usedForIndoorLocalizationSetup: true,
-          overlayText: 'Place your Crownstones in rooms!',
-          explanation: "Tap a Crownstone to see it's details, then tap 'Not in room' in the top-left corner!"
+          overlayText: lang("Place_your_Crownstones_in"),
+          explanation: lang("Tap_a_Crownstone_to_see_i")
         });
       }
     };

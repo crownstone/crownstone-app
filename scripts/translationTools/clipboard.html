@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+  let FILE_NAME = "ActivityLogItem";
+  let TYPE = "label";
+  let KEY_SIZE = 25
+  let text = '';
+  function a(str) {
+
+    let padd = function (x, size) {
+      if (x === "__FILE_NAME:") {
+        return x;
+      }
+      while (x.length < size) {
+        x += " ";
+      }
+      return x
+    };
+
+    function prepareTextKey(inputText, postfix = '') {
+      let keyText = inputText.replace(/(\')/g,'')
+      keyText = keyText.replace(/[^a-zA-Z]/g,'_')
+      let textKeyNoSpaces = keyText.replace(/( )/g,"_").substr(0,KEY_SIZE) + postfix;
+
+      return textKeyNoSpaces;
+    }
+
+    let subKey = prepareTextKey(str)
+    let resultString = padd(subKey + ":", 37) + "function() { return \"" + str + "\" },"
+
+    // console.log(resultString + "\n\nLanguages." + TYPE + "(\"" + FILE_NAME + "\",\"" + subKey + "\")()");
+    return [resultString ,"lang(\"" + subKey + "\")"]
+  }
+
+  function update(str) {
+    let textarea = document.getElementById("test")
+    let value = textarea.value;
+
+
+    let code = "text = " + value
+    eval(code)
+
+    if (Array.isArray(text)) {
+      let returnText = ''
+      let returnGet = ''
+      text.forEach((t) => {
+        let processed = a(t);
+        returnText += processed[0].replace(/(\n)/g, "\\n") + '\n'
+        returnGet += processed[1] + ',\n'
+      })
+
+      copyToClipboard(returnText + "\n\n" + returnGet)
+    }
+    else {
+        let processed = a(text)
+
+        copyToClipboard(processed[0].replace(/(\n)/g, "\\n") + "\n\n" + processed[1])
+    }
+
+  }
+
+  const copyToClipboard = str => {
+    const el = document.createElement('textarea');
+    el.value = str;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  };
+
+  function runClear(elem) {
+    let id = document.getElementById("test")
+    id.value = ''
+  }
+</script>
+
+<textarea id="test" onchange="update(this)" onclick="runClear(this)" style="width:300px; height:300px;"></textarea>
+</body>
+</html>

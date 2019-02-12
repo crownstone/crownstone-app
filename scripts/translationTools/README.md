@@ -45,3 +45,8 @@ Finally, we want to copy the changes to the other language files by running main
 ```$xslt
 node maintainLanguageFiles.js
 ```
+
+
+If you find strings in the code that need manual extraction, open the clipboard.html.
+Cut the text from the code and paste it into the textbox. Click next to the textbox. Your clipboard is now loaded
+with translation file format entries.

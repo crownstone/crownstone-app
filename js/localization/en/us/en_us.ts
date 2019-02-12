@@ -88,7 +88,6 @@ export default {
     One_Sphere_per_House:                function() { return "One Sphere per House" },
     Using_only_one_sphere_per:           function() { return "Using only one sphere per individual building (like house, office or holiday home), you can add up to 20 spheres!\n\n" + "If you want to create a new sphere, tap the button below.\n\nIf you do not need a new sphere after all, press back in the top left corner!" },
     I_understand_:                       function() { return "I understand!" },
-    Using_only_one_sphere_per_:          function() { return "Using only one sphere per individual building (like house, office or holiday home), you can add up to 20 spheres!\n\n" + "If you want to create a new sphere, tap the button below.\n\nIf you do not need a new sphere after all, press back in the top left corner!" },
   },
   AddSphereTutorial_introduction:{
     What_is_a_Sphere_:                   function() { return "What is a Sphere?" },
@@ -2258,6 +2257,15 @@ export default {
     Invite_someone_new_:                 function() { return "Invite someone new!" },
     navigation:                          function() { return "navigation" },
     Users_in_:                           function() { return "Users in " + arguments[0] },
+  },
+  SphereUtil:{
+    First_things_first___:               function() { return "First things first :)" },
+    Place_your_Crownstones_in:           function() { return "Place your Crownstones in rooms!" },
+    Tap_a_Crownstone_to_see_i:           function() { return "Tap a Crownstone to see it's details, then tap 'Not in room' in the top-right corner!" },
+    Tap_the_icon_on_the_botto:           function() { return "Tap the icon on the bottom-right to add a room!" },
+    Lets_create_some_rooms_:             function() { return "Let's create some rooms!" },
+    If_youre_in_range_of_any_:           function() { return "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!" },
+    Youll_have_to_be_in_the_S:           function() { return "You'll have to be in the Sphere to continue." },
   },
   Splash:{
     __filename: "../js/views/startupViews/Splash.tsx",
