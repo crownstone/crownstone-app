@@ -2,12 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Translation Helper</title>
 </head>
 <body>
 <script>
-  let FILE_NAME = "ActivityLogItem";
-  let TYPE = "label";
   let KEY_SIZE = 25
   let text = '';
   function a(str) {
@@ -78,7 +76,9 @@
     id.value = ''
   }
 </script>
-
-<textarea id="test" onchange="update(this)" onclick="runClear(this)" style="width:300px; height:300px;"></textarea>
+<p>Paste the string into the textbox below, then click outside of the textbox. For instance on the green area!</p><p>Your clipboard is then loaded with translated data. This can be pasted into the en_us.ts file.</p>
+<div style="width:650px">
+    <textarea id="test" onchange="update(this)" onclick="runClear(this)" style="width:300px; height:300px;"></textarea><div style="width:300px; height:300px; background-color:#a0eb58; float:right" />
+</div>
 </body>
 </html>

@@ -47,6 +47,8 @@ node maintainLanguageFiles.js
 ```
 
 
-If you find strings in the code that need manual extraction, open the clipboard.html.
+If you find strings in the code that need manual extraction, open the translationHelper.html.
 Cut the text from the code and paste it into the textbox. Click next to the textbox. Your clipboard is now loaded
-with translation file format entries.
+with translation file format entries. Paste that into the en_us.ts file and the lang(..) back at the position of the initial string.
+
+Once that is done, run the maintainLanguageFiles.js script to sync this to the other languages.
