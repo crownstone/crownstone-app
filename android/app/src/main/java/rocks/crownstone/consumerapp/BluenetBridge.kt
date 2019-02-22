@@ -768,8 +768,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun connect(address: String, referenceId: String, callback: Callback) {
 		Log.i(TAG, "connect $address")
 		bluenet.connect(address)
-				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.success {
+					Log.i(TAG, "connected")
+					resolveCallback(callback)
+				}
+				.fail {
+					Log.w(TAG, "failed to connect: ${it.message}")
+					rejectCallback(callback, it.message)
+				}
 	}
 
 	@ReactMethod
@@ -777,8 +783,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun disconnectCommand(callback: Callback) {
 		Log.i(TAG, "disconnectCommand")
 		bluenet.control.disconnect()
-				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.success {
+					Log.i(TAG, "disconnected via command")
+					resolveCallback(callback)
+				}
+				.fail {
+					Log.w(TAG, "failed to disconnect via command: ${it.message}")
+					rejectCallback(callback, it.message)
+				}
 	}
 
 	@ReactMethod
@@ -786,8 +798,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun phoneDisconnect(callback: Callback) {
 		Log.i(TAG, "phoneDisconnect")
 		bluenet.disconnect(false)
-				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.success {
+					Log.i(TAG, "disconnected")
+					resolveCallback(callback)
+				}
+				.fail {
+					Log.w(TAG, "failed to disconnect: ${it.message}")
+					rejectCallback(callback, it.message)
+				}
 	}
 
 
