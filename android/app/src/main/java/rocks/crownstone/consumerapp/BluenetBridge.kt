@@ -725,7 +725,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		fingerprint.sphereId = sphereId
 		fingerprint.locationId = locationId
 		val fixedSamlesStr = samplesStr.replace("[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}".toRegex()) { it.value.toUpperCase() }
-		Log.d(TAG, "fixed: $fixedSamlesStr")
+		Log.i(TAG, "fixed: $fixedSamlesStr")
 		try {
 			val samples = FingerprintSamplesMap(fixedSamlesStr)
 			if (!samples.isEmpty()) {
@@ -1779,7 +1779,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return switchVal.toDouble() / 100
 	}
 
-	/** Converts switch state (0-228) to 0.0 .. 1.0 value.
+	/** Converts switch state (0-228) to value used in react: 0 - 228.
 	 */
 	private fun convertSwitchState(switchState: SwitchState): Double {
 //		var switchStateInt = switchState.state.toInt()
@@ -1787,7 +1787,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //			switchStateInt = 100
 //		}
 //		return switchStateInt.toDouble() / 100
-		return switchState.value.toDouble() / 100
+//		return switchState.value.toDouble() / 100
+		return switchState.state.toDouble()
 	}
 
 
