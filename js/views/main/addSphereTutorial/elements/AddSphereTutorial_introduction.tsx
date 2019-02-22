@@ -34,7 +34,7 @@ export class AddSphereTutorial_introduction extends Component<any, any> {
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <ScaledImage source={require("../../../../images/tutorial/Sphere_with_house.png")} sourceHeight={481} sourceWidth={480} targetHeight={200} />
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
-          <Text style={tutorialStyle.text}>{ lang("Spheres_are_individual__se") }</Text>
+          <Text style={tutorialStyle.text}>{ lang("Spheres_are_individual__s") }</Text>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />
         </View>
       </ScrollView>

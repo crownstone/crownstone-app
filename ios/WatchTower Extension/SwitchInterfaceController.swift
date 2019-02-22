@@ -15,24 +15,28 @@ import WatchConnectivity
 class SwitchInterfaceController: WKInterfaceController {
     @IBOutlet weak var csTable: WKInterfaceTable!
     
+    @IBOutlet weak var loadingImage: WKInterfaceImage!
+    
     var switchableStoneList : [String: SwitchableStone]!
     var existingRowTypes : [String]!
     
     
     func updateList(data: Any) {
         let sortedList = bluenetManager.listOfCrownstones.getSortedList()
-
+        
         var redrawRequired = false
         
         var typeRows = [String]()
         var elementRows = [SwitchableStone]()
 
         var counter = 0
+        var validatedItemsFound = false
+        
         for item in sortedList {
             let verified = item["verified"]! as! Bool
             let adv = (item["data"]! as! Advertisement)
             
-            if verified == false                    { continue }
+            if verified == false                      { continue }
             if adv.getOperationMode() != .operation { continue }
             
             typeRows.append("SwitchRow")
@@ -43,12 +47,24 @@ class SwitchInterfaceController: WKInterfaceController {
             else {
                 self.switchableStoneList[adv.handle]!.update(advertisement: adv, verified: verified)
             }
+            
+            validatedItemsFound = true
             elementRows.append(self.switchableStoneList[adv.handle]!)
             counter += 1
             if (counter > 8) {
                 break
             }
         }
+        
+        if validatedItemsFound {
+            self.csTable.setHidden(false)
+            self.loadingImage.setHidden(true)
+        }
+        else {
+            self.csTable.setHidden(true)
+            self.loadingImage.setHidden(false)
+        }
+        
         typeRows.append("EmptyRow")
         
         if self.existingRowTypes.elementsEqual(typeRows) == false {

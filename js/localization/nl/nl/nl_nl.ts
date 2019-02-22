@@ -167,13 +167,11 @@ export default {
       One_Sphere_per_House:               false,
       Using_only_one_sphere_per:          false,
       I_understand_:                      false,
-      Using_only_one_sphere_per_:         false,
     },
     __filename: "../../js/views/main/addSphereTutorial/elements/AddSphereTutorial_intended.tsx",
     One_Sphere_per_House:                () => { return "One Sphere per House" },
     Using_only_one_sphere_per:           () => { return "Using only one sphere per individual building (like house, office or holiday home), you can add up to 20 spheres!\n\n" + "If you want to create a new sphere, tap the button below.\n\nIf you do not need a new sphere after all, press back in the top left corner!" },
     I_understand_:                       () => { return "I understand!" },
-    Using_only_one_sphere_per_:          () => { return "Using only one sphere per individual building (like house, office or holiday home), you can add up to 20 spheres!\n\n" + "If you want to create a new sphere, tap the button below.\n\nIf you do not need a new sphere after all, press back in the top left corner!" },
   },
   AddSphereTutorial_introduction:{
     __stringSameAsBaseLanguage: {
@@ -4357,6 +4355,24 @@ export default {
       navigation:                         false,
       Users_in_:                          false,
     },
+  },
+  SphereUtil:{
+    __stringSameAsBaseLanguage: {
+      First_things_first___:              false,
+      Place_your_Crownstones_in:          false,
+      Tap_a_Crownstone_to_see_i:          false,
+      Tap_the_icon_on_the_botto:          false,
+      Lets_create_some_rooms_:            false,
+      If_youre_in_range_of_any_:          false,
+      Youll_have_to_be_in_the_S:          false,
+    },
+    First_things_first___:               function() { return "First things first :)" },
+    Place_your_Crownstones_in:           function() { return "Place your Crownstones in rooms!" },
+    Tap_a_Crownstone_to_see_i:           function() { return "Tap a Crownstone to see it's details, then tap 'Not in room' in the top-right corner!" },
+    Tap_the_icon_on_the_botto:           function() { return "Tap the icon on the bottom-right to add a room!" },
+    Lets_create_some_rooms_:             function() { return "Let's create some rooms!" },
+    If_youre_in_range_of_any_:           function() { return "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!" },
+    Youll_have_to_be_in_the_S:           function() { return "You'll have to be in the Sphere to continue." },
   },
   Splash:{
     __filename: "../js/views/startupViews/Splash.tsx",

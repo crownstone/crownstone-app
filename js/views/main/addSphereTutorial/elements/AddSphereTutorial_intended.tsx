@@ -42,7 +42,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
             <View style={{flex:0.5}} />
           </View>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
-          <Text style={tutorialStyle.text}>{ lang("Using_only_one_sphere_per_") }</Text>
+          <Text style={tutorialStyle.text}>{ lang("Using_only_one_sphere_per") }</Text>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <TouchableOpacity
             onPress={() => {

@@ -8,10 +8,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14460.16"/>
     </dependencies>
     <scenes>
-        <!--Crownstone-->
+        <!--CrownstoneScanner-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller identifier="CrownstoneScanner" title="Scanner" alwaysBounce="YES" id="AgC-eL-Hgc" userLabel="Crownstone" customClass="CSInterfaceController" customModule="WatchTower_Extension">
+                <controller identifier="CrownstoneScanner" title="Scanner" alwaysBounce="YES" id="AgC-eL-Hgc" userLabel="CrownstoneScanner" customClass="CSInterfaceController" customModule="WatchTower_Extension">
                     <items>
                         <table alignment="left" id="lGs-FV-8Bb" userLabel="CsTable">
                             <items>
@@ -125,7 +125,7 @@
             <objects>
                 <controller identifier="Crownstone" title="Crownstone" id="4Ox-WU-azg" customClass="SwitchInterfaceController" customModule="WatchTower_Extension">
                     <items>
-                        <table alignment="left" id="fIh-wG-Aou" userLabel="CsTable">
+                        <table alignment="left" hidden="YES" id="fIh-wG-Aou" userLabel="CsTable">
                             <items>
                                 <tableRow identifier="SwitchRow" selectable="NO" id="Hkr-dk-lJF" customClass="SwitchRowController" customModule="WatchTower_Extension">
                                     <group key="rootItem" width="1" height="40" alignment="left" id="1DD-PK-agZ">
@@ -229,14 +229,15 @@
                                 </tableRow>
                             </items>
                         </table>
+                        <imageView width="150" height="150" alignment="center" verticalAlignment="center" image="Image" id="TMC-Gv-bNh"/>
                     </items>
                     <connections>
                         <outlet property="csTable" destination="fIh-wG-Aou" id="9x3-ZV-yxk"/>
-                        <segue destination="AgC-eL-Hgc" kind="relationship" relationship="nextPage" id="fGY-y2-pH0"/>
+                        <outlet property="loadingImage" destination="TMC-Gv-bNh" id="AMC-WM-Rej"/>
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="-4" y="345"/>
+            <point key="canvasLocation" x="-4.4347826086956523" y="391.60714285714289"/>
         </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="AEw-b0-oYE">
