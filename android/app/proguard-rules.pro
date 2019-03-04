@@ -20,6 +20,10 @@
 # (unless you are using a system that supports de-obfuscate the stack traces).
 -dontobfuscate
 
+-dontskipnonpubliclibraryclasses
+-forceprocessing
+-optimizationpasses 5
+
 # React Native
 
 # Keep our interfaces so they can be used by other ProGuard rules.
@@ -67,3 +71,10 @@
 
 # Added according to https://github.com/luggit/react-native-config/pull/30/commits/f0ad581f96d9210233e3c8756df38610977a97cd
 -keep class rocks.crownstone.consumerapp.BuildConfig { *; }
+
+-keep class kotlin.reflect.jvm.internal.** { *; }
+
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+}

@@ -725,7 +725,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		fingerprint.sphereId = sphereId
 		fingerprint.locationId = locationId
 		val fixedSamlesStr = samplesStr.replace("[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}".toRegex()) { it.value.toUpperCase() }
-		Log.d(TAG, "fixed: $fixedSamlesStr")
+		Log.i(TAG, "fixed: $fixedSamlesStr")
 		try {
 			val samples = FingerprintSamplesMap(fixedSamlesStr)
 			if (!samples.isEmpty()) {
@@ -768,8 +768,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun connect(address: String, referenceId: String, callback: Callback) {
 		Log.i(TAG, "connect $address")
 		bluenet.connect(address)
-				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.success {
+					Log.i(TAG, "connected")
+					resolveCallback(callback)
+				}
+				.fail {
+					Log.w(TAG, "failed to connect: ${it.message}")
+					rejectCallback(callback, it.message)
+				}
 	}
 
 	@ReactMethod
@@ -777,8 +783,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun disconnectCommand(callback: Callback) {
 		Log.i(TAG, "disconnectCommand")
 		bluenet.control.disconnect()
-				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.success {
+					Log.i(TAG, "disconnected via command")
+					resolveCallback(callback)
+				}
+				.fail {
+					Log.w(TAG, "failed to disconnect via command: ${it.message}")
+					rejectCallback(callback, it.message)
+				}
 	}
 
 	@ReactMethod
@@ -786,8 +798,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun phoneDisconnect(callback: Callback) {
 		Log.i(TAG, "phoneDisconnect")
 		bluenet.disconnect(false)
-				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+				.success {
+					Log.i(TAG, "disconnected")
+					resolveCallback(callback)
+				}
+				.fail {
+					Log.w(TAG, "failed to disconnect: ${it.message}")
+					rejectCallback(callback, it.message)
+				}
 	}
 
 
@@ -1779,7 +1797,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return switchVal.toDouble() / 100
 	}
 
-	/** Converts switch state (0-228) to 0.0 .. 1.0 value.
+	/** Converts switch state (0-228) to value used in react: 0 - 228.
 	 */
 	private fun convertSwitchState(switchState: SwitchState): Double {
 //		var switchStateInt = switchState.state.toInt()
@@ -1787,7 +1805,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //			switchStateInt = 100
 //		}
 //		return switchStateInt.toDouble() / 100
-		return switchState.value.toDouble() / 100
+//		return switchState.value.toDouble() / 100
+		return switchState.state.toDouble()
 	}
 
 

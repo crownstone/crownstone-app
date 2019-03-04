@@ -119,8 +119,8 @@ android {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 35
-        versionName "2.2.0"
+        versionCode 41
+        versionName "2.2.5"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -143,6 +143,7 @@ android {
             shrinkResources false // Only works with minifyEnabled?
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
+//            debuggable false
             // debuggable false
             // jniDebuggable false
             // zipAlignEnabled true

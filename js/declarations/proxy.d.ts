@@ -72,7 +72,7 @@ interface crownstoneServiceData {
   hasError                  : boolean,
   setupMode                 : boolean,
   crownstoneId              : number, // [0 .. 255]
-  switchState               : number, // [0.0 .. 1.0]
+  switchState               : number, // [0 .. 228]
   flagsBitmask?             : number, // bitmask (optional)
   temperature               : number, // °C
   powerFactor               : number, // [-1.0 .. 1.0] __not 0__ (default 1.0)
