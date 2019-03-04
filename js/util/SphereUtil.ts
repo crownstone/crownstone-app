@@ -33,11 +33,13 @@ export const SphereUtil = {
     let sphereIds = Object.keys(state.spheres);
     let amountOfSpheres = sphereIds.length;
 
-    if (amountOfSpheres === 0) {  return { sphereId: null, sphere: null }; }
+    if (amountOfSpheres === 0) { return { sphereId: null, sphere: null }; }
 
     let activeSphereId = state.app.activeSphere;
     if (!activeSphereId) { activeSphereId = sphereIds[0]; }
     let activeSphere = state.spheres[activeSphereId];
+
+    if (!activeSphere) { return { sphereId: null, sphere: null }; }
 
     return { sphereId: activeSphereId, sphere: activeSphere }
   },
