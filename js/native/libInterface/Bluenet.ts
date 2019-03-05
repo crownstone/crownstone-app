@@ -53,7 +53,6 @@ const BluenetAPI = {
   getBootloaderVersion:     () => { console.log("BluenetBridgeCall: getBootloaderVersion:    "); },
   getFirmwareVersion:       () => { console.log("BluenetBridgeCall: getFirmwareVersion:      "); },
   bootloaderToNormalMode:   () => { console.log("BluenetBridgeCall: bootloaderToNormalMode:  "); },
-  getErrors:                () => { console.log("BluenetBridgeCall: getErrors:               "); },
   clearFingerprintsPromise: () => { console.log("BluenetBridgeCall: clearFingerprintsPromise:"); },
   clearFingerprints:        () => { console.log("BluenetBridgeCall: clearFingerprints:       "); },
   setTime:                  () => { console.log("BluenetBridgeCall: setTime:                 "); },
