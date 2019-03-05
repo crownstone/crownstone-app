@@ -67,6 +67,12 @@ import { SwitchCraftInformation }      from "../views/deviceViews/elements/Switc
 import { ToonAdd }                     from "../views/thirdParty/toon/ToonAdd";
 import { ToonSettings }                from "../views/thirdParty/toon/ToonSettings";
 import { ToonOverview }                from "../views/thirdParty/toon/ToonOverview";
+import { DeviceSmartBehaviour } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour";
+import { DeviceSmartBehaviour2 } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour2";
+import { DeviceSmartBehaviour_newBehaviour } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_newBehaviour";
+import { DeviceSmartBehaviour_CreateNewBehaviour } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_CreateNewBehaviour";
+import { DeviceSmartBehaviour_PresenceAware } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_PresenceAware";
+import { DeviceSmartBehaviour_Editor } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor";
 
 export const Views = {
   AlexaOverview,
@@ -137,4 +143,11 @@ export const Views = {
   SwitchCraftInformation,
   Tutorial,
   IconDebug,
+
+  DeviceSmartBehaviour,
+  DeviceSmartBehaviour2,
+  DeviceSmartBehaviour_newBehaviour,
+  DeviceSmartBehaviour_CreateNewBehaviour,
+  DeviceSmartBehaviour_PresenceAware,
+  DeviceSmartBehaviour_Editor,
 };

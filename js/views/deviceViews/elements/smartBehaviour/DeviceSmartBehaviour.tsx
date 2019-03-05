@@ -19,15 +19,45 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {colors, screenWidth} from '../../../styles'
+import { colors, OrangeLine, screenHeight, screenWidth } from "../../../styles";
+import { Background } from "../../../components/Background";
+import { TopbarButton } from "../../../components/topbar/TopbarButton";
+import { IconButton } from "../../../components/IconButton";
+import { deviceStyles } from "../../DeviceOverview";
 
 export class DeviceSmartBehaviour extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    return {
+      title: "A Crownstone",
+    }
+  };
+
 
   render() {
+    let iconSize = 0.15*screenHeight;
+
     return (
-      <View style={{flex:1, flexDirection: 'column', alignItems:'center',padding: 30}}>
-        <View style={{height:30, width: screenWidth, backgroundColor:'transparent'}} />
-      </View>
+      <Background image={this.props.backgrounds.detailsDark}>
+        <OrangeLine/>
+        <View style={{ width: screenWidth, alignItems:'center' }}>
+          <View style={{height: 30}} />
+          <Text style={[deviceStyles.header]}>{ "Smart Behaviour" }</Text>
+          <View style={{height: 0.2*iconSize}} />
+          <Text style={textStyle.specification}>{"Tap the icon below to create my first behaviour!"}</Text>
+          <View style={{height: 0.2*iconSize}} />
+          <IconButton
+            name="c1-brain"
+            size={0.8*iconSize}
+            color="#fff"
+            addIcon={true}
+            buttonSize={iconSize}
+            buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
+          />
+        </View>
+
+      </Background>
     )
   }
 }

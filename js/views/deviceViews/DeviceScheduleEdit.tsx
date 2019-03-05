@@ -38,6 +38,7 @@ import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios
 import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
+import { WeekDayList } from "../components/WeekDayList";
 
 export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; // these are keys
 export let DAYS_FULL = [
@@ -209,7 +210,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
 
     items.push({label: lang("REPEAT"), type: 'lightExplanation',  below:false});
     items.push({__item:
-      <RepeatWeekday data={this.state.activeDays} onChange={(newData) => { this.setState({activeDays: newData}); }} />
+      <WeekDayList data={this.state.activeDays} onChange={(newData) => { this.setState({activeDays: newData}); }} />
     });
 
     if (this.props.scheduleId !== null && this.props.scheduleId !== undefined) {
@@ -563,57 +564,3 @@ text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSch
   }
 }
 
-class RepeatWeekday extends Component<any, any> {
-  _getDays(size) {
-    let localizedDays = [lang("DAY_Mon"), lang("DAY_Tue"), lang("DAY_Wed"), lang("DAY_Thu"), lang("DAY_Fri"), lang("DAY_Sat"), lang("DAY_Sun")];
-    let items = [];
-
-    items.push(<View key={'selectableDayFlexStart'} style={{flex:1}} />);
-    for (let i = 0; i < DAYS.length; i++) {
-      items.push(
-        <TouchableOpacity
-          key={'selectableDay'+i}
-          onPress={() => {
-            let newState = {...this.props.data};
-            newState[DAYS[i]] = !this.props.data[DAYS[i]];
-            this.props.onChange(newState);
-          }}
-          style={{
-            width: size,
-            height: size,
-            borderRadius: 0.5*size,
-            backgroundColor: this.props.data[DAYS[i]] ? colors.green.hex : colors.darkBackground.rgba(0.2),
-            alignItems:'center',
-            justifyContent:'center'
-          }}
-        >
-          <Text style={{
-            fontSize:11,
-            fontWeight: this.props.data[DAYS[i]] ? 'bold' : '300',
-            color: this.props.data[DAYS[i]] ? colors.white.hex : colors.darkBackground.rgba(0.6),
-            backgroundColor:"transparent"
-          }}>{localizedDays[i]}</Text>
-        </TouchableOpacity>
-      );
-      items.push(<View key={'selectableDayFlex'+i} style={{flex:1}} />)
-    }
-
-    return items;
-  }
-
-  render() {
-    let size = screenWidth/10;
-    return (
-      <View style={{
-        height: size*1.5,
-        width: screenWidth,
-        backgroundColor: colors.white.hex,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center'
-      }}>
-        { this._getDays(size) }
-      </View>
-    )
-  }
-}
