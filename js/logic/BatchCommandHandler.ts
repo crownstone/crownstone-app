@@ -169,9 +169,6 @@ class BatchCommandHandlerClass {
               case 'getHardwareVersion':
                 actionPromise = BluenetPromiseWrapper.getHardwareVersion();
                 break;
-              case 'getErrors':
-                actionPromise = BluenetPromiseWrapper.getErrors();
-                break;
               case 'clearErrors':
                 actionPromise = BluenetPromiseWrapper.clearErrors(command.clearErrorJSON);
                 // actionPromise = BluenetPromiseWrapper.restartCrownstone();

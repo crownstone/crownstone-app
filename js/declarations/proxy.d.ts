@@ -33,7 +33,6 @@ interface BluenetPromiseWrapperProtocol {
   bootloaderToNormalMode( handle : string )     : Promise< void >,
 
   // new
-  getErrors()                                   : Promise< errorData >,
   clearErrors(clearErrorJSON : clearErrorData)  : Promise< void >,
   restartCrownstone()                           : Promise< void >,
   setTime(time : number)                        : Promise< void >,

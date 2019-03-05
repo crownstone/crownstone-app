@@ -66,7 +66,6 @@ export let colors : any = {
   menuRed: {hex:'#e00'},
   iosBlue: {hex:'#007aff'},
   lightBlue: {hex:'#a9d0f1'},
-  lightBlue2: {hex:'#77c2f7'},
   blinkColor1: {hex:'#2daeff'},
   blinkColor2: {hex:'#a5dcff'},
 };
@@ -75,6 +74,13 @@ for (let color in colors) {
   if (colors.hasOwnProperty(color)) {
     populateColorObject(colors[color], color)
   }
+}
+
+
+let allColors = Object.keys(colors)
+
+colors.random = function() {
+  return colors[allColors[Math.floor(Math.random()*allColors.length)]]
 }
 
 function populateColorObject(clr, color) {

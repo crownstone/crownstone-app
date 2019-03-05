@@ -90,7 +90,6 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'commandFactoryReset' } |
   { commandName : 'sendNoOp' } |
   { commandName : 'sendMeshNoOp' } |
-  { commandName : 'getErrors' } |
   { commandName : 'getTime' } |
   { commandName : 'meshSetTime', time: number } |
   { commandName : 'setTime', time: number } |
