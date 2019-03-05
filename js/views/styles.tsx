@@ -77,6 +77,13 @@ for (let color in colors) {
   }
 }
 
+
+let allColors = Object.keys(colors)
+
+colors.random = function() {
+  return colors[allColors[Math.floor(Math.random()*allColors.length)]]
+}
+
 function populateColorObject(clr, color) {
   clr.name = color;
   clr.rgb = hex2rgb(clr.hex);

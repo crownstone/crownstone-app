@@ -46,6 +46,7 @@ class SwitchableStone {
                     nameSet = true
                     let switchState = advertisement.scanResponse!.switchState
                     self.crownstoneId = advertisement.scanResponse!.crownstoneId
+        
                     self.name = sessionDelegate.getName(crownstoneId: NSNumber(value: self.crownstoneId).stringValue, referenceId: advertisement.referenceId)
                     dataStore.storeNameForHandle(advertisement.handle, name: self.name)
                     if switchState == 128 {

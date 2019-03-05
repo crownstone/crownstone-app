@@ -125,7 +125,7 @@
             <objects>
                 <controller identifier="Crownstone" title="Crownstone" id="4Ox-WU-azg" customClass="SwitchInterfaceController" customModule="WatchTower_Extension">
                     <items>
-                        <table alignment="left" hidden="YES" id="fIh-wG-Aou" userLabel="CsTable">
+                        <table alignment="left" hidden="YES" alpha="0.0" id="fIh-wG-Aou" userLabel="CsTable">
                             <items>
                                 <tableRow identifier="SwitchRow" selectable="NO" id="Hkr-dk-lJF" customClass="SwitchRowController" customModule="WatchTower_Extension">
                                     <group key="rootItem" width="1" height="40" alignment="left" id="1DD-PK-agZ">

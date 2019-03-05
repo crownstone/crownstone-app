@@ -18,7 +18,7 @@ class SortedCrownstoneCollection {
     
     
     // config
-    let timeout : Double = 10 //seconds
+    let timeout : Double = 4 //seconds
     
     init() {}
     
@@ -40,6 +40,8 @@ class SortedCrownstoneCollection {
     }
     
     public func getSortedList() -> [[String: Any]] {
+        self.removeExpired()
+        
         var list = [[String: Any]]()
         
         if (self.lock && self.itemOrder.count > 1) {

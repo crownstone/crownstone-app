@@ -20,6 +20,8 @@ class SwitchInterfaceController: WKInterfaceController {
     var switchableStoneList : [String: SwitchableStone]!
     var existingRowTypes : [String]!
     
+    var showingTable = false
+    var ticking = false
     
     func updateList(data: Any) {
         let sortedList = bluenetManager.listOfCrownstones.getSortedList()
@@ -57,12 +59,28 @@ class SwitchInterfaceController: WKInterfaceController {
         }
         
         if validatedItemsFound {
-            self.csTable.setHidden(false)
-            self.loadingImage.setHidden(true)
+            if self.showingTable == false {
+                self.showingTable = true
+                self.animate(withDuration: 0.3, animations: {
+                    self.loadingImage.setAlpha(0.0)
+                    return
+                })
+                delay(0.3, {
+                    self.csTable.setHidden(false)
+                    self.loadingImage.setHidden(true)
+                    self.animate(withDuration: 0.3, animations: {
+                        self.csTable.setAlpha(1.0)
+                        return
+                    })
+                })
+            }
         }
         else {
+            self.showingTable = false
             self.csTable.setHidden(true)
             self.loadingImage.setHidden(false)
+            self.loadingImage.setAlpha(1.0)
+            self.csTable.setAlpha(0.0)
         }
         
         typeRows.append("EmptyRow")
@@ -109,6 +127,16 @@ class SwitchInterfaceController: WKInterfaceController {
         self.subscriptions.append(eventBus.on(Event.newVerifiedAdvertisement, self.updateList))
         self.subscriptions.append(eventBus.on(Event.bleAction, self.updateList))
         self.updateList(data: true)
+        
+        if self.ticking == false {
+            self.tick()
+        }
+    }
+    
+    func tick() {
+        self.ticking = true
+        self.updateList(data: false)
+        delay(1, { self.tick() })
     }
     
     override func didDeactivate() {
