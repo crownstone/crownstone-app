@@ -66,6 +66,7 @@ export let colors : any = {
   menuRed: {hex:'#e00'},
   iosBlue: {hex:'#007aff'},
   lightBlue: {hex:'#a9d0f1'},
+  lightBlue2: {hex:'#77c2f7'},
   blinkColor1: {hex:'#2daeff'},
   blinkColor2: {hex:'#a5dcff'},
 };
