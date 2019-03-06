@@ -17,7 +17,6 @@ import {
   Text,
   View
 } from 'react-native';
-import {LOG} from "../logging/Log";
 import {eventBus} from "./EventBus";
 import {Permissions} from "../backgroundProcesses/PermissionManager";
 import {
@@ -42,6 +41,23 @@ export const SphereUtil = {
     if (!activeSphere) { return { sphereId: null, sphere: null }; }
 
     return { sphereId: activeSphereId, sphere: activeSphere }
+  },
+
+
+  getAmountOfPresentSpheres: function(state) : number {
+    let sphereIds = Object.keys(state.spheres);
+    let amountOfSpheres = sphereIds.length;
+
+    if (amountOfSpheres === 0) { return 0; }
+
+    let amountOfPresentSpheres = 0;
+    sphereIds.forEach((sphereId) => {
+      if (state.spheres[sphereId].state.present) {
+        amountOfPresentSpheres += 1;
+      }
+    })
+
+    return amountOfPresentSpheres;
   },
 
   finalizeLocalizationData: function(state) {

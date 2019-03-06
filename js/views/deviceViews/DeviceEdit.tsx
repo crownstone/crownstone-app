@@ -475,8 +475,8 @@ lang("_Success__arguments___OKn_body",labelText),
     if (dimChange)         { changePromises.push(dimChange); }
     if (switchCraftChange) { changePromises.push(switchCraftChange); }
     Promise.all(changePromises)
-      .then(() => { this.props.eventBus.emit("hideLoading") } )
-      .catch((err) => { () => { this.props.eventBus.emit("hideLoading") } });
+      .then(() => { this.props.eventBus.emit("hideLoading"); } )
+      .catch((err) => { () => { this.props.eventBus.emit("hideLoading"); } });
 
     let actions = [];
     if (

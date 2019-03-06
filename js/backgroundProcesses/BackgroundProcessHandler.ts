@@ -103,6 +103,8 @@ class BackgroundProcessHandlerClass {
         // init behaviour based on if we are in the foreground or the background.
         this._applyAppStateOnScanning(AppState.currentState);
 
+        BroadcastStateManager.init();
+
         let state = this.store.getState();
         // this should have been covered by the naming of the AI. This is a fallback and it's for users who are not admins.
         if (state.user.accessToken !== null && state.user.isNew !== false) {

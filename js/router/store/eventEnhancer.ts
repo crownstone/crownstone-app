@@ -202,10 +202,8 @@ function checkAction(action, affectedIds) {
     case "SET_DEVELOPER_MODE":
     case "SET_BETA_ACCESS":
     case "CHANGE_DEV_SETTINGS":
-      eventStatus['changeUserDeveloperStatus'] = true; break;
+      eventStatus['changeUserDeveloperStatus'] = true;
     case "SET_LOGGING":
-    case 'SET_DEVELOPER_MODE':
-    case 'SET_LOGGING':
     case 'REVERT_LOGGING_DETAILS':
     case 'DEFINE_LOGGING_DETAILS':
       eventStatus['changeDeveloperData'] = affectedIds; break;
