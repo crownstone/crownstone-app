@@ -1097,24 +1097,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun getErrors(callback: Callback) {
-		Log.i(TAG, "getErrors")
-		// return a map: { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
-		bluenet.state.getErrors()
-				.success {
-					val stateErrorMap = Arguments.createMap()
-					stateErrorMap.putBoolean("overCurrent", it.overCurrent)
-					stateErrorMap.putBoolean("overCurrentDimmer", it.overCurrentDimmer)
-					stateErrorMap.putBoolean("temperatureChip", it.chipTemperature)
-					stateErrorMap.putBoolean("temperatureDimmer", it.dimmerTemperature)
-					stateErrorMap.putInt("bitMask", it.bitmask.toInt())
-					resolveCallback(callback, stateErrorMap)
-				}
-				.fail { rejectCallback(callback, it.message) }
-	}
-
-	@ReactMethod
-	@Synchronized
 	fun clearErrors(clearErrorsMap: ReadableMap, callback: Callback) {
 		Log.i(TAG, "clearErrors")
 		// clearErrorsMap, map with errors to clear. Keys: overCurrent, overCurrentDimmer, temperatureChip, temperatureDimmer, dimmerOnFailure, dimmerOffFailure
