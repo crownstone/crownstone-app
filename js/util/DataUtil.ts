@@ -415,7 +415,11 @@ export const getFloatingStones = function(state, sphereId) {
 
 export const getPresentUsersInLocation = function(state, sphereId, locationId, all = false) {
   let users = [];
-  if (locationId === null) {
+  if (!locationId || !sphereId) {
+    return users;
+  }
+
+  if (!(state && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].locations && state.spheres[sphereId].locations[locationId])) {
     return users;
   }
 
@@ -781,6 +785,7 @@ export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) 
   return Object.keys(state.spheres[sphereId].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
 
+
 export const enoughCrownstonesInLocationsForIndoorLocalization = function(state, sphereId) {
   if (!(state && sphereId && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
     return false;
@@ -797,6 +802,7 @@ export const enoughCrownstonesInLocationsForIndoorLocalization = function(state,
   });
   return count >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
+
 
 export const requireMoreFingerprints = function (state, sphereId) {
   // if we do not have a sphereId return false
