@@ -19,13 +19,15 @@ import {WNStyles} from "../WhatsNewStyles";
 export class BatteryImprovements extends Component<any, any> {
   render() {
     let factor = 0.0001*screenWidth;
-    let size = 12*factor;
+    let size = 11*factor;
     return (
       <View style={{flex:1, paddingBottom:0, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={[WNStyles.outerScrollView,{width: this.props.width}]}>
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>{ lang("Battery_Improvements_") }</Text>
-            <Image source={require('../../../../images/whatsNew/2.0.0/batteryImprovements.png')} style={{width:539*size, height:543*size}} />
+            <View style={{height:40}} />
+            <Image source={require('../../../../images/whatsNew/2.3.0/batteryImprovements.png')} style={{width:539*size, height:549*size}} />
+            <View style={{height:30}} />
             <Text style={WNStyles.detail}>{ lang("The_Crownstone_app_will_n") }</Text>
           </View>
         </ScrollView>

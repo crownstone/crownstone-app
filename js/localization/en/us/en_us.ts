@@ -123,6 +123,12 @@ export default {
     OK:                                  function() { return "OK" },
     Your_AI:                             function() { return "Your AI" },
   },
+  AlexaIntegration:{
+    __filename: "../../js/views/overlays/WhatsNew/2.3.0/AlexaIntegration.tsx",
+    Amazon_Alexa_:                       function() { return "Amazon Alexa!" },
+    Crownstone_is_now_availab:           function() { return "Crownstone is now available as a skill for Amazon Alexa!\n\n" + "It is available in the German, US and UK stores so you might need to get it from there!" },
+    Crownstone_is_now_availabl:          function() { return "Crownstone is now available as a skill for Amazon Alexa!\n\n" + "It is available in the German, US and UK stores so you might need to get it from there!" },
+  },
   AlexaOverview:{
     __filename: "../js/views/thirdParty/alexa/AlexaOverview.tsx",
     Working_with_Alexa:                  function() { return "Working with Alexa" },
@@ -133,6 +139,12 @@ export default {
     Were_hard_at_work_adding_:           function() { return "We're hard at work adding more features, like dimming and location based utterances." },
     Expect_more_to_come_and_e:           function() { return "Expect more to come and enjoy using Alexa!" },
     Amazon_Alexa:                        function() { return "Amazon Alexa" },
+  },
+  AndroidLib:{
+    __filename: "../../js/views/overlays/WhatsNew/2.3.0/AndroidLib.tsx",
+    Brand_new_Android_:                  function() { return "Brand new Android!" },
+    Over_the_last_few_months_:           function() { return "Over the last few months we have completely rewritten the Android core solve a lot of problems!\n\n" + "With this big upgrade, we'll be ready to handle the ever evolving Android ecosystem!" },
+    Over_the_last_few_months_w:          function() { return "Over the last few months we have completely rewritten the Android core solve a lot of problems!\n\n" + "With this big upgrade, we'll be ready to handle the ever evolving Android ecosystem!" },
   },
   AnimatedDoubleTap:{
     __filename: "../js/views/components/animated/AnimatedDoubleTap.tsx",
@@ -150,6 +162,12 @@ export default {
     Something_went_wrong_in_t:           function() { return "Something went wrong in the data reset process. The best way to solve this is to remove the app from your phone, reinstall it and log into you account" },
     OK:                                  function() { return "OK" },
     Logging_out_and_closing_a:           function() { return "Logging out and closing app..." },
+  },
+  AppleWatch:{
+    __filename: "../../js/views/overlays/WhatsNew/2.3.0/AppleWatch.tsx",
+    Apple_Watch_:                        function() { return "Apple Watch!" },
+    Quickly_scan_for_nearby_C:           function() { return "Quickly scan for nearby Crownstones and switch them on and off!\n\n" + "If you have an Apple Watch, the companion app will be automatically installed. Alternatively you can use the Apple Watch app to install it." },
+    Quickly_scan_for_nearby_Cr:          function() { return "Quickly scan for nearby Crownstones and switch them on and off!\n\n" + "If you have an Apple Watch, the companion app will be automatically installed. Alternatively you can use the Apple Watch app to install it." },
   },
   ApplianceAdd:{
     __filename: "../js/views/deviceViews/ApplianceAdd.tsx",
@@ -199,7 +217,7 @@ export default {
   BatteryImprovements:{
     __filename: "../js/views/overlays/WhatsNew/2.0.0/BatteryImprovements.tsx",
     Battery_Improvements_:               function() { return "Battery Improvements!" },
-    The_Crownstone_app_will_n:           function() { return "The Crownstone app will now use less power in the background for the localization features! The more Crownstones you have, the more efficient it becomes!" },
+    The_Crownstone_app_will_n:           function() { return "The Crownstone app will now use 20% less power in the background for the localization features!\n\nThis means longer battery life and more improvements still to come!" },
   },
   BugsFixedAndroid:{
     __filename: "../js/views/overlays/WhatsNew/2.1.2/BugsFixedAndroid.tsx",
@@ -938,6 +956,12 @@ export default {
     __filename: "../js/views/overlays/WhatsNew/2.2.0/MoveRooms.tsx",
     Custom_screen_positions_:            function() { return "Custom screen positions!" },
     You_can_now_choose_where_:           function() { return "You can now choose where you want your rooms to be placed!\n\n" + "You can find this in the new Sphere menu, under rooms!\n\n" },
+  },
+  MultiSphere:{
+    __filename: "../../js/views/overlays/WhatsNew/2.3.0/MultiSphere.tsx",
+    Multiple_Spheres_:                   function() { return "Multiple Spheres!" },
+    You_can_now_create_multip:           function() { return "You can now create multiple Spheres if you have multiple properties you'd like to use your Crownstones with!\n\n" + "Spheres not meant to replace rooms, they are stand-alone collections of Crownstones." },
+    You_can_now_create_multipl:          function() { return "You can now create multiple Spheres if you have multiple properties you'd like to use your Crownstones with!\n\n" + "Spheres not meant to replace rooms, they are stand-alone collections of Crownstones." },
   },
   NewDeviceUI:{
     __filename: "../js/views/overlays/WhatsNew/1.10.0/NewDeviceUI.tsx",

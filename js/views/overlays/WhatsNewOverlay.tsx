@@ -18,12 +18,16 @@ import { colors, screenHeight, screenWidth} from '../styles'
 import {eventBus} from "../../util/EventBus";
 const Swiper = require("react-native-swiper");
 import { Awesome } from "./WhatsNew/Awesome";
-import {BugsFixedAndroid} from "./WhatsNew/2.1.2/BugsFixedAndroid";
 import {ActivityLog} from "./WhatsNew/2.2.0/ActivityLog";
 import {Diagnostics} from "./WhatsNew/2.2.0/Diagnostics";
 import {ToonIsNew} from "./WhatsNew/2.2.0/ToonIsNew";
 import {NewSphereSettings} from "./WhatsNew/2.2.0/NewSphereSettings";
 import {MoveRooms} from "./WhatsNew/2.2.0/MoveRooms";
+import { BatteryImprovements } from "./WhatsNew/2.0.0/BatteryImprovements";
+import { MultiSphere } from "./WhatsNew/2.3.0/MultiSphere";
+import { AlexaIntegration } from "./WhatsNew/2.3.0/AlexaIntegration";
+import { AppleWatch } from "./WhatsNew/2.3.0/AppleWatch";
+import { AndroidLib } from "./WhatsNew/2.3.0/AndroidLib";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -53,15 +57,21 @@ export class WhatsNewOverlay extends Component<any, any> {
     let size = {height: height-10, width: width};
 
     if (Platform.OS === 'ios') {
+      content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
+      content.push(<AlexaIntegration key="AlexaIntegration"  {...size}/>);
+      content.push(<AppleWatch key="AppleWatch"  {...size}/>);
+      content.push(<MultiSphere key="MultiSphere"  {...size}/>);
+    }
+    if (Platform.OS === 'android') {
+      content.push(<AndroidLib key="AndroidLib"  {...size}/>);
+      content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
       content.push(<ToonIsNew key="ToonIsNew"  {...size}/>);
-      content.push(<NewSphereSettings key="Switchcraft"  {...size}/>);
+      content.push(<NewSphereSettings key="NewSphereSettings"  {...size}/>);
       content.push(<MoveRooms key="MoveRooms"  {...size}/>);
       content.push(<ActivityLog key="ActivityLog"  {...size}/>);
       content.push(<Diagnostics key="Diagnostics"  {...size}/>);
-    }
-    if (Platform.OS === 'android') {
-      // content.push(<Switchcraft key="Switchcraft"  {...size}/>);
-      content.push(<BugsFixedAndroid key="BugsFixedAndroid"  {...size}/>);
+      content.push(<AlexaIntegration key="AlexaIntegration"  {...size}/>);
+      content.push(<MultiSphere key="MultiSphere"  {...size}/>);
     }
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }} {...size} />);
 
