@@ -318,9 +318,15 @@ export class RoomOverview extends LiveComponent<any, any> {
     if (!sphere) { return <SphereDeleted/> }
     let location = null;
 
+    if (this.props.locationId) {
+      location = sphere.locations[this.props.locationId];
+      if (!location) {
+        return <RoomDeleted/>
+      }
+    }
+
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
-    this.viewingRemotely = sphere.state.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
@@ -328,14 +334,12 @@ export class RoomOverview extends LiveComponent<any, any> {
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
 
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
+    this.viewingRemotely = sphere.state.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
     this.viewingRemotely = this.props.locationId === null && Object.keys(stones).length === 0 ? false : this.viewingRemotely;
 
     let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
 
     if (this.props.locationId) {
-      location = sphere.locations[this.props.locationId];
-      if (!location) { return <RoomDeleted /> }
-
       if (location.config.picture) {
         backgroundImage = { uri: preparePictureURI(location.config.picture) };
       }
