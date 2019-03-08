@@ -25,10 +25,20 @@ import { tutorialStyle } from "../../../tutorialViews/TutorialStyle";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { eventBus } from "../../../../util/EventBus";
 import { createNewSphere } from "../../../../util/CreateSphere";
+import { BackAction } from "../../../../util/Back";
 
 
 export class AddSphereTutorial_intended extends Component<any, any> {
   render() {
+    let buttonStyle = [styles.centered, {
+      width: 0.75 * screenWidth,
+      height: 50,
+      borderRadius: 25,
+      borderWidth: 3,
+      borderColor: colors.white.hex,
+      backgroundColor: colors.csBlue.rgba(0.5)
+    }]
+
     return (
       <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}}>
         <View style={{flex:1, alignItems:'center', padding: 20}}>
@@ -46,6 +56,14 @@ export class AddSphereTutorial_intended extends Component<any, any> {
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <TouchableOpacity
             onPress={() => {
+              BackAction();
+            }}
+            style={buttonStyle}>
+            <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("I_dont_need_a_sphere") }</Text>
+          </TouchableOpacity>
+          <View style={{height:15}} />
+          <TouchableOpacity
+            onPress={() => {
               let state = this.props.store.getState();
               createNewSphere(eventBus, this.props.store, state.user.firstName+"'s Sphere")
                 .then((sphereId) => {
@@ -56,14 +74,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
                   Alert("Whoops!", "Something went wrong with the creation of your Sphere.", [{text:"OK"}])
                 });
             }}
-            style={[styles.centered, {
-              width: 0.6 * screenWidth,
-              height: 50,
-              borderRadius: 25,
-              borderWidth: 3,
-              borderColor: colors.white.hex,
-              backgroundColor: colors.csBlue.rgba(0.5)
-            }]}>
+            style={buttonStyle}>
             <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("I_understand_") }</Text>
           </TouchableOpacity>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />

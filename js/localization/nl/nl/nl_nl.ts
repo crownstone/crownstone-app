@@ -167,11 +167,13 @@ export default {
       One_Sphere_per_House:               false,
       Using_only_one_sphere_per:          false,
       I_understand_:                      false,
+      I_dont_need_a_sphere:               false,
     },
     __filename: "../../js/views/main/addSphereTutorial/elements/AddSphereTutorial_intended.tsx",
     One_Sphere_per_House:                () => { return "One Sphere per House" },
     Using_only_one_sphere_per:           () => { return "Using only one sphere per individual building (like house, office or holiday home), you can add up to 20 spheres!\n\n" + "If you want to create a new sphere, tap the button below.\n\nIf you do not need a new sphere after all, press back in the top left corner!" },
     I_understand_:                       () => { return "I understand!" },
+    I_dont_need_a_sphere:                function() { return "Nevermind." },
   },
   AddSphereTutorial_introduction:{
     __stringSameAsBaseLanguage: {
@@ -4085,11 +4087,13 @@ export default {
       Careful_a_sphere_is_not:            false,
       Welcome_:                           false,
       SPHERE_SETTINGS:                    false,
+      More_items_are_available_:          false,
     },
     Create_a_new_Sphere:                 function() { return "Create a new Sphere" },
     Sphere_Creation:                     function() { return "SPHERE CREATION" },
     Careful_a_sphere_is_not:             function() { return "Careful! A Sphere is not a room, but a completly separated collection of Crownstones. A holiday home or office would be a second Sphere. Using multiple Spheres in the same location is not recommended." },
     SPHERE_SETTINGS:                     () => { return "SPHERE SETTINGS" },
+    More_items_are_available_:           function() { return "More items are available if you first select a Sphere before going into this menu!" },
   },
   SphereEditSettings:{
     __filename: "../js/views/main/editSubviews/SphereEditSettings.tsx",

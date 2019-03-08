@@ -124,8 +124,9 @@ export class SphereOverview extends LiveComponent<any, any> {
       let change = data.change;
 
       if (change.removeSphere) {
-        this.props.store.dispatch({type:"CLEAR_ACTIVE_SPHERE"})
-        this.setState({zoomLevel: ZOOM_LEVELS.sphere})
+        this.props.store.dispatch({type:"CLEAR_ACTIVE_SPHERE"});
+        this._updateNavBar();
+        this.setState({zoomLevel: ZOOM_LEVELS.sphere});
         return;
       }
 
@@ -196,6 +197,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
   _updateNavBar() {
+    console.log("Updating with ", this.state.zoomLevel)
     let state = this.props.store.getState();
     let params = getNavBarParams(state, this.props, this.state);
     this.props.navigation.setParams(params)
@@ -342,8 +344,11 @@ export class SphereOverview extends LiveComponent<any, any> {
 }
 
 function getNavBarParams(state, props, viewState) {
-  LOG.info("UPDATING SPHERE OVERVIEW NAV BAR");
-  if (viewState.zoomLevel === ZOOM_LEVELS.sphere) {
+  let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
+  LOG.info("UPDATING SPHERE OVERVIEW NAV BAR", viewState.zoomLevel === ZOOM_LEVELS.sphere , (sphereId === null && Object.keys(state.spheres).length > 0));
+  console.log("UPDATING SPHERE OVERVIEW NAV BAR", viewState.zoomLevel === ZOOM_LEVELS.sphere , (sphereId === null && Object.keys(state.spheres).length > 0));
+
+  if (viewState.zoomLevel === ZOOM_LEVELS.sphere || (sphereId === null && Object.keys(state.spheres).length > 0)) {
     NAVBAR_PARAMS_CACHE = {
       title: lang("Sphere_Overview"),
       showMailIcon: false,
@@ -354,13 +359,14 @@ function getNavBarParams(state, props, viewState) {
     }
   }
   else {
-    let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
     if (sphereId === null) {
       NAVBAR_PARAMS_CACHE = {
         title: lang("Hello_there_"),
         showFinalizeNavigationButton: false,
         rightLabel: lang("Edit"),
-        rightAction: () => { Actions.sphereEdit() },
+        rightAction: () => {
+          Actions.sphereEdit()
+        },
       }
     }
     else {
