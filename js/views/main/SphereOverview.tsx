@@ -346,7 +346,6 @@ export class SphereOverview extends LiveComponent<any, any> {
 function getNavBarParams(state, props, viewState) {
   let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
   LOG.info("UPDATING SPHERE OVERVIEW NAV BAR", viewState.zoomLevel === ZOOM_LEVELS.sphere , (sphereId === null && Object.keys(state.spheres).length > 0));
-  console.log("UPDATING SPHERE OVERVIEW NAV BAR", viewState.zoomLevel === ZOOM_LEVELS.sphere , (sphereId === null && Object.keys(state.spheres).length > 0));
 
   if (viewState.zoomLevel === ZOOM_LEVELS.sphere || (sphereId === null && Object.keys(state.spheres).length > 0)) {
     NAVBAR_PARAMS_CACHE = {

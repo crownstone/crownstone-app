@@ -86,8 +86,8 @@ export default {
   AddSphereTutorial_intended:{
     __filename: "../../js/views/main/addSphereTutorial/elements/AddSphereTutorial_intended.tsx",
     One_Sphere_per_House:                function() { return "One Sphere per House" },
-    Using_only_one_sphere_per:           function() { return "Using only one sphere per individual building (like house, office or holiday home), you can add up to 20 spheres!\n\n" + "If you want to create a new sphere, tap the button below.\n\nIf you do not need a new sphere after all, press back in the top left corner!" },
-    I_dont_need_a_sphere:                function() { return "Nevermind." },
+    Using_only_one_sphere_per:           function() { return "Using only one sphere per individual building (like house, office or holiday home), you can add up to 20 spheres!\n\n" + "If you want to create a new sphere, tap the \"Understood\" button below.\n\nIf you do not need a new sphere after all, press back or the \"Never mind\" button." },
+    I_dont_need_a_sphere:                function() { return "Never mind." },
     I_understand_:                       function() { return "Understood, create sphere!" },
   },
   AddSphereTutorial_introduction:{
