@@ -1663,7 +1663,7 @@ export default {
     __filename: "../js/views/settingsViews/troubleshooting/SettingsBleTroubleshootingAndroid.tsx",
     Troubleshooting:                     function() { return "Troubleshooting" },
     Sometimes__the_Bluetooth_:           function() { return "Sometimes, the Bluetooth on your iPhone can act up, refuse to work or be stuck on a connection." },
-    Unfortunately__sometimes_:           function() { return "Unfortunately, sometimes things go wrong, and we're not allowed by the phone manufacturers reset the Bluetooth chip (and rightfully so!).\n\n" + "There are a few things you can do however, to fix most of these issues. This guide will walk you through the steps to reset your Bluetooth on iOS." },
+    Unfortunately__sometimes_:           function() { return "Unfortunately, sometimes things go wrong, and we're not allowed by the phone manufacturers to reset the Bluetooth chip (and rightfully so!).\n\n" + "There are a few things you can do however, to fix most of these issues. This guide will walk you through the steps to reset your Bluetooth on iOS." },
     Im_sure_youre_all_familia:           function() { return "I'm sure you're all familiar with the Apple Control Center. If you're not, it's this one:" },
     There_is_a_Bluetooth_icon:           function() { return "There is a Bluetooth icon on there, but if you press it, you do NOT disable Bluetooth. You only tell it to stop connecting:" },
     To_reset_Bluetooth_the_ri:           function() { return "To reset Bluetooth the right way, we have to go into the settings of your iPhone by pressing on the cogwheel icon:" },
