@@ -922,7 +922,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(true); this.setState({ crownstoneProblemType: 'not_in_mesh' }); }); },
             () => { this._changeContent(() => { this.setState({ existingTestsFinished: true, crownstoneProblemType: 'unexpected_switches'   }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'only_switches_when_near' }); }); },
-            () => { this._changeContent(() => { this.setState({ crownstoneProblemType: 'behaviour_is_weird' }); }); },
+            () => { this._changeContent(() => { this.setState({ existingTestsFinished: true, crownstoneProblemType: 'behaviour_is_weird' }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'other' }); }); },
           ]}
         />
@@ -930,7 +930,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
     else if (this.state.existingTestsFinished === false) {
       let name = nameFromSummary(this.state.problemStoneSummary);
-      return <DiagWaiting visible={this.state.visible} header={"Checking on " + name + '...'}/>;
+      return <DiagWaiting visible={this.state.visible} header={lang("Checking_on____",name)}/>;
     }
     else if (this.state.crownstoneProblemType === 'searching') {
       return this._handleSearching();
