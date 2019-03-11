@@ -166,7 +166,7 @@ export class DeviceActivityLog extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     let showFullLogs = state.user.developer && state.development.show_full_activity_log;
-    console.log("sphereId={'" + this.props.sphereId + "'} stoneId={'" + this.props.stoneId + "'}")
+    // console.log("sphereId={'" + this.props.sphereId + "'} stoneId={'" + this.props.stoneId + "'}")
     return (
       <View style={{flex:1}}>
         <ScrollView

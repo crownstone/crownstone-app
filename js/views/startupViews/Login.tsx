@@ -198,7 +198,7 @@ lang("_Incorrect_Email_or_Passw_body"),
         throw err;
       })
       .then((response) => {
-        console.log("This is the reponse from the cloud", response);
+        // console.log("This is the reponse from the cloud", response);
         return new Promise((resolve, reject) => {
           // start the login process from the store manager.
           StoreManager.userLogIn(response.userId)
@@ -209,7 +209,7 @@ lang("_Incorrect_Email_or_Passw_body"),
         })
       })
       .then((response) => {
-        console.log("This is the reponse from the SM", response);
+        // console.log("This is the reponse from the SM", response);
         this.finalizeLogin(response.id, response.userId);
       })
       .catch((err) => { LOGe.info("Error during login.", err); })
@@ -341,7 +341,6 @@ lang("_Incorrect_Email_or_Passw_body"),
     let parts = 1/5;
 
     let promises = [];
-    console.log("DOING USER ID", userId)
 
     // get more data on the user
     promises.push(

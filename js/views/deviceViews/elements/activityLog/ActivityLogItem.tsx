@@ -42,6 +42,9 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === "generatedExit") {
       return colors.darkPurple.hex;
     }
+    else if (this.props.data.type === "generatedResponse") {
+      return colors.darkPurple.hex;
+    }
     else if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState' || this.props.data.type === 'skippedHeartbeat') {
       return colors.darkBackground.hex;
     }
@@ -104,6 +107,17 @@ export class ActivityLogItem extends Component<any, any> {
         return 'md-eye-off';
       }
     }
+    else if (this.props.data.type === 'generatedResponse') {
+      if (this.props.data.intent === INTENTS.exit) {
+          // check if we have room or near
+          if (canDoIndoorLocalization) {
+            return 'md-cube';
+          }
+          else {
+            return 'md-eye-off';
+          }
+      }
+    }
 
     return 'md-moon';
   }
@@ -123,6 +137,15 @@ export class ActivityLogItem extends Component<any, any> {
     }
     else if (this.props.data.type === 'schedule') {
       return timeIndicator + lang("_Schedule");
+    }
+    else if (this.props.data.type === 'generatedResponse') {
+      if (canDoIndoorLocalization) {
+        // exit sphere
+        return timeIndicator + lang("You_left_the_",roomConfig.name);
+      }
+      else {
+        return timeIndicator + lang("You_went_away_");
+      }
     }
     else if (this.props.data.type === 'generatedExit') {
       if (this.props.data.isSelf) {
@@ -185,7 +208,6 @@ export class ActivityLogItem extends Component<any, any> {
           return timeIndicator + lang("Someone_is_near_");
         }
       }
-
 
       return timeIndicator + ' ' + this.props.data.generatedFrom + this.props.data.switchedToState;
     }
@@ -307,6 +329,9 @@ export class ActivityLogItem extends Component<any, any> {
           return lang("_because_everyone_is_away",initialLabel, targetState);
         }
       }
+    }
+    else if (this.props.data.type === 'generatedResponse') {
+      return lang("The_Crownstone_switched_", targetState);
     }
     else if (this.props.data.type === 'multiswitch') {
       let label = '';

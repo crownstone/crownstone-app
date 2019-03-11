@@ -157,5 +157,7 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
     return "BROADCAST_ERROR"
   case .BROADCAST_ABORTED:
     return "BROADCAST_ABORTED"
-  }
+  case .BLE_RESET:
+    return "BLE_RESET"
+}
 }

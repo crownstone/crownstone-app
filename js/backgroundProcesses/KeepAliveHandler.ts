@@ -119,7 +119,7 @@ class KeepAliveHandlerClass {
           let delay = determineDelay(state.spheres[sphereId].config.exitDelay);
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
-          if      (behaviourHomeExit.active === true)                   { behaviour = behaviourHomeExit; }
+          if      (behaviourHomeExit.active === true)                         { behaviour = behaviourHomeExit; }
           else if (behaviourRoomExit.active === true && stoneUsesRoomLevel)   { behaviour = behaviourRoomExit; delay = determineDelay(behaviour.delay); }
           else if (behaviourAway.active     === true && !stoneUsesRoomLevel)  { behaviour = behaviourAway;     delay = determineDelay(behaviour.delay); }
 

@@ -120,7 +120,7 @@ export class ToonAdd extends Component<any, any> {
           )
         })
         return Promise.all(promises).then(() => {
-          console.log("Dispatching", actions);
+          // console.log("Dispatching", actions);
           this.props.store.batchDispatch(actions) })
       })
       .then(() => {

@@ -1,9 +1,3 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SettingsBleTroubleshootingAndroid", key)(a,b,c,d,e);
-}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
@@ -40,15 +34,20 @@ export class SettingsBleTroubleshootingAndroid extends Component<any, any> {
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
-            <Text style={titleStyle}>{ lang("Troubleshooting") }</Text>
+            <Text style={titleStyle}>{ "Troubleshooting" }</Text>
             <View style={{height:20}} />
             <IconButton name="ios-bluetooth" buttonSize={80} size={60} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />
             <View style={{height:20}} />
             <Text style={headerStyle}>{ "Sometimes, the Bluetooth on your phone can act up, refuse to work or be stuck on a connection." }</Text>
-            <Text style={explanationStyle}>{ "Unfortunately, sometimes things go wrong, and we're not allowed by the phone manufacturers to reset the Bluetooth chip (and rightfully so!).\n\n" + "There are a few things you can do however, to fix most of these issues. This guide will walk you through the steps to reset your Bluetooth." }</Text>
+            <Text style={explanationStyle}>{ "Unfortunately, sometimes things go wrong, and we're not allowed by the phone manufacturers to reset the Bluetooth chip (and rightfully so!).\n\n" +
+            "There are a few things you can do however, to fix most of these issues. This guide will walk you through the steps to reset your Bluetooth." }</Text>
             <Text style={explanationStyle}>{ "To reset Bluetooth, simply pull down the notification bar to get to the quick settings:" }</Text>
+            <ScaledImage source={require('../../../images/bleTroubleshooter/android/dragDown.png')} sourceWidth={500} sourceHeight={179} targetWidth={imageWidth} style={imageStyle} />
             <Text style={explanationStyle}>{ "Turn off Bluetooth by clicking the Bluetooth icon, and wait until it turns grey." }</Text>
-            <Text style={explanationStyle}>{ "Then turn Bluetooth on again by clicking the same icon. Your Bluetooth has now been restarted, which will solve most related problems.\n\n" + "If any issues persist, you can try restarting your phone or run the diagnostics in the Crownstone app.\n\n" + "If none of this works for you, contact us at team@crownstone.rocks and we'd be happy to help you solve the issue!" }</Text>
+            <ScaledImage source={require('../../../images/bleTroubleshooter/android/toggleBLE.png')} sourceWidth={500} sourceHeight={292} targetWidth={imageWidth} style={imageStyle} />
+            <Text style={explanationStyle}>{ "Then turn Bluetooth on again by clicking the same icon. Your Bluetooth has now been restarted, which will solve most related problems.\n\n" +
+            "If any issues persist, you can try restarting your phone or run the diagnostics in the Crownstone app.\n\n" +
+            "If none of this works for you, contact us at team@crownstone.rocks and we'd be happy to help you solve the issue!" }</Text>
             <View style={{height:50}} />
             <Text style={headerStyle}>{ "Enjoy using your Crownstones!" }</Text>
             <View style={{height:100}} />

@@ -197,7 +197,6 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
   _updateNavBar() {
-    console.log("Updating with ", this.state.zoomLevel)
     let state = this.props.store.getState();
     let params = getNavBarParams(state, this.props, this.state);
     this.props.navigation.setParams(params)

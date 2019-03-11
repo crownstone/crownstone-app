@@ -263,6 +263,7 @@ export class RoomOverview extends LiveComponent<any, any> {
       });
     }
 
+
     // add the stoneIds of the Crownstones in setup mode to the list but only if we're in the floating category
     if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
       let setupStones = SetupStateHandler.getSetupStones();
