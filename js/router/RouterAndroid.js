@@ -67,7 +67,7 @@ export class Router_Android extends Component {
               drawerWidth={0.75*screenWidth}
               initial={this.props.loggedIn}
             >
-              <Scene key="sphereOverview"           component={Views.SphereOverview}               />
+              <Scene key="sphereOverview"             component={Views.SphereOverview}               />
             </Drawer>
             <Scene key="addItemsToSphere"            component={Views.AddItemsToSphere}            />
             <Scene key="roomOverview"                component={Views.RoomOverview}                />
