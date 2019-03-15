@@ -1668,8 +1668,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		advertisementMap.putInt("rssi", device.rssi)
 		advertisementMap.putBoolean("isInDFUMode", device.operationMode == OperationMode.DFU)
 
-		if (device.validated && device.operationMode == OperationMode.NORMAL) {
-			advertisementMap.putString("referenceId", currentSphereId) // TODO: make this work for multisphere
+//		if (device.validated && device.operationMode == OperationMode.NORMAL) {
+//			advertisementMap.putString("referenceId", currentSphereId) // TODO: make this work for multisphere
+//		}
+		if (device.validated && device.operationMode == OperationMode.NORMAL && device.sphereId != null) {
+			advertisementMap.putString("referenceId", device.sphereId)
 		}
 
 //		val serviceDataMap = when (serviceData) {
