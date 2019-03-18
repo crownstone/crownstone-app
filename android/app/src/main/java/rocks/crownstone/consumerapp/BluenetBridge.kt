@@ -360,9 +360,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun requestLocationPermission() {
 		Log.i(TAG, "requestLocationPermission")
 		// Request for location permission during tutorial.
+		// Should also ask for location services to be turned on.
 		// TODO: check if you can't continue the tutorial before giving or denying permission.
 		val activity = reactContext.currentActivity ?: return
-		bluenet.requestLocationPermission(activity)
+//		bluenet.requestLocationPermission(activity)
+		bluenet.tryMakeScannerReady(activity)
 	}
 
 	@ReactMethod
@@ -1666,8 +1668,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		advertisementMap.putInt("rssi", device.rssi)
 		advertisementMap.putBoolean("isInDFUMode", device.operationMode == OperationMode.DFU)
 
-		if (device.validated && device.operationMode == OperationMode.NORMAL) {
-			advertisementMap.putString("referenceId", currentSphereId) // TODO: make this work for multisphere
+//		if (device.validated && device.operationMode == OperationMode.NORMAL) {
+//			advertisementMap.putString("referenceId", currentSphereId) // TODO: make this work for multisphere
+//		}
+		if (device.validated && device.operationMode == OperationMode.NORMAL && device.sphereId != null) {
+			advertisementMap.putString("referenceId", device.sphereId)
 		}
 
 //		val serviceDataMap = when (serviceData) {
