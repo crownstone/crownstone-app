@@ -10,6 +10,7 @@ import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferAppliances} from "../../../transferData/transferAppliances";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 export class ApplianceSyncer extends SyncingSphereItemBase {
   userId: string;
@@ -59,7 +60,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
       else {
         // the appliance does not exist locally but it does exist in the cloud.
         // we create it locally.
-        localId = Util.getUUID();
+        localId = xUtil.getUUID();
         transferAppliances.createLocal(this.actions, {
           localId: localId,
           localSphereId: this.localSphereId,

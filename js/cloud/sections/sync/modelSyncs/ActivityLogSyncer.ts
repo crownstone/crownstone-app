@@ -16,6 +16,7 @@ import {SyncingSphereItemBase} from "./SyncingBase";
 import {LOG, LOGe} from "../../../../logging/Log";
 import {CLOUD} from "../../../cloudAPI";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 export class ActivityLogSyncer extends SyncingSphereItemBase {
@@ -132,7 +133,7 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
       else {
         // the schedule does not exist locally but it does exist in the cloud.
         // we create it locally.
-        localId = Util.getUUID();
+        localId = xUtil.getUUID();
         localActivityLogsIdsSynced[localId] = true;
         // add activityLog
         transferActivityLogs.createLocal(this.actions, {

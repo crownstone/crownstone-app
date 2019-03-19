@@ -17,10 +17,6 @@ import {
   TouchableHighlight,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
-import {colors, screenWidth} from "../../styles";
-import {FadeInView} from "../../components/animated/FadeInView";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {
   DiagOptions,
@@ -28,7 +24,6 @@ import {
   DiagSingleButton,
   DiagSingleButtonHelp,
   DiagSingleButtonGoBack,
-  DiagSingleButtonQuit,
   DiagSingleButtonToOverview,
   DiagYesNo,
   TestResult,
@@ -36,16 +31,15 @@ import {
   DiagSingleButtonMeshTopology,
   DiagWaiting, DiagListOfStones
 } from "./DiagnosticUtil";
-import {SlideInView} from "../../components/animated/SlideInView";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {TestRunner} from "./TestRunner";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {Util} from "../../../util/Util";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {INTENTS} from "../../../native/libInterface/Constants";
-import {BlePromiseManager} from "../../../logic/BlePromiseManager";
 import {BleUtil} from "../../../util/BleUtil";
 import {BluenetPromiseWrapper} from "../../../native/libInterface/BluenetPromise";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class ProblemWithExistingCrownstone extends Component<any, any> {

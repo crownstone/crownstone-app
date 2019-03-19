@@ -6,6 +6,7 @@ import { LOG }                from '../../logging/Log';
 import { DFU_MODE_TIMEOUT }   from '../../ExternalConfig';
 import { MapProvider }        from "../../backgroundProcesses/MapProvider";
 import {Scheduler} from "../../logic/Scheduler";
+import { xUtil } from "../../util/StandAloneUtil";
 
 /**
  * This class keeps track of the Crownstones in DFU state.
@@ -19,7 +20,7 @@ class DfuStateHandlerClass {
   _dfuTimeouts : any = {};
 
   constructor() {
-    this._uuid = Util.getUUID();
+    this._uuid = xUtil.getUUID();
   }
 
   loadStore(store) {

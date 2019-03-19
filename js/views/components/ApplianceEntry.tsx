@@ -17,10 +17,10 @@ import {
   View
 } from 'react-native';
 
-import { Util } from '../../util/Util';
 import { Icon } from './Icon';
 import { styles, colors } from '../styles'
 import {DoubleTapDelete} from "./DoubleTapDelete";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 export class ApplianceEntry extends Component<any, any> {
@@ -28,7 +28,7 @@ export class ApplianceEntry extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.id = Util.getUUID();
+    this.id = xUtil.getUUID();
   }
 
   render() {

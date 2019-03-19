@@ -4,6 +4,7 @@ import {LOG, LOGe, LOGw} from '../logging/Log'
 import { Util } from '../util/Util'
 import {eventBus} from "../util/EventBus";
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
+import { xUtil } from "../util/StandAloneUtil";
 
 
 interface scheduledCallback {
@@ -296,7 +297,7 @@ class SchedulerClass {
         throw "Scheduler: Failed to schedule callback. Not a function: " + label;
       }
     }
-    let uuid = label + Util.getUUID();
+    let uuid = label + xUtil.getUUID();
     LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
 
     // fallback to try to fire this callback after exactly the amount of ms

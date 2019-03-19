@@ -26,6 +26,7 @@ import {NativeBus} from "../../../native/libInterface/NativeBus";
 import {LocalizationDebugCircle} from "./LocalizationDebugCircle";
 import {getPresentUsersInLocation} from "../../../util/DataUtil";
 import {AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION} from "../../../ExternalConfig";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 export class SettingsLocalizationDebug extends LiveComponent<any, any> {
@@ -52,7 +53,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
 
     this._baseRadius = 0.15 * screenWidth;
 
-    this.viewId = Util.getUUID();
+    this.viewId = xUtil.getUUID();
     this.refName = (Math.random() * 1e9).toString(36);
   }
 

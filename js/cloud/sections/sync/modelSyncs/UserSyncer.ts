@@ -8,9 +8,9 @@ import { shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 
 import { CLOUD}               from "../../../cloudAPI";
 import { SyncingBase }        from "./SyncingBase";
-import {Util} from "../../../../util/Util";
 import {transferUser} from "../../../transferData/transferUser";
 import {LOGe} from "../../../../logging/Log";
+import { FileUtil } from "../../../../util/FileUtil";
 
 export class UserSyncer extends SyncingBase {
   userId : string;
@@ -35,7 +35,7 @@ export class UserSyncer extends SyncingBase {
   syncDown(userInState, userInCloud) {
     if (userInCloud.profilePicId && userInState.picture === null || (userInCloud.profilePicId && (userInCloud.profilePicId !== userInState.pictureId))) {
       // user should have A or A DIFFERENT profile picture according to the cloud
-      let toPath = Util.getPath(this.userId + '.jpg');
+      let toPath = FileUtil.getPath(this.userId + '.jpg');
       this.transferPromises.push(
         CLOUD.downloadProfileImage(toPath)
           .then((picturePath) => {

@@ -17,7 +17,6 @@ import {
   Text,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
 import {
   DiagOptions,
   DiagSingleButtonHelp,
@@ -30,6 +29,7 @@ import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {ProblemWithLocalization} from "./ProblemWithLocalization";
 import {Util} from "../../../util/Util";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class InSphere extends Component<any, any> {

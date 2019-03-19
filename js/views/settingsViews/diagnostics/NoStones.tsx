@@ -17,7 +17,6 @@ import {
   Text,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
 import {
   DiagSingleBleTroubleshooter, DiagSingleButtonHelp,
   DiagSingleButtonGoBack,
@@ -25,6 +24,7 @@ import {
   DiagYesNo, TestResult
 } from "./DiagnosticUtil";
 import {TestRunner} from "./TestRunner";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class NoStones extends Component<any, any> {

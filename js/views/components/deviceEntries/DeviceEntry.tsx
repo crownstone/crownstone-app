@@ -31,15 +31,15 @@ import { Actions }                            from 'react-native-router-flux';
 import { StoneUtil }                          from "../../../util/StoneUtil";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
-import {FadeInView} from "../animated/FadeInView";
 import {SlideFadeInView} from "../animated/SlideFadeInView";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 export class DeviceEntry extends Component<any, any> {
   baseHeight : number;
   unsubscribe = [];
   animating = false;
-  id = Util.getUUID();
+  id = xUtil.getUUID();
 
   showMeshMessageTimeout
 

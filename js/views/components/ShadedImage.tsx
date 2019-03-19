@@ -35,7 +35,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 //   animationFrame = null;
 //   _opacity = 1;
 //   _crossfade = 0;
-//   _uid = Util.getUUID();
+//   _uid = xUtil.getUUID();
 //
 //   constructor(props) {
 //     super(props);

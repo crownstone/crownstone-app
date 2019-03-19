@@ -11,6 +11,7 @@ import { Permissions }           from "../backgroundProcesses/PermissionManager"
 import { CommandManager }        from "./bchComponents/CommandManager";
 import { RssiLogger }            from "../native/advertisements/RssiLogger";
 import { BroadcastCommandManager } from "./bchComponents/BroadcastCommandManager";
+import { xUtil } from "../util/StandAloneUtil";
 
 
 export const errorCodes = {
@@ -638,7 +639,7 @@ class BatchCommandHandlerClass {
 
     LOGi.bch("BatchCommandHandler: Scheduling command in promiseManager");
     let actionPromise = () => {
-      this.activePromiseId = Util.getUUID();
+      this.activePromiseId = xUtil.getUUID();
       LOGi.bch("BatchCommandHandler: Executing!", this.activePromiseId);
       return this._searchAndHandleCommands(options);
     };

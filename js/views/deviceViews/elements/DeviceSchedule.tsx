@@ -37,6 +37,7 @@ import {SchedulerEntry} from "../../components/SchedulerEntry";
 import {Scheduler} from "../../../logic/Scheduler";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {ScheduleUtil} from "../../../util/ScheduleUtil";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 export class DeviceSchedule extends LiveComponent<any, any> {
@@ -156,7 +157,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
           let matchingId = ScheduleUtil.findMatchingScheduleId(schedule, dbSchedules);
           if (matchingId === null) {
             syncActions.push({
-              type: 'ADD_STONE_SCHEDULE', stoneId: this.props.stoneId, sphereId: this.props.sphereId, scheduleId: Util.getUUID(),
+              type: 'ADD_STONE_SCHEDULE', stoneId: this.props.stoneId, sphereId: this.props.sphereId, scheduleId: xUtil.getUUID(),
               data: generateReduxData(schedule)
             })
           }

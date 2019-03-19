@@ -1,10 +1,11 @@
 import { AppState }           from "react-native"
-import {LOG, LOGe} from "../logging/Log";
+import {LOG, LOGe}            from "../logging/Log";
 import { NativeBus }          from "../native/libInterface/NativeBus";
 import { CLOUD }              from "../cloud/cloudAPI";
 import { LocalNotifications } from "../notifications/LocalNotifications";
 import { Util }               from "../util/Util";
-import {MapProvider} from "./MapProvider";
+import { MapProvider }        from "./MapProvider";
+import { xUtil }              from "../util/StandAloneUtil";
 
 class MessageCenterClass {
   _initialized: boolean = false;
@@ -102,7 +103,7 @@ class MessageCenterClass {
     let localSphereId  = MapProvider.cloud2localMap.spheres[cloudMessage.sphereId];
     if (!localSphereId) { return null }
 
-    let dbMessageId = localMessageId || Util.getUUID();
+    let dbMessageId = localMessageId || xUtil.getUUID();
 
     // add message to the store
     actions.push({

@@ -30,6 +30,7 @@ import KeepAwake from 'react-native-keep-awake';
 import {Icon} from "../components/Icon";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {MeshUtil} from "../../util/MeshUtil";
+import { xUtil } from "../../util/StandAloneUtil";
 const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
@@ -57,7 +58,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
 
   constructor(props) {
     super(props);
-    this.viewId = Util.getUUID();
+    this.viewId = xUtil.getUUID();
     this.state = { leftOffset: new Animated.Value() };
   }
 

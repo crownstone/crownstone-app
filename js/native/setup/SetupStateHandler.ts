@@ -9,6 +9,7 @@ import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
 import { DfuStateHandler }    from "../firmware/DfuStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 
@@ -27,7 +28,7 @@ class SetupStateHandlerClass {
 
 
   constructor() {
-    this._uuid = Util.getUUID();
+    this._uuid = xUtil.getUUID();
 
     this._store = undefined;
     this._setupModeTimeouts = {};

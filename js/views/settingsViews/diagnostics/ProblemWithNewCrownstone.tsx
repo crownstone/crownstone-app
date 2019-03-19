@@ -17,18 +17,18 @@ import {
   Text,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
-import {colors, screenWidth} from "../../styles";
+import {screenWidth} from "../../styles";
 import {FadeInView} from "../../components/animated/FadeInView";
 import {
   DiagSingleButton,
   DiagSingleButtonHelp,
   DiagSingleButtonGoBack,
-  DiagSingleButtonQuit, DiagSingleButtonToOverview, DiagYesNo, TestResult
+  DiagSingleButtonToOverview, TestResult
 } from "./DiagnosticUtil";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {TestRunner} from "./TestRunner";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class ProblemWithNewCrownstone extends Component<any, any> {

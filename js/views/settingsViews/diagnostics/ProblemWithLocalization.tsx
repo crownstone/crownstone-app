@@ -17,14 +17,13 @@ import {
   Text,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {
   DiagOptions,
-  DiagSingleBleTroubleshooter, DiagSingleButton,
+  DiagSingleButton,
   DiagSingleButtonHelp,
   DiagSingleButtonGoBack,
-  DiagSingleButtonQuit, DiagSingleButtonToOverview, DiagYesNo, TestResult, DiagListOfStones
+  TestResult, DiagListOfStones
 } from "./DiagnosticUtil";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {Util} from "../../../util/Util";
@@ -33,6 +32,7 @@ import {
   enoughCrownstonesInLocationsForIndoorLocalization, requireMoreFingerprints
 } from "../../../util/DataUtil";
 import {STONE_TYPES} from "../../../router/store/reducers/stones";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class ProblemWithLocalization extends Component<any, any> {

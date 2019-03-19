@@ -5,7 +5,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomEdit", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   TouchableHighlight,
@@ -21,7 +21,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
-import {processImage, safeDeleteFile, Util} from '../../util/Util'
+import {processImage, Util} from '../../util/Util'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import {colors, OrangeLine} from './../styles'
@@ -30,7 +30,7 @@ import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
-import {eventBus} from "../../util/EventBus";
+import { FileUtil } from "../../util/FileUtil";
 
 
 
@@ -107,7 +107,7 @@ export class RoomEdit extends LiveComponent<any, any> {
 
   _removePicture(image) {
     if (image) {
-      safeDeleteFile(image).catch(() => {});
+      FileUtil.safeDeleteFile(image).catch(() => {});
     }
   }
 

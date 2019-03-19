@@ -17,16 +17,14 @@ import {
   Text,
   View
 } from 'react-native';
-import {colors, screenWidth} from "../../styles";
+import {colors} from "../../styles";
 import {AppUtil} from "../../../util/AppUtil";
 import {eventBus} from "../../../util/EventBus";
 import {SlideInView} from "../../components/animated/SlideInView";
-import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
-import {DiagSingleButton, TestResult} from "./DiagnosticUtil";
+import { TestResult} from "./DiagnosticUtil";
 import {FadeInView} from "../../components/animated/FadeInView";
-import {diagnosticStyles} from "../SettingsDiagnostics";
 import {TestRunner} from "./TestRunner";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class ReviewInitialTests extends Component<any, any> {

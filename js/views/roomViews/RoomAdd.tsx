@@ -24,13 +24,15 @@ import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../.
 import {LOG, LOGe} from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
 import {colors, OrangeLine} from '../styles'
-import {processImage, safeDeleteFile, Util} from "../../util/Util";
+import {processImage} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {getRandomRoomIcon} from "./RoomIconSelection";
+import { xUtil } from "../../util/StandAloneUtil";
+import { FileUtil } from "../../util/FileUtil";
 
 
 
@@ -83,7 +85,7 @@ export class RoomAdd extends Component<any, any> {
 
   _removePicture(image) {
     if (image) {
-      safeDeleteFile(image).catch(() => {});
+      FileUtil.safeDeleteFile(image).catch(() => {});
     }
   }
 
@@ -213,7 +215,7 @@ lang("_Room_name_must_be_at_lea_body"),
       if (existingLocations[this.state.name] === undefined) {
         this.props.eventBus.emit('showLoading', lang("Creating_room___"));
         let actions = [];
-        let localId = Util.getUUID();
+        let localId = xUtil.getUUID();
 
         // todo Move to create new location method once it is implemented in transferLocations
         actions.push({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: localId, data:{name: this.state.name, icon: this.state.icon}});

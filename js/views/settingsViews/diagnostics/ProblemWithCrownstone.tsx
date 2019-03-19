@@ -17,20 +17,14 @@ import {
   Text,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
 import {
   DiagOptions,
-  DiagSingleButton,
-  DiagSingleButtonGoBack,
-  DiagSingleButtonHelp,
-  DiagSingleButtonToOverview,
-  DiagWaiting,
-  DiagYesNo, nameFromSummary,
   TestResult
 } from "./DiagnosticUtil";
 import {ProblemWithExistingCrownstone} from "./ProblemWithExistingCrownstone";
 import {ProblemWithNewCrownstone} from "./ProblemWithNewCrownstone";
 import {ProblemWithOtherCrownstone} from "./ProblemWithOtherCrownstone";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class ProblemWithCrownstone extends Component<any, any> {
