@@ -4,6 +4,7 @@ import {Util} from "../util/Util";
 import {transferActivityLogs} from "../cloud/transferData/transferActivityLogs";
 import {MapProvider} from "./MapProvider";
 import {transferActivityRanges} from "../cloud/transferData/transferActivityRanges";
+import { xUtil } from "../util/StandAloneUtil";
 
 
 class ActivityLogManagerClass {
@@ -58,7 +59,7 @@ class ActivityLogManagerClass {
       type: "ADD_ACTIVITY_LOG",
       sphereId: data.sphereId,
       stoneId:  data.target,
-      logId: Util.getUUID(),
+      logId: xUtil.getUUID(),
       data: {
         commandUuid: data.commandUuid,
         viaMesh: data.connectedTo !== data.target,
@@ -146,7 +147,7 @@ class ActivityLogManagerClass {
       actionData.cloudId = activeRange.cloudId;
     }
     else {
-      action.rangeId = Util.getUUID();
+      action.rangeId = xUtil.getUUID();
       actionData["startTime"] = now;
     }
 

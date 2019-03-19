@@ -1,5 +1,6 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { Util } from '../../../util/Util'
+import { xUtil } from "../../../util/StandAloneUtil";
 
 let defaultSettings = {
   firstName: null,
@@ -57,7 +58,7 @@ export default (state = defaultSettings, action : any = {}) => {
     case 'CREATE_APP_IDENTIFIER':
       if (state.appIdentifier === null) {
         let newState = {...state};
-        newState.appIdentifier = Util.getUUID();
+        newState.appIdentifier = xUtil.getUUID();
         return newState;
       }
       return state;

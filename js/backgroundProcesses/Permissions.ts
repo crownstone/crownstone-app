@@ -1,6 +1,6 @@
 import {eventBus} from "../util/EventBus";
-import {Util} from "../util/Util";
 import {LOG} from "../logging/Log";
+import { DataUtil } from "../util/DataUtil";
 
 export class PermissionBase {
   canEditSphere           = false; // a or m
@@ -126,7 +126,7 @@ export class PermissionClass extends PermissionBase {
 
   _update(state = null, levelOverride : any = false) {
     LOG.info("Permissions: Update permissions for", this._sphereId);
-    let level = Util.data.getUserLevelInSphere(state, this._sphereId);
+    let level = DataUtil.getUserLevelInSphere(state, this._sphereId);
     if (levelOverride) {
       level = levelOverride;
     }

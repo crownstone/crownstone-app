@@ -11,12 +11,9 @@ import { Permissions }           from "../backgroundProcesses/PermissionManager"
 import { CommandManager }        from "./bchComponents/CommandManager";
 import { RssiLogger }            from "../native/advertisements/RssiLogger";
 import { BroadcastCommandManager } from "./bchComponents/BroadcastCommandManager";
+import { xUtil } from "../util/StandAloneUtil";
+import { BCH_ERROR_CODES } from "../Enums";
 
-
-export const errorCodes = {
-  NO_STONES_FOUND: "NO_STONES_FOUND",
-  STONE_IS_LOCKED: "STONE_IS_LOCKED"
-}
 
 /**
  * This can be used to batch commands over the mesh or 1:1 to the Crownstones.
@@ -340,7 +337,7 @@ class BatchCommandHandlerClass {
       }
 
       LOGv.bch("BatchCommandHandler:", this._commandHandler.commands)
-      reject({code: errorCodes.NO_STONES_FOUND, message:"No stones found in connection target obtaining"});
+      reject({code: BCH_ERROR_CODES.NO_STONES_FOUND, message:"No stones found in connection target obtaining"});
     });
   }
 
@@ -638,7 +635,7 @@ class BatchCommandHandlerClass {
 
     LOGi.bch("BatchCommandHandler: Scheduling command in promiseManager");
     let actionPromise = () => {
-      this.activePromiseId = Util.getUUID();
+      this.activePromiseId = xUtil.getUUID();
       LOGi.bch("BatchCommandHandler: Executing!", this.activePromiseId);
       return this._searchAndHandleCommands(options);
     };

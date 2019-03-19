@@ -5,7 +5,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsProfile", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   Dimensions,
@@ -21,13 +21,14 @@ import { Actions } from 'react-native-router-flux';
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { processImage, safeDeleteFile } from '../../util/Util'
+import { processImage } from '../../util/Util'
 import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import {colors, screenWidth, OrangeLine} from './../styles'
 import { IconButton } from "../components/IconButton";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
+import { FileUtil } from "../../util/FileUtil";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -228,7 +229,7 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
                     })
                 }}
                 removePicture={() => {
-                  safeDeleteFile(this.state.picture).catch(() => {});
+                  FileUtil.safeDeleteFile(this.state.picture).catch(() => {});
                   store.dispatch({type:'USER_UPDATE', data:{picture:null, pictureId: null}});
                   // update your settings in every sphere that you belong to.
                   sphereIds.forEach((sphereId) => {

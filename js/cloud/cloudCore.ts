@@ -5,8 +5,9 @@ let emptyFunction = function() {};
 import {LOG, LOGe, LOGi} from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
 import { defaultHeaders } from './sections/cloudApiBase'
-import {safeMoveFile, safeDeleteFile, Util} from '../util/Util'
 import {Scheduler} from "../logic/Scheduler";
+import { xUtil } from "../util/StandAloneUtil";
+import { FileUtil } from "../util/FileUtil";
 
 
 
@@ -74,7 +75,7 @@ export function request(
     return response.text(); // this is a promise
   };
 
-  let logToken = Util.getToken();
+  let logToken = xUtil.getToken();
 
   let url = endPoint;
   if (endPoint.substr(0,4) !== 'http') {
@@ -157,7 +158,7 @@ export function downloadFile(url, targetPath, callbacks) {
     // get a temp path
     let downloadSessionId = Math.round(10000 + Math.random() * 1e5).toString(36);
     let tempFilename = downloadSessionId + '.tmp';
-    let tempPath = Util.getPath(tempFilename);
+    let tempPath = FileUtil.getPath(tempFilename);
     tempPath = 'file://' + tempPath.replace("file://","");
     targetPath = 'file://' + targetPath.replace("file://","");
 
@@ -174,7 +175,7 @@ export function downloadFile(url, targetPath, callbacks) {
       .then((status) => {
         if (status.statusCode !== 200) {
           // remove the temp file if the download failed
-          safeDeleteFile(tempPath)
+          FileUtil.safeDeleteFile(tempPath)
             .then(() => {
               LOGi.cloud('CloudCore:DownloadFile:',downloadSessionId,' Download was not status 200:', status);
               callbacks.success();
@@ -183,7 +184,7 @@ export function downloadFile(url, targetPath, callbacks) {
             .catch((err) => { LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not delete file", tempPath, ' err:', err); });
         }
         else {
-          safeMoveFile(tempPath, targetPath)
+          FileUtil.safeMoveFile(tempPath, targetPath)
             .then((toPath) => {
               // if we have renamed the file, we resolve the promise so we can store the changed filename.
               LOGi.cloud('CloudCore:DownloadFile:',downloadSessionId,' Downloaded file successfully:', targetPath);
@@ -195,7 +196,7 @@ export function downloadFile(url, targetPath, callbacks) {
       })
       .catch((err) => {
         LOGe.cloud("CloudCore:DownloadFile: ",downloadSessionId,"Could not download file err:", err);
-        safeDeleteFile(tempPath).catch((err) => { LOGe.cloud("CloudCore:DownloadFile: ",downloadSessionId," Could not delete file", tempPath, 'err:', err); });
+        FileUtil.safeDeleteFile(tempPath).catch((err) => { LOGe.cloud("CloudCore:DownloadFile: ",downloadSessionId," Could not delete file", tempPath, 'err:', err); });
         reject(err);
       })
   });

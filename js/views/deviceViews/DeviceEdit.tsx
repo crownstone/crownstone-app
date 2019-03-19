@@ -21,9 +21,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import { STONE_TYPES } from '../../router/store/reducers/stones'
 import {styles, colors, OrangeLine} from '../styles'
-import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
 import { BleUtil } from '../../util/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
@@ -33,13 +31,13 @@ import {LOG, LOGe} from '../../logging/Log'
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Util} from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
-import {StoneUtil} from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
 import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
+import { STONE_TYPES } from "../../Enums";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -475,8 +473,8 @@ lang("_Success__arguments___OKn_body",labelText),
     if (dimChange)         { changePromises.push(dimChange); }
     if (switchCraftChange) { changePromises.push(switchCraftChange); }
     Promise.all(changePromises)
-      .then(() => { this.props.eventBus.emit("hideLoading") } )
-      .catch((err) => { () => { this.props.eventBus.emit("hideLoading") } });
+      .then(() => { this.props.eventBus.emit("hideLoading"); } )
+      .catch((err) => { () => { this.props.eventBus.emit("hideLoading"); } });
 
     let actions = [];
     if (

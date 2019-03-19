@@ -25,6 +25,7 @@ import { NativeBus }                   from '../../native/libInterface/NativeBus
 import {canUseIndoorLocalizationInSphere, enoughCrownstonesInLocationsForIndoorLocalization} from '../../util/DataUtil'
 import {BehaviourUtil} from "../../util/BehaviourUtil";
 import {BackAction} from "../../util/Back";
+import { xUtil } from "../../util/StandAloneUtil";
 const Actions = require('react-native-router-flux').Actions;
 
 
@@ -37,15 +38,15 @@ let timeOptions = [];
 timeOptions.push({label: lang("seconds", 2),    value: 2});
 
 let timeOptionsV2 = [];
-timeOptionsV2.push({label: lang("seconds",2),    value: 2});
-timeOptionsV2.push({label: lang("seconds",10),   value: 10});
-timeOptionsV2.push({label: lang("seconds",30),   value: 30});
-timeOptionsV2.push({label: lang("minute", 1),    value: 60});
-timeOptionsV2.push({label: lang("minutes",2),    value: 120});
-timeOptionsV2.push({label: lang("minutes",5),    value: 300});
-timeOptionsV2.push({label: lang("minutes",10),   value: 600});
-timeOptionsV2.push({label: lang("minutes",15),   value: 900});
-timeOptionsV2.push({label: lang("minutes",30),   value: 1800});
+timeOptionsV2.push({label: lang("seconds", 2),     value: 2});
+timeOptionsV2.push({label: lang("seconds", 10),    value: 10});
+timeOptionsV2.push({label: lang("seconds", 30),    value: 30});
+timeOptionsV2.push({label: lang("minute" , 1),    value: 60});
+timeOptionsV2.push({label: lang("minutes", 2),   value: 120});
+timeOptionsV2.push({label: lang("minutes", 5),   value: 300});
+timeOptionsV2.push({label: lang("minutes", 10),   value: 600});
+timeOptionsV2.push({label: lang("minutes", 15),   value: 900});
+timeOptionsV2.push({label: lang("minutes", 30),  value: 1800});
 
 export class DeviceBehaviourEdit extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -68,7 +69,7 @@ export class DeviceBehaviourEdit extends LiveComponent<any, any> {
     super(props);
     this.detectionTimeout = undefined;
     this.unsubscribeNative = undefined;
-    this._uuid = Util.getUUID();
+    this._uuid = xUtil.getUUID();
     this.element = undefined;
     this.stone = undefined;
     this.canDoIndoorLocalization = false;

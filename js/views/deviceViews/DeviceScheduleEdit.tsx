@@ -38,6 +38,7 @@ import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios
 import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
+import { xUtil } from "../../util/StandAloneUtil";
 import { WeekDayList } from "../components/WeekDayList";
 
 export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; // these are keys
@@ -315,7 +316,7 @@ lang("_Pick_a_day___You_need_to_body"),
           alertLabel:  lang("I_could_not_set_the_Sched"),
           fullLabel: lang("You_cant_have_any_more_sc"),
           actionType: 'ADD_STONE_SCHEDULE',
-          scheduleId: Util.getUUID(),
+          scheduleId: xUtil.getUUID(),
         }
       );
     }

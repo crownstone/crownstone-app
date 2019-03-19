@@ -360,9 +360,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun requestLocationPermission() {
 		Log.i(TAG, "requestLocationPermission")
 		// Request for location permission during tutorial.
+		// Should also ask for location services to be turned on.
 		// TODO: check if you can't continue the tutorial before giving or denying permission.
 		val activity = reactContext.currentActivity ?: return
-		bluenet.requestLocationPermission(activity)
+//		bluenet.requestLocationPermission(activity)
+		bluenet.tryMakeScannerReady(activity)
 	}
 
 	@ReactMethod
@@ -1097,24 +1099,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun getErrors(callback: Callback) {
-		Log.i(TAG, "getErrors")
-		// return a map: { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
-		bluenet.state.getErrors()
-				.success {
-					val stateErrorMap = Arguments.createMap()
-					stateErrorMap.putBoolean("overCurrent", it.overCurrent)
-					stateErrorMap.putBoolean("overCurrentDimmer", it.overCurrentDimmer)
-					stateErrorMap.putBoolean("temperatureChip", it.chipTemperature)
-					stateErrorMap.putBoolean("temperatureDimmer", it.dimmerTemperature)
-					stateErrorMap.putInt("bitMask", it.bitmask.toInt())
-					resolveCallback(callback, stateErrorMap)
-				}
-				.fail { rejectCallback(callback, it.message) }
-	}
-
-	@ReactMethod
-	@Synchronized
 	fun clearErrors(clearErrorsMap: ReadableMap, callback: Callback) {
 		Log.i(TAG, "clearErrors")
 		// clearErrorsMap, map with errors to clear. Keys: overCurrent, overCurrentDimmer, temperatureChip, temperatureDimmer, dimmerOnFailure, dimmerOffFailure
@@ -1684,8 +1668,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		advertisementMap.putInt("rssi", device.rssi)
 		advertisementMap.putBoolean("isInDFUMode", device.operationMode == OperationMode.DFU)
 
-		if (device.validated && device.operationMode == OperationMode.NORMAL) {
-			advertisementMap.putString("referenceId", currentSphereId) // TODO: make this work for multisphere
+//		if (device.validated && device.operationMode == OperationMode.NORMAL) {
+//			advertisementMap.putString("referenceId", currentSphereId) // TODO: make this work for multisphere
+//		}
+		if (device.validated && device.operationMode == OperationMode.NORMAL && device.sphereId != null) {
+			advertisementMap.putString("referenceId", device.sphereId)
 		}
 
 //		val serviceDataMap = when (serviceData) {

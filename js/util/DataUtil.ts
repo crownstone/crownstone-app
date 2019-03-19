@@ -1,9 +1,9 @@
 import { Platform } from 'react-native'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOGe } from '../logging/Log'
-import { STONE_TYPES } from '../router/store/reducers/stones'
 
 import { Alert } from 'react-native';
+import { STONE_TYPES } from "../Enums";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -415,7 +415,11 @@ export const getFloatingStones = function(state, sphereId) {
 
 export const getPresentUsersInLocation = function(state, sphereId, locationId, all = false) {
   let users = [];
-  if (locationId === null) {
+  if (!locationId || !sphereId) {
+    return users;
+  }
+
+  if (!(state && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].locations && state.spheres[sphereId].locations[locationId])) {
     return users;
   }
 
@@ -781,6 +785,7 @@ export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) 
   return Object.keys(state.spheres[sphereId].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
 
+
 export const enoughCrownstonesInLocationsForIndoorLocalization = function(state, sphereId) {
   if (!(state && sphereId && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
     return false;
@@ -797,6 +802,7 @@ export const enoughCrownstonesInLocationsForIndoorLocalization = function(state,
   });
   return count >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
+
 
 export const requireMoreFingerprints = function (state, sphereId) {
   // if we do not have a sphereId return false

@@ -1,6 +1,5 @@
 import { Alert, Platform } from 'react-native';
 import ImageResizer from 'react-native-image-resizer';
-const RNFS = require('react-native-fs');
 
 import { screenWidth, screenHeight, pxRatio } from '../views/styles'
 
@@ -10,6 +9,7 @@ import {EventUtil} from "./EventUtil";
 import {ALWAYS_DFU_UPDATE} from "../ExternalConfig";
 import {Permissions} from "../backgroundProcesses/PermissionManager";
 import {SessionMemory} from "./SessionMemory";
+import { FileUtil } from "./FileUtil";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -37,11 +37,11 @@ export const getImageFileFromUser = function(email) {
 export const processImage = function(pictureURI, targetFilename, scaleFactor = 0.5) {
   return new Promise((resolve, reject) => {
     if (pictureURI !== undefined) {
-      let targetPath = Util.getPath(targetFilename);
+      let targetPath = FileUtil.getPath(targetFilename);
 
       ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * scaleFactor, screenHeight * pxRatio * scaleFactor, 'JPEG', 90)
         .then(({uri}) => {
-          return safeMoveFile(uri, targetPath);
+          return FileUtil.safeMoveFile(uri, targetPath);
         })
         .then(() => {
           resolve(targetPath);
@@ -56,38 +56,6 @@ export const processImage = function(pictureURI, targetFilename, scaleFactor = 0
   })
 };
 
-export const safeMoveFile = function(from,to) {
-  // TODO: Make this less ugly. Placing it here is kind of a convenience hack.
-  // we update the session memory to make sure all pictures are reloaded.
-  SessionMemory.cacheBusterUniqueElement = Math.random();
-
-  return safeDeleteFile(to)
-    .then(() => {
-      return new Promise((resolve, reject) => {
-        RNFS.moveFile(from, to)
-          .then(() => {
-            resolve(to);
-          });
-      })
-    })
-};
-
-export const safeDeleteFile = function(uri) {
-  return new Promise((resolve, reject) => {
-    RNFS.exists(uri)
-      .then((fileExists) => {
-        if (fileExists) {
-          return RNFS.unlink(uri)
-        }
-      })
-      .then(() => {
-        resolve()
-      })
-      .catch((err) => {
-        reject(err);
-      })
-  })
-};
 
 export const preparePictureURI = function(picture, cacheBuster = true) {
   if (typeof picture === 'object') {
@@ -193,32 +161,6 @@ export const Util = {
 
     return hours + ':' + minutes + ':' + seconds
   },
-
-  getUUID : () : string => {
-    const S4 = function () {
-      return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);
-    };
-
-    return (
-      S4() + S4() + '-' +
-      S4() + '-' +
-      S4() + '-' +
-      S4() + '-' +
-      S4() + S4() + S4()
-    );
-  },
-
-  getShortUUID : () : string => {
-    const S4 = function () {
-      return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(36);
-    };
-
-    return (
-      S4() + S4() + '-' +
-      S4()
-    );
-  },
-
 
   getToken : () : string => {
     return Math.floor(Math.random() * 1e8 /* 65536 */).toString(36);
@@ -454,17 +396,6 @@ export const Util = {
     })
   },
 
-  getPath(filename? : string) {
-    let targetPath = Platform.OS === 'android' ? RNFS.ExternalDirectoryPath : RNFS.DocumentDirectoryPath;
-
-    if (filename) {
-      if (targetPath[targetPath.length-1] !== '/') {
-        targetPath += '/';
-      }
-      targetPath += filename;
-    }
-    return targetPath;
-  }
 
 
 };

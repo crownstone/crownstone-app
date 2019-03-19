@@ -6,11 +6,12 @@
 
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {CLOUD} from "../../../cloudAPI";
-import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferLocations} from "../../../transferData/transferLocations";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {LOGe} from "../../../../logging/Log";
+import { xUtil } from "../../../../util/StandAloneUtil";
+import { FileUtil } from "../../../../util/FileUtil";
 
 export class LocationSyncer extends SyncingSphereItemBase {
   userId: string;
@@ -64,7 +65,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
         // the location does not exist locally but it does exist in the cloud.
         // we create it locally.
 
-        localId = Util.getUUID();
+        localId = xUtil.getUUID();
         transferLocations.createLocal(this.actions, {
           localId: localId,
           localSphereId: this.localSphereId,
@@ -195,7 +196,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
   _downloadLocationImage(localId, cloudId, imageId) {
     if (!imageId) { return; }
 
-    let toPath = Util.getPath(localId + '.jpg');
+    let toPath = FileUtil.getPath(localId + '.jpg');
     this.transferPromises.push(
       CLOUD.forLocation(cloudId).downloadLocationPicture(toPath)
         .then((picturePath) => {

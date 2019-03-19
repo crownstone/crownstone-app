@@ -2,6 +2,7 @@ import { Alert, NativeModules, NativeEventEmitter } from 'react-native';
 import {LOG, LOGe, LOGi} from '../../logging/Log'
 import { Util } from "../../util/Util";
 import {DISABLE_NATIVE} from "../../ExternalConfig";
+import { xUtil } from "../../util/StandAloneUtil";
 
 let BluenetEmitter = { addListener: (a,b) => { return {remove:() => {}} }};
 
@@ -67,7 +68,7 @@ class NativeBusClass {
     }
 
     // generate unique id
-    let id = Util.getUUID();
+    let id = xUtil.getUUID();
 
     // subscribe to native event.
     let subscription = BluenetEmitter.addListener(topic, callback);

@@ -8,22 +8,7 @@ import activityLogsReducer from './stoneSubReducers/activityLog'
 import activityRangesReducer from './stoneSubReducers/activityRange'
 import reachabilityReducer from './stoneSubReducers/reachability'
 import lastUpdatedReducer from './stoneSubReducers/lastUpdated'
-
-export let BEHAVIOUR_TYPES = {
-  NEAR:       'onNear',
-  AWAY:       'onAway',
-  HOME_ENTER: 'onHomeEnter',
-  HOME_EXIT:  'onHomeExit',
-  ROOM_ENTER: 'onRoomEnter',
-  ROOM_EXIT:  'onRoomExit',
-};
-
-export let STONE_TYPES = {
-  plug:          "PLUG",
-  builtin:       "BUILTIN",
-  guidestone:    "GUIDESTONE",
-  crownstoneUSB: "CROWNSTONE_USB"
-};
+import { STONE_TYPES } from "../../../Enums";
 
 let defaultSettings = {
   config: {

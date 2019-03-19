@@ -23,15 +23,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { colors, screenWidth, screenHeight } from '../../styles'
 import { Util }                from "../../../util/Util";
-import { Icon }                from "../../components/Icon";
-import { StoneUtil }           from "../../../util/StoneUtil";
-import { AnimatedCircle }      from "../../components/animated/AnimatedCircle";
-import { DimmerButton }        from "../../components/DimmerButton";
-import { INTENTS }             from "../../../native/libInterface/Constants";
 import { Permissions}          from "../../../backgroundProcesses/PermissionManager";
-import { EventBusClass}        from "../../../util/EventBus";
-import { LockedStateUI}        from "../../components/LockedStateUI";
-import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import {DeviceButton, DeviceInformation} from "./DeviceSummary";
 
 export class UsbSummary extends LiveComponent<any, any> {

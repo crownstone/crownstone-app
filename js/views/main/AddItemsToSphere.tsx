@@ -22,13 +22,9 @@ import {
 } from 'react-native';
 let Actions = require('react-native-router-flux').Actions;
 
-import { LOG }       from '../../logging/Log'
-import {screenWidth, availableScreenHeight, topBarHeight, colors, OrangeLine} from '../styles'
+import { screenWidth, availableScreenHeight, topBarHeight, colors, OrangeLine, deviceStyles } from "../styles";
 import {Background} from "../components/Background";
-import {deviceStyles} from "../deviceViews/DeviceOverview";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {textStyle} from "../deviceViews/elements/DeviceBehaviour";
-import {Util} from "../../util/Util";
 import {IconButton} from "../components/IconButton";
 import {BackAction} from "../../util/Back";
 

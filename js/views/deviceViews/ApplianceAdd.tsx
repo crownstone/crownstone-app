@@ -28,6 +28,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 
@@ -92,7 +93,7 @@ lang("_Device_name_must_be_at_l_body"),
     else {
       this.props.eventBus.emit('showLoading', 'Creating new Device Type...');
       let actions = [];
-      let localId = Util.getUUID();
+      let localId = xUtil.getUUID();
       // todo Move to create new location method once it is implemented in transferLocations
       actions.push({type: 'ADD_APPLIANCE', sphereId: this.props.sphereId, applianceId: localId, data:{name: this.state.name, icon: this.state.icon}});
       transferAppliances.createOnCloud(actions, {

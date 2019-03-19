@@ -17,10 +17,6 @@ import {
   TouchableHighlight,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
-import {colors, screenWidth} from "../../styles";
-import {FadeInView} from "../../components/animated/FadeInView";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {
   DiagOptions,
@@ -28,7 +24,6 @@ import {
   DiagSingleButton,
   DiagSingleButtonHelp,
   DiagSingleButtonGoBack,
-  DiagSingleButtonQuit,
   DiagSingleButtonToOverview,
   DiagYesNo,
   TestResult,
@@ -36,16 +31,15 @@ import {
   DiagSingleButtonMeshTopology,
   DiagWaiting, DiagListOfStones
 } from "./DiagnosticUtil";
-import {SlideInView} from "../../components/animated/SlideInView";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import {TestRunner} from "./TestRunner";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {Util} from "../../../util/Util";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {INTENTS} from "../../../native/libInterface/Constants";
-import {BlePromiseManager} from "../../../logic/BlePromiseManager";
 import {BleUtil} from "../../../util/BleUtil";
 import {BluenetPromiseWrapper} from "../../../native/libInterface/BluenetPromise";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class ProblemWithExistingCrownstone extends Component<any, any> {
@@ -922,7 +916,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(true); this.setState({ crownstoneProblemType: 'not_in_mesh' }); }); },
             () => { this._changeContent(() => { this.setState({ existingTestsFinished: true, crownstoneProblemType: 'unexpected_switches'   }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'only_switches_when_near' }); }); },
-            () => { this._changeContent(() => { this.setState({ crownstoneProblemType: 'behaviour_is_weird' }); }); },
+            () => { this._changeContent(() => { this.setState({ existingTestsFinished: true, crownstoneProblemType: 'behaviour_is_weird' }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'other' }); }); },
           ]}
         />
@@ -930,7 +924,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
     else if (this.state.existingTestsFinished === false) {
       let name = nameFromSummary(this.state.problemStoneSummary);
-      return <DiagWaiting visible={this.state.visible} header={"Checking on " + name + '...'}/>;
+      return <DiagWaiting visible={this.state.visible} header={lang("Checking_on____",name)}/>;
     }
     else if (this.state.crownstoneProblemType === 'searching') {
       return this._handleSearching();

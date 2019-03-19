@@ -6,6 +6,7 @@ import { Util } from './Util'
 
 import { DirectCommand } from '../logic/DirectCommand'
 import {Scheduler} from "../logic/Scheduler";
+import { xUtil } from "./StandAloneUtil";
 
 
 export const BleUtil = {
@@ -46,7 +47,7 @@ export const BleUtil = {
     LOGd.info("_getNearestCrownstoneFromEvent: LOOKING FOR NEAREST");
     return new Promise((resolve, reject) => {
       let measurementMap = {};
-      let highFrequencyRequestUUID = Util.getUUID();
+      let highFrequencyRequestUUID = xUtil.getUUID();
       this.startHighFrequencyScanning(highFrequencyRequestUUID);
 
       let sortingCallback = (nearestItem) => {
@@ -85,7 +86,7 @@ export const BleUtil = {
     this.cancelSearch();
     return new Promise((resolve, reject) => {
       let count = 0;
-      let highFrequencyRequestUUID = Util.getUUID();
+      let highFrequencyRequestUUID = xUtil.getUUID();
       this.startHighFrequencyScanning(highFrequencyRequestUUID);
 
       let cleanup = {unsubscribe:()=>{}, timeout: undefined};

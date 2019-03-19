@@ -1,8 +1,8 @@
 import { Platform }       from 'react-native';
 import { CLOUD }          from "../../cloud/cloudAPI";
 import {LOG, LOGe} from "../../logging/Log";
-import {safeDeleteFile, Util} from "../../util/Util";
 import { FirmwareHelper } from "./FirmwareHelper";
+import { FileUtil } from "../../util/FileUtil";
 
 const RNFS = require('react-native-fs');
 const sha1 = require('sha-1');
@@ -45,11 +45,11 @@ class FirmwareHandlerClass {
 
   download(sourceDetails, type) {
     // set path depending on ios or android
-    let toPath = Util.getPath(type + '.zip');
+    let toPath = FileUtil.getPath(type + '.zip');
 
     this.paths[type] = toPath;
     // remove the file we will write to if it exists
-    return safeDeleteFile(toPath)
+    return FileUtil.safeDeleteFile(toPath)
       .then(() => {
         return CLOUD.downloadFile(sourceDetails.downloadUrl, toPath, {
           start: (data) => {
@@ -76,13 +76,13 @@ class FirmwareHandlerClass {
             resolve();
           }
           else {
-            safeDeleteFile(toPath).catch(() => {});
+            FileUtil.safeDeleteFile(toPath).catch(() => {});
             reject("Invalid hash");
           }
         })
       })
       .catch((err) => {
-        safeDeleteFile(toPath).catch(() => {});
+        FileUtil.safeDeleteFile(toPath).catch(() => {});
         LOGe.info("FirmwareHandler: Could not download file", err);
 
         // propagate the error

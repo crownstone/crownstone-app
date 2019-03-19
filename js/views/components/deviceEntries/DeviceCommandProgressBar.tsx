@@ -23,11 +23,12 @@ import {
 import { Util } from '../../../util/Util'
 import { colors, screenWidth } from '../../styles'
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 export class DeviceCommandProgressBar extends Component<any, any> {
   unsubscribe = [];
   animating = false;
-  id = Util.getUUID();
+  id = xUtil.getUUID();
   initiallyOpenTimeout : any;
   _connectingToRelatedCrownstone = false;
   _pendingProcess = true;

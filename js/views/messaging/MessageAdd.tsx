@@ -30,6 +30,7 @@ import {MessageUtil} from "../../util/MessageUtil";
 import {BackAction} from "../../util/Back";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {CancelButton} from "../components/topbar/CancelButton";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
@@ -97,7 +98,7 @@ lang("_No_recipients____I_cant__body"),
     let everyoneInSphere = this.state.recipients[EVERYONE_IN_SPHERE] === true;
     let everyoneInSphereIncludingOwner = everyoneInSphere && this.state.everyoneInSphereIncludingOwner;
     let localLocationIdToTrigger = this.state.triggerLocationId === ANYWHERE_IN_SPHERE ? null : this.state.triggerLocationId;
-    let messageId = Util.getUUID();
+    let messageId = xUtil.getUUID();
 
     this.props.store.dispatch({
       type:'ADD_MESSAGE',

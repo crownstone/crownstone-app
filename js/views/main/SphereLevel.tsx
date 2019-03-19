@@ -5,7 +5,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereLevel", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Animated,
   Dimensions,
@@ -19,16 +19,11 @@ import {
   View
 } from 'react-native';
 
-let Actions = require('react-native-router-flux').Actions;
-import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
-import { RoomCircle }        from '../components/RoomCircle'
-import { getFloatingStones} from '../../util/DataUtil'
 import { screenWidth} from '../styles'
-import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
-import {Util} from "../../util/Util";
 import {SphereCircle} from "../components/SphereCircle";
+import { xUtil } from "../../util/StandAloneUtil";
 
 export class SphereLevel extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
@@ -44,7 +39,7 @@ export class SphereLevel extends LiveComponent<any, any> {
     super(props);
 
     this._baseRadius = 0.15 * screenWidth;
-    this.viewId = Util.getUUID()
+    this.viewId = xUtil.getUUID()
     this._currentSphere = props.sphereId;
     this._showingFloatingRoom = false
   }

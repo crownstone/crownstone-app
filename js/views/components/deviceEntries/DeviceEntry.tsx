@@ -25,21 +25,21 @@ import { Util } from '../../../util/Util'
 import { styles, colors}        from '../../styles'
 import { AlternatingContent }                 from '../animated/AlternatingContent';
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
-import { STONE_TYPES }                        from '../../../router/store/reducers/stones';
 import { INTENTS }                            from '../../../native/libInterface/Constants';
 import { Actions }                            from 'react-native-router-flux';
 import { StoneUtil }                          from "../../../util/StoneUtil";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
-import {FadeInView} from "../animated/FadeInView";
 import {SlideFadeInView} from "../animated/SlideFadeInView";
+import { xUtil } from "../../../util/StandAloneUtil";
+import { STONE_TYPES } from "../../../Enums";
 
 
 export class DeviceEntry extends Component<any, any> {
   baseHeight : number;
   unsubscribe = [];
   animating = false;
-  id = Util.getUUID();
+  id = xUtil.getUUID();
 
   showMeshMessageTimeout
 

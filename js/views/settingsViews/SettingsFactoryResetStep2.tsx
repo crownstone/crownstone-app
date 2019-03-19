@@ -30,6 +30,7 @@ import {LOG, LOGe} from '../../logging/Log'
 import { BlePromiseManager }     from "../../logic/BlePromiseManager";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
+import { xUtil } from "../../util/StandAloneUtil";
 
 export class SettingsFactoryResetStep2 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -37,7 +38,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
   };
 
   lookingForCrownstone : boolean = true;
-  uuid : string = Util.getUUID();
+  uuid : string = xUtil.getUUID();
 
   constructor(props) {
     super(props);

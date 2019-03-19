@@ -5,7 +5,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceOverview", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   ActivityIndicator,
@@ -26,7 +26,6 @@ const Swiper = require("react-native-swiper");
 import { Util }                 from "../../util/Util";
 import { DeviceBehaviour }      from "./elements/DeviceBehaviour";
 import { DeviceSummary }        from "./elements/DeviceSummary";
-import { STONE_TYPES }          from "../../router/store/reducers/stones";
 import { DeviceError }          from "./elements/DeviceError";
 import { DeviceUpdate }         from "./elements/DeviceUpdate";
 import { GuidestoneSummary }    from "./elements/GuidestoneSummary";
@@ -43,6 +42,7 @@ import { StoneDeleted }         from "../static/StoneDeleted";
 import { UsbSummary }           from "./elements/UsbSummary";
 import { Scheduler }            from "../../logic/Scheduler";
 import {DeviceActivityLog} from "./elements/DeviceActivityLog";
+import { STONE_TYPES } from "../../Enums";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -442,43 +442,4 @@ let swiperStyles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   }
-});
-
-let textColor = colors.white;
-
-export const deviceStyles = StyleSheet.create({
-  header: {
-    color: textColor.hex,
-    fontSize: 25,
-    fontWeight:'800',
-    textAlign:'center'
-  },
-  subHeader: {
-    paddingTop:10,
-    color: textColor.hex,
-    fontSize: 22,
-    fontWeight:'800'
-  },
-  text: {
-    color: textColor.hex,
-    fontSize: 16,
-    textAlign:'center',
-    fontWeight:'500'
-  },
-  subText: {
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-  },
-  explanation: {
-    width: screenWidth,
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-    textAlign:'center'
-  },
-  errorText: {
-    color: textColor.hex,
-    fontSize: 16,
-    textAlign:'center',
-    fontWeight:'600'
-  },
 });

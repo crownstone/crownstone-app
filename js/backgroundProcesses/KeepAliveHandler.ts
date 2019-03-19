@@ -5,9 +5,9 @@ import { KEEPALIVE_INTERVAL, KEEPALIVE_ATTEMPTS } from '../ExternalConfig';
 import { NativeBus }                              from '../native/libInterface/NativeBus';
 import { BatchCommandHandler }                    from '../logic/BatchCommandHandler';
 import { Util }                                   from '../util/Util'
-import { STONE_TYPES, BEHAVIOUR_TYPES }                      from '../router/store/reducers/stones'
 import { canUseIndoorLocalizationInSphere } from '../util/DataUtil'
 import {Permissions} from "./PermissionManager";
+import { BEHAVIOUR_TYPES, STONE_TYPES } from "../Enums";
 
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 
@@ -119,7 +119,7 @@ class KeepAliveHandlerClass {
           let delay = determineDelay(state.spheres[sphereId].config.exitDelay);
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
-          if      (behaviourHomeExit.active === true)                   { behaviour = behaviourHomeExit; }
+          if      (behaviourHomeExit.active === true)                         { behaviour = behaviourHomeExit; }
           else if (behaviourRoomExit.active === true && stoneUsesRoomLevel)   { behaviour = behaviourRoomExit; delay = determineDelay(behaviour.delay); }
           else if (behaviourAway.active     === true && !stoneUsesRoomLevel)  { behaviour = behaviourAway;     delay = determineDelay(behaviour.delay); }
 

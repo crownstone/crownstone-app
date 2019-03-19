@@ -70,36 +70,55 @@ export class SphereEdit extends Component<any, any> {
   _getItems() {
     let items = [];
     let state = this.props.store.getState();
+    let amountOfSpheres = Object.keys(state.spheres).length;
+
+    items.push({ label: lang("What_can_I_help_you_with_"), type: 'largeExplanation' });
+    let radius = 12;
 
     if (!this.props.sphereId || !state.spheres[this.props.sphereId]) {
-      items.push({label: lang("What_can_I_help_you_with_"),  type:'largeExplanation'});
+      if (amountOfSpheres === 0) {
 
-      let radius = 12;
-
-      items.push({
-        label: lang("Create_Sphere"),
-        type: 'navigation',
-        largeIcon: <IconButton name='c1-sphere' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
-        callback: () => {
-          createNewSphere(eventBus, this.props.store, state.user.firstName+"'s Sphere")
-            .then((sphereId) => {
-              Actions.refresh({sphereId:sphereId})
-              setTimeout(() => {Actions.aiStart()}, 100)
-            })
-            .catch((err) => {
-              Alert("Whoops!", "Something went wrong with the creation of your Sphere.", [{text:"OK"}])
-            });
-        }
-      });
-      items.push({label: lang("A_Sphere_contains_your_Cr"),  type:'explanation', below: true});
-      return items;
+        items.push({
+          label: lang("Create_Sphere"),
+          type: 'navigation',
+          largeIcon: <IconButton name='c1-sphere' buttonSize={55} size={40} radius={radius} button={true} color="#fff"
+                                 buttonStyle={{ backgroundColor: colors.green.hex }}/>,
+          callback: () => {
+            createNewSphere(eventBus, this.props.store, state.user.firstName + "'s Sphere")
+              .then((sphereId) => {
+                Actions.refresh({ sphereId: sphereId })
+                setTimeout(() => {
+                  Actions.aiStart()
+                }, 100)
+              })
+              .catch((err) => {
+                Alert("Whoops!", "Something went wrong with the creation of your Sphere.", [{ text: "OK" }])
+              });
+          }
+        });
+        items.push({ label: lang("A_Sphere_contains_your_Cr"), type: 'explanation', below: true });
+        return items;
+      }
+      else {
+        items.push({label: lang("Sphere_Creation"),  type:'explanation'});
+        items.push({
+          label: lang("Create_a_new_Sphere"),
+          largeIcon: <IconButton plusSize={25} addIcon={true} name="c1-sphere" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.csBlueLight.hex}} />,
+          type: 'navigation',
+          callback: () => {
+            Actions.addSphereTutorial();
+          }
+        });
+        items.push({label: lang("Careful_a_sphere_is_not"),    type:'explanation', below: true});
+        items.push({label: lang("More_items_are_available_"),  type:'explanation', below: false});
+        return items;
+      }
     }
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    items.push({label: lang("What_can_I_help_you_with_"),  type:'largeExplanation'});
 
-    let radius = 12;
+
 
     items.push({
       label: lang("Rooms"),
@@ -119,8 +138,6 @@ export class SphereEdit extends Component<any, any> {
         Actions.sphereCrownstoneOverview({sphereId: this.props.sphereId});
       }
     });
-
-
 
     items.push({
       label: lang("Users"),

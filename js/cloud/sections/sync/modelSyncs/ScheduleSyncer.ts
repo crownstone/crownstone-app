@@ -14,6 +14,7 @@ import {transferSchedules} from "../../../transferData/transferSchedules";
 import {Util} from "../../../../util/Util";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {SyncingSphereItemBase} from "./SyncingBase";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 export class ScheduleSyncer extends SyncingSphereItemBase {
@@ -79,7 +80,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
       else {
         // the schedule does not exist locally but it does exist in the cloud.
         // we create it locally.
-        localId = Util.getUUID();
+        localId = xUtil.getUUID();
         localScheduleIdsSynced[localId] = true;
         // add schedule
         transferSchedules.createLocal(this.actions, {

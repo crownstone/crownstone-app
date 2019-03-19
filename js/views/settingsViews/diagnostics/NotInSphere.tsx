@@ -17,9 +17,8 @@ import {
   Text,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
 import {colors, screenWidth} from "../../styles";
-import {FadeInView, HiddenFadeInView} from "../../components/animated/FadeInView";
+import {FadeInView} from "../../components/animated/FadeInView";
 import {
   DiagSingleBleTroubleshooter,
   DiagSingleButtonHelp,
@@ -27,6 +26,7 @@ import {
   DiagSingleButtonQuit, DiagSingleButtonToOverview, DiagYesNo, TestResult
 } from "./DiagnosticUtil";
 import {TestRunner} from "./TestRunner";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class NotInSphere extends Component<any, any> {
@@ -121,15 +121,6 @@ export class NotInSphere extends Component<any, any> {
   }
 
   _getResults() {
-    let state = this.props.store.getState();
-    let spheres = state.spheres;
-    let keysLoaded = false;
-    Object.keys(spheres).forEach((sphereId) => {
-      if (spheres[sphereId].state.present === true) {
-        keysLoaded = true;
-      }
-    })
-
     if (this.state.scanningFinished) {
       if (this.state.ibeacons && this.state.verifiedAdvertisements === false && !this.props.canSetupStones) {
         return (
@@ -177,26 +168,15 @@ export class NotInSphere extends Component<any, any> {
         );
       }
       else if (this.state.anyCrownstoneAdvertisements && this.props.canSetupStones && this.state.userInputVisitingSphere === false) {
-        if (!keysLoaded) {
-          return (
-            <DiagSingleBleTroubleshooter
-              visible={this.state.visible}
-              header={lang("I_can_hear_a_Crownstone_bu")}
-              explanation={ lang("In_this_case__you_can_try")}
-            />
-          );
-        }
-        else {
-          return (
-            <DiagSingleButtonHelp
-              visible={this.state.visible}
-              header={
-                lang("I_can_hear_a_Crownstone__noAdm")
-              }
-              explanation={lang("Tap_the_button_below_to_go")}
-            />
-          );
-        }
+        return (
+          <DiagSingleButtonHelp
+            visible={this.state.visible}
+            header={
+              lang("I_can_hear_a_Crownstone__noAdm")
+            }
+            explanation={lang("Tap_the_button_below_to_go")}
+          />
+        );
       }
       else if (this.state.anyCrownstoneAdvertisements && !this.props.canSetupStones && this.state.userInputVisitingSphere === false) {
         return (

@@ -36,6 +36,7 @@ import { DEBUG_MODE_ENABLED } from '../../ExternalConfig';
 import { TopBar }             from "../components/Topbar";
 import { Icon }               from "../components/Icon";
 import { Sentry }             from "react-native-sentry";
+import { FileUtil } from "../../util/FileUtil";
 
 
 export class Login extends Component<any, any> {
@@ -198,7 +199,7 @@ lang("_Incorrect_Email_or_Passw_body"),
         throw err;
       })
       .then((response) => {
-        console.log("This is the reponse from the cloud", response);
+        // console.log("This is the reponse from the cloud", response);
         return new Promise((resolve, reject) => {
           // start the login process from the store manager.
           StoreManager.userLogIn(response.userId)
@@ -209,7 +210,7 @@ lang("_Incorrect_Email_or_Passw_body"),
         })
       })
       .then((response) => {
-        console.log("This is the reponse from the SM", response);
+        // console.log("This is the reponse from the SM", response);
         this.finalizeLogin(response.id, response.userId);
       })
       .catch((err) => { LOGe.info("Error during login.", err); })
@@ -280,7 +281,7 @@ lang("_Incorrect_Email_or_Passw_body"),
           // if the file belongs to this user, we want to upload it to the cloud.
           if (file.name === filename) {
             uploadingImage = true;
-            let newPath = Util.getPath(userId + '.jpg');
+            let newPath = FileUtil.getPath(userId + '.jpg');
             LOGi.info("Login: new path", newPath);
             CLOUD.forUser(userId).uploadProfileImage(file.path)
               .then(() => {
@@ -303,14 +304,14 @@ lang("_Incorrect_Email_or_Passw_body"),
       };
 
       // read the document dir for files that have been created during the registration process
-      RNFS.readDir(Util.getPath())
+      RNFS.readDir(FileUtil.getPath())
         .then(handleFiles)
     });
   }
 
 
   downloadImage(userId) {
-    let toPath = Util.getPath(userId + '.jpg');
+    let toPath = FileUtil.getPath(userId + '.jpg');
     return CLOUD.forUser(userId).downloadProfileImage(toPath);
   }
 
@@ -341,7 +342,6 @@ lang("_Incorrect_Email_or_Passw_body"),
     let parts = 1/5;
 
     let promises = [];
-    console.log("DOING USER ID", userId)
 
     // get more data on the user
     promises.push(

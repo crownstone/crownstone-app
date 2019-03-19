@@ -66,7 +66,6 @@ export class ActivityLogProcessor {
   }
 
   _addEventsForActivityRanges(logs, activityRanges, keepAliveType, userId) {
-    console.log("activityRanges", activityRanges)
     // add an enter event on the start, and a leave event at the last time
     // do this for your used, then check if the other users did something?
     let now = new Date().valueOf();
@@ -196,7 +195,13 @@ export class ActivityLogProcessor {
           else {
             // not cancelled, check if expired
             if (now - log.timestamp >= 1000 * log.delayInCommand) {
-              result.push(this._generateExpiredTimeoutEvent(log.timestamp + 1000*log.delayInCommand, log.switchedToState, keepAliveType,'multiswitch'));
+              result.push({
+                timestamp: log.timestamp + 1000*log.delayInCommand,
+                type: 'generatedResponse',
+                intent: log.intent,
+                switchedToState: log.switchedToState,
+              })
+
             }
           }
         }
@@ -246,7 +251,7 @@ export class ActivityLogProcessor {
     let presumedState = null;
     let result = [];
 
-    let checkForDuplicate = (log) => {
+    let checkAndMarkForDuplicate = (log) => {
       if (log.switchedToState === -1) {
         log.presumedDuplicate = true;
       }
@@ -280,7 +285,7 @@ export class ActivityLogProcessor {
         }
       }
       else if (log.type === 'generatedResponse') {
-        checkForDuplicate(log);
+        checkAndMarkForDuplicate(log);
         if (log.presumedDuplicate !== true) {
           result.push(log);
         }
@@ -293,7 +298,7 @@ export class ActivityLogProcessor {
         result.push(log);
       }
       else if (log.type === 'schedule') {
-        checkForDuplicate(log);
+        checkAndMarkForDuplicate(log);
         result.push(log);
       }
       else {

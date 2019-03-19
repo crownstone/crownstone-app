@@ -13,8 +13,8 @@ import {
 
 import { colors } from '../styles'
 import {Icon} from "./Icon";
-import {Util} from "../../util/Util";
 import {IconButton} from "./IconButton";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 export class DoubleTapDelete extends Component<any, any> {
@@ -26,7 +26,7 @@ export class DoubleTapDelete extends Component<any, any> {
     super(props);
     this.state = {deleteActive:false};
     this.resetTimeout = undefined;
-    this.id = Util.getUUID();
+    this.id = xUtil.getUUID();
   }
 
   componentWillUnmount() {

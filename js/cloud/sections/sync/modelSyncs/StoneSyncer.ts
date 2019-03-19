@@ -12,6 +12,7 @@ import {LOGe, LOGw} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {ActivityLogSyncer} from "./ActivityLogSyncer";
 import {ActivityRangeSyncer} from "./ActivityRangeSyncer";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 export class StoneSyncer extends SyncingSphereItemBase {
 
@@ -74,7 +75,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
       else {
         // the stone does not exist locally but it does exist in the cloud.
         // we create it locally.
-        localId = Util.getUUID();
+        localId = xUtil.getUUID();
 
         let cloudDataForLocal = {...stone_from_cloud};
         cloudDataForLocal['localApplianceId'] = this._getLocalApplianceId(stone_from_cloud.applianceId);

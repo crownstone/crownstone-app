@@ -22,7 +22,7 @@ import {
 
 import { colors}             from '../../styles'
 import { SetupStateHandler } from "../../../native/setup/SetupStateHandler";
-import { STONE_TYPES }       from "../../../router/store/reducers/stones";
+import { STONE_TYPES } from "../../../Enums";
 
 export class DeviceEntrySubText extends Component<any, any> {
   render() {

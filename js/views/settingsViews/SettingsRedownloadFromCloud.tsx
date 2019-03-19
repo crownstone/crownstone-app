@@ -16,9 +16,8 @@ import {
 } from 'react-native';
 
 import { Background } from '../components/Background'
-import {colors, screenHeight, screenWidth} from "../styles";
+import { colors, deviceStyles, screenHeight, screenWidth } from "../styles";
 import {IconButton} from "../components/IconButton";
-import {deviceStyles} from "../deviceViews/DeviceOverview";
 import {AppUtil} from "../../util/AppUtil";
 
 

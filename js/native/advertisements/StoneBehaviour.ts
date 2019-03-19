@@ -2,8 +2,6 @@ import { Alert }                    from "react-native"
 import {LOG, LOGd, LOGw} from "../../logging/Log";
 import { eventBus }                 from "../../util/EventBus";
 import { FirmwareHandler }          from "../firmware/FirmwareHandler";
-import { BEHAVIOUR_TYPES }          from "../../router/store/reducers/stones";
-import { BleUtil }                  from "../../util/BleUtil";
 import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
 import { TIME_BETWEEN_TAP_TO_TOGGLES, TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY } from "../../ExternalConfig";
 import { addDistanceToRssi, Util }  from "../../util/Util";
@@ -11,6 +9,8 @@ import { LocalNotifications }       from "../../notifications/LocalNotifications
 import { BehaviourUtil }            from "../../util/BehaviourUtil";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {INTENTS} from "../libInterface/Constants";
+import { xUtil } from "../../util/StandAloneUtil";
+import { BEHAVIOUR_TYPES } from "../../Enums";
 
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
@@ -95,7 +95,6 @@ export class StoneBehaviour {
     this.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * this.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
     this.samples += (this.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER) ? 1 : 0;
 
-
     if (!toggled) {
       this._handleNearFar(state, stone);
     }
@@ -142,7 +141,7 @@ export class StoneBehaviour {
           .then((newSwitchState : {data: number}) => {
             eventBus.emit("NEW_ACTIVITY_LOG", {
               command:     "tap2toggle",
-              commandUuid: Util.getUUID(),
+              commandUuid: xUtil.getUUID(),
               connectedTo: this.stoneId,
               target:      this.stoneId,
               timeout:     0,
@@ -203,9 +202,8 @@ export class StoneBehaviour {
     }
 
     let farThreshold = addDistanceToRssi(stone.config.nearThreshold, 1.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
-
     // these event are only used for when there are no room-level options possible
-    if (!canUseIndoorLocalizationInSphere(state, this.sphereId)) {
+    if (!canUseIndoorLocalizationInSphere(state, this.sphereId) || stone.config.locationId === null) {
       if (this.rssiAverage >= stone.config.nearThreshold) {
         // only trigger if the last type of event this module triggered was NOT a near event.
         if (this.lastTriggerType !== BEHAVIOUR_TYPES.NEAR) {
@@ -223,6 +221,7 @@ export class StoneBehaviour {
               this.lastTriggerTime = new Date().valueOf();
             }
           };
+
           BehaviourUtil.enactBehaviour(this.store, this.sphereId, this.stoneId, BEHAVIOUR_TYPES.NEAR, callbacks);
         }
       }
@@ -249,7 +248,7 @@ export class StoneBehaviour {
       }
       // in case we are between near and far, only clear pending timeouts. They will be placed back on the next event.
       else if (this.rssiAverage > stone.config.nearThreshold && this.rssiAverage < farThreshold) {
-        // this._cleanupPendingActions(ref);
+
       }
     }
   }

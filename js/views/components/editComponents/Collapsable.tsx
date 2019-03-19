@@ -13,15 +13,15 @@ import {
 
 import { Icon } from '../Icon';
 import { styles, colors, screenWidth} from '../../styles'
-import {Util} from "../../../util/Util";
 import {eventBus} from "../../../util/EventBus";
 import {SlideInView} from "../animated/SlideInView";
 import {Separator} from "../Separator";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 export class CollapsableBar extends Component<any, any> {
   unsubscribe = [];
-  uuid = Util.getUUID();
+  uuid = xUtil.getUUID();
 
   constructor(props) {
     super(props);

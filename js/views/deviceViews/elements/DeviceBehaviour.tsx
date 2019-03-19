@@ -23,8 +23,8 @@ const Actions = require('react-native-router-flux').Actions;
 import { colors, screenWidth }              from '../../styles'
 import { Util }                             from "../../../util/Util";
 import { canUseIndoorLocalizationInSphere } from "../../../util/DataUtil";
-import { BEHAVIOUR_TYPES }                  from "../../../router/store/reducers/stones";
 import { Permissions }                      from "../../../backgroundProcesses/PermissionManager";
+import { BEHAVIOUR_TYPES } from "../../../Enums";
 
 
 let DISABLED_COLOR = colors.gray.hex;
@@ -155,7 +155,7 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
         }}>
           <Text style={textStyle.value}>{ lang("I_will_") }</Text>
           <Text style={[textStyle.value,{fontStyle: 'italic'}]}>{ lang("only_") }</Text>
-          <Text style={[textStyle.value,{color: colors.green.hex}]}>{ lang("_TURN_ON") }</Text>
+          <Text style={[textStyle.value,{color: colors.green.hex}]}>{ lang("TURN_ON") }</Text>
           <Text style={textStyle.value}>{ lang("_if_it_is_dark_outside_") }</Text>
         </TouchableOpacity> : undefined }
         <View style={{flex:2}} />

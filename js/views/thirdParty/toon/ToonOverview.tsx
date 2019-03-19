@@ -23,12 +23,11 @@ import {
 import {BackAction} from "../../../util/Back";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import {colors, OrangeLine, screenHeight, screenWidth, tabBarHeight} from "../../styles";
+import { colors, deviceStyles, OrangeLine, screenHeight, screenWidth, tabBarHeight } from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {Actions} from "react-native-router-flux";
 import {ScaledImage} from "../../components/ScaledImage";
-import {deviceStyles} from "../../deviceViews/DeviceOverview";
 
 
 export class ToonOverview extends LiveComponent<any, any> {

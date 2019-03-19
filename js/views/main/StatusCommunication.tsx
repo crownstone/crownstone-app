@@ -23,8 +23,7 @@ import {
   enoughCrownstonesInLocationsForIndoorLocalization,
   enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
-import { overviewStyles }     from './SphereOverview'
-import { colors, screenWidth, availableScreenHeight} from '../styles'
+import { colors, screenWidth, availableScreenHeight, overviewStyles } from "../styles";
 import { SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 

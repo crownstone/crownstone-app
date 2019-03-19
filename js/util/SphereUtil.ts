@@ -17,7 +17,6 @@ import {
   Text,
   View
 } from 'react-native';
-import {LOG} from "../logging/Log";
 import {eventBus} from "./EventBus";
 import {Permissions} from "../backgroundProcesses/PermissionManager";
 import {
@@ -42,6 +41,50 @@ export const SphereUtil = {
     if (!activeSphere) { return { sphereId: null, sphere: null }; }
 
     return { sphereId: activeSphereId, sphere: activeSphere }
+  },
+
+
+  getPresentSphere: function(state) {
+    let sphereIds = Object.keys(state.spheres);
+
+    for (let i = 0; i < sphereIds.length; i++) {
+      if (state.spheres[sphereIds[i]].state.present) {
+        return { sphereId: sphereIds[i], sphere: state.spheres[sphereIds[i]] };
+      }
+    }
+
+    return { sphereId: null, sphere: null };
+  },
+
+
+  getAmountOfPresentSpheres: function(state) : number {
+    let sphereIds = Object.keys(state.spheres);
+    let amountOfSpheres = sphereIds.length;
+
+    if (amountOfSpheres === 0) { return 0; }
+
+    let amountOfPresentSpheres = 0;
+    for (let i = 0; i < sphereIds.length; i++) {
+      if (state.spheres[sphereIds[i]].state.present) {
+        amountOfPresentSpheres += 1;
+      }
+    }
+
+    return amountOfPresentSpheres;
+  },
+
+  getTimeLastSeenInSphere: function(state, sphereId) {
+    let stones = state.spheres[sphereId].stones;
+    let stoneIds = Object.keys(stones);
+    let timeLastSeen = 0;
+    stoneIds.forEach((stoneId) => {
+      // get the most recent time.
+      if (stones[stoneId].reachability.lastSeen) {
+        timeLastSeen = Math.max(timeLastSeen, stones[stoneId].reachability.lastSeen);
+      }
+    });
+
+    return timeLastSeen > 0 ? timeLastSeen : null
   },
 
   finalizeLocalizationData: function(state) {

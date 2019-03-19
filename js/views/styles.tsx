@@ -268,6 +268,89 @@ export const styles = StyleSheet.create({
   }
 });
 
+let textColor = colors.white;
+export const deviceStyles = StyleSheet.create({
+  header: {
+    color: textColor.hex,
+    fontSize: 25,
+    fontWeight:'800',
+    textAlign:'center'
+  },
+  subHeader: {
+    paddingTop:10,
+    color: textColor.hex,
+    fontSize: 22,
+    fontWeight:'800'
+  },
+  text: {
+    color: textColor.hex,
+    fontSize: 16,
+    textAlign:'center',
+    fontWeight:'500'
+  },
+  subText: {
+    color: textColor.rgba(0.5),
+    fontSize: 13,
+  },
+  explanation: {
+    width: screenWidth,
+    color: textColor.rgba(0.5),
+    fontSize: 13,
+    textAlign:'center'
+  },
+  errorText: {
+    color: textColor.hex,
+    fontSize: 16,
+    textAlign:'center',
+    fontWeight:'600'
+  },
+});
+
+
+export const overviewStyles = StyleSheet.create({
+  mainText: {
+    backgroundColor: 'transparent',
+    textAlign: 'center',
+    color: colors.menuBackground.hex,
+    fontSize: 25,
+    fontWeight: 'bold',
+    padding: 15,
+    paddingBottom: 0
+  },
+  subText: {
+    backgroundColor: 'transparent',
+    textAlign: 'center',
+    color: colors.menuBackground.hex,
+    fontSize: 15,
+    padding: 15,
+    paddingBottom: 0
+  },
+  subTextSmall: {
+    backgroundColor: 'transparent',
+    textAlign: 'center',
+    color: colors.menuBackground.rgba(0.4),
+    fontSize: 12,
+    padding: 30,
+    paddingBottom: 0
+  },
+  bottomText: {
+    backgroundColor:'transparent',
+    color: colors.darkGreen.hex,
+    fontSize:12,
+    padding:3
+  },
+  swipeButtonText: {
+    backgroundColor: 'transparent',
+    fontSize: 40,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }
+});
+
+
+
 
 export class OrangeLine extends Component<any, any> {
   render() { return <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} />; }

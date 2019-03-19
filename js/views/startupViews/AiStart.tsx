@@ -200,10 +200,10 @@ export class AiStart extends Component<any, any> {
         }
         else if (this.props.resetViewStack === true) {
           if (Platform.OS === 'android') {
-            Actions.reset("sphereOverview");
+            Actions.drawer({type: 'reset'});
           }
           else {
-            Actions.reset("tabBar");
+            Actions.tabBar({type: 'reset'});
           }
         }
         else {

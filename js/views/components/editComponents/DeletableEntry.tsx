@@ -13,8 +13,8 @@ import {
 } from 'react-native';
 
 import {styles, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
-import {Util} from "../../../util/Util";
 import {DoubleTapDelete} from "../DoubleTapDelete";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 export class DeletableEntry extends Component<any, any> {
@@ -23,7 +23,7 @@ export class DeletableEntry extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.id = Util.getUUID();
+    this.id = xUtil.getUUID();
   }
 
   render() {

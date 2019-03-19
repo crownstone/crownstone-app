@@ -2,7 +2,7 @@ import { BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/libInterface/Consta
 import { BatchCommandHandler } from '../logic/BatchCommandHandler';
 import {LOG, LOGe} from '../logging/Log';
 import { Util } from './Util';
-import {BEHAVIOUR_TYPES} from "../router/store/reducers/stones";
+import { BEHAVIOUR_TYPES } from "../Enums";
 const SunCalc = require('suncalc');
 
 export const BehaviourUtil = {
