@@ -279,10 +279,9 @@ export default {
     This_is_how_I_respond_to_:           function() { return "This is how I respond to your location:" },
     I_will_:                             function() { return arguments[0] || "I will " },
     only_:                               function() { return "only" },
-    _TURN_ON:                            function() { return "TURN ON" },
     _if_it_is_dark_outside_:             function() { return "if it is dark outside." },
-    TURN_ON:                             function() { return "TURN ON" },
-    TURN_OFF:                            function() { return "TURN OFF" },
+    TURN_ON:                             function() { return " TURN ON " },
+    TURN_OFF:                            function() { return " TURN OFF " },
     I_wont_do_anything___:               function() { return "I won't do anything..." },
   },
   DeviceBehaviourEdit:{

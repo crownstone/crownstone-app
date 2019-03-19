@@ -17,9 +17,7 @@ import {
   Text,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
 import {
-  DiagOptions,
   DiagSingleButton,
   DiagSingleButtonGoBack,
   DiagSingleButtonHelp,
@@ -35,6 +33,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {Util} from "../../../util/Util";
 import {TestRunner} from "./TestRunner";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class ProblemWithOtherCrownstone extends Component<any, any> {

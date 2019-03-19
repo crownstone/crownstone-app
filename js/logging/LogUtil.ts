@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { safeDeleteFile, Util } from '../util/Util'
+import { FileUtil } from "../util/FileUtil";
 
 const RNFS = require('react-native-fs');
 
@@ -16,7 +16,7 @@ function getFilename(timestamp) {
 
 export function cleanLogs() {
   // create a path you want to write to
-  let logPath = Util.getPath();
+  let logPath = FileUtil.getPath();
 
   _cleanLogs(logPath);
 }
@@ -37,7 +37,7 @@ function _cleanLogs(logPath, amountOfDaysStored = 3) {
         }
       }
       for (let i = 0; i < flagForRemoval.length; i++) {
-        safeDeleteFile(logPath + "/" + flagForRemoval[i]).catch(()=>{});
+        FileUtil.safeDeleteFile(logPath + "/" + flagForRemoval[i]).catch(()=>{});
       }
     })
     .catch((err) => {
@@ -46,7 +46,7 @@ function _cleanLogs(logPath, amountOfDaysStored = 3) {
 
 export function clearLogs() {
   // create a path you want to write to
-  let logPath = Util.getPath();
+  let logPath = FileUtil.getPath();
 
   _cleanLogs(logPath,0);
 }
@@ -55,7 +55,7 @@ export function clearLogs() {
 
 export function logToFile() {
   // create a path you want to write to
-  let logPath = Util.getPath();
+  let logPath = FileUtil.getPath();
 
   // generate filename based on current date.
   let filename = getFilename(new Date().valueOf());

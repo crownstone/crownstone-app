@@ -85,6 +85,9 @@ class ToonIntegrationClass {
                 };
                 this.store.dispatch(action);
               })
+              .catch((err) => {
+
+              })
           }
         }
         else {
@@ -102,6 +105,8 @@ class ToonIntegrationClass {
 
     let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
     let deviceId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
+
+
 
     Object.keys(toons).forEach((toonId) => {
       let toon = toons[toonId];

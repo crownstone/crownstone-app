@@ -17,9 +17,8 @@ import {
   Text,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
 import {colors, screenWidth} from "../../styles";
-import {FadeInView, HiddenFadeInView} from "../../components/animated/FadeInView";
+import {FadeInView} from "../../components/animated/FadeInView";
 import {
   DiagSingleBleTroubleshooter,
   DiagSingleButtonHelp,
@@ -27,6 +26,7 @@ import {
   DiagSingleButtonQuit, DiagSingleButtonToOverview, DiagYesNo, TestResult
 } from "./DiagnosticUtil";
 import {TestRunner} from "./TestRunner";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 export class NotInSphere extends Component<any, any> {

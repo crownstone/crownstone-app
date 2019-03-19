@@ -15,7 +15,6 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import {diagnosticStyles} from "../SettingsDiagnostics";
 import {FadeInView} from "../../components/animated/FadeInView";
 import {colors, screenWidth} from "../../styles";
 import {BackAction} from "../../../util/Back";
@@ -24,6 +23,7 @@ import {AppUtil} from "../../../util/AppUtil";
 import {IconButton} from "../../components/IconButton";
 import {Icon} from "../../components/Icon";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
+import { diagnosticStyles } from "./DiagnosticStyles";
 
 
 class DiagResponseBase extends Component<{

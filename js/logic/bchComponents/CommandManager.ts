@@ -5,6 +5,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {MeshUtil} from "../../util/MeshUtil";
 import {errorCodes} from "../BatchCommandHandler";
 import mesh from "../../router/store/reducers/stoneSubReducers/mesh";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 /**
@@ -21,8 +22,8 @@ export class CommandManager {
       return new Promise((resolve, reject) => {
         // remove duplicates from list.
         this._clearDuplicates(stoneId, sphereId, command);
-        let uuid = Util.getUUID();
-        let shortUuid = Util.getShortUUID();
+        let uuid = xUtil.getUUID();
+        let shortUuid = xUtil.getShortUUID();
         this.commands[uuid] = {
           priority: priority,
           handle:   stone.config.handle,

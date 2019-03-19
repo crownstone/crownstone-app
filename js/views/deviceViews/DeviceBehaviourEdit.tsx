@@ -25,6 +25,7 @@ import { NativeBus }                   from '../../native/libInterface/NativeBus
 import {canUseIndoorLocalizationInSphere, enoughCrownstonesInLocationsForIndoorLocalization} from '../../util/DataUtil'
 import {BehaviourUtil} from "../../util/BehaviourUtil";
 import {BackAction} from "../../util/Back";
+import { xUtil } from "../../util/StandAloneUtil";
 const Actions = require('react-native-router-flux').Actions;
 
 
@@ -68,7 +69,7 @@ export class DeviceBehaviourEdit extends LiveComponent<any, any> {
     super(props);
     this.detectionTimeout = undefined;
     this.unsubscribeNative = undefined;
-    this._uuid = Util.getUUID();
+    this._uuid = xUtil.getUUID();
     this.element = undefined;
     this.stone = undefined;
     this.canDoIndoorLocalization = false;

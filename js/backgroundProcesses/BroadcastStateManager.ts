@@ -38,6 +38,8 @@ class BroadcastStateManagerClass {
         }
         if (change.changeDeveloperData) {
           this._reloadAdvertisingState();
+          this._handleActiveSphereUpdate();
+          this._reloadDevicePreferences();
         }
 
         if (change.updateActiveSphere) {
@@ -56,6 +58,7 @@ class BroadcastStateManagerClass {
       //TODO: have this respond to location changed, not just sphere changes
 
       this._reloadAdvertisingState();
+      this._handleActiveSphereUpdate();
       this._reloadDevicePreferences();
       this._initialized = true;
     }
@@ -72,6 +75,7 @@ class BroadcastStateManagerClass {
     let state = this._store.getState();
 
     let amountOfPresentSpheres = SphereUtil.getAmountOfPresentSpheres(state);
+    let presentSphere = SphereUtil.getPresentSphere(state);
     let activeSphereData = SphereUtil.getActiveSphere(state);
 
     // if there is 1 active sphere, ignore any and all switching of locationState
@@ -80,8 +84,12 @@ class BroadcastStateManagerClass {
     if (amountOfPresentSpheres === 0) {
       return this._stopAdvertising();
     }
-
-    if (amountOfPresentSpheres > 1) {
+    else if (amountOfPresentSpheres === 1) {
+      if (presentSphere.sphereId) {
+        this._updateLocationState(presentSphere.sphereId);
+      }
+    }
+    else {
       if (activeSphereData.sphere.state.present === false) {
         // do nothing since we are not in the new active sphere
       }

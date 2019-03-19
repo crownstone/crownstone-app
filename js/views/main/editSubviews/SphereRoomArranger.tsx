@@ -32,6 +32,7 @@ import {Icon} from "../../components/Icon";
 import {CancelButton} from "../../components/topbar/CancelButton";
 import {TopbarButton} from "../../components/topbar/TopbarButton";
 import {BackAction} from "../../../util/Back";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 let Actions = require('react-native-router-flux').Actions;
 
@@ -62,7 +63,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
 
     this._baseRadius = 0.15 * screenWidth;
 
-    this.viewId = Util.getUUID()
+    this.viewId = xUtil.getUUID()
     this.refName = (Math.random() * 1e9).toString(36);
 
     this.props.navigation.setParams({rightAction: () => { this._storePositions();}})

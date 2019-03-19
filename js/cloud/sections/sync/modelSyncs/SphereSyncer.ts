@@ -19,6 +19,7 @@ import {LOG} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {ToonSyncer} from "./thirdParty/ToonSyncer";
 import { PresenceSyncer } from "./PresenceSyncer";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;
@@ -66,7 +67,7 @@ export class SphereSyncer extends SyncingBase {
       else {
         // the sphere does not exist locally but it does exist in the cloud.
         // we create it locally.
-        localId = Util.getUUID();
+        localId = xUtil.getUUID();
         cloudIdMap[sphere_from_cloud.id] = localId;
         transferSpheres.createLocal(this.actions, {
           localId: localId,

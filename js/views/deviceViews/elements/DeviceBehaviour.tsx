@@ -155,7 +155,7 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
         }}>
           <Text style={textStyle.value}>{ lang("I_will_") }</Text>
           <Text style={[textStyle.value,{fontStyle: 'italic'}]}>{ lang("only_") }</Text>
-          <Text style={[textStyle.value,{color: colors.green.hex}]}>{ lang("_TURN_ON") }</Text>
+          <Text style={[textStyle.value,{color: colors.green.hex}]}>{ lang("TURN_ON") }</Text>
           <Text style={textStyle.value}>{ lang("_if_it_is_dark_outside_") }</Text>
         </TouchableOpacity> : undefined }
         <View style={{flex:2}} />

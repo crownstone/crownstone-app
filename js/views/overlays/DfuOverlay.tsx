@@ -33,6 +33,7 @@ import {Bluenet} from "../../native/libInterface/Bluenet";
 import KeepAwake from 'react-native-keep-awake';
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import { FirmwareHelper } from "../../native/firmware/FirmwareHelper";
+import { xUtil } from "../../util/StandAloneUtil";
 
 let STEP_TYPES = {
   UPDATE_AVAILABLE:           'UPDATE_AVAILABLE',
@@ -78,7 +79,7 @@ export class DfuOverlay extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.uuid = Util.getUUID();
+    this.uuid = xUtil.getUUID();
     this.state = {
       visible: false,
       step: STEP_TYPES.UPDATE_AVAILABLE,

@@ -118,7 +118,7 @@ export const AppUtil = {
         state:'startLogOut'
       }
     });
-
+    // TODO: Wait for possibly pending sync to stop
     eventBus.emit("showLoading", {text:lang("Logging_out_and_closing_a"), opacity:0.25});
 
     // clear position for this device.

@@ -11,6 +11,7 @@ import { LocalNotifications }       from "../../notifications/LocalNotifications
 import { BehaviourUtil }            from "../../util/BehaviourUtil";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {INTENTS} from "../libInterface/Constants";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
@@ -141,7 +142,7 @@ export class StoneBehaviour {
           .then((newSwitchState : {data: number}) => {
             eventBus.emit("NEW_ACTIVITY_LOG", {
               command:     "tap2toggle",
-              commandUuid: Util.getUUID(),
+              commandUuid: xUtil.getUUID(),
               connectedTo: this.stoneId,
               target:      this.stoneId,
               timeout:     0,

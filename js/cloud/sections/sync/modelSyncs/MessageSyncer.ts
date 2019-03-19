@@ -9,6 +9,7 @@ import {CLOUD} from "../../../cloudAPI";
 import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferMessages} from "../../../transferData/transferMessages";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 export class MessageSyncer extends SyncingSphereItemBase {
   userId: string;
@@ -63,7 +64,7 @@ export class MessageSyncer extends SyncingSphereItemBase {
           // do nothing.
         }
         else {
-          localId = Util.getUUID();
+          localId = xUtil.getUUID();
           let cloudDataForLocal = {...message_from_cloud};
           cloudDataForLocal['localTriggerLocationId'] = this._getLocalLocationId(message_from_cloud.triggerLocationId);
           transferMessages.createLocal( this.actions, {

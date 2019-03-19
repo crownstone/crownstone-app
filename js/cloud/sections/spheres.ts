@@ -1,8 +1,8 @@
-import {Util} from "../../util/Util";
 
-const RNFS = require('react-native-fs');
 import {transferSpheres} from "../transferData/transferSpheres";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import { xUtil } from "../../util/StandAloneUtil";
+import { FileUtil } from "../../util/FileUtil";
 
 export const spheres = {
 
@@ -25,7 +25,7 @@ export const spheres = {
       payload['gpsLocation'] = {lat:latitude, lng: longitude}
     }
 
-    let localId = Util.getUUID();
+    let localId = xUtil.getUUID();
     return this.forUser(state.user.userId).createSphere(payload, false)
       .then((response) => {
         // add the sphere to the database once it had been added in the cloud.
@@ -159,7 +159,7 @@ export const spheres = {
 
   getUserPicture(localSphereId, email, userId, background = true) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    let toPath = Util.getPath(userId + '.jpg');
+    let toPath = FileUtil.getPath(userId + '.jpg');
     return this.forSphere(cloudSphereId)._download({
       endPoint:'/Spheres/{id}/profilePic',
       data: {email: email},

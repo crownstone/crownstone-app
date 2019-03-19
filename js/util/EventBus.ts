@@ -1,5 +1,5 @@
 import {LOG, LOGe, LOGi, LOGv} from '../logging/Log'
-import { Util } from './Util'
+import { xUtil } from "./StandAloneUtil";
 
 
 const EXCLUDE_FROM_CLEAR = {
@@ -29,7 +29,7 @@ export class EventBusClass {
       this._topics[topic] = [];
 
     // generate unique id
-    let id = Util.getUUID();
+    let id = xUtil.getUUID();
 
     LOGv.event('Something is subscribing to ', topic, 'got ID:', id);
 

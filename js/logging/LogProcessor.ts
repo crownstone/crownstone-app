@@ -1,9 +1,8 @@
-import { Platform } from 'react-native';
-import { Scheduler } from '../logic/Scheduler'
-import { eventBus } from '../util/EventBus'
-import {cleanLogs} from "./LogUtil";
-import {LOG} from "./Log";
-import {LOG_LEVEL} from "./LogLevels";
+import { Platform }   from 'react-native';
+import { Scheduler }  from '../logic/Scheduler'
+import { eventBus }   from '../util/EventBus'
+import { cleanLogs }  from "./LogUtil";
+import { LOG_LEVEL }  from "./LogLevels";
 
 
 class LogProcessorClass {
