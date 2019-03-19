@@ -54,7 +54,7 @@ export default {
     The_Crownstone_switched_:            function() { return "The Crownstone switched " + arguments[0] + "."},
     Dimmed_to_arg:                       function() { return "Dimmed to " + arguments[0] + "%."},
     _told_another_Crownstone_after:      function() { return arguments[0] + " told another Crownstone to switch this one " + arguments[1] + " after " },
-    _told_this_Crownstone_after:         function() { return arguments[0] + " told this Crownstone to switch this one " + arguments[1] + " after" },
+    _told_this_Crownstone_after:         function() { return arguments[0] + " told this Crownstone to switch this one " + arguments[1] + " after " },
     _minutes:                            function() { return arguments[0] + " minutes" },
     _seconds:                            function() { return arguments[0] + " seconds" },
     _because_everyone_is_away:           function() { return arguments[0] + arguments[1] + " because everyone is away from this Crownstone." },
