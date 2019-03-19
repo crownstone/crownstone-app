@@ -123,12 +123,12 @@ class Logger {
 }
 
 
-export const LOGv   = new Logger(LOG_LEVEL.verbose);
-export const LOGd   = new Logger(LOG_LEVEL.debug  );
-export const LOGi   = new Logger(LOG_LEVEL.info   );
-export const LOG    = new Logger(LOG_LEVEL.info   );
-export const LOGw   = new Logger(LOG_LEVEL.warning);
-export const LOGe   = new Logger(LOG_LEVEL.error  );
+export const LOGv = new Logger(LOG_LEVEL.verbose);
+export const LOGd = new Logger(LOG_LEVEL.debug  );
+export const LOGi = new Logger(LOG_LEVEL.info   );
+export const LOG  = new Logger(LOG_LEVEL.info   );
+export const LOGw = new Logger(LOG_LEVEL.warning);
+export const LOGe = new Logger(LOG_LEVEL.error  );
 
 
 LOG.info("Device Manufacturer",    DeviceInfo.getManufacturer());  // e.g. Apple
