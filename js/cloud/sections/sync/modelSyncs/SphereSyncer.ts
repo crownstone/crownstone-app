@@ -7,7 +7,6 @@
 import { shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 
 import { CLOUD}               from "../../../cloudAPI";
-import { Util}                from "../../../../util/Util";
 import {getGlobalIdMap, SyncingBase} from "./SyncingBase";
 import { transferSpheres }    from "../../../transferData/transferSpheres";
 import { SphereUserSyncer }   from "./SphereUserSyncer";

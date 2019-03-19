@@ -1,11 +1,8 @@
-import { eventBus }              from '../../util/EventBus'
-import { Util }                  from '../../util/Util'
+import { eventBus }     from '../../util/EventBus'
 import {LOGd, LOGe}         from '../../logging/Log'
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {MeshUtil} from "../../util/MeshUtil";
-import {errorCodes} from "../BatchCommandHandler";
-import mesh from "../../router/store/reducers/stoneSubReducers/mesh";
 import { xUtil } from "../../util/StandAloneUtil";
+import { BCH_ERROR_CODES } from "../../Enums";
 
 
 /**
@@ -16,7 +13,7 @@ export class CommandManager {
 
   load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number, options: batchCommandEntryOptions) : Promise<bchReturnType> {
     if (stone.config.locked === true && command.commandName === "multiSwitch") {
-      return new Promise((resolve, reject) => { reject({code: errorCodes.STONE_IS_LOCKED, message:"Stone is Locked"}); });
+      return new Promise((resolve, reject) => { reject({code: BCH_ERROR_CODES.STONE_IS_LOCKED, message:"Stone is Locked"}); });
     }
     else {
       return new Promise((resolve, reject) => {

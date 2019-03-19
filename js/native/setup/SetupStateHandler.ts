@@ -1,7 +1,6 @@
 import { NativeBus }          from '../libInterface/NativeBus';
 import { SetupHelper }        from './SetupHelper';
 import { BleUtil }            from '../../util/BleUtil';
-import { STONE_TYPES }         from '../../router/store/reducers/stones'
 import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
 import {LOG, LOGd, LOGe} from '../../logging/Log';
@@ -10,6 +9,7 @@ import { DfuStateHandler }    from "../firmware/DfuStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
+import { STONE_TYPES } from "../../Enums";
 
 
 

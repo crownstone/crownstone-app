@@ -19,10 +19,9 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight} from '../../styles'
+import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {ErrorContent} from "../../content/ErrorContent";
-import {deviceStyles} from "../DeviceOverview";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 

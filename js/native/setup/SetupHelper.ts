@@ -4,7 +4,6 @@ import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
 import { NativeBus }             from '../libInterface/NativeBus';
 import {LOG, LOGe} from '../../logging/Log'
-import { STONE_TYPES }            from '../../router/store/reducers/stones'
 import { eventBus }              from '../../util/EventBus'
 import { Util }                  from '../../util/Util'
 import { CLOUD }                 from '../../cloud/cloudAPI'
@@ -15,6 +14,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
 import {StoneUtil} from "../../util/StoneUtil";
+import { STONE_TYPES } from "../../Enums";
 
 
 const networkError = 'network_error';

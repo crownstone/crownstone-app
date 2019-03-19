@@ -31,8 +31,8 @@ import {
   enoughCrownstonesForIndoorLocalization,
   enoughCrownstonesInLocationsForIndoorLocalization, requireMoreFingerprints
 } from "../../../util/DataUtil";
-import {STONE_TYPES} from "../../../router/store/reducers/stones";
 import { diagnosticStyles } from "./DiagnosticStyles";
+import { STONE_TYPES } from "../../../Enums";
 
 
 export class ProblemWithLocalization extends Component<any, any> {

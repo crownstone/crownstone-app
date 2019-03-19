@@ -19,14 +19,11 @@ import {
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
 
 import { canUseIndoorLocalizationInSphere } from "../../../util/DataUtil";
 
-import {colors, screenHeight, screenWidth} from '../../styles'
+import { colors, deviceStyles, screenHeight, screenWidth } from "../../styles";
 import { Util }                 from "../../../util/Util";
-import { deviceStyles }         from "../DeviceOverview";
-import { BEHAVIOUR_TYPES }      from "../../../router/store/reducers/stones";
 import { ActivityLogItem }      from './activityLog/ActivityLogItem';
 import { ActivityLogProcessor } from './activityLog/ActivityLogProcessor';
 import {ActivityLogDayIndicator} from "./activityLog/ActivityLogDayIndicator";
@@ -34,9 +31,9 @@ import {ActivityLogSyncer} from "../../../cloud/sections/sync/modelSyncs/Activit
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {getGlobalIdMap} from "../../../cloud/sections/sync/modelSyncs/SyncingBase";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {textStyle} from "./DeviceBehaviour";
 import {ActivityLogStatusIndicator} from "./activityLog/ActivityLogStatusIndicator";
 import {ActivityRangeSyncer} from "../../../cloud/sections/sync/modelSyncs/ActivityRangeSyncer";
+import { BEHAVIOUR_TYPES } from "../../../Enums";
 
 
 export class DeviceActivityLog extends Component<any, any> {

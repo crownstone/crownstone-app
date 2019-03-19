@@ -2,8 +2,6 @@ import { Alert }                    from "react-native"
 import {LOG, LOGd, LOGw} from "../../logging/Log";
 import { eventBus }                 from "../../util/EventBus";
 import { FirmwareHandler }          from "../firmware/FirmwareHandler";
-import { BEHAVIOUR_TYPES }          from "../../router/store/reducers/stones";
-import { BleUtil }                  from "../../util/BleUtil";
 import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
 import { TIME_BETWEEN_TAP_TO_TOGGLES, TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY } from "../../ExternalConfig";
 import { addDistanceToRssi, Util }  from "../../util/Util";
@@ -12,6 +10,7 @@ import { BehaviourUtil }            from "../../util/BehaviourUtil";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {INTENTS} from "../libInterface/Constants";
 import { xUtil } from "../../util/StandAloneUtil";
+import { BEHAVIOUR_TYPES } from "../../Enums";
 
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;

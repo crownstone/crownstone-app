@@ -19,12 +19,10 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import { styles, colors, screenWidth, screenHeight } from '../../styles'
+import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../../styles";
 import { IconButton }   from "../../components/IconButton";
 import { eventBus }     from "../../../util/EventBus";
 import { Permissions }  from "../../../backgroundProcesses/PermissionManager";
-import { StoneUtil }    from "../../../util/StoneUtil";
-import {deviceStyles} from "../DeviceOverview";
 
 export class DeviceUpdate extends Component<any, any> {
 

@@ -23,8 +23,8 @@ const Actions = require('react-native-router-flux').Actions;
 import { colors, screenWidth }              from '../../styles'
 import { Util }                             from "../../../util/Util";
 import { canUseIndoorLocalizationInSphere } from "../../../util/DataUtil";
-import { BEHAVIOUR_TYPES }                  from "../../../router/store/reducers/stones";
 import { Permissions }                      from "../../../backgroundProcesses/PermissionManager";
+import { BEHAVIOUR_TYPES } from "../../../Enums";
 
 
 let DISABLED_COLOR = colors.gray.hex;

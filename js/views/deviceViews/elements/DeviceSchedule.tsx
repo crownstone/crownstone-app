@@ -23,9 +23,8 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
+import { styles, colors, screenWidth, screenHeight, availableScreenHeight, deviceStyles } from "../../styles";
 import {IconButton} from "../../components/IconButton";
-import {deviceStyles} from "../DeviceOverview";
 import {textStyle} from "./DeviceBehaviour";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {Util} from "../../../util/Util";
@@ -208,7 +207,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
     return (
       <View style={{ width: screenWidth, alignItems:'center' }}>
         <View style={{height: 30}} />
-        <Text style={[deviceStyles.header]}>{ lang("Schedule") }</Text>
+        <Text style={deviceStyles.header}>{ lang("Schedule") }</Text>
         <View style={{height: 0.2*iconSize}} />
         <Text style={textStyle.specification}>{label}</Text>
       </View>

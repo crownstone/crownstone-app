@@ -20,15 +20,14 @@ import {
   View
 } from 'react-native';
 import { Background } from "../../components/Background";
-import { colors, OrangeLine, screenHeight, screenWidth, tabBarHeight } from "../../styles";
-import { deviceStyles } from "../../deviceViews/DeviceOverview";
+import { colors, deviceStyles, OrangeLine, screenHeight, screenWidth, tabBarHeight } from "../../styles";
 import { toonConfig } from "../../../sensitiveData/toonConfig";
 import { NativeBus } from "../../../native/libInterface/NativeBus";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { Actions } from 'react-native-router-flux';
-import {ScaledImage} from "../../components/ScaledImage";
-import {TextEditInput} from "../../components/editComponents/TextEditInput";
-import {LOGe} from "../../../logging/Log";
+import { ScaledImage } from "../../components/ScaledImage";
+import { TextEditInput } from "../../components/editComponents/TextEditInput";
+import { LOGe } from "../../../logging/Log";
 
 
 export class ToonAdd extends Component<any, any> {

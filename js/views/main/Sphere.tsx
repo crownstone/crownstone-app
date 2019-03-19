@@ -22,10 +22,9 @@ let Actions = require('react-native-router-flux').Actions;
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
 import { LOG }       from '../../logging/Log'
-import {screenWidth, availableScreenHeight, colors} from '../styles'
+import { screenWidth, availableScreenHeight, colors, overviewStyles } from "../styles";
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
-import {overviewStyles} from "./SphereOverview";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Icon} from "../components/Icon";
 

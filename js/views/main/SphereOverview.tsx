@@ -26,7 +26,7 @@ import { AnimatedBackground }       from '../components/animated/AnimatedBackgro
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
 import { LOG }                      from '../../logging/Log'
-import {availableScreenHeight, colors, OrangeLine, screenHeight, screenWidth} from '../styles'
+import { availableScreenHeight, colors, OrangeLine, overviewStyles, screenHeight, screenWidth } from "../styles";
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
@@ -36,11 +36,8 @@ import { topBarStyle }              from "../components/topbar/TopbarStyles";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
 import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
-import {SphereLevel} from "./SphereLevel";
-import {IconButton} from "../components/IconButton";
-import {OverlayBox} from "../components/overlays/OverlayBox";
-import {WNStyles} from "../overlays/WhatsNew/WhatsNewStyles";
-import {ZoomInstructionOverlay} from "./ZoomInstructionOverlay";
+import {SphereLevel}                from "./SphereLevel";
+import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
 import {Util} from "../../util/Util";
 
 
@@ -389,48 +386,4 @@ function getNavBarParams(state, props, viewState) {
 }
 
 let NAVBAR_PARAMS_CACHE = null;
-
-
-export const overviewStyles = StyleSheet.create({
-  mainText: {
-    backgroundColor: 'transparent',
-    textAlign: 'center',
-    color: colors.menuBackground.hex,
-    fontSize: 25,
-    fontWeight: 'bold',
-    padding: 15,
-    paddingBottom: 0
-  },
-  subText: {
-    backgroundColor: 'transparent',
-    textAlign: 'center',
-    color: colors.menuBackground.hex,
-    fontSize: 15,
-    padding: 15,
-    paddingBottom: 0
-  },
-  subTextSmall: {
-    backgroundColor: 'transparent',
-    textAlign: 'center',
-    color: colors.menuBackground.rgba(0.4),
-    fontSize: 12,
-    padding: 30,
-    paddingBottom: 0
-  },
-  bottomText: {
-    backgroundColor:'transparent',
-    color: colors.darkGreen.hex,
-    fontSize:12,
-    padding:3
-  },
-  swipeButtonText: {
-    backgroundColor: 'transparent',
-    fontSize: 40,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  }
-});
-
 

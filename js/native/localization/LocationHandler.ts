@@ -14,14 +14,13 @@ import { KeepAliveHandler }         from '../../backgroundProcesses/KeepAliveHan
 import { Scheduler }                from '../../logic/Scheduler';
 import {LOG, LOGe} from '../../logging/Log';
 import { Util }                     from '../../util/Util';
-import { BEHAVIOUR_TYPES }          from '../../router/store/reducers/stones';
-import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
+import { KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
 import { eventBus }          from '../../util/EventBus';
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
-
+import { BEHAVIOUR_TYPES } from "../../Enums";
 
 class LocationHandlerClass {
   _initialized : boolean;
