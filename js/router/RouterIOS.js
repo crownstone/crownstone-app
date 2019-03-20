@@ -46,12 +46,12 @@ export class Router_IOS extends Component {
             <Scene key="registerConclusion"             component={Views.RegisterConclusion}         type="reset" />
             <Tabs key="tabBar" showLabel={false} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} backToInitial={true} initial={true || this.props.loggedIn}>
               <Scene key="overview" tabTitle={Languages.get("Tabs","Overview")()} icon={TabIcon} iconString="ios-color-filter-outline" >
-                <Scene key="DeviceSmartBehaviour_Editor"             component={Views.DeviceSmartBehaviour_Editor}      />
-                <Scene key="newBehaviour"               component={Views.DeviceSmartBehaviour}       />
-                <Scene key="newBehaviour2"             component={Views.DeviceSmartBehaviour2}      />
-                <Scene key="deviceSmartBehaviour_CreateNewBehaviour"             component={Views.DeviceSmartBehaviour_CreateNewBehaviour}      />
-                <Scene key="deviceSmartBehaviour_newBehaviour"             component={Views.DeviceSmartBehaviour_newBehaviour}      />
-                <Scene key="deviceSmartBehaviour_PresenceAware"             component={Views.DeviceSmartBehaviour_PresenceAware}      />
+                <Scene key="DeviceSmartBehaviour_Editor"  component={Views.DeviceSmartBehaviour_Editor}      />
+                <Scene key="newBehaviour"                 component={Views.DeviceSmartBehaviour}       />
+                <Scene key="newBehaviour2"                component={Views.DeviceSmartBehaviour2}      />
+                <Scene key="deviceSmartBehaviour_CreateNewBehaviour"     component={Views.DeviceSmartBehaviour_CreateNewBehaviour}      />
+                <Scene key="deviceSmartBehaviour_newBehaviour"           component={Views.DeviceSmartBehaviour_newBehaviour}      />
+                <Scene key="deviceSmartBehaviour_PresenceAware"          component={Views.DeviceSmartBehaviour_PresenceAware}      />
                 <Scene key="sphereOverview"             component={Views.SphereOverview}             />
                 <Scene key="roomOverview"               component={Views.RoomOverview}               />
                 <Scene key="deviceOverview"             component={Views.DeviceOverview}      sphereId={'a316fd99-de06-960b-d492-9a8dbb859c68'} stoneId={'f4872889-1c2a-e463-3b23-a3dcd3bf2af1'}    />

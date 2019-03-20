@@ -19,11 +19,8 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import { colors, OrangeLine, screenHeight, screenWidth } from "../../../styles";
+import { colors, deviceStyles, OrangeLine, screenHeight, screenWidth } from "../../../styles";
 import { Background } from "../../../components/Background";
-import { TopbarButton } from "../../../components/topbar/TopbarButton";
-import { IconButton } from "../../../components/IconButton";
-import { deviceStyles } from "../../DeviceOverview";
 import { WeekDayList } from "../../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./SmartBehaviourSummaryGraph";
 

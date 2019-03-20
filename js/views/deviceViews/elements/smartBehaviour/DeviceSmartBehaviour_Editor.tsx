@@ -20,9 +20,16 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import { availableScreenHeight, colors, OrangeLine, screenHeight, screenWidth, styles } from "../../../styles";
+import {
+  availableScreenHeight,
+  colors,
+  deviceStyles,
+  OrangeLine,
+  screenHeight,
+  screenWidth,
+  styles
+} from "../../../styles";
 import { Background } from "../../../components/Background";
-import { deviceStyles } from "../../DeviceOverview";
 import { textStyle } from "./DeviceSmartBehaviour";
 import {
   ACTIONS,

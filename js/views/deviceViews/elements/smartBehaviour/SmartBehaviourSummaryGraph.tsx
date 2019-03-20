@@ -16,7 +16,7 @@ import {
 import { Icon } from "../../../components/Icon";
 import { colors, screenWidth } from "../../../styles";
 import { eventBus } from "../../../../util/EventBus";
-import { Util } from "../../../../util/Util";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 export class SmartBehaviourSummaryGraph extends Component<any, any> {
@@ -24,7 +24,7 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.id = Util.getShortUUID();
+    this.id = xUtil.getShortUUID();
   }
 
   render() {
