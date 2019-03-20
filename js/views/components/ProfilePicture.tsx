@@ -61,8 +61,9 @@ export class ProfilePicture extends Component<any, any> {
             justifyContent:'center'
            }]}>
             <Icon
-              name={this.props.placeHolderIcon || 'ios-contact'}
-              size={innerSize} color={this.props.color || colors.menuBackground.hex}
+              name={ this.props.placeHolderIcon || 'ios-contact' }
+              size={ innerSize } color={this.props.color || colors.menuBackground.hex}
+              ignoreCorrection={ true }
             />
           </View>
           {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}

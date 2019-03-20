@@ -1,5 +1,4 @@
 import {LOG, LOGe} from "../../../logging/Log";
-import {LocationSyncer} from "./modelSyncs/LocationSyncer";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
 import { PresenceSyncer } from "./modelSyncs/PresenceSyncer";
