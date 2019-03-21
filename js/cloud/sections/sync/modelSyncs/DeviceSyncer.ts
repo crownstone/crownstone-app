@@ -100,13 +100,16 @@ export class DeviceSyncer extends SyncingBase {
       address:     specs.address,
       description: specs.description,
     };
+
+    deviceInfo["deviceType"] =  specs.deviceType;
+    deviceInfo["locale"]     =  specs.locale;
+
     if (state.user.uploadDeviceDetails) {
       deviceInfo["os"] =          specs.os;
-      deviceInfo["deviceType"] =  specs.deviceType;
       deviceInfo["userAgent"] =   specs.userAgent;
       deviceInfo["model"] =       specs.model;
-      deviceInfo["locale"] =      specs.locale;
     }
+
     this.transferPromises.push(
       CLOUD.createDevice(deviceInfo)
         .then((device) => {
@@ -155,6 +158,7 @@ export class DeviceSyncer extends SyncingBase {
         data: {appIdentifier: matchingSpecs.address}
       });
     }
+
     // Old bug caused the local db to have a device address of null. This should fix that.
     if (localDevice.address !== matchingSpecs.address) {
       LOG.info("Sync: update address to", matchingSpecs.address);
@@ -184,6 +188,17 @@ export class DeviceSyncer extends SyncingBase {
           tapToToggleCalibration: matchingSpecs.deviceInCloud.tapToToggleCalibration
         }
       })
+    }
+
+    // if our locale and deviceType is different or missing in the cloud, we restore it
+    if (specs.locale !== matchingSpecs.deviceInCloud.locale || specs.deviceType !== matchingSpecs.deviceInCloud.deviceType) {
+      LOG.info("Sync: Updating cloud device with deviceType and locale.")
+      this.transferPromises.push(
+        CLOUD.updateDevice(matchingSpecs.id, {
+          locale: specs.locale,
+          deviceType: specs.deviceType,
+        })
+      );
     }
 
     LOG.info("Sync: User device found in cloud, updating installation: ", installationId);

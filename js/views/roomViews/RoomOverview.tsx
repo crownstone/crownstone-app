@@ -33,8 +33,8 @@ import {
   getCurrentPowerUsageInLocation,
   getStonesAndAppliancesInLocation,
   canUseIndoorLocalizationInSphere,
-  enoughCrownstonesInLocationsForIndoorLocalization
-} from '../../util/DataUtil'
+  enoughCrownstonesInLocationsForIndoorLocalization, DataUtil
+} from "../../util/DataUtil";
 import { styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth, OrangeLine} from '../styles'
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
@@ -444,11 +444,11 @@ function getNavBarRightItem(state, enoughCrownstonesInLocations, label, props, v
 
   // this will show a one-time popup for localization
   if (state.user.seenRoomFingerprintAlert !== true) {
-    let aiName = state.spheres[props.sphereId].config.aiName;
+    let aiData = DataUtil.getAiData(state, props.sphereId);;
     props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
     Alert.alert(
-lang("_Lets_teach_____arguments_header",aiName),
-lang("_Lets_teach_____arguments_body",aiName),
+lang("_Lets_teach_____arguments_header",aiData.name),
+lang("_Lets_teach_____arguments_body",aiData.name),
 [{text: lang("_Lets_teach_____arguments_left")}]
     );
   }

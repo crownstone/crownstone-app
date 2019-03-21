@@ -170,9 +170,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
           CLOUD.updateDevice(deviceId, {
             os: null,
             userAgent: null,
-            deviceType: null,
             model: null,
-            locale: null
           })
             .then(() => {
               this.props.eventBus.emit("showLoading", "Done!");
@@ -182,9 +180,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
                 store.dispatch({ type: 'CLEAR_DEVICE_DETAILS', deviceId: deviceId, data: {
                   os: null,
                   userAgent: null,
-                  deviceType: null,
                   model: null,
-                  locale: null
                 }});
                 Alert.alert(
 lang("_Phone_Details_Removed__W_header"),
