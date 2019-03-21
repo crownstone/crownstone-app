@@ -15,8 +15,8 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  View
-} from 'react-native';
+  View, TextStyle
+} from "react-native";
 
 const Actions = require('react-native-router-flux').Actions;
 import {
@@ -173,7 +173,7 @@ export class MessageInbox extends LiveComponent<any, any> {
   render() {
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
-    let messageExplanationStyle = {
+    let messageExplanationStyle : TextStyle = {
       color: colors.green.hex,
       textAlign: 'center',
       paddingLeft: 30,

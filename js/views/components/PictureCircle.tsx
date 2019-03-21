@@ -104,7 +104,7 @@ text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removeP
   askForPermissions() {
     if (Platform.OS === 'android') {
       PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
-        .then((grantedPreviously) => {
+        .then((grantedPreviously : any) => {
           if (grantedPreviously === true || grantedPreviously === PermissionsAndroid.RESULTS.GRANTED) {
             return PermissionsAndroid.RESULTS.GRANTED;
           }

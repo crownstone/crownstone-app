@@ -356,7 +356,7 @@ lang("_Cant_see_this_one___We_c_header"),
 lang("_Cant_see_this_one___We_c_body"),
 [{text:lang("_Cant_see_this_one___We_c_left"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
               {
-text:lang("_Cant_see_this_one___We_c_right"),style:  lang("cancel"), onPress: () => {this.props.eventBus.emit('hideLoading');}}])
+text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {this.props.eventBus.emit('hideLoading');}}])
         })
     })
   }

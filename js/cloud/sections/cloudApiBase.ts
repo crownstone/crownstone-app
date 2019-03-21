@@ -43,7 +43,7 @@ export const cloudApiBase = {
   _toonId:         undefined,
   _userId:         undefined,
 
-  _networkErrorHandler: () => {},
+  _networkErrorHandler: (err) => {},
 
   _post: function(options) {
     return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, this), this._accessToken);
@@ -82,7 +82,7 @@ export const cloudApiBase = {
       })
       .catch((err) => { LOGe.cloud("_uploadImage: failed to check if file exists:", err); })
   },
-  _download: function(options, toPath, beginCallback, progressCallback) {
+  _download: function(options, toPath, beginCallback?, progressCallback?) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
   },
   downloadFile: function(url, targetPath, callbacks) {
@@ -148,7 +148,7 @@ export const cloudApiBase = {
     return this._finalizeRequest(promise, options, endpoint, promiseBody);
   },
 
-  _finalizeRequest: function(promise, options, endpoint, promiseBody) {
+  _finalizeRequest: function(promise, options, endpoint?, promiseBody?) {
     return new Promise((resolve, reject) => {
       let startTime = new Date().valueOf();
       promise
@@ -169,20 +169,20 @@ export const cloudApiBase = {
   // END USER API
   // These methods have all the endpoints embedded in them.
 
-  setNetworkErrorHandler: function(handler)      { this._networkErrorHandler = handler },
+  setNetworkErrorHandler: function(handler)     : any  { this._networkErrorHandler = handler },
 
-  setAccess:          function(accessToken)      { this._accessToken = accessToken;       return this; },
+  setAccess:          function(accessToken)     : any  { this._accessToken = accessToken;       return this; },
 
-  setUserId:          function(userId)           { this._userId = userId;                 return this; }, // cloudId === localId
-  forUser:            function(userId)           { this._userId = userId;                 return this; }, // cloudId === localId
-  forDevice:          function(deviceId)         { this._deviceId = deviceId;             return this; }, // cloudId === localId
-  forInstallation:    function(installationId)   { this._installationId = installationId; return this; }, // cloudId === localId
-  forStone:           function(localStoneId)     { this._stoneId     = MapProvider.local2cloudMap.stones[localStoneId]         || localStoneId;     return this; },
-  forSphere:          function(localSphereId)    { this._sphereId    = MapProvider.local2cloudMap.spheres[localSphereId]       || localSphereId;    return this; },
-  forLocation:        function(localLocationId)  { this._locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return this; },
-  forAppliance:       function(localApplianceId) { this._applianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; return this; },
-  forMessage:         function(localMessageId)   { this._messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return this; },
-  forToon:            function(localToonId)      { this._toonId      = MapProvider.local2cloudMap.toons[localToonId]           || localToonId;      return this; },
+  setUserId:          function(userId)          : any  { this._userId = userId;                 return this; }, // cloudId === localId
+  forUser:            function(userId)          : any  { this._userId = userId;                 return this; }, // cloudId === localId
+  forDevice:          function(deviceId)        : any  { this._deviceId = deviceId;             return this; }, // cloudId === localId
+  forInstallation:    function(installationId)  : any  { this._installationId = installationId; return this; }, // cloudId === localId
+  forStone:           function(localStoneId)    : any  { this._stoneId     = MapProvider.local2cloudMap.stones[localStoneId]         || localStoneId;     return this; },
+  forSphere:          function(localSphereId)   : any  { this._sphereId    = MapProvider.local2cloudMap.spheres[localSphereId]       || localSphereId;    return this; },
+  forLocation:        function(localLocationId) : any  { this._locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return this; },
+  forAppliance:       function(localApplianceId): any  { this._applianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; return this; },
+  forMessage:         function(localMessageId)  : any  { this._messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return this; },
+  forToon:            function(localToonId)     : any  { this._toonId      = MapProvider.local2cloudMap.toons[localToonId]           || localToonId;      return this; },
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {

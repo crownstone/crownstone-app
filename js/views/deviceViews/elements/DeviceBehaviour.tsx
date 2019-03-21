@@ -16,8 +16,8 @@ import {
   Switch,
   TextInput,
   Text,
-  View
-} from 'react-native';
+  View, TextStyle
+} from "react-native";
 const Actions = require('react-native-router-flux').Actions;
 
 import { colors, screenWidth }              from '../../styles'
@@ -63,10 +63,7 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
     let warnings = [];
     if (stone.config.locked) {
       return (
-        <View
-          style={{flexDirection: 'row'}}
-          onPress={() => { Actions.settingsApp(); }}
-        >
+        <View style={{flexDirection: 'row'}}>
           <Text style={textStyle.softWarning}>{ lang("This_Crownstone_is_locked") }</Text>
         </View>
       );
@@ -204,7 +201,7 @@ class BehaviourResponse extends Component<any, any> {
   }
 
 
-  _getResponseStyle(isDisabled: boolean, active : boolean) {
+  _getResponseStyle(isDisabled: boolean, active : boolean) : TextStyle {
     if (isDisabled) {
       return {color: DISABLED_COLOR, textDecorationLine:'line-through'};
     }

@@ -14,8 +14,8 @@ import {
   ScrollView,
   TouchableHighlight,
   Text,
-  View
-} from 'react-native';
+  View, GetPhotosParamType
+} from "react-native";
 
 const Actions = require('react-native-router-flux').Actions;
 import {styles, OrangeLine} from '../styles'
@@ -49,7 +49,7 @@ export class CameraRollView extends Component<any, any> {
 
   fetchPictures() {
     if (this.active === true) {
-      let query = {
+      let query : GetPhotosParamType = {
         first: 10,
         assetType: 'Photos',
       };

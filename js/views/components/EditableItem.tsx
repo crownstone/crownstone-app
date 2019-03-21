@@ -152,7 +152,7 @@ export class EditableItem extends Component<any, any> {
       default:
         return (
           <View>
-            <View style={[styles.listView, {NORMAL_ROW_SIZE, flex:1} ]}>
+            <View style={[styles.listView, {height: NORMAL_ROW_SIZE, flex:1} ]}>
               <Text>{ lang("___UNHANDLED_for_",this.props.label,this.props.type) }</Text>
             </View>
           </View>

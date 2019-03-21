@@ -112,10 +112,12 @@ class Logger {
       }
 
       if (LOG_TO_FILE || LogProcessor.writeToFile === true) {
+        // @ts-ignore
         logToFile.apply(this, args);
       }
 
       if (RELEASE_MODE_USED === false) {
+        // @ts-ignore
         console.log.apply(this, args);
       }
     }

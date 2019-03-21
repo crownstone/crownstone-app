@@ -1,18 +1,10 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   Animated,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
-  Text,
+  Text, TextStyle,
   TouchableWithoutFeedback,
   View
-} from 'react-native';
+} from "react-native";
 import { Icon } from "../../../components/Icon";
 import { colors, screenWidth } from "../../../styles";
 import { eventBus } from "../../../../util/EventBus";
@@ -343,4 +335,4 @@ function getMinutes(timeString) {
   return Number(elements[0]) * 60 + Number(elements[1])
 }
 
-const explanationStyle = (width) => { return {color: colors.csBlue.hex, fontWeight: 'bold', fontSize: 12, width: width, paddingLeft:10} }
+const explanationStyle = (width) : TextStyle => { return {color: colors.csBlue.hex, fontWeight: 'bold', fontSize: 12, width: width, paddingLeft:10} }

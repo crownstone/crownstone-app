@@ -8,17 +8,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Navigator,
-  Dimensions,
   Image,
-  Linking,
-  PixelRatio,
   TouchableOpacity,
-  StyleSheet,
   ScrollView,
   Text,
-  View
-} from 'react-native';
+  View, TextStyle
+} from "react-native";
 import { eventBus }                 from '../../../util/EventBus'
 import { Actions }                  from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
@@ -213,15 +208,13 @@ class MenuItem extends Component<any, any> {
   render(){
     let backgroundColor = colors.lightGray.rgba(0.5);
     let foregroundColor = colors.darkGray.rgba(0.5);
-    let weight = '300';
-    let fontStyle = 'normal';
+    let style : TextStyle = {paddingLeft: 15, fontSize:16, fontWeight: '300', fontStyle: 'normal', color: foregroundColor};
 
     if (this.props.highlight) {
-      weight    = 'bold';
-      fontStyle = 'italic';
-    //   backgroundColor = colors.csOrange.rgba(0.5);
-    //   foregroundColor = colors.white.hex;
+      style.fontWeight = 'bold';
+      style.fontStyle  = 'italic';
     }
+
     return (
       <TouchableOpacity style={{
         flexDirection:'row',
@@ -239,7 +232,7 @@ class MenuItem extends Component<any, any> {
         <View style={[styles.centered,{width:25, marginRight:10}]}>
           {this.props.icon}
         </View>
-        <Text style={{paddingLeft: 15, fontSize:16, fontWeight: weight, fontStyle: fontStyle, color: foregroundColor}}>{this.props.label}</Text>
+        <Text style={style}>{this.props.label}</Text>
       </TouchableOpacity>
     );
   }

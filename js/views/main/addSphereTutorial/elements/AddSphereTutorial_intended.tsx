@@ -71,7 +71,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
                   Actions.aiStart({sphereId: sphereId, resetViewStack: true})
                 })
                 .catch((err) => {
-                  Alert("Whoops!", "Something went wrong with the creation of your Sphere.", [{text:"OK"}])
+                  Alert.alert(lang("Whoops!"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])
                 });
             }}
             style={buttonStyle}>

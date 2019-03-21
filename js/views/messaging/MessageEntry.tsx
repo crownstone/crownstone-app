@@ -15,8 +15,8 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  View
-} from 'react-native';
+  View, ViewStyle
+} from "react-native";
 
 const Actions = require('react-native-router-flux').Actions;
 import {colors, screenWidth} from '../styles'
@@ -216,7 +216,7 @@ export class MessageEntry extends Component<{
     );
 
 
-    let style = {
+    let style : ViewStyle = {
       flexDirection:  'row',
       width:          screenWidth,
       minHeight:      rowHeight,
@@ -227,6 +227,7 @@ export class MessageEntry extends Component<{
     if (this.props.message.config.sendFailed || this.props.read === false) {
       return (
         <TouchableOpacity
+          style={style}
           onPress={() => {
             if (this.props.message.config.sendFailed) {
               this.props.store.dispatch({type: "APPEND_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { sendFailed: false, sent: false }});
@@ -243,7 +244,7 @@ export class MessageEntry extends Component<{
               this.props.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
             }
           }}
-        style={style}>
+        >
           { content }
         </TouchableOpacity>
       );

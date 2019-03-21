@@ -23,7 +23,7 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
   localStoneId: string;
   cloudStoneId: string;
 
-  activityLogUploadBatch : [[transferNewToCloudStoneData]]
+  activityLogUploadBatch : transferNewToCloudStoneData[][]
   maxBatchSize;
 
   constructor(
@@ -168,12 +168,10 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
       if (!activityLogInState.cloudId) {
         // fill the batch uploader.
         if (this.activityLogUploadBatch.length === 0) {
-          // @ts-ignore
           this.activityLogUploadBatch.push([]);
         }
 
         if (this.activityLogUploadBatch[this.activityLogUploadBatch.length-1].length >= this.maxBatchSize) {
-          // @ts-ignore
           this.activityLogUploadBatch.push([]);
         }
 

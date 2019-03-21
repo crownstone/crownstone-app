@@ -15,8 +15,8 @@ import {
   TouchableOpacity,
   Text,
   View,
-  Vibration
-} from 'react-native';
+  Vibration, ViewStyle, TextStyle
+} from "react-native";
 
 const Actions = require('react-native-router-flux').Actions;
 
@@ -26,21 +26,21 @@ import { Icon }         from '../components/Icon';
 import { Util }         from "../../util/Util";
 
 
-let buttonTextStyle = {
+let buttonTextStyle : TextStyle = {
   backgroundColor:'transparent',
   fontSize:15,
   fontWeight:'500',
   color: colors.white.hex,
   textAlign:'left',
 };
-let squareMeterStyle = {
+let squareMeterStyle : TextStyle = {
   ...buttonTextStyle,
   position:'relative',
   top:-2,
   fontSize:12,
 };
 
-let buttonStyle = {
+let buttonStyle : ViewStyle = {
   backgroundColor: colors.white.rgba(0.3),
   borderRadius:2,
   height: 0.15*screenHeight,
@@ -48,12 +48,12 @@ let buttonStyle = {
   alignItems:'center'
 };
 
-let iconContainerStyle = {
+let iconContainerStyle : ViewStyle = {
   width:0.3*screenWidth,
   alignItems:'center'
 };
 
-let textContainerStyle = {
+let textContainerStyle : ViewStyle = {
   flexDirection:'row',
   width:0.7*screenWidth,
   paddingLeft: 10

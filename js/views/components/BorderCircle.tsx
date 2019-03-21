@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 
-import { styles, colors} from '../styles'
+import { colors } from '../styles'
 
 export class BorderCircle extends Component<any, any> {
   render() {

@@ -15,8 +15,8 @@ import {
   Switch,
   TextInput,
   Text,
-  View
-} from 'react-native';
+  View, ViewStyle, TextStyle
+} from "react-native";
 const Actions = require('react-native-router-flux').Actions;
 
 import {
@@ -43,8 +43,8 @@ export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any>
 
   render() {
     let iconHeight = 0.10*availableScreenHeight;
-    let bubbleStyle = {width: 0.40*screenWidth, height:70, borderRadius:30, backgroundColor: colors.white.rgba(0.4), alignItems:'center', justifyContent: 'center'}
-    let bubbleTextStyle = {color: colors.white.hex, padding:10, textAlign:'center'}
+    let bubbleStyle : ViewStyle = {width: 0.40*screenWidth, height:70, borderRadius:30, backgroundColor: colors.white.rgba(0.4), alignItems:'center', justifyContent: 'center'}
+    let bubbleTextStyle : TextStyle = {color: colors.white.hex, padding:10, textAlign:'center'}
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>

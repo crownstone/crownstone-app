@@ -58,6 +58,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);
+      // @ts-ignore
       Bluenet[functionName].apply(this, bluenetArguments);
     }
   })

@@ -6,21 +6,17 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Linking,
   Image,
-  StyleSheet,
-  TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, TextStyle
+} from "react-native";
 const Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
 import { colors} from './../styles'
 
 const DeviceInfo = require('react-native-device-info');
 
-let versionStyle = {
+let versionStyle : TextStyle = {
   backgroundColor:"transparent",
   color: colors.white.rgba(0.4),
   fontWeight:'300',

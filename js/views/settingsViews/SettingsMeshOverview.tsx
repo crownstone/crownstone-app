@@ -35,7 +35,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = { leftOffset: new Animated.Value() };
+    this.state = { leftOffset: new Animated.Value(0) };
   }
 
   componentDidMount() {

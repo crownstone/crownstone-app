@@ -50,7 +50,6 @@ const DeviceInfo = require('react-native-device-info');
    * Silence cloud will silently reject all cloud calls.
    */
   export let DISABLE_NATIVE = DeviceInfo.isEmulator();
-  console.log(DeviceInfo.isEmulator())
   export let SILENCE_CLOUD  = false;
 
   /**

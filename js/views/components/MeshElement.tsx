@@ -14,8 +14,8 @@ import {
   NativeModules,
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, TextStyle
+} from "react-native";
 
 import {colors, screenWidth, styles} from '../styles'
 
@@ -188,7 +188,7 @@ class MeshElementClass extends LiveComponent<any, any> {
     let height   = 2*this.props.radius;
     let iconSize = width;
 
-    let fontContainerViewStyle = { position:'absolute', top: 0, left: 2.1*this.props.radius, height: height, width: 0.5*screenWidth, alignItems:'flex-start', justifyContent:'center' };
+    let fontContainerViewStyle : TextStyle = { position:'absolute', top: 0, left: 2.1*this.props.radius, height: height, width: 0.5*screenWidth, alignItems:'flex-start', justifyContent:'center' };
     let fontViewStyle = { backgroundColor: colors.white.hex, padding: 7, borderRadius:8, borderColor: colors.csBlue.rgba(0.1), borderWidth: 2 };
 
     let supportedFirmware = Util.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.2');

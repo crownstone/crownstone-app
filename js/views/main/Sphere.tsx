@@ -15,8 +15,8 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, ViewStyle
+} from "react-native";
 let Actions = require('react-native-router-flux').Actions;
 
 import { RoomLayer }           from './RoomLayer'
@@ -49,7 +49,7 @@ export class Sphere extends Component<any, any> {
     // This is an empty sphere. Tell the user what to expect.
     if (noStones === true && noRoomsCurrentSphere == true) {
       // on screen buttons are 0.11*screenWidth high.
-      let viewStyle = {
+      let viewStyle : ViewStyle = {
         position:'absolute',
         top: 0.11*screenWidth, left:0,
         alignItems: 'center', justifyContent: 'center',

@@ -1,9 +1,10 @@
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import { cloudApiBase } from "./cloudApiBase";
 
 export const schedules = {
 
   createSchedule: function(data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Stones/{id}/schedules/',
       { data: data, background: background },
@@ -13,7 +14,7 @@ export const schedules = {
 
   getSchedule: function(localScheduleId, background = true) {
     let cloudScheduleId = MapProvider.local2cloudMap.schedules[localScheduleId] || localScheduleId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Stones/{id}/schedules/'+cloudScheduleId,
       {background: background}
@@ -26,7 +27,7 @@ export const schedules = {
    * @returns {*}
    */
   getSchedules: function(background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Stones/{id}/schedules',
       {background: background}
@@ -38,7 +39,7 @@ export const schedules = {
    * @returns {*}
    */
   getScheduleWithIndex: function(index, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Stones/{id}/schedules',
       { background: background, data:{filter: {where:{scheduleEntryIndex:index}}}}
@@ -48,7 +49,7 @@ export const schedules = {
 
   updateSchedule: function(localScheduleId, data, background = true) {
     let cloudScheduleId = MapProvider.local2cloudMap.schedules[localScheduleId] || localScheduleId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'PUT',
       '/Stones/{id}/schedules/'+cloudScheduleId,
       { data: data, background: background },
@@ -58,7 +59,7 @@ export const schedules = {
 
   deleteSchedule: function(localScheduleId, background = true) {
     let cloudScheduleId = MapProvider.local2cloudMap.schedules[localScheduleId] || localScheduleId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'DELETE',
       '/Stones/{id}/schedules/'+cloudScheduleId,
       { background: background }

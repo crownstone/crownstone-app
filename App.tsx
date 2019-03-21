@@ -1,5 +1,7 @@
 'use strict';
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
+import { Component } from 'react';
+
 import { Animated, Keyboard, StatusBar,  View, Platform } from 'react-native';
 
 import { AppRouter } from './js/router/Router'
@@ -8,12 +10,16 @@ import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundPro
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 import SplashScreen from 'react-native-splash-screen'
 
-export class Root extends Component {
-  constructor() {
-    super();
+export class Root extends Component<any, any> {
+  unsubscribe = [];
+  keyboardDidShowListener = null;
+  keyboardDidHideListener = null;
+  focusTime = 0;
+
+  constructor(props) {
+    super(props);
 
     this.state = {top: new Animated.Value(0)};
-    this.unsubscribe = [];
     BackgroundProcessHandler.start();
   }
 

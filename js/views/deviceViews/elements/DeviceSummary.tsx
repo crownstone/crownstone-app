@@ -17,8 +17,8 @@ import {
   Switch,
   TextInput,
   Text,
-  View
-} from 'react-native';
+  View, ViewStyle
+} from "react-native";
 const Actions = require('react-native-router-flux').Actions;
 
 import { colors, screenWidth, screenHeight } from '../../styles'
@@ -225,7 +225,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
   }
 
   _getLockIcon(stone) {
-    let wrapperStyle = {
+    let wrapperStyle : ViewStyle = {
       width: 35,
       height: 35,
       position: 'absolute',

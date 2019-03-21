@@ -78,7 +78,7 @@ export const sync = {
       // in case the event sync fails, check if the user accessToken is invalid, try to regain it if that's the case and try again.
       .catch(getUserIdCheckError(state, store, () => {
         LOG.info("Sync: RETRY Sync Events.");
-        return this.syncEvents(store);
+        return syncEvents(store);
       }))
       .then(() => {
         LOG.info("Sync: DONE Sync Events.");

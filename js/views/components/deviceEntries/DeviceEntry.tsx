@@ -17,8 +17,8 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Text,
-  View
-} from 'react-native';
+  View, ViewStyle
+} from "react-native";
 
 import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
@@ -125,7 +125,7 @@ export class DeviceEntry extends Component<any, any> {
     }
 
 
-    let wrapperStyle = {height: this.baseHeight, width: 60, alignItems:'flex-end', justifyContent:'center'};
+    let wrapperStyle : ViewStyle = {height: this.baseHeight, width: 60, alignItems:'flex-end', justifyContent:'center'};
     if (action) {
       return (
         <TouchableOpacity onPress={() => { action() }} style={wrapperStyle}>
@@ -230,7 +230,7 @@ export class DeviceEntry extends Component<any, any> {
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
     });
 
-    let WrapperElement = TouchableOpacity;
+    let WrapperElement : any = TouchableOpacity;
     if (this.props.touchable === false) {
       WrapperElement = View
     }

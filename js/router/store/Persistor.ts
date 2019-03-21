@@ -517,7 +517,7 @@ export class Persistor {
       'spheres.{id}.stones.{id}.powerUsage': true,
     };
 
-    let keyValueWrites = [] as [string[]];
+    let keyValueWrites = [] as string[][];
     let keysToRemove = [] as string[];
 
     let options : persistOptions = {
@@ -622,7 +622,7 @@ export class Persistor {
   }
 
 
-  _batchPersist(keyValueWrites : [string[]]) : Promise<void> {
+  _batchPersist(keyValueWrites : string[][]) : Promise<void> {
     return new Promise((resolve, reject) => {
       if (keyValueWrites.length > 0) {
         let updatedKeys = [];

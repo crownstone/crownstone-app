@@ -3,6 +3,11 @@ import {transferSpheres} from "../transferData/transferSpheres";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { FileUtil } from "../../util/FileUtil";
+import { cloudApiBase } from "./cloudApiBase";
+import { user } from "./user";
+import { stones } from "./stones";
+import { appliances } from "./appliances";
+import { locations } from "./locations";
 
 export const spheres = {
 
@@ -26,7 +31,7 @@ export const spheres = {
     }
 
     let localId = xUtil.getUUID();
-    return this.forUser(state.user.userId).createSphere(payload, false)
+    return cloudApiBase.forUser(state.user.userId).createSphere(payload, false)
       .then((response) => {
         // add the sphere to the database once it had been added in the cloud.
         return transferSpheres.createLocal(creationActions, {localId: localId, cloudData: response})
@@ -50,7 +55,7 @@ export const spheres = {
         });
 
         // get all encryption keys the user has access to and store them in the appropriate spheres.
-        return this.getKeys()
+        return user.getKeys()
       })
       .then((keyResult) => {
         if (Array.isArray(keyResult)) {
@@ -75,7 +80,7 @@ export const spheres = {
 
   updateSphere: function(localSphereId, data, background = true) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'PUT',
       '/Spheres/' + cloudSphereId,
       {background: background, data: data},
@@ -87,11 +92,11 @@ export const spheres = {
     permission = permission.toLowerCase();
     switch (permission) {
       case 'admin':
-        return this._setupRequest('PUT', '/Spheres/{id}/admins', { data: { email: email }});
+        return cloudApiBase._setupRequest('PUT', '/Spheres/{id}/admins', { data: { email: email }});
       case 'member':
-        return this._setupRequest('PUT', '/Spheres/{id}/members', { data: { email: email }});
+        return cloudApiBase._setupRequest('PUT', '/Spheres/{id}/members', { data: { email: email }});
       case 'guest':
-        return this._setupRequest('PUT', '/Spheres/{id}/guests', { data: { email: email }});
+        return cloudApiBase._setupRequest('PUT', '/Spheres/{id}/guests', { data: { email: email }});
       default:
         return new Promise((resolve, reject) => {
           reject(new Error('Invalid Permission: "' + permission + '"'))
@@ -100,15 +105,15 @@ export const spheres = {
   },
 
   getPendingInvites: function(background = true) {
-    return this._setupRequest('GET', '/Spheres/{id}/pendingInvites', {background:background});
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/pendingInvites', {background:background});
   },
 
   resendInvite: function(email, background = false) {
-    return this._setupRequest('GET', '/Spheres/{id}/resendInvite', {data:{email: email}, background: background});
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/resendInvite', {data:{email: email}, background: background});
   },
 
   revokeInvite: function(email, background = false) {
-    return this._setupRequest('GET', '/Spheres/{id}/removeInvite', {data:{email: email}, background: background});
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/removeInvite', {data:{email: email}, background: background});
   },
 
 
@@ -118,31 +123,31 @@ export const spheres = {
    * @returns {*}
    */
   getSpheres: function (background = true) {
-    return this._setupRequest('GET', '/users/{id}/spheres', { data: {filter: {include:"floatingLocationPosition"}}, background: background });
+    return cloudApiBase._setupRequest('GET', '/users/{id}/spheres', { data: {filter: {include:"floatingLocationPosition"}}, background: background });
   },
 
   getUsers: function (background = true) {
-    return this._setupRequest('GET', '/Spheres/{id}/users', { background : background } );
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/users', { background : background } );
   },
 
   getAdmins: function (background = true) {
-    return this._setupRequest('GET', '/Spheres/{id}/admins', { background : background });
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/admins', { background : background });
   },
 
   getMembers: function (background = true) {
-    return this._setupRequest('GET', '/Spheres/{id}/members', { background : background });
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/members', { background : background });
   },
 
   getGuests: function (background = true) {
-    return this._setupRequest('GET', '/Spheres/{id}/guests', { background : background });
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/guests', { background : background });
   },
 
   getToons: function (background = true) {
-    return this._setupRequest('GET', '/Spheres/{id}/Toons', { background : background });
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/Toons', { background : background });
   },
 
   getPresentPeople: function (ignoreDeviceId, background = true) {
-    return this._setupRequest('GET', '/Spheres/{id}/PresentPeople', {
+    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/PresentPeople', {
       data: { ignoreDeviceId: ignoreDeviceId },
       background : background
     }, 'query');
@@ -154,13 +159,13 @@ export const spheres = {
    * @param background
    */
   createSphere: function(data, background = true) {
-    return this._setupRequest('POST', 'users/{id}/spheres', { data: data, background: background }, 'body');
+    return cloudApiBase._setupRequest('POST', 'users/{id}/spheres', { data: data, background: background }, 'body');
   },
 
   getUserPicture(localSphereId, email, userId, background = true) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     let toPath = FileUtil.getPath(userId + '.jpg');
-    return this.forSphere(cloudSphereId)._download({
+    return cloudApiBase.forSphere(cloudSphereId)._download({
       endPoint:'/Spheres/{id}/profilePic',
       data: {email: email},
       type: 'query',
@@ -169,15 +174,15 @@ export const spheres = {
   },
 
   changeSphereName: function(sphereName) {
-    return this._setupRequest('PUT', '/Spheres/{id}', { data: { name: sphereName }}, 'body');
+    return cloudApiBase._setupRequest('PUT', '/Spheres/{id}', { data: { name: sphereName }}, 'body');
   },
 
   changeUserAccess: function(email, accessLevel, background = false) {
-    return this._setupRequest('PUT', '/Spheres/{id}/role', {data: {email: email, role:accessLevel}, background:background}, 'query');
+    return cloudApiBase._setupRequest('PUT', '/Spheres/{id}/role', {data: {email: email, role:accessLevel}, background:background}, 'query');
   },
 
   updateFloatingLocationPosition: function (data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Spheres/{id}/floatingLocationPosition/',
       {background: background, data: data},
@@ -187,11 +192,11 @@ export const spheres = {
 
   deleteUserFromSphere: function(userId) {
     // userId is the same in the cloud as it is locally
-    return this._setupRequest('DELETE', '/Spheres/{id}/users/rel/' + userId);
+    return cloudApiBase._setupRequest('DELETE', '/Spheres/{id}/users/rel/' + userId);
   },
 
   deleteSphere: function() {
-    let sphereId = this._sphereId;
+    let sphereId = cloudApiBase._sphereId;
 
     let promises      = [];
     let applianceData = [];
@@ -199,24 +204,24 @@ export const spheres = {
     let locationData  = [];
 
     promises.push(
-      this.getStonesInSphere()
-        .then((stones) => {
+      stones.getStonesInSphere()
+        .then((stones : any) => {
           stoneData = stones;
         }).catch((err) => {})
     );
 
     // for every sphere we get the appliances
     promises.push(
-      this.getAppliancesInSphere()
-        .then((appliances) => {
+      appliances.getAppliancesInSphere()
+        .then((appliances : any) => {
           applianceData = appliances;
         }).catch((err) => {})
     );
 
     // for every sphere, we get the locations
     promises.push(
-      this.getLocations()
-        .then((locations) => {
+      locations.getLocations()
+        .then((locations : any) => {
           locationData = locations;
         }).catch((err) => {})
     );
@@ -225,15 +230,15 @@ export const spheres = {
       .then(() => {
         let deletePromises = [];
         applianceData.forEach((appliance) => {
-          deletePromises.push(this.forSphere(this._sphereId).deleteAppliance(appliance.id));
+          deletePromises.push(cloudApiBase.forSphere(sphereId).deleteAppliance(appliance.id));
         });
 
         stoneData.forEach((stone) => {
-          deletePromises.push(this.forSphere(this._sphereId).deleteStone(stone.id));
+          deletePromises.push(cloudApiBase.forSphere(sphereId).deleteStone(stone.id));
         });
 
         locationData.forEach((location) => {
-          deletePromises.push(this.forSphere(this._sphereId).deleteLocation(location.id));
+          deletePromises.push(cloudApiBase.forSphere(sphereId).deleteLocation(location.id));
         });
 
         return Promise.all(deletePromises);
@@ -246,7 +251,7 @@ export const spheres = {
   _deleteSphere: function(localSphereId) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     if (cloudSphereId) {
-      return this._setupRequest(
+      return cloudApiBase._setupRequest(
         'DELETE',
         'Spheres/' + cloudSphereId
       );
@@ -256,7 +261,7 @@ export const spheres = {
   leaveSphere: function(localSphereId) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     if (cloudSphereId) {
-      return this._setupRequest(
+      return cloudApiBase._setupRequest(
         'DELETE',
         'users/{id}/spheres/rel/' + cloudSphereId
       );

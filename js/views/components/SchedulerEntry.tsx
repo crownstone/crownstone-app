@@ -6,20 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  DatePickerIOS,
   TouchableOpacity,
-  Platform,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
-  TimePickerAndroid,
   Text,
-  View
-} from 'react-native';
+  View, TextStyle
+} from "react-native";
 const Actions = require('react-native-router-flux').Actions;
 
 import {colors, screenWidth} from '../styles'
@@ -31,8 +21,8 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 export class SchedulerEntry extends Component<any, any> {
 
   _getHeader(active) {
-    let wrapperStyle = {height: 50, justifyContent:'center'};
-    let headerStyle = {fontSize: 16, fontWeight:'500', paddingTop: 15, color: active ? colors.black.hex : colors.darkGray2.hex};
+    let wrapperStyle : TextStyle = {height: 50, justifyContent:'center'};
+    let headerStyle : TextStyle = {fontSize: 16, fontWeight:'500', paddingTop: 15, color: active ? colors.black.hex : colors.darkGray2.hex};
     let timeText = lang('Do_X_at',this.props.schedule.switchState > 0, Util.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.props.schedule.time), false));
     let activeText = active ? '' :  lang("__disabled_");
     if (this.props.schedule.label) {

@@ -78,7 +78,6 @@ class SphereCircleClass extends Component<any, any> {
       setupProgress: 20,
     };
 
-    this.props = props;
     // calculate the size of the circle based on the screen size
     this.borderWidth = props.radius / 24;
     this.innerDiameter = 2 * props.radius - 4.5 * this.borderWidth;

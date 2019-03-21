@@ -92,7 +92,7 @@ export class SphereEdit extends Component<any, any> {
                 }, 100)
               })
               .catch((err) => {
-                Alert("Whoops!", "Something went wrong with the creation of your Sphere.", [{ text: "OK" }])
+                Alert.alert(lang("Whoops!"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])
               });
           }
         });

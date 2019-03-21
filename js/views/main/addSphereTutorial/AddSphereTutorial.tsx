@@ -6,15 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  ActivityIndicator,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
   StyleSheet,
-  Switch,
-  TextInput,
-  Text,
   View
 } from 'react-native';
 import { eventBus } from "../../../util/EventBus";
@@ -24,7 +16,6 @@ import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_int
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
 const Swiper = require("react-native-swiper");
-
 
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {

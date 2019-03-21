@@ -14,8 +14,8 @@ import {Persistor} from "./Persistor";
 export const BATCH = 'BATCHING_REDUCER.BATCH';
 
 // modified for application
-function batchActions(actions) {
-  return this.dispatch({ type: BATCH, payload: actions });
+function batchActions(context, actions) {
+  return context.dispatch({ type: BATCH, payload: actions });
 }
 
 function enableBatching(reducer) {
@@ -69,7 +69,7 @@ class StoreManagerClass {
   _initializeStore(userId) {
     LOG.info("StoreManager: initializing Store");
     this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer, PersistenceEnhancer));
-    this.store.batchDispatch = batchActions;
+    this.store.batchDispatch = (actions) => { return batchActions(this, actions); }
 
     if (userId !== null) {
       this.persistor.initialize(userId, this.store)

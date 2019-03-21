@@ -17,8 +17,8 @@ import {
   Switch,
   TextInput,
   Text,
-  View
-} from 'react-native';
+  View, ViewStyle, TextStyle
+} from "react-native";
 const Actions = require('react-native-router-flux').Actions;
 
 import {colors, screenWidth} from '../styles'
@@ -39,7 +39,6 @@ export class LockedStateUI extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.props = props;
     this.state = {level: 0, unlockingInProgress: false, unlocked: false};
     this.loadingAmountRequired = 3000;
 
@@ -128,8 +127,8 @@ export class LockedStateUI extends Component<any, any> {
 
 
   _getContent() {
-    let viewStyle = {width: this.props.size, height: this.props.size, position:'absolute', top:0, left:0, alignItems:'center', justifyContent:'center'};
-    let textStyle = {fontSize:12, textAlign:'center', color: colors.white.hex, paddingTop:5, fontWeight: 'bold'};
+    let viewStyle : ViewStyle = {width: this.props.size, height: this.props.size, position:'absolute', top:0, left:0, alignItems:'center', justifyContent:'center'};
+    let textStyle : TextStyle = {fontSize:12, textAlign:'center', color: colors.white.hex, paddingTop:5, fontWeight: 'bold'};
     if (!Permissions.inSphere(this.props.sphereId).canUnlockCrownstone) {
       return (
         <View style={viewStyle}>

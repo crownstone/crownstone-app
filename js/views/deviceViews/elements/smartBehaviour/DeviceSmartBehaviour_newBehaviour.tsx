@@ -15,8 +15,8 @@ import {
   Switch,
   TextInput,
   Text,
-  View
-} from 'react-native';
+  View, TextStyle, ViewStyle
+} from "react-native";
 const Actions = require('react-native-router-flux').Actions;
 
 import {
@@ -52,16 +52,16 @@ export class DeviceSmartBehaviour_newBehaviour extends Component<any, any> {
 
 
   render() {
-    let descriptionTextStyle = {fontWeight:'bold', color: colors.white.hex, fontSize: 13, padding:4}
-    let iconHeight = 0.10*availableScreenHeight;
+    let descriptionTextStyle : TextStyle = {fontWeight:'bold', color: colors.white.hex, fontSize: 13, padding:4}
+    let iconHeight  = 0.10*availableScreenHeight;
     let blockHeight = 0.22*availableScreenHeight;
-    let textHeight = 30;
+    let textHeight  = 30;
     let iconBlockHeight = blockHeight - textHeight;
 
-    let blockStyle          = {width:0.5*screenWidth, height: blockHeight,      alignItems:'center'};
-    let iconBlockStyle      = {width:0.5*screenWidth, height: iconBlockHeight,  alignItems:'center', justifyContent:'center'};
-    let textBlockStyle      = {width:0.5*screenWidth, height: textHeight,       alignItems:'center', justifyContent:'flex-start'};
-    let verticalLineStyle   = {width:1,               height: blockHeight,      backgroundColor: colors.menuBackground.rgba(0.2)};
+    let blockStyle        : ViewStyle = {width:0.5*screenWidth, height: blockHeight,      alignItems:'center'};
+    let iconBlockStyle    : ViewStyle = {width:0.5*screenWidth, height: iconBlockHeight,  alignItems:'center', justifyContent:'center'};
+    let textBlockStyle    : ViewStyle = {width:0.5*screenWidth, height: textHeight,       alignItems:'center', justifyContent:'flex-start'};
+    let verticalLineStyle : ViewStyle = {width:1,               height: blockHeight,      backgroundColor: colors.menuBackground.rgba(0.2)};
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>

@@ -14,8 +14,8 @@ import {
   StyleSheet,
   TouchableHighlight,
   Text,
-  View
-} from 'react-native';
+  View, TextStyle
+} from "react-native";
 
 import { Icon }               from '../components/Icon'
 import {
@@ -79,7 +79,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
     });
 
 
-    let generalStyle = {
+    let generalStyle : TextStyle = {
       position:'absolute',
       bottom: 0,
       justifyContent: 'center',
@@ -156,7 +156,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
 
 }
 
-let inRangeStyle = {position: 'absolute',
+let inRangeStyle : TextStyle = {position: 'absolute',
   flexDirection:'row',
   width: screenWidth,
   backgroundColor: 'transparent',
@@ -164,7 +164,7 @@ let inRangeStyle = {position: 'absolute',
   alignItems: 'center',
 };
 
-let descriptionTextStyle = {
+let descriptionTextStyle : TextStyle = {
   backgroundColor:'transparent',
   color: colors.darkGreen.hex,
   fontSize:12,

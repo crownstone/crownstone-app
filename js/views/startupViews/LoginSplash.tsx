@@ -12,8 +12,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, TextStyle
+} from "react-native";
 const Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
 import { colors, screenWidth} from './../styles'
@@ -21,7 +21,7 @@ import loginStyles from './LoginStyles'
 
 const DeviceInfo = require('react-native-device-info');
 
-let versionStyle = {
+let versionStyle : TextStyle = {
   position:'absolute',
   bottom:3,
   right:3,

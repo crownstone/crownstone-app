@@ -25,7 +25,7 @@ export const createNewSphere = function(eventBus, store, name) {
     })
     .catch((err) => {
       if (err.status == 422) {
-        return this.createNewSphere(eventBus, store, name + ' new')
+        return createNewSphere(eventBus, store, name + ' new')
       }
       else {
         return new Promise((resolve, reject) => {reject(err);})

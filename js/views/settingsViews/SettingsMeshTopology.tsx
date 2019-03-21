@@ -59,7 +59,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
     this.viewId = xUtil.getUUID();
-    this.state = { leftOffset: new Animated.Value() };
+    this.state = { leftOffset: new Animated.Value(0) };
   }
 
   componentDidMount() {
@@ -277,7 +277,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
           onPress={() => { Alert.alert(
             lang("_Refresh_Topology__While__header"),
             lang("_Refresh_Topology__While__body"),
-            [{text:lang("_Refresh_Topology__While__left"),style:  lang("cancel")}, {
+            [{text:lang("_Refresh_Topology__While__left"),style: "cancel"}, {
             text:lang("_Refresh_Topology__While__right"), onPress: () => { this._refreshMesh(sphereId, stones); }}]) }}
           style={{position:'absolute', bottom:0, right:40, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
           <Icon name={'md-refresh-circle'} size={40} color={colors.darkGray.rgba(0.75)} />

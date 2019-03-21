@@ -16,8 +16,8 @@ import {
   Switch,
   TextInput,
   Text,
-  View
-} from 'react-native';
+  View, TextStyle
+} from "react-native";
 const Actions = require('react-native-router-flux').Actions;
 
 import {
@@ -143,9 +143,9 @@ export class Rule extends Component<any, any> {
   getElements() {
     this.amountOfLines = 0;
 
-    let normal       = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30  }
-    let selectable   = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30, textDecorationLine:'underline' }
-    let segmentStyle = {flexDirection:'row', justifyContent:'center', width: screenWidth}
+    let normal      : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30  }
+    let selectable  : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30, textDecorationLine:'underline' }
+    let segmentStyle = {...styles.centered, width: screenWidth}
 
     let d = [
       // {label: "I will be ",              clickable: false, type: true},

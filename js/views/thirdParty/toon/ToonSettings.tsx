@@ -8,18 +8,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  ActivityIndicator,
-  Dimensions,
-  Image,
-  Linking,
-  PixelRatio,
   ScrollView,
-  Switch,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
+  StyleSheet,
+  Text, TextStyle,
   View
-} from 'react-native';
+} from "react-native";
 import {BackAction} from "../../../util/Back";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
@@ -172,9 +165,9 @@ export class ToonSettings extends LiveComponent<any, any> {
   render() {
     let state = this.props.store.getState();
     let sphere = state.spheres[this.props.sphereId];
-    let textStyle = {
+    let textStyle : TextStyle = {
       fontSize: 14,
-      textAlign:'center',
+      textAlign: 'center',
       color:colors.menuBackground.hex,
       paddingLeft: 0.075*screenWidth, paddingRight:0.075*screenWidth
     };
