@@ -101,6 +101,26 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return "BluenetJS"
 	}
 
+	private val lifecycleEventListener = object : LifecycleEventListener {
+		override fun onHostResume() {
+			Log.i(TAG, "onHostResume")
+			if (::bluenet.isInitialized) {
+				bluenet.filterForCrownstones(true)
+			}
+		}
+
+		override fun onHostPause() {
+			Log.i(TAG, "onHostPause")
+			if (::bluenet.isInitialized) {
+				bluenet.filterForCrownstones(false)
+			}
+		}
+
+		override fun onHostDestroy() {
+			Log.i(TAG, "onHostDestroy")
+		}
+	}
+
 
 
 
@@ -136,6 +156,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //		val handlerThread = HandlerThread("BluenetBridge")
 //		handlerThread.start()
 //		bluenet = Bluenet(handlerThread.looper)
+
+		reactContext.addLifecycleEventListener(lifecycleEventListener)
+
 		initPromise = bluenet.init(reactContext, ONGOING_NOTIFICATION_ID, getServiceNotification("Crownstone is running in the background"))
 		initPromise.success {
 			// TODO: this might be called again when app opens.
