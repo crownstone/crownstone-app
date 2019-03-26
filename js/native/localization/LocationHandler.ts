@@ -87,10 +87,15 @@ class LocationHandlerClass {
     // scan for crownstones on entering a sphere.
     BatterySavingUtil.startNormalUsage(enteringSphereId);
 
-
+    // get the time last seen of the crownstones in this sphere
+    // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
+    let timeLastSeen  = SphereUtil.getTimeLastSeenInSphere(state, enteringSphereId);
+    let sphereTimeout = state.spheres[enteringSphereId].config.exitDelay - KEEPALIVE_INTERVAL;
+    let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
+    let sphereHasTimedOut = timeSinceLastCrownstoneWasSeen > sphereTimeout;
 
     // make sure we only do the following once per sphere
-    if (sphere && sphere.state && sphere.state.present === true) {
+    if (sphere && sphere.state && sphere.state.present === true && sphereHasTimedOut === false) {
       LOG.info('LocationHandler: IGNORE ENTER SPHERE because I\'m already in the Sphere.');
 
       // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
@@ -133,13 +138,9 @@ class LocationHandlerClass {
       KeepAliveHandler.fireTrigger();
     }, 1000, 'sphere enter keepAlive trigger');
 
-    // get the time last seen of the crownstones in this sphere
-    let timeLastSeen = SphereUtil.getTimeLastSeenInSphere(state, enteringSphereId);
 
-    // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
-    let sphereTimeout = state.spheres[enteringSphereId].config.exitDelay - KEEPALIVE_INTERVAL;
-    let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
-    if (timeSinceLastCrownstoneWasSeen > sphereTimeout) {
+
+    if (sphereHasTimedOut) {
       // trigger crownstones on enter sphere
       LOG.info('LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE', sphere.config.name);
       BehaviourUtil.enactBehaviourInSphere(this.store, enteringSphereId, BEHAVIOUR_TYPES.HOME_ENTER);

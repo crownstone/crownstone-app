@@ -353,6 +353,7 @@ class BatchCommandHandlerClass {
       // we record the time here to enable failing of failed commands by the attemptHandler that were loaded before this time.
       let executionTimestamp = new Date().valueOf();
 
+      let executingPromiseId = this.activePromiseId;
 
       let state = this.store.getState();
       let { directTargets, relayOnlyTargets } = this._commandHandler.extractConnectionTargets(state);
@@ -391,10 +392,12 @@ class BatchCommandHandlerClass {
       // get a connection target
       this._getConnectionTarget(rssiScanThreshold, directTargets)
         .catch(() => {
+          if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
           // cant find a crownstone in the recent scans, look for one now.
           return this._searchScan(topicsToScan, rssiScanThreshold, highPriorityActive, 5000)
         })
         .catch((err) => {
+          if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
           if (allowMeshRelay === false) {
             throw err;
           }
@@ -403,6 +406,7 @@ class BatchCommandHandlerClass {
           return this._getConnectionTarget(rssiScanThreshold, relayOnlyTargets)
         })
         .catch((err) => {
+          if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
           // we have not found any mesh targets in the last few scans either
           relayOnlyUsed = false;
           // nothing found within -91. if this is a low priority call, we will attempt it without the rssi threshold.
@@ -414,13 +418,14 @@ class BatchCommandHandlerClass {
           }
         })
         .then((crownstoneToHandle : connectionInfo) => {
+          if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
           activeCrownstone = crownstoneToHandle;
           if (crownstoneToHandle === null) {
             // this happens during a priority interrupt
             return;
           }
           else {
-            return this._connectAndHandleCommands(crownstoneToHandle, highPriorityActive, relayOnlyUsed);
+            return this._connectAndHandleCommands(crownstoneToHandle, highPriorityActive, relayOnlyUsed, executingPromiseId);
           }
         })
         .then(() => {
@@ -430,6 +435,8 @@ class BatchCommandHandlerClass {
           // Use the attempt handler to clean up after something fails.
           this.attemptHandler(activeCrownstone, executionTimestamp, err);
 
+          if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
+
           // attempt to reschedule on failure.
           if (this._commandHandler.commandsAvailable()) {
             this._scheduleNextStone();
@@ -438,30 +445,33 @@ class BatchCommandHandlerClass {
         })
         .catch((err) => {
           // this fallback catches errors in the attemptHandler.
-          LOGe.bch("BatchCommandHandler: FATAL ERROR DURING EXECUTE", err, this.activePromiseId);
+          LOGe.bch("BatchCommandHandler: FATAL ERROR DURING EXECUTE", err, executingPromiseId);
           reject(err);
         })
     })
   }
 
-  _connectAndHandleCommands(crownstoneToHandle : connectionInfo, highPriorityActive: boolean, relayOnlyUsed: boolean) {
+  _connectAndHandleCommands(crownstoneToHandle : connectionInfo, highPriorityActive: boolean, relayOnlyUsed: boolean, executingPromiseId: string) {
     return new Promise((resolve, reject) => {
-      LOGi.bch("BatchCommandHandler: connecting to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
+      LOGi.bch("BatchCommandHandler: connecting to ", crownstoneToHandle.stone.config.name, executingPromiseId);
       BluenetPromiseWrapper.connect(crownstoneToHandle.handle, crownstoneToHandle.sphereId, highPriorityActive)
         .then(() => {
-          LOGi.bch("BatchCommandHandler: Connected to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
+          if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
+          LOGi.bch("BatchCommandHandler: Connected to ", crownstoneToHandle.stone.config.name, executingPromiseId);
           return this._handleAllCommandsForStone(crownstoneToHandle, {}, relayOnlyUsed);
         })
         .then((optionsOfPerformedActions : batchCommandEntryOptions) => {
+          if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
           if (optionsOfPerformedActions.keepConnectionOpen === true) {
             return this._keepConnectionOpen(optionsOfPerformedActions, crownstoneToHandle, true);
           }
         })
         .then(() => {
+          if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
           if (Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store) {
             // check if we have to tell this crownstone what time it is.
             let state = this.store.getState();
-            let stone = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId]
+            let stone = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId];
             let lastTime = stone.lastUpdated.stoneTime;
             // if it is more than 5 hours ago, tell this crownstone the time.
             if (new Date().valueOf() - lastTime > STONE_TIME_REFRESH_INTERVAL || stone.state.timeSet === false) {
