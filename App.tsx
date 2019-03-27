@@ -4,11 +4,11 @@ import { Component } from 'react';
 
 import { Animated, Keyboard, StatusBar,  View, Platform } from 'react-native';
 
-import { Router_IOS } from './js/router/RouterIOS'
-import { eventBus } from './js/util/EventBus'
 import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 import SplashScreen from 'react-native-splash-screen'
+import { Router } from "./js/router/Router";
+import { core } from "./js/core";
 
 export class Root extends Component<any, any> {
   unsubscribe = [];
@@ -61,7 +61,7 @@ export class Root extends Component<any, any> {
         Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration: 200}).start()
       }
 
-      this.unsubscribe.push(eventBus.on('focus', (posY_bottomTextfield) => {
+      this.unsubscribe.push(core.eventBus.on('focus', (posY_bottomTextfield) => {
         if (keyboardHeight === null) {
           moveUpForKeyboard_onKeyboardEvent = () => { moveUpForKeyboard(posY_bottomTextfield); };
         }
@@ -69,15 +69,15 @@ export class Root extends Component<any, any> {
           moveUpForKeyboard(posY_bottomTextfield);
         }
       }));
-      this.unsubscribe.push(eventBus.on('hidePopup', snapBackKeyboard));
-      this.unsubscribe.push(eventBus.on('showPopup', snapBackKeyboard));
-      this.unsubscribe.push(eventBus.on('blur',      snapBackKeyboard));
+      this.unsubscribe.push(core.eventBus.on('hidePopup', snapBackKeyboard));
+      this.unsubscribe.push(core.eventBus.on('showPopup', snapBackKeyboard));
+      this.unsubscribe.push(core.eventBus.on('blur',      snapBackKeyboard));
 
       // catch for the simulator
-      this.unsubscribe.push(eventBus.on('showLoading',  snapBack));
-      this.unsubscribe.push(eventBus.on('showProgress', snapBack));
-      this.unsubscribe.push(eventBus.on('hideLoading',  snapBack));
-      this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
+      this.unsubscribe.push(core.eventBus.on('showLoading',  snapBack));
+      this.unsubscribe.push(core.eventBus.on('showProgress', snapBack));
+      this.unsubscribe.push(core.eventBus.on('hideLoading',  snapBack));
+      this.unsubscribe.push(core.eventBus.on('hideProgress', snapBack));
       this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow);
       this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
     }
@@ -100,7 +100,7 @@ export class Root extends Component<any, any> {
         <View style={{flex: 1, backgroundColor: colors.menuBackgroundDarker.hex}}>
           <StatusBar barStyle="light-content"/>
           <Animated.View style={{flex: 1, position: 'relative', top: this.state.top}}>
-            <Router_IOS />
+            <Router />
           </Animated.View>
         </View>
       );
@@ -108,7 +108,7 @@ export class Root extends Component<any, any> {
     else {
       return (
         <View style={{flex:1}}>
-          <Router_IOS />
+          <Router />
         </View>
       )
     }

@@ -16,7 +16,7 @@ import { AppWithNavigationState, navigationStore } from "./NavigationReducer";
 import { Provider } from 'react-redux';
 
 
-export class Router_IOS extends Component {
+export class Router extends Component {
   render() {
     return (
       [
