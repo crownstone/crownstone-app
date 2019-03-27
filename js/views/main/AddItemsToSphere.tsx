@@ -43,7 +43,7 @@ export class AddItemsToSphere extends Component<any, any> {
 
     return {
       title: lang("Add_to_Sphere"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back(); }} />
     }
   };
 
@@ -70,7 +70,7 @@ export class AddItemsToSphere extends Component<any, any> {
               <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
                 NavigationUtil.navigateAndReplace("RoomAdd", { sphereId: this.props.sphereId });
               }} />
-              <AddItem icon={'c2-crownstone'} label={ lang("Crownstone")} callback={() => { addCrownstoneExplanationAlert(() => { this.props.navigation.goBack(null); }); }} />
+              <AddItem icon={'c2-crownstone'} label={ lang("Crownstone")} callback={() => { addCrownstoneExplanationAlert(() => { NavigationUtil.back(); }); }} />
             </View>
             <View  style={{flexDirection:'row'}}>
               <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => {

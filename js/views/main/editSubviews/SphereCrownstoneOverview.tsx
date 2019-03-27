@@ -19,6 +19,7 @@ import {Icon} from "../../components/Icon";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationActions, StackActions } from "react-navigation";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 
@@ -120,18 +121,14 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
       callback: () => {
         if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
           addCrownstoneExplanationAlert(() => {
-            const resetAction = StackActions.reset({
-              index: 0,
-              actions: [NavigationActions.navigate({ routeName: 'Main' })],
-            });
-            this.props.navigation.dispatch(resetAction);
-          })
+            NavigationUtil.reset("Main");
+          });
         }
         else {
           Alert.alert(
-lang("_Ask_your_Sphere_Admin__A_header"),
-lang("_Ask_your_Sphere_Admin__A_body"),
-[{text:lang("_Ask_your_Sphere_Admin__A_left")}]);
+            lang("_Ask_your_Sphere_Admin__A_header"),
+            lang("_Ask_your_Sphere_Admin__A_body"),
+            [{text:lang("_Ask_your_Sphere_Admin__A_left")}]);
         }
       }
     });

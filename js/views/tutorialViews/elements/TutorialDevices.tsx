@@ -43,10 +43,10 @@ export class TutorialDevices extends Component<any, any> {
 
               let goToSphereOverview = () => {
                 if (Platform.OS === 'android') {
-                  NavigationUtil.reset("Main");
+                  NavigationUtil.navigate("Main");
                 }
                 else {
-                  NavigationUtil.reset("Main");
+                  NavigationUtil.navigate("Main");
                 }
               };
 

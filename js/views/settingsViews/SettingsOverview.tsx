@@ -52,7 +52,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
   _getItems() {
     const store = core.store;
     const state = store.getState();
-    let items = SettingConstructor(store, state, core.eventBus);
+    let items = SettingConstructor(store, state);
 
     items.push({type:'spacer'});
     items.push({type:'explanation',

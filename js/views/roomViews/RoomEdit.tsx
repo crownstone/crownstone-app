@@ -68,6 +68,7 @@ export class RoomEdit extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
+    NavigationUtil.backTo('SphereOverview');
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -138,7 +139,7 @@ export class RoomEdit extends LiveComponent<any, any> {
 
         // jump back to root
         core.eventBus.emit('hideLoading');
-        this.props.navigation.goBack('RoomOverview');
+        NavigationUtil.backTo('SphereOverview');
 
         // reload fingerprints.
         LocationHandler.loadFingerprints();
@@ -248,11 +249,10 @@ lang("_Encountered_Cloud_Issue__body"),
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
         callback: () => {
           Alert.alert(
-lang("_Are_you_sure___Removing__header"),
-lang("_Are_you_sure___Removing__body"),
-[{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
-              
-text: lang("_Are_you_sure___Removing__right"),
+            lang("_Are_you_sure___Removing__header"),
+            lang("_Are_you_sure___Removing__body"),
+            [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
+            text: lang("_Are_you_sure___Removing__right"),
               style: 'destructive',
               onPress: this._removeRoom.bind(this)
             }])
@@ -315,7 +315,7 @@ text: lang("_Are_you_sure___Removing__right"),
           icon: this.state.icon
         }});
     }
-    this.props.navigation.goBack(null);
+    NavigationUtil.back();
   }
 
   cancelEdit() {
@@ -333,7 +333,7 @@ text: lang("_Are_you_sure___Removing__right"),
       this._removePicture(this.state.picture)
     }
 
-    this.props.navigation.goBack(null);
+    NavigationUtil.back();
   }
 
   render() {

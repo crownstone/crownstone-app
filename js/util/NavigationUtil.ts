@@ -18,15 +18,13 @@ export const NavigationUtil = {
     navigationStore.dispatch(navigateAction);
   },
 
-  backFrom(fromTarget) {
-    const navigateAction = NavigationActions.back({key:fromTarget})
-
-    navigationStore.dispatch(navigateAction);
-  },
 
   backTo(target) {
-    const navigateAction = NavigationActions.back({key:target})
-
+    console.log("I want to go back to: ", target)
+    const navigateAction = {
+      type: "Navigation/BACK",
+      target: target
+    }
     navigationStore.dispatch(navigateAction);
   },
 
@@ -36,10 +34,10 @@ export const NavigationUtil = {
     navigationStore.dispatch(navigateAction);
   },
 
-  reset(target) {
+  reset(target, params = {}) {
     const navigateAction = StackActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({ routeName: target })],
+      actions: [NavigationActions.navigate({ routeName: target, params: params })],
     });
 
     navigationStore.dispatch(navigateAction);
@@ -72,8 +70,17 @@ export const NavigationUtil = {
     const action = DrawerActions.openDrawer();
     navigationStore.dispatch(action);
   },
+
   closeDrawer: function() {
     const action = DrawerActions.closeDrawer();
     navigationStore.dispatch(action);
   },
+
+  logout: function() {
+    let action = {
+      type: 'Navigation/BACK',
+      logout: true,
+    }
+    navigationStore.dispatch(action);
+  }
 }

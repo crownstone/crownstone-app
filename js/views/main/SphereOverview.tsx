@@ -28,6 +28,7 @@ import {SphereLevel}                from "./SphereLevel";
 import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
 import {Util} from "../../util/Util";
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 const ZOOM_LEVELS = {
@@ -206,7 +207,7 @@ export class SphereOverview extends LiveComponent<any, any> {
   _getAddItemButton(viewingRemotely, activeSphereId) {
     if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
       if (Permissions.inSphere(activeSphereId).addRoom) {
-         return <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} navigation={this.props.navigation} />;
+         return <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} />;
       }
     }
   }
@@ -345,7 +346,7 @@ function getNavBarParams(state, props, viewState) {
         showFinalizeNavigationButton: false,
         rightLabel: lang("Edit"),
         rightAction: () => {
-          props.navigation.navigate("SphereEdit")
+          NavigationUtil.navigate("SphereEdit")
         },
       }
     }
@@ -359,7 +360,7 @@ function getNavBarParams(state, props, viewState) {
         showFinalizeNavigationButton: finalizeLocalization.showItem,
         showFinalizeIndoorNavigationCallback: finalizeLocalization.action,
         rightLabel: lang("Edit"),
-        rightAction: () => { props.navigation.navigate("SphereEdit",{sphereId: sphereId}) },
+        rightAction: () => { NavigationUtil.navigate("SphereEdit",{sphereId: sphereId}) },
         activeSphereId: sphereId,
       }
     }

@@ -100,7 +100,7 @@ export class SphereEdit extends Component<any, any> {
           largeIcon: <IconButton plusSize={25} addIcon={true} name="c1-sphere" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.csBlueLight.hex}} />,
           type: 'navigation',
           callback: () => {
-            this.props.navigation("AddSphereTutorial");
+            NavigationUtil.navigate("AddSphereTutorial");
           }
         });
         items.push({label: lang("Careful_a_sphere_is_not"),    type:'explanation', below: true});

@@ -35,7 +35,7 @@ export class RoomList extends Component<any, any> {
             { this.props.hideSubtitle !== true ? <Text style={{fontSize:14, fontWeight:'100', paddingTop:3}}>{ lang("Number_of_Crownstones__",this.props.stoneCount) }</Text> : undefined }
           </View>
         </View>
-        {this.props.navigation ? <Icon name="ios-arrow-forward" size={18} color={'#888'} /> : undefined}
+        {this.props.showNavigationIcon ? <Icon name="ios-arrow-forward" size={18} color={'#888'} /> : undefined}
       </View>
     );
   }

@@ -14,6 +14,7 @@ import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
 import {colors, screenWidth} from "../styles";
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 
@@ -229,7 +230,7 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
             selectedIcon={this.props.icon}
             callback={(newIcon) => {
               this.props.callback(newIcon);
-              this.props.navigation.goBack(null);
+              NavigationUtil.back();
             }}
           />
         </ScrollView>

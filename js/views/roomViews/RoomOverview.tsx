@@ -44,6 +44,7 @@ import { Scheduler }              from "../../logic/Scheduler";
 import { topBarStyle }            from "../components/topbar/TopbarStyles";
 import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -67,7 +68,6 @@ export class RoomOverview extends LiveComponent<any, any> {
     }
   };
 
-  navBarCalback : any = null;
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
@@ -181,12 +181,6 @@ export class RoomOverview extends LiveComponent<any, any> {
     // we keep open a connection for a few seconds to await a second command
     BatchCommandHandler.closeKeptOpenConnection();
     NAVBAR_PARAMS_CACHE = null;
-
-    if (this.navBarCalback) {
-      this.navBarCalback();
-      this.navBarCalback = null
-    }
-
   }
 
   _renderer(item, index, stoneId) {
@@ -290,15 +284,9 @@ export class RoomOverview extends LiveComponent<any, any> {
 
 
   _updateNavBar() {
-    if (this.navBarCalback) {
-      this.navBarCalback();
-      this.navBarCalback = null
-    }
-    this.navBarCalback = Scheduler.scheduleCallback(() => {
-      let state = core.store.getState();
-      let params = getNavBarParams(state, this.props, this.viewingRemotely);
-      this.props.navigation.setParams(params)
-    } , 0)
+    let state = core.store.getState();
+    let params = getNavBarParams(state, this.props, this.viewingRemotely);
+    this.props.navigation.setParams(params)
   }
 
 
@@ -479,7 +467,7 @@ function getNavBarParams(state, props, viewingRemotely) {
   if (spherePermissions.editRoom === true && props.locationId !== null) {
     rightLabel =  lang("Edit");
     rightAction = () => {
-      props.navigation.navigate("RoomEdit",{ sphereId: props.sphereId, locationId: props.locationId });
+      NavigationUtil.navigate("RoomEdit",{ sphereId: props.sphereId, locationId: props.locationId });
     };
   }
   else if (spherePermissions.editRoom === false && props.locationId !== null && enoughCrownstonesInLocations === true) {
@@ -492,7 +480,7 @@ function getNavBarParams(state, props, viewingRemotely) {
           [{text:lang("_Youre_not_in_the_Sphere__left")}])
       }
       else {
-        props.navigation.navigate("RoomTraining_roomSize",{ sphereId: props.sphereId, locationId: props.locationId });
+        NavigationUtil.navigate("RoomTraining_roomSize",{ sphereId: props.sphereId, locationId: props.locationId });
       }
     };
   }

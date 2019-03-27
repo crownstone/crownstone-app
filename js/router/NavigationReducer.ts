@@ -85,12 +85,55 @@ function findTopLevelRoutes(state) {
   }
 }
 
+function getIndexOfRouteName(state, routeName) {
+  let index = null;
+  for (let i = 0; i < state.routes.length; i++) {
+    if (state.routes[i].routeName === routeName) {
+      index = i;
+      break;
+    }
+  }
+  return index;
+}
+
+
+function changeStateToGoToRoute(state, routeName) {
+  if (!routeName) { return }
+
+  let parent = searchTreeForParentOfRoute(state, routeName);
+  if (!parent) { return };
+
+  let targetIndex = getIndexOfRouteName(parent, routeName);
+  if (parent.index === targetIndex) {
+    return changeStateToGoToRoute(state, parent.routeName)
+  }
+  else if (parent.index < targetIndex) {
+    parent.index = targetIndex;
+    return changeStateToGoToRoute(state, parent.routeName)
+  }
+  else if (parent.index > targetIndex) {
+    let diff = parent.index - targetIndex;
+    // shift the index.
+    parent.index = targetIndex;
+    // pop the higher routes:
+    for (let i = 0; i < diff; i++) {
+      parent.routes.pop();
+    }
+    return changeStateToGoToRoute(state, parent.routeName)
+  }
+}
+
+
+
+
 let expectedCompletes = 0;
 let choppingBlock = [];
 export const getAppReducer = function(navReducer) {
   return combineReducers({
     nav: (state, action) => {
       if (!state) { return navReducer(state,action); }
+
+      console.log("NAV STATE", state)
 
       if (action.type === "Navigation/NAVIGATE") {
         if (action.routeName !== "AppBase") {
@@ -99,9 +142,23 @@ export const getAppReducer = function(navReducer) {
           // console.log("ExpectedCompletes after Navigation:", expectedCompletes);
         }
       }
+      else if (action.type === "Navigation/BACK") {
+        if (action.logout === true) {
+          let newState = xUtil.deepExtend({}, state);
+          newState.index = getIndexOfRouteName(newState, "Logout");
+          return navReducer(newState, action);
+        }
+        else if (action.target !== undefined) {
+          let newState = xUtil.deepExtend({}, state);
+          changeStateToGoToRoute(newState, action.target)
+          action.type = "Navigation/COMPLETE_TRANSITION"
+          return navReducer(newState, action);
+        }
+      }
 
       if (action.params && action.params.__popBeforeAdd) {
         choppingBlock.push(getNameOfCurrentRoute(state));
+
         return navReducer(state, action);
       }
 
@@ -116,19 +173,18 @@ export const getAppReducer = function(navReducer) {
             while (choppingBlock.length > 0) {
               let parent = searchTreeForParentOfRoute(newState, choppingBlock[0]);
               if (parent) {
-                let index = 0;
-                for (let i = 0; i < parent.routes.length; i++) {
-                  if (parent.routes[i].routeName === choppingBlock[0]) {
-                    index = i;
-                    break;
+                let index = getIndexOfRouteName(parent, choppingBlock[0]);
+                if (index) {
+                  if (parent.index < index) {
+                    parent.routes.splice(index, 1);
                   }
-                }
-                if (parent.index < index) {
-                  parent.routes.splice(index, 1);
-                } else if (parent.index > index) {
-                  parent.routes.splice(index, 1);
-                  parent.index -= 1;
-                } else {
+                  else if (parent.index > index) {
+                    parent.routes.splice(index, 1);
+                    parent.index -= 1;
+                  }
+                  else {
+                    // TODO
+                  }
 
                 }
               }

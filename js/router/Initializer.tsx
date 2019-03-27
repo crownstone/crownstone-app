@@ -32,10 +32,10 @@ export class Initializer extends Component<any, any> {
       }
 
       if (BackgroundProcessHandler.userLoggedIn) {
-        NavigationUtil.navigate("AppBase")
+        NavigationUtil.navigate("AppBase");
       }
       else {
-        NavigationUtil.navigate("NewUser")
+        NavigationUtil.navigate("NewUser");
       }
     };
 

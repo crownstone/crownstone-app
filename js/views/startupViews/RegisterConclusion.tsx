@@ -41,7 +41,7 @@ export class RegisterConclusion extends Component<any, any> {
           </View>
           <View style={{flex:0.5}} />
           <View style={{alignItems:'center', justifyContent:'center', paddingBottom: 30}}>
-            <TouchableOpacity onPress={ () => { NavigationUtil.navigate("Login") }}>
+            <TouchableOpacity onPress={ () => { NavigationUtil.navigateAndReplaceVia("LoginSplash","Login") }}>
               <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ lang("OK") }</Text></View>
             </TouchableOpacity>
           </View>

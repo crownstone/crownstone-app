@@ -47,6 +47,10 @@ export class RoomAdd extends Component<any, any> {
     }
   };
 
+  componentDidMount(): void {
+    NavigationUtil.backTo(this.props.returnToRoute)
+  }
+
   refName : string;
   removePictureQueue = [];
 
@@ -70,7 +74,7 @@ export class RoomAdd extends Component<any, any> {
     // clean up any pictures that were taken
     this._removeUnusedPictures();
     this._removePicture(this.state.picture);
-    this.props.navigation.goBack(null);
+    NavigationUtil.back();
   }
 
   _removeUnusedPictures() {
@@ -252,7 +256,7 @@ export class RoomAdd extends Component<any, any> {
 
             core.store.batchDispatch(actions);
             if (this.props.returnToRoute) {
-              NavigationUtil.back();
+              NavigationUtil.backTo(this.props.returnToRoute);
             }
             else {
               NavigationUtil.navigate("RoomOverview",{sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false, __popBeforeAddCount: 2});
@@ -283,7 +287,7 @@ export class RoomAdd extends Component<any, any> {
     let backgroundImage = core.background.menu;
 
     if (!this.props.sphereId) {
-      this.props.navigation.goBack(null);
+      NavigationUtil.back();
       return <View />
     }
 

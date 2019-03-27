@@ -273,7 +273,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
           leftValue={stone.state.currentUsage + ' W'}
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate( "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'deviceOverview'}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate( "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'DeviceOverview'}); } : null}
         />
         <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>
@@ -372,7 +372,7 @@ export class DeviceInformation extends Component<any, any> {
         <View style={{width:screenWidth, flexDirection:'row', paddingLeft:10, paddingRight:10}}>
           {this.props.leftTapAction ?  <TouchableOpacity onPress={this.props.leftTapAction}><Text style={deviceStyles.text}>{this.props.leftValue}</Text></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.leftValue}</Text>}
           <View style={{flex:1}} />
-          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction} style={{flexDirection:'row'}}><Text style={deviceStyles.clickableTexct}>{this.props.rightValue}</Text><Icon name={"md-log-in"} size={20} color={colors.white.hex} style={{paddingLeft:5}} /></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.rightValue}</Text>}
+          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction} style={{flexDirection:'row'}}><Text style={deviceStyles.clickableText}>{this.props.rightValue}</Text><Icon name={"md-log-in"} size={20} color={colors.white.hex} style={{paddingLeft:5}} /></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.rightValue}</Text>}
         </View>
       </View>
     )
@@ -387,7 +387,7 @@ let deviceStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight:'600'
   },
-  clickableTexct: {
+  clickableText: {
     color: textColor.hex,
     fontSize: 18,
     fontWeight:'600',

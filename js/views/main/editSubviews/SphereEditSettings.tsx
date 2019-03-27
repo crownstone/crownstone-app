@@ -135,7 +135,7 @@ lang("_Sphere_name_must_be_at_l_body"),
       type: 'navigation',
       icon: <IconButton name='c1-people' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
       callback: () => {
-        this.props.navigation.goBack();
+        NavigationUtil.back();
         setTimeout(() => { core.eventBus.emit("highlight_nav_field", "sphereEdit_users");}, 200);
         setTimeout(() => { NavigationUtil.navigate("SphereUserOverview",{sphereId: this.props.sphereId}); }, 500);
       }
@@ -213,11 +213,7 @@ text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
     // stop tracking sphere.
     Bluenet.stopTrackingIBeacon(state.spheres[this.props.sphereId].config.iBeaconUUID);
     core.store.batchDispatch(actions);
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'Main' })],
-    });
-    this.props.navigation.dispatch(resetAction);
+    NavigationUtil.reset("Main");
   }
 
   _deleteSphere(state) {

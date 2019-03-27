@@ -189,26 +189,43 @@ const RoomTrainingStack = createStackNavigator(
   }
 );
 
+const FactoryResetStack = createStackNavigator(
+  {
+    SettingsFactoryResetStep1:     Views.SettingsFactoryResetStep1,
+    SettingsFactoryResetStep2:     Views.SettingsFactoryResetStep2,
+
+  },
+  {
+    ...defaultHeader
+  }
+);
+
 
 const AppStack = createStackNavigator(
   {
     Main: {
       screen: TabNavigator,
     },
+    AddItemsToSphere: {
+      screen: wrap("AddItemsToSphere"),
+    },
+    AddSphereTutorial: {
+      screen:  wrap("AddSphereTutorial"),
+    },
+    AiStart: {
+      screen:  wrap("AiStart"),
+    },
     EditSphereMenu: {
       screen: EditSphereStack
     },
-    SphereUserInvite: {
-      screen:  wrap("SphereUserInvite"),
-    },
-    PictureView: {
-      screen:  wrap("PictureView"),
+    FactoryResetStack: {
+      screen: FactoryResetStack,
     },
     CameraRollView: {
       screen:  wrap("CameraRollView"),
     },
-    AiStart: {
-      screen:  wrap("AiStart"),
+    PictureView: {
+      screen:  wrap("PictureView"),
     },
     RoomTrainingStack: {
       screen: RoomTrainingStack,
@@ -222,17 +239,17 @@ const AppStack = createStackNavigator(
     RoomAdd: {
       screen:  wrap("RoomAdd"),
     },
-    AddItemsToSphere: {
-      screen: wrap("AddItemsToSphere"),
-    },
     RoomEdit: {
       screen: wrap("RoomEdit"),
     },
+    SettingsRedownloadFromCloud: {
+      screen: wrap("SettingsRedownloadFromCloud"),
+    },
+    SphereUserInvite: {
+      screen:  wrap("SphereUserInvite"),
+    },
     ToonAdd: {
       screen:  wrap("ToonAdd"),
-    },
-    AddSphereTutorial: {
-      screen:  wrap("AddSphereTutorial"),
     },
   },
   {
@@ -252,6 +269,9 @@ export const RootStack = createSwitchNavigator(
     },
     AppBase: {
       screen: AppStack
+    },
+    Logout: {
+      screen: wrap("Logout")
     },
   },
   {

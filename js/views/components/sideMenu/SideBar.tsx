@@ -113,7 +113,7 @@ export class SideBar extends LiveComponent<any, any> {
 
   _getSettingsItems() {
     let state = this.store.getState();
-    let settingItems = SettingConstructor(this.store, state, () => { /*NavigationUtil.navigate(drawerClose()*/ });
+    let settingItems = SettingConstructor(this.store, state);
 
     settingItems.push({
       id: 'quit',

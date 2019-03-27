@@ -35,6 +35,7 @@ import { Icon }               from "../components/Icon";
 import { Sentry }             from "react-native-sentry";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class Login extends Component<any, any> {
@@ -80,7 +81,7 @@ export class Login extends Component<any, any> {
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        this.props.navigation.reset("RegisterConclusion", {email:this.state.email.toLowerCase(), title: lang("Verification_Email_Sent")});
+        NavigationUtil.reset("RegisterConclusion", {email:this.state.email.toLowerCase(), title: lang("Verification_Email_Sent")});
       })
       .catch((reply) => {
         let defaultAction = () => {core.eventBus.emit('hideLoading')};
@@ -97,7 +98,7 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        this.props.navigation.reset("RegisterConclusion", {email:this.state.email.toLowerCase(), title: lang("Reset_Email_Sent"), passwordReset:true});
+        NavigationUtil.reset("RegisterConclusion", {email:this.state.email.toLowerCase(), title: lang("Reset_Email_Sent"), passwordReset:true});
       })
       .catch((reply) => {
         let content = "Please try again.";
@@ -224,7 +225,7 @@ lang("_Incorrect_Email_or_Passw_body"),
     }
     return (
       <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} safeView={true}>
-        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { this.props.navigation.goBack() }} style={{backgroundColor:'transparent', paddingTop:0}} />
+        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
             <View style={{flex:2, width:screenWidth}} />
@@ -464,13 +465,12 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
           core.eventBus.emit('hideProgress');
 
           if (state.user.isNew !== false) {
-            this.props.navigation.reset("Tutorial");
+            NavigationUtil.reset("Tutorial");
           }
           else {
             core.eventBus.emit("userLoggedInFinished");
-            console.log("HERE")
-            if (Platform.OS === 'android') { this.props.navigation.reset("SphereOverview"); }
-            else                           { this.props.navigation.reset("SphereOverview"); }
+            if (Platform.OS === 'android') { NavigationUtil.navigate("Main"); }
+            else                           { NavigationUtil.navigate("Main"); }
           }
         }, 100);
       })

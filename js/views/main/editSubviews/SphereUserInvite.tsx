@@ -17,6 +17,7 @@ import {LOGe} from '../../../logging/Log'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { TopbarBackButton } from "../../components/topbar/TopbarButton";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 export class SphereUserInvite extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -138,7 +139,7 @@ export class SphereUserInvite extends Component<any, any> {
           userId: this.state.email.toLowerCase(),
           data: { email: this.state.email.toLowerCase(), invitationPending: true, accessLevel: this.state.permission.toLowerCase()}
         });
-        let defaultAction = () => { this.props.navigation.goBack(); };
+        let defaultAction = () => { NavigationUtil.back(); };
         Alert.alert(
           lang("_Invite_has_been_sent___A_header"),
           lang("_Invite_has_been_sent___A_body",this.state.email),

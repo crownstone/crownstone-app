@@ -198,7 +198,7 @@ export class AiStart extends Component<any, any> {
         core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
         core.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {aiName: this.state.aiName, aiSex: this.state.aiSex}});
         if (this.props.canGoBack === true) {
-          this.props.navigation.goBack(null);
+          NavigationUtil.back();
         }
         else if (this.props.resetViewStack === true) {
           if (Platform.OS === 'android') {

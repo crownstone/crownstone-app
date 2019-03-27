@@ -68,7 +68,7 @@ export class RoomSelection extends LiveComponent<any, any> {
             icon={room.config.icon}
             name={room.config.name}
             stoneCount={Object.keys(Util.data.getStonesInLocation(state, this.props.sphereId, roomId)).length}
-            navigation={true}
+            showNavigationIcon={true}
           />
         </View>
       </TouchableHighlight>

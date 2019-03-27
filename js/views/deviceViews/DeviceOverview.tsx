@@ -63,7 +63,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
     }
   };
 
-  navBarCalback : any = null;
   unsubscribeStoreEvents : any;
   unsubscribeSwiperEvents : any = [];
   touchEndTimeout: any;
@@ -177,24 +176,9 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
     NAVBAR_PARAMS_CACHE = null;
 
-    if (this.navBarCalback) {
-      this.navBarCalback();
-      this.navBarCalback = null
-    }
   }
 
   _updateNavBar(swiperIndex, scrolling) {
-    if (this.navBarCalback) {
-      this.navBarCalback();
-      this.navBarCalback = null
-    }
-    this.navBarCalback = Scheduler.scheduleCallback(() => {
-      let state = core.store.getState();
-      let params = getNavBarParams(core.store, state, this.props, swiperIndex, scrolling);
-      this.props.navigation.setParams(params)
-    } , 0);
-
-
     let state = core.store.getState();
     let params = getNavBarParams(core.store, state, this.props, swiperIndex, scrolling);
     this.props.navigation.setParams(params)

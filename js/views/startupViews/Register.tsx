@@ -24,6 +24,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { colors } from '../styles'
 
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral =  lang("Your_password_must_not_be");
@@ -253,7 +254,7 @@ lang("_You_Must_Enter_a_Last_Na_body"),
       .then(() => {
         core.eventBus.emit("hideLoading");
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
-        this.props.navigation.reset("RegisterConclusion", {email:this.state.email.toLowerCase()});
+        NavigationUtil.reset("RegisterConclusion", {email:this.state.email.toLowerCase()});
       })
       .catch((reply) => {
         if (reply.data && reply.data.error && reply.data.error.message) {

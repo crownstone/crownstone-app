@@ -20,6 +20,7 @@ import { tutorialStyle } from "../../../tutorialViews/TutorialStyle";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { createNewSphere } from "../../../../util/CreateSphere";
 import { core } from "../../../../core";
+import { NavigationUtil } from "../../../../util/NavigationUtil";
 
 
 export class AddSphereTutorial_intended extends Component<any, any> {
@@ -50,7 +51,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.goBack();
+              NavigationUtil.back();
             }}
             style={buttonStyle}>
             <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("I_dont_need_a_sphere") }</Text>
@@ -62,7 +63,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
               createNewSphere(core.eventBus, core.store, state.user.firstName+"'s Sphere")
                 .then((sphereId) => {
                   core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: sphereId}});
-                  this.props.navigation.reset("AiStart",{sphereId: sphereId, resetViewStack: true});
+                  NavigationUtil.reset("AiStart",{sphereId: sphereId, resetViewStack: true});
                 })
                 .catch((err) => {
                   Alert.alert(lang("Whoops!"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])

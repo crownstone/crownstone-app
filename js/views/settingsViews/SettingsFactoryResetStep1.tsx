@@ -17,10 +17,14 @@ import { setupStyle, NextButton } from './SetupShared'
 import {colors, screenHeight, OrangeLine} from './../styles'
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 export class SettingsFactoryResetStep1 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: lang("Factory_Reset")}
+    return {
+      title: lang("Factory_Reset"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
+    }
   };
 
   render() {

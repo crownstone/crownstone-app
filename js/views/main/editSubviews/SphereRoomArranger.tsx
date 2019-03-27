@@ -22,6 +22,7 @@ import { ForceDirectedView } from "../../components/interactiveView/ForceDirecte
 import { Background } from "../../components/Background";
 import { Util } from "../../../util/Util";
 import { Icon } from "../../components/Icon";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 
@@ -121,7 +122,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
     if (actions.length > 0) {
       core.store.batchDispatch(actions);
     }
-    this.props.navigation.goBack();
+    NavigationUtil.back();
   }
 
   getButtons() {

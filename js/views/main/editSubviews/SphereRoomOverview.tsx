@@ -54,11 +54,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
   _getRoomItem(state, roomId, room) {
     return (
       <TouchableHighlight key={roomId + '_entry'} onPress={() => {
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: 'Main' })],
-        });
-        this.props.navigation.dispatch(resetAction);
+        NavigationUtil.reset("Main")
         NavigationUtil.navigate("RoomOverview",{sphereId: this.props.sphereId, locationId: roomId, title: room.config.name, seeStoneInSetupMode: false});
       }}>
       <View style={[styles.listView, {paddingRight:5}]}>
@@ -66,7 +62,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
           icon={room.config.icon}
           name={room.config.name}
           stoneCount={Object.keys(Util.data.getStonesInLocation(state, this.props.sphereId, roomId)).length}
-          navigation={true}
+          showNavigationIcon={true}
         />
       </View>
       </TouchableHighlight>
@@ -85,7 +81,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
             hideSubtitle={true}
             iconSizeOverride={40}
             backgroundColor={colors.menuTextSelected.hex}
-            navigation={true}
+            showNavigationIcon={true}
           />
         </View>
       </TouchableHighlight>
