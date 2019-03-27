@@ -1,5 +1,5 @@
 import {StoneUtil} from "./StoneUtil";
-import {LOG, LOGe} from "../logging/Log";
+import {LOGe} from "../logging/Log";
 
 export const ScheduleUtil = {
   getNextTime: function(time, activeDays) {

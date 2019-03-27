@@ -1,4 +1,3 @@
-import { Alert, Platform } from 'react-native';
 import ImageResizer from 'react-native-image-resizer';
 
 import { screenWidth, screenHeight, pxRatio } from '../views/styles'
@@ -8,8 +7,8 @@ import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
 import {ALWAYS_DFU_UPDATE} from "../ExternalConfig";
 import {Permissions} from "../backgroundProcesses/PermissionManager";
-import {SessionMemory} from "./SessionMemory";
 import { FileUtil } from "./FileUtil";
+import { core } from "../core";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -80,7 +79,7 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
   }
 
   if (cacheBuster) {
-    pictureUri += '?r=' + SessionMemory.cacheBusterUniqueElement
+    pictureUri += '?r=' + core.sessionMemory.cacheBusterUniqueElement
   }
 
   return pictureUri;

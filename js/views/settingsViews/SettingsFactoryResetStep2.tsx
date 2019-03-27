@@ -10,27 +10,23 @@ import {
   ActivityIndicator,
   Alert,
   Image,
-  StyleSheet,
-  ScrollView,
-  TouchableHighlight,
-  TouchableOpacity,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { Background }            from '../components/Background'
 import { setupStyle }            from './SetupShared'
 import {colors, screenWidth, screenHeight, OrangeLine} from './../styles'
-import { Util }                  from '../../util/Util'
 import { BleUtil }               from '../../util/BleUtil'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
 import {LOG, LOGe} from '../../logging/Log'
 import { BlePromiseManager }     from "../../logic/BlePromiseManager";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {BackAction} from "../../util/Back";
+
 import { xUtil } from "../../util/StandAloneUtil";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class SettingsFactoryResetStep2 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -51,10 +47,10 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
 
   componentDidMount() {
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
-    this.props.eventBus.emit("ignoreTriggers");
+    core.eventBus.emit("ignoreTriggers");
 
     // this is done with an event to avoid double starting due to additional construction by the navigation lib.
-    this.props.eventBus.on("StartFactoryResetProcess", () => {
+    core.eventBus.on("StartFactoryResetProcess", () => {
       // we scan high frequency when we see a setup node
       BleUtil.startHighFrequencyScanning(this.uuid, true);
       this.searchForStone()
@@ -63,7 +59,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
 
   componentWillUnmount() {
     // Restore trigger state
-    this.props.eventBus.emit("useTriggers");
+    core.eventBus.emit("useTriggers");
     BleUtil.startHighFrequencyScanning(this.uuid);
     BleUtil.cancelAllSearches();
   }
@@ -121,21 +117,21 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
           let description = this._getDescription(map[nearestNormal.handle]);
           if (nearestNormal.rssi > -60) {
             Alert.alert(
-lang("_Crownstone_in_Setup_mode_header"),
-lang("_Crownstone_in_Setup_mode_body",description),
-[{text:lang("_Crownstone_in_Setup_mode_left"), style: 'cancel', onPress: () => { BackAction(); }},{
-text:lang("_Crownstone_in_Setup_mode_right"), onPress: () => {
+              lang("_Crownstone_in_Setup_mode_header"),
+              lang("_Crownstone_in_Setup_mode_body",description),
+              [{text:lang("_Crownstone_in_Setup_mode_left"), style: 'cancel', onPress: () => { NavigationUtil.back(); }},{
+              text:lang("_Crownstone_in_Setup_mode_right"), onPress: () => {
                 this._removeOwnedCrownstone(nearestNormal.handle);
               }}],
               { cancelable: false }
             );
           }
           else {
-            let defaultAction = () => { BackAction(); };
+            let defaultAction = () => { NavigationUtil.back(); };
             Alert.alert(
-lang("_Crownstone_in_Setup_mode__header"),
-lang("_Crownstone_in_Setup_mode__body",description),
-[{text:lang("_Crownstone_in_Setup_mode__left"), onPress: defaultAction }],
+              lang("_Crownstone_in_Setup_mode__header"),
+              lang("_Crownstone_in_Setup_mode__body",description),
+              [{text:lang("_Crownstone_in_Setup_mode__left"), onPress: defaultAction }],
               { cancelable: false }
             );
           }
@@ -144,26 +140,26 @@ lang("_Crownstone_in_Setup_mode__body",description),
           // both setup AND normal in range.
           if (nearestNormal.rssi > -60) {
             Alert.alert(
-lang("_Crownstone_in_Setup_mode_n_header"),
-lang("_Crownstone_in_Setup_mode_n_body"),
-[{text:lang("_Crownstone_in_Setup_mode_n_left"), style: 'cancel', onPress: () => { BackAction(); }},{
-text:lang("_Crownstone_in_Setup_mode__right"), onPress: () => { this.recoverStone(nearestNormal.handle); }}],
+              lang("_Crownstone_in_Setup_mode_n_header"),
+              lang("_Crownstone_in_Setup_mode_n_body"),
+              [{text:lang("_Crownstone_in_Setup_mode_n_left"), style: 'cancel', onPress: () => { NavigationUtil.back(); }},{
+              text:lang("_Crownstone_in_Setup_mode__right"), onPress: () => { this.recoverStone(nearestNormal.handle); }}],
               { cancelable: false }
             );
           }
           else {
             Alert.alert(
-lang("_Crownstone_in_Setup_mode_ne_header"),
-lang("_Crownstone_in_Setup_mode_ne_body"),
-[{text:lang("_Crownstone_in_Setup_mode_ne_left"), style: 'cancel', onPress: () => { BackAction(); }},{
-text:lang("_Crownstone_in_Setup_mode_n_right"), onPress: () => { this.recoverStone(nearestNormal.handle); }}],
+              lang("_Crownstone_in_Setup_mode_ne_header"),
+              lang("_Crownstone_in_Setup_mode_ne_body"),
+              [{text:lang("_Crownstone_in_Setup_mode_ne_left"), style: 'cancel', onPress: () => { NavigationUtil.back(); }},{
+              text:lang("_Crownstone_in_Setup_mode_n_right"), onPress: () => { this.recoverStone(nearestNormal.handle); }}],
               { cancelable: false }
             );
           }
         }
       })
       .catch((err) => {
-        let defaultAction = () => { BackAction(); };
+        let defaultAction = () => { NavigationUtil.back(); };
         // either setup or normal or none in range
         if (nearestSetup === undefined && nearestNormal !== undefined) {
           // we detect only our own crownstones.
@@ -173,7 +169,7 @@ text:lang("_Crownstone_in_Setup_mode_n_right"), onPress: () => { this.recoverSto
               Alert.alert(
 lang("_No_unknown_Crownstone_ne_header"),
 lang("_No_unknown_Crownstone_ne_body",description),
-[{text:lang("_No_unknown_Crownstone_ne_left"), style: 'cancel', onPress: () => { BackAction(); BackAction(); }},{
+[{text:lang("_No_unknown_Crownstone_ne_left"), style: 'cancel', onPress: () => { NavigationUtil.backToTop(); }},{
 text:lang("_No_unknown_Crownstone_ne_right"), onPress: () => {
                   this._removeOwnedCrownstone(nearestNormal.handle);
                 }}],
@@ -233,8 +229,7 @@ lang("_No_nearby_Crownstones____body"),
       .then(() => {
         let defaultAction = () => {
           // pop twice to get back to the settings.
-          BackAction();
-          BackAction();
+          NavigationUtil.backToTop();
         };
         Alert.alert(
 lang("_Success___This_Crownston_header"),
@@ -245,7 +240,7 @@ lang("_Success___This_Crownston_body"),
       })
       .catch((err) => {
         LOGe.info("ERROR IN RECOVERY", err);
-        let defaultAction = () => { BackAction(); };
+        let defaultAction = () => { NavigationUtil.back(); };
         if (err === "NOT_IN_RECOVERY_MODE") {
           Alert.alert(
 lang("_Not_in_Factory_Reset_mod_header"),
@@ -269,7 +264,7 @@ lang("_Error_during_Factory_Res_body"),
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} safeView={true}>
+      <Background hasNavBar={false} image={core.background.detailsDark} safeView={true}>
         <OrangeLine/>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>{ lang("Hold_your_phone_next_to_t") }</Text>

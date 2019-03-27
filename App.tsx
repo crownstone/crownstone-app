@@ -4,7 +4,7 @@ import { Component } from 'react';
 
 import { Animated, Keyboard, StatusBar,  View, Platform } from 'react-native';
 
-import { AppRouter } from './js/router/Router'
+import { Router_IOS } from './js/router/RouterIOS'
 import { eventBus } from './js/util/EventBus'
 import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
@@ -100,7 +100,7 @@ export class Root extends Component<any, any> {
         <View style={{flex: 1, backgroundColor: colors.menuBackgroundDarker.hex}}>
           <StatusBar barStyle="light-content"/>
           <Animated.View style={{flex: 1, position: 'relative', top: this.state.top}}>
-            <AppRouter/>
+            <Router_IOS />
           </Animated.View>
         </View>
       );
@@ -108,7 +108,7 @@ export class Root extends Component<any, any> {
     else {
       return (
         <View style={{flex:1}}>
-          <AppRouter />
+          <Router_IOS />
         </View>
       )
     }

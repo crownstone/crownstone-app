@@ -8,6 +8,7 @@ import { user } from "./user";
 import { stones } from "./stones";
 import { appliances } from "./appliances";
 import { locations } from "./locations";
+import { core } from "../../core";
 
 export const spheres = {
 
@@ -67,7 +68,7 @@ export const spheres = {
             }})
           });
 
-          eventBus.emit('sphereCreated');
+          core.eventBus.emit('sphereCreated');
           store.batchDispatch(creationActions);
           return localId;
         }

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Component } from 'react';
 import {TopbarStateContainer} from "../../../logic/TopbarStateContainer";
 
@@ -8,7 +7,7 @@ export class TopbarProxy extends Component<{
 }, any> {
 
   constructor(props) {
-    super(props)
+    super(props);
 
     TopbarStateContainer.addProxy(props.id, props);
     this.props.navigation.setParams({xtitle:"test" + (Math.ceil(Math.random()*1000)).toString(36)})

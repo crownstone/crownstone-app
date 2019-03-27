@@ -6,27 +6,19 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
   ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
   PanResponder,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View, ViewStyle, TextStyle
 } from "react-native";
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {colors, screenWidth} from '../styles'
-import {eventBus} from "../../util/EventBus";
 import {AnimatedDial} from "./AnimatedDial";
 import {Icon} from "./Icon";
 import {LOGe} from "../../logging/Log";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { core } from "../../core";
 
 export class LockedStateUI extends Component<any, any> {
   _panResponder;
@@ -60,7 +52,7 @@ export class LockedStateUI extends Component<any, any> {
             this.controlling = true;
             this._startTime = new Date().valueOf();
             this._updateLoop();
-            eventBus.emit("UIGestureControl", false);
+            core.eventBus.emit("UIGestureControl", false);
           }
         }
       },
@@ -76,7 +68,7 @@ export class LockedStateUI extends Component<any, any> {
           else {
             this.setState({level: 0});
           }
-          eventBus.emit("UIGestureControl", true)
+          core.eventBus.emit("UIGestureControl", true)
         }
       },
       onPanResponderTerminate: (evt, gestureState) => {

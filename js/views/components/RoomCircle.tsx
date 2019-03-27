@@ -5,13 +5,9 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomCircle", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Animated,
-  Dimensions,
-  Image,
-  NativeModules,
-  TouchableOpacity,
   Text,
   View
 } from 'react-native';
@@ -20,7 +16,7 @@ import { styles, colors } from '../styles'
 import { getCurrentPowerUsageInLocation } from '../../util/DataUtil'
 import { Icon } from './Icon';
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { Svg, Circle } from 'react-native-svg';
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
@@ -28,6 +24,8 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {IconCircle} from "./IconCircle";
 import { AlternatingContent } from "./animated/AlternatingContent";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -101,33 +99,31 @@ class RoomCircleClass extends LiveComponent<any, any> {
     this.unsubscribeSetupEvents = [];
 
     // set the usage initially
-    this.usage = getCurrentPowerUsageInLocation(props.store.getState(), props.sphereId, props.locationId);
+    this.usage = getCurrentPowerUsageInLocation(core.store.getState(), props.sphereId, props.locationId);
   }
 
 
   componentDidMount() {
-    const {store} = this.props;
-
     if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID) {
-      this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled", (handle) => {
+      this.unsubscribeSetupEvents.push(core.eventBus.on("setupCancelled", (handle) => {
         this.setState({setupProgress: 20});
       }));
-      this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress", (data) => {
+      this.unsubscribeSetupEvents.push(core.eventBus.on("setupInProgress", (data) => {
         this.setState({setupProgress: data.progress});
       }));
-      this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete", (handle) => {
+      this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete", (handle) => {
         this.setState({setupProgress: 20});
       }));
     }
 
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("dfuStoneChange", () => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange", () => {
       this.forceUpdate();
     }));
 
 
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
-      const state = store.getState();
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+      const state = core.store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
         return;
       }
@@ -151,23 +147,23 @@ class RoomCircleClass extends LiveComponent<any, any> {
       }
     });
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
       this.handleTouchReleased(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTap(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeTouched' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeTouched' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTouch(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeReleased' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeReleased' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTouchReleased(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeDragging' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeDragging' + this.props.viewId + this.props.locationId, (data) => {
       this.handleDragging(data);
     }));
   }
@@ -255,7 +251,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
       return <Icon name="c2-pluginFilled" size={this.iconSize} color='#ffffff'/>;
     }
     else {
-      let icon = this.props.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
+      let icon = core.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
       return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
     }
 
@@ -369,8 +365,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
-    const state = store.getState();
+    const state = core.store.getState();
 
     // do not show the fingerprint required alert bubbles if the user does not want to use indoor localization
     if (state.app.indoorLocalizationEnabled) {
@@ -453,18 +448,17 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
     this.state.scale.setValue(1);
     this.state.opacity.setValue(1);
-
     if (this.showAlert !== null) {
       if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
         if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
           handled = true;
-          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
+          NavigationUtil.navigate("RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
         }
       }
     }
 
     if (handled === false) {
-      Actions.roomOverview({ sphereId: this.props.sphereId, locationId: this.props.locationId });
+      NavigationUtil.navigate("RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
     }
   }
 }

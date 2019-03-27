@@ -6,16 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
   Animated,
   ActivityIndicator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  Platform,
   Switch,
   TouchableOpacity,
-  TouchableHighlight,
   Text,
   View, ViewStyle
 } from "react-native";
@@ -26,13 +20,14 @@ import { styles, colors}        from '../../styles'
 import { AlternatingContent }                 from '../animated/AlternatingContent';
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
 import { INTENTS }                            from '../../../native/libInterface/Constants';
-import { Actions }                            from 'react-native-router-flux';
 import { StoneUtil }                          from "../../../util/StoneUtil";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
 import {SlideFadeInView} from "../animated/SlideFadeInView";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../../Enums";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -41,7 +36,7 @@ export class DeviceEntry extends Component<any, any> {
   animating = false;
   id = xUtil.getUUID();
 
-  showMeshMessageTimeout
+  showMeshMessageTimeout;
 
   constructor(props) {
     super(props);
@@ -59,7 +54,7 @@ export class DeviceEntry extends Component<any, any> {
 
   componentDidMount() {
     // this event makes the background of the device entry blink to incidate the error.
-    this.unsubscribe.push(this.props.eventBus.on('showErrorInOverview', (stoneId) => {
+    this.unsubscribe.push(core.eventBus.on('showErrorInOverview', (stoneId) => {
       if (stoneId === this.props.stoneId) {
         Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 90 }).start();
         setTimeout(() => {
@@ -87,7 +82,7 @@ export class DeviceEntry extends Component<any, any> {
       this.props.sphereId,
       this.props.stoneId,
       stone, newState,
-      this.props.store,
+      core.store,
       {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
       (err, result) => {
         let newState = {pendingCommand:false};
@@ -139,7 +134,7 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _basePressed() {
-    Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+    NavigationUtil.navigate("DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
   }
 
   _getIcon(element, stone, state) {
@@ -207,7 +202,7 @@ export class DeviceEntry extends Component<any, any> {
 
 
   _getExplanationText(state) {
-    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12}
+    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12};
 
     if (this.props.hideExplanation !== true && (this.props.locationId === null || state.app.hasSeenDeviceSettings === false)) {
       return (
@@ -220,7 +215,7 @@ export class DeviceEntry extends Component<any, any> {
 
 
   render() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let element = stone.config.applianceId ? state.spheres[this.props.sphereId].appliances[stone.config.applianceId] : stone;

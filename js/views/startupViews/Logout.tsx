@@ -6,14 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Linking,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  View
-} from 'react-native';
+  Image} from 'react-native';
 import {styles} from "../styles";
 
 

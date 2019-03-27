@@ -6,7 +6,6 @@
 
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {CLOUD} from "../../../cloudAPI";
-import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferAppliances} from "../../../transferData/transferAppliances";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
@@ -65,7 +64,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
           localId: localId,
           localSphereId: this.localSphereId,
           cloudData: appliance_from_cloud
-        })
+        });
         this._copyBehaviourFromCloud(localId, appliance_from_cloud);
       }
 

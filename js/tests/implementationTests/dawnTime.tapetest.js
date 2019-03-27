@@ -8,7 +8,7 @@ test('dawn', function (t) {
   // get today's sunlight times for Rotterdam
   var times = SunCalc.getTimes(new Date("2019/06/21"), lat, lon);
 
-  console.log(times)
+  console.log(times);
 
   let keys = Object.keys(times);
   keys.forEach((key) => {

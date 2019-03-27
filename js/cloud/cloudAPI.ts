@@ -1,5 +1,4 @@
 'use strict';
-import { Alert } from 'react-native';
 import { Util } from '../util/Util';
 
 import { activityLogs }      from './sections/activityLogs'

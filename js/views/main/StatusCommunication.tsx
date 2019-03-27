@@ -5,14 +5,8 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("StatusCommunication", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Animated,
-  Dimensions,
-  Image,
-  PanResponder,
-  StyleSheet,
-  TouchableHighlight,
   Text,
   View, TextStyle
 } from "react-native";
@@ -23,9 +17,10 @@ import {
   enoughCrownstonesInLocationsForIndoorLocalization,
   enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
-import { colors, screenWidth, availableScreenHeight, overviewStyles } from "../styles";
+import { colors, screenWidth, overviewStyles } from "../styles";
 import { SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { core } from "../../core";
 
 
 export class StatusCommunication extends LiveComponent<any, any> {
@@ -37,7 +32,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
     this.unsubscribeSetupEvents = [];
 
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
         (change.changeStoneState && change.changeStoneState.sphereIds[this.props.sphereId]) ||
@@ -54,7 +49,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
 
     let currentSphereId = this.props.sphereId;

@@ -1,4 +1,3 @@
-import {INTENTS} from "../../../../native/libInterface/Constants";
 import {StoneUtil} from "../../../../util/StoneUtil";
 import {DAYS} from "../../DeviceScheduleEdit";
 
@@ -37,7 +36,7 @@ export class ActivityLogProcessor {
             break;
           }
           else {
-            log.duplicate = true
+            log.duplicate = true;
             lastDuplicate = log;
             amountOfMeshRelays++;
           }
@@ -85,7 +84,7 @@ export class ActivityLogProcessor {
       //   isRange:   true,
       // });
 
-      let endTime = 0
+      let endTime = 0;
       if (range.lastDirectTime !== null && range.lastMeshTime !== null) {
         endTime = Math.max(range.lastDirectTime, range.lastMeshTime);
       }
@@ -146,7 +145,7 @@ export class ActivityLogProcessor {
           switchedToState:  range.switchedToState,
           otherUserPresent: otherUserPresent,
           isRange: true,
-        })
+        });
 
         logs.push({
           timestamp: expirationTime,
@@ -167,7 +166,7 @@ export class ActivityLogProcessor {
   }
 
   _addDateIndicators(logs) {
-    let additions = []
+    let additions = [];
     for (let i = 1; i < logs.length; i++) {
       if (new Date(logs[i].timestamp).getDay() !== new Date(logs[i-1].timestamp).getDay()) {
         additions.push({
@@ -261,7 +260,7 @@ export class ActivityLogProcessor {
         }
         presumedState = log.switchedToState;
       }
-    }
+    };
 
     for (let i = 0; i < logs.length; i++) {
       let log = logs[i];
@@ -346,7 +345,7 @@ export class ActivityLogProcessor {
     // dont show times older than 1.5 day
     let minAvailable = new Date().valueOf();
     for ( let i = 0; i < logIds.length; i++ ) {
-      let log = rawLogs[logIds[i]]
+      let log = rawLogs[logIds[i]];
       if (state.development.show_only_own_activity_log) {
         if (log.userId === userId) {
           minAvailable = Math.min(log.timestamp, minAvailable);
@@ -365,8 +364,8 @@ export class ActivityLogProcessor {
 
     for ( let i = 0; i < scheduleId.length; i++ ) {
       let schedule = schedules[scheduleId[i]];
-      let time = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.time))
-      let now = new Date().valueOf()
+      let time = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.time));
+      let now = new Date().valueOf();
 
       let timeToday = new Date(new Date(new Date(now).setHours(time.getHours())).setMinutes(time.getMinutes())).setSeconds(0);
       let timeYesterday = new Date(new Date(new Date(now - 24 * 3600000).setHours(time.getHours())).setMinutes(time.getMinutes())).setSeconds(0);
@@ -404,7 +403,7 @@ export class ActivityLogProcessor {
     logs = this._removeMeshDuplicates(logs);
 
     // add day markers
-    logs = this._addDateIndicators(logs)
+    logs = this._addDateIndicators(logs);
 
     // generate log entries for expired multiSwitches, this will also sort.
     logs = this._addEventsForExpiredMultiswitches(logs, keepAliveType);

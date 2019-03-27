@@ -7,7 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
-  Platform,
   Text,
   TouchableOpacity,
   View,
@@ -15,8 +14,8 @@ import {
 
 import { OverlayBox }                                from '../components/overlays/OverlayBox'
 import { styles, colors, screenWidth } from '../styles'
-import { eventBus }                                  from '../../util/EventBus'
 import { Util }                                      from "../../util/Util";
+import { core } from "../../core";
 
 export class LocalizationSetupStep2 extends Component<any, any> {
   unsubscribe : any;
@@ -29,7 +28,7 @@ export class LocalizationSetupStep2 extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on("showLocalizationSetupStep2", (sphereId) => {
+    this.unsubscribe.push(core.eventBus.on("showLocalizationSetupStep2", (sphereId) => {
       this.setState({visible: true, sphereId: sphereId});
     }));
 
@@ -41,8 +40,10 @@ export class LocalizationSetupStep2 extends Component<any, any> {
   }
 
   render() {
-    let state = this.props.store.getState();
-    let ai = Util.data.getAiData(state, this.state.sphereId);
+    let ai = {name:"AI"}
+    if (this.state.visible) {
+      ai = Util.data.getAiData(core.store.getState(), this.state.sphereId);
+    }
 
     return (
       <OverlayBox

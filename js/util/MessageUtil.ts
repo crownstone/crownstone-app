@@ -2,7 +2,7 @@
 
 import {CLOUD} from "../cloud/cloudAPI";
 import {Util} from "./Util";
-import {LOG, LOGe} from "../logging/Log";
+import {LOGe} from "../logging/Log";
 import {MapProvider} from "../backgroundProcesses/MapProvider";
 
 export const MessageUtil = {

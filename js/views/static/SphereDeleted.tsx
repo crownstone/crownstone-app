@@ -6,12 +6,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Image,
-  Text,
-  View
-} from 'react-native';
+  Text} from 'react-native';
 import {Background} from "../components/Background";
-import {OrangeLine, styles} from "../styles";
+import {OrangeLine} from "../styles";
 
 
 export class SphereDeleted extends Component<any, any> {

@@ -1,17 +1,13 @@
-import { eventBus }               from "../../util/EventBus";
 import {DISABLE_TIMEOUT, FALLBACKS_ENABLED} from "../../ExternalConfig";
 import { LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
-import { NativeBus }              from "../libInterface/NativeBus";
 import { MapProvider }            from "../../backgroundProcesses/MapProvider";
-import { BlePromiseManager }      from "../../logic/BlePromiseManager";
-import { BleUtil }                from "../../util/BleUtil";
-import { BluenetPromiseWrapper }  from "../libInterface/BluenetPromise";
 import { Scheduler }              from "../../logic/Scheduler";
 import { Util }                   from "../../util/Util";
 import { StoneEntity }            from "./StoneEntity";
 import { LocationHandler }        from "../localization/LocationHandler";
 import { DfuStateHandler }        from "../firmware/DfuStateHandler";
 import { StoneStoreManager }      from "./StoneStoreManager";
+import { core } from "../../core";
 
 
 /**
@@ -37,7 +33,7 @@ class StoneManagerClass {
   // _debugging = false
   //
   // constructor() {
-  //   eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
+  //   core.eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
   //     this._debug(state);
   //   })
   // }
@@ -63,7 +59,7 @@ class StoneManagerClass {
   //           this.createEntity(sphereId, stoneId);
   //         })
   //       })
-  //       eventBus.emit("ADVERTISEMENT_DEBUGGING", true);
+  //       core.eventBus.emit("ADVERTISEMENT_DEBUGGING", true);
   //     }
   //   }
   // }
@@ -72,7 +68,7 @@ class StoneManagerClass {
   _init() {
     if (this._initialized === false) {
       // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
-      eventBus.on("connecting", (handle) => {
+      core.eventBus.on("connecting", (handle) => {
         // this is a fallback mechanism in case no disconnect event is fired.
         this.stonesInConnectionProcess[handle] = { timeout: Scheduler.scheduleCallback(() => {
             LOGw.native("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 15 seconds.");
@@ -80,14 +76,14 @@ class StoneManagerClass {
           }, 15000, 'ignoreProcessAdvertisementsTimeout')};
       });
       // sometimes the first event since state change can be wrong, we use this to ignore it.
-      eventBus.on("disconnect", () => {
+      core.eventBus.on("disconnect", () => {
         // wait before listening to the stones again.
         Scheduler.scheduleCallback(() => { this._restoreConnectionTimeout(); }, 1000,'_restoreConnectionTimeout');
       });
 
 
       // clean entities if we remove a stone or a sphere
-      eventBus.on("databaseChange", (data) => {
+      core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
         let changedAction = change.removeStone || change.removeSphere;
         if (changedAction) {
@@ -105,24 +101,24 @@ class StoneManagerClass {
         }
       });
 
-      eventBus.on("CrownstoneDisabled", (sphereId) => { this._evaluateDisabledState(sphereId); });
+      core.eventBus.on("CrownstoneDisabled", (sphereId) => { this._evaluateDisabledState(sphereId); });
 
       // // if we are syncing, this means we might get new crownstones to download, in the mean time we dont want to factory reset them
-      // eventBus.on("CloudSyncStarting", () => { this._pauseFactoryResetCapability();   });
+      // core.eventBus.on("CloudSyncStarting", () => { this._pauseFactoryResetCapability();   });
       // // after syncing we enable factory reset capability
-      // eventBus.on("CloudSyncComplete", () => { this._restoreFactoryResetCapability(); });
+      // core.eventBus.on("CloudSyncComplete", () => { this._restoreFactoryResetCapability(); });
       //
       // // during setup we do will ignore crownstones which we can understand but dont have in the database
-      // eventBus.on("setupStarted"  , (stoneHandle) => { this._pauseFactoryResetCapability();   });
+      // core.eventBus.on("setupStarted"  , (stoneHandle) => { this._pauseFactoryResetCapability();   });
       //
       // // we will delay the enabling of the automatic factory resetting to ensure setup mode has really been concluded.
-      // eventBus.on("setupCancelled", (stoneHandle) => { this._restoreFactoryResetCapability(); });
-      // eventBus.on("setupComplete" , (stoneHandle) => { this._restoreFactoryResetCapability(); });
+      // core.eventBus.on("setupCancelled", (stoneHandle) => { this._restoreFactoryResetCapability(); });
+      // core.eventBus.on("setupComplete" , (stoneHandle) => { this._restoreFactoryResetCapability(); });
 
       // listen to verified advertisements. Verified means consecutively successfully encrypted.
-      NativeBus.on(NativeBus.topics.advertisement, this.handleAdvertisement.bind(this));
+      core.nativeBus.on(core.nativeBus.topics.advertisement, this.handleAdvertisement.bind(this));
 
-      NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data : ibeaconPackage[]) => {
+      core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data : ibeaconPackage[]) => {
         data.forEach((iBeaconPackage: ibeaconPackage) => {
           this.handleIBeacon(iBeaconPackage);
         });
@@ -215,7 +211,7 @@ class StoneManagerClass {
 
     let stoneId = stoneData.id;
 
-    eventBus.emit("iBeaconOfValidCrownstone", {stoneId: stoneId, rssi: ibeaconPackage.rssi});
+    core.eventBus.emit("iBeaconOfValidCrownstone", {stoneId: stoneId, rssi: ibeaconPackage.rssi});
 
     // create an entity for this crownstone if one does not exist yet.
     if (!this.entities[stoneId]) { this.createEntity(sphereId, stoneId); }
@@ -262,7 +258,7 @@ class StoneManagerClass {
       LOGd.native("StoneManager: IGNORE: unknown Crownstone Id.");
       // LOGw.native("StoneManager: ATTEMPTING FACTORY RESET OF UNKNOWN CROWNSTONE");
       // this._factoryResetUnknownCrownstone(advertisement.handle);
-      return;;
+      return;
     }
 
     // repair mechanism to store the handle.
@@ -285,7 +281,7 @@ class StoneManagerClass {
 
     // emit event of valid crownstone
     if (advertisement.rssi && advertisement.rssi < 0) {
-      eventBus.emit("AdvertisementOfValidCrownstone", {stoneId: referenceByHandle.id, rssi: advertisement.rssi})
+      core.eventBus.emit("AdvertisementOfValidCrownstone", {stoneId: referenceByHandle.id, rssi: advertisement.rssi})
     }
 
     // this is on manager level, not on entity level since setup crownstones do not have an entity but do need this functionality.

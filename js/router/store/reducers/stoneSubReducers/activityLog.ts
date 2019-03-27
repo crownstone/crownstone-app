@@ -54,7 +54,7 @@ export default (state = {}, action : any = {}) => {
       for (let i = 0; i < k.length; i++) {
         s[k[i]].cloudId = null;
       }
-      return s
+      return s;
     case 'REMOVE_ALL_ACTIVITY_LOGS':
       return {};
     case 'REMOVE_ACTIVITY_LOG':

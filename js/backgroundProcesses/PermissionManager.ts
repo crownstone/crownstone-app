@@ -1,6 +1,6 @@
-import {eventBus} from "../util/EventBus";
 import {LOG} from "../logging/Log";
 import {PermissionBase, PermissionClass} from "./Permissions";
+import { core } from "../core";
 
 export class PermissionManagerClass {
   _store : any;
@@ -18,7 +18,7 @@ export class PermissionManagerClass {
       this._userAlreadyLoggedIn = userAlreadyLoggedIn;
 
       // sometimes the first event since state change can be wrong, we use this to ignore it.
-      eventBus.on("databaseChange", (data) => {
+      core.eventBus.on("databaseChange", (data) => {
         if (this._enableUpdates === false) {
           return;
         }
@@ -30,7 +30,7 @@ export class PermissionManagerClass {
         }
       });
 
-      eventBus.on('userLoggedIn', () => {
+      core.eventBus.on('userLoggedIn', () => {
         LOG.info("PermissionManager: Update permissions due to userLoggedIn");
         this._enableUpdates = true;
         this._userAlreadyLoggedIn = true;

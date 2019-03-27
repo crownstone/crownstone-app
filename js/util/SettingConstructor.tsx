@@ -7,24 +7,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import {
   Alert,
-  Dimensions,
-  Linking,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableHighlight,
-  View
-} from 'react-native';
+  Platform} from 'react-native';
 
 import { Util }               from './Util'
 import { AppUtil }            from './AppUtil'
-import { Actions }            from 'react-native-router-flux';
 import { colors }             from '../views/styles'
 import { Icon }               from '../views/components/Icon'
 import { IconButton }         from '../views/components/IconButton'
-import { createNewSphere }    from "./CreateSphere";
 import { AlternatingContent } from "../views/components/animated/AlternatingContent";
-import { MapProvider }        from "../backgroundProcesses/MapProvider";
+import { core } from "../core";
+import { NavigationUtil } from "./NavigationUtil";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -72,7 +64,7 @@ const insertExplanation = function(items: any[], label : string, below : boolean
   }
 };
 
-export const SettingConstructor = function(store, state, eventBus, clickCallback = () => {}) {
+export const SettingConstructor = function(store, state, clickCallback = () => {}) {
   let items = [];
 
   insertExplanation(items, lang("My_AccountLabel"), false);
@@ -83,7 +75,7 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
     type: 'navigation',
     callback: () => {
       clickCallback();
-      Actions.settingsProfile();
+      NavigationUtil.navigate("SettingsProfile");
     }
   });
   items.push({
@@ -93,7 +85,7 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
     type: 'navigation',
     callback:() => {
       clickCallback();
-      Actions.settingsPrivacy();
+      NavigationUtil.navigate("SettingsPrivacy");
     }
   });
   insertExplanation(items, lang("PrivacyLabel"), true);
@@ -106,7 +98,10 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
       type: 'navigation',
       style: {color: '#000'},
       icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
-      callback: () => { clickCallback(); Actions.settingsMeshTopology(); }
+      callback: () => {
+        clickCallback();
+        NavigationUtil.navigate("SettingsMeshTopology");
+      }
     });
   }
 
@@ -116,7 +111,10 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
     type: 'navigation',
     style: {color: '#000'},
     icon: getAlternatingIcons(['ios-cog','ios-battery-full'],[25,25],[colors.white.hex, colors.white.hex],[colors.darkBackground.hex, colors.darkBackground.hex]) ,
-    callback: () => { clickCallback(); Actions.settingsApp(); }
+    callback: () => {
+      clickCallback();
+      NavigationUtil.navigate("SettingsApp");
+    }
   });
 
   if (state.app.tapToToggleEnabled !== false) {
@@ -130,7 +128,7 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
       type:'button',
       style: {color:'#000'},
       icon: getIcon('md-flask', 22, colors.white.hex, colors.menuBackground.hex),
-      callback: () => { clickCallback(); eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
+      callback: () => { clickCallback(); core.eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
     });
   }
 
@@ -140,7 +138,7 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
     type: 'button',
     style: {color: '#000'},
     icon: getIcon('md-bulb', 23, colors.white.hex, colors.green.hex),
-    callback: () => { clickCallback(); eventBus.emit("showWhatsNew"); }
+    callback: () => { clickCallback(); core.eventBus.emit("showWhatsNew"); }
   });
 
   insertExplanation(items,  lang("TROUBLESHOOTING"), false);
@@ -151,7 +149,7 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
     icon: getIcon('md-analytics', 21, colors.white.hex, colors.csBlue.hex),
     callback: () => {
       clickCallback();
-      Actions.settingsDiagnostics()
+      NavigationUtil.navigate("SettingsDiagnostics");
     }
   });
   items.push({
@@ -162,7 +160,7 @@ export const SettingConstructor = function(store, state, eventBus, clickCallback
     callback: () => {
       // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
       clickCallback();
-      Actions.settingsFAQ()
+      NavigationUtil.navigate("SettingsFAQ");
     }
   });
 

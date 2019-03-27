@@ -7,8 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Platform,
-  StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
   Text,
   View
@@ -16,10 +14,11 @@ import {
 
 import { Icon } from './Icon';
 import { colors, topBarHeight, statusBarHeight} from '../styles'
-let Actions = require('react-native-router-flux').Actions;
+
 import { AlternatingContent }   from './animated/AlternatingContent'
-import {BackAction} from "../../util/Back";
+
 import {topBarStyle} from "./topbar/TopbarStyles";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 let barHeight = topBarHeight - statusBarHeight;
 
@@ -58,7 +57,7 @@ class TopBarAndroid extends Component<any, any> {
         }
 
         return (
-          <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true, viewProps: this.props})}} style={[topBarStyle.topBarLeftTouch]}>
+          <TouchableOpacity onPress={() => { NavigationUtil.openDrawer() }} style={[topBarStyle.topBarLeftTouch]}>
             <AlternatingContent
               style={[topBarStyle.topBarLeftTouch,{paddingLeft:0}]}
               fadeDuration={ 500 }
@@ -70,7 +69,7 @@ class TopBarAndroid extends Component<any, any> {
       }
 
       return (
-        <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true })}} style={[topBarStyle.topBarLeftTouch]}>
+        <TouchableOpacity onPress={() => { NavigationUtil.openDrawer() }} style={[topBarStyle.topBarLeftTouch]}>
           <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
             <Icon name="md-menu" size={27} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
           </View>
@@ -91,12 +90,12 @@ class TopBarAndroid extends Component<any, any> {
     }
     else {
       // back
-      let backCallback = () => { BackAction(); };
+      let backCallback = () => { NavigationUtil.back(); };
       if (typeof this.props.leftAction === 'function') {
         backCallback = this.props.leftAction;
       }
       return (
-        <TouchableOpacity onPress={() => { backCallback(); }}style={[topBarStyle.topBarLeftTouch]} ><View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
+        <TouchableOpacity onPress={() => { backCallback(); }} style={[topBarStyle.topBarLeftTouch]} ><View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
             <Icon name="md-arrow-back" size={22} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
           </View>
         </TouchableOpacity>
@@ -163,7 +162,7 @@ class TopBarIOS extends Component<any, any> {
           <TouchableOpacity onPress={() => {this.props.leftAction();}} style={[topBarStyle.topBarLeftTouch]}>
             <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
               <Icon name="ios-arrow-back" size={33} color={color} style={{paddingRight:6, marginTop:2}} />
-              <Text style={[topBarStyle.topBarLeft,topBarStyle.text, this.props.leftStyle]}>{this.props.left}</Text>
+              <Text style={[topBarStyle.topBarLeft,topBarStyle.leftText, this.props.leftStyle]}>{this.props.left}</Text>
             </View>
           </TouchableOpacity>
         );

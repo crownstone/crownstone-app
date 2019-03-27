@@ -96,7 +96,7 @@ export const stones = {
    * @returns {*}
    */
   updateStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true, doNotSetUpdatedTimes = false) {
-    console.warn("WARNING DEPRECATED updateStoneLocationLink")
+    console.warn("WARNING DEPRECATED updateStoneLocationLink");
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(
         'PUT',
@@ -129,7 +129,7 @@ export const stones = {
    * @returns {*}
    */
   deleteStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true) {
-    console.warn("WARNING DEPRECATED deleteStoneLocationLink")
+    console.warn("WARNING DEPRECATED deleteStoneLocationLink");
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(
         'DELETE',

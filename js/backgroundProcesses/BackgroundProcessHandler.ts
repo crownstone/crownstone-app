@@ -1,10 +1,8 @@
 import { Alert, AppState }       from 'react-native';
 
-import { eventBus }              from "../util/EventBus";
 import { Bluenet }               from "../native/libInterface/Bluenet";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { LocationHandler }       from "../native/localization/LocationHandler";
-import { NativeBus }             from "../native/libInterface/NativeBus";
 import { CLOUD }                 from "../cloud/cloudAPI";
 import { AppUtil }               from "../util/AppUtil";
 import { Util }                  from "../util/Util";
@@ -35,12 +33,13 @@ import { Sentry }                from "react-native-sentry";
 import { ActivityLogManager }    from "./ActivityLogManager";
 import { ToonIntegration }       from "./thirdParty/ToonIntegration";
 import { EncryptionManager }     from "../native/libInterface/Encryption";
-import { SessionMemory }         from "../util/SessionMemory";
 import { BroadcastStateManager } from "./BroadcastStateManager";
 import { WatchStateManager } from "./WatchStateManager";
 
 const PushNotification = require('react-native-push-notification');
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
+import { core } from "../core";
+import { cleanLogs } from "../logging/LogUtil";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -65,8 +64,8 @@ class BackgroundProcessHandlerClass {
       Bluenet.rerouteEvents();
 
       BluenetPromiseWrapper.isDevelopmentEnvironment().then((result) => {
-        SessionMemory.developmentEnvironment = result;
-      })
+        core.sessionMemory.developmentEnvironment = result;
+      });
 
       // if there is a badge number, remove it on opening the app.
       this._clearBadge();
@@ -75,7 +74,7 @@ class BackgroundProcessHandlerClass {
 
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
-      eventBus.on('userLoggedIn', () => {
+      core.eventBus.on('userLoggedIn', () => {
         // clear the temporary data like state and disability of stones so no old data will be shown
         prepareStoreForUser(this.store);
 
@@ -93,13 +92,11 @@ class BackgroundProcessHandlerClass {
 
         // initialize logging to file if this is required.
         this.setupLogging();
-
-        this.userLoggedIn = true;
       });
 
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
-      eventBus.on('userLoggedInFinished', () => {
+      core.eventBus.on('userLoggedInFinished', () => {
         // init behaviour based on if we are in the foreground or the background.
         this._applyAppStateOnScanning(AppState.currentState);
 
@@ -122,7 +119,7 @@ class BackgroundProcessHandlerClass {
       });
 
       // wait for store to be prepared in order to continue.
-      eventBus.on("storePrepared", () => {
+      core.eventBus.on("storePrepared", () => {
         LOG.info("BackgroundProcessHandler: Store is prepared.");
         this.storePrepared = true;
 
@@ -160,7 +157,7 @@ class BackgroundProcessHandlerClass {
       this.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} })
     }
     else if (state.app.shownWhatsNewVersion !== DeviceInfo.getReadableVersion()) {
-      Scheduler.scheduleCallback(() => { eventBus.emit("showWhatsNew"); }, 100);
+      Scheduler.scheduleCallback(() => { core.eventBus.emit("showWhatsNew"); }, 100);
     }
   }
 
@@ -170,6 +167,13 @@ class BackgroundProcessHandlerClass {
     if ((state.user.developer === true && state.development.logging_enabled === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
       Bluenet.enableExtendedLogging(true);
     }
+
+
+    // use periodic events to clean the logs.
+    let triggerId = "LOG_CLEANING_TRIGGER";
+    Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds: 5*3600});
+    Scheduler.loadCallback(triggerId,() => { cleanLogs() }, true);
+
   }
 
 
@@ -208,7 +212,7 @@ class BackgroundProcessHandlerClass {
     CLOUD.setNetworkErrorHandler((err) => {
       if (this.connectionPopupActive === false) {
         this.connectionPopupActive = true;
-        let defaultAction = () => { this.connectionPopupActive = false; eventBus.emit('hideLoading');};
+        let defaultAction = () => { this.connectionPopupActive = false; core.eventBus.emit('hideLoading');};
         LOGw.cloud("Could not connect to the cloud.", err);
         Alert.alert(
           "Connection Problem",
@@ -261,7 +265,7 @@ class BackgroundProcessHandlerClass {
     // trigger the CalibrateTapToToggle tutorial for existing users when they open the app
     let state = this.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
-    NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
+    core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => {
       // do not show popup during setup.
       if (SetupStateHandler.isSetupInProgress() === true) {
         return;
@@ -271,7 +275,7 @@ class BackgroundProcessHandlerClass {
       if (state && state.devices && deviceInDatabaseId && state.devices[deviceInDatabaseId] &&
         (state.devices[deviceInDatabaseId].tapToToggleCalibration === null || state.devices[deviceInDatabaseId].tapToToggleCalibration === undefined)) {
         if (Util.data.userHasPlugsInSphere(state,sphereId))
-          eventBus.emit("CalibrateTapToToggle");
+          core.eventBus.emit("CalibrateTapToToggle");
       }
     });
 
@@ -345,7 +349,7 @@ class BackgroundProcessHandlerClass {
 
   startBluetoothListener() {
     // Ensure we start scanning when the bluetooth module is powered on.
-    NativeBus.on(NativeBus.topics.bleStatus, (status) => {
+    core.nativeBus.on(core.nativeBus.topics.bleStatus, (status) => {
       if (this.userLoggedIn && status === 'poweredOn') {
         BatterySavingUtil.startNormalUsage();
       }
@@ -361,7 +365,7 @@ class BackgroundProcessHandlerClass {
       this._verifyStore();
     }
     else {
-      eventBus.on('storeManagerInitialized', () => { this._verifyStore(); });
+      core.eventBus.on('storeManagerInitialized', () => { this._verifyStore(); });
     }
   }
 
@@ -381,11 +385,11 @@ class BackgroundProcessHandlerClass {
       if (corruptData) {
         brokenSphere = true;
       }
-    })
+    });
 
     if (brokenSphere) {
       Alert.alert("Something went wrong...","I have identified a problem with the Sphere on your phone... I'll have to redownload it from the Cloud to fix this.", [{text:'OK', onPress: () => {
-        AppUtil.resetDatabase(this.store, eventBus);
+        AppUtil.resetDatabase(this.store, core.eventBus);
       }}], {cancelable:false});
       return;
     }
@@ -422,14 +426,15 @@ class BackgroundProcessHandlerClass {
             AppUtil.logOut(this.store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }
         });
-      eventBus.emit("userLoggedIn");
-      eventBus.emit("storePrepared", {userLoggedIn: true});
+      this.userLoggedIn = true;
+      core.eventBus.emit("userLoggedIn");
+      core.eventBus.emit("storePrepared");
       if (state.user.isNew === false) {
-        eventBus.emit("userLoggedInFinished");
+        core.eventBus.emit("userLoggedInFinished");
       }
     }
     else {
-      eventBus.emit("storePrepared", {userLoggedIn: false});
+      core.eventBus.emit("storePrepared");
     }
   }
 

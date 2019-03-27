@@ -1,4 +1,3 @@
-import { eventBus }              from '../util/EventBus'
 import { Util }                  from '../util/Util'
 import { BlePromiseManager }     from './BlePromiseManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
@@ -13,6 +12,7 @@ import { RssiLogger }            from "../native/advertisements/RssiLogger";
 import { BroadcastCommandManager } from "./bchComponents/BroadcastCommandManager";
 import { xUtil } from "../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../Enums";
+import { core } from "../core";
 
 
 /**
@@ -38,7 +38,7 @@ class BatchCommandHandlerClass {
   }
 
   closeKeptOpenConnection() {
-    eventBus.emit("BatchCommandHandlerCloseConnection");
+    core.eventBus.emit("BatchCommandHandlerCloseConnection");
   }
 
   /**
@@ -180,14 +180,14 @@ class BatchCommandHandlerClass {
                 break;
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive().then(() => {
-                  eventBus.emit("NEW_ACTIVITY_LOG", {
+                  core.eventBus.emit("NEW_ACTIVITY_LOG", {
                     command: "keepAlive",
                     commandUuid: action.commandUuid,
                     connectedTo: connectedStoneInfo.stoneId,
                     target:      connectedStoneInfo.stoneId,
                     sphereId:    connectedStoneInfo.sphereId
                   });
-                })
+                });
                 break;
               case 'commandFactoryReset':
                 actionPromise = BluenetPromiseWrapper.commandFactoryReset();
@@ -196,7 +196,7 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.keepAliveState(command.changeState, command.state, command.timeout)
                   .then(() => {
                     let com = command as any;
-                    eventBus.emit("NEW_ACTIVITY_LOG", {
+                    core.eventBus.emit("NEW_ACTIVITY_LOG", {
                       command:     "keepAliveState",
                       commandUuid: action.commandUuid,
                       connectedTo: connectedStoneInfo.stoneId,
@@ -206,7 +206,7 @@ class BatchCommandHandlerClass {
                       state:       com.state,
                       sphereId:    connectedStoneInfo.sphereId
                     });
-                  })
+                  });
                 break;
               case 'getSchedules':
                 actionPromise = BluenetPromiseWrapper.getSchedules();
@@ -244,7 +244,7 @@ class BatchCommandHandlerClass {
               case 'multiSwitch':
                 let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, timeout: command.timeout, intent: command.intent, state: command.state};
                 actionPromise = BluenetPromiseWrapper.multiSwitch([stoneSwitchPacket]).then(() => {
-                  eventBus.emit("NEW_ACTIVITY_LOG", {
+                  core.eventBus.emit("NEW_ACTIVITY_LOG", {
                     command:     "multiswitch",
                     commandUuid: action.commandUuid,
                     connectedTo: connectedStoneInfo.stoneId,
@@ -533,12 +533,12 @@ class BatchCommandHandlerClass {
         scheduleCloseTimeout(timeout);
       }
 
-      this._unsubscribeCloseListener = eventBus.on("BatchCommandHandlerCloseConnection", () => {
+      this._unsubscribeCloseListener = core.eventBus.on("BatchCommandHandlerCloseConnection", () => {
         this._cleanKeepOpen();
         resolve();
       });
 
-      this._unsubscribeLoadListener = eventBus.on("BatchCommandHandlerLoadAction", () => {
+      this._unsubscribeLoadListener = core.eventBus.on("BatchCommandHandlerLoadAction", () => {
         // remove all listeners before moving on.
         this._cleanKeepOpen();
 
@@ -621,7 +621,7 @@ class BatchCommandHandlerClass {
   }
 
   executePriority(options? : batchCommandEntryOptions) {
-    eventBus.emit('PriorityCommandSubmitted');
+    core.eventBus.emit('PriorityCommandSubmitted');
     this._execute(true, options);
   }
 
@@ -699,7 +699,7 @@ class BatchCommandHandlerClass {
 
       // if we're busy with a low priority command, we will stop the search if a high priority execute comes in.
       if (highPriorityActive !== true) {
-        unsubscribeListeners.push(eventBus.on('PriorityCommandSubmitted', () => {
+        unsubscribeListeners.push(core.eventBus.on('PriorityCommandSubmitted', () => {
           LOGi.bch("BatchCommandHandler: Stopped listening for Crownstones due to Priority Execute.");
           // remove the listeners
           cleanup();
@@ -715,7 +715,7 @@ class BatchCommandHandlerClass {
       // cleanup timeout
       objectsToScan.forEach((topic) => {
         // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
-        unsubscribeListeners.push( eventBus.on(topic.topic, (data) => {
+        unsubscribeListeners.push( core.eventBus.on(topic.topic, (data) => {
           LOGd.bch("BatchCommandHandler: Got an event:", data.id, data.rssi, data.handle);
           if (rssiThreshold === null || data.rssi > rssiThreshold) {
             // remove the listeners

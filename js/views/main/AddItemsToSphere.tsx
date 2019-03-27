@@ -7,38 +7,34 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Animated,
-  Dimensions,
-  Image,
-  PanResponder,
   Linking,
-  Platform,
-  StyleSheet,
   ScrollView,
-  TouchableHighlight,
   TouchableOpacity,
   Text,
   View
 } from 'react-native';
-let Actions = require('react-native-router-flux').Actions;
 
-import { screenWidth, availableScreenHeight, topBarHeight, colors, OrangeLine, deviceStyles } from "../styles";
+
+import { screenWidth, colors, OrangeLine, deviceStyles } from "../styles";
 import {Background} from "../components/Background";
 import {textStyle} from "../deviceViews/elements/DeviceBehaviour";
 import {IconButton} from "../components/IconButton";
-import {BackAction} from "../../util/Back";
+import { core } from "../../core";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
+import { NavigationUtil } from "../../util/NavigationUtil";
+
 
 let iconSize = 100;
 
 export const addCrownstoneExplanationAlert = (actionOnOK = () => {}) => {
   Alert.alert(
-lang("_Adding_a_Crownstone__Plu_header"),
-lang("_Adding_a_Crownstone__Plu_body"),
-[{text: lang("_Adding_a_Crownstone__Plu_left"), style:'cancel',onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},
-      {
-text: lang("_Adding_a_Crownstone__Plu_right"), onPress: () => { actionOnOK() }}]
+    lang("_Adding_a_Crownstone__Plu_header"),
+    lang("_Adding_a_Crownstone__Plu_body"),
+    [{text: lang("_Adding_a_Crownstone__Plu_left"), style:'cancel',onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},
+          {
+    text: lang("_Adding_a_Crownstone__Plu_right"), onPress: () => { actionOnOK() }}]
   );
-}
+};
 
 export class AddItemsToSphere extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -47,12 +43,13 @@ export class AddItemsToSphere extends Component<any, any> {
 
     return {
       title: lang("Add_to_Sphere"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
     }
   };
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark} hasNavBar={false}>
+      <Background image={core.background.detailsDark} hasNavBar={false}>
         <OrangeLine/>
         <ScrollView>
           <View style={{ width: screenWidth, alignItems:'center' }}>
@@ -70,12 +67,18 @@ export class AddItemsToSphere extends Component<any, any> {
             <Text style={textStyle.specification}>{ lang("You_can_add_Rooms__People") }</Text>
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row'}}>
-              <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => { Actions.roomAdd({sphereId: this.props.sphereId }); }} />
-              <AddItem icon={'c2-crownstone'} label={ lang("Crownstone")} callback={() => { addCrownstoneExplanationAlert(() => { BackAction(); }); }} />
+              <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
+                NavigationUtil.navigateAndReplace("RoomAdd", { sphereId: this.props.sphereId });
+              }} />
+              <AddItem icon={'c2-crownstone'} label={ lang("Crownstone")} callback={() => { addCrownstoneExplanationAlert(() => { this.props.navigation.goBack(null); }); }} />
             </View>
             <View  style={{flexDirection:'row'}}>
-              <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => { Actions.sphereUserInvite({sphereId: this.props.sphereId}) }} />
-              <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => { Actions.sphereIntegrations({sphereId: this.props.sphereId}) }} />
+              <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => {
+                NavigationUtil.navigateAndReplace("SphereUserInvite",{sphereId: this.props.sphereId});
+              }} />
+              <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => {
+                NavigationUtil.navigateAndReplaceVia("SphereEdit","SphereIntegrations",{sphereId: this.props.sphereId})
+              }} />
             </View>
           </View>
           <View style={{height: 30}} />

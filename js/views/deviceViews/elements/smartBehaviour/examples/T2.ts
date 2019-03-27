@@ -11,7 +11,7 @@ let timeConditionStart = {
     value: "22:00",
     offset: null,
   }
-}
+};
 
 let timeConditionEnd = {
   type: CONDITIONS.TIME,
@@ -20,7 +20,7 @@ let timeConditionEnd = {
     value: "6:00",
     offset: null,
   }
-}
+};
 
 let rule = {
   start: [timeConditionStart],
@@ -29,4 +29,4 @@ let rule = {
     type: ACTIONS.REACT_TO_TURN_ON,
     value: 0.5
   }
-}
+};

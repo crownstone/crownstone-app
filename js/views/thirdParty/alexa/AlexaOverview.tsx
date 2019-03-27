@@ -11,8 +11,9 @@ import {
   View
 } from 'react-native';
 import {Background} from "../../components/Background";
-import { colors, OrangeLine, screenWidth, styles } from "../../styles";
+import { OrangeLine, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
+import { core } from "../../../core";
 
 
 export class AlexaOverview extends Component<any, any> {
@@ -25,7 +26,7 @@ export class AlexaOverview extends Component<any, any> {
   render() {
 
     return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={true}>
+      <Background image={core.background.menu} hasNavBar={false} safeView={true}>
         <OrangeLine/>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>

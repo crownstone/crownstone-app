@@ -10,19 +10,18 @@ import {
   Image,
   PermissionsAndroid,
   Platform,
-  TouchableHighlight,
   TouchableOpacity,
   Text,
   View
 } from 'react-native';
 
 import { IconCircle }  from './IconCircle'
-import {LOG, LOGe} from '../../logging/Log'
+import {LOGe} from '../../logging/Log'
 import { Icon } from './Icon';
 import { styles, colors} from '../styles'
-import { eventBus } from '../../util/EventBus'
 import { preparePictureURI } from '../../util/Util'
-const Actions = require('react-native-router-flux').Actions;
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class PictureCircle extends Component<any, any> {
   triggerOptions() {
@@ -37,14 +36,14 @@ export class PictureCircle extends Component<any, any> {
   showOptions() {
     let buttons = [];
     if (Platform.OS === 'android') {
-      buttons.push({ text: lang("Take_Photo"), callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
-      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Photo"), callback: () => {  NavigationUtil.navigate("PictureView",{selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { NavigationUtil.navigate("CameraRollView",{selectCallback: this.props.callback});}});
     }
     else {
-      buttons.push({ text: lang("Take_Picture"), callback: () => { Actions.pictureView({selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
-      buttons.push({ text: lang("Choose_Existing"), callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Picture"), callback: () => { NavigationUtil.navigate("PictureView",{selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
+      buttons.push({ text: lang("Choose_Existing"), callback: () => { NavigationUtil.navigate("CameraRollView",{selectCallback: this.props.callback});}});
     }
-    eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
+    core.eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
   }
 
   render() {

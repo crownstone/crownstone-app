@@ -292,7 +292,7 @@ export const rgb2hsv = function(r,g?,b?) {
  * @constructor
  */
 export const hsv2hex = function(h, s, v) {
-  let rgb = hsv2rgb(h,s,v)
+  let rgb = hsv2rgb(h,s,v);
 
   return rgb2hex(rgb)
 };

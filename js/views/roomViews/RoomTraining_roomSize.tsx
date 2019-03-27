@@ -6,24 +6,20 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  Alert,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
   Text,
   View,
-  Vibration, ViewStyle, TextStyle
+  ViewStyle, TextStyle
 } from "react-native";
 
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { Background }   from '../components/Background'
 import {colors, screenWidth, screenHeight, OrangeLine} from '../styles'
 import { Icon }         from '../components/Icon';
 import { Util }         from "../../util/Util";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 let buttonTextStyle : TextStyle = {
@@ -69,7 +65,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
         paramsToUse = NAVBAR_PARAMS_CACHE;
       }
       else {
-        paramsToUse = getNavBarParams(params.store.getState(), params, true);
+        paramsToUse = getNavBarParams(core.store.getState(), params, true);
       }
     }
 
@@ -81,7 +77,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
   _getButton(sampleSize, iconSize, text, roomSize) {
     return (
-      <TouchableOpacity style={buttonStyle} onPress={() => { Actions.roomTraining({sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
+      <TouchableOpacity style={buttonStyle} onPress={() => { NavigationUtil.navigate("RoomTraining",{sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
         <View style={iconContainerStyle}>
           <Icon name="md-cube" size={iconSize} color={colors.green.hex} style={{backgroundColor:"transparent"}} />
         </View>
@@ -95,12 +91,12 @@ export class RoomTraining_roomSize extends Component<any, any> {
   }
 
   render() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let ai = Util.data.getAiData(state, this.props.sphereId);
     let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
         <OrangeLine/>
         <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <View style={{flex:1}} />

@@ -4,17 +4,12 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   Animated,
-  Image,
-  Platform,
-  TouchableHighlight,
   ScrollView,
-  StyleSheet,
   Text,
-  TouchableOpacity,
   View
 } from 'react-native';
 
@@ -27,7 +22,7 @@ import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
 import { Icon }                 from '../components/Icon'
-const Actions = require('react-native-router-flux').Actions;
+
 import {
   getPresentUsersInLocation,
   getCurrentPowerUsageInLocation,
@@ -35,7 +30,7 @@ import {
   canUseIndoorLocalizationInSphere,
   enoughCrownstonesInLocationsForIndoorLocalization, DataUtil
 } from "../../util/DataUtil";
-import { styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth, OrangeLine} from '../styles'
+import { styles, colors, screenHeight, tabBarHeight, topBarHeight, OrangeLine} from '../styles'
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
 import { RoomExplanation }        from '../components/RoomExplanation';
@@ -48,6 +43,7 @@ import { preparePictureURI }      from "../../util/Util";
 import { Scheduler }              from "../../logic/Scheduler";
 import { topBarStyle }            from "../components/topbar/TopbarStyles";
 import { LiveComponent }          from "../LiveComponent";
+import { core } from "../../core";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -60,7 +56,7 @@ export class RoomOverview extends LiveComponent<any, any> {
         paramsToUse = NAVBAR_PARAMS_CACHE;
       }
       else {
-        paramsToUse = getNavBarParams(params.store.getState(), params, true);
+        paramsToUse = getNavBarParams(core.store.getState(), params, true);
       }
     }
 
@@ -77,7 +73,7 @@ export class RoomOverview extends LiveComponent<any, any> {
   viewingRemotely : boolean;
   viewingRemotelyInitial : boolean;
   justFinishedSetup : any;
-  pictureTaken : any = null
+  pictureTaken : any = null;
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
 
@@ -93,7 +89,7 @@ export class RoomOverview extends LiveComponent<any, any> {
     this.nearestStoneIdInSphere = undefined;
     this.nearestStoneIdInRoom = undefined;
 
-    let state = props.store.getState();
+    let state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (sphere) {
       this.viewingRemotely = sphere.state.present === false;
@@ -122,27 +118,27 @@ export class RoomOverview extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data)   => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected", () => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(core.eventBus.on("setupInProgress",  (data)   => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(core.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(core.eventBus.on("setupStonesDetected", () => {
       Animated.spring(this.state.scrollViewHeight, { toValue: screenHeight-tabBarHeight-topBarHeight-160, friction: 7, tension: 70 }).start();
     }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => {
       Animated.timing(this.state.scrollViewHeight, { toValue: screenHeight-tabBarHeight-topBarHeight-100, duration: 250 }).start();
     }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete",    (handle) => {
       this.justFinishedSetup = handle;
       this.forceUpdate();
     }));
 
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
       if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId] ||
           change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
-        if (Actions.currentScene === "roomOverview") {
+        if (this.props.navigation.state.routeName === "RoomOverview") {
           this.forceUpdate()
         }
         return;
@@ -200,8 +196,6 @@ export class RoomOverview extends LiveComponent<any, any> {
         <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
           <DfuDeviceEntry
             key={stoneId + '_dfu_element'}
-            eventBus={this.props.eventBus}
-            store={this.props.store}
             sphereId={this.props.sphereId}
             handle={item.advertisement && item.advertisement.handle}
             name={item.data && item.data.name}
@@ -217,8 +211,6 @@ export class RoomOverview extends LiveComponent<any, any> {
           <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
             <SetupDeviceEntry
               key={stoneId + '_setup_element'}
-              eventBus={this.props.eventBus}
-              store={this.props.store}
               sphereId={this.props.sphereId}
               handle={item.handle}
               item={item}
@@ -231,8 +223,6 @@ export class RoomOverview extends LiveComponent<any, any> {
       return (
         <View key={stoneId + '_entry'}>
           <DeviceEntry
-            eventBus={this.props.eventBus}
-            store={this.props.store}
             stoneId={stoneId}
             locationId={this.props.locationId}
             sphereId={this.props.sphereId}
@@ -305,7 +295,7 @@ export class RoomOverview extends LiveComponent<any, any> {
       this.navBarCalback = null
     }
     this.navBarCalback = Scheduler.scheduleCallback(() => {
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let params = getNavBarParams(state, this.props, this.viewingRemotely);
       this.props.navigation.setParams(params)
     } , 0)
@@ -313,7 +303,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted/> }
@@ -338,7 +328,7 @@ export class RoomOverview extends LiveComponent<any, any> {
     this.viewingRemotely = sphere.state.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
     this.viewingRemotely = this.props.locationId === null && Object.keys(stones).length === 0 ? false : this.viewingRemotely;
 
-    let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
+    let backgroundImage = core.background.menu;
 
     if (this.props.locationId) {
       if (location.config.picture) {
@@ -444,8 +434,8 @@ function getNavBarRightItem(state, enoughCrownstonesInLocations, label, props, v
 
   // this will show a one-time popup for localization
   if (state.user.seenRoomFingerprintAlert !== true) {
-    let aiData = DataUtil.getAiData(state, props.sphereId);;
-    props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
+    let aiData = DataUtil.getAiData(state, props.sphereId);
+    core.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
     Alert.alert(
 lang("_Lets_teach_____arguments_header",aiData.name),
 lang("_Lets_teach_____arguments_body",aiData.name),
@@ -488,19 +478,21 @@ function getNavBarParams(state, props, viewingRemotely) {
 
   if (spherePermissions.editRoom === true && props.locationId !== null) {
     rightLabel =  lang("Edit");
-    rightAction = () => { Actions.roomEdit({sphereId: props.sphereId, locationId: props.locationId}); };
+    rightAction = () => {
+      props.navigation.navigate("RoomEdit",{ sphereId: props.sphereId, locationId: props.locationId });
+    };
   }
   else if (spherePermissions.editRoom === false && props.locationId !== null && enoughCrownstonesInLocations === true) {
     rightLabel =  lang("Train");
     rightAction = () => {
       if (viewingRemotely === true) {
         Alert.alert(
-lang("_Youre_not_in_the_Sphere__header"),
-lang("_Youre_not_in_the_Sphere__body"),
-[{text:lang("_Youre_not_in_the_Sphere__left")}])
+          lang("_Youre_not_in_the_Sphere__header"),
+          lang("_Youre_not_in_the_Sphere__body"),
+          [{text:lang("_Youre_not_in_the_Sphere__left")}])
       }
       else {
-        Actions.roomTraining_roomSize({sphereId: props.sphereId, locationId: props.locationId});
+        props.navigation.navigate("RoomTraining_roomSize",{ sphereId: props.sphereId, locationId: props.locationId });
       }
     };
   }

@@ -5,30 +5,24 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereUserOverview", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Alert,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
-  ScrollView,
-  Switch,
-  Text,
-  View
-} from 'react-native';
+  ScrollView} from 'react-native';
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {IconButton} from "../../components/IconButton";
 import {colors, OrangeLine} from "../../styles";
-import {Actions} from "react-native-router-flux";
+
 import {ProfilePicture} from "../../components/ProfilePicture";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 export class SphereUserOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-    let state = params.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[params.sphereId] ;
     return {
       title: lang("Users_in_",sphere.config.name),
@@ -40,7 +34,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
         change.changeSphereUsers  && change.changeSphereUsers.sphereIds[this.props.sphereId]  ||
@@ -68,7 +62,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
               type: (userId === state.user.userId || spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
               icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
-                Actions.sphereInvitedUser({
+                NavigationUtil.navigate("SphereInvitedUser",{
                   title: users[userId].email,
                   userId: userId,
                   invitePending: true,
@@ -83,7 +77,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
               type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
               icon: <ProfilePicture picture={users[userId].picture} borderless={false} />,
               callback: () => {
-                Actions.sphereUser({
+                NavigationUtil.navigate("SphereUser",{
                   title: users[userId].firstName,
                   userId: userId,
                   sphereId: this.props.sphereId
@@ -101,7 +95,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
   _getItems() {
     let items = [];
 
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
 
     items.push({label: lang("ADMINS"),  type:'explanation', below:false});
@@ -131,14 +125,16 @@ export class SphereUserOverview extends LiveComponent<any, any> {
         labelStyle: {color: colors.menuTextSelected.hex, fontWeight:'bold'},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft: 3, marginRight: 7}}/>,
         callback: () => {
-          Actions.sphereUserInvite({sphereId: this.props.sphereId});
+          NavigationUtil.navigate("SphereUserInvite",{
+            sphereId: this.props.sphereId
+          });
         }
       });
     }
 
-    items.push({type:'spacer'})
-    items.push({type:'spacer'})
-    items.push({type:'spacer'})
+    items.push({type:'spacer'});
+    items.push({type:'spacer'});
+    items.push({type:'spacer'});
 
     return items;
   }
@@ -146,7 +142,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false}>
+      <Background image={core.background.menu} hasNavBar={false}>
         <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

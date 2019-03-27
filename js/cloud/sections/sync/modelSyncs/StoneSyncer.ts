@@ -85,7 +85,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
           localId: localId,
           cloudId: stone_from_cloud.id,
           cloudData: cloudDataForLocal
-        })
+        });
         this._copyBehaviourFromCloud(localId, stone_from_cloud );
       }
 
@@ -96,7 +96,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
       return Promise.all(this.transferPromises);
     })
       .then(() => {
-        this.globalSphereMap.stones = {...this.globalSphereMap.stones, ...cloudIdMap}
+        this.globalSphereMap.stones = {...this.globalSphereMap.stones, ...cloudIdMap};
         this.globalCloudIdMap.stones = {...this.globalCloudIdMap.stones, ...cloudIdMap};
         return localStoneIdsSynced;
       })

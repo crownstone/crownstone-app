@@ -5,12 +5,8 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("MessageInbox", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Alert,
-  Animated,
-  Image,
-  TouchableHighlight,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -18,7 +14,7 @@ import {
   View, TextStyle
 } from "react-native";
 
-const Actions = require('react-native-router-flux').Actions;
+
 import {
   availableScreenHeight,
   colors,
@@ -31,13 +27,15 @@ import {IconButton} from "../components/IconButton";
 import {ListEditableItems} from "../components/ListEditableItems";
 import {MessageEntry} from "./MessageEntry";
 import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
-    let state = params.store.getState();
+    let state = core.store.getState();
     let activeSphere = state.app.activeSphere;
 
     let title =  lang("Messages");
@@ -63,7 +61,7 @@ export class MessageInbox extends LiveComponent<any, any> {
   init() {
     let activeSphere = this._setActiveSphere();
     if (activeSphere) {
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let sphere = state.spheres[activeSphere];
       if (sphere.state.newMessageFound) {
         MessageCenter.newMessageStateInSphere(activeSphere, false);
@@ -74,7 +72,7 @@ export class MessageInbox extends LiveComponent<any, any> {
 
   _setActiveSphere() {
     // set the active sphere if needed and setup the object variables.
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let activeSphere = state.app.activeSphere;
 
     let sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
@@ -84,7 +82,7 @@ export class MessageInbox extends LiveComponent<any, any> {
       activeSphere = null;
     }
     if (activeSphere === null && sphereIds.length > 0) {
-      this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
+      core.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
       return sphereIds[0];
     }
 
@@ -94,7 +92,7 @@ export class MessageInbox extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
       if (
@@ -103,7 +101,7 @@ export class MessageInbox extends LiveComponent<any, any> {
         change.updateActiveSphere ||
         change.changeSphereState
       ) {
-        let state = this.props.store.getState();
+        let state = core.store.getState();
         let activeSphere = state.app.activeSphere;
         if (activeSphere) {
           let sphere = state.spheres[activeSphere];
@@ -124,7 +122,7 @@ export class MessageInbox extends LiveComponent<any, any> {
   _getMessages() {
     let items = [];
 
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let activeSphereId = state.app.activeSphere;
 
     let sphere = state.spheres[activeSphereId];
@@ -152,7 +150,7 @@ export class MessageInbox extends LiveComponent<any, any> {
         items.push({__item:
           <View style={[styles.listView,{backgroundColor: backgroundColor, paddingRight:0, paddingLeft:0}]}>
             <MessageEntry
-              store={this.props.store}
+              store={core.store}
               message={message}
               read={read}
               messageId={messageData.id}
@@ -160,7 +158,7 @@ export class MessageInbox extends LiveComponent<any, any> {
               sphereId={activeSphereId}
               self={state.user}
               size={45}
-              deleteMessage={ () => { this.props.store.dispatch({type:'REMOVE_MESSAGE', sphereId: activeSphereId, messageId: messageData.id}) }}
+              deleteMessage={ () => { core.store.dispatch({type:'REMOVE_MESSAGE', sphereId: activeSphereId, messageId: messageData.id}) }}
             />
           </View>
         })
@@ -171,7 +169,7 @@ export class MessageInbox extends LiveComponent<any, any> {
   }
 
   render() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let activeSphere = state.app.activeSphere;
     let messageExplanationStyle : TextStyle = {
       color: colors.green.hex,
@@ -193,7 +191,7 @@ export class MessageInbox extends LiveComponent<any, any> {
 
         let iconButton = (
           <TouchableOpacity
-            onPress={() => { Actions.messageAdd({ sphereId: activeSphere }); }}
+            onPress={() => { NavigationUtil.navigate("MessageAdd",{ sphereId: activeSphere }); }}
           >
             <IconButton
               name="ios-mail"
@@ -227,7 +225,7 @@ export class MessageInbox extends LiveComponent<any, any> {
         else {
           scrollView = (
             <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
-              <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
+              <View style={{flex:1, minHeight: availableScreenHeight, width: screenWidth, alignItems:'center'}}>
                 <View style={{height: 0.3*iconSize}} />
                 { headerText }
                 <View style={{height: 0.4*iconSize}} />
@@ -241,7 +239,7 @@ export class MessageInbox extends LiveComponent<any, any> {
         }
 
         return (
-          <Background image={this.props.backgrounds.detailsDark}>
+          <Background image={core.background.detailsDark}>
             <OrangeLine/>
             { scrollView }
           </Background>
@@ -249,7 +247,7 @@ export class MessageInbox extends LiveComponent<any, any> {
       }
       else {
         return (
-          <Background image={this.props.backgrounds.detailsDark}>
+          <Background image={core.background.detailsDark}>
             <OrangeLine/>
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>{ lang("Add_some_Crownstones_to_u") }</Text>
@@ -260,7 +258,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     }
     else {
       return (
-        <Background image={this.props.backgrounds.detailsDark}>
+        <Background image={core.background.detailsDark}>
           <OrangeLine/>
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>{ lang("Add_a_Sphere_to_use_messa") }</Text>

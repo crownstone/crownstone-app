@@ -6,19 +6,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  Alert,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
   Text,
-  View,
-  Vibration
-} from 'react-native';
+  View} from 'react-native';
 
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {styles, colors, screenWidth, OrangeLine} from '../../styles'
 import { Icon } from '../../components/Icon';

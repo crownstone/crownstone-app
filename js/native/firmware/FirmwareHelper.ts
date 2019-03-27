@@ -1,14 +1,11 @@
-import { Alert } from 'react-native';
-
 import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper}  from '../libInterface/BluenetPromise';
-import { NativeBus }             from '../libInterface/NativeBus';
-import {LOG, LOGd, LOGe, LOGi, LOGv} from '../../logging/Log'
+import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import { Util }                  from '../../util/Util'
 import { SetupStateHandler } from "../setup/SetupStateHandler";
-import { eventBus } from "../../util/EventBus";
 import { ALWAYS_DFU_UPDATE } from "../../ExternalConfig";
 import {Scheduler} from "../../logic/Scheduler";
+import { core } from "../../core";
 
 
 interface dfuData {
@@ -180,13 +177,13 @@ export class FirmwareHelper {
       })
     }
 
-    this.eventSubscriptions.push(NativeBus.on(NativeBus.topics.dfuProgress, (data) => {
+    this.eventSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.dfuProgress, (data) => {
       LOGd.info("FirmwareHelper: DFU event:", data);
-      eventBus.emit("updateDfuProgress", (data.progress*0.01));
+      core.eventBus.emit("updateDfuProgress", (data.progress*0.01));
     }));
-    this.eventSubscriptions.push(NativeBus.on(NativeBus.topics.setupProgress, (progress) => {
+    this.eventSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.setupProgress, (progress) => {
       LOGd.info("FirmwareHelper: Setup event:", progress);
-      eventBus.emit("updateDfuProgress", (progress/13));
+      core.eventBus.emit("updateDfuProgress", (progress/13));
     }));
 
     switch (this.phases[phaseNumber]) {
@@ -276,7 +273,7 @@ export class FirmwareHelper {
       else {
         return BluenetPromiseWrapper.connect(this.handle, this.sphereId)
           .then(() => {
-            eventBus.emit("updateDfuProgress", 0.25);
+            core.eventBus.emit("updateDfuProgress", 0.25);
             LOG.info("FirmwareHelper: DFU progress: Reconnected.");
             if (crownstoneMode.setupMode === true) {
               return BluenetPromiseWrapper.setupFactoryReset();
@@ -292,13 +289,13 @@ export class FirmwareHelper {
             }
           })
           .then(() => {
-            eventBus.emit("updateDfuProgress", 0.50);
+            core.eventBus.emit("updateDfuProgress", 0.50);
           })
-          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.6); }); })
-          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.7); }); })
-          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.8); }); })
-          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.9); }); })
-          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 1.0); }); })
+          .then(() => { return delay(750, () => { core.eventBus.emit("updateDfuProgress", 0.6); }); })
+          .then(() => { return delay(750, () => { core.eventBus.emit("updateDfuProgress", 0.7); }); })
+          .then(() => { return delay(750, () => { core.eventBus.emit("updateDfuProgress", 0.8); }); })
+          .then(() => { return delay(750, () => { core.eventBus.emit("updateDfuProgress", 0.9); }); })
+          .then(() => { return delay(750, () => { core.eventBus.emit("updateDfuProgress", 1.0); }); })
           .then(() => {
             LOG.info("FirmwareHelper: DFU progress: Reset complete.");
           });
@@ -325,7 +322,7 @@ export class FirmwareHelper {
       return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true)
         .catch(() => {
           // try again
-          eventBus.emit("updateDfuProgress", 0.0);
+          core.eventBus.emit("updateDfuProgress", 0.0);
           return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true)
         })
         .then(() => {

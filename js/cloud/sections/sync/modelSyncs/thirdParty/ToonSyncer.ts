@@ -4,10 +4,8 @@
  *
  */
 
-import {shouldUpdateLocally} from "../../shared/syncUtil";
 import {CLOUD} from "../../../../cloudAPI";
 import {SyncingSphereItemBase} from "../SyncingBase";
-import {Permissions} from "../../../../../backgroundProcesses/PermissionManager";
 import {transferToons} from "../../../../transferData/thirdParty/transferToons";
 
 export class ToonSyncer extends SyncingSphereItemBase {

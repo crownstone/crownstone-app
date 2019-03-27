@@ -8,7 +8,6 @@ import * as React from 'react';
 import { Component } from 'react';
 import {
   Animated,
-  Image,
   PanResponder,
   TouchableOpacity,
   Text,
@@ -18,7 +17,7 @@ import {
 import {
   styles, colors, screenWidth, screenHeight} from '../../styles'
 import { HiddenFadeInView } from "./FadeInView";
-import { eventBus }  from "../../../util/EventBus";
+import { core } from "../../../core";
 
 export class AnimatedMenu extends Component<any, any> {
   visible    : boolean;
@@ -57,7 +56,7 @@ export class AnimatedMenu extends Component<any, any> {
       },
     });
 
-    eventBus.on("showBlurredMenu", (data) => {
+    core.eventBus.on("showBlurredMenu", (data) => {
       if (data.fields && Array.isArray(data.fields)) {
         this.setState({content: data.fields, position: data.position});
         this.show()

@@ -6,32 +6,23 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
   ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {
   availableScreenHeight,
   colors,
   deviceStyles,
   OrangeLine,
-  screenHeight,
-  screenWidth,
-  styles
-} from "../../../styles";
+  screenWidth} from "../../../styles";
 import { Background } from "../../../components/Background";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { Icon } from "../../../components/Icon";
 import { textStyle } from "./DeviceSmartBehaviour";
+import { core } from "../../../../core";
 
 
 export class DeviceSmartBehaviour_PresenceAware extends Component<any, any> {
@@ -48,7 +39,7 @@ export class DeviceSmartBehaviour_PresenceAware extends Component<any, any> {
     let iconHeight   = 0.10*availableScreenHeight;
 
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
+      <Background image={core.background.detailsDark}>
         <OrangeLine/>
         <ScrollView style={{height:availableScreenHeight, width: screenWidth,}}>
           <View style={{ width: screenWidth, alignItems:'center', paddingBottom:30 }}>

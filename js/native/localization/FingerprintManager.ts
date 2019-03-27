@@ -1,7 +1,7 @@
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
-import { NativeBus }             from '../libInterface/NativeBus';
 import { Bluenet  }              from '../libInterface/Bluenet';
 import { LOG }                   from '../../logging/Log'
+import { core } from "../../core";
 
 class FingerprintManagerClass {
   fingerprintingActive : any;
@@ -27,7 +27,7 @@ class FingerprintManagerClass {
     if (callback !== undefined) {
       let sessionId = (Math.random() * 1e8).toString(36) + '-' + (Math.random() * 1e8).toString(36);
       this.fingerprintingSession = sessionId;
-      this.fingerprintingSubscriptions[sessionId] = NativeBus.on(NativeBus.topics.iBeaconAdvertisement,
+      this.fingerprintingSubscriptions[sessionId] = core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement,
         (iBeaconAdvertisement) => {
           if (Array.isArray(iBeaconAdvertisement)) {
             let data = [];

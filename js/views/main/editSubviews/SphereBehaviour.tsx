@@ -5,22 +5,15 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereBehaviour", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Alert,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
-  ScrollView,
-  Switch,
-  Text,
-  View
-} from 'react-native';
+  ScrollView} from 'react-native';
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {OrangeLine} from "../../styles";
 import {LOG} from "../../../logging/Log";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
+import { core } from "../../../core";
 
 export class SphereBehaviour extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -36,7 +29,7 @@ export class SphereBehaviour extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
         change.changeSphereConfig && change.changeSphereConfig.sphereIds[this.props.sphereId]
@@ -65,8 +58,7 @@ export class SphereBehaviour extends LiveComponent<any, any> {
   _getItems() {
     let items = [];
 
-    const store = this.props.store;
-    const state = store.getState();
+    const state = core.store.getState();
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
@@ -87,7 +79,7 @@ export class SphereBehaviour extends LiveComponent<any, any> {
         buttons: true,
         callback: (newValue) => {
           LOG.info("SettingsSphere: new Value for exit delay", newValue);
-          store.dispatch({
+          core.store.dispatch({
             sphereId: this.props.sphereId,
             type: 'UPDATE_SPHERE_CONFIG',
             data: {exitDelay: newValue}
@@ -107,7 +99,7 @@ export class SphereBehaviour extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false}>
+      <Background image={core.background.menu} hasNavBar={false}>
         <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

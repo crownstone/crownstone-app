@@ -1,7 +1,7 @@
 
 
 class TopbarStateContainerClass {
-  views = {}
+  views = {};
 
   constructor() { }
 
@@ -23,4 +23,4 @@ class TopbarStateContainerClass {
 
 }
 
-export const TopbarStateContainer = new TopbarStateContainerClass()
+export const TopbarStateContainer = new TopbarStateContainerClass();

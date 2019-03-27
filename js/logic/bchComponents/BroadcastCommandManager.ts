@@ -5,7 +5,7 @@ export const BROADCAST_ERRORS = {
   CANNOT_BROADCAST:     { message: "CANNOT_BROADCAST",     fatal: false},
   BROADCAST_INCOMPLETE: { message: "BROADCAST_INCOMPLETE", fatal: false},
   BROADCAST_FAILED:     { message: "BROADCAST_FAILED",     fatal: false},
-}
+};
 
 
 
@@ -20,14 +20,14 @@ class BroadcastCommandManagerClass {
     // double check here, this api should be able to be used
     if (this.canBroadcast(commandData)) {
       // TODO: make generic
-      console.log("Switching via broadcast")
+      console.log("Switching via broadcast");
       return BluenetPromiseWrapper.broadcastSwitch(commandData.sphereId, commandData.stone.config.crownstoneId, commandData.command.state)
         .then(() => {
-          console.log("Success broadcast", commandData.command.state)
+          console.log("Success broadcast", commandData.command.state);
           return { data: null }
         })
         .catch((err) => {
-          console.log("ERROR broadcast", commandData.command.state)
+          console.log("ERROR broadcast", commandData.command.state);
           throw err
         })
     }
@@ -55,4 +55,4 @@ class BroadcastCommandManagerClass {
 }
 
 
-export const BroadcastCommandManager = new BroadcastCommandManagerClass()
+export const BroadcastCommandManager = new BroadcastCommandManagerClass();

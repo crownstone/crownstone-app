@@ -1,4 +1,4 @@
-import {LOG, LOGd, LOGe} from '../../logging/Log'
+import {LOGd, LOGe} from '../../logging/Log'
 import {StoreManager} from "./storeManager";
 
 

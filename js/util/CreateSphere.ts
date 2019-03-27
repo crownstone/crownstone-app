@@ -1,11 +1,11 @@
 import { Alert } from 'react-native';
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { CLOUD } from "../cloud/cloudAPI";
-import { Actions } from "react-native-router-flux";
-import {LOG, LOGe} from '../logging/Log'
+import {LOGe} from '../logging/Log'
+import { core } from "../core";
 
 export const createNewSphere = function(eventBus, store, name) {
-  eventBus.emit('showLoading', 'Creating Sphere...');
+  core.eventBus.emit('showLoading', 'Creating Sphere...');
   return BluenetPromiseWrapper.requestLocation()
     .catch((err) => {
       LOGe.info("Could not get Location when creating a sphere: ", err);
@@ -20,7 +20,7 @@ export const createNewSphere = function(eventBus, store, name) {
       return CLOUD.createNewSphere(store, name, eventBus, latitude, longitude)
     })
     .then((sphereId) => {
-      eventBus.emit('hideLoading');
+      core.eventBus.emit('hideLoading');
       return sphereId;
     })
     .catch((err) => {
@@ -32,7 +32,7 @@ export const createNewSphere = function(eventBus, store, name) {
       }
     })
     .catch((err) => {
-      eventBus.emit('hideLoading');
+      core.eventBus.emit('hideLoading');
       LOGe.info("Could not create sphere", err);
       Alert.alert("Could not create sphere", "Please try again later.", [{text:'OK'}])
     })

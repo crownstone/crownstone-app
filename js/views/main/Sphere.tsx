@@ -6,18 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  Dimensions,
-  Image,
-  PanResponder,
   Platform,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
   Text,
   View, ViewStyle
 } from "react-native";
-let Actions = require('react-native-router-flux').Actions;
 
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
@@ -27,13 +19,13 @@ import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Icon} from "../components/Icon";
+import { core } from "../../core";
 
 
 export class Sphere extends Component<any, any> {
   render() {
     LOG.info("RENDERING SPHERE");
-    const store = this.props.store;
-    const state = store.getState();
+    const state = core.store.getState();
     let viewingRemotely = true;
     let currentSphere = this.props.sphereId;
 
@@ -81,16 +73,14 @@ export class Sphere extends Component<any, any> {
 
     return (
       <View style={{width: screenWidth, height: availableScreenHeight}}>
-        <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} opacity={0.5}  />
+        <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  />
         <RoomLayer
-          store={store}
           sphereId={currentSphere}
           viewingRemotely={viewingRemotely}
-          eventBus={this.props.eventBus}
           multipleSpheres={this.props.multipleSpheres}
           zoomOutCallback={this.props.zoomOutCallback}
         />
-        <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} opacity={0.5} />
+        <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5} />
       </View>
     );
   }

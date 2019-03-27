@@ -5,27 +5,24 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomSelection", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Alert,
-  Dimensions,
   TouchableHighlight,
-  PixelRatio,
   ScrollView,
-  Switch,
-  Text,
   View
 } from 'react-native';
 
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { Util } from '../../util/Util'
-const Actions = require('react-native-router-flux').Actions;
+
 import Toast from 'react-native-same-toast';
 import { styles, colors } from './../styles'
 import { RoomList } from '../components/RoomList';
 import { Icon } from '../components/Icon';
-import {BackAction} from "../../util/Back";
+
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class RoomSelection extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -38,11 +35,11 @@ export class RoomSelection extends LiveComponent<any, any> {
 
   componentDidMount() {
     // tell the component exactly when it should redraw
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
       if (change.removeSphere && change["removeSphere"].sphereIds[this.props.sphereId]) {
-        return BackAction();
+        return NavigationUtil.back();
       }
 
       if (change.changeLocations && change["changeLocations"].sphereIds[this.props.sphereId]) {
@@ -56,8 +53,8 @@ export class RoomSelection extends LiveComponent<any, any> {
   }
 
   _moveCrownstone(roomId) {
-    BackAction();
-    this.props.store.dispatch({type: "UPDATE_STONE_LOCATION", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locationId: roomId}});
+    NavigationUtil.back();
+    core.store.dispatch({type: "UPDATE_STONE_LOCATION", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locationId: roomId}});
     Toast.showWithGravity(' Moved Crownstone! ', Toast.SHORT, Toast.CENTER);
   }
 
@@ -80,11 +77,11 @@ export class RoomSelection extends LiveComponent<any, any> {
 
   _getItems() {
     let items = [];
-    const state = this.props.store.getState();
+    const state = core.store.getState();
 
     let rooms = state.spheres[this.props.sphereId].locations;
     let roomIds = Object.keys(rooms);
-    roomIds.sort((a,b) => { return rooms[a].config.name > rooms[b].config.name ? 1 : -1 })
+    roomIds.sort((a,b) => { return rooms[a].config.name > rooms[b].config.name ? 1 : -1 });
     items.push({label: lang("ROOMS_IN_CURRENT_SPHERE"),  type:'explanation', below:false});
     roomIds.forEach((roomId) => {
       let room = rooms[roomId];
@@ -97,7 +94,7 @@ export class RoomSelection extends LiveComponent<any, any> {
       style: {color:colors.blue.hex, fontWeight:'bold'},
       type: 'navigation',
       callback: () => {
-        Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true, returnToRoute: this.props.returnToRoute})
+       NavigationUtil.navigate("RoomAdd",{sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true, returnToRoute: this.props.returnToRoute})
       }
     });
 
@@ -117,7 +114,7 @@ export class RoomSelection extends LiveComponent<any, any> {
   }
 
   render() {
-    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
+    let backgroundImage = core.background.menu
     return (
       <Background image={backgroundImage} hasNavBar={false} >
         <ScrollView>

@@ -5,15 +5,10 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsMeshDebug", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
-  Text,
-  View
-} from 'react-native';
+  ScrollView} from 'react-native';
 
 import { Background }          from '../../components/Background'
 import { ListEditableItems }   from '../../components/ListEditableItems'
@@ -22,7 +17,9 @@ import { Util }                from "../../../util/Util";
 import { IconCircle }          from "../../components/IconCircle";
 import { MeshUtil }            from "../../../util/MeshUtil";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
-const Actions = require('react-native-router-flux').Actions;
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+
 
 export class SettingsMeshDebug extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -32,11 +29,11 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
   };
 
   unsubscribe : any;
-  refreshAmountRequired = 0
-  refreshCount = 0
+  refreshAmountRequired = 0;
+  refreshCount = 0;
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (change.stoneRssiUpdated || change.changeSpheres || change.updateActiveSphere || change.changeStoneState) {
         this.forceUpdate();
@@ -68,7 +65,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
       subtextStyle: {color:locationColor},
       type: 'navigation',
       callback: () => {
-        Actions.settingsStoneBleDebug({sphereId: sphereId, stoneId: stoneId})
+        NavigationUtil.navigate("SettingsStoneBleDebug",{sphereId: sphereId, stoneId: stoneId})
       },
     });
   }
@@ -77,7 +74,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
     this.refreshAmountRequired = 0;
     this.refreshCount = 0;
 
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
     let sphereId = Util.data.getReferenceId(state);
     if (!sphereId) { return [{label: lang("You_have_to_be_in_a_sphere"), type: 'largeExplanation'}]; }
@@ -94,25 +91,25 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
     });
 
 
-    this.props.eventBus.emit('showProgress', {progress: 0, progressText: lang("Setting_Mesh_Channels__St", channel)});
+    core.eventBus.emit('showProgress', {progress: 0, progressText: lang("Setting_Mesh_Channels__St", channel)});
 
     let evaluateRefreshProgress = () => {
-      this.refreshCount += 1
+      this.refreshCount += 1;
       if (this.refreshCount >= this.refreshAmountRequired) {
         Alert.alert(
           lang("_All_done___This_went_ver_header"),
           lang("_All_done___This_went_ver_body"),
           [{text:lang("_All_done___This_went_ver_left")}]
         );
-        this.props.eventBus.emit('updateProgress', { progress: 1, progressText: lang("Done") });
-        setTimeout(() => { this.props.eventBus.emit("hideProgress");}, 500);
+        core.eventBus.emit('updateProgress', { progress: 1, progressText: lang("Done") });
+        setTimeout(() => { core.eventBus.emit("hideProgress");}, 500);
 
         MeshUtil.clearMeshNetworkIds(store, sphereId);
       }
       else {
-        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: lang("Setting_Mesh_Channels_n_n",channel,this.refreshCount,this.refreshAmountRequired)});
+        core.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: lang("Setting_Mesh_Channels_n_n",channel,this.refreshCount,this.refreshAmountRequired)});
       }
-    }
+    };
 
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
@@ -128,18 +125,18 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
             Alert.alert(
               lang("_Missed_one__I_could_not__header"),
               lang("_Missed_one__I_could_not__body",stone.config.name),
-              [{text:lang("_Missed_one__I_could_not__left")}])
+              [{text:lang("_Missed_one__I_could_not__left")}]);
             evaluateRefreshProgress()
           })
       }
-    })
+    });
     BatchCommandHandler.executePriority()
   }
 
   _getItems() {
     let items = [];
 
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
     let sphereId = Util.data.getReferenceId(state);
     if (!sphereId) { return [{label: lang("You_have_to_be_in_a_sphere"), type: 'largeExplanation'}]; }
@@ -195,7 +192,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={core.background.menu} >
         <OrangeLine/>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />

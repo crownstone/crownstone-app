@@ -6,22 +6,19 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Platform,
-  StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
   Text,
   View
 } from 'react-native';
 
-import { topBarHeight, statusBarHeight} from '../../styles'
+import { topBarHeight, statusBarHeight, colors } from "../../styles";
 import {topBarStyle} from "./TopbarStyles";
+import { Icon } from "../Icon";
 
 let barHeight = topBarHeight - statusBarHeight;
 
 
 export class TopbarButton extends Component<any, any> {
-
   render() {
     let alignmentStyle = this.props.alignmentStyle || topBarStyle.topBarRightTouch;
     if ( this.props.item ) {
@@ -39,6 +36,7 @@ export class TopbarButton extends Component<any, any> {
       return (
         <TouchableOpacity onPress={() => {this.props.onPress();}}  style={[alignmentStyle, this.props.style]}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
+            { this.props.icon }
             <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.style]}>{text}</Text>
           </View>
         </TouchableOpacity>
@@ -53,6 +51,35 @@ export class TopbarLeftButton extends Component<any, any> {
 
   render() {
     return <TopbarButton {...this.props} alignmentStyle={topBarStyle.topBarLeftTouch}/>
+  }
+}
+
+export class TopbarBackButton extends Component<any, any> {
+  render() {
+    let alignmentStyle = this.props.alignmentStyle || topBarStyle.topBarLeftTouch;
+    if ( this.props.item ) {
+      return (
+        <TouchableOpacity onPress={() => {this.props.onPress();}} style={[alignmentStyle, this.props.style]}>
+          {this.props.item}
+        </TouchableOpacity>
+      );
+    }
+    else if ( this.props.text ) {
+      let text = this.props.text;
+      if (typeof this.props.text === 'function') {
+        text = this.props.text();
+      }
+      return (
+        <TouchableOpacity onPress={() => {this.props.onPress();}}  style={[alignmentStyle, this.props.style]}>
+          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
+            <Icon name="ios-arrow-back" size={33} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
+            {/*<Icon name="md-arrow-back" size={20} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />*/}
+            <Text style={[topBarStyle.topBarLeft, topBarStyle.leftText, this.props.style]}>{text}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+    return <View style={[alignmentStyle, this.props.style]} />;
   }
 }
 

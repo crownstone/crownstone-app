@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import { FileUtil } from "../util/FileUtil";
 
 const RNFS = require('react-native-fs');

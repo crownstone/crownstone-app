@@ -1,10 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Image,
-  PixelRatio,
   TouchableOpacity,
-  ScrollView,
   Text,
   View
 } from 'react-native';
@@ -14,7 +10,6 @@ import {NavigationBar} from "../components/editComponents/NavigationBar";
 import {Separator} from "../components/Separator";
 import {SlideInView} from "../components/animated/SlideInView";
 import {Icon} from "../components/Icon";
-import {CustomIcon} from "../../fonts/customIcons";
 
 let borderColor = 'rgba(0,0,0,0.1)';
 let ROW_HEIGHT = 70;
@@ -70,10 +65,10 @@ export class DebugIconSelection extends Component<any, any> {
       this.props.icons[category.key].forEach((iconName) => {
         stateContent["offset"][category.key][iconName] = {top: 0, left: 0}
       })
-    })
+    });
 
     // console.log(JSON.stringify(newIconArray, undefined, 2));
-    console.log("Amount of duplicate icons: ", Object.keys(this.duplicates).length, ':', JSON.stringify(Object.keys(this.duplicates), undefined, 2))
+    console.log("Amount of duplicate icons: ", Object.keys(this.duplicates).length, ':', JSON.stringify(Object.keys(this.duplicates), undefined, 2));
 
     this.state = stateContent;
   }
@@ -210,7 +205,7 @@ export class DebugIconSelection extends Component<any, any> {
             style={[styles.centered, {position:'absolute', top:10+h, left: 5, width: sh, height:sh} ]}
             onPress={() => {
               let values = [ -15, -10, -5, 0, 2, 5, 10, 15, 20];
-              let newValue = values[(values.indexOf(this.state.circleSizeOffset) + 1)%values.length]
+              let newValue = values[(values.indexOf(this.state.circleSizeOffset) + 1)%values.length];
               this.setState({circleSizeOffset: newValue})
             }}
           >
@@ -233,7 +228,7 @@ export class DebugIconSelection extends Component<any, any> {
   _generateOffsets() {
     let nameLength = 35;
     this.props.categories.forEach((category) => {
-      let str = "const " + category.key + "Corrections = {\n"
+      let str = "const " + category.key + "Corrections = {\n";
       this.props.icons[category.key].forEach((iconName) => {
         let lineStr = "  '" + iconName + "':";
         for (let i =  lineStr.length; i < nameLength; i++) {
@@ -249,8 +244,8 @@ export class DebugIconSelection extends Component<any, any> {
         
         lineStr += "{change: true, top: " + (topOffsetLabel < 0 ? '' : '+') + topOffsetLabel.toFixed(3) + ', left: ' + (leftOffsetLabel < 0 ? '' : '+') + leftOffsetLabel.toFixed(3) + '},\n';
         str += lineStr
-      })
-      str += '}\n\n'
+      });
+      str += '}\n\n';
       console.log(str)
     })
   }

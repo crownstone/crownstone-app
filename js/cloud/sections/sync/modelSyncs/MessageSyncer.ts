@@ -6,7 +6,6 @@
 
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {CLOUD} from "../../../cloudAPI";
-import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferMessages} from "../../../transferData/transferMessages";
 import { xUtil } from "../../../../util/StandAloneUtil";

@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SetupShared", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
-import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { Icon } from '../components/Icon';
 import { colors, screenWidth, screenHeight } from '../styles'
 

@@ -1,8 +1,6 @@
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import {LOG, LOGe, LOGi, LOGw} from '../logging/Log'
-import { eventBus }              from "../util/EventBus";
-import { conditionMap }          from "../native/advertisements/StoneEntity";
-import {Util} from "../util/Util";
+import { core } from "../core";
 
 
 const MESH_PROPAGATION_TIMEOUT_MS = 8000;
@@ -60,7 +58,7 @@ export class MeshHelper {
         return true;
       }
     }
-    LOGi.mesh("MeshHelper: No direct target in set, moving on.")
+    LOGi.mesh("MeshHelper: No direct target in set, moving on.");
     return false;
   }
 
@@ -78,7 +76,7 @@ export class MeshHelper {
       }
 
       for (let i = 0; i < multiSwitchInstructions.length; i++) {
-        let instruction = multiSwitchInstructions[i]
+        let instruction = multiSwitchInstructions[i];
         if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
           multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
           instruction.promise.pending = true;
@@ -88,8 +86,7 @@ export class MeshHelper {
         else {
           LOGe.mesh("MeshHelper: Invalid multiSwitchPackets instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
         }
-      };
-
+      }
       if (multiSwitchPackets.length === 0) {
         return null;
       }
@@ -101,7 +98,7 @@ export class MeshHelper {
           // log all the multiswitches
           for (let i = 0; i < multiSwitchInstructions.length; i++) {
             let command = multiSwitchInstructions[i];
-            eventBus.emit("NEW_ACTIVITY_LOG", {
+            core.eventBus.emit("NEW_ACTIVITY_LOG", {
               command:     "multiswitch",
               commandUuid: command.commandUuid,
               connectedTo: this.connectedStoneId,
@@ -153,7 +150,7 @@ export class MeshHelper {
       return BluenetPromiseWrapper.meshKeepAliveState(maxTimeout, stoneKeepAlivePackets)
         .then(() => {
           keepAliveInstructions.forEach((command) => {
-            eventBus.emit("NEW_ACTIVITY_LOG", {
+            core.eventBus.emit("NEW_ACTIVITY_LOG", {
               command:     "keepAliveState",
               commandUuid: command.commandUuid,
               connectedTo: this.connectedStoneId,
@@ -191,7 +188,7 @@ export class MeshHelper {
       return BluenetPromiseWrapper.meshKeepAlive()
         .then(() => {
           this.meshInstruction.keepAlive.forEach((command) => {
-            eventBus.emit("NEW_ACTIVITY_LOG", {
+            core.eventBus.emit("NEW_ACTIVITY_LOG", {
               command:     "keepAlive",
               commandUuid: command.commandUuid,
               connectedTo: this.connectedStoneId,

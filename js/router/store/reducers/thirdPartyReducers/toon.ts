@@ -1,5 +1,4 @@
 import {getTime, refreshDefaults, update} from "../reducerUtil";
-import {Util} from "../../../../util/Util";
 
 let defaultSettings = {
   toonAgreementId: null,

@@ -6,9 +6,9 @@ import {
   getMapOfCrownstonesInAllSpheresByIBeacon,
   getMapOfCrownstonesInAllSpheresByStoneId
 } from "../util/DataUtil";
-import {eventBus} from "../util/EventBus";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import {LOG} from "../logging/Log";
+import { core } from "../core";
 
 /**
  * Map format
@@ -48,8 +48,8 @@ class MapProviderClass {
     if (this._initialized === false) {
       this._store = store;
 
-      eventBus.on("CloudSyncComplete", () => { this._updateCloudIdMap(); });
-      eventBus.on("databaseChange", (data) => {
+      core.eventBus.on("CloudSyncComplete", () => { this._updateCloudIdMap(); });
+      core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
 
         if (

@@ -10,7 +10,6 @@ import {
   Alert,
   Linking,
   ScrollView,
-  Switch,
   Text,
   TouchableHighlight,
   View
@@ -21,10 +20,10 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { getImageFileFromUser, processImage } from '../../util/Util'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-const Actions = require('react-native-router-flux').Actions;
+
 import { colors } from '../styles'
 
-import { SessionMemory } from '../../util/SessionMemory'
+import { core } from "../../core";
 
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral =  lang("Your_password_must_not_be");
@@ -240,7 +239,7 @@ lang("_You_Must_Enter_a_Last_Na_body"),
 
   requestRegistration() {
     // show the processing screen
-    this.props.eventBus.emit('showLoading', 'Sending Registration Request...');
+    core.eventBus.emit('showLoading', 'Sending Registration Request...');
     CLOUD.registerUser({
       email: this.state.email.toLowerCase(),
       password: sha1(this.state.password),
@@ -252,15 +251,15 @@ lang("_You_Must_Enter_a_Last_Na_body"),
         return processImage(this.state.picture, imageName);
       })
       .then(() => {
-        this.props.eventBus.emit("hideLoading");
-        SessionMemory.loginEmail = this.state.email.toLowerCase();
-        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
+        core.eventBus.emit("hideLoading");
+        core.sessionMemory.loginEmail = this.state.email.toLowerCase();
+        this.props.navigation.reset("RegisterConclusion", {email:this.state.email.toLowerCase()});
       })
       .catch((reply) => {
         if (reply.data && reply.data.error && reply.data.error.message) {
           let message = reply.data.error.message.split("` ");
           message = message[message.length - 1];
-          let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
+          let defaultAction = () => {core.eventBus.emit('hideLoading')};
           Alert.alert(
 lang("_Registration_Error_argum_header"),
 lang("_Registration_Error_argum_body",message),
@@ -273,7 +272,7 @@ lang("_Registration_Error_argum_body",message),
 
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.menu}>
+      <Background hasNavBar={false} image={core.background.menu}>
         <ScrollView keyboardShouldPersistTaps="never" >
           <ListEditableItems items={this.getItems()} separatorIndent={true} />
         </ScrollView>

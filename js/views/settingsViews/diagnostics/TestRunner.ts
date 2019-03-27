@@ -1,7 +1,5 @@
 import {Bluenet} from "../../../native/libInterface/Bluenet";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
-
-
+import { core } from "../../../core";
 
 class TestRunnerClass {
 
@@ -28,12 +26,12 @@ class TestRunnerClass {
     };
 
     this.eventMap = {
-      ibeacons:            NativeBus.topics.iBeaconAdvertisement,
-      verifiedCrownstones: NativeBus.topics.advertisement,
-      anyCrownstones:      NativeBus.topics.unverifiedAdvertisementData,
-      setupCrownstones:    NativeBus.topics.nearestSetup,
-      anyAdvertisement:    NativeBus.topics.crownstoneAdvertisementReceived,
-      nearestCrownstone:   NativeBus.topics.nearest,
+      ibeacons:            core.nativeBus.topics.iBeaconAdvertisement,
+      verifiedCrownstones: core.nativeBus.topics.advertisement,
+      anyCrownstones:      core.nativeBus.topics.unverifiedAdvertisementData,
+      setupCrownstones:    core.nativeBus.topics.nearestSetup,
+      anyAdvertisement:    core.nativeBus.topics.crownstoneAdvertisementReceived,
+      nearestCrownstone:   core.nativeBus.topics.nearest,
     };
 
     this.amountThreshold = {
@@ -189,7 +187,7 @@ class TestRunnerClass {
 
   _setupTest(label, topic) {
     this.tests[label] = { data:[], result: null };
-    let unsubscribeNativeEvent = NativeBus.on(topic, (data) => {
+    let unsubscribeNativeEvent = core.nativeBus.on(topic, (data) => {
       this.tests[label].data.push(data);
       if (this.tests[label].data.length >= this.amountThreshold[label]) {
         this.tests[label].result = true;
@@ -208,7 +206,7 @@ class TestRunnerClass {
     this.tests[task.type + "_" + task.stoneId + "_advertisement_externalState"] = { result: null };
 
     // search for ibeacon signals from this Crownstone
-    let unsubIbeacon = NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+    let unsubIbeacon = core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => {
       data.forEach((ibeacon) => {
         let stone = task.sphere.stones[task.stoneId];
         if (ibeacon.uuid.toLowerCase() !== task.sphere.config.iBeaconUUID.toLowerCase() ) { return; }
@@ -224,7 +222,7 @@ class TestRunnerClass {
     this.unsubscribeEvents.push(unsubIbeacon);
 
 
-    let unsubUnverifiedAdvertisements = NativeBus.on(NativeBus.topics.unverifiedAdvertisementData,(data) => {
+    let unsubUnverifiedAdvertisements = core.nativeBus.on(core.nativeBus.topics.unverifiedAdvertisementData,(data) => {
       let stone = task.sphere.stones[task.stoneId];
       // direct but not in sphere perse
       if (data.handle === stone.config.handle) {
@@ -238,7 +236,7 @@ class TestRunnerClass {
 
 
     // search for advertisements from this Crownstone via mesh and direct
-    let unsubAdvertisements = NativeBus.on(NativeBus.topics.advertisement,(data) => {
+    let unsubAdvertisements = core.nativeBus.on(core.nativeBus.topics.advertisement,(data) => {
       if (!data.serviceData) { return; }
       let stone = task.sphere.stones[task.stoneId];
       // direct

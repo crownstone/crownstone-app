@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
-const Actions = require('react-native-router-flux').Actions;
+import { NavigationUtil } from "../../../util/NavigationUtil";
+
 
 
 export class AddItemButton extends Component<any, any> {
@@ -31,7 +32,7 @@ export class AddItemButton extends Component<any, any> {
         alignItems:'center',
         justifyContent:'center',
     }}
-    onPress={() => { Actions.addItemsToSphere({sphereId: this.props.sphereId}) }}>
+    onPress={() => { NavigationUtil.navigate("AddItemsToSphere",{sphereId: this.props.sphereId}); }}>
     <View style={{
       width: outerRadius,
         height:outerRadius,

@@ -9,11 +9,11 @@
 - presence condition END
  */
 
-import { ACTIONS, CONDITIONS, OFFSET_TYPES, PRESENCE_TYPES, TIME_TYPES } from "./enums";
+import { ACTIONS, CONDITIONS, PRESENCE_TYPES} from "./enums";
 
 let always = {
   type: CONDITIONS.ALWAYS,
-}
+};
 
 let presenceCondition = {
   type: CONDITIONS.NOT_PRESENCE,
@@ -22,7 +22,7 @@ let presenceCondition = {
     users: [],
     locations: ["idOfBedroom"]
   }
-}
+};
 
 let rule = {
   start: [presenceCondition],
@@ -32,6 +32,6 @@ let rule = {
     type: ACTIONS.TURN_ON,
     value: 1
   },
-}
+};
 
 // interpreter action:

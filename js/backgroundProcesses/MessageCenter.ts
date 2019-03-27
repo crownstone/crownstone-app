@@ -1,11 +1,10 @@
-import { AppState }           from "react-native"
 import {LOG, LOGe}            from "../logging/Log";
-import { NativeBus }          from "../native/libInterface/NativeBus";
 import { CLOUD }              from "../cloud/cloudAPI";
 import { LocalNotifications } from "../notifications/LocalNotifications";
 import { Util }               from "../util/Util";
 import { MapProvider }        from "./MapProvider";
 import { xUtil }              from "../util/StandAloneUtil";
+import { core } from "../core";
 
 class MessageCenterClass {
   _initialized: boolean = false;
@@ -22,10 +21,10 @@ class MessageCenterClass {
     if (this._initialized === false) {
       this._store = store;
 
-      NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => { this._enterSphere(sphereId); });
-      NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this._exitSphere(sphereId); });
-      NativeBus.on(NativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
-      NativeBus.on(NativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
+      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._enterSphere(sphereId); });
+      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._exitSphere(sphereId); });
+      core.nativeBus.on(core.nativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
+      core.nativeBus.on(core.nativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
 
     }
     this._initialized = true;

@@ -5,28 +5,24 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("MeshElement", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   Animated,
-  Dimensions,
-  Image,
-  NativeModules,
-  TouchableOpacity,
   Text,
   View, TextStyle
 } from "react-native";
 
 import {colors, screenWidth, styles} from '../styles'
 
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {IconCircle} from "./IconCircle";
-import {eventBus} from "../../util/EventBus";
 import {Scheduler} from "../../logic/Scheduler";
 import {Util} from "../../util/Util";
 import {Icon} from "./Icon";
 import {AnimatedIconCircle} from "./animated/AnimatedIconCircle";
+import { core } from "../../core";
 
 
 class MeshElementClass extends LiveComponent<any, any> {
@@ -43,7 +39,7 @@ class MeshElementClass extends LiveComponent<any, any> {
   reachable = false;
   reachableTimeout : any = null;
 
-  expanded = false
+  expanded = false;
 
   constructor(props) {
     super(props);
@@ -67,19 +63,19 @@ class MeshElementClass extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    this.unsubscribeControlEvents.push(eventBus.on('nodeWasTapped' + this.props.viewId + this.props.id, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.id, (data) => {
       this.handleTap(data);
     }));
 
-    this.unsubscribeControlEvents.push(eventBus.on('nodeTouched' + this.props.viewId + this.props.id, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeTouched' + this.props.viewId + this.props.id, (data) => {
       this.handleTouch(data);
     }));
 
-    this.unsubscribeControlEvents.push(eventBus.on('nodeReleased' + this.props.viewId + this.props.id, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeReleased' + this.props.viewId + this.props.id, (data) => {
       this.handleTouchReleased(data);
     }));
 
-    this.unsubscribeBeaconEvent = eventBus.on('iBeaconOfValidCrownstone', (data) => {
+    this.unsubscribeBeaconEvent = core.eventBus.on('iBeaconOfValidCrownstone', (data) => {
       if (data.stoneId === this.props.id) {
         this.isReachable();
       }
@@ -90,8 +86,8 @@ class MeshElementClass extends LiveComponent<any, any> {
     if (this.reachable === true) {
       let animations = [];
       this.state.pulse.stopAnimation();
-      animations.push(Animated.timing(this.state.pulse, { toValue: 1, duration: 50 }))
-      animations.push(Animated.timing(this.state.pulse, { toValue: 0, duration: 250 }))
+      animations.push(Animated.timing(this.state.pulse, { toValue: 1, duration: 50 }));
+      animations.push(Animated.timing(this.state.pulse, { toValue: 0, duration: 250 }));
       Animated.sequence(animations).start();
 
       this.delayUnreachable();
@@ -134,7 +130,7 @@ class MeshElementClass extends LiveComponent<any, any> {
       this.state.pulse.stopAnimation();
 
       let animations = [];
-      animations.push(Animated.timing(this.state.pulse, {toValue: 0, duration: 600}))
+      animations.push(Animated.timing(this.state.pulse, {toValue: 0, duration: 600}));
       Animated.parallel(animations).start();
     }
   }

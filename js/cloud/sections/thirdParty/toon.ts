@@ -1,6 +1,5 @@
 import {toonConfig} from "../../../sensitiveData/toonConfig";
 import {request} from "../../cloudCore";
-import {refreshDefaults} from "../../../router/store/reducers/reducerUtil";
 import {cloudApiBase} from "../cloudApiBase";
 
 /**
@@ -15,7 +14,7 @@ export const toon = {
       client_secret: toonConfig.clientSecret,
       code: code,
       grant_type:'authorization_code'
-    }
+    };
 
     let options = {endPoint: "https://api.toon.eu/token", data: payload, type: 'body-urlencoded', options: {}};
     let headers = {'Content-Type': 'application/x-www-form-urlencoded'};

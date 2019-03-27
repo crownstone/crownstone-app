@@ -1,8 +1,8 @@
-import { eventBus } from "../util/EventBus";
 import { Util } from "../util/Util";
 import { Bluenet } from "../native/libInterface/Bluenet";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { SphereUtil } from "../util/SphereUtil";
+import { core } from "../core";
 
 
 class BroadcastStateManagerClass {
@@ -30,8 +30,8 @@ class BroadcastStateManagerClass {
       let state = this._store.getState();
       this._advertisingEnabled = state.development.broadcasting_enabled;
 
-      console.log("INITIALIZING BroadcastStateManagerClass")
-      eventBus.on("databaseChange", (data) => {
+      console.log("INITIALIZING BroadcastStateManagerClass");
+      core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
         if (change.changeAppSettings || change.changeDeviceData) {
           this._reloadDevicePreferences();
@@ -47,11 +47,11 @@ class BroadcastStateManagerClass {
         }
       });
 
-      eventBus.on("enterSphere", (enteringSphereId) => {
+      core.eventBus.on("enterSphere", (enteringSphereId) => {
         this._handleEnterSphere(enteringSphereId);
       });
 
-      eventBus.on("exitSphere", (exitSphereId) => {
+      core.eventBus.on("exitSphere", (exitSphereId) => {
         this._handleExitSphere(exitSphereId);
       });
 
@@ -194,7 +194,7 @@ class BroadcastStateManagerClass {
   _startAdvertising() {
     BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
-        console.log("Bluenet.startAdvertising()")
+        console.log("Bluenet.startAdvertising()");
         this._advertising = true;
         Bluenet.startAdvertising();
       });
@@ -203,7 +203,7 @@ class BroadcastStateManagerClass {
   _stopAdvertising() {
     BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
-        console.log("Bluenet.stopAdvertising()")
+        console.log("Bluenet.stopAdvertising()");
         this._sphereIdInLocationState = null;
         this._advertising = false;
         Bluenet.stopAdvertising();
@@ -226,4 +226,4 @@ class BroadcastStateManagerClass {
 
 }
 
-export const BroadcastStateManager = new BroadcastStateManagerClass()
+export const BroadcastStateManager = new BroadcastStateManagerClass();

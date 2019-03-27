@@ -7,24 +7,20 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
-  ScrollView,
   StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View, TextStyle
 } from "react-native";
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { colors, screenWidth }              from '../../styles'
 import { Util }                             from "../../../util/Util";
 import { canUseIndoorLocalizationInSphere } from "../../../util/DataUtil";
 import { Permissions }                      from "../../../backgroundProcesses/PermissionManager";
 import { BEHAVIOUR_TYPES } from "../../../Enums";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 let DISABLED_COLOR = colors.gray.hex;
@@ -32,14 +28,13 @@ let WARNING_COLOR = colors.csOrange.hex;
 
 export class DeviceBehaviour extends LiveComponent<any, any> {
 
-  unsubscribeStoreEvents
+  unsubscribeStoreEvents;
   componentDidMount() {
-    const { store } = this.props;
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      let state = store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       if (!stone || !stone.config) { return; }
 
@@ -74,7 +69,7 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
         <TouchableOpacity
           key="heartbeatWarning"
           style={{flexDirection: 'row'}}
-          onPress={() => { Actions.settingsApp(); }}
+          onPress={() => { NavigationUtil.navigate("SettingsApp"); }}
         >
           <Text style={textStyle.warning}>{ lang("Behaviour_is_disabled_in_") }</Text>
         </TouchableOpacity>
@@ -86,7 +81,7 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
         <TouchableOpacity
           key="heartbeatWarning"
           style={{flexDirection: 'row'}}
-          onPress={() => { Actions.settingsApp(); }}
+          onPress={() => { NavigationUtil.navigate("SettingsApp"); }}
         >
           <Text style={textStyle.warning}>{ lang("Heartbeat_is_disabled_in_") }</Text>
         </TouchableOpacity>
@@ -99,7 +94,7 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
         <TouchableOpacity
           key="nearFarWarning"
           style={{flexDirection: 'row'}}
-          onPress={() => {Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});}}
+          onPress={() => { NavigationUtil.navigate("DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});}}
         >
           <Text style={textStyle.warning}>{ lang("Near_away_is_disabled_unt") }</Text>
         </TouchableOpacity>
@@ -110,11 +105,11 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
-    const element = Util.data.getElement(this.props.store, this.props.sphereId, this.props.stoneId, stone);
+    const element = Util.data.getElement(core.store, this.props.sphereId, this.props.stoneId, stone);
 
     let canChangeBehaviour = Permissions.inSphere(this.props.sphereId).changeBehaviour && state.app.indoorLocalizationEnabled;
 
@@ -148,7 +143,7 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
         <View style={{flex: 2}} />
         { element.config.onlyOnWhenDark === true && state.app.indoorLocalizationEnabled ?
         <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {
-          Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+          NavigationUtil.navigate("DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
         }}>
           <Text style={textStyle.value}>{ lang("I_will_") }</Text>
           <Text style={[textStyle.value,{fontStyle: 'italic'}]}>{ lang("only_") }</Text>
@@ -284,7 +279,7 @@ class BehaviourResponse extends Component<any, any> {
     else {
       return (
         <TouchableOpacity style={{alignItems:'center'}} onPress={() => {
-          Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+          NavigationUtil.navigate("DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
         }}>
           {content}
         </TouchableOpacity>

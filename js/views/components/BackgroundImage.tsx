@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
 } from 'react-native';
-import {screenHeight, screenWidth, tabBarHeight, topBarHeight} from "../styles";
+import {screenWidth} from "../styles";
 
 export class BackgroundImage extends Component<{height?: number, image: any}, any> {
   render() {

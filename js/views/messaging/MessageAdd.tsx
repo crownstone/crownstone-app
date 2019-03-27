@@ -7,30 +7,25 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Animated,
-  Image,
-  TouchableHighlight,
   ScrollView,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
   View
 } from 'react-native';
 
-const Actions = require('react-native-router-flux').Actions;
+
 import {
   colors,
   OrangeLine} from '../styles'
 import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
-import {Util} from "../../util/Util";
 import { ListEditableItems } from "../components/ListEditableItems";
 import { ProfilePicture } from "../components/ProfilePicture";
 import {MessageUtil} from "../../util/MessageUtil";
-import {BackAction} from "../../util/Back";
+
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {CancelButton} from "../components/topbar/CancelButton";
 import { xUtil } from "../../util/StandAloneUtil";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { core } from "../../core";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
@@ -42,7 +37,7 @@ export class MessageAdd extends Component<any, any> {
     return {
       title: lang("New_Message"),
       headerTruncatedBackTitle: lang("Back"),
-      headerLeft: <CancelButton onPress={BackAction} />,
+      headerLeft: <CancelButton onPress={ () => { NavigationUtil.back(); }} />,
       headerRight: <TopbarButton
         text={ lang("Create")}
         onPress={() => {
@@ -84,7 +79,7 @@ lang("_No_recipients____I_cant__body"),
       return;
     }
 
-    let state = this.props.store.getState();
+    let state = core.store.getState();
 
     // gather array of recipients
     let recipients = [];
@@ -100,7 +95,7 @@ lang("_No_recipients____I_cant__body"),
     let localLocationIdToTrigger = this.state.triggerLocationId === ANYWHERE_IN_SPHERE ? null : this.state.triggerLocationId;
     let messageId = xUtil.getUUID();
 
-    this.props.store.dispatch({
+    core.store.dispatch({
       type:'ADD_MESSAGE',
       sphereId: this.props.sphereId,
       messageId: messageId,
@@ -116,7 +111,7 @@ lang("_No_recipients____I_cant__body"),
     });
 
     MessageUtil.uploadMessage(
-      this.props.store,
+      core.store,
       this.props.sphereId,
       messageId,
       { triggerLocationId: localLocationIdToTrigger,
@@ -128,7 +123,7 @@ lang("_No_recipients____I_cant__body"),
       recipients
     );
 
-    BackAction();
+    NavigationUtil.back();
   }
 
   _getLocationItems(sphere) {
@@ -187,7 +182,7 @@ lang("_No_recipients____I_cant__body"),
   }
 
   _getItems() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let items = [];
 
@@ -212,7 +207,7 @@ lang("_No_recipients____I_cant__body"),
         type: 'navigation',
         icon:  <IconButton name={userData[1].icon} size={24} buttonSize={34} radius={17} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/>,
         callback: () => {
-          Actions.selectFromList({items: userData, title: lang("Recipients"), callback: (selection) => {
+         NavigationUtil.navigate("SelectFromList",{items: userData, title: lang("Recipients"), callback: (selection) => {
             this.setState({recipients: selection});
           }});
         }
@@ -237,7 +232,7 @@ lang("_No_recipients____I_cant__body"),
         type: 'navigation',
         icon: <IconButton name='ios-body' size={23} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/>,
         callback: () => {
-          Actions.selectFromList({items: userData, title: lang("Recipients"), callback: (selection) => {
+         NavigationUtil.navigate("SelectFromList",{items: userData, title: lang("Recipients"), callback: (selection) => {
             this.setState({recipients: selection});
           }});
         }
@@ -271,7 +266,7 @@ lang("_No_recipients____I_cant__body"),
 
     // show locations
     let selectLocation = () => {
-      Actions.selectFromList({items: locationItems , title: lang("Leave_where_"), submitOnSelect: true, callback: (selection) => {
+     NavigationUtil.navigate("SelectFromList",{items: locationItems , title: lang("Leave_where_"), submitOnSelect: true, callback: (selection) => {
         let selectedIds = Object.keys(selection);
         if (selectedIds.length > 0) {
           this.setState({triggerLocationId: Object.keys(selection)[0]});
@@ -332,7 +327,7 @@ lang("_No_recipients____I_cant__body"),
 
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} >
+      <Background hasNavBar={false} image={core.background.detailsDark} >
         <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />

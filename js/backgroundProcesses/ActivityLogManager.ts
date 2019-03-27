@@ -1,16 +1,15 @@
-import {eventBus} from "../util/EventBus";
 import {LOG, LOGe} from "../logging/Log";
-import {Util} from "../util/Util";
 import {transferActivityLogs} from "../cloud/transferData/transferActivityLogs";
 import {MapProvider} from "./MapProvider";
 import {transferActivityRanges} from "../cloud/transferData/transferActivityRanges";
 import { xUtil } from "../util/StandAloneUtil";
+import { core } from "../core";
 
 
 class ActivityLogManagerClass {
 
-  _initialized = false
-  store = null
+  _initialized = false;
+  store = null;
 
   _stagedActions = [];
 
@@ -27,8 +26,8 @@ class ActivityLogManagerClass {
 
   init() {
     if (this._initialized === false) {
-      eventBus.on("NEW_ACTIVITY_LOG", (data) => { if (data.command) {this._handleActivity(data);}});
-      eventBus.on("disconnect",       this._commit.bind(this));
+      core.eventBus.on("NEW_ACTIVITY_LOG", (data) => { if (data.command) {this._handleActivity(data);}});
+      core.eventBus.on("disconnect",       this._commit.bind(this));
       this._initialized = true;
 
     }
@@ -67,7 +66,7 @@ class ActivityLogManagerClass {
         userId: state.user.userId,
         timestamp: new Date().valueOf(),
       }
-    }
+    };
     let unknownAction = false;
     switch (data.command) {
       case 'keepAliveState':
@@ -128,7 +127,7 @@ class ActivityLogManagerClass {
       stoneId:  data.target,
       rangeId: null,
       data: {}
-    }
+    };
     let actionData = {
       count:           1,
       delayInCommand:  data.timeout || sphere.config.exitDelay,
@@ -136,7 +135,7 @@ class ActivityLogManagerClass {
       type:            data.command,
       cloudId:         null,
       userId:          state.user.userId,
-    }
+    };
     if (viaMesh) { actionData["lastMeshTime"]   = now; }
     else         { actionData["lastDirectTime"] = now; }
 

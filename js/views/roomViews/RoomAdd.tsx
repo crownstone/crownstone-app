@@ -7,13 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
-  Platform,
   ScrollView,
-  Switch,
-  Text,
   View
 } from 'react-native';
 
@@ -21,18 +15,20 @@ import { Background } from '../components/Background'
 import { IconCircle } from '../components/IconCircle'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
-import {LOG, LOGe} from '../../logging/Log'
-const Actions = require('react-native-router-flux').Actions;
+import {LOGe} from '../../logging/Log'
+
 import {colors, OrangeLine} from '../styles'
 import {processImage} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {BackAction} from "../../util/Back";
+
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {getRandomRoomIcon} from "./RoomIconSelection";
 import { xUtil } from "../../util/StandAloneUtil";
 import { FileUtil } from "../../util/FileUtil";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 
@@ -41,7 +37,7 @@ export class RoomAdd extends Component<any, any> {
     const { params } = navigation.state;
     return {
       title: lang("Create_Room"),
-      headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : BackAction() }}/>,
+      headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : navigation.goBack(); }}/>,
       headerRight: <TopbarButton
         text={ lang("Create")}
         onPress={() => {
@@ -73,8 +69,8 @@ export class RoomAdd extends Component<any, any> {
   cancelEdit() {
     // clean up any pictures that were taken
     this._removeUnusedPictures();
-    this._removePicture(this.state.picture)
-    BackAction();
+    this._removePicture(this.state.picture);
+    this.props.navigation.goBack(null);
   }
 
   _removeUnusedPictures() {
@@ -119,12 +115,12 @@ export class RoomAdd extends Component<any, any> {
     }});
     items.push({label: lang("Icon"), type: 'icon', value: this.state.icon,
       callback: () => {
-        Actions.roomIconSelection({
+        NavigationUtil.navigate("RoomIconSelection",{
           icon: this.state.icon,
           sphereId: this.props.sphereId,
           callback: (newIcon) => { this.setState({icon:newIcon}); }
-        }
-      )}
+        });
+      }
     });
     items.push({
       label: lang("Picture"),
@@ -138,10 +134,10 @@ export class RoomAdd extends Component<any, any> {
         this.removePictureQueue.push(this.state.picture);
         this.setState({picture: null});
       }
-    })
+    });
 
     let floatingStoneIds = Object.keys(floatingStones);
-    floatingStoneIds.sort((a,b) => { return (floatingStones[a].device.config.name < floatingStones[b].device.config.name) ? -1 : 1 })
+    floatingStoneIds.sort((a,b) => { return (floatingStones[a].device.config.name < floatingStones[b].device.config.name) ? -1 : 1 });
 
     let shownMovingStone = false;
     if (floatingStoneIds.length > 0) {
@@ -165,7 +161,7 @@ export class RoomAdd extends Component<any, any> {
     if (shownMovingStone === false && this.props.movingCrownstone !== undefined) {
       items.push({label: lang("CURRENTLY_MOVING_CROWNSTO"), type:'explanation', below:false});
       let stoneId = this.props.movingCrownstone;
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[stoneId];
       let device = stone;
       if (stone.config.applianceId) {
@@ -195,29 +191,28 @@ export class RoomAdd extends Component<any, any> {
 
   createRoom() {
     // make sure all text fields are blurred
-    this.props.eventBus.emit("inputComplete");
+    core.eventBus.emit("inputComplete");
     setTimeout(() => { this._createRoom(); }, 20);
   }
 
   _createRoom() {
-    const state = this.props.store.getState();
+    const state = core.store.getState();
 
     if (this.state.name.length === 0) {
       Alert.alert(
-lang("_Room_name_must_be_at_lea_header"),
-lang("_Room_name_must_be_at_lea_body"),
-[{text:lang("_Room_name_must_be_at_lea_left")}]
+        lang("_Room_name_must_be_at_lea_header"),
+        lang("_Room_name_must_be_at_lea_body"),
+        [{text:lang("_Room_name_must_be_at_lea_left")}]
       )
     }
     else {
       // check if the room name is unique.
       let existingLocations = getLocationNamesInSphere(state, this.props.sphereId);
       if (existingLocations[this.state.name] === undefined) {
-        this.props.eventBus.emit('showLoading', lang("Creating_room___"));
+        core.eventBus.emit('showLoading', lang("Creating_room___"));
         let actions = [];
         let localId = xUtil.getUUID();
 
-        // todo Move to create new location method once it is implemented in transferLocations
         actions.push({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: localId, data:{name: this.state.name, icon: this.state.icon}});
         transferLocations.createOnCloud(actions, {
           localId: localId,
@@ -243,7 +238,7 @@ lang("_Room_name_must_be_at_lea_body"),
             if (this.state.picture !== null) {
               processImage(this.state.picture, localId + ".jpg", 1.0)
                 .then((picture) => {
-                  this.props.store.dispatch({
+                  core.store.dispatch({
                     type:'UPDATE_LOCATION_CONFIG',
                     sphereId: this.props.sphereId,
                     locationId: localId,
@@ -255,18 +250,18 @@ lang("_Room_name_must_be_at_lea_body"),
                 })
             }
 
-            this.props.store.batchDispatch(actions);
+            core.store.batchDispatch(actions);
             if (this.props.returnToRoute) {
-              Actions.popTo(this.props.returnToRoute);
+              NavigationUtil.back();
             }
             else {
-              Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false, __popBeforeAddCount: 2});
+              NavigationUtil.navigate("RoomOverview",{sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false, __popBeforeAddCount: 2});
             }
-            this.props.eventBus.emit('hideLoading');
+            core.eventBus.emit('hideLoading');
           })
           .catch((err) => {
             LOGe.info("RoomAdd: Something went wrong with creation of rooms", err);
-            let defaultActions = () => {this.props.eventBus.emit('hideLoading');};
+            let defaultActions = () => {core.eventBus.emit('hideLoading');};
             Alert.alert(
               lang("_Whoops___Something_went__header"),
               lang("_Whoops___Something_went__body"),
@@ -284,11 +279,11 @@ lang("_Room_name_must_be_at_lea_body"),
   }
 
   render() {
-    let state = this.props.store.getState();
-    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
+    let state = core.store.getState();
+    let backgroundImage = core.background.menu;
 
     if (!this.props.sphereId) {
-      BackAction();
+      this.props.navigation.goBack(null);
       return <View />
     }
 

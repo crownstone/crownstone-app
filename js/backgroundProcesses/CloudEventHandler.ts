@@ -1,6 +1,6 @@
-import {eventBus} from "../util/EventBus";
 import {LOG, LOGe} from "../logging/Log";
 import {syncEvents} from "../cloud/sections/sync/syncEvents";
+import { core } from "../core";
 
 class CloudEventHandlerClass {
   _store : any;
@@ -14,7 +14,7 @@ class CloudEventHandlerClass {
       this._eventSyncInProgress = false;
 
       let pendingActions = [];
-      eventBus.on("submitCloudEvent", (data) => {
+      core.eventBus.on("submitCloudEvent", (data) => {
         if (!data) { return; }
 
         if (Array.isArray(data) && data.length > 0) {

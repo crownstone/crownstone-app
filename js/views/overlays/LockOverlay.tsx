@@ -7,7 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Image,
   Text,
   TouchableOpacity,
   View,
@@ -16,10 +15,10 @@ import {
 import { IconButton }           from '../components/IconButton'
 import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { styles, colors } from '../styles'
-import { eventBus }             from "../../util/EventBus";
 import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
 import { Scheduler }            from "../../logic/Scheduler";
 import { Permissions }          from "../../backgroundProcesses/PermissionManager";
+import { core } from "../../core";
 
 export class LockOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -35,7 +34,7 @@ export class LockOverlay extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on("showLockOverlay", (data) => {
+    this.unsubscribe.push(core.eventBus.on("showLockOverlay", (data) => {
       this.setState({ visible: true, sphereId: data.sphereId, stoneId: data.stoneId });
     }));
   }
@@ -45,7 +44,9 @@ export class LockOverlay extends Component<any, any> {
     this.unsubscribe = [];
   }
 
-  _getText(stone) {
+  _getText() {
+    let stone = this._getStone();
+
     if (!stone) {
       return "";
     }
@@ -67,18 +68,18 @@ export class LockOverlay extends Component<any, any> {
   }
 
   _lockCrownstone(stone) {
-    eventBus.emit("showLoading", lang("Locking_Crownstone___"));
+    core.eventBus.emit("showLoading", lang("Locking_Crownstone___"));
     BatchCommandHandler.loadPriority(stone, this.state.stoneId, this.state.sphereId, { commandName : 'lockSwitch', value: true })
       .then(() => {
-        eventBus.emit("showLoading", "Done!");
+        core.eventBus.emit("showLoading", "Done!");
         Scheduler.scheduleCallback(() => {
-          eventBus.emit("hideLoading");
-          this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.state.sphereId, stoneId: this.state.stoneId, data: {locked: true}});
+          core.eventBus.emit("hideLoading");
+          core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.state.sphereId, stoneId: this.state.stoneId, data: {locked: true}});
           this.setState({visible: false, sphereId: null});
         }, 500, 'Locked Crownstone');
       })
       .catch((err) => {
-        eventBus.emit("hideLoading");
+        core.eventBus.emit("hideLoading");
         Alert.alert(
           lang("_Im_sorry____Something_we_header"),
           lang("_Im_sorry____Something_we_body"),
@@ -88,7 +89,12 @@ export class LockOverlay extends Component<any, any> {
     BatchCommandHandler.executePriority();
   }
 
-  _getButtons(stone) {
+  _getButtons() {
+    let stone = this._getStone();
+    if (!stone) {
+      return;
+    }
+
     if (!Permissions.inSphere(this.state.sphereId).canLockCrownstone || stone.config.dimmingEnabled) {
       return (
         <View style={{flexDirection: 'row'}}>
@@ -135,15 +141,22 @@ export class LockOverlay extends Component<any, any> {
     }
   }
 
-  render() {
-    let iconSize = 150;
-    const store = this.props.store;
-    const state = store.getState();
+  _getStone() {
+    if (!this.state.visible) {
+      return null;
+    }
+
+    const state = core.store.getState();
     const sphere = state.spheres[this.state.sphereId];
     var stone = null;
     if (sphere) {
       stone = sphere.stones[this.state.stoneId];
     }
+    return stone;
+  }
+
+  render() {
+    let iconSize = 150;
 
     return (
       <OverlayBox visible={this.state.visible} height={400} width={300} overrideBackButton={false} backgroundColor={colors.black.rgba(0.4)}>
@@ -157,9 +170,9 @@ export class LockOverlay extends Component<any, any> {
         />
         <View style={{flex:1}} />
         <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{ lang("Locking_a_Crownstone") }</Text>
-        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.darkBackground.hex, padding:15, textAlign:'center'}}>{this._getText(stone)}</Text>
+        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.darkBackground.hex, padding:15, textAlign:'center'}}>{this._getText()}</Text>
         <View style={{flex:1}} />
-        { this._getButtons(stone) }
+        { this._getButtons() }
         <View style={{flex:1}} />
       </OverlayBox>
     );

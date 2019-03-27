@@ -5,26 +5,19 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DevicePowerCurve", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
   ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { screenWidth, availableScreenHeight, deviceStyles } from "../../styles";
 import {Graph} from "../../components/graph/Graph";
 import {Util} from "../../../util/Util";
-import {eventBus} from "../../../util/EventBus";
 import {textStyle} from "./DeviceBehaviour";
+import { core } from "../../../core";
 
 
 export class DevicePowerCurve extends LiveComponent<any, any> {
@@ -33,7 +26,7 @@ export class DevicePowerCurve extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
         change.powerUsageUpdated && change.powerUsageUpdated.stoneIds[this.props.stoneId]
@@ -49,7 +42,7 @@ export class DevicePowerCurve extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];

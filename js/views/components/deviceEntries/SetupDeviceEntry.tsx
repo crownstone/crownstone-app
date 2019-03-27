@@ -9,12 +9,7 @@ import {
   Alert,
   Animated,
   ActivityIndicator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  Switch,
   TouchableOpacity,
-  TouchableHighlight,
   Text,
   View
 } from 'react-native';
@@ -24,6 +19,7 @@ import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from '../../styles'
 import {Util} from "../../../util/Util";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import { core } from "../../../core";
 
 
 export class SetupDeviceEntry extends Component<any, any> {
@@ -52,7 +48,7 @@ export class SetupDeviceEntry extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.setupEvents.push(this.props.eventBus.on(Util.events.getSetupTopic(this.props.handle), (data) => {
+    this.setupEvents.push(core.eventBus.on(Util.events.getSetupTopic(this.props.handle), (data) => {
       if (data.rssi < 0) {
         if (this.state.rssi === null) {
           this.setState({rssi: data.rssi, showRssi: true});
@@ -65,21 +61,21 @@ export class SetupDeviceEntry extends Component<any, any> {
       }
     }));
 
-    this.setupEvents.push(this.props.eventBus.on("setupStarted",  (handle) => {
+    this.setupEvents.push(core.eventBus.on("setupStarted",  (handle) => {
       if (this.props.handle === handle) {
         this.setProgress('pending');
       }
     }));
 
-    this.setupEvents.push(this.props.eventBus.on("setupCancelled", (handle) => {
+    this.setupEvents.push(core.eventBus.on("setupCancelled", (handle) => {
       this.setProgress(0);
     }));
-    this.setupEvents.push(this.props.eventBus.on("setupComplete", (handle) => {
+    this.setupEvents.push(core.eventBus.on("setupComplete", (handle) => {
       if (this.props.handle !== handle) {
         this.setProgress(0);
       }
     }));
-    this.setupEvents.push(this.props.eventBus.on("setupInProgress", (data) => {
+    this.setupEvents.push(core.eventBus.on("setupInProgress", (data) => {
       if (this.props.handle === data.handle) {
         this.setProgress(data.progress);
       }

@@ -1,4 +1,3 @@
-import { Alert, Platform } from 'react-native'
 import { CLOUD_ADDRESS, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
 const RNFS = require('react-native-fs');
 let emptyFunction = function() {};

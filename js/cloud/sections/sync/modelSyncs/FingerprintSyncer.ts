@@ -10,11 +10,9 @@
  * @param sphereInState
  */
 
-import { Platform } from 'react-native'
 import { Util } from "../../../../util/Util";
 import { SyncingBase } from "./SyncingBase";
 import { CLOUD } from "../../../cloudAPI";
-import {update} from "../../../../router/store/reducers/reducerUtil";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {LOGe} from "../../../../logging/Log";
 
@@ -49,7 +47,7 @@ export class FingerprintSyncer extends SyncingBase {
         return this.checkForUpdates(state, deviceId, locationIdsWithCloudFingerprints);
       })
       .then(() => {
-        this.syncUp(state, deviceId, locationIdsWithNewFingerprints)
+        this.syncUp(state, deviceId, locationIdsWithNewFingerprints);
         return Promise.all(this.transferPromises)
       })
   }

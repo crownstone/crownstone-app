@@ -5,16 +5,11 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsPrivacy", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
-  TouchableHighlight,
   ScrollView,
-  Linking,
-  Switch,
-  Text,
-  View
-} from 'react-native';
+  Linking} from 'react-native';
 
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
@@ -23,6 +18,7 @@ import {colors, OrangeLine} from '../styles'
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
+import { core } from "../../core";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
@@ -38,7 +34,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (change.changeUserData) {
         this.forceUpdate();
@@ -52,7 +48,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
 
   
   _getItems(user) {
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
     let items = [];
 
@@ -166,16 +162,16 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
       callback:(newValue) => {
         if (newValue === false) {
           let deviceId = Util.data.getCurrentDeviceId(state);
-          this.props.eventBus.emit("showLoading", "Removing phone details from the Cloud...");
+          core.eventBus.emit("showLoading", "Removing phone details from the Cloud...");
           CLOUD.updateDevice(deviceId, {
             os: null,
             userAgent: null,
             model: null,
           })
             .then(() => {
-              this.props.eventBus.emit("showLoading", "Done!");
+              core.eventBus.emit("showLoading", "Done!");
               setTimeout(() => {
-                this.props.eventBus.emit("hideLoading");
+                core.eventBus.emit("hideLoading");
                 store.dispatch({ type: 'USER_UPDATE', data: {uploadDeviceDetails: newValue} });
                 store.dispatch({ type: 'CLEAR_DEVICE_DETAILS', deviceId: deviceId, data: {
                   os: null,
@@ -189,7 +185,7 @@ lang("_Phone_Details_Removed__W_body"),
               }, 500);
             })
             .catch((err) => {
-              this.props.eventBus.emit("hideLoading");
+              core.eventBus.emit("hideLoading");
               Alert.alert(
 lang("_Whoops___We_could_not_re_header"),
 lang("_Whoops___We_could_not_re_body"),
@@ -222,12 +218,12 @@ lang("_Whoops___We_could_not_re_body"),
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     let user = state.user;
 
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={core.background.menu} >
         <OrangeLine/>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />

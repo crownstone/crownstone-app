@@ -6,10 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Image,
-  View
-} from 'react-native';
-import { SafeAreaView } from 'react-navigation';
+  Image} from 'react-native';
 
 export class ScaledImage extends Component<{source: any, targetWidth?: number, targetHeight?: number, sourceWidth: number, sourceHeight:number, style?:any}, any> {
   render() {

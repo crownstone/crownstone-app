@@ -13,7 +13,7 @@
 import {transferActivityLogs} from "../../../transferData/transferActivityLogs";
 import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
-import {LOG, LOGe} from "../../../../logging/Log";
+import {LOG} from "../../../../logging/Log";
 import {CLOUD} from "../../../cloudAPI";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import { xUtil } from "../../../../util/StandAloneUtil";
@@ -23,7 +23,7 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
   localStoneId: string;
   cloudStoneId: string;
 
-  activityLogUploadBatch : transferNewToCloudStoneData[][]
+  activityLogUploadBatch : transferNewToCloudStoneData[][];
   maxBatchSize;
 
   constructor(
@@ -104,7 +104,7 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
             type: 'UPDATE_SYNC_ACTIVITY_TIME',
             sphereId: this.localSphereId,
             stoneId: this.localStoneId
-          })
+          });
 
           return Promise.all(this.transferPromises);
         })

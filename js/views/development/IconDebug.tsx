@@ -1,23 +1,19 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Image,
-  PixelRatio,
-  TouchableHighlight,
   ScrollView,
-  Text,
   View
 } from 'react-native';
 
 import { Background }  from '../components/Background'
-import { IconSelection }  from '../components/IconSelection'
 import {colors, screenWidth} from "../styles";
-import {BackAction} from "../../util/Back";
+
 import {glyphMapC1, glyphMapC2, glyphMapC3} from "../../fonts/customIcons";
 import {iconCorrections} from "../../fonts/iconCorrections";
 import {DebugIconSelection} from "./DebugIconSelection";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { core } from "../../core";
 
-const Actions = require('react-native-router-flux').Actions;
+
 
 export class IconDebug extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
@@ -26,8 +22,8 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
     }
   };
 
-  c1Maps = {}
-  iconCorrectionsMap = {}
+  c1Maps = {};
+  iconCorrectionsMap = {};
   chunks = 10;
 
   constructor(props) {
@@ -42,7 +38,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       ...iconCorrections,
       'ionicons-ios': iconCorrections.ionicons,
       'ionicons-md': iconCorrections.ionicons,
-    }
+    };
 
     for (let i = 0; i < this.chunks; i++) {
       this.iconCorrectionsMap['c1_'+i] = iconCorrections.c1;
@@ -112,7 +108,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "ios-warning",
       "ios-more",
       "ios-wifi",
-    ]
+    ];
     let ioniconsMdList = [
       "md-arrow-dropright",
       "md-analytics",
@@ -157,18 +153,18 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "md-trash",
       "md-unlock",
       "md-wifi",
-    ]
+    ];
 
     let categories = [];
-    let icons = {}
+    let icons = {};
     for (let i = 0; i < this.chunks; i++) {
-      categories.push({key: 'c1_' + i, label:'c1 part '+i})
+      categories.push({key: 'c1_' + i, label:'c1 part '+i});
       icons['c1_' + i] = this.c1Maps[i]
     }
-    categories.push({key: 'c2', label: 'c2'})
-    categories.push({key: 'c3', label: 'c3'})
-    categories.push({key: 'ionicons-ios', label: 'ionicons-ios'})
-    categories.push({key: 'ionicons-md',  label: 'ionicons-md'})
+    categories.push({key: 'c2', label: 'c2'});
+    categories.push({key: 'c3', label: 'c3'});
+    categories.push({key: 'ionicons-ios', label: 'ionicons-ios'});
+    categories.push({key: 'ionicons-md',  label: 'ionicons-md'});
 
     icons['c2'] = Object.keys(glyphMapC2);
     icons['c3'] = Object.keys(glyphMapC3);
@@ -176,7 +172,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
     icons['ionicons-md']  = ioniconsMdList;
 
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <DebugIconSelection
@@ -187,7 +183,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
             debug={true}
             callback={(newIcon) => {
               this.props.callback(newIcon);
-              BackAction();
+              NavigationUtil.back();
             }}
           />
         </ScrollView>

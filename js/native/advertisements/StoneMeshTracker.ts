@@ -1,8 +1,6 @@
-import { Alert, Vibration } from 'react-native';
-
-import { eventBus }   from '../../util/EventBus';
 import { LOGd, LOGi } from '../../logging/Log';
 import { Util }       from "../../util/Util";
+import { core } from "../../core";
 
 const meshRemovalThreshold : number = 200; // times not this crownstone in mesh
 const meshRemovalTimeout : number = 200; // seconds
@@ -33,7 +31,7 @@ export class StoneMeshTracker {
   }
 
   init() {
-    this.subscriptions.push(eventBus.on("databaseChange", (data) => {
+    this.subscriptions.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if ( change.meshIdUpdated && change.meshIdUpdated.stoneIds[this.stoneId] ) {
         this.updateListener();
@@ -70,7 +68,7 @@ export class StoneMeshTracker {
 
     // if we have a network, listen for its advertisements
     if (this.meshNetworkId !== null) {
-      this.unsubscribeMeshListeners.push(eventBus.on(Util.events.getViaMeshTopic(this.sphereId, this.meshNetworkId), (data) => {
+      this.unsubscribeMeshListeners.push(core.eventBus.on(Util.events.getViaMeshTopic(this.sphereId, this.meshNetworkId), (data) => {
         if (data.id === this.stoneId) {
           this.timeLastSeen = now;
           this.notThisStoneCounter = 0;

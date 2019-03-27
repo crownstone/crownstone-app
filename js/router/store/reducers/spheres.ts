@@ -130,7 +130,7 @@ let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
     default:
       return state;
   }
-}
+};
 
 let floatingLocationReducer = (state = defaultSettings.layout.floatingLocation, action : any = {}) => {
   switch (action.type) {
@@ -149,7 +149,7 @@ let floatingLocationReducer = (state = defaultSettings.layout.floatingLocation, 
     default:
       return state;
   }
-}
+};
 
 let layoutReducer = combineReducers({
   floatingLocation: floatingLocationReducer,

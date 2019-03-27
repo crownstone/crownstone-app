@@ -25,7 +25,7 @@ export class SlideFadeInView extends Component<any, any> {
 
   componentWillUpdate(nextProps) {
     if (this.visible !== nextProps.visible) {
-      let animations = []
+      let animations = [];
       let delay = this.props.delay || 0;
       let duration = this.props.duration || 200;
       if (nextProps.visible === true) {
@@ -33,7 +33,7 @@ export class SlideFadeInView extends Component<any, any> {
           toValue:  1,
           delay:    delay + 0.2*duration,
           duration: duration,
-        }))
+        }));
         animations.push(Animated.timing(this.state.viewHeight, {
           toValue:  (nextProps.height || (nextProps.style && nextProps.style.height)),
           delay:    delay,

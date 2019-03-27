@@ -9,18 +9,11 @@ import * as React from 'react';
 import {
   Alert,
   ActivityIndicator,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
   StyleSheet,
-  Switch,
-  TextInput,
-  Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
 
-import {colors, screenWidth, availableScreenHeight, OrangeLine} from '../styles'
+import {colors, availableScreenHeight, OrangeLine} from '../styles'
 import { Background } from '../components/Background'
 const Swiper = require("react-native-swiper");
 import { Util }                 from "../../util/Util";
@@ -29,7 +22,6 @@ import { DeviceSummary }        from "./elements/DeviceSummary";
 import { DeviceError }          from "./elements/DeviceError";
 import { DeviceUpdate }         from "./elements/DeviceUpdate";
 import { GuidestoneSummary }    from "./elements/GuidestoneSummary";
-import { eventBus }             from "../../util/EventBus";
 import { DevicePowerCurve }     from "./elements/DevicePowerCurve";
 import { DeviceSchedule }       from "./elements/DeviceSchedule";
 import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
@@ -43,9 +35,11 @@ import { UsbSummary }           from "./elements/UsbSummary";
 import { Scheduler }            from "../../logic/Scheduler";
 import {DeviceActivityLog} from "./elements/DeviceActivityLog";
 import { STONE_TYPES } from "../../Enums";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
-  eventBus.emit("setNewSwiperIndex", nextState.index);
+  core.eventBus.emit("setNewSwiperIndex", nextState.index);
 };
 
 export class DeviceOverview extends LiveComponent<any, any> {
@@ -58,7 +52,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
         paramsToUse = NAVBAR_PARAMS_CACHE;
       }
       else {
-        paramsToUse = getNavBarParams(params.store, params.store.getState(), params, 0, false);
+        paramsToUse = getNavBarParams(core.store, core.store.getState(), params, 0, false);
       }
     }
 
@@ -69,7 +63,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
     }
   };
 
-  navBarCalback : any = null
+  navBarCalback : any = null;
   unsubscribeStoreEvents : any;
   unsubscribeSwiperEvents : any = [];
   touchEndTimeout: any;
@@ -80,13 +74,13 @@ export class DeviceOverview extends LiveComponent<any, any> {
     super(props);
 
     this.state = {swiperIndex: 0, scrolling:false, swipeEnabled: true};
-    this.unsubscribeSwiperEvents.push(eventBus.on("setNewSwiperIndex", (nextIndex) => {
+    this.unsubscribeSwiperEvents.push(core.eventBus.on("setNewSwiperIndex", (nextIndex) => {
       if (this.state.swiperIndex !== nextIndex) {
         this.setState({swiperIndex: nextIndex, scrolling: false});
         this._updateNavBar(nextIndex, false);
       }
     }));
-    this.unsubscribeSwiperEvents.push(eventBus.on("UIGestureControl", (panAvailable) => {
+    this.unsubscribeSwiperEvents.push(core.eventBus.on("UIGestureControl", (panAvailable) => {
       if (panAvailable === true && this.state.swipeEnabled === false) {
         this.setState({swipeEnabled: true});
       }
@@ -100,13 +94,13 @@ export class DeviceOverview extends LiveComponent<any, any> {
       }
     }));
 
-    const state = this.props.store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return; }
     const stone = sphere.stones[this.props.stoneId];
     if (!stone) { return; }
     if (stone.config.firmwareVersionSeenInOverview === null) {
-      this.props.store.dispatch({
+      core.store.dispatch({
         type: "UPDATE_STONE_LOCAL_CONFIG",
         sphereId: this.props.sphereId,
         stoneId: this.props.stoneId,
@@ -116,17 +110,16 @@ export class DeviceOverview extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    let state = store.getState();
+    let state = core.store.getState();
     if (state.app.hasSeenDeviceSettings === false) {
-      store.dispatch({type: 'UPDATE_APP_SETTINGS', data: {hasSeenDeviceSettings: true}})
+      core.store.dispatch({type: 'UPDATE_APP_SETTINGS', data: {hasSeenDeviceSettings: true}})
     }
 
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      let state = store.getState();
+      let state = core.store.getState();
       if (
         (state.spheres[this.props.sphereId] === undefined) ||
         (change.removeSphere && change.removeSphere.sphereIds[this.props.sphereId]) ||
@@ -168,12 +161,12 @@ export class DeviceOverview extends LiveComponent<any, any> {
     // If there is no connection being kept open, this command will not do anything.
     BatchCommandHandler.closeKeptOpenConnection();
 
-    const state = this.props.store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (sphere) {
       const stone = sphere.stones[this.props.stoneId];
       if (stone && stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) {
-        this.props.store.dispatch({
+        core.store.dispatch({
           type: "UPDATE_STONE_LOCAL_CONFIG",
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
@@ -196,20 +189,20 @@ export class DeviceOverview extends LiveComponent<any, any> {
       this.navBarCalback = null
     }
     this.navBarCalback = Scheduler.scheduleCallback(() => {
-      let state = this.props.store.getState();
-      let params = getNavBarParams(this.props.store, state, this.props, swiperIndex, scrolling);
+      let state = core.store.getState();
+      let params = getNavBarParams(core.store, state, this.props, swiperIndex, scrolling);
       this.props.navigation.setParams(params)
-    } , 0)
+    } , 0);
 
 
-    let state = this.props.store.getState();
-    let params = getNavBarParams(this.props.store, state, this.props, swiperIndex, scrolling);
+    let state = core.store.getState();
+    let params = getNavBarParams(core.store, state, this.props, swiperIndex, scrolling);
     this.props.navigation.setParams(params)
   }
 
 
   render() {
-    const state = this.props.store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted /> }
     const stone = sphere.stones[this.props.stoneId];
@@ -254,9 +247,9 @@ export class DeviceOverview extends LiveComponent<any, any> {
       }
     };
 
-    let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog, showWhatsNew, deviceType, stone.config)
+    let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog, showWhatsNew, deviceType, stone.config);
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
+      <Background image={core.background.detailsDark}>
         <OrangeLine/>
         { content.length > 1 ? <Swiper
           style={swiperStyles.wrapper}
@@ -284,7 +277,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
     hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog,
     showWhatsNew, deviceType, stoneConfig) {
     let content = [];
-    let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId, eventBus: this.props.eventBus};
+    let props = {sphereId: this.props.sphereId, stoneId: this.props.stoneId};
 
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
@@ -385,7 +378,7 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
     case summaryIndex:
       if (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) {
         rightLabel =  lang("Edit");
-        rightAction = () => {Actions.deviceEdit({sphereId: props.sphereId, stoneId: props.stoneId})};
+        rightAction = () => { NavigationUtil.navigate("DeviceEdit",{sphereId: props.sphereId, stoneId: props.stoneId});};
       }
       break;
     case behaviourIndex:
@@ -398,7 +391,7 @@ lang("_Crownstone_is_Locked___Y_body"),
 [{text:lang("_Crownstone_is_Locked___Y_left")}])};
         }
         else {
-          rightAction = () => { Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId}); }
+          rightAction = () => { NavigationUtil.navigate("DeviceBehaviourEdit",{sphereId: props.sphereId, stoneId: props.stoneId}); }
         }
       }
       break;

@@ -6,26 +6,19 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
   ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
   PanResponder,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
 
 import {colors, screenWidth} from '../styles'
 import { Svg, Circle} from 'react-native-svg';
-import {eventBus} from "../../util/EventBus";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {INTENTS} from "../../native/libInterface/Constants";
+import { core } from "../../core";
 
 export class DimmerButton extends Component<any, any> {
   _panResponder;
@@ -101,9 +94,9 @@ export class DimmerButton extends Component<any, any> {
             data.state < this.state.state + 0.2
           ) {
             this.controlling = true;
-            eventBus.emit("UIGestureControl", false);
+            core.eventBus.emit("UIGestureControl", false);
           }
-        }
+        };
 
         if (this.startY === 0 || !this.startY) {
           (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
@@ -135,7 +128,7 @@ export class DimmerButton extends Component<any, any> {
 
       onPanResponderRelease: (evt, gestureState) => {
         this.controlling = false;
-        eventBus.emit("UIGestureControl", true)
+        core.eventBus.emit("UIGestureControl", true)
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture

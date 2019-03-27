@@ -1,8 +1,8 @@
-import { eventBus }     from '../../util/EventBus'
 import {LOGd, LOGe}         from '../../logging/Log'
 import {MeshUtil} from "../../util/MeshUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../../Enums";
+import { core } from "../../core";
 
 
 /**
@@ -34,7 +34,7 @@ export class CommandManager {
           cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
           promise:  { resolve: resolve, reject: reject, pending: false }
         };
-        eventBus.emit("BatchCommandHandlerLoadAction");
+        core.eventBus.emit("BatchCommandHandlerLoadAction");
       });
     }
   }

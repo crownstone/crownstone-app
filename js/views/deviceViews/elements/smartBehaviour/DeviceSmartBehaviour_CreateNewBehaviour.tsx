@@ -6,30 +6,21 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View, ViewStyle, TextStyle
 } from "react-native";
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {
   availableScreenHeight,
   colors,
   deviceStyles,
   OrangeLine,
-  screenHeight,
-  screenWidth,
-  styles
-} from "../../../styles";
+  screenWidth} from "../../../styles";
 import { Background } from "../../../components/Background";
 import { textStyle } from "./DeviceSmartBehaviour";
+import { core } from "../../../../core";
 
 export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -43,11 +34,11 @@ export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any>
 
   render() {
     let iconHeight = 0.10*availableScreenHeight;
-    let bubbleStyle : ViewStyle = {width: 0.40*screenWidth, height:70, borderRadius:30, backgroundColor: colors.white.rgba(0.4), alignItems:'center', justifyContent: 'center'}
-    let bubbleTextStyle : TextStyle = {color: colors.white.hex, padding:10, textAlign:'center'}
+    let bubbleStyle : ViewStyle = {width: 0.40*screenWidth, height:70, borderRadius:30, backgroundColor: colors.white.rgba(0.4), alignItems:'center', justifyContent: 'center'};
+    let bubbleTextStyle : TextStyle = {color: colors.white.hex, padding:10, textAlign:'center'};
 
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
+      <Background image={core.background.detailsDark}>
         <OrangeLine/>
         <View style={{ width: screenWidth, height:availableScreenHeight, alignItems:'center' }}>
           <View style={{height: 30}} />

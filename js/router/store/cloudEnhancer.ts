@@ -1,9 +1,8 @@
 import { CLOUD }         from '../../cloud/cloudAPI'
 import { Util }          from '../../util/Util'
 import { BATCH }         from './storeManager'
-import {LOG, LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
+import {LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
 import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
-import {eventBus} from "../../util/EventBus";
 import {transferSchedules} from "../../cloud/transferData/transferSchedules";
 import {transferUser} from "../../cloud/transferData/transferUser";
 import {transferStones} from "../../cloud/transferData/transferStones";
@@ -13,8 +12,7 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {LOG_LEVEL} from "../../logging/LogLevels";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
-import {transferActivityLogs} from "../../cloud/transferData/transferActivityLogs";
-import {transferToons} from "../../cloud/transferData/thirdParty/transferToons";
+import { core } from "../../core";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -171,16 +169,16 @@ function handleUserInCloud(action, state) {
   if (action.data.picture) {
     // in case the user has a pending delete profile picture request, we will finish this immediately so a new
     // picture will not be deleted.
-    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'removeProfilePicture' });
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'removeProfilePicture' });
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_USER',
       id: 'uploadProfilePicture',
       specialType: 'uploadProfilePicture'
     });
   }
   else if (action.data.picture === null) {
-    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'uploadProfilePicture' });
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'uploadProfilePicture' });
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_USER',
       id: 'removeProfilePicture',
       specialType: 'removeProfilePicture'
@@ -264,8 +262,8 @@ function handleLocationInCloud(action, state) {
   if (action.data.picture) {
     // in case the user has a pending delete location picture request, we will finish this immediately so a new
     // picture will not be deleted.
-    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'removeLocationPicture' + action.locationId });
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'removeLocationPicture' + action.locationId });
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
       id: 'uploadLocationPicture' + action.locationId,
       localId: action.locationId,
@@ -276,8 +274,8 @@ function handleLocationInCloud(action, state) {
   else if (action.data.picture === null) {
     // in case the user has a pending upload location picture request, we will finish this immediately so a new
     // picture will not be uploaded.
-    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'uploadLocationPicture' + action.locationId });
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'uploadLocationPicture' + action.locationId });
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
       id: 'removeLocationPicture'+ action.locationId,
       localId: action.locationId,
@@ -420,7 +418,7 @@ function handleInstallation(action, state) {
 
 function handleMessageReceived(action, state) {
   let message = state.spheres[action.sphereId].messages[action.messageId];
-  eventBus.emit("submitCloudEvent", {
+  core.eventBus.emit("submitCloudEvent", {
     type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
     sphereId: action.sphereId,
     id: action.messageId + '_' + 'receivedMessage',
@@ -432,7 +430,7 @@ function handleMessageReceived(action, state) {
 
 function handleMessageRead(action, state) {
   let message = state.spheres[action.sphereId].messages[action.messageId];
-  eventBus.emit("submitCloudEvent", {
+  core.eventBus.emit("submitCloudEvent", {
     type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
     sphereId: action.sphereId,
     id: action.messageId + '_' + 'readMessage',
@@ -450,7 +448,7 @@ function handleMessageRemove(action, state, oldState) {
 
   // if user is sender, delete in cloud.
   if (message.config.senderId === oldState.user.userId) {
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_MESSAGES',
       sphereId: action.sphereId,
       id: action.messageId,
@@ -479,7 +477,7 @@ function handleStoneScheduleAdd(action, state) {
 
   transferSchedules.createOnCloud(actions, payload)
     .then(() => {
-      eventBus.emit("submitCloudEvent", actions);
+      core.eventBus.emit("submitCloudEvent", actions);
     }).catch((err) => {});
 
 }
@@ -518,5 +516,5 @@ function handleStoneScheduleRemoval(action, state, oldState) {
     cloudId: oldSchedule && oldSchedule.cloudId || null, // if old does not exist, this is a create event which does not have a cloudId
   };
 
-  eventBus.emit("submitCloudEvent", payload);
+  core.eventBus.emit("submitCloudEvent", payload);
 }

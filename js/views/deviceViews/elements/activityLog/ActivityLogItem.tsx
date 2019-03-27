@@ -6,15 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
@@ -73,11 +64,11 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === 'multiswitch') {
       switch (this.props.data.intent) {
         case INTENTS.manual:
-          return 'md-power'
+          return 'md-power';
         case INTENTS.sphereEnter:
-          return 'ios-globe'
+          return 'ios-globe';
         case INTENTS.sphereExit:
-          return 'ios-globe'
+          return 'ios-globe';
         case INTENTS.enter:
           // check if we have room or near
           if (canDoIndoorLocalization) {
@@ -214,11 +205,11 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === 'multiswitch') {
       switch (this.props.data.intent) {
         case INTENTS.manual:
-          return timeIndicator + lang("Switch_")
+          return timeIndicator + lang("Switch_");
         case INTENTS.sphereEnter:
-          return timeIndicator + lang("Entered_the_Sphere_")
+          return timeIndicator + lang("Entered_the_Sphere_");
         case INTENTS.sphereExit:
-          return timeIndicator + lang("Left_the_Sphere_")
+          return timeIndicator + lang("Left_the_Sphere_");
         case INTENTS.enter:
           // check if we have room or near
           if (canDoIndoorLocalization) {
@@ -251,7 +242,7 @@ export class ActivityLogItem extends Component<any, any> {
       personPrefix =  lang("Someone_else")}
     let initialLabel =  lang("Switched_");
     if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-      targetState = Math.round((this.props.data.switchedToState/0.99)*100) + " %"
+      targetState = Math.round((this.props.data.switchedToState/0.99)*100) + " %";
       initialLabel =  lang("Dimmed_to_");
     }
     if (this.props.data.presumedDuplicate) {

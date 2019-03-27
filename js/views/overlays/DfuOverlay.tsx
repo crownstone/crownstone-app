@@ -8,9 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  AppState,
   BackHandler,
-  Image,
   Platform,
   Text,
   TouchableOpacity,
@@ -19,14 +17,12 @@ import {
 
 import { OverlayContent }  from '../components/overlays/OverlayContent'
 import { OverlayBox }      from '../components/overlays/OverlayBox'
-import { eventBus }        from '../../util/EventBus'
 import { FirmwareHandler } from "../../native/firmware/FirmwareHandler";
 import {LOG, LOGd, LOGe} from "../../logging/Log";
 import { Util }            from "../../util/Util";
 import { ProgressCircle }  from "../components/ProgressCircle";
 import {colors, screenHeight, screenWidth} from '../styles'
 import {Icon} from "../components/Icon";
-import {NativeBus} from "../../native/libInterface/NativeBus";
 import {BleUtil} from "../../util/BleUtil";
 import {Scheduler} from "../../logic/Scheduler";
 import {Bluenet} from "../../native/libInterface/Bluenet";
@@ -34,6 +30,7 @@ import KeepAwake from 'react-native-keep-awake';
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import { FirmwareHelper } from "../../native/firmware/FirmwareHelper";
 import { xUtil } from "../../util/StandAloneUtil";
+import { core } from "../../core";
 
 let STEP_TYPES = {
   UPDATE_AVAILABLE:           'UPDATE_AVAILABLE',
@@ -98,7 +95,7 @@ export class DfuOverlay extends Component<any, any> {
 
   componentDidMount() {
     // data = { stoneId : string , sphereId: string };
-    this.unsubscribe.push(eventBus.on("updateCrownstoneFirmware", (data : any = {}) => {
+    this.unsubscribe.push(core.eventBus.on("updateCrownstoneFirmware", (data : any = {}) => {
       KeepAwake.activate();
       this.setState({
         visible: true,
@@ -117,10 +114,10 @@ export class DfuOverlay extends Component<any, any> {
         bootloaderToUpdate: null,
       });
     }));
-    this.unsubscribe.push(eventBus.on("updateDfuProgress", (progress : number) => {
+    this.unsubscribe.push(core.eventBus.on("updateDfuProgress", (progress : number) => {
       this.setState({progress:progress});
     }));
-    this.unsubscribe.push(eventBus.on("updateDfuStep", (step : string) => {
+    this.unsubscribe.push(core.eventBus.on("updateDfuStep", (step : string) => {
       this.setState({step:step});
     }));
   }
@@ -133,7 +130,7 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   getReleaseNotes(releaseNoteState) {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let userConfig = state.user;
     let stoneConfig = state.spheres[releaseNoteState.sphereId].stones[releaseNoteState.stoneId].config;
 
@@ -189,7 +186,7 @@ export class DfuOverlay extends Component<any, any> {
 
   startProcess() {
     this.initializeProcess();
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let userConfig = state.user;
     let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
 
@@ -225,7 +222,7 @@ export class DfuOverlay extends Component<any, any> {
           if (this.helper) {
             // this means that DFU was successful but we failed at performing setup.
             if (this.helper.resetRequired === false) {
-              this.props.store.dispatch({
+              core.store.dispatch({
                 type: "UPDATE_STONE_DFU_RESET",
                 stoneId: this.state.stoneId,
                 sphereId: this.state.sphereId,
@@ -263,7 +260,7 @@ export class DfuOverlay extends Component<any, any> {
       let firmwareUpdateRequired   = Util.versions.isHigher(userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.firmwareVersion);
       let bootloaderUpdateRequired = Util.versions.isHigher(userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.bootloaderVersion);
 
-      this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
+      this.helper = FirmwareHandler.getFirmwareHelper(core.store, this.state.sphereId, this.state.stoneId);
 
       if (!firmwareUpdateRequired && !bootloaderUpdateRequired) {
         return false;
@@ -285,7 +282,7 @@ export class DfuOverlay extends Component<any, any> {
       // do not store bootloader version if we didnt have to get it.
       if (didGetBootloaderVersion) {
         // add Bootloader version to store
-        this.props.store.dispatch({
+        core.store.dispatch({
           type: "UPDATE_STONE_CONFIG",
           stoneId: this.state.stoneId,
           sphereId: this.state.sphereId,
@@ -298,7 +295,7 @@ export class DfuOverlay extends Component<any, any> {
       // check what we have to do for this Crownstone. This will give us an amount of phases to do.
       let phasesRequired = this.helper.getAmountOfPhases(stoneConfig.dfuResetRequired);
       if (this.helper.resetRequired === true) {
-        this.props.store.dispatch({
+        core.store.dispatch({
           type: "UPDATE_STONE_DFU_RESET",
           stoneId: this.state.stoneId,
           sphereId: this.state.sphereId,
@@ -330,7 +327,7 @@ export class DfuOverlay extends Component<any, any> {
     })
     .then(() => {
       this._processCleanup();
-      this.props.store.dispatch({
+      core.store.dispatch({
         type: "UPDATE_STONE_CONFIG",
         stoneId: this.state.stoneId,
         sphereId: this.state.sphereId,
@@ -368,7 +365,7 @@ export class DfuOverlay extends Component<any, any> {
 
               // ==== store progress in in database ====
               if (completedProcess === "BOOTLOADER_UPLOADED") {
-                this.props.store.dispatch({
+                core.store.dispatch({
                   type: "UPDATE_STONE_CONFIG",
                   stoneId: this.state.stoneId,
                   sphereId: this.state.sphereId,
@@ -378,7 +375,7 @@ export class DfuOverlay extends Component<any, any> {
                 });
               }
               else if (completedProcess === "FIRMWARE_UPLOADED") {
-                this.props.store.dispatch({
+                core.store.dispatch({
                   type: "UPDATE_STONE_CONFIG",
                   stoneId: this.state.stoneId,
                   sphereId: this.state.sphereId,
@@ -413,7 +410,7 @@ export class DfuOverlay extends Component<any, any> {
 
     let timeStart = new Date().valueOf();
     let searchTimeBeforeView = 2500;
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
 
     // we need high frequency scanning to get duplicates of the DFU crownstone.
@@ -426,7 +423,7 @@ export class DfuOverlay extends Component<any, any> {
       // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
       this.cancelShowTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== STEP_TYPES.SEARCHING) {
-          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING);
+          core.eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING);
         }
       }, searchTimeBeforeView, 'dfu this.cancelShowTimeout');
 
@@ -434,19 +431,19 @@ export class DfuOverlay extends Component<any, any> {
       // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
       this.cancelMoveCloserTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== STEP_TYPES.SEARCHING_MOVE_CLOSER) {
-          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
+          core.eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         }
       }, 3000, 'dfu this.cancelMoveCloserTimeout');
 
       this.cancelMoveEvenCloserTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER) {
-          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER);
+          core.eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER);
         }
       }, 6000, 'dfu this.cancelMoveEvenCloserTimeout');
 
       this.cancelResetBleTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== STEP_TYPES.SEARCHING_RESET_BLE) {
-          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_RESET_BLE);
+          core.eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_RESET_BLE);
         }
       }, 10000, 'dfu this.cancelResetBleTimeout');
 
@@ -455,7 +452,7 @@ export class DfuOverlay extends Component<any, any> {
       let rssiResolver = (data, setupMode, dfuMode) => {
         LOGd.info("DfuOverlay: Found match:", data);
         if ((setupMode && data.rssi < -99) || (data.rssi < -80)) {
-          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
+          core.eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         }
         else if (this.paused === false) {
           // no need to HF scan any more
@@ -474,19 +471,19 @@ export class DfuOverlay extends Component<any, any> {
         }
       };
 
-      this.processSubscriptions.push(NativeBus.on(NativeBus.topics.advertisement, (advertisement) => {
+      this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (advertisement) => {
         if (advertisement.handle === stoneConfig.handle) {
           rssiResolver(advertisement, false, false);
         }
       }));
 
-      this.processSubscriptions.push(NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+      this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
         if (setupAdvertisement.handle === stoneConfig.handle) {
           rssiResolver(setupAdvertisement, true, false);
         }
       }));
 
-      this.processSubscriptions.push(NativeBus.on(NativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
+      this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
         if (dfuAdvertisement.handle === stoneConfig.handle) {
           rssiResolver(dfuAdvertisement, false, true);
         }
@@ -525,7 +522,7 @@ export class DfuOverlay extends Component<any, any> {
     if (this.helper)
       this.helper.finish();
 
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     if (canUseIndoorLocalizationInSphere(state, this.state.sphereId) === true) {
       LOGd.info("(Re)Starting indoor localization after training");
       Bluenet.startIndoorLocalization();
@@ -536,7 +533,7 @@ export class DfuOverlay extends Component<any, any> {
   getContent() {
     let updateToVersion = '1.0.0';
     if (this.state.sphereId && this.state.stoneId) {
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let userConfig = state.user;
       let sphere = state.spheres[this.state.sphereId];
       let stoneConfig = sphere.stones[this.state.stoneId].config;
@@ -552,14 +549,14 @@ lang("_Are_you_sure___You_can_a_body"),
 [{text:lang("_Are_you_sure___You_can_a_left"), onPress: defaultAction }, {
 text:lang("_Are_you_sure___You_can_a_right"), onPress: () => {
           this._searchCleanup();
-          eventBus.emit("updateCrownstoneFirmwareEnded");
+          core.eventBus.emit("updateCrownstoneFirmwareEnded");
           this.setState({visible: false});
         }}],
         { onDismiss: defaultAction });
     };
 
     let closeOverlay = () => {
-      eventBus.emit("updateCrownstoneFirmwareEnded");
+      core.eventBus.emit("updateCrownstoneFirmwareEnded");
       KeepAwake.deactivate();
       this.setState({visible: false});
     };
@@ -861,7 +858,7 @@ lang("_Are_you_sure___You_can_al_body"),
               {
 text:lang("_Are_you_sure___You_can_al_right"), onPress: () => {
                 this._searchCleanup();
-                eventBus.emit("updateCrownstoneFirmwareEnded");
+                core.eventBus.emit("updateCrownstoneFirmwareEnded");
                 this.setState({visible: false});
               }}
             ]

@@ -1,8 +1,5 @@
-import { Platform }   from 'react-native';
-import { Scheduler }  from '../logic/Scheduler'
-import { eventBus }   from '../util/EventBus'
-import { cleanLogs }  from "./LogUtil";
 import { LOG_LEVEL }  from "./LogLevels";
+import { core } from "../core";
 
 
 class LogProcessorClass {
@@ -29,12 +26,7 @@ class LogProcessorClass {
   loadStore(store) {
     this.store = store;
 
-    // use periodic events to clean the logs.
-    let triggerId = "LOG_CLEANING_TRIGGER";
-    Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds: 5*3600});
-    Scheduler.loadCallback(triggerId,() => { cleanLogs() }, true);
-
-    eventBus.on("databaseChange", (data) => {
+    core.eventBus.on("databaseChange", (data) => {
       if (data.change.changeUserDeveloperStatus || data.change.changeDeveloperData) {
         this.refreshData();
       }

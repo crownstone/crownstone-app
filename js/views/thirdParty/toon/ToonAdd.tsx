@@ -8,26 +8,20 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
   ActivityIndicator,
-  Dimensions,
-  Image,
   Linking,
-  PixelRatio,
-  ScrollView,
-  Switch,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
   View
 } from 'react-native';
 import { Background } from "../../components/Background";
-import { colors, deviceStyles, OrangeLine, screenHeight, screenWidth, tabBarHeight } from "../../styles";
+import { colors, deviceStyles, OrangeLine, screenWidth} from "../../styles";
 import { toonConfig } from "../../../sensitiveData/toonConfig";
-import { NativeBus } from "../../../native/libInterface/NativeBus";
 import { CLOUD } from "../../../cloud/cloudAPI";
-import { Actions } from 'react-native-router-flux';
 import { ScaledImage } from "../../components/ScaledImage";
 import { TextEditInput } from "../../components/editComponents/TextEditInput";
 import { LOGe } from "../../../logging/Log";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 export class ToonAdd extends Component<any, any> {
@@ -48,9 +42,9 @@ export class ToonAdd extends Component<any, any> {
       manualCodeInput: false,
       code:       null,
       codeInput:  '',
-    }
+    };
 
-    this.unsubscribeNativeEvent = NativeBus.on(NativeBus.topics.callbackUrlInvoked, (url) => {
+    this.unsubscribeNativeEvent = core.nativeBus.on(core.nativeBus.topics.callbackUrlInvoked, (url) => {
       this.setState({processing: true});
       this.process(url);
     });
@@ -84,7 +78,7 @@ export class ToonAdd extends Component<any, any> {
       .then((data) => {
         if (data.status === 200) {
           agreementIds = data.data;
-          this.props.store.dispatch({type:"REMOVE_ALL_TOONS", sphereId: this.props.sphereId});
+          core.store.dispatch({type:"REMOVE_ALL_TOONS", sphereId: this.props.sphereId});
 
           return CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud(false)
         }
@@ -117,10 +111,10 @@ export class ToonAdd extends Component<any, any> {
                 })
               })
           )
-        })
+        });
         return Promise.all(promises).then(() => {
           // console.log("Dispatching", actions);
-          this.props.store.batchDispatch(actions) })
+          core.store.batchDispatch(actions) })
       })
       .then(() => {
         if (agreementIds.length === 0) {
@@ -133,10 +127,10 @@ export class ToonAdd extends Component<any, any> {
           this.setState({success:true, processing:false}, () => {
             setTimeout(() => {
               if (agreementIds.length > 1) {
-                Actions.toonOverview({sphereId: this.props.sphereId,  __popBeforeAddCount: 1})
+                NavigationUtil.navigateAndReplace("ToonOverview",{sphereId: this.props.sphereId})
               }
               else {
-                Actions.toonSettings({sphereId: this.props.sphereId, toonId: agreementIds[0].agreementId, __popBeforeAddCount: 1})
+                NavigationUtil.navigateAndReplace("SoonSettings",{sphereId: this.props.sphereId, toonId: agreementIds[0].agreementId})
               }
             }, 1500);
           })
@@ -304,7 +298,7 @@ export class ToonAdd extends Component<any, any> {
     }
 
     return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={true}>
+      <Background image={core.background.menu} hasNavBar={false} safeView={true}>
         <OrangeLine/>
         { content }
       </Background>

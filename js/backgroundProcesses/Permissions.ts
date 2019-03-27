@@ -1,6 +1,6 @@
-import {eventBus} from "../util/EventBus";
 import {LOG} from "../logging/Log";
 import { DataUtil } from "../util/DataUtil";
+import { core } from "../core";
 
 export class PermissionBase {
   canEditSphere           = false; // a or m
@@ -59,7 +59,7 @@ export class PermissionBase {
   canUploadAppliances     = false; // a or m
   canUploadData           = false; // a or m
   canUploadSpheres        = false; // a or m
-};
+}
 
 const EmptyPermissions = new PermissionBase();
 
@@ -83,7 +83,7 @@ export class PermissionClass extends PermissionBase {
       this._initialized = true;
 
       // sometimes the first event since state change can be wrong, we use this to ignore it.
-      eventBus.on("databaseChange", (data) => {
+      core.eventBus.on("databaseChange", (data) => {
         if (this._enableUpdates === false) {
           return;
         }
@@ -95,7 +95,7 @@ export class PermissionClass extends PermissionBase {
         }
       });
 
-      eventBus.on('userLoggedIn', () => {
+      core.eventBus.on('userLoggedIn', () => {
         LOG.info("Permissions: Update permissions in Sphere " + this._sphereId + "  due to userLoggedIn");
         this._enableUpdates = true;
         this._update(this._store.getState());

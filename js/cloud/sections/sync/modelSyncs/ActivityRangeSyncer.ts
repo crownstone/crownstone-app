@@ -11,9 +11,7 @@
  */
 
 import {transferActivityRanges} from "../../../transferData/transferActivityRanges";
-import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
-import {LOG, LOGe} from "../../../../logging/Log";
 import {CLOUD} from "../../../cloudAPI";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import { xUtil } from "../../../../util/StandAloneUtil";
@@ -23,8 +21,8 @@ export class ActivityRangeSyncer extends SyncingSphereItemBase {
   localStoneId: string;
   cloudStoneId: string;
 
-  activityRangeUpdateBatch : transferNewToCloudStoneData[]
-  activityRangeCreateBatch : transferNewToCloudStoneData[]
+  activityRangeUpdateBatch : transferNewToCloudStoneData[];
+  activityRangeCreateBatch : transferNewToCloudStoneData[];
   maxBatchSize;
 
   constructor(

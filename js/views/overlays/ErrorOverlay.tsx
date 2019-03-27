@@ -6,21 +6,19 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  Image,
   Text,
   View,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native';
+  } from 'react-native';
 
 import { IconButton }         from '../components/IconButton'
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { styles, colors , screenHeight, screenWidth, availableScreenHeight } from '../styles'
-import { eventBus } from "../../util/EventBus";
 import { Util } from "../../util/Util";
 import {ErrorContent} from "../content/ErrorContent";
-const Actions = require('react-native-router-flux').Actions;
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+
 
 let SEE_THROUGH_OPACITY = 0.33;
 
@@ -41,7 +39,7 @@ export class ErrorOverlay extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on("showErrorOverlay", (data) => { // { stoneId : stoneId, sphereId: sphereId }
+    this.unsubscribe.push(core.eventBus.on("showErrorOverlay", (data) => { // { stoneId : stoneId, sphereId: sphereId }
       if (this.state.visible === false) {
         this.setState({
           visible: true,
@@ -52,7 +50,7 @@ export class ErrorOverlay extends Component<any, any> {
       }
     }));
 
-    this.unsubscribe.push(eventBus.on("updateErrorOverlay", (data) => { // { stoneId : stoneId, sphereId: sphereId }
+    this.unsubscribe.push(core.eventBus.on("updateErrorOverlay", (data) => { // { stoneId : stoneId, sphereId: sphereId }
       if (this.state.visible === true) {
         this.setState({
           stoneId: data.stoneId,
@@ -84,14 +82,14 @@ export class ErrorOverlay extends Component<any, any> {
       <TouchableOpacity
         onPress={() => {
           let locationId = stone.config.locationId;
-          Actions.roomOverview({
+          NavigationUtil.navigate("RoomOverview",{
             sphereId: this.state.sphereId,
             locationId: locationId,
             errorCrownstone: this.state.stoneId
           });
           this.setState({maxOpacity: SEE_THROUGH_OPACITY});
           setTimeout(() => {
-            eventBus.emit("showErrorInOverview", this.state.stoneId);
+            core.eventBus.emit("showErrorInOverview", this.state.stoneId);
             this.setState({visible: false, stoneId: null, sphereId: null});
           }, 300);
         }}
@@ -109,10 +107,10 @@ export class ErrorOverlay extends Component<any, any> {
 
 
   render() {
-    let aiData = { name: 'Amy' };
-    let state = this.props.store.getState();
+    let aiData = { name: 'AI' };
     let stone = null;
     if (this.state.sphereId) {
+      let state = core.store.getState();
       aiData = Util.data.getAiData(state, this.state.sphereId);
       let sphere = state.spheres[this.state.sphereId];
       stone = sphere.stones[this.state.stoneId];

@@ -1,10 +1,8 @@
 import { AppState } from 'react-native'
-import { NativeBus } from '../native/libInterface/NativeBus';
 import {LOG, LOGe, LOGw} from '../logging/Log'
-import { Util } from '../util/Util'
-import {eventBus} from "../util/EventBus";
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 import { xUtil } from "../util/StandAloneUtil";
+import { core } from "../core";
 
 
 interface scheduledCallback {
@@ -68,9 +66,9 @@ class SchedulerClass {
         this.allowTicksAfterTime = new Date().valueOf() + 2000;
       });
       // we use the local event instead of the native one to also trigger when enter is triggered by fallback.
-      eventBus.on("enterSphere", this.flushAll.bind(this));
-      NativeBus.on(NativeBus.topics.exitSphere, this.flushAll.bind(this));
-      NativeBus.on(NativeBus.topics.iBeaconAdvertisement, () => {
+      core.eventBus.on("enterSphere", this.flushAll.bind(this));
+      core.nativeBus.on(core.nativeBus.topics.exitSphere, this.flushAll.bind(this));
+      core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, () => {
         this.tick();
       });
 

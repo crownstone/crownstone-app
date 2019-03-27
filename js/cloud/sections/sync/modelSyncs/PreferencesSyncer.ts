@@ -38,7 +38,7 @@ export class PreferenceSyncer extends SyncingBase {
     return this.download()
       .then((preferences_in_cloud) => {
         let preferenceMap = this.mapPreferences(state);
-        this.checkInferredPreferences(preferenceMap, preferences_in_cloud, [])
+        this.checkInferredPreferences(preferenceMap, preferences_in_cloud, []);
 
         return Promise.all(this.transferPromises);
       })
@@ -62,7 +62,7 @@ export class PreferenceSyncer extends SyncingBase {
         let property = 'toon_enabled_agreementId.' + toons[toonId].toonAgreementId;
         preferenceMap[property] = {value: toons[toonId].enabled};
       })
-    })
+    });
 
     return preferenceMap;
   }
@@ -73,7 +73,7 @@ export class PreferenceSyncer extends SyncingBase {
 
     // check if we have to update the preference in the cloud.
     preferences_in_cloud.forEach((preference_in_cloud) => {
-      let cloudId = preference_in_cloud.id
+      let cloudId = preference_in_cloud.id;
       let property = preference_in_cloud.property;
       usedProperty[property] = true;
       if (preferenceMap[property] === undefined) {
@@ -87,7 +87,7 @@ export class PreferenceSyncer extends SyncingBase {
           );
         }
       }
-    })
+    });
 
     // create property entries for the ones that are not uploaded.
     let propertyMap = Object.keys(preferenceMap);

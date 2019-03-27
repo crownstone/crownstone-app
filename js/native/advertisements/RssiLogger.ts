@@ -1,11 +1,11 @@
-import {eventBus} from "../../util/EventBus";
+import { core } from "../../core";
 
 class RssiLoggerClass {
   log = {};
 
   constructor() {
-    eventBus.on("iBeaconOfValidCrownstone",       (data) => { this.log[data.stoneId] = { t: new Date().valueOf(), rssi: data.rssi }; });
-    eventBus.on("AdvertisementOfValidCrownstone", (data) => { this.log[data.stoneId] = { t: new Date().valueOf(), rssi: data.rssi }; })
+    core.eventBus.on("iBeaconOfValidCrownstone",       (data) => { this.log[data.stoneId] = { t: new Date().valueOf(), rssi: data.rssi }; });
+    core.eventBus.on("AdvertisementOfValidCrownstone", (data) => { this.log[data.stoneId] = { t: new Date().valueOf(), rssi: data.rssi }; })
   }
 
   getNearestStoneId(reduxIdMap : map, inTheLastNSeconds : number = 2, rssiThreshold = -100) {

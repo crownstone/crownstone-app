@@ -6,12 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Image,
-  PixelRatio,
   TouchableOpacity,
-  ScrollView,
-  Text,
   View
 } from 'react-native';
 
@@ -21,7 +16,6 @@ import { SlideInView } from './animated/SlideInView'
 import { NavigationBar } from './editComponents/NavigationBar'
 import { Separator } from './Separator'
 import { CustomIcon } from '../../fonts/customIcons'
-import {Icon} from "./Icon";
 
 let borderColor = 'rgba(0,0,0,0.1)';
 let ROW_HEIGHT = 70;
@@ -46,9 +40,9 @@ export class IconSelection extends Component<any, any> {
     }
 
     if (props.debug) {
-      AMOUNT_OF_ITEMS_IN_ROW = 3
-      ROW_HEIGHT = 250
-      ICON_SIZE = screenWidth / (AMOUNT_OF_ITEMS_IN_ROW + 1)
+      AMOUNT_OF_ITEMS_IN_ROW = 3;
+      ROW_HEIGHT = 250;
+      ICON_SIZE = screenWidth / (AMOUNT_OF_ITEMS_IN_ROW + 1);
       let iconKeys = Object.keys(props.icons);
       let newOnes = {};
       iconKeys.forEach((key) => {

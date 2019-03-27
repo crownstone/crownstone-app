@@ -1,5 +1,3 @@
-import { Alert } from 'react-native'
-
 export function prepareEndpointAndBody(options : any, id : any, accessToken : any, doNotStringify? : boolean) {
   let endPoint = options.endPoint;
 

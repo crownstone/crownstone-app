@@ -1,10 +1,6 @@
-import { Platform } from 'react-native';
 import {
   LOG_INFO,
   LOG_ADVERTISEMENTS,
-  LOG_ERRORS,
-  LOG_WARNINGS,
-  LOG_VERBOSE,
   LOG_EVENTS,
   LOG_CLOUD,
   LOG_BLE,
@@ -15,11 +11,10 @@ import {
   LOG_TIME_DIFFS,
   LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH, LOG_TO_FILE
 } from "../ExternalConfig";
-import {LogProcessor} from "./LogProcessor";
-import {logToFile} from "./LogUtil";
-import {LOG_LEVEL} from "./LogLevels";
-const DeviceInfo = require('react-native-device-info');
-
+import { LogProcessor } from "./LogProcessor";
+import { logToFile } from "./LogUtil";
+import { LOG_LEVEL } from "./LogLevels";
+import DeviceInfo from 'react-native-device-info';
 let lastLogTime = 0;
 
 class Logger {
@@ -95,7 +90,7 @@ class Logger {
 
   _log(type, globalCheckField, dbCheckField, allArguments) {
     if (Math.min(globalCheckField, dbCheckField) <= this.level) {
-      let prefix = ''
+      let prefix = '';
       let now = new Date().valueOf();
       if (LOG_TIMESTAMPS) {
         prefix += now + ' - '

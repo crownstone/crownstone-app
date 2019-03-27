@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import {Icon} from "../Icon";
 import {colors} from "../../styles";
+import { core } from "../../../core";
 
 export class AnimatedDoubleTap extends Component<any, any> {
   unsubscribe : any;
@@ -34,7 +35,7 @@ export class AnimatedDoubleTap extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("showDoubleTapGesture", () => { this.animateDoubleTap(); });
+    this.unsubscribe = core.eventBus.on("showDoubleTapGesture", () => { this.animateDoubleTap(); });
   }
   componentWillUnmount() {
     this.unsubscribe();

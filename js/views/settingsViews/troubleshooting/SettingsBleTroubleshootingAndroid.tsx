@@ -14,6 +14,7 @@ import {IconButton} from "../../components/IconButton";
 import {Background} from "../../components/Background";
 import { colors, OrangeLine, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
+import { core } from "../../../core";
 
 
 
@@ -21,11 +22,11 @@ import {ScaledImage} from "../../components/ScaledImage";
 export class SettingsBleTroubleshootingAndroid extends Component<any, any> {
 
   render() {
-    let imageStyle = {marginTop:10, marginBottom:10, borderRadius:10, borderColor: colors.black.rgba(0.5), borderWidth: 1}
+    let imageStyle = {marginTop:10, marginBottom:10, borderRadius:10, borderColor: colors.black.rgba(0.5), borderWidth: 1};
 
     let imageWidth = 0.7*screenWidth;
     return (
-      <Background image={this.props.backgrounds.menu}>
+      <Background image={core.background.menu}>
         <OrangeLine/>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>

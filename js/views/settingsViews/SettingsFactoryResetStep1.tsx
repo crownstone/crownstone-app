@@ -6,21 +6,17 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
   Image,
-  StyleSheet,
-  ScrollView,
-  TouchableHighlight,
-  TouchableOpacity,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupShared'
 import {colors, screenHeight, OrangeLine} from './../styles'
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { core } from "../../core";
 
 export class SettingsFactoryResetStep1 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -30,7 +26,7 @@ export class SettingsFactoryResetStep1 extends Component<any, any> {
   render() {
     let imageSize = 0.40;
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} safeView={true}>
+      <Background hasNavBar={false} image={core.background.detailsDark} safeView={true}>
         <OrangeLine/>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>{ lang("If_youre_physically_next_") }</Text>
@@ -44,9 +40,9 @@ export class SettingsFactoryResetStep1 extends Component<any, any> {
           <View style={setupStyle.buttonContainer}>
             <View style={{flex:1}} />
             <NextButton onPress={ () => {
-              Actions.settingsFactoryResetStep2();
+              NavigationUtil.navigate("SettingsFactoryResetStep2");
               // trigger to start the process
-              setTimeout(() => { this.props.eventBus.emit("StartFactoryResetProcess"); }, 1000)
+              setTimeout(() => { core.eventBus.emit("StartFactoryResetProcess"); }, 1000)
             }} />
           </View>
         </View>

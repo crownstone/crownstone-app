@@ -6,26 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  Animated,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
   ScrollView,
-  Switch,
   Text,
-  TouchableOpacity,
   View
 } from 'react-native';
 
 
 import { Background } from './../components/Background'
 import { colors, OrangeLine, styles } from "./../styles";
-import {screenWidth, topBarHeight} from "../styles";
-import {ScaledImage} from "../components/ScaledImage";
+import {screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {MeshElement} from "../components/MeshElement";
-import { inspect } from "util";
+import { core } from "../../core";
 
 
 export class SettingsMeshTopologyHelp extends Component<any, any> {
@@ -41,7 +33,7 @@ export class SettingsMeshTopologyHelp extends Component<any, any> {
   render() {
     let mockData = {deviceIcon: 'c1-studiolight', locationIcon: 'c1-cinema', locationTitle: lang("Movie_Room"), element:{config:{name:lang("Device")}}, stone:{config:{name:'Device', firmwareVersion: '2.3.0'}}};
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.menu}>
+      <Background hasNavBar={false} image={core.background.menu}>
         <OrangeLine/>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>

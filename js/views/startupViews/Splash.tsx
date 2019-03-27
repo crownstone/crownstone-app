@@ -10,11 +10,11 @@ import {
   Text,
   View, TextStyle
 } from "react-native";
-const Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
 import { colors} from './../styles'
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
+import { core } from "../../core";
 
 let versionStyle : TextStyle = {
   backgroundColor:"transparent",
@@ -28,7 +28,7 @@ export class Splash extends Component<any, any> {
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true} safeView={true}>
+      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} safeView={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>

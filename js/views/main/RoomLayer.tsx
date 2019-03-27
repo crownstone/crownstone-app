@@ -5,21 +5,12 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomLayer", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Animated,
-  Dimensions,
-  Image,
-  NativeModules,
-  PanResponder,
-  Platform,
-  ScrollView,
-  TouchableHighlight,
-  Text,
   View
 } from 'react-native';
 
-let Actions = require('react-native-router-flux').Actions;
+
 import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
 import { screenWidth} from '../styles'
@@ -28,6 +19,7 @@ import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {Util} from "../../util/Util";
 import { xUtil } from "../../util/StandAloneUtil";
+import { core } from "../../core";
 
 export class RoomLayer extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
@@ -43,7 +35,7 @@ export class RoomLayer extends LiveComponent<any, any> {
     super(props);
 
     this._baseRadius = 0.15 * screenWidth;
-    this.viewId = xUtil.getUUID()
+    this.viewId = xUtil.getUUID();
     this._currentSphere = props.sphereId;
     this._showingFloatingRoom = false
   }
@@ -56,17 +48,17 @@ export class RoomLayer extends LiveComponent<any, any> {
     };
 
     this.unsubscribeSetupEvents = [];
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on('setupStarting',  reloadSolverOnDemand));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on('setupCleanedUp', reloadSolverOnDemand));
+    this.unsubscribeSetupEvents.push(core.eventBus.on('setupStarting',  reloadSolverOnDemand));
+    this.unsubscribeSetupEvents.push(core.eventBus.on('setupCleanedUp', reloadSolverOnDemand));
 
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on('setupStonesDetected',  () => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on('setupStonesDetected',  () => {
       reloadSolverOnDemand();
     }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on('noSetupStonesVisible', () => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on('noSetupStonesVisible', () => {
       reloadSolverOnDemand();
     }));
 
-    this.unsubscribeStoreEvents = this.props.eventBus.on('databaseChange', (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
 
       if (change.changeLocations) {
@@ -96,11 +88,9 @@ export class RoomLayer extends LiveComponent<any, any> {
     return (
       <RoomCircle
         viewId={this.viewId}
-        eventBus={this.props.eventBus}
         locationId={locationId}
         sphereId={this.props.sphereId}
         radius={this._baseRadius}
-        store={this.props.store}
         pos={{x: nodePosition.x, y: nodePosition.y}}
         seeStonesInSetupMode={SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone}
         viewingRemotely={this.props.viewingRemotely}
@@ -115,7 +105,7 @@ export class RoomLayer extends LiveComponent<any, any> {
     }
     else {
       let showSetupCrownstones = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone;
-      let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), this.props.sphereId, showSetupCrownstones);
+      let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId, showSetupCrownstones);
       return (
         <ForceDirectedView
           viewId={this.viewId}
@@ -131,8 +121,6 @@ export class RoomLayer extends LiveComponent<any, any> {
           zoomInCallback={this.props.zoomInCallback}
           renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}>
           <UserLayer
-            store={this.props.store}
-            eventBus={this.props.eventBus}
             sphereId={this.props.sphereId}
             nodeRadius={this._baseRadius}
           />

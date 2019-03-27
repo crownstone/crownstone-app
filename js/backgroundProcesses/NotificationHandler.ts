@@ -7,12 +7,13 @@ import { CLOUD } from "../cloud/cloudAPI";
 import { INTENTS } from "../native/libInterface/Constants";
 import { StoneUtil } from "../util/StoneUtil";
 import {LocalNotifications} from "../notifications/LocalNotifications";
-import {Actions} from "react-native-router-flux";
+
 import {MessageCenter} from "./MessageCenter";
 import {MapProvider} from "./MapProvider";
 import {SphereUserSyncer} from "../cloud/sections/sync/modelSyncs/SphereUserSyncer";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
-import {eventBus} from "../util/EventBus";
+import { core } from "../core";
+import { NavigationUtil } from "../util/NavigationUtil";
 
 class NotificationHandlerClass {
   store: any = {};
@@ -168,17 +169,17 @@ class NotificationParserClass {
       this._handleLocalNotifications(messageData);
     }
 
-    eventBus.emit("NotificationReceived", messageData);
+    core.eventBus.emit("NotificationReceived", messageData);
   }
 
   _handleLocalNotifications(messageData) {
     switch (messageData.type) {
       case 'newMessage':
-        Actions.messageInbox();
+       NavigationUtil.navigate("MessageInbox");
 
         // actually go to the message tab
         if (Platform.OS === 'ios') {
-          Actions.messages();
+         NavigationUtil.navigate("Messages");
         }
 
         break;

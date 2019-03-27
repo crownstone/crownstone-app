@@ -572,7 +572,7 @@ class PhysicsEngine {
             this.onChange(() => { iterate(count) }); // this is async
           }
         }
-      }
+      };
       iterate(count);
 
     }

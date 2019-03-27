@@ -1,13 +1,7 @@
-
-import { Languages } from "../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("styles", key)(a,b,c,d,e);
-}
 import * as React from 'react'; import { Component } from 'react';
 import { Dimensions, PixelRatio, Platform, StyleSheet, View } from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
 
 export const deviceModel = DeviceInfo.getModel();
 
@@ -74,17 +68,19 @@ export let colors : colorInterface = {
 
 for (let color in colors) {
   if (colors.hasOwnProperty(color)) {
-    populateColorObject(colors[color], color)
+    if (color !== "random") {
+      populateColorObject(colors[color], color)
+    }
   }
 }
 
 
-let allColors = Object.keys(colors)
+let allColors = Object.keys(colors);
 
 colors.random = function() {
   return colors[allColors[Math.floor(Math.random()*allColors.length)]]
-}
-
+};
+~``;
 function populateColorObject(clr, color) {
   clr.name = color;
   clr.rgb = hex2rgb(clr.hex);
@@ -103,7 +99,7 @@ function populateColorObject(clr, color) {
     return populateColorObject({hex:rgb2hex(red, green, blue)},'blend:'+color+"_"+otherColor.name+"_"+factor)
   };
   clr.hsvBlend = (otherColor, factor) => {
-    let h = (1-factor) * clr.hsv.h + factor * otherColor.hsv.h;
+    let h = (1-factor) * clr.hsv.h + factor * otherColor.hsv.h;``;
     let s = (1-factor) * clr.hsv.s + factor * otherColor.hsv.s;
     let v = (1-factor) * clr.hsv.v + factor * otherColor.hsv.v;
 

@@ -1,4 +1,3 @@
-
 import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings([
   'Module RCTImageLoader requires',
@@ -9,6 +8,7 @@ YellowBox.ignoreWarnings([
   'Module RNWebGLTextureLoader requires main queue setup',
 ])
 
+import 'react-native-gesture-handler'
 import { AppRegistry, Platform } from 'react-native';
 import { Root } from './App';
 

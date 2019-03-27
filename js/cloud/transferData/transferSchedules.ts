@@ -1,5 +1,5 @@
 import { CLOUD }        from "../cloudAPI";
-import {LOG, LOGe, LOGw} from "../../logging/Log";
+import {LOGe, LOGw} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 
 

@@ -5,28 +5,20 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsLocalizationDebug", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Animated,
-  Dimensions,
-  Image,
-  NativeModules,
-  PanResponder,
-  Platform,
-  ScrollView,
-  TouchableHighlight,
   Text,
   View
 } from 'react-native';
-import {colors, OrangeLine, screenWidth, styles} from "../../styles";
+import {colors, OrangeLine, screenWidth} from "../../styles";
 import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ForceDirectedView} from "../../components/interactiveView/ForceDirectedView";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
 import {LocalizationDebugCircle} from "./LocalizationDebugCircle";
 import {getPresentUsersInLocation} from "../../../util/DataUtil";
 import {AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION} from "../../../ExternalConfig";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { core } from "../../../core";
 
 
 export class SettingsLocalizationDebug extends LiveComponent<any, any> {
@@ -46,7 +38,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
   sphereId = null;
   currentLocation = null;
   appLocation = null;
-  _amountOfStones = 0
+  _amountOfStones = 0;
 
   constructor(props) {
     super(props);
@@ -59,23 +51,23 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.classifierProbabilities, (data) => {
+    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.classifierProbabilities, (data) => {
       this.roomData = data;
-    }))
-    this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.classifierResult, (data) => {
+    }));
+    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.classifierResult, (data) => {
       this.currentLocation = data.highestPredictionLabel;
-    }))
-    this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+    }));
+    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => {
       this._amountOfStones = data.length;
-    }))
-    this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.currentRoom, (data) => {
+    }));
+    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.currentRoom, (data) => {
       this.forceUpdate();
-    }))
-    this.unsubscribeNativeEvents.push(NativeBus.on(NativeBus.topics.enterRoom, (data) => {
+    }));
+    this.unsubscribeNativeEvents.push(core.nativeBus.on(core.nativeBus.topics.enterRoom, (data) => {
       this.appLocation = data.location;
-    }))
+    }));
 
-    this.unsubscribeStoreEvents = this.props.eventBus.on('databaseChange', (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
 
       if (change.changeLocations || change.changeSpheres || change.updateActiveSphere) {
@@ -84,7 +76,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     });
 
     // get initial location
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
     let sphereId = Util.data.getPresentSphereId(state);
     if (sphereId) {
@@ -130,7 +122,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     }
 
 
-    let valueRange = (max - min)
+    let valueRange = (max - min);
     if (valueRange == 0) {
       return 'rgb(0,30,60)'
     }
@@ -138,15 +130,15 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     let factor = (value - min) / valueRange;
 
     if (factor > 1)
-      factor = 1
+      factor = 1;
     else if (factor < 0)
-      factor = 0
+      factor = 0;
 
-    let fraction = (factor%(1/stepCount))
+    let fraction = (factor%(1/stepCount));
     if (fraction < 0.5/stepCount)
-      factor = factor - (factor % (1 / stepCount))
+      factor = factor - (factor % (1 / stepCount));
     else
-      factor = factor - (factor % (1 / stepCount)) + 1/stepCount
+      factor = factor - (factor % (1 / stepCount)) + 1/stepCount;
 
 
 
@@ -160,11 +152,10 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
       return (
         <LocalizationDebugCircle
           viewId={this.viewId}
-          eventBus={this.props.eventBus}
           locationId={locationId}
           sphereId={this.sphereId}
           radius={this._baseRadius}
-          store={this.props.store}
+          store={core.store}
           pos={{x: nodePosition.x, y: nodePosition.y}}
           viewingRemotely={true}
           key={locationId}
@@ -180,7 +171,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
 
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
     let sphereId = Util.data.getReferenceId(state);
     this.sphereId = sphereId;
@@ -189,7 +180,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
       return <View style={{flex: 1}} ><Text>{ lang("You_have_to_be_in_a_Spher") }</Text></View>;
     }
     else {
-      let roomData = Util.data.getLayoutDataRooms(this.props.store.getState(), sphereId);
+      let roomData = Util.data.getLayoutDataRooms(core.store.getState(), sphereId);
       return (
         <Background image={require('../../../images/blueprintBackgroundDesaturated_noLine.png')}>
           <OrangeLine/>

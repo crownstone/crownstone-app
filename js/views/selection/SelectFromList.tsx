@@ -6,18 +6,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  Animated,
-  Image,
-  TouchableHighlight,
   ScrollView,
   Text,
   TouchableOpacity,
-  StyleSheet,
   View
 } from 'react-native';
 
-const Actions = require('react-native-router-flux').Actions;
+
 import {
   colors,
   OrangeLine} from '../styles'
@@ -27,7 +22,9 @@ import {Icon} from "../components/Icon";
 import {SeparatedItemList} from "../components/SeparatedItemList";
 import {EditableItem} from "../components/EditableItem";
 import {ProfilePicture} from "../components/ProfilePicture";
-import {BackAction} from "../../util/Back";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+
 
 
 export class SelectFromList extends Component<any, any> {
@@ -78,7 +75,7 @@ export class SelectFromList extends Component<any, any> {
             this.props.callback(newIds);
 
             if (item.singular) {
-              BackAction();
+              NavigationUtil.back();
             }
           }}
           style={{
@@ -102,7 +99,7 @@ export class SelectFromList extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
         <OrangeLine/>
         <ScrollView style={{flex:1}}>
           <SeparatedItemList

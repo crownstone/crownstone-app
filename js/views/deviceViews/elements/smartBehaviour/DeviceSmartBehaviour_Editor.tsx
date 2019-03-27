@@ -6,26 +6,19 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   Animated,
   TouchableOpacity,
-  PixelRatio,
   ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View, TextStyle
 } from "react-native";
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {
   availableScreenHeight,
   colors,
   deviceStyles,
   OrangeLine,
-  screenHeight,
   screenWidth,
   styles
 } from "../../../styles";
@@ -40,6 +33,7 @@ import {
   TIME_TYPES
 } from "./SmartBehaviourTypes";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
+import { core } from "../../../../core";
 
 
 
@@ -59,7 +53,7 @@ export class DeviceSmartBehaviour_Editor extends Component<any, any> {
     let iconHeight   = 0.10*availableScreenHeight;
 
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
+      <Background image={core.background.detailsDark}>
         <OrangeLine/>
         <ScrollView style={{height:availableScreenHeight, width: screenWidth,}}>
           <View style={{ width: screenWidth, minHeight:availableScreenHeight, alignItems:'center', paddingBottom: 10 }}>
@@ -143,9 +137,9 @@ export class Rule extends Component<any, any> {
   getElements() {
     this.amountOfLines = 0;
 
-    let normal      : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30  }
-    let selectable  : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30, textDecorationLine:'underline' }
-    let segmentStyle = {...styles.centered, width: screenWidth}
+    let normal      : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30  };
+    let selectable  : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30, textDecorationLine:'underline' };
+    let segmentStyle = {...styles.centered, width: screenWidth};
 
     let d = [
       // {label: "I will be ",              clickable: false, type: true},
@@ -162,8 +156,8 @@ export class Rule extends Component<any, any> {
     let segments = [];
     let result = [];
     let letterWidth = 9;
-    let amountOfLettersInScreenWidth = Math.floor((segmentStyle.width)/letterWidth)
-    let totalLettersOnLine = 0
+    let amountOfLettersInScreenWidth = Math.floor((segmentStyle.width)/letterWidth);
+    let totalLettersOnLine = 0;
     d.forEach((behaviour,i) => {
 
       totalLettersOnLine += behaviour.label.length;
@@ -182,7 +176,7 @@ export class Rule extends Component<any, any> {
       else {
         segments.push(<View key={i + "_3"}><Text  style={normal}>{behaviour.label}</Text></View>)
       }
-    })
+    });
 
     if (segments.length > 0) {
       result.push(<View style={segmentStyle}>{segments}</View>);
@@ -194,7 +188,7 @@ export class Rule extends Component<any, any> {
 
 
   getDetails() {
-    let details = null
+    let details = null;
     switch (this.state.detail) {
       case SELECTABLE_TYPE.ACTION:
         details = (
@@ -302,20 +296,20 @@ export class Rule extends Component<any, any> {
 
     if (this.state.detail === null) {
       let animation = [];
-      this.setState({detail: nextType})
-      animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 0,   duration: 100}))
-      animation.push(Animated.timing(this.state.buttonOpacity,     {toValue: 0, delay: 100, duration: 100}))
-      animation.push(Animated.timing(this.state.detailHeight,      {toValue: detailSelectedHeight, delay: 0, duration: 200}))
-      animation.push(Animated.timing(this.state.detailInnerHeight, {toValue: detailSelectedHeight, delay: 0, duration: 200}))
+      this.setState({detail: nextType});
+      animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 0,   duration: 100}));
+      animation.push(Animated.timing(this.state.buttonOpacity,     {toValue: 0, delay: 100, duration: 100}));
+      animation.push(Animated.timing(this.state.detailHeight,      {toValue: detailSelectedHeight, delay: 0, duration: 200}));
+      animation.push(Animated.timing(this.state.detailInnerHeight, {toValue: detailSelectedHeight, delay: 0, duration: 200}));
       Animated.parallel(animation).start(() => { this.state.detailInnerHeight.setValue(0) })
     }
     else if (nextType === null) {
       let animation = [];
-      this.state.detailInnerHeight.setValue(detailSelectedHeight)
-      animation.push(Animated.timing(this.state.detailOpacity,     {toValue:0, delay:0, duration: 100}))
-      animation.push(Animated.timing(this.state.buttonOpacity,     {toValue:1, delay:100, duration: 100}))
-      animation.push(Animated.timing(this.state.detailInnerHeight, {toValue:availableScreenHeight - 300, delay:0, duration: 200}))
-      animation.push(Animated.timing(this.state.detailHeight,      {toValue: availableScreenHeight - 300, delay:0, duration: 200}))
+      this.state.detailInnerHeight.setValue(detailSelectedHeight);
+      animation.push(Animated.timing(this.state.detailOpacity,     {toValue:0, delay:0, duration: 100}));
+      animation.push(Animated.timing(this.state.buttonOpacity,     {toValue:1, delay:100, duration: 100}));
+      animation.push(Animated.timing(this.state.detailInnerHeight, {toValue:availableScreenHeight - 300, delay:0, duration: 200}));
+      animation.push(Animated.timing(this.state.detailHeight,      {toValue: availableScreenHeight - 300, delay:0, duration: 200}));
       Animated.parallel(animation).start(() => { this.setState({detail: nextType}); })
     }
     else {
@@ -345,7 +339,7 @@ class ContentConstructor {
   store: any;
 
   constructor(behaviour: behaviour, store) {
-    this.ruleDescription = behaviour
+    this.ruleDescription = behaviour;
     this.store = store;
   }
 
@@ -380,11 +374,11 @@ class ContentConstructor {
     if (presence.type != PRESENCE_TYPES.IGNORE) {
       switch (presence.data.type) {
         case LOCATION_TYPES.SPHERE:
-          locationPrefixStr = " is "
-          locationStr = "home"
+          locationPrefixStr = " is ";
+          locationStr = "home";
         case LOCATION_TYPES.SPECIFIC_LOCATIONS:
           if (presence.data.locationIds.length > 0) {
-            locationPrefixStr = " is in the "
+            locationPrefixStr = " is in the ";
             // we will now construct a roomA_name, roomB_name or roomC_name line.
             locationStr += this._getLocationName(presence.data.locationIds[0]);
             if (presence.data.locationIds.length > 1) {

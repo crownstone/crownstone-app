@@ -6,28 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View, TextStyle, ViewStyle
 } from "react-native";
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {
   availableScreenHeight,
   colors,
   deviceStyles,
   OrangeLine,
-  screenHeight,
-  screenWidth,
-  styles
-} from "../../../styles";
+  screenWidth} from "../../../styles";
 import { Background } from "../../../components/Background";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { Icon } from "../../../components/Icon";
@@ -40,6 +30,7 @@ import {
   LinearGradient,
   Stop,
 } from 'react-native-svg';
+import { core } from "../../../../core";
 
 export class DeviceSmartBehaviour_newBehaviour extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -52,7 +43,7 @@ export class DeviceSmartBehaviour_newBehaviour extends Component<any, any> {
 
 
   render() {
-    let descriptionTextStyle : TextStyle = {fontWeight:'bold', color: colors.white.hex, fontSize: 13, padding:4}
+    let descriptionTextStyle : TextStyle = {fontWeight:'bold', color: colors.white.hex, fontSize: 13, padding:4};
     let iconHeight  = 0.10*availableScreenHeight;
     let blockHeight = 0.22*availableScreenHeight;
     let textHeight  = 30;
@@ -64,7 +55,7 @@ export class DeviceSmartBehaviour_newBehaviour extends Component<any, any> {
     let verticalLineStyle : ViewStyle = {width:1,               height: blockHeight,      backgroundColor: colors.menuBackground.rgba(0.2)};
 
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
+      <Background image={core.background.detailsDark}>
         <OrangeLine/>
         <View style={{ width: screenWidth, alignItems:'center' }}>
           <View style={{height: 30}} />

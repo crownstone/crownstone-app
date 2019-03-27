@@ -24,7 +24,7 @@ let timeConditionStart = {
       {type: OFFSET_TYPES.RANDOM, value: 15*60},
     ],
   }
-}
+};
 
 let timeConditionEnd = {
   type: CONDITIONS.TIME,
@@ -33,7 +33,7 @@ let timeConditionEnd = {
     value: "22:00",
     offset: null,
   }
-}
+};
 
 let presenceCondition = {
   type: CONDITIONS.PRESENCE,
@@ -42,7 +42,7 @@ let presenceCondition = {
     users: [],
     locations: ["idOfLivingRoom"]
   }
-}
+};
 
 let rule = {
   start: [timeConditionStart],
@@ -52,4 +52,4 @@ let rule = {
     type: ACTIONS.TURN_ON,
     value: 1
   },
-}
+};

@@ -1,7 +1,7 @@
 import { BatchCommandHandler } from '../logic/BatchCommandHandler'
 import {LOG, LOGe} from "../logging/Log";
-import { eventBus }            from "../util/EventBus";
 import { Util } from "../util/Util";
+import { core } from "../core";
 
 class FirmwareWatcherClass {
   _initialized: boolean = false;
@@ -14,7 +14,8 @@ class FirmwareWatcherClass {
     if (this._initialized === false) {
       this.store = store;
       // once the user is logged in, we will check if there are crownstones that we do not know the firmware of.
-      eventBus.on('enterSphere', (sphereId) => { this.checkFirmware(sphereId); });
+
+      core.eventBus.on('enterSphere', (sphereId) => { this.checkFirmware(sphereId); });
     }
     this._initialized = true;
   }

@@ -1,6 +1,6 @@
-import { eventBus } from '../../util/EventBus'
 import { BATCH } from './storeManager'
-import {LOG, LOGw} from '../../logging/Log'
+import {LOGw} from '../../logging/Log'
+import { core } from "../../core";
 
 
 /**
@@ -48,7 +48,7 @@ export function EventEnhancer({ getState }) {
       }
     }
 
-    eventBus.emit("databaseChange", {...action, change: eventData});
+    core.eventBus.emit("databaseChange", {...action, change: eventData});
 
     // This will likely be the action itself, unless
     // a middleware further in chain changed it.

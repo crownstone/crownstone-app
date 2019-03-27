@@ -78,3 +78,60 @@ interface colorInterface {
   blinkColor2:  color,
   random() : any
 }
+
+interface NativeBusTopics {
+  setupAdvertisement:              string,
+  dfuAdvertisement:                string,
+  advertisement:                   string,
+  crownstoneAdvertisementReceived: string,
+  unverifiedAdvertisementData:     string,
+  setupProgress:                   string,
+  dfuProgress:                     string,
+  bleStatus:                       string,
+  locationStatus:                  string,
+
+  nearest:                         string,
+  nearestSetup:                    string,
+
+  iBeaconAdvertisement:            string,
+  enterSphere:                     string,
+  exitSphere:                      string,
+  enterRoom:                       string,
+  exitRoom:                        string,
+  currentRoom:                     string,
+
+  libAlert:                        string,
+  libPopup:                        string,
+
+  classifierProbabilities:         string,
+  classifierResult:                string,
+
+  callbackUrlInvoked:              string,
+}
+
+interface NativeBus {
+  topics: NativeBusTopics,
+  on(topic : string, callback) : () => void,
+  clearAllEvents() : void,
+}
+
+interface core {
+  background: {
+    main                   : any,
+    menu                   : any,
+    mainRemoteNotConnected : any,
+    menuRemoteNotConnected : any,
+    mainDarkLogo           : any,
+    mainDark               : any,
+    detailsDark            : any,
+  },
+  store: any,
+  eventBus: any,
+  nativeBus: NativeBus,
+  sessionMemory: {
+    loginEmail: string,
+    cameraSide: string,
+    cacheBusterUniqueElement: number,
+    developmentEnvironment: boolean,
+  }
+}

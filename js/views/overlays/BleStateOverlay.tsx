@@ -6,15 +6,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Image,
   Text,
   View,
 } from 'react-native';
 
-import { NativeBus }          from '../../native/libInterface/NativeBus'
 import { IconButton }         from '../components/IconButton'
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { colors , screenHeight} from '../styles'
+import { core } from "../../core";
 
 export class BleStateOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -30,7 +29,7 @@ export class BleStateOverlay extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.bleStatus, (status) => {
+    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.bleStatus, (status) => {
       switch (status) {
         case "poweredOff":
           this.setState({visible: true, notificationType: status});

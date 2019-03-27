@@ -1,6 +1,5 @@
 import { CLOUD }                    from '../../cloudAPI'
 import {LOG, LOGe, LOGw} from '../../../logging/Log'
-import { Platform }                 from 'react-native'
 import { AppUtil }                  from "../../../util/AppUtil";
 import { cleanupPowerUsage, syncPowerUsage }   from "./syncPowerUsage";
 import { syncEvents }               from "./syncEvents";
@@ -11,13 +10,13 @@ import { SphereSyncer }             from "./modelSyncs/SphereSyncer";
 import { DeviceSyncer }             from "./modelSyncs/DeviceSyncer";
 import { FirmwareBootloaderSyncer } from "./modelSyncs/FirmwareBootloaderSyncer";
 import { getGlobalIdMap }           from "./modelSyncs/SyncingBase";
-import { eventBus }                 from "../../../util/EventBus";
 import { KeySyncer }                from "./modelSyncs/KeySyncer";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 import { Sentry }                   from "react-native-sentry";
 import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
 import { cleanupActivity }          from "./cleanActivityLogs";
+import { core } from "../../../core";
 
 
 
@@ -58,7 +57,7 @@ export const sync = {
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
 
-    eventBus.emit("CloudSyncStarting");
+    core.eventBus.emit("CloudSyncStarting");
 
     Sentry.captureBreadcrumb({
       category: 'sync',
@@ -187,10 +186,10 @@ export const sync = {
           }
         });
 
-        eventBus.emit("CloudSyncComplete");
+        core.eventBus.emit("CloudSyncComplete");
 
         if (reloadTrackingRequired) {
-          eventBus.emit("CloudSyncComplete_spheresChanged");
+          core.eventBus.emit("CloudSyncComplete_spheresChanged");
         }
 
       })
@@ -215,7 +214,7 @@ export const sync = {
         this.__currentlySyncing = false;
         this.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
-        eventBus.emit("CloudSyncComplete");
+        core.eventBus.emit("CloudSyncComplete");
         LOGe.cloud("Sync: error during sync:", err);
 
         throw err;

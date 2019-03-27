@@ -152,7 +152,7 @@ export class SphereSyncer extends SyncingBase {
           updatedAt: sphere_from_cloud.floatingLocationPosition.updatedAt,
         }
       })
-    }
+    };
     if (localSphere) {
       if (localSphere.layout.floatingLocation.x === null || localSphere.layout.floatingLocation.y === null) {
         if (sphere_from_cloud.floatingLocationPosition) {

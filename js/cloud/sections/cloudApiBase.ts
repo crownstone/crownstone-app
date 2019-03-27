@@ -46,19 +46,19 @@ export const cloudApiBase = {
   _networkErrorHandler: (err) => {},
 
   _post: function(options) {
-    return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, this), this._accessToken);
+    return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
   },
   _get: function(options) {
-    return request(options, 'GET',    defaultHeaders, _getId(options.endPoint, this), this._accessToken);
+    return request(options, 'GET',    defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
   },
   _delete: function(options) {
-    return request(options, 'DELETE', defaultHeaders, _getId(options.endPoint, this), this._accessToken);
+    return request(options, 'DELETE', defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
   },
   _put: function(options) {
-    return request(options, 'PUT',    defaultHeaders, _getId(options.endPoint, this), this._accessToken);
+    return request(options, 'PUT',    defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
   },
   _head: function(options) {
-    return request(options, 'HEAD',   defaultHeaders, _getId(options.endPoint, this), this._accessToken);
+    return request(options, 'HEAD',   defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
   },
   _uploadImage: function(options) {
     let formData = new FormData();
@@ -76,14 +76,14 @@ export const cloudApiBase = {
         }
         else {
           LOGi.cloud("CloudAPIBase: file exists, continue upload");
-          let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), this._accessToken, true);
-          return this._finalizeRequest(promise, options);
+          let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken, true);
+          return cloudApiBase._finalizeRequest(promise, options);
         }
       })
       .catch((err) => { LOGe.cloud("_uploadImage: failed to check if file exists:", err); })
   },
   _download: function(options, toPath, beginCallback?, progressCallback?) {
-    return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
+    return download(options, _getId(options.endPoint, this), cloudApiBase._accessToken, toPath, beginCallback, progressCallback)
   },
   downloadFile: function(url, targetPath, callbacks) {
     return downloadFile(url, targetPath, callbacks);
@@ -97,7 +97,7 @@ export const cloudApiBase = {
       // make sure we do not show this popup when too much time has passed.
       // this can happen when the app starts to sleep and wakes up much later, resulting in the user encountering an error message on app open.
       if (new Date().valueOf()  - startTime < 1.5*NETWORK_REQUEST_TIMEOUT) {
-        this._networkErrorHandler(error);
+        cloudApiBase._networkErrorHandler(error);
       }
 
       reject(error);
@@ -127,25 +127,25 @@ export const cloudApiBase = {
     let promise;
     switch (reqType) {
       case 'POST':
-        promise = this._post(promiseBody);
+        promise = cloudApiBase._post(promiseBody);
         break;
       case 'GET':
-        promise = this._get(promiseBody);
+        promise = cloudApiBase._get(promiseBody);
         break;
       case 'PUT':
-        promise = this._put(promiseBody);
+        promise = cloudApiBase._put(promiseBody);
         break;
       case 'DELETE':
-        promise = this._delete(promiseBody);
+        promise = cloudApiBase._delete(promiseBody);
         break;
       case 'HEAD':
-        promise = this._head(promiseBody);
+        promise = cloudApiBase._head(promiseBody);
         break;
       default:
         LOGe.cloud("UNKNOWN TYPE:", reqType);
         return;
     }
-    return this._finalizeRequest(promise, options, endpoint, promiseBody);
+    return cloudApiBase._finalizeRequest(promise, options, endpoint, promiseBody);
   },
 
   _finalizeRequest: function(promise, options, endpoint?, promiseBody?) {
@@ -156,11 +156,11 @@ export const cloudApiBase = {
           if (reply.status === 200 || reply.status === 204)
             resolve(reply.data);
           else
-            this.__debugReject(reply, reject, [promise, options, endpoint, promiseBody]);
+            cloudApiBase.__debugReject(reply, reject, [promise, options, endpoint, promiseBody]);
         })
         .catch((error) => {
           //console.trace(error, this);
-          this._handleNetworkError(error, options, endpoint, promiseBody, reject, startTime);
+          cloudApiBase._handleNetworkError(error, options, endpoint, promiseBody, reject, startTime);
         })
     });
   },
@@ -169,20 +169,20 @@ export const cloudApiBase = {
   // END USER API
   // These methods have all the endpoints embedded in them.
 
-  setNetworkErrorHandler: function(handler)     : any  { this._networkErrorHandler = handler },
+  setNetworkErrorHandler: function(handler)     : any  { cloudApiBase._networkErrorHandler = handler },
 
-  setAccess:          function(accessToken)     : any  { this._accessToken = accessToken;       return this; },
+  setAccess:          function(accessToken)     : any  { cloudApiBase._accessToken = accessToken;       return this; },
 
-  setUserId:          function(userId)          : any  { this._userId = userId;                 return this; }, // cloudId === localId
-  forUser:            function(userId)          : any  { this._userId = userId;                 return this; }, // cloudId === localId
-  forDevice:          function(deviceId)        : any  { this._deviceId = deviceId;             return this; }, // cloudId === localId
-  forInstallation:    function(installationId)  : any  { this._installationId = installationId; return this; }, // cloudId === localId
-  forStone:           function(localStoneId)    : any  { this._stoneId     = MapProvider.local2cloudMap.stones[localStoneId]         || localStoneId;     return this; },
-  forSphere:          function(localSphereId)   : any  { this._sphereId    = MapProvider.local2cloudMap.spheres[localSphereId]       || localSphereId;    return this; },
-  forLocation:        function(localLocationId) : any  { this._locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return this; },
-  forAppliance:       function(localApplianceId): any  { this._applianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; return this; },
-  forMessage:         function(localMessageId)  : any  { this._messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return this; },
-  forToon:            function(localToonId)     : any  { this._toonId      = MapProvider.local2cloudMap.toons[localToonId]           || localToonId;      return this; },
+  setUserId:          function(userId)          : any  { cloudApiBase._userId = userId;                 return this; }, // cloudId === localId
+  forUser:            function(userId)          : any  { cloudApiBase._userId = userId;                 return this; }, // cloudId === localId
+  forDevice:          function(deviceId)        : any  { cloudApiBase._deviceId = deviceId;             return this; }, // cloudId === localId
+  forInstallation:    function(installationId)  : any  { cloudApiBase._installationId = installationId; return this; }, // cloudId === localId
+  forStone:           function(localStoneId)    : any  { cloudApiBase._stoneId     = MapProvider.local2cloudMap.stones[localStoneId]         || localStoneId;     return this; },
+  forSphere:          function(localSphereId)   : any  { cloudApiBase._sphereId    = MapProvider.local2cloudMap.spheres[localSphereId]       || localSphereId;    return this; },
+  forLocation:        function(localLocationId) : any  { cloudApiBase._locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return this; },
+  forAppliance:       function(localApplianceId): any  { cloudApiBase._applianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; return this; },
+  forMessage:         function(localMessageId)  : any  { cloudApiBase._messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return this; },
+  forToon:            function(localToonId)     : any  { cloudApiBase._toonId      = MapProvider.local2cloudMap.toons[localToonId]           || localToonId;      return this; },
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {

@@ -1,4 +1,4 @@
-import { update, getTime, refreshDefaults } from '../reducerUtil'
+import { update, refreshDefaults } from '../reducerUtil'
 
 
 
@@ -16,7 +16,7 @@ export default (state = defaultReachability, action : any = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.disabled = false;
-        newState.lastSeenTemperature = update(action.data.lastSeenTemperature, newState.lastSeenTemperature);;
+        newState.lastSeenTemperature = update(action.data.lastSeenTemperature, newState.lastSeenTemperature);
         return newState;
       }
       return state;

@@ -9,17 +9,17 @@ import {
   StyleSheet,
   View
 } from 'react-native';
-import { eventBus } from "../../../util/EventBus";
 import { Background } from "../../components/Background";
 import { colors, OrangeLine, screenHeight, topBarHeight } from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
+import { core } from "../../../core";
 const Swiper = require("react-native-swiper");
 
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
-  eventBus.emit("setNewSwiperIndex", nextState.index);
+  core.eventBus.emit("setNewSwiperIndex", nextState.index);
 };
 
 export class AddSphereTutorial extends Component<any, any> {
@@ -36,7 +36,7 @@ export class AddSphereTutorial extends Component<any, any> {
 
     this.requestedPermission = false;
     this.state = {swiperIndex: 0, scrolling: false};
-    this.unsubscribeSwipeEvent = eventBus.on("setNewSwiperIndex", (nextIndex) => {
+    this.unsubscribeSwipeEvent = core.eventBus.on("setNewSwiperIndex", (nextIndex) => {
       if (this.state.swiperIndex !== nextIndex) {
         this.setState({swiperIndex: nextIndex, scrolling: false});
       }
@@ -56,7 +56,7 @@ export class AddSphereTutorial extends Component<any, any> {
     };
 
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
         <OrangeLine/>
         <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight}
           dot={<View style={{backgroundColor: colors.white.rgba(0.35), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.black.rgba(0.1)}} />}
@@ -77,7 +77,7 @@ export class AddSphereTutorial extends Component<any, any> {
     let content = [];
     content.push(<AddSphereTutorial_introduction key="AddSphereTutorial_introduction" />);
     content.push(<AddSphereTutorial_multiple     key="AddSphereTutorial_multiple" />);
-    content.push(<AddSphereTutorial_intended     key="AddSphereTutorial_intended" store={this.props.store} />);
+    content.push(<AddSphereTutorial_intended     key="AddSphereTutorial_intended" store={core.store} />);
     return content;
   }
 }

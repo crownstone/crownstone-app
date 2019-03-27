@@ -6,22 +6,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
   StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { colors, deviceStyles, OrangeLine, screenHeight, screenWidth } from "../../../styles";
 import { Background } from "../../../components/Background";
 import { IconButton } from "../../../components/IconButton";
+import { core } from "../../../../core";
 
 export class DeviceSmartBehaviour extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -37,7 +31,7 @@ export class DeviceSmartBehaviour extends Component<any, any> {
     let iconSize = 0.15*screenHeight;
 
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
+      <Background image={core.background.detailsDark}>
         <OrangeLine/>
         <View style={{ width: screenWidth, alignItems:'center' }}>
           <View style={{height: 30}} />

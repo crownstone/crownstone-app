@@ -7,13 +7,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Dimensions,
-  Image,
-  NativeModules,
   PanResponder,
   Platform,
-  ScrollView,
-  TouchableHighlight,
   View
 } from 'react-native';
 
@@ -26,13 +21,14 @@ import {
   Text,
   } from 'react-native-svg';
 
-let Actions = require('react-native-router-flux').Actions;
+
 import { colors, screenWidth, topBarHeight, availableScreenHeight} from '../../styles'
 import PhysicsEngine from "../../../logic/PhysicsEngine";
 import {Scheduler} from "../../../logic/Scheduler";
 import {AnimatedDoubleTap} from "../animated/AnimatedDoubleTap";
 import {eventBus} from "../../../util/EventBus";
 import {Util} from "../../../util/Util";
+import { core } from "../../../core";
 
 export class ForceDirectedView extends Component<{
   nodeIds: string[],
@@ -79,7 +75,7 @@ export class ForceDirectedView extends Component<{
   panListener : any;
 
   animationFrame : any;
-  recenterOnStable = false
+  recenterOnStable = false;
 
   nodes: any = {};
   edges: any = [];
@@ -93,8 +89,8 @@ export class ForceDirectedView extends Component<{
   _shownDoubleTap = false;
   _clearScheduledDoubleTapGesture = () => {};
 
-  _dragInitialX = 0
-  _dragInitialY = 0
+  _dragInitialX = 0;
+  _dragInitialY = 0;
 
   constructor(props) {
     super(props);
@@ -172,10 +168,10 @@ export class ForceDirectedView extends Component<{
         // if we select a new node, animate it popping up and turning a bit translucent.
         if (this._pressedNodeData === false || this._pressedNodeData.nodeId !== nodeIds[i]) {
           if (this.props.allowDrag) {
-            eventBus.emit('nodeTouchedAllowDrag'+this.props.viewId+nodeId, nodeData);
+            core.eventBus.emit('nodeTouchedAllowDrag'+this.props.viewId+nodeId, nodeData);
           }
           else {
-            eventBus.emit('nodeTouched'+this.props.viewId+nodeId, nodeData);
+            core.eventBus.emit('nodeTouched'+this.props.viewId+nodeId, nodeData);
           }
         }
 
@@ -291,7 +287,7 @@ export class ForceDirectedView extends Component<{
             if (this._pressedNodeData !== false) {
               // do nothing
               if (this.props.allowDrag) {
-                eventBus.emit('nodeDragging' + this.props.viewId + this._pressedNodeData.nodeId, this._pressedNodeData);
+                core.eventBus.emit('nodeDragging' + this.props.viewId + this._pressedNodeData.nodeId, this._pressedNodeData);
                 this._draggingNode = this._pressedNodeData;
                 this._dragInitialX = this.nodes[this._pressedNodeData.nodeId].x;
                 this._dragInitialY = this.nodes[this._pressedNodeData.nodeId].y;
@@ -330,7 +326,7 @@ export class ForceDirectedView extends Component<{
             this._clearScheduledDoubleTapGesture();
             this._clearScheduledDoubleTapGesture = Scheduler.scheduleCallback(() => {
               if (this._shownDoubleTap === false) {
-                eventBus.emit("showDoubleTapGesture" + this.props.viewId);
+                core.eventBus.emit("showDoubleTapGesture" + this.props.viewId);
                 this._shownDoubleTap = true;
               }
               this._recenter();
@@ -387,14 +383,14 @@ export class ForceDirectedView extends Component<{
 
         if (this._pressedNodeData !== false) {
           if (this.props.allowDrag) {
-            eventBus.emit('nodeWasTappedAllowDrag'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
+            core.eventBus.emit('nodeWasTappedAllowDrag'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
           }
           else {
-            eventBus.emit('nodeWasTapped'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
+            core.eventBus.emit('nodeWasTapped'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
           }
         }
         else {
-          eventBus.emit('viewWasTapped'+this.props.viewId, this._pressedNodeData);
+          core.eventBus.emit('viewWasTapped'+this.props.viewId, this._pressedNodeData);
         }
 
         if (this._draggingNode !== false) {
@@ -427,7 +423,7 @@ export class ForceDirectedView extends Component<{
 
         // reset touch state variables
         this._multiTouch = false;
-        this._draggingNode = false
+        this._draggingNode = false;
         this._clearTap();
       },
       onPanResponderTerminate: (evt, gestureState) => {
@@ -444,12 +440,12 @@ export class ForceDirectedView extends Component<{
 
   componentDidMount() {
     this.unsubscribeGestureEvents = [];
-    this.unsubscribeGestureEvents.push(eventBus.on('showDoubleTapGesture'+this.props.viewId, () => {
+    this.unsubscribeGestureEvents.push(core.eventBus.on('showDoubleTapGesture'+this.props.viewId, () => {
       Scheduler.scheduleCallback(() => { this._shownDoubleTap = false;}, 5000)
-    }))
+    }));
 
-    this.unsubscribeGestureEvents.push(eventBus.on('physicsRun'+this.props.viewId, (iterations) => {
-      this.recenterOnStable = true
+    this.unsubscribeGestureEvents.push(core.eventBus.on('physicsRun'+this.props.viewId, (iterations) => {
+      this.recenterOnStable = true;
       this.physicsEngine.stabilize(iterations, false);
     }))
   }
@@ -559,7 +555,7 @@ export class ForceDirectedView extends Component<{
 
   _clearTap() {
     if (this._pressedNodeData !== false) {
-      eventBus.emit('nodeReleased'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
+      core.eventBus.emit('nodeReleased'+this.props.viewId+this._pressedNodeData.nodeId, this._pressedNodeData);
     }
 
     this._validTap = false;
@@ -578,7 +574,7 @@ export class ForceDirectedView extends Component<{
     // load rooms into nodes
     for (let i = 0; i < nodeIds.length; i++) {
       let id = nodeIds[i];
-      let initialPosition = initialPositions && initialPositions[id] || {x:null, y:null}
+      let initialPosition = initialPositions && initialPositions[id] || {x:null, y:null};
       this.nodes[id] = {id: id, mass: 1, fixed: false, support:false, x: initialPosition.x, y: initialPosition.y };
       this.state.nodes[id] = {x: new Animated.Value(initialPosition.x || 0), y: new Animated.Value(initialPosition.y || 0), scale: new Animated.Value(1), opacity: new Animated.Value(1)};
     }

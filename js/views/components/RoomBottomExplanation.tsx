@@ -6,22 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  Image,
-  TouchableHighlight,
-  ScrollView,
   Text,
   TouchableOpacity,
-  StyleSheet,
   View
 } from 'react-native';
 
 import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
-const Actions = require('react-native-router-flux').Actions;
+
 import { colors } from '../styles'
-import {eventBus} from "../../util/EventBus";
-import {BackAction} from "../../util/Back";
+
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 /**
@@ -49,10 +45,10 @@ export class RoomBottomExplanation extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribeSetupEvents.push(eventBus.on("setupStonesDetected", () => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on("setupStonesDetected", () => {
       this._loadSetupMessage();
     }));
-    this.unsubscribeSetupEvents.push(eventBus.on("noSetupStonesVisible", () => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => {
       this.cleanupTimeout = setTimeout(() => {
         this.setState({explanation: null, buttonCallback: null});
       }, 500);
@@ -82,9 +78,9 @@ export class RoomBottomExplanation extends Component<any, any> {
     if (this.props.locationId !== null && SetupStateHandler.areSetupStonesAvailable() && canSeeSetupCrownstones) {
       let explanation = "Crownstone in setup mode found.\nTap here to see it!";
       let buttonCallback = () => {
-        BackAction();
+        NavigationUtil.back();
         setTimeout(() => {
-          Actions.roomOverview({sphereId: this.props.sphereId, locationId: null})
+         NavigationUtil.navigate("RoomOverview",{sphereId: this.props.sphereId, locationId: null})
         }, 150);
       };
       this.setState({explanation: explanation, buttonCallback: buttonCallback});

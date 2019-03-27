@@ -8,16 +8,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import {
   Alert,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
   ScrollView,
-  Switch,
-  Text,
   View
 } from 'react-native';
 
-import { Actions } from 'react-native-router-flux';
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
@@ -29,6 +23,8 @@ import {colors, screenWidth, OrangeLine} from './../styles'
 import { IconButton } from "../components/IconButton";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 import { FileUtil } from "../../util/FileUtil";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -44,7 +40,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     this.renderState = {};
     this.validationState = {firstName: undefined, lastName: undefined, email: undefined};
 
-    const store = props.store;
+    const store = core.store;
     const state = store.getState();
     let user = state.user;
 
@@ -53,7 +49,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (change.changeUserData || change.changeUserDeveloperStatus) {
         this.forceUpdate();
@@ -66,7 +62,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
   }
 
   _getItems(user) {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     let sphereIds = Object.keys(state.spheres);
     let items = [];
@@ -89,9 +85,9 @@ export class SettingsProfile extends LiveComponent<any, any> {
         }
         else {
           Alert.alert(
-lang("_First_name_must_be_at_le_header"),
-lang("_First_name_must_be_at_le_body"),
-[{text: lang("_First_name_must_be_at_le_left")}]);
+            lang("_First_name_must_be_at_le_header"),
+            lang("_First_name_must_be_at_le_body"),
+            [{text: lang("_First_name_must_be_at_le_left")}]);
         }
       }
     });
@@ -113,9 +109,9 @@ lang("_First_name_must_be_at_le_body"),
         }
         else {
           Alert.alert(
-lang("_Last_name_must_be_at_lea_header"),
-lang("_Last_name_must_be_at_lea_body"),
-[{text: lang("_Last_name_must_be_at_lea_left")}]);
+            lang("_Last_name_must_be_at_lea_header"),
+            lang("_Last_name_must_be_at_lea_body"),
+            [{text: lang("_Last_name_must_be_at_lea_left")}]);
         }
       }
     });
@@ -131,11 +127,10 @@ lang("_Last_name_must_be_at_lea_body"),
       style: {color:colors.blue.hex},
       callback: () => {
         Alert.alert(
-lang("_Are_you_sure_you_want_to_header"),
-lang("_Are_you_sure_you_want_to_body",user.email),
-[{text: lang("_Are_you_sure_you_want_to_left"), style: 'cancel'},
-            {
-text: lang("_Are_you_sure_you_want_to_right"), onPress: () => {this.requestPasswordResetEmail(user.email)}}
+          lang("_Are_you_sure_you_want_to_header"),
+          lang("_Are_you_sure_you_want_to_body",user.email),
+          [{text: lang("_Are_you_sure_you_want_to_left"), style: 'cancel'},
+            {text: lang("_Are_you_sure_you_want_to_right"), onPress: () => {this.requestPasswordResetEmail(user.email)}}
           ]
         )
       }
@@ -165,7 +160,7 @@ text: lang("_Are_you_sure_you_want_to_right"), onPress: () => {this.requestPassw
         label: lang("Developer_Menu"),
         icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
         type: 'navigation',
-        callback:() => { Actions.settingsDeveloper(); }
+        callback:() => { NavigationUtil.navigate("SettingsDeveloper"); }
       });
       items.push({type: 'spacer'});
     }
@@ -175,38 +170,38 @@ text: lang("_Are_you_sure_you_want_to_right"), onPress: () => {this.requestPassw
 
 
   requestPasswordResetEmail(email) {
-    this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
+    core.eventBus.emit('showLoading', 'Requesting password reset email...');
     CLOUD.requestPasswordResetEmail({email: email.toLowerCase()})
       .then(() => {
-        this.props.eventBus.emit('showLoading', 'Email sent!');
+        core.eventBus.emit('showLoading', 'Email sent!');
         let defaultAction = () => {
-          AppUtil.logOut(this.props.store);
+          AppUtil.logOut(core.store);
         };
         Alert.alert(
-lang("_Reset_email_has_been_sen_header"),
-lang("_Reset_email_has_been_sen_body"),
-[{text: lang("_Reset_email_has_been_sen_left"), onPress: defaultAction}],
-          { onDismiss: defaultAction }
+          lang("_Reset_email_has_been_sen_header"),
+          lang("_Reset_email_has_been_sen_body"),
+          [{text: lang("_Reset_email_has_been_sen_left"), onPress: defaultAction}],
+                    { onDismiss: defaultAction }
         )
       })
       .catch((reply) => {
-        let defaultAction = () => {this.props.eventBus.emit('hideLoading'); };
+        let defaultAction = () => {core.eventBus.emit('hideLoading'); };
         Alert.alert(
-lang("_Cannot_Send_Email_argume_header"),
-lang("_Cannot_Send_Email_argume_body",reply.data),
-[{text: lang("_Cannot_Send_Email_argume_left"), onPress: defaultAction}], { onDismiss: defaultAction });
+          lang("_Cannot_Send_Email_argume_header"),
+          lang("_Cannot_Send_Email_argume_body",reply.data),
+          [{text: lang("_Cannot_Send_Email_argume_left"), onPress: defaultAction}], { onDismiss: defaultAction });
       });
   }
 
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     let sphereIds = Object.keys(state.spheres);
     let user = state.user;
 
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={core.background.menu} >
         <OrangeLine/>
         <ScrollView keyboardShouldPersistTaps="always">
           <View>

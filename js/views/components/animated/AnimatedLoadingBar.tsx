@@ -7,8 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Image,
-  Text,
   View,
 } from 'react-native';
 

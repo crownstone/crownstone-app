@@ -6,7 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import { Alert }                    from 'react-native';
 
-import { NativeBus }                from '../libInterface/NativeBus';
 import { BluenetPromiseWrapper }    from '../libInterface/BluenetPromise';
 import { Bluenet  }                 from '../libInterface/Bluenet';
 import { BehaviourUtil }            from '../../util/BehaviourUtil';
@@ -16,11 +15,11 @@ import {LOG, LOGe} from '../../logging/Log';
 import { Util }                     from '../../util/Util';
 import { KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
-import { eventBus }          from '../../util/EventBus';
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
 import { BEHAVIOUR_TYPES } from "../../Enums";
+import { core } from "../../core";
 
 class LocationHandlerClass {
   _initialized : boolean;
@@ -32,15 +31,15 @@ class LocationHandlerClass {
     this.store = undefined;
 
     // subscribe to iBeacons when the spheres in the cloud change.
-    eventBus.on('CloudSyncComplete_spheresChanged', () => {
+    core.eventBus.on('CloudSyncComplete_spheresChanged', () => {
       if (this._readyForLocalization) {
         LocationHandler.initializeTracking();
       }
     });
 
     // when a sphere is created, we track all spheres anew.
-    eventBus.on('userLoggedInFinished', () => { this._readyForLocalization = true; });
-    eventBus.on('sphereCreated', () => {
+    core.eventBus.on('userLoggedInFinished', () => { this._readyForLocalization = true; });
+    core.eventBus.on('sphereCreated', () => {
       if (this._readyForLocalization) {
         LocationHandler.initializeTracking();
       }
@@ -53,11 +52,11 @@ class LocationHandlerClass {
       this._initialized = true;
       this.store = store;
 
-      // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOGd.info('CURRENT ROOM', data)});
-      NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); });
-      NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });
-      NativeBus.on(NativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
-      NativeBus.on(NativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
+      // core.nativeBus.on(core.nativeBus.topics.currentRoom, (data) => {LOGd.info('CURRENT ROOM', data)});
+      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); });
+      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });
+      core.nativeBus.on(core.nativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
+      core.nativeBus.on(core.nativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
     }
   }
 
@@ -99,7 +98,7 @@ class LocationHandlerClass {
       LOG.info('LocationHandler: IGNORE ENTER SPHERE because I\'m already in the Sphere.');
 
       // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
-      eventBus.emit('enterSphere', enteringSphereId);
+      core.eventBus.emit('enterSphere', enteringSphereId);
 
       return;
     }
@@ -150,7 +149,7 @@ class LocationHandlerClass {
     }
 
     // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
-    eventBus.emit('enterSphere', enteringSphereId);
+    core.eventBus.emit('enterSphere', enteringSphereId);
   }
 
 
@@ -190,7 +189,7 @@ class LocationHandlerClass {
 
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
 
-      eventBus.emit('exitSphere', sphereId);
+      core.eventBus.emit('exitSphere', sphereId);
     }
   }
 
@@ -309,7 +308,7 @@ class LocationHandlerClass {
         LOG.info("LocationHandler: Apply exit sphere.", sphereId);
         this.exitSphere(sphereId);
       });
-    }
+    };
 
     if (currentSphere === null) {
       leaveAllSpheres();

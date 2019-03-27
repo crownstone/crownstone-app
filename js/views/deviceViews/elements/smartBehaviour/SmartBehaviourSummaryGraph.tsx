@@ -7,8 +7,8 @@ import {
 } from "react-native";
 import { Icon } from "../../../components/Icon";
 import { colors, screenWidth } from "../../../styles";
-import { eventBus } from "../../../../util/EventBus";
 import { xUtil } from "../../../../util/StandAloneUtil";
+import { core } from "../../../../core";
 
 
 export class SmartBehaviourSummaryGraph extends Component<any, any> {
@@ -23,7 +23,7 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
     return (
       <View style={{flexDirection:'row', width:screenWidth, height:90}}>
         <View style={{flex:1}} />
-        <TouchableWithoutFeedback style={{width:screenWidth*0.8, height:100}} onPress={() => { eventBus.emit("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH"+this.id)}}>
+        <TouchableWithoutFeedback style={{width:screenWidth*0.8, height:100}} onPress={() => { core.eventBus.emit("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH"+this.id)}}>
           <View style={{width:screenWidth*0.8, height:100}}>
             <DayNightIndicator id={this.id} />
             <View style={{postion:'absolute', left:0, top:15, width:screenWidth*0.8, height:75}}>
@@ -49,8 +49,8 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
   iconWidth = 18;
   keyCount = 0;
 
-  explanationVisible = false
-  unsubscribe = null
+  explanationVisible = false;
+  unsubscribe = null;
   width = null;
 
   constructor(props) {
@@ -66,7 +66,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
   }
 
   componentDidMount(): void {
-    this.unsubscribe = eventBus.on("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH" + this.props.id, () => { this.toggleExplanation() })
+    this.unsubscribe = core.eventBus.on("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH" + this.props.id, () => { this.toggleExplanation() })
   }
 
   componentWillUnmount(): void {
@@ -94,8 +94,8 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
   getSubItem(startMinutes, endMinutes) {
     let width = this.width;
 
-    let startX = width * startMinutes / (24*60)
-    let endX   = width * endMinutes   / (24*60)
+    let startX = width * startMinutes / (24*60);
+    let endX   = width * endMinutes   / (24*60);
 
     return (
       <View
@@ -138,7 +138,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
 
     this.props.times.forEach((time) => {
       elements = elements.concat(this.getItem(time.start, time.end))
-    })
+    });
 
     return elements
   }
@@ -174,8 +174,8 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
 
 
 class TimeSelector extends Component<any, any> {
-  explanationVisible = false
-  unsubscribe = null
+  explanationVisible = false;
+  unsubscribe = null;
   width = null;
 
   constructor(props) {
@@ -191,7 +191,7 @@ class TimeSelector extends Component<any, any> {
   }
 
   componentDidMount(): void {
-    this.unsubscribe = eventBus.on("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH" + this.props.id, () => { this.toggleExplanation() })
+    this.unsubscribe = core.eventBus.on("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH" + this.props.id, () => { this.toggleExplanation() })
   }
 
   componentWillUnmount(): void {
@@ -220,7 +220,7 @@ class TimeSelector extends Component<any, any> {
 
 
   render() {
-    let width = 0.8*screenWidth - 25
+    let width = 0.8*screenWidth - 25;
     let time = "15:50";
 
     return (
@@ -244,8 +244,8 @@ class TimeSelector extends Component<any, any> {
 }
 
 class DayNightIndicator extends Component<any, any> {
-  explanationVisible = false
-  unsubscribe = null
+  explanationVisible = false;
+  unsubscribe = null;
   width = null;
 
   constructor(props) {
@@ -261,7 +261,7 @@ class DayNightIndicator extends Component<any, any> {
   }
 
   componentDidMount(): void {
-    this.unsubscribe = eventBus.on("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH" + this.props.id, () => { this.toggleExplanation() })
+    this.unsubscribe = core.eventBus.on("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH" + this.props.id, () => { this.toggleExplanation() })
   }
 
   componentWillUnmount(): void {
@@ -331,8 +331,8 @@ class DayNightIndicator extends Component<any, any> {
 
 function getMinutes(timeString) {
   // this is for times like 14:00
-  let elements = timeString.split(":")
+  let elements = timeString.split(":");
   return Number(elements[0]) * 60 + Number(elements[1])
 }
 
-const explanationStyle = (width) : TextStyle => { return {color: colors.csBlue.hex, fontWeight: 'bold', fontSize: 12, width: width, paddingLeft:10} }
+const explanationStyle = (width) : TextStyle => { return {color: colors.csBlue.hex, fontWeight: 'bold', fontSize: 12, width: width, paddingLeft:10} };

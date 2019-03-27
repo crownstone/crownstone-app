@@ -6,7 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Image,
   Text,
   TouchableOpacity,
   View,
@@ -16,7 +15,7 @@ import { Icon }         from '../components/Icon'
 import { OverlayBox }   from '../components/overlays/OverlayBox'
 import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
-import {NativeBus} from "../../native/libInterface/NativeBus";
+import { core } from "../../core";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -32,7 +31,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.locationStatus, (status) => {
+    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.locationStatus, (status) => {
       switch (status) {
         case "off":
           this.setState({visible: true, notificationType: status});

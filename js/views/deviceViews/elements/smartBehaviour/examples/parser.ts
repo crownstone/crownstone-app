@@ -12,7 +12,7 @@ let data = {
     roomId1: ["userId1","userId2"],
     roomId2: ["userId3","userId4"],
   }
-}
+};
 
 // interpreter action:
 function parse(rule, data) {
@@ -22,7 +22,7 @@ function parse(rule, data) {
 
   let endedPrevious = null;
 
-  let time = new Date().valueOf()
+  let time = new Date().valueOf();
 
   let startedChecks = [];
 
@@ -31,19 +31,19 @@ function parse(rule, data) {
     let isActive = false;
     switch (condition) {
       case CONDITIONS.ALWAYS:
-        always = true
+        always = true;
         isActive = true;
         return;
       case CONDITIONS.TIME:
-        isActive = parseTimeCondition(data, condition, "START", time, false ).active
-        return
+        isActive = parseTimeCondition(data, condition, "START", time, false ).active;
+        return;
       case CONDITIONS.PRESENCE:
-        isActive = parsePresenceCondition(data, condition)
+        isActive = parsePresenceCondition(data, condition);
         return
     }
 
     startedChecks.push(isActive);
-  })
+  });
 
   // check if the rule has ended
   rule.end.forEach((condition) => {
@@ -53,11 +53,11 @@ function parse(rule, data) {
         started = true;
         return;
       case CONDITIONS.TIME:
-        endedPrevious = parseTimeCondition(data, condition,"END", time,false )
-        ended         = parseTimeCondition(data, condition,"END", time,true  )
+        endedPrevious = parseTimeCondition(data, condition,"END", time,false );
+        ended         = parseTimeCondition(data, condition,"END", time,true  );
       case CONDITIONS.PRESENCE:
     }
-  })
+  });
 
   // S = start
   // E = end of rule
@@ -78,7 +78,7 @@ function parse(rule, data) {
 function parsePresenceCondition(data, condition) {
   // type is "START" or "END"
   let details = condition.data;
-  let active = false
+  let active = false;
 
   switch (details.type) {
     case PRESENCE_TYPES.ANYBODY:
@@ -86,21 +86,21 @@ function parsePresenceCondition(data, condition) {
         // if (hasUser) {
         //   active = true
         // }
-      })
+      });
       break;
     case PRESENCE_TYPES.NOBODY:
       details.locations.forEach((location) => {
         // if (hasUser) {
         //   active = false
         // }
-      })
+      });
       break;
     case PRESENCE_TYPES.SPECIFIC_USERS:
       details.locations.forEach((location) => {
         // if (hasUser) {
         //   active = true
         // }
-      })
+      });
       break;
   }
 
@@ -112,19 +112,19 @@ function parseTimeCondition(data, condition, type, currentTime, upcoming) {
   // type is "START" or "END"
   let details = condition.data;
   let time = null;
-  let active = false
+  let active = false;
   switch (details.type) {
     case TIME_TYPES.SUNRISE:
-      time = getTimeFromMinutes(data.sunrise, upcoming)
+      time = getTimeFromMinutes(data.sunrise, upcoming);
       break;
     case TIME_TYPES.SUNSET:
-      time = getTimeFromMinutes(data.sunset, upcoming)
+      time = getTimeFromMinutes(data.sunset, upcoming);
       break;
     case TIME_TYPES.MIDNIGHT:
-      time = getTimeFromMinutes("00:00", upcoming)
+      time = getTimeFromMinutes("00:00", upcoming);
       break;
     case TIME_TYPES.NOON:
-      time = getTimeFromMinutes("12:00", upcoming)
+      time = getTimeFromMinutes("12:00", upcoming);
       break;
     case TIME_TYPES.SPECIFIC:
       time = getTimeFromMinutes(condition.value, upcoming)

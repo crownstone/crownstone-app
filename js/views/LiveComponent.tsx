@@ -40,7 +40,7 @@ export class LiveComponent<a, b> extends Component<a, b> {
         super.forceUpdate();
       }
     }
-  }
+  };
 
   ___cleanup() {
     if (this.___subscribedToAppState) {

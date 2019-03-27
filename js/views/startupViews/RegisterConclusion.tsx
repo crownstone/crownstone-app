@@ -6,22 +6,17 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
-  ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
 
 import { Background } from './../components/Background'
-const Actions = require('react-native-router-flux').Actions;
+
 import loginStyles from './LoginStyles'
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { core } from "../../core";
 
 
 export class RegisterConclusion extends Component<any, any> {
@@ -31,7 +26,7 @@ export class RegisterConclusion extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.mainDark} safeView={true}>
+      <Background hasNavBar={false} image={core.background.mainDark} safeView={true}>
         <View style={{flex:1}}>
           <View style={{flex:4}} />
           <View style={style.viewContainer}>
@@ -46,7 +41,7 @@ export class RegisterConclusion extends Component<any, any> {
           </View>
           <View style={{flex:0.5}} />
           <View style={{alignItems:'center', justifyContent:'center', paddingBottom: 30}}>
-            <TouchableOpacity onPress={ () => { Actions.login() }}>
+            <TouchableOpacity onPress={ () => { NavigationUtil.navigate("Login") }}>
               <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ lang("OK") }</Text></View>
             </TouchableOpacity>
           </View>

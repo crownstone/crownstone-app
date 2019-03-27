@@ -59,12 +59,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 //     }
 //     else if (appState === 'background') {
 //       this.setState({renderable:false});
-//       eventBus.emit("cleanupTextures" + this._uid);
+//       core.eventBus.emit("cleanupTextures" + this._uid);
 //     }
 //   }
 //
 //   componentWillUnmount() {
-//     eventBus.emit("cleanupTextures" + this._uid);
+//     core.eventBus.emit("cleanupTextures" + this._uid);
 //     cancelAnimationFrame(this.animationFrame);
 //     AppState.removeEventListener('change', this._checkRenderable)
 //   }
@@ -76,7 +76,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 //         this.loadedImage = this.props.image;
 //         this.loadedImageTaken = this.props.imageTaken;
 //         this.loadedImageURI = {uri: preparePictureURI(this.loadedImage) };
-//         eventBus.emit("changedPicture" + this._uid);
+//         core.eventBus.emit("changedPicture" + this._uid);
 //       }
 //       else if (
 //         this.props.r !== prevProps.r ||
@@ -92,7 +92,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 //         if (this.props.b !== prevProps.b)                     { blendMap['b']           = {value: prevProps.b,           target: this.props.b, step: (this.props.b - prevProps.b) / steps}}
 //         if (this.props.blendFactor !== prevProps.blendFactor) { blendMap['blendFactor'] = {value: prevProps.blendFactor, target: this.props.blendFactor, step: (this.props.blendFactor - prevProps.blendFactor) / steps}}
 //         if (this.props.grayScale   !== prevProps.grayScale)   { blendMap['grayScale']   = {value: prevProps.grayScale,   target: this.props.grayScale,   step: (this.props.grayScale   - prevProps.grayScale  ) / steps}}
-//         eventBus.emit("changedVarariables" + this._uid, blendMap);
+//         core.eventBus.emit("changedVarariables" + this._uid, blendMap);
 //       }
 //     }
 //   }
@@ -435,7 +435,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 //
 //     drawWithNewTexture(true);
 //
-//     eventBus.on("changedPicture" + this._uid, () => {
+//     core.eventBus.on("changedPicture" + this._uid, () => {
 //       if (!this.props.enableOpacityShaderFade) {
 //         this.state.opacity.setValue(0);
 //       }
@@ -449,11 +449,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 //       drawWithNewTexture(true);
 //     })
 //
-//     eventBus.on("changedVarariables" + this._uid, (blendMap) => {
+//     core.eventBus.on("changedVarariables" + this._uid, (blendMap) => {
 //       this.animationFrame = requestAnimationFrame(() => { animateFade(blendMap) })
 //     })
 //
-//     eventBus.on("cleanupTextures" + this._uid, () => {
+//     core.eventBus.on("cleanupTextures" + this._uid, () => {
 //       if (loadedTextures.length > 0) {
 //         loadedTextures.forEach((loadedTexture) => {
 //           rngl.unloadTexture(loadedTexture.texture)

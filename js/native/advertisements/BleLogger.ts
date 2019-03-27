@@ -1,8 +1,7 @@
 import {LogProcessor} from "../../logging/LogProcessor";
 import {LOG_BLE} from "../../ExternalConfig";
 import {LOG} from "../../logging/Log";
-import {eventBus} from "../../util/EventBus";
-import {NativeBus} from "../libInterface/NativeBus";
+import { core } from "../../core";
 
 
 /**
@@ -16,7 +15,7 @@ class BleLoggerClass {
     if (this._initialized === false) {
       // subscribe to all events
       // sometimes the first event since state change can be wrong, we use this to ignore it.
-      eventBus.on("databaseChange", (data) => {
+      core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
         if  (change.changeDeveloperData || change.changeUserDeveloperStatus) {
           this._reloadListeners();
@@ -36,16 +35,16 @@ class BleLoggerClass {
       }
       this.listeners = [];
 
-      this.listeners.push(NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
+      this.listeners.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (data) => {
         LOG.ble('setupAdvertisement', data.name, data.rssi, data.handle, data);
       }));
-      this.listeners.push(NativeBus.on(NativeBus.topics.advertisement, (data) => {
+      this.listeners.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (data) => {
         LOG.ble('advertisement', data.name, data.rssi, data.handle, data);
       }));
-      this.listeners.push(NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+      this.listeners.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => {
         LOG.ble('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor, data);
       }));
-      this.listeners.push(NativeBus.on(NativeBus.topics.dfuAdvertisement, (data) => {
+      this.listeners.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (data) => {
         LOG.ble('dfuAdvertisement', data);
       }));
     }

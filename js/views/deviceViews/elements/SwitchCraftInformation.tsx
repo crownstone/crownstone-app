@@ -6,24 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  TouchableOpacity,
-  PixelRatio,
   ScrollView,
-  StyleSheet,
   Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { colors, screenWidth, OrangeLine, styles } from "../../styles";
 import {Background} from "../../components/Background";
 import {IconButton} from "../../components/IconButton";
 import {ScaledImage} from "../../components/ScaledImage";
+import { core } from "../../../core";
 
 
 export class SwitchCraftInformation extends Component<any, any> {
@@ -35,7 +29,7 @@ export class SwitchCraftInformation extends Component<any, any> {
   // "SwitchCraft is a new, experimental feature of the Crownstone that allows you to switch your lights with both Crownstone and an existing wall switch." +
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.menu}>
+      <Background hasNavBar={false} image={core.background.menu}>
         <OrangeLine/>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>

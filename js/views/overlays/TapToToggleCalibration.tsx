@@ -18,8 +18,8 @@ import {LOG, LOGe} from '../../logging/Log'
 import { BlePromiseManager }                          from '../../logic/BlePromiseManager'
 import { addDistanceToRssi, Util }                    from '../../util/Util'
 import { OverlayBox }                                 from '../components/overlays/OverlayBox'
-import { eventBus }                                   from '../../util/EventBus'
 import { styles, colors , screenHeight, screenWidth } from '../styles'
+import { core } from "../../core";
 
 export class TapToToggleCalibration extends Component<any, any> {
   unsubscribe : any;
@@ -32,10 +32,10 @@ export class TapToToggleCalibration extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on("CalibrateTapToToggle", (data : any = {}) => {
-      let state = this.props.store.getState();
+    this.unsubscribe.push(core.eventBus.on("CalibrateTapToToggle", (data : any = {}) => {
+      let state = core.store.getState();
       if (state.app.tapToToggleEnabled !== false) {
-        eventBus.emit("ignoreTriggers");
+        core.eventBus.emit("ignoreTriggers");
         this.setState({
           visible: true,
           step: data.tutorial === false ? 1 : 0,
@@ -53,21 +53,21 @@ export class TapToToggleCalibration extends Component<any, any> {
 
   learnDistance(attempt = 0) {
     // show loading screen
-    eventBus.emit("showLoading", lang("Waiting_to_start_learning"));
+    core.eventBus.emit("showLoading", lang("Waiting_to_start_learning"));
 
     // make sure we don't strangely trigger stuff while doing this.
-    eventBus.emit("ignoreTriggers");
+    core.eventBus.emit("ignoreTriggers");
 
     let learnDistancePromise = () => {
       return new Promise((resolve, reject) => {
-        eventBus.emit("showLoading", lang("Finding_Tap_to_Toggle_dis"));
+        core.eventBus.emit("showLoading", lang("Finding_Tap_to_Toggle_dis"));
         // timeout for the user to put his phone on the
         setTimeout(() => {
-          eventBus.emit("showLoading", lang("Learning_Tap_to_Toggle_di"));
+          core.eventBus.emit("showLoading", lang("Learning_Tap_to_Toggle_di"));
           // waiting for the data to be collected. We use the RSSI updates through the iBeacon messages which come in at
           // StoneStateHandler.js ~ line 35
           setTimeout(() => {
-            let state = this.props.store.getState();
+            let state = core.store.getState();
             let sphereIds = Object.keys(state.spheres);
             let minRSSI = -1000;
 
@@ -97,51 +97,53 @@ export class TapToToggleCalibration extends Component<any, any> {
           let rssiAddedDistance = Math.max(nearestRSSI - 5, addDistanceToRssi(nearestRSSI, 0.1));
           LOG.info("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
 
-          let state = this.props.store.getState();
+          let state = core.store.getState();
           let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
           let deviceId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
-          this.props.store.dispatch({
+          core.store.dispatch({
             type: 'UPDATE_DEVICE_CONFIG',
             deviceId: deviceId,
             data: { tapToToggleCalibration: rssiAddedDistance }
           });
-          eventBus.emit("showLoading", lang("Great_"));
+          core.eventBus.emit("showLoading", lang("Great_"));
 
           setTimeout(() => {
-            eventBus.emit("hideLoading");
+            core.eventBus.emit("hideLoading");
           }, 500);
           this.setState({step:2});
         }
         else {
-          eventBus.emit("hideLoading");
+          core.eventBus.emit("hideLoading");
           if (attempt === 2) {
             Alert.alert(
-lang("_Thats_a_bit_far_away___M_header"),
-lang("_Thats_a_bit_far_away___M_body"),
-[{text:lang("_Thats_a_bit_far_away___M_left")}])
+              lang("_Thats_a_bit_far_away___M_header"),
+              lang("_Thats_a_bit_far_away___M_body"),
+              [{text:lang("_Thats_a_bit_far_away___M_left")}])
           }
           else {
             let defaultAction = () => {this.learnDistance(attempt + 1)};
             Alert.alert(
-lang("_Thats_a_bit_far_away___T_header"),
-lang("_Thats_a_bit_far_away___T_body"),
-[{text:lang("_Thats_a_bit_far_away___T_left"), onPress: defaultAction }], { onDismiss: defaultAction })
+              lang("_Thats_a_bit_far_away___T_header"),
+              lang("_Thats_a_bit_far_away___T_body"),
+              [{text:lang("_Thats_a_bit_far_away___T_left"), onPress: defaultAction }], { onDismiss: defaultAction })
           }
 
         }
       })
       .catch((err) => {
         LOGe.info("TapToToggleCalibration error:", err);
-        eventBus.emit("hideLoading");
+        core.eventBus.emit("hideLoading");
         Alert.alert(
-lang("_Something_went_wrong__Ma_header"),
-lang("_Something_went_wrong__Ma_body"),
-[{text:lang("_Something_went_wrong__Ma_left")}])
+          lang("_Something_went_wrong__Ma_header"),
+          lang("_Something_went_wrong__Ma_body"),
+          [{text:lang("_Something_went_wrong__Ma_left")}])
       })
   }
 
   getContent() {
-    let state = this.props.store.getState();
+    if (!this.state.visible) { return; }
+
+    let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId(state);
 
     let props : any = {};
@@ -182,14 +184,14 @@ lang("_Something_went_wrong__Ma_body"),
           explanation: lang("After_you_click_Next_Ill_"),
           back: true,
           backCallback: () => {this.setState({step:1});},
-          nextCallback: () => {eventBus.emit("useTriggers"); this.setState({step:3})},
+          nextCallback: () => {core.eventBus.emit("useTriggers"); this.setState({step:3})},
           nextLabel: lang("Next")};
 
         if (this.state.tutorial === false) {
           props.title =  lang("Done_");
           props.header =  lang("The_new_distance_has_been");
           props.explanation =  lang("Once_you_press_Done_the_n");
-          props.nextCallback = () => {eventBus.emit("useTriggers"); this.setState({visible: false})},
+          props.nextCallback = () => {core.eventBus.emit("useTriggers"); this.setState({visible: false})},
           props.nextLabel =  lang("Done")}
         break;
       case 3:
@@ -269,11 +271,11 @@ lang("_Something_went_wrong__Ma_body"),
         explanationLabel =  lang("You_can_calibrate_tap_to_t");
       }
       Alert.alert(
-lang("_Training_Tap_to_Toggle_L_header"),
-lang("_Training_Tap_to_Toggle_L_body",explanationLabel),
-[{text:lang("_Training_Tap_to_Toggle_L_left")}])
+        lang("_Training_Tap_to_Toggle_L_header"),
+        lang("_Training_Tap_to_Toggle_L_body",explanationLabel),
+        [{text:lang("_Training_Tap_to_Toggle_L_left")}])
     }
-    eventBus.emit("useTriggers");
+    core.eventBus.emit("useTriggers");
     this.setState({visible: false});
   }
 

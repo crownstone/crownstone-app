@@ -2,9 +2,7 @@ import { Alert } from 'react-native';
 
 import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
-import { NativeBus }             from '../libInterface/NativeBus';
 import {LOG, LOGe} from '../../logging/Log'
-import { eventBus }              from '../../util/EventBus'
 import { Util }                  from '../../util/Util'
 import { CLOUD }                 from '../../cloud/cloudAPI'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
@@ -15,6 +13,7 @@ import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
 import {StoneUtil} from "../../util/StoneUtil";
 import { STONE_TYPES } from "../../Enums";
+import { core } from "../../core";
 
 
 const networkError = 'network_error';
@@ -59,15 +58,15 @@ export class SetupHelper {
     this.stoneWasAlreadyInCloud = false; // is the stone is already in the cloud during setup of this stone.
 
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
-    eventBus.emit("ignoreTriggers");
-    eventBus.emit("setupStarted", this.handle);
+    core.eventBus.emit("ignoreTriggers");
+    core.eventBus.emit("setupStarted", this.handle);
     let setupPromise = () => {
       return new Promise((resolve, reject) => {
-        eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
+        core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
         BluenetPromiseWrapper.connect(this.handle, sphereId)
           .then(() => {
             LOG.info("setup progress: connected");
-            eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
             return BluenetPromiseWrapper.getMACAddress();
           })
           .then((macAddress) => {
@@ -85,25 +84,25 @@ export class SetupHelper {
             LOG.info("setup progress: have hardware version: ", hardwareVersion);
           })
           .then(() => {
-            eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
             return this.registerInCloud(sphereId);
           })
           .then((cloudResponse : any) => {
             LOG.info("setup progress: registered in cloud");
-            eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 });
             this.cloudResponse = cloudResponse;
             this.stoneIdInCloud = cloudResponse.id;
             return this.setupCrownstone(store, sphereId);
           })
           .then(() => {
             LOG.info("setup progress: setupCrownstone done");
-            eventBus.emit("setupInProgress", { handle: this.handle, progress: 18 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 18 });
 
             // fast setup will require much less time in 'stand-by' after the setup has completed.
-            let fastSetupEnabled = Util.versions.isHigherOrEqual(this.firmwareVersion, '2.1.0')
+            let fastSetupEnabled = Util.versions.isHigherOrEqual(this.firmwareVersion, '2.1.0');
 
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-            Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 20, 'setup19');
+            Scheduler.scheduleCallback(() => { core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 20, 'setup19');
             Scheduler.scheduleCallback(() => {
               let actions = [];
 
@@ -154,10 +153,10 @@ export class SetupHelper {
               store.batchDispatch(actions);
 
               // Restore trigger state
-              eventBus.emit("useTriggers");
+              core.eventBus.emit("useTriggers");
 
               // first add to database, then emit. The adding to database will cause a redraw and having this event after it can lead to race conditions / ghost stones / missing room nodes.
-              eventBus.emit("setupComplete", this.handle);
+              core.eventBus.emit("setupComplete", this.handle);
 
               if (showRestoreAlert && silent === false) {
                 Alert.alert(
@@ -180,7 +179,7 @@ export class SetupHelper {
               if (state.app.indoorLocalizationEnabled) {
                 // show the celebration of 4 stones
                 if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION) {
-                  eventBus.emit('showLocalizationSetupStep1', sphereId);
+                  core.eventBus.emit('showLocalizationSetupStep1', sphereId);
                   popupShown = true;
                 }
               }
@@ -191,7 +190,7 @@ export class SetupHelper {
                   if (Util.data.getTapToToggleCalibration(state) === null) {
                     Scheduler.scheduleCallback(() => {
                       if (SetupStateHandler.isSetupInProgress() === false) {
-                        eventBus.emit("CalibrateTapToToggle");
+                        core.eventBus.emit("CalibrateTapToToggle");
                       }
                     }, 1500, 'setup t2t timeout');
                   }
@@ -203,8 +202,8 @@ export class SetupHelper {
           })
           .catch((err) => {
             // Restore trigger state
-            eventBus.emit("useTriggers");
-            eventBus.emit("setupCancelled", this.handle);
+            core.eventBus.emit("useTriggers");
+            core.eventBus.emit("setupCancelled", this.handle);
 
             // clean up in the cloud after failed setup.
             if (this.stoneIdInCloud !== undefined && this.stoneWasAlreadyInCloud === false) {
@@ -295,8 +294,8 @@ export class SetupHelper {
     data["ibeaconMajor"]      = this.cloudResponse.major;
     data["ibeaconMinor"]      = this.cloudResponse.minor;
 
-    let unsubscribe = NativeBus.on(NativeBus.topics.setupProgress, (progress) => {
-      eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 + progress });
+    let unsubscribe = core.nativeBus.on(core.nativeBus.topics.setupProgress, (progress) => {
+      core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 + progress });
     });
 
     return new Promise((resolve, reject) => {

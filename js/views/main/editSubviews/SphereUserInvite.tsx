@@ -7,26 +7,21 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
-  ScrollView,
-  Switch,
-  Text,
-  View
-} from 'react-native';
+  ScrollView} from 'react-native';
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
-const Actions = require('react-native-router-flux').Actions;
+
 import {colors, OrangeLine} from '../../styles';
 import { CLOUD } from '../../../cloud/cloudAPI'
-import {LOG, LOGe} from '../../../logging/Log'
+import {LOGe} from '../../../logging/Log'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {BackAction} from "../../../util/Back";
+import { core } from "../../../core";
+import { TopbarBackButton } from "../../components/topbar/TopbarButton";
 
 export class SphereUserInvite extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: lang("Invite")}
+    return { title: lang("Invite"),
+    headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />}
   };
 
   inputStates : any;
@@ -41,7 +36,7 @@ export class SphereUserInvite extends Component<any, any> {
   }
 
   _getItems() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
     let items = [];
@@ -105,16 +100,16 @@ export class SphereUserInvite extends Component<any, any> {
   validateAndContinue(state) {
     if (!this.state.email) {
       Alert.alert(
-lang("_Please_provide_an_email__header"),
-lang("_Please_provide_an_email__body"),
-[{text:lang("_Please_provide_an_email__left")}]);
+        lang("_Please_provide_an_email__header"),
+        lang("_Please_provide_an_email__body"),
+        [{text:lang("_Please_provide_an_email__left")}]);
       return;
     }
     else if (!this.inputStates.email) {
       Alert.alert(
-lang("_Please_provide_a_valid_e_header"),
-lang("_Please_provide_a_valid_e_body"),
-[{text:lang("_Please_provide_a_valid_e_left")}]);
+        lang("_Please_provide_a_valid_e_header"),
+        lang("_Please_provide_a_valid_e_body"),
+        [{text:lang("_Please_provide_a_valid_e_left")}]);
       return;
     }
 
@@ -125,44 +120,44 @@ lang("_Please_provide_a_valid_e_body"),
     for (let i = 0; i < userIds.length; i++) {
       if (users[userIds[i]].email.toLowerCase() === this.state.email.toLowerCase()) {
         Alert.alert(
-lang("_User_already_in_Sphere___header"),
-lang("_User_already_in_Sphere___body"),
-[{text:lang("_User_already_in_Sphere___left")}]);
+        lang("_User_already_in_Sphere___header"),
+        lang("_User_already_in_Sphere___body"),
+        [{text:lang("_User_already_in_Sphere___left")}]);
         return;
       }
     }
 
     // We only get here if the user does not exists in the sphere yet.
-    this.props.eventBus.emit('showLoading', 'Inviting User...');
+    core.eventBus.emit('showLoading', 'Inviting User...');
     CLOUD.forSphere(this.props.sphereId).inviteUser(this.state.email.toLowerCase(), this.state.permission)
       .then(() => {
-        this.props.eventBus.emit('hideLoading');
-        this.props.store.dispatch({
+        core.eventBus.emit('hideLoading');
+        core.store.dispatch({
           type: 'ADD_SPHERE_USER',
           sphereId: this.props.sphereId,
           userId: this.state.email.toLowerCase(),
           data: { email: this.state.email.toLowerCase(), invitationPending: true, accessLevel: this.state.permission.toLowerCase()}
         });
-        let defaultAction = () => { BackAction(); };
+        let defaultAction = () => { this.props.navigation.goBack(); };
         Alert.alert(
-lang("_Invite_has_been_sent___A_header"),
-lang("_Invite_has_been_sent___A_body",this.state.email),
-[{text:lang("_Invite_has_been_sent___A_left"), onPress: defaultAction}], { onDismiss: defaultAction })
+          lang("_Invite_has_been_sent___A_header"),
+          lang("_Invite_has_been_sent___A_body",this.state.email),
+          [{text:lang("_Invite_has_been_sent___A_left"), onPress: defaultAction}], { onDismiss: defaultAction })
       })
       .catch((err) => {
-        this.props.eventBus.emit('hideLoading');
+        core.eventBus.emit('hideLoading');
         LOGe.info("Error when inviting using:",err);
         Alert.alert(
-lang("_Could_not_send_invite____header"),
-lang("_Could_not_send_invite____body"),
-[{text:lang("_Could_not_send_invite____left")}])
+          lang("_Could_not_send_invite____header"),
+          lang("_Could_not_send_invite____body"),
+          [{text:lang("_Could_not_send_invite____left")}])
       })
   }
 
   render() {
 
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={core.background.menu} >
         <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

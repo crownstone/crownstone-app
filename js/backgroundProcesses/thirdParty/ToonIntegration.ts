@@ -1,15 +1,15 @@
 import {LOG, LOGe} from "../../logging/Log";
-import { eventBus }  from "../../util/EventBus";
 import { Scheduler } from "../../logic/Scheduler";
 import {Util} from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
+import { core } from "../../core";
 
 const CHECK_TOON_SCHEDULE_TRIGGER = "CHECK_TOON_SCHEDULE_TRIGGER";
 
 class ToonIntegrationClass {
 
-  _initialized = false
-  store = null
+  _initialized = false;
+  store = null;
 
   loadStore(store) {
     LOG.info('LOADED STORE ToonIntegration', this._initialized);
@@ -24,7 +24,7 @@ class ToonIntegrationClass {
   init() {
     if (this._initialized === false) {
       this._initialized = true;
-      eventBus.on('exitSphere', (sphereId) => { this._handleExitSphere(sphereId) });
+      core.eventBus.on('exitSphere', (sphereId) => { this._handleExitSphere(sphereId) });
       Scheduler.setRepeatingTrigger(CHECK_TOON_SCHEDULE_TRIGGER, {repeatEveryNSeconds: 120}); // check every 2 minutes
 
       // if the app is open, update the user locations every 10 seconds
@@ -54,7 +54,7 @@ class ToonIntegrationClass {
       // only use the ENABLED Toons in this sphere
       if (toon.enabled) {
         // evaluate if the schedule is currently set to "AWAY"
-        let activeProgram = getActiveToonProgram(toon.schedule)
+        let activeProgram = getActiveToonProgram(toon.schedule);
         if (activeProgram && activeProgram.program === 'away') {
           // if the schedule is away BUT I am home, the toon should be on too!
           let timestampOfStartProgram = new Date(new Date().setHours(activeProgram.start.hour)).setMinutes(activeProgram.start.minute);
@@ -113,7 +113,7 @@ class ToonIntegrationClass {
       // only use the ENABLED Toons in this sphere
       if (toon.enabled) {
         // evaluate if the schedule is currently set to "AWAY"
-        let activeProgram = getActiveToonProgram(toon.schedule)
+        let activeProgram = getActiveToonProgram(toon.schedule);
         if (activeProgram && activeProgram.program === 'away') {
           CLOUD.forToon(toonId).thirdParty.toon.setToonToAway(deviceId)
             .catch((err) => {
@@ -154,7 +154,7 @@ export function getActiveToonProgram(scheduleString : string) {
     scheduleObj = JSON.parse(scheduleString);
   }
   catch (err) {
-    LOGe.info("ToonIntegration: Schedule is not a valid json object.", scheduleString)
+    LOGe.info("ToonIntegration: Schedule is not a valid json object.", scheduleString);
     return null;
   }
 

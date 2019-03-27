@@ -6,15 +6,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
   Animated,
-  Alert,
-  Platform,
-  Linking,
   TouchableOpacity,
-  TouchableHighlight,
   ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
@@ -31,6 +25,7 @@ import {TestResult} from "./diagnostics/DiagnosticUtil";
 import {InSphere} from "./diagnostics/InSphere";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { DiagnosticStates, diagnosticStyles } from "./diagnostics/DiagnosticStyles";
+import { core } from "../../core";
 
 export class SettingsDiagnostics extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -68,7 +63,7 @@ export class SettingsDiagnostics extends Component<any, any> {
       testPhase: DiagnosticStates.INITIAL_TESTS,
     });
 
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let spheres = state.spheres;
     let healthySpheres = true;
     let stoneCount = 0;
@@ -153,7 +148,7 @@ export class SettingsDiagnostics extends Component<any, any> {
         return (
           <ReviewInitialTests
             {...this.state}
-            store={this.props.store}
+            store={core.store}
             canSetupStones={this.canSetupStones}
             nextPhase={(ibeacons, verifiedAdvertisements) => {
               if (!ibeacons || !verifiedAdvertisements ) {
@@ -170,7 +165,7 @@ export class SettingsDiagnostics extends Component<any, any> {
           <NoStones
             {...this.state}
             canSetupStones={this.canSetupStones}
-            store={this.props.store}
+            store={core.store}
           />
         );
       case DiagnosticStates.NOT_IN_SPHERE:
@@ -178,7 +173,7 @@ export class SettingsDiagnostics extends Component<any, any> {
           <NotInSphere
             {...this.state}
             canSetupStones={this.canSetupStones}
-            store={this.props.store}
+            store={core.store}
             amInSphere={() => {
               this.setState({ibeacons: true, verifiedAdvertisements: true, testPhase: DiagnosticStates.IN_SPHERE})
             }}
@@ -189,7 +184,7 @@ export class SettingsDiagnostics extends Component<any, any> {
           <InSphere
             {...this.state}
             canSetupStones={this.canSetupStones}
-            store={this.props.store}
+            store={core.store}
           />
         );
     }
@@ -198,7 +193,7 @@ export class SettingsDiagnostics extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu}>
+      <Background image={core.background.menu}>
         <OrangeLine/>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center'}}>

@@ -6,21 +6,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
   ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
 
-const Actions = require('react-native-router-flux').Actions;
 
-import { colors, screenHeight, screenWidth, topBarHeight } from "../../../styles";
+
+import { screenHeight, screenWidth, topBarHeight } from "../../../styles";
 import { tutorialStyle } from "../../../tutorialViews/TutorialStyle";
 import { ScaledImage } from "../../../components/ScaledImage";
 

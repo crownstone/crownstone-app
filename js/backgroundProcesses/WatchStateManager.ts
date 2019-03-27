@@ -1,10 +1,10 @@
 import { Platform } from 'react-native'
 import { Bluenet } from "../native/libInterface/Bluenet";
-import { eventBus } from "../util/EventBus";
+import { core } from "../core";
 
 class WatchStateManagerClass {
-  _store
-  initialized = false
+  _store;
+  initialized = false;
 
   constructor() {}
 
@@ -17,7 +17,7 @@ class WatchStateManagerClass {
     if (this.initialized === false) {
       if (Platform.OS === 'ios') {
         // listen to events that might change the name of the stones, or added and removed stones.
-        eventBus.on("databaseChange", (data) => {
+        core.eventBus.on("databaseChange", (data) => {
           let change = data.change;
           if (change.changeStones || change.updateStoneCoreConfig || change.changeAppliances || change.updateApplianceConfig) {
             this._updateNames();
@@ -36,7 +36,7 @@ class WatchStateManagerClass {
 
     Object.keys(state.spheres).forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
-      nameObject[sphereId] = {}
+      nameObject[sphereId] = {};
       Object.keys(sphere.stones).forEach((stoneId) => {
         let stone = sphere.stones[stoneId];
         let name = stone.config.name;
@@ -57,4 +57,4 @@ class WatchStateManagerClass {
 
 }
 
-export const WatchStateManager = new WatchStateManagerClass()
+export const WatchStateManager = new WatchStateManagerClass();

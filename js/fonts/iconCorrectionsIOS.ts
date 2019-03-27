@@ -310,7 +310,7 @@ const c1CorrectionsIOS = {
   'c1-present':                    {change: true, top: +0.020, left: +0.000},
   'c1-screen':                     {change: true, top: +0.100, left: +0.000},
   'c1-computer':                   {change: true, top: +0.060, left: +0.000},
-}
+};
 
 
 const c2CorrectionsIOS = {

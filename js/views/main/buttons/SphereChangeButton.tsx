@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
-import {eventBus} from "../../../util/EventBus";
 
 export class SphereChangeButton extends Component<any, any> {
   render() {

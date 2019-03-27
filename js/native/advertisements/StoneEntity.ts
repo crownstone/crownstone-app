@@ -1,15 +1,14 @@
 import { LOG_LEVEL }        from "../../logging/LogLevels";
-import {LOG, LOGd, LOGi, LOGw} from "../../logging/Log";
+import {LOGd, LOGi, LOGw} from "../../logging/Log";
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED } from "../../ExternalConfig";
-import { eventBus }         from "../../util/EventBus";
 import { Util }             from "../../util/Util";
 import { Scheduler }        from "../../logic/Scheduler";
 import { LocationHandler }  from "../localization/LocationHandler";
 import { StoneMeshTracker } from "./StoneMeshTracker";
 import { StoneBehaviour }   from "./StoneBehaviour";
 import { StoneStoreManager } from "./StoneStoreManager";
-import {generateFakeAdvertisement} from "./Debug";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { core } from "../../core";
 
 let RSSI_TIMEOUT = 5000;
 
@@ -66,7 +65,7 @@ export class StoneEntity {
     this.meshTracker = new StoneMeshTracker(store, sphereId, stoneId);
 
     this.subscribe();
-    // eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
+    // core.eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
     //   this._debug(state);
     // })
   }
@@ -108,7 +107,7 @@ export class StoneEntity {
     // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
     // This is to avoid the case where a state that was recorded pre-connection is shown post-connection
     // (ie. switch off instead of on)
-    this.subscriptions.push(eventBus.on("connecting", (handle) => {
+    this.subscriptions.push(core.eventBus.on("connecting", (handle) => {
       let state = this.store.getState();
       let sphere = state.spheres[this.sphereId];
       let stone = sphere.stones[this.stoneId];
@@ -119,7 +118,7 @@ export class StoneEntity {
     }));
 
     // these timeouts are required for mesh propagation
-    this.subscriptions.push(eventBus.on(Util.events.getIgnoreTopic(this.stoneId), (data) => {
+    this.subscriptions.push(core.eventBus.on(Util.events.getIgnoreTopic(this.stoneId), (data) => {
       if (!data.timeoutMs) { return; }
 
       // clear any previous timeouts
@@ -194,7 +193,7 @@ export class StoneEntity {
 
   _emitUpdateEvents(stone, rssi) {
     // These events are used in the Batch Command Handler
-    eventBus.emit(Util.events.getCrownstoneTopic(this.sphereId, this.stoneId), {
+    core.eventBus.emit(Util.events.getCrownstoneTopic(this.sphereId, this.stoneId), {
       handle: stone.config.handle,
       stone: stone,
       stoneId: this.stoneId,
@@ -203,7 +202,7 @@ export class StoneEntity {
     });
 
     if (stone.config.meshNetworkId) {
-      eventBus.emit(Util.events.getMeshTopic(this.sphereId, stone.config.meshNetworkId), {
+      core.eventBus.emit(Util.events.getMeshTopic(this.sphereId, stone.config.meshNetworkId), {
         handle: stone.config.handle,
         stoneId: this.stoneId,
         stone: stone,
@@ -251,7 +250,7 @@ export class StoneEntity {
         data: {disabled: true, rssi: -1000}
       });
 
-      eventBus.emit("CrownstoneDisabled", this.sphereId);
+      core.eventBus.emit("CrownstoneDisabled", this.sphereId);
     };
 
     this.disabledTimeout = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + this.stoneId + "_");
@@ -429,7 +428,7 @@ export class StoneEntity {
    * @param {crownstoneAdvertisement} advertisement
    */
   handleContentViaMesh(stone, advertisement : crownstoneAdvertisement) {
-    eventBus.emit(Util.events.getViaMeshTopic(this.sphereId, stone.config.meshNetworkId), {
+    core.eventBus.emit(Util.events.getViaMeshTopic(this.sphereId, stone.config.meshNetworkId), {
       id: this.stoneId,
       serviceData: advertisement.serviceData
     });
@@ -539,7 +538,7 @@ export class StoneEntity {
 
         // clean up timeout
         if (result === true) {
-          eventBus.emit(Util.events.getIgnoreConditionFulfilledTopic(this.stoneId));
+          core.eventBus.emit(Util.events.getIgnoreConditionFulfilledTopic(this.stoneId));
           LOGi.advertisements("StoneEntity: Conditions met for cancellation of advertisement ignore.");
           this._clearTimeout();
         }
@@ -651,8 +650,9 @@ export class StoneEntity {
 
 
   _errorsHaveChanged(stoneErrors, advertisementErrors : errorData) {
-    if (stoneErrors.hasError === false) { return true };
-
+    if (stoneErrors.hasError === false) {
+      return true;
+    }
     if (
       stoneErrors.overCurrent       !== advertisementErrors.overCurrent       ||
       stoneErrors.overCurrentDimmer !== advertisementErrors.overCurrentDimmer ||
@@ -681,7 +681,7 @@ export class StoneEntity {
               data: { hasError: true }
             });
             if (Permissions.inSphere(this.sphereId).canClearErrors) {
-              eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
+              core.eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
             }
           }
 
@@ -701,7 +701,7 @@ export class StoneEntity {
               }
             });
             if (Permissions.inSphere(this.sphereId).canClearErrors) {
-              eventBus.emit('updateErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
+              core.eventBus.emit('updateErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
             }
           }
         }

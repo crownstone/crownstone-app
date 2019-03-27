@@ -6,22 +6,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
 import {Util} from "../../../../util/Util";
 import {colors, screenWidth} from "../../../styles";
-import {DAYS_FULL} from "../../DeviceScheduleEdit";
-import {Icon} from "../../../components/Icon";
 
 
 export class ActivityLogStatusIndicator extends Component<any, any> {

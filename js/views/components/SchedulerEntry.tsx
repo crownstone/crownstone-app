@@ -10,13 +10,14 @@ import {
   Text,
   View, TextStyle
 } from "react-native";
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {colors, screenWidth} from '../styles'
 import {Util} from "../../util/Util";
 import {StoneUtil} from "../../util/StoneUtil";
 import {IconButton} from "./IconButton";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class SchedulerEntry extends Component<any, any> {
 
@@ -55,7 +56,7 @@ export class SchedulerEntry extends Component<any, any> {
       lang("Fri_day_first_letter"),
       lang("Sat_day_first_letter"),
       lang("Sun_day_first_letter"),
-    ]
+    ];
     let items = [];
 
     let activeColor = colors.green.hex;
@@ -138,7 +139,7 @@ export class SchedulerEntry extends Component<any, any> {
       return (
         <TouchableOpacity
           onPress={() => {
-            Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
+           NavigationUtil.navigate("DeviceScheduleEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
           }}
           style={{
             flexDirection: 'row',

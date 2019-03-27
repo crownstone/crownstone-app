@@ -1,6 +1,6 @@
 import { cloudApiBase } from "./cloudApiBase";
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
 
 
 export const bootloader = {

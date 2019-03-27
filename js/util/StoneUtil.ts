@@ -6,12 +6,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 
 import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 import {INTENTS} from "../native/libInterface/Constants";
-import {LOG, LOGe} from "../logging/Log";
+import {LOGe} from "../logging/Log";
 import {Scheduler} from "../logic/Scheduler";
-import {eventBus} from "./EventBus";
 import {
   Alert,
 } from 'react-native';
+import { core } from "../core";
 
 export const StoneUtil = {
   switchBHC: function (
@@ -106,7 +106,7 @@ export const StoneUtil = {
       overCurrent:        true,
     };
 
-    eventBus.emit("showLoading", lang("Attempting_to_Reset_Error"));
+    core.eventBus.emit("showLoading", lang("Attempting_to_Reset_Error"));
     BatchCommandHandler.loadPriority(
       stone,
       stoneId,
@@ -117,7 +117,7 @@ export const StoneUtil = {
       'from _getButton in ErrorOverlay'
     )
       .then(() => {
-        eventBus.emit("showLoading", lang("Success_"));
+        core.eventBus.emit("showLoading", lang("Success_"));
         store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: {
           dimmerOnFailure:    false,
           dimmerOffFailure:   false,
@@ -129,12 +129,12 @@ export const StoneUtil = {
         return Scheduler.delay(500);
       })
       .then(() => {
-        eventBus.emit("hideLoading");
+        core.eventBus.emit("hideLoading");
         Alert.alert(lang("Success_"), lang("The_Error_has_been_reset_"),[{text:'OK'}]);
       })
       .catch((err) => {
         LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err);
-        let defaultAction = () => { eventBus.emit("hideLoading"); };
+        let defaultAction = () => { core.eventBus.emit("hideLoading"); };
         Alert.alert(lang("Failed_to_reset_error___"), lang("You_can_move_closer_and_t"),[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
       });
 

@@ -6,15 +6,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Linking,
   Platform,
-  ScrollView,
-  Switch,
   Text,
-  TouchableOpacity,
-  TouchableHighlight,
   View
 } from 'react-native';
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
@@ -40,6 +33,7 @@ import {INTENTS} from "../../../native/libInterface/Constants";
 import {BleUtil} from "../../../util/BleUtil";
 import {BluenetPromiseWrapper} from "../../../native/libInterface/BluenetPromise";
 import { diagnosticStyles } from "./DiagnosticStyles";
+import { core } from "../../../core";
 
 
 export class ProblemWithExistingCrownstone extends Component<any, any> {
@@ -109,7 +103,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
       this.setState({existingTestsVisible: true});
     }
 
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let sphereId = Util.data.getPresentSphereId(state);
     let sphere = state.spheres[sphereId];
     let stoneId = this.state.problemStoneSummary.id;
@@ -181,7 +175,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
   }
 
   _factoryResetMyLostCrownstone(handle) {
-    let referenceId = Util.data.getReferenceId(this.props.store.getState());
+    let referenceId = Util.data.getReferenceId(core.store.getState());
     let proxy = BleUtil.getProxy(handle, referenceId);
     return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
       .then(() => { this.setState({factoryResetSuccess: true}); })
@@ -598,11 +592,11 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
   _tryToSwitchCrownstone() {
     let sphereId = this.state.problemStoneSummary.sphereId;
     let stoneId = this.state.problemStoneSummary.id;
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];
 
-    StoneUtil.switchBHC(sphereId, stoneId, stone,stone.state.state > 0 ? 0 : 1, this.props.store,{onlyAllowDirectCommand: true},
+    StoneUtil.switchBHC(sphereId, stoneId, stone,stone.state.state > 0 ? 0 : 1, core.store,{onlyAllowDirectCommand: true},
       (err) => {
         if (err) {
           if (typeof err === 'object' && err.code === "NO_STONES_FOUND") {
@@ -878,7 +872,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
   }
 
   _getResults() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     if (this.state.userInputProblemCrownstoneId === null) {
       let sphereId = Util.data.getPresentSphereId(state);
       let stones = state.spheres[sphereId].stones;

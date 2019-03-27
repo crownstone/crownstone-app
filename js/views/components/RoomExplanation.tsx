@@ -6,25 +6,21 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  Image,
-  TouchableHighlight,
-  ScrollView,
   Text,
   TouchableOpacity,
-  StyleSheet,
   View
 } from 'react-native';
 
 import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
-const Actions = require('react-native-router-flux').Actions;
+
 import {
   getStonesAndAppliancesInLocation,
   getFloatingStones
 } from '../../util/DataUtil'
 import { colors } from '../styles'
-import {BackAction} from "../../util/Back";
+
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.
@@ -64,7 +60,7 @@ export class RoomExplanation extends Component<any, any> {
       // there are floating crownstones
       else if (getFloatingStones(state, sphereId).length > 0) {
         explanation =  lang("Tap_here_to_see_all_Crown");
-        buttonCallback = () => { BackAction(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
+        buttonCallback = () => { NavigationUtil.back(); setTimeout(() => { NavigationUtil.navigate( "RoomOverview",{sphereId: sphereId, locationId: null}) }, 150)};
       }
       else {
         explanation =  lang("No_Crownstones_in_this_ro");

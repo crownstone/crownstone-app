@@ -6,23 +6,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
   RefreshControl,
   ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
 
 import { canUseIndoorLocalizationInSphere } from "../../../util/DataUtil";
 
-import { colors, deviceStyles, screenHeight, screenWidth } from "../../styles";
+import { colors, deviceStyles, screenHeight} from "../../styles";
 import { Util }                 from "../../../util/Util";
 import { ActivityLogItem }      from './activityLog/ActivityLogItem';
 import { ActivityLogProcessor } from './activityLog/ActivityLogProcessor';
@@ -34,6 +26,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {ActivityLogStatusIndicator} from "./activityLog/ActivityLogStatusIndicator";
 import {ActivityRangeSyncer} from "../../../cloud/sections/sync/modelSyncs/ActivityRangeSyncer";
 import { BEHAVIOUR_TYPES } from "../../../Enums";
+import { core } from "../../../core";
 
 
 export class DeviceActivityLog extends Component<any, any> {
@@ -55,7 +48,7 @@ export class DeviceActivityLog extends Component<any, any> {
   processLogs() {
     if (!Permissions.inSphere(this.props.sphereId).seeActivityLogs) { return; }
 
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
@@ -131,34 +124,34 @@ export class DeviceActivityLog extends Component<any, any> {
   }
 
   updateLogs() {
-    this.setState({updating:true})
-    const state = this.props.store.getState();
+    this.setState({updating:true});
+    const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     let actions = [];
 
-    let logSyncer   = new ActivityLogSyncer(  actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap())
-    let rangeSyncer = new ActivityRangeSyncer(actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap())
-    logSyncer.sync(this.props.store)
+    let logSyncer   = new ActivityLogSyncer(  actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap());
+    let rangeSyncer = new ActivityRangeSyncer(actions, [], this.props.sphereId, MapProvider.local2cloudMap[this.props.sphereId], this.props.stoneId, stone.config.cloudId, getGlobalIdMap());
+    logSyncer.sync(core.store)
       .then(() => {
-        return rangeSyncer.sync(this.props.store);
+        return rangeSyncer.sync(core.store);
       })
       .then(() => {
         if (actions.length > 0) {
-          this.props.store.batchDispatch(actions);
+          core.store.batchDispatch(actions);
         }
-        this.processLogs()
+        this.processLogs();
         this.setState({updating:false});
       })
       .catch((err) => {
-        this.processLogs()
+        this.processLogs();
         this.setState({updating:false})
       })
   }
 
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];

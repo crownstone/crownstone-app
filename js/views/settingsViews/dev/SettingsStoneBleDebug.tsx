@@ -5,12 +5,9 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsStoneBleDebug", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Alert,
-  TouchableHighlight,
   ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
@@ -19,8 +16,8 @@ import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import {colors, OrangeLine} from '../../styles'
 import {Util} from "../../../util/Util";
-import {NativeBus} from "../../../native/libInterface/NativeBus";
 import {Scheduler} from "../../../logic/Scheduler";
+import { core } from "../../../core";
 
 const triggerId = "SettingsStoneBleDebug";
 
@@ -34,7 +31,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   constructor(props) {
     super(props);
-    const store = props.store;
+    const store = core.store;
     let state = store.getState();
     let sphere = state.spheres[props.sphereId];
     let stone = sphere.stones[props.stoneId];
@@ -58,8 +55,8 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribeNative.push(NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => { this._parseIBeacon(data) }));
-    this.unsubscribeNative.push(NativeBus.on(NativeBus.topics.advertisement, (data) => { this._parseAdvertisement(data) }));
+    this.unsubscribeNative.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => { this._parseIBeacon(data) }));
+    this.unsubscribeNative.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (data) => { this._parseAdvertisement(data) }));
     Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds : 1});
     Scheduler.loadCallback(triggerId, () => { this.forceUpdate(); })
   }
@@ -107,7 +104,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   _getItems() {
     let items = [];
 
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
@@ -115,7 +112,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
     let largeLabel = 'Examining Sphere';
     if (stone) {
-      let element = Util.data.getElement(this.props.store, this.props.sphereId, this.props.stoneId, stone);
+      let element = Util.data.getElement(core.store, this.props.sphereId, this.props.stoneId, stone);
 
       largeLabel = "Examining \"" + stone.config.name + "\"\nMAC address: \"" + stone.config.macAddress;
       if (stone.config.applianceId) {
@@ -157,7 +154,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={core.background.menu} >
         <OrangeLine/>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />

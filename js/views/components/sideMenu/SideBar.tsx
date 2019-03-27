@@ -14,19 +14,18 @@ import {
   Text,
   View, TextStyle
 } from "react-native";
-import { eventBus }                 from '../../../util/EventBus'
-import { Actions }                  from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
 import { Icon }                     from '../Icon'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
-import { NativeBus }                from '../../../native/libInterface/NativeBus'
 import { AppUtil }                  from '../../../util/AppUtil'
 import { SettingConstructor }       from '../../../util/SettingConstructor'
-import {LOG, LOGe} from "../../../logging/Log";
+import {LOGe} from "../../../logging/Log";
 import { StoreManager }             from "../../../router/store/storeManager";
 import { SphereUtil }               from "../../../util/SphereUtil";
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
@@ -42,7 +41,7 @@ export class SideBar extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on("databaseChange", (data) => {
+    this.unsubscribe.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (
         change.changeUserData            ||
@@ -58,8 +57,8 @@ export class SideBar extends LiveComponent<any, any> {
       }
     }));
     // trigger a redraw then the sphere is entered/left
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.enterSphere, () => { this.forceUpdate(); }));
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.exitSphere,  () => { this.forceUpdate(); }));
+    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.enterSphere, () => { this.forceUpdate(); }));
+    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.exitSphere,  () => { this.forceUpdate(); }));
   }
 
   componentWillUnmount() {
@@ -72,7 +71,7 @@ export class SideBar extends LiveComponent<any, any> {
     let actionItems = [];
 
     let state = this.store.getState();
-    let finalizeLocalization = SphereUtil.finalizeLocalizationData(state)
+    let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
 
     if (finalizeLocalization.showItem) {
       actionItems.push({
@@ -80,7 +79,7 @@ export class SideBar extends LiveComponent<any, any> {
         label: lang("Setup_localization"),
         icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
         callback: () => {
-          Actions.drawerClose()
+         // NavigationUtil.navigate(drawerClose();
           finalizeLocalization.action()
         }
       });
@@ -92,7 +91,7 @@ export class SideBar extends LiveComponent<any, any> {
     let menuItems = [];
 
     let state = this.store.getState();
-    let highlight = SphereUtil.newMailAvailable(state)
+    let highlight = SphereUtil.newMailAvailable(state);
 
     menuItems.push({
       id: 'messages',
@@ -105,8 +104,8 @@ export class SideBar extends LiveComponent<any, any> {
       />,
       highlight: highlight,
       callback: () => {
-        Actions.drawerClose();
-        Actions.messageInbox();
+       // NavigationUtil.navigate(drawerClose();
+       NavigationUtil.navigate("MessageInbox");
       }
     });
     return menuItems;
@@ -114,7 +113,7 @@ export class SideBar extends LiveComponent<any, any> {
 
   _getSettingsItems() {
     let state = this.store.getState();
-    let settingItems = SettingConstructor(this.store, state, eventBus, () => { Actions.drawerClose() });
+    let settingItems = SettingConstructor(this.store, state, () => { /*NavigationUtil.navigate(drawerClose()*/ });
 
     settingItems.push({
       id: 'quit',

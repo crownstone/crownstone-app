@@ -1,11 +1,9 @@
-import { Platform } from 'react-native'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOGe } from '../logging/Log'
 
-import { Alert } from 'react-native';
 import { STONE_TYPES } from "../Enums";
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
 
 
 export const DataUtil = {
@@ -320,8 +318,8 @@ export const DataUtil = {
   },
 
   getLayoutDataRooms: function(state, sphereId, showSetupCrownstone = false) {
-    let initialPositions = {}
-    let sphere = state.spheres[sphereId]
+    let initialPositions = {};
+    let sphere = state.spheres[sphereId];
     let rooms = sphere.locations;
 
     let floatingStones = getFloatingStones(state, sphereId);
@@ -641,8 +639,7 @@ export const getMapOfCrownstonesInAllSpheresByIBeacon = function(state) {
       let ibeaconString = iBeaconUUID + '_' + stoneConfig.iBeaconMajor + '_' + stoneConfig.iBeaconMinor;
       map[ibeaconString.toLowerCase()] = data
     }
-  };
-
+  }
   return map;
 };
 

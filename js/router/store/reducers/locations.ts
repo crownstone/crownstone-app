@@ -134,17 +134,17 @@ let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
       return state;
     case 'CLEAR_LOCATION_POSITIONS':
       let newState = {...state};
-      newState.x = null
-      newState.y = null
-      newState.setOnThisDevice = false
-      newState.updatedAt = null
+      newState.x = null;
+      newState.y = null;
+      newState.setOnThisDevice = false;
+      newState.updatedAt = null;
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.layout);
     default:
       return state;
   }
-}
+};
 
 let combinedLocationReducer = combineReducers({
   config:       locationConfigReducer,

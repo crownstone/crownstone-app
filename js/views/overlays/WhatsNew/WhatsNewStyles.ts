@@ -1,9 +1,6 @@
 import {
-  Image,
   StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+  } from 'react-native';
 import {colors} from "../../styles";
 
 export const WNStyles = StyleSheet.create({

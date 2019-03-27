@@ -5,21 +5,17 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceEdit", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   ActivityIndicator,
   Linking,
-  PixelRatio,
   ScrollView,
-  Switch,
-  TextInput,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {styles, colors, OrangeLine} from '../styles'
 import { BleUtil } from '../../util/BleUtil'
@@ -32,12 +28,14 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Util} from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import { INTENTS } from "../../native/libInterface/Constants";
-import {BackAction} from "../../util/Back";
+
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
 import { STONE_TYPES } from "../../Enums";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -45,7 +43,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     const { params } = navigation.state;
     return {
       title: lang("Edit_Device"),
-      headerLeft: <CancelButton onPress={BackAction} />,
+      headerLeft: <CancelButton onPress={ () => { NavigationUtil.back(); }} />,
       headerRight: <TopbarButton
         text={ lang("Save")}
         onPress={() => {
@@ -61,7 +59,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    const store = props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return; }
@@ -94,12 +92,10 @@ export class DeviceEdit extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      let state = store.getState();
+      let state = core.store.getState();
 
       // in case the sphere is deleted
       if (state.spheres[this.props.sphereId] === undefined) {
@@ -146,7 +142,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
         type: 'icon',
         value: this.state.applianceIcon,
         callback: () => {
-          Actions.deviceIconSelection({
+         NavigationUtil.navigate("DeviceIconSelection",{
             icon: this.state.applianceIcon,
             callback: (newIcon) => {
               this.setState({applianceIcon: newIcon})
@@ -250,7 +246,7 @@ lang("_Permission_Required__Onl_body"),
             label: lang("Enable_Switchcraft"),
             type: 'switch',
             experimental: true, hasHelp: true, onHelp: () => {
-              Actions.switchCraftInformation()
+             NavigationUtil.navigate("SwitchCraftInformation()")
             },
             icon: <IconButton name="md-power" size={22} button={true} color="#fff"
                               buttonStyle={{backgroundColor: colors.purple.hex}}/>,
@@ -290,7 +286,7 @@ lang("_Permission_Required__Onl_body"),
       items.push({label: lang("SELECT_WHICH_DEVICE_TYPE_"), type: 'explanation', below: false, style:{paddingTop:0}});
       items.push({
         label: lang("Select___"), type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
-          Actions.applianceSelection({
+         NavigationUtil.navigate("ApplianceSelection",{
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             applianceId: this.state.applianceId,
@@ -322,11 +318,11 @@ text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () 
                 Alert.alert("Can't see this one!",
                   "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
                   [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
-                    {text:'Cancel',style: 'cancel', onPress: () => {this.props.eventBus.emit('hideLoading');}}]
+                    {text:'Cancel',style: 'cancel', onPress: () => {core.eventBus.emit('hideLoading');}}]
                 )
               }
               else {
-                this.props.eventBus.emit('showLoading', 'Looking for the Crownstone...');
+                core.eventBus.emit('showLoading', 'Looking for the Crownstone...');
                 this._removeCrownstone(stone).catch((err) => {});
               }
             }}]
@@ -356,14 +352,14 @@ lang("_Cant_see_this_one___We_c_header"),
 lang("_Cant_see_this_one___We_c_body"),
 [{text:lang("_Cant_see_this_one___We_c_left"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
               {
-text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {this.props.eventBus.emit('hideLoading');}}])
+text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {core.eventBus.emit('hideLoading');}}])
         })
     })
   }
 
 
   _removeCloudOnly() {
-    this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
+    core.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise((resolve, reject) => {
@@ -381,7 +377,7 @@ text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {t
       })
       .catch((err) => {
         LOG.info("error while asking the cloud to remove this crownstone", err);
-        this.props.eventBus.emit('hideLoading');
+        core.eventBus.emit('hideLoading');
         Alert.alert(
 lang("_Encountered_Cloud_Issue__header"),
 lang("_Encountered_Cloud_Issue__body"),
@@ -391,7 +387,7 @@ lang("_Encountered_Cloud_Issue__body"),
 
 
   _removeCloudReset(stone) {
-    this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
+    core.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise((resolve, reject) => {
@@ -405,7 +401,7 @@ lang("_Encountered_Cloud_Issue__body"),
         })
       })
       .then(() => {
-        this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
+        core.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
         BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:"commandFactoryReset"}, {}, 5, "Factory reset from deviceEdit.")
           .then(() => {
             this._removeCrownstoneFromRedux(true);
@@ -413,14 +409,14 @@ lang("_Encountered_Cloud_Issue__body"),
           .catch((err) => {
             LOGe.info("ERROR:",err);
             Alert.alert(
-lang("_Encountered_a_problem____header"),
-lang("_Encountered_a_problem____body"),
-[{text:lang("_Encountered_a_problem____left"), onPress: () => {
-                this.props.eventBus.emit('hideLoading');
-                BackAction('roomOverview');
+              lang("_Encountered_a_problem____header"),
+              lang("_Encountered_a_problem____body"),
+              [{text:lang("_Encountered_a_problem____left"), onPress: () => {
+                core.eventBus.emit('hideLoading');
+                NavigationUtil.backTo('RoomOverview');
               }}]
             )
-          })
+          });
 
         BatchCommandHandler.executePriority();
 
@@ -428,10 +424,10 @@ lang("_Encountered_a_problem____body"),
       .catch((err) => {
         LOG.info("error while asking the cloud to remove this crownstone", err);
         Alert.alert(
-lang("_Encountered_Cloud_Issue___header"),
-lang("_Encountered_Cloud_Issue___body"),
-[{text:lang("_Encountered_Cloud_Issue___left"), onPress: () => {
-            this.props.eventBus.emit('hideLoading');}
+          lang("_Encountered_Cloud_Issue___header"),
+          lang("_Encountered_Cloud_Issue___body"),
+          [{text:lang("_Encountered_Cloud_Issue___left"), onPress: () => {
+            core.eventBus.emit('hideLoading');}
           }])
       })
   }
@@ -446,19 +442,19 @@ lang("_Encountered_Cloud_Issue___body"),
      labelText =  lang("I_have_removed_this_Crowns")}
 
     Alert.alert(
-lang("_Success__arguments___OKn_header"),
-lang("_Success__arguments___OKn_body",labelText),
+      lang("_Success__arguments___OKn_header"),
+      lang("_Success__arguments___OKn_body",labelText),
 [{text:lang("_Success__arguments___OKn_left"), onPress: () => {
-        this.props.eventBus.emit('hideLoading');
-        BackAction('roomOverview');
-        this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+        core.eventBus.emit('hideLoading');
+        NavigationUtil.backTo('RoomOverview');
+        core.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }}]
     )
   }
 
 
   _updateCrownstone() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     let appliance = null;
@@ -473,8 +469,8 @@ lang("_Success__arguments___OKn_body",labelText),
     if (dimChange)         { changePromises.push(dimChange); }
     if (switchCraftChange) { changePromises.push(switchCraftChange); }
     Promise.all(changePromises)
-      .then(() => { this.props.eventBus.emit("hideLoading"); } )
-      .catch((err) => { () => { this.props.eventBus.emit("hideLoading"); } });
+      .then(() => { core.eventBus.emit("hideLoading"); } )
+      .catch((err) => { () => { core.eventBus.emit("hideLoading"); } });
 
     let actions = [];
     if (
@@ -510,10 +506,10 @@ lang("_Success__arguments___OKn_body",labelText),
     }
 
     if (actions.length > 0) {
-      this.props.store.batchDispatch(actions);
+      core.store.batchDispatch(actions);
     }
 
-    BackAction();
+    NavigationUtil.back();
   }
 
   _setDimState(stone) {
@@ -536,7 +532,7 @@ lang("_Cant_see_this_Crownstone_body",this.state.dimmingEnabled),
       let promises = [];
       let dimmingChangedSuccessfully = false;
       if (this.state.dimmingEnabled === false) {
-        this.props.eventBus.emit("showLoading", "Disabling dimming on this Crownstone...");
+        core.eventBus.emit("showLoading", "Disabling dimming on this Crownstone...");
         // turn the relay on if dimming is being disabled and the stone is dimming
         if (stone.state.state > 0) {
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'multiSwitch', state: 1, intent: INTENTS.manual, timeout: 0}));
@@ -552,7 +548,7 @@ lang("_Im_sorry_____I_couldnt_d_body"),
           }));
       }
       else {
-        this.props.eventBus.emit("showLoading", "Enabling dimming on this Crownstone...");
+        core.eventBus.emit("showLoading", "Enabling dimming on this Crownstone...");
         promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: true })
           .then(() => { dimmingChangedSuccessfully = true; })
           .catch((err) => {
@@ -566,7 +562,7 @@ lang("_Im_sorry_____I_couldnt_e_body"),
       BatchCommandHandler.executePriority();
       return Promise.all(promises).then(() => {
         if (dimmingChangedSuccessfully) {
-          this.props.store.dispatch({
+          core.store.dispatch({
             type: 'UPDATE_STONE_CONFIG',
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
@@ -581,7 +577,7 @@ lang("_Im_sorry_____I_couldnt_e_body"),
 
   _setSwitchcraftState(stone) {
     if (stone.config.switchCraft !== this.state.switchCraft) {
-      this.props.eventBus.emit("showLoading", "Configuring Switchcraft on this Crownstone...");
+      core.eventBus.emit("showLoading", "Configuring Switchcraft on this Crownstone...");
 
       if (stone.reachability.disabled) {
         Alert.alert(
@@ -593,7 +589,7 @@ lang("_Cant_see_this_Crownstone__body",this.state.dimmingEnabled),
 
       let changePromise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'setSwitchCraft', value: this.state.switchCraft })
         .then(() => {
-          this.props.store.dispatch({
+          core.store.dispatch({
             type: 'UPDATE_STONE_CONFIG',
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
@@ -640,7 +636,7 @@ lang("_Cant_see_this_stone___I__body"),
           let promises = [];
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware')
             .then((firmwareVersion : {data: string}) => {
-              this.props.store.dispatch({
+              core.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
                 stoneId: this.props.stoneId,
                 sphereId: this.props.sphereId,
@@ -658,7 +654,7 @@ lang("_Whoops___I_could_not_get_body"),
             }));
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware')
             .then((hardwareVersion : {data: string}) => {
-              this.props.store.dispatch({
+              core.store.dispatch({
                 type: "UPDATE_STONE_CONFIG",
                 stoneId: this.props.stoneId,
                 sphereId: this.props.sphereId,
@@ -696,7 +692,7 @@ lang("_Whoops___I_could_not_get__body"),
   }
 
   render() {
-    const state = this.props.store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted /> }
     const stone = sphere.stones[this.props.stoneId];
@@ -704,7 +700,7 @@ lang("_Whoops___I_could_not_get__body"),
 
     let options = this.constructStoneOptions(stone, state);
 
-    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
+    let backgroundImage = core.background.menu;
 
     return (
       <Background hasNavBar={false} image={backgroundImage}>

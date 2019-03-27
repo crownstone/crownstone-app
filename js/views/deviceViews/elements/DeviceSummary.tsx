@@ -7,19 +7,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
   ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
-  ScrollView,
   StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View, ViewStyle
 } from "react-native";
-const Actions = require('react-native-router-flux').Actions;
 
 import { colors, screenWidth, screenHeight } from '../../styles'
 import { Util }                from "../../../util/Util";
@@ -32,16 +25,18 @@ import { Permissions}          from "../../../backgroundProcesses/PermissionMana
 import { EventBusClass}        from "../../../util/EventBus";
 import { LockedStateUI}        from "../../components/LockedStateUI";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 export class DeviceSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
-  unsubscribeStoreEvents
+  unsubscribeStoreEvents;
 
   constructor(props) {
     super(props);
     this.state = {pendingCommand: false};
 
-    const state = props.store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[props.sphereId];
     const stone = sphere.stones[props.stoneId];
     this.storedSwitchState = stone.state.state;
@@ -49,12 +44,11 @@ export class DeviceSummary extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    const { store } = this.props;
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      let state = store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       if (!stone || !stone.config) { return; }
 
@@ -83,7 +77,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
    * this will store the switchstate if it is not already done. Used for dimmers which use the "TRANSIENT" action.
    */
   safeStoreUpdate() {
-    const state = this.props.store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return; }
 
@@ -95,7 +89,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
       if (stone.state.state === 0) {
         data['currentUsage'] = 0;
       }
-      this.props.store.dispatch({
+      core.store.dispatch({
         type: 'UPDATE_STONE_SWITCH_STATE',
         sphereId: this.props.sphereId,
         stoneId: this.props.stoneId,
@@ -108,12 +102,12 @@ export class DeviceSummary extends LiveComponent<any, any> {
 
   _triggerApplianceSelection(stone) {
     this.safeStoreUpdate();
-    Actions.applianceSelection({
+    NavigationUtil.navigate("ApplianceSelection",{
       sphereId: this.props.sphereId,
       applianceId: stone.config.applianceId,
       stoneId: this.props.stoneId,
       callback: (applianceId) => {
-        this.props.store.dispatch({
+        core.store.dispatch({
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
           type: 'UPDATE_STONE_CONFIG',
@@ -162,7 +156,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
             BatchCommandHandler.executePriority();
             return promise;
           }}
-          unlockDataCallback={() => { this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
+          unlockDataCallback={() => { core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
         />
       );
     }
@@ -173,7 +167,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
         if (newState === 0) {
           data['currentUsage'] = 0;
         }
-        this.props.store.dispatch({
+        core.store.dispatch({
           type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
@@ -204,7 +198,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
             this.props.stoneId,
             stone,
             newState,
-            this.props.store,
+            core.store,
             {},
             () => { this.setState({pendingCommand:false}); this.storedSwitchState = newState; },
             INTENTS.manual,
@@ -237,7 +231,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
     if (stone.reachability.disabled === false && stone.config.locked === false) {
       return (
         <TouchableOpacity
-          onPress={() => {this.props.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
+          onPress={() => {core.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
           style={wrapperStyle}>
           <Icon name={"md-unlock"} color={colors.white.rgba(0.5)} size={30}/>
         </TouchableOpacity>
@@ -249,7 +243,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
@@ -279,13 +273,11 @@ export class DeviceSummary extends LiveComponent<any, any> {
           leftValue={stone.state.currentUsage + ' W'}
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { Actions.roomSelection({sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'deviceOverview'}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate( "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'deviceOverview'}); } : null}
         />
         <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>
           <DeviceButton
-            store={this.props.store}
-            eventBus={this.props.eventBus}
             stoneId={this.props.stoneId}
             sphereId={this.props.sphereId}
             callback={(stone) => { spherePermissions.canChangeAppliance ? this._triggerApplianceSelection(stone) : null }}
@@ -302,12 +294,12 @@ export class DeviceSummary extends LiveComponent<any, any> {
   }
 }
 
-export class DeviceButton extends Component<{store: any, sphereId: string, stoneId: string, eventBus: EventBusClass, callback?(any): void}, any> {
+export class DeviceButton extends Component<{sphereId: string, stoneId: string, callback?(any): void}, any> {
   unsubscribeStoreEvents;
 
   componentDidMount() {
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (change.stoneUsageUpdatedTransient && change.stoneUsageUpdatedTransient.stoneIds[this.props.stoneId]) {
         this.forceUpdate();
@@ -320,11 +312,11 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
-    const element = Util.data.getElement(this.props.store, this.props.sphereId, this.props.stoneId, stone);
+    const element = Util.data.getElement(core.store, this.props.sphereId, this.props.stoneId, stone);
 
     let currentState = stone.state.state;
     let stateColor = colors.menuBackground.hex;
@@ -352,7 +344,7 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
     if (this.props.callback) {
       return (
         <TouchableOpacity onPress={() => {
-          const store = this.props.store;
+          const store = core.store;
           const state = store.getState();
           const sphere = state.spheres[this.props.sphereId];
           const stone = sphere.stones[this.props.stoneId];

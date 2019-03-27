@@ -1,7 +1,5 @@
-import { NativeBus }          from '../libInterface/NativeBus';
 import { SetupHelper }        from './SetupHelper';
 import { BleUtil }            from '../../util/BleUtil';
-import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
 import {LOG, LOGd, LOGe} from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
@@ -10,6 +8,7 @@ import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../Enums";
+import { core } from "../../core";
 
 
 
@@ -57,10 +56,10 @@ class SetupStateHandlerClass {
     if (this._initialized === false) {
       this._initialized = true;
       // these events are emitted from the setupUtil
-      eventBus.on("setupStarted",   (handle) => {});
+      core.eventBus.on("setupStarted",   (handle) => {});
 
       // when the setup is finished, we clean up the handle from the list of stones in setup mode
-      eventBus.on("setupComplete",  (handle) => {
+      core.eventBus.on("setupComplete",  (handle) => {
         this._ignoreStoneAfterSetup[handle] = true;
 
         // we ignore the stone that just completed setup for 5 seconds after completion to avoid duplicates in the view.
@@ -72,17 +71,17 @@ class SetupStateHandlerClass {
         this._resetSetupState();
         // cleaning up the entry of the setup stone
         this._cleanup(handle);
-        eventBus.emit("setupCleanedUp");
+        core.eventBus.emit("setupCleanedUp");
       });
 
       // if we cancel the setup mode because of an error, we reset the timeout for this handle.
-      eventBus.on("setupCancelled", (handle) => {
+      core.eventBus.on("setupCancelled", (handle) => {
         this._resetSetupState();
         this._setSetupTimeout(handle);
-        eventBus.emit("setupCleanedUp");
+        core.eventBus.emit("setupCleanedUp");
       });
 
-      NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+      core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
 
@@ -98,7 +97,7 @@ class SetupStateHandlerClass {
         }
 
         // emit advertisements for other views
-        eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
+        core.eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
 
         // if we just completed the setup of this stone, we ignore it for a while to avoid duplicates.
         if (this._ignoreStoneAfterSetup[handle]) {
@@ -117,11 +116,11 @@ class SetupStateHandlerClass {
 
           this._stonesInSetupStateAdvertisements[handle] = setupAdvertisement;
           this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
-          eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
+          core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
         }
 
         if (emitDiscovery) {
-          eventBus.emit("setupStonesDetected");
+          core.eventBus.emit("setupStonesDetected");
         }
 
         // (re)start setup timeout
@@ -152,9 +151,9 @@ class SetupStateHandlerClass {
     delete this._stonesInSetupStateAdvertisements[handle];
     delete this._stonesInSetupStateTypes[handle];
     delete this._setupModeTimeouts[handle];
-    eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
+    core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
     if (Object.keys(this._stonesInSetupStateAdvertisements).length === 0) {
-      eventBus.emit("noSetupStonesVisible");
+      core.eventBus.emit("noSetupStonesVisible");
     }
   }
 
@@ -216,7 +215,7 @@ class SetupStateHandlerClass {
       this._setupModeTimeouts[handle] = null;
     }
 
-    eventBus.emit("setupStarting");
+    core.eventBus.emit("setupStarting");
 
     return helper.claim(this._store, sphereId, silent);
   }

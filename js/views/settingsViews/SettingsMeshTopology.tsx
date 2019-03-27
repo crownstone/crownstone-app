@@ -5,15 +5,10 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsMeshTopology", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   Animated,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
-  ScrollView,
-  Switch,
   Text,
   TouchableOpacity,
   View
@@ -24,14 +19,14 @@ import { Util } from '../../util/Util'
 import {colors, OrangeLine} from './../styles'
 import { MeshElement } from "../components/MeshElement";
 import {ForceDirectedView} from "../components/interactiveView/ForceDirectedView";
-import {topBarHeight} from "../styles";
 import {TopbarButton} from "../components/topbar/TopbarButton";
-import KeepAwake from 'react-native-keep-awake';
 import {Icon} from "../components/Icon";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {MeshUtil} from "../../util/MeshUtil";
 import { xUtil } from "../../util/StandAloneUtil";
-const Actions = require('react-native-router-flux').Actions;
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+
 
 let MESH_TIMEOUT = 3*24*3600*1000;
 
@@ -42,7 +37,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
       <TopbarButton
         text={ lang("Networks")}
         style={{width:100}}
-        onPress={() => { Actions.settingsMeshOverview(); }}
+        onPress={() => { NavigationUtil.navigate("SettingsMeshOverview"); }}
       />,
       headerTruncatedBackTitle: lang("Back"),
     }
@@ -52,9 +47,9 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
   unsubscribeStoreEvents : any;
   nodeData = {};
 
-  refreshCount = 0
-  refreshAmountRequired = 0
-  viewId : string
+  refreshCount = 0;
+  refreshAmountRequired = 0;
+  viewId : string;
 
   constructor(props) {
     super(props);
@@ -63,7 +58,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if ( change.meshIdUpdated || change.meshIndicatorUpdated || change.changeStones || change.changeLocations || change.stoneLocationUpdated ) {
         this.forceUpdate();
@@ -130,41 +125,41 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     this.refreshAmountRequired = stoneIds.length;
     this.refreshCount = 0;
 
-    this.props.eventBus.emit('showProgress', {progress: 0, progressText: lang("Refreshing_Mesh_Topology_Start")});
+    core.eventBus.emit('showProgress', {progress: 0, progressText: lang("Refreshing_Mesh_Topology_Start")});
 
     let evaluateRefreshProgress = () => {
-      this.refreshCount += 1
+      this.refreshCount += 1;
       if (this.refreshCount >= this.refreshAmountRequired) {
-        this.props.eventBus.emit("hideProgress");
-        const store = this.props.store;
+        core.eventBus.emit("hideProgress");
+        const store = core.store;
         const state = store.getState();
         let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
         MeshUtil.clearMeshNetworkIds(store, sphereId);
       }
       else {
-        this.props.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: lang("Refreshing_Mesh_Topology_",this.refreshCount,this.refreshAmountRequired)});
+        core.eventBus.emit('updateProgress', {progress: this.refreshCount / this.refreshAmountRequired, progressText: lang("Refreshing_Mesh_Topology_",this.refreshCount,this.refreshAmountRequired)});
       }
-    }
+    };
 
     stoneIds.forEach((stoneId) => {
       BatchCommandHandler.loadPriority(stones[stoneId], stoneId, sphereId, {commandName: 'sendMeshNoOp'}, {}, 2, 'meshNoOp_meshRefresh' + stoneId )
         .then(() => { evaluateRefreshProgress() })
         .catch(() => { evaluateRefreshProgress() })
-    })
+    });
     BatchCommandHandler.executePriority()
   }
 
   _debugPrints(sphereId, connections, edgeId, stones) {
-    let element1 = Util.data.getElement(this.props.store, sphereId, connections[edgeId].from, stones[connections[edgeId].from]);
-    let element2 = Util.data.getElement(this.props.store, sphereId, connections[edgeId].to,   stones[connections[edgeId].to]);
+    let element1 = Util.data.getElement(core.store, sphereId, connections[edgeId].from, stones[connections[edgeId].from]);
+    let element2 = Util.data.getElement(core.store, sphereId, connections[edgeId].to,   stones[connections[edgeId].to]);
 
-    let stoneName0 = stones[connections[edgeId].from].config.name
-    let stoneName1 = stones[connections[edgeId].to].config.name
+    let stoneName0 = stones[connections[edgeId].from].config.name;
+    let stoneName1 = stones[connections[edgeId].to].config.name;
 
-    let names = [stoneName0, stoneName1].sort()
+    let names = [stoneName0, stoneName1].sort();
 
-    let n0 = stoneName0.split(":")
-    let n1 = stoneName1.split(":")
+    let n0 = stoneName0.split(":");
+    let n1 = stoneName1.split(":");
 
     if (n0[1] !== n1[1]) {
       console.log("meshDebug: '"+names[0], '-', names[1], ';', connections[edgeId].rssi+"',")
@@ -172,7 +167,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
 
     let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
@@ -182,13 +177,13 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
 
     if (stoneIds.length === 0) {
       return (
-        <Background image={this.props.backgrounds.menu}>
+        <Background image={core.background.menu}>
           <OrangeLine/>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{ lang("No_Crownstones_in_Sphere_",sphere.config.name) }</Text>
           </View>
           <TouchableOpacity
-            onPress={() => { Actions.settingsMeshTopologyHelp() }}
+            onPress={() => { NavigationUtil.navigate("SettingsMeshTopologyHelp"); }}
             style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
             <Icon name={'ios-help-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
           </TouchableOpacity>
@@ -209,7 +204,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
         locationIcon = location.config.icon;
         locationTitle = location.config.name;
       }
-      let element = Util.data.getElement(this.props.store, sphereId, stoneId, stone);
+      let element = Util.data.getElement(core.store, sphereId, stoneId, stone);
 
       this.nodeData[stoneId] = {locationIcon: locationIcon, deviceIcon: element.config.icon, locationTitle:locationTitle, element: element, stone:stone};
 
@@ -250,7 +245,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     });
 
     return (
-      <Background image={this.props.backgrounds.menu}>
+      <Background image={core.background.menu}>
         <OrangeLine/>
         <ForceDirectedView
           viewId={this.viewId}
@@ -269,7 +264,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
           }}
         />
         <TouchableOpacity
-          onPress={() => { Actions.settingsMeshTopologyHelp() }}
+          onPress={() => { NavigationUtil.navigate("SettingsMeshTopologyHelp"); }}
           style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
           <Icon name={'ios-help-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
         </TouchableOpacity>

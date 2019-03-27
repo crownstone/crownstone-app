@@ -6,23 +6,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../../styles";
 import { IconButton }   from "../../components/IconButton";
-import { eventBus }     from "../../../util/EventBus";
 import { Permissions }  from "../../../backgroundProcesses/PermissionManager";
+import { core } from "../../../core";
 
 export class DeviceUpdate extends Component<any, any> {
 
@@ -57,7 +50,7 @@ export class DeviceUpdate extends Component<any, any> {
   }
 
   _getTitle() {
-    const state = this.props.store.getState();
+    const state = core.store.getState();
     const dfuResetRequired = state.spheres[this.props.sphereId].stones[this.props.stoneId].config.dfuResetRequired;
     if (dfuResetRequired) {
       return 'Finish Update';
@@ -79,7 +72,7 @@ export class DeviceUpdate extends Component<any, any> {
     return (
       <TouchableOpacity
         onPress={() => {
-          eventBus.emit('updateCrownstoneFirmware', {
+          core.eventBus.emit('updateCrownstoneFirmware', {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId,
             skipIntroduction: true
@@ -98,7 +91,7 @@ export class DeviceUpdate extends Component<any, any> {
   }
 
   render() {
-    const state    = this.props.store.getState();
+    const state    = core.store.getState();
     const sphere   = state.spheres[this.props.sphereId];
     const stone    = sphere.stones[this.props.stoneId];
     const disabled = stone.reachability.disabled;
@@ -113,7 +106,7 @@ export class DeviceUpdate extends Component<any, any> {
         <View style={{flex:1}} />
         {disabled ? undefined : <TouchableOpacity
           onPress={() => {
-            eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId, skipIntroduction: true});
+            core.eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId, skipIntroduction: true});
           }}
           style={[styles.centered, {
             width: 0.6 * screenWidth,

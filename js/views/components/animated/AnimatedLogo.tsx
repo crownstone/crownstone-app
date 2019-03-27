@@ -7,9 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Image,
-  
-} from 'react-native';
+  } from 'react-native';
 
 export class AnimatedLogo extends Component<any, any> {
   baseSize : number;

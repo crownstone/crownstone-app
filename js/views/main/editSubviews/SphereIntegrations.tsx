@@ -7,22 +7,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
   ScrollView,
-  Switch,
-  Text,
   View
 } from 'react-native';
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import { IconButton } from '../../components/IconButton'
-const Actions = require('react-native-router-flux').Actions;
-import { colors } from '../../styles';
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+
 import {OrangeLine} from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 export class SphereIntegrations extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -43,17 +37,17 @@ export class SphereIntegrations extends Component<any, any> {
       type: 'navigation',
       largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/toonLogo.png')} targetWidth={65} targetHeight={45} sourceWidth={1000} sourceHeight={237}/>,
       callback: () => {
-        let state = this.props.store.getState();
+        let state = core.store.getState();
         let sphere = state.spheres[this.props.sphereId];
-        let toonIds = Object.keys(sphere.thirdParty.toons)
+        let toonIds = Object.keys(sphere.thirdParty.toons);
         if (toonIds.length === 1) {
-          Actions.toonSettings({sphereId: this.props.sphereId, toonId: toonIds[0]});
+          NavigationUtil.navigate("ToonSettings",{sphereId: this.props.sphereId, toonId: toonIds[0]});
         }
         else if (toonIds.length > 1) {
-          Actions.toonOverview({sphereId: this.props.sphereId});
+          NavigationUtil.navigate("ToonOverview",{sphereId: this.props.sphereId});
         }
         else {
-          Actions.toonAdd({sphereId: this.props.sphereId});
+          NavigationUtil.navigate("ToonAdd",{sphereId: this.props.sphereId});
         }
       }
     });
@@ -64,7 +58,7 @@ export class SphereIntegrations extends Component<any, any> {
       type: 'navigation',
       largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/amazonAlexa.png')} targetWidth={52} targetHeight={52} sourceWidth={264} sourceHeight={265}/>,
       callback: () => {
-        Actions.alexaOverview({sphereId: this.props.sphereId});
+       NavigationUtil.navigate("AlexaOverview",{sphereId: this.props.sphereId});
       }
     });
 
@@ -80,9 +74,9 @@ export class SphereIntegrations extends Component<any, any> {
         </View>,
       callback: () => {
         Alert.alert(
-lang("_Working_on_it___Support__header"),
-lang("_Working_on_it___Support__body"),
-[{text:lang("_Working_on_it___Support__left")}])
+          lang("_Working_on_it___Support__header"),
+          lang("_Working_on_it___Support__body"),
+          [{text:lang("_Working_on_it___Support__left")}])
       }
     });
 
@@ -94,12 +88,9 @@ lang("_Working_on_it___Support__body"),
     return items;
   }
 
-
-
-
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false} >
+      <Background image={core.background.menu} hasNavBar={false} >
         <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItemsAlternative()} />

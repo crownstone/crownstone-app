@@ -1,6 +1,6 @@
 import {LOG_LEVEL} from "./logging/LogLevels";
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
 
 /******************** RELEASE FLAGS ********************/
 

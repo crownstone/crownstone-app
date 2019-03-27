@@ -7,9 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   
-  Dimensions,
-  Image,
-  PixelRatio,
   Text,
   View,
 } from 'react-native';
@@ -18,7 +15,7 @@ import { AnimatedLogo }       from './animated/AnimatedLogo'
 import { AnimatedLoadingBar } from './animated/AnimatedLoadingBar'
 import { HiddenFadeInView }         from './animated/FadeInView'
 import { styles, colors , screenHeight} from './../styles'
-import { eventBus } from '../../util/EventBus'
+import { core } from "../../core";
 
 export class Processing extends Component<any, any> {
   unsubscribe : any;
@@ -37,7 +34,7 @@ export class Processing extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on('showLoading', (data) => {
+    this.unsubscribe.push(core.eventBus.on('showLoading', (data) => {
       if (typeof data === "string") {
         this.setState({
           visible: true,
@@ -58,28 +55,28 @@ export class Processing extends Component<any, any> {
       }
     }));
 
-    this.unsubscribe.push(eventBus.on('showProgress', (data) => {this.setState({
+    this.unsubscribe.push(core.eventBus.on('showProgress', (data) => {this.setState({
       visible:      true,
       progress:     data.progress === undefined ? 0               : data.progress,
       text:         data.text     === undefined ? this.state.text : data.text,
       opacity:      data.opacity  === undefined ? null            : data.opacity,
       progressText: data.progressText,
     })}));
-    this.unsubscribe.push(eventBus.on('updateProgress', (data) => {this.setState({
+    this.unsubscribe.push(core.eventBus.on('updateProgress', (data) => {this.setState({
       visible:      true,
       progress:     data.progress     === undefined ? this.state.progress     : data.progress,
       text:         data.text         === undefined ? this.state.text         : data.text,
       progressText: data.progressText === undefined ? this.state.progressText : data.progressText,
       opacity:      data.opacity      === undefined ? this.state.opacity      : data.opacity
     })}));
-    this.unsubscribe.push(eventBus.on('hideProgress', () => {this.setState({
+    this.unsubscribe.push(core.eventBus.on('hideProgress', () => {this.setState({
       visible:      false,
       progress:     undefined,
       text:         undefined,
       progressText: undefined,
       opacity:      null,
     })}));
-    this.unsubscribe.push(eventBus.on('hideLoading', () => {this.setState({
+    this.unsubscribe.push(core.eventBus.on('hideLoading', () => {this.setState({
       visible:      false,
       progress:     undefined,
       text:         undefined,

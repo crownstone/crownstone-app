@@ -8,17 +8,10 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
   Alert,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
-  Text,
-  View,
   Vibration
 } from 'react-native';
 
-const Actions = require('react-native-router-flux').Actions;
+
 import KeepAwake from 'react-native-keep-awake';
 
 import { FingerprintManager } from '../../native/localization/FingerprintManager'
@@ -31,9 +24,11 @@ import { RoomTraining_explanation } from './trainingComponents/RoomTraining_expl
 import { RoomTraining_training } from './trainingComponents/RoomTraining_training'
 import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
 import { Util } from "../../util/Util";
-import {BackAction} from "../../util/Back";
+
 import {CancelButton} from "../components/topbar/CancelButton";
 import {CLOUD} from "../../cloud/cloudAPI";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class RoomTraining extends Component<any, any> {
@@ -46,7 +41,7 @@ export class RoomTraining extends Component<any, any> {
         paramsToUse = NAVBAR_PARAMS_CACHE;
       }
       else {
-        paramsToUse = getNavBarParams(params.store.getState(), params, true);
+        paramsToUse = getNavBarParams(core.store.getState(), params, true);
       }
     }
 
@@ -82,7 +77,7 @@ export class RoomTraining extends Component<any, any> {
     this.stop();
     clearTimeout(this.noSignalTimeout);
 
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     if (canUseIndoorLocalizationInSphere(state, this.props.sphereId) === true) {
       LOGd.info("(Re)Starting indoor localization after training");
       Bluenet.startIndoorLocalization();
@@ -102,11 +97,11 @@ export class RoomTraining extends Component<any, any> {
 
       this.stop(true);
 
-      let defaultAction = () => { BackAction('sphereOverview'); };
+      let defaultAction = () => { NavigationUtil.backTo('SphereOverview'); };
       Alert.alert(
-lang("_No_Crownstones_in_range__header"),
-lang("_No_Crownstones_in_range__body"),
-[{text:lang("_No_Crownstones_in_range__left"), onPress: defaultAction}],
+        lang("_No_Crownstones_in_range__header"),
+        lang("_No_Crownstones_in_range__body"),
+        [{text:lang("_No_Crownstones_in_range__left"), onPress: defaultAction}],
         { onDismiss: defaultAction }
       )
     },4000);
@@ -143,7 +138,7 @@ lang("_No_Crownstones_in_range__body"),
 
       this.stop(true);
 
-      let defaultAction = () => { BackAction('sphereOverview'); };
+      let defaultAction = () => { NavigationUtil.backTo('SphereOverview'); };
       Alert.alert(
 lang("_I_can_not_see_enough_Cro_header"),
 lang("_I_can_not_see_enough_Cro_body",averageAmountOfMeasurements),
@@ -169,11 +164,11 @@ lang("_I_can_not_see_enough_Cro_body",averageAmountOfMeasurements),
     Vibration.vibrate(400, false);
 
     this.setState({text:'Finished!', phase:2});
-    const store = this.props.store;
+    const store = core.store;
     FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId)
       .then((stringifiedFingerprint : any) => {
         LOG.info("gathered fingerprint:", stringifiedFingerprint);
-        let transformedFingerprint = FingerprintManager.transformFingerprint(stringifiedFingerprint)
+        let transformedFingerprint = FingerprintManager.transformFingerprint(stringifiedFingerprint);
         store.dispatch({
           type:'UPDATE_NEW_LOCATION_FINGERPRINT',
           sphereId: this.props.sphereId,
@@ -202,7 +197,7 @@ lang("_I_can_not_see_enough_Cro_body",averageAmountOfMeasurements),
 
 
   render() {
-    let state  = this.props.store.getState();
+    let state  = core.store.getState();
     let ai = Util.data.getAiData(state, this.props.sphereId);
     let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
@@ -214,13 +209,13 @@ lang("_Do_you_want_to_cancel_tr_header"),
 lang("_Do_you_want_to_cancel_tr_body"),
 [{text:lang("_Do_you_want_to_cancel_tr_left"), onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
           {
-text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); BackAction('sphereOverview'); }}
+text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); NavigationUtil.backTo('SphereOverview'); }}
         ],
         { cancelable : false }
       )
     };
 
-    let quitMethod = () => { BackAction('sphereOverview'); };
+    let quitMethod = () => { NavigationUtil.backTo('RoomOverview'); };
 
     let content = undefined;
     if (this.state.phase === 0) {
@@ -257,7 +252,7 @@ text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); 
     }
 
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
         <KeepAwake />
         {content}
       </Background>

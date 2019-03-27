@@ -5,16 +5,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  DatePickerIOS,
-  Platform,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
-  TimePickerAndroid,
   TouchableOpacity,
   Text,
   View

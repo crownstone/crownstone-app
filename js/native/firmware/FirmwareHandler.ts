@@ -1,4 +1,3 @@
-import { Platform }       from 'react-native';
 import { CLOUD }          from "../../cloud/cloudAPI";
 import {LOG, LOGe} from "../../logging/Log";
 import { FirmwareHelper } from "./FirmwareHelper";

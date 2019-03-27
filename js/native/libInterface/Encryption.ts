@@ -1,7 +1,6 @@
-import { Alert, AppState }       from 'react-native';
-import { eventBus } from "../../util/EventBus";
 import { BluenetPromiseWrapper } from "./BluenetPromise";
 import { Bluenet } from "./Bluenet";
+import { core } from "../../core";
 
 
 class EncryptionManagerClass {
@@ -15,9 +14,9 @@ class EncryptionManagerClass {
       this.store = store;
       this._initialized = true;
 
-      eventBus.on("sphereCreated",        () => { this.setKeySets(); });
-      eventBus.on("KEYS_UPDATED",         () => { this.setKeySets(); });
-      eventBus.on('userLoggedInFinished', () => { this.setKeySets(); });
+      core.eventBus.on("sphereCreated",        () => { this.setKeySets(); });
+      core.eventBus.on("KEYS_UPDATED",         () => { this.setKeySets(); });
+      core.eventBus.on('userLoggedInFinished', () => { this.setKeySets(); });
 
       this.setKeySets();
     }
@@ -49,4 +48,4 @@ class EncryptionManagerClass {
   }
 }
 
-export const EncryptionManager = new EncryptionManagerClass()
+export const EncryptionManager = new EncryptionManagerClass();

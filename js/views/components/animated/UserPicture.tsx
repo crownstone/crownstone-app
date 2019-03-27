@@ -6,9 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  View
-} from 'react-native';
+  Animated} from 'react-native';
 import {ProfilePicture} from "../ProfilePicture";
 
 export class UserPicture extends Component<any, any> {

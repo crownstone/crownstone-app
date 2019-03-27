@@ -9,37 +9,39 @@ import {
   Alert,
   Image,
   ScrollView,
-  StyleSheet,
   Platform,
   TouchableHighlight,
   TouchableOpacity,
-  TextInput,
   Text,
   View
 } from 'react-native';
 
-const Actions = require('react-native-router-flux').Actions;
+
 const sha1    = require('sha-1');
 const RNFS    = require('react-native-fs');
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
 
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
-import { emailChecker, getImageFileFromUser, Util } from '../../util/Util'
-import { SessionMemory }      from '../../util/SessionMemory'
+import { emailChecker, getImageFileFromUser} from '../../util/Util'
 import { CLOUD }              from '../../cloud/cloudAPI'
 import { TextEditInput }      from '../components/editComponents/TextEditInput'
 import { Background }         from '../components/Background'
 import { StoreManager }       from '../../router/store/storeManager'
 import loginStyles            from './LoginStyles'
-import {screenWidth, screenHeight, colors, availableScreenHeight, topBarHeight} from '../styles'
+import {screenWidth, screenHeight, colors, topBarHeight} from '../styles'
 import { DEBUG_MODE_ENABLED } from '../../ExternalConfig';
 import { TopBar }             from "../components/Topbar";
 import { Icon }               from "../components/Icon";
 import { Sentry }             from "react-native-sentry";
 import { FileUtil } from "../../util/FileUtil";
+import { core } from "../../core";
 
 
 export class Login extends Component<any, any> {
+  static navigationOptions = {
+    header: null
+  };
+
   progress : number;
 
   emailInputRef    = null;
@@ -48,7 +50,7 @@ export class Login extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {email: SessionMemory.loginEmail || '', password:'', passwordSecureDisplay: true};
+    this.state = {email: core.sessionMemory.loginEmail || '', password:'', passwordSecureDisplay: true};
     this.progress = 0;
   }
 
@@ -73,15 +75,15 @@ export class Login extends Component<any, any> {
   }
 
   requestVerificationEmail() {
-    this.props.eventBus.emit('showLoading', 'Requesting new verification email...');
+    core.eventBus.emit('showLoading', 'Requesting new verification email...');
     CLOUD.requestVerificationEmail({email:this.state.email.toLowerCase()})
       .then(() => {
-        SessionMemory.loginEmail = this.state.email.toLowerCase();
-        this.props.eventBus.emit('hideLoading');
-        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: lang("Verification_Email_Sent")});
+        core.sessionMemory.loginEmail = this.state.email.toLowerCase();
+        core.eventBus.emit('hideLoading');
+        this.props.navigation.reset("RegisterConclusion", {email:this.state.email.toLowerCase(), title: lang("Verification_Email_Sent")});
       })
       .catch((reply) => {
-        let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
+        let defaultAction = () => {core.eventBus.emit('hideLoading')};
         Alert.alert(
 lang("_Cannot_Send_Email_argume_header"),
 lang("_Cannot_Send_Email_argume_body",reply.data),
@@ -90,12 +92,12 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
   }
 
   requestPasswordResetEmail() {
-    this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
+    core.eventBus.emit('showLoading', 'Requesting password reset email...');
     CLOUD.requestPasswordResetEmail({email:this.state.email.toLowerCase()})
       .then(() => {
-        SessionMemory.loginEmail = this.state.email.toLowerCase();
-        this.props.eventBus.emit('hideLoading');
-        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: lang("Reset_Email_Sent"), passwordReset:true});
+        core.sessionMemory.loginEmail = this.state.email.toLowerCase();
+        core.eventBus.emit('hideLoading');
+        this.props.navigation.reset("RegisterConclusion", {email:this.state.email.toLowerCase(), title: lang("Reset_Email_Sent"), passwordReset:true});
       })
       .catch((reply) => {
         let content = "Please try again.";
@@ -110,7 +112,7 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
             validationLink = true;
           }
         }
-        let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
+        let defaultAction = () => {core.eventBus.emit('hideLoading')};
 
         if (validationLink) {
           Alert.alert(
@@ -133,21 +135,20 @@ lang("arguments___arguments___O_body",content),
   attemptLogin() {
     if (this.state.email === '' || this.state.password === '') {
       Alert.alert(
-lang("_Almost_there___Please_in_header"),
-lang("_Almost_there___Please_in_body"),
-[{text: lang("_Almost_there___Please_in_left")}]);
+        lang("_Almost_there___Please_in_header"),
+        lang("_Almost_there___Please_in_body"),
+        [{text: lang("_Almost_there___Please_in_left")}]);
       return;
     }
 
-    this.props.eventBus.emit('showLoading', lang("Logging_in___"));
-    let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
+    core.eventBus.emit('showLoading', lang("Logging_in___"));
+    let defaultAction = () => {core.eventBus.emit('hideLoading')};
     let unverifiedEmailCallback = () => {
       Alert.alert(
-lang("_Your_email_address_has_no_header"),
-lang("_Your_email_address_has_no_body"),
-[{text: lang("_Your_email_address_has_no_left"), onPress: () => this.requestVerificationEmail()},
-        {
-text: lang("_Your_email_address_has_no_right"), onPress: defaultAction}
+        lang("_Your_email_address_has_no_header"),
+        lang("_Your_email_address_has_no_body"),
+        [{text: lang("_Your_email_address_has_no_left"), onPress: () => this.requestVerificationEmail()},
+           {text: lang("_Your_email_address_has_no_right"), onPress: defaultAction}
       ],
       { onDismiss: defaultAction });
     };
@@ -182,11 +183,11 @@ lang("_Incorrect_Email_or_Passw_body"),
         if (handledError === false) {
           // do not show a popup if it is a failed request: this has its own pop up
           if (err.message && err.message === 'Network request failed') {
-            this.props.eventBus.emit('hideLoading');
+            core.eventBus.emit('hideLoading');
           }
           else {
             let defaultAction = () => {
-              this.props.eventBus.emit('hideLoading')
+              core.eventBus.emit('hideLoading')
             };
             Alert.alert(
               lang("_Connection_Problem__Coul_header"),
@@ -222,8 +223,8 @@ lang("_Incorrect_Email_or_Passw_body"),
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true} safeView={true}>
-        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent', paddingTop:0}} />
+      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} safeView={true}>
+        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { this.props.navigation.goBack() }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
             <View style={{flex:2, width:screenWidth}} />
@@ -317,14 +318,14 @@ lang("_Incorrect_Email_or_Passw_body"),
 
   finalizeLogin(accessToken, userId) {
     this.progress = 0;
-    this.props.eventBus.emit('showProgress', {progress: 0, progressText: lang("Getting_user_data_")});
+    core.eventBus.emit('showProgress', {progress: 0, progressText: lang("Getting_user_data_")});
 
     // give the access token and the userId to the cloud api 
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
 
     // load the user into the database
-    const store = this.props.store;
+    const store = core.store;
     store.dispatch({
       type:'USER_LOG_IN',
       data:{
@@ -354,7 +355,7 @@ lang("_Incorrect_Email_or_Passw_body"),
             updatedAt : userData.updatedAt
           }});
           this.progress += parts;
-          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Received_user_data_")});
+          core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Received_user_data_")});
         })
     );
 
@@ -382,7 +383,7 @@ lang("_Incorrect_Email_or_Passw_body"),
         LOG.info("Login: step 2");
         store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
         this.progress += parts;
-        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Handle_profile_picture_")});
+        core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Handle_profile_picture_")});
       })
       .catch((err) => {
         // likely a 404, ignore
@@ -391,25 +392,25 @@ lang("_Incorrect_Email_or_Passw_body"),
       .then(() => {
         LOG.info("Login: step 3");
         this.progress += parts;
-        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
+        core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
         return CLOUD.sync(store, false);
       })
       .then(() => {
         LOG.info("Login: step 4");
         this.progress += parts;
-        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
+        core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Syncing_with_the_Cloud_")});
         let state = store.getState();
         if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
-          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Creating_first_Sphere_")});
-          return CLOUD.createNewSphere(store, state.user.firstName + "'s Sphere", this.props.eventBus);
+          core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Creating_first_Sphere_")});
+          return CLOUD.createNewSphere(store, state.user.firstName + "'s Sphere", core.eventBus);
         }
         else {
-          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Sphere_available_")});
+          core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Sphere_available_")});
         }
       })
       .catch((err) => {
         LOGe.info("Login: Failed to login.", err);
-        let defaultAction = () => {this.props.eventBus.emit('hideProgress')};
+        let defaultAction = () => {core.eventBus.emit('hideProgress')};
         Alert.alert(
 lang("_Whoops___An_error_has_oc_header"),
 lang("_Whoops___An_error_has_oc_body"),
@@ -440,7 +441,7 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
         });
 
         LOG.info("Login: finished promises");
-        this.props.eventBus.emit('updateProgress', {progress: 1, progressText: lang("Done")});
+        core.eventBus.emit('updateProgress', {progress: 1, progressText: lang("Done")});
 
         // finalize the login due to successful download of data. Enables persistence.
         StoreManager.finalizeLogIn(userId).catch(() => {});
@@ -448,33 +449,34 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
         let state = store.getState();
         if (state.user.isNew !== false) {
           // new users do not need to see the "THIS IS WHATS NEW" popup.
-          this.props.store.dispatch({
+          core.store.dispatch({
             type: "UPDATE_APP_SETTINGS",
             data: {shownWhatsNewVersion: DeviceInfo.getReadableVersion()}
           });
         }
 
         // this starts scanning, tracking spheres and prepping the database for the user
-        this.props.eventBus.emit("userLoggedIn");
+        core.eventBus.emit("userLoggedIn");
 
         // set a small delay so the user sees "done"
         setTimeout(() => {
           state = store.getState();
-          this.props.eventBus.emit('hideProgress');
+          core.eventBus.emit('hideProgress');
 
           if (state.user.isNew !== false) {
-            Actions.tutorial({type: 'reset'});
+            this.props.navigation.reset("Tutorial");
           }
           else {
-            this.props.eventBus.emit("userLoggedInFinished");
-            if (Platform.OS === 'android') { Actions.drawer({type: 'reset'}); }
-            else                           { Actions.tabBar({type: 'reset'}); }
+            core.eventBus.emit("userLoggedInFinished");
+            console.log("HERE")
+            if (Platform.OS === 'android') { this.props.navigation.reset("SphereOverview"); }
+            else                           { this.props.navigation.reset("SphereOverview"); }
           }
         }, 100);
       })
       .catch((err) => {
         LOGe.info("Login: ERROR during login.", err);
-        this.props.eventBus.emit('hideProgress');
+        core.eventBus.emit('hideProgress');
       });
   }
 }

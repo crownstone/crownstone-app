@@ -5,16 +5,9 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsApp", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Alert,
-  Platform,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
-  Text,
-  View
-} from 'react-native';
+  ScrollView} from 'react-native';
 
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
@@ -26,6 +19,7 @@ import {colors, OrangeLine} from '../styles'
 import {Util} from "../../util/Util";
 import {KeepAliveHandler} from "../../backgroundProcesses/KeepAliveHandler";
 import {LocationHandler} from "../../native/localization/LocationHandler";
+import { core } from "../../core";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -39,12 +33,12 @@ export class SettingsApp extends LiveComponent<any, any> {
 
 
   _getKeepAliveState() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     return state.app.indoorLocalizationEnabled && state.app.keepAlivesEnabled;
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (change.changeAppSettings) {
         this.forceUpdate();
@@ -61,7 +55,7 @@ export class SettingsApp extends LiveComponent<any, any> {
         KeepAliveHandler.fireTrigger();
       }
       else {
-        let state = this.props.store.getState();
+        let state = core.store.getState();
         KeepAliveHandler.clearCurrentKeepAlives();
         LocationHandler._removeUserFromAllRooms(state, state.user.userId);
       }
@@ -70,13 +64,13 @@ export class SettingsApp extends LiveComponent<any, any> {
     this.unsubscribe();
 
     if (this.triggerTapToToggleCalibration) {
-      this.props.eventBus.emit("CalibrateTapToToggle");
+      core.eventBus.emit("CalibrateTapToToggle");
     }
   }
 
   
   _getItems() {
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
 
     let items = [];
@@ -166,7 +160,7 @@ export class SettingsApp extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={core.background.menu} >
         <OrangeLine/>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />

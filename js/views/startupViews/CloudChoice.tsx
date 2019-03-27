@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 
 import { setupStyle, CancelButton } from '../setupViews/SetupShared'
-var Actions = require('react-native-router-flux').Actions;
 
 
 import { Background } from '../components/Background'
