@@ -2,7 +2,7 @@ import { eventBus }              from '../util/EventBus'
 import { Util }                  from '../util/Util'
 import { BlePromiseManager }     from './BlePromiseManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
-import { LOG, LOGd, LOGe, LOGi, LOGv, LOGw } from '../logging/Log'
+import { LOGd, LOGe, LOGi, LOGv, LOGw } from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
 import { DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL } from '../ExternalConfig'
@@ -51,7 +51,7 @@ class BatchCommandHandlerClass {
    * @param { string } label              // explain where the command comes from,
    */
   load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') : Promise<bchReturnType> {
-    LOGv.bch("BatchCommandHandler: Loading Command, sphereId:",sphereId," stoneId:", stoneId, stone.config.name, command, label);
+    LOGi.bch("BatchCommandHandler: Loading Command, sphereId:",sphereId," stoneId:", stoneId, stone.config.name, command, label);
     return this._load(stone, stoneId, sphereId, command, options, false, attempts, label);
   }
 
@@ -65,13 +65,13 @@ class BatchCommandHandlerClass {
    * @param { string } label              // explain where the command comes from,
    */
   loadPriority(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, attempts: number = 1, label = '') : Promise<bchReturnType>  {
-    LOGv.bch("BatchCommandHandler: Loading High Priority Command, sphereId:",sphereId," stoneId", stoneId, stone.config.name, command, label);
+    LOGi.bch("BatchCommandHandler: Loading High Priority Command, sphereId:",sphereId," stoneId", stoneId, stone.config.name, command, label);
     return this._load(stone, stoneId, sphereId, command, options, true, attempts, label);
   }
 
 
   _load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, priority: boolean, attempts: number = 1, label = '') : Promise<bchReturnType>  {
-    let commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options }
+    let commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options };
     let state = this.store.getState();
 
     if (BroadcastCommandManager.canBroadcast(commandSummary) && state.development.broadcasting_enabled) {
@@ -82,7 +82,7 @@ class BatchCommandHandlerClass {
             return this._commandHandler.load(stone, stoneId, sphereId, command, priority,  attempts, options );
           }
           else {
-            console.log(err, "Error in broadcast.")
+            console.log(err, "Error in broadcast.");
             throw err;
           }
         });
@@ -106,7 +106,7 @@ class BatchCommandHandlerClass {
     // find all the topics for individual crownstones.
     let stoneIds = Object.keys(directTargets);
     stoneIds.forEach((stoneId) => {
-      LOGi.bch("BatchCommandHandler: directCommands for sphere:", directTargets[stoneId], " stone:", stoneId, this.activePromiseId);
+      LOGd.bch("BatchCommandHandler: directCommands for sphere:", directTargets[stoneId], " stone:", stoneId, this.activePromiseId);
       topicsToScan.push({ sphereId: directTargets[stoneId], topic: Util.events.getCrownstoneTopic(directTargets[stoneId], stoneId) });
     });
     return topicsToScan;
@@ -336,7 +336,7 @@ class BatchCommandHandlerClass {
         });
       }
 
-      LOGv.bch("BatchCommandHandler:", this._commandHandler.commands)
+      LOGv.bch("BatchCommandHandler:", this._commandHandler.commands);
       reject({code: BCH_ERROR_CODES.NO_STONES_FOUND, message:"No stones found in connection target obtaining"});
     });
   }
@@ -432,6 +432,7 @@ class BatchCommandHandlerClass {
           resolve({data:null});
         })
         .catch((err) => {
+          LOGi.bch("BatchCommandHandler: Failed to execute", err, executingPromiseId);
           // Use the attempt handler to clean up after something fails.
           this.attemptHandler(activeCrownstone, executionTimestamp, err);
 
@@ -507,11 +508,12 @@ class BatchCommandHandlerClass {
           // In case the disconnect event triggers a bug, we return this promise and reject the error in either case.
           // This will ensure the promise manager will NEVER stall.
           return BluenetPromiseWrapper.phoneDisconnect()
-            .then((err) => {
+            .then((disconnectErr) => {
               reject(err);
             })
         })
         .catch((err) => {
+          // this handles an error during the phoneDisconnect
           reject(err);
         })
     });
@@ -643,9 +645,11 @@ class BatchCommandHandlerClass {
       return;
     }
 
+
+    let promiseId = xUtil.getUUID();
     LOGi.bch("BatchCommandHandler: Scheduling command in promiseManager");
     let actionPromise = () => {
-      this.activePromiseId = xUtil.getUUID();
+      this.activePromiseId = promiseId;
       LOGi.bch("BatchCommandHandler: Executing!", this.activePromiseId);
       return this._searchAndHandleCommands(options);
     };
@@ -655,10 +659,10 @@ class BatchCommandHandlerClass {
     if (priority) { promiseRegistration = BlePromiseManager.registerPriority.bind(BlePromiseManager); }
     else          { promiseRegistration = BlePromiseManager.register.bind(BlePromiseManager); }
 
-    promiseRegistration(actionPromise, {from: 'BatchCommandHandler: executing.'})
+    promiseRegistration(actionPromise, {from: 'BatchCommandHandler: executing ' + promiseId})
       .catch((err) => {
         // disable execution stop the error propagation since this is not returned anywhere.
-        LOGe.bch("BatchCommandHandler: Error completing promise.", err, this.activePromiseId);
+        LOGe.bch("BatchCommandHandler: Error completing promise.", err, promiseId);
       });
   }
 
@@ -689,7 +693,7 @@ class BatchCommandHandlerClass {
         cleanup();
 
         LOGi.bch("BatchCommandHandler: None of the required stones found before timeout.");
-        reject({code: "NO_STONES_FOUND", message:"None of the required stones found before timeout."});
+        reject({code: BCH_ERROR_CODES.NO_STONES_FOUND, message:"None of the required stones found before timeout."});
       }, timeout, 'Looking for target...');
 
 
