@@ -68,7 +68,6 @@ export class RoomEdit extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    NavigationUtil.backTo('SphereOverview');
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;

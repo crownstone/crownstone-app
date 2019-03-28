@@ -1,4 +1,4 @@
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import { colors} from '../views/styles'
 import { Views }                     from './Views'
 import {
@@ -60,6 +60,21 @@ const defaultBackButtonHeaderStyle = {
 }
 
 
+const NewBehaviourStack = createStackNavigator(
+  {
+    DeviceSmartBehaviour : Views.DeviceSmartBehaviour,
+    DeviceSmartBehaviour2 : Views.DeviceSmartBehaviour2,
+    DeviceSmartBehaviour_CreateNewBehaviour : Views.DeviceSmartBehaviour_CreateNewBehaviour,
+    DeviceSmartBehaviour_Editor : Views.DeviceSmartBehaviour_Editor,
+    DeviceSmartBehaviour_PresenceAware : Views.DeviceSmartBehaviour_PresenceAware,
+    DeviceSmartBehaviour_newBehaviour : Views.DeviceSmartBehaviour_newBehaviour,
+
+  },
+  {
+    ...defaultHeader
+  }
+);
+
 
 const EditSphereStack = createStackNavigator(
   {
@@ -73,6 +88,9 @@ const EditSphereStack = createStackNavigator(
     SphereUser : Views.SphereUser,
     SphereBehaviour : Views.SphereBehaviour,
     SphereIntegrations : Views.SphereIntegrations,
+    AlexaOverview : Views.AlexaOverview,
+    ToonOverview: Views.ToonOverview,
+    ToonSettings: Views.ToonSettings,
   },
   {
     ...defaultBackButtonHeaderStyle
@@ -123,11 +141,13 @@ const SettingsStack = createStackNavigator(
 
 const TabNavigator = createBottomTabNavigator(
   {
+    __proto:        NewBehaviourStack,
     Main:           MainStack,
     Messages:       MessageStack,
     Settings:       SettingsStack,
   },
   {
+    // initialRouteName: "__proto",
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
         const { routeName } = navigation.state;
@@ -135,6 +155,10 @@ const TabNavigator = createBottomTabNavigator(
         let icon = "";
         let badgeOnMessages = false;
         switch (routeName) {
+          case "__proto":
+            name = "Prototype";
+            icon = "md-aperture";
+            break;
           case "Main":
             name = Languages.get("Tabs","Overview")();
             icon = "ios-color-filter-outline";
@@ -203,17 +227,39 @@ const FactoryResetStack = createStackNavigator(
 
 const AppStack = createStackNavigator(
   {
-    Main: {
+    AppNavigator: {
       screen: TabNavigator,
     },
+    //modals:
     AddItemsToSphere: {
-      screen: wrap("AddItemsToSphere"),
+      screen: wrap("AddItemsToSphere", Views.AddItemsToSphere),
     },
     AddSphereTutorial: {
-      screen:  wrap("AddSphereTutorial"),
+      screen:  wrap("AddSphereTutorial", Views.AddSphereTutorial),
     },
     AiStart: {
-      screen:  wrap("AiStart"),
+      screen: wrap("AiStart", Views.AiStart),
+    },
+    ApplianceSelection: {
+      screen: wrap("ApplianceSelection", Views.ApplianceSelection),
+    },
+    ApplianceAdd: {
+      screen: wrap("ApplianceAdd", Views.ApplianceAdd),
+    },
+    CameraRollView: {
+      screen:  wrap("CameraRollView", Views.CameraRollView),
+    },
+    DeviceEdit: {
+      screen:  wrap("DeviceEdit", Views.DeviceEdit),
+    },
+    DeviceBehaviourEdit: {
+      screen:  wrap("DeviceBehaviourEdit", Views.DeviceBehaviourEdit),
+    },
+    DeviceIconSelection: {
+      screen:  wrap("DeviceIconSelection", Views.DeviceIconSelection),
+    },
+    DeviceScheduleEdit: {
+      screen:  wrap("DeviceScheduleEdit", Views.DeviceScheduleEdit),
     },
     EditSphereMenu: {
       screen: EditSphereStack
@@ -221,39 +267,49 @@ const AppStack = createStackNavigator(
     FactoryResetStack: {
       screen: FactoryResetStack,
     },
-    CameraRollView: {
-      screen:  wrap("CameraRollView"),
+    MessageAdd: {
+      screen:  wrap("MessageAdd", Views.MessageAdd),
     },
     PictureView: {
-      screen:  wrap("PictureView"),
+      screen:  wrap("PictureView", Views.PictureView),
     },
     RoomTrainingStack: {
       screen: RoomTrainingStack,
     },
     RoomSelection: {
-      screen:  wrap("RoomSelection"),
+      screen:  wrap("RoomSelection", Views.RoomSelection),
     },
     RoomIconSelection: {
-      screen:  wrap("RoomIconSelection"),
+      screen:  wrap("RoomIconSelection", Views.RoomIconSelection),
     },
     RoomAdd: {
-      screen:  wrap("RoomAdd"),
+      screen:  wrap("RoomAdd", Views.RoomAdd),
     },
     RoomEdit: {
-      screen: wrap("RoomEdit"),
+      screen: wrap("RoomEdit", Views.RoomEdit),
+    },
+    SettingsMeshTopologyHelp: {
+      screen: wrap("SelectFromList", Views.SettingsMeshTopologyHelp),
+    },
+    SelectFromList: {
+      screen: wrap("SelectFromList", Views.SelectFromList),
     },
     SettingsRedownloadFromCloud: {
-      screen: wrap("SettingsRedownloadFromCloud"),
+      screen: wrap("SettingsRedownloadFromCloud", Views.SettingsRedownloadFromCloud),
     },
     SphereUserInvite: {
-      screen:  wrap("SphereUserInvite"),
+      screen:  wrap("SphereUserInvite", Views.SphereUserInvite),
+    },
+    SwitchCraftInformation: {
+      screen:  wrap("SwitchCraftInformation", Views.SwitchCraftInformation),
     },
     ToonAdd: {
-      screen:  wrap("ToonAdd"),
+      screen:  wrap("ToonAdd", Views.ToonAdd),
     },
+
   },
   {
-    initialRouteName: "Main",
+    initialRouteName: "AppNavigator",
     mode: 'modal',
     headerMode: 'none',
   }
@@ -261,6 +317,9 @@ const AppStack = createStackNavigator(
 
 export const RootStack = createSwitchNavigator(
   {
+    // IconDebug: {
+    //   screen: Views.IconDebug,
+    // },
     Splash: {
       screen: Initializer,
     },
@@ -271,7 +330,7 @@ export const RootStack = createSwitchNavigator(
       screen: AppStack
     },
     Logout: {
-      screen: wrap("Logout")
+      screen: wrap("Logout", Views.Logout),
     },
   },
   {
@@ -285,10 +344,10 @@ export const RootStack = createSwitchNavigator(
  * this is a convenience method that will create a new stack navigator for each modal so that it has a header.
  * @param view
  */
-function wrap(view) {
+function wrap(view, ViewElement) {
   let obj = {};
   obj[view] = {
-    screen: Views[view],
+    screen: ViewElement,
   }
   return createStackNavigator(
     obj,

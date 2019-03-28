@@ -25,6 +25,7 @@ import {EventBusClass} from "../../util/EventBus";
 
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 export class ApplianceSelection extends LiveComponent<{
   sphereId: string,
@@ -40,6 +41,7 @@ export class ApplianceSelection extends LiveComponent<{
     const { params } = navigation.state;
     return {
       title: lang("Select_Device_Type"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />,
     }
   };
 

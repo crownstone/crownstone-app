@@ -20,6 +20,7 @@ import {BehaviourUtil} from "../../util/BehaviourUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 
 let toggleOptions = [];
@@ -45,6 +46,7 @@ export class DeviceBehaviourEdit extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Behaviour"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />,
     }
   };
 

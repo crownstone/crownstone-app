@@ -134,6 +134,7 @@ export const getAppReducer = function(navReducer) {
       if (!state) { return navReducer(state,action); }
 
       console.log("NAV STATE", state)
+      console.log("NAV ACTION", action)
 
       if (action.type === "Navigation/NAVIGATE") {
         if (action.routeName !== "AppBase") {

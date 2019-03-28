@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 
-import { Animated, Keyboard, StatusBar,  View, Platform } from 'react-native';
+import { Animated, Keyboard, View, Platform } from 'react-native';
 
 import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
@@ -30,36 +30,35 @@ export class Root extends Component<any, any> {
 
       let keyboardHeight = null;
 
-
       let moveUpForKeyboard_onKeyboardEvent = () => {};
       let keyboardDidShow = (event) => {
         keyboardHeight = event.endCoordinates.height;
         moveUpForKeyboard_onKeyboardEvent();
         moveUpForKeyboard_onKeyboardEvent = () => {};
-      }
+      };
       let keyboardDidHide = (event) => {
         // console.log("keyboardDidHide", event)
-      }
+      };
 
       this.focusTime = 0;
 
       let snapBack = () => {
-        this.state.top.stopAnimation()
+        this.state.top.stopAnimation();
         Animated.timing(this.state.top, {toValue: 0, duration:0}).start();
       };
       let snapBackKeyboard = () => {
-        this.state.top.stopAnimation()
+        this.state.top.stopAnimation();
         if (new Date().valueOf() - this.focusTime > 100) {
           Animated.timing(this.state.top, {toValue: 0, duration: 200}).start();
         }
       };
 
       let moveUpForKeyboard = (posY_bottomTextfield) => {
-        this.state.top.stopAnimation()
+        this.state.top.stopAnimation();
         let distFromBottom = screenHeight - ((posY_bottomTextfield + 20) - this.state.top._value); // 20 is padding
         this.focusTime = new Date().valueOf();
         Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration: 200}).start()
-      }
+      };
 
       this.unsubscribe.push(core.eventBus.on('focus', (posY_bottomTextfield) => {
         if (keyboardHeight === null) {
@@ -98,7 +97,6 @@ export class Root extends Component<any, any> {
     if (Platform.OS === 'ios') {
       return (
         <View style={{flex: 1, backgroundColor: colors.menuBackgroundDarker.hex}}>
-          <StatusBar barStyle="light-content"/>
           <Animated.View style={{flex: 1, position: 'relative', top: this.state.top}}>
             <Router />
           </Animated.View>

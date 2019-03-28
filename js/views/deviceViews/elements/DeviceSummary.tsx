@@ -22,7 +22,6 @@ import { AnimatedCircle }      from "../../components/animated/AnimatedCircle";
 import { DimmerButton }        from "../../components/DimmerButton";
 import { INTENTS }             from "../../../native/libInterface/Constants";
 import { Permissions}          from "../../../backgroundProcesses/PermissionManager";
-import { EventBusClass}        from "../../../util/EventBus";
 import { LockedStateUI}        from "../../components/LockedStateUI";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { core } from "../../../core";
