@@ -15,11 +15,11 @@ import BluenetBasicLocalization
 
 import WatchConnectivity
 
-var GLOBAL_BLUENET : Portal?
+let GLOBAL_BLUENET = Portal()
 
 typealias voidCallback = () -> Void
 
-@objc open class Portal : NSObject {
+class Portal : NSObject {
   open var bluenet : Bluenet!
   open var bluenetLocalization : BluenetLocalization!
   open var bluenetMotion : BluenetMotion!
@@ -32,9 +32,8 @@ typealias voidCallback = () -> Void
   var watchBridge : WatchBridge!
   
   var subscriptions = [voidCallback]()
-  
-  init(viewController: UIViewController) {
-    super.init()
+    
+  open func initController(viewController: UIViewController) {
     self.watchBridge = WatchBridge()
     self.watchStateManager = WatchStateManager()
     
@@ -57,7 +56,6 @@ typealias voidCallback = () -> Void
     // store the environment so the app can request it. This is used to determine which notification key we should use in our installation model in the cloud.
     self.devEnvironment = isDevelopmentEnvironment()
 
-    GLOBAL_BLUENET = self
   }
   
   func bluenetOn(_ topic: String, _ callback: @escaping eventCallback) {
@@ -122,7 +120,7 @@ class WatchBridge: NSObject, WCSessionDelegate {
   override init() {
     super.init()
     if (WCSession.isSupported()) {
-      let session = WCSession.default()
+        let session = WCSession.default
       session.delegate = self
       print("Activating Session on iosApp")
       session.activate()

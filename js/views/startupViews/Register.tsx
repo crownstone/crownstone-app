@@ -212,29 +212,29 @@ export class Register extends Component<any, any> {
     else {
       if (this.inputStates.email !== 'valid')
         Alert.alert(
-lang("_Invalid_Email_Address__P_header"),
-lang("_Invalid_Email_Address__P_body"),
-[{text:lang("_Invalid_Email_Address__P_left")}]);
+          lang("_Invalid_Email_Address__P_header"),
+          lang("_Invalid_Email_Address__P_body"),
+          [{text:lang("_Invalid_Email_Address__P_left")}]);
       else if (this.inputStates.password === 'errorNoMatch')
         Alert.alert(
-lang("_Check_the_Verification_P_header"),
-lang("_Check_the_Verification_P_body",passwordStateConflict),
-[{text:lang("_Check_the_Verification_P_left")}]);
+          lang("_Check_the_Verification_P_header"),
+          lang("_Check_the_Verification_P_body",passwordStateConflict),
+          [{text:lang("_Check_the_Verification_P_left")}]);
       else if (this.inputStates.password !== 'valid')
         Alert.alert(
-lang("_Invalid_Password_argumen_header"),
-lang("_Invalid_Password_argumen_body",passwordStateNeutral),
-[{text:lang("_Invalid_Password_argumen_left")}]);
+          lang("_Invalid_Password_argumen_header"),
+          lang("_Invalid_Password_argumen_body",passwordStateNeutral),
+          [{text:lang("_Invalid_Password_argumen_left")}]);
       else if (this.inputStates.firstName !== 'valid')
         Alert.alert(
-lang("_You_Must_Enter_a_First_N_header"),
-lang("_You_Must_Enter_a_First_N_body"),
-[{text:lang("_You_Must_Enter_a_First_N_left")}]);
+          lang("_You_Must_Enter_a_First_N_header"),
+          lang("_You_Must_Enter_a_First_N_body"),
+          [{text:lang("_You_Must_Enter_a_First_N_left")}]);
       else if (this.inputStates.lastName !== 'valid')
         Alert.alert(
-lang("_You_Must_Enter_a_Last_Na_header"),
-lang("_You_Must_Enter_a_Last_Na_body"),
-[{text:lang("_You_Must_Enter_a_Last_Na_left")}]);
+          lang("_You_Must_Enter_a_Last_Na_header"),
+          lang("_You_Must_Enter_a_Last_Na_body"),
+          [{text:lang("_You_Must_Enter_a_Last_Na_left")}]);
     }
   }
 
@@ -262,9 +262,9 @@ lang("_You_Must_Enter_a_Last_Na_body"),
           message = message[message.length - 1];
           let defaultAction = () => {core.eventBus.emit('hideLoading')};
           Alert.alert(
-lang("_Registration_Error_argum_header"),
-lang("_Registration_Error_argum_body",message),
-[{text: lang("_Registration_Error_argum_left"), onPress: defaultAction}], { onDismiss: defaultAction});
+            lang("_Registration_Error_argum_header"),
+            lang("_Registration_Error_argum_body",message),
+            [{text: lang("_Registration_Error_argum_left"), onPress: defaultAction}], { onDismiss: defaultAction});
         }
         return false;
       })

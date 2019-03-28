@@ -21,11 +21,11 @@ class WatchStateManager {
   
   func syncState() {
     do {
-      print("Sending state to the Watch")
-      try WCSession.default().updateApplicationContext(self.state)
+        print("Sending state to the Watch")
+        try WCSession.default.updateApplicationContext(self.state)
     }
     catch {
-      print("Error while sending to the watch:",error)
+        print("Error while sending to the watch:",error)
     }
   }
   

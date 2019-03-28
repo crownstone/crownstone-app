@@ -18,7 +18,7 @@ import WatchConnectivity
 
 @objc(BluenetJS)
 open class BluenetJS: RCTEventEmitter {
-  
+
   override init() {
     super.init()
     EventEmitter.sharedInstance.registerEventEmitter(eventEmitter: self)
@@ -33,176 +33,174 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func rerouteEvents() {
     LOGGER.info("BluenetBridge: Called rerouteEvents")
-    if let globalBluenet = GLOBAL_BLUENET {
       
-      _ = AppEventBus.on("callbackUrlInvoked", { (data) -> Void in
-        if let urlStr = data as? String {
-          self.sendEvent(withName: "callbackUrlInvoked", body: urlStr)
-        }
-      })
-      
-      print("BluenetBridge: ----- BLUENET BRIDGE: Rerouting events")
-      
-      _ = globalBluenet.classifier.subscribe("__classifierProbabilities", callback:{ (data) -> Void in
-        //print("__classifierProbabilities",data)
-        if let dict = data as? NSDictionary {
-          self.sendEvent(withName: "classifierProbabilities", body: dict)
-        }
-      })
-      
-      _ = globalBluenet.classifier.subscribe("__classifierResult", callback: { (data) -> Void in
-        //print("__classifierResult",data)
-        if let dict = data as? NSDictionary {
-          self.sendEvent(withName: "classifierResult", body: dict)
-        }
-      })
-      
-      
-      
-      // forward the event streams to react native
-      globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
-        if let castData = data as? Advertisement {
-          if (castData.operationMode == .setup) {
-            self.sendEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
-            
-            
-            //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
-          }
-          else if (castData.operationMode == .dfu) {
-            self.sendEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
-            
-            //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
-          }
-          else {
-            self.sendEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
-            //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
-          }
+    _ = AppEventBus.on("callbackUrlInvoked", { (data) -> Void in
+      if let urlStr = data as? String {
+        self.sendEvent(withName: "callbackUrlInvoked", body: urlStr)
+      }
+    })
     
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
-        }
-      })
-      
-      globalBluenet.bluenetOn("bleStatus", {data -> Void in
-        if let castData = data as? String {
-          self.sendEvent(withName: "bleStatus", body: castData)
+    print("BluenetBridge: ----- BLUENET BRIDGE: Rerouting events")
+    
+    _ = GLOBAL_BLUENET.classifier.subscribe("__classifierProbabilities", callback:{ (data) -> Void in
+      //print("__classifierProbabilities",data)
+      if let dict = data as? NSDictionary {
+        self.sendEvent(withName: "classifierProbabilities", body: dict)
+      }
+    })
+    
+    _ = GLOBAL_BLUENET.classifier.subscribe("__classifierResult", callback: { (data) -> Void in
+      //print("__classifierResult",data)
+      if let dict = data as? NSDictionary {
+        self.sendEvent(withName: "classifierResult", body: dict)
+      }
+    })
+    
+    
+    
+    // forward the event streams to react native
+    GLOBAL_BLUENET.bluenetOn("verifiedAdvertisementData", {data -> Void in
+      if let castData = data as? Advertisement {
+        if (castData.operationMode == .setup) {
+          self.sendEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
           
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "bleStatus", body: castData)
+          
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
         }
-      })
-      
-     
-      globalBluenet.bluenetOn("unverifiedAdvertisementData", {data -> Void in
-        if let castData = data as? Advertisement {
-          self.sendEvent(withName: "unverifiedAdvertisementData", body: castData.getDictionary())
+        else if (castData.operationMode == .dfu) {
+          self.sendEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
+          
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
         }
-      })
-      
-      globalBluenet.bluenetLocalizationOn("locationStatus", {data -> Void in
-        if let castData = data as? String {
-          self.sendEvent(withName: "locationStatus", body: castData)
+        else {
+          self.sendEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
         }
-      })
-      
+  
+        //self.bridge.eventDispatcher().sendAppEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
+      }
+    })
+    
+    GLOBAL_BLUENET.bluenetOn("bleStatus", {data -> Void in
+      if let castData = data as? String {
+        self.sendEvent(withName: "bleStatus", body: castData)
+        
+        //self.bridge.eventDispatcher().sendAppEvent(withName: "bleStatus", body: castData)
+      }
+    })
+    
+   
+    GLOBAL_BLUENET.bluenetOn("unverifiedAdvertisementData", {data -> Void in
+      if let castData = data as? Advertisement {
+        self.sendEvent(withName: "unverifiedAdvertisementData", body: castData.getDictionary())
+      }
+    })
+    
+    GLOBAL_BLUENET.bluenetLocalizationOn("locationStatus", {data -> Void in
+      if let castData = data as? String {
+        self.sendEvent(withName: "locationStatus", body: castData)
+      }
+    })
+    
 
-      globalBluenet.bluenetOn("advertisementData", {data -> Void in
-        if let castData = data as? Advertisement {
-          self.sendEvent(withName: "crownstoneAdvertisementReceived", body: castData.handle)
-        }
-      })
+    GLOBAL_BLUENET.bluenetOn("advertisementData", {data -> Void in
+      if let castData = data as? Advertisement {
+        self.sendEvent(withName: "crownstoneAdvertisementReceived", body: castData.handle)
+      }
+    })
 
-      globalBluenet.bluenetOn("dfuProgress", {data -> Void in
-        if let castData = data as? [String: NSNumber] {
-          // data["percentage"]  = NSNumber(value: percentage)
-          // data["part"]        = NSNumber(value: part)
-          // data["totalParts"]  = NSNumber(value: totalParts)
-          // data["progress"]    = NSNumber(value: progress)
-          // data["currentSpeedBytesPerSecond"] = NSNumber(value: currentSpeedBytesPerSecond)
-          // data["avgSpeedBytesPerSecond"]     = NSNumber(value: avgSpeedBytesPerSecond)
-          self.sendEvent(withName: "dfuProgress", body: castData)
-        }
-      })
-      
-      globalBluenet.bluenetOn("setupProgress", {data -> Void in
-        if let castData = data as? NSNumber {
-          self.sendEvent(withName: "setupProgress", body: castData)
-        }
-      })
+    GLOBAL_BLUENET.bluenetOn("dfuProgress", {data -> Void in
+      if let castData = data as? [String: NSNumber] {
+        // data["percentage"]  = NSNumber(value: percentage)
+        // data["part"]        = NSNumber(value: part)
+        // data["totalParts"]  = NSNumber(value: totalParts)
+        // data["progress"]    = NSNumber(value: progress)
+        // data["currentSpeedBytesPerSecond"] = NSNumber(value: currentSpeedBytesPerSecond)
+        // data["avgSpeedBytesPerSecond"]     = NSNumber(value: avgSpeedBytesPerSecond)
+        self.sendEvent(withName: "dfuProgress", body: castData)
+      }
+    })
+    
+    GLOBAL_BLUENET.bluenetOn("setupProgress", {data -> Void in
+      if let castData = data as? NSNumber {
+        self.sendEvent(withName: "setupProgress", body: castData)
+      }
+    })
 
-      
-      globalBluenet.bluenetOn("nearestSetupCrownstone", {data -> Void in
-        if let castData = data as? NearestItem {
-          self.sendEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
+    
+    GLOBAL_BLUENET.bluenetOn("nearestSetupCrownstone", {data -> Void in
+      if let castData = data as? NearestItem {
+        self.sendEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
+      }
+    })
+    
+    GLOBAL_BLUENET.bluenetOn("nearestCrownstone", {data -> Void in
+      if let castData = data as? NearestItem {
+        self.sendEvent(withName: "nearestCrownstone", body: castData.getDictionary())
+      }
+    })
+    
+    // forward the navigation event stream to react native
+    GLOBAL_BLUENET.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in
+      var returnArray = [NSDictionary]()
+      if let data = ibeaconData as? [iBeaconPacket] {
+        for packet in data {
+          returnArray.append(packet.getDictionary())
         }
-      })
-      
-      globalBluenet.bluenetOn("nearestCrownstone", {data -> Void in
-        if let castData = data as? NearestItem {
-          self.sendEvent(withName: "nearestCrownstone", body: castData.getDictionary())
-        }
-      })
-      
-      // forward the navigation event stream to react native
-      globalBluenet.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in
-        var returnArray = [NSDictionary]()
-        if let data = ibeaconData as? [iBeaconPacket] {
-          for packet in data {
-            returnArray.append(packet.getDictionary())
-          }
-        }
-        self.sendEvent(withName: "iBeaconAdvertisement", body: returnArray)
-        //self.bridge.eventDispatcher().sendAppEvent(withName: "iBeaconAdvertisement", body: returnArray)
-      })
-      
+      }
+      self.sendEvent(withName: "iBeaconAdvertisement", body: returnArray)
+      //self.bridge.eventDispatcher().sendAppEvent(withName: "iBeaconAdvertisement", body: returnArray)
+    })
+    
 //      globalBluenet.bluenetLocalizationOn("lowLevelEnterRegion", {data -> Void in
 //        print("BluenetBridge: lowLevelEnterRegion")
 //      })
 //      globalBluenet.bluenetLocalizationOn("lowLevelExitRegion", {data -> Void in
 //        print("BluenetBridge: lowLevelExitRegion")
 //      })
-      
-      globalBluenet.bluenetLocalizationOn("enterRegion", {data -> Void in
-        print("BluenetBridge: enterRegion")
-        if let castData = data as? String {
-          self.sendEvent(withName: "enterSphere", body: castData)
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "enterSphere", body: castData)
-        }
-      })
-      globalBluenet.bluenetLocalizationOn("exitRegion", {data -> Void in
-        print("BluenetBridge: exitRegion")
-        if let castData = data as? String {
-          self.sendEvent(withName: "exitSphere", body: castData)
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "exitSphere", body: castData)
-        }
-      })
-      globalBluenet.bluenetLocalizationOn("enterLocation", {data -> Void in
-        print("BluenetBridge: enterLocation")
-        if let castData = data as? NSDictionary {
-          self.sendEvent(withName: "enterLocation", body: castData)
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
-        }
-      })
-      globalBluenet.bluenetLocalizationOn("exitLocation", {data -> Void in
-        print("BluenetBridge: exitLocation")
-        if let castData = data as? NSDictionary {
-          self.sendEvent(withName: "exitLocation", body: castData)
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
-        }
-      })
-      globalBluenet.bluenetLocalizationOn("currentLocation", {data -> Void in
-        //print("BluenetBridge: currentLocation")
-        if let castData = data as? NSDictionary {
-          //print("BluenetBridge: currentLocation \(castData)")
-          self.sendEvent(withName: "currentLocation", body: castData)
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
-        }
-      })
-     }
+    
+    GLOBAL_BLUENET.bluenetLocalizationOn("enterRegion", {data -> Void in
+      print("BluenetBridge: enterRegion")
+      if let castData = data as? String {
+        self.sendEvent(withName: "enterSphere", body: castData)
+        //self.bridge.eventDispatcher().sendAppEvent(withName: "enterSphere", body: castData)
+      }
+    })
+    GLOBAL_BLUENET.bluenetLocalizationOn("exitRegion", {data -> Void in
+      print("BluenetBridge: exitRegion")
+      if let castData = data as? String {
+        self.sendEvent(withName: "exitSphere", body: castData)
+        //self.bridge.eventDispatcher().sendAppEvent(withName: "exitSphere", body: castData)
+      }
+    })
+    GLOBAL_BLUENET.bluenetLocalizationOn("enterLocation", {data -> Void in
+      print("BluenetBridge: enterLocation")
+      if let castData = data as? NSDictionary {
+        self.sendEvent(withName: "enterLocation", body: castData)
+        //self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
+      }
+    })
+    GLOBAL_BLUENET.bluenetLocalizationOn("exitLocation", {data -> Void in
+      print("BluenetBridge: exitLocation")
+      if let castData = data as? NSDictionary {
+        self.sendEvent(withName: "exitLocation", body: castData)
+        //self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
+      }
+    })
+    GLOBAL_BLUENET.bluenetLocalizationOn("currentLocation", {data -> Void in
+      //print("BluenetBridge: currentLocation")
+      if let castData = data as? NSDictionary {
+        //print("BluenetBridge: currentLocation \(castData)")
+        self.sendEvent(withName: "currentLocation", body: castData)
+        //self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
+      }
+    })
   }
   
   
   
   @objc func clearKeySets() {
-    GLOBAL_BLUENET!.bluenet.loadKeysets(encryptionEnabled: true, keySets: [])
+    GLOBAL_BLUENET.bluenet.loadKeysets(encryptionEnabled: true, keySets: [])
   }
   
   @objc func setKeySets(_ keySets: [NSDictionary], callback: RCTResponseSenderBlock) {
@@ -231,16 +229,16 @@ open class BluenetJS: RCTEventEmitter {
       return
     }
     
-    GLOBAL_BLUENET!.bluenet.loadKeysets(encryptionEnabled: true, keySets: sets)
+    GLOBAL_BLUENET.bluenet.loadKeysets(encryptionEnabled: true, keySets: sets)
     
-    GLOBAL_BLUENET!.watchStateManager.loadState("keysets", watchSets)
+    GLOBAL_BLUENET.watchStateManager.loadState("keysets", watchSets)
    
     callback([["error" : false]])
   }
   
   @objc func isReady(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called isReady")
-    GLOBAL_BLUENET!.bluenet.isReady()
+    GLOBAL_BLUENET.bluenet.isReady()
       .done{_ -> Void in
         LOGGER.info("BluenetBridge: returned isReady")
         callback([["error" : false]]
@@ -257,7 +255,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func isPeripheralReady(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called isPeripheralReady")
-    GLOBAL_BLUENET!.bluenet.isPeripheralReady()
+    GLOBAL_BLUENET.bluenet.isPeripheralReady()
       .done{_ -> Void in
         LOGGER.info("BluenetBridge: returned isPeripheralReady")
         callback([["error" : false]]
@@ -275,7 +273,7 @@ open class BluenetJS: RCTEventEmitter {
 
   @objc func connect(_ handle: String, referenceId: String, callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called connect")
-    GLOBAL_BLUENET!.bluenet.connect(handle, referenceId: referenceId)
+    GLOBAL_BLUENET.bluenet.connect(handle, referenceId: referenceId)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -289,7 +287,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func phoneDisconnect(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called phoneDisconnect")
-    GLOBAL_BLUENET!.bluenet.disconnect()
+    GLOBAL_BLUENET.bluenet.disconnect()
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -303,7 +301,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func disconnectCommand(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called disconnectCommand")
-    GLOBAL_BLUENET!.bluenet.control.disconnect()
+    GLOBAL_BLUENET.bluenet.control.disconnect()
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -317,7 +315,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func toggleSwitchState(_ stateForOn: NSNumber, callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called toggleSwitchState")
-    GLOBAL_BLUENET!.bluenet.control.toggleSwitchState(stateForOn: stateForOn.floatValue)
+    GLOBAL_BLUENET.bluenet.control.toggleSwitchState(stateForOn: stateForOn.floatValue)
       .done{newState in callback([["error" : false, "data": newState]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -331,7 +329,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func setSwitchState(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called setSwitchState")
-    GLOBAL_BLUENET!.bluenet.control.setSwitchState(state.floatValue)
+    GLOBAL_BLUENET.bluenet.control.setSwitchState(state.floatValue)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -346,7 +344,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getSwitchState(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called getSwitchState")
-    GLOBAL_BLUENET!.bluenet.state.getSwitchState()
+    GLOBAL_BLUENET.bluenet.state.getSwitchState()
       .done{switchState in callback([["error" : false, "data":switchState]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -367,7 +365,7 @@ open class BluenetJS: RCTEventEmitter {
       changeStateBool = true
     }
     
-    GLOBAL_BLUENET!.bluenet.control.keepAliveState(changeState: changeStateBool, state: state.floatValue, timeout: timeout.uint16Value)
+    GLOBAL_BLUENET.bluenet.control.keepAliveState(changeState: changeStateBool, state: state.floatValue, timeout: timeout.uint16Value)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -381,7 +379,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func keepAlive(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called keepAlive")
-    GLOBAL_BLUENET!.bluenet.control.keepAliveRepeat()
+    GLOBAL_BLUENET.bluenet.control.keepAliveRepeat()
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -396,42 +394,42 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func startAdvertising() {
     LOGGER.info("BluenetBridge: Called startAdvertising")
-    GLOBAL_BLUENET!.bluenet.startAdvertising()
+    GLOBAL_BLUENET.bluenet.startAdvertising()
   }
   @objc func stopAdvertising() {
     LOGGER.info("BluenetBridge: Called stopAdvertising")
-    GLOBAL_BLUENET!.bluenet.stopAdvertising()
+    GLOBAL_BLUENET.bluenet.stopAdvertising()
   }
   
   
   @objc func startScanning() {
     LOGGER.info("BluenetBridge: Called startScanning")
-    GLOBAL_BLUENET!.bluenet.startScanning()
+    GLOBAL_BLUENET.bluenet.startScanning()
   }
   
   @objc func startScanningForCrownstones() {
     LOGGER.info("BluenetBridge: Called startScanningForCrownstones")
-    GLOBAL_BLUENET!.bluenet.startScanningForCrownstones()
+    GLOBAL_BLUENET.bluenet.startScanningForCrownstones()
   }
   
   @objc func startScanningForCrownstonesUniqueOnly() {
     LOGGER.info("BluenetBridge: Called startScanningForCrownstonesUniqueOnly")
-    GLOBAL_BLUENET!.bluenet.startScanningForCrownstonesUniqueOnly()
+    GLOBAL_BLUENET.bluenet.startScanningForCrownstonesUniqueOnly()
   }
   
   @objc func stopScanning() {
     LOGGER.info("BluenetBridge: Called stopScanning")
-    GLOBAL_BLUENET!.bluenet.stopScanning()
+    GLOBAL_BLUENET.bluenet.stopScanning()
   }
   
   @objc func startIndoorLocalization() {
     LOGGER.info("BluenetBridge: Called startIndoorLocalization")
-    GLOBAL_BLUENET!.bluenetLocalization.startIndoorLocalization()
+    GLOBAL_BLUENET.bluenetLocalization.startIndoorLocalization()
   }
   
   @objc func stopIndoorLocalization() {
     LOGGER.info("BluenetBridge: Called stopIndoorLocalization")
-    GLOBAL_BLUENET!.bluenetLocalization.stopIndoorLocalization()
+    GLOBAL_BLUENET.bluenetLocalization.stopIndoorLocalization()
   }
   
   @objc func quitApp() {
@@ -444,12 +442,12 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   @objc func requestBleState() {
-    GLOBAL_BLUENET!.bluenet.emitBleState()
+    GLOBAL_BLUENET.bluenet.emitBleState()
   }
   
   @objc func requestLocation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called requestLocation")
-    let coordinates = GLOBAL_BLUENET!.bluenetLocalization.requestLocation()
+    let coordinates = GLOBAL_BLUENET.bluenetLocalization.requestLocation()
     var returnType = [String: NSNumber]();
     returnType["latitude"] = NSNumber(value: coordinates.latitude)
     returnType["longitude"] = NSNumber(value: coordinates.longitude)
@@ -459,61 +457,61 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func requestLocationPermission() -> Void {
     LOGGER.info("BluenetBridge: Called requestLocationPermission")
-    GLOBAL_BLUENET!.bluenetLocalization.requestLocationPermission()
+    GLOBAL_BLUENET.bluenetLocalization.requestLocationPermission()
   }
   
   @objc func trackIBeacon(_ ibeaconUUID: String, sphereId: String) -> Void {
     LOGGER.info("BluenetBridge: Called trackIBeacon \(ibeaconUUID) for sphere: \(sphereId)")
-    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, referenceId: sphereId)
+    GLOBAL_BLUENET.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, referenceId: sphereId)
   }
   
   @objc func stopTrackingIBeacon(_ ibeaconUUID: String) -> Void {
     LOGGER.info("BluenetBridge: Called stopTrackingIBeacon")
-    GLOBAL_BLUENET!.bluenetLocalization.stopTrackingIBeacon(ibeaconUUID)
+    GLOBAL_BLUENET.bluenetLocalization.stopTrackingIBeacon(ibeaconUUID)
     
   }
   
   @objc func pauseTracking() -> Void {
     LOGGER.info("BluenetBridge: Called pauseTracking")
-    GLOBAL_BLUENET!.bluenetLocalization.pauseTracking()
+    GLOBAL_BLUENET.bluenetLocalization.pauseTracking()
   }
   
   @objc func resumeTracking() -> Void {
     LOGGER.info("BluenetBridge: Called resumeTracking")
-    GLOBAL_BLUENET!.bluenetLocalization.resumeTracking()
+    GLOBAL_BLUENET.bluenetLocalization.resumeTracking()
   }
   
   @objc func startCollectingFingerprint() -> Void {
     LOGGER.info("BluenetBridge: Called startCollectingFingerprint")
     // abort collecting fingerprint if it is currently happening.
-    GLOBAL_BLUENET!.trainingHelper.abortCollectingTrainingData()
+    GLOBAL_BLUENET.trainingHelper.abortCollectingTrainingData()
     
     // start collection
-    GLOBAL_BLUENET!.trainingHelper.startCollectingTrainingData()
+    GLOBAL_BLUENET.trainingHelper.startCollectingTrainingData()
   }
   
   @objc func abortCollectingFingerprint() -> Void {
     LOGGER.info("BluenetBridge: Called abortCollectingFingerprint")
-    GLOBAL_BLUENET!.trainingHelper.abortCollectingTrainingData()
+    GLOBAL_BLUENET.trainingHelper.abortCollectingTrainingData()
   }
   
   @objc func pauseCollectingFingerprint() -> Void {
     LOGGER.info("BluenetBridge: Called pauseCollectingFingerprint")
-    GLOBAL_BLUENET!.trainingHelper.pauseCollectingTrainingData()
+    GLOBAL_BLUENET.trainingHelper.pauseCollectingTrainingData()
   }
   
   @objc func resumeCollectingFingerprint() -> Void {
     LOGGER.info("BluenetBridge: Called resumeCollectingFingerprint")
-    GLOBAL_BLUENET!.trainingHelper.resumeCollectingTrainingData()
+    GLOBAL_BLUENET.trainingHelper.resumeCollectingTrainingData()
   }
   
   
   @objc func finalizeFingerprint(_ sphereId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called finalizeFingerprint \(sphereId) \(locationId)")
     
-    let stringifiedFingerprint = GLOBAL_BLUENET!.trainingHelper.finishCollectingTrainingData()
+    let stringifiedFingerprint = GLOBAL_BLUENET.trainingHelper.finishCollectingTrainingData()
     if (stringifiedFingerprint != nil) {
-      GLOBAL_BLUENET!.classifier.loadTrainingData(locationId, referenceId: sphereId, trainingData: stringifiedFingerprint!)
+      GLOBAL_BLUENET.classifier.loadTrainingData(locationId, referenceId: sphereId, trainingData: stringifiedFingerprint!)
       callback([["error" : false, "data": stringifiedFingerprint!]])
     }
     else {
@@ -524,7 +522,7 @@ open class BluenetJS: RCTEventEmitter {
   // this  has a callback so we can chain it in a promise. External calls are always async in RN, we need this to be done before loading new beacons.
   @objc func clearTrackedBeacons(_ callback: RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called clearTrackedBeacons")
-    GLOBAL_BLUENET!.bluenetLocalization.clearTrackedBeacons()
+    GLOBAL_BLUENET.bluenetLocalization.clearTrackedBeacons()
     
     callback([["error" : false]])
   }
@@ -532,25 +530,25 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func clearFingerprints() {
     LOGGER.info("BluenetBridge: Called clearFingerprints")
-    GLOBAL_BLUENET!.classifier.resetAllTrainingData()
+    GLOBAL_BLUENET.classifier.resetAllTrainingData()
   }
   
   @objc func clearFingerprintsPromise(_ callback: RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called clearFingerprintsPromise")
-    GLOBAL_BLUENET!.classifier.resetAllTrainingData()
+    GLOBAL_BLUENET.classifier.resetAllTrainingData()
     
     callback([["error" : false]])
   }
   
   @objc func loadFingerprint(_ sphereId: String, locationId: String, fingerprint: String) -> Void {
     LOGGER.info("BluenetBridge: Called loadFingerprint \(sphereId) \(locationId) \(fingerprint)")
-    GLOBAL_BLUENET!.classifier.loadTrainingData(locationId, referenceId: sphereId, trainingData: fingerprint)
+    GLOBAL_BLUENET.classifier.loadTrainingData(locationId, referenceId: sphereId, trainingData: fingerprint)
   }
   
   
   @objc func commandFactoryReset(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called commandFactoryReset")
-    GLOBAL_BLUENET!.bluenet.control.commandFactoryReset()
+    GLOBAL_BLUENET.bluenet.control.commandFactoryReset()
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -564,7 +562,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getHardwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getHardwareVersion")
-    GLOBAL_BLUENET!.bluenet.device.getHardwareRevision()
+    GLOBAL_BLUENET.bluenet.device.getHardwareRevision()
       .done{(harwareVersion : String) -> Void in
         callback([["error" : false, "data": harwareVersion]]
       )}
@@ -580,7 +578,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getFirmwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getFirmwareVersion")
-    GLOBAL_BLUENET!.bluenet.device.getFirmwareRevision()
+    GLOBAL_BLUENET.bluenet.device.getFirmwareRevision()
       .done{(firmwareVersion : String) -> Void in callback([["error" : false, "data": firmwareVersion]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -594,7 +592,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getBootloaderVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getBootloaderVersion")
-    GLOBAL_BLUENET!.bluenet.device.getBootloaderRevision()
+    GLOBAL_BLUENET.bluenet.device.getBootloaderRevision()
       .done{(bootloaderVersion : String) -> Void in callback([["error" : false, "data": bootloaderVersion]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -609,7 +607,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getMACAddress(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getMACAddress")
-    GLOBAL_BLUENET!.bluenet.setup.getMACAddress()
+    GLOBAL_BLUENET.bluenet.setup.getMACAddress()
       .done{(macAddress : String) -> Void in callback([["error" : false, "data": macAddress]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -624,7 +622,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getErrors(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getErrors")
-    GLOBAL_BLUENET!.bluenet.state.getErrors()
+    GLOBAL_BLUENET.bluenet.state.getErrors()
       .done{(errors : CrownstoneErrors) -> Void in callback([["error" : false, "data": errors.getDictionary()]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -638,7 +636,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func clearErrors(_ errors: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called clearErrors")
-    GLOBAL_BLUENET!.bluenet.control.clearError(errorDict: errors)
+    GLOBAL_BLUENET.bluenet.control.clearError(errorDict: errors)
       .done{_ -> Void in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -652,7 +650,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func restartCrownstone(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called restartCrownstone")
-    GLOBAL_BLUENET!.bluenet.control.reset()
+    GLOBAL_BLUENET.bluenet.control.reset()
       .done{_ -> Void in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -667,7 +665,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func recover(_ crownstoneHandle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called recover")
-    GLOBAL_BLUENET!.bluenet.control.recoverByFactoryReset(crownstoneHandle)
+    GLOBAL_BLUENET.bluenet.control.recoverByFactoryReset(crownstoneHandle)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -744,7 +742,7 @@ open class BluenetJS: RCTEventEmitter {
       ibeaconUUID != nil &&
       ibeaconMajor != nil &&
       ibeaconMinor != nil) {
-      GLOBAL_BLUENET!.bluenet.setup.setup(
+      GLOBAL_BLUENET.bluenet.setup.setup(
         crownstoneId: (crownstoneId!).uint16Value,
         adminKey: adminKey!,
         memberKey: memberKey!,
@@ -770,7 +768,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func meshKeepAlive(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called meshKeepAlive")
-    GLOBAL_BLUENET!.bluenet.mesh.keepAliveRepeat()
+    GLOBAL_BLUENET.bluenet.mesh.keepAliveRepeat()
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -785,7 +783,7 @@ open class BluenetJS: RCTEventEmitter {
   @objc func meshKeepAliveState(_ timeout: NSNumber, stoneKeepAlivePackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called meshKeepAliveState")
 //    print("-- Firing meshKeepAliveState timeout: \(timeout), packets: \(stoneKeepAlivePackets)")
-    GLOBAL_BLUENET!.bluenet.mesh.keepAliveState(timeout: timeout.uint16Value, stones: stoneKeepAlivePackets as! [[String : NSNumber]])
+    GLOBAL_BLUENET.bluenet.mesh.keepAliveState(timeout: timeout.uint16Value, stones: stoneKeepAlivePackets as! [[String : NSNumber]])
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -798,7 +796,7 @@ open class BluenetJS: RCTEventEmitter {
   }  
   
   @objc func multiSwitch(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-      GLOBAL_BLUENET!.bluenet.mesh.multiSwitch(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]])
+      GLOBAL_BLUENET.bluenet.mesh.multiSwitch(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]])
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -813,7 +811,7 @@ open class BluenetJS: RCTEventEmitter {
   @objc func broadcastSwitch(_ referenceId: String, stoneId: NSNumber, switchState: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called broadcastSwitch")
     //    print("-- Firing multiSwitch arrayOfStoneSwitchPackets: \(arrayOfStoneSwitchPackets)")
-    GLOBAL_BLUENET!.bluenet.broadcast.multiSwitch(referenceId: referenceId, stoneId: stoneId.uint8Value, switchState: switchState.floatValue)
+    GLOBAL_BLUENET.bluenet.broadcast.multiSwitch(referenceId: referenceId, stoneId: stoneId.uint8Value, switchState: switchState.floatValue)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -830,7 +828,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func setupPutInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called setupPutInDFU")
-    GLOBAL_BLUENET!.bluenet.setup.putInDFU()
+    GLOBAL_BLUENET.bluenet.setup.putInDFU()
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -845,7 +843,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func putInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called putInDFU")
-    GLOBAL_BLUENET!.bluenet.control.putInDFU()
+    GLOBAL_BLUENET.bluenet.control.putInDFU()
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -860,7 +858,7 @@ open class BluenetJS: RCTEventEmitter {
   @objc func performDFU(_ handle: String, uri: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called performDFU")
     let firmwareURL = URL(fileURLWithPath: uri)
-    GLOBAL_BLUENET!.bluenet.dfu.startDFU(handle: handle, firmwareURL: firmwareURL)
+    GLOBAL_BLUENET.bluenet.dfu.startDFU(handle: handle, firmwareURL: firmwareURL)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -874,7 +872,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func setupFactoryReset(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called setupFactoryReset")
-    GLOBAL_BLUENET!.bluenet.setup.factoryReset()
+    GLOBAL_BLUENET.bluenet.setup.factoryReset()
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -888,7 +886,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func bootloaderToNormalMode(_ uuid: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called bootloaderToNormalMode")
-    GLOBAL_BLUENET!.bluenet.dfu.bootloaderToNormalMode(uuid: uuid)
+    GLOBAL_BLUENET.bluenet.dfu.bootloaderToNormalMode(uuid: uuid)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -903,7 +901,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func setTime(_ time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called setTime")
-    GLOBAL_BLUENET!.bluenet.control.setTime(time)
+    GLOBAL_BLUENET.bluenet.control.setTime(time)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -917,7 +915,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getTime(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getTime")
-    GLOBAL_BLUENET!.bluenet.state.getTime()
+    GLOBAL_BLUENET.bluenet.state.getTime()
       .done{time in callback([["error" : false, "data": time]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -935,10 +933,10 @@ open class BluenetJS: RCTEventEmitter {
     LOGGER.info("BluenetBridge: batterySaving set to \(batterySavingState)")
 
     if (batterySavingState) {
-      GLOBAL_BLUENET!.bluenet.enableBatterySaving()
+      GLOBAL_BLUENET.bluenet.enableBatterySaving()
     }
     else {
-      GLOBAL_BLUENET!.bluenet.disableBatterySaving()
+      GLOBAL_BLUENET.bluenet.disableBatterySaving()
     }
   }
 
@@ -948,8 +946,8 @@ open class BluenetJS: RCTEventEmitter {
     print("BluenetBridge: backgroundScanning set to \(backgroundScanning)")
     LOGGER.info("BluenetBridge: backgroundScanning set to \(backgroundScanning)")
     
-    GLOBAL_BLUENET!.bluenet.setBackgroundOperations(newBackgroundState: backgroundScanning)
-    GLOBAL_BLUENET!.bluenetLocalization.setBackgroundScanning(newBackgroundState: backgroundScanning)
+    GLOBAL_BLUENET.bluenet.setBackgroundOperations(newBackgroundState: backgroundScanning)
+    GLOBAL_BLUENET.bluenetLocalization.setBackgroundScanning(newBackgroundState: backgroundScanning)
   }
 
   @objc func addSchedule(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
@@ -1010,7 +1008,7 @@ open class BluenetJS: RCTEventEmitter {
       callback([["error" : true, "data": "If you want to deactivate the schedule, use the clearSchedule command"]])
       return
     }
-    GLOBAL_BLUENET!.bluenet.state.getAvailableScheduleEntryIndex()
+    GLOBAL_BLUENET.bluenet.state.getAvailableScheduleEntryIndex()
       .done{scheduleEntryIndex -> Void in
         let config = ScheduleConfigurator(
           scheduleEntryIndex: scheduleEntryIndex,
@@ -1028,7 +1026,7 @@ open class BluenetJS: RCTEventEmitter {
         config.repeatDay.Saturday = activeSaturday!.boolValue
         config.repeatDay.Sunday = activeSunday!.boolValue
         
-        GLOBAL_BLUENET!.bluenet.control.setSchedule(scheduleConfig: config)
+        GLOBAL_BLUENET.bluenet.control.setSchedule(scheduleConfig: config)
           .done{time in callback([["error" : false, "data": scheduleEntryIndex]])}
           .catch{err in
             if let bleErr = err as? BluenetError {
@@ -1130,7 +1128,7 @@ open class BluenetJS: RCTEventEmitter {
     config.repeatDay.Sunday = activeSunday!.boolValue
 
     
-    GLOBAL_BLUENET!.bluenet.control.setSchedule(scheduleConfig: config)
+    GLOBAL_BLUENET.bluenet.control.setSchedule(scheduleConfig: config)
       .done{time in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1144,7 +1142,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func clearSchedule(_ scheduleEntryIndex: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called clearSchedule")
-    GLOBAL_BLUENET!.bluenet.control.clearSchedule(scheduleEntryIndex: scheduleEntryIndex.uint8Value)
+    GLOBAL_BLUENET.bluenet.control.clearSchedule(scheduleEntryIndex: scheduleEntryIndex.uint8Value)
       .done{time in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1159,7 +1157,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getAvailableScheduleEntryIndex(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getAvailableScheduleEntryIndex")
-    GLOBAL_BLUENET!.bluenet.state.getAvailableScheduleEntryIndex()
+    GLOBAL_BLUENET.bluenet.state.getAvailableScheduleEntryIndex()
       .done{index in callback([["error" : false, "data": index]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1173,7 +1171,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getSchedules(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getSchedules")
-    GLOBAL_BLUENET!.bluenet.state.getAllSchedules()
+    GLOBAL_BLUENET.bluenet.state.getAllSchedules()
       .done{data -> Void in
         var returnData = [NSDictionary]()
         for schedule in data {
@@ -1197,7 +1195,7 @@ open class BluenetJS: RCTEventEmitter {
   @objc func allowDimming(_ allow: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let allowBool = allow.boolValue
     LOGGER.info("BluenetBridge: Called allowDimming")
-    GLOBAL_BLUENET!.bluenet.control.allowDimming(allow: allowBool)
+    GLOBAL_BLUENET.bluenet.control.allowDimming(allow: allowBool)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1212,7 +1210,7 @@ open class BluenetJS: RCTEventEmitter {
   @objc func lockSwitch(_ lock: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let lockBool = lock.boolValue
     LOGGER.info("BluenetBridge: Called lockSwitch")
-    GLOBAL_BLUENET!.bluenet.control.lockSwitch(lock: lockBool)
+    GLOBAL_BLUENET.bluenet.control.lockSwitch(lock: lockBool)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1227,7 +1225,7 @@ open class BluenetJS: RCTEventEmitter {
   @objc func setSwitchCraft(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let stateBool = state.boolValue
     LOGGER.info("BluenetBridge: Called setSwitchCraft")
-    GLOBAL_BLUENET!.bluenet.control.setSwitchCraft(enabled: stateBool)
+    GLOBAL_BLUENET.bluenet.control.setSwitchCraft(enabled: stateBool)
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1241,7 +1239,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func meshSetTime(_ time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called meshSetTime")
-    GLOBAL_BLUENET!.bluenet.mesh.batchCommand(crownstoneIds: [], commandPacket: ControlPacketsGenerator.getSetTimePacket(time.uint32Value))
+    GLOBAL_BLUENET.bluenet.mesh.batchCommand(crownstoneIds: [], commandPacket: ControlPacketsGenerator.getSetTimePacket(time.uint32Value))
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1256,7 +1254,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func sendNoOp(_  callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called sendNoOp")
-    GLOBAL_BLUENET!.bluenet.control.sendNoOp()
+    GLOBAL_BLUENET.bluenet.control.sendNoOp()
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1270,7 +1268,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func sendMeshNoOp(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called sendMeshNoOp")
-    GLOBAL_BLUENET!.bluenet.mesh.batchCommand(crownstoneIds: [], commandPacket: ControlPacketsGenerator.getNoOpPacket())
+    GLOBAL_BLUENET.bluenet.mesh.batchCommand(crownstoneIds: [], commandPacket: ControlPacketsGenerator.getNoOpPacket())
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1285,9 +1283,9 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func setMeshChannel(_ channel: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called setMeshChannel")
-    GLOBAL_BLUENET!.bluenet.config.setMeshChannel(channel) // set channel
-      .then{_ in return GLOBAL_BLUENET!.bluenet.waitToWrite()} // wait to store
-      .then{_ in return GLOBAL_BLUENET!.bluenet.control.reset()} // reset
+    GLOBAL_BLUENET.bluenet.config.setMeshChannel(channel) // set channel
+      .then{_ in return GLOBAL_BLUENET.bluenet.waitToWrite()} // wait to store
+      .then{_ in return GLOBAL_BLUENET.bluenet.control.reset()} // reset
       .done{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BluenetError {
@@ -1301,13 +1299,13 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func getTrackingState(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getTrackingState")
-    callback([["error" : false, "data": GLOBAL_BLUENET!.bluenetLocalization.getTrackingState() ]])
+    callback([["error" : false, "data": GLOBAL_BLUENET.bluenetLocalization.getTrackingState() ]])
   }
   
   
   @objc func isDevelopmentEnvironment(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called isDevelopmentEnvironment")
-    callback([["error" : false, "data": GLOBAL_BLUENET!.devEnvironment ]])
+    callback([["error" : false, "data": GLOBAL_BLUENET.devEnvironment ]])
   }
   
   
@@ -1317,17 +1315,17 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func setLocationState(_ sphereUID: NSNumber, locationId: NSNumber, profileIndex: NSNumber, referenceId: String) {
     print("BluenetBridge: Called setLocationState \(sphereUID) \(locationId) \(profileIndex) referenceId:\(referenceId)" )
-    GLOBAL_BLUENET!.bluenet.setLocationState(sphereUID: sphereUID.uint8Value, locationId: locationId.uint8Value, profileIndex: profileIndex.uint8Value, referenceId: referenceId)
+    GLOBAL_BLUENET.bluenet.setLocationState(sphereUID: sphereUID.uint8Value, locationId: locationId.uint8Value, profileIndex: profileIndex.uint8Value, referenceId: referenceId)
   }
   
   @objc func setDevicePreferences(_ rssiOffset: NSNumber, tapToToggle: NSNumber) {
     print("BluenetBridge: Called setDevicePreferences \(rssiOffset) \(tapToToggle)")
-    GLOBAL_BLUENET!.bluenet.setDevicePreferences(rssiOffset: rssiOffset.int8Value, tapToToggle: tapToToggle.boolValue)
+    GLOBAL_BLUENET.bluenet.setDevicePreferences(rssiOffset: rssiOffset.int8Value, tapToToggle: tapToToggle.boolValue)
   }
   
   @objc func setCrownstoneNames(_ names: NSDictionary) {
     print("BluenetBridge: Called SETTING setCrownstoneNames")
-    GLOBAL_BLUENET!.watchStateManager.loadState("crownstoneNames", names)
+    GLOBAL_BLUENET.watchStateManager.loadState("crownstoneNames", names)
   }
   
 }
