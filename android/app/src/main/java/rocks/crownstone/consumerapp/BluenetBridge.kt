@@ -72,6 +72,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //	private var uniqueScansOnly = false // Easier than unsubscribing and subscribing to events.
 	private var scannerState = ScannerState.STOPPED
 	private var isTracking = false
+	private var appForeGround = true // Assume we start in foreground.
 
 	// Localization
 	private var isLocalizationTraining = false // TODO: keep this up in localization lib.
@@ -104,6 +105,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private val lifecycleEventListener = object : LifecycleEventListener {
 		override fun onHostResume() {
 			Log.i(TAG, "onHostResume")
+			appForeGround = true
 			if (::bluenet.isInitialized) {
 				bluenet.filterForCrownstones(true)
 			}
@@ -111,13 +113,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 		override fun onHostPause() {
 			Log.i(TAG, "onHostPause")
+			appForeGround = false
 			if (::bluenet.isInitialized) {
 				bluenet.filterForCrownstones(false)
 			}
 		}
 
 		override fun onHostDestroy() {
-			Log.i(TAG, "onHostDestroy")
+			Log.w(TAG, "onHostDestroy")
 		}
 	}
 
@@ -476,7 +479,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun startScanning() {
 		Log.i(TAG, "startScanning")
 		scannerState = ScannerState.HIGH_POWER
-		bluenet.filterForCrownstones(true) // TODO: always set this?
+		bluenet.filterForIbeacons(true)
+		bluenet.filterForCrownstones(appForeGround)
 		updateScanner()
 	}
 
@@ -485,7 +489,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun startScanningForCrownstones() {
 		Log.i(TAG, "startScanningForCrownstones")
 		scannerState = ScannerState.HIGH_POWER
-		bluenet.filterForCrownstones(true)
+		bluenet.filterForIbeacons(true)
+		bluenet.filterForCrownstones(appForeGround)
 		updateScanner()
 	}
 
@@ -495,7 +500,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "startScanningForCrownstonesUniqueOnly")
 		// Validated and non validated, but unique only.
 		scannerState = ScannerState.UNIQUE_ONLY
-		bluenet.filterForCrownstones(true)
+		bluenet.filterForIbeacons(true)
+		bluenet.filterForCrownstones(appForeGround)
 		updateScanner()
 	}
 
@@ -1556,6 +1562,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			if (region.key == uuid) {
 				val referenceId = region.value
 				currentSphereId = referenceId
+				Log.i(TAG, "enterSphere uuid=$uuid refId=$referenceId")
 				sendEvent("enterSphere", referenceId)
 			}
 		}
@@ -1569,6 +1576,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			if (region.key == uuid) {
 				val referenceId = region.value
 //				currentSphereId = ""
+				Log.i(TAG, "exitSphere uuid=$uuid refId=$referenceId")
 				sendEvent("exitSphere", referenceId)
 			}
 		}
@@ -1604,6 +1612,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Any stone, validated or not, any operation mode.
 		val nearest = data as NearestDeviceListEntry
 		val nearestMap = exportNearest(nearest)
+//		Log.i(TAG, "nearestCrownstone: $nearest")
 		sendEvent("nearestCrownstone", nearestMap)
 	}
 
