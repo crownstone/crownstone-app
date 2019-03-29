@@ -1,6 +1,6 @@
 import { AppState } from 'react-native'
 import { NativeBus } from '../native/libInterface/NativeBus';
-import {LOG, LOGe, LOGw} from '../logging/Log'
+import {LOG, LOGd, LOGe, LOGi, LOGw} from '../logging/Log'
 import { Util } from '../util/Util'
 import {eventBus} from "../util/EventBus";
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
@@ -32,7 +32,6 @@ class SchedulerClass {
   triggers : scheduleTrigger;
   singleFireTriggers : scheduledCallback;
   allowTicksAfterTime : any;
-  activeSphere : any;
   scheduledTick : any;
 
   constructor() {
@@ -62,11 +61,6 @@ class SchedulerClass {
 
   init() {
     if (this._initialized === false) {
-      this.store.subscribe(() => {
-        let state = this.store.getState();
-        this.activeSphere = state.app.activeSphere;
-        this.allowTicksAfterTime = new Date().valueOf() + 2000;
-      });
       // we use the local event instead of the native one to also trigger when enter is triggered by fallback.
       eventBus.on("enterSphere", this.flushAll.bind(this));
       NativeBus.on(NativeBus.topics.exitSphere, this.flushAll.bind(this));
@@ -298,7 +292,7 @@ class SchedulerClass {
       }
     }
     let uuid = label + xUtil.getUUID();
-    LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
+    LOGd.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
 
     // fallback to try to fire this callback after exactly the amount of ms
     let timeoutId = null;
@@ -326,12 +320,13 @@ class SchedulerClass {
 
     let now = new Date().valueOf();
 
-    LOG.scheduler("Tick", now);
+    LOGi.scheduler("Tick", now);
 
     // we use this to avoid a race condition where the user has updated the database, and a tick from advertisements
     // instantly overwrites the value again. This can happen when a Crownstone's first advertisement after switching is
     // still the old state.
     if (now > this.allowTicksAfterTime) {
+      LOGi.scheduler("Tick allowed");
       let state = this.store.getState();
       let triggerIds = Object.keys(this.triggers);
 
@@ -349,7 +344,7 @@ class SchedulerClass {
           // We use round in the conversion from millis to seconds so 1.5seconds is also accepted when the target is 2 seconds
           // due to timer inaccuracy this gives the most reliable results.
           if (Math.round(0.001 * (now - trigger.lastTriggerTime)) >= trigger.options.repeatEveryNSeconds) {
-            LOG.scheduler("FIRING Trigger:", triggerId);
+            LOGi.scheduler("FIRING Trigger:", triggerId);
             this.flush(trigger, state);
           }
         }
