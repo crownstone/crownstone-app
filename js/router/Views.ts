@@ -71,7 +71,8 @@ import { ToonSettings }                from "../views/thirdParty/toon/ToonSettin
 import { ToonOverview }                from "../views/thirdParty/toon/ToonOverview";
 import { DeviceSmartBehaviour } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour";
 import { DeviceSmartBehaviour2 } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour2";
-import { DeviceSmartBehaviour_newBehaviour } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_newBehaviour";
+import { DeviceSmartBehaviour_TypeSelector } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeSelector";
+import { DeviceSmartBehaviour_TypeStart }   from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart";
 import { DeviceSmartBehaviour_CreateNewBehaviour } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_CreateNewBehaviour";
 import { DeviceSmartBehaviour_PresenceAware } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_PresenceAware";
 import { DeviceSmartBehaviour_Editor } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor";
@@ -94,7 +95,8 @@ export const Views = {
   DeviceSmartBehaviour_CreateNewBehaviour: withMappedNavigationProps()(DeviceSmartBehaviour_CreateNewBehaviour),
   DeviceSmartBehaviour_Editor:             withMappedNavigationProps()(DeviceSmartBehaviour_Editor),
   DeviceSmartBehaviour_PresenceAware:      withMappedNavigationProps()(DeviceSmartBehaviour_PresenceAware),
-  DeviceSmartBehaviour_newBehaviour:       withMappedNavigationProps()(DeviceSmartBehaviour_newBehaviour),
+  DeviceSmartBehaviour_TypeSelector:       withMappedNavigationProps()(DeviceSmartBehaviour_TypeSelector),
+  DeviceSmartBehaviour_TypeStart:          withMappedNavigationProps()(DeviceSmartBehaviour_TypeStart),
   IconDebug:                      withMappedNavigationProps()(IconDebug),
   Login:                          withMappedNavigationProps()(Login),
   LoginSplash:                    withMappedNavigationProps()(LoginSplash),

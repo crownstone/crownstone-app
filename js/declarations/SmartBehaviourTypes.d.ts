@@ -1,10 +1,8 @@
-
 type behaviourActionType     = "TURN_ON"    | "DIM_WHEN_TURNED_ON"
 type behaviourLocationType   = "HOME"       | "SPECIFIC_LOCATIONS"
 type behaviourTimeType       = "ALWAYS"     | "FROM_TO"
-type behaviourSelectableType = "ACTION"     | "PRESENCE" | "LOCATION"    | "TIME"
-type behaviourPresenceType   = "SOMEBODY"   | "NOBODY"   | "IGNORE"      | "SPECIFIC_USERS"
-type behaviourTimeDetailType = "DARK_START" | "DARK_END" | "LIGHT_START" | "LIGHT_END" | "SPECIFIC"
+type behaviourPresenceType   = "SOMEBODY"   | "NOBODY"   | "IGNORE"   | "SPECIFIC_USERS"
+type behaviourTimeDetailType = "SUNSET"     | "SUNRISE"  | "SPECIFIC"
 
 interface behaviourAction {
   type:         behaviourActionType,
@@ -54,5 +52,4 @@ interface behaviour {
   presence: behaviourPresence,
   time:     behaviourTime,
   repeat:   behaviourDayFlags
-
 }

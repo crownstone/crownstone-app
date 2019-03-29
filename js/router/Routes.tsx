@@ -1,20 +1,17 @@
 import * as React from 'react';
-import { colors} from '../views/styles'
-import { Views }                     from './Views'
 import {
   createStackNavigator,
   createBottomTabNavigator,
   createSwitchNavigator,
   HeaderMode
 } from "react-navigation";
-import { TabIcon } from "./TabIcon";
-import { Languages } from "../Languages";
-import { Initializer } from "./Initializer";
-import { TextStyle } from "react-native";
-
-
-
-import { Provider, connect } from 'react-redux';
+import { TextStyle }          from "react-native";
+import { Provider, connect }  from 'react-redux';
+import { TabIcon }            from "./TabIcon";
+import { Languages }          from "../Languages";
+import { Initializer }        from "./Initializer";
+import { colors}              from '../views/styles'
+import { Views }              from './Views'
 
 
 interface headerModeObj {
@@ -63,11 +60,12 @@ const defaultBackButtonHeaderStyle = {
 const NewBehaviourStack = createStackNavigator(
   {
     DeviceSmartBehaviour : Views.DeviceSmartBehaviour,
-    DeviceSmartBehaviour2 : Views.DeviceSmartBehaviour2,
+    DeviceSmartBehaviour_TypeStart    : Views.DeviceSmartBehaviour_TypeStart,
+    DeviceSmartBehaviour_TypeSelector : Views.DeviceSmartBehaviour_TypeSelector,
+    DeviceSmartBehaviour_PresenceAware : Views.DeviceSmartBehaviour_PresenceAware,
     DeviceSmartBehaviour_CreateNewBehaviour : Views.DeviceSmartBehaviour_CreateNewBehaviour,
     DeviceSmartBehaviour_Editor : Views.DeviceSmartBehaviour_Editor,
-    DeviceSmartBehaviour_PresenceAware : Views.DeviceSmartBehaviour_PresenceAware,
-    DeviceSmartBehaviour_newBehaviour : Views.DeviceSmartBehaviour_newBehaviour,
+    DeviceSmartBehaviour2 : Views.DeviceSmartBehaviour2,
 
   },
   {
