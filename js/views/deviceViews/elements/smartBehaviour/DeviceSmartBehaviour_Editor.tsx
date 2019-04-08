@@ -24,16 +24,15 @@ import {
 } from "../../../styles";
 import { Background } from "../../../components/Background";
 import { textStyle } from "./DeviceSmartBehaviour";
-import {
-  ACTIONS,
-  LOCATION_TYPES,
-  PRESENCE_TYPES,
-  SELECTABLE_TYPE,
-  TIME_DATA_TYPE,
-  TIME_TYPES
-} from "./SmartBehaviourTypes";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { core } from "../../../../core";
+import {
+  AICORE_LOCATIONS_TYPES,
+  AICORE_PRESENCE_TYPES,
+  AICORE_TIME_DETAIL_TYPES,
+  AICORE_TIME_TYPES,
+  SELECTABLE_TYPE
+} from "../../../../Enums";
 
 
 
@@ -106,32 +105,7 @@ export class Rule extends Component<any, any> {
       time:        null,
     };
 
-    this.rule = {
-      action: {
-        type: ACTIONS.TURN_ON,
-        data: 1, // 1 or 0   // 1 is "on", rest is dimmed
-      },
-      presence: {
-        type: PRESENCE_TYPES.SOMEBODY,
-        data: {
-          type: LOCATION_TYPES.SPHERE,
-          locationIds: [],
-        },
-      },
-      time: {
-        type: TIME_TYPES.FROM_TO,
-        data: {
-          from: {
-            type: TIME_DATA_TYPE.SUNSET,
-            offset: { minutes: -60, variation: 15 },
-          },
-          to: {
-            type: TIME_DATA_TYPE.SUNRISE,
-            offset: { minutes: +60, variation: 15 },
-          }
-        },
-      },
-    };
+    this.rule = {};
   }
 
   getElements() {
@@ -334,7 +308,7 @@ export class Rule extends Component<any, any> {
 }
 
 
-class ContentConstructor {
+class BehaviourConstructor {
   ruleDescription : behaviour;
   store: any;
 
@@ -347,48 +321,49 @@ class ContentConstructor {
     let sentence = "";
 
     let starterStr = null;
-    switch (this.ruleDescription.action.type) {
-      case ACTIONS.TURN_ON:
-        starterStr = "I will be "; break;
-      case ACTIONS.DIM_WHEN_TURNED_ON:
-        starterStr = "I will dim to "; break;
-      case ACTIONS.FADE_ON:
-        starterStr = "I will fade to "; break;
+    if (this.ruleDescription.action.data < 1) {
+      starterStr = "I will be dimmed at " + Math.round(this.ruleDescription.action.data * 100) + "% ";
+    }
+    else if (this.ruleDescription.action.data == 1) {
+      starterStr = "I will be on ";
     }
 
     let presenceStr = null;
     let presence = this.ruleDescription.presence;
     switch (presence.type) {
-      case PRESENCE_TYPES.SOMEBODY:
+      case AICORE_PRESENCE_TYPES.SOMEBODY:
         presenceStr = "somebody"; break;
-      case PRESENCE_TYPES.NOBODY:
+      case AICORE_PRESENCE_TYPES.NOBODY:
         presenceStr = "nobody"; break;
-      case PRESENCE_TYPES.SPECIFIC_USERS:
+      case AICORE_PRESENCE_TYPES.SPECIFIC_USERS:
         presenceStr = null; break; // TODO: implement profiles
-      case PRESENCE_TYPES.IGNORE:
+      case AICORE_PRESENCE_TYPES.IGNORE:
         presenceStr = null; break;
     }
 
     let locationPrefixStr = "";
     let locationStr       = "";
-    if (presence.type != PRESENCE_TYPES.IGNORE) {
-      switch (presence.data.type) {
-        case LOCATION_TYPES.SPHERE:
+    if (presence.type !== AICORE_PRESENCE_TYPES.IGNORE) {
+      // @ts-ignore
+      let pd = presence.data as aicorePresenceData;
+
+      switch (presence.type) {
+        case AICORE_LOCATIONS_TYPES.SPHERE:
           locationPrefixStr = " is ";
           locationStr = "home";
-        case LOCATION_TYPES.SPECIFIC_LOCATIONS:
-          if (presence.data.locationIds.length > 0) {
+        case AICORE_LOCATIONS_TYPES.LOCATION:
+          if (pd.locationIds.length > 0) {
             locationPrefixStr = " is in the ";
             // we will now construct a roomA_name, roomB_name or roomC_name line.
-            locationStr += this._getLocationName(presence.data.locationIds[0]);
-            if (presence.data.locationIds.length > 1) {
-              for (let i = 1; i < presence.data.locationIds.length - 1; i++) {
-                let locationCloudId = presence.data.locationIds[i];
+            locationStr += this._getLocationName(pd.locationIds[0]);
+            if (pd.locationIds.length > 1) {
+              for (let i = 1; i < pd.locationIds.length - 1; i++) {
+                let locationCloudId = pd.locationIds[i];
                 let locationName = this._getLocationName(locationCloudId);
                 locationStr += ", " + locationName;
               }
 
-              locationStr += " or " + this._getLocationName(presence.data.locationIds[presence.data.locationIds.length]);
+              locationStr += " or " + this._getLocationName(pd.locationIds[pd.locationIds.length]);
             }
           }
       }
@@ -396,35 +371,41 @@ class ContentConstructor {
 
     let timePrefixStr = "";
     let timeStr = "";
-/*
 
-  between 22:22 and 11:22                     // specific - specific
+/*
   from 22:22 until sunrise                    // specific - sunrise
   from 22:22 until 60 minutes after  sunrise  // specific - sunrise + offset
   from 22:22 until 60 minutes before sunrise  // specific - sunrise - offset
   from 22:22 until sunset                     // specific - sunset
-  from sunset to 4:00                         // sunset   - specific
   from an hour before sunset until sunrise    // sunset   - sunrise
+  from sunrise to 15:00                       // sunrise  - specific
+  from sunset to 4:00                         // sunset   - specific
+
+  between 22:22 and 11:22                     // specific - specific
+
   when its dark outside                       // sunset   - sunrise
   while the sun is up                         // sunrise  - sunset
-  from sunrise to 15:00                       // sunrise  - specific
-
  */
 
 
     let time = this.ruleDescription.time;
-    if (time.type != TIME_TYPES.ALWAYS) {
-      let td = time.data;
-      if ((td.from.type === TIME_DATA_TYPE.SUNRISE || td.from.type === TIME_DATA_TYPE.SUNSET) &&
-          (td.to.type   === TIME_DATA_TYPE.SUNRISE || td.to.type   === TIME_DATA_TYPE.SUNSET) &&
-          (td.from.offset.minutes === 0) && (td.to.offset.minutes === 0)) {
+    if (time.type != AICORE_TIME_TYPES.ALWAYS) {
+      // @ts-ignore
+      let tr = time as aicoreTimeRange;
+
+      if ((tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNRISE || tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNSET) &&
+          (tr.to.type   === AICORE_TIME_DETAIL_TYPES.SUNRISE || tr.to.type   === AICORE_TIME_DETAIL_TYPES.SUNSET) &&
+          ((tr.from as aicoreTimeDataSun).offsetMinutes === 0) && ((tr.to as aicoreTimeDataSun).offsetMinutes === 0)) {
           // this is either "when its dark outside" or "while the sun is up"
       }
-      else if (td.from.type === TIME_DATA_TYPE.SPECIFIC || td.to.type === TIME_DATA_TYPE.SPECIFIC) {
+      else if (tr.from.type === AICORE_TIME_DETAIL_TYPES.CLOCK && tr.to.type === AICORE_TIME_DETAIL_TYPES.CLOCK) {
         // this makes "between X and Y"
       }
+      else if (tr.from.type === AICORE_TIME_DETAIL_TYPES.CLOCK && (tr.to.type   === AICORE_TIME_DETAIL_TYPES.SUNRISE || tr.to.type   === AICORE_TIME_DETAIL_TYPES.SUNSET)) {
+        // this makes "from xxxxx until xxxxx"
+      }
       else {
-        // these are "from xxxxx until xxxxx"
+        // these are "from xxxxx to xxxxx"
       }
     }
   }

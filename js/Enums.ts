@@ -20,6 +20,9 @@ export const BCH_ERROR_CODES = {
   TASK_HAS_BEEN_SUPERSEDED: "TASK_HAS_BEEN_SUPERSEDED",
 };
 
+
+// AiCore types
+
 export const SMART_BEHAVIOUR_TYPES = {
   PRESENCE:      "PRESENCE",
   WAKE_UP_LIGHT: "WAKE_UP_LIGHT",
@@ -29,32 +32,27 @@ export const SMART_BEHAVIOUR_TYPES = {
   CUSTOM:        "CUSTOM",
 }
 
-export const ACTIONS = {
-  TURN_ON:            "TURN_ON",
-  DIM_WHEN_TURNED_ON: "DIM_WHEN_TURNED_ON"
-};
-
-export const TIME_TYPES = {
+export const AICORE_TIME_TYPES = {
   ALWAYS:   "ALWAYS",
-  FROM_TO:  "FROM_TO",
+  RANGE:  "RANGE",
 };
 
-export const TIME_DATA_TYPE = {
-  SUNSET:   "SUNSET",
-  SUNRISE:  "SUNRISE",
-  SPECIFIC: "SPECIFIC"
+export const AICORE_TIME_DETAIL_TYPES = {
+  SUNSET:  "SUNSET",
+  SUNRISE: "SUNRISE",
+  CLOCK:   "CLOCK"
 };
 
-export const PRESENCE_TYPES = {
+export const AICORE_PRESENCE_TYPES = {
   SOMEBODY:       "SOMEBODY",
   NOBODY:         "NOBODY",
   IGNORE:         "IGNORE",
   SPECIFIC_USERS: "SPECIFIC_USERS"
 };
 
-export const LOCATION_TYPES = {
-  SPHERE:             "SPHERE",
-  SPECIFIC_LOCATIONS: "SPECIFIC_LOCATIONS",
+export const AICORE_LOCATIONS_TYPES = {
+  SPHERE:   "SPHERE",
+  LOCATION: "LOCATION",
 };
 
 export const SELECTABLE_TYPE = {

@@ -4,15 +4,9 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
-import { ScrollView, Text, View } from 'react-native';
 import { DeviceSmartBehaviour_TypeExamples } from "./DeviceSmartBehaviour_TypeExamples";
 import {
-  ACTIONS,
-  LOCATION_TYPES,
-  PRESENCE_TYPES,
-  SMART_BEHAVIOUR_TYPES,
-  TIME_DATA_TYPE,
-  TIME_TYPES
+  SMART_BEHAVIOUR_TYPES
 } from "../../../../Enums";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { DeviceSmartBehaviour_Editor } from "./DeviceSmartBehaviour_Editor";
@@ -28,29 +22,24 @@ export class DeviceSmartBehaviour_TypeStart extends Component<any, any> {
   };
 
   _getPresenceExamples() {
-    let examples = [];
+    let examples : behaviour[] = [];
+    let always   : dayOfWeek = {
+      Mon: true,
+      Tue: true,
+      Wed: true,
+      Thu: true,
+      Fri: true,
+      Sat: true,
+      Sun: true
+    };
     examples.push({
-      action:   { type: ACTIONS.TURN_ON, data: 1, },
-      presence: { type: PRESENCE_TYPES.SOMEBODY, data: { type: LOCATION_TYPES.SPHERE, locationIds: []}},
+      action:   { type: "BE_ON", fadeDuration: 0, data: 1, },
+      presence: { type: "SOMEBODY", data: { type: "SPHERE" }, delay: 5},
       time: {
-        type: TIME_TYPES.FROM_TO, data: {
-          from: { type: TIME_DATA_TYPE.SPECIFIC, data: "15:00"},
-          to:   { type: TIME_DATA_TYPE.SPECIFIC, data: "23:00"}
-        }}
-    });
-    examples.push({
-      action:   { type: ACTIONS.TURN_ON, data: 1, },
-      presence: { type: PRESENCE_TYPES.SOMEBODY, data: { type: LOCATION_TYPES.SPECIFIC_LOCATIONS, locationIds: ["Living room", "Kitchen"]}},
-      time: { type: TIME_TYPES.ALWAYS }});
-
-    examples.push({
-      action:   { type: ACTIONS.TURN_ON, data: 0.3, },
-      presence: { type: PRESENCE_TYPES.NOBODY, data: { type: LOCATION_TYPES.SPHERE, locationIds: []}},
-      time: {
-        type: TIME_TYPES.FROM_TO, data: {
-          from: { type: TIME_DATA_TYPE.SUNSET},
-          to:   { type: TIME_DATA_TYPE.SUNRISE}
-        }}
+        type: "RANGE",
+        from: { type: "CLOCK", data: { minutes: 0, hours: 15, dayOfMonth: "*", month: "*", dayOfWeek: always }},
+        to:   { type: "CLOCK", data: { minutes: 0, hours: 23, dayOfMonth: "*", month: "*", dayOfWeek: always }}
+      }
     });
     return examples;
   }
@@ -103,16 +92,4 @@ export class DeviceSmartBehaviour_TypeStart extends Component<any, any> {
     return <DeviceSmartBehaviour_TypeExamples examples={examples} {...this.props} />
 
   }
-}
-
-
-function ruleConstructor() {
-  return {
-    action:   { type: ACTIONS.TURN_ON, data: 1, },
-    presence: { type: PRESENCE_TYPES.SOMEBODY, data: { type: LOCATION_TYPES.SPHERE, locationIds: []}},
-    time: {
-      type: TIME_TYPES.FROM_TO, data: {
-        from: { type: TIME_DATA_TYPE.SUNSET,  offset: { minutes: -60, variation: 15 }},
-        to:   { type: TIME_DATA_TYPE.SUNRISE, offset: { minutes: +60, variation: 15 }}
-    }}};
 }
