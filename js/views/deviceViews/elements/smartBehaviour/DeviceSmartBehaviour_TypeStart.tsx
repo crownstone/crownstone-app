@@ -10,6 +10,7 @@ import {
 } from "../../../../Enums";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { DeviceSmartBehaviour_Editor } from "./DeviceSmartBehaviour_Editor";
+import { core } from "../../../../core";
 
 
 export class DeviceSmartBehaviour_TypeStart extends Component<any, any> {
@@ -20,6 +21,22 @@ export class DeviceSmartBehaviour_TypeStart extends Component<any, any> {
       title: "A Crownstone",
     }
   };
+
+
+  _getLocationIds(amount) {
+    let state = core.store.getState();
+    let sphereIds = Object.keys(state.spheres);
+    let activeSphere = sphereIds[0]
+
+    let sphere = state.spheres[activeSphere];
+    let locationIds = Object.keys(sphere.locations);
+    let usedLocationIds = [];
+    for (let i = 0; i < locationIds.length && i < amount; i++) {
+      usedLocationIds.push(locationIds[i]);
+    }
+
+    return usedLocationIds;
+  }
 
   _getPresenceExamples() {
     let examples : behaviour[] = [];
@@ -37,8 +54,28 @@ export class DeviceSmartBehaviour_TypeStart extends Component<any, any> {
       presence: { type: "SOMEBODY", data: { type: "SPHERE" }, delay: 5},
       time: {
         type: "RANGE",
+        from: { type: "SUNSET",  offsetMinutes:0},
+        to:   { type: "SUNRISE", offsetMinutes:0}
+      }
+    });
+    examples.push({
+      action:   { type: "BE_ON", fadeDuration: 0, data: 1, },
+      presence: { type: "SOMEBODY", data: { type: "LOCATION", locationIds: this._getLocationIds(2) }, delay: 5},
+      time: {
+        type: "ALWAYS"
+      }
+    });
+
+    examples.push({
+      action:   { type: "BE_ON", fadeDuration: 0, data: 1, },
+      presence: { type: "IGNORE" },
+      time: {
+        type: "RANGE",
         from: { type: "CLOCK", data: { minutes: 0, hours: 15, dayOfMonth: "*", month: "*", dayOfWeek: always }},
-        to:   { type: "CLOCK", data: { minutes: 0, hours: 23, dayOfMonth: "*", month: "*", dayOfWeek: always }}
+        to:   { type: "SUNSET", offsetMinutes: 0 }
+      },
+      options: {
+        type: "LOCATION_PRESENCE_AFTER"
       }
     });
     return examples;

@@ -59,14 +59,13 @@ const defaultBackButtonHeaderStyle = {
 
 const NewBehaviourStack = createStackNavigator(
   {
-    DeviceSmartBehaviour : Views.DeviceSmartBehaviour,
-    DeviceSmartBehaviour_TypeStart    : Views.DeviceSmartBehaviour_TypeStart,
-    DeviceSmartBehaviour_TypeSelector : Views.DeviceSmartBehaviour_TypeSelector,
-    DeviceSmartBehaviour_PresenceAware : Views.DeviceSmartBehaviour_PresenceAware,
+    DeviceSmartBehaviour_Editor :             Views.DeviceSmartBehaviour_Editor,
+    DeviceSmartBehaviour :                    Views.DeviceSmartBehaviour,
+    DeviceSmartBehaviour_TypeStart    :       Views.DeviceSmartBehaviour_TypeStart,
+    DeviceSmartBehaviour_TypeSelector :       Views.DeviceSmartBehaviour_TypeSelector,
+    DeviceSmartBehaviour_PresenceAware :      Views.DeviceSmartBehaviour_PresenceAware,
     DeviceSmartBehaviour_CreateNewBehaviour : Views.DeviceSmartBehaviour_CreateNewBehaviour,
-    DeviceSmartBehaviour_Editor : Views.DeviceSmartBehaviour_Editor,
-    DeviceSmartBehaviour2 : Views.DeviceSmartBehaviour2,
-
+    DeviceSmartBehaviour2 :                   Views.DeviceSmartBehaviour2,
   },
   {
     ...defaultHeader
@@ -304,7 +303,6 @@ const AppStack = createStackNavigator(
     ToonAdd: {
       screen:  wrap("ToonAdd", Views.ToonAdd),
     },
-
   },
   {
     initialRouteName: "AppNavigator",

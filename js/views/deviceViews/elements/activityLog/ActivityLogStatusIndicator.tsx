@@ -9,8 +9,8 @@ import {
   Text,
   View
 } from 'react-native';
-import {Util} from "../../../../util/Util";
 import {colors, screenWidth} from "../../../styles";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 export class ActivityLogStatusIndicator extends Component<any, any> {
@@ -25,7 +25,7 @@ export class ActivityLogStatusIndicator extends Component<any, any> {
 
 
   getLabel() {
-    let timeIndicator = Util.getTimeFormat(this.props.data.startTime);
+    let timeIndicator = xUtil.getTimeFormat(this.props.data.startTime);
     return this.props.data.count + ' ' + (this.props.data.count > 1 ? 'heartbeats' : 'heartbeat') + ' since ' + timeIndicator + " " + this.getDayLabel() + ".";
   }
 

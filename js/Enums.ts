@@ -60,4 +60,5 @@ export const SELECTABLE_TYPE = {
   PRESENCE:    "PRESENCE",
   LOCATION:    "LOCATION",
   TIME:        "TIME",
+  OPTION:      "OPTION",
 };

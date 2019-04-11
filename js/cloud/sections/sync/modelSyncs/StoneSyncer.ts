@@ -55,7 +55,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
     let cloudIdMap = this._getCloudIdMap(stonesInState);
 
     // go through all stones in the cloud.
-    return Util.promiseBatchPerformer(stonesInCloud, (stone_from_cloud) => { // underscores so its visually different from stoneInState
+    return xUtil.promiseBatchPerformer(stonesInCloud, (stone_from_cloud) => { // underscores so its visually different from stoneInState
       this.transferPromises = [];
 
       let localId = cloudIdMap[stone_from_cloud.id];
@@ -244,6 +244,10 @@ export class StoneSyncer extends SyncingSphereItemBase {
     else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud) || corruptData) {
       syncLocal()
     }
+    else if (!stoneInState.config.uid) { // self repair
+      LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing uid.");
+      syncLocal();
+    }
     else if (stoneInState.config.applianceId && localApplianceId === null) { // self repair
       LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing applianceId.");
       syncLocal();
@@ -255,24 +259,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
     else if (localLocationId && stoneInState.config.locationId === null) {   // self repair
       LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing locationId.");
       syncLocal();
-    }
-    // TODO: [2017-10-02] RETROFIT CODE: AFTER A FEW RELEASES
-    else if (stone_from_cloud.locationId === undefined) {
-      if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return; }
-
-      let localDataForCloud = {...stoneInState};
-      localDataForCloud.config['cloudApplianceId'] = this._getCloudApplianceId(stoneInState.applianceId);
-      localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
-      this.transferPromises.push(
-        transferStones.updateOnCloud({
-          localId: localId,
-          localData: localDataForCloud,
-          localSphereId: this.localSphereId,
-          cloudId: stone_from_cloud.id,
-          cloudSphereId: this.cloudSphereId,
-        })
-        .catch(() => {})
-      );
     }
 
     if (!stoneInState.config.cloudId) {

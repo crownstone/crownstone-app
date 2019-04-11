@@ -13,6 +13,7 @@ import {LOG_LEVEL} from "../../logging/LogLevels";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import { core } from "../../core";
+import { xUtil } from "../../util/StandAloneUtil";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -79,17 +80,17 @@ function handleAction(action, returnValue, newState, oldState) {
     case 'USER_UPDATE':
       handleUserInCloud(action, newState);
       break;
-    case 'UPDATE_APPLIANCE_CONFIG':
-      handleApplianceInCloud(action, newState);
-      break;
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
-      handleApplianceBehaviourInCloud(action, newState);
-      break;
+    // case 'UPDATE_APPLIANCE_CONFIG':
+    //   // handleApplianceInCloud(action, newState);
+    //   break;
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
+    //   // handleApplianceBehaviourInCloud(action, newState);
+    //   break;
 
 
     case 'ADD_STONE':
@@ -360,7 +361,7 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
     let stone = state.spheres[sphereId].stones[stoneId];
     let data  = { power: stone.state.currentUsage, powerFactor: stone.state.powerFactor, timestamp: action.updatedAt };
 
-    let dateId = Util.getDateHourId(action.updatedAt);
+    let dateId = xUtil.getDateHourId(action.updatedAt);
 
     // get the index the new item will have. This is used to mark them as synced. If there is no previous item, it is 0.
     let oldStone = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] || null;

@@ -14,6 +14,7 @@ import {ScheduleUtil} from "../../util/ScheduleUtil";
 import {StoneUtil} from "../../util/StoneUtil";
 import { STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 const networkError = 'network_error';
@@ -99,7 +100,7 @@ export class SetupHelper {
             core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 18 });
 
             // fast setup will require much less time in 'stand-by' after the setup has completed.
-            let fastSetupEnabled = Util.versions.isHigherOrEqual(this.firmwareVersion, '2.1.0');
+            let fastSetupEnabled = xUtil.versions.isHigherOrEqual(this.firmwareVersion, '2.1.0');
 
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
             Scheduler.scheduleCallback(() => { core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 20, 'setup19');

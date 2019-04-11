@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Text,
-  View, TextStyle
+  View, TextStyle, ViewStyle
 } from "react-native";
 
 
@@ -26,13 +26,9 @@ import { Background } from "../../../components/Background";
 import { textStyle } from "./DeviceSmartBehaviour";
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { core } from "../../../../core";
-import {
-  AICORE_LOCATIONS_TYPES,
-  AICORE_PRESENCE_TYPES,
-  AICORE_TIME_DETAIL_TYPES,
-  AICORE_TIME_TYPES,
-  SELECTABLE_TYPE
-} from "../../../../Enums";
+import { SELECTABLE_TYPE } from "../../../../Enums";
+import { BehaviourConstructor } from "./SmartBehaviourLogic";
+import { NavigationUtil } from "../../../../util/NavigationUtil";
 
 
 
@@ -51,6 +47,16 @@ export class DeviceSmartBehaviour_Editor extends Component<any, any> {
   render() {
     let iconHeight   = 0.10*availableScreenHeight;
 
+    let rule : behaviour = {
+      action:   { type: "BE_ON", fadeDuration: 0, data: 1, },
+      presence: { type: "SOMEBODY", data: { type: "SPHERE" }, delay: 5},
+      time: {
+        type: "RANGE",
+        from: { type: "SUNSET",  offsetMinutes:0},
+        to:   { type: "SUNRISE", offsetMinutes:0}
+      }
+    }
+
     return (
       <Background image={core.background.detailsDark}>
         <OrangeLine/>
@@ -60,7 +66,7 @@ export class DeviceSmartBehaviour_Editor extends Component<any, any> {
             <Text style={[deviceStyles.header]}>{ "Smart Behaviour" }</Text>
             <View style={{height: 0.2*iconHeight}} />
             <Text style={textStyle.specification}>{"Tap the underlined parts to customize them!"}</Text>
-            <Rule />
+            <Rule data={rule} />
           </View>
         </ScrollView>
       </Background>
@@ -84,10 +90,11 @@ export class DeviceSmartBehaviour_Editor extends Component<any, any> {
  *
  */
 
-export class Rule extends Component<any, any> {
+export class Rule extends Component<{data:behaviour}, any> {
   references = [];
   amountOfLines = 0;
   rule;
+  selectedChunk : behaviourChunk;
 
   constructor(props) {
     super(props);
@@ -98,14 +105,9 @@ export class Rule extends Component<any, any> {
       detailInnerHeight: new Animated.Value(availableScreenHeight - 300),
       detailOpacity:     new Animated.Value(0),
       buttonOpacity:     new Animated.Value(1),
-
-      switchState: null,
-      presence:    null,
-      location:    null,
-      time:        null,
     };
 
-    this.rule = {};
+    this.rule = new BehaviourConstructor(this.props.data);
   }
 
   getElements() {
@@ -113,51 +115,152 @@ export class Rule extends Component<any, any> {
 
     let normal      : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30  };
     let selectable  : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30, textDecorationLine:'underline' };
-    let segmentStyle = {...styles.centered, width: screenWidth};
+    let segmentStyle : ViewStyle = {...styles.centered, flexDirection:'row', width: screenWidth};
 
-    let d = [
-      // {label: "I will be ",              clickable: false, type: true},
-      // {label: "on",                      clickable: true , type: DETAIL_TYPES.SWITCH_STATE },
-      // {label: " if ",                    clickable: false, type: true},
-      // {label: "somebody",                clickable: true , type: DETAIL_TYPES.PRESENCE },
-      // {label: " is ",                    clickable: false, type: true},
-      // {label: "home",                    clickable: true , type: DETAIL_TYPES.LOCATION },
-      // {label: " ",                       clickable: false, type: true},
-      // {label: "between 15:00 and 23:00", clickable: true , type: DETAIL_TYPES.TIME },
-      // {label: ".",                       clickable: false, type: true},
-    ];
+    let rule = this.rule.getLogicChunks();
 
     let segments = [];
     let result = [];
-    let letterWidth = 9;
-    let amountOfLettersInScreenWidth = Math.floor((segmentStyle.width)/letterWidth);
-    let totalLettersOnLine = 0;
-    d.forEach((behaviour,i) => {
+    let paddingForRules = 7;
+    let letterLengthOnLine = 0;
+    let wordsOnLine = [];
 
-      totalLettersOnLine += behaviour.label.length;
-
-      if (totalLettersOnLine > amountOfLettersInScreenWidth) {
-        totalLettersOnLine = 0;
-        result.push(<View key={i + "_1"} style={segmentStyle}>{segments}</View>);
+    let putSegmentsIntoLine = () => {
+      if (segments.length > 0) {
+        result.push(<View key={"descriptionLine_" + this.amountOfLines} style={segmentStyle}>{segments}</View>);
         this.amountOfLines++;
+        letterLengthOnLine = 0;
         segments = [];
+        wordsOnLine = [];
       }
-      if (behaviour.clickable) {
-        segments.push(<TouchableOpacity key={i + "_2"} onPress={() => {
-          this.toggleDetails(behaviour.type)
-        }}><Text style={[selectable, {color: this.state.detail === behaviour.type ? colors.green.hex : colors.white.hex}]}>{behaviour.label}</Text></TouchableOpacity>)
-      }
-      else {
-        segments.push(<View key={i + "_3"}><Text  style={normal}>{behaviour.label}</Text></View>)
-      }
-    });
-
-    if (segments.length > 0) {
-      result.push(<View style={segmentStyle}>{segments}</View>);
-      this.amountOfLines++;
     }
 
+    rule.forEach((chunk,i) => {
+      // refresh the selected chunk for the UI
+      if (chunk.type === this.state.detail) { this.selectedChunk = chunk; }
+
+      // hidden chunks are imply that they are not part of the sentence. We do however need their data for the selection.
+      if (chunk.hidden) {
+        // TODO: add suggestions?
+        return;
+      }
+
+      let words = chunk.label.split(" ");
+      wordsOnLine = [];
+
+      let putWordsIntoSegments = () => {
+        if (wordsOnLine.length > 0) {
+          if (chunk.clickable) {
+            segments.push(
+              <TouchableOpacity key={"selectable_element_" + i} onPress={() => { this.toggleDetails(chunk); }}>
+                <Text style={[selectable, {color: this.state.detail === chunk.type ? colors.green.hex : colors.white.hex}]}>{wordsOnLine.join(" ")}</Text>
+              </TouchableOpacity>
+            );
+          }
+          else {
+            segments.push(<View key={"label_element_" + i}><Text style={normal}>{wordsOnLine.join(" ")}</Text></View>);
+          }
+        }
+      }
+
+      for (let i = 0; i < words.length; i++) {
+        let lastWordLength = 0;
+        if (words[i]) {
+          lastWordLength = getWordLength(words[i] + ' ')
+          letterLengthOnLine += lastWordLength;
+        }
+        if (letterLengthOnLine > screenWidth - paddingForRules*2) {
+          putWordsIntoSegments();
+          putSegmentsIntoLine();
+          letterLengthOnLine += lastWordLength;
+        }
+        wordsOnLine.push(words[i]);
+      }
+
+      putWordsIntoSegments();
+    });
+
+    putSegmentsIntoLine();
+
     return result;
+  }
+
+
+
+  toggleDetails(chunk) {
+    let selectedBehaviourType = null;
+
+    if (chunk !== null) {
+      selectedBehaviourType = chunk.type;
+    }
+
+    if (this.state.detail === selectedBehaviourType) {
+      return;
+    }
+
+    let detailSelectedHeight = availableScreenHeight - 200 - this.amountOfLines*30;
+
+    if (this.state.detail === null) {
+      let animation = [];
+      this.setState({detail: selectedBehaviourType});
+      animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 0,   duration: 100}));
+      animation.push(Animated.timing(this.state.buttonOpacity,     {toValue: 0, delay: 100, duration: 100}));
+      animation.push(Animated.timing(this.state.detailHeight,      {toValue: detailSelectedHeight, delay: 0, duration: 200}));
+      animation.push(Animated.timing(this.state.detailInnerHeight, {toValue: detailSelectedHeight, delay: 0, duration: 200}));
+      Animated.parallel(animation).start(() => { this.state.detailInnerHeight.setValue(0) })
+    }
+    else if (selectedBehaviourType === null) {
+      let animation = [];
+      this.state.detailInnerHeight.setValue(detailSelectedHeight);
+      animation.push(Animated.timing(this.state.detailOpacity,     {toValue:0, delay:0, duration: 100}));
+      animation.push(Animated.timing(this.state.buttonOpacity,     {toValue:1, delay:100, duration: 100}));
+      animation.push(Animated.timing(this.state.detailInnerHeight, {toValue: availableScreenHeight - 300, delay:0, duration: 200}));
+      animation.push(Animated.timing(this.state.detailHeight,      {toValue: availableScreenHeight - 300, delay:0, duration: 200}));
+      Animated.parallel(animation).start(() => { this.setState({detail: selectedBehaviourType}); })
+    }
+    else {
+      Animated.timing(this.state.detailOpacity, {toValue:0, delay:0, duration: 150}).start(() => {
+        this.setState({detail: selectedBehaviourType}, () => {
+          Animated.timing(this.state.detailOpacity, {toValue:1, delay:0, duration: 150}).start()
+        })
+      })
+    }
+  }
+
+  _showDimAmountPopup() {
+    let buttons = [];
+    let genCallback = (amount) => { return () => {
+      this.selectedChunk.changeAction(amount);
+      this.forceUpdate();
+    }}
+    buttons.push({ text: "90%", callback: genCallback(0.9)});
+    buttons.push({ text: "80%", callback: genCallback(0.8)});
+    buttons.push({ text: "70%", callback: genCallback(0.7)});
+    buttons.push({ text: "60%", callback: genCallback(0.6)});
+    buttons.push({ text: "50%", callback: genCallback(0.5)});
+    buttons.push({ text: "40%", callback: genCallback(0.4)});
+    buttons.push({ text: "30%", callback: genCallback(0.3)});
+    buttons.push({ text: "20%", callback: genCallback(0.2)});
+    buttons.push({ text: "10%", callback: genCallback(0.1)});
+    core.eventBus.emit('showPopup', {title: "How much should I dim?", buttons: buttons})
+  }
+
+  _showLocationSelectionPopup() {
+    let buttons = [];
+    let genCallback = (amount) => { return () => {
+      this.selectedChunk.changeAction(amount);
+      this.forceUpdate();
+    }}
+    buttons.push({ text: "90%", callback: genCallback(0.9)});
+    buttons.push({ text: "80%", callback: genCallback(0.8)});
+    buttons.push({ text: "70%", callback: genCallback(0.7)});
+    buttons.push({ text: "60%", callback: genCallback(0.6)});
+    buttons.push({ text: "50%", callback: genCallback(0.5)});
+    buttons.push({ text: "40%", callback: genCallback(0.4)});
+    buttons.push({ text: "30%", callback: genCallback(0.3)});
+    buttons.push({ text: "20%", callback: genCallback(0.2)});
+    buttons.push({ text: "10%", callback: genCallback(0.1)});
+    core.eventBus.emit('showPopup', {title: "How much should I dim?", buttons: buttons})
   }
 
 
@@ -166,86 +269,100 @@ export class Rule extends Component<any, any> {
     switch (this.state.detail) {
       case SELECTABLE_TYPE.ACTION:
         details = (
-          <View style={{width:screenWidth, flex:1, alignItems:'center'}}>
-            <View style={{flex:1}} />
-            <Text style={textStyle.specification}>What should I be?</Text>
-            <TouchableOpacity style={{
-              width: screenWidth, height:50,
-              borderTopWidth:1, borderColor: colors.menuBackground.hex,
-              backgroundColor: colors.green.hex,
-              justifyContent:'center',
-            }}>
-              <Text style={{paddingLeft:15, fontSize:15}}>On</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{
-              width: screenWidth, height:50,
-              borderTopWidth:1, borderColor: colors.menuBackground.hex,
-              backgroundColor: colors.white.rgba(0.8),
-              alignItems:'center', flexDirection: "row"
-            }}>
-              <Text style={{paddingLeft:15, fontSize:15}}>Dimmed to 50%</Text>
-              <View style={{flex:1}} />
-              <Text style={{paddingRight:15, fontSize:15, color: colors.black.rgba(0.2)}}>(tap to change)</Text>
-            </TouchableOpacity>
-            <View style={{width: screenWidth, height:1, backgroundColor: colors.menuBackground.hex,}} />
-            <Text style={textStyle.explanation}>My behaviour defines when I should be on. I will be off when I should not be on.</Text>
-            <View style={{flex:1}} />
-            <TouchableOpacity onPress={() => { this.toggleDetails(null); }} style={{
-              width:0.5*screenWidth, height:50, borderRadius:15,
-              backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
-            }}>
-              <Text style={{fontSize:15, fontWeight:'bold'}}>Sounds about right!</Text>
-            </TouchableOpacity>
-          </View>
+          <BehaviourList
+            header={"What should I be?"}
+            explanation={"My behaviour defines when I should be on. I will be off when I should not be on."}
+            closeCallback={() => { this.toggleDetails(null); }}
+            closeLabel={"Sounds about right!"}
+            elements={[
+              {
+                label: "On",
+                isSelected: () => { return this.selectedChunk.value === 1;},
+                selectionCallback: () => { this.selectedChunk.changeAction(1); this.forceUpdate(); }
+              },
+              {
+                label: "Dimmed " + Math.round((this.selectedChunk.value < 1 ? this.selectedChunk.value : 0.5) * 100) + "%",
+                subLabel: "(tap to change)",
+                isSelected: () => { return this.selectedChunk.value < 1;},
+                selectionCallback: () => { this._showDimAmountPopup(); }},
+            ]}
+          />
         );
         break;
       case SELECTABLE_TYPE.PRESENCE:
         details = (
-          <View style={{width:screenWidth, flex:1, alignItems:'center'}}>
-            <View style={{flex:1}} />
-            <Text style={textStyle.specification}>Who shall I look for?</Text>
-            <TouchableOpacity style={{
-              width: screenWidth, height:50,
-              borderTopWidth:1, borderColor: colors.menuBackground.hex,
-              backgroundColor: colors.green.hex,
-              justifyContent:'center',
-            }}>
-              <Text style={{paddingLeft:15, fontSize:15}}>Somebody</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{
-              width: screenWidth, height:50,
-              borderTopWidth:1, borderColor: colors.menuBackground.hex,
-              backgroundColor: colors.white.rgba(0.8),
-              alignItems:'center', flexDirection: "row"
-            }}>
-              <Text style={{paddingLeft:15, fontSize:15}}>Nobody</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{
-              width: screenWidth, height:50,
-              borderTopWidth:1, borderColor: colors.menuBackground.hex,
-              backgroundColor: colors.white.rgba(0.8),
-              alignItems:'center', flexDirection: "row"
-            }}>
-              <Text style={{paddingLeft:15, fontSize:15}}>Ignore presence</Text>
-            </TouchableOpacity>
-            <View style={{width: screenWidth, height:1, backgroundColor: colors.menuBackground.hex,}} />
-            <View style={{flex:1}} />
-            <TouchableOpacity onPress={() => { this.toggleDetails(null); }} style={{
-              width:0.5*screenWidth, height:50, borderRadius:15,
-              backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
-            }}>
-              <Text style={{fontSize:15, fontWeight:'bold'}}>Thats it!</Text>
-            </TouchableOpacity>
-          </View>
+          <BehaviourList
+            header={"Who shall I look for?"}
+            closeCallback={() => { this.toggleDetails(null); }}
+            closeLabel={"That's it!"}
+            elements={[
+              {
+                label: "Somebody",
+                isSelected: () => { return this.selectedChunk.value === "SOMEBODY"; },
+                selectionCallback: () => { this.selectedChunk.changeAction("SOMEBODY"); this.forceUpdate(); }
+              },
+              {
+                label: "Nobody",
+                isSelected: () => { return this.selectedChunk.value === "NOBODY"; },
+                selectionCallback: () => { this.selectedChunk.changeAction("NOBODY"); this.forceUpdate(); }
+              },
+              {
+                label: "Ignore",
+                isSelected: () => { return this.selectedChunk.value === "IGNORE"; },
+                selectionCallback: () => { this.selectedChunk.changeAction("IGNORE"); this.forceUpdate(); }
+              },
+            ]}
+          />
         );
         break;
       case SELECTABLE_TYPE.LOCATION:
+        details = (
+          <BehaviourList
+            header={"Where should I look?"}
+            closeCallback={() => { this.toggleDetails(null); }}
+            closeLabel={"Got it!"}
+            elements={[
+              {
+                label: "Anywhere in the house!",
+                isSelected: () => { return this.selectedChunk.value && this.selectedChunk.value.type === "SPHERE"; },
+                selectionCallback: () => { this.selectedChunk.changeAction({type:"SPHERE"}); this.forceUpdate(); }
+              },
+              {
+                label: "In the room.",
+                isSelected: () => {
+                  return this.selectedChunk.value &&
+                    this.selectedChunk.value.type === "LOCATION" &&
+                    this.selectedChunk.value.locationIds.length === 1 &&
+                    this.selectedChunk.value.locationIds[0] == getTheId()
+                },
+                selectionCallback: () => {
+                  this.selectedChunk.changeAction({
+                    type:"LOCATION",
+                    locationIds:[getTheId()]
+                  });
+                  this.forceUpdate();
+                }
+              },
+              {
+                label: "Select room(s)...",
+                subLabel: "(tap to select)",
+                isSelected: () => {
+                  return this.selectedChunk.value &&
+                    this.selectedChunk.value.type === "LOCATION" &&
+                    ((this.selectedChunk.value.locationIds.length === 1 && this.selectedChunk.value.locationIds[0] != getTheId()) ||
+                    this.selectedChunk.value.locationIds.length > 1)
+                },
+                selectionCallback: () => { this.selectedChunk.changeAction("LOCATION"); this.forceUpdate(); }
+              },
+            ]}
+          />
+        );
       case SELECTABLE_TYPE.TIME:
     }
 
     return (
       <Animated.View style={{height: this.state.detailHeight}}>
-        <Animated.View style={{opacity: this.state.detailOpacity, height: this.state.detailHeight, position:'absolute', top:0}}>{details}</Animated.View>
+        <Animated.View style={{opacity: this.state.detailOpacity, height: this.state.detailHeight,      position:'absolute', top:0}}>{details}</Animated.View>
         <Animated.View style={{opacity: this.state.buttonOpacity, height: this.state.detailInnerHeight, position:'absolute', top:0, overflow: 'hidden'}}>{
           <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
             <View style={{flex:1}} />
@@ -261,40 +378,6 @@ export class Rule extends Component<any, any> {
     );
   }
 
-  toggleDetails(nextType) {
-    if (this.state.detail === nextType) {
-      return;
-    }
-
-    let detailSelectedHeight = availableScreenHeight - 200 - this.amountOfLines*30;
-
-    if (this.state.detail === null) {
-      let animation = [];
-      this.setState({detail: nextType});
-      animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 0,   duration: 100}));
-      animation.push(Animated.timing(this.state.buttonOpacity,     {toValue: 0, delay: 100, duration: 100}));
-      animation.push(Animated.timing(this.state.detailHeight,      {toValue: detailSelectedHeight, delay: 0, duration: 200}));
-      animation.push(Animated.timing(this.state.detailInnerHeight, {toValue: detailSelectedHeight, delay: 0, duration: 200}));
-      Animated.parallel(animation).start(() => { this.state.detailInnerHeight.setValue(0) })
-    }
-    else if (nextType === null) {
-      let animation = [];
-      this.state.detailInnerHeight.setValue(detailSelectedHeight);
-      animation.push(Animated.timing(this.state.detailOpacity,     {toValue:0, delay:0, duration: 100}));
-      animation.push(Animated.timing(this.state.buttonOpacity,     {toValue:1, delay:100, duration: 100}));
-      animation.push(Animated.timing(this.state.detailInnerHeight, {toValue:availableScreenHeight - 300, delay:0, duration: 200}));
-      animation.push(Animated.timing(this.state.detailHeight,      {toValue: availableScreenHeight - 300, delay:0, duration: 200}));
-      Animated.parallel(animation).start(() => { this.setState({detail: nextType}); })
-    }
-    else {
-      Animated.timing(this.state.detailOpacity, {toValue:0, delay:0, duration: 150}).start(() => {
-        this.setState({detail: nextType}, () => {
-          Animated.timing(this.state.detailOpacity, {toValue:1, delay:0, duration: 150}).start()
-        })
-      })
-    }
-  }
-
 
   render() {
     return (
@@ -307,111 +390,80 @@ export class Rule extends Component<any, any> {
   }
 }
 
+class BehaviourList extends Component<{
+    closeLabel: string,
+    closeCallback: () => void,
+    explanation?: string,
+    header: string,
+    elements: behaviourListElement[]
+  },any> {
 
-class BehaviourConstructor {
-  ruleDescription : behaviour;
-  store: any;
+  _getElements() {
+    let elements = [];
+    this.props.elements.forEach((el,i) => {
+      elements.push(
+        <TouchableOpacity key={"behaviourElement_"+ i} style={{
+          flexDirection:'row',
+          width: screenWidth, height:50,
+          borderTopWidth:1, borderColor: colors.menuBackground.rgba(0.7),
+          backgroundColor: el.isSelected() ? colors.green.hex : colors.white.rgba(0.8),
+          alignItems:'center',
+        }}
+          onPress={() => { el.selectionCallback() }}>
+          <Text style={{paddingLeft:15, fontSize:15}}>{el.label}</Text>
+          {el.subLabel ? <View style={{flex:1}} /> : undefined}
+          {el.subLabel ? <Text style={{paddingRight:15, fontSize:15, color: colors.black.rgba(0.2)}}>{el.subLabel}</Text> : undefined}
+        </TouchableOpacity>
+      )
+    });
 
-  constructor(behaviour: behaviour, store) {
-    this.ruleDescription = behaviour;
-    this.store = store;
+    return elements;
   }
 
-  getSentence() {
-    let sentence = "";
+  render() {
+    return (
 
-    let starterStr = null;
-    if (this.ruleDescription.action.data < 1) {
-      starterStr = "I will be dimmed at " + Math.round(this.ruleDescription.action.data * 100) + "% ";
-    }
-    else if (this.ruleDescription.action.data == 1) {
-      starterStr = "I will be on ";
-    }
+    <View style={{width:screenWidth, flex:1, alignItems:'center'}}>
+      <View style={{flex:1}} />
+      <Text style={textStyle.specification}>{this.props.header}</Text>
 
-    let presenceStr = null;
-    let presence = this.ruleDescription.presence;
-    switch (presence.type) {
-      case AICORE_PRESENCE_TYPES.SOMEBODY:
-        presenceStr = "somebody"; break;
-      case AICORE_PRESENCE_TYPES.NOBODY:
-        presenceStr = "nobody"; break;
-      case AICORE_PRESENCE_TYPES.SPECIFIC_USERS:
-        presenceStr = null; break; // TODO: implement profiles
-      case AICORE_PRESENCE_TYPES.IGNORE:
-        presenceStr = null; break;
-    }
+      { this._getElements() }
 
-    let locationPrefixStr = "";
-    let locationStr       = "";
-    if (presence.type !== AICORE_PRESENCE_TYPES.IGNORE) {
-      // @ts-ignore
-      let pd = presence.data as aicorePresenceData;
+      <View style={{width: screenWidth, height:1, backgroundColor: colors.menuBackground.rgba(0.7)}} />
 
-      switch (presence.type) {
-        case AICORE_LOCATIONS_TYPES.SPHERE:
-          locationPrefixStr = " is ";
-          locationStr = "home";
-        case AICORE_LOCATIONS_TYPES.LOCATION:
-          if (pd.locationIds.length > 0) {
-            locationPrefixStr = " is in the ";
-            // we will now construct a roomA_name, roomB_name or roomC_name line.
-            locationStr += this._getLocationName(pd.locationIds[0]);
-            if (pd.locationIds.length > 1) {
-              for (let i = 1; i < pd.locationIds.length - 1; i++) {
-                let locationCloudId = pd.locationIds[i];
-                let locationName = this._getLocationName(locationCloudId);
-                locationStr += ", " + locationName;
-              }
+      { this.props.explanation ? <Text style={textStyle.explanation}>{this.props.explanation}</Text> : undefined }
 
-              locationStr += " or " + this._getLocationName(pd.locationIds[pd.locationIds.length]);
-            }
-          }
-      }
-    }
+      <View style={{flex:1}} />
+      <TouchableOpacity
+        onPress={this.props.closeCallback}
+        style={{
+          width:0.5*screenWidth, height:50, borderRadius:15,
+          backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
+        }}>
+        <Text style={{fontSize:15, fontWeight:'bold'}}>{this.props.closeLabel}</Text>
+      </TouchableOpacity>
+    </View>
+    )
+  }
+}
 
-    let timePrefixStr = "";
-    let timeStr = "";
-
-/*
-  from 22:22 until sunrise                    // specific - sunrise
-  from 22:22 until 60 minutes after  sunrise  // specific - sunrise + offset
-  from 22:22 until 60 minutes before sunrise  // specific - sunrise - offset
-  from 22:22 until sunset                     // specific - sunset
-  from an hour before sunset until sunrise    // sunset   - sunrise
-  from sunrise to 15:00                       // sunrise  - specific
-  from sunset to 4:00                         // sunset   - specific
-
-  between 22:22 and 11:22                     // specific - specific
-
-  when its dark outside                       // sunset   - sunrise
-  while the sun is up                         // sunrise  - sunset
- */
-
-
-    let time = this.ruleDescription.time;
-    if (time.type != AICORE_TIME_TYPES.ALWAYS) {
-      // @ts-ignore
-      let tr = time as aicoreTimeRange;
-
-      if ((tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNRISE || tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNSET) &&
-          (tr.to.type   === AICORE_TIME_DETAIL_TYPES.SUNRISE || tr.to.type   === AICORE_TIME_DETAIL_TYPES.SUNSET) &&
-          ((tr.from as aicoreTimeDataSun).offsetMinutes === 0) && ((tr.to as aicoreTimeDataSun).offsetMinutes === 0)) {
-          // this is either "when its dark outside" or "while the sun is up"
-      }
-      else if (tr.from.type === AICORE_TIME_DETAIL_TYPES.CLOCK && tr.to.type === AICORE_TIME_DETAIL_TYPES.CLOCK) {
-        // this makes "between X and Y"
-      }
-      else if (tr.from.type === AICORE_TIME_DETAIL_TYPES.CLOCK && (tr.to.type   === AICORE_TIME_DETAIL_TYPES.SUNRISE || tr.to.type   === AICORE_TIME_DETAIL_TYPES.SUNSET)) {
-        // this makes "from xxxxx until xxxxx"
-      }
-      else {
-        // these are "from xxxxx to xxxxx"
-      }
+function getWordLength(word) {
+  let result = 0;
+  let letterWidthMap = { I:4," ": 5, m:16, w:16, rest:11 };
+  for (let i = 0; i < word.length; i++) {
+    if (word[i]) {
+      result += letterWidthMap[word[i]] || letterWidthMap.rest;
     }
   }
+  return result;
+}
 
-  _getLocationName(locationCloudId) {
-    let localId = MapProvider.cloud2localMap[locationCloudId];
-  }
+function getTheId() {
+  let state = core.store.getState();
+  let sphereIds = Object.keys(state.spheres);
+  let activeSphere = sphereIds[0]
 
+  let sphere = state.spheres[activeSphere];
+  let locationIds = Object.keys(sphere.locations).sort();
+  return locationIds[0];
 }

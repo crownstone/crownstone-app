@@ -26,6 +26,7 @@ import { LockedStateUI}        from "../../components/LockedStateUI";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 export class DeviceSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
@@ -283,7 +284,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
           />
         </View>
         <View style={{flex:1}} />
-        <Text style={deviceStyles.explanation}>{Util.spreadString(showDimmingText ? lang("The_dimmer_is_starting_up") : lang("tap_icon_to_set_device_ty"))}</Text>
+        <Text style={deviceStyles.explanation}>{xUtil.spreadString(showDimmingText ? lang("The_dimmer_is_starting_up") : lang("tap_icon_to_set_device_ty"))}</Text>
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />

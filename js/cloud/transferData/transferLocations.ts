@@ -7,11 +7,12 @@ import { transferUtil } from "./shared/transferUtil";
 let fieldMap : fieldMap = [
   {local: 'name',      cloud: 'name'},
   {local: 'icon',      cloud: 'icon'},
+  {local: 'uid',       cloud: 'uid',  cloudToLocalOnly: true},
   {local: 'updatedAt', cloud: 'updatedAt'},
   {local: 'pictureId', cloud:'imageId', cloudToLocalOnly: true},
 
   // used for local config
-  {local: 'cloudId',           cloud: 'id' ,  cloudToLocalOnly: true },
+  {local: 'cloudId',           cloud: 'id',  cloudToLocalOnly: true },
   {local: 'fingerprintRaw',    cloud: null},
   {local: 'fingerprintParsed', cloud: null},
 ];

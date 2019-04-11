@@ -221,7 +221,7 @@ lang("_Great___Ill_make_sure_to_body"),
       let delays = timeOptions;
       let explanation = null;
       if (stone.config.firmwareVersion) {
-        if (Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '2.0.0')) {
+        if (xUtil.versions.isHigherOrEqual(stone.config.firmwareVersion, '2.0.0')) {
           delays = timeOptionsV2;
         }
         else {
@@ -251,7 +251,7 @@ lang("_Great___Ill_make_sure_to_body"),
         buttons: delays.length === 1,
         valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
         value: element.behaviour[eventLabel].delay,
-        valueLabel: Util.getDelayLabel(element.behaviour[eventLabel].delay, true),
+        valueLabel: getDelayLabel(element.behaviour[eventLabel].delay, true),
         items: delays,
         callback: (newValue) => {
           core.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
@@ -295,8 +295,8 @@ lang("_Great___Ill_make_sure_to_body"),
     toggleOptions.push({label: lang("do_nothing"), value: -1});
 
     let toggleOptionsExitSphere = [];
-    toggleOptionsExitSphere.push({label: lang("turn_on_after_",Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))),  value: 1});
-    toggleOptionsExitSphere.push({label: lang("turn_off_after_",Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))), value: 0});
+    toggleOptionsExitSphere.push({label: lang("turn_on_after_",getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))),  value: 1});
+    toggleOptionsExitSphere.push({label: lang("turn_off_after_",getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))), value: 0});
     toggleOptionsExitSphere.push({label: lang("do_nothing"), value: -1});
 
     let toggleOptionsExit = [];
@@ -315,7 +315,7 @@ lang("_Great___Ill_make_sure_to_body"),
       items.push(generateDropdown(eventLabel, 'Leave Sphere', toggleOptionsExitSphere));
       if (element.behaviour[eventLabel].active === true) {
         items.push({
-          label: lang("Leaving_the_sphere_will_b",Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true)),
+          label: lang("Leaving_the_sphere_will_b",getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true)),
           style: {paddingBottom: 5},
           type: 'explanation',
           below: true
@@ -451,3 +451,18 @@ text: lang("_How_near_is_near___You_c_right"), onPress: () => {
     )
   }
 }
+
+
+export function getDelayLabel(delay, fullLengthText = false) {
+  if (delay < 60) {
+    return Math.floor(delay) + ' seconds';
+  }
+  else {
+    if (fullLengthText === true) {
+      return Math.floor(delay / 60) + ' minutes';
+    }
+    else {
+      return Math.floor(delay / 60) + ' min';
+    }
+  }
+};

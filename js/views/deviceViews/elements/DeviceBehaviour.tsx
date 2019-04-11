@@ -21,6 +21,7 @@ import { Permissions }                      from "../../../backgroundProcesses/P
 import { BEHAVIOUR_TYPES } from "../../../Enums";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { getDelayLabel } from "../DeviceBehaviourEdit";
 
 
 let DISABLED_COLOR = colors.gray.hex;
@@ -164,7 +165,7 @@ class BehaviourResponse extends Component<any, any> {
       delay = this.props.sphere.config.exitDelay;
     }
     if (delay === 0) { return; }
-    return ' after ' + Util.getDelayLabel(delay, true);
+    return ' after ' + getDelayLabel(delay, true);
   }
 
   _getValue(responseStyle) {

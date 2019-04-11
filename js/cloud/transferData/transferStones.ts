@@ -4,6 +4,7 @@ import { transferUtil } from "./shared/transferUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 let fieldMap : fieldMap = [
+  {local: 'uid',                cloud: 'uid'},
   {local: 'crownstoneId',       cloud: 'uid'},
   {local: 'dimmingEnabled',     cloud: 'dimmingEnabled'},
   {local: 'firmwareVersion',    cloud: 'firmwareVersion'},

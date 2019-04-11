@@ -4,6 +4,7 @@ import {Util} from "../../../util/Util";
 import {CLOUD} from "../../cloudAPI";
 import {HISTORY_PERSISTENCE} from "../../../ExternalConfig";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 export const cleanupPowerUsage = function(state, actions) {
   LOG.info("SYNC: cleanupPowerUsage starting");
@@ -110,7 +111,7 @@ export const syncPowerUsage = function(state, actions) {
   }
 
   let uploadCounter = 0;
-  return Util.promiseBatchPerformer(uploadBatches, (uploadBatch) => {
+  return xUtil.promiseBatchPerformer(uploadBatches, (uploadBatch) => {
     let stoneId = uploadBatch.stoneId;
     let sphereId = uploadBatch.sphereId;
     let dateId = uploadBatch.dateId;

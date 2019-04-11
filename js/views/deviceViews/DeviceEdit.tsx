@@ -36,6 +36,7 @@ import {StoneDeleted} from "../static/StoneDeleted";
 import { STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -241,7 +242,7 @@ lang("_Permission_Required__Onl_body"),
       }
 
       if (state.user.betaAccess && this.state.stoneType === STONE_TYPES.builtin) {
-        if (Util.versions.canIUse(stone.config.firmwareVersion, '2.1.0')) {
+        if (xUtil.versions.canIUse(stone.config.firmwareVersion, '2.1.0')) {
           items.push({
             label: lang("Enable_Switchcraft"),
             type: 'switch',

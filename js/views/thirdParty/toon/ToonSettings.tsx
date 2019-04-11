@@ -22,6 +22,7 @@ import {Util} from "../../../util/Util";
 import {getActiveToonProgram} from "../../../backgroundProcesses/thirdParty/ToonIntegration";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 export class ToonSettings extends LiveComponent<any, any> {
@@ -72,7 +73,7 @@ export class ToonSettings extends LiveComponent<any, any> {
       }
     });
 
-    let updatedAt = toon.updatedScheduleTime ? Util.getDateTimeFormat(toon.updatedScheduleTime) : "NEVER";
+    let updatedAt = toon.updatedScheduleTime ? xUtil.getDateTimeFormat(toon.updatedScheduleTime) : "NEVER";
     items.push({
       type: 'explanation',
       label: lang("LAST_SCHEDULE_UPDATE__",updatedAt),
@@ -259,7 +260,7 @@ class ToonSchedule extends Component<any, any> {
             }} />
 
           { duration > 3*60 ? <View style={{alignSelf:'flex-end'}}>
-            <Text style={{fontSize:10, height:10}}>{entry.end.hour+ ":" + Util.pad(entry.end.minute)}</Text>
+            <Text style={{fontSize:10, height:10}}>{entry.end.hour+ ":" + xUtil.pad(entry.end.minute)}</Text>
           </View> : undefined }
         </View>
       )

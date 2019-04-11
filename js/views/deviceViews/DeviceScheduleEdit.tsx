@@ -153,7 +153,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not pick time for android.", err) })
       }}>
         <Text style={{flex:1, fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6) }}>
-          {Util.getTimeFormat(this.state.time, false)}
+          {xUtil.getTimeFormat(this.state.time, false)}
         </Text>
       </TouchableOpacity>
     });
@@ -332,7 +332,7 @@ lang("_Pick_a_day___You_need_to_body"),
       if (
         schedule.active !== this.state.active ||
         schedule.switchState !== this.state.switchState ||
-        Util.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(schedule.time)) !== Util.getTimeFormat(this.state.time) ||
+        xUtil.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(schedule.time)) !== xUtil.getTimeFormat(this.state.time) ||
         schedule.fadeDuration !== this.state.fadeDuration ||
         schedule.intervalInMinutes !== this.state.intervalInMinutes ||
         schedule.ignoreLocationTriggers !== this.state.ignoreLocationTriggers ||

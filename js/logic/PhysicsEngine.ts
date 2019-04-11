@@ -6,6 +6,7 @@ import ForceAtlas2BasedCentralGravitySolver from './physicsComponents/FA2BasedCe
 import MassMover from "./physicsComponents/MassMover";
 import KamadaKawai from "./physicsComponents/KamadaKawai";
 import {Util} from "../util/Util";
+import { xUtil } from "../util/StandAloneUtil";
 
 class PhysicsEngine {
 
@@ -116,7 +117,7 @@ class PhysicsEngine {
       useDynamicEdges: true,
       center: center
     };
-    this.options = Util.deepExtend({}, this.baseOptions);
+    this.options = xUtil.deepExtend({}, this.baseOptions);
     this.timestep = 0.5;
     this.layoutFailed = false;
 
@@ -125,8 +126,8 @@ class PhysicsEngine {
 
   setOptions(options) {
     if (options) {
-      let baseOptions = Util.deepExtend({}, this.options);
-      this.options = Util.deepExtend(baseOptions, options);
+      let baseOptions = xUtil.deepExtend({}, this.options);
+      this.options = xUtil.deepExtend(baseOptions, options);
       this.init()
     }
   }

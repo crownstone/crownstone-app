@@ -11,8 +11,8 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, ScrollView
+} from "react-native";
 
 import { HiddenFadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
@@ -63,11 +63,24 @@ export class OptionPopup extends Component<any, any> {
       }
     });
 
-    return (
-      <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>
-        {buttons}
-      </View>
-    )
+    if (buttonContainerHeight > screenHeight - 65) {
+      return (
+        <ScrollView style={{height: screenHeight - 50, width:screenWidth}} contentOffset={{x:0,y:buttonContainerHeight - (screenHeight - 65)}}>
+          <View style={styles.centered}>
+            <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>
+              {buttons}
+            </View>
+          </View>
+        </ScrollView>
+      );
+    }
+    else {
+      return (
+        <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>
+          {buttons}
+        </View>
+      );
+    }
   }
 
   getChildrenAndroid() {
@@ -123,8 +136,8 @@ export class OptionPopup extends Component<any, any> {
           height={screenHeight}
           visible={this.state.visible}>
           <SlideInFromBottomView
-            style={[styles.centered, {backgroundColor: 'transparent'}]}
-            height={180}
+            style={[styles.centered, {justifyContent:'flex-end', backgroundColor: 'transparent'}]}
+            height={screenHeight}
             visible={this.state.visible}>
             {this.getChildrenIOS()}
             <TouchableOpacity style={styles.button} onPress={() => { core.eventBus.emit("hidePopup");}}>

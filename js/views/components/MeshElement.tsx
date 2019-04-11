@@ -23,6 +23,7 @@ import {Util} from "../../util/Util";
 import {Icon} from "./Icon";
 import {AnimatedIconCircle} from "./animated/AnimatedIconCircle";
 import { core } from "../../core";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 class MeshElementClass extends LiveComponent<any, any> {
@@ -187,7 +188,7 @@ class MeshElementClass extends LiveComponent<any, any> {
     let fontContainerViewStyle : TextStyle = { position:'absolute', top: 0, left: 2.1*this.props.radius, height: height, width: 0.5*screenWidth, alignItems:'flex-start', justifyContent:'center' };
     let fontViewStyle = { backgroundColor: colors.white.hex, padding: 7, borderRadius:8, borderColor: colors.csBlue.rgba(0.1), borderWidth: 2 };
 
-    let supportedFirmware = Util.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.2');
+    let supportedFirmware = xUtil.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.2');
     return (
       <Animated.View style={[animatedStyle, { position:'absolute', top: this.props.pos.y, left: this.props.pos.x, width: this.state.width, height: this.state.height, overflow:'hidden'}]}>
         <Animated.View style={{position:'absolute', top: this.state.locationY, left: this.state.locationX}}>
@@ -248,7 +249,7 @@ class MeshElementClass extends LiveComponent<any, any> {
 
     let offset = 1.25*this.props.radius;
 
-    let supportedFirmware = Util.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.2');
+    let supportedFirmware = xUtil.versions.canIUse(this.props.nodeData.stone.config.firmwareVersion, '2.1.2');
     if (!supportedFirmware && data) {
       if (data.dx > this.props.radius && data.dy > -this.props.radius) {
         Alert.alert(

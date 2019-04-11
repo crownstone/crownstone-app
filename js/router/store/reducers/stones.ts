@@ -15,6 +15,7 @@ let defaultSettings = {
     icon: 'c2-pluginFilled',
     applianceId: null,
     crownstoneId: undefined,
+    uid: undefined,
     cloudId: null,
     dimmingAvailable: false,
     dimmingEnabled: false,
@@ -155,6 +156,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         let newState = {...state};
         newState.applianceId       = update(action.data.applianceId,       newState.applianceId);
         newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);
+        newState.uid               = update(action.data.uid,               newState.uid);
         newState.cloudId           = update(action.data.cloudId,           newState.cloudId);
         newState.dimmingEnabled    = update(action.data.dimmingEnabled,    newState.dimmingEnabled);
         newState.dimmingAvailable  = update(action.data.dimmingAvailable,  newState.dimmingAvailable);

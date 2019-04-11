@@ -10,6 +10,7 @@ import {
   
   Dimensions,
 } from 'react-native';
+import { screenWidth } from "../../styles";
 
 export class SlideInFromBottomView extends Component<any, any> {
   visible : boolean;
@@ -37,10 +38,8 @@ export class SlideInFromBottomView extends Component<any, any> {
   }
 
   render() {
-    let width  = Dimensions.get('window').width;
-
     return (
-      <Animated.View style={[this.props.style, {position:'absolute', top: this.state.viewHeight, left:0, width: width, overflow:'hidden', height: this.props.height}]}>
+      <Animated.View style={[this.props.style, {position:'absolute', top: this.state.viewHeight, left:0, width: screenWidth, overflow:'hidden', height: this.props.height}]}>
         {this.props.children}
       </Animated.View>
     );

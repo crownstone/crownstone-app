@@ -265,7 +265,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
         </View>
       )
     }
-    else if (!Util.versions.canIUse(stone.config.firmwareVersion, '1.5.0')) {
+    else if (!xUtil.versions.canIUse(stone.config.firmwareVersion, '1.5.0')) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
           { this._getHeader(state, iconSize, lang("This_Crownstone_needs_to_")) }

@@ -1,12 +1,14 @@
 type aicorePresenceType   = "SOMEBODY" | "NOBODY"  | "IGNORE"  | "SPECIFIC_USERS"
 type sunTimes             = "SUNSET"   | "SUNRISE"
 
-type aicorePresence     = { type: "SOMEBODY" | "NOBODY", data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number } |
-                          { type: "SPECIFIC_USERS",      data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number, profileIds:number[] } |
-                          { type: "IGNORE" }
+type aicorePresenceGeneric  = { type: "SOMEBODY" | "NOBODY", data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number }
+type aicorePresenceSpecific = { type: "SPECIFIC_USERS",      data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number, profileIds:number[] }
+type aicorePresenceNone     = { type: "IGNORE" }
+type aicorePresence         = aicorePresenceGeneric | aicorePresenceSpecific | aicorePresenceNone
+
 
 type aicorePresenceSphereData   = { type: "SPHERE" }
-type aicorePresenceLocationData = { type: "LOCATION", locationIds: number[] }
+type aicorePresenceLocationData = { type: "LOCATION", locationIds: string[] }
 
 type aicoreTimeAlways   = { type: "ALWAYS" }
 type aicoreTimeRange    = { type: "RANGE", from: aicoreTimeData, to: aicoreTimeData }
@@ -16,11 +18,15 @@ type aicoreTimeDataSun   = { type: sunTimes, offsetMinutes: number}
 type aicoreTimeDataClock = { type: "CLOCK", data: cron }
 type aicoreTimeData      = aicoreTimeDataSun | aicoreTimeDataClock
 
+interface behaviourOptions {
+  type: "SPHERE_PRESENCE_AFTER" | "LOCATION_PRESENCE_AFTER"
+}
+
 type cron = {
   minutes:    number,
   hours:      number,
-  dayOfMonth: string, // allowed values are: 1-31 , - * (comma for set, hyphen for range, star for any)  currently only * is supported.
-  month:      string,      // allowed values are: 1-12 , - * (comma for set, hyphen for range, star for any)  currently only * is supported.
+  dayOfMonth: string,   // allowed values are: 1-31 , - * (comma for set, hyphen for range, star for any)  currently only * is supported.
+  month:      string,   // allowed values are: 1-12 , - * (comma for set, hyphen for range, star for any)  currently only * is supported.
   dayOfWeek:  dayOfWeek
 }
 
@@ -38,7 +44,8 @@ type eventAction = { type: "TURN_ON",  fadeDuration: number, data: number } |
                    { type: "TURN_OFF", fadeDuration: number }               |
                    { type: "COPY_STATE" | "TOGGLE" | "PULSE" }
 
-type eventCondition = { type: "PRESENCE", data: aicorePresence } | { type: "TIME", from: aicoreTimeData, to: aicoreTimeData }
+type eventCondition = { type: "PRESENCE", data: aicorePresence } |
+                      { type: "TIME", from: aicoreTimeData, to: aicoreTimeData }
 
 
 // TYPE: behaviour
@@ -50,6 +57,7 @@ interface behaviour {
   }
   time: aicoreTime,
   presence: aicorePresence, // optional condition: react to presence
+  options?: aicoreBehaviourOptions
 }
 
 // TYPE: TWILIGHT
@@ -171,7 +179,7 @@ let wakeupLightEvent = {
 
 // Soft fuse @ 100 W
 /*
-let wakeupLightEvent = {
+let softFuseEvent = {
   type: "POWER_THRESHOLD_HIGHER",
   action: {
     type:"TURN_OFF",

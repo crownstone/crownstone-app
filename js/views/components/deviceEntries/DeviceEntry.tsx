@@ -166,7 +166,7 @@ export class DeviceEntry extends Component<any, any> {
       </View>
       );
     }
-    else if (((Util.versions.canUpdate(stone, state) === true) || Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) && stone.reachability.disabled === false) {
+    else if (((xUtil.versions.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) && stone.reachability.disabled === false) {
       return (
         <View style={[{
           width:60,
@@ -257,7 +257,7 @@ export class DeviceEntry extends Component<any, any> {
               </SlideFadeInView>
             </View>
           </WrapperElement>
-          {useControl === true && Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}
+          {useControl === true && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}
         </View>
       </Animated.View>
     );

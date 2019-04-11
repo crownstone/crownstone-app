@@ -16,6 +16,7 @@ import {INTENTS} from "../../../../native/libInterface/Constants";
 import {IconButton} from "../../../components/IconButton";
 import {BorderCircle} from "../../../components/BorderCircle";
 import {Icon} from "../../../components/Icon";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 export class ActivityLogItem extends Component<any, any> {
@@ -116,7 +117,7 @@ export class ActivityLogItem extends Component<any, any> {
   _getTitle(canDoIndoorLocalization, roomConfig) {
     let targetState = (this.props.data.switchedToState === 0 ? lang("off") :  lang("on"));
 
-    let timeIndicator = Util.getTimeFormat(this.props.data.timestamp) + ' - ';
+    let timeIndicator = xUtil.getTimeFormat(this.props.data.timestamp) + ' - ';
     if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState') {
       return timeIndicator + lang("Heartbeat_");
     }
@@ -288,7 +289,7 @@ export class ActivityLogItem extends Component<any, any> {
         else {
           // exit sphere
           if (this.props.data.switchedToState === -1) {
-            return lang("Last_heartbeat_sent_at_",Util.getTimeFormat(this.props.data.endTime));
+            return lang("Last_heartbeat_sent_at_",xUtil.getTimeFormat(this.props.data.endTime));
           }
           else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
             return lang("___because_everyone_left_",initialLabel, Math.round((this.props.data.switchedToState/0.99)*100));

@@ -36,7 +36,8 @@ let fieldMap : fieldMap = [
   {local:'guestKey',           cloud:  null },
 
   // used for local
-  {local:'cloudId',            cloud:  'id',  cloudToLocalOnly: true  },
+  {local:'uid',                cloud: 'uid',  cloudToLocalOnly: true },
+  {local:'cloudId',            cloud:  'id',  cloudToLocalOnly: true },
 ];
 
 export const transferSpheres = {

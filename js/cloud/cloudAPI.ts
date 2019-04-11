@@ -1,5 +1,4 @@
 'use strict';
-import { Util } from '../util/Util';
 
 import { activityLogs }      from './sections/activityLogs'
 import { activityRanges }    from './sections/activityRanges'
@@ -22,33 +21,34 @@ import { syncUsersInSphere } from './sections/sync/syncUsersInSphere'
 import { user }              from './sections/user'
 
 import { toon }              from './sections/thirdParty/toon'
+import { xUtil } from "../util/StandAloneUtil";
 
 function combineSections() {
   let result : any = {};
-  Util.mixin(result, cloudApiBase, result);
+  xUtil.mixin(result, cloudApiBase, result);
 
   // mixin all modules.
-  Util.mixin(result, activityLogs,      result);
-  Util.mixin(result, activityRanges,    result);
-  Util.mixin(result, appliances,        result);
-  Util.mixin(result, bootloader,        result);
-  Util.mixin(result, devices,           result);
-  Util.mixin(result, firmware,          result);
-  Util.mixin(result, fingerprints,      result);
-  Util.mixin(result, installations,     result);
-  Util.mixin(result, locations,         result);
-  Util.mixin(result, messages,          result);
-  Util.mixin(result, preferences,       result);
-  Util.mixin(result, schedules,         result);
-  Util.mixin(result, spheres,           result);
-  Util.mixin(result, stones,            result);
-  Util.mixin(result, sync,              result);
-  Util.mixin(result, syncEvents,        result);
-  Util.mixin(result, syncUsersInSphere, result);
-  Util.mixin(result, user,              result);
+  xUtil.mixin(result, activityLogs,      result);
+  xUtil.mixin(result, activityRanges,    result);
+  xUtil.mixin(result, appliances,        result);
+  xUtil.mixin(result, bootloader,        result);
+  xUtil.mixin(result, devices,           result);
+  xUtil.mixin(result, firmware,          result);
+  xUtil.mixin(result, fingerprints,      result);
+  xUtil.mixin(result, installations,     result);
+  xUtil.mixin(result, locations,         result);
+  xUtil.mixin(result, messages,          result);
+  xUtil.mixin(result, preferences,       result);
+  xUtil.mixin(result, schedules,         result);
+  xUtil.mixin(result, spheres,           result);
+  xUtil.mixin(result, stones,            result);
+  xUtil.mixin(result, sync,              result);
+  xUtil.mixin(result, syncEvents,        result);
+  xUtil.mixin(result, syncUsersInSphere, result);
+  xUtil.mixin(result, user,              result);
 
   result["thirdParty"] = {toon:{}};
-  Util.mixin(result.thirdParty.toon, toon, result);
+  xUtil.mixin(result.thirdParty.toon, toon, result);
 
   return result;
 }

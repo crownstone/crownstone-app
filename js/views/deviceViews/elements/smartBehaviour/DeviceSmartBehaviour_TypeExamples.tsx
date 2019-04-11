@@ -23,6 +23,7 @@ import { ScaledImage } from "../../../components/ScaledImage";
 import { Icon } from "../../../components/Icon";
 import { textStyle } from "./DeviceSmartBehaviour";
 import { core } from "../../../../core";
+import { BehaviourConstructor } from "./SmartBehaviourLogic";
 
 
 export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]}, any> {
@@ -89,11 +90,11 @@ class BehaviourExample extends Component<{data: any}, any> {
             color:"#fff",
             fontSize:14,
             textAlign:'center',
-            paddingLeft:50,
+            paddingLeft:30,
             paddingTop:20,
             paddingBottom:20,
-            paddingRight:30
-          }}>{this.props.data}</Text>
+            paddingRight:10
+          }}>{createDescriptiveString(this.props.data)}</Text>
         </View>
         <Icon name="ios-arrow-forward" size={18} color={'#fff'} />
       </View>
@@ -102,9 +103,8 @@ class BehaviourExample extends Component<{data: any}, any> {
 }
 
 function createDescriptiveString(rule) {
+  if (typeof rule === 'string') { return rule; }
 
-
-
-
-  return ""
+  let b = new BehaviourConstructor(rule as behaviour);
+  return b.getSentence()
 }

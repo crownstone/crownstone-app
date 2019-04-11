@@ -29,6 +29,7 @@ import {AnimatedDoubleTap} from "../animated/AnimatedDoubleTap";
 import {eventBus} from "../../../util/EventBus";
 import {Util} from "../../../util/Util";
 import { core } from "../../../core";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 export class ForceDirectedView extends Component<{
   nodeIds: string[],
@@ -233,7 +234,7 @@ export class ForceDirectedView extends Component<{
         if (nextProps.edges && Array.isArray(nextProps.edges)) {
           for (let i = 0; i < nextProps.edges.length; i++) {
             let edgeId = nextProps.edges[i].id;
-            this.edges[this.edgeMap[edgeId]] = Util.deepExtend(this.edges[this.edgeMap[edgeId]], nextProps.edges[i])
+            this.edges[this.edgeMap[edgeId]] = xUtil.deepExtend(this.edges[this.edgeMap[edgeId]], nextProps.edges[i])
           }
         }
       }
@@ -583,7 +584,7 @@ export class ForceDirectedView extends Component<{
     this.edgeMap = {};
     if (edges && Array.isArray(edges)) {
       for (let i = 0; i < edges.length; i++) {
-        this.edges.push(Util.deepExtend({}, edges[i]));
+        this.edges.push(xUtil.deepExtend({}, edges[i]));
         this.edgeMap[edges[i].id] = i;
       }
     }

@@ -91,7 +91,7 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
           if (this.activityLogUploadBatch.length > 0) {
             let uploadCounter = 0;
             this.transferPromises.push(
-              Util.promiseBatchPerformer(this.activityLogUploadBatch, (uploadBatch) => {
+              xUtil.promiseBatchPerformer(this.activityLogUploadBatch, (uploadBatch) => {
                 uploadCounter++;
                 LOG.info("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length, ' which has ', uploadBatch.length, ' data points');
                 // console.log("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');

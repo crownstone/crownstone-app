@@ -38,7 +38,7 @@ export class DeviceSmartBehaviour extends Component<any, any> {
         <OrangeLine/>
         <View style={{ width: screenWidth, alignItems:'center' }}>
           <View style={{height: 30}} />
-          <Text style={[deviceStyles.header]}>{ "Smart Behaviour" }</Text>
+          <Text style={[deviceStyles.header]}>{ "Behaviour" }</Text>
           <View style={{height: 0.2*iconSize}} />
           <Text style={textStyle.specification}>{"Tap the icon below to create my first behaviour!"}</Text>
           <View style={{height: 0.2*iconSize}} />

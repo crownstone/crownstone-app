@@ -6,6 +6,7 @@ import { SetupStateHandler } from "../setup/SetupStateHandler";
 import { ALWAYS_DFU_UPDATE } from "../../ExternalConfig";
 import {Scheduler} from "../../logic/Scheduler";
 import { core } from "../../core";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 interface dfuData {
@@ -60,13 +61,13 @@ export class FirmwareHelper {
   getAmountOfPhases(dfuResetRequired) {
     this.phases = [];
     LOG.info("FirmwareHelper: Getting Phases...");
-    if (Util.versions.isHigher(this.newBootloaderDetails.version, this.stoneBootloaderVersion) || ALWAYS_DFU_UPDATE) {
+    if (xUtil.versions.isHigher(this.newBootloaderDetails.version, this.stoneBootloaderVersion) || ALWAYS_DFU_UPDATE) {
       // UPDATE BOOTLOADER
       LOG.info("FirmwareHelper: Phase: Require Bootloader.");
       this.phases.push(bootloaderUpdate);
     }
 
-    if (Util.versions.isHigher(this.newFirmwareDetails.version, this.stoneFirmwareVersion) || ALWAYS_DFU_UPDATE) {
+    if (xUtil.versions.isHigher(this.newFirmwareDetails.version, this.stoneFirmwareVersion) || ALWAYS_DFU_UPDATE) {
       // UPDATE firmware
       LOG.info("FirmwareHelper: Phase: Require Firmware.");
       this.phases.push(firmwareUpdate);
@@ -74,8 +75,8 @@ export class FirmwareHelper {
 
     if (
         dfuResetRequired ||
-        Util.versions.isLower(this.stoneBootloaderVersion, this.newBootloaderDetails.minimumCompatibleVersion) ||
-        Util.versions.isLower(this.stoneFirmwareVersion,   this.newFirmwareDetails.minimumCompatibleVersion) ||
+        xUtil.versions.isLower(this.stoneBootloaderVersion, this.newBootloaderDetails.minimumCompatibleVersion) ||
+        xUtil.versions.isLower(this.stoneFirmwareVersion,   this.newFirmwareDetails.minimumCompatibleVersion) ||
         ALWAYS_DFU_UPDATE
        ) {
       // PERFORM SETUP AFTERWARDS

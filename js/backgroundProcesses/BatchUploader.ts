@@ -3,6 +3,7 @@ import {CLOUD} from "../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL} from "../ExternalConfig";
 import {LOGd, LOGe} from "../logging/Log";
 import {Util} from "../util/Util";
+import { xUtil } from "../util/StandAloneUtil";
 
 const TRIGGER_ID = 'BATCH_UPLOADER_INTERVAL';
 
@@ -62,7 +63,7 @@ class BatchUploadClass {
     let powerKeys = Object.keys(this.queue.power);
     let successfulUploads = 0;
     let actions = [];
-    Util.promiseBatchPerformer(powerKeys, (key) => {
+    xUtil.promiseBatchPerformer(powerKeys, (key) => {
       let stoneId = this.queue.power[key].stoneId;
       let sphereId = this.queue.power[key].sphereId;
       let dateId = this.queue.power[key].dateId;

@@ -213,7 +213,6 @@ export class LocationSyncer extends SyncingSphereItemBase {
 
 
     if (shouldUpdateInCloud(locationInState.config, location_from_cloud)) {
-
       if (!Permissions.inSphere(this.localSphereId).canUploadLocations) { return }
 
       this.transferPromises.push(
@@ -227,7 +226,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
         .catch(() => {})
       );
     }
-    else if (shouldUpdateLocally(locationInState.config, location_from_cloud)) {
+    else if (shouldUpdateLocally(locationInState.config, location_from_cloud) || !locationInState.config.uid) {
       transferLocations.updateLocal(this.actions, {
         localId:   localId,
         localSphereId: this.localSphereId,

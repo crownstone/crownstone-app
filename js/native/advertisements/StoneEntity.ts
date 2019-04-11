@@ -9,6 +9,7 @@ import { StoneBehaviour }   from "./StoneBehaviour";
 import { StoneStoreManager } from "./StoneStoreManager";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
+import { xUtil } from "../../util/StandAloneUtil";
 
 let RSSI_TIMEOUT = 5000;
 
@@ -668,7 +669,7 @@ export class StoneEntity {
   }
 
   handleErrors(stone, advertisement : crownstoneAdvertisement) {
-    if (Util.versions.canIUse(stone.config.firmwareVersion, '2.0.0')) {
+    if (xUtil.versions.canIUse(stone.config.firmwareVersion, '2.0.0')) {
       if (advertisement.serviceData.hasError === true) {
         LOGi.advertisements("StoneEntity: GOT ERROR", advertisement.serviceData);
         if (advertisement.serviceData.errorMode) {

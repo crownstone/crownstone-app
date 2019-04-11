@@ -1,6 +1,13 @@
+import { Permissions } from "../backgroundProcesses/PermissionManager";
+import { ALWAYS_DFU_UPDATE } from "../ExternalConfig";
+
 export const xUtil = {
+
   pad: function(str) {
-    return pad(str)
+    if (Number(str) < 10) {
+      return '0' + str;
+    }
+    return str;
   },
 
   getDateHourId: function(timestamp)  {
@@ -8,9 +15,9 @@ export const xUtil = {
       return 'unknown';
     }
     let date = new Date(timestamp);
-    let month = pad(date.getMonth() + 1);
-    let day = pad(date.getDate());
-    let hours = pad(date.getHours());
+    let month = xUtil.pad(date.getMonth() + 1);
+    let day = xUtil.pad(date.getDate());
+    let hours = xUtil.pad(date.getHours());
 
     return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':00:00'
   },
@@ -20,8 +27,8 @@ export const xUtil = {
       return 'unknown';
     }
     let date = new Date(timestamp);
-    let month = pad(date.getMonth() + 1);
-    let day = pad(date.getDate());
+    let month = xUtil.pad(date.getMonth() + 1);
+    let day = xUtil.pad(date.getDate());
 
     return date.getFullYear() + '/' + month + '/' + day
   },
@@ -32,11 +39,11 @@ export const xUtil = {
     }
     let date = new Date(timestamp);
 
-    let month   = pad(date.getMonth() + 1);
-    let day     = pad(date.getDate());
-    let hours   = pad(date.getHours());
-    let minutes = pad(date.getMinutes());
-    let seconds = pad(date.getSeconds());
+    let month = xUtil.pad(date.getMonth() + 1);
+    let day = xUtil.pad(date.getDate());
+    let hours = xUtil.pad(date.getHours());
+    let minutes = xUtil.pad(date.getMinutes());
+    let seconds = xUtil.pad(date.getSeconds());
 
     return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds
   },
@@ -49,34 +56,16 @@ export const xUtil = {
     let date = new Date(timestamp);
 
     let hours = date.getHours();
-    let minutes = pad(date.getMinutes());
+    let minutes = xUtil.pad(date.getMinutes());
 
     if (showSeconds === false) {
       return hours + ':' + minutes;
     }
 
-    let seconds = pad(date.getSeconds());
+    let seconds = xUtil.pad(date.getSeconds());
 
     return hours + ':' + minutes + ':' + seconds
   },
-
-  getUUID : () : string => {
-    return (
-      S4() + S4() + '-' +
-      S4() + '-' +
-      S4() + '-' +
-      S4() + '-' +
-      S4() + S4() + S4()
-    );
-  },
-
-  getShortUUID : () : string => {
-    return (
-      S4() + S4() + '-' +
-      S4()
-    );
-  },
-
 
   getToken : () : string => {
     return Math.floor(Math.random() * 1e8 /* 65536 */).toString(36);
@@ -111,6 +100,26 @@ export const xUtil = {
     return result;
   },
 
+
+  getUUID : () : string => {
+    return (
+      S4() + S4() + '-' +
+      S4() + '-' +
+      S4() + '-' +
+      S4() + '-' +
+      S4() + S4() + S4()
+    );
+  },
+
+  getShortUUID : () : string => {
+    return (
+      S4() + S4() + '-' +
+      S4()
+    );
+  },
+
+
+
   getDelayLabel: function(delay, fullLengthText = false) {
     if (delay < 60) {
       return Math.floor(delay) + ' seconds';
@@ -122,6 +131,123 @@ export const xUtil = {
       else {
         return Math.floor(delay / 60) + ' min';
       }
+    }
+  },
+
+  versions: {
+    isHigher: function(version, compareWithVersion) {
+      if (!version || !compareWithVersion) {
+        return false;
+      }
+
+      let [versionClean, versionRc] = getRC(version);
+      let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
+
+      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
+        return false;
+      }
+
+      let A = versionClean.split('.');
+      let B = compareWithVersionClean.split('.');
+
+      if (A[0] < B[0]) return false;
+      else if (A[0] > B[0]) return true;
+      else { // A[0] == B[0]
+        if (A[1] < B[1]) return false;
+        else if (A[1] > B[1]) return true;
+        else { // A[1] == B[1]
+          if (A[2] < B[2]) return false;
+          else if (A[2] > B[2]) return true;
+          else { // A[2] == B[2]
+            if (versionRc === null && compareWithVersionRc === null) {
+              return false;
+            }
+            else if (versionRc !== null && compareWithVersionRc !== null) {
+              return (versionRc > compareWithVersionRc);
+            }
+            else if (versionRc !== null) {
+              // 2.0.0.rc0 is smaller than 2.0.0
+              return false;
+            }
+            else {
+              return true;
+            }
+          }
+        }
+      }
+    },
+
+
+    /**
+     * This is the same as the isHigherOrEqual except it allows access to githashes. It is up to the dev to determine what it can and cannot do.
+     * @param myVersion
+     * @param minimumRequiredVersion
+     * @returns {any}
+     */
+    canIUse: function(myVersion, minimumRequiredVersion) {
+      if (!myVersion)              { return false; }
+      if (!minimumRequiredVersion) { return false; }
+
+      let [myVersionClean, myVersionRc] = getRC(myVersion);
+      let [minimumRequiredVersionClean, minimumRequiredVersionRc] = getRC(minimumRequiredVersion);
+
+      if (checkSemVer(myVersionClean) === false) {
+        return true;
+      }
+
+      return xUtil.versions.isHigherOrEqual(myVersionClean, minimumRequiredVersionClean);
+    },
+
+    isHigherOrEqual: function(version, compareWithVersion) {
+      if (!version || !compareWithVersion) {
+        return false;
+      }
+
+      let [versionClean, versionRc] = getRC(version);
+      let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
+
+      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
+        return false;
+      }
+
+      if (version === compareWithVersion && version && compareWithVersion) {
+        return true;
+      }
+
+      return xUtil.versions.isHigher(version, compareWithVersion);
+    },
+
+    isLower: function(version, compareWithVersion) {
+      if (!version || !compareWithVersion) {
+        return false;
+      }
+
+      let [versionClean, versionRc] = getRC(version);
+      let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
+
+      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
+        return false;
+      }
+
+      // Do not allow compareWithVersion to be semver
+      if (compareWithVersion.split(".").length !== 3) {
+        return false;
+      }
+
+      // if version is NOT semver, is higher will be false so is lower is true.
+      return !xUtil.versions.isHigherOrEqual(version, compareWithVersion);
+    },
+
+    canUpdate: function(stone, state) {
+      // only admins are allowed to update
+      if (Permissions.activeSphere().seeUpdateCrownstone) {
+        if (ALWAYS_DFU_UPDATE)
+          return true;
+
+        let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
+        return xUtil.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);
+      }
+      return false;
     }
   },
 
@@ -195,13 +321,37 @@ export const xUtil = {
   },
 };
 
-const pad = function(base) {
-  if (Number(base) < 10) {
-    return '0' + base;
-  }
-  return base;
-};
 
 const S4 = function () {
   return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);
+};
+
+
+function getRC(version) {
+  let lowerCaseVersion = version.toLowerCase();
+  let lowerCaseRC_split = lowerCaseVersion.split("-rc");
+  let RC = null;
+  if (lowerCaseRC_split.length > 1) {
+    RC = lowerCaseRC_split[1];
+  }
+
+  return [lowerCaseRC_split[0], RC];
+}
+
+let checkSemVer = (str) => {
+  if (!str) { return false; }
+
+  // a git commit hash is longer than 12, we pick 12 so 123.122.1234 is the max semver length.
+  if (str.length > 12) {
+    return false;
+  }
+
+  let A = str.split('.');
+
+  // further ensure only semver is compared
+  if (A.length !== 3) {
+    return false;
+  }
+
+  return true;
 };

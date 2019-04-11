@@ -18,13 +18,14 @@ import {StoneUtil} from "../../util/StoneUtil";
 import {IconButton} from "./IconButton";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { xUtil } from "../../util/StandAloneUtil";
 
 export class SchedulerEntry extends Component<any, any> {
 
   _getHeader(active) {
     let wrapperStyle : TextStyle = {height: 50, justifyContent:'center'};
     let headerStyle : TextStyle = {fontSize: 16, fontWeight:'500', paddingTop: 15, color: active ? colors.black.hex : colors.darkGray2.hex};
-    let timeText = lang('Do_X_at',this.props.schedule.switchState > 0, Util.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.props.schedule.time), false));
+    let timeText = lang('Do_X_at',this.props.schedule.switchState > 0, xUtil.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.props.schedule.time), false));
     let activeText = active ? '' :  lang("__disabled_");
     if (this.props.schedule.label) {
       return (

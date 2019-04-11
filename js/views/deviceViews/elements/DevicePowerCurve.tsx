@@ -18,6 +18,7 @@ import {Graph} from "../../components/graph/Graph";
 import {Util} from "../../../util/Util";
 import {textStyle} from "./DeviceBehaviour";
 import { core } from "../../../core";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 export class DevicePowerCurve extends LiveComponent<any, any> {
@@ -47,7 +48,7 @@ export class DevicePowerCurve extends LiveComponent<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
 
-    let dateId = Util.getDateHourId(new Date().valueOf());
+    let dateId = xUtil.getDateHourId(new Date().valueOf());
 
     let dataStream = [];
     if (stone.powerUsage[dateId]) {

@@ -18,6 +18,7 @@ import {
   } from 'react-native-svg';
 import { Util } from "../../../../util/Util";
 import { TimeStep } from './TimeStep'
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 export class GraphTimeline extends LiveComponent<any, any> {
   timePaddingFactor = 2;
@@ -106,7 +107,7 @@ export class GraphTimeline extends LiveComponent<any, any> {
       current = step.getCurrent();
       x = _toScreen(current);
 
-      label = Util.getTimeFormat(current.valueOf());
+      label = xUtil.getTimeFormat(current.valueOf());
 
       if (isMajor) {
         elements.push(<Text key={'bottomStepLabel' + label} x={x-20} y={ty} originX={x-20} originY={ty} fontSize={11} fill={color} fillOpacity={0.75} textAnchor="middle" rotation="-45">{label}</Text>);

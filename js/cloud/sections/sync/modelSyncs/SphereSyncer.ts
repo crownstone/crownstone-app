@@ -88,7 +88,7 @@ export class SphereSyncer extends SyncingBase {
 
     let sphereUserSyncer  = new SphereUserSyncer( this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let locationSyncer    = new LocationSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
-    let applianceSyncer   = new ApplianceSyncer(  this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    // let applianceSyncer   = new ApplianceSyncer(  this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let stoneSyncer       = new StoneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let toonSyncer        = new ToonSyncer(       this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
@@ -110,14 +110,14 @@ export class SphereSyncer extends SyncingBase {
         // sync appliances
         return presenceSyncer.sync(store);
       })
+      // .then(() => {
+      //   LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
+      //   LOG.info("SphereSync ",localId,": START applianceSyncer sync.");
+      //   // sync appliances
+      //   return applianceSyncer.sync(store);
+      // })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
-        LOG.info("SphereSync ",localId,": START applianceSyncer sync.");
-        // sync appliances
-        return applianceSyncer.sync(store);
-      })
-      .then(() => {
-        LOG.info("SphereSync ",localId,": DONE applianceSyncer sync.");
         LOG.info("SphereSync ",localId,": START stoneSyncer sync.");
         // sync stones
         return stoneSyncer.sync(store);

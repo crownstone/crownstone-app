@@ -13,6 +13,7 @@ import {Util} from "../../../../util/Util";
 import {colors, screenWidth} from "../../../styles";
 import {DAYS_FULL} from "../../DeviceScheduleEdit";
 import {Icon} from "../../../components/Icon";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 export class ActivityLogDayIndicator extends Component<any, any> {
@@ -40,7 +41,7 @@ export class ActivityLogDayIndicator extends Component<any, any> {
 
         <View style={{flex:1, height: this.props.height, paddingLeft: 66, paddingTop: 29, alignItems:'flex-start', flexDirection:'row'}}>
           <Icon name={'md-arrow-round-down'} color={'#fff'} size={20} style={{position:'relative', top:-2}} />
-          <Text style={{color:colors.white.hex, fontWeight:'bold', paddingLeft:10,  marginBottom:10}}>{Util.getDateFormat(this.props.data.timestamp) + this.getDayLabel()}</Text>
+          <Text style={{color:colors.white.hex, fontWeight:'bold', paddingLeft:10,  marginBottom:10}}>{xUtil.getDateFormat(this.props.data.timestamp) + this.getDayLabel()}</Text>
         </View>
       </View>
     )
