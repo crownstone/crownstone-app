@@ -21,7 +21,6 @@ import {
 import { Background } from "../../../components/Background";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { Icon } from "../../../components/Icon";
-import { textStyle } from "./DeviceSmartBehaviour";
 import { core } from "../../../../core";
 
 
@@ -46,18 +45,18 @@ export class DeviceSmartBehaviour_PresenceAware extends Component<any, any> {
             <View style={{height: 30}} />
             <Text style={[deviceStyles.header]}>{ "Smart Behaviour" }</Text>
             <View style={{height: 0.2*iconHeight}} />
-            <Text style={textStyle.specification}>{"Presence aware behaviour"}</Text>
+            <Text style={deviceStyles.specification}>{"Presence aware behaviour"}</Text>
             <View style={{height: 0.2*iconHeight}} />
             <ScaledImage source={require('../../../../images/icons/presence.png')} sourceWidth={125} sourceHeight={162} targetWidth={0.15*availableScreenHeight} />
             <View style={{height: 0.2*iconHeight}} />
-            <Text style={textStyle.explanation}>You can pick an example behaviour and change it to your liking, or make your own! Keep in mind that I'll be off when I'm not supposed to be on.</Text>
+            <Text style={deviceStyles.explanation}>You can pick an example behaviour and change it to your liking, or make your own! Keep in mind that I'll be off when I'm not supposed to be on.</Text>
             <View style={{height: 0.2*iconHeight}} />
             <BehaviourExample label={"I will be on if somebody is home between 15:00 and 23:00."} />
             <BehaviourExample label={"I will be on if somebody is in the Living room or the Kitchen."} />
             <BehaviourExample label={"I will dim to 30% if nobody is home and it's dark outside."} />
 
             <View style={{height:1, backgroundColor:colors.menuBackground.rgba(0.3), width: screenWidth}} />
-            <Text style={[textStyle.explanation,{padding:15}]}>or</Text>
+            <Text style={[deviceStyles.explanation,{padding:15}]}>or</Text>
             <BehaviourExample label={"Make your own!"} />
             <View style={{height:1, backgroundColor:colors.menuBackground.rgba(0.3), width: screenWidth}} />
           </View>

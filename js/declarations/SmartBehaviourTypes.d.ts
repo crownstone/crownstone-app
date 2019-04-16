@@ -99,7 +99,7 @@ type aicoreEvent = {
   conditions: eventCondition[],
   threshold:  number,
 } | {
-  type:       "SWITCHCRAFT" | "MANUAL_SWITCH",
+  type:       "SWITCHCRAFT" | "MANUAL_BLE_SWITCH",
   action:     eventAction,
   effect:     effectData,
   conditions: eventCondition[],

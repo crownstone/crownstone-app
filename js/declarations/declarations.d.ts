@@ -126,6 +126,7 @@ interface core {
     detailsDark            : any,
   },
   store: any,
+  storeInitialized: boolean,
   eventBus: any,
   nativeBus: NativeBus,
   sessionMemory: {

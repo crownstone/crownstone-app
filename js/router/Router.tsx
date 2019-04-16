@@ -14,6 +14,8 @@ import { OptionPopup } from "../views/components/OptionPopup";
 import { Processing } from "../views/components/Processing";
 import { AppWithNavigationState, navigationStore } from "./NavigationReducer";
 import { Provider } from 'react-redux';
+import { SelectRoomOverlay } from "../views/overlays/SelectRoomOverlay";
+import { ListOverlay } from "../views/overlays/ListOverlay";
 
 
 export class Router extends Component {
@@ -32,6 +34,7 @@ export class Router extends Component {
         <LocalizationSetupStep2    key={"LocalizationSetupStep2"}    />,
         <TapToToggleCalibration    key={"TapToToggleCalibration"}    />,
         <LocationPermissionOverlay key={"LocationPermissionOverlay"} />,
+        <ListOverlay               key={"ListOverlay"} />,
         <BleStateOverlay           key={"BleStateOverlay"} />,
         <ErrorOverlay              key={"ErrorOverlay"}    />,
         <WhatsNewOverlay           key={"WhatsNewOverlay"} />,

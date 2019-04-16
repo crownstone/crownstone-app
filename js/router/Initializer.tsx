@@ -25,6 +25,7 @@ export class Initializer extends Component<any, any> {
       let store = StoreManager.getStore();
       let state = store.getState();
       core.store = store;
+      core.storeInitialized = true;
       // this should have been covered by the naming of the AI. This is a fallback.
       if (state.user.accessToken !== null && state.user.isNew !== false) {
         store.dispatch({type:'USER_UPDATE', data: {isNew: false}});

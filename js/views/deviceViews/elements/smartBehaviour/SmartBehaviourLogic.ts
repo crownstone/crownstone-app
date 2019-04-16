@@ -61,15 +61,15 @@ export class BehaviourConstructor {
           if (pd.locationIds.length > 0) {
             locationPrefix = "is in the ";
             // we will now construct a roomA_name, roomB_name or roomC_name line.
-            locationStr = this._getLocationName(pd.locationIds[0]);
+            locationStr = getLocationName(pd.locationIds[0]);
             if (pd.locationIds.length > 1) {
               for (let i = 1; i < pd.locationIds.length - 1; i++) {
                 let locationCloudId = pd.locationIds[i];
-                let locationName = this._getLocationName(locationCloudId);
+                let locationName = getLocationName(locationCloudId);
                 locationStr += ", " + locationName;
               }
 
-              locationStr += " or " + this._getLocationName(pd.locationIds[pd.locationIds.length - 1]);
+              locationStr += " or " + getLocationName(pd.locationIds[pd.locationIds.length - 1]);
             }
           }
       }
@@ -148,23 +148,40 @@ export class BehaviourConstructor {
     }
 
     return {
-      intention:      { label: intentionStr,   value: null, changeAction: () => {} },
+      intention: {
+        label: intentionStr,
+        value: null,
+        changeAction: () => {
+        }
+      },
       action: {
         label: actionStr,
         value: this.ruleDescription.action.data,
-        changeAction: (newValue: number) => { this.ruleDescription.action.data = newValue; }
+        changeAction: (newValue: number) => {
+          this.ruleDescription.action.data = newValue;
+        }
       },
-      presencePrefix: { label: presencePrefix, value: null, changeAction: () => {} },
-      presence:       {
+      presencePrefix: {
+        label: presencePrefix,
+        value: null,
+        changeAction: () => {
+        }
+      },
+      presence: {
         label: presenceStr,
         value: this.ruleDescription.presence.type,
-        changeAction: (newValue: "SOMEBODY" | "NOBODY" | "IGNORE") => { this.ruleDescription.presence.type = newValue; }
+        changeAction: (newValue: "SOMEBODY" | "NOBODY" | "IGNORE") => {
+          this.ruleDescription.presence.type = newValue;
+        }
       },
-      locationPrefix: { label: locationPrefix, value: null, changeAction: () => {} },
-      location:       {
+      locationPrefix: {
+        label: locationPrefix, value: null, changeAction: () => {
+        }
+      },
+      location: {
         label: locationStr,
         value: this.ruleDescription.presence["data"],
-        changeAction: (newData : { type: "SPHERE" | "LOCATION", locationIds?: string[] }) => {
+        changeAction: (newData: { type: "SPHERE" | "LOCATION", locationIds?: string[] }) => {
           if (this.ruleDescription.presence["data"] !== undefined) {
             this.ruleDescription.presence["data"].type = newData.type;
             if (newData.type === "LOCATION") {
@@ -173,17 +190,22 @@ export class BehaviourConstructor {
           }
         }
       },
-      time:   { label: timeStr,     value: null, changeAction: (newData : aicoreTime) => {
-        this.ruleDescription.time = newData;
-      }},
-      option: { label: optionStr, value: null, changeAction: (newValue) => {
-        if (newValue === null) {
-          delete this.ruleDescription.options;
+      time: {
+        label: timeStr,
+        value: this.ruleDescription.time,
+        changeAction: (newData: aicoreTime) => {
+          this.ruleDescription.time = newData;
         }
-        else {
-          this.ruleDescription.options = { type: newValue };
+      },
+      option: {
+        label: optionStr, value: null, changeAction: (newValue) => {
+          if (newValue === null) {
+            delete this.ruleDescription.options;
+          } else {
+            this.ruleDescription.options = { type: newValue };
+          }
         }
-      }},
+      },
     }
   }
 
@@ -203,16 +225,7 @@ export class BehaviourConstructor {
     return sentence;
   }
 
-  _getLocationName(locationCloudId) {
-    let state = core.store.getState();
-    let sphereIds = Object.keys(state.spheres);
-    let activeSphere = sphereIds[0]
 
-    let sphere = state.spheres[activeSphere];
-    let localId = MapProvider.cloud2localMap.locations[locationCloudId] || locationCloudId;
-
-    return sphere.locations[localId].config.name.toLowerCase();
-  }
 
   getLogicChunks() : behaviourChunk[] {
     let chunks = this._getChunks();
@@ -269,3 +282,13 @@ function getTimeStr(timeObj) {
   }
 }
 
+function getLocationName(locationCloudId) {
+  let state = core.store.getState();
+  let sphereIds = Object.keys(state.spheres);
+  let activeSphere = sphereIds[0]
+
+  let sphere = state.spheres[activeSphere];
+  let localId = MapProvider.cloud2localMap.locations[locationCloudId] || locationCloudId;
+
+  return sphere.locations[localId].config.name.toLowerCase();
+}

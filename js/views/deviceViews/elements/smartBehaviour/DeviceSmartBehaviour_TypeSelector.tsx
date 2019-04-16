@@ -21,7 +21,6 @@ import {
 import { Background } from "../../../components/Background";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { Icon } from "../../../components/Icon";
-import { textStyle } from "./DeviceSmartBehaviour";
 
 import {
   Svg,
@@ -59,7 +58,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
             <View style={{height: 30}} />
             <Text style={[deviceStyles.header]}>{ "New Behaviour" }</Text>
             <View style={{height: 0.2*iconHeight}} />
-            <Text style={textStyle.specification}>{"What sort of behaviour shall I learn?"}</Text>
+            <Text style={deviceStyles.specification}>{"What sort of behaviour shall I learn?"}</Text>
             <View style={{height: 0.2*iconHeight}} />
             <View style={blockWrapperStyle}>
               <TypeBlock

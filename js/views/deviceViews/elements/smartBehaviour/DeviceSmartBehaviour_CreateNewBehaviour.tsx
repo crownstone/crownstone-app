@@ -19,7 +19,6 @@ import {
   OrangeLine,
   screenWidth} from "../../../styles";
 import { Background } from "../../../components/Background";
-import { textStyle } from "./DeviceSmartBehaviour";
 import { core } from "../../../../core";
 
 export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any> {
@@ -44,7 +43,7 @@ export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any>
           <View style={{height: 30}} />
           <Text style={[deviceStyles.header]}>{ "Presence Aware" }</Text>
           <View style={{height: 0.2*iconHeight}} />
-          <Text style={textStyle.specification}>{"I'll be ON when..."}</Text>
+          <Text style={deviceStyles.specification}>{"I'll be ON when..."}</Text>
           <View style={{height: 0.2*iconHeight}} />
           <View style={{flexDirection:'row', padding:10}}>
             <View style={{flex:1}} />

@@ -9,6 +9,7 @@ import {
   BackHandler,
   Platform,
   TouchableOpacity,
+  Text,
   View,
 } from 'react-native';
 
@@ -26,7 +27,10 @@ interface overlayBoxProps {
   canClose?:           boolean,
   closeCallback?:      any,
   style?:              any
-  wrapperStyle?:       any
+  wrapperStyle?:       any,
+  getDesignElement?:   (innerSize: number) => JSX.Element
+  title?:              string
+  footerComponent?:  JSX.Element
 }
 
 // Set prop "overrideBackButton" to override the (android) back button when the overlay box is visible.
@@ -74,7 +78,100 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     this.backButtonFunction = null;
   }
 
+  _getExtraContent(width, height, size, border) {
+    if (this.props.getDesignElement) {
+      let top = (screenHeight - height) / 4;
+      let left = 10;
+      let innerSize = size - 2 * border;
+
+      return (
+        <View style={{
+          position: 'absolute',
+          top: top,
+          left: left,
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: colors.white.rgba(0.5)
+        }}>
+          <View style={{
+            position: 'absolute',
+            top: border,
+            left: border,
+            width: innerSize,
+            height: innerSize,
+            borderRadius: innerSize / 2,
+            backgroundColor: colors.white.rgba(1)
+          }}>
+            {this.props.getDesignElement(innerSize)}
+          </View>
+          { this.props.title ? <View style={{
+            position: 'absolute',
+            top: 0.5*size-border,
+            left: border + size,
+            width: width-size,
+            height: 0.5*size+border,
+          }}>
+            <Text style={{fontSize: 20, fontWeight:'bold'}}>{this.props.title}</Text>
+          </View> : undefined }
+        </View>
+      );
+    }
+  }
+
+  _getFooterComponent(width, height, border, closeIconSize) {
+    if (this.props.footerComponent) {
+      let top = (screenHeight - height) / 4;
+
+      return (
+        <View style={{
+          position: 'absolute',
+          top: top+height+border-5,
+          left: 0,
+          width: screenWidth - 0.25*closeIconSize,
+          height: 60,
+        }}>
+          {this.props.footerComponent}
+        </View>
+      );
+    }
+  }
+
+  _getCloseIcon(width, height, size) {
+    if (this.props.canClose === true) {
+      let size = 40;
+
+      let top   = ((screenHeight - height) / 2) - 0.25*size;
+      let right = ((screenWidth - width)   / 2) - 0.25*size;
+      return (
+        <TouchableOpacity onPress={this.props.closeCallback} style={{
+          position: 'absolute',
+          top: top,
+          right: right,
+          width: size,
+          height: size,
+          backgroundColor: colors.csBlue.hex,
+          borderRadius: size/2,
+          borderWidth: 3,
+          borderColor: '#fff',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <Icon name="md-close" size={size*0.75} color="#fff" style={{ position: 'relative', top: 1, right: 0 }}/>
+        </TouchableOpacity>
+      )
+    }
+  }
+
   render() {
+    let width = this.props.width || 0.85*screenWidth;
+    let height = this.props.height || Math.min(500,0.9*availableScreenHeight);
+
+    let top = (screenHeight - height) / 4;
+    let size = 0.38 * screenWidth;
+    let closeIconSize = 40
+    let border = 10;
+
     return (
       <HiddenFadeInView
         style={[
@@ -85,20 +182,22 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
         height={screenHeight}
         duration={200}
         maxOpacity={this.props.maxOpacity}
-        visible={this.props.visible}>
-        <View style={{backgroundColor:colors.white.rgba(0.5), width: this.props.width || 0.85*screenWidth, height: this.props.height || Math.min(500,0.9*availableScreenHeight), borderRadius: 25, padding: 12}}>
+        visible={this.props.visible}
+      >
+
+        <View style={{backgroundColor:colors.white.rgba(0.5), width: width, height: height, borderRadius: 25, padding: 12}}>
           <View style={[
             styles.centered,
-            {backgroundColor:'#fff', flex:1, borderRadius: 25-0.02*screenWidth, padding: 0.03*screenWidth, overflow:'hidden'},
+            {backgroundColor:'#fff', flex:1, borderRadius: 25-0.02*screenWidth, padding: 0.03*screenWidth, paddingTop: this.props.getDesignElement ? 0.5*size+top-30 : 0.03*screenWidth,
+              overflow:'hidden'},
             {...this.props.style}
           ]}>
             {this.props.children}
           </View>
-          { this.props.canClose === true ?
-            <TouchableOpacity onPress={this.props.closeCallback} style={{position:'absolute', top:0, right:0, width:40, height:40, backgroundColor: colors.csBlue.hex, borderRadius:20, borderWidth:3, borderColor:'#fff', alignItems:'center', justifyContent:'center'}}>
-              <Icon name="md-close" size={30} color="#fff" style={{position:'relative', top:1, right:0}}/>
-            </TouchableOpacity> : undefined}
         </View>
+        { this._getExtraContent(width, height, size, border) }
+        { this._getFooterComponent(width, height, border, closeIconSize)     }
+        { this._getCloseIcon(width, height, closeIconSize)     }
       </HiddenFadeInView>
     );
   }

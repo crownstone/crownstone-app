@@ -13,7 +13,11 @@ export class ScaledImage extends Component<{source: any, targetWidth?: number, t
     let factor = this.props.sourceWidth/this.props.sourceHeight;
     let width = this.props.sourceWidth;
     let height = this.props.sourceHeight;
-    if (this.props.targetWidth) {
+    if (this.props.targetWidth && this.props.targetHeight) {
+      width = this.props.targetWidth;
+      height = this.props.targetHeight;
+    }
+    else if (this.props.targetWidth) {
       width = this.props.targetWidth;
       height = this.props.targetWidth/factor;
     }

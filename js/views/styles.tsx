@@ -295,6 +295,14 @@ export const deviceStyles = StyleSheet.create({
     color: textColor.rgba(0.5),
     fontSize: 13,
   },
+  specification: {
+    color:colors.white.hex,
+    width:screenWidth,
+    textAlign:'center',
+    fontSize:15,
+    padding:15,
+    fontWeight:'600'
+  },
   explanation: {
     width: screenWidth,
     color: textColor.rgba(0.5),

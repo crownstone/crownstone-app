@@ -20,7 +20,6 @@ import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
-import { NavigationActions, StackActions } from "react-navigation";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 
 

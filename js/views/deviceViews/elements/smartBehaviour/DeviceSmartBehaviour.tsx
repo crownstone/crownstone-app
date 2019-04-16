@@ -40,7 +40,7 @@ export class DeviceSmartBehaviour extends Component<any, any> {
           <View style={{height: 30}} />
           <Text style={[deviceStyles.header]}>{ "Behaviour" }</Text>
           <View style={{height: 0.2*iconSize}} />
-          <Text style={textStyle.specification}>{"Tap the icon below to create my first behaviour!"}</Text>
+          <Text style={deviceStyles.specification}>{"Tap the icon below to create my first behaviour!"}</Text>
           <View style={{height: 0.2*iconSize}} />
           <TouchableOpacity
             onPress={() => { NavigationUtil.navigate("DeviceSmartBehaviour_TypeSelector")}}
@@ -60,54 +60,3 @@ export class DeviceSmartBehaviour extends Component<any, any> {
     )
   }
 }
-
-
-export const textStyle = StyleSheet.create({
-  title: {
-    color:colors.white.hex,
-    fontSize:30,
-    paddingBottom:10,
-    fontWeight:'bold'
-  },
-  explanation: {
-    color:colors.white.hex,
-    width:screenWidth,
-    textAlign:'center',
-    fontSize:13,
-    padding:5,
-    paddingLeft:15,
-    paddingRight:15,
-    fontWeight:'400'
-  },
-  case: {
-    color:colors.white.hex,
-    width:screenWidth,
-    textAlign:'center',
-    fontSize:13,
-    padding:5,
-    fontWeight:'400',
-  },
-  value: {
-    color:colors.white.hex,
-    textAlign:'center',
-    fontSize:15,
-    fontWeight:'600'
-  },
-  specification: {
-    color:colors.white.hex,
-    width:screenWidth,
-    textAlign:'center',
-    fontSize:15,
-    padding:15,
-    fontWeight:'600'
-  },
-  softWarning: {
-    color: colors.white.hex,
-    width:screenWidth,
-    textAlign:'center',
-    fontStyle:'italic',
-    fontSize:13,
-    padding:15,
-    fontWeight:'600'
-  }
-});
