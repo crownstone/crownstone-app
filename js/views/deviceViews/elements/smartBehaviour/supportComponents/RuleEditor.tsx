@@ -11,7 +11,7 @@ import { RoomList } from "../../../../components/RoomList";
 import { core } from "../../../../../core";
 import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
-import { xUtil } from "../../../../../util/StandAloneUtil";
+import { AicoreUtil } from "../supportCode/AicoreUtil";
 
 
 export class RuleEditor extends Component<{data:behaviour}, any> {
@@ -54,7 +54,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
         sunUp: new AicoreBehaviour().setTimeWhenSunUp(),
         allDay: new AicoreBehaviour().setTimeAllday(),
         specific: new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
-        custom: new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
+        custom: new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
       }
     }
 
@@ -257,6 +257,12 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
     })
   }
 
+
+  /**
+   * The example origin field is meant to allow the system to update the custom fields based on the user selection.
+   * @param exampleOriginField
+   * @private
+   */
   _showTimeSelectionPopup(exampleOriginField) {
     core.eventBus.emit('showListOverlay', {
       title: "When?",
@@ -307,12 +313,12 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             closeLabel={"That's it!"}
             elements={[
               {
-                label: "Somebody",
+                label: AicoreUtil.extractPresenceChunk(this.exampleBehaviours.presence.somebody).presenceStr,
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.somebody); },
                 onSelect: () => { this.rule.setPresenceSomebody(); this.forceUpdate(); }
               },
               {
-                label: "Nobody",
+                label: AicoreUtil.extractPresenceChunk(this.exampleBehaviours.presence.nobody).presenceStr,
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.nobody); },
                 onSelect: () => { this.rule.setPresenceNobody(); this.forceUpdate(); }
               },

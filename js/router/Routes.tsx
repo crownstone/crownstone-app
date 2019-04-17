@@ -12,6 +12,7 @@ import { Languages }          from "../Languages";
 import { Initializer }        from "./Initializer";
 import { colors}              from '../views/styles'
 import { Views }              from './Views'
+import { TimeSelector } from "../views/deviceViews/elements/smartBehaviour/supportComponents/TimeSelector";
 
 
 interface headerModeObj {
@@ -59,6 +60,7 @@ const defaultBackButtonHeaderStyle = {
 
 const NewBehaviourStack = createStackNavigator(
   {
+    TimeSelector :             TimeSelector,
     DeviceSmartBehaviour_Editor :             Views.DeviceSmartBehaviour_Editor,
     DeviceSmartBehaviour :                    Views.DeviceSmartBehaviour,
     DeviceSmartBehaviour_TypeStart    :       Views.DeviceSmartBehaviour_TypeStart,

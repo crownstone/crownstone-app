@@ -6,6 +6,8 @@ YellowBox.ignoreWarnings([
   'Warning: componentWillMount is deprecated',
   'Warning: componentWillReceiveProps is deprecated',
   'Module RNWebGLTextureLoader requires main queue setup',
+  // RN 0.58.6 ships with RNCameraRoll with this issue: https://github.com/facebook/react-native/issues/23755:
+  'Module RCTImagePickerManager requires main queue setup since it overrides `init`',
 ])
 
 import 'react-native-gesture-handler'

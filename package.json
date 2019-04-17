@@ -15,7 +15,7 @@
     "prettier": "^1.14.3",
     "prop-types": "^15.7.2",
     "react": "16.8.4",
-    "react-native": "zienag/react-native#xcode_10_2_fix",
+    "react-native": "^0.59.4",
     "react-native-camera-kit": "7.3.5",
     "react-native-console-time-polyfill": "^0.0.6",
     "react-native-device-info": "1.0.1",

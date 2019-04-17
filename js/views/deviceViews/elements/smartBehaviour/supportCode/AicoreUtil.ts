@@ -10,7 +10,7 @@ import { core } from "../../../../../core";
 
 export const AicoreUtil = {
 
-  extractActionChunk(rule) {
+  extractActionChunk(rule : behaviour) {
     if (rule.action.data < 1) {
       return "dimmed at " + Math.round(rule.action.data * 100) + "%";
     }
@@ -19,7 +19,7 @@ export const AicoreUtil = {
     }
   },
 
-  extractPresenceChunk(rule) {
+  extractPresenceChunk(rule : behaviour) {
     let presencePrefix = null;
     let presenceStr = null;
     switch (rule.presence.type) {
@@ -40,7 +40,7 @@ export const AicoreUtil = {
     return { presencePrefix, presenceStr };
   },
 
-  extractLocationChunk(rule) {
+  extractLocationChunk(rule : behaviour) {
     let locationPrefix = "";
     let locationStr = "";
     if (rule.presence.type !== AICORE_PRESENCE_TYPES.IGNORE) {
@@ -74,7 +74,7 @@ export const AicoreUtil = {
   },
 
 
-  extractTimeChunk(rule) {
+  extractTimeChunk(rule : behaviour) {
     let timeStr = "";
 
     let time = rule.time;
@@ -121,7 +121,7 @@ export const AicoreUtil = {
 
 
 
-  extractOptionString(rule) {
+  extractOptionString(rule : behaviour) {
     let optionStr = null;
     if (rule.options && rule.options.type) {
       switch (rule.options.type) {
@@ -137,7 +137,7 @@ export const AicoreUtil = {
   },
 
 
-  getLocationName(locationCloudId) {
+  getLocationName(locationCloudId : string) {
     let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     let localId = MapProvider.cloud2localMap.locations[locationCloudId] || locationCloudId;
@@ -151,8 +151,8 @@ export const AicoreUtil = {
   },
 
 
-  getTimeStr(timeObj) {
-    if (timeObj.data !== undefined) {
+  getTimeStr(timeObj: aicoreTimeData) {
+    if (timeObj.type === "CLOCK") {
       // TYPE IS CLOCK
       let obj = (timeObj as aicoreTimeDataClock).data;
       return obj.hours + ":" + (obj.minutes < 10 ? obj.minutes + "0" : obj.minutes);
