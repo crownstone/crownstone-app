@@ -23,8 +23,8 @@ import { Background } from "../../../components/Background";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { Icon } from "../../../components/Icon";
 import { core } from "../../../../core";
-import { BehaviourConstructor } from "./SmartBehaviourLogic";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 
 
 export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]}, any> {
@@ -104,6 +104,6 @@ class BehaviourExample extends Component<{data: any}, any> {
 function createDescriptiveString(rule) {
   if (typeof rule === 'string') { return rule; }
 
-  let b = new BehaviourConstructor(rule as behaviour);
+  let b = new AicoreBehaviour(rule as behaviour);
   return b.getSentence()
 }

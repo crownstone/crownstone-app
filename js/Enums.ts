@@ -33,7 +33,7 @@ export const SMART_BEHAVIOUR_TYPES = {
 }
 
 export const AICORE_TIME_TYPES = {
-  ALWAYS:   "ALWAYS",
+  ALL_DAY:"ALL_DAY",
   RANGE:  "RANGE",
 };
 

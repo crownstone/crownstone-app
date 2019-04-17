@@ -40,38 +40,29 @@ export class DeviceSmartBehaviour_TypeStart extends Component<any, any> {
 
   _getPresenceExamples() {
     let examples : behaviour[] = [];
-    let always   : dayOfWeek = {
-      Mon: true,
-      Tue: true,
-      Wed: true,
-      Thu: true,
-      Fri: true,
-      Sat: true,
-      Sun: true
-    };
     examples.push({
-      action:   { type: "BE_ON", fadeDuration: 0, data: 1, },
+      action:   { type: "BE_ON", data: 1, },
       presence: { type: "SOMEBODY", data: { type: "SPHERE" }, delay: 5},
       time: {
         type: "RANGE",
-        from: { type: "SUNSET",  offsetMinutes:0},
-        to:   { type: "SUNRISE", offsetMinutes:0}
+        from: { type: "SUNSET", offsetMinutes: 0 },
+        to: { type: "SUNRISE", offsetMinutes: 0 }
       }
     });
     examples.push({
-      action:   { type: "BE_ON", fadeDuration: 0, data: 1, },
+      action:   { type: "BE_ON", data: 1, },
       presence: { type: "SOMEBODY", data: { type: "LOCATION", locationIds: this._getLocationIds(2) }, delay: 5},
       time: {
-        type: "ALWAYS"
+        type: "ALL_DAY"
       }
     });
 
     examples.push({
-      action:   { type: "BE_ON", fadeDuration: 0, data: 1, },
+      action:   { type: "BE_ON", data: 1, },
       presence: { type: "IGNORE" },
       time: {
         type: "RANGE",
-        from: { type: "CLOCK", data: { minutes: 0, hours: 15, dayOfMonth: "*", month: "*", dayOfWeek: always }},
+        from: { type: "CLOCK", data: { minutes: 0, hours: 15, dayOfMonth: "*", month: "*" }},
         to:   { type: "SUNSET", offsetMinutes: 0 }
       },
       options: {

@@ -14,7 +14,6 @@ import { OptionPopup } from "../views/components/OptionPopup";
 import { Processing } from "../views/components/Processing";
 import { AppWithNavigationState, navigationStore } from "./NavigationReducer";
 import { Provider } from 'react-redux';
-import { SelectRoomOverlay } from "../views/overlays/SelectRoomOverlay";
 import { ListOverlay } from "../views/overlays/ListOverlay";
 
 

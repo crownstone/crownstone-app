@@ -5,20 +5,22 @@ import {
   Text,
   View, TextStyle, ViewStyle
 } from "react-native";
-import { BehaviourConstructor } from "../SmartBehaviourLogic";
 import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../../../../styles";
 import { SELECTABLE_TYPE } from "../../../../../Enums";
 import { RoomList } from "../../../../components/RoomList";
 import { core } from "../../../../../core";
 import { BehaviourOptionList } from "./BehaviourOptionList";
-
+import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
+import { xUtil } from "../../../../../util/StandAloneUtil";
 
 
 export class RuleEditor extends Component<{data:behaviour}, any> {
   references = [];
   amountOfLines = 0;
-  rule;
-  selectedChunk : behaviourChunk;
+  rule : AicoreBehaviour;
+  selectedChunk : selectableAicoreBehaviourChunk;
+
+  exampleBehaviours : any;
 
   constructor(props) {
     super(props);
@@ -30,7 +32,32 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
       detailOpacity:     new Animated.Value(0),
       buttonOpacity:     new Animated.Value(1),
     };
-    this.rule = new BehaviourConstructor(this.props.data);
+    this.rule = new AicoreBehaviour(this.props.data);
+
+    this.exampleBehaviours = {
+      action: {
+        on: new AicoreBehaviour(),
+        dimming: new AicoreBehaviour().setActionState(0.5),
+      },
+      presence: {
+        somebody: new AicoreBehaviour().setPresenceSomebody(),
+        nobody: new AicoreBehaviour().setPresenceNobody(),
+        ignore: new AicoreBehaviour().ignorePresence(),
+      },
+      location: {
+        sphere: new AicoreBehaviour().setPresenceSomebodyInSphere(),
+        inRoom: new AicoreBehaviour().setPresenceSomebodyInLocations([getLocationId(0)]), // TODO: get actual room ID
+        custom: new AicoreBehaviour().setPresenceSomebodyInLocations([]),
+      },
+      time: {
+        dark: new AicoreBehaviour().setTimeWhenDark(),
+        sunUp: new AicoreBehaviour().setTimeWhenSunUp(),
+        allDay: new AicoreBehaviour().setTimeAllday(),
+        specific: new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
+        custom: new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
+      }
+    }
+
   }
 
   getRuleSentenceElements() {
@@ -40,7 +67,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
     let selectable  : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30, textDecorationLine:'underline' };
     let segmentStyle : ViewStyle = {...styles.centered, flexDirection:'row', width: screenWidth};
 
-    let ruleChunks = this.rule.getLogicChunks();
+    let ruleChunks = this.rule.getSelectableChunkData();
 
     let segments = [];
     let result = [];
@@ -111,7 +138,6 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
 
     return result;
   }
-
 
   toggleDetails(chunk) {
     let selectedBehaviourType = null;
@@ -186,13 +212,17 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
     core.eventBus.emit('showListOverlay', {
       title: "Dim how much?",
       getItems: () => { return dimmerOptions; },
-      callback: (value) => { this.selectedChunk.changeAction(value); this.forceUpdate(); },
-      selection:  (this.selectedChunk.value < 1 ? this.selectedChunk.value : 0.5),
+      callback: (value) => {
+        this.exampleBehaviours.action.dimming.setDimAmount(value);
+        this.rule.setDimAmount(value);
+        this.forceUpdate();
+      },
+      selection: this.rule.willDim() ? this.rule.getDimAmount() : this.exampleBehaviours.action.dimming.getDimAmount(),
       image: require("../../../../../images/overlayCircles/dimmingCircleGreen.png")
     })
   }
 
-  _showLocationSelectionPopup(selection) {
+  _showLocationSelectionPopup() {
     core.eventBus.emit('showListOverlay', {
       title: "Select Rooms",
       getItems: () => {
@@ -215,21 +245,25 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
         return items;
       },
       callback: (selection) => {
-        this.selectedChunk.changeAction({type:"LOCATION", locationIds: selection});
+        if (selection.length > 0) {
+          this.exampleBehaviours.location.custom.setPresenceInLocations(selection);
+          this.rule.setPresenceInLocations(selection);
+        }
         this.forceUpdate();
       },
       allowMultipleSelections: true,
-      selection: selection,
+      selection: this.rule.getLocationIds(),
       image: require("../../../../../images/overlayCircles/roomsCircle.png")
     })
   }
 
-  _showTimeSelectionPopup() {
+  _showTimeSelectionPopup(exampleOriginField) {
     core.eventBus.emit('showListOverlay', {
       title: "When?",
       customContent: <View style={{width:100, height:100, backgroundColor:"#f00"}} />,
-      callback: (selection) => {
-        this.selectedChunk.changeAction({type:"LOCATION", locationIds: selection});
+      callback: (newTime : aicoreTime) => {
+        this.exampleBehaviours.time[exampleOriginField].setTime(newTime);
+        this.rule.setTime(newTime);
         this.forceUpdate();
       },
       allowMultipleSelections: true,
@@ -252,14 +286,14 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             elements={[
               {
                 label: "On",
-                isSelected: () => { return this.selectedChunk.value === 1;},
-                selectionCallback: () => { this.selectedChunk.changeAction(1); this.forceUpdate(); }
+                isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.on) },
+                onSelect: () => {this.rule.setActionState(1); this.forceUpdate(); }
               },
               {
-                label: "Dimmed " + Math.round((this.selectedChunk.value < 1 ? this.selectedChunk.value : 0.5) * 100) + "%",
+                label: "Dimmed " + Math.round((this.rule.willDim() ? this.rule.getDimAmount() : 0.5) * 100) + "%",
                 subLabel: "(tap to change)",
-                isSelected: () => { return this.selectedChunk.value < 1;},
-                selectionCallback: () => { this._showDimAmountPopup(); }
+                isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming)},
+                onSelect: () => { this._showDimAmountPopup(); }
               },
             ]}
           />
@@ -274,18 +308,18 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             elements={[
               {
                 label: "Somebody",
-                isSelected: () => { return this.selectedChunk.value === "SOMEBODY"; },
-                selectionCallback: () => { this.selectedChunk.changeAction("SOMEBODY"); this.forceUpdate(); }
+                isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.somebody); },
+                onSelect: () => { this.rule.setPresenceSomebody(); this.forceUpdate(); }
               },
               {
                 label: "Nobody",
-                isSelected: () => { return this.selectedChunk.value === "NOBODY"; },
-                selectionCallback: () => { this.selectedChunk.changeAction("NOBODY"); this.forceUpdate(); }
+                isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.nobody); },
+                onSelect: () => { this.rule.setPresenceNobody(); this.forceUpdate(); }
               },
               {
                 label: "Ignore",
-                isSelected: () => { return this.selectedChunk.value === "IGNORE"; },
-                selectionCallback: () => { this.selectedChunk.changeAction("IGNORE"); this.forceUpdate(); }
+                isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
+                onSelect: () => { this.rule.setPresenceIgnore(); this.forceUpdate(); }
               },
             ]}
           />
@@ -300,22 +334,16 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             elements={[
               {
                 label: "Anywhere in the house!",
-                isSelected: () => { return this.selectedChunk.value && this.selectedChunk.value.type === "SPHERE"; },
-                selectionCallback: () => { this.selectedChunk.changeAction({type:"SPHERE"}); this.forceUpdate(); }
+                isSelected: () => { return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.sphere); },
+                onSelect: () => { this.rule.setPresenceInSphere(); this.forceUpdate(); }
               },
               {
                 label: "In the room.",
                 isSelected: () => {
-                  return this.selectedChunk.value &&
-                    this.selectedChunk.value.type === "LOCATION" &&
-                    this.selectedChunk.value.locationIds.length === 1 &&
-                    this.selectedChunk.value.locationIds[0] == getTheId(0)
+                  return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.inRoom);
                 },
-                selectionCallback: () => {
-                  this.selectedChunk.changeAction({
-                    type:"LOCATION",
-                    locationIds:[getTheId(0)]
-                  });
+                onSelect: () => {
+                  this.rule.setPresenceInLocations([getLocationId(0)]);
                   this.forceUpdate();
                 }
               },
@@ -323,12 +351,9 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
                 label: "Select room(s)...",
                 subLabel: "(tap to select)",
                 isSelected: () => {
-                  return this.selectedChunk.value &&
-                    this.selectedChunk.value.type === "LOCATION" &&
-                    ((this.selectedChunk.value.locationIds.length === 1 && this.selectedChunk.value.locationIds[0] != getTheId(0)) ||
-                    this.selectedChunk.value.locationIds.length > 1)
+                  return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.custom);
                 },
-                selectionCallback: () => { this._showLocationSelectionPopup(this.selectedChunk.value.locationIds); },
+                onSelect: () => { this._showLocationSelectionPopup(); },
               },
             ]}
           />
@@ -343,61 +368,42 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             elements={[
               {
                 label: "While it's dark outside.",
-                isSelected: () => {
-                  console.log(this.selectedChunk)
-                  return this.selectedChunk.value.type === "RANGE" &&
-                    this.selectedChunk.value.from.type === "SUNSET" &&
-                    this.selectedChunk.value.from.offsetMinutes === 0 &&
-                    this.selectedChunk.value.to.type === "SUNRISE" &&
-                    this.selectedChunk.value.to.offsetMinutes === 0
-                },
-                selectionCallback: () => {
-                  this.selectedChunk.changeAction({
-                    type:"RANGE", from: {type:"SUNSET", offsetMinutes:0}, to: {type:"SUNRISE", offsetMinutes:0}
-                  });
+                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.dark); },
+                onSelect: () => {
+                  this.rule.setTimeWhenDark();
                   this.forceUpdate();
                 }
               },
               {
                 label: "While the sun's up.",
-                isSelected: () => {
-                  return this.selectedChunk.value.type === "RANGE" &&
-                    this.selectedChunk.value.from.type === "SUNRISE" &&
-                    this.selectedChunk.value.from.offsetMinutes === 0 &&
-                    this.selectedChunk.value.to.type === "SUNSET" &&
-                    this.selectedChunk.value.to.offsetMinutes === 0
-                },
-                selectionCallback: () => {
-                  this.selectedChunk.changeAction({
-                    type:"RANGE", from: {type:"SUNRISE", offsetMinutes:0}, to: {type:"SUNSET", offsetMinutes:0}
-                  });
+                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.sunUp); },
+                onSelect: () => {
+                  this.rule.setTimeWhenSunUp();
                   this.forceUpdate();
                 }
               },
               {
                 label: "Always.",
-                isSelected: () => {
-                  return this.selectedChunk.value.type === "ALWAYS";
-                },
-                selectionCallback: () => {
-                  this.selectedChunk.changeAction({type:"ALWAYS"});
+                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.allDay); },
+                onSelect: () => {
+                  this.rule.setTimeAllday();
                   this.forceUpdate();
                 }
               },
               {
                 label: "From 9:30 to 15:00.",
                 subLabel: "(tap to customize)",
-                isSelected: () => { return false; },
-                selectionCallback: () => {
-                  this._showTimeSelectionPopup()
+                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.specific); },
+                onSelect: () => {
+                  this._showTimeSelectionPopup('specific')
                 }
               },
               {
                 label: "Other...",
                 subLabel: "(tap to create)",
-                isSelected: () => { return false; },
-                selectionCallback: () => {
-                  this._showTimeSelectionPopup()
+                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.custom); },
+                onSelect: () => {
+                  this._showTimeSelectionPopup('custom')
                 }
               },
             ]}
@@ -447,7 +453,7 @@ function getWordLength(word) {
   return result;
 }
 
-function getTheId(i) {
+function getLocationId(i) {
   let state = core.store.getState();
   let sphereIds = Object.keys(state.spheres);
   let activeSphere = sphereIds[0]

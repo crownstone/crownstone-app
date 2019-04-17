@@ -295,6 +295,44 @@ export const xUtil = {
     return a;
   },
 
+  deepCompare: function (a, b) {
+    for (let prop in b) {
+      if (b.hasOwnProperty(prop)) {
+        if (a[prop] === undefined) {
+          return false;
+        }
+        else if (b[prop] && b[prop].constructor === Object) {
+          if (a[prop].constructor === Object) {
+            if (xUtil.deepCompare(a[prop], b[prop]) === false) {
+              return false
+            }
+          }
+          return false;
+        }
+        else if (Array.isArray(b[prop])) {
+          if (Array.isArray(a[prop]) === false) {
+            return false;
+          }
+          else if (a[prop].length !== b[prop].length) {
+            return false;
+          }
+
+          for (let i = 0; i < b[prop].length; i++) {
+            if (xUtil.deepCompare(a[prop][i], b[prop][i]) === false) {
+              return false;
+            }
+          }
+        }
+        else {
+          if (a[prop] !== b[prop]) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  },
+
   promiseBatchPerformer: function(arr : any[], method : PromiseCallback) {
     if (arr.length === 0) {
       return new Promise((resolve, reject) => { resolve() });

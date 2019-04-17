@@ -1,15 +1,14 @@
-interface behaviourChunk {
+interface selectableAicoreBehaviourChunk {
   label: string,
   clickable: boolean,
   type: string,
-  value: any,
+  data: any,
   hidden: boolean,
-  changeAction: (any) => void,
 }
 
 interface behaviourListElement {
   isSelected: () => boolean,
-  selectionCallback: () => void,
+  onSelect: () => void,
   label: string,
   subLabel?: string
 }

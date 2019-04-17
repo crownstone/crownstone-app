@@ -30,7 +30,7 @@ export class BehaviourOptionList extends Component<{
             backgroundColor: el.isSelected() ? colors.green.hex : colors.white.rgba(0.8),
             alignItems:'center',
           }}
-          onPress={() => { el.selectionCallback() }}
+          onPress={() => { el.onSelect() }}
         >
         <Text style={{paddingLeft:15, fontSize:15}}>{el.label}</Text>
         {el.subLabel ? <View style={{flex:1}} /> : undefined}

@@ -10,7 +10,7 @@ type aicorePresence         = aicorePresenceGeneric | aicorePresenceSpecific | a
 type aicorePresenceSphereData   = { type: "SPHERE" }
 type aicorePresenceLocationData = { type: "LOCATION", locationIds: string[] }
 
-type aicoreTimeAlways   = { type: "ALWAYS" }
+type aicoreTimeAlways   = { type: "ALL_DAY" }
 type aicoreTimeRange    = { type: "RANGE", from: aicoreTimeData, to: aicoreTimeData }
 type aicoreTime         = aicoreTimeAlways | aicoreTimeRange
 
@@ -18,18 +18,20 @@ type aicoreTimeDataSun   = { type: sunTimes, offsetMinutes: number}
 type aicoreTimeDataClock = { type: "CLOCK", data: cron }
 type aicoreTimeData      = aicoreTimeDataSun | aicoreTimeDataClock
 
-interface behaviourOptions {
+interface aicoreBehaviourOptions {
   type: "SPHERE_PRESENCE_AFTER" | "LOCATION_PRESENCE_AFTER"
 }
 
 type cron = {
   minutes:    number,
   hours:      number,
-  dayOfMonth: string,   // allowed values are: 1-31 , - * (comma for set, hyphen for range, star for any)  currently only * is supported.
-  month:      string,   // allowed values are: 1-12 , - * (comma for set, hyphen for range, star for any)  currently only * is supported.
-  dayOfWeek:  dayOfWeek
+  dayOfMonth: string,   // allowed values are: 1-31 , - * (comma for set, hyphen for range, star for any) currently only * is supported.
+  month:      string,   // allowed values are: 1-12 , - * (comma for set, hyphen for range, star for any) currently only * is supported.
 }
 
+
+// Active days are defined on when the FROM time starts.
+// When there is no from time (type ALL_DAY), the days are from sunrise to sunrise!
 type dayOfWeek = {
   Mon: boolean,
   Tue: boolean,
@@ -52,11 +54,10 @@ type eventCondition = { type: "PRESENCE", data: aicorePresence } |
 interface behaviour {
   action: {
     type: "BE_ON",
-    fadeDuration: number,
     data: number, // 0 .. 1
-  }
+  },
   time: aicoreTime,
-  presence: aicorePresence, // optional condition: react to presence
+  presence: aicorePresence,
   options?: aicoreBehaviourOptions
 }
 
