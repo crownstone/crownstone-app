@@ -12,6 +12,7 @@ import { core } from "../../../../../core";
 import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
+import { xUtil } from "../../../../../util/StandAloneUtil";
 
 
 export class RuleEditor extends Component<{data:behaviour}, any> {
@@ -27,10 +28,13 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
 
     this.state = {
       detail:            null,
+      containerHeight:   new Animated.Value(availableScreenHeight - 300),
       detailHeight:      new Animated.Value(availableScreenHeight - 300),
-      mainBottomHeight: new Animated.Value(availableScreenHeight - 300),
       detailOpacity:     new Animated.Value(0),
-      buttonOpacity:     new Animated.Value(1),
+      mainBottomHeight:  new Animated.Value(availableScreenHeight - 300),
+      mainBottomOpacity: new Animated.Value(1),
+      selectedDetailField: null,
+      showCustomTimeData: false,
     };
     this.rule = new AicoreBehaviour(this.props.data);
 
@@ -165,10 +169,12 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
     if (this.state.detail === null) {
       // selecting a behaviour type while none was selected before.
       let animation = [];
-      this.setState({detail: selectedBehaviourType});
-      animation.push(Animated.timing(this.state.detailOpacity,   {toValue: 1, delay: 0,   duration: 100}));
-      animation.push(Animated.timing(this.state.buttonOpacity,   {toValue: 0, delay: 100, duration: 100}));
-      animation.push(Animated.timing(this.state.detailHeight,    {toValue: behaviourHeight, delay: 0, duration: 200}));
+      this.setState({detail: selectedBehaviourType, selectedDetailField: false});
+      this.state.detailHeight.setValue(behaviourHeight)
+      animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 100, duration: 100}));
+      animation.push(Animated.timing(this.state.mainBottomOpacity, {toValue: 0, delay: 0, duration: 100}));
+      animation.push(Animated.timing(this.state.containerHeight  , {toValue: behaviourHeight, delay: 0, duration: 200}));
+      animation.push(Animated.timing(this.state.mainBottomHeight  ,{toValue: behaviourHeight, delay: 0, duration: 200}));
       // animation.push(Animated.timing(this.state.mainBottomHeight,{toValue: originalHeight, delay: 0, duration: 200}));
       Animated.parallel(animation).start(() => { this.state.mainBottomHeight.setValue(0) })
     }
@@ -177,18 +183,19 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
       let animation = [];
       this.state.mainBottomHeight.setValue(originalHeight);
       animation.push(Animated.timing(this.state.detailOpacity,     {toValue:0, delay:0, duration: 100}));
-      animation.push(Animated.timing(this.state.buttonOpacity,     {toValue:1, delay:100, duration: 100}));
+      animation.push(Animated.timing(this.state.mainBottomOpacity,     {toValue:1, delay:100, duration: 100}));
+      animation.push(Animated.timing(this.state.containerHeight,      {toValue: originalHeight, delay:0, duration: 200}));
       animation.push(Animated.timing(this.state.detailHeight,      {toValue: originalHeight, delay:0, duration: 200}));
-      Animated.parallel(animation).start(() => { this.setState({detail: selectedBehaviourType}); })
+      Animated.parallel(animation).start(() => { this.setState({detail: selectedBehaviourType, selectedDetailField: false}); })
     }
     else {
       // changing between selected behaviour types, fade out, and fadein
       let animation = [];
       animation.push(Animated.timing(this.state.detailHeight,     {toValue: behaviourHeight, delay:0, duration: 200}));
-      animation.push(Animated.timing(this.state.detailHeight,     {toValue: behaviourHeight, delay:0, duration: 200}));
+      animation.push(Animated.timing(this.state.containerHeight,     {toValue: behaviourHeight, delay:0, duration: 200}));
       animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 150}))
       Animated.parallel(animation).start(() => {
-        this.setState({detail: selectedBehaviourType}, () => {
+        this.setState({detail: selectedBehaviourType, selectedDetailField: false}, () => {
           let animation = [];
           animation.push(Animated.timing(this.state.detailOpacity,    {toValue:1, delay:0, duration: 150}));
           Animated.parallel(animation).start()
@@ -249,7 +256,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
           this.exampleBehaviours.location.custom.setPresenceInLocations(selection);
           this.rule.setPresenceInLocations(selection);
         }
-        this.forceUpdate();
+        this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "3"})
       },
       allowMultipleSelections: true,
       selection: this.rule.getLocationIds(),
@@ -263,17 +270,21 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
    * @param exampleOriginField
    * @private
    */
-  _showTimeSelectionPopup(exampleOriginField) {
-    core.eventBus.emit('showListOverlay', {
-      title: "When?",
-      customContent: <View style={{width:100, height:100, backgroundColor:"#f00"}} />,
+  _showTimeSelectionPopup(exampleOriginField, useData = true) {
+    core.eventBus.emit('showAicoreTimeCustomizationOverlay', {
       callback: (newTime : aicoreTime) => {
         this.exampleBehaviours.time[exampleOriginField].setTime(newTime);
         this.rule.setTime(newTime);
-        this.forceUpdate();
+
+        // Yes, this is ugly. I also don't want to mark a field as "default" in the behaviour, nor allow null as a behaviour value.
+        if (exampleOriginField === "custom") {
+          this.setState({showCustomTimeData: true, selectedDetailField: SELECTABLE_TYPE.TIME + "5"})
+        }
+        else {
+          this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "4"})
+        }
       },
-      allowMultipleSelections: true,
-      selection: null,
+      time: useData ? this.exampleBehaviours.time[exampleOriginField].getTime() : null,
       image: require("../../../../../images/overlayCircles/time.png")
     })
   }
@@ -313,12 +324,12 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             closeLabel={"That's it!"}
             elements={[
               {
-                label: AicoreUtil.extractPresenceChunk(this.exampleBehaviours.presence.somebody).presenceStr,
+                label: xUtil.capitalize(AicoreUtil.extractPresenceChunk(this.exampleBehaviours.presence.somebody.rule).presenceStr),
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.somebody); },
                 onSelect: () => { this.rule.setPresenceSomebody(); this.forceUpdate(); }
               },
               {
-                label: AicoreUtil.extractPresenceChunk(this.exampleBehaviours.presence.nobody).presenceStr,
+                label: xUtil.capitalize(AicoreUtil.extractPresenceChunk(this.exampleBehaviours.presence.nobody.rule).presenceStr),
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.nobody); },
                 onSelect: () => { this.rule.setPresenceNobody(); this.forceUpdate(); }
               },
@@ -340,23 +351,37 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             elements={[
               {
                 label: "Anywhere in the house!",
-                isSelected: () => { return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.sphere); },
-                onSelect: () => { this.rule.setPresenceInSphere(); this.forceUpdate(); }
+                isSelected: () => {
+                  // we check the selection by state because the second and custom option can both be valid. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.LOCATION + "1") {
+                    return true;
+                  }
+                  return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.sphere);
+                },
+                onSelect: () => { this.rule.setPresenceInSphere(); this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "1"}) }
               },
               {
                 label: "In the room.",
                 isSelected: () => {
+                  // we check the selection by state because the second and custom option can both be valid. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.LOCATION + "2") {
+                    return true;
+                  }
                   return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.inRoom);
                 },
                 onSelect: () => {
                   this.rule.setPresenceInLocations([getLocationId(0)]);
-                  this.forceUpdate();
+                  this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "2"})
                 }
               },
               {
                 label: "Select room(s)...",
                 subLabel: "(tap to select)",
                 isSelected: () => {
+                  // we check the selection by state because the second and custom option can both be valid. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.LOCATION + "3") {
+                    return true;
+                  }
                   return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.custom);
                 },
                 onSelect: () => { this._showLocationSelectionPopup(); },
@@ -374,32 +399,59 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             elements={[
               {
                 label: "While it's dark outside.",
-                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.dark); },
+                isSelected: () => {
+                  // we check the selection by state because the 4th and 5th option can both be valid with
+                  // some of the others. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "1") {
+                    return true;
+                  }
+                  return this.rule.doesTimeMatch(this.exampleBehaviours.time.dark); },
                 onSelect: () => {
                   this.rule.setTimeWhenDark();
-                  this.forceUpdate();
+                  this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "1"})
                 }
               },
               {
                 label: "While the sun's up.",
-                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.sunUp); },
+                isSelected: () => {
+                  // we check the selection by state because the 4th and 5th option can both be valid with
+                  // some of the others. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "2") {
+                    return true;
+                  }
+                  return this.rule.doesTimeMatch(this.exampleBehaviours.time.sunUp);
+                },
                 onSelect: () => {
                   this.rule.setTimeWhenSunUp();
-                  this.forceUpdate();
+                  this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "2"})
                 }
               },
               {
                 label: "Always.",
-                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.allDay); },
+                isSelected: () => {
+                  // we check the selection by state because the 4th and 5th option can both be valid with
+                  // some of the others. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "3") {
+                    return true;
+                  }
+                  return this.rule.doesTimeMatch(this.exampleBehaviours.time.allDay);
+                },
                 onSelect: () => {
                   this.rule.setTimeAllday();
-                  this.forceUpdate();
+                  this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
                 }
               },
               {
                 label: "From 9:30 to 15:00.",
                 subLabel: "(tap to customize)",
-                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.specific); },
+                isSelected: () => {
+                  // we check the selection by state because the 4th and 5th option can both be valid with
+                  // some of the others. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "4") {
+                    return true;
+                  }
+                  return this.rule.doesTimeMatch(this.exampleBehaviours.time.specific);
+                },
                 onSelect: () => {
                   this._showTimeSelectionPopup('specific')
                 }
@@ -407,9 +459,16 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
               {
                 label: "Other...",
                 subLabel: "(tap to create)",
-                isSelected: () => { return this.rule.doesTimeMatch(this.exampleBehaviours.time.custom); },
+                isSelected: () => {
+                  // we check the selection by state because the 4th and 5th option can both be valid with
+                  // some of the others. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "5") {
+                    return true;
+                  }
+                  return this.rule.doesTimeMatch(this.exampleBehaviours.time.custom);
+                },
                 onSelect: () => {
-                  this._showTimeSelectionPopup('custom')
+                  this._showTimeSelectionPopup('custom', this.state.showCustomTimeData)
                 }
               },
             ]}
@@ -418,9 +477,9 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
     }
 
     return (
-      <Animated.View style={{height: this.state.detailHeight}}>
-        <Animated.View style={{opacity: this.state.detailOpacity, height: this.state.detailHeight,     position:'absolute', top:0}}>{details}</Animated.View>
-        <Animated.View style={{opacity: this.state.buttonOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
+      <Animated.View style={{height: this.state.containerHeight}}>
+        <Animated.View style={{opacity: this.state.detailOpacity, height: this.state.detailHeight, position:'absolute', top:0}}>{details}</Animated.View>
+        <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
           <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
             <View style={{flex:1}} />
             <TouchableOpacity onPress={() => {  }} style={{

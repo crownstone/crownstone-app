@@ -15,6 +15,7 @@ import { Processing } from "../views/components/Processing";
 import { AppWithNavigationState, navigationStore } from "./NavigationReducer";
 import { Provider } from 'react-redux';
 import { ListOverlay } from "../views/overlays/ListOverlay";
+import { AicoreTimeCustomizationOverlay } from "../views/overlays/AicoreTimeCustomizationOverlay";
 
 
 export class Router extends Component {
@@ -25,6 +26,7 @@ export class Router extends Component {
           <AppWithNavigationState />
         </Provider>,
 
+        <AicoreTimeCustomizationOverlay key={"AicoreTimeCustomizationOverlay"}    />,
         <AnimatedMenu              key={"AnimatedMenu"}    />,
         <LibMessages               key={"LibMessages"}     />,
         <DfuOverlay                key={"DfuOverlay"}      />,

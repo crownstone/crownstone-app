@@ -19,7 +19,7 @@ export const AicoreUtil = {
     }
   },
 
-  extractPresenceChunk(rule : behaviour) {
+  extractPresenceChunk(rule : behaviour) : {presencePrefix: string, presenceStr: string} {
     let presencePrefix = null;
     let presenceStr = null;
     switch (rule.presence.type) {
@@ -162,11 +162,28 @@ export const AicoreUtil = {
       let obj = (timeObj as aicoreTimeDataSun);
       let str = "";
       if (obj.offsetMinutes !== 0) {
+        let getTimeNotation = function(mins) {
+          mins = Math.abs(mins)
+          if (mins%60 === 0) {
+            let hours = mins/60;
+            if (hours === 1) {
+              return "1 hour";
+            }
+            return hours + " hours"
+          }
+          else if (mins < 60) {
+            return mins + " minutes"
+          }
+          else {
+            return Math.floor(mins/60) + " hrs, " + mins%60 + ' mins'
+          }
+        }
+
         if (obj.offsetMinutes < 0) {
-          str += obj.offsetMinutes + " before "
+          str += getTimeNotation(obj.offsetMinutes) + " before "
         }
         else {
-          str += obj.offsetMinutes + " after "
+          str += getTimeNotation(obj.offsetMinutes) + " after "
         }
       }
       if (obj.type === "SUNSET") {

@@ -196,6 +196,26 @@ export class AicoreBehaviour {
     return this;
   }
 
+  insertTimeDataFrom(timeData: AicoreTimeData) {
+    if (this.rule.time.type !== "RANGE") {
+      this.setTimeWhenDark();
+    }
+
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.from = timeData.data;
+    }
+  }
+
+  insertTimeDataTo(timeData: AicoreTimeData) {
+    if (this.rule.time.type !== "RANGE") {
+      this.setTimeWhenDark();
+    }
+
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.to = timeData.data;
+    }
+  }
+
 
   ignorePresence() : AicoreBehaviour {
     this.rule.presence = { type:"IGNORE" };
@@ -305,7 +325,9 @@ export class AicoreBehaviour {
     return xUtil.deepCompare(this.rule.presence, otherAicoreBehaviour.rule.presence);
   }
   doesTimeMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
-    return xUtil.deepCompare(this.rule.time, otherAicoreBehaviour.rule.time);
+    let match = xUtil.deepCompare(this.rule.time, otherAicoreBehaviour.rule.time);
+    console.log(this.rule.time, otherAicoreBehaviour.rule.time, match)
+    return match
   }
 
 
@@ -325,8 +347,82 @@ export class AicoreBehaviour {
     }
     return [];
   }
+  getTime() : aicoreTime {
+    return this.rule.time;
+  }
+}
+
+export class AicoreTimeData {
+  data: aicoreTimeData = null;
+
+  constructor(timeData = null) {
+    this.data = timeData;
+  }
+
+  setTime(hours: number, minutes: number) {
+    // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
+    this.data = { type: "CLOCK", data: {hours: hours, minutes: minutes, dayOfMonth:"*", month:"*"} };
+  }
+  setClock() {
+    // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
+    this.data = { type: "CLOCK", data: {hours: 15, minutes: 0, dayOfMonth:"*", month:"*"} };
+  }
+  setOffsetMinutes(offsetMinutes : number = 0) {
+    if (this.data.type !== "CLOCK") {
+      this.data = { type: this.data.type, offsetMinutes: offsetMinutes };
+    }
+    else {
+      this.setSunset(offsetMinutes);
+    }
+  }
+  setSunrise(offsetMinutes : number = 0) {
+    this.data = { type: "SUNRISE", offsetMinutes: offsetMinutes };
+  }
+  setSunset(offsetMinutes : number = 0) {
+    this.data = { type: "SUNSET", offsetMinutes: offsetMinutes };
+  }
+
+  insertAicoreTimeFrom(time: aicoreTime) {
+    this.data = null;
+    if (time && time.type === "RANGE") {
+      this.data = xUtil.deepExtend({}, time.from);
+      return true;
+    }
+    return false;
+  }
+  insertAicoreTimeTo(time: aicoreTime) {
+    this.data = null;
+    if (time && time.type === "RANGE") {
+      this.data = xUtil.deepExtend({}, time.to);
+      return true;
+    }
+    return false;
+  }
 
 
+  getType() {
+    if (this.data) {
+      return this.data.type;
+    }
+    return null;
+  }
+  getOffsetMinutes() {
+    if (this.data && this.data.type !== "CLOCK") {
+      return this.data.offsetMinutes;
+    }
+    return 0;
+  }
+  getTime() {
+    if (this.data && this.data.type === "CLOCK") {
+      return { hours: this.data.data.hours, minutes: this.data.data.minutes };
+    }
+    return { hours: new Date().getHours(), minutes: 0 };
+  }
 
-
+  getString() : string {
+    if (this.data) {
+      return AicoreUtil.getTimeStr(this.data);
+    }
+    return "";
+  }
 }

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
@@ -38,6 +39,7 @@ public class MainApplication extends Application implements ReactApplication {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
 					new MainReactPackage(),
+            new ReactSliderPackage(),
             new RNGestureHandlerPackage(),
 					new VectorIconsPackage(),
 					new SvgPackage(),

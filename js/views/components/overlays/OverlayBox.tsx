@@ -10,8 +10,8 @@ import {
   Platform,
   TouchableOpacity,
   Text,
-  View,
-} from 'react-native';
+  View, ScrollView
+} from "react-native";
 
 import { HiddenFadeInView }   from '../animated/FadeInView'
 import { Icon }         from '../Icon'
@@ -22,6 +22,7 @@ interface overlayBoxProps {
   visible:             boolean,
   backgroundColor?:    any,
   maxOpacity?:         number,
+  scrollable?:         boolean,
   height?:             number,
   width?:              number,
   canClose?:           boolean,
@@ -30,6 +31,7 @@ interface overlayBoxProps {
   wrapperStyle?:       any,
   getDesignElement?:   (innerSize: number) => JSX.Element
   title?:              string
+  subTitle?:           string
   footerComponent?:  JSX.Element
 }
 
@@ -78,11 +80,10 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     this.backButtonFunction = null;
   }
 
-  _getExtraContent(width, height, size, border) {
+  _getExtraContent(width, height, size, padding, top) {
     if (this.props.getDesignElement) {
-      let top = (screenHeight - height) / 4;
       let left = 10;
-      let innerSize = size - 2 * border;
+      let innerSize = size - 2 * padding;
 
       return (
         <View style={{
@@ -96,8 +97,8 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
         }}>
           <View style={{
             position: 'absolute',
-            top: border,
-            left: border,
+            top: padding,
+            left: padding,
             width: innerSize,
             height: innerSize,
             borderRadius: innerSize / 2,
@@ -107,26 +108,26 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
           </View>
           { this.props.title ? <View style={{
             position: 'absolute',
-            top: 0.5*size-border,
-            left: border + size,
+            top: 0.5*size-padding,
+            left: padding + size,
             width: width-size,
-            height: 0.5*size+border,
+            height: 0.5*size+padding,
           }}>
             <Text style={{fontSize: 20, fontWeight:'bold'}}>{this.props.title}</Text>
-          </View> : undefined }
+            { this.props.subTitle ? <Text style={{fontSize: 15, fontWeight:'bold', paddingTop:10}}>{this.props.subTitle}</Text> : undefined }
+          </View>  : undefined }
         </View>
       );
     }
   }
 
-  _getFooterComponent(width, height, border, closeIconSize) {
+  _getFooterComponent(width, height, padding, closeIconSize, top) {
     if (this.props.footerComponent) {
-      let top = (screenHeight - height) / 4;
 
       return (
         <View style={{
           position: 'absolute',
-          top: top+height+border-5,
+          top: top+height+padding-5,
           left: 0,
           width: screenWidth - 0.25*closeIconSize,
           height: 60,
@@ -139,8 +140,6 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
 
   _getCloseIcon(width, height, size) {
     if (this.props.canClose === true) {
-      let size = 40;
-
       let top   = ((screenHeight - height) / 2) - 0.25*size;
       let right = ((screenWidth - width)   / 2) - 0.25*size;
       return (
@@ -167,16 +166,31 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     let width = this.props.width || 0.85*screenWidth;
     let height = this.props.height || Math.min(500,0.9*availableScreenHeight);
 
-    let top = (screenHeight - height) / 4;
-    let size = 0.38 * screenWidth;
+    let topPositionOfDesignElements = (screenHeight - height) / 4;
+    let designElementSize = 0.38 * screenWidth;
     let closeIconSize = 40
-    let border = 10;
+    let padding = 0.03*screenWidth;
+    let innerPaddingTop = this.props.getDesignElement ?
+      0.5*designElementSize+topPositionOfDesignElements - 30 : // the -30 is an overflow area which is can be added to the scroll view.
+      padding;
+
+    let innerChildrenArea = (
+      <View style={{ minHeight: height - innerPaddingTop - 30 }}>
+        <View style={{height:35}} />
+        {this.props.children}
+      </View>
+    );
 
     return (
       <HiddenFadeInView
         style={[
           styles.fullscreen,
-          {backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2), justifyContent:'center', alignItems:'center', overflow:'hidden'},
+          {
+            backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2),
+            justifyContent:'center',
+            alignItems:'center',
+            overflow:"hidden",
+          },
           this.props.wrapperStyle
         ]}
         height={screenHeight}
@@ -184,20 +198,28 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
         maxOpacity={this.props.maxOpacity}
         visible={this.props.visible}
       >
-
         <View style={{backgroundColor:colors.white.rgba(0.5), width: width, height: height, borderRadius: 25, padding: 12}}>
           <View style={[
             styles.centered,
-            {backgroundColor:'#fff', flex:1, borderRadius: 25-0.02*screenWidth, padding: 0.03*screenWidth, paddingTop: this.props.getDesignElement ? 0.5*size+top-30 : 0.03*screenWidth,
-              overflow:'hidden'},
+            {
+              backgroundColor:'#fff',
+              flex:1,
+              overflow:"hidden",
+              borderRadius: 25-0.02*screenWidth,
+              paddingLeft:  padding,
+              paddingRight: padding,
+              paddingTop: innerPaddingTop
+             },
             {...this.props.style}
           ]}>
-            {this.props.children}
+            {this.props.scrollable ?
+              <ScrollView style={{ width: width - 2*padding }}>{innerChildrenArea}</ScrollView> : innerChildrenArea
+            }
           </View>
         </View>
-        { this._getExtraContent(width, height, size, border) }
-        { this._getFooterComponent(width, height, border, closeIconSize)     }
-        { this._getCloseIcon(width, height, closeIconSize)     }
+        { this._getExtraContent(width, height, designElementSize, padding, topPositionOfDesignElements) }
+        { this._getFooterComponent(width, height, padding, closeIconSize, topPositionOfDesignElements) }
+        { this._getCloseIcon(width, height, closeIconSize) }
       </HiddenFadeInView>
     );
   }

@@ -150,7 +150,7 @@ export class ListOverlay extends Component<any, any> {
 
   render() {
     let idealAspectRatio = 1.75;
-    let width = 0.9*screenWidth-30;
+    let width = 0.85*screenWidth;
     let height = Math.min(width*idealAspectRatio, 0.9 * screenHeight);
 
     return (
@@ -159,6 +159,7 @@ export class ListOverlay extends Component<any, any> {
         height={height} width={width}
         overrideBackButton={false}
         canClose={true}
+        scrollable={true}
         closeCallback={() => { this.close(); }}
         backgroundColor={colors.white.rgba(0.2)}
         getDesignElement={(innerSize) => { return (
@@ -167,11 +168,8 @@ export class ListOverlay extends Component<any, any> {
         title={this.state.title}
         footerComponent={this._getSaveButton()}
       >
-        <ScrollView style={{width: width}}>
-          <View style={{height:30}} />
-          { this.customContent ? this.customContent : this.getElements() }
-          <View style={{height:50}} />
-        </ScrollView>
+        { this.customContent ? this.customContent : this.getElements() }
+        <View style={{height:50}} />
       </OverlayBox>
     );
   }
