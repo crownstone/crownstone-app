@@ -36,7 +36,7 @@ export const core : core = {
     menuRemoteNotConnected : require('./images/menuBackgroundRemoteNotConnected.png'),
     mainDarkLogo           : require('./images/backgroundWLogo.png'),
     mainDark               : require('./images/background.png'),
-    detailsDark            : require('./images/stoneDetails.png'),
+    detailsDark            : require('./images/darkBackground.png'),
   },
   eventBus: eventBus,
   nativeBus: NativeBus,

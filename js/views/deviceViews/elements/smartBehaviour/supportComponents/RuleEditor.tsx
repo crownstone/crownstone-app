@@ -13,6 +13,8 @@ import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { xUtil } from "../../../../../util/StandAloneUtil";
+import { BehaviourQuestion, BehaviourSuggestion } from "./BehaviourSuggestion";
+
 
 
 export class RuleEditor extends Component<{data:behaviour}, any> {
@@ -22,21 +24,25 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
   selectedChunk : selectableAicoreBehaviourChunk;
 
   exampleBehaviours : any;
+  baseHeight = availableScreenHeight - 300
 
   constructor(props) {
     super(props);
 
+
+    this.rule = new AicoreBehaviour(this.props.data);
+    let baseHeightOffset = this._shouldShowSuggestions().amountOfSuggestions * 25;
+
     this.state = {
       detail:            null,
-      containerHeight:   new Animated.Value(availableScreenHeight - 300),
-      detailHeight:      new Animated.Value(availableScreenHeight - 300),
+      containerHeight:   new Animated.Value(this.baseHeight + baseHeightOffset),
+      detailHeight:      new Animated.Value(this.baseHeight + baseHeightOffset),
       detailOpacity:     new Animated.Value(0),
-      mainBottomHeight:  new Animated.Value(availableScreenHeight - 300),
+      mainBottomHeight:  new Animated.Value(this.baseHeight + baseHeightOffset),
       mainBottomOpacity: new Animated.Value(1),
       selectedDetailField: null,
       showCustomTimeData: false,
     };
-    this.rule = new AicoreBehaviour(this.props.data);
 
     this.exampleBehaviours = {
       action: {
@@ -50,7 +56,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
       },
       location: {
         sphere: new AicoreBehaviour().setPresenceSomebodyInSphere(),
-        inRoom: new AicoreBehaviour().setPresenceSomebodyInLocations([getLocationId(0)]), // TODO: get actual room ID
+        inRoom: new AicoreBehaviour().setPresenceSomebodyInStoneLocation([getLocationId(0)]), // TODO: get actual room ID
         custom: new AicoreBehaviour().setPresenceSomebodyInLocations([]),
       },
       time: {
@@ -59,6 +65,11 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
         allDay: new AicoreBehaviour().setTimeAllday(),
         specific: new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
         custom: new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
+      },
+      option: {
+        inSphere: new AicoreBehaviour().setOptionStayOnWhilePeopleInSphere(),
+        inRoom: new AicoreBehaviour().setOptionStayOnWhilePeopleInLocation(),
+        noOption: new AicoreBehaviour().setNoOptions(),
       }
     }
 
@@ -68,7 +79,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
     this.amountOfLines = 0;
 
     let normal      : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30  };
-    let selectable  : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30, textDecorationLine:'underline' };
+    let selectable  : TextStyle = {...normal, textDecorationLine:'underline' };
     let segmentStyle : ViewStyle = {...styles.centered, flexDirection:'row', width: screenWidth};
 
     let ruleChunks = this.rule.getSelectableChunkData();
@@ -95,7 +106,6 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
 
       // hidden chunks are imply that they are not part of the sentence. We do however need their data for the selection.
       if (chunk.hidden) {
-        // TODO: add suggestions?
         return;
       }
 
@@ -107,7 +117,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
         if (wordsOnLine.length > 0) {
           if (chunk.clickable) {
             segments.push(
-              <TouchableOpacity key={"selectable_element_" + i} onPress={() => { this.toggleDetails(chunk); }}>
+              <TouchableOpacity key={"selectable_element_" + i} onPress={() => { this.toggleDetails(chunk.type); }}>
                 <Text style={[selectable, {color: this.state.detail === chunk.type ? colors.green.hex : colors.white.hex}]}>{wordsOnLine.join(" ")}</Text>
               </TouchableOpacity>
             );
@@ -143,11 +153,11 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
     return result;
   }
 
-  toggleDetails(chunk) {
+  toggleDetails(type) {
     let selectedBehaviourType = null;
 
-    if (chunk !== null) {
-      selectedBehaviourType = chunk.type;
+    if (type !== null) {
+      selectedBehaviourType = type;
     }
 
     if (this.state.detail === selectedBehaviourType) {
@@ -155,7 +165,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
       return;
     }
 
-    let originalHeight = availableScreenHeight - 300;
+    let baseHeight = this.baseHeight;
     let behaviourHeight = availableScreenHeight - 200 - this.amountOfLines*30;
     switch (selectedBehaviourType) {
       case SELECTABLE_TYPE.ACTION:
@@ -164,6 +174,10 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
         break;
       case SELECTABLE_TYPE.TIME:
         behaviourHeight += 130;
+        break
+      case SELECTABLE_TYPE.OPTION:
+        behaviourHeight += 50;
+        break
     }
 
     if (this.state.detail === null) {
@@ -181,27 +195,82 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
     else if (selectedBehaviourType === null) {
       // deselecting, revert to initial state
       let animation = [];
-      this.state.mainBottomHeight.setValue(originalHeight);
-      animation.push(Animated.timing(this.state.detailOpacity,     {toValue:0, delay:0, duration: 100}));
-      animation.push(Animated.timing(this.state.mainBottomOpacity,     {toValue:1, delay:100, duration: 100}));
-      animation.push(Animated.timing(this.state.containerHeight,      {toValue: originalHeight, delay:0, duration: 200}));
-      animation.push(Animated.timing(this.state.detailHeight,      {toValue: originalHeight, delay:0, duration: 200}));
+      if (this._shouldShowSuggestions().showAnySuggestions === true) {
+        baseHeight = this.baseHeight + this._shouldShowSuggestions().amountOfSuggestions * 25;
+      }
+      this.state.mainBottomHeight.setValue(baseHeight);
+      animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 100}));
+      animation.push(Animated.timing(this.state.mainBottomOpacity,{toValue:1, delay:100, duration: 100}));
+      animation.push(Animated.timing(this.state.containerHeight,  {toValue: baseHeight, delay:0, duration: 200}));
+      animation.push(Animated.timing(this.state.detailHeight,     {toValue: baseHeight, delay:0, duration: 200}));
       Animated.parallel(animation).start(() => { this.setState({detail: selectedBehaviourType, selectedDetailField: false}); })
     }
     else {
       // changing between selected behaviour types, fade out, and fadein
       let animation = [];
       animation.push(Animated.timing(this.state.detailHeight,     {toValue: behaviourHeight, delay:0, duration: 200}));
-      animation.push(Animated.timing(this.state.containerHeight,     {toValue: behaviourHeight, delay:0, duration: 200}));
+      animation.push(Animated.timing(this.state.containerHeight,  {toValue: behaviourHeight, delay:0, duration: 200}));
       animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 150}))
       Animated.parallel(animation).start(() => {
         this.setState({detail: selectedBehaviourType, selectedDetailField: false}, () => {
           let animation = [];
-          animation.push(Animated.timing(this.state.detailOpacity,    {toValue:1, delay:0, duration: 150}));
+          animation.push(Animated.timing(this.state.detailOpacity,{toValue:1, delay:0, duration: 150}));
           Animated.parallel(animation).start()
         })
       })
     }
+  }
+
+  _shouldShowSuggestions() {
+    let showPresenceSuggestion = this.rule.isUsingPresence() === false;
+    let showTimeSuggestion = this.rule.isAlwaysActive() === true;
+    let showOptionSuggestion = this.rule.isUsingClockEndTime() && this.rule.getHour() > 21 && this.rule.hasNoOptions();
+
+    return {
+      showPresenceSuggestion,
+      showTimeSuggestion,
+      showOptionSuggestion,
+      showAnySuggestions: showPresenceSuggestion || showTimeSuggestion || showOptionSuggestion,
+      amountOfSuggestions: (showPresenceSuggestion ? 1 : 0)  + (showTimeSuggestion ? 1 : 0) + (showOptionSuggestion ? 1 : 0)
+    };
+  }
+
+  _getSuggestions() {
+    let {showPresenceSuggestion, showTimeSuggestion, showOptionSuggestion } = this._shouldShowSuggestions()
+    let suggestionArray = [];
+    let paddingIndex = 0;
+    if (showPresenceSuggestion) {
+      suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
+      suggestionArray.push(<BehaviourSuggestion key={"presenceSuggestion"}
+        label={"Would you like me to react to presence?"}
+        callback={() => { this.toggleDetails(SELECTABLE_TYPE.PRESENCE); }}
+      />);
+    }
+    if (showTimeSuggestion) {
+      suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
+      suggestionArray.push(<BehaviourSuggestion key={"timeSuggestion"}
+        label={"Shall I do this at a certain time?"}
+        callback={() => { this.toggleDetails(SELECTABLE_TYPE.TIME); }}
+      />);
+    }
+    if (showOptionSuggestion) {
+      let timeStr = AicoreUtil.getClockTimeStr(this.rule.getHour(), this.rule.getMinutes());
+      suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
+      suggestionArray.push(<BehaviourSuggestion
+        key={"optionSuggestion"}
+        label={"Is it OK if I turn off at " + timeStr + " if there are still people around?"}
+        callback={() => { this.toggleDetails(SELECTABLE_TYPE.OPTION); }}
+      />);
+    }
+    suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex} />);
+
+
+
+    return (
+      <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        {suggestionArray}
+      </View>
+    )
   }
 
   _showDimAmountPopup() {
@@ -324,17 +393,17 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             closeLabel={"That's it!"}
             elements={[
               {
-                label: xUtil.capitalize(AicoreUtil.extractPresenceChunk(this.exampleBehaviours.presence.somebody.rule).presenceStr),
+                label: xUtil.capitalize(AicoreUtil.extractPresenceStrings(this.exampleBehaviours.presence.somebody.rule).presenceStr),
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.somebody); },
                 onSelect: () => { this.rule.setPresenceSomebody(); this.forceUpdate(); }
               },
               {
-                label: xUtil.capitalize(AicoreUtil.extractPresenceChunk(this.exampleBehaviours.presence.nobody.rule).presenceStr),
+                label: xUtil.capitalize(AicoreUtil.extractPresenceStrings(this.exampleBehaviours.presence.nobody.rule).presenceStr),
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.nobody); },
                 onSelect: () => { this.rule.setPresenceNobody(); this.forceUpdate(); }
               },
               {
-                label: "Ignore",
+                label: "Ignore presence",
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
                 onSelect: () => { this.rule.setPresenceIgnore(); this.forceUpdate(); }
               },
@@ -370,7 +439,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
                   return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.inRoom);
                 },
                 onSelect: () => {
-                  this.rule.setPresenceInLocations([getLocationId(0)]);
+                  this.rule.setPresenceSomebodyInStoneLocation([getLocationId(0)]);
                   this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "2"})
                 }
               },
@@ -398,7 +467,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             closeLabel={"Will do!"}
             elements={[
               {
-                label: "While it's dark outside.",
+                label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.rule)) + ".",
                 isSelected: () => {
                   // we check the selection by state because the 4th and 5th option can both be valid with
                   // some of the others. This is sloppy for the UI.
@@ -412,7 +481,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
                 }
               },
               {
-                label: "While the sun's up.",
+                label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.sunUp.rule)) + ".",
                 isSelected: () => {
                   // we check the selection by state because the 4th and 5th option can both be valid with
                   // some of the others. This is sloppy for the UI.
@@ -442,7 +511,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
                 }
               },
               {
-                label: "From 9:30 to 15:00.",
+                label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.rule)) + ".",
                 subLabel: "(tap to customize)",
                 isSelected: () => {
                   // we check the selection by state because the 4th and 5th option can both be valid with
@@ -474,6 +543,61 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
             ]}
           />
         );
+        break;
+      case SELECTABLE_TYPE.OPTION:
+        details = (
+          <BehaviourOptionList
+            header={"Can I turn off afterwards?"}
+            closeCallback={() => { this.toggleDetails(null); }}
+            closeLabel={"Will do!"}
+            elements={[
+              {
+                label: xUtil.capitalize(AicoreUtil.extractOptionStrings(this.exampleBehaviours.option.inRoom.rule).optionStr) + ".",
+                isSelected: () => {
+                  // we check the selection by state because the 4th and 5th option can both be valid with
+                  // some of the others. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.OPTION + "1") {
+                    return true;
+                  }
+                  return this.rule.doesOptionMatch(this.exampleBehaviours.option.inRoom);
+                },
+                onSelect: () => {
+                  this.rule.setOptionStayOnWhilePeopleInLocation();
+                  this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "1"})
+                }
+              },
+              {
+                label: xUtil.capitalize(AicoreUtil.extractOptionStrings(this.exampleBehaviours.option.inSphere.rule).optionStr) + ".",
+                isSelected: () => {
+                  // we check the selection by state because the 4th and 5th option can both be valid with
+                  // some of the others. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.OPTION + "2") {
+                    return true;
+                  }
+                  return this.rule.doesOptionMatch(this.exampleBehaviours.option.inSphere); },
+                onSelect: () => {
+                  this.rule.setOptionStayOnWhilePeopleInSphere();
+                  this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "2"})
+                }
+              },
+              {
+                label: "Yes, just turn off afterwards.",
+                isSelected: () => {
+                  // we check the selection by state because the 4th and 5th option can both be valid with
+                  // some of the others. This is sloppy for the UI.
+                  if (this.state.selectedDetailField === SELECTABLE_TYPE.OPTION + "3") {
+                    return true;
+                  }
+                  return this.rule.doesOptionMatch(this.exampleBehaviours.option.noOption);
+                },
+                onSelect: () => {
+                  this.rule.setNoOptions();
+                  this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "3"})
+                }
+              },
+            ]}
+          />
+        );
     }
 
     return (
@@ -481,8 +605,12 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
         <Animated.View style={{opacity: this.state.detailOpacity, height: this.state.detailHeight, position:'absolute', top:0}}>{details}</Animated.View>
         <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
           <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
-            <View style={{flex:1}} />
-            <TouchableOpacity onPress={() => {  }} style={{
+            { this._getSuggestions() }
+            <TouchableOpacity onPress={() => {
+              // todo:
+              // check if there is a lock
+
+            }} style={{
               width:0.5*screenWidth, height:60, borderRadius:20,
               backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
             }}>
@@ -498,9 +626,10 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
   render() {
     return (
       <View style={{flex:1}}>
-        <View style={{flex:0.8}} />
+        <View style={{flex:1}} />
         { this.getRuleSentenceElements() }
         { this.getDetails() }
+        <View style={{flex:1}} />
       </View>
     );
   }

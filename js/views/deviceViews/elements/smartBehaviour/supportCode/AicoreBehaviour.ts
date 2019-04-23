@@ -28,11 +28,11 @@ export class AicoreBehaviour {
 
   _getChunks() {
     let intentionStr = "I will be";
-    let actionStr = AicoreUtil.extractActionChunk(this.rule);
-    let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceChunk(this.rule)
-    let { locationPrefix, locationStr } = AicoreUtil.extractLocationChunk(this.rule)
-    let timeStr   = AicoreUtil.extractTimeChunk(this.rule);
-    let optionStr = AicoreUtil.extractOptionString(this.rule);
+    let actionStr = AicoreUtil.extractActionString(this.rule);
+    let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.rule)
+    let { locationPrefix, locationStr } = AicoreUtil.extractLocationStrings(this.rule)
+    let timeStr   = AicoreUtil.extractTimeString(this.rule);
+    let { optionPrefix, optionStr } = AicoreUtil.extractOptionStrings(this.rule);
 
 
     return {
@@ -43,6 +43,7 @@ export class AicoreBehaviour {
       locationPrefix: { label: locationPrefix, data: null },
       location:       { label: locationStr,    data: this.rule.presence },
       time:           { label: timeStr,        data: this.rule.time },
+      optionPrefix:   { label: optionPrefix,   data: null },
       option:         { label: optionStr,      data: this.rule.options }
     }
   }
@@ -59,7 +60,10 @@ export class AicoreBehaviour {
     sentence += chunks.location.label       ? " " + chunks.location.label       : "";
     sentence += chunks.time.label           ? " " + chunks.time.label           : "";
     sentence += ".";
-    sentence += chunks.option.label         ? " " + chunks.option.label + "."   : "";
+    if (this.rule.time.type !== "ALL_DAY" && this.rule.time.to.type === "CLOCK") {
+      sentence += chunks.optionPrefix.label ? " " + chunks.optionPrefix.label : "";
+      sentence += chunks.option.label ? " " + chunks.option.label + "." : "";
+    }
 
     return sentence;
   }
@@ -85,8 +89,21 @@ export class AicoreBehaviour {
     if (chunks.location.label)        { addToResult(" "); addToResult(chunks.location,      SELECTABLE_TYPE.LOCATION); } else {  addToResult(chunks.location,SELECTABLE_TYPE.LOCATION, true);  }
     if (chunks.time.label)            { addToResult(" "); addToResult(chunks.time,          SELECTABLE_TYPE.TIME);     } else {  addToResult(chunks.time, SELECTABLE_TYPE.TIME, true);      }
     addToResult(".");
-    if (chunks.option.label)          { addToResult(" "); addToResult(chunks.option,        SELECTABLE_TYPE.OPTION); addToResult("."); }
-
+    if (this.rule.time.type !== "ALL_DAY" && this.rule.time.to.type === "CLOCK") {
+      if (chunks.optionPrefix.label) {
+        addToResult(" ");
+        addToResult(chunks.optionPrefix);
+      } else {
+        addToResult(chunks.optionPrefix, undefined, true);
+      }
+      if (chunks.option.label) {
+        addToResult(" ");
+        addToResult(chunks.option, SELECTABLE_TYPE.OPTION);
+        addToResult(".");
+      } else {
+        addToResult(chunks.option, undefined, true);
+      }
+    }
     return result;
   }
 
@@ -271,6 +288,10 @@ export class AicoreBehaviour {
     return this;
   }
 
+  setPresenceSomebodyInStoneLocation(locationIds: string[]) : AicoreBehaviour {
+    this.rule.presence = { type:"SOMEBODY", data: {type:"IN_STONE_LOCATION", locationIds: locationIds}, delay: this._getSphereDelay()};
+    return this;
+  }
 
   setPresenceSomebodyInLocations(locationIds: string[]) : AicoreBehaviour {
     this.rule.presence = { type:"SOMEBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getSphereDelay()};
@@ -285,15 +306,15 @@ export class AicoreBehaviour {
     return this;
   }
 
-  noOptions() : AicoreBehaviour {
+  setNoOptions() : AicoreBehaviour {
     delete this.rule.options;
     return this;
   }
-  optionStayOnWhilePeopleInSphere() : AicoreBehaviour {
+  setOptionStayOnWhilePeopleInSphere() : AicoreBehaviour {
     this.rule.options = {type:"SPHERE_PRESENCE_AFTER"};
     return this;
   }
-  optionStayOnWhilePeopleInLocation() : AicoreBehaviour {
+  setOptionStayOnWhilePeopleInLocation() : AicoreBehaviour {
     this.rule.options = {type:"LOCATION_PRESENCE_AFTER"};
     return this;
   }
@@ -326,8 +347,14 @@ export class AicoreBehaviour {
   }
   doesTimeMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
     let match = xUtil.deepCompare(this.rule.time, otherAicoreBehaviour.rule.time);
-    console.log(this.rule.time, otherAicoreBehaviour.rule.time, match)
-    return match
+    return match;
+  }
+  doesOptionMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
+    return this.rule.options &&
+      this.rule.options.type &&
+      otherAicoreBehaviour.rule.options &&
+      otherAicoreBehaviour.rule.options.type &&
+      this.rule.options.type === otherAicoreBehaviour.rule.options.type;
   }
 
 
@@ -349,6 +376,31 @@ export class AicoreBehaviour {
   }
   getTime() : aicoreTime {
     return this.rule.time;
+  }
+  getHour() : number {
+    if (this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK") {
+      return this.rule.time.to.data.hours;
+    }
+    return null;
+  }
+  getMinutes() : number {
+    if (this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK") {
+      return this.rule.time.to.data.minutes;
+    }
+    return null;
+  }
+
+  isUsingPresence() : boolean {
+    return this.rule.presence.type !== "IGNORE";
+  }
+  isAlwaysActive() : boolean {
+    return this.rule.time.type === "ALL_DAY";
+  }
+  isUsingClockEndTime(): boolean {
+    return this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK";
+  }
+  hasNoOptions(): boolean {
+    return this.rule.options === undefined;
   }
 }
 

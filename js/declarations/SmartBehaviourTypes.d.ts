@@ -1,14 +1,15 @@
 type aicorePresenceType   = "SOMEBODY" | "NOBODY"  | "IGNORE"  | "SPECIFIC_USERS"
 type sunTimes             = "SUNSET"   | "SUNRISE"
 
-type aicorePresenceGeneric  = { type: "SOMEBODY" | "NOBODY", data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number }
-type aicorePresenceSpecific = { type: "SPECIFIC_USERS",      data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number, profileIds:number[] }
+type aicorePresenceGeneric  = { type: "SOMEBODY" | "NOBODY", data: aicorePresenceSphereData | aicorePresenceLocationData | aicorePresenceStoneLocationData, delay: number }
+type aicorePresenceSpecific = { type: "SPECIFIC_USERS",      data: aicorePresenceSphereData | aicorePresenceLocationData | aicorePresenceStoneLocationData, delay: number, profileIds:number[] }
 type aicorePresenceNone     = { type: "IGNORE" }
 type aicorePresence         = aicorePresenceGeneric | aicorePresenceSpecific | aicorePresenceNone
 
 
 type aicorePresenceSphereData   = { type: "SPHERE" }
 type aicorePresenceLocationData = { type: "LOCATION", locationIds: string[] }
+type aicorePresenceStoneLocationData = { type: "IN_STONE_LOCATION", locationIds: string[] }
 
 type aicoreTimeAlways   = { type: "ALL_DAY" }
 type aicoreTimeRange    = { type: "RANGE", from: aicoreTimeData, to: aicoreTimeData }

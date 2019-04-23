@@ -24,12 +24,12 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
 
   c1Maps = {};
   iconCorrectionsMap = {};
-  chunks = 10;
+  chunks = 1;
 
   constructor(props) {
     super(props);
 
-    this.chunks = props.chunks || 10;
+    this.chunks = props.chunks || 1;
 
     let c1Glyphs = Object.keys(glyphMapC1);
 

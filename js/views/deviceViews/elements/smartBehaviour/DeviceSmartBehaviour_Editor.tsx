@@ -41,12 +41,15 @@ export class DeviceSmartBehaviour_Editor extends Component<any, any> {
             <View style={{height: 0.2*iconHeight}} />
             <Text style={deviceStyles.specification}>{"Tap the underlined parts to customize them!"}</Text>
             <RuleEditor data={{
-              action:   { type: "BE_ON", fadeDuration: 0, data: 1, },
+              action:   { type: "BE_ON", data: 1, },
               presence: { type: "SOMEBODY", data: { type: "SPHERE" }, delay: 5},
               time: {
                 type: "RANGE",
                 from: { type: "SUNSET",  offsetMinutes:0},
                 to:   { type: "SUNRISE", offsetMinutes:0}
+              },
+              options: {
+                type:"LOCATION_PRESENCE_AFTER"
               }
             }} />
           </View>

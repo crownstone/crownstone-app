@@ -73,7 +73,7 @@ import { DeviceSmartBehaviour } from "../views/deviceViews/elements/smartBehavio
 import { DeviceSmartBehaviour2 } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour2";
 import { DeviceSmartBehaviour_TypeSelector } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeSelector";
 import { DeviceSmartBehaviour_TypeStart }   from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart";
-import { DeviceSmartBehaviour_CreateNewBehaviour } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_CreateNewBehaviour";
+import { DeviceSmartBehaviour_CreateNewBehaviour } from "../views/deviceViews/elements/smartBehaviour/prototyping/DeviceSmartBehaviour_CreateNewBehaviour";
 import { DeviceSmartBehaviour_PresenceAware } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_PresenceAware";
 import { DeviceSmartBehaviour_Editor } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor";
 

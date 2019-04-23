@@ -10,7 +10,7 @@ import { core } from "../../../../../core";
 
 export const AicoreUtil = {
 
-  extractActionChunk(rule : behaviour) {
+  extractActionString(rule : behaviour) {
     if (rule.action.data < 1) {
       return "dimmed at " + Math.round(rule.action.data * 100) + "%";
     }
@@ -19,7 +19,7 @@ export const AicoreUtil = {
     }
   },
 
-  extractPresenceChunk(rule : behaviour) : {presencePrefix: string, presenceStr: string} {
+  extractPresenceStrings(rule : behaviour) : {presencePrefix: string, presenceStr: string} {
     let presencePrefix = null;
     let presenceStr = null;
     switch (rule.presence.type) {
@@ -40,7 +40,7 @@ export const AicoreUtil = {
     return { presencePrefix, presenceStr };
   },
 
-  extractLocationChunk(rule : behaviour) {
+  extractLocationStrings(rule : behaviour) {
     let locationPrefix = "";
     let locationStr = "";
     if (rule.presence.type !== AICORE_PRESENCE_TYPES.IGNORE) {
@@ -74,7 +74,7 @@ export const AicoreUtil = {
   },
 
 
-  extractTimeChunk(rule : behaviour) {
+  extractTimeString(rule : behaviour) {
     let timeStr = "";
 
     let time = rule.time;
@@ -121,19 +121,23 @@ export const AicoreUtil = {
 
 
 
-  extractOptionString(rule : behaviour) {
-    let optionStr = null;
+  extractOptionStrings(rule : behaviour) {
+    let optionPrefix = "";
+    let optionStr = "";
+
     if (rule.options && rule.options.type) {
       switch (rule.options.type) {
         case "SPHERE_PRESENCE_AFTER":
-          optionStr += " Afterwards, I'll stay on if someone is still at home";
+          optionPrefix += "Afterwards, I'll"
+          optionStr += "stay on if someone is still at home";
           break;
         case "LOCATION_PRESENCE_AFTER":
-          optionStr += " Afterwards, I'll stay on if someone is still in the room";
+          optionPrefix += "Afterwards, I'll"
+          optionStr += "stay on if someone is still in the room";
           break;
       }
     }
-    return optionStr;
+    return {optionPrefix, optionStr};
   },
 
 
@@ -150,12 +154,15 @@ export const AicoreUtil = {
     return "(deleted location)";
   },
 
+  getClockTimeStr(hours, minutes) {
+    return hours + ":" + (minutes < 10 ? minutes + "0" : minutes);
+  },
 
   getTimeStr(timeObj: aicoreTimeData) {
     if (timeObj.type === "CLOCK") {
       // TYPE IS CLOCK
       let obj = (timeObj as aicoreTimeDataClock).data;
-      return obj.hours + ":" + (obj.minutes < 10 ? obj.minutes + "0" : obj.minutes);
+      return AicoreUtil.getClockTimeStr(obj.hours, obj.minutes);
     }
     else {
       // TYPE IS SUNSET/SUNRISE

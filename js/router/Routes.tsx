@@ -59,13 +59,11 @@ const defaultBackButtonHeaderStyle = {
 
 const NewBehaviourStack = createStackNavigator(
   {
-    // TimeSelector :             TimeSelector,
     DeviceSmartBehaviour_Editor :             Views.DeviceSmartBehaviour_Editor,
     DeviceSmartBehaviour :                    Views.DeviceSmartBehaviour,
     DeviceSmartBehaviour_TypeStart    :       Views.DeviceSmartBehaviour_TypeStart,
     DeviceSmartBehaviour_TypeSelector :       Views.DeviceSmartBehaviour_TypeSelector,
     DeviceSmartBehaviour_PresenceAware :      Views.DeviceSmartBehaviour_PresenceAware,
-    DeviceSmartBehaviour_CreateNewBehaviour : Views.DeviceSmartBehaviour_CreateNewBehaviour,
     DeviceSmartBehaviour2 :                   Views.DeviceSmartBehaviour2,
   },
   {
@@ -225,6 +223,9 @@ const FactoryResetStack = createStackNavigator(
 
 const AppStack = createStackNavigator(
   {
+    // IconDebug: {
+    //   screen: wrap("IconDebug", Views.IconDebug),
+    // },
     AppNavigator: {
       screen: TabNavigator,
     },
@@ -306,7 +307,7 @@ const AppStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: "AppNavigator",
+    // initialRouteName: "AppNavigator",
     mode: 'modal',
     headerMode: 'none',
   }

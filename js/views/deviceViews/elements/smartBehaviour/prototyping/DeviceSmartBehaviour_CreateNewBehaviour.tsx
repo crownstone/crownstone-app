@@ -1,5 +1,5 @@
 
-import { Languages } from "../../../../Languages"
+import { Languages } from "../../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
@@ -17,9 +17,9 @@ import {
   colors,
   deviceStyles,
   OrangeLine,
-  screenWidth} from "../../../styles";
-import { Background } from "../../../components/Background";
-import { core } from "../../../../core";
+  screenWidth} from "../../../../styles";
+import { Background } from "../../../../components/Background";
+import { core } from "../../../../../core";
 
 export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {

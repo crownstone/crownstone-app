@@ -52,7 +52,7 @@ export class BehaviourOptionList extends Component<{
 
         <View style={{width: screenWidth, height:1, backgroundColor: colors.menuBackground.rgba(0.7)}} />
 
-        { this.props.explanation ? <Text style={deviceStyles.explanation}>{this.props.explanation}</Text> : undefined }
+        { this.props.explanation ? <Text style={[deviceStyles.explanation, {padding: 10, color: colors.white.rgba(0.7)}]}>{this.props.explanation}</Text> : undefined }
 
         <View style={{flex:1, minHeight:15}} />
         <TouchableOpacity
