@@ -36,7 +36,7 @@ export class Sphere extends Component<any, any> {
 
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
-
+    let setupCrownstoneNotification = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone;
 
     // This is an empty sphere. Tell the user what to expect.
     if (noStones === true && noRoomsCurrentSphere == true) {
@@ -73,14 +73,14 @@ export class Sphere extends Component<any, any> {
 
     return (
       <View style={{width: screenWidth, height: availableScreenHeight}}>
-        <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  />
+        { setupCrownstoneNotification !== true ? <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
         <RoomLayer
           sphereId={currentSphere}
           viewingRemotely={viewingRemotely}
           multipleSpheres={this.props.multipleSpheres}
           zoomOutCallback={this.props.zoomOutCallback}
         />
-        <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5} />
+        { setupCrownstoneNotification !== true ? <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
       </View>
     );
   }

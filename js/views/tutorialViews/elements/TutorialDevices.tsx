@@ -42,12 +42,7 @@ export class TutorialDevices extends Component<any, any> {
               let sphereIds = Object.keys(spheres);
 
               let goToSphereOverview = () => {
-                if (Platform.OS === 'android') {
-                  NavigationUtil.navigate("Main");
-                }
-                else {
-                  NavigationUtil.navigate("Main");
-                }
+                NavigationUtil.navigate("AppNavigator");
               };
 
               // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment

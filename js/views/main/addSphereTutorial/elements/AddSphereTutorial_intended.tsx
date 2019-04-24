@@ -60,7 +60,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
           <TouchableOpacity
             onPress={() => {
               let state = core.store.getState();
-              createNewSphere(core.eventBus, core.store, state.user.firstName+"'s Sphere")
+              createNewSphere(state.user.firstName+"'s Sphere")
                 .then((sphereId) => {
                   core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: sphereId}});
                   NavigationUtil.reset("AiStart",{sphereId: sphereId, resetViewStack: true});

@@ -261,7 +261,7 @@ export class DiagSingleButtonToOverview extends Component<{
         explanation={ this.props.explanation }
         label={ lang("Go_to_Overview")}
         onPress={() => {
-          NavigationUtil.navigateAndReplace("Main");
+          NavigationUtil.navigateAndReplace("AppNavigator");
         }}
       />
     );

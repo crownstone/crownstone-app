@@ -6,10 +6,11 @@ import {
 } from "react-native";
 
 import {
+  availableModalHeight,
   availableScreenHeight,
   deviceStyles,
   OrangeLine,
-  screenWidth,
+  screenWidth
 } from "../../../styles";
 import { Background } from "../../../components/Background";
 import { core } from "../../../../core";
@@ -29,29 +30,17 @@ export class DeviceSmartBehaviour_Editor extends Component<any, any> {
 
 
   render() {
-    let iconHeight = 0.10*availableScreenHeight;
     return (
-      <Background image={core.background.detailsDark}>
+      <Background image={core.background.detailsDark} hasNavBar={false}>
         <OrangeLine/>
-        <View style={{height:availableScreenHeight,width:screenWidth}}>
+        <View style={{height:availableModalHeight,width:screenWidth}}>
         <ScrollView style={{width: screenWidth}}>
           <View style={{flex:1, width: screenWidth, minHeight:availableScreenHeight, alignItems:'center'}}>
             <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ "Smart Behaviour" }</Text>
-            <View style={{height: 0.2*iconHeight}} />
+            <Text style={[deviceStyles.header]}>{ "New Behaviour" }</Text>
+            <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{"Tap the underlined parts to customize them!"}</Text>
-            <RuleEditor data={{
-              action:   { type: "BE_ON", data: 1, },
-              presence: { type: "SOMEBODY", data: { type: "SPHERE" }, delay: 5},
-              time: {
-                type: "RANGE",
-                from: { type: "SUNSET",  offsetMinutes:0},
-                to:   { type: "SUNRISE", offsetMinutes:0}
-              },
-              options: {
-                type:"LOCATION_PRESENCE_AFTER"
-              }
-            }} />
+            <RuleEditor data={this.props.data} />
           </View>
         </ScrollView>
         </View>

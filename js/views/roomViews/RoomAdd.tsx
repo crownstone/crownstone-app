@@ -56,16 +56,9 @@ export class RoomAdd extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    let initialState = {name:'', icon: getRandomRoomIcon(), selectedStones: {}, picture: null};
     this.refName = "listItems";
 
-    if (props.movingCrownstone) {
-      let selectedStones = {};
-      selectedStones[props.movingCrownstone] = true;
-      initialState.selectedStones = selectedStones;
-    }
-
-    this.state = initialState;
+    this.state =  {name:'', icon: getRandomRoomIcon(), selectedStones: {}, picture: null};
 
     this.props.navigation.setParams({leftAction: () => { this.cancelEdit(); }, rightAction: () => { this.createRoom(); }})
   }
@@ -111,7 +104,7 @@ export class RoomAdd extends Component<any, any> {
     });
   }
 
-  _getItems(floatingStones) {
+  _getItems() {
     let items = [];
     items.push({label: lang("NEW_ROOM"), type:'explanation', below:false});
     items.push({label: lang("Room_Name"), type: 'textEdit', placeholder: lang("My_New_Room"), value: this.state.name, callback: (newText) => {
@@ -140,57 +133,10 @@ export class RoomAdd extends Component<any, any> {
       }
     });
 
-    let floatingStoneIds = Object.keys(floatingStones);
-    floatingStoneIds.sort((a,b) => { return (floatingStones[a].device.config.name < floatingStones[b].device.config.name) ? -1 : 1 });
-
-    let shownMovingStone = false;
-    if (floatingStoneIds.length > 0) {
-      items.push({label: lang("ADD_CROWNSTONES_TO_ROOM"), type:'explanation', below:false});
-      let nearestId = this._getNearestStone(floatingStoneIds, floatingStones);
-      floatingStoneIds.forEach((stoneId) => {
-        // check if we have already shown the moving stone
-        shownMovingStone = this.props.movingCrownstone === stoneId ? true : shownMovingStone;
-
-        let device = floatingStones[stoneId].device;
-        let stone = floatingStones[stoneId].stone;
-        let subtext = stone.reachability.disabled === false ?
-          (nearestId === stoneId ? 'Nearest' : stone.reachability.rssi > -60 ? 'Very near' : stone.reachability.rssi > -70 ? 'Near' : undefined)
-          : undefined;
-
-        this._pushCrownstoneItem(items, device, stone, stoneId, subtext);
-      });
-      items.push({label: lang("You_can_select_floating_C"), type:'explanation', below: true, style:{paddingBottom:0}});
-    }
-
-    if (shownMovingStone === false && this.props.movingCrownstone !== undefined) {
-      items.push({label: lang("CURRENTLY_MOVING_CROWNSTO"), type:'explanation', below:false});
-      let stoneId = this.props.movingCrownstone;
-      let state = core.store.getState();
-      let stone = state.spheres[this.props.sphereId].stones[stoneId];
-      let device = stone;
-      if (stone.config.applianceId) {
-        device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId]
-      }
-
-      this._pushCrownstoneItem(items, device, stone, stoneId);
-    }
 
     items.push({type:'spacer'});
 
     return items;
-  }
-
-  _getNearestStone(floatingStoneIds, floatingStones) {
-    let rssi = -1000;
-    let id = undefined;
-    for (let i = 0; i < floatingStoneIds.length; i++) {
-      let stone = floatingStones[floatingStoneIds[i]].stone;
-      if (stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
-        rssi = stone.reachability.rssi;
-        id = floatingStoneIds[i];
-      }
-    }
-    return id;
   }
 
   createRoom() {
@@ -230,14 +176,6 @@ export class RoomAdd extends Component<any, any> {
           cloudSphereId: MapProvider.local2cloudMap.spheres[this.props.sphereId]
         })
           .then(() => {
-            // move the selected stones into the location.
-            let floatingStoneIds = Object.keys(this.state.selectedStones);
-            floatingStoneIds.forEach((floatingStoneId) => {
-              if (this.state.selectedStones[floatingStoneId] === true) {
-                actions.push({sphereId: this.props.sphereId, stoneId: floatingStoneId, type: "UPDATE_STONE_LOCATION", data: {locationId: localId}});
-              }
-            });
-
             // if we have a picture:
             if (this.state.picture !== null) {
               processImage(this.state.picture, localId + ".jpg", 1.0)
@@ -283,7 +221,6 @@ export class RoomAdd extends Component<any, any> {
   }
 
   render() {
-    let state = core.store.getState();
     let backgroundImage = core.background.menu;
 
     if (!this.props.sphereId) {
@@ -291,8 +228,7 @@ export class RoomAdd extends Component<any, any> {
       return <View />
     }
 
-    let floatingStones = getStonesAndAppliancesInLocation(state, this.props.sphereId, null);
-    let items = this._getItems(floatingStones);
+    let items = this._getItems();
 
     return (
       <Background image={backgroundImage} hasNavBar={ false } >

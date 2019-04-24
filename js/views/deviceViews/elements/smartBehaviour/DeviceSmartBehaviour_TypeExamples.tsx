@@ -49,7 +49,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
     let iconHeight   = 0.10*availableScreenHeight;
 
     return (
-      <Background image={core.background.detailsDark}>
+      <Background image={core.background.detailsDark} hasNavBar={false}>
         <OrangeLine/>
         <ScrollView style={{height:availableScreenHeight, width: screenWidth,}}>
           <View style={{ width: screenWidth, alignItems:'center', paddingBottom:30 }}>
@@ -82,7 +82,7 @@ class BehaviourExample extends Component<{data: any}, any> {
         backgroundColor:colors.white.rgba(0.3),
         width: screenWidth,
         alignItems:'center'}}
-      onPress={() => { NavigationUtil.navigate("DeviceSmartBehaviour_Editor", {rule: this.props.data})}}>
+      onPress={() => { NavigationUtil.navigate("DeviceSmartBehaviour_Editor", {data: this.props.data})}}>
         <View style={{width:screenWidth-20}}>
           <Text style={{
             fontWeight:'500',

@@ -20,12 +20,7 @@ import { NavigationUtil } from "./NavigationUtil";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
-  if (Platform.OS === 'android') {
-    return <Icon name={name} size={size} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />
-  }
-  else {
-    return <IconButton name={name} size={size} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
-  }
+  return <IconButton name={name} buttonSize={40} size={size} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
 };
 
 
@@ -71,7 +66,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
   items.push({
     id: 'My Account',
     label: lang("My_Account"),
-    icon: getIcon('ios-body', 23, colors.white.hex, colors.purple.hex),
+    mediumIcon: getIcon('ios-body', 30, colors.white.hex, colors.purple.hex),
     type: 'navigation',
     callback: () => {
       clickCallback();
@@ -81,7 +76,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
   items.push({
     id:'Privacy',
     label: lang("Privacy"),
-    icon: getIcon('ios-eye', 27, colors.white.hex, colors.darkPurple.hex),
+    mediumIcon: getIcon('ios-eye', 32, colors.white.hex, colors.darkPurple.hex),
     type: 'navigation',
     callback:() => {
       clickCallback();
@@ -91,53 +86,53 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
   insertExplanation(items, lang("PrivacyLabel"), true);
 
   insertExplanation(items,  lang("ConfigurationLabel"), false, true);
-  if (Object.keys(state.spheres).length > 0) {
-    items.push({
-      id: 'Mesh Overview',
-      label: lang("Mesh_Overview"),
-      type: 'navigation',
-      style: {color: '#000'},
-      icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
-      callback: () => {
-        clickCallback();
-        NavigationUtil.navigate("SettingsMeshTopology");
-      }
-    });
-  }
+  // if (Object.keys(state.spheres).length > 0) {
+  //   items.push({
+  //     id: 'Mesh Overview',
+  //     label: lang("Mesh_Overview"),
+  //     type: 'navigation',
+  //     style: {color: '#000'},
+  //     mediumIcon: getIcon('md-share', 35, colors.white.hex, colors.menuBackground.hex),
+  //     callback: () => {
+  //       clickCallback();
+  //       NavigationUtil.navigate("SettingsMeshTopology");
+  //     }
+  //   });
+  // }
 
   items.push({
     id: 'App Settings',
     label: lang("App_Settings"),
     type: 'navigation',
     style: {color: '#000'},
-    icon: getAlternatingIcons(['ios-cog','ios-battery-full'],[25,25],[colors.white.hex, colors.white.hex],[colors.darkBackground.hex, colors.darkBackground.hex]) ,
+    mediumIcon: getIcon('ios-cog', 35, colors.white.hex, colors.darkBackground.hex),
     callback: () => {
       clickCallback();
       NavigationUtil.navigate("SettingsApp");
     }
   });
 
-  if (state.app.tapToToggleEnabled !== false) {
-    let tapToToggleSettings = { tutorial: false };
-    if (!Util.data.getTapToToggleCalibration(state)) {
-      tapToToggleSettings.tutorial = true;
-    }
-    items.push({
-      id:'Calibrate Tap-to-Toggle',
-      label: lang("Calibrate_Tap_to_Toggle"),
-      type:'button',
-      style: {color:'#000'},
-      icon: getIcon('md-flask', 22, colors.white.hex, colors.menuBackground.hex),
-      callback: () => { clickCallback(); core.eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
-    });
-  }
+  // if (state.app.tapToToggleEnabled !== false) {
+  //   let tapToToggleSettings = { tutorial: false };
+  //   if (!Util.data.getTapToToggleCalibration(state)) {
+  //     tapToToggleSettings.tutorial = true;
+  //   }
+  //   items.push({
+  //     id:'Calibrate Tap-to-Toggle',
+  //     label: lang("Calibrate_Tap_to_Toggle"),
+  //     type:'button',
+  //     style: {color:'#000'},
+  //     mediumIcon: getIcon('md-flask', 35, colors.white.hex, colors.menuBackground.hex),
+  //     callback: () => { clickCallback(); core.eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
+  //   });
+  // }
 
   items.push({
     id: 'whats new',
     label: lang("androidWhats_new_Whats_ne",Platform.OS),
     type: 'button',
     style: {color: '#000'},
-    icon: getIcon('md-bulb', 23, colors.white.hex, colors.green.hex),
+    mediumIcon: getIcon('md-bulb', 31, colors.white.hex, colors.green.hex),
     callback: () => { clickCallback(); core.eventBus.emit("showWhatsNew"); }
   });
 
@@ -146,7 +141,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     id:'Diagnostics',
     label: lang("Diagnostics"),
     type:'navigation',
-    icon: getIcon('md-analytics', 21, colors.white.hex, colors.csBlue.hex),
+    mediumIcon: getIcon('md-analytics', 28, colors.white.hex, colors.csBlue.hex),
     callback: () => {
       clickCallback();
       NavigationUtil.navigate("SettingsDiagnostics");
@@ -156,7 +151,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     id:'Help',
     label: lang("Help"),
     type:'navigation',
-    icon: getIcon('ios-help-circle', 23, colors.white.hex, colors.csBlueLight.hex),
+    mediumIcon: getIcon('ios-help-circle', 30, colors.white.hex, colors.csBlueLight.hex),
     callback: () => {
       // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
       clickCallback();
@@ -172,7 +167,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     id:'Log Out',
     label: lang("Log_Out"),
     type:'button',
-    icon: getIcon('md-log-out', 22, colors.white.hex, colors.menuRed.hex),
+    mediumIcon: getIcon('md-log-out', 32, colors.white.hex, colors.menuRed.hex),
     callback: () => {
       Alert.alert(
         lang("_Log_out__Are_you_sure__I_header"),

@@ -121,7 +121,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
       callback: () => {
         if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
           addCrownstoneExplanationAlert(() => {
-            NavigationUtil.reset("Main");
+            NavigationUtil.reset("AppNavigator");
           });
         }
         else {

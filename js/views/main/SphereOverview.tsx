@@ -29,6 +29,9 @@ import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
 import {Util} from "../../util/Util";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { AddSetupStoneButton } from "./buttons/AddSetupStoneButton";
+import { AddSetupStoneButtonDescription } from "./buttons/AddSetupStoneButtonDescription";
+import { FadeInView, HiddenFadeInView } from "../components/animated/FadeInView";
 
 
 const ZOOM_LEVELS = {
@@ -196,8 +199,9 @@ export class SphereOverview extends LiveComponent<any, any> {
           let newState = {zoomLevel: ZOOM_LEVELS.sphere};
 
           if (state.app.hasZoomedOutForSphereOverview === false) {
-            newState["zoomInstructionsVisible"] = true;
+            this._getInstructionScreen();
           }
+
           this.setState(newState, () => { this._updateNavBar(); })
         }}/>;
       }
@@ -207,7 +211,20 @@ export class SphereOverview extends LiveComponent<any, any> {
   _getAddItemButton(viewingRemotely, activeSphereId) {
     if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
       if (Permissions.inSphere(activeSphereId).addRoom) {
-         return <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} />;
+        if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
+          return <AddSetupStoneButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} />;
+        }
+        else {
+          return <AddItemButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} />;
+        }
+      }
+    }
+  }
+
+  _getAddButtonDescription() {
+    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
+      if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
+        return <HiddenFadeInView><AddSetupStoneButtonDescription /></HiddenFadeInView>;
       }
     }
   }
@@ -256,12 +273,9 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
   _getInstructionScreen() {
-    return (
-      <ZoomInstructionOverlay
-        visible={this.state.zoomInstructionsVisible}
-        closeCallback={() => { this.setState({zoomInstructionsVisible: false})}}
-      />
-    );
+      core.eventBus.emit("showCustomOverlay", {
+        content: <ZoomInstructionOverlay />
+      });
   }
 
   render() {
@@ -305,10 +319,10 @@ export class SphereOverview extends LiveComponent<any, any> {
       return (
         <AnimatedBackground image={background}>
           <OrangeLine/>
+          { this._getAddButtonDescription() }
           { this._getContent(state, amountOfSpheres, activeSphereId) }
           { this._getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) }
           { this._getAddItemButton(viewingRemotely, activeSphereId) }
-          { this._getInstructionScreen() }
         </AnimatedBackground>
       );
     }

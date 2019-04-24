@@ -121,6 +121,16 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     }
   }
 
+  _getTitle() {
+    if (!this.props.getDesignElement && this.props.title) {
+      return (
+        <View style={{...styles.centered, padding: 10, paddingTop:20}}>
+          <Text style={{fontSize: 20, fontWeight:'bold', textAlign:'center'}}>{this.props.title}</Text>
+        </View>
+      )
+    }
+  }
+
   _getFooterComponent(width, height, padding, closeIconSize, top) {
     if (this.props.footerComponent) {
 
@@ -170,13 +180,16 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     let designElementSize = 0.38 * screenWidth;
     let closeIconSize = 40
     let padding = 0.03*screenWidth;
+
     let innerPaddingTop = this.props.getDesignElement ?
       0.5*designElementSize+topPositionOfDesignElements - 30 : // the -30 is an overflow area which is can be added to the scroll view.
       padding;
 
+
+
     let innerChildrenArea = (
-      <View style={{ minHeight: height - innerPaddingTop - 30 }}>
-        <View style={{height:35}} />
+      <View style={{ minHeight: height - innerPaddingTop }}>
+        {this.props.getDesignElement ? <View style={{height:35}} /> : undefined}
         {this.props.children}
       </View>
     );
@@ -212,8 +225,9 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
              },
             {...this.props.style}
           ]}>
+            { this._getTitle() }
             {this.props.scrollable ?
-              <ScrollView style={{ width: width - 2*padding }}>{innerChildrenArea}</ScrollView> : innerChildrenArea
+              <ScrollView style={{ width: width - 2*padding }}>{innerChildrenArea}</ScrollView> : this.props.children
             }
           </View>
         </View>

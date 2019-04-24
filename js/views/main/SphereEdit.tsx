@@ -79,7 +79,7 @@ export class SphereEdit extends Component<any, any> {
           largeIcon: <IconButton name='c1-sphere' buttonSize={55} size={40} radius={radius} button={true} color="#fff"
                                  buttonStyle={{ backgroundColor: colors.green.hex }}/>,
           callback: () => {
-            createNewSphere(eventBus, core.store, state.user.firstName + "'s Sphere")
+            createNewSphere(state.user.firstName + "'s Sphere")
               .then((sphereId) => {
                 setTimeout(() => {
                   NavigationUtil.navigate("AiStart");

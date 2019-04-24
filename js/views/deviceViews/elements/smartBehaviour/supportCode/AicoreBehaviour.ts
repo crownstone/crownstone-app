@@ -60,7 +60,7 @@ export class AicoreBehaviour {
     sentence += chunks.location.label       ? " " + chunks.location.label       : "";
     sentence += chunks.time.label           ? " " + chunks.time.label           : "";
     sentence += ".";
-    if (this.rule.time.type !== "ALL_DAY" && this.rule.time.to.type === "CLOCK") {
+    if (this.rule.time.type !== "ALL_DAY" && (this.rule.time.to.type === "CLOCK" || this.rule.time.to.type === "SUNSET")) {
       sentence += chunks.optionPrefix.label ? " " + chunks.optionPrefix.label : "";
       sentence += chunks.option.label ? " " + chunks.option.label + "." : "";
     }
@@ -89,7 +89,7 @@ export class AicoreBehaviour {
     if (chunks.location.label)        { addToResult(" "); addToResult(chunks.location,      SELECTABLE_TYPE.LOCATION); } else {  addToResult(chunks.location,SELECTABLE_TYPE.LOCATION, true);  }
     if (chunks.time.label)            { addToResult(" "); addToResult(chunks.time,          SELECTABLE_TYPE.TIME);     } else {  addToResult(chunks.time, SELECTABLE_TYPE.TIME, true);      }
     addToResult(".");
-    if (this.rule.time.type !== "ALL_DAY" && this.rule.time.to.type === "CLOCK") {
+    if (this.rule.time.type !== "ALL_DAY" && (this.rule.time.to.type === "CLOCK" || this.rule.time.to.type === "SUNSET")) {
       if (chunks.optionPrefix.label) {
         addToResult(" ");
         addToResult(chunks.optionPrefix);

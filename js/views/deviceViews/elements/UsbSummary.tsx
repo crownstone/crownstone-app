@@ -14,7 +14,7 @@ import {
 import { screenWidth} from '../../styles'
 import { Util }                from "../../../util/Util";
 import { Permissions}          from "../../../backgroundProcesses/PermissionManager";
-import {DeviceButton, DeviceInformation} from "./DeviceSummary";
+import { StoneInformation } from "./DeviceSummary";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 
@@ -58,33 +58,10 @@ export class UsbSummary extends LiveComponent<any, any> {
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
-    const location = Util.data.getLocationFromStone(sphere, stone);
-
-    // stone.reachability.disabled = false
-    let spherePermissions = Permissions.inSphere(this.props.sphereId);
-
-    let locationLabel =  lang("Tap_here_to_move_me_");
-    let locationName =  lang("Not_in_room");
-    if (location) {
-      locationLabel =  lang("Located_in_");
-      locationName = location.config.name;
-    }
-
 
     return (
       <View style={{flex:1, paddingBottom: 35}}>
-        <DeviceInformation
-          right={locationLabel}
-          rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate("RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
-        />
-        <View style={{flex:1}} />
-        <View style={{width:screenWidth, alignItems: 'center' }}>
-          <DeviceButton
-            stoneId={this.props.stoneId}
-            sphereId={this.props.sphereId}
-          />
-        </View>
+        { StoneInformation({stoneId: this.props.stoneId, sphereId: this.props.sphereId, canSelectRoom: Permissions.inSphere(this.props.sphereId).moveCrownstone}) }
         <View style={{flex:1.5}} />
       </View>
     )

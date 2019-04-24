@@ -59,11 +59,10 @@ const defaultBackButtonHeaderStyle = {
 
 const NewBehaviourStack = createStackNavigator(
   {
-    DeviceSmartBehaviour_Editor :             Views.DeviceSmartBehaviour_Editor,
     DeviceSmartBehaviour :                    Views.DeviceSmartBehaviour,
+    DeviceSmartBehaviour_Editor :             Views.DeviceSmartBehaviour_Editor,
     DeviceSmartBehaviour_TypeStart    :       Views.DeviceSmartBehaviour_TypeStart,
     DeviceSmartBehaviour_TypeSelector :       Views.DeviceSmartBehaviour_TypeSelector,
-    DeviceSmartBehaviour_PresenceAware :      Views.DeviceSmartBehaviour_PresenceAware,
     DeviceSmartBehaviour2 :                   Views.DeviceSmartBehaviour2,
   },
   {
@@ -96,8 +95,8 @@ const EditSphereStack = createStackNavigator(
 const MainStack = createStackNavigator(
   {
     SphereOverview: Views.SphereOverview,
-    RoomOverview:   Views.RoomOverview,
     DeviceOverview: Views.DeviceOverview,
+    RoomOverview:   Views.RoomOverview,
   },
   {
     ...defaultHeader
@@ -137,7 +136,6 @@ const SettingsStack = createStackNavigator(
 
 const TabNavigator = createBottomTabNavigator(
   {
-    __proto:        NewBehaviourStack,
     Main:           MainStack,
     Messages:       MessageStack,
     Settings:       SettingsStack,
@@ -228,6 +226,9 @@ const AppStack = createStackNavigator(
     // },
     AppNavigator: {
       screen: TabNavigator,
+    },
+    StoneBehaviour: {
+      screen: NewBehaviourStack,
     },
     //modals:
     AddItemsToSphere: {

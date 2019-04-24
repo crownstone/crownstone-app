@@ -4,7 +4,7 @@ import { activityLogs }      from './sections/activityLogs'
 import { activityRanges }    from './sections/activityRanges'
 import { appliances }        from './sections/appliances'
 import { bootloader }        from './sections/bootloader'
-import { cloudApiBase }      from './sections/cloudApiBase'
+import { cloudApiBase, TokenStore } from "./sections/cloudApiBase";
 import { devices }           from './sections/devices'
 import { firmware }          from './sections/firmware'
 import { fingerprints }      from './sections/fingerprints'
@@ -22,6 +22,7 @@ import { user }              from './sections/user'
 
 import { toon }              from './sections/thirdParty/toon'
 import { xUtil } from "../util/StandAloneUtil";
+import { MapProvider } from "../backgroundProcesses/MapProvider";
 
 function combineSections() {
   let result : any = {};
@@ -58,3 +59,14 @@ function combineSections() {
  */
 export const CLOUD : any = combineSections();
 
+CLOUD.setAccess =          function(accessToken)     : any  { TokenStore.accessToken = accessToken;       return CLOUD; };
+CLOUD.setUserId =          function(userId)          : any  { TokenStore.userId = userId;                 return CLOUD; }; // cloudId === localId
+CLOUD.forUser =            function(userId)          : any  { TokenStore.userId = userId;                 return CLOUD; }; // cloudId === localId
+CLOUD.forDevice =          function(deviceId)        : any  { TokenStore.deviceId = deviceId;             return CLOUD; }; // cloudId === localId
+CLOUD.forInstallation =    function(installationId)  : any  { TokenStore.installationId = installationId; return CLOUD; }; // cloudId === localId
+CLOUD.forStone =           function(localStoneId)    : any  { TokenStore.stoneId     = MapProvider.local2cloudMap.stones[localStoneId]         || localStoneId;     return CLOUD; };
+CLOUD.forSphere =          function(localSphereId)   : any  { TokenStore.sphereId    = MapProvider.local2cloudMap.spheres[localSphereId]       || localSphereId;    return CLOUD; };
+CLOUD.forLocation =        function(localLocationId) : any  { TokenStore.locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return CLOUD; };
+CLOUD.forAppliance =       function(localApplianceId): any  { TokenStore.applianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; return CLOUD; };
+CLOUD.forMessage =         function(localMessageId)  : any  { TokenStore.messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return CLOUD; };
+CLOUD.forToon =            function(localToonId)     : any  { TokenStore.toonId      = MapProvider.local2cloudMap.toons[localToonId]           || localToonId;      return CLOUD; };

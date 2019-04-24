@@ -53,6 +53,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
       if (action.data) {
         let newState = {...state};
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        newState.uid     = update(action.data.uid, newState.uid);
         return newState;
       }
       return state;

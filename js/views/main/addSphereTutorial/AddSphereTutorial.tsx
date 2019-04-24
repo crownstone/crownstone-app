@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native';
 import { Background } from "../../components/Background";
-import { colors, OrangeLine, screenHeight, topBarHeight } from "../../styles";
+import { colors, OrangeLine, screenHeight, screenWidth, topBarHeight } from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
@@ -18,17 +18,11 @@ import { core } from "../../../core";
 const Swiper = require("react-native-swiper");
 
 
-Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
-  core.eventBus.emit("setNewSwiperIndex", nextState.index);
-};
-
 export class AddSphereTutorial extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: lang("New_Sphere")}
   };
 
-  unsubscribeSwipeEvent : any;
-  touchEndTimeout: any;
   requestedPermission;
 
   constructor(props) {
@@ -36,35 +30,17 @@ export class AddSphereTutorial extends Component<any, any> {
 
     this.requestedPermission = false;
     this.state = {swiperIndex: 0, scrolling: false};
-    this.unsubscribeSwipeEvent = core.eventBus.on("setNewSwiperIndex", (nextIndex) => {
-      if (this.state.swiperIndex !== nextIndex) {
-        this.setState({swiperIndex: nextIndex, scrolling: false});
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeSwipeEvent();
-    clearTimeout(this.touchEndTimeout);
   }
 
   render() {
-    let checkScrolling = (newState) => {
-      if (this.state.scrolling !== newState) {
-        this.setState({scrolling: newState});
-      }
-    };
-
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
         <OrangeLine/>
-        <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight}
+        <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight} width={screenWidth}
           dot={<View style={{backgroundColor: colors.white.rgba(0.35), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.black.rgba(0.1)}} />}
           activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}
           loop={false}
           bounces={true}
-          onScrollBeginDrag={  () => { checkScrolling(true);  }}
-          onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
           { this._getContent() }
         </Swiper>

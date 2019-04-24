@@ -27,7 +27,6 @@ export class RoomLayer extends LiveComponent<any, any> {
   _baseRadius;
   _currentSphere;
   _showingFloatingRoom;
-  unsubscribeSetupEvents = [];
   unsubscribeStoreEvents;
   viewId: string;
 
@@ -43,20 +42,7 @@ export class RoomLayer extends LiveComponent<any, any> {
 
   componentDidMount() {
     // to ensure
-    let reloadSolverOnDemand = () => {
-      this.forceUpdate();
-    };
-
-    this.unsubscribeSetupEvents = [];
-    this.unsubscribeSetupEvents.push(core.eventBus.on('setupStarting',  reloadSolverOnDemand));
-    this.unsubscribeSetupEvents.push(core.eventBus.on('setupCleanedUp', reloadSolverOnDemand));
-
-    this.unsubscribeSetupEvents.push(core.eventBus.on('setupStonesDetected',  () => {
-      reloadSolverOnDemand();
-    }));
-    this.unsubscribeSetupEvents.push(core.eventBus.on('noSetupStonesVisible', () => {
-      reloadSolverOnDemand();
-    }));
+    let reloadSolverOnDemand = () => { this.forceUpdate(); };
 
     this.unsubscribeStoreEvents = core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
@@ -78,7 +64,6 @@ export class RoomLayer extends LiveComponent<any, any> {
   }
 
   componentWillUnmount() {
-    this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
   }
 
@@ -104,8 +89,7 @@ export class RoomLayer extends LiveComponent<any, any> {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }
     else {
-      let showSetupCrownstones = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone;
-      let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId, showSetupCrownstones);
+      let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId);
       return (
         <ForceDirectedView
           viewId={this.viewId}

@@ -199,7 +199,7 @@ export class MessageInbox extends LiveComponent<any, any> {
               color="#fff"
               addIcon={true}
               buttonSize={iconSize}
-              buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
+              buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}
             />
           </TouchableOpacity>
         );

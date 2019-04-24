@@ -561,10 +561,10 @@ export default {
   },
   DeviceSummary:{
     __filename: "../js/views/deviceViews/elements/DeviceSummary.tsx",
-    Energy_Usage_:                       function() { return "Energy Usage:" },
+    Energy_Usage_:                       function() { return "Energy Usage" },
     Turn_On:                             function() { return "Turn On" },
     Turn_Off:                            function() { return "Turn Off" },
-    Location_:                           function() { return "Location:" },
+    Location_:                           function() { return "Room" },
     Not_in_room:                         function() { return "Not in room" },
     Located_in_:                         function() { return "Located in:" },
     Tap_here_to_move_me_:                function() { return "Tap here to move me!" },

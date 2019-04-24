@@ -31,7 +31,7 @@ export const sync = {
   __syncTriggerDatabaseEvents: true,
 
   sync: function (store, background = true) {
-    if (this.__currentlySyncing) {
+    if (CLOUD.__currentlySyncing) {
       LOG.info("SYNC: Skip Syncing, sync already in progress.");
       return new Promise((resolve, reject) => { resolve(true) });
     }
@@ -43,13 +43,13 @@ export const sync = {
     }
 
     let cancelFallbackCallback = Scheduler.scheduleBackgroundCallback(() => {
-      if (this.__currentlySyncing === true) {
-        this.__currentlySyncing = false;
+      if (CLOUD.__currentlySyncing === true) {
+        CLOUD.__currentlySyncing = false;
       }
     }, 30000);
 
     LOG.info("Sync: Start Syncing.");
-    this.__currentlySyncing = true;
+    CLOUD.__currentlySyncing = true;
 
     // set the authentication tokens
     let userId = state.user.userId;
@@ -147,7 +147,7 @@ export const sync = {
         actions.forEach((action) => {
           action.triggeredBySync = true;
 
-          if (this.__syncTriggerDatabaseEvents === false) {
+          if (CLOUD.__syncTriggerDatabaseEvents === false) {
             action.__noEvents = true
           }
 
@@ -175,8 +175,8 @@ export const sync = {
         return reloadTrackingRequired;
       })
       .then((reloadTrackingRequired) => {
-        this.__currentlySyncing = false;
-        this.__syncTriggerDatabaseEvents = true;
+        CLOUD.__currentlySyncing = false;
+        CLOUD.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
 
         Sentry.captureBreadcrumb({
@@ -211,8 +211,8 @@ export const sync = {
           }
         });
 
-        this.__currentlySyncing = false;
-        this.__syncTriggerDatabaseEvents = true;
+        CLOUD.__currentlySyncing = false;
+        CLOUD.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
         core.eventBus.emit("CloudSyncComplete");
         LOGe.cloud("Sync: error during sync:", err);

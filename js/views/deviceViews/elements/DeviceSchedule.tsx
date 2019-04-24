@@ -216,7 +216,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
         color="#fff"
         addIcon={canAddSchedule}
         buttonSize={iconSize}
-        buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
+        buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}
       />
     );
 

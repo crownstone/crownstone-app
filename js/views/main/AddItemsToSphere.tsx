@@ -61,7 +61,7 @@ export class AddItemsToSphere extends Component<any, any> {
               size={0.75*iconSize}
               color="#fff"
               buttonSize={iconSize}
-              buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
+              buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}
             />
             <View style={{height: 0.2*iconSize}} />
             <Text style={textStyle.specification}>{ lang("You_can_add_Rooms__People") }</Text>

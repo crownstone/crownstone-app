@@ -317,13 +317,10 @@ export const DataUtil = {
     return items;
   },
 
-  getLayoutDataRooms: function(state, sphereId, showSetupCrownstone = false) {
+  getLayoutDataRooms: function(state, sphereId) {
     let initialPositions = {};
     let sphere = state.spheres[sphereId];
     let rooms = sphere.locations;
-
-    let floatingStones = getFloatingStones(state, sphereId);
-    let showFloatingCrownstones = floatingStones.length > 0 || showSetupCrownstone;
 
     let roomIdArray = Object.keys(rooms).sort();
     let usePhysics = false;
@@ -332,14 +329,6 @@ export const DataUtil = {
       let room = rooms[roomIdArray[i]];
       initialPositions[roomIdArray[i]] = {x: room.layout.x, y: room.layout.y};
       if (room.layout.setOnThisDevice === false) {
-        usePhysics = true
-      }
-    }
-
-    if (showFloatingCrownstones) {
-      roomIdArray.push(null);
-      initialPositions['null'] = {x: sphere.layout.floatingLocation.x, y: sphere.layout.floatingLocation.y};
-      if ( sphere.layout.floatingLocation.setOnThisDevice === false ) {
         usePhysics = true
       }
     }

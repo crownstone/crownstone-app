@@ -18,6 +18,7 @@ export let screenHeight = Platform.OS === 'android' ?
   Dimensions.get('window').height;
 
 export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+export const availableModalHeight = screenHeight - topBarHeight;
 
 export const pxRatio = PixelRatio.get();
 
@@ -28,12 +29,15 @@ export const NORMAL_ROW_SIZE = 50;
 
 export let colors : colorInterface = {
   darkBackground:       {hex:'#4f6b84'},
+  darkBackgroundOverlay:{hex:'#6e8dac'},
   csBlue:               {hex:'#003E52'},
+  csBlueDark:           {hex:'#00283c'},
   csBlueLight:          {hex:'#006f84'},
   csOrange:             {hex:'#ff8400'},
   darkCsOrange:         {hex:'#d97500'},
   lightCsOrange:        {hex:'#ffa94d'},
-  menuBackground:       {hex:'#00263e'},
+  // menuBackground:       {hex:'#00263e'},
+  menuBackground:       {hex:'#00283c'},
   menuBackgroundDarker: {hex:'#001122'},
   menuText:             {hex:'#fff'},
   menuTextSelected:     {hex:'#2daeff'},
@@ -305,6 +309,7 @@ export const deviceStyles = StyleSheet.create({
   },
   explanation: {
     width: screenWidth,
+    paddingLeft:10, paddingRight:10,
     color: textColor.rgba(0.5),
     fontSize: 13,
     textAlign:'center'

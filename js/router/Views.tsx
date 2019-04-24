@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper'
 
 import { AddSphereTutorial }           from "../views/main/addSphereTutorial/AddSphereTutorial";
@@ -74,7 +75,6 @@ import { DeviceSmartBehaviour2 } from "../views/deviceViews/elements/smartBehavi
 import { DeviceSmartBehaviour_TypeSelector } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeSelector";
 import { DeviceSmartBehaviour_TypeStart }   from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart";
 import { DeviceSmartBehaviour_CreateNewBehaviour } from "../views/deviceViews/elements/smartBehaviour/prototyping/DeviceSmartBehaviour_CreateNewBehaviour";
-import { DeviceSmartBehaviour_PresenceAware } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_PresenceAware";
 import { DeviceSmartBehaviour_Editor } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor";
 
 export const Views = {
@@ -89,12 +89,12 @@ export const Views = {
   DeviceEdit:                     withMappedNavigationProps()(DeviceEdit),
   DeviceIconSelection:            withMappedNavigationProps()(DeviceIconSelection),
   DeviceOverview:                 withMappedNavigationProps()(DeviceOverview),
+  // DeviceOverview:                 withMappedNavigationProps()((props) => { return <DeviceOverview {...props} sphereId={"6bb1dfe9-b4a7-c2aa-7a7c-d4d837b1451b"} stoneId={"5a1f3fd0-7c3f-3873-3141-a6e4c89dfe86"} />}),
   DeviceScheduleEdit:             withMappedNavigationProps()(DeviceScheduleEdit),
   DeviceSmartBehaviour:           withMappedNavigationProps()(DeviceSmartBehaviour),
   DeviceSmartBehaviour2:          withMappedNavigationProps()(DeviceSmartBehaviour2),
   DeviceSmartBehaviour_CreateNewBehaviour: withMappedNavigationProps()(DeviceSmartBehaviour_CreateNewBehaviour),
   DeviceSmartBehaviour_Editor:             withMappedNavigationProps()(DeviceSmartBehaviour_Editor),
-  DeviceSmartBehaviour_PresenceAware:      withMappedNavigationProps()(DeviceSmartBehaviour_PresenceAware),
   DeviceSmartBehaviour_TypeSelector:       withMappedNavigationProps()(DeviceSmartBehaviour_TypeSelector),
   DeviceSmartBehaviour_TypeStart:          withMappedNavigationProps()(DeviceSmartBehaviour_TypeStart),
   IconDebug:                      withMappedNavigationProps()(IconDebug),

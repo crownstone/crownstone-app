@@ -7,7 +7,7 @@ import { transferUtil } from "./shared/transferUtil";
 let fieldMap : fieldMap = [
   {local: 'name',      cloud: 'name'},
   {local: 'icon',      cloud: 'icon'},
-  {local: 'uid',       cloud: 'uid',  cloudToLocalOnly: true},
+  {local: 'uid',       cloud: 'uid',  cloudToLocalOnly: false},
   {local: 'updatedAt', cloud: 'updatedAt'},
   {local: 'pictureId', cloud:'imageId', cloudToLocalOnly: true},
 
@@ -28,7 +28,7 @@ export const transferLocations = {
     return CLOUD.forSphere(data.cloudSphereId).createLocation(payload)
       .then((result) => {
         // update cloudId in local database.
-        actions.push({type: 'UPDATE_LOCATION_CLOUD_ID', sphereId: data.localSphereId, locationId: data.localId, data: { cloudId: result.id }});
+        actions.push({type: 'UPDATE_LOCATION_CLOUD_ID', sphereId: data.localSphereId, locationId: data.localId, data: { cloudId: result.id, uid: result.uid }});
         return result.id;
       })
       .catch((err) => {

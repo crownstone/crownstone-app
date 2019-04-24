@@ -53,7 +53,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
   _getRoomItem(state, roomId, room) {
     return (
       <TouchableHighlight key={roomId + '_entry'} onPress={() => {
-        NavigationUtil.reset("Main")
+        NavigationUtil.reset("AppNavigator")
         NavigationUtil.navigate("RoomOverview",{sphereId: this.props.sphereId, locationId: roomId, title: room.config.name, seeStoneInSetupMode: false});
       }}>
       <View style={[styles.listView, {paddingRight:5}]}>

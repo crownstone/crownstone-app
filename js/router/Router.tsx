@@ -1,5 +1,4 @@
 import * as React from 'react'; import { Component } from 'react';
-import { AnimatedMenu } from "../views/components/animated/AnimatedMenu";
 import { LibMessages } from "../views/overlays/LibMessages";
 import { DfuOverlay } from "../views/overlays/DfuOverlay";
 import { LockOverlay } from "../views/overlays/LockOverlay";
@@ -16,6 +15,7 @@ import { AppWithNavigationState, navigationStore } from "./NavigationReducer";
 import { Provider } from 'react-redux';
 import { ListOverlay } from "../views/overlays/ListOverlay";
 import { AicoreTimeCustomizationOverlay } from "../views/overlays/AicoreTimeCustomizationOverlay";
+import { SimpleOverlay } from "../views/overlays/SimpleOverlay";
 
 
 export class Router extends Component {
@@ -27,7 +27,7 @@ export class Router extends Component {
         </Provider>,
 
         <AicoreTimeCustomizationOverlay key={"AicoreTimeCustomizationOverlay"}    />,
-        <AnimatedMenu              key={"AnimatedMenu"}    />,
+        <SimpleOverlay             key={"SimpleOverlay"}     />,
         <LibMessages               key={"LibMessages"}     />,
         <DfuOverlay                key={"DfuOverlay"}      />,
         <LockOverlay               key={"LockOverlay"}     />,

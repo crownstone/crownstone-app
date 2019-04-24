@@ -41,7 +41,9 @@ interface color {
 
 interface colorInterface {
   darkBackground: color,
+  darkBackgroundOverlay: color,
   csBlue:        color,
+  csBlueDark:    color,
   csBlueLight:   color,
   csOrange:      color,
   darkCsOrange:  color,

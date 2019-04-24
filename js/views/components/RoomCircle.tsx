@@ -31,7 +31,6 @@ let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
 };
 
-const FLOATING_CROWNSTONE_LOCATION_ID = null;
 
 class RoomCircleClass extends LiveComponent<any, any> {
   initializedPosition: any;
@@ -104,18 +103,6 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID) {
-      this.unsubscribeSetupEvents.push(core.eventBus.on("setupCancelled", (handle) => {
-        this.setState({setupProgress: 20});
-      }));
-      this.unsubscribeSetupEvents.push(core.eventBus.on("setupInProgress", (data) => {
-        this.setState({setupProgress: data.progress});
-      }));
-      this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete", (handle) => {
-        this.setState({setupProgress: 20});
-      }));
-    }
-
     this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange", () => {
       this.forceUpdate();
     }));
@@ -131,17 +118,11 @@ class RoomCircleClass extends LiveComponent<any, any> {
       let usage = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
 
       // in the case the room is deleted, do not redraw.
-      if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID && state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
+      if (state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
         return;
       }
 
-      if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID) {
-        if (usage !== this.usage || state.spheres[this.props.sphereId].locations[this.props.locationId].config != this.renderState.spheres[this.props.sphereId].locations[this.props.locationId].config) {
-          this.usage = usage;
-          this.forceUpdate();
-        }
-      }
-      else if (usage !== this.usage) {
+      if (usage !== this.usage || state.spheres[this.props.sphereId].locations[this.props.locationId].config != this.renderState.spheres[this.props.sphereId].locations[this.props.locationId].config) {
         this.usage = usage;
         this.forceUpdate();
       }
@@ -205,12 +186,6 @@ class RoomCircleClass extends LiveComponent<any, any> {
       return colors.purple.hex;
     }
 
-    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
-      if (prev)  {
-        return colors.lightGray.hex;
-      }
-      return colors.blinkColor1.hex;
-    }
 
     let level = this._getLevel(usage);
     if (prev) {
@@ -229,31 +204,8 @@ class RoomCircleClass extends LiveComponent<any, any> {
       return <Icon name="ios-settings" size={this.iconSize*1.3} color='#ffffff'/>;
     }
 
-    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
-      let smallSize = this.iconSize*1.1*0.6;
-
-      return (
-        <AlternatingContent
-          style={{width:this.iconSize*1.1, height: this.iconSize, justifyContent:'center', alignItems:'center'}}
-          fadeDuration={500}
-          switchDuration={2000}
-          contentArray={[
-            <View style={{width:this.iconSize*1.1, height: this.iconSize}}>
-              <Icon name="ios-sunny" size={smallSize} color={colors.blinkColor2.hex} style={{position:'absolute', top:-smallSize*0.024, left:smallSize*0.465}} />
-              <Icon name="c2-crownstone" size={this.iconSize*1.1} color='#ffffff' style={{position:'absolute', top:this.iconSize*0.15, left:0}} />
-            </View>,
-            <Icon name="c1-tap" size={this.iconSize*0.9} style={{paddingLeft:0.1*this.iconSize}} color='#ffffff'/>,
-            <Icon name="c3-addRounded" size={this.iconSize*0.9} color='#ffffff'/>
-          ]} />
-      );
-    }
-    else if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID) {
-      return <Icon name="c2-pluginFilled" size={this.iconSize} color='#ffffff'/>;
-    }
-    else {
-      let icon = core.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
-      return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
-    }
+    let icon = core.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
+    return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
 
   }
 
@@ -296,28 +248,8 @@ class RoomCircleClass extends LiveComponent<any, any> {
   _getUsageCircle(usage, newColor) {
     let colorOfLowerLayer = this._getColor(usage, true);
     let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
-    if (usage == 0 && !(this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true)) {
-      return (
-        <View style={{position:'absolute', top:0, left:0}}>
-          <Svg width={this.outerDiameter} height={this.outerDiameter}>
-            <Circle
-              r={this.props.radius - this.borderWidth}
-              stroke={colorOfLowerLayer}
-              strokeWidth={this.borderWidth}
-              x={this.props.radius}
-              y={this.props.radius}
-              strokeLinecap="round"
-              fill="white"
-            />
-          </Svg>
-        </View>
-      );
-    }
 
     let levelProgress = this._getFactor(usage);
-    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
-      levelProgress = this.state.setupProgress / 20;
-    }
     return (
       <View style={{position:'absolute', top:0, left:0}}>
         <Svg width={this.outerDiameter} height={this.outerDiameter}>
@@ -371,7 +303,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
     if (state.app.indoorLocalizationEnabled) {
       let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
       this.showAlert = null;
-      if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID && this.props.viewingRemotely !== true) {
+      if (this.props.viewingRemotely !== true) {
         if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
           this.showAlert = ALERT_TYPES.fingerprintNeeded;
         }

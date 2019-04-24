@@ -95,19 +95,8 @@ export class WhatsNewOverlay extends Component<any, any> {
         height={height}
         canClose={true}
         style={{padding:0}}
-        closeCallback={() => {
-          this._closePopup()
-        }}
-      >
-        <Text style={{
-          fontSize: 18,
-          fontWeight:'bold',
-          backgroundColor:'transparent',
-          color:colors.csBlue.hex,
-          marginTop:25,
-          marginBottom:25,
-          overflow:'hidden'
-        }}>{ lang("Your_App_was_updated_") }</Text>
+        title={lang("Your_App_was_updated_")}
+        closeCallback={() => { this._closePopup() }}>
         <Swiper style={{}} showsPagination={true} height={height-80} width={width}
           loadMinimal={true}
           loadMinimalSize={2}

@@ -26,39 +26,51 @@ interface requestOptions {
 
 type requestType = 'query' | 'body';
 
+
+class TokenStoreClass {
+  accessToken
+  applianceId
+  deviceId
+  eventId
+  installationId
+  locationId
+  messageId
+  sphereId
+  stoneId
+  toonId
+  userId
+
+  constructor() {
+
+  }
+
+
+}
+
+export const TokenStore = new TokenStoreClass()
+
+
 /**
  * The cloud API is designed to maintain the REST endpoints and to handle responses and errors on the network level.
  * When the responses come back successfully, the convenience wrappers allow callbacks for relevant scenarios.
  */
 export const cloudApiBase = {
-  _accessToken:    undefined,
-  _applianceId:    undefined,
-  _deviceId:       undefined,
-  _eventId:        undefined,
-  _installationId: undefined,
-  _locationId:     undefined,
-  _messageId:      undefined,
-  _sphereId:       undefined,
-  _stoneId:        undefined,
-  _toonId:         undefined,
-  _userId:         undefined,
-
   _networkErrorHandler: (err) => {},
 
   _post: function(options) {
-    return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
+    return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, TokenStore), TokenStore.accessToken);
   },
   _get: function(options) {
-    return request(options, 'GET',    defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
+    return request(options, 'GET',    defaultHeaders, _getId(options.endPoint, TokenStore), TokenStore.accessToken);
   },
   _delete: function(options) {
-    return request(options, 'DELETE', defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
+    return request(options, 'DELETE', defaultHeaders, _getId(options.endPoint, TokenStore), TokenStore.accessToken);
   },
   _put: function(options) {
-    return request(options, 'PUT',    defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
+    return request(options, 'PUT',    defaultHeaders, _getId(options.endPoint, TokenStore), TokenStore.accessToken);
   },
   _head: function(options) {
-    return request(options, 'HEAD',   defaultHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken);
+    return request(options, 'HEAD',   defaultHeaders, _getId(options.endPoint, TokenStore), TokenStore.accessToken);
   },
   _uploadImage: function(options) {
     let formData = new FormData();
@@ -76,14 +88,14 @@ export const cloudApiBase = {
         }
         else {
           LOGi.cloud("CloudAPIBase: file exists, continue upload");
-          let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), cloudApiBase._accessToken, true);
-          return cloudApiBase._finalizeRequest(promise, options);
+          let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), TokenStore.accessToken, true);
+          return this._finalizeRequest(promise, options);
         }
       })
       .catch((err) => { LOGe.cloud("_uploadImage: failed to check if file exists:", err); })
   },
   _download: function(options, toPath, beginCallback?, progressCallback?) {
-    return download(options, _getId(options.endPoint, this), cloudApiBase._accessToken, toPath, beginCallback, progressCallback)
+    return download(options, _getId(options.endPoint, this), TokenStore.accessToken, toPath, beginCallback, progressCallback)
   },
   downloadFile: function(url, targetPath, callbacks) {
     return downloadFile(url, targetPath, callbacks);
@@ -97,7 +109,7 @@ export const cloudApiBase = {
       // make sure we do not show this popup when too much time has passed.
       // this can happen when the app starts to sleep and wakes up much later, resulting in the user encountering an error message on app open.
       if (new Date().valueOf()  - startTime < 1.5*NETWORK_REQUEST_TIMEOUT) {
-        cloudApiBase._networkErrorHandler(error);
+        this._networkErrorHandler(error);
       }
 
       reject(error);
@@ -156,11 +168,11 @@ export const cloudApiBase = {
           if (reply.status === 200 || reply.status === 204)
             resolve(reply.data);
           else
-            cloudApiBase.__debugReject(reply, reject, [promise, options, endpoint, promiseBody]);
+            this.__debugReject(reply, reject, [promise, options, endpoint, promiseBody]);
         })
         .catch((error) => {
           //console.trace(error, this);
-          cloudApiBase._handleNetworkError(error, options, endpoint, promiseBody, reject, startTime);
+          this._handleNetworkError(error, options, endpoint, promiseBody, reject, startTime);
         })
     });
   },
@@ -169,20 +181,7 @@ export const cloudApiBase = {
   // END USER API
   // These methods have all the endpoints embedded in them.
 
-  setNetworkErrorHandler: function(handler)     : any  { cloudApiBase._networkErrorHandler = handler },
-
-  setAccess:          function(accessToken)     : any  { cloudApiBase._accessToken = accessToken;       return this; },
-
-  setUserId:          function(userId)          : any  { cloudApiBase._userId = userId;                 return this; }, // cloudId === localId
-  forUser:            function(userId)          : any  { cloudApiBase._userId = userId;                 return this; }, // cloudId === localId
-  forDevice:          function(deviceId)        : any  { cloudApiBase._deviceId = deviceId;             return this; }, // cloudId === localId
-  forInstallation:    function(installationId)  : any  { cloudApiBase._installationId = installationId; return this; }, // cloudId === localId
-  forStone:           function(localStoneId)    : any  { cloudApiBase._stoneId     = MapProvider.local2cloudMap.stones[localStoneId]         || localStoneId;     return this; },
-  forSphere:          function(localSphereId)   : any  { cloudApiBase._sphereId    = MapProvider.local2cloudMap.spheres[localSphereId]       || localSphereId;    return this; },
-  forLocation:        function(localLocationId) : any  { cloudApiBase._locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return this; },
-  forAppliance:       function(localApplianceId): any  { cloudApiBase._applianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; return this; },
-  forMessage:         function(localMessageId)  : any  { cloudApiBase._messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return this; },
-  forToon:            function(localToonId)     : any  { cloudApiBase._toonId      = MapProvider.local2cloudMap.toons[localToonId]           || localToonId;      return this; },
+  setNetworkErrorHandler: function(handler)     : any  { this._networkErrorHandler = handler },
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
@@ -195,44 +194,46 @@ export const cloudApiBase = {
 
 
 function _getId(url, obj) : string {
+  console.log("Getting ID", url, obj)
+
   let usersLocation = url.indexOf('users');
   if (usersLocation !== -1 && usersLocation < 3)
-    return obj._userId;
+    return obj.userId;
 
   let devicesLocation = url.indexOf('Devices');
   if (devicesLocation !== -1 && devicesLocation < 3)
-    return obj._deviceId;
+    return obj.deviceId;
 
   let appliancesLocation = url.indexOf('Appliances');
   if (appliancesLocation !== -1 && appliancesLocation < 3)
-    return obj._applianceId;
+    return obj.applianceId;
 
   let eventsLocation = url.indexOf('Events');
   if (eventsLocation !== -1 && eventsLocation < 3)
-    return obj._eventId;
+    return obj.eventId;
 
   let spheresLocation = url.indexOf('Spheres');
   if (spheresLocation !== -1 && spheresLocation < 3)
-    return obj._sphereId;
+    return obj.sphereId;
 
   let locationsLocation = url.indexOf('Locations');
   if (locationsLocation !== -1 && locationsLocation < 3)
-    return obj._locationId;
+    return obj.locationId;
 
   let stoneLocation = url.indexOf('Stones');
   if (stoneLocation !== -1 && stoneLocation < 3)
-    return obj._stoneId;
+    return obj.stoneId;
 
   let installationLocation = url.indexOf('AppInstallation');
   if (installationLocation !== -1 && installationLocation < 3)
-    return obj._installationId;
+    return obj.installationId;
 
   let messagesLocation = url.indexOf('Messages');
   if (messagesLocation !== -1 && messagesLocation < 3)
-    return obj._messageId;
+    return obj.messageId;
 
   let toonsLocation = url.indexOf('Toons');
   if (toonsLocation !== -1 && toonsLocation < 3)
-    return obj._toonId;
+    return obj.toonId;
 }
 

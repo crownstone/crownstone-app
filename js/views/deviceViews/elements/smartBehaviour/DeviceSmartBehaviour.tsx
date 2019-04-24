@@ -31,16 +31,16 @@ export class DeviceSmartBehaviour extends Component<any, any> {
 
 
   render() {
-    let iconSize = 0.15*screenHeight;
+    let iconSize = 0.2*screenHeight;
 
     return (
-      <Background image={core.background.detailsDark}>
+      <Background image={core.background.detailsDark} hasNavBar={false}>
         <OrangeLine/>
         <View style={{ width: screenWidth, alignItems:'center' }}>
           <View style={{height: 30}} />
           <Text style={[deviceStyles.header]}>{ "Behaviour" }</Text>
           <View style={{height: 0.2*iconSize}} />
-          <Text style={deviceStyles.specification}>{"Tap the icon below to create my first behaviour!"}</Text>
+          <Text style={deviceStyles.specification}>{"This is how I respond to your presence, the time of day and more!\n\nTap the button below to get started!"}</Text>
           <View style={{height: 0.2*iconSize}} />
           <TouchableOpacity
             onPress={() => { NavigationUtil.navigate("DeviceSmartBehaviour_TypeSelector")}}
@@ -51,7 +51,7 @@ export class DeviceSmartBehaviour extends Component<any, any> {
               color="#fff"
               addIcon={true}
               buttonSize={iconSize}
-              buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
+              buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}
             />
           </TouchableOpacity>
         </View>

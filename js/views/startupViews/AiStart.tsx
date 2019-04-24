@@ -202,19 +202,19 @@ export class AiStart extends Component<any, any> {
         }
         else if (this.props.resetViewStack === true) {
           if (Platform.OS === 'android') {
-            NavigationUtil.reset("Main");
+            NavigationUtil.reset("AppNavigator");
           }
           else {
-            NavigationUtil.reset("Main");
+            NavigationUtil.reset("AppNavigator");
           }
         }
         else {
           this.restoreBackButton();
           if (Platform.OS === 'android') {
-            NavigationUtil.reset("Main");
+            NavigationUtil.reset("AppNavigator");
           }
           else {
-            NavigationUtil.reset("Main");
+            NavigationUtil.reset("AppNavigator");
           }
         }
       };

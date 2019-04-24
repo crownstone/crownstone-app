@@ -40,7 +40,6 @@ import { TopbarButton }           from "../components/topbar/TopbarButton";
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { RoomDeleted }            from "../static/RoomDeleted";
 import { preparePictureURI }      from "../../util/Util";
-import { Scheduler }              from "../../logic/Scheduler";
 import { topBarStyle }            from "../components/topbar/TopbarStyles";
 import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../core";

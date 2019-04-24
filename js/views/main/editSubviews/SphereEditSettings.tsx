@@ -213,7 +213,7 @@ text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
     // stop tracking sphere.
     Bluenet.stopTrackingIBeacon(state.spheres[this.props.sphereId].config.iBeaconUUID);
     core.store.batchDispatch(actions);
-    NavigationUtil.reset("Main");
+    NavigationUtil.reset("AppNavigator");
   }
 
   _deleteSphere(state) {
@@ -239,6 +239,7 @@ text:lang("_Are_you_sure_you_want_to__right"), onPress:() => {
                 this._processLocalDeletion();
               })
               .catch((err) => {
+                console.log("ERROR", err)
                 core.eventBus.emit('hideLoading');
                 Alert.alert(
 lang("_Could_not_delete_Sphere__header"),

@@ -469,8 +469,7 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
           }
           else {
             core.eventBus.emit("userLoggedInFinished");
-            if (Platform.OS === 'android') { NavigationUtil.navigate("Main"); }
-            else                           { NavigationUtil.navigate("Main"); }
+            NavigationUtil.navigate("AppNavigator");
           }
         }, 100);
       })

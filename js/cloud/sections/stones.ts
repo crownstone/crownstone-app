@@ -1,5 +1,6 @@
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import { cloudApiBase } from "./cloudApiBase";
+import { cloudApiBase, TokenStore } from "./cloudApiBase";
+import { CLOUD } from "../cloudAPI";
 
 export const stones = {
   /**
@@ -106,8 +107,8 @@ export const stones = {
       .then(() => {
         if (doNotSetUpdatedTimes !== true) {
           let promises = [];
-          promises.push(cloudApiBase.forSphere(localSphereId).updateStone(cloudApiBase._stoneId,{locationId: cloudLocationId, updatedAt: updatedAt}));
-          promises.push(cloudApiBase.forSphere(localSphereId).updateLocation(localLocationId,   {updatedAt: updatedAt}));
+          promises.push(CLOUD.forSphere(localSphereId).updateStone(TokenStore.stoneId,{locationId: cloudLocationId, updatedAt: updatedAt}));
+          promises.push(CLOUD.forSphere(localSphereId).updateLocation(localLocationId,   {updatedAt: updatedAt}));
           // we set the updatedAt time in the cloud since changing the links does not update the time there
           return Promise.all(promises);
         }
@@ -138,8 +139,8 @@ export const stones = {
       )
       .then(() => {
         let promises = [];
-        promises.push(cloudApiBase.forSphere(localSphereId).updateStone(cloudApiBase._stoneId,{updatedAt: updatedAt}));
-        promises.push(cloudApiBase.forSphere(localSphereId).updateLocation(localLocationId,   {updatedAt: updatedAt}));
+        promises.push(CLOUD.forSphere(localSphereId).updateStone(TokenStore.stoneId,{updatedAt: updatedAt}));
+        promises.push(CLOUD.forSphere(localSphereId).updateLocation(localLocationId,   {updatedAt: updatedAt}));
         // we set the updatedAt time in the cloud since changing the links does not update the time there
         return Promise.all(promises);
       })
