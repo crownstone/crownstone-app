@@ -194,8 +194,6 @@ export const cloudApiBase = {
 
 
 function _getId(url, obj) : string {
-  console.log("Getting ID", url, obj)
-
   let usersLocation = url.indexOf('users');
   if (usersLocation !== -1 && usersLocation < 3)
     return obj.userId;

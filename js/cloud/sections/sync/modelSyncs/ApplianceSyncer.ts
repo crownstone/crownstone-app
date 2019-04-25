@@ -77,17 +77,17 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
   }
 
   syncUp(store, appliancesInState, localApplianceIdsSynced) {
-    let localApplianceIds = Object.keys(appliancesInState);
-
-    localApplianceIds.forEach((applianceId) => {
-      let appliance = appliancesInState[applianceId];
-      this.syncLocalApplianceUp(
-        store,
-        appliance,
-        applianceId,
-        localApplianceIdsSynced[applianceId] === true
-      )
-    });
+    // let localApplianceIds = Object.keys(appliancesInState);
+    //
+    // localApplianceIds.forEach((applianceId) => {
+    //   let appliance = appliancesInState[applianceId];
+    //   this.syncLocalApplianceUp(
+    //     store,
+    //     appliance,
+    //     applianceId,
+    //     localApplianceIdsSynced[applianceId] === true
+    //   )
+    // });
   }
 
 

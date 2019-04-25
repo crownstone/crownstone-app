@@ -61,9 +61,8 @@ const NewBehaviourStack = createStackNavigator(
   {
     DeviceSmartBehaviour :                    Views.DeviceSmartBehaviour,
     DeviceSmartBehaviour_Editor :             Views.DeviceSmartBehaviour_Editor,
-    DeviceSmartBehaviour_TypeStart    :       Views.DeviceSmartBehaviour_TypeStart,
     DeviceSmartBehaviour_TypeSelector :       Views.DeviceSmartBehaviour_TypeSelector,
-    DeviceSmartBehaviour2 :                   Views.DeviceSmartBehaviour2,
+    DeviceSmartBehaviour_TypeStart :          Views.DeviceSmartBehaviour_TypeStart,
   },
   {
     ...defaultHeader
@@ -221,8 +220,8 @@ const FactoryResetStack = createStackNavigator(
 
 const AppStack = createStackNavigator(
   {
-    // IconDebug: {
-    //   screen: wrap("IconDebug", Views.IconDebug),
+    // test: {
+    //   screen: wrap("InterviewLight", InterviewLight),
     // },
     AppNavigator: {
       screen: TabNavigator,

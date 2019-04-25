@@ -10,40 +10,63 @@ import {
   View
 } from 'react-native';
 import { Background } from "../../components/Background";
-import { colors, OrangeLine, screenHeight, screenWidth, topBarHeight } from "../../styles";
+import { colors, OrangeLine, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
 import { core } from "../../../core";
-const Swiper = require("react-native-swiper");
-
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { HiddenFadeInView } from "../../components/animated/FadeInView";
 
 export class AddSphereTutorial extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return { title: lang("New_Sphere")}
   };
-
-  requestedPermission;
+  _carousel
 
   constructor(props) {
     super(props);
 
-    this.requestedPermission = false;
-    this.state = {swiperIndex: 0, scrolling: false};
+    this.state = {activeSlide: 0};
   }
 
+  _renderItem({item, index}) {
+    return item;
+  }
+
+
   render() {
+    let components = this._getContent();
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
         <OrangeLine/>
-        <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight} width={screenWidth}
-          dot={<View style={{backgroundColor: colors.white.rgba(0.35), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.black.rgba(0.1)}} />}
-          activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}
-          loop={false}
-          bounces={true}
-        >
-          { this._getContent() }
-        </Swiper>
+        <Carousel
+          ref={(c) => { this._carousel = c; }}
+          data={components}
+          renderItem={this._renderItem}
+          sliderWidth={screenWidth}
+          itemWidth={screenWidth}
+          onSnapToItem={(index) => this.setState({ activeSlide: index }) }
+        />
+        <HiddenFadeInView visible={this.state.activeSlide !== components.length - 1} style={{position:'absolute', bottom:0, width:screenWidth}}>
+          <Pagination
+            dotsLength={components.length}
+            activeDotIndex={this.state.activeSlide}
+            containerStyle={{ backgroundColor: colors.black.rgba(0.3 )}}
+            dotStyle={{
+              width: 10,
+              height: 10,
+              borderRadius: 5,
+              marginHorizontal: 8,
+              backgroundColor: 'rgba(255, 255, 255, 0.92)'
+            }}
+            inactiveDotStyle={{
+              // Define styles for inactive dots here
+            }}
+            inactiveDotOpacity={0.4}
+            inactiveDotScale={0.6}
+          />
+        </HiddenFadeInView>
       </Background>
     )
   }

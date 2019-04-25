@@ -13,6 +13,7 @@ type aicorePresenceStoneLocationData = { type: "IN_STONE_LOCATION", locationIds:
 
 type aicoreTimeAlways   = { type: "ALL_DAY" }
 type aicoreTimeRange    = { type: "RANGE", from: aicoreTimeData, to: aicoreTimeData }
+type aicoreTimeRangeTwilight = { from: aicoreTimeData, to: aicoreTimeData }
 type aicoreTime         = aicoreTimeAlways | aicoreTimeRange
 
 type aicoreTimeDataSun   = { type: sunTimes, offsetMinutes: number}
@@ -68,10 +69,7 @@ interface twilight {
     type: "DIM_WHEN_TURNED_ON",
     data: number,
   },
-  time: {
-    from: aicoreTimeData,
-    to:   aicoreTimeData,
-  },
+  time: aicoreTimeRangeTwilight,
 }
 
 // TYPE: EVENT

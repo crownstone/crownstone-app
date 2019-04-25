@@ -10,7 +10,10 @@ import { core } from "../../../../../core";
 
 export const AicoreUtil = {
 
-  extractActionString(rule : behaviour) {
+  extractActionString(rule : behaviour | twilight) {
+    if (rule.action.type === "DIM_WHEN_TURNED_ON") {
+      return "dimmed to " + Math.round(rule.action.data * 100) + "%";
+    }
     if (rule.action.data < 1) {
       return "dimmed at " + Math.round(rule.action.data * 100) + "%";
     }
@@ -74,12 +77,12 @@ export const AicoreUtil = {
   },
 
 
-  extractTimeString(rule : behaviour) {
+  extractTimeString(rule : behaviour | twilight) {
     let timeStr = "";
 
     let time = rule.time;
-    if (time.type != AICORE_TIME_TYPES.ALL_DAY) {
-      // @ts-ignore
+    // @ts-ignore
+    if (time.type === undefined || time.type != AICORE_TIME_TYPES.ALL_DAY) {
       let tr = time as aicoreTimeRange;
       let noOffset = (tr.from as aicoreTimeDataSun).offsetMinutes === 0 && (tr.to as aicoreTimeDataSun).offsetMinutes === 0;
       if ((tr.from.type === AICORE_TIME_DETAIL_TYPES.SUNRISE && tr.to.type === AICORE_TIME_DETAIL_TYPES.SUNSET) && noOffset) {
@@ -118,7 +121,6 @@ export const AicoreUtil = {
 
     return timeStr;
   },
-
 
 
   extractOptionStrings(rule : behaviour) {
@@ -201,6 +203,18 @@ export const AicoreUtil = {
       }
       return str;
     }
+  },
+
+
+  getWordLength(word) {
+    let result = 0;
+    let letterWidthMap = { I: 4, " ": 5, m: 16, w: 16, rest: 11, ".": 2 };
+    for (let i = 0; i < word.length; i++) {
+      if (word[i]) {
+        result += letterWidthMap[word[i]] || letterWidthMap.rest;
+      }
+    }
+    return result;
   },
 
 }

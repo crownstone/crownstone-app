@@ -40,6 +40,7 @@ const PushNotification = require('react-native-push-notification');
 import DeviceInfo from 'react-native-device-info';
 import { core } from "../core";
 import { cleanLogs } from "../logging/LogUtil";
+import { migrate } from "./migration/StoreMigration";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -97,6 +98,7 @@ class BackgroundProcessHandlerClass {
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
       core.eventBus.on('userLoggedInFinished', () => {
+        migrate();
 
         // init behaviour based on if we are in the foreground or the background.
         this._applyAppStateOnScanning(AppState.currentState);

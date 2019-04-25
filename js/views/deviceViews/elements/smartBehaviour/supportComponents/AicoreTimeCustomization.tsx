@@ -1,42 +1,20 @@
 import React, { useState,useEffect, Component } from 'react';
 import {
-  TouchableOpacity,
   Text,
-  View, TextStyle, ViewStyle, ScrollView
+  View, TextStyle
 } from "react-native";
 import { availableScreenHeight, colors, deviceStyles, screenHeight, screenWidth, styles } from "../../../../styles";
-import { ScaledImage } from "../../../../components/ScaledImage";
-import { OverlayBox } from "../../../../components/overlays/OverlayBox";
-import { Icon } from "../../../../components/Icon";
 import Slider from '@react-native-community/slider';
 
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
-import { AicoreUtil } from "../supportCode/AicoreUtil";
-import { FadeInView } from "../../../../components/animated/FadeInView";
+import { FadeIn } from "../../../../components/animated/FadeInView";
 import { xUtil } from "../../../../../util/StandAloneUtil";
 import { AicoreBehaviour, AicoreTimeData } from "../supportCode/AicoreBehaviour";
+import { TextButtonDark, TimeButtonWithImage } from "../../../../components/InterviewComponents";
 
 
 let timeReference = null;
-let buttonStyle : ViewStyle = {
-  flexDirection:'row',
-  margin:10,
-  marginTop:5,
-  marginBottom:5,
-  paddingTop:10,
-  paddingBottom:10,
-  paddingLeft:15,
-  alignItems:'center',
-  backgroundColor: colors.csBlue.rgba(0.2),
-  borderRadius:10
-};
 
-let textStyle : TextStyle = {
-  fontSize: 15,
-  width:  0.9*screenWidth-30 - 0.06*screenWidth - 75 - 35,
-  fontWeight: "bold",
-  color: colors.csBlue.hex
-};
 
 let headerStyle : TextStyle = {
   paddingLeft: 15,
@@ -102,6 +80,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
               this.props.save(tempBehaviour.getTime());
             }}/>
           : undefined}
+        <View style={{ height: 5 }}/>
       </View>
     )
   }
@@ -173,7 +152,7 @@ function TimePart(props : {
               </FadeIn>
               <FadeIn index={index++}>
                 <View style={{ marginLeft: 25 }}>
-                  <TextButton label={"That's a good time!"} callback={() => {
+                  <TextButtonDark label={"That's a good time!"} callback={() => {
                     setFinished(true);
                     props.setFinished(true);
                   }}/>
@@ -302,39 +281,3 @@ function TypeSelector(props) {
   );
 }
 
-
-function TimeButtonWithImage(props) {
-  return (
-    <FadeIn index={props.index || 0}>
-      <TouchableOpacity style={buttonStyle} onPress={() => { props.callback(); }}>
-        <ScaledImage source={props.image} sourceWidth={100} sourceHeight={100} targetHeight={40}/>
-        <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
-        <Text style={textStyle} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</Text>
-      </TouchableOpacity>
-    </FadeIn>
-  );
-}
-
-
-function TextButton(props) {
-  return (
-    <TouchableOpacity style={buttonStyle} onPress={() => { props.callback(); }}>
-      <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
-      <Text style={textStyle}>{props.label}</Text>
-    </TouchableOpacity>
-  );
-}
-
-
-function FadeIn(props) {
-  let [visible, setVisible] = useState(false)
-  if (visible === false) {
-    setTimeout(() => { setVisible(true); }, 0);
-  }
-
-  return (
-    <FadeInView visible={visible} delay={props.index * 65 || 0}>
-      {props.children}
-    </FadeInView>
-  );
-}

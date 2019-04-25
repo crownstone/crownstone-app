@@ -51,7 +51,6 @@ export class SimpleOverlay extends Component<any, any> {
   }
 
 
-
   close() {
     this.customContent = null;
     this.setState({ visible:false });

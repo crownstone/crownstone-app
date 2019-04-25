@@ -125,6 +125,7 @@ interface core {
     menuRemoteNotConnected : any,
     mainDarkLogo           : any,
     mainDark               : any,
+    light                  : any,
     detailsDark            : any,
   },
   store: any,

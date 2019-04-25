@@ -1,5 +1,5 @@
 
-import { Languages } from "../../../../Languages"
+import { Languages } from "../../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
@@ -18,16 +18,16 @@ import {
   colors,
   deviceStyles,
   OrangeLine,
-  screenWidth} from "../../../styles";
-import { Background } from "../../../components/Background";
-import { ScaledImage } from "../../../components/ScaledImage";
-import { Icon } from "../../../components/Icon";
-import { core } from "../../../../core";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
-import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
+  screenWidth} from "../../../../styles";
+import { Background } from "../../../../components/Background";
+import { ScaledImage } from "../../../../components/ScaledImage";
+import { Icon } from "../../../../components/Icon";
+import { core } from "../../../../../core";
+import { NavigationUtil } from "../../../../../util/NavigationUtil";
+import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 
 
-export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]}, any> {
+export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[], image: any, header:string}, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
@@ -54,12 +54,10 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
         <ScrollView style={{height:availableScreenHeight, width: screenWidth,}}>
           <View style={{ width: screenWidth, alignItems:'center', paddingBottom:30 }}>
             <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ "Smart Behaviour" }</Text>
-            <View style={{height: 0.2*iconHeight}} />
-            <Text style={deviceStyles.specification}>{"Presence aware behaviour"}</Text>
-            <View style={{height: 0.2*iconHeight}} />
-            <ScaledImage source={require('../../../../images/icons/presence.png')} sourceWidth={125} sourceHeight={162} targetWidth={0.15*availableScreenHeight} />
-            <View style={{height: 0.2*iconHeight}} />
+            <Text style={deviceStyles.header}>{this.props.header}</Text>
+            <View style={{height: 0.75*iconHeight}} />
+            { this.props.image }
+            <View style={{height: 0.5*iconHeight}} />
             <Text style={deviceStyles.explanation}>Pick an example behaviour and change it to your liking! Keep in mind that I'll be off when I'm not supposed to be on.</Text>
             <View style={{height: 0.2*iconHeight}} />
               { this.getExamples() }

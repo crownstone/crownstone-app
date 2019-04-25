@@ -179,6 +179,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     let topPositionOfDesignElements = (screenHeight - height) / 4;
     let designElementSize = 0.38 * screenWidth;
     let closeIconSize = 40
+    let topPadding = 12;
     let padding = 0.03*screenWidth;
 
     let innerPaddingTop = this.props.getDesignElement ?
@@ -188,7 +189,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
 
 
     let innerChildrenArea = (
-      <View style={{ minHeight: height - innerPaddingTop }}>
+      <View style={{ minHeight: height - innerPaddingTop - 2*topPadding}}>
         {this.props.getDesignElement ? <View style={{height:35}} /> : undefined}
         {this.props.children}
       </View>
@@ -211,7 +212,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
         maxOpacity={this.props.maxOpacity}
         visible={this.props.visible}
       >
-        <View style={{backgroundColor:colors.white.rgba(0.5), width: width, height: height, borderRadius: 25, padding: 12}}>
+        <View style={{backgroundColor:colors.white.rgba(0.5), width: width, height: height, borderRadius: 25, padding: topPadding}}>
           <View style={[
             styles.centered,
             {

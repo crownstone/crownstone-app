@@ -70,12 +70,10 @@ import { SwitchCraftInformation }      from "../views/deviceViews/elements/Switc
 import { ToonAdd }                     from "../views/thirdParty/toon/ToonAdd";
 import { ToonSettings }                from "../views/thirdParty/toon/ToonSettings";
 import { ToonOverview }                from "../views/thirdParty/toon/ToonOverview";
-import { DeviceSmartBehaviour } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour";
-import { DeviceSmartBehaviour2 } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour2";
+import { DeviceSmartBehaviour }        from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour";
 import { DeviceSmartBehaviour_TypeSelector } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeSelector";
-import { DeviceSmartBehaviour_TypeStart }   from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart";
-import { DeviceSmartBehaviour_CreateNewBehaviour } from "../views/deviceViews/elements/smartBehaviour/prototyping/DeviceSmartBehaviour_CreateNewBehaviour";
-import { DeviceSmartBehaviour_Editor } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor";
+import { DeviceSmartBehaviour_Editor }       from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor";
+import { DeviceSmartBehaviour_TypeStart }    from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart";
 
 export const Views = {
   AddItemsToSphere:               withMappedNavigationProps()(AddItemsToSphere),
@@ -92,11 +90,9 @@ export const Views = {
   // DeviceOverview:                 withMappedNavigationProps()((props) => { return <DeviceOverview {...props} sphereId={"6bb1dfe9-b4a7-c2aa-7a7c-d4d837b1451b"} stoneId={"5a1f3fd0-7c3f-3873-3141-a6e4c89dfe86"} />}),
   DeviceScheduleEdit:             withMappedNavigationProps()(DeviceScheduleEdit),
   DeviceSmartBehaviour:           withMappedNavigationProps()(DeviceSmartBehaviour),
-  DeviceSmartBehaviour2:          withMappedNavigationProps()(DeviceSmartBehaviour2),
-  DeviceSmartBehaviour_CreateNewBehaviour: withMappedNavigationProps()(DeviceSmartBehaviour_CreateNewBehaviour),
-  DeviceSmartBehaviour_Editor:             withMappedNavigationProps()(DeviceSmartBehaviour_Editor),
-  DeviceSmartBehaviour_TypeSelector:       withMappedNavigationProps()(DeviceSmartBehaviour_TypeSelector),
-  DeviceSmartBehaviour_TypeStart:          withMappedNavigationProps()(DeviceSmartBehaviour_TypeStart),
+  DeviceSmartBehaviour_Editor:       withMappedNavigationProps()(DeviceSmartBehaviour_Editor),
+  DeviceSmartBehaviour_TypeSelector: withMappedNavigationProps()(DeviceSmartBehaviour_TypeSelector),
+  DeviceSmartBehaviour_TypeStart:    withMappedNavigationProps()(DeviceSmartBehaviour_TypeStart),
   IconDebug:                      withMappedNavigationProps()(IconDebug),
   Login:                          withMappedNavigationProps()(Login),
   LoginSplash:                    withMappedNavigationProps()(LoginSplash),

@@ -24,10 +24,6 @@ export class DeviceSmartBehaviour_Editor extends Component<any, any> {
     }
   };
 
-  constructor(props) {
-    super(props)
-  }
-
 
   render() {
     return (
@@ -37,7 +33,7 @@ export class DeviceSmartBehaviour_Editor extends Component<any, any> {
         <ScrollView style={{width: screenWidth}}>
           <View style={{flex:1, width: screenWidth, minHeight:availableScreenHeight, alignItems:'center'}}>
             <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ "New Behaviour" }</Text>
+            <Text style={[deviceStyles.header]}>{ "Create my Behaviour" }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{"Tap the underlined parts to customize them!"}</Text>
             <RuleEditor data={this.props.data} />

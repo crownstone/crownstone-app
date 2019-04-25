@@ -44,6 +44,17 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
 
 
   render() {
+    return (
+      <Background image={core.background.detailsDark} hasNavBar={false}>
+        <OrangeLine/>
+        <DeviceSmartBehaviour_TypeSelectorBody {...this.props} />
+      </Background>
+    )
+  }
+}
+
+export class DeviceSmartBehaviour_TypeSelectorBody extends Component<any, any> {
+  render() {
     let iconHeight  = 0.10*availableScreenHeight;
     let blockHeight = 0.22*availableScreenHeight;
 
@@ -51,48 +62,45 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
     let blockWrapperStyle : ViewStyle = { flexDirection: 'row',  paddingLeft:0.05*screenWidth, paddingRight: 0.05*screenWidth };
 
     return (
-      <Background image={core.background.detailsDark} hasNavBar={false}>
-        <OrangeLine/>
-        <ScrollView>
-          <View style={{ width: screenWidth, minHeight:availableScreenHeight, alignItems:'center' }}>
-            <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ "New Behaviour" }</Text>
-            <View style={{height: 0.2*iconHeight}} />
-            <Text style={deviceStyles.specification}>{"What sort of behaviour shall I learn?"}</Text>
-            <View style={{height: 0.2*iconHeight}} />
-            <View style={{flex:1}} />
-            <View style={blockWrapperStyle}>
-              <TypeBlock
-                image={{source: require('../../../../images/icons/presence.png'), width: 125, height: 162}}
-                type={SMART_BEHAVIOUR_TYPES.PRESENCE}
-                label={"Presence aware"}
-              />
-              <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} />
-              <TypeBlock
-                image={{source: require('../../../../images/icons/smartTimer.png'), width: 140, height: 140}}
-                type={SMART_BEHAVIOUR_TYPES.SMART_TIMER}
-                label={"Smart timer"}
-              />
-            </View>
-            <HorizontalGradientLine width={0.9*screenWidth} color={colors.csBlueDark.hex} inverted={true} />
-            <View style={blockWrapperStyle}>
-              <TypeBlock
-                image={{source: require('../../../../images/icons/childLock.png'), width: 124, height: 128}}
-                type={SMART_BEHAVIOUR_TYPES.CHILD_SAFETY}
-                label={"Child safety"}
-              />
-              <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} inverted={true} />
-              <TypeBlock
-                image={{source: require('../../../../images/icons/twilight.png'), width: 149, height: 112}}
-                type={SMART_BEHAVIOUR_TYPES.TWILIGHT_MODE}
-                label={"Twilight mode"}
-              />
-            </View>
-          <View style={{flex:1}} />
-          </View>
-        </ScrollView>
-      </Background>
-    )
+      <ScrollView>
+      <View style={{ width: screenWidth, minHeight:availableScreenHeight, alignItems:'center' }}>
+        <View style={{height: 30}} />
+        <Text style={[deviceStyles.header]}>{ "New Behaviour" }</Text>
+        <View style={{height: 0.2*iconHeight}} />
+        <Text style={deviceStyles.specification}>{"What sort of behaviour shall I learn?"}</Text>
+        <View style={{height: 0.2*iconHeight}} />
+        <View style={{flex:1}} />
+        <View style={blockWrapperStyle}>
+          <TypeBlock
+            image={{source: require('../../../../images/icons/presence.png'), width: 125, height: 162}}
+            type={SMART_BEHAVIOUR_TYPES.PRESENCE}
+            label={"Presence aware"}
+          />
+          <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} />
+          <TypeBlock
+            image={{source: require('../../../../images/icons/smartTimer.png'), width: 140, height: 140}}
+            type={SMART_BEHAVIOUR_TYPES.SMART_TIMER}
+            label={"Smart timer"}
+          />
+        </View>
+        <HorizontalGradientLine width={0.9*screenWidth} color={colors.csBlueDark.hex} inverted={true} />
+        <View style={blockWrapperStyle}>
+          <TypeBlock
+            image={{source: require('../../../../images/icons/childLock.png'), width: 124, height: 128}}
+            type={SMART_BEHAVIOUR_TYPES.CHILD_SAFETY}
+            label={"Child safety"}
+          />
+          <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} inverted={true} />
+          <TypeBlock
+            image={{source: require('../../../../images/icons/twilight.png'), width: 149, height: 112}}
+            type={SMART_BEHAVIOUR_TYPES.TWILIGHT_MODE}
+            label={"Twilight mode"}
+          />
+        </View>
+        <View style={{flex: 10}} />
+      </View>
+      </ScrollView>
+    );
   }
 }
 
