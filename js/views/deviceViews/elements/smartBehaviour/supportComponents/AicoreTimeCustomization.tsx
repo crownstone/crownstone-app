@@ -1,5 +1,6 @@
 import React, { useState,useEffect, Component } from 'react';
 import {
+  Alert,
   Text,
   View, TextStyle
 } from "react-native";
@@ -9,8 +10,10 @@ import Slider from '@react-native-community/slider';
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
 import { FadeIn } from "../../../../components/animated/FadeInView";
 import { xUtil } from "../../../../../util/StandAloneUtil";
-import { AicoreBehaviour, AicoreTimeData } from "../supportCode/AicoreBehaviour";
+import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { TextButtonDark, TimeButtonWithImage } from "../../../../components/InterviewComponents";
+import { AicoreUtil } from "../supportCode/AicoreUtil";
+import { AicoreTimeData } from "../supportCode/AicoreTimeData";
 
 
 let timeReference = null;
@@ -74,10 +77,15 @@ export class AicoreTimeCustomization extends Component<any,any> {
             label={"Looks good!"}
             image={require("../../../../../images/icons/timeIcon.png")}
             callback={() => {
-              let tempBehaviour = new AicoreBehaviour();
-              tempBehaviour.insertTimeDataFrom(this.fromTime);
-              tempBehaviour.insertTimeDataTo(this.toTime);
-              this.props.save(tempBehaviour.getTime());
+              if (AicoreUtil.isSameTime(this.fromTime, this.toTime)) {
+                Alert.alert("The start and ending times can't be the same!", "Check the times you set to make sure they're not exactly the same.",[{text:"OK"}])
+              }
+              else {
+                let tempBehaviour = new AicoreBehaviour();
+                tempBehaviour.insertTimeDataFrom(this.fromTime);
+                tempBehaviour.insertTimeDataTo(this.toTime);
+                this.props.save(tempBehaviour.getTime());
+              }
             }}/>
           : undefined}
         <View style={{ height: 5 }}/>

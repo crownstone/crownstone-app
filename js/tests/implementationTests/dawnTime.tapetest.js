@@ -6,7 +6,7 @@ test('dawn', function (t) {
   let lat = 51.923611570463152;
   let lon = 4.4667693378575288;
   // get today's sunlight times for Rotterdam
-  var times = SunCalc.getTimes(new Date("2019/06/21"), lat, lon);
+  var times = SunCalc.getTimes(new Date(), lat, lon);
 
   console.log(times);
 

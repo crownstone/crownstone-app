@@ -72,6 +72,7 @@ interface twilight {
 
 
 interface behaviourWrapper {
+  type: "BEHAVIOUR" | "TWILIGHT"
   data: behaviour | twilight,
   activeDays: dayOfWeek,
   version: number,

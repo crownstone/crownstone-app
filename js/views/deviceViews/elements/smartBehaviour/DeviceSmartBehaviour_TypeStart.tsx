@@ -14,9 +14,10 @@ import { core } from "../../../../core";
 import { availableScreenHeight } from "../../../styles";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
+import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 
 
-export class DeviceSmartBehaviour_TypeStart extends Component<any, any> {
+export class DeviceSmartBehaviour_TypeStart extends Component<{stoneId: string, sphereId: string, type: string}, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
@@ -56,8 +57,9 @@ export class DeviceSmartBehaviour_TypeStart extends Component<any, any> {
     return examples;
   }
   _getTwilightModeExamples() {
-    let examples : behaviour[] = [];
-
+    let examples : AicoreTwilight[] = [];
+    examples.push(new AicoreTwilight().setDimAmount(0.5).setTimeWhenDark())
+    examples.push(new AicoreTwilight().setDimAmount(0.35).setTimeFrom(23,30).setTimeToSunrise())
     return examples;
   }
   _getChildSafetyExamples() {
@@ -84,13 +86,13 @@ export class DeviceSmartBehaviour_TypeStart extends Component<any, any> {
         break;
       case SMART_BEHAVIOUR_TYPES.TWILIGHT_MODE:
         examples = this._getTwilightModeExamples();
-        image = <ScaledImage source={require("../../../../images/icons/twilight.png")} sourceWidth={124} sourceHeight={128} targetWidth={0.15*availableScreenHeight} />;
+        image = <ScaledImage source={require("../../../../images/icons/twilight.png")} sourceWidth={149} sourceHeight={112} targetWidth={0.15*availableScreenHeight} />;
         header = "Twilight Mode";
         twilightRules = true;
         break;
       case SMART_BEHAVIOUR_TYPES.CHILD_SAFETY:
         examples = this._getChildSafetyExamples();
-        image = <ScaledImage source={require("../../../../images/icons/childLock.png")} sourceWidth={149} sourceHeight={112} targetWidth={0.15*availableScreenHeight} />;
+        image = <ScaledImage source={require("../../../../images/icons/childLock.png")} sourceWidth={124} sourceHeight={128} targetWidth={0.15*availableScreenHeight} />;
         header = "Child Safety";
         break;
       default:

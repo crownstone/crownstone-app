@@ -27,7 +27,7 @@ import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 
 
-export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[], image: any, header:string, twilightRules: boolean}, any> {
+export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[], image: any, header:string, twilightRules: boolean, sphereId: string, stoneId: string}, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
@@ -39,7 +39,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
   getExamples() {
     let examples = [];
     this.props.examples.forEach((example, index) => {
-      examples.push(<BehaviourExample data={example} key={"behaviourExample_" + index} twilightRule={this.props.twilightRules} />);
+      examples.push(<BehaviourExample data={example} key={"behaviourExample_" + index} twilightRule={this.props.twilightRules} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
     })
     return examples;
   }
@@ -70,7 +70,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
 }
 
 
-class BehaviourExample extends Component<{data: AicoreBehaviour | AicoreTwilight, twilightRule: boolean}, any> {
+class BehaviourExample extends Component<{data: AicoreBehaviour | AicoreTwilight, twilightRule: boolean, stoneId: string, sphereId: string}, any> {
   render() {
     return (
       <TouchableOpacity style={{
@@ -80,7 +80,7 @@ class BehaviourExample extends Component<{data: AicoreBehaviour | AicoreTwilight
         backgroundColor:colors.white.rgba(0.3),
         width: screenWidth,
         alignItems:'center'}}
-      onPress={() => { NavigationUtil.navigate("DeviceSmartBehaviour_Editor", {data: this.props.data, twilightRule: this.props.twilightRule})}}>
+      onPress={() => { NavigationUtil.navigate("DeviceSmartBehaviour_Editor", {...this.props})}}>
         <View style={{width:screenWidth-20}}>
           <Text style={{
             fontWeight:'500',

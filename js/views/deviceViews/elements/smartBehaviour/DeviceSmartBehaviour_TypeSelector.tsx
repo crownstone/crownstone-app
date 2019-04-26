@@ -72,12 +72,14 @@ export class DeviceSmartBehaviour_TypeSelectorBody extends Component<any, any> {
         <View style={{flex:1}} />
         <View style={blockWrapperStyle}>
           <TypeBlock
+            {...this.props}
             image={{source: require('../../../../images/icons/presence.png'), width: 125, height: 162}}
             type={SMART_BEHAVIOUR_TYPES.PRESENCE}
             label={"Presence aware"}
           />
           <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} />
           <TypeBlock
+            {...this.props}
             image={{source: require('../../../../images/icons/smartTimer.png'), width: 140, height: 140}}
             type={SMART_BEHAVIOUR_TYPES.SMART_TIMER}
             label={"Smart timer"}
@@ -86,12 +88,14 @@ export class DeviceSmartBehaviour_TypeSelectorBody extends Component<any, any> {
         <HorizontalGradientLine width={0.9*screenWidth} color={colors.csBlueDark.hex} inverted={true} />
         <View style={blockWrapperStyle}>
           <TypeBlock
+            {...this.props}
             image={{source: require('../../../../images/icons/childLock.png'), width: 124, height: 128}}
             type={SMART_BEHAVIOUR_TYPES.CHILD_SAFETY}
             label={"Child safety"}
           />
           <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} inverted={true} />
           <TypeBlock
+            {...this.props}
             image={{source: require('../../../../images/icons/twilight.png'), width: 149, height: 112}}
             type={SMART_BEHAVIOUR_TYPES.TWILIGHT_MODE}
             label={"Twilight mode"}

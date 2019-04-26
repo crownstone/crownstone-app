@@ -9,6 +9,9 @@ import { Icon } from "../../../../components/Icon";
 import { colors, screenWidth } from "../../../../styles";
 import { xUtil } from "../../../../../util/StandAloneUtil";
 import { core } from "../../../../../core";
+import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
+import { AicoreTwilight } from "../supportCode/AicoreTwilight";
+import { AicoreUtil } from "../supportCode/AicoreUtil";
 
 
 export class SmartBehaviourSummaryGraph extends Component<any, any> {
@@ -20,6 +23,29 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
   }
 
   render() {
+    let ruleIds = Object.keys(this.props.rules);
+    let onArray = [];
+    let presenceArray = [];
+    let twilightArray = [];
+
+    ruleIds.forEach((ruleId) => {
+      let rule = this.props.rules[ruleId];
+      let ai;
+      if (rule.type === "BEHAVIOUR") {
+        ai = new AicoreBehaviour(rule.data);
+        if (ai.isUsingPresence()) {
+          presenceArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId)})
+        }
+        else {
+          onArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId)})
+        }
+      }
+      else if (rule.type === "TWILIGHT") {
+        ai = new AicoreTwilight(rule.data);
+        twilightArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId)})
+      }
+    })
+
     return (
       <View style={{flexDirection:'row', width:screenWidth, height:90}}>
         <View style={{flex:1}} />
@@ -27,9 +53,9 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
           <View style={{width:screenWidth*0.8, height:100}}>
             <DayNightIndicator id={this.id} />
             <View style={{postion:'absolute', left:0, top:15, width:screenWidth*0.8, height:75}}>
-              <SmartBehaviourSummaryGraphElement dataColor={colors.green.hex}       icon={'md-power'}        iconSize={17} times={[{start:'15:30', end:'22:00'}]} id={this.id} explanation={"When I will be on."} />
-              <SmartBehaviourSummaryGraphElement dataColor={colors.csBlue.hex}      icon={'c1-locationPin1'} iconSize={14} times={[{start:'23:00', end:'8:00'}]}  id={this.id} explanation={"When I'll be on based on presence."} />
-              <SmartBehaviourSummaryGraphElement dataColor={colors.blinkColor2.hex} icon={'ios-leaf'}        iconSize={17} times={[{start:'20:30', end:'5:00'}]}  id={this.id} explanation={"When twilight mode is active."} />
+              <SmartBehaviourSummaryGraphElement dataColor={colors.green.hex}       icon={'md-power'}        iconSize={17} times={onArray}       id={this.id} explanation={"When I will be on."} />
+              <SmartBehaviourSummaryGraphElement dataColor={colors.csBlueDark.hex}  icon={'c1-locationPin1'} iconSize={14} times={presenceArray} id={this.id} explanation={"When I'll be on based on presence."} />
+              <SmartBehaviourSummaryGraphElement dataColor={colors.blinkColor2.hex} icon={'ios-leaf'}        iconSize={17} times={twilightArray} id={this.id} explanation={"When twilight mode is active."} />
             </View>
             <TimeSelector id={this.id} />
           </View>
@@ -221,7 +247,7 @@ class TimeSelector extends Component<any, any> {
 
   render() {
     let width = 0.8*screenWidth - 25;
-    let time = "15:50";
+    let time = AicoreUtil.getClockTimeStr(new Date().getHours(), new Date().getMinutes());
 
     return (
       <View style={{position:'absolute', top:0, left: 25, width:width, height:90}}>

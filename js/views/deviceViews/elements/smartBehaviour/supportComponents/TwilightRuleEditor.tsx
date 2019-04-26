@@ -12,10 +12,11 @@ import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { xUtil } from "../../../../../util/StandAloneUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
+import { NavigationUtil } from "../../../../../util/NavigationUtil";
 
 
 
-export class TwilightRuleEditor extends Component<{data:twilight}, any> {
+export class TwilightRuleEditor extends Component<{data:twilight,sphereId: string, stoneId:string, ruleId?:string}, any> {
   references = [];
   amountOfLines = 0;
   rule : AicoreTwilight;
@@ -395,9 +396,8 @@ export class TwilightRuleEditor extends Component<{data:twilight}, any> {
         <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
           <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
             <TouchableOpacity onPress={() => {
-              // todo:
-              // check if there is a lock
-
+              this._storeRule();
+              NavigationUtil.backTo("DeviceSmartBehaviour")
             }} style={{
               width:0.5*screenWidth, height:60, borderRadius:20,
               backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
@@ -410,6 +410,35 @@ export class TwilightRuleEditor extends Component<{data:twilight}, any> {
     );
   }
 
+
+  _storeRule() {
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    if (!sphere) return;
+    let stone = sphere.stones[this.props.stoneId];
+    if (!stone) return;
+
+    let activeDays = { Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: true, Sun: true };
+    if (this.props.ruleId) {
+      let rule = stone.rules[this.props.ruleId];
+      if (rule) {
+        activeDays = rule.activeDays;
+      }
+    }
+    core.store.dispatch({
+      type:"ADD_STONE_RULE",
+      sphereId: this.props.sphereId,
+      stoneId: this.props.stoneId,
+      ruleId: this.props.ruleId || undefined,
+      data: {
+        type:"TWILIGHT",
+        data: this.rule.stringify(),
+        activeDays: activeDays,
+        syncedToCrownstone: false
+      }
+    });
+
+  }
 
   render() {
     return (

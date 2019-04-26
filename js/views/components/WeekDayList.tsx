@@ -39,9 +39,7 @@ export class WeekDayList extends Component<any, any> {
         <TouchableOpacity
           key={'selectableDay'+i}
           onPress={() => {
-            let newState = {...this.props.data};
-            newState[DAYS[i]] = !this.props.data[DAYS[i]];
-            this.props.onChange(newState);
+            this.props.onChange(DAYS[i]);
           }}
           style={{
             width: size,
@@ -56,7 +54,7 @@ export class WeekDayList extends Component<any, any> {
         >
           <Text style={{
             fontSize:12,
-            fontWeight: this.props.data[DAYS[i]] ? 'bold' : '300',
+            fontWeight: 'bold',
             color: this.props.data[DAYS[i]] ? colors.white.hex : ( this.props.darkTheme === true ? colors.white.hex : colors.darkBackground.rgba(0.6)),
             backgroundColor:"transparent"
           }}>{localizedDays[i]}</Text>
@@ -73,7 +71,7 @@ export class WeekDayList extends Component<any, any> {
   }
 
   render() {
-    let size = screenWidth/10;
+    let size = screenWidth/9;
     return (
       <View style={{
         height: size*1.5,

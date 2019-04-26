@@ -329,7 +329,6 @@ export class SphereOverview extends LiveComponent<any, any> {
           return <SphereRoomOverview sphereId={activeSphereId} returnToRoute={"Main"} />
         }
 
-
         // retrofit: place all stones in a room.
         if (
           Object.keys(floatingStones).length > 0 &&
@@ -338,8 +337,6 @@ export class SphereOverview extends LiveComponent<any, any> {
           return <PlaceFloatingCrownstonesInRoom sphereId={activeSphereId} />;
         }
       }
-
-
 
       return (
         <AnimatedBackground image={background}>

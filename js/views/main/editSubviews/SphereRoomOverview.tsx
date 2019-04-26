@@ -114,7 +114,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
         style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
         type: 'navigation',
         callback: () => {
-          NavigationUtil.navigate("RoomAdd", {sphereId: this.props.sphereId, fromMovingView: true, returnToRoute: this.props.returnToRoute || 'sphereRoomOverview'});
+          NavigationUtil.navigate("RoomAdd", {sphereId: this.props.sphereId, fromMovingView: true, returnToRoute: this.props.returnToRoute || 'SphereRoomOverview'});
         }
       });
     }

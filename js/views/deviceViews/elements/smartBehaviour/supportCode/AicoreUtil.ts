@@ -6,13 +6,14 @@ import {
 } from "../../../../../Enums";
 import { MapProvider } from "../../../../../backgroundProcesses/MapProvider";
 import { core } from "../../../../../core";
-
+import { AicoreTimeData } from "./AicoreTimeData";
+const SunCalc = require('suncalc');
 
 export const AicoreUtil = {
 
   extractActionString(rule : behaviour | twilight) {
     if (rule.action.type === "DIM_WHEN_TURNED_ON") {
-      return "dimmed to " + Math.round(rule.action.data * 100) + "%";
+      return "dim to " + Math.round(rule.action.data * 100) + "%";
     }
     if (rule.action.data < 1) {
       return "dimmed at " + Math.round(rule.action.data * 100) + "%";
@@ -205,6 +206,10 @@ export const AicoreUtil = {
     }
   },
 
+  isSameTime(fromTime : AicoreTimeData, toTime: AicoreTimeData) : boolean {
+    return AicoreUtil.getTimeStr(fromTime.data) === AicoreUtil.getTimeStr(toTime.data);
+  },
+
 
   getWordLength(word) {
     let result = 0;
@@ -216,5 +221,42 @@ export const AicoreUtil = {
     }
     return result;
   },
+
+  getTimeStrInTimeFormat(timeObj : aicoreTimeData, sphereId) {
+    if (timeObj.type === "CLOCK") {
+      // TYPE IS CLOCK
+      let obj = (timeObj as aicoreTimeDataClock).data;
+      return AicoreUtil.getClockTimeStr(obj.hours, obj.minutes);
+    }
+    else {
+      let state = core.store.getState();
+      let sphere = state.spheres[sphereId];
+
+      // position of Crownstone HQ.
+      let lat = 51.923611570463152;
+      let lon = 4.4667693378575288;
+      if (sphere) {
+        lat = sphere.state.latitude || lat;
+        lon = sphere.state.longitude || lon;
+      }
+      let baseTime = 0;
+      var times = SunCalc.getTimes(new Date(), lat, lon);
+
+      let obj = (timeObj as aicoreTimeDataSun);
+      if (obj.type === "SUNSET") {
+        baseTime = new Date(times.sunriseEnd).valueOf();
+      }
+      else if (obj.type === "SUNRISE") {
+        baseTime = new Date(times.sunrise).valueOf();
+      }
+
+
+      if (obj.offsetMinutes !== 0) {
+        baseTime += 60*1000*obj.offsetMinutes;
+      }
+
+      return AicoreUtil.getClockTimeStr(new Date(baseTime).getHours(), new Date(baseTime).getMinutes());
+    }
+  }
 
 }

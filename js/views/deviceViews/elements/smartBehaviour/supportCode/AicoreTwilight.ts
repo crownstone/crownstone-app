@@ -3,7 +3,7 @@ import {
 } from "../../../../../Enums";
 import { AicoreUtil } from "./AicoreUtil";
 import { xUtil } from "../../../../../util/StandAloneUtil";
-import { AicoreTimeData } from "./AicoreBehaviour";
+import { AicoreTimeData } from "./AicoreTimeData";
 
 const DEFAULT_DELAY_MINUTES = 5
 const EMPTY_RULE : twilight = {
@@ -16,23 +16,26 @@ export class AicoreTwilight {
   rule : twilight;
   store: any;
 
-  constructor(twilightBehaviour?: twilight | AicoreTwilight) {
-    if (!twilightBehaviour) {
+  constructor(behaviour?: twilight | AicoreTwilight | string) {
+    if (!behaviour) {
       this.rule = xUtil.deepExtend({},EMPTY_RULE);
     }
+    else if (typeof behaviour === 'string') {
+      this.fromString(behaviour);
+    }
     else {
-      if (!(twilightBehaviour instanceof AicoreTwilight)) {
-        this.rule = twilightBehaviour;
+      if (!(behaviour instanceof AicoreTwilight)) {
+        this.rule = behaviour;
       }
       else {
-        this.rule = xUtil.deepExtend({}, twilightBehaviour.rule);
+        this.rule = xUtil.deepExtend({}, behaviour.rule);
       }
     }
   }
 
 
   _getChunks() {
-    let intentionStr = "If I'm turned on, ";
+    let intentionStr = "If I'm turned on, I'll";
     let actionStr = AicoreUtil.extractActionString(this.rule);
     let timeStr   = AicoreUtil.extractTimeString(this.rule);
 
@@ -194,7 +197,31 @@ export class AicoreTwilight {
     return null;
   }
 
+  /**
+   * SphereId is used to get the lat lon of the sphere for the time of day times
+   * @param sphereId
+   */
+  getFromTimeString(sphereId) {
+    return AicoreUtil.getTimeStrInTimeFormat(this.rule.time.from, sphereId);
+  }
+  /**
+   * SphereId is used to get the lat lon of the sphere for the time of day times
+   * @param sphereId
+   */
+  getToTimeString(sphereId) {
+    return AicoreUtil.getTimeStrInTimeFormat(this.rule.time.to, sphereId);
+  }
+
   isUsingClockEndTime(): boolean {
     return this.rule.time.to.type === "CLOCK";
+  }
+
+
+  fromString(dataString) {
+    this.rule = JSON.parse(dataString);
+  }
+
+  stringify() : string {
+    return JSON.stringify(this.rule);
   }
 }

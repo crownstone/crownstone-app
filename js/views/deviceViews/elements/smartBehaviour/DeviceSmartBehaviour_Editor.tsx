@@ -16,11 +16,9 @@ import { Background } from "../../../components/Background";
 import { core } from "../../../../core";
 import { BehaviourRuleEditor } from "./supportComponents/BehaviourRuleEditor";
 import { TwilightRuleEditor } from "./supportComponents/TwilightRuleEditor";
-import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
-import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 
 
-export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any}, any> {
+export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: "A Crownstone",
@@ -39,7 +37,9 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
             <Text style={[deviceStyles.header]}>{ "Create my Behaviour" }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{"Tap the underlined parts to customize them!"}</Text>
-            { this.props.twilightRule ? <TwilightRuleEditor data={this.props.data} /> : <BehaviourRuleEditor data={this.props.data} /> }
+            { this.props.twilightRule ?
+              <TwilightRuleEditor  sphereId={this.props.sphereId} stoneId={this.props.stoneId} data={this.props.data} /> :
+              <BehaviourRuleEditor sphereId={this.props.sphereId} stoneId={this.props.stoneId} data={this.props.data} /> }
           </View>
         </ScrollView>
         </View>

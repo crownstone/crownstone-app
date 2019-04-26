@@ -14,10 +14,11 @@ import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { xUtil } from "../../../../../util/StandAloneUtil";
 import { BehaviourQuestion, BehaviourSuggestion } from "./BehaviourSuggestion";
+import { NavigationUtil } from "../../../../../util/NavigationUtil";
 
 
 
-export class BehaviourRuleEditor extends Component<{data:behaviour}, any> {
+export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: string, stoneId: string, ruleId?: string}, any> {
   references = [];
   amountOfLines = 0;
   rule : AicoreBehaviour;
@@ -31,20 +32,18 @@ export class BehaviourRuleEditor extends Component<{data:behaviour}, any> {
 
 
     this.rule = new AicoreBehaviour(this.props.data);
-    let baseHeightOffset = this._shouldShowSuggestions().amountOfSuggestions * 25;
-
     this.state = {
       detail:            null,
-      containerHeight:   new Animated.Value(this.baseHeight + baseHeightOffset),
-      detailHeight:      new Animated.Value(this.baseHeight + baseHeightOffset),
+      containerHeight:   new Animated.Value(this.baseHeight),
+      detailHeight:      new Animated.Value(this.baseHeight),
       detailOpacity:     new Animated.Value(0),
-      mainBottomHeight:  new Animated.Value(this.baseHeight + baseHeightOffset),
+      mainBottomHeight:  new Animated.Value(this.baseHeight),
       mainBottomOpacity: new Animated.Value(1),
       selectedDetailField: null,
       showCustomTimeData: false,
 
-      hidPresence: false,
-      hidTime: false
+      userHidPresence: false,
+      userHidTime: false
     };
 
     this.exampleBehaviours = {
@@ -225,8 +224,10 @@ export class BehaviourRuleEditor extends Component<{data:behaviour}, any> {
   }
 
   _shouldShowSuggestions() {
-    let showPresenceSuggestion = this.rule.isUsingPresence() === false && this.state.hidPresence === true;
-    let showTimeSuggestion = this.rule.isAlwaysActive() === true && this.state.hidTime === true;
+    console.log(this.state, this)
+
+    let showPresenceSuggestion = this.rule.isUsingPresence() === false && this.state.userHidPresence === true;
+    let showTimeSuggestion = this.rule.isAlwaysActive() === true && this.state.userHidTime === true;
     let showOptionSuggestion = this.rule.isUsingClockEndTime() && this.rule.getHour() > 21 && this.rule.hasNoOptions();
 
     return {
@@ -408,7 +409,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour}, any> {
               {
                 label: "Ignore presence",
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
-                onSelect: () => { this.rule.setPresenceIgnore(); this.setState({hidPresence: true}) }
+                onSelect: () => { this.rule.setPresenceIgnore(); this.setState({userHidPresence: true}) }
               },
             ]}
           />
@@ -510,7 +511,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour}, any> {
                 },
                 onSelect: () => {
                   this.rule.setTimeAllday();
-                  this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3", hidTime: true})
+                  this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3", userHidTime: true})
                 }
               },
               {
@@ -610,9 +611,8 @@ export class BehaviourRuleEditor extends Component<{data:behaviour}, any> {
           <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
             { this._getSuggestions() }
             <TouchableOpacity onPress={() => {
-              // todo:
-              // check if there is a lock
-
+              this._storeRule();
+              NavigationUtil.backTo("DeviceSmartBehaviour")
             }} style={{
               width:0.5*screenWidth, height:60, borderRadius:20,
               backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
@@ -625,6 +625,34 @@ export class BehaviourRuleEditor extends Component<{data:behaviour}, any> {
     );
   }
 
+
+  _storeRule() {
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    if (!sphere) return;
+    let stone = sphere.stones[this.props.stoneId];
+    if (!stone) return;
+
+    let activeDays = { Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: true, Sun: true };
+    if (this.props.ruleId) {
+      let rule = stone.rules[this.props.ruleId];
+      if (rule) {
+        activeDays = rule.activeDays;
+      }
+    }
+    core.store.dispatch({
+      type:"ADD_STONE_RULE",
+      sphereId: this.props.sphereId,
+      stoneId: this.props.stoneId,
+      ruleId: this.props.ruleId || xUtil.getUUID(),
+      data: {
+        type:"BEHAVIOUR",
+        data: this.rule.stringify(),
+        activeDays: activeDays,
+        syncedToCrownstone: false
+      }
+    });
+  }
 
   render() {
     return (

@@ -72,19 +72,19 @@ const NewBehaviourStack = createStackNavigator(
 
 const EditSphereStack = createStackNavigator(
   {
-    SphereEdit : Views.SphereEdit,
-    SphereEditSettings : Views.SphereEditSettings,
-    SphereRoomOverview : Views.SphereRoomOverview,
+    SphereEdit               : Views.SphereEdit,
+    SphereEditSettings       : Views.SphereEditSettings,
+    SphereRoomOverview       : Views.SphereRoomOverview,
     SphereCrownstoneOverview : Views.SphereCrownstoneOverview,
-    SphereRoomArranger : Views.SphereRoomArranger,
-    SphereUserOverview : Views.SphereUserOverview,
-    SphereInvitedUser : Views.SphereInvitedUser,
-    SphereUser : Views.SphereUser,
-    SphereBehaviour : Views.SphereBehaviour,
-    SphereIntegrations : Views.SphereIntegrations,
-    AlexaOverview : Views.AlexaOverview,
-    ToonOverview: Views.ToonOverview,
-    ToonSettings: Views.ToonSettings,
+    SphereRoomArranger       : Views.SphereRoomArranger,
+    SphereUserOverview       : Views.SphereUserOverview,
+    SphereInvitedUser        : Views.SphereInvitedUser,
+    SphereUser               : Views.SphereUser,
+    SphereBehaviour          : Views.SphereBehaviour,
+    SphereIntegrations       : Views.SphereIntegrations,
+    AlexaOverview            : Views.AlexaOverview,
+    ToonOverview             : Views.ToonOverview,
+    ToonSettings             : Views.ToonSettings,
   },
   {
     ...defaultBackButtonHeaderStyle
