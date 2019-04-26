@@ -17,7 +17,7 @@ import { BehaviourQuestion, BehaviourSuggestion } from "./BehaviourSuggestion";
 
 
 
-export class RuleEditor extends Component<{data:behaviour}, any> {
+export class BehaviourRuleEditor extends Component<{data:behaviour}, any> {
   references = [];
   amountOfLines = 0;
   rule : AicoreBehaviour;
@@ -42,6 +42,9 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
       mainBottomOpacity: new Animated.Value(1),
       selectedDetailField: null,
       showCustomTimeData: false,
+
+      hidPresence: false,
+      hidTime: false
     };
 
     this.exampleBehaviours = {
@@ -222,8 +225,8 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
   }
 
   _shouldShowSuggestions() {
-    let showPresenceSuggestion = this.rule.isUsingPresence() === false;
-    let showTimeSuggestion = this.rule.isAlwaysActive() === true;
+    let showPresenceSuggestion = this.rule.isUsingPresence() === false && this.state.hidPresence === true;
+    let showTimeSuggestion = this.rule.isAlwaysActive() === true && this.state.hidTime === true;
     let showOptionSuggestion = this.rule.isUsingClockEndTime() && this.rule.getHour() > 21 && this.rule.hasNoOptions();
 
     return {
@@ -405,7 +408,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
               {
                 label: "Ignore presence",
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
-                onSelect: () => { this.rule.setPresenceIgnore(); this.forceUpdate(); }
+                onSelect: () => { this.rule.setPresenceIgnore(); this.setState({hidPresence: true}) }
               },
             ]}
           />
@@ -507,7 +510,7 @@ export class RuleEditor extends Component<{data:behaviour}, any> {
                 },
                 onSelect: () => {
                   this.rule.setTimeAllday();
-                  this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
+                  this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3", hidTime: true})
                 }
               },
               {

@@ -32,6 +32,9 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { AddSetupStoneButton } from "./buttons/AddSetupStoneButton";
 import { AddSetupStoneButtonDescription } from "./buttons/AddSetupStoneButtonDescription";
 import { FadeInView, HiddenFadeInView } from "../components/animated/FadeInView";
+import { getStonesAndAppliancesInLocation } from "../../util/DataUtil";
+import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
+import { SphereRoomOverview } from "./editSubviews/SphereRoomOverview";
 
 
 const ZOOM_LEVELS = {
@@ -302,6 +305,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
+      let floatingStones = getStonesAndAppliancesInLocation(state, activeSphereId, null);
 
       let viewingRemotely = true;
       if (sphereIsPresent || SetupStateHandler.areSetupStonesAvailable() || DfuStateHandler.areDfuStonesAvailable() || (noStones === true && noRooms === true)) {
@@ -315,6 +319,27 @@ export class SphereOverview extends LiveComponent<any, any> {
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
         background = require("../../images/sphereBackground.png");
       }
+
+
+
+      // if you're focusses on a sphere:
+      if (this.state.zoomLevel === ZOOM_LEVELS.room) {
+        // handle the case where there are no rooms added:
+        if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
+          return <SphereRoomOverview sphereId={activeSphereId} returnToRoute={"Main"} />
+        }
+
+
+        // retrofit: place all stones in a room.
+        if (
+          Object.keys(floatingStones).length > 0 &&
+          Permissions.inSphere(activeSphereId).moveCrownstone
+        ) {
+          return <PlaceFloatingCrownstonesInRoom sphereId={activeSphereId} />;
+        }
+      }
+
+
 
       return (
         <AnimatedBackground image={background}>

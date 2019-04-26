@@ -16,12 +16,17 @@ export class AicoreBehaviour {
   rule : behaviour;
   store: any;
 
-  constructor(behaviour?: behaviour) {
+  constructor(behaviour?: behaviour | AicoreBehaviour) {
     if (!behaviour) {
       this.rule = xUtil.deepExtend({},EMPTY_RULE);
     }
     else {
-      this.rule = behaviour;
+      if (!(behaviour instanceof AicoreBehaviour)) {
+        this.rule = behaviour;
+      }
+      else {
+        this.rule = xUtil.deepExtend({}, behaviour.rule);
+      }
     }
   }
 
@@ -182,7 +187,7 @@ export class AicoreBehaviour {
     }
 
     if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.from = { type: "CLOCK", data: {hours: hours, minutes: minutes, dayOfMonth:"*", month:"*"} };
+      this.rule.time.from = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
     }
     return this;
   }
@@ -203,7 +208,7 @@ export class AicoreBehaviour {
     }
 
     if (this.rule.time.type !== "ALL_DAY") {
-      this.rule.time.to = { type: "CLOCK", data: {hours: hours, minutes: minutes, dayOfMonth:"*", month:"*"} };
+      this.rule.time.to = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
     }
     return this;
   }
@@ -413,11 +418,11 @@ export class AicoreTimeData {
 
   setTime(hours: number, minutes: number) {
     // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
-    this.data = { type: "CLOCK", data: {hours: hours, minutes: minutes, dayOfMonth:"*", month:"*"} };
+    this.data = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
   }
   setClock() {
     // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
-    this.data = { type: "CLOCK", data: {hours: 15, minutes: 0, dayOfMonth:"*", month:"*"} };
+    this.data = { type: "CLOCK", data: {hours: 15, minutes: 0} };
   }
   setOffsetMinutes(offsetMinutes : number = 0) {
     if (this.data.type !== "CLOCK") {

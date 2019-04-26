@@ -91,13 +91,15 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
     let items = [];
     const state = core.store.getState();
 
-    items.push({label: lang("CUSTOMIZE_LAYOUT"),  type:'explanation', below:false});
-    items.push({__item: this._getRearrangeItem()});
-
-
     let rooms = state.spheres[this.props.sphereId].locations;
     let roomIds = Object.keys(rooms);
     roomIds.sort((a,b) => { return rooms[a].config.name > rooms[b].config.name ? 1 : -1 });
+
+    if (roomIds.length > 0) {
+      items.push({ label: lang("CUSTOMIZE_LAYOUT"), type: 'explanation', below: false });
+      items.push({ __item: this._getRearrangeItem() });
+    }
+
 
     items.push({label: lang("ROOMS_IN_SPHERE"),  type:'explanation', below:false});
     roomIds.forEach((roomId) => {
@@ -112,7 +114,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
         style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
         type: 'navigation',
         callback: () => {
-          NavigationUtil.navigate("RoomAdd", {sphereId: this.props.sphereId, fromMovingView: true, returnToRoute: 'sphereRoomOverview'});
+          NavigationUtil.navigate("RoomAdd", {sphereId: this.props.sphereId, fromMovingView: true, returnToRoute: this.props.returnToRoute || 'sphereRoomOverview'});
         }
       });
     }

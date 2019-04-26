@@ -17,18 +17,16 @@ type aicoreTimeRangeTwilight = { from: aicoreTimeData, to: aicoreTimeData }
 type aicoreTime         = aicoreTimeAlways | aicoreTimeRange
 
 type aicoreTimeDataSun   = { type: sunTimes, offsetMinutes: number}
-type aicoreTimeDataClock = { type: "CLOCK", data: cron }
+type aicoreTimeDataClock = { type: "CLOCK", data: timeHoursMinutes }
 type aicoreTimeData      = aicoreTimeDataSun | aicoreTimeDataClock
 
 interface aicoreBehaviourOptions {
   type: "SPHERE_PRESENCE_AFTER" | "LOCATION_PRESENCE_AFTER"
 }
 
-type cron = {
-  minutes:    number,
-  hours:      number,
-  dayOfMonth: string,   // allowed values are: 1-31 , - * (comma for set, hyphen for range, star for any) currently only * is supported.
-  month:      string,   // allowed values are: 1-12 , - * (comma for set, hyphen for range, star for any) currently only * is supported.
+type timeHoursMinutes = {
+  minutes: number,
+  hours:   number,
 }
 
 
@@ -70,6 +68,15 @@ interface twilight {
     data: number,
   },
   time: aicoreTimeRangeTwilight,
+}
+
+
+interface behaviourWrapper {
+  data: behaviour | twilight,
+  activeDays: dayOfWeek,
+  version: number,
+  syncedToCrownstone: boolean,
+  updatedAt: number
 }
 
 // TYPE: EVENT

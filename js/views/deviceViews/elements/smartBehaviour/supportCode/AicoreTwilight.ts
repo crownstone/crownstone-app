@@ -16,12 +16,17 @@ export class AicoreTwilight {
   rule : twilight;
   store: any;
 
-  constructor(behaviour?: twilight) {
-    if (!behaviour) {
+  constructor(twilightBehaviour?: twilight | AicoreTwilight) {
+    if (!twilightBehaviour) {
       this.rule = xUtil.deepExtend({},EMPTY_RULE);
     }
     else {
-      this.rule = behaviour;
+      if (!(twilightBehaviour instanceof AicoreTwilight)) {
+        this.rule = twilightBehaviour;
+      }
+      else {
+        this.rule = xUtil.deepExtend({}, twilightBehaviour.rule);
+      }
     }
   }
 
@@ -45,8 +50,8 @@ export class AicoreTwilight {
 
     let sentence = "";
     sentence += chunks.intention.label;
-    sentence += chunks.action.label         ? " " + chunks.action.label         : "";
-    sentence += chunks.time.label           ? " " + chunks.time.label           : "";
+    sentence += chunks.action.label ? " " + chunks.action.label : "";
+    sentence += chunks.time.label   ? " " + chunks.time.label   : "";
     sentence += ".";
 
     return sentence;
@@ -119,7 +124,7 @@ export class AicoreTwilight {
       this.setTimeWhenDark();
     }
 
-    this.rule.time.from = { type: "CLOCK", data: {hours: hours, minutes: minutes, dayOfMonth:"*", month:"*"} };
+    this.rule.time.from = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
     return this;
   }
 
@@ -135,7 +140,7 @@ export class AicoreTwilight {
       this.setTimeFrom(0,0);
     }
 
-    this.rule.time.to = { type: "CLOCK", data: {hours: hours, minutes: minutes, dayOfMonth:"*", month:"*"} };
+    this.rule.time.to = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
     return this;
   }
 

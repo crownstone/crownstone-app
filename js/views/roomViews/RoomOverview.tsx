@@ -247,20 +247,6 @@ export class RoomOverview extends LiveComponent<any, any> {
     }
 
 
-    // add the stoneIds of the Crownstones in setup mode to the list but only if we're in the floating category
-    if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
-      let setupStones = SetupStateHandler.getSetupStones();
-      let setupIds = Object.keys(setupStones);
-      setupIds.forEach((setupId) => {
-        if (setupStones[setupId] && shownHandles[setupStones[setupId].handle] === undefined) {
-          ids.push(setupId);
-          shownHandles[setupStones[setupId].handle] = true;
-          setupStones[setupId].setupMode = true;
-          stoneArray.push(setupStones[setupId]);
-        }
-      });
-    }
-
     let tempStoneDataArray = [];
     stoneIds.forEach((stoneId) => {
       // do not show the same device twice
@@ -303,7 +289,6 @@ export class RoomOverview extends LiveComponent<any, any> {
       }
     }
 
-    let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
@@ -312,10 +297,9 @@ export class RoomOverview extends LiveComponent<any, any> {
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
 
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
-    this.viewingRemotely = sphere.state.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
-    this.viewingRemotely = this.props.locationId === null && Object.keys(stones).length === 0 ? false : this.viewingRemotely;
+    this.viewingRemotely = sphere.state.present === false && seeStoneInDfuMode !== true;
 
-    let backgroundImage = core.background.menu;
+    let backgroundImage = core.background.light;
 
     if (this.props.locationId) {
       if (location.config.picture) {
@@ -325,10 +309,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 
     let amountOfStonesInRoom = Object.keys(stones).length;
     let content = undefined;
-    if (amountOfStonesInRoom === 0 && seeStoneInSetupMode == false) {
-      content = undefined;
-    }
-    else {
+    if (amountOfStonesInRoom > 0) {
       let {stoneArray, ids} = this._getStoneList(stones);
       this._setNearestStoneInRoom(stoneArray, ids);
       this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);

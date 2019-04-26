@@ -20,14 +20,14 @@ import {
   OrangeLine,
   screenWidth} from "../../../../styles";
 import { Background } from "../../../../components/Background";
-import { ScaledImage } from "../../../../components/ScaledImage";
 import { Icon } from "../../../../components/Icon";
 import { core } from "../../../../../core";
 import { NavigationUtil } from "../../../../../util/NavigationUtil";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
+import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 
 
-export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[], image: any, header:string}, any> {
+export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[], image: any, header:string, twilightRules: boolean}, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
@@ -39,7 +39,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
   getExamples() {
     let examples = [];
     this.props.examples.forEach((example, index) => {
-      examples.push(<BehaviourExample data={example} key={"behaviourExample_" + index} />);
+      examples.push(<BehaviourExample data={example} key={"behaviourExample_" + index} twilightRule={this.props.twilightRules} />);
     })
     return examples;
   }
@@ -70,7 +70,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
 }
 
 
-class BehaviourExample extends Component<{data: any}, any> {
+class BehaviourExample extends Component<{data: AicoreBehaviour | AicoreTwilight, twilightRule: boolean}, any> {
   render() {
     return (
       <TouchableOpacity style={{
@@ -80,7 +80,7 @@ class BehaviourExample extends Component<{data: any}, any> {
         backgroundColor:colors.white.rgba(0.3),
         width: screenWidth,
         alignItems:'center'}}
-      onPress={() => { NavigationUtil.navigate("DeviceSmartBehaviour_Editor", {data: this.props.data})}}>
+      onPress={() => { NavigationUtil.navigate("DeviceSmartBehaviour_Editor", {data: this.props.data, twilightRule: this.props.twilightRule})}}>
         <View style={{width:screenWidth-20}}>
           <Text style={{
             fontWeight:'500',
@@ -91,17 +91,10 @@ class BehaviourExample extends Component<{data: any}, any> {
             paddingTop:20,
             paddingBottom:20,
             paddingRight:10
-          }}>{createDescriptiveString(this.props.data)}</Text>
+          }}>{this.props.data.getSentence()}</Text>
         </View>
         <Icon name="ios-arrow-forward" size={18} color={'#fff'} />
       </TouchableOpacity>
     )
   }
-}
-
-function createDescriptiveString(rule) {
-  if (typeof rule === 'string') { return rule; }
-
-  let b = new AicoreBehaviour(rule as behaviour);
-  return b.getSentence()
 }

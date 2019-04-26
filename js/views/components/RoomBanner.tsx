@@ -95,11 +95,6 @@ export class RoomBanner extends Component<any, any> {
     let color1 = colors.green.hex;
     let color2 = colors.darkGreen.hex;
     let color3 = colors.blue.hex;
-    if (this.props.viewingRemotely === true) {
-      color1 = "#fff";
-      color2 = "#fff";
-      color3 = "#fff";
-    }
 
     return (
       <View style={{flexDirection:'row', height:0.7*ELEMENT_HEIGHT}}>

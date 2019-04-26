@@ -25,3 +25,35 @@ export const updateToggleState = function (state, action) {
   return state;
 };
 
+let ruleDb = {
+  rules: {
+    12324: {
+      data: {
+        action: {
+          type: "DIM_WHEN_TURNED_ON",
+          data: 0.4,
+        },
+        time: {
+          from: {
+            type: "CLOCK", data: {
+              minutes: 1,
+              hours: 1,
+            }
+          }, to: {
+            type: "SUNSET", offsetMinutes:1
+          }
+        },
+      },
+      activeDays: {
+        Mon: true,
+        Tue: true,
+        Wed: true,
+        Thu: true,
+        Fri: true,
+        Sat: true,
+        Sun: true
+      },
+      version: 1
+    }
+  }
+}

@@ -47,10 +47,6 @@ export class RoomAdd extends Component<any, any> {
     }
   };
 
-  componentDidMount(): void {
-    NavigationUtil.backTo(this.props.returnToRoute)
-  }
-
   refName : string;
   removePictureQueue = [];
 

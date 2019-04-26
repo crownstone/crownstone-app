@@ -13,7 +13,6 @@ import {
   requireMoreFingerprints
 } from "./DataUtil";
 import { core } from "../core";
-import { NavigationUtil } from "./NavigationUtil";
 
 
 export const SphereUtil = {
@@ -119,17 +118,6 @@ export const SphereUtil = {
       }
       else if (enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId)) {
         core.eventBus.emit("showLocalizationSetupStep2", sphereId);
-      }
-      else {
-        NavigationUtil.navigate("RoomOverview",{
-          sphereId: sphereId,
-          locationId: null,
-          title: lang("First_things_first___"),
-          hideRight: true,
-          usedForIndoorLocalizationSetup: true,
-          overlayText: lang("Place_your_Crownstones_in"),
-          explanation: lang("Tap_a_Crownstone_to_see_i")
-        });
       }
     };
 
