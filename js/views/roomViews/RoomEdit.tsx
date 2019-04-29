@@ -17,7 +17,7 @@ import { IconButton } from '../components/IconButton'
 import {processImage, Util} from '../../util/Util'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
-import {colors, OrangeLine} from './../styles'
+import {colors, } from './../styles'
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import {CancelButton} from "../components/topbar/CancelButton";
@@ -342,8 +342,7 @@ lang("_Encountered_Cloud_Issue__body"),
     let backgroundImage = core.background.menu;
     return (
       <Background hasNavBar={false} image={backgroundImage}>
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>

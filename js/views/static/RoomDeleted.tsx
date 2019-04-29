@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Text} from 'react-native';
 import {Background} from "../components/Background";
-import {OrangeLine} from "../styles";
+import {} from "../styles";
 
 export class RoomDeleted extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -20,8 +20,7 @@ export class RoomDeleted extends Component<any, any> {
   render() {
     return (
       <Background image={require('../../images/mainBackgroundLightNotConnected.png')}>
-        <OrangeLine/>
-        <Text>{ lang("Room_Deleted_") }</Text>
+                <Text>{ lang("Room_Deleted_") }</Text>
       </Background>
     )
   }

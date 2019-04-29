@@ -13,7 +13,7 @@ import {
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
 
-import {OrangeLine} from "../../styles";
+import {} from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
@@ -91,8 +91,7 @@ export class SphereIntegrations extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false} >
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <ListEditableItems items={this._getItemsAlternative()} />
         </ScrollView>
       </Background>

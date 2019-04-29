@@ -13,7 +13,7 @@ import {
   View
 } from 'react-native';
 
-import {colors, availableScreenHeight, OrangeLine} from '../styles'
+import {colors, availableScreenHeight, } from '../styles'
 import { Background } from '../components/Background'
 const Swiper = require("react-native-swiper");
 import { Util }                 from "../../util/Util";
@@ -235,8 +235,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
     let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog, showWhatsNew, deviceType, stone.config);
     return (
       <Background image={core.background.detailsDark}>
-        <OrangeLine/>
-        { content.length > 1 ? <Swiper
+                { content.length > 1 ? <Swiper
           style={swiperStyles.wrapper}
           showsPagination={true}
           height={availableScreenHeight}

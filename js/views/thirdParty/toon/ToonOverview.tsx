@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import { colors, deviceStyles, OrangeLine, screenWidth} from "../../styles";
+import { colors, deviceStyles, screenWidth} from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {CLOUD} from "../../../cloud/cloudAPI";
 
@@ -111,8 +111,7 @@ text:lang("_Are_you_sure__You_will_h_right"), onPress:() => {
 
     return (
       <Background image={core.background.menu} hasNavBar={false} safeView={true}>
-        <OrangeLine/>
-        <View style={{flex:1, alignItems:'center'}}>
+                <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
           <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
           <View style={{flex:1}} />

@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 
-import { OrangeLine } from '../styles'
+import {  } from '../styles'
 import { Background } from '../components/Background'
 import { DeviceSummary }        from "./elements/DeviceSummary";
 import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
@@ -150,7 +150,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
     // let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog, deviceType, stone.config);
     return (
       <Background image={core.background.detailsDark}>
-        <OrangeLine/>
         <DeviceSummary {...this.props} />
       </Background>
     )

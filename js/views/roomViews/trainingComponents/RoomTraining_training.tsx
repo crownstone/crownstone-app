@@ -10,7 +10,7 @@ import {
   Text,
   View} from 'react-native';
 
-import {colors, screenWidth, OrangeLine} from '../../styles'
+import {colors, screenWidth, } from '../../styles'
 import { Icon } from '../../components/Icon';
 
 import {ProgressCircle} from "../../components/ProgressCircle";
@@ -22,8 +22,7 @@ export class RoomTraining_training extends Component<any, any> {
 
     return (
       <View style={{flex:1}}>
-        <OrangeLine/>
-        <View style={{flexDirection:'column', flex:1}}>
+                <View style={{flexDirection:'column', flex:1}}>
           <View style={{padding:30, alignItems:'center'}}>
             <Text style={{
               backgroundColor:'transparent',

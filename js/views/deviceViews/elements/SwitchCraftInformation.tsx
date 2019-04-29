@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 
-import { colors, screenWidth, OrangeLine, styles } from "../../styles";
+import { colors, screenWidth, styles } from "../../styles";
 import {Background} from "../../components/Background";
 import {IconButton} from "../../components/IconButton";
 import {ScaledImage} from "../../components/ScaledImage";
@@ -30,8 +30,7 @@ export class SwitchCraftInformation extends Component<any, any> {
   render() {
     return (
       <Background hasNavBar={false} image={core.background.menu}>
-        <OrangeLine/>
-        <ScrollView >
+                <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
             <ScaledImage source={require('../../../images/switchCraft/switchCraftText.png')} sourceWidth={1000} sourceHeight={161} targetWidth={0.75*screenWidth} />

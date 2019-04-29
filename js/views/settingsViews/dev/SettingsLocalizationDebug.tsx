@@ -10,7 +10,7 @@ import {
   Text,
   View
 } from 'react-native';
-import {colors, OrangeLine, screenWidth} from "../../styles";
+import {colors, screenWidth} from "../../styles";
 import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ForceDirectedView} from "../../components/interactiveView/ForceDirectedView";
@@ -183,8 +183,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), sphereId);
       return (
         <Background image={require('../../../images/blueprintBackgroundDesaturated_noLine.png')}>
-          <OrangeLine/>
-          <View style={{
+                    <View style={{
             position:'absolute', top:5, left:5, padding:5, borderRadius:5,
             backgroundColor:this._amountOfStones < AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION ? colors.csOrange.hex : 'transparent',
           }}>

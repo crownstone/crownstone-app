@@ -11,7 +11,7 @@ import {
   Text,
   View
 } from 'react-native';
-import {colors, OrangeLine, screenWidth, tabBarHeight, tabBarMargin, topBarHeight} from "../../styles";
+import {colors, screenWidth, tabBarHeight, tabBarMargin, topBarHeight} from "../../styles";
 import {RoomCircle} from "../../components/RoomCircle";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CancelButton} from "../../components/topbar/CancelButton";
@@ -150,8 +150,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId);
       return (
         <Background image={require('../../../images/blueprintBackgroundGray.png')} hasNavBar={false} safeView={true}>
-          <OrangeLine/>
-          <ForceDirectedView
+                    <ForceDirectedView
             ref={this.refName}
             viewId={this.viewId}
             topOffset={0.3*this._baseRadius}

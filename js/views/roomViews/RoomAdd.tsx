@@ -17,7 +17,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
 import {LOGe} from '../../logging/Log'
 
-import {colors, OrangeLine} from '../styles'
+import {colors, } from '../styles'
 import {processImage} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -228,8 +228,7 @@ export class RoomAdd extends Component<any, any> {
 
     return (
       <Background image={backgroundImage} hasNavBar={ false } >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} />
         </ScrollView>
       </Background>

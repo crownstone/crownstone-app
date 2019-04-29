@@ -17,7 +17,6 @@ import {
   availableScreenHeight,
   colors,
   deviceStyles,
-  OrangeLine,
   screenWidth} from "../../../../styles";
 import { Background } from "../../../../components/Background";
 import { Icon } from "../../../../components/Icon";
@@ -50,8 +49,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
 
     return (
       <Background image={core.background.detailsDark} hasNavBar={false}>
-        <OrangeLine/>
-        <ScrollView style={{height:availableScreenHeight, width: screenWidth,}}>
+                <ScrollView style={{height:availableScreenHeight, width: screenWidth,}}>
           <View style={{ width: screenWidth, alignItems:'center', paddingBottom:30 }}>
             <View style={{height: 30}} />
             <Text style={deviceStyles.header}>{this.props.header}</Text>

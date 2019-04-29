@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import {colors, OrangeLine, screenHeight, screenWidth} from "../../styles";
+import {colors, screenHeight, screenWidth} from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {ScaledImage} from "../../components/ScaledImage";
@@ -175,8 +175,7 @@ export class ToonSettings extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.menu} hasNavBar={false} safeView={false}>
-        <OrangeLine/>
-        <ScrollView style={{flex:1}}>
+                <ScrollView style={{flex:1}}>
           <View style={{flex:1, width: screenWidth, minHeight: screenHeight, alignItems:'center' }}>
             <View style={{height:375, alignItems:'center'}}>
               <View style={{flex:1}} />

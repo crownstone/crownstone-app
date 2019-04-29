@@ -11,7 +11,7 @@ import {
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
 
-import {colors, OrangeLine} from '../../styles';
+import {colors, } from '../../styles';
 import { CLOUD } from '../../../cloud/cloudAPI'
 import {LOGe} from '../../../logging/Log'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
@@ -159,8 +159,7 @@ export class SphereUserInvite extends Component<any, any> {
 
     return (
       <Background image={core.background.menu} >
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {IconButton} from "../../components/IconButton";
 import {Background} from "../../components/Background";
-import { colors, OrangeLine, screenWidth, styles } from "../../styles";
+import { colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 
@@ -27,8 +27,7 @@ export class SettingsBleTroubleshootingAndroid extends Component<any, any> {
     let imageWidth = 0.7*screenWidth;
     return (
       <Background image={core.background.menu}>
-        <OrangeLine/>
-        <ScrollView >
+                <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
             <Text style={styles.title}>{ lang("Troubleshooting") }</Text>

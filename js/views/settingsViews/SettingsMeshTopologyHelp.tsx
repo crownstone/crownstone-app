@@ -13,7 +13,7 @@ import {
 
 
 import { Background } from './../components/Background'
-import { colors, OrangeLine, styles } from "./../styles";
+import { colors, styles } from "./../styles";
 import {screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {MeshElement} from "../components/MeshElement";
@@ -34,8 +34,7 @@ export class SettingsMeshTopologyHelp extends Component<any, any> {
     let mockData = {deviceIcon: 'c1-studiolight', locationIcon: 'c1-cinema', locationTitle: lang("Movie_Room"), element:{config:{name:lang("Device")}}, stone:{config:{name:'Device', firmwareVersion: '2.3.0'}}};
     return (
       <Background hasNavBar={false} image={core.background.menu}>
-        <OrangeLine/>
-        <ScrollView >
+                <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:10}} />
             <Text style={styles.title}>{ lang("Mesh_Topology") }</Text>

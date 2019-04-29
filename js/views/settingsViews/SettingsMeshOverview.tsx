@@ -15,7 +15,7 @@ import {
 
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
-import {colors, screenWidth, OrangeLine} from './../styles'
+import {colors, screenWidth, } from './../styles'
 import { IconCircle } from "../components/IconCircle";
 import { core } from "../../core";
 
@@ -126,8 +126,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.detailsDark}>
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,

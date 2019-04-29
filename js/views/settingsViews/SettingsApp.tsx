@@ -15,7 +15,7 @@ import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {colors, OrangeLine} from '../styles'
+import {colors, } from '../styles'
 import {Util} from "../../util/Util";
 import {KeepAliveHandler} from "../../backgroundProcesses/KeepAliveHandler";
 import {LocationHandler} from "../../native/localization/LocationHandler";
@@ -161,8 +161,7 @@ export class SettingsApp extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

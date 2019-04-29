@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { Background } from '../components/Background'
-import {availableScreenHeight, colors, OrangeLine, screenWidth} from "../styles";
+import {availableScreenHeight, colors, screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {Bluenet} from "../../native/libInterface/Bluenet";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
@@ -194,8 +194,7 @@ export class SettingsDiagnostics extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.menu}>
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center'}}>
             <Text style={diagnosticStyles.titleStyle}>{ lang("Diagnostics") }</Text>
           </View>

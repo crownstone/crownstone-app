@@ -18,7 +18,6 @@ import {
 import {
   availableScreenHeight,
   colors,
-  OrangeLine,
   screenHeight,
   screenWidth,
   styles} from '../styles'
@@ -240,7 +239,6 @@ export class MessageInbox extends LiveComponent<any, any> {
 
         return (
           <Background image={core.background.detailsDark}>
-            <OrangeLine/>
             { scrollView }
           </Background>
         );
@@ -248,7 +246,6 @@ export class MessageInbox extends LiveComponent<any, any> {
       else {
         return (
           <Background image={core.background.detailsDark}>
-            <OrangeLine/>
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>{ lang("Add_some_Crownstones_to_u") }</Text>
             <View style={{flex:1}} />
@@ -259,7 +256,6 @@ export class MessageInbox extends LiveComponent<any, any> {
     else {
       return (
         <Background image={core.background.detailsDark}>
-          <OrangeLine/>
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>{ lang("Add_a_Sphere_to_use_messa") }</Text>
           <View style={{flex:1}} />

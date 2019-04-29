@@ -9,7 +9,6 @@ import {
   availableModalHeight,
   availableScreenHeight,
   deviceStyles,
-  OrangeLine,
   screenWidth
 } from "../../../styles";
 import { Background } from "../../../components/Background";
@@ -29,8 +28,7 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
   render() {
     return (
       <Background image={core.background.detailsDark} hasNavBar={false}>
-        <OrangeLine/>
-        <View style={{height:availableModalHeight,width:screenWidth}}>
+                <View style={{height:availableModalHeight,width:screenWidth}}>
         <ScrollView style={{width: screenWidth}}>
           <View style={{flex:1, width: screenWidth, minHeight:availableScreenHeight, alignItems:'center'}}>
             <View style={{height: 30}} />

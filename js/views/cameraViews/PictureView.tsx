@@ -11,7 +11,7 @@ import {
 
 import { CameraKitCamera, CameraKitCameraScreen } from 'react-native-camera-kit';
 
-import {colors, screenWidth, screenHeight, OrangeLine} from '../styles'
+import {colors, screenWidth, screenHeight, } from '../styles'
 
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
@@ -60,8 +60,7 @@ export class PictureView extends Component<any, any> {
     // somehow the camera does not take full screen size.
     return (
       <View style={{flex:1, width: screenWidth, height: screenHeight}}>
-        <OrangeLine/>
-        <View style={{width: screenWidth, height: 10, backgroundColor: colors.black.hex }} />
+                <View style={{width: screenWidth, height: 10, backgroundColor: colors.black.hex }} />
         <CameraKitCameraScreen
           ref={(cam) => this.cameraView = cam}
           cameraOptions={{

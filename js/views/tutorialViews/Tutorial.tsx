@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 
-import {colors, screenHeight, topBarHeight, OrangeLine} from '../styles'
+import {colors, screenHeight, topBarHeight, } from '../styles'
 import { Background } from '../components/Background'
 const Swiper = require("react-native-swiper");
 import {TutorialSphere} from "./elements/TutorialSphere";
@@ -71,8 +71,7 @@ export class Tutorial extends Component<any, any> {
 
     return (
       <Background hasNavBar={false} image={core.background.detailsDark} >
-        <OrangeLine/>
-        <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight}
+                <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight}
           dot={<View style={{backgroundColor: colors.white.rgba(0.35), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.black.rgba(0.1)}} />}
           activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}
           loop={false}

@@ -9,7 +9,7 @@ import * as React from 'react';
 import {
   ScrollView} from 'react-native';
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {OrangeLine} from "../../styles";
+import {} from "../../styles";
 import {LOG} from "../../../logging/Log";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
@@ -100,8 +100,7 @@ export class SphereBehaviour extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false}>
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>

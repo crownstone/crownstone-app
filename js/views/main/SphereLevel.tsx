@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 
-import { screenWidth} from '../styles'
+import { availableScreenHeight, screenWidth } from "../styles";
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {SphereCircle} from "../components/SphereCircle";
@@ -93,6 +93,7 @@ export class SphereLevel extends LiveComponent<any, any> {
         enablePhysics={true}
         nodeRadius={this._baseRadius}
         allowDrag={false}
+        height={availableScreenHeight-2}
         zoomInCallback={ this.props.zoomInCallback }
         zoomOutCallback={ this.props.zoomOutCallback }
         renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }} />

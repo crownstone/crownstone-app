@@ -11,7 +11,7 @@ import {
   ScrollView,
   View
 } from 'react-native';
-import { colors, OrangeLine, styles } from "../../styles";
+import { colors, styles } from "../../styles";
 import {RoomList} from "../../components/RoomList";
 import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
@@ -130,7 +130,6 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
     let backgroundImage = core.background.menu;
     return (
       <Background image={backgroundImage} hasNavBar={false} >
-        <OrangeLine />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

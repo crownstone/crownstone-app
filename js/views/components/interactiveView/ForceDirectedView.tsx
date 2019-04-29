@@ -22,18 +22,18 @@ import {
   } from 'react-native-svg';
 
 
-import { colors, screenWidth, topBarHeight, availableScreenHeight} from '../../styles'
+import { colors, screenWidth, availableScreenHeight, screenHeight, tabBarHeight } from "../../styles";
 import PhysicsEngine from "../../../logic/PhysicsEngine";
 import {Scheduler} from "../../../logic/Scheduler";
 import {AnimatedDoubleTap} from "../animated/AnimatedDoubleTap";
 import {eventBus} from "../../../util/EventBus";
-import {Util} from "../../../util/Util";
 import { core } from "../../../core";
 import { xUtil } from "../../../util/StandAloneUtil";
 
 export class ForceDirectedView extends Component<{
   nodeIds: string[],
   viewId: string,
+  height?: number,
   edges?: any,
   positionGetter?: any
   nodeRadius: number,
@@ -85,6 +85,7 @@ export class ForceDirectedView extends Component<{
 
   viewWidth : number = screenWidth;
   viewHeight : number = availableScreenHeight;
+  frameHeight : number = availableScreenHeight;
 
   boundingBoxData : any = {};
   _shownDoubleTap = false;
@@ -92,6 +93,8 @@ export class ForceDirectedView extends Component<{
 
   _dragInitialX = 0;
   _dragInitialY = 0;
+
+  _viewRef: any;
 
   constructor(props) {
     super(props);
@@ -109,27 +112,30 @@ export class ForceDirectedView extends Component<{
     this.physicsEngine = new PhysicsEngine();
     this._drawToken = props.drawToken;
 
+    this.frameHeight = this.props.height || availableScreenHeight;
     if (Platform.OS === 'android') {
       this.viewWidth =  8 * screenWidth;
-      this.viewHeight = 8 * availableScreenHeight;
+      this.viewHeight = 8 * this.frameHeight;
     }
 
     this.init();
   }
 
   _convertToScreenSpace(x,y) {
+    let convertedY = y - (screenHeight - this.frameHeight - tabBarHeight);
+
     // center of the view in absolute coordinates
     let cx = 0.5*screenWidth;
-    let cy = 0.5*availableScreenHeight;
+    let cy = 0.5*this.frameHeight;
 
     // x = 0 on the left, y = 0 on the top. These offsets are the corrections from the center to 0,0.
     // the view can be larger than the visible area.
     let offsetX = (this.viewWidth - screenWidth)*0.5;
-    let offsetY = (this.viewHeight - availableScreenHeight)*0.5;
+    let offsetY = (this.viewHeight - this.frameHeight)*0.5;
 
     // we correct for the current pan offset
     let x2 = x - this._currentPan.x;
-    let y2 = y - this._currentPan.y;
+    let y2 = convertedY - this._currentPan.y;
 
     // we calculate the distance from the center
     let dx2 = x2 - cx;
@@ -259,7 +265,8 @@ export class ForceDirectedView extends Component<{
         this._multiTouchUsed = false;
         this._totalMovedX = 0;
         this._totalMovedY = 0;
-        this._pressedNodeData = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
+
+        this._pressedNodeData = this._findPress(gestureState.x0, gestureState.y0);
         this._validTap = true;
         this._clearScheduledDoubleTapGesture()
       },
@@ -284,7 +291,7 @@ export class ForceDirectedView extends Component<{
             this.nodes[nodeId].y = newY;
           }
           else if (this._totalMovedX < 50 && this._totalMovedY < 50 && this._multiTouchUsed === false) {
-            this._pressedNodeData = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
+            this._pressedNodeData = this._findPress(gestureState.x0, gestureState.y0);
             if (this._pressedNodeData !== false) {
               // do nothing
               if (this.props.allowDrag) {
@@ -449,6 +456,10 @@ export class ForceDirectedView extends Component<{
       this.recenterOnStable = true;
       this.physicsEngine.stabilize(iterations, false);
     }))
+
+    this._viewRef.measureInWindow((x,y,width,height) => {
+      console.log(x,y,width,height, this._viewRef)
+    })
   }
 
   componentWillUnmount() {
@@ -504,7 +515,7 @@ export class ForceDirectedView extends Component<{
     this.boundingBoxData['height'] = this.boundingBoxData.maxY - this.boundingBoxData.minY;
 
     // set scale
-    this.boundingBoxData['requiredScale'] = Math.min(this._maxScale, Math.max(this._minScale, Math.min(screenWidth / this.boundingBoxData.width, availableScreenHeight / this.boundingBoxData.height)));
+    this.boundingBoxData['requiredScale'] = Math.min(this._maxScale, Math.max(this._minScale, Math.min(screenWidth / this.boundingBoxData.width, this.frameHeight / this.boundingBoxData.height)));
 
     this.boundingBoxData['effectiveWidth']  = this.boundingBoxData.width  * this.boundingBoxData.requiredScale;
     this.boundingBoxData['effectiveHeight'] = this.boundingBoxData.height * this.boundingBoxData.requiredScale;
@@ -640,7 +651,7 @@ export class ForceDirectedView extends Component<{
     }
 
     // here we do not use this.viewWidth because it is meant to give the exact screen proportions
-    this.physicsEngine.initEngine(center, screenWidth, availableScreenHeight - 50, radius, onChange, onStable, usePhysics);
+    this.physicsEngine.initEngine(center, screenWidth, this.frameHeight - 50, radius, onChange, onStable, usePhysics);
     this.physicsEngine.setOptions(this.props.options);
     this.physicsEngine.load(this.nodes, this.edges);
     if (usePhysics) {
@@ -898,8 +909,9 @@ export class ForceDirectedView extends Component<{
     });
 
     return (
-      <View {...this._panResponder.panHandlers} style={{backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight, overflow:'hidden'}}>
-        <Animated.View style={
+      <View ref={(v) => { this._viewRef = v; }} {...this._panResponder.panHandlers} style={{backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, width: screenWidth, overflow:'hidden'}}>
+        <Animated.View
+          style={
           [animatedStyle,
             {
               // backgroundColor: colors.green.rgba(0.2),
@@ -907,7 +919,7 @@ export class ForceDirectedView extends Component<{
               height:   this.viewHeight,
               opacity:  this.state.opacity,
               position: 'relative',
-              top:      -(this.viewHeight - availableScreenHeight)*0.5,
+              top:      -(this.viewHeight - this.frameHeight)*0.5,
               left:     -(this.viewWidth  - screenWidth)*0.5,
             }
           ]}>
@@ -915,7 +927,7 @@ export class ForceDirectedView extends Component<{
           { this.getNodes() }
           { children }
         </Animated.View>
-        <AnimatedDoubleTap width={screenWidth} height={availableScreenHeight} eventBus={eventBus} />
+        <AnimatedDoubleTap width={screenWidth} height={this.frameHeight} eventBus={eventBus} />
       </View>
     );
   }

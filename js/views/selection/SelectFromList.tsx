@@ -15,7 +15,7 @@ import {
 
 import {
   colors,
-  OrangeLine} from '../styles'
+  } from '../styles'
 import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
 import {Icon} from "../components/Icon";
@@ -100,8 +100,7 @@ export class SelectFromList extends Component<any, any> {
   render() {
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
-        <OrangeLine/>
-        <ScrollView style={{flex:1}}>
+                <ScrollView style={{flex:1}}>
           <SeparatedItemList
             items={ this.props.items }
             separatorIndent={ false }

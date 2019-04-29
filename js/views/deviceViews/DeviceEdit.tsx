@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 
 
-import {styles, colors, OrangeLine} from '../styles'
+import {styles, colors, } from '../styles'
 import { BleUtil } from '../../util/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
@@ -705,7 +705,6 @@ lang("_Whoops___I_could_not_get__body"),
 
     return (
       <Background hasNavBar={false} image={backgroundImage}>
-        <OrangeLine />
         <ScrollView>
           <ListEditableItems items={options} separatorIndent={true}/>
           {this._getVersionInformation(stone)}

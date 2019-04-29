@@ -12,7 +12,8 @@ import { core } from "../../../../../core";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
-
+import { AlternatingContent } from "../../../../components/animated/AlternatingContent";
+const SunCalc = require('suncalc');
 
 export class SmartBehaviourSummaryGraph extends Component<any, any> {
   id;
@@ -178,7 +179,8 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
         <View style={{
           position: 'absolute', top: 0.5*(this.itemHeight-this.lineHeight), left: this.iconWidth + this.padding,
           width: this.width, height: this.lineHeight,
-          borderRadius: 0.5*this.lineHeight, backgroundColor:colors.white.rgba(0.2)
+          borderRadius: 0.5*this.lineHeight,
+          backgroundColor:colors.white.rgba(0.2)
         }} />
         {this.getElements()}
         <Animated.View style={{
@@ -187,7 +189,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
           top:2,
           width: this.state.explanationWidth,
           height: this.itemHeight - 3,
-          borderRadius: 8,
+          borderRadius: 0.5*(this.itemHeight - 3),
           backgroundColor:colors.white.hex,
           opacity: this.state.explanationOpacity
         }}>
@@ -315,17 +317,36 @@ class DayNightIndicator extends Component<any, any> {
   render() {
     let width = 0.8*screenWidth - 25;
 
-    let dawnLeft = width*(getMinutes("8:30")/(24*60));
-    let duskLeft = width*(getMinutes("18:30")/(24*60));
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+
+    // position of Crownstone HQ.
+    let lat = 51.923611570463152;
+    let lon = 4.4667693378575288;
+    if (sphere) {
+      lat = sphere.state.latitude || lat;
+      lon = sphere.state.longitude || lon;
+    }
+    var times = SunCalc.getTimes(new Date(), lat, lon);
+
+    let sunriseTime = new Date(times.sunriseEnd).valueOf();
+    let sunsetTime  = new Date(times.sunset).valueOf();
+
+    let sunriseTimeStr = AicoreUtil.getClockTimeStr(new Date(sunriseTime).getHours(), new Date(sunriseTime).getMinutes());
+    let sunsetTimeStr = AicoreUtil.getClockTimeStr(new Date(sunsetTime).getHours(), new Date(sunsetTime).getMinutes());
+
+    let dawnLeft = width*(getMinutes(sunriseTimeStr)/(24*60));
+    let duskLeft = width*(getMinutes(sunsetTimeStr) /(24*60));
+
 
     return (
-      <View style={{position:'absolute', top:0, left: 25, width:width, height:90}}>
-        <View style={{position:'absolute', top:29, left: dawnLeft, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:29, left: duskLeft, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:47, left: dawnLeft, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:47, left: duskLeft, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:65, left: dawnLeft, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:65, left: duskLeft, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
+      <View style={{position:'absolute', top:0, left: 24, width:width, height:90}}>
+        <View style={{position:'absolute', top:31, left: dawnLeft - 1, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
+        <View style={{position:'absolute', top:31, left: duskLeft,     width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
+        <View style={{position:'absolute', top:49, left: dawnLeft - 1, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
+        <View style={{position:'absolute', top:49, left: duskLeft,     width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
+        <View style={{position:'absolute', top:67, left: dawnLeft - 1, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
+        <View style={{position:'absolute', top:67, left: duskLeft,     width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
         <View style={{position:'absolute', top:72, left: dawnLeft - 14, width:30, height:20, alignItems:'center', justifyContent: 'center'}}>
           <Icon name={"c1-sunrise"} size={20} color={"#fff"} />
         </View>
@@ -339,7 +360,10 @@ class DayNightIndicator extends Component<any, any> {
           backgroundColor:colors.white.hex,
           opacity: this.state.explanationOpacity
         }}>
-          <Text style={explanationStyle(this.width)}>{"Sunrise"}</Text>
+          <AlternatingContent  style={{height:15, width: this.width}} contentArray={[
+            <Text style={explanationStyle(this.width, 'center')}>{"Sunrise"}</Text>,
+            <Text style={explanationStyle(this.width, 'center')}>{sunriseTimeStr}</Text>,
+          ]}/>
         </Animated.View>
         <Animated.View style={{
           position:'absolute', top:73, left: duskLeft - 32,
@@ -348,7 +372,10 @@ class DayNightIndicator extends Component<any, any> {
           backgroundColor:colors.white.hex,
           opacity: this.state.explanationOpacity
         }}>
-          <Text style={explanationStyle(this.width)}>{"Sunset"}</Text>
+          <AlternatingContent style={{height:15, width: this.width}} contentArray={[
+            <Text style={explanationStyle(this.width,'center')}>{"Sunset"}</Text>,
+            <Text style={explanationStyle(this.width,'center')}>{sunsetTimeStr}</Text>,
+          ]}/>
         </Animated.View>
       </View>
     )
@@ -361,4 +388,13 @@ function getMinutes(timeString) {
   return Number(elements[0]) * 60 + Number(elements[1])
 }
 
-const explanationStyle = (width) : TextStyle => { return {color: colors.csBlue.hex, fontWeight: 'bold', fontSize: 12, width: width, paddingLeft:10} };
+const explanationStyle = (width, alignment = "left") : TextStyle => {
+  return {
+    color: colors.csBlue.hex,
+    fontWeight: 'bold',
+    fontSize: 12,
+    width: width,
+    paddingLeft: alignment === 'center' ? 0 : 10,
+    textAlign:   alignment === 'center' ? "center" : "left"
+  }
+};

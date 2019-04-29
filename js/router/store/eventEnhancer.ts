@@ -324,6 +324,7 @@ function checkAction(action, affectedIds) {
     case "UPDATE_ACTIVITY_LOG_CLOUD_ID":
       break;
     case "ADD_ACTIVITY_LOG":
+    case "REMOVE_ACTIVITY_RANGE":
     case "REMOVE_ACTIVITY_LOG":
       eventStatus['stoneChangeLogs'] = affectedIds; break;
     default:

@@ -9,7 +9,7 @@ import * as React from 'react';
 import {
   Alert,
   ScrollView} from 'react-native';
-import {colors, OrangeLine} from "../../styles";
+import {colors, } from "../../styles";
 import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
@@ -142,8 +142,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false}>
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>

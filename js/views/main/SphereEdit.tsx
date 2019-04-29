@@ -16,7 +16,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { IconButton }        from '../components/IconButton'
 import { colors }            from './../styles';
 import { Permissions }       from "../../backgroundProcesses/PermissionManager";
-import { OrangeLine }        from "../styles";
+import {  }        from "../styles";
 import { eventBus }          from "../../util/EventBus";
 import { CLOUD }             from "../../cloud/cloudAPI";
 import { createNewSphere }   from "../../util/CreateSphere";
@@ -194,8 +194,7 @@ export class SphereEdit extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false} >
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <RefreshControl
             refreshing={this.state.syncing}
             onRefresh={() => { this.setState({syncing: true}); CLOUD.sync(core.store, true) }}

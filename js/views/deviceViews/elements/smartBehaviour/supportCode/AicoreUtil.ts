@@ -244,10 +244,10 @@ export const AicoreUtil = {
 
       let obj = (timeObj as aicoreTimeDataSun);
       if (obj.type === "SUNSET") {
-        baseTime = new Date(times.sunriseEnd).valueOf();
+        baseTime = new Date(times.sunset).valueOf();
       }
       else if (obj.type === "SUNRISE") {
-        baseTime = new Date(times.sunrise).valueOf();
+        baseTime = new Date(times.sunriseEnd).valueOf();
       }
 
 

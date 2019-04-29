@@ -16,7 +16,7 @@ import {
 
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
-import {colors, OrangeLine} from './../styles'
+import {colors, } from './../styles'
 import { MeshElement } from "../components/MeshElement";
 import {ForceDirectedView} from "../components/interactiveView/ForceDirectedView";
 import {TopbarButton} from "../components/topbar/TopbarButton";
@@ -178,8 +178,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     if (stoneIds.length === 0) {
       return (
         <Background image={core.background.menu}>
-          <OrangeLine/>
-          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+                    <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{ lang("No_Crownstones_in_Sphere_",sphere.config.name) }</Text>
           </View>
           <TouchableOpacity
@@ -246,8 +245,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.menu}>
-        <OrangeLine/>
-        <ForceDirectedView
+                <ForceDirectedView
           viewId={this.viewId}
           nodeIds={stoneIds}
           nodeRadius={this._baseRadius}

@@ -1,5 +1,5 @@
 import * as React from 'react'; import { Component } from 'react';
-import { Dimensions, PixelRatio, Platform, StyleSheet, View } from 'react-native'
+import { Dimensions, PixelRatio, Platform, StyleSheet, Text, View } from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
 
@@ -364,10 +364,3 @@ export const overviewStyles = StyleSheet.create({
     alignItems: 'center'
   }
 });
-
-
-
-
-export class OrangeLine extends Component<any, any> {
-  render() { return <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} />; }
-}

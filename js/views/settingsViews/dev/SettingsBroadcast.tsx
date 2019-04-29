@@ -11,7 +11,7 @@ import {
 
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import {OrangeLine} from '../../styles'
+import {} from '../../styles'
 import { core } from "../../../core";
 
 export class SettingsBroadcast extends LiveComponent<any, any> {
@@ -54,8 +54,7 @@ export class SettingsBroadcast extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

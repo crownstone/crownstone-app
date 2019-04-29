@@ -16,7 +16,7 @@ import {
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {styles, colors, OrangeLine} from '../styles'
+import {styles, colors, } from '../styles'
 import { SettingConstructor } from '../../util/SettingConstructor'
 
 import DeviceInfo from 'react-native-device-info';
@@ -83,7 +83,6 @@ export class SettingsOverview extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu}>
-        <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
           <Text style={[styles.version,{paddingBottom: 20}]}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>

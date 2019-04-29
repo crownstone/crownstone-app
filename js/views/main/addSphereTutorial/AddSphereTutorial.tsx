@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native';
 import { Background } from "../../components/Background";
-import { colors, OrangeLine, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
+import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
@@ -39,8 +39,7 @@ export class AddSphereTutorial extends Component<any, any> {
     let components = this._getContent();
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
-        <OrangeLine/>
-        <Carousel
+                <Carousel
           ref={(c) => { this._carousel = c; }}
           data={components}
           renderItem={this._renderItem}

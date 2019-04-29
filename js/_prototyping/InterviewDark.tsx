@@ -6,7 +6,7 @@ import {
 } from "react-native";
 import { core } from "../core";
 import { Background } from "../views/components/Background";
-import { colors, OrangeLine, screenWidth } from "../views/styles";
+import { colors, screenWidth } from "../views/styles";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { FadeIn, FadeInView } from "../views/components/animated/FadeInView";
 import { TextButtonLight } from "../views/components/InterviewComponents";
@@ -154,8 +154,7 @@ export class InterviewDark extends Component<any, any> {
   render() {
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
-        <OrangeLine/>
-        {this.state.finished === false ?
+                {this.state.finished === false ?
           <Carousel
             ref={(c) => {
               this._carousel = c;

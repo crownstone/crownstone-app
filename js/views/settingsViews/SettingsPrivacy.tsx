@@ -14,7 +14,7 @@ import {
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {colors, OrangeLine} from '../styles'
+import {colors, } from '../styles'
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
@@ -224,8 +224,7 @@ lang("_Whoops___We_could_not_re_body"),
 
     return (
       <Background image={core.background.menu} >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>
       </Background>

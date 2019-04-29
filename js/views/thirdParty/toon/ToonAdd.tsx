@@ -14,7 +14,7 @@ import {
   View
 } from 'react-native';
 import { Background } from "../../components/Background";
-import { colors, deviceStyles, OrangeLine, screenWidth} from "../../styles";
+import { colors, deviceStyles, screenWidth} from "../../styles";
 import { toonConfig } from "../../../sensitiveData/toonConfig";
 import { CLOUD } from "../../../cloud/cloudAPI";
 import { ScaledImage } from "../../components/ScaledImage";
@@ -299,8 +299,7 @@ export class ToonAdd extends Component<any, any> {
 
     return (
       <Background image={core.background.menu} hasNavBar={false} safeView={true}>
-        <OrangeLine/>
-        { content }
+                { content }
       </Background>
     );
   }

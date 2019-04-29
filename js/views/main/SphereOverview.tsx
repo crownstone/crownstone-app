@@ -16,11 +16,11 @@ import { AnimatedBackground }       from '../components/animated/AnimatedBackgro
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
 import { LOG }                      from '../../logging/Log'
-import { colors, OrangeLine, overviewStyles} from "../styles";
+import { colors, overviewStyles} from "../styles";
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
-import { TopbarButton, TopbarLeftButton } from "../components/topbar/TopbarButton";
+import { TopbarButton, TopbarLeftButton, TopbarRightMoreButton } from "../components/topbar/TopbarButton";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
 import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
@@ -59,36 +59,12 @@ export class SphereOverview extends LiveComponent<any, any> {
 
     let returnData = {
       title: paramsToUse.title,
-      headerRight: paramsToUse.rightLabel ? <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem} /> : undefined,
+      headerRight: paramsToUse.rightLabel ? <TopbarRightMoreButton onPress={paramsToUse.rightAction} /> : undefined,
       headerTruncatedBackTitle: lang("Back"),
-      // headerTitle: <Component /> // used to insert custom header Title component
-      // headerLeft:  <Component /> // used to insert custom header Title component
-      // headerBackImage: require("path to image") // customize back button image
-
     };
 
     if (paramsToUse.showFinalizeNavigationButton || paramsToUse.showMailIcon) {
-      // let headerLeft = null;
-      // if (Platform.OS === 'android') {
-      //   let contentArray = [];
-      //
-      //   if (paramsToUse.showFinalizeNavigationButton) { contentArray.push(<FinalizeLocalizationIcon />); }
-      //   if (paramsToUse.showMailIcon)                 { contentArray.push(<Icon name='md-mail' size={27} style={{color:colors.white.hex}} />); }
-      //   contentArray.push(<Icon name="md-menu" size={27} color={colors.white.hex} />);
-      //
-      //   headerLeft = (
-      //     <AlternatingContent
-      //       style={topBarStyle.topBarLeftTouch}
-      //       fadeDuration={500}
-      //       switchDuration={2000}
-      //       onPress={() => { NavigationUtil.navigate(drawerOpen(); }}
-      //       contentArray={contentArray}
-      //     />
-      //   );
-      // }
-      // else {
       let headerLeft = <TopbarLeftButton item={<FinalizeLocalizationIcon />} onPress={paramsToUse.showFinalizeIndoorNavigationCallback} />
-      // }
 
       returnData["headerLeft"] = headerLeft
     }
@@ -294,7 +270,6 @@ export class SphereOverview extends LiveComponent<any, any> {
       if (!activeSphereId) {
         return (
           <AnimatedBackground image={require("../../images/sphereBackground.png")}>
-            <OrangeLine/>
             { this._getContent(state, amountOfSpheres, activeSphereId) }
           </AnimatedBackground>
         );
@@ -339,8 +314,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       }
 
       return (
-        <AnimatedBackground image={background}>
-          <OrangeLine/>
+        <AnimatedBackground image={background} hideNotification={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
           { this._getAddButtonDescription() }
           { this._getContent(state, amountOfSpheres, activeSphereId) }
           { this._getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) }

@@ -10,7 +10,7 @@ import {
 
 import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
-import {OrangeLine} from "../styles";
+import {} from "../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 
@@ -285,7 +285,6 @@ export class DeviceIconSelection extends Component<{callback(icon: string) : voi
   render() {
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
-        <OrangeLine/>
         <ScrollView>
           <IconSelection
             categories={categories}

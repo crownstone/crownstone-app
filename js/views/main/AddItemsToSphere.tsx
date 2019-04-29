@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 
-import { screenWidth, colors, OrangeLine, deviceStyles } from "../styles";
+import { screenWidth, colors, deviceStyles } from "../styles";
 import {Background} from "../components/Background";
 import {textStyle} from "../deviceViews/elements/DeviceBehaviour";
 import {IconButton} from "../components/IconButton";
@@ -50,8 +50,7 @@ export class AddItemsToSphere extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.detailsDark} hasNavBar={false}>
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <View style={{ width: screenWidth, alignItems:'center' }}>
             <View style={{height: 30}} />
             <Text style={[deviceStyles.header]}>{ lang("Add_to_your_Sphere") }</Text>

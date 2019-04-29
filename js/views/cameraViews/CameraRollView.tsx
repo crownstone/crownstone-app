@@ -17,7 +17,7 @@ import {
 } from "react-native";
 
 
-import {styles, OrangeLine} from '../styles'
+import {styles, } from '../styles'
 import {LOGe} from '../../logging/Log'
 import { NavigationUtil } from "../../util/NavigationUtil";
 
@@ -126,8 +126,7 @@ lang("_I_do_not_have_access_to__body"),
   render() {
     return (
       <View style={[styles.fullscreen, {backgroundColor:'#fff'}]}>
-        <OrangeLine/>
-        {this.drawPictures()}
+                {this.drawPictures()}
       </View>
     );
   }

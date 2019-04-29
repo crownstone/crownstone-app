@@ -15,7 +15,7 @@ import {
 
 
 import { Background }   from '../components/Background'
-import {colors, screenWidth, screenHeight, OrangeLine} from '../styles'
+import {colors, screenWidth, screenHeight, } from '../styles'
 import { Icon }         from '../components/Icon';
 import { Util }         from "../../util/Util";
 import { core } from "../../core";
@@ -97,8 +97,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
-        <OrangeLine/>
-        <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
+                <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <View style={{flex:1}} />
           <Text style={{
             backgroundColor:'transparent',

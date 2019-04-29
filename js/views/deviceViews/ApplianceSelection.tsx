@@ -18,7 +18,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 
 
-import {styles, colors, OrangeLine} from './../styles'
+import {styles, colors, } from './../styles'
 import { Icon } from '../components/Icon';
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {EventBusClass} from "../../util/EventBus";
@@ -170,7 +170,6 @@ lang("_Encountered_Cloud_Issue__body"),
   render() {
     return (
       <Background hasNavBar={false} image={core.background.detailsDark} >
-        <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

@@ -17,7 +17,7 @@ import { ProfilePicture } from '../../components/ProfilePicture'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { CLOUD } from '../../../cloud/cloudAPI'
 import {LOGe} from '../../../logging/Log'
-import {colors, screenWidth, OrangeLine} from '../../styles'
+import {colors, screenWidth, } from '../../styles'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
@@ -135,8 +135,7 @@ export class SphereInvitedUser extends Component<any, any> {
 
     return (
       <Background image={core.background.menu} hasNavBar={false}>
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width:screenWidth, paddingTop:40}}>
             <ProfilePicture
               value={user && user.picture || undefined}

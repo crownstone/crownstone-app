@@ -15,7 +15,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {LOGe} from "../../../logging/Log";
 import {Background} from "../../components/Background";
-import {OrangeLine, screenWidth} from "../../styles";
+import {screenWidth} from "../../styles";
 import {ProfilePicture} from "../../components/ProfilePicture";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
@@ -129,8 +129,7 @@ lang("_Something_went_wrong__Pl_body"),
 
     return (
       <Background image={core.background.menu} hasNavBar={false}>
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture
               picture={user.picture}

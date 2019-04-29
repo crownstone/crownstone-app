@@ -15,7 +15,7 @@ import {
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {colors, OrangeLine} from "../styles";
+import {colors, } from "../styles";
 import {IconButton} from "../components/IconButton";
 
 import {NavigationBar} from "../components/editComponents/NavigationBar";
@@ -253,8 +253,7 @@ export class SettingsFAQ extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.menu} >
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>

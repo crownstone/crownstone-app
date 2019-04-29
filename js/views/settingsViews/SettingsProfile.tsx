@@ -19,7 +19,7 @@ import { processImage } from '../../util/Util'
 import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {colors, screenWidth, OrangeLine} from './../styles'
+import {colors, screenWidth, } from './../styles'
 import { IconButton } from "../components/IconButton";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 import { FileUtil } from "../../util/FileUtil";
@@ -202,8 +202,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.menu} >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+                <ScrollView keyboardShouldPersistTaps="always">
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
               <PictureCircle

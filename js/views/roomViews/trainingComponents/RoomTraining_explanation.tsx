@@ -12,15 +12,14 @@ import {
 
 
 
-import {styles, colors, screenWidth, OrangeLine} from '../../styles'
+import {styles, colors, screenWidth, } from '../../styles'
 import { Icon } from '../../components/Icon';
 
 export class RoomTraining_explanation extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1}}>
-        <OrangeLine/>
-        <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
+                <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:20,

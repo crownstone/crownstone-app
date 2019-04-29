@@ -42,6 +42,15 @@ export class TopbarButton extends Component<any, any> {
         </TouchableOpacity>
       );
     }
+    else if ( this.props.icon ) {
+      return (
+        <TouchableOpacity onPress={() => {this.props.onPress();}}  style={[alignmentStyle, this.props.style]}>
+          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
+            { this.props.icon }
+          </View>
+        </TouchableOpacity>
+      );
+    }
     return <View style={[alignmentStyle, this.props.style]} />;
   }
 }
@@ -88,5 +97,14 @@ export class TopbarRightButton extends Component<any, any> {
 
   render() {
     return <TopbarButton {...this.props} alignmentStyle={topBarStyle.topBarRightTouch}/>
+  }
+}
+
+
+
+export class TopbarRightMoreButton extends Component<any, any> {
+
+  render() {
+    return <TopbarButton {...this.props} alignmentStyle={topBarStyle.topBarRightTouch} icon={<Icon name={'md-more'} color={colors.white.hex} size={30} style={{paddingRight:5}} />}/>
   }
 }

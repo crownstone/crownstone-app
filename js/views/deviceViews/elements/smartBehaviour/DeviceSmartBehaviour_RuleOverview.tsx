@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 
-import { deviceStyles, OrangeLine, screenHeight, screenWidth } from "../../../styles";
+import { deviceStyles, screenHeight, screenWidth } from "../../../styles";
 import { WeekDayList } from "../../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
 import { core } from "../../../../core";
@@ -45,24 +45,19 @@ export class DeviceSmartBehaviour_RuleOverview extends Component<any, any> {
 
     let texts = [];
 
+
     ruleIds.forEach((ruleId) => {
-
-      ruleIds.forEach((ruleId) => {
-        let rule = rules[ruleId];
-        let ai;
-        if (rule.type === "BEHAVIOUR") {
-          ai = new AicoreBehaviour(rule.data);
-          texts.push(<Text style={{color: "#FFF"}}>{ai.getSentence()}</Text>)
-        }
-        else if (rule.type === "TWILIGHT") {
-          ai = new AicoreTwilight(rule.data);
-          texts.push(<Text style={{color: "#FFF"}}>{ai.getSentence()}</Text>)
-        }
-      })
-
+      let rule = rules[ruleId];
+      let ai;
+      if (rule.type === "BEHAVIOUR") {
+        ai = new AicoreBehaviour(rule.data);
+        texts.push(<Text key={"description" + ruleId} style={{color: "#FFF"}}>{ai.getSentence()}</Text>)
+      }
+      else if (rule.type === "TWILIGHT") {
+        ai = new AicoreTwilight(rule.data);
+        texts.push(<Text key={"description" + ruleId} style={{color: "#FFF"}}>{ai.getSentence()}</Text>)
+      }
     })
-
-
 
     return (
       <View style={{ width: screenWidth, alignItems:'center' }}>

@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Text} from 'react-native';
 import {Background} from "../components/Background";
-import {OrangeLine} from "../styles";
+import {} from "../styles";
 
 
 export class SphereDeleted extends Component<any, any> {
@@ -21,8 +21,7 @@ export class SphereDeleted extends Component<any, any> {
   render() {
     return (
       <Background image={require('../../images/mainBackgroundLightNotConnected.png')}>
-        <OrangeLine/>
-        <Text>{ lang("Sphere_Deleted_") }</Text>
+                <Text>{ lang("Sphere_Deleted_") }</Text>
       </Background>
     )
   }

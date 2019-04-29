@@ -13,13 +13,14 @@ import {
 
 import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
-import { screenWidth} from '../styles'
+import { availableScreenHeight, screenWidth } from "../styles";
 import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {Util} from "../../util/Util";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
+import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 export class RoomLayer extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
@@ -85,6 +86,16 @@ export class RoomLayer extends LiveComponent<any, any> {
   }
 
   render() {
+    let height = availableScreenHeight;
+    if (OnScreenNotifications.hasNotifications()) {
+      height -= 64;
+    }
+
+
+
+
+
+
     if (this.props.sphereId === null) {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }
@@ -103,6 +114,7 @@ export class RoomLayer extends LiveComponent<any, any> {
           allowDrag={false}
           zoomOutCallback={this.props.zoomOutCallback}
           zoomInCallback={this.props.zoomInCallback}
+          height={height}
           renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}>
           <UserLayer
             sphereId={this.props.sphereId}

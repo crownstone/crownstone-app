@@ -16,7 +16,6 @@ import {
   availableScreenHeight,
   colors,
   deviceStyles,
-  OrangeLine,
   screenWidth} from "../../../styles";
 import { Background } from "../../../components/Background";
 import { ScaledImage } from "../../../components/ScaledImage";
@@ -46,8 +45,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.detailsDark} hasNavBar={false}>
-        <OrangeLine/>
-        <DeviceSmartBehaviour_TypeSelectorBody {...this.props} />
+                <DeviceSmartBehaviour_TypeSelectorBody {...this.props} />
       </Background>
     )
   }

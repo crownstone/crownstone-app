@@ -12,7 +12,7 @@ import {
 
 import {IconButton} from "../../components/IconButton";
 import {Util} from "../../../util/Util";
-import {colors, OrangeLine} from "../../styles";
+import {colors, } from "../../styles";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
@@ -255,8 +255,7 @@ lang("_Could_not_delete_Sphere__body"),
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false} >
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>

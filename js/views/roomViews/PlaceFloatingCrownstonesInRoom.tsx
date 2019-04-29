@@ -25,7 +25,7 @@ import {
   canUseIndoorLocalizationInSphere,
   enoughCrownstonesInLocationsForIndoorLocalization, DataUtil
 } from "../../util/DataUtil";
-import { styles, colors, screenHeight, tabBarHeight, topBarHeight, OrangeLine} from '../styles'
+import { styles, colors, screenHeight, tabBarHeight, topBarHeight, } from '../styles'
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { LiveComponent }          from "../LiveComponent";
@@ -168,8 +168,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.light}>
-        <OrangeLine/>
-        <RoomBanner
+                <RoomBanner
           noCrownstones={amountOfStonesInRoom === 0}
           amountOfStonesInRoom={amountOfStonesInRoom}
           hideRight={true}

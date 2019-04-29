@@ -14,7 +14,7 @@ import {
 
 import {
   colors,
-  OrangeLine} from '../styles'
+  } from '../styles'
 import {Background} from "../components/Background";
 import {IconButton} from "../components/IconButton";
 import { ListEditableItems } from "../components/ListEditableItems";
@@ -328,8 +328,7 @@ lang("_No_recipients____I_cant__body"),
   render() {
     return (
       <Background hasNavBar={false} image={core.background.detailsDark} >
-        <OrangeLine/>
-        <ScrollView>
+                <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>

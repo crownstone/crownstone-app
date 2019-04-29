@@ -15,7 +15,7 @@ import {
   View
 } from 'react-native';
 
-import {colors, screenWidth, OrangeLine} from '../styles'
+import {colors, screenWidth, } from '../styles'
 import {IconButton} from "../components/IconButton";
 import {Background} from "../components/Background";
 import {ListEditableItems} from "../components/ListEditableItems";
@@ -548,7 +548,6 @@ text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSch
   render() {
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
-        <OrangeLine/>
         <ScrollView style={{flex:1}}>
           <View style={{alignItems:'center', width: screenWidth}}>
             { Platform.OS === 'android' ? this._getAndroidUI() : this._getIosUI() }

@@ -12,7 +12,7 @@ import {
 
 import { Background }          from '../../components/Background'
 import { ListEditableItems }   from '../../components/ListEditableItems'
-import { colors, OrangeLine }  from '../../styles'
+import { colors,  }  from '../../styles'
 import { Util }                from "../../../util/Util";
 import { IconCircle }          from "../../components/IconCircle";
 import { MeshUtil }            from "../../../util/MeshUtil";
@@ -193,8 +193,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

@@ -11,7 +11,7 @@ import {
 
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import {colors, OrangeLine} from '../../styles'
+import {colors, } from '../../styles'
 import {LOG_LEVEL} from "../../../logging/LogLevels";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
@@ -165,8 +165,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

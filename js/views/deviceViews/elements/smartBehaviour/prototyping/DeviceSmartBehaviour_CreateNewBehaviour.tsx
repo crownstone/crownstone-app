@@ -16,7 +16,6 @@ import {
   availableScreenHeight,
   colors,
   deviceStyles,
-  OrangeLine,
   screenWidth} from "../../../../styles";
 import { Background } from "../../../../components/Background";
 import { core } from "../../../../../core";
@@ -38,8 +37,7 @@ export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any>
 
     return (
       <Background image={core.background.detailsDark}>
-        <OrangeLine/>
-        <View style={{ width: screenWidth, height:availableScreenHeight, alignItems:'center' }}>
+                <View style={{ width: screenWidth, height:availableScreenHeight, alignItems:'center' }}>
           <View style={{height: 30}} />
           <Text style={[deviceStyles.header]}>{ "Presence Aware" }</Text>
           <View style={{height: 0.2*iconHeight}} />

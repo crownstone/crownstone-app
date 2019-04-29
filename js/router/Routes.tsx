@@ -3,7 +3,7 @@ import {
   createStackNavigator,
   createBottomTabNavigator,
   createSwitchNavigator,
-  HeaderMode
+  HeaderMode, createDrawerNavigator
 } from "react-navigation";
 import { TextStyle }          from "react-native";
 import { Provider, connect }  from 'react-redux';
