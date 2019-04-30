@@ -11,6 +11,10 @@ import {
 } from 'react-native';
 import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
+import { HiddenFadeInView } from "../../components/animated/FadeInView";
+
+
+
 
 export class SphereChangeButton extends Component<any, any> {
   render() {
@@ -18,7 +22,8 @@ export class SphereChangeButton extends Component<any, any> {
     let size = 0.084*screenWidth;
     let color = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
     return (
-      <TouchableOpacity
+      <HiddenFadeInView
+        visible={this.props.visible}
         style={{
           position:'absolute',
           top: 0,
@@ -29,20 +34,20 @@ export class SphereChangeButton extends Component<any, any> {
           flexDirection:'row',
           alignItems:'center',
           justifyContent:'center',
-        }}
-        onPress={() => { this.props.onPress(); }}
-      >
-        <View style={{
-          width: outerRadius,
-          height:outerRadius,
-          borderRadius:0.5*outerRadius,
-          backgroundColor: colors.white.rgba(0.5),
-          alignItems:'center',
-          justifyContent:'center',
         }}>
-          <Icon name="c1-sphere" size={size} color={ color } />
-        </View>
-      </TouchableOpacity>
+          <TouchableOpacity onPress={() => { this.props.onPress(); }}>
+          <View style={{
+            width: outerRadius,
+            height:outerRadius,
+            borderRadius:0.5*outerRadius,
+            backgroundColor: colors.white.rgba(0.5),
+            alignItems:'center',
+            justifyContent:'center',
+          }}>
+            <Icon name="c1-sphere" size={size} color={ color } />
+          </View>
+        </TouchableOpacity>
+      </HiddenFadeInView>
     );
   }
 }

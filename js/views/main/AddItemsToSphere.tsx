@@ -50,7 +50,7 @@ export class AddItemsToSphere extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.detailsDark} hasNavBar={false}>
-                <ScrollView>
+        <ScrollView>
           <View style={{ width: screenWidth, alignItems:'center' }}>
             <View style={{height: 30}} />
             <Text style={[deviceStyles.header]}>{ lang("Add_to_your_Sphere") }</Text>

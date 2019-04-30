@@ -30,7 +30,7 @@ import { StoreManager }       from '../../router/store/storeManager'
 import loginStyles            from './LoginStyles'
 import {screenWidth, screenHeight, colors, topBarHeight} from '../styles'
 import { DEBUG_MODE_ENABLED } from '../../ExternalConfig';
-import { TopBar }             from "../components/Topbar";
+import { TopbarImitation }             from "../components/TopbarImitation";
 import { Icon }               from "../components/Icon";
 import { Sentry }             from "react-native-sentry";
 import { FileUtil } from "../../util/FileUtil";
@@ -225,7 +225,7 @@ lang("_Incorrect_Email_or_Passw_body"),
     }
     return (
       <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} safeView={true}>
-        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
+        <TopbarImitation leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
             <View style={{flex:2, width:screenWidth}} />

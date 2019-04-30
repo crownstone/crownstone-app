@@ -54,7 +54,6 @@ export class Sphere extends Component<any, any> {
 
     // This is an empty sphere. Tell the user what to expect.
     if (noStones === true && noRoomsCurrentSphere == true) {
-
       if (Permissions.inSphere(this.props.sphereId).seeSetupCrownstone !== true) {
         // this user cannot see setup Crownstones. Tell him the admin will have to add them.
         return (
@@ -78,8 +77,8 @@ export class Sphere extends Component<any, any> {
       }
     }
 
-    if (availableStones === 0) {
-      // This dude can add stones. Tell him how.
+    if (availableStones === 0 && floatingStones > 0) {
+      // This dude cant add rooms and floating Crownstones need to be put in rooms. Tell him how to continue.
       return (
         <View style={viewStyle}>
           <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
@@ -89,16 +88,22 @@ export class Sphere extends Component<any, any> {
       )
     }
 
+
+    let shouldShowStatusCommunication = this.props.arrangingRooms === false && setupCrownstoneNotification === false;
+
     return (
       <View style={{width: screenWidth, height: availableScreenHeight}}>
-        { setupCrownstoneNotification !== true ? <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
+        { shouldShowStatusCommunication ? <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
         <RoomLayer
+          viewId={this.props.viewId}
           sphereId={currentSphere}
           viewingRemotely={viewingRemotely}
           multipleSpheres={this.props.multipleSpheres}
           zoomOutCallback={this.props.zoomOutCallback}
+          setRearrangeRooms={this.props.setRearrangeRooms}
+          arrangingRooms={this.props.arrangingRooms}
         />
-        { setupCrownstoneNotification !== true ? <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
+        { shouldShowStatusCommunication ? <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
       </View>
     );
   }

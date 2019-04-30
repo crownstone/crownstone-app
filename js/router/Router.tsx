@@ -27,7 +27,7 @@ export class Router extends Component {
         </Provider>,
 
         <AicoreTimeCustomizationOverlay key={"AicoreTimeCustomizationOverlay"}    />,
-        <SimpleOverlay             key={"SimpleOverlay"}     />,
+        <SimpleOverlay             key={"SimpleOverlay"}   />,
         <LibMessages               key={"LibMessages"}     />,
         <DfuOverlay                key={"DfuOverlay"}      />,
         <LockOverlay               key={"LockOverlay"}     />,

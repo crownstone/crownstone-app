@@ -11,7 +11,7 @@ import {
   Text,
   View
 } from 'react-native';
-import {colors, screenWidth, tabBarHeight, tabBarMargin, topBarHeight} from "../../styles";
+import { availableScreenHeight, colors, screenWidth, tabBarHeight, tabBarMargin, topBarHeight } from "../../styles";
 import {RoomCircle} from "../../components/RoomCircle";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CancelButton} from "../../components/topbar/CancelButton";
@@ -23,6 +23,7 @@ import { Background } from "../../components/Background";
 import { Util } from "../../../util/Util";
 import { Icon } from "../../components/Icon";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
 
 
 
@@ -140,6 +141,10 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
 
 
   render() {
+    let height = availableScreenHeight;
+    if (OnScreenNotifications.hasNotifications()) {
+      height -= 64;
+    }
     if (this.props.sphereId === null) {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }
@@ -150,7 +155,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId);
       return (
         <Background image={require('../../../images/blueprintBackgroundGray.png')} hasNavBar={false} safeView={true}>
-                    <ForceDirectedView
+          <ForceDirectedView
             ref={this.refName}
             viewId={this.viewId}
             topOffset={0.3*this._baseRadius}
@@ -160,6 +165,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
             initialPositions={roomData.initialPositions}
             enablePhysics={roomData.usePhysics}
             nodeRadius={this._baseRadius}
+            height={height}
             allowDrag={true}
             renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}
           />

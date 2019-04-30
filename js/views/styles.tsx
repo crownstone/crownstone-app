@@ -97,12 +97,14 @@ function populateColorObject(clr, color) {
    * @returns {{name: string; hex: string; rgb: {r: number; g: number; b: number}; rgba: (opacity) => string}}
    */
   clr.blend = (otherColor, factor) => {
+    factor = Math.max(0,Math.min(1,factor));
     let red   = Math.floor((1-factor) * clr.rgb.r + factor * otherColor.rgb.r);
     let green = Math.floor((1-factor) * clr.rgb.g + factor * otherColor.rgb.g);
     let blue  = Math.floor((1-factor) * clr.rgb.b + factor * otherColor.rgb.b);
     return populateColorObject({hex:rgb2hex(red, green, blue)},'blend:'+color+"_"+otherColor.name+"_"+factor)
   };
   clr.hsvBlend = (otherColor, factor) => {
+    factor = Math.max(0,Math.min(1,factor));
     let h = (1-factor) * clr.hsv.h + factor * otherColor.hsv.h;``;
     let s = (1-factor) * clr.hsv.s + factor * otherColor.hsv.s;
     let v = (1-factor) * clr.hsv.v + factor * otherColor.hsv.v;

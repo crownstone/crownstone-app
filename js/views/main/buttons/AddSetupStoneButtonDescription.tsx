@@ -13,14 +13,16 @@ import {
 import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-
+import { HiddenFadeInView } from "../../components/animated/FadeInView";
 
 
 export class AddSetupStoneButtonDescription extends Component<any, any> {
   render() {
     let outerRadius = 0.15*screenWidth;
     return (
-      <View style={{
+      <HiddenFadeInView
+        visible={this.props.visible}
+        style={{
         position:'absolute',
         bottom: 6,
         right: 0,
@@ -38,7 +40,7 @@ export class AddSetupStoneButtonDescription extends Component<any, any> {
         <Icon name={"md-arrow-round-forward"}  size={20} color={colors.menuTextSelected.hex} style={{padding:5}} />
         <View style={{width:5}} />
         <View style={{width:outerRadius,height: outerRadius}} />
-    </View>
+    </HiddenFadeInView>
   );
   }
 }

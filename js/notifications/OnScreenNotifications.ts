@@ -7,7 +7,7 @@ class OnScreenNotificationsClass {
   sphereUpdateAvailable: boolean;
 
   constructor() {
-    this.sphereUpdateAvailable = true;
+    this.sphereUpdateAvailable = false;
   }
 
   hasNotifications() {

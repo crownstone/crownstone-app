@@ -2203,12 +2203,15 @@ export default {
     Sphere_Overview:                     function() { return "Sphere Overview" },
     Hello_there_:                        function() { return "Hello there!" },
     Back:                                function() { return "Back" },
+    Save:                                function() { return "Save" },
+    Solve_Positions:                     function() { return "Auto Arrange!" },
+    Move_rooms_around:                   function() { return "Move rooms around!" },
   },
   SphereRoomArranger:{
     __filename: "../js/views/main/editSubviews/SphereRoomArranger.tsx",
     Save:                                function() { return "Save" },
-    Solve_Positions:                     function() { return "Solve Positions" },
-    Drag_it_around_:                     function() { return "Drag it around!" },
+    Solve_Positions:                     function() { return "Auto Arrange!" },
+    Drag_it_around_:                     function() { return "Move rooms around!" },
   },
   SphereRoomOverview:{
     __filename: "../js/views/main/editSubviews/SphereRoomOverview.tsx",

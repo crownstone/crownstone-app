@@ -4252,7 +4252,7 @@ export default {
   SphereRoomArranger:{
     __filename: "../js/views/main/editSubviews/SphereRoomArranger.tsx",
     Save:                                function() { return "Save" },
-    Solve_Positions:                     function() { return "Solve Positions" },
+    Solve_Positions:                     function() { return "Auto Arrange!" },
     Drag_it_around_:                     function() { return "Drag it around!" },
     __stringSameAsBaseLanguage: {
       Save:                               false,

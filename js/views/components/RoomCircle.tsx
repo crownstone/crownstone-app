@@ -57,6 +57,9 @@ class RoomCircleClass extends LiveComponent<any, any> {
   renderState: any;
 
   scaledUp = true;
+  touching = false;
+  touchTimeout = null;
+
 
   constructor(props) {
     super(props);
@@ -72,6 +75,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
       scale: new Animated.Value(1),
       opacity: new Animated.Value(1),
       setupProgress: 20,
+      progress: 0
     };
 
     this.energyLevels = [
@@ -278,6 +282,28 @@ class RoomCircleClass extends LiveComponent<any, any> {
     )
   }
 
+  _getProgressCircle(percentage) {
+    if (percentage > 0) {
+      let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
+      return (
+        <View style={{ position: 'absolute', top: 0, left: 0 }}>
+          <Svg width={this.outerDiameter} height={this.outerDiameter}>
+            <Circle
+              r={this.props.radius - 10}
+              stroke={colors.white.blend(colors.purple, percentage).hex}
+              strokeWidth={10}
+              strokeDasharray={[pathLength * percentage, pathLength]}
+              rotation="-89.9"
+              x={this.props.radius}
+              y={this.props.radius}
+              strokeLinecap="round"
+              fill="rgba(0,0,0,0)"
+            />
+          </Svg>
+        </View>
+      );
+    }
+  }
 
   _getFactor(usage) {
     let level = this._getLevel(usage);
@@ -325,6 +351,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
         <View>
           {this.getCircle()}
           {this.showAlert !== null ? this._getAlertIcon() : undefined}
+          {this._getProgressCircle(this.state.progress) }
         </View>
       </Animated.View>
     )
@@ -341,6 +368,34 @@ class RoomCircleClass extends LiveComponent<any, any> {
     tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70 }));
     tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, duration: 100}));
     Animated.parallel(tapAnimations).start();
+
+    this.touching = true;
+    this.touchTimeout = setTimeout(() => { this._onHoldAnimation(); }, 250);
+  }
+
+  _onHoldAnimation() {
+    Animated.timing(this.state.opacity, {toValue: 1, duration: 100}).start(() => { this._onHoldProgress() })
+  }
+
+  _onHoldProgress() {
+    if (this.touching) {
+      let nextStep = Math.min(1, this.state.progress + 0.04);
+      this.setState({ progress: nextStep })
+      if (nextStep >= 0.95) {
+        this.props.onHold();
+        this._clearHold();
+      } else {
+        this.touchTimeout = setTimeout(() => { this._onHoldProgress(); }, 20);
+      }
+    }
+  }
+
+  _clearHold() {
+    this.touching = false;
+    if (this.state.progress > 0) {
+      this.setState({ progress: 0 })
+    }
+    clearTimeout(this.touchTimeout);
   }
 
   handleTouchReleased(data) {
@@ -356,6 +411,9 @@ class RoomCircleClass extends LiveComponent<any, any> {
       revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
       Animated.parallel(revertAnimations).start();
     }
+
+
+    this._clearHold();
   }
 
   handleDragging(data) {
@@ -369,6 +427,8 @@ class RoomCircleClass extends LiveComponent<any, any> {
     revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
     revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
     Animated.parallel(revertAnimations).start();
+
+    this._clearHold();
   }
 
   handleTap(data) {
@@ -380,18 +440,21 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
     this.state.scale.setValue(1);
     this.state.opacity.setValue(1);
-    if (this.showAlert !== null) {
-      if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
-        if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
-          handled = true;
-          NavigationUtil.navigate("RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+
+    if (this.touching === true) {
+      if (this.showAlert !== null) {
+        if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
+          if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
+            handled = true;
+            NavigationUtil.navigate("RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+          }
         }
       }
+      if (handled === false) {
+        NavigationUtil.navigate("RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+      }
     }
-
-    if (handled === false) {
-      NavigationUtil.navigate("RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
-    }
+    this._clearHold();
   }
 }
 

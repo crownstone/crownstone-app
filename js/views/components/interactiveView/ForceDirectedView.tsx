@@ -247,9 +247,13 @@ export class ForceDirectedView extends Component<{
     }
   }
 
+  initLayout() {
+    this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges, this.props.initialPositions, this.props.enablePhysics);
+  }
+
   init() {
     this.panListener = this.state.pan.addListener(value => this._currentPan = value);
-    this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges, this.props.initialPositions, this.props.enablePhysics);
+    this.initLayout();
 
     // configure the pan responder
     this._panResponder = PanResponder.create({

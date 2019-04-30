@@ -229,5 +229,5 @@ else {
   TopBarClass = TopBarIOS;
 }
 
-export const TopBar = TopBarClass;
+export const TopbarImitation = TopBarClass;
 

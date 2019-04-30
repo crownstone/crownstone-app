@@ -271,7 +271,7 @@ export class RoomOverview extends LiveComponent<any, any> {
   _updateNavBar() {
     let state = core.store.getState();
     let params = getNavBarParams(state, this.props, this.viewingRemotely);
-    this.props.navigation.setParams(params)
+    this.props.navigation.setParams(params);
   }
 
 
@@ -333,7 +333,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 
     return (
       <Background image={backgroundImage}>
-                <RoomBanner
+        <RoomBanner
           presentUsers={users}
           noCrownstones={amountOfStonesInRoom === 0}
           canDoLocalization={canDoLocalization}

@@ -21,29 +21,30 @@ import {Util} from "../../util/Util";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class RoomLayer extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
 
   _baseRadius;
   _currentSphere;
-  _showingFloatingRoom;
+  _forceViewRef;
   unsubscribeStoreEvents;
-  viewId: string;
+  unsubscribeViewEvents = [];
 
   constructor(props) {
     super(props);
 
     this._baseRadius = 0.15 * screenWidth;
-    this.viewId = xUtil.getUUID();
+
     this._currentSphere = props.sphereId;
-    this._showingFloatingRoom = false
   }
 
 
   componentDidMount() {
-    // to ensure
     let reloadSolverOnDemand = () => { this.forceUpdate(); };
+    this.unsubscribeViewEvents.push(core.eventBus.on("save_positions"  + this.props.viewId, () => { this._storePositions(); }));
+    this.unsubscribeViewEvents.push(core.eventBus.on("reset_positions" + this.props.viewId, () => { this._resetPositions(); }));
 
     this.unsubscribeStoreEvents = core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
@@ -66,6 +67,7 @@ export class RoomLayer extends LiveComponent<any, any> {
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
+    this.unsubscribeViewEvents.forEach((unsub) => { unsub() });
   }
 
 
@@ -73,7 +75,7 @@ export class RoomLayer extends LiveComponent<any, any> {
     // variables to pass to the room overview
     return (
       <RoomCircle
-        viewId={this.viewId}
+        viewId={this.props.viewId}
         locationId={locationId}
         sphereId={this.props.sphereId}
         radius={this._baseRadius}
@@ -81,8 +83,33 @@ export class RoomLayer extends LiveComponent<any, any> {
         seeStonesInSetupMode={SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone}
         viewingRemotely={this.props.viewingRemotely}
         key={locationId || 'floating'}
+        onHold={() => { this.props.setRearrangeRooms(true); }}
       />
     );
+  }
+
+  _storePositions() {
+    let nodes = this._forceViewRef.nodes;
+    let nodeIds = Object.keys(nodes);
+    let actions = [];
+    nodeIds.forEach((nodeId) => {
+      let node = nodes[nodeId];
+      if (node.support === false && node.id !== null) {
+        actions.push({type:"SET_LOCATION_POSITIONS", sphereId: this.props.sphereId, locationId: nodeId, data:{ x: node.x, y: node.y, setOnThisDevice: true}})
+      }
+      else if (node.id === null) {
+        actions.push({type:"SET_FLOATING_LAYOUT_LOCATION", sphereId: this.props.sphereId, data:{ x: node.x, y: node.y, setOnThisDevice: true}})
+      }
+    });
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions);
+    }
+    this.props.setRearrangeRooms(false);
+  }
+
+  _resetPositions() {
+    this._forceViewRef.initLayout();
+    this.props.setRearrangeRooms(false);
   }
 
   render() {
@@ -91,11 +118,6 @@ export class RoomLayer extends LiveComponent<any, any> {
       height -= 64;
     }
 
-
-
-
-
-
     if (this.props.sphereId === null) {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }
@@ -103,7 +125,8 @@ export class RoomLayer extends LiveComponent<any, any> {
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId);
       return (
         <ForceDirectedView
-          viewId={this.viewId}
+          ref={(r) => { this._forceViewRef = r }}
+          viewId={this.props.viewId}
           topOffset={0.3*this._baseRadius}
           bottomOffset={Permissions.inSphere(this.props.sphereId).addRoom ? 0.3*this._baseRadius : 0}
           drawToken={this.props.sphereId}
@@ -111,15 +134,15 @@ export class RoomLayer extends LiveComponent<any, any> {
           initialPositions={roomData.initialPositions}
           enablePhysics={roomData.usePhysics}
           nodeRadius={this._baseRadius}
-          allowDrag={false}
+          allowDrag={this.props.arrangingRooms}
           zoomOutCallback={this.props.zoomOutCallback}
           zoomInCallback={this.props.zoomInCallback}
           height={height}
           renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}>
-          <UserLayer
-            sphereId={this.props.sphereId}
-            nodeRadius={this._baseRadius}
-          />
+          {
+            this.props.arrangingRooms === false ?
+              <UserLayer sphereId={this.props.sphereId} nodeRadius={this._baseRadius} /> : undefined
+          }
         </ForceDirectedView>
       );
     }
