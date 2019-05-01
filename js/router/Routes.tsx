@@ -72,9 +72,9 @@ const NewBehaviourStack = createStackNavigator(
 
 const AddCrownstoneStack = createStackNavigator(
   {
+    AddCrownstone:               Views.AddCrownstone,
     SetupCrownstone_step1:       Views.SetupCrownstone_step1,
     ScanningForSetupCrownstones: Views.ScanningForSetupCrownstones,
-    AddCrownstone:               Views.AddCrownstone,
   },
   {
     ...defaultHeader,

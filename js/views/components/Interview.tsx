@@ -60,10 +60,10 @@ export class Interview extends Component<{
     let cards = this.props.getCards();
     if (cards && cards.start) {
       this.state = {
-        activeCard: 0,
+        activeCardIndex: 0,
         cardIds: ['start'],
         finished: false,
-        transitioningToCard: undefined
+        transitioningToCardId: undefined
       };
     }
     else {
@@ -81,19 +81,19 @@ export class Interview extends Component<{
           if (!cardId) { return; }
 
           let currentIds = this.state.cardIds;
-          currentIds.splice(this.state.activeCard + 1);
+          currentIds.splice(this.state.activeCardIndex + 1);
 
-          if (this.selectedOptions.length <= this.state.activeCard) {
+          if (this.selectedOptions.length <= this.state.activeCardIndex) {
             this.selectedOptions.push(selectedIndex)
           }
           else {
-            this.selectedOptions[this.state.activeCard] = selectedIndex;
+            this.selectedOptions[this.state.activeCardIndex] = selectedIndex;
           }
           this.responseHeaders[cardId] = option.dynamicResponse && option.dynamicResponse(value) || option.response;
 
           currentIds.push(cardId);
 
-          this.setState({ cardIds: currentIds, transitioningToCard: currentIds.length - 1 }, () => {
+          this.setState({ cardIds: currentIds, transitioningToCardId: cardId }, () => {
             this.checkStyleUpdates();
             setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1); }, 0);
           })
@@ -107,12 +107,13 @@ export class Interview extends Component<{
 
   getBackgroundFromCard() {
     let cards = this.props.getCards();
+    let activeCard = cards[this.state.cardIds[this.state.activeCardIndex]];
     let backgroundImage = null;
-    if (this.state.transitioningToCard !== undefined) {
-      backgroundImage = cards[this.state.transitioningToCard].backgroundImage;
+    if (this.state.transitioningToCardId !== undefined) {
+      backgroundImage = cards[this.state.transitioningToCardId].backgroundImage;
     }
-    else if (cards[this.state.activeCard].backgroundImage !== undefined) {
-      backgroundImage = cards[this.state.activeCard].backgroundImage;
+    else if (activeCard.backgroundImage !== undefined) {
+      backgroundImage = activeCard.backgroundImage;
     }
 
     return backgroundImage;
@@ -120,7 +121,7 @@ export class Interview extends Component<{
 
   getTextColorFromCard() {
     let cards = this.props.getCards();
-    let activeCard = cards[this.state.activeCard];
+    let activeCard = cards[this.state.cardIds[this.state.activeCardIndex]];
 
     return activeCard.textColor || null;
   }
@@ -146,16 +147,19 @@ export class Interview extends Component<{
   }
 
 
+
+
   render() {
     if (this.state.invalid === true) {
       return <View><Text>Something went wrong. Please retry.</Text></View>
     }
 
-    let allCards = this.props.getCards()
+    let allCards = this.props.getCards();
     let cards = [];
     this.state.cardIds.forEach((cardId) => {
       cards.push(allCards[cardId]);
-    })
+    });
+
 
     return (
       <Carousel
@@ -167,7 +171,7 @@ export class Interview extends Component<{
         itemHeight={screenHeight}
         sliderWidth={screenWidth}
         itemWidth={screenWidth}
-        onSnapToItem={(index) => { this.setState({ activeCard: index, transitioningToCard: undefined }, () => { this.checkStyleUpdates();})}}
+        onSnapToItem={(index) => { this.setState({ activeCardIndex: index, transitioningToCardId: undefined }, () => { this.checkStyleUpdates();})}}
       />
     );
   }

@@ -51,7 +51,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
   interviewState
   interviewData
 
-  _interview
+  _interview : Interview
   responseHeaders : any;
   selectedOptions = [];
   constructor(props) {
@@ -83,8 +83,8 @@ export class AddCrownstone extends LiveComponent<any, any> {
         optionsCenter: true,
         options: [
           {label: "Plug",          image: require('../../images/addCrownstone/plugs.png'),      nextCard: 'installingPlug',              response: "A Plug it is!"},
-          {label: "Built-in One",  image: require('../../images/addCrownstone/builtin-v2.png'), nextCard: 'installingBuiltinOne_step1',  response: "Let's add second generation Built-in!"},
-          {label: "Built-in Zero", image: require('../../images/addCrownstone/builtin-v1.png'), nextCard: 'installingBuiltinZero_step1', response: "Let's add a Built-in!"},
+          {label: "Built-in One",  image: require('../../images/addCrownstone/builtin-v2.png'), nextCard: 'installingBuiltinOne_step1',  response: "Let's add a Built-in One!"},
+          {label: "Built-in Zero", image: require('../../images/addCrownstone/builtin-v1.png'), nextCard: 'installingBuiltinZero_step1', response: "Let's add a Built-in Zero!"},
           {label: "I don't have\nCrownstones yet...", image: require('../../images/addCrownstone/buy.png'), nextCard: 'buy',             response: "Let's buy Crownstones!"},
         ]
       },
