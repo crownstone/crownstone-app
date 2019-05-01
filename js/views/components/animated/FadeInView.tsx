@@ -98,7 +98,7 @@ export function FadeIn(props) {
   }
 
   return (
-    <FadeInView visible={visible} delay={props.index * 65 || 0}>
+    <FadeInView visible={visible} delay={props.index * 65 || 0} {...props}>
       {props.children}
     </FadeInView>
   );

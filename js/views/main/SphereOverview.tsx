@@ -184,9 +184,9 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
 
-  _getAddButtonDescription() {
-    if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
-      if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
+  _getAddButtonDescription(activeSphereId) {
+    if (this.state.zoomLevel === ZOOM_LEVELS.room) {
+      if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(activeSphereId).seeSetupCrownstone) {
         return <AddSetupStoneButtonDescription visible={this.state.arrangingRooms === false} />;
       }
     }
@@ -266,7 +266,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
         return (
-          <AnimatedBackground image={require("../../images/sphereBackground.png")}>
+          <AnimatedBackground image={require("../../images/backgrounds/sphereBackground.png")}>
             { this._getContent(state, amountOfSpheres, activeSphereId) }
           </AnimatedBackground>
         );
@@ -288,7 +288,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       }
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
-        background = require("../../images/sphereBackground.png");
+        background = require("../../images/backgrounds/sphereBackground.png");
       }
       else {
         // handle the case where there are no rooms added:
@@ -306,15 +306,16 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
 
         if (this.state.arrangingRooms) {
-          background = require('../../images/blueprintBackgroundGray.png')
+          background = require('../../images/backgrounds/blueprintBackgroundGray.png')
         }
       }
 
       return (
         <AnimatedBackground image={background} hideNotification={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
-          { this._getAddButtonDescription() }
+          { this._getAddButtonDescription(activeSphereId) }
           { this._getContent(state, amountOfSpheres, activeSphereId) }
           { this._getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) }
+          { this._getAddButtonDescription(activeSphereId) }
           <AddItemButton inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} viewingRemotely={true }/>
           <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
         </AnimatedBackground>

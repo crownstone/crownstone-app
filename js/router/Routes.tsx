@@ -70,6 +70,18 @@ const NewBehaviourStack = createStackNavigator(
 );
 
 
+const AddCrownstoneStack = createStackNavigator(
+  {
+    SetupCrownstone_step1:       Views.SetupCrownstone_step1,
+    ScanningForSetupCrownstones: Views.ScanningForSetupCrownstones,
+    AddCrownstone:               Views.AddCrownstone,
+  },
+  {
+    ...defaultHeader,
+  }
+);
+
+
 const EditSphereStack = createStackNavigator(
   {
     SphereEdit               : Views.SphereEdit,
@@ -223,6 +235,9 @@ const AppStack = createStackNavigator(
     // test: {
     //   screen: wrap("InterviewLight", InterviewLight),
     // },
+    AddCrownstoneStack: {
+      screen: AddCrownstoneStack,
+    },
     AppNavigator: {
       screen: TabNavigator,
     },

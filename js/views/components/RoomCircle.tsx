@@ -266,7 +266,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
             strokeLinecap="round"
             fill="white"
           />
-          <Circle
+          {usage ? <Circle
             r={this.props.radius - this.borderWidth}
             stroke={newColor}
             strokeWidth={this.borderWidth}
@@ -276,7 +276,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
             y={this.props.radius}
             strokeLinecap="round"
             fill="rgba(0,0,0,0)"
-          />
+          /> : undefined}
         </Svg>
       </View>
     )

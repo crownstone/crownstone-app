@@ -10,6 +10,7 @@ export let BEHAVIOUR_TYPES = {
 export let STONE_TYPES = {
   plug:          "PLUG",
   builtin:       "BUILTIN",
+  builtinV2:     "BUILTIN_V2",
   guidestone:    "GUIDESTONE",
   crownstoneUSB: "CROWNSTONE_USB"
 };
@@ -22,7 +23,6 @@ export const BCH_ERROR_CODES = {
 
 
 // AiCore types
-
 export const SMART_BEHAVIOUR_TYPES = {
   PRESENCE:      "PRESENCE",
   WAKE_UP_LIGHT: "WAKE_UP_LIGHT",

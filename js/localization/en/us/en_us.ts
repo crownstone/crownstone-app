@@ -2041,7 +2041,7 @@ export default {
     _You_dont_have_permission_header:    function() { return "You don't have permission" },
     _You_dont_have_permission_body:      function() { return "You can ask an admin in your Sphere to setup this Crownstone" },
     _You_dont_have_permission_left:      function() { return "OK" },
-    Tap_here_to_add_it_to_thi:           function() { return "Tap here to add it to this Sphere!" },
+    Tap_here_to_add_it_to_thi:           function() { return "Tap here to add me to this Sphere!" },
     _Very_Near_:                         function() { return "(Very Near)" },
     _Near_:                              function() { return "(Near)" },
     _Visible_:                           function() { return "(Visible)" },

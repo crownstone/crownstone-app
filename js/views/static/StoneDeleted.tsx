@@ -20,7 +20,7 @@ export class StoneDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={require('../../images/stoneDetails.png')}>
+      <Background image={require('../../images/backgrounds/stoneDetails.png')}>
                 <Text>{ lang("Stone_Deleted_") }</Text>
       </Background>
     )

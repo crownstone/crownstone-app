@@ -13,14 +13,13 @@ import { SetupStateHandler } from "../../../native/setup/SetupStateHandler";
 
 export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean, sphereId: string, viewingRemotely: boolean}) {
   if (Permissions.inSphere(props.sphereId).addRoom) {
-    let setupIcon = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone
-
+    let setupIcon = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(props.sphereId).seeSetupCrownstone;
 
     let outerRadius = 0.12*screenWidth;
     let iconSize = 0.09*screenWidth;
     let iconColor = props.viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
     if (setupIcon) {
-      iconSize = 0.12*screenWidth;
+      iconSize = 0.11*screenWidth;
       outerRadius = 0.15*screenWidth;
       iconColor = colors.white.hex;
     }
@@ -47,7 +46,7 @@ export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean
 
     return (
       <HiddenFadeInView visible={props.arrangingRooms === false && props.inSphere} style={buttonStyle}>
-        <TouchableOpacity onPress={() => { NavigationUtil.navigate("AddItemsToSphere",{sphereId: this.props.sphereId}); }}>
+        <TouchableOpacity onPress={() => { NavigationUtil.navigate("AddItemsToSphere",{sphereId: props.sphereId}); }}>
           <View style={viewStyle}>
             <Icon name="c3-addRounded" size={ iconSize } color={ iconColor } />
           </View>

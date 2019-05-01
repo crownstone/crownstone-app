@@ -226,7 +226,7 @@ class SetupStateHandlerClass {
   }
 
   areSetupStonesAvailable() {
-    return (Object.keys(this._stonesInSetupStateAdvertisements).length > 0 || this._currentSetupState.busy);
+    return (Object.keys(this._stonesInSetupStateAdvertisements).length > 0 || this._currentSetupState.busy) || true;
   }
 
   isSetupInProgress() {

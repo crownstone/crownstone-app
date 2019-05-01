@@ -19,7 +19,7 @@ export class RoomDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={require('../../images/mainBackgroundLightNotConnected.png')}>
+      <Background image={require('../../images/backgrounds/mainBackgroundLightNotConnected.png')}>
                 <Text>{ lang("Room_Deleted_") }</Text>
       </Background>
     )

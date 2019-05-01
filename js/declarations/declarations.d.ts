@@ -121,9 +121,8 @@ interface core {
   background: {
     main                   : any,
     menu                   : any,
-    mainRemoteNotConnected : any,
-    menuRemoteNotConnected : any,
     mainDarkLogo           : any,
+    mainRemoteNotConnected : any,
     mainDark               : any,
     light                  : any,
     detailsDark            : any,
@@ -138,4 +137,44 @@ interface core {
     cacheBusterUniqueElement: number,
     developmentEnvironment: boolean,
   }
+}
+
+
+interface interviewOption {
+  label: string,
+  icon?: any,
+  image?: any,
+  nextCard?: string,
+  response?: string,
+  dynamicResponse?: (value) => string | string,
+  textAlign?: string,
+  onSelect?: (value: interviewReturnData) => boolean | void,
+  editable?: boolean,
+  theme?: "default" | "create"
+}
+
+
+interface interviewReturnData {
+  customElementState: any,
+  textfieldState: any
+}
+
+interface interviewCard {
+  header?: string,
+  subHeader?: string,
+  explanation?: string,
+  textColor?: string,
+  image?: any,
+  editableItem?: (state, setState) => any,
+  backgroundImage?: any
+  hasTextInputField?: boolean
+  placeholder?: string
+  optionsCenter?: boolean,
+  optionsBottom?: boolean
+  options: interviewOption[]
+}
+
+interface interviewCards {
+  start: interviewCard,
+  [key: string]: interviewCard,
 }

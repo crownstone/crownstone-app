@@ -22,6 +22,8 @@ import {IconButton} from "../components/IconButton";
 import { core } from "../../core";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
 
 let iconSize = 100;
@@ -48,6 +50,11 @@ export class AddItemsToSphere extends Component<any, any> {
   };
 
   render() {
+    let seeCrownstoneInSetup = false;
+    if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
+      seeCrownstoneInSetup = true;
+    }
+
     return (
       <Background image={core.background.detailsDark} hasNavBar={false}>
         <ScrollView>
@@ -65,11 +72,11 @@ export class AddItemsToSphere extends Component<any, any> {
             <View style={{height: 0.2*iconSize}} />
             <Text style={textStyle.specification}>{ lang("You_can_add_Rooms__People") }</Text>
             <View style={{height: 0.2*iconSize}} />
-            <View  style={{flexDirection:'row'}}>
+            <View  style={{flexDirection:'row', alignItems:'center'}}>
               <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
                 NavigationUtil.navigateAndReplace("RoomAdd", { sphereId: this.props.sphereId });
               }} />
-              <AddItem icon={'c2-crownstone'} label={ lang("Crownstone")} callback={() => { addCrownstoneExplanationAlert(() => { NavigationUtil.back(); }); }} />
+              <AddItem icon={'c2-crownstone'} highlight={seeCrownstoneInSetup} label={ lang("Crownstone")} callback={() => { addCrownstoneExplanationAlert(() => { NavigationUtil.back(); }); }} />
             </View>
             <View  style={{flexDirection:'row'}}>
               <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => {
@@ -87,21 +94,27 @@ export class AddItemsToSphere extends Component<any, any> {
   }
 }
 
-class AddItem extends Component<any, any> {
-  render() {
-    return (
-      <TouchableOpacity style={{alignItems:'center', padding:10}} onPress={() => { this.props.callback(); }}>
-        <IconButton
-          name={this.props.icon}
-          size={0.75*iconSize}
-          color={colors.white.hex}
-          addColor={colors.menuBackground.hex}
-          addIcon={true}
-          buttonSize={iconSize}
-          buttonStyle={{backgroundColor:colors.green.hex, borderRadius: 0.2*iconSize}}
-        />
-        <Text style={{paddingTop:10, color: colors.white.hex, fontWeight:'bold'}}>{this.props.label}</Text>
-      </TouchableOpacity>
-    );
-  }
+function AddItem(props) {
+  let usedIconSize = iconSize;
+  if (props.highlight) { usedIconSize = 1.3*iconSize}
+
+  return (
+    <TouchableOpacity style={{alignItems:'center', padding:10}} onPress={() => { props.callback(); }}>
+      <IconButton
+        name={props.icon}
+        size={0.75*usedIconSize}
+        color={colors.white.hex}
+        addColor={props.highlight ? colors.green.hex : colors.menuBackground.hex}
+        addIcon={true}
+        buttonSize={usedIconSize}
+        buttonStyle={{
+          backgroundColor: props.highlight ? colors.menuTextSelected.hex : colors.green.hex,
+          borderRadius: 0.2*usedIconSize,
+          borderColor: colors.white.hex,
+          borderWidth: props.highlight ? 5 : 0,
+        }}
+      />
+      <Text style={{paddingTop:10, color: colors.white.hex, fontWeight:'bold'}}>{props.label}</Text>
+    </TouchableOpacity>
+  );
 }

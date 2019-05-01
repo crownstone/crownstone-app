@@ -154,7 +154,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
 
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), this.props.sphereId);
       return (
-        <Background image={require('../../../images/blueprintBackgroundGray.png')} hasNavBar={false} safeView={true}>
+        <Background image={require('../../../images/backgrounds/blueprintBackgroundGray.png')} hasNavBar={false} safeView={true}>
           <ForceDirectedView
             ref={this.refName}
             viewId={this.viewId}

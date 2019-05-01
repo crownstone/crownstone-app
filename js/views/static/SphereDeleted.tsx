@@ -20,7 +20,7 @@ export class SphereDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={require('../../images/mainBackgroundLightNotConnected.png')}>
+      <Background image={require('../../images/backgrounds/mainBackgroundLightNotConnected.png')}>
                 <Text>{ lang("Sphere_Deleted_") }</Text>
       </Background>
     )

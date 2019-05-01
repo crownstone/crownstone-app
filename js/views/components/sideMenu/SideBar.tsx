@@ -176,7 +176,7 @@ text: lang("_Are_you_sure___Crownston_right"), onPress: () => {
     }
     return (
       <View style={{flexDirection:'column', flex:1, height:screenHeight,  backgroundColor: color}}>
-        <Image source={require('../../../images/menuBackground.png')} style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight}} />
+        <Image source={require('../../../images/backgrounds/menuBackground.png')} style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight}} />
         <View style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight}}>
           <MenuTopBar />
           <MenuCategoryImage />

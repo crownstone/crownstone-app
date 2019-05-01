@@ -159,7 +159,7 @@ class TopBarIOS extends Component<any, any> {
           color = this.props.leftStyle.color;
         }
         return (
-          <TouchableOpacity onPress={() => {this.props.leftAction();}} style={[topBarStyle.topBarLeftTouch]}>
+          <TouchableOpacity onPress={() => {this.props.leftAction();}} style={[topBarStyle.topBarLeftTouch, this.props.leftButtonStyle]}>
             <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
               <Icon name="ios-arrow-back" size={33} color={color} style={{paddingRight:6, marginTop:2}} />
               <Text style={[topBarStyle.topBarLeft,topBarStyle.leftText, this.props.leftStyle]}>{this.props.left}</Text>

@@ -41,7 +41,11 @@ export class TextEditInput extends Component<any, any> {
     this.blurListener.remove();
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    if (this.props.focusOnMount) {
+      this.focus();
+    }
+  }
 
   focus() {
     (this.refs[this.refName] as any).focus()

@@ -94,7 +94,7 @@ export class RoomSelection extends LiveComponent<any, any> {
       style: {color:colors.blue.hex, fontWeight:'bold'},
       type: 'navigation',
       callback: () => {
-       NavigationUtil.navigate("RoomAdd",{sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true, returnToRoute: this.props.returnToRoute})
+       NavigationUtil.navigate("RoomAdd",{sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, returnToRoute: this.props.returnToRoute})
       }
     });
 

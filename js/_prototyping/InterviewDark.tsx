@@ -9,8 +9,9 @@ import { Background } from "../views/components/Background";
 import { colors, screenWidth } from "../views/styles";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { FadeIn, FadeInView } from "../views/components/animated/FadeInView";
-import { TextButtonLight } from "../views/components/InterviewComponents";
+import { TextButtonLightOnDark } from "../views/components/InterviewComponents";
 import { AicoreUtil } from "../views/deviceViews/elements/smartBehaviour/supportCode/AicoreUtil";
+import { AnimatedBackground } from "../views/components/animated/AnimatedBackground";
 
 
 
@@ -54,6 +55,7 @@ export class InterviewDark extends Component<any, any> {
     return {
       introduction: {
         question:"When would you like me to be on?",
+        backgroundImage: core.background.light,
           answers: [
           {label: "When someone is in the room.", nextCard: 'timeAfterPresence', updateState: () => { this.interviewData.presence = "ROOM" }},
           {label: "When someone is at home.",     nextCard: 'timeAfterPresence', updateState: () => { this.interviewData.presence = "HOME" }},
@@ -152,8 +154,9 @@ export class InterviewDark extends Component<any, any> {
 
 
   render() {
+
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark}>
+      <AnimatedBackground hasNavBar={false} image={core.background.detailsDark}>
                 {this.state.finished === false ?
           <Carousel
             ref={(c) => {
@@ -183,7 +186,7 @@ export class InterviewDark extends Component<any, any> {
             onSnapToItem={(index) => this.setState({ activeSlide: index })}
           />
         : undefined }
-      </Background>
+      </AnimatedBackground>
     );
   }
 
@@ -204,7 +207,7 @@ function Answers({data, nextCard}) {
   data.forEach((answer, index) => {
     answers.push(
       <FadeIn key={"answer_" + index} index={index}>
-        <TextButtonLight
+        <TextButtonLightOnDark
           label={answer.label}
           callback={() => {
             if (answer.updateState) { answer.updateState(); }
