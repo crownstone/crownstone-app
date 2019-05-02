@@ -10,7 +10,7 @@ export let BEHAVIOUR_TYPES = {
 export let STONE_TYPES = {
   plug:          "PLUG",
   builtin:       "BUILTIN",
-  builtinV2:     "BUILTIN_V2",
+  builtinOne:    "BUILTIN_ONE",
   guidestone:    "GUIDESTONE",
   crownstoneUSB: "CROWNSTONE_USB"
 };

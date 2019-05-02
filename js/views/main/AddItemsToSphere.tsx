@@ -78,10 +78,10 @@ export class AddItemsToSphere extends Component<any, any> {
               }} />
               <AddItem icon={'c2-crownstone'} highlight={seeCrownstoneInSetup} label={ lang("Crownstone")} callback={() => {
                 if (seeCrownstoneInSetup) {
-                  NavigationUtil.navigateAndReplace("AddCrownstone", {sphereId: this.props.sphereId});
+                  NavigationUtil.navigateAndReplace("ScanningForSetupCrownstones", {sphereId: this.props.sphereId, returnToRoute: "Main"});
                 }
                 else {
-                  NavigationUtil.navigateAndReplace("ScanningForSetupCrownstones", {sphereId: this.props.sphereId});
+                  NavigationUtil.navigateAndReplace("AddCrownstone", {sphereId: this.props.sphereId});
                 }
               }} />
             </View>

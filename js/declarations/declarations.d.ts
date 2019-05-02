@@ -148,7 +148,7 @@ interface interviewOption {
   response?: string,
   dynamicResponse?: (value) => string | string,
   textAlign?: string,
-  onSelect?: (value: interviewReturnData) => boolean | void,
+  onSelect?: (value: interviewReturnData) => boolean | void | string,
   editable?: boolean,
   theme?: "default" | "create"
 }
@@ -164,6 +164,7 @@ interface interviewCard {
   subHeader?: string,
   explanation?: string,
   textColor?: string,
+  component?: any,
   image?: any,
   editableItem?: (state, setState) => any,
   backgroundImage?: any

@@ -186,9 +186,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
   _getAddButtonDescription(activeSphereId) {
     if (this.state.zoomLevel === ZOOM_LEVELS.room) {
-      if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(activeSphereId).seeSetupCrownstone) {
-        return <AddSetupStoneButtonDescription visible={this.state.arrangingRooms === false} />;
-      }
+      return <AddSetupStoneButtonDescription visible={SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(activeSphereId).seeSetupCrownstone && this.state.arrangingRooms === false} />;
     }
   }
 

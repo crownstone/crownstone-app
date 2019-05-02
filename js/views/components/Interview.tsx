@@ -51,6 +51,7 @@ export class Interview extends Component<{
   _carousel
   responseHeaders : any;
   selectedOptions = [];
+  _lockedCard = false;
 
   activeBackground = null;
   activeTextColor  = null;
@@ -62,7 +63,6 @@ export class Interview extends Component<{
       this.state = {
         activeCardIndex: 0,
         cardIds: ['start'],
-        finished: false,
         transitioningToCardId: undefined
       };
     }
@@ -72,6 +72,22 @@ export class Interview extends Component<{
 
     this.selectedOptions = [];
     this.responseHeaders = {};
+  }
+
+
+  setLockedCard(cardId) {
+    if (!cardId) { return; }
+    this._lockedCard = true;
+
+    let currentIds = this.state.cardIds;
+    currentIds.splice(this.state.activeCardIndex + 1);
+
+    currentIds.push(cardId);
+
+    this.setState({ cardIds: currentIds, transitioningToCardId: cardId }, () => {
+      this.checkStyleUpdates();
+      setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1); }, 0);
+    })
   }
 
   renderCard({item, index}) {
@@ -146,9 +162,6 @@ export class Interview extends Component<{
     }
   }
 
-
-
-
   render() {
     if (this.state.invalid === true) {
       return <View><Text>Something went wrong. Please retry.</Text></View>
@@ -159,7 +172,6 @@ export class Interview extends Component<{
     this.state.cardIds.forEach((cardId) => {
       cards.push(allCards[cardId]);
     });
-
 
     return (
       <Carousel
@@ -172,7 +184,22 @@ export class Interview extends Component<{
         itemHeight={screenHeight}
         sliderWidth={screenWidth}
         itemWidth={screenWidth}
-        onSnapToItem={(index) => { this.setState({ activeCardIndex: index, transitioningToCardId: undefined }, () => { this.checkStyleUpdates();})}}
+        onSnapToItem={(index) => { this.setState({ activeCardIndex: index, transitioningToCardId: undefined }, () => {
+          this.checkStyleUpdates();
+
+
+          let allCards = this.props.getCards();
+          let cards = [];
+          this.state.cardIds.forEach((cardId) => {
+            cards.push(allCards[cardId]);
+          });
+
+          let activeCard = cards[this.state.activeCardIndex]
+
+          if (this._lockedCard || activeCard.locked === true) {
+            this.setState({cardIds: [this.state.cardIds[this.state.activeCardIndex]], activeCardIndex: 0});
+          }
+        })}}
       />
     );
   }
@@ -223,6 +250,21 @@ function InterviewCard(props : {
             undefined
         }
         {
+          props.card.component ?
+            <View style={{ flex: 1 }}/> :
+            undefined
+        }
+        {
+          props.card.component ?
+            props.card.component :
+            undefined
+        }
+        {
+          props.card.component ?
+            <View style={{flex:1}} /> :
+            undefined
+        }
+        {
           flexBeforeOptions ?
             <View style={{flex:1}} /> :
             undefined
@@ -247,6 +289,10 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
         let resumeAllowed = option.onSelect(props.value);
         if (resumeAllowed === false) {
           resume = false;
+        }
+        else if (typeof resumeAllowed === 'string') {
+          props.nextCard(resumeAllowed, props.value, index, option);
+          return;
         }
       }
 

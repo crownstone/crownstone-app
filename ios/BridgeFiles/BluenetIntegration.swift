@@ -1327,5 +1327,21 @@ open class BluenetJS: RCTEventEmitter {
     print("BluenetBridge: Called SETTING setCrownstoneNames")
     GLOBAL_BLUENET.watchStateManager.loadState("crownstoneNames", names)
   }
+
+
+  @objc func setupPulse(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    print("BluenetBridge: Called SETTING setupPulse")
+    GLOBAL_BLUENET.bluenet.setup.pulse()
+      .done{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BluenetError {
+          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN setupPulse"]])
+        }
+    }
+  }
+
   
 }

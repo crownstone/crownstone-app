@@ -12,6 +12,8 @@ import {
   Alert,
 } from 'react-native';
 import { core } from "../core";
+import { BleUtil } from "./BleUtil";
+import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 
 export const StoneUtil = {
   switchBHC: function (
@@ -54,6 +56,11 @@ export const StoneUtil = {
       });
 
     BatchCommandHandler.executePriority(options);
+  },
+
+  setupPulse: function (handle, sphereId) {
+    let proxy = BleUtil.getProxy(handle, sphereId);
+    return proxy.performPriority(BluenetPromiseWrapper.setupPulse);
   },
 
 

@@ -49,7 +49,7 @@ export class SetupHelper {
    * @param silent            // if silent is true, this means no popups will be sent or triggered.
    * @returns {Promise<T>}
    */
-  claim(store, sphereId, silent : boolean = false) {
+  claim(store, sphereId, silent : boolean = false) : Promise<string> {
     // things to be filled out during setup process
     this.macAddress = undefined;
     this.cloudResponse = undefined;
@@ -171,7 +171,7 @@ export class SetupHelper {
               LOG.info("setup complete");
 
               // Resolve the setup promise.
-              resolve();
+              resolve(localId);
 
               if (silent) { return; }
 
@@ -185,18 +185,18 @@ export class SetupHelper {
                 }
               }
 
-              if (state.app.tapToToggleEnabled) {
-                // start the tap-to-toggle tutorial, only if there is no other popup shown
-                if (this.type === STONE_TYPES.plug && popupShown === false) { // find the ID
-                  if (Util.data.getTapToToggleCalibration(state) === null) {
-                    Scheduler.scheduleCallback(() => {
-                      if (SetupStateHandler.isSetupInProgress() === false) {
-                        core.eventBus.emit("CalibrateTapToToggle");
-                      }
-                    }, 1500, 'setup t2t timeout');
-                  }
-                }
-              }
+              // if (state.app.tapToToggleEnabled) {
+              //   // start the tap-to-toggle tutorial, only if there is no other popup shown
+              //   if (this.type === STONE_TYPES.plug && popupShown === false) { // find the ID
+              //     if (Util.data.getTapToToggleCalibration(state) === null) {
+              //       Scheduler.scheduleCallback(() => {
+              //         if (SetupStateHandler.isSetupInProgress() === false) {
+              //           core.eventBus.emit("CalibrateTapToToggle");
+              //         }
+              //       }, 1500, 'setup t2t timeout');
+              //     }
+              //   }
+              // }
 
 
             }, fastSetupEnabled ? 50 : 2500, 'setup20 resolver timeout');

@@ -57,12 +57,13 @@ interface BluenetPromiseWrapperProtocol {
 
   getTrackingState()                            : Promise< trackingState >,
   isDevelopmentEnvironment()                    : Promise< boolean >,
+  setupPulse()                                  : Promise< void >,
 
   broadcastSwitch(referenceId, stoneId, switchState):Promise< void >,
 }
 
 
-type deviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB'
+type deviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB' | 'builtinOne'
 
 interface crownstoneServiceData {
   opCode?                   : number, // unencrypted type (optional)

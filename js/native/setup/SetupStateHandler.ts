@@ -157,18 +157,21 @@ class SetupStateHandlerClass {
     }
   }
 
-  _getTypeData(advertisement) {
-    if (advertisement.serviceData.deviceType      == 'plug')
-      return {name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:STONE_TYPES.plug,       handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'builtin')
-      return {name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:STONE_TYPES.builtin,    handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'guidestone')
-      return {name: 'Guidestone',         icon: 'c2-crownstone',    type:STONE_TYPES.guidestone, handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'crownstoneUSB')
-      return {name: 'Crownstone USB',     icon: 'c1-router',        type:STONE_TYPES.crownstoneUSB, handle: advertisement.handle};
+  _getTypeData(advertisement : crownstoneAdvertisement) {
+    let payload = {};
+    if (     advertisement.serviceData.deviceType == 'plug')          { payload = {name: 'Crownstone Plug',        icon: 'c2-pluginFilled', type:STONE_TYPES.plug,        }; }
+    else if (advertisement.serviceData.deviceType == 'builtin')       { payload = {name: 'Crownstone Builtin',     icon: 'c2-crownstone',   type:STONE_TYPES.builtin,     }; }
+    else if (advertisement.serviceData.deviceType == 'builtinOne')    { payload = {name: 'Crownstone Builtin One', icon: 'c2-crownstone',   type:STONE_TYPES.builtinOne,  }; }
+    else if (advertisement.serviceData.deviceType == 'guidestone')    { payload = {name: 'Guidestone',             icon: 'c2-crownstone',   type:STONE_TYPES.guidestone,  }; }
+    else if (advertisement.serviceData.deviceType == 'crownstoneUSB') { payload = {name: 'Crownstone USB',         icon: 'c1-router',       type:STONE_TYPES.crownstoneUSB}; }
     else {
       LOGe.info("UNKNOWN DEVICE in setup procedure", advertisement);
+      return undefined;
     }
+
+    payload["handle"] = advertisement.handle;
+
+    return payload;
   }
   
   setupStone(handle, sphereId) {
@@ -226,7 +229,7 @@ class SetupStateHandlerClass {
   }
 
   areSetupStonesAvailable() {
-    return (Object.keys(this._stonesInSetupStateAdvertisements).length > 0 || this._currentSetupState.busy) || true;
+    return (Object.keys(this._stonesInSetupStateAdvertisements).length > 0 || this._currentSetupState.busy);
   }
 
   isSetupInProgress() {

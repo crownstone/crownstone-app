@@ -13,11 +13,9 @@ import {
   View
 } from 'react-native';
 
-import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
 import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }           from '../components/Background'
 import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
-import { SetupDeviceEntry }     from '../components/deviceEntries/SetupDeviceEntry'
 import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
@@ -34,7 +32,6 @@ import { styles, colors, screenHeight, tabBarHeight, topBarHeight, } from '../st
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
 import { RoomExplanation }        from '../components/RoomExplanation';
-import { RoomBottomExplanation }  from "../components/RoomBottomExplanation";
 import { Permissions }            from "../../backgroundProcesses/PermissionManager";
 import { TopbarButton }           from "../components/topbar/TopbarButton";
 import { SphereDeleted }          from "../static/SphereDeleted";
@@ -79,7 +76,7 @@ export class RoomOverview extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    let initialState = {pendingRequests:{}, scrollViewHeight:null};
+    let initialState = {pendingRequests:{}};
     this.unsubscribeSetupEvents = [];
 
     this.viewingRemotely = true;
@@ -94,21 +91,6 @@ export class RoomOverview extends LiveComponent<any, any> {
       this.viewingRemotely = sphere.state.present === false;
     }
 
-    let stonesInRoom = getStonesAndAppliancesInLocation(state, props.sphereId, props.locationId);
-    let {stoneArray, ids} = this._getStoneList(stonesInRoom);
-    if (SetupStateHandler.areSetupStonesAvailable()) {
-      this.viewingRemotely = false;
-      if (stoneArray.length === 0) {
-        initialState.scrollViewHeight = new Animated.Value(screenHeight - tabBarHeight - topBarHeight - 100 - 60 - 60);
-      }
-      else {
-        initialState.scrollViewHeight = new Animated.Value(screenHeight - tabBarHeight - topBarHeight - 100 - 60);
-      }
-    }
-    else {
-      initialState.scrollViewHeight = new Animated.Value(screenHeight-tabBarHeight-topBarHeight-100);
-    }
-
     this.state = initialState;
 
     this.viewingRemotelyInitial = this.viewingRemotely;
@@ -117,18 +99,8 @@ export class RoomOverview extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribeSetupEvents.push(core.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(core.eventBus.on("setupInProgress",  (data)   => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(core.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(core.eventBus.on("setupStonesDetected", () => {
-      Animated.spring(this.state.scrollViewHeight, { toValue: screenHeight-tabBarHeight-topBarHeight-160, friction: 7, tension: 70 }).start();
-    }));
-    this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => {
-      Animated.timing(this.state.scrollViewHeight, { toValue: screenHeight-tabBarHeight-topBarHeight-100, duration: 250 }).start();
-    }));
     this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete",    (handle) => {
-      this.justFinishedSetup = handle;
       this.forceUpdate();
     }));
 
@@ -197,20 +169,6 @@ export class RoomOverview extends LiveComponent<any, any> {
         </View>
       </View>
       )
-    }
-    else if (item.setupMode === true && item.handle) {
-      return (
-        <View key={stoneId + '_setup_entry'}>
-          <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
-            <SetupDeviceEntry
-              key={stoneId + '_setup_element'}
-              sphereId={this.props.sphereId}
-              handle={item.handle}
-              item={item}
-            />
-          </View>
-        </View>
-      );
     }
     else {
       return (
@@ -316,18 +274,16 @@ export class RoomOverview extends LiveComponent<any, any> {
       let viewHeight = screenHeight-tabBarHeight-topBarHeight-100;
 
       content = (
-        <Animated.View style={{height: this.state.scrollViewHeight}}>
-          <ScrollView style={{position:'relative', top:-1}}>
-            <View style={{height: Math.max(stoneArray.length*81 + 0.5*viewHeight, viewHeight)} /* make sure we fill the screen */}>
-              <SeparatedItemList
-                items={stoneArray}
-                ids={ids}
-                separatorIndent={false}
-                renderer={this._renderer.bind(this)}
-              />
-            </View>
-          </ScrollView>
-        </Animated.View>
+        <ScrollView style={{position:'relative', top:-1}}>
+          <View style={{height: Math.max(stoneArray.length*81 + 0.5*viewHeight, viewHeight)} /* make sure we fill the screen */}>
+            <SeparatedItemList
+              items={stoneArray}
+              ids={ids}
+              separatorIndent={false}
+              renderer={this._renderer.bind(this)}
+            />
+          </View>
+        </ScrollView>
       );
     }
 

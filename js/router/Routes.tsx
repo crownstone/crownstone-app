@@ -73,8 +73,8 @@ const NewBehaviourStack = createStackNavigator(
 const AddCrownstoneStack = createStackNavigator(
   {
     AddCrownstone:               Views.AddCrownstone,
-    SetupCrownstone_step1:       Views.SetupCrownstone_step1,
     ScanningForSetupCrownstones: Views.ScanningForSetupCrownstones,
+    SetupCrownstone:             Views.SetupCrownstone,
   },
   {
     ...defaultHeader,
@@ -186,7 +186,8 @@ const TabNavigator = createBottomTabNavigator(
       inactiveBackgroundColor: colors.menuBackground.hex,
       activeTintColor: colors.menuTextSelected.hex,
       inactiveTintColor: colors.white.hex,
-      showLabel: false
+      showLabel: false,
+      style: { backgroundColor: colors.menuBackground.hex, }
     },
   }
 );

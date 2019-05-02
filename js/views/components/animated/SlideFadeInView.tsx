@@ -10,7 +10,7 @@ import {
   
 } from 'react-native';
 
-export class SlideFadeInView extends Component<any, any> {
+export class SlideFadeInView extends Component<{visible, height, delay?, duration?, style?}, any> {
   visible : boolean;
 
   constructor(props) {

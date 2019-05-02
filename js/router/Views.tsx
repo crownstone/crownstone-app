@@ -76,11 +76,11 @@ import { DeviceSmartBehaviour_Editor }       from "../views/deviceViews/elements
 import { DeviceSmartBehaviour_TypeStart }    from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart";
 import { AddCrownstone } from "../views/addingCrownstones/AddCrownstone";
 import { ScanningForSetupCrownstones } from "../views/addingCrownstones/ScanningForSetupCrownstones";
-import { SetupCrownstone_step1 } from "../views/addingCrownstones/SetupCrownstone_step1";
+import { SetupCrownstone } from "../views/addingCrownstones/SetupCrownstone";
 
 export const Views = {
   AddCrownstone:                  withMappedNavigationProps()(AddCrownstone),
-  SetupCrownstone_step1:          withMappedNavigationProps()(SetupCrownstone_step1),
+  SetupCrownstone:                withMappedNavigationProps()(SetupCrownstone),
   ScanningForSetupCrownstones:    withMappedNavigationProps()(ScanningForSetupCrownstones),
 
   AddItemsToSphere:               withMappedNavigationProps()(AddItemsToSphere),

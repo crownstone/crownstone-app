@@ -130,6 +130,8 @@ RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggl
 
 RCT_EXTERN_METHOD(setCrownstoneNames:(NSDictionary *)names)
 
+// Setup
+RCT_EXTERN_METHOD(setupPulse:(RCTResponseSenderBlock)callback)
 
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end

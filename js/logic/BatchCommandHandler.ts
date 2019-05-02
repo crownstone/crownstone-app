@@ -232,6 +232,9 @@ class BatchCommandHandlerClass {
               case 'sendNoOp':
                 actionPromise = BluenetPromiseWrapper.sendNoOp();
                 break;
+              case 'setupPulse':
+                actionPromise = BluenetPromiseWrapper.setupPulse();
+                break;
               case 'sendMeshNoOp':
                 actionPromise = BluenetPromiseWrapper.sendMeshNoOp();
                 break;

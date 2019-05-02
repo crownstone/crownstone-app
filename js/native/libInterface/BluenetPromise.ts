@@ -150,7 +150,9 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   sendMeshNoOp:                   () => { return BluenetPromise('sendMeshNoOp'); },
   setMeshChannel:                 (channel) => { return BluenetPromise('setMeshChannel', channel); },
 
-  getTrackingState:               () => { return BluenetPromise('getTrackingState'); }, // return type: trackingState
+  getTrackingState:               () => { return BluenetPromise('getTrackingState'); },         // return type: trackingState
   isDevelopmentEnvironment:       () => { return BluenetPromise('isDevelopmentEnvironment'); }, // return type: boolean
+  setupPulse:                     () => { return BluenetPromise('setupPulse'); },               // return type: void
+
   broadcastSwitch:                (referenceId, stoneId, switchState) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState); },
 };

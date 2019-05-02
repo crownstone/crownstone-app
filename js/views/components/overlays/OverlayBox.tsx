@@ -176,15 +176,14 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     let width = this.props.width || 0.85*screenWidth;
     let height = this.props.height || Math.min(500,0.9*availableScreenHeight);
 
-    let topPositionOfDesignElements = (screenHeight - height) / 4;
+    let topPositionOfOverlay = (screenHeight - height) / 2;
     let designElementSize = 0.38 * screenWidth;
+    let topPositionOfDesignElements = topPositionOfOverlay - 0.3*designElementSize;
     let closeIconSize = 40
     let topPadding = 12;
     let padding = 0.03*screenWidth;
 
-    let innerPaddingTop = this.props.getDesignElement ?
-      0.5*designElementSize+topPositionOfDesignElements - 30 : // the -30 is an overflow area which is can be added to the scroll view.
-      padding;
+    let innerPaddingTop = this.props.getDesignElement ? 0.7*designElementSize - 2*topPadding - 30: padding;
 
 
 
