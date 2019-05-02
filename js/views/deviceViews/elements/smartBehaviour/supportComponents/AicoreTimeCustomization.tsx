@@ -75,6 +75,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
         <View style={{ flex: 1 }}/>
         {this.state.toFinished && this.state.fromFinished ? <TimeButtonWithImage
             label={"Looks good!"}
+            TimeButtonWithImage
             image={require("../../../../../images/icons/timeIcon.png")}
             callback={() => {
               if (AicoreUtil.isSameTime(this.fromTime, this.toTime)) {
@@ -160,7 +161,7 @@ function TimePart(props : {
               </FadeIn>
               <FadeIn index={index++}>
                 <View style={{ marginLeft: 25 }}>
-                  <TextButtonDark label={"That's a good time!"} callback={() => {
+                  <TextButtonDark label={"That's a good time!"} basic={true} callback={() => {
                     setFinished(true);
                     props.setFinished(true);
                   }}/>
@@ -183,6 +184,7 @@ function TimePart(props : {
                 />
               </FadeIn>
               <TimeButtonWithImage
+                basic={true}
                 key={"resultButton" + index}
                 index={index}
                 label={"Tap to select time!"}
@@ -229,6 +231,7 @@ function TimeSummary(props : any) {
     case "SUNRISE":
       return (
         <TimeButtonWithImage
+          basic={true}
           index={props.index}
           label={props.label}
           image={require("../../../../../images/icons/sunrise.png")}
@@ -239,6 +242,7 @@ function TimeSummary(props : any) {
     case "SUNSET":
       return (
         <TimeButtonWithImage
+          basic={true}
           index={props.index}
           label={props.label}
           image={require("../../../../../images/icons/sunset.png")}
@@ -249,6 +253,7 @@ function TimeSummary(props : any) {
     case "CLOCK":
       return (
         <TimeButtonWithImage
+          basic={true}
           index={props.index}
           label={props.label}
           image={require("../../../../../images/icons/clock.png")}
@@ -268,18 +273,21 @@ function TypeSelector(props) {
   return (
     <View>
       <TimeButtonWithImage
+        basic={true}
         index={i++}
         label={"At sunrise..."}
         image={require("../../../../../images/icons/sunrise.png")}
         callback={() => { console.log(props); props.timeObj.setSunrise(); props.callback("SUNRISE") }}
       />
       <TimeButtonWithImage
+        basic={true}
         index={i++}
         label={"At sunset..."}
         image={require("../../../../../images/icons/sunset.png")}
         callback={() => { props.timeObj.setSunset(); props.callback("SUNSET") }}
       />
       <TimeButtonWithImage
+        basic={true}
         index={i++}
         label={"At a specific time..."}
         image={require("../../../../../images/icons/clock.png")}

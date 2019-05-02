@@ -76,7 +76,14 @@ export class AddItemsToSphere extends Component<any, any> {
               <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
                 NavigationUtil.navigateAndReplace("RoomAdd", { sphereId: this.props.sphereId });
               }} />
-              <AddItem icon={'c2-crownstone'} highlight={seeCrownstoneInSetup} label={ lang("Crownstone")} callback={() => { addCrownstoneExplanationAlert(() => { NavigationUtil.back(); }); }} />
+              <AddItem icon={'c2-crownstone'} highlight={seeCrownstoneInSetup} label={ lang("Crownstone")} callback={() => {
+                if (seeCrownstoneInSetup) {
+                  NavigationUtil.navigateAndReplace("AddCrownstone", {sphereId: this.props.sphereId});
+                }
+                else {
+                  NavigationUtil.navigateAndReplace("ScanningForSetupCrownstones", {sphereId: this.props.sphereId});
+                }
+              }} />
             </View>
             <View  style={{flexDirection:'row'}}>
               <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => {

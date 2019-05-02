@@ -166,6 +166,7 @@ export class Interview extends Component<{
         ref={(c) => {
           this._carousel = c;
         }}
+        removeClippedSubviews={false /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
         data={cards}
         renderItem={this.renderCard.bind(this)}
         itemHeight={screenHeight}

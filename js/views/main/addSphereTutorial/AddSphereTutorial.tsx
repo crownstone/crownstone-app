@@ -10,17 +10,20 @@ import {
   View
 } from 'react-native';
 import { Background } from "../../components/Background";
-import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
+import { availableModalHeight, colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
 import { core } from "../../../core";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
-import { HiddenFadeInView } from "../../components/animated/FadeInView";
+import { FadeIn, HiddenFadeInView } from "../../components/animated/FadeInView";
 
 export class AddSphereTutorial extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: lang("New_Sphere")}
+    return {
+      title: lang("New_Sphere"),
+      headerTruncatedBackTitle: lang("Back"),
+    }
   };
   _carousel
 
@@ -39,9 +42,12 @@ export class AddSphereTutorial extends Component<any, any> {
     let components = this._getContent();
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
-                <Carousel
+        <View style={{height: availableModalHeight, width:screenWidth}}>
+        <Carousel
+          useScrollView={true}
           ref={(c) => { this._carousel = c; }}
           data={components}
+          removeClippedSubviews={false /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
           renderItem={this._renderItem}
           sliderWidth={screenWidth}
           itemWidth={screenWidth}
@@ -66,6 +72,7 @@ export class AddSphereTutorial extends Component<any, any> {
             inactiveDotScale={0.6}
           />
         </HiddenFadeInView>
+        </View>
       </Background>
     )
   }
@@ -79,30 +86,3 @@ export class AddSphereTutorial extends Component<any, any> {
     return content;
   }
 }
-
-let swiperStyles = StyleSheet.create({
-  wrapper: {
-
-  },
-  slide1: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  slide2: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  slide3: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: '#fff',
-    fontSize: 30,
-    fontWeight: 'bold',
-  }
-});
-

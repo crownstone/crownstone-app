@@ -351,10 +351,6 @@ export class RoomOverview extends LiveComponent<any, any> {
           locationId={ this.props.locationId }
         />
         {content}
-        <RoomBottomExplanation
-          sphereId={ this.props.sphereId }
-          locationId={ this.props.locationId }
-        />
       </Background>
     );
   }

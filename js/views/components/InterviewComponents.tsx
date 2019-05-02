@@ -31,6 +31,24 @@ let buttonStyle : ViewStyle = {
 
 };
 
+let buttonBasicStyle : ViewStyle = {
+  flexDirection:'row',
+  margin:10,
+  marginTop:5,
+  marginBottom:5,
+  paddingTop:10,
+  paddingBottom:10,
+  paddingLeft:15,
+  paddingRight:25,
+  alignItems:'center',
+  backgroundColor: colors.csBlue.rgba(0.2),
+  borderBottomLeftRadius:  0,
+  borderBottomRightRadius: 10,
+  borderTopLeftRadius:     10,
+  borderTopRightRadius:    0,
+
+};
+
 let selectedAsymetricalStyle : ViewStyle = {
   borderColor: colors.menuTextSelected.hex,
   borderBottomWidth: 6,
@@ -57,7 +75,7 @@ let textStyle : TextStyle = {
 export function TimeButtonWithImage(props) {
   return (
     <FadeIn index={props.index || 0}>
-      <TouchableOpacity style={buttonStyle} onPress={() => { props.callback(); }}>
+      <TouchableOpacity style={props.basic ? buttonBasicStyle : buttonStyle} onPress={() => { props.callback(); }}>
         <ScaledImage source={props.image} sourceWidth={100} sourceHeight={100} targetHeight={40}/>
         <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
         <Text style={textStyle} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</Text>
@@ -90,7 +108,7 @@ export function TextButtonWithLargeImage(props) {
 
 function TextButton(props) {
   return (
-    <TouchableOpacity style={[buttonStyle, {backgroundColor: props.backgroundColor}, props.selected ? selectedStyle : {}]} onPress={() => { props.callback(); }}>
+    <TouchableOpacity style={[props.basic ? buttonBasicStyle : buttonStyle, {backgroundColor: props.backgroundColor}, props.selected ? selectedStyle : {}]} onPress={() => { props.callback(); }}>
       { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
       <Icon name={"md-arrow-dropright"} color={props.iconColor || props.textColor || colors.csBlue.hex} size={15} style={{padding:10}} />
       <Text style={[textStyle, {color: props.textColor}]}>{props.label}</Text>
@@ -113,8 +131,8 @@ function TextButtonWithIcon(props) {
   );
 }
 
-export function TextButtonDark({label, callback, selected=false}) {
-  return TextButton({label, callback, selected, backgroundColor: colors.csBlue.rgba(0.2), textColor: colors.csBlue.hex});
+export function TextButtonDark({label, callback, basic=false, selected=false}) {
+  return TextButton({label, callback, selected, basic, backgroundColor: colors.csBlue.rgba(0.2), textColor: colors.csBlue.hex});
 }
 
 export function TextButtonSemitranslucentDark({label, callback, selected=false}) {

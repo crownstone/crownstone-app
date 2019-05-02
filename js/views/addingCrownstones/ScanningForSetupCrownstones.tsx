@@ -107,7 +107,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
     const { stoneArray, ids } = this._getStoneList();
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
-
+    console.log("HERE")
     return (
       <Background hasNavBar={false} image={core.background.light}>
         <View style={{...styles.centered, flexDirection:'row', width: screenWidth, height: 80, ...borderStyle, overflow:'hidden'}}>

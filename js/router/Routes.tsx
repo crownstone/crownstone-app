@@ -235,21 +235,21 @@ const AppStack = createStackNavigator(
     // test: {
     //   screen: wrap("InterviewLight", InterviewLight),
     // },
-    AddCrownstoneStack: {
-      screen: AddCrownstoneStack,
-    },
     AppNavigator: {
       screen: TabNavigator,
+    },
+    AddCrownstoneStack: {
+      screen: AddCrownstoneStack,
     },
     StoneBehaviour: {
       screen: NewBehaviourStack,
     },
+    AddSphereTutorial: {
+      screen:  wrap("AddSphereTutorial", Views.AddSphereTutorial),
+    },
     //modals:
     AddItemsToSphere: {
       screen: wrap("AddItemsToSphere", Views.AddItemsToSphere),
-    },
-    AddSphereTutorial: {
-      screen:  wrap("AddSphereTutorial", Views.AddSphereTutorial),
     },
     AiStart: {
       screen: wrap("AiStart", Views.AiStart),
