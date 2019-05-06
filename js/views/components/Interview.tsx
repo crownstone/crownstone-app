@@ -74,6 +74,18 @@ export class Interview extends Component<{
     this.responseHeaders = {};
   }
 
+  resetStackToCard(cardId) {
+    if (!cardId) { return; }
+    this._lockedCard = false;
+
+    let currentIds = [cardId];
+
+    this.setState({ cardIds: currentIds, transitioningToCardId: cardId }, () => {
+      this.checkStyleUpdates();
+      setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1); }, 0);
+    })
+  }
+
 
   setLockedCard(cardId) {
     if (!cardId) { return; }
@@ -108,6 +120,8 @@ export class Interview extends Component<{
           this.responseHeaders[cardId] = option.dynamicResponse && option.dynamicResponse(value) || option.response;
 
           currentIds.push(cardId);
+
+
 
           this.setState({ cardIds: currentIds, transitioningToCardId: cardId }, () => {
             this.checkStyleUpdates();
@@ -215,7 +229,7 @@ function InterviewCard(props : {
   let [ editableInputState, setEditableInputState ] = useState("")
   let [ textInput, setTextInput ] = useState("")
 
-  let header = props.card.header || props.headerOverride;
+  let header = props.headerOverride || props.card.header;
   let subHeader = props.card.subHeader;
   let explanation = props.card.explanation;
   let options = props.card.options;
@@ -303,40 +317,38 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
 
     if (option.image) {
       options.push(
-        <FadeIn key={"option_" + index} index={index}>
-          <TextButtonWithLargeImage
-            selected={props.selectedOption === index}
-            image={option.image}
-            label={option.label}
-            textAlign={option.textAlign}
-            callback={cb}
-          />
-        </FadeIn>);
+        <TextButtonWithLargeImage
+          key={"option_" + index}
+          selected={props.selectedOption === index}
+          image={option.image}
+          label={option.label}
+          textAlign={option.textAlign}
+          callback={cb}
+        />
+      );
     }
     else if (option.icon) {
       options.push(
-        <FadeIn key={"option_" + index} index={index}>
-          <ThemedTextButtonWithIcon
-            icon={option.icon}
-            selected={props.selectedOption === index}
-            label={option.label}
-            textAlign={option.textAlign}
-            callback={cb}
-            theme={option.theme || "default"}
-          />
-        </FadeIn>
+        <ThemedTextButtonWithIcon
+          key={"option_" + index}
+          icon={option.icon}
+          selected={props.selectedOption === index}
+          label={option.label}
+          textAlign={option.textAlign}
+          callback={cb}
+          theme={option.theme || "default"}
+        />
       );
     }
     else {
       options.push(
-        <FadeIn key={"option_" + index} index={index}>
-          <TextButtonLight
-            selected={props.selectedOption === index}
-            label={option.label}
-            textAlign={option.textAlign}
-            callback={cb}
-          />
-        </FadeIn>
+        <TextButtonLight
+          key={"option_" + index}
+          selected={props.selectedOption === index}
+          label={option.label}
+          textAlign={option.textAlign}
+          callback={cb}
+        />
       );
     }
   })

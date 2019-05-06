@@ -1,15 +1,10 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Animated,
-  Platform, ScrollView, StatusBar,
   Text, TextStyle, TouchableOpacity,
   View, ViewStyle
 } from "react-native";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { core } from "../../core";
-import { Background } from "../components/Background";
 import { Interview } from "../components/Interview";
 import { LiveComponent } from "../LiveComponent";
 import { IconCircle } from "../components/IconCircle";
@@ -18,22 +13,22 @@ import { colors, screenWidth, styles } from "../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
-import set = Reflect.set;
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { SetupCircle } from "../components/animated/SetupCircle";
-
+import { Icon } from "../components/Icon";
+import KeepAwake from 'react-native-keep-awake';
+import { BlePromiseManager } from "../../logic/BlePromiseManager";
+import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 
 export class SetupCrownstone extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-
 
     return {
       title: "New Crownstone",
       headerLeft: params && params.disableBack ? null : undefined
     }
   };
-
 
   _interview: any;
   randomIcon: string;
@@ -47,13 +42,11 @@ export class SetupCrownstone extends Component<any, any> {
     this.newCrownstoneState = {
       name:           null,
       icon:           null,
-      locationId:     null,
       location:       {id:null, name: null, icon:null},
       configFinished: false,
       setupFinished:  false,
       newStoneId:     null,
-    }
-
+    };
   }
 
   componentDidMount() {
@@ -78,18 +71,87 @@ export class SetupCrownstone extends Component<any, any> {
     // TODO: disable android back button
   }
 
+
   _startSetup() {
     this._disableBackButton();
-    SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId)
-      .catch((err) => { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); })
-      .catch((err) => { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); })
-      .then((newStoneId) => {
-        this.newCrownstoneState.newStoneId    = newStoneId;
-        this.newCrownstoneState.setupFinished = true;
-        if (this.newCrownstoneState.configFinished) {
-          this._wrapUp();
-        }
-      })
+
+    const performSetup = () => {
+      SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId)
+        .catch((err) => { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); })
+        .catch((err) => { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); })
+        .then((newStoneData : any) => {
+          this.newCrownstoneState.newStoneId    = newStoneData.id;
+          this.newCrownstoneState.setupFinished = true;
+
+          let wrapUp = () => {
+            if (this.newCrownstoneState.configFinished) {
+              this._wrapUp();
+            }
+          }
+
+          if (newStoneData.familiarCrownstone === true) {
+            let state = core.store.getState();
+            let sphere = state.spheres[this.props.sphereId];
+            if (!sphere) { return wrapUp(); }
+            let stone = sphere.stones[newStoneData.id];
+            if (!stone) { return wrapUp(); }
+            let location = sphere.locations[stone.config.locationId];
+
+            this.newCrownstoneState.name = stone.config.name;
+            this.newCrownstoneState.icon = stone.config.icon;
+            this.newCrownstoneState.configFinished = true;
+            this.newCrownstoneState.location = {id:null, name: null, icon:null};
+            this.newCrownstoneState.location.id =   location ? stone.config.locationId : null;
+            this.newCrownstoneState.location.name = location ? location.config.name    : null;
+            this.newCrownstoneState.location.icon = location ? location.config.icon    : null;
+
+            this._interview.setLockedCard("iKnowThisOne");
+            return;
+          }
+          else {
+            wrapUp();
+          }
+        })
+        .catch((err) => {
+          if (err.code) {
+            if (err.code === 1) {
+              this._interview.setLockedCard("problemBle");
+            }
+            else if (err.code === "network_error") {
+              this._interview.setLockedCard("problemCloud");
+            }
+            else {
+              this._interview.setLockedCard("problemBle");
+            }
+          }
+          this._interview.setLockedCard("problemBle");
+        })
+    }
+
+    if (this.props.unownedVerified) {
+      let resetPromise = () => {
+        return new Promise((resolve, reject) => {
+          BluenetPromiseWrapper.connect(this.props.setupStone.handle, this.props.sphereId)
+            .then(() => { return BluenetPromiseWrapper.commandFactoryReset() })
+            .then(() => { return BluenetPromiseWrapper.disconnectCommand() })
+            .then(() => { return BluenetPromiseWrapper.phoneDisconnect() })
+            .then(() => { resolve() })
+            .catch((err) => { reject(err) })
+        })
+      }
+      BlePromiseManager.registerPriority(resetPromise, {from: 'Setup: resetting stone ' + this.props.setupStone.handle})
+        .then(() => {
+          return performSetup();
+        })
+        .catch(() => {
+          this._interview.setLockedCard("problem");
+        })
+    }
+    else {
+      performSetup();
+    }
+
+
   }
 
   _wrapUp() {
@@ -100,7 +162,7 @@ export class SetupCrownstone extends Component<any, any> {
       data: {
         name: this.newCrownstoneState.name,
         icon: this.newCrownstoneState.icon,
-        locationId: this.newCrownstoneState.locationId
+        locationId: this.newCrownstoneState.location.id
       }
     });
 
@@ -115,7 +177,6 @@ export class SetupCrownstone extends Component<any, any> {
 
     // TODO REMOVE HACK
     let sphereId = this.props.sphereId || Object.keys(state.spheres)[0];
-
 
     let sphere = state.spheres[sphereId];
     if (!sphere) return null;
@@ -133,9 +194,9 @@ export class SetupCrownstone extends Component<any, any> {
         label: location.name,
         icon: location.icon,
         nextCard: 'waitToFinish',
+        response: "I'm almost done!",
         onSelect: () => {
           this.newCrownstoneState.location       = location;
-          this.newCrownstoneState.locationId     = location.id;
           this.newCrownstoneState.configFinished = true;
           if (this.newCrownstoneState.setupFinished === true) {
             this._wrapUp();
@@ -154,6 +215,38 @@ export class SetupCrownstone extends Component<any, any> {
       }
     });
 
+    let failedOptions = [
+      {
+        label: "OK, try again!",
+        onSelect: (result) => {
+          this.newCrownstoneState.setupFinished = false;
+          this.newCrownstoneState.configFinished = false;
+
+          console.log("HERE", this.newCrownstoneState)
+          if (!this.newCrownstoneState.name) {
+            return this._interview.resetStackToCard("start");
+          }
+          else if (!this.newCrownstoneState.icon) {
+            this._startSetup();
+            return this._interview.resetStackToCard("icon");
+          }
+          else if (!this.newCrownstoneState.location.id) {
+            this._startSetup();
+            return this._interview.resetStackToCard("rooms");
+          }
+          else {
+            this._startSetup();
+            this.newCrownstoneState.configFinished = true;
+            return this._interview.resetStackToCard("waitToFinish");
+          }
+        }
+      },
+      {
+        label: "I'll try again later...",
+        onSelect: (result) => { NavigationUtil.backTo("Main"); }
+      },
+    ]
+
     return {
       start: {
         header:"Let's get started!",
@@ -165,6 +258,7 @@ export class SetupCrownstone extends Component<any, any> {
             label: "Next",
             textAlign:'right',
             nextCard: 'icon',
+            response: "That's a good name!",
             onSelect: (result) => {
               let name = result.textfieldState;
               if (name == "") {
@@ -174,7 +268,7 @@ export class SetupCrownstone extends Component<any, any> {
                 this.newCrownstoneState.name = name;
               }
 
-              this._startSetup()
+              this._startSetup();
 
 
               return true
@@ -182,7 +276,7 @@ export class SetupCrownstone extends Component<any, any> {
         ]
       },
       icon: {
-        header:"That's a good name!",
+        header: "Let's pick an icon!",
         subHeader: "Let's give this Crownstone an icon so we can quickly recognize it!",
         explanation: "You can always change this later in the Crownstone's settings.",
         editableItem: (state, setState) => {
@@ -209,21 +303,21 @@ export class SetupCrownstone extends Component<any, any> {
           );
         },
         options: [
-          {label: "Next", textAlign:'right', nextCard: 'rooms',
+          {label: "Next", textAlign:'right', nextCard: 'rooms', response: "Cool, so that'll be my icon!",
             onSelect: (result) => {
-              let icon = result.customElementState;
+              let icon = result.customElementState || this.randomIcon;
               this.newCrownstoneState.icon = icon;
             }}
         ]
       },
       rooms: {
-        header:"Cool, so that'll be my icon!",
+        header:"Let's pick a room!",
         subHeader: "In which room did you put " + xUtil.capitalize(this.newCrownstoneState.name) + "?",
         optionsBottom: true,
         options: roomOptions
       },
       waitToFinish: {
-        header:"I'm almost done!",
+        header: "Working on it!",
         subHeader: "Setting up your new Crownstone now...",
         backgroundImage: require('../../images/backgrounds/fadedLightBackground.png'),
         component: (
@@ -238,6 +332,12 @@ export class SetupCrownstone extends Component<any, any> {
       setupMore: {
         header:"That's it!",
         subHeader: "Would you like to setup more Crownstones or is this enough for now?",
+        backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <Icon name="ios-checkmark-circle" size={0.5*screenWidth} color={colors.white.rgba(0.8)} />
+          </View>
+        ),
         optionsBottom: true,
         options: [
           {
@@ -252,11 +352,85 @@ export class SetupCrownstone extends Component<any, any> {
           },
           {
             label: "Take me to " + this.newCrownstoneState.location.name + "!",
-            onSelect: (result) => { NavigationUtil.navigateAndReplaceVia("Main", "RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.locationId }); }
+            onSelect: (result) => { NavigationUtil.navigateAndReplaceVia("Main", "RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id }); }
+          },
+        ]
+      },
+      iKnowThisOne: {
+        header:"I know this one!",
+        subHeader: "This Crownstone was already in your Sphere. I've restored it to the way it was!\n\n" +
+          "Name: " + this.newCrownstoneState.name + "\n" +
+          "Room: " + (this.newCrownstoneState.location.name || "Unknown") + "\n\n" +
+          "What would you like to do now?",
+        backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.png'),
+        optionsBottom: true,
+        options: [
+          {
+            label: "Add more Crownstones!",
+            onSelect: (result) => {
+              if (SetupStateHandler.areSetupStonesAvailable()) {
+                NavigationUtil.back();
+              }
+              else {
+                NavigationUtil.navigateAndReplaceVia("Main", "AddCrownstones", {sphereId: this.props.sphereId}); }
+            }
+          },
+          {
+            label: "Take me to " + this.newCrownstoneState.location.name + "!",
+            onSelect: (result) => { NavigationUtil.navigateAndReplaceVia("Main", "RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id }); }
+          },
+        ]
+      },
+      problemCloud: {
+        header:"Something went wrong..",
+        subHeader: "Please verify that you are connected to the internet and try again.",
+        textColor: colors.white.hex,
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="ios-cloudy-night" size={0.6*screenWidth} color={colors.white.rgba(0.8)} />
+            </View>
+          </View>
+        ),
+        optionsBottom: true,
+        options: failedOptions
+      },
+      problemBle: {
+        header:"Something went wrong..",
+        subHeader: "Please restart the Bluetooth on your phone and make sure you're really close to this Crownstone!",
+        textColor: colors.white.hex,
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="ios-bluetooth" size={0.6*screenWidth} color={colors.white.rgba(0.8)} />
+            </View>
+          </View>
+        ),
+        optionsBottom: true,
+        options: failedOptions
+      },
+      problem: {
+        header:"Something went wrong..",
+        subHeader: "Please try again later!",
+        textColor: colors.white.hex,
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="ios-alert" size={0.6*screenWidth} color={colors.white.rgba(0.8)} />
+            </View>
+          </View>
+        ),
+        optionsBottom: true,
+        options: [
+          {
+            label: "I'll try again later...",
+            onSelect: (result) => { NavigationUtil.backTo("Main"); }
           },
         ]
       }
-
     }
   }
 
@@ -269,6 +443,7 @@ export class SetupCrownstone extends Component<any, any> {
 
     return (
       <AnimatedBackground hasNavBar={false} image={backgroundImage}>
+        <KeepAwake />
         <Interview
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}

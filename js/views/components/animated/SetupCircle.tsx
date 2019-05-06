@@ -11,7 +11,6 @@ import {
 
 import { colors, styles } from "../../styles";
 import { core } from "../../../core";
-
 import { Svg, Circle } from 'react-native-svg';
 
 export class SetupCircle extends Component<any, any> {

@@ -1,23 +1,11 @@
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Linking,
-  Platform, ScrollView, StatusBar,
-  Text, TextStyle,
-  View, ViewStyle
+  Platform,
 } from "react-native";
 import { availableModalHeight, availableScreenHeight, colors, screenHeight, screenWidth } from "../styles";
-import { AicoreUtil } from "../deviceViews/elements/smartBehaviour/supportCode/AicoreUtil";
 import { core } from "../../core";
-import { Background } from "../components/Background";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
-import { FadeIn } from "../components/animated/FadeInView";
-import {
-  TextButtonLight,
-  TextButtonSemitranslucentDark,
-  TimeButtonWithImage,
-  TextButtonWithLargeImage
-} from "../components/InterviewComponents";
-import { ScaledImage } from "../components/ScaledImage";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { ScanningForSetupCrownstones } from "./ScanningForSetupCrownstones";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";
@@ -26,22 +14,6 @@ import { TopbarImitation } from "../components/TopbarImitation";
 import { Interview } from "../components/Interview";
 import { LiveComponent } from "../LiveComponent";
 
-let headerStyle : TextStyle = {
-  paddingLeft: 15,
-  paddingRight: 15,
-  marginTop: 20,
-  fontSize: 28,
-  fontWeight: "bold",
-  color: colors.csBlueDark.hex
-};
-
-let subHeaderStyle : TextStyle = {
-  padding: 15,
-  marginTop: 20,
-  fontSize: 21,
-  fontWeight: "bold",
-  color: colors.csBlueDark.hex
-};
 
 export class AddCrownstone extends LiveComponent<any, any> {
   static navigationOptions = {

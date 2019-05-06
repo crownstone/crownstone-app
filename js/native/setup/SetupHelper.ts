@@ -111,7 +111,7 @@ export class SetupHelper {
               let localId = MapProvider.cloud2localMap.stones[this.stoneIdInCloud] || this.stoneIdInCloud;
               let isPlug = this.type === STONE_TYPES.plug;
               let canSwitch = this.type === STONE_TYPES.plug || this.type === STONE_TYPES.builtin;
-              let showRestoreAlert = false;
+              let familiarCrownstone = false;
               let finalizeSetupStoneAction = {
                 type:           "ADD_STONE",
                 sphereId:       sphereId,
@@ -133,7 +133,7 @@ export class SetupHelper {
               };
 
               if (MapProvider.cloud2localMap.stones[this.stoneIdInCloud]) {
-                showRestoreAlert = true;
+                familiarCrownstone = true;
                 finalizeSetupStoneAction.type = "UPDATE_STONE_CONFIG";
                 this._restoreSchedules(store, sphereId, MapProvider.cloud2localMap.stones[localId]);
               }
@@ -159,45 +159,10 @@ export class SetupHelper {
               // first add to database, then emit. The adding to database will cause a redraw and having this event after it can lead to race conditions / ghost stones / missing room nodes.
               core.eventBus.emit("setupComplete", this.handle);
 
-              if (showRestoreAlert && silent === false) {
-                Alert.alert(
-                  "I know this one!",
-                  "This Crownstone was already your sphere. I've combined the existing Crownstone " +
-                  "data with the one you just set up!",
-                  [{text: "OK"}]
-                );
-              }
-
               LOG.info("setup complete");
 
               // Resolve the setup promise.
-              resolve(localId);
-
-              if (silent) { return; }
-
-              let state = store.getState();
-              let popupShown = false;
-              if (state.app.indoorLocalizationEnabled) {
-                // show the celebration of 4 stones
-                if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION) {
-                  core.eventBus.emit('showLocalizationSetupStep1', sphereId);
-                  popupShown = true;
-                }
-              }
-
-              // if (state.app.tapToToggleEnabled) {
-              //   // start the tap-to-toggle tutorial, only if there is no other popup shown
-              //   if (this.type === STONE_TYPES.plug && popupShown === false) { // find the ID
-              //     if (Util.data.getTapToToggleCalibration(state) === null) {
-              //       Scheduler.scheduleCallback(() => {
-              //         if (SetupStateHandler.isSetupInProgress() === false) {
-              //           core.eventBus.emit("CalibrateTapToToggle");
-              //         }
-              //       }, 1500, 'setup t2t timeout');
-              //     }
-              //   }
-              // }
-
+              resolve({id:localId, familiarCrownstone: familiarCrownstone});
 
             }, fastSetupEnabled ? 50 : 2500, 'setup20 resolver timeout');
           })
@@ -217,10 +182,10 @@ export class SetupHelper {
             else if (err === networkError) {
               // do nothing, alert was already sent
             }
-            else if (silent === false) {
-              // user facing alert
-              Alert.alert("I'm Sorry!", "Something went wrong during the setup. Please try it again and stay really close to it!", [{text:"OK"}]);
-            }
+            // else if (silent === false) {
+            //   // user facing alert
+            //   Alert.alert("I'm Sorry!", "Something went wrong during the setup. Please try it again and stay really close to it!", [{text:"OK"}]);
+            // }
 
             LOGe.info("SetupHelper: Error during setup phase:", err);
 
@@ -237,11 +202,12 @@ export class SetupHelper {
     return new Promise((resolve, reject) => {
       const processFailure = (err?) => {
         if (err.message && err.message === 'Network request failed') {
-          reject(networkError);
+          reject({code: networkError, message: err.message});
         }
         else {
-          let defaultAction = () => { reject(networkError); };
-          Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{ text:"OK", onPress: defaultAction }], { onDismiss: defaultAction });
+          reject({code: networkError, message: err});
+          // let defaultAction = () => { reject(networkError); };
+          // Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{ text:"OK", onPress: defaultAction }], { onDismiss: defaultAction });
         }
       };
 
