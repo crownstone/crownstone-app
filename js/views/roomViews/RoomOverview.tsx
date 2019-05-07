@@ -33,7 +33,7 @@ import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { Permissions }            from "../../backgroundProcesses/PermissionManager";
-import { TopbarButton }           from "../components/topbar/TopbarButton";
+import { TopbarButton, TopbarRightMoreButton } from "../components/topbar/TopbarButton";
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { RoomDeleted }            from "../static/RoomDeleted";
 import { preparePictureURI }      from "../../util/Util";
@@ -59,7 +59,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 
     return {
       title: paramsToUse.title,
-      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>,
+      headerRight: paramsToUse.headerRight,
       headerTruncatedBackTitle: lang("Back"),
     }
   };
@@ -336,50 +336,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 }
 
 
-/**
- * The right item is the flickering icon for localization.
- * @param state
- * @param enoughCrownstonesInLocations
- * @param label
- */
-function getNavBarRightItem(state, enoughCrownstonesInLocations, label, props, viewingRemotely) {
-  if (!state.app.indoorLocalizationEnabled) { return; } // do not show localization if it is disabled
-  if (props.locationId === null)            { return; } // floating crownstones do not have settings
-  if (viewingRemotely === true)             { return; } // cant train a room when not in the sphere
-  if (!enoughCrownstonesInLocations)                   { return; } // not enough crownstones to train this room
 
-  let location = state.spheres[props.sphereId].locations[props.locationId];
-  if (location.config.fingerprintRaw !== null) { return; } // there already is a fingerprint, dont show animated training icon.
-
-  // this will show a one-time popup for localization
-  if (state.user.seenRoomFingerprintAlert !== true) {
-    let aiData = DataUtil.getAiData(state, props.sphereId);
-    core.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
-    Alert.alert(
-lang("_Lets_teach_____arguments_header",aiData.name),
-lang("_Lets_teach_____arguments_body",aiData.name),
-[{text: lang("_Lets_teach_____arguments_left")}]
-    );
-  }
-  let iconSize = 25;
-  return (
-    <AlternatingContent
-      style={{width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
-      fadeDuration={500}
-      switchDuration={2000}
-      contentArray={[
-        <View style={[styles.centered, {
-          width:iconSize,
-          height:iconSize, borderRadius:iconSize*0.5,
-          borderWidth:2,
-          borderColor:'#fff',
-          backgroundColor:colors.iosBlue.hex}]} >
-          <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
-        </View>,
-        <Text style={[topBarStyle.text, props.rightStyle]}>{ label }</Text>
-      ]} />
-  );
-}
 
 function getNavBarParams(state, props, viewingRemotely) {
   let title = undefined;
@@ -391,18 +348,15 @@ function getNavBarParams(state, props, viewingRemotely) {
     title =  lang("Floating");
   }
 
-  let rightLabel = undefined;
   let rightAction = () => { };
   let spherePermissions = Permissions.inSphere(props.sphereId);
 
-  if (spherePermissions.editRoom === true && props.locationId !== null) {
-    rightLabel =  lang("Edit");
+  if (spherePermissions.editRoom === true) {
     rightAction = () => {
       NavigationUtil.navigate("RoomEdit",{ sphereId: props.sphereId, locationId: props.locationId });
     };
   }
-  else if (spherePermissions.editRoom === false && props.locationId !== null && enoughCrownstonesInLocations === true) {
-    rightLabel =  lang("Train");
+  else if (spherePermissions.editRoom === false && enoughCrownstonesInLocations === true) {
     rightAction = () => {
       if (viewingRemotely === true) {
         Alert.alert(
@@ -416,7 +370,9 @@ function getNavBarParams(state, props, viewingRemotely) {
     };
   }
 
-  NAVBAR_PARAMS_CACHE = {title: title, rightItem: getNavBarRightItem(state, enoughCrownstonesInLocations, rightLabel, props, viewingRemotely), rightAction: rightAction, rightLabel: rightLabel};
+
+
+  NAVBAR_PARAMS_CACHE = {title: title, headerRight: <TopbarRightMoreButton onPress={rightAction} />};
   return NAVBAR_PARAMS_CACHE;
 }
 

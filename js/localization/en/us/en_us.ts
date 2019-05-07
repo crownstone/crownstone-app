@@ -1508,6 +1508,7 @@ export default {
     __filename: "../js/views/components/RoomExplanation.tsx",
     Crownstones_in_setup_mode:           function() { return "Crownstones in setup mode have a blue icon." },
     No_Crownstones_found_:               function() { return "No Crownstones found." },
+    Train_Room:                          function() { return "Tap here to teach me where this room is!" },
     To_add_a_Crownstones_to_y:           function() { return "To add a Crownstones to your sphere, hold your phone really close to a new one!" },
     Tap_here_to_see_all_Crown:           function() { return "Tap here to see all Crownstones without rooms!" },
     No_Crownstones_in_this_ro:           function() { return "No Crownstones in this room." },

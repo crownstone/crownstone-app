@@ -20,6 +20,7 @@ import { Icon }         from '../components/Icon';
 import { Util }         from "../../util/Util";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 
 let buttonTextStyle : TextStyle = {
@@ -71,7 +72,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
     return {
       title: paramsToUse.title,
-      headerTruncatedBackTitle: lang("Back"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />,
     }
   };
 
