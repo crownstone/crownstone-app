@@ -5,6 +5,75 @@ import { connect } from 'react-redux';
 import { RootStack } from "./Routes";
 import { xUtil } from "../util/StandAloneUtil";
 
+
+// check for simple
+let stripAdditionalStates = (routeState, target) => {
+  for (let i = routeState.index; i >= 0; i--) {
+    if (routeState.routes[i].routeName === target) {
+      // found it!
+      routeState.index = i
+      return true;
+    }
+    else {
+      let childRoutes = routeState.routes[i].routes;
+      if (childRoutes && Array.isArray(childRoutes)) {
+        let subCheck = stripAdditionalStates(routeState.routes[i], target);
+        if (subCheck) {
+          routeState.index = i;
+          return true;
+        }
+      }
+    }
+    routeState.routes.pop()
+  }
+  return false;
+}
+
+
+
+let getState = (routeState) => {
+  for (let i = routeState.routes.length-1; i >= 0; i--) {
+    if (routeState.index !== i) {
+      routeState.routes.splice(i,1)
+    }
+  }
+
+  routeState.index = 0;
+  if (routeState.routes[0].routes) {
+    routeState.routes[0] = getState(routeState.routes[0])
+  }
+  return routeState;
+}
+
+let mergeStates = (targetState, oneOver) => {
+  if (oneOver.routes && Array.isArray(oneOver.routes) && oneOver.routes.length > 0) {
+    if (oneOver.routes[0].routes) {
+      if (targetState.routes[0].routes) {
+        // we merge it one deeper
+        mergeStates(targetState.routes[0], oneOver.routes[0]);
+      }
+      else {
+        targetState.routes.push(oneOver.routes[0]);
+        targetState.index = targetState.routes.length - 1;
+      }
+    }
+    else {
+      targetState.routes.push(oneOver.routes[0]);
+      targetState.index = targetState.routes.length - 1;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 function revertState(routeState) {
   let topLevel = findTopLevelRoutes(routeState) || routeState;
 
@@ -140,7 +209,7 @@ export const getAppReducer = function(navReducer) {
         if (action.routeName !== "AppBase") {
           if (expectedCompletes > 0) { expectedCompletes += 1; }
           else                       { expectedCompletes += 2; }
-          // console.log("ExpectedCompletes after Navigation:", expectedCompletes);
+          console.log("ExpectedCompletes after Navigation:", expectedCompletes);
         }
       }
       else if (action.type === "Navigation/BACK") {
@@ -151,8 +220,9 @@ export const getAppReducer = function(navReducer) {
         }
         else if (action.target !== undefined) {
           let newState = xUtil.deepExtend({}, state);
-          changeStateToGoToRoute(newState, action.target)
-          action.type = "Navigation/COMPLETE_TRANSITION"
+          changeStateToGoToRoute(newState, action.target);
+          // console.log(state, newState)
+          // action.type = "Navigation/COMPLETE_TRANSITION"
           return navReducer(newState, action);
         }
       }
@@ -165,10 +235,10 @@ export const getAppReducer = function(navReducer) {
 
       if (action.type === "Navigation/COMPLETE_TRANSITION") {
         expectedCompletes = Math.max(expectedCompletes - 1, 0);
-        // console.log("ExpectedCompletes after complete:", expectedCompletes)
+        console.log("ExpectedCompletes after complete:", expectedCompletes)
 
         if (expectedCompletes === 0) {
-          // console.log("Working by the chopping block", choppingBlock)
+          console.log("Working by the chopping block", choppingBlock)
           if (choppingBlock.length > 0) {
             let newState = xUtil.deepExtend({}, state);
             while (choppingBlock.length > 0) {

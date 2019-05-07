@@ -80,18 +80,59 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Is the Built-in Zero already installed?",
         backgroundImage: require('../../images/backgrounds/builtinZeroBackground.png'),
         options: [
-          {label: "Yes, behind a socket.", nextCard: "installingBuiltin_endSocket"},
+          {label: "Yes, behind a socket.",    nextCard: "installingBuiltin_endSocket"},
           {label: "Yes, at a ceiling light.", nextCard: "installingBuiltin_endLight"},
-          {label: "Not yet!", nextCard: "installingBuiltinZero_step2"},
+          {label: "Not yet!",                 nextCard: "installingBuiltin_step2"},
         ]
       },
       installingBuiltinOne_step1: {
         subHeader: "Is your Built-in One already installed?",
         backgroundImage: require('../../images/backgrounds/builtinOneBackground.png'),
         options: [
-          {label: "Yes, behind a socket.", nextCard: "installingBuiltinOne_endSocket"},
-          {label: "Yes, at a ceiling light.", nextCard: "installingBuiltinOne_endLight"},
-          {label: "Not yet!", nextCard: "installingBuiltinOne_step2"},
+          {label: "Yes, behind a socket.",    nextCard: "installingBuiltin_endSocket"},
+          {label: "Yes, at a ceiling light.", nextCard: "installingBuiltin_endLight"},
+          {label: "Not yet!",                 nextCard: "installingBuiltin_step2"},
+        ]
+      },
+      installingBuiltin_step2: {
+        header: "Installation",
+        subHeader: "Do you wish to use this Crownstone behind a power socket or with a ceiling light?",
+        backgroundImage: require('../../images/backgrounds/installationBackground.png'),
+        options: [
+          {label: "Behind a socket.",      image: require('../../images/addCrownstone/socket.png'),        nextCard: "installingBuiltin_instructions_socket"},
+          {label: "With a ceiling light.", image: require('../../images/addCrownstone/ceilingLights.png'), nextCard: "installingBuiltin_instructions_light"},
+        ]
+      },
+      installingBuiltin_instructions_socket: {
+        header: "Installing behind a socket",
+        subHeader: "Please follow the instructions in the manual for the installation.\n\nIn future releases, we will have a complete install guide here.",
+        backgroundImage: require('../../images/backgrounds/socketBackground.png'),
+        options: [
+          {label: "OK. I have installed it!",    nextCard: "installingBuiltin_endSocket"},
+        ]
+      },
+      installingBuiltin_instructions_light: {
+        header: "Installing in a ceiling light",
+        subHeader: "Please follow the instructions in the manual for the installation.\n\nIn future releases, we will have a complete install guide here.",
+        backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
+        options: [
+          {label: "OK. I have installed it!",    nextCard: "installingBuiltinOne_endLight"},
+        ]
+      },
+      installingBuiltinOne_endSocket: {
+        header: "Let's get close!",
+        subHeader: "Hold your phone close to the socket with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
+        backgroundImage: require('../../images/backgrounds/socketBackground.png'),
+        options: [
+          {label: "Next", textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
+        ]
+      },
+      installingBuiltinOne_endLight: {
+        header: "Let's get close!",
+        subHeader: "Hold your phone near the ceiling light with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
+        backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
+        options: [
+          {label: "Next", textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
     }
@@ -110,7 +151,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
 
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeBar={true} dimStatusBar={true}>
-        <TopbarImitation leftStyle={{color: textColor}} left={Platform.OS === 'android' ? null : "Back to overview"} leftAction={() => { NavigationUtil.back(); }} leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
+        <TopbarImitation leftStyle={{color: textColor}} left={Platform.OS === 'android' ? null : "Back to overview"} leftAction={() => { NavigationUtil.backTo("Main"); }} leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
