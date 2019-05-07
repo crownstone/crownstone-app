@@ -42,6 +42,7 @@ let explanationStyle : TextStyle = {
 
 export class Interview extends Component<{
   getCards() : interviewCards,
+  height? : number
   update?() : void
 }, any> {
 
@@ -129,6 +130,7 @@ export class Interview extends Component<{
           })
         }}
         card={item}
+        height={this.props.height}
         headerOverride={this.responseHeaders[this.state.cardIds[index]]}
         selectedOption={this.selectedOptions[index]}
       />
@@ -195,7 +197,7 @@ export class Interview extends Component<{
         removeClippedSubviews={false /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
         data={cards}
         renderItem={this.renderCard.bind(this)}
-        itemHeight={screenHeight}
+        itemHeight={this.props.height || screenHeight}
         sliderWidth={screenWidth}
         itemWidth={screenWidth}
         onSnapToItem={(index) => { this.setState({ activeCardIndex: index, transitioningToCardId: undefined }, () => {
@@ -222,6 +224,7 @@ export class Interview extends Component<{
 function InterviewCard(props : {
   card: interviewCard,
   headerOverride?: string,
+  height?: number,
   image?: any,
   selectedOption?: number,
   nextCard: (nextCard:string, value: interviewReturnData, index:number, option: interviewOption) => void
@@ -245,8 +248,8 @@ function InterviewCard(props : {
   };
 
   return (
-    <ScrollView style={{height: availableModalHeight}}>
-      <View style={{minHeight: availableModalHeight - 10, paddingBottom: 10}}>
+    <ScrollView style={{height: props.height || availableModalHeight}}>
+      <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
         { header      ? <Text style={[headerStyle, {color: props.card.textColor}]}>{header}</Text>           : undefined }
         { subHeader   ? <Text style={[subHeaderStyle, {color: props.card.textColor}]}>{subHeader}</Text>     : undefined }
         { explanation ? <Text style={[explanationStyle, {color: props.card.textColor}]}>{explanation}</Text> : undefined }

@@ -33,6 +33,7 @@ export class ListOverlay extends Component<any, any> {
       maxSelections: null,
       saveLabel: null,
       showSaveButton:false,
+      separator:true,
       title: "",
       visible: false,
     };
@@ -58,6 +59,7 @@ export class ListOverlay extends Component<any, any> {
       this.setState({
         visible: true,
         image: data.image,
+        separator: data.separator === undefined ? true : data.separator,
         title: data.title,
         allowMultipleSelections: data.allowMultipleSelections || false,
         maxSelections: data.maxSelections,
@@ -78,7 +80,9 @@ export class ListOverlay extends Component<any, any> {
 
     let items = this.getItems()
     let elements = [];
-    elements.push(<Separator key={"listOverlay_seperator_first"}/>)
+    if (this.state.separator) {
+      elements.push(<Separator key={"listOverlay_Separator_first"}/>)
+    }
     items.forEach((item, i) => {
       let isSelected = this.selection.indexOf(item.id) !== -1
       elements.push(
@@ -106,7 +110,10 @@ export class ListOverlay extends Component<any, any> {
           </View>: undefined}
         </TouchableOpacity>
       );
-      elements.push(<Separator key={"listOverlay_seperator_"+i} />)
+
+      if (this.state.separator) {
+        elements.push(<Separator key={"listOverlay_seperator_" + i}/>)
+      }
     });
 
     return elements;
@@ -143,6 +150,7 @@ export class ListOverlay extends Component<any, any> {
       maxSelections: null,
       saveLabel: null,
       showSaveButton:false,
+      separator:true,
       title: "",
       visible:false,
     });

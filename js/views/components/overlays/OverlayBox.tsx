@@ -108,7 +108,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
           </View>
           { this.props.title ? <View style={{
             position: 'absolute',
-            top: 0.5*size-padding,
+            top: 0.5*size,
             left: padding + size,
             width: width-size,
             height: 0.5*size+padding,
@@ -133,7 +133,6 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
 
   _getFooterComponent(width, height, padding, closeIconSize, top) {
     if (this.props.footerComponent) {
-
       return (
         <View style={{
           position: 'absolute',

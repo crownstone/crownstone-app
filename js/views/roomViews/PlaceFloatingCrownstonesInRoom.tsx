@@ -96,13 +96,16 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
                 let items = [];
                 Object.keys(sphere.locations).forEach((locationId) => {
                   let location = sphere.locations[locationId];
-                  items.push( {id: locationId, component: <RoomList
-                      icon={location.config.icon}
-                      name={location.config.name}
-                      hideSubtitle={true}
-                      showNavigationIcon={false}
-                      small={true}
-                    />})
+                  items.push({
+                    id: locationId,
+                    component:
+                      <RoomList
+                        icon={location.config.icon}
+                        name={location.config.name}
+                        hideSubtitle={true}
+                        showNavigationIcon={false}
+                      />
+                  });
                 })
 
                 return items;
@@ -112,6 +115,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
               },
               allowMultipleSelections: false,
               selection: null,
+              separator: false,
               image: require("../../images/overlayCircles/roomsCircle.png")
             });
           }}
@@ -168,7 +172,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.light}>
-                <RoomBanner
+        <RoomBanner
           noCrownstones={amountOfStonesInRoom === 0}
           amountOfStonesInRoom={amountOfStonesInRoom}
           hideRight={true}

@@ -17,7 +17,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
 import { LOG, LOGe } from "../../logging/Log";
 
-import { colors, screenHeight, screenWidth, styles } from "../styles";
+import { availableModalHeight, availableScreenHeight, colors, screenHeight, screenWidth, styles } from "../styles";
 import {processImage} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -57,7 +57,14 @@ export class RoomAdd extends Component<any, any> {
       icon: getRandomRoomIcon(),
       picture: null
     };
-    this.props.navigation.setParams({leftAction: () => { this.cancelEdit(); }})
+
+    if (this.props.navigation) {
+      this.props.navigation.setParams({
+        leftAction: () => {
+          this.cancelEdit();
+        }
+      })
+    }
   }
 
   cancelEdit() {
@@ -256,6 +263,7 @@ export class RoomAdd extends Component<any, any> {
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}
+          height={ this.props.height || availableModalHeight }
         />
       </AnimatedBackground>
     );

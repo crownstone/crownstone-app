@@ -18,7 +18,7 @@ export let screenHeight = Platform.OS === 'android' ?
   Dimensions.get('window').height;
 
 export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
-export const availableModalHeight = screenHeight - topBarHeight;
+export const availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
 
 export const pxRatio = PixelRatio.get();
 

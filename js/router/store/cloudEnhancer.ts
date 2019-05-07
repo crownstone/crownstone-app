@@ -227,6 +227,11 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
   let stoneId    = action.stoneId;
   let locationId = action.data.locationId;
 
+  if (MapProvider.local2cloudMap.locations[locationId] === undefined) {
+    // the location is not synced to the cloud yet... We should wait for a sync to properly handle this.
+    return;
+  }
+
   let data = { locationId: MapProvider.local2cloudMap.locations[locationId] || locationId };
   CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
 }

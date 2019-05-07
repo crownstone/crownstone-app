@@ -16,7 +16,15 @@ import { AnimatedBackground }       from '../components/animated/AnimatedBackgro
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
 import { LOG }                      from '../../logging/Log'
-import { colors, overviewStyles, screenWidth, tabBarHeight, tabBarMargin, topBarHeight } from "../styles";
+import {
+  availableScreenHeight,
+  colors,
+  overviewStyles,
+  screenWidth,
+  tabBarHeight,
+  tabBarMargin,
+  topBarHeight
+} from "../styles";
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
@@ -37,6 +45,7 @@ import { SphereRoomOverview } from "./editSubviews/SphereRoomOverview";
 import { CancelButton } from "../components/topbar/CancelButton";
 import { xUtil } from "../../util/StandAloneUtil";
 import { AutoArrangeButton } from "./buttons/AutoArrangeButton";
+import { RoomAdd } from "../roomViews/RoomAdd";
 
 const ZOOM_LEVELS = {
   sphere: 'sphere',
@@ -291,7 +300,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       else {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
-          return <SphereRoomOverview sphereId={activeSphereId} returnToRoute={"Main"} />
+          return <RoomAdd sphereId={activeSphereId} returnToRoute={"Main"} height={availableScreenHeight} />
         }
 
         // retrofit: place all stones in a room.
