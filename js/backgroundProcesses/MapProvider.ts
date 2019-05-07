@@ -65,6 +65,7 @@ class MapProviderClass {
           change.changeStoneHandle   ||
           change.changeDeviceData    ||
           change.updatedToon         ||
+          change.updatedCloudIds     ||
           change.updateStoneConfig   ||
           change.changeMessage
         ) {
