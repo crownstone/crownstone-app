@@ -15,6 +15,7 @@ import { IconSelection }  from '../components/IconSelection'
 import {colors, screenWidth} from "../styles";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 
 
@@ -212,6 +213,7 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Pick_an_Icon"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
     }
   };
 
@@ -227,6 +229,8 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
           <IconSelection
             categories={categories}
             icons={listOfIcons}
+            iconColor={colors.csBlue.hex}
+            iconBackgroundColor={colors.white.rgba(0.3)}
             selectedIcon={this.props.icon}
             callback={(newIcon) => {
               this.props.callback(newIcon);

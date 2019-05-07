@@ -283,7 +283,7 @@ lang("_No_device_Id___There_was_body"),
       label: lang("Reset_networks"),
       type:  'button',
       style: {color: colors.black.hex},
-      icon:  <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkGreen.hex}} />,
+      icon:  <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback:() => {
         Alert.alert(
 lang("_Are_you_sure___This_will_header"),
@@ -303,6 +303,13 @@ lang("_Reset_Done__Rediscovery__body"),
         )
       }
     });
+    items.push({
+      label: "Mesh Topology",
+      type: 'navigation',
+      icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueDark.hex}} />,
+      callback:() => {
+        NavigationUtil.navigate("SettingsMeshTopology");
+      }});
 
     if (user.betaAccess) {
       items.push({label: lang("ALPHA_FEATURES_WILL_LOOK_"), type: 'explanation', below: false});

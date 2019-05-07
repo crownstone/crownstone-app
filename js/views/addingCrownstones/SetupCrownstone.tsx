@@ -175,8 +175,7 @@ export class SetupCrownstone extends Component<any, any> {
 
     let namePlaceholder = "My New Crownstone";
 
-    // TODO REMOVE HACK
-    let sphereId = this.props.sphereId || Object.keys(state.spheres)[0];
+    let sphereId = this.props.sphereId;
 
     let sphere = state.spheres[sphereId];
     if (!sphere) return null;
@@ -449,16 +448,7 @@ export class SetupCrownstone extends Component<any, any> {
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}
         />
-        <SetupProgress />
       </AnimatedBackground>
     );
   }
-
 }
-
-class SetupProgress extends LiveComponent<any, any> {
-  render() {
-    return <View></View>
-  }
-}
-

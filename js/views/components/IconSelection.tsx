@@ -133,7 +133,7 @@ export class IconSelection extends Component<any, any> {
 
   _getIcon(icons, iconIndex) {
     if (iconIndex < icons.length) {
-      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : "transparent";
+      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : this.props.iconBackgroundColor || "transparent";
       if (this.props.debug === true && this.duplicates[icons[iconIndex]]) {
         backgroundColor = colors.red.hex;
       }
@@ -144,7 +144,7 @@ export class IconSelection extends Component<any, any> {
           style={   [styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ] }
           onPress={ () => {this.props.callback(icons[iconIndex])} }
         >
-          <CustomIcon name={icons[iconIndex]} size={ICON_SIZE} color={ colors.white.hex} />
+          <CustomIcon name={icons[iconIndex]} size={ICON_SIZE} color={this.props.iconColor || colors.white.hex} />
         </TouchableOpacity>
       );
     }

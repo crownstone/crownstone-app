@@ -13,6 +13,7 @@ import { IconSelection }  from '../components/IconSelection'
 import {} from "../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 
 
@@ -275,6 +276,7 @@ export class DeviceIconSelection extends Component<{callback(icon: string) : voi
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Pick_an_Icon"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
     }
   };
 

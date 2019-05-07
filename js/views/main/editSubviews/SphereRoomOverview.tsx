@@ -53,8 +53,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
   _getRoomItem(state, roomId, room) {
     return (
       <TouchableHighlight key={roomId + '_entry'} onPress={() => {
-        NavigationUtil.reset("AppNavigator")
-        NavigationUtil.navigate("RoomOverview",{sphereId: this.props.sphereId, locationId: roomId, title: room.config.name, seeStoneInSetupMode: false});
+        NavigationUtil.navigateAndReplaceVia("AppNavigator", "RoomOverview",{sphereId: this.props.sphereId, locationId: roomId, title: room.config.name, seeStoneInSetupMode: false});
       }}>
       <View style={[styles.listView, {paddingRight:5}]}>
         <RoomList
@@ -114,7 +113,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
         style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
         type: 'navigation',
         callback: () => {
-          NavigationUtil.navigate("RoomAdd", {sphereId: this.props.sphereId, returnToRoute: this.props.returnToRoute || 'SphereRoomOverview'});
+          NavigationUtil.navigate("RoomAdd", {sphereId: this.props.sphereId, returnToRoute: this.props.returnToRoute, goBack: true});
         }
       });
     }

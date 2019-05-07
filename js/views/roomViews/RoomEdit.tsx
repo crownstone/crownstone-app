@@ -115,6 +115,14 @@ export class RoomEdit extends LiveComponent<any, any> {
     this.deleting = true;
     core.eventBus.emit('showLoading', lang("Removing_this_room_in_the"));
     CLOUD.forSphere(this.props.sphereId).deleteLocation(this.props.locationId)
+      .catch((err) => {
+        if (err && err.status === 404) {
+          // ignore error
+        }
+        else {
+          throw err;
+        }
+      })
       .then(() => {
         let removeActions = [];
         let stones = Util.data.getStonesInLocation(state, this.props.sphereId, this.props.locationId);

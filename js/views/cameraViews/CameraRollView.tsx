@@ -20,12 +20,14 @@ import {
 import {styles, } from '../styles'
 import {LOGe} from '../../logging/Log'
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 
 export class CameraRollView extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Choose_a_Picture"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
     }
   };
 

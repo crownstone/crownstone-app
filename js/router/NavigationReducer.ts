@@ -222,7 +222,7 @@ export const getAppReducer = function(navReducer) {
           let newState = xUtil.deepExtend({}, state);
           changeStateToGoToRoute(newState, action.target);
           // console.log(state, newState)
-          // action.type = "Navigation/COMPLETE_TRANSITION"
+          action.type = "Navigation/COMPLETE_TRANSITION"
           return navReducer(newState, action);
         }
       }

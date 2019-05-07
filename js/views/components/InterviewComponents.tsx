@@ -175,7 +175,7 @@ export function InterviewTextInput(props) {
   return (
     <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.menuTextSelected.hex, backgroundColor: colors.white.rgba(1)}}>
       <TextEditInput
-        focusOnMount={true}
+        autoFocus={true}
         style={{width: 0.8*screenWidth, padding:10}}
         placeholder={props.placeholder}
         placeholderTextColor='#888'

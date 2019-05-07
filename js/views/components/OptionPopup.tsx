@@ -16,7 +16,7 @@ import {
 
 import { HiddenFadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
-import { styles, screenHeight, screenWidth } from './../styles'
+import { styles, screenHeight, screenWidth, tabBarMargin } from "./../styles";
 import { core } from "../../core";
 
 
@@ -140,7 +140,7 @@ export class OptionPopup extends Component<any, any> {
             height={screenHeight}
             visible={this.state.visible}>
             {this.getChildrenIOS()}
-            <TouchableOpacity style={styles.button} onPress={() => { core.eventBus.emit("hidePopup");}}>
+            <TouchableOpacity style={{...styles.button, marginBottom: 5 + tabBarMargin*0.5}} onPress={() => { core.eventBus.emit("hidePopup");}}>
               <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>{ lang("Cancel") }</Text>
             </TouchableOpacity>
           </SlideInFromBottomView>

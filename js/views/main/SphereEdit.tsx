@@ -33,14 +33,14 @@ export class SphereEdit extends Component<any, any> {
       if (sphere) {
         return {
           title: sphere.config.name,
-          headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
+          headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
         }
       }
     }
 
     return {
       title: lang("Welcome_"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
     }
   };
 
