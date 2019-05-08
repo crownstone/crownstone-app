@@ -74,9 +74,7 @@ class ToonIntegrationClass {
                 };
                 core.store.dispatch(action);
               })
-              .catch((err) => {
-
-              })
+              .catch((err) => { })
           }
         }
         else {
@@ -127,6 +125,7 @@ class ToonIntegrationClass {
               };
               core.store.dispatch(action);
             })
+            .catch((err) => { })
         }
         else {
           // We do not do anything if the schedule is not set to AWAY

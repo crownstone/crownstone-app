@@ -12,8 +12,6 @@ class NotificationHandlerClass {
 
   notificationPermissionGranted = false;
 
-  constructor() {}
-
   init() {
     this.configure();
 

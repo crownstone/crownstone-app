@@ -12,12 +12,7 @@ import { core } from "../core";
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 
 class KeepAliveHandlerClass {
-  _initialized : any;
-
-  constructor() {
-    this._initialized = false;
-    core.store = undefined;
-  }
+  _initialized = false;
 
 
   init() {

@@ -17,12 +17,13 @@ import { Sentry }                   from "react-native-sentry";
 import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
 import { cleanupActivity }          from "./cleanActivityLogs";
 import { core } from "../../../core";
+import { CloudPoller } from "../../../logic/CloudPoller";
 
 
 
 /**
  * We claim the cloud is leading for the availability of items.
- * @param store
+ * @param core.store
  * @returns {Promise.<TResult>|*}
  */
 export const sync = {
@@ -30,13 +31,13 @@ export const sync = {
   __currentlySyncing: false,
   __syncTriggerDatabaseEvents: true,
 
-  sync: function (store, background = true) {
+  sync: function (background = true) {
     if (CLOUD.__currentlySyncing) {
       LOG.info("SYNC: Skip Syncing, sync already in progress.");
       return new Promise((resolve, reject) => { resolve(true) });
     }
 
-    let state = store.getState();
+    let state = core.store.getState();
     if (!state.user.userId) {
       // do not sync if we're not logged in
       return;
@@ -73,38 +74,38 @@ export const sync = {
     let userSyncer = new UserSyncer(actions, [], globalCloudIdMap);
 
     LOG.info("Sync: START Sync Events.");
-    return syncEvents(store)
+    return syncEvents(core.store)
       // in case the event sync fails, check if the user accessToken is invalid, try to regain it if that's the case and try again.
-      .catch(getUserIdCheckError(state, store, () => {
+      .catch(getUserIdCheckError(state, core.store, () => {
         LOG.info("Sync: RETRY Sync Events.");
-        return syncEvents(store);
+        return syncEvents(core.store);
       }))
       .then(() => {
         LOG.info("Sync: DONE Sync Events.");
         LOG.info("Sync: START userSyncer sync.");
-        return userSyncer.sync(store)
+        return userSyncer.sync(core.store)
       })
-      .catch(getUserIdCheckError(state, store, () => {
+      .catch(getUserIdCheckError(state, core.store, () => {
         LOG.info("Sync: RETRY userSyncer Sync.");
-        return userSyncer.sync(store)
+        return userSyncer.sync(core.store)
       }))
       .then(() => {
         LOG.info("Sync: DONE userSyncer sync.");
         LOG.info("Sync: START FirmwareBootloader sync.");
         let firmwareBootloaderSyncer = new FirmwareBootloaderSyncer(actions, [], globalCloudIdMap);
-        return firmwareBootloaderSyncer.sync(store);
+        return firmwareBootloaderSyncer.sync(core.store);
       })
       .then(() => {
         LOG.info("Sync: DONE FirmwareBootloader sync.");
         LOG.info("Sync: START SphereSyncer sync.");
         let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap, globalSphereMap);
-        return sphereSyncer.sync(store);
+        return sphereSyncer.sync(core.store);
       })
       .then(() => {
         LOG.info("Sync: DONE SphereSyncer sync.");
         LOG.info("Sync: START KeySyncer sync.");
         let keySyncer = new KeySyncer(actions, [], globalCloudIdMap);
-        return keySyncer.sync(store);
+        return keySyncer.sync(core.store);
       })
       .then(() => {
         LOG.info("Sync: DONE KeySyncer sync.");
@@ -161,16 +162,16 @@ export const sync = {
         });
 
         if (actions.length > 0) {
-          store.batchDispatch(actions);
+          core.store.batchDispatch(actions);
         }
 
         LOG.info("Sync: Requesting notification permissions during updating of the device.");
         NotificationHandler.request();
 
 
-        LOG.info("Sync after: START MessageCenter checkForMessages.");
-        MessageCenter.checkForMessages();
-        LOG.info("Sync after: DONE MessageCenter checkForMessages.");
+        LOG.info("Sync after: START Executing cloud poll.");
+        CloudPoller.poll(true)
+        LOG.info("Sync after: DONE Executing cloud poll.");
 
         return reloadTrackingRequired;
       })
@@ -200,7 +201,7 @@ export const sync = {
         });
 
         // if (actions.length > 0) {
-        //   store.batchDispatch(actions);
+        //   core.store.batchDispatch(actions);
         // }
 
         Sentry.captureBreadcrumb({
@@ -235,7 +236,7 @@ let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
         .then((response) => {
           CLOUD.setAccess(response.id);
           CLOUD.setUserId(response.userId);
-          store.dispatch({type:'USER_APPEND', data: {accessToken: response.id}});
+          core.store.dispatch({type:'USER_APPEND', data: {accessToken: response.id}});
           return retryThisAfterRecovery();
         })
         .catch((err) => {

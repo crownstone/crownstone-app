@@ -46,6 +46,7 @@ import { CancelButton } from "../components/topbar/CancelButton";
 import { xUtil } from "../../util/StandAloneUtil";
 import { AutoArrangeButton } from "./buttons/AutoArrangeButton";
 import { RoomAdd } from "../roomViews/RoomAdd";
+import { CLOUD } from "../../cloud/cloudAPI";
 
 const ZOOM_LEVELS = {
   sphere: 'sphere',
@@ -249,6 +250,9 @@ export class SphereOverview extends LiveComponent<any, any> {
         <SphereLevel
           selectSphere={(sphereId) => {
             core.store.dispatch({type:"SET_ACTIVE_SPHERE", data: { activeSphere:sphereId }});
+
+            // request latest location data.
+            CLOUD.syncUsers();
             this.setState({zoomLevel:ZOOM_LEVELS.room}, () => {  this._updateNavBar(); });
           }}
           zoomInCallback={zoomInCallback}

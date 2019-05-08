@@ -177,3 +177,12 @@ interface interviewCards {
   start: interviewCard,
   [key: string]: interviewCard,
 }
+
+interface onScreenNotificationPayload {
+  source: string,
+  id: string,
+  label: string,
+  icon?: string,
+  iconSize?: number,
+  callback: () => void
+}

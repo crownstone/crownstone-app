@@ -6,7 +6,6 @@ import { core } from "../core";
 
 
 class BroadcastStateManagerClass {
-  _store : any;
   _initialized : boolean = false;
   _advertising : boolean = false;
   _advertisingEnabled : boolean = false;
@@ -21,7 +20,7 @@ class BroadcastStateManagerClass {
     // We do not need to watch the foreground-background, this is done automatically
     // We need to start advertising when the peripheral is ready.
     if (this._initialized === false) {
-      let state = this._store.getState();
+      let state = core.store.getState();
       this._advertisingEnabled = state.development.broadcasting_enabled;
 
       console.log("INITIALIZING BroadcastStateManagerClass");
@@ -66,7 +65,7 @@ class BroadcastStateManagerClass {
   _handleActiveSphereUpdate() {
     if (this._advertisingEnabled === false) { return; }
 
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     let amountOfPresentSpheres = SphereUtil.getAmountOfPresentSpheres(state);
     let presentSphere = SphereUtil.getPresentSphere(state);
@@ -99,7 +98,7 @@ class BroadcastStateManagerClass {
   _handleEnterSphere(sphereId) {
     if (this._advertisingEnabled === false) { return; }
 
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereData = SphereUtil.getActiveSphere(state);
@@ -136,7 +135,7 @@ class BroadcastStateManagerClass {
   _handleExitSphere(sphereId) {
     if (this._advertisingEnabled === false) { return; }
 
-    let state = this._store.getState();
+    let state = core.store.getState();
     let amountOfPresentSpheres = SphereUtil.getAmountOfPresentSpheres(state);
     let activeSphereData = SphereUtil.getActiveSphere(state);
 
@@ -168,14 +167,14 @@ class BroadcastStateManagerClass {
       this._startAdvertising();
     }
 
-    let state = this._store.getState();
+    let state = core.store.getState();
     console.log("Settings Sphere As Present:",state.spheres[sphereId].config.name);
     this._sphereIdInLocationState = sphereId;
     Bluenet.setLocationState(0, 0, 0, sphereId);
   }
 
   _reloadAdvertisingState() {
-    let state = this._store.getState();
+    let state = core.store.getState();
     this._advertisingEnabled = state.development.broadcasting_enabled;
     if (this._advertisingEnabled) {
       this._startAdvertising();
@@ -205,7 +204,7 @@ class BroadcastStateManagerClass {
   }
 
   _reloadDevicePreferences() {
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     let rssiOffset = 0;
     let tapToToggleEnabled = state.app.tapToToggleEnabled;

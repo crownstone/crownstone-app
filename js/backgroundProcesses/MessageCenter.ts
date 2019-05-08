@@ -211,7 +211,7 @@ class MessageCenterClass {
     this._enterSphereInProgress = true;
 
     LOG.info("MessageCenter: enter sphere / already in sphere", localSphereId);
-    this._handleMessageInSphere(localSphereId, 'enter')
+    return this._handleMessageInSphere(localSphereId, 'enter')
       .then(() => { this._enterSphereInProgress = false; })
       .catch(() => {          this._enterSphereInProgress = false; })
   }
@@ -221,7 +221,7 @@ class MessageCenterClass {
     this._exitSphereInProgress = true;
 
     LOG.info("MessageCenter: exit sphere", localSphereId);
-    this._handleMessageInSphere(localSphereId, 'exit')
+    return this._handleMessageInSphere(localSphereId, 'exit')
       .then(() => { this._exitSphereInProgress = false; })
       .catch(() => {          this._exitSphereInProgress = false; })
   }
@@ -231,7 +231,7 @@ class MessageCenterClass {
     this._enterRoomInProgress = true;
 
     LOG.info("MessageCenter: enter room / already in room", data);
-    this._handleMessageInLocation(data.region, data.location, 'enter')
+    return this._handleMessageInLocation(data.region, data.location, 'enter')
       .then(() => { this._enterRoomInProgress = false; })
       .catch(() => {          this._enterRoomInProgress = false; })
   }
@@ -241,7 +241,7 @@ class MessageCenterClass {
     this._exitRoomInProgress = true;
 
     LOG.info("MessageCenter: exit room", data);
-    this._handleMessageInLocation(data.region, data.location, 'exit')
+    return this._handleMessageInLocation(data.region, data.location, 'exit')
       .then(() => { this._exitRoomInProgress = false; })
       .catch(() => {          this._exitRoomInProgress = false; })
   }
@@ -300,11 +300,14 @@ class MessageCenterClass {
     if (presentSphereId) {
       let presentLocationId = Util.data.getUserLocationIdInSphere(state, presentSphereId, state.user.userId);
       if (presentLocationId) {
-        this._enterRoom({region: presentSphereId, location: presentLocationId});
+        return this._enterRoom({region: presentSphereId, location: presentLocationId});
       }
       else {
-        this._enterSphere(presentSphereId);
+        return this._enterSphere(presentSphereId);
       }
+    }
+    else {
+      return new Promise((resolve, reject) => { resolve(); })
     }
   }
 }

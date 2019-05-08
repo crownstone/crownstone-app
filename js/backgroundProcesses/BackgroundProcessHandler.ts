@@ -42,6 +42,7 @@ import { core } from "../core";
 import { cleanLogs } from "../logging/LogUtil";
 import { migrate } from "./migration/StoreMigration";
 import { NotificationParser } from "../notifications/NotificationParser";
+import { CloudPoller } from "../logic/CloudPoller";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -50,7 +51,6 @@ class BackgroundProcessHandlerClass {
   started : boolean = false;
   userLoggedIn : boolean = false;
   storePrepared : boolean = false;
-  store : any;
   connectionPopupActive : boolean = false;
 
   cancelPauseTrackingCallback = null;
@@ -78,9 +78,9 @@ class BackgroundProcessHandlerClass {
       // This event is triggered on boot by the start store or by the login process.
       core.eventBus.on('userLoggedIn', () => {
         // clear the temporary data like state and disability of stones so no old data will be shown
-        prepareStoreForUser(this.store);
+        prepareStoreForUser();
 
-        let state = this.store.getState();
+        let state = core.store.getState();
         if (state.app.indoorLocalizationEnabled === false) {
           LOG.info("BackgroundProcessHandler: Set background processes to OFF");
           Bluenet.setBackgroundScanning(false);
@@ -106,10 +106,10 @@ class BackgroundProcessHandlerClass {
 
         BroadcastStateManager.init();
 
-        let state = this.store.getState();
+        let state = core.store.getState();
         // this should have been covered by the naming of the AI. This is a fallback and it's for users who are not admins.
         if (state.user.accessToken !== null && state.user.isNew !== false) {
-          this.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
+          core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
         }
 
         LOG.info("BackgroundProcessHandler: received userLoggedInFinished event.");
@@ -156,9 +156,9 @@ class BackgroundProcessHandlerClass {
 
 
   showWhatsNew() {
-    let state = this.store.getState();
+    let state = core.store.getState();
     if (!state.app.shownWhatsNewVersion || state.app.shownWhatsNewVersion === '0') {
-      this.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} })
+      core.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} })
     }
     else if (state.app.shownWhatsNewVersion !== DeviceInfo.getReadableVersion()) {
       Scheduler.scheduleCallback(() => { core.eventBus.emit("showWhatsNew"); }, 100);
@@ -166,7 +166,7 @@ class BackgroundProcessHandlerClass {
   }
 
   setupLogging() {
-    let state = this.store.getState();
+    let state = core.store.getState();
     Bluenet.enableLoggingToFile((state.user.developer === true && state.development.logging_enabled === true) || LOG_TO_FILE === true);
     if ((state.user.developer === true && state.development.logging_enabled === true && state.development.nativeExtendedLogging === true) || LOG_EXTENDED_TO_FILE === true) {
       Bluenet.enableExtendedLogging(true);
@@ -192,20 +192,18 @@ class BackgroundProcessHandlerClass {
     // if the app is open, update the user locations every 10 seconds
     Scheduler.loadCallback(BACKGROUND_USER_SYNC_TRIGGER, () => {
       if (SetupStateHandler.isSetupInProgress() === false) {
-        CLOUD.syncUsers();
-        MessageCenter.checkForMessages();
-        CLOUD.syncInvites();
+        CloudPoller.poll()
       }
     });
 
     // sync the full db with the cloud every 10 minutes
     Scheduler.loadCallback(BACKGROUND_SYNC_TRIGGER, () => {
-      let state = this.store.getState();
+      let state = core.store.getState();
       // if a crownstone is in setup mode, we do not sync at that time
       if (SetupStateHandler.isSetupInProgress() === false) {
         if (state.user.userId) {
           LOG.info("BackgroundProcessHandler: STARTING ROUTINE SYNCING IN BACKGROUND");
-          CLOUD.sync(this.store, true).catch((err) => { LOGe.cloud("Error during background sync: ", err)});
+          CLOUD.sync(core.store, true).catch((err) => { LOGe.cloud("Error during background sync: ", err)});
         }
       }
       else {
@@ -234,7 +232,7 @@ class BackgroundProcessHandlerClass {
    * Update device specs: Since name is user editable, it can change over time. We use this to update the model.
    */
   updateDeviceDetails() {
-    let state = this.store.getState();
+    let state = core.store.getState();
     let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
     let deviceInDatabaseId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
     if (currentDeviceSpecs.address && deviceInDatabaseId) {
@@ -249,7 +247,7 @@ class BackgroundProcessHandlerClass {
         (currentDeviceSpecs.locale != deviceInDatabase.locale) || 
         (currentDeviceSpecs.description != deviceInDatabase.description))
         {
-        this.store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {
+        core.store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {
           name: currentDeviceSpecs.name,
           os: currentDeviceSpecs.os,
           userAgent: currentDeviceSpecs.userAgent,
@@ -268,7 +266,7 @@ class BackgroundProcessHandlerClass {
    */
   startEventTriggers() {
     // trigger the CalibrateTapToToggle tutorial for existing users when they open the app
-    let state = this.store.getState();
+    let state = core.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
     core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => {
       // do not show popup during setup.
@@ -276,7 +274,7 @@ class BackgroundProcessHandlerClass {
         return;
       }
 
-      let state = this.store.getState();
+      let state = core.store.getState();
       if (state && state.devices && deviceInDatabaseId && state.devices[deviceInDatabaseId] &&
         (state.devices[deviceInDatabaseId].tapToToggleCalibration === null || state.devices[deviceInDatabaseId].tapToToggleCalibration === undefined)) {
         if (Util.data.userHasPlugsInSphere(state,sphereId))
@@ -304,7 +302,7 @@ class BackgroundProcessHandlerClass {
       BatterySavingUtil.startNormalUsage();
 
       // clear all mesh network ids in all spheres on opening the app.
-      MeshUtil.clearMeshNetworkIds(this.store);
+      MeshUtil.clearMeshNetworkIds(core.store);
 
       // remove any badges from the app icon on the phone.
       this._clearBadge();
@@ -331,7 +329,7 @@ class BackgroundProcessHandlerClass {
       BatterySavingUtil.startBatterySaving();
 
       // check if we require indoor localization, pause tracking if we dont.
-      let state = this.store.getState();
+      let state = core.store.getState();
       if (state.app.indoorLocalizationEnabled === false) {
         this.cancelPauseTrackingCallback = Scheduler.scheduleCallback(() => {
           // stop all scanning and tracking to save battery. This will only happen if the app lives in the background for 5 minutes when it shouldnt.
@@ -375,10 +373,10 @@ class BackgroundProcessHandlerClass {
   }
 
   _verifyStore() {
-    this.store = StoreManager.getStore();
+    core.store = StoreManager.getStore();
 
     // if we have an accessToken, we proceed with logging in automatically
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     // Catch a broken sphere.
     let sphereIds = state.spheres;
@@ -401,10 +399,13 @@ class BackgroundProcessHandlerClass {
 
     if (brokenSphere) {
       Alert.alert("Something went wrong...","I have identified a problem with the Sphere on your phone... I'll have to redownload it from the Cloud to fix this.", [{text:'OK', onPress: () => {
-        AppUtil.resetDatabase(this.store, core.eventBus);
+        AppUtil.resetDatabase(core.store, core.eventBus);
       }}], {cancelable:false});
       return;
     }
+
+    core.store = core.store;
+    core.storeInitialized = true;
 
     if (state.user.accessToken !== null) {
       // in the background we check if we're authenticated, if not we log out.
@@ -421,7 +422,7 @@ class BackgroundProcessHandlerClass {
             .then((response) => {
               CLOUD.setAccess(response.id);
               CLOUD.setUserId(response.userId);
-              this.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
+              core.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
             })
           }
           else {
@@ -430,12 +431,12 @@ class BackgroundProcessHandlerClass {
         })
         .then((reply) => {
           LOG.info("BackgroundProcessHandler: Verified User.", reply);
-          CLOUD.sync(this.store, true).catch(() => {})
+          CLOUD.sync(core.store, true).catch(() => {})
         })
         .catch((err) => {
           LOG.info("BackgroundProcessHandler: COULD NOT VERIFY USER -- ERROR", err);
           if (err.status === 401) {
-            AppUtil.logOut(this.store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
+            AppUtil.logOut(core.store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }
         });
       this.userLoggedIn = true;

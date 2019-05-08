@@ -76,6 +76,14 @@ export const user = {
 
   /**
    *
+   * @returns {*}
+   */
+  getPendingInvites: function (background = true) {
+    return cloudApiBase._setupRequest('GET', '/users/{id}/pendingInvites', {background});
+  },
+
+  /**
+   *
    * @param data
    * @param background
    * @returns {Promise}

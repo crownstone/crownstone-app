@@ -15,7 +15,6 @@ class BatchUploadClass {
   };
   _initialized = false;
 
-  constructor() {}
 
   init() {
     if (this._initialized === false) {

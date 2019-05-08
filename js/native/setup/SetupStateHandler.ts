@@ -17,7 +17,6 @@ import { core } from "../../core";
  */
 class SetupStateHandlerClass {
   _uuid : string;
-  _store : any;
   _setupModeTimeouts : any;
   _stonesInSetupStateAdvertisements : any;
   _stonesInSetupStateTypes : any;
@@ -29,7 +28,6 @@ class SetupStateHandlerClass {
   constructor() {
     this._uuid = xUtil.getUUID();
 
-    this._store = undefined;
     this._setupModeTimeouts = {};
     this._stonesInSetupStateAdvertisements = {};
     this._stonesInSetupStateTypes = {};
@@ -185,7 +183,7 @@ class SetupStateHandlerClass {
   }
 
   setupExistingStone(handle, sphereId, stoneId, silent : boolean = false) {
-    let stoneConfig = this._store.getState().spheres[sphereId].stones[stoneId].config;
+    let stoneConfig = core.store.getState().spheres[sphereId].stones[stoneId].config;
     return this._setupStone(handle, sphereId, stoneConfig.name, stoneConfig.type, stoneConfig.icon, silent);
   }
 
@@ -213,7 +211,7 @@ class SetupStateHandlerClass {
 
     core.eventBus.emit("setupStarting");
 
-    return helper.claim(this._store, sphereId, silent);
+    return helper.claim(sphereId, silent);
   }
 
   getSetupStones() {

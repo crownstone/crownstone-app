@@ -12,6 +12,7 @@ import {
 
 export class SlideFadeInView extends Component<{visible, height, delay?, duration?, style?}, any> {
   visible : boolean;
+  height : number;
 
   constructor(props) {
     super(props);
@@ -20,14 +21,16 @@ export class SlideFadeInView extends Component<{visible, height, delay?, duratio
       viewOpacity: new Animated.Value(props.visible ? 1 : 0),
       viewHeight:  new Animated.Value(props.visible ? (props.height || (props.style && props.style.height)) : 0)
     };
+    this.height =  props.height || (props.style && props.style.height);
     this.visible = props.visible || false;
   }
 
   componentWillUpdate(nextProps) {
+    let delay = this.props.delay || 0;
+    let duration = this.props.duration || 200;
+    let height = nextProps.height || (nextProps.style && nextProps.style.height);
     if (this.visible !== nextProps.visible) {
       let animations = [];
-      let delay = this.props.delay || 0;
-      let duration = this.props.duration || 200;
       if (nextProps.visible === true) {
         animations.push(Animated.timing(this.state.viewOpacity, {
           toValue:  1,
@@ -35,7 +38,7 @@ export class SlideFadeInView extends Component<{visible, height, delay?, duratio
           duration: duration,
         }));
         animations.push(Animated.timing(this.state.viewHeight, {
-          toValue:  (nextProps.height || (nextProps.style && nextProps.style.height)),
+          toValue:  height,
           delay:    delay,
           duration: duration
         }))
@@ -46,6 +49,9 @@ export class SlideFadeInView extends Component<{visible, height, delay?, duratio
       }
       Animated.parallel(animations).start();
       this.visible = nextProps.visible;
+    }
+    else if (this.visible && this.height !== height) {
+      Animated.timing(this.state.viewHeight, {toValue: height, delay: delay, duration: duration }).start(() => { this.height = height; })
     }
   }
 

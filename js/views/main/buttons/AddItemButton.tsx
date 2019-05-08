@@ -54,5 +54,6 @@ export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean
       </HiddenFadeInView>
     );
   }
+  return <View />;
 }
 

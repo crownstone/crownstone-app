@@ -37,6 +37,7 @@ export class SimpleOverlay extends Component<any, any> {
     this.unsubscribe.push(core.eventBus.on("showCustomOverlay", (data) => {
       this.customContent = data.content || null;
       this.setState({
+        backgroundColor: data.backgroundColor || null,
         visible: true,
       });
     }));
@@ -53,7 +54,10 @@ export class SimpleOverlay extends Component<any, any> {
 
   close() {
     this.customContent = null;
-    this.setState({ visible:false });
+    this.setState({
+      visible:false,
+      backgroundColor:null
+    });
   }
 
   render() {
@@ -69,11 +73,10 @@ export class SimpleOverlay extends Component<any, any> {
         canClose={true}
         scrollable={true}
         closeCallback={() => { this.close(); }}
-        // backgroundColor={colors.white.rgba(0.2)}
+        backgroundColor={this.state.backgroundColor || colors.white.rgba(0.2)}
         title={this.state.title}
       >
         { this.customContent }
-        <View style={{height:50}} />
       </OverlayBox>
     );
   }

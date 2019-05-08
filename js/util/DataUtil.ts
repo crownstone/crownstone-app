@@ -4,6 +4,7 @@ import { LOGe } from '../logging/Log'
 import { STONE_TYPES } from "../Enums";
 
 import DeviceInfo from 'react-native-device-info';
+import { core } from "../core";
 
 
 export const DataUtil = {
@@ -688,8 +689,8 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
 
 
 
-export const prepareStoreForUser = function(store) {
-  const state = store.getState();
+export const prepareStoreForUser = function() {
+  const state = core.store.getState();
   let spheres = state.spheres;
   let sphereIds = Object.keys(spheres);
   let actions = [];
@@ -710,7 +711,7 @@ export const prepareStoreForUser = function(store) {
     });
   });
 
-  store.batchDispatch(actions);
+  core.store.batchDispatch(actions);
 };
 
 

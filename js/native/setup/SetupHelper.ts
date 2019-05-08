@@ -44,12 +44,11 @@ export class SetupHelper {
 
   /**
    * This claims a stone, this means it will perform setup, register in cloud and clean up after itself.
-   * @param store
    * @param sphereId
    * @param silent            // if silent is true, this means no popups will be sent or triggered.
    * @returns {Promise<T>}
    */
-  claim(store, sphereId, silent : boolean = false) : Promise<string> {
+  claim(sphereId, silent : boolean = false) : Promise<string> {
     // things to be filled out during setup process
     this.macAddress = undefined;
     this.cloudResponse = undefined;
@@ -93,7 +92,7 @@ export class SetupHelper {
             core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 });
             this.cloudResponse = cloudResponse;
             this.stoneIdInCloud = cloudResponse.id;
-            return this.setupCrownstone(store, sphereId);
+            return this.setupCrownstone(sphereId);
           })
           .then(() => {
             LOG.info("setup progress: setupCrownstone done");
@@ -135,7 +134,7 @@ export class SetupHelper {
               if (MapProvider.cloud2localMap.stones[this.stoneIdInCloud]) {
                 familiarCrownstone = true;
                 finalizeSetupStoneAction.type = "UPDATE_STONE_CONFIG";
-                this._restoreSchedules(store, sphereId, MapProvider.cloud2localMap.stones[localId]);
+                this._restoreSchedules(sphereId, MapProvider.cloud2localMap.stones[localId]);
               }
               else {
                 // if we do not know the stone, we provide the new name and icon
@@ -151,7 +150,7 @@ export class SetupHelper {
                 data: { state: canSwitch ? 1 : 0, currentUsage: 0 },
               });
 
-              store.batchDispatch(actions);
+              core.store.batchDispatch(actions);
 
               // Restore trigger state
               core.eventBus.emit("useTriggers");
@@ -247,8 +246,8 @@ export class SetupHelper {
     })
   }
 
-  setupCrownstone(store, sphereId) {
-    const state = store.getState();
+  setupCrownstone(sphereId) {
+    const state = core.store.getState();
     let sphereData = state.spheres[sphereId].config;
 
     let data = {};
@@ -281,8 +280,8 @@ export class SetupHelper {
     });
   }
 
-  _restoreSchedules(store, sphereId, localStoneId) {
-    let state  = store.getState();
+  _restoreSchedules(sphereId, localStoneId) {
+    let state  = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere) { return; }
 

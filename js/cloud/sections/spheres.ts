@@ -268,6 +268,24 @@ export const spheres = {
         'users/{id}/spheres/rel/' + cloudSphereId
       );
     }
-  }
+  },
+
+  acceptInvitation: function() {
+    return CLOUD._setupRequest(
+      'POST',
+      '/Spheres/{id}/inviteAccept/',
+      {background: false},
+      'body'
+      );
+  },
+
+  declineInvitation: function() {
+    return CLOUD._setupRequest(
+      'POST',
+      '/Spheres/{id}/inviteDecline/',
+      {background: false},
+      'body'
+      );
+  },
 
 };

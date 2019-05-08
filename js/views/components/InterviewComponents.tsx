@@ -106,9 +106,16 @@ export function TextButtonWithLargeImage(props) {
   );
 }
 
-function TextButton(props) {
+export function TextButton(props) {
   return (
-    <TouchableOpacity style={[props.basic ? buttonBasicStyle : buttonStyle, {backgroundColor: props.backgroundColor}, props.selected ? selectedStyle : {}]} onPress={() => { props.callback(); }}>
+    <TouchableOpacity
+      style={[
+        props.basic ? buttonBasicStyle : buttonStyle,
+        {backgroundColor: props.backgroundColor},
+        props.selected ? selectedStyle : {},
+        props.rounded ? {borderBottomLeftRadius: 10} : {},
+        props.borderColor ? {borderColor: props.borderColor} : {},
+      ]} onPress={() => { props.callback(); }}>
       { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
       <Icon name={"md-arrow-dropright"} color={props.iconColor || props.textColor || colors.csBlue.hex} size={15} style={{padding:10}} />
       <Text style={[textStyle, {color: props.textColor}]}>{props.label}</Text>
@@ -135,16 +142,15 @@ export function TextButtonDark({label, callback, basic=false, selected=false}) {
   return TextButton({label, callback, selected, basic, backgroundColor: colors.csBlue.rgba(0.2), textColor: colors.csBlue.hex});
 }
 
-export function TextButtonSemitranslucentDark({label, callback, selected=false}) {
+export function TextButtonSemitranslucentDark({label, callback, rounded=false,selected=false}) {
   return (
-    TextButton({label, callback, selected, backgroundColor: colors.white.blend(colors.csBlue,0.25).rgba(0.7), textColor: colors.csBlue.hex})
+    TextButton({label, callback, selected, backgroundColor: colors.white.blend(colors.csBlue,0.25).rgba(0.6), textColor: colors.csBlue.hex, rounded})
   )
 }
 
 export function TextButtonLightOnDark({label, callback, selected=false}) {
   return TextButton({label, callback, selected, backgroundColor: colors.white.rgba(0.3), textColor: colors.white.hex})
 }
-
 
 export function TextButtonLight({label, callback, selected=false, textAlign="left"}) {
   return TextButton({label, callback, selected, backgroundColor: colors.white.rgba(1), textColor: colors.csBlue.hex, textAlign})

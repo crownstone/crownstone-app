@@ -3,9 +3,7 @@ import { Bluenet } from "../native/libInterface/Bluenet";
 import { core } from "../core";
 
 class WatchStateManagerClass {
-  _store;
   initialized = false;
-
 
   init() {
     if (this.initialized === false) {
@@ -25,7 +23,7 @@ class WatchStateManagerClass {
   }
 
   _updateNames() {
-    let state = this._store.getState();
+    let state = core.store.getState();
     let nameObject = {};
 
     Object.keys(state.spheres).forEach((sphereId) => {
