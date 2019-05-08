@@ -5,13 +5,11 @@ import { core } from "../../core";
 
 class EncryptionManagerClass {
   _initialized : boolean = false;
-  store : any;
   _uuid : string;
   _readyForLocalization = false;
 
-  loadStore(store) {
+  init() {
     if (this._initialized === false) {
-      this.store = store;
       this._initialized = true;
 
       core.eventBus.on("sphereCreated",        () => { this.setKeySets(); });
@@ -23,7 +21,7 @@ class EncryptionManagerClass {
   }
 
   setKeySets() {
-    let state = this.store.getState();
+    let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     let keysets : keySet[] = [];
 

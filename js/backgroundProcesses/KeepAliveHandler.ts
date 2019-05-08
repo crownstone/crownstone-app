@@ -7,26 +7,18 @@ import { Util }                                   from '../util/Util'
 import { canUseIndoorLocalizationInSphere } from '../util/DataUtil'
 import {Permissions} from "./PermissionManager";
 import { BEHAVIOUR_TYPES, STONE_TYPES } from "../Enums";
+import { core } from "../core";
 
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 
 class KeepAliveHandlerClass {
   _initialized : any;
-  store : any;
 
   constructor() {
     this._initialized = false;
-    this.store = undefined;
+    core.store = undefined;
   }
 
-  loadStore(store) {
-    LOG.info('LOADED STORE KeepAliveHandler', this._initialized);
-    if (this._initialized === false) {
-      this.store = store;
-      this.init();
-
-    }
-  }
 
   init() {
     if (this._initialized === false) {
@@ -43,7 +35,7 @@ class KeepAliveHandlerClass {
 
 
   clearCurrentKeepAlives() {
-    const state = this.store.getState();
+    const state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
@@ -58,7 +50,7 @@ class KeepAliveHandlerClass {
 
         if (stone.config.type !== STONE_TYPES.guidestone) {
           if (stone.config.handle && stone.reachability.disabled === false) {
-            let element = Util.data.getElement(this.store, sphereId, stoneId, stone);
+            let element = Util.data.getElement(core.store, sphereId, stoneId, stone);
             this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, {active:false, state:0}, 10, element, keepAliveId);
           }
         }
@@ -69,7 +61,7 @@ class KeepAliveHandlerClass {
   }
 
   keepAlive() {
-    const state = this.store.getState();
+    const state = core.store.getState();
 
     // do not use keepAlives if the user does not want to.
     if (state.app.keepAlivesEnabled === false || state.app.indoorLocalizationEnabled === false) {
@@ -101,7 +93,7 @@ class KeepAliveHandlerClass {
         let keepAliveId = (Math.floor(Math.random()*1e6)).toString(36);
 
         if (stone.config.type !== STONE_TYPES.guidestone) {
-          let element = Util.data.getElement(this.store, sphereId, stoneId, stone);
+          let element = Util.data.getElement(core.store, sphereId, stoneId, stone);
           if (!element || !element.behaviour) {
             LOGe.info("KeepAliveHandler: Invalid Element received");
             return;

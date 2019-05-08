@@ -26,7 +26,6 @@ interface scheduleTrigger {
 
 class SchedulerClass {
   _initialized : any;
-  store : any;
   triggers : scheduleTrigger;
   singleFireTriggers : scheduledCallback;
   allowTicksAfterTime : any;
@@ -34,7 +33,6 @@ class SchedulerClass {
 
   constructor() {
     this._initialized = false;
-    this.store = undefined;
     this.triggers = {};
 
     this.singleFireTriggers = {};
@@ -43,13 +41,6 @@ class SchedulerClass {
   }
 
 
-  loadStore(store) {
-    LOG.info('LOADED STORE SchedulerClass', this._initialized);
-    if (this._initialized === false) {
-      this.store = store;
-      this.init();
-    }
-  }
 
   reset() {
     this.triggers = {};
@@ -324,7 +315,7 @@ class SchedulerClass {
     // instantly overwrites the value again. This can happen when a Crownstone's first advertisement after switching is
     // still the old state.
     if (now > this.allowTicksAfterTime) {
-      let state = this.store.getState();
+      let state = core.store.getState();
       let triggerIds = Object.keys(this.triggers);
 
       // check if we have to fire the trigger
@@ -357,7 +348,7 @@ class SchedulerClass {
   }
 
   fireTrigger(triggerId) {
-    let state = this.store.getState();
+    let state = core.store.getState();
     let trigger = this.triggers[triggerId];
 
     if (trigger)
@@ -399,7 +390,7 @@ class SchedulerClass {
   flushAll() {
     LOG.scheduler("Flush All!");
     let triggerIds = Object.keys(this.triggers);
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     triggerIds.forEach((triggerId) => {
       this.flush(this.triggers[triggerId], state);
@@ -447,7 +438,7 @@ class SchedulerClass {
 
     // update the store
     if (actionsToDispatch.length > 0) {
-      this.store.batchDispatch(actionsToDispatch);
+      core.store.batchDispatch(actionsToDispatch);
     }
 
     trigger.actions = [];

@@ -12,12 +12,6 @@ class BroadcastStateManagerClass {
   _advertisingEnabled : boolean = false;
   _sphereIdInLocationState : string = null;
 
-  constructor() {}
-
-  loadStore(store) {
-    this._store = store;
-  }
-
 
   init() {
     // set event listener on:

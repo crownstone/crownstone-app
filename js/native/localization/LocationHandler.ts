@@ -23,12 +23,10 @@ import { core } from "../../core";
 
 class LocationHandlerClass {
   _initialized : boolean;
-  store : any;
   _readyForLocalization = false;
 
   constructor() {
     this._initialized = false;
-    this.store = undefined;
 
     // subscribe to iBeacons when the spheres in the cloud change.
     core.eventBus.on('CloudSyncComplete_spheresChanged', () => {
@@ -46,11 +44,10 @@ class LocationHandlerClass {
     });
   }
 
-  loadStore(store) {
+  init() {
     LOG.info('LocationHandler: LOADED STORE LocationHandler', this._initialized);
     if (this._initialized === false) {
       this._initialized = true;
-      this.store = store;
 
       // core.nativeBus.on(core.nativeBus.topics.currentRoom, (data) => {LOGd.info('CURRENT ROOM', data)});
       core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); });
@@ -62,7 +59,7 @@ class LocationHandlerClass {
 
 
   enterSphere(enteringSphereId) {
-    let state = this.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[enteringSphereId];
 
     if (!sphere) {
@@ -118,19 +115,19 @@ class LocationHandlerClass {
             let distance = Math.sqrt(dx*dx + dy*dy);
             if (distance > 0.4) {
               LOG.info('LocationHandler: Update sphere location, old: (', sphere.state.latitude, ',', sphere.state.longitude,') to new: (', location.latitude, ',', location.longitude,')');
-              this.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+              core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
             }
           }
           else {
             LOG.info('LocationHandler: Setting sphere location to (', location.latitude, ',', location.longitude,')');
-            this.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+            core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
           }
         }
       })
       .catch((err) => {});
 
     // set the presence
-    this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true}});
+    core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true}});
 
     // start the keep alive run. This gives the app some time for syncing and pointing out which stones are NOT disabled.
     Scheduler.scheduleCallback(() => {
@@ -142,7 +139,7 @@ class LocationHandlerClass {
     if (sphereHasTimedOut) {
       // trigger crownstones on enter sphere
       LOG.info('LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE', sphere.config.name);
-      BehaviourUtil.enactBehaviourInSphere(this.store, enteringSphereId, BEHAVIOUR_TYPES.HOME_ENTER);
+      BehaviourUtil.enactBehaviourInSphere(core.store, enteringSphereId, BEHAVIOUR_TYPES.HOME_ENTER);
     }
     else {
       LOG.info('LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ', timeSinceLastCrownstoneWasSeen, ' WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ', KEEPALIVE_INTERVAL*1000*1.5, ' ms');
@@ -161,7 +158,7 @@ class LocationHandlerClass {
   exitSphere(sphereId) {
     LOG.info('LocationHandler: LEAVING SPHERE', sphereId);
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     if (state.spheres[sphereId] && state.spheres[sphereId].state.present === true) {
       LOG.info('Applying EXIT SPHERE');
@@ -169,10 +166,10 @@ class LocationHandlerClass {
       this._removeUserFromRooms(state, sphereId, state.user.userId);
 
       // clear all rssi's
-      clearRSSIs(this.store, sphereId);
+      clearRSSIs(core.store, sphereId);
 
       // disable all crownstones
-      disableStones(this.store, sphereId);
+      disableStones(core.store, sphereId);
 
       // check if you are present in any sphere. If not, stop scanning (BLE, not iBeacon).
       let presentSomewhere = false;
@@ -187,7 +184,7 @@ class LocationHandlerClass {
         BatterySavingUtil.startBatterySaving(true);
       }
 
-      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
+      core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
 
       core.eventBus.emit('exitSphere', sphereId);
     }
@@ -197,7 +194,7 @@ class LocationHandlerClass {
     LOG.info('LocationHandler: USER_ENTER_LOCATION.', data);
     let sphereId = data.region;
     let locationId = data.location;
-    let state = this.store.getState();
+    let state = core.store.getState();
     if (sphereId && locationId) {
       // remove user from all locations except the locationId, if we are in the location ID, don't trigger anything
       let presentAtProvidedLocationId = this._removeUserFromRooms(state, sphereId, state.user.userId, locationId);
@@ -207,11 +204,11 @@ class LocationHandlerClass {
         return;
       }
 
-      this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
+      core.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
 
       // used for clearing the timeouts for this room and toggling stones in this room
       LOG.info('RoomTracker: Enter room: ', locationId, ' in sphere: ', sphereId);
-      this._triggerRoomEvent(this.store, sphereId, locationId, BEHAVIOUR_TYPES.ROOM_ENTER);
+      this._triggerRoomEvent(core.store, sphereId, locationId, BEHAVIOUR_TYPES.ROOM_ENTER);
     }
   }
 
@@ -219,13 +216,13 @@ class LocationHandlerClass {
     LOG.info('LocationHandler: USER_EXIT_LOCATION.', data);
     let sphereId = data.region;
     let locationId = data.location;
-    let state = this.store.getState();
+    let state = core.store.getState();
     if (sphereId && locationId) {
-      this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
+      core.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
 
       // used for clearing the timeouts for this room
       LOG.info('RoomTracker: Exit room: ', locationId, ' in sphere: ', sphereId);
-      this._triggerRoomEvent(this.store, sphereId, locationId, BEHAVIOUR_TYPES.ROOM_EXIT);
+      this._triggerRoomEvent(core.store, sphereId, locationId, BEHAVIOUR_TYPES.ROOM_EXIT);
     }
   }
 
@@ -285,7 +282,7 @@ class LocationHandlerClass {
 
   applySphereStateFromStore() {
     LOG.info("LocationHandler: Apply the sphere state from the store.");
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     let lastSeenPerSphere = {};
     Util.data.callOnAllStones(state, (sphereId, stoneId, stone) => {
@@ -337,7 +334,7 @@ class LocationHandlerClass {
       })
       .then(() => {
         // register the iBeacons UUIDs with the localization system.
-        const state = this.store.getState();
+        const state = core.store.getState();
         let sphereIds = Object.keys(state.spheres);
         let showRemoveFingerprintNotification : boolean = false;
         let actions = [];
@@ -358,7 +355,7 @@ class LocationHandlerClass {
                 if (FingerprintManager.shouldTransformFingerprint(activeFingerprint)) {
                   LOG.info('LocationHandler: Transforming fingerprint format for: ', locationId, ' in sphere: ', sphereId);
                   activeFingerprint = FingerprintManager.transformFingerprint(activeFingerprint);
-                  this.store.dispatch({
+                  core.store.dispatch({
                     type: 'UPDATE_NEW_LOCATION_FINGERPRINT',
                     sphereId: sphereId,
                     locationId: locationId,
@@ -379,7 +376,7 @@ class LocationHandlerClass {
 
         if (showRemoveFingerprintNotification) { //  === true
           if (actions.length > 0) {
-            this.store.batchDispatch(actions);
+            core.store.batchDispatch(actions);
           }
 
           Alert.alert(
@@ -404,7 +401,7 @@ class LocationHandlerClass {
       })
       .then(() => {
         // register the iBeacons UUIDs with the localization system.
-        const state = this.store.getState();
+        const state = core.store.getState();
         let sphereIds = Object.keys(state.spheres);
 
         sphereIds.forEach((sphereId) => {

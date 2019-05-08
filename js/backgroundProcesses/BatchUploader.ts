@@ -4,6 +4,7 @@ import {CLOUD_BATCH_UPDATE_INTERVAL} from "../ExternalConfig";
 import {LOGd, LOGe} from "../logging/Log";
 import {Util} from "../util/Util";
 import { xUtil } from "../util/StandAloneUtil";
+import { core } from "../core";
 
 const TRIGGER_ID = 'BATCH_UPLOADER_INTERVAL';
 
@@ -12,15 +13,12 @@ class BatchUploadClass {
     power: {},
     energy: {},
   };
-  _store: any;
   _initialized = false;
 
   constructor() {}
 
-  loadStore(store) {
-    this._store = store;
+  init() {
     if (this._initialized === false) {
-      this._store = store;
       this._initialized = true;
 
       Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: CLOUD_BATCH_UPDATE_INTERVAL});
@@ -30,7 +28,7 @@ class BatchUploadClass {
   }
 
   batchUpload() {
-    if (this._store.getState().user.uploadHighFrequencyPowerUsage === false) {
+    if (core.store.getState().user.uploadHighFrequencyPowerUsage === false) {
       // clear queue if the uploading is disabled.
       this.queue = {
         power: {},
@@ -97,7 +95,7 @@ class BatchUploadClass {
       }
 
       // set the sync states
-      this._store.batchDispatch(actions);
+      core.store.batchDispatch(actions);
     })
     .catch((err) => {
       LOGe.cloud("BatchUploader: Error during upload session", err);

@@ -44,15 +44,8 @@ class SetupStateHandlerClass {
     this._currentSetupState = {busy: false, handle: undefined, name: undefined, type: undefined, icon: undefined};
   }
 
-  loadStore(store) {
-    LOG.info('LOADED STORE SetupStateHandler', this._initialized);
-    if (this._initialized === false) {
-      this._store = store;
-      this._init();
-    }
-  }
 
-  _init() {
+  init() {
     if (this._initialized === false) {
       this._initialized = true;
       // these events are emitted from the setupUtil

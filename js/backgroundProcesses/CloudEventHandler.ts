@@ -3,13 +3,11 @@ import {syncEvents} from "../cloud/sections/sync/syncEvents";
 import { core } from "../core";
 
 class CloudEventHandlerClass {
-  _store : any;
   _initialized : boolean = false;
   _eventSyncInProgress : boolean = false;
 
-  loadStore(store) {
+  init() {
     if (this._initialized === false) {
-      this._store = store;
       this._initialized = true;
       this._eventSyncInProgress = false;
 
@@ -32,7 +30,7 @@ class CloudEventHandlerClass {
             let dispatchingActions = pendingActions;
             pendingActions = [];
             LOG.info("CloudEventHandler: dispatching to store:", dispatchingActions);
-            this._store.batchDispatch(dispatchingActions);
+            core.store.batchDispatch(dispatchingActions);
             // next tick we execute eventSync.
             setTimeout(() => { this._executeEventSync(); },0);
           }},0);
@@ -43,7 +41,7 @@ class CloudEventHandlerClass {
   _executeEventSync() {
     if (this._eventSyncInProgress === false) {
       this._eventSyncInProgress = true;
-      syncEvents(this._store)
+      syncEvents(core.store)
         .then(() => {
           this._eventSyncInProgress = false;
         })

@@ -12,7 +12,6 @@ import { core } from "../../core";
  */
 class DfuStateHandlerClass {
   _uuid : string;
-  _store : any;
   _initialized : boolean = false;
   _ignoreDuringDfuOverlay : boolean = false;
   _stonesInDfuMode : any = {};
@@ -22,10 +21,9 @@ class DfuStateHandlerClass {
     this._uuid = xUtil.getUUID();
   }
 
-  loadStore(store) {
+  init() {
     LOG.info('LOADED STORE DfuStateHandler', this._initialized);
     if (this._initialized === false) {
-      this._store = store;
       this._init();
 
       core.eventBus.on("updateCrownstoneFirmware",      () => { this._ignoreDuringDfuOverlay = true; this._cleanupAll(); });

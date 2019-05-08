@@ -8,7 +8,6 @@ import { core } from "../core";
 
 class MessageCenterClass {
   _initialized: boolean = false;
-  _store: any;
   _enterSphereInProgress : boolean = false;
   _exitSphereInProgress  : boolean = false;
   _enterRoomInProgress   : boolean = false;
@@ -16,10 +15,9 @@ class MessageCenterClass {
 
   constructor() { }
 
-  loadStore(store: any) {
+  init() {
     LOG.info('LOADED STORE MessageCenter', this._initialized);
     if (this._initialized === false) {
-      this._store = store;
 
       core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._enterSphere(sphereId); });
       core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._exitSphere(sphereId); });
@@ -166,17 +164,17 @@ class MessageCenterClass {
 
   storeMessage(cloudMessage) {
     let actions = [];
-    let state = this._store.getState();
+    let state = core.store.getState();
     this._generateMessageStoringActions(actions, state, cloudMessage);
     if (actions.length > 0) {
-      this._store.batchDispatch(actions);
+      core.store.batchDispatch(actions);
     }
   }
 
   deliveredMessage(localSphereId, localMessageId) {
-    let state = this._store.getState();
+    let state = core.store.getState();
     if (localMessageId) {
-      this._store.dispatch({
+      core.store.dispatch({
         type: "I_RECEIVED_MESSAGE",
         sphereId: localSphereId,
         messageId: localMessageId,
@@ -189,9 +187,9 @@ class MessageCenterClass {
   }
 
   readMessage(localSphereId, localMessageId) {
-    let state = this._store.getState();
+    let state = core.store.getState();
     if (localMessageId) {
-      this._store.dispatch({
+      core.store.dispatch({
         type: "I_READ_MESSAGE",
         sphereId: localSphereId,
         messageId: localMessageId,
@@ -201,7 +199,7 @@ class MessageCenterClass {
   }
 
   newMessageStateInSphere(localSphereId, newMessageReceived : boolean = true) {
-    this._store.dispatch({
+    core.store.dispatch({
       type: "SET_SPHERE_MESSAGE_STATE",
       sphereId: localSphereId,
       data: {newMessageFound: newMessageReceived}
@@ -249,7 +247,7 @@ class MessageCenterClass {
   }
 
   _handleMessageInLocation(localSphereId, localLocationId, triggerEvent) {
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     return CLOUD.forSphere(localSphereId).getNewMessagesInLocation(localLocationId)
       .then((messages) => {
@@ -264,7 +262,7 @@ class MessageCenterClass {
           });
 
           if (actions.length > 0) {
-            this._store.batchDispatch(actions);
+            core.store.batchDispatch(actions);
           }
         }
       })
@@ -272,7 +270,7 @@ class MessageCenterClass {
   }
 
   _handleMessageInSphere(localSphereId, triggerEvent) {
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     return CLOUD.forSphere(localSphereId).getNewMessagesInSphere()
       .then((messages) => {
@@ -285,7 +283,7 @@ class MessageCenterClass {
             }
           });
           if (actions.length > 0) {
-            this._store.batchDispatch(actions);
+            core.store.batchDispatch(actions);
           }
         }
       })
@@ -296,7 +294,7 @@ class MessageCenterClass {
    * This will check for messages in the current location. It is self contained and can be called whenever.
    */
   checkForMessages() {
-    let state = this._store.getState();
+    let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId(state);
 
     if (presentSphereId) {

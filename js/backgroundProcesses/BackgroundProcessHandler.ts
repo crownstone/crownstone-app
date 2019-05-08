@@ -18,7 +18,7 @@ import { LOG_EXTENDED_TO_FILE, LOG_TO_FILE, CLOUD_POLLING_INTERVAL, SYNC_INTERVA
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
-import { NotificationHandler, NotificationParser } from "./NotificationHandler";
+import { NotificationHandler }   from "./NotificationHandler";
 import { BatchCommandHandler }   from "../logic/BatchCommandHandler";
 import { BatchUploader }         from "./BatchUploader";
 import { MessageCenter }         from "./MessageCenter";
@@ -41,6 +41,7 @@ import DeviceInfo from 'react-native-device-info';
 import { core } from "../core";
 import { cleanLogs } from "../logging/LogUtil";
 import { migrate } from "./migration/StoreMigration";
+import { NotificationParser } from "../notifications/NotificationParser";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -193,7 +194,7 @@ class BackgroundProcessHandlerClass {
       if (SetupStateHandler.isSetupInProgress() === false) {
         CLOUD.syncUsers();
         MessageCenter.checkForMessages();
-        CLOUD.syncInvites()
+        CLOUD.syncInvites();
       }
     });
 
@@ -451,28 +452,24 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
-    EncryptionManager.loadStore(this.store);
-    BatchCommandHandler.loadStore(this.store);
-    MapProvider.loadStore(this.store);
-    LogProcessor.loadStore(this.store);
-    LocationHandler.loadStore(this.store);
-    Scheduler.loadStore(this.store);
-    StoneManager.loadStore(this.store);
-    DfuStateHandler.loadStore(this.store);
-    SetupStateHandler.loadStore(this.store);
-    KeepAliveHandler.loadStore(this.store);
-    FirmwareWatcher.loadStore(this.store);
-    BatterySavingUtil.loadStore(this.store);
-    NotificationHandler.loadStore(this.store);
-    NotificationParser.loadStore(this.store);
-    BatchUploader.loadStore(this.store);
-    MessageCenter.loadStore(this.store);
-    CloudEventHandler.loadStore(this.store);
-    Permissions.loadStore(this.store, this.userLoggedIn);
-    ActivityLogManager.loadStore(this.store);
-    ToonIntegration.loadStore(this.store);
-    BroadcastStateManager.loadStore(this.store);
-    WatchStateManager.loadStore(this.store);
+    EncryptionManager.init();
+    MapProvider.init();
+    LogProcessor.init();
+    LocationHandler.init();
+    Scheduler.init();
+    StoneManager.init();
+    DfuStateHandler.init();
+    SetupStateHandler.init();
+    KeepAliveHandler.init();
+    FirmwareWatcher.init();
+    NotificationHandler.init();
+    BatchUploader.init();
+    MessageCenter.init();
+    CloudEventHandler.init();
+    Permissions.init(this.userLoggedIn);
+    ActivityLogManager.init();
+    ToonIntegration.init();
+    WatchStateManager.init();
 
     BleLogger.init();
   }

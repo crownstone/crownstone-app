@@ -3,7 +3,6 @@ import {PermissionBase, PermissionClass} from "./Permissions";
 import { core } from "../core";
 
 export class PermissionManagerClass {
-  _store : any;
   _initialized : boolean = false;
   _activeSphereId : string;
   _userAlreadyLoggedIn : boolean = false;
@@ -11,9 +10,8 @@ export class PermissionManagerClass {
 
   permissionClasses = {};
 
-  loadStore(store, userAlreadyLoggedIn : boolean) {
+  init(userAlreadyLoggedIn : boolean) {
     if (this._initialized === false) {
-      this._store = store;
       this._initialized = true;
       this._userAlreadyLoggedIn = userAlreadyLoggedIn;
 
@@ -26,7 +24,7 @@ export class PermissionManagerClass {
         let change = data.change;
         if (change.changeSpheres || change.changeSphereConfig || change.updateActiveSphere) {
           LOG.info("PermissionManager: Update permissions due to databaseChange");
-          this._update(this._store.getState());
+          this._update(core.store.getState());
         }
       });
 
@@ -34,13 +32,13 @@ export class PermissionManagerClass {
         LOG.info("PermissionManager: Update permissions due to userLoggedIn");
         this._enableUpdates = true;
         this._userAlreadyLoggedIn = true;
-        this._update(this._store.getState());
+        this._update(core.store.getState());
       });
 
       // in case the login event has already fired before we init the permission module.
       if (userAlreadyLoggedIn === true) {
         this._enableUpdates = true;
-        this._update(this._store.getState());
+        this._update(core.store.getState());
       }
     }
   }
@@ -60,7 +58,7 @@ export class PermissionManagerClass {
     Object.keys(state.spheres).forEach((sphereId) => {
       if (this.permissionClasses[sphereId] === undefined) {
         LOG.info("PermissionManager: Creating PermissionClass for ", sphereId);
-        this.permissionClasses[sphereId] = new PermissionClass(this._store, sphereId, this._userAlreadyLoggedIn);
+        this.permissionClasses[sphereId] = new PermissionClass(core.store, sphereId, this._userAlreadyLoggedIn);
       }
     });
   }

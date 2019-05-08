@@ -19,7 +19,6 @@ import { core } from "../core";
  * This can be used to batch commands over the mesh or 1:1 to the Crownstones.
  */
 class BatchCommandHandlerClass {
-  store: any;
   sphereId  : any;
   activePromiseId : string = null;
 
@@ -33,9 +32,6 @@ class BatchCommandHandlerClass {
     this._commandHandler = new CommandManager();
   }
 
-  loadStore(store) {
-    this.store = store;
-  }
 
   closeKeptOpenConnection() {
     core.eventBus.emit("BatchCommandHandlerCloseConnection");
@@ -72,7 +68,7 @@ class BatchCommandHandlerClass {
 
   _load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, priority: boolean, attempts: number = 1, label = '') : Promise<bchReturnType>  {
     let commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options };
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     if (BroadcastCommandManager.canBroadcast(commandSummary) && state.development.broadcasting_enabled) {
       return BroadcastCommandManager.broadcast(commandSummary)
@@ -123,9 +119,9 @@ class BatchCommandHandlerClass {
     return new Promise((resolve, reject) => {
 
       // get everything we CAN and WILL do now with this Crownstone.
-      let directCommands = this._commandHandler.extractDirectCommands(this.store.getState(), connectedStoneInfo.stoneId, relayOnlyUsed);
+      let directCommands = this._commandHandler.extractDirectCommands(core.store.getState(), connectedStoneInfo.stoneId, relayOnlyUsed);
 
-      let meshNetworks = this._commandHandler.extractMeshCommands(this.store.getState(), connectedStoneInfo.stoneId, connectedStoneInfo.meshNetworkId, relayOnlyUsed);
+      let meshNetworks = this._commandHandler.extractMeshCommands(core.store.getState(), connectedStoneInfo.stoneId, connectedStoneInfo.meshNetworkId, relayOnlyUsed);
 
       // check if we have to perform any mesh commands for this Crownstone.
       let meshSphereIds = Object.keys(meshNetworks);
@@ -311,7 +307,7 @@ class BatchCommandHandlerClass {
    */
   _getConnectionTarget(rssiScanThreshold, directTargets) : Promise<connectionInfo> {
     return new Promise((resolve, reject) => {
-      let state = this.store.getState();
+      let state = core.store.getState();
 
       let nearestDirect = RssiLogger.getNearestStoneId(directTargets, 2, rssiScanThreshold);
       if (!nearestDirect && rssiScanThreshold !== null) { nearestDirect = RssiLogger.getNearestStoneId(directTargets,    2); }
@@ -358,7 +354,7 @@ class BatchCommandHandlerClass {
 
       let executingPromiseId = this.activePromiseId;
 
-      let state = this.store.getState();
+      let state = core.store.getState();
       let { directTargets, relayOnlyTargets } = this._commandHandler.extractConnectionTargets(state);
 
       // We will not use the relayOnlyTargets for now since the handling of the mesh should be improved for this.
@@ -472,9 +468,9 @@ class BatchCommandHandlerClass {
         })
         .then(() => {
           if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
-          if (Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store) {
+          if (Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && core.store) {
             // check if we have to tell this crownstone what time it is.
-            let state = this.store.getState();
+            let state = core.store.getState();
             let stone = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId];
             let lastTime = stone.lastUpdated.stoneTime;
             // if it is more than 5 hours ago, tell this crownstone the time.
@@ -482,7 +478,7 @@ class BatchCommandHandlerClass {
               // this will never halt the chain since it's optional.
               return BluenetPromiseWrapper.setTime(StoneUtil.nowToCrownstoneTime())
                 .then(() => {
-                  this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
+                  core.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
                 })
                 .catch((err) => {
                   LOGw.bch("BatchCommandHandler: Could not set the time of Crownstone", err);
@@ -493,7 +489,7 @@ class BatchCommandHandlerClass {
             }
           }
           else {
-            LOGd.bch("BatchCommandHandler: Decided not to set the time Permissions.setStoneTime:", Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime, Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store);
+            LOGd.bch("BatchCommandHandler: Decided not to set the time Permissions.setStoneTime:", Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime, Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && core.store);
           }
         })
         .then(() => {
@@ -610,7 +606,7 @@ class BatchCommandHandlerClass {
     }
 
     // get all todos that would have been done to reduce their attempt counts.
-    let directCommands = this._commandHandler.extractDirectCommands(this.store.getState(), connectedCrownstone.stoneId);
+    let directCommands = this._commandHandler.extractDirectCommands(core.store.getState(), connectedCrownstone.stoneId);
     let directCommandSphereIds = Object.keys(directCommands);
     directCommandSphereIds.forEach((sphereId) => {
       let commandsInSphere = directCommands[sphereId];

@@ -18,7 +18,6 @@ import { core } from "../../core";
  */
 class StoneManagerClass {
 
-  store;
   storeManager;
   _initialized = false;
   stonesInConnectionProcess : any = {};
@@ -38,20 +37,12 @@ class StoneManagerClass {
   //   })
   // }
 
-  loadStore(store) {
-    if (this._initialized === false) {
-      LOGi.native("StoreManager: loadStore");
-      this.store = store;
-      this.storeManager = new StoneStoreManager(store);
-      this._init();
-    }
-  }
 
   // _debug(debugState) {
   //   if (debugState) {
   //     if (!this._debugging) {
   //       this._debugging = true;
-  //       let state = this.store.getState();
+  //       let state = core.store.getState();
   //       let sphereIds = Object.keys(state.spheres);
   //       sphereIds.forEach((sphereId) => {
   //         let stoneIds = Object.keys(state.spheres[sphereId].stones);
@@ -65,8 +56,10 @@ class StoneManagerClass {
   // }
 
 
-  _init() {
+  init() {
     if (this._initialized === false) {
+      this.storeManager = new StoneStoreManager();
+
       // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
       core.eventBus.on("connecting", (handle) => {
         // this is a fallback mechanism in case no disconnect event is fired.
@@ -158,7 +151,7 @@ class StoneManagerClass {
 
 
   createEntity(sphereId, stoneId) {
-    this.entities[stoneId] = new StoneEntity(this.store, this.storeManager, sphereId, stoneId);
+    this.entities[stoneId] = new StoneEntity(core.store, this.storeManager, sphereId, stoneId);
 
     if (!this.sphereEntityCollections[sphereId]) {
       this.sphereEntityCollections[sphereId] = {};
@@ -193,7 +186,7 @@ class StoneManagerClass {
     }
 
     // check if we have the sphere
-    let state = this.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!(sphere)) {
       LOGd.native("StoneManager.handleIbeacon: IGNORE: unknown sphere.");
@@ -226,7 +219,7 @@ class StoneManagerClass {
 
     // the service data in this advertisement;
     let serviceData : crownstoneServiceData = advertisement.serviceData;
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     // service data not available
     if (typeof serviceData !== 'object') {
@@ -265,7 +258,7 @@ class StoneManagerClass {
     if (serviceData.stateOfExternalCrownstone === false && referenceByCrownstoneId !== undefined) {
       if (referenceByCrownstoneId.handle != advertisement.handle) {
         LOGd.native("StoneManager: IGNORE: Store handle in our database so we can use the next advertisement.");
-        this.store.dispatch({type: "UPDATE_STONE_HANDLE", sphereId: advertisement.referenceId, stoneId: referenceByCrownstoneId.id, data:{handle: advertisement.handle}});
+        core.store.dispatch({type: "UPDATE_STONE_HANDLE", sphereId: advertisement.referenceId, stoneId: referenceByCrownstoneId.id, data:{handle: advertisement.handle}});
         return;
       }
     }
@@ -352,7 +345,7 @@ class StoneManagerClass {
       let actions = [];
       actions.push(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromServiceDataId, meshNetworkId));
       actions.push(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromAdvertisementId, meshNetworkId));
-      this.store.batchDispatch(actions);
+      core.store.batchDispatch(actions);
     }
     // if they are in a different mesh network, place them in the same one.
     else if (meshNetworkId_external !== meshNetworkId_advertiser) {
@@ -361,27 +354,27 @@ class StoneManagerClass {
         // copy mesh id from stoneFromAdvertisement to stoneFromServiceData
         meshNetworkId = meshNetworkId_advertiser;
         LOGi.mesh("StoneManager: Adding Stone to existing mesh network", stoneFromServiceDataId, meshNetworkId);
-        this.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromServiceDataId, meshNetworkId));
+        core.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromServiceDataId, meshNetworkId));
       }
       else if (meshNetworkId_advertiser === null) {
         // copy mesh id from stoneFromServiceData to stoneFromAdvertisement
         meshNetworkId = meshNetworkId_external;
         LOGi.mesh("StoneManager: Adding Stone to existing mesh network", stoneFromAdvertisementId, meshNetworkId);
-        this.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromAdvertisementId, meshNetworkId));
+        core.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromAdvertisementId, meshNetworkId));
       }
       else {
         // copy the mesh id from the largest mesh to the smallest mesh
-        let state = this.store.getState();
+        let state = core.store.getState();
         let stonesInNetwork_external = Util.mesh.getStonesInNetwork(state, sphereId, meshNetworkId_external);
         let stonesInNetwork_advertiser = Util.mesh.getStonesInNetwork(state, sphereId, meshNetworkId_advertiser);
 
         if (stonesInNetwork_external.length > stonesInNetwork_advertiser.length) {
           meshNetworkId = meshNetworkId_external;
-          Util.mesh.setNetworkId(this.store, sphereId, stonesInNetwork_advertiser, meshNetworkId);
+          Util.mesh.setNetworkId(core.store, sphereId, stonesInNetwork_advertiser, meshNetworkId);
         }
         else {
           meshNetworkId = meshNetworkId_advertiser;
-          Util.mesh.setNetworkId(this.store, sphereId, stonesInNetwork_external, meshNetworkId);
+          Util.mesh.setNetworkId(core.store, sphereId, stonesInNetwork_external, meshNetworkId);
         }
         LOGi.mesh("StoneManager: Merging networks:", meshNetworkId_advertiser, meshNetworkId_external, " into ", meshNetworkId);
       }
@@ -390,7 +383,7 @@ class StoneManagerClass {
 
 
   _evaluateDisabledState(sphereId) {
-    let state = this.store.getState();
+    let state = core.store.getState();
     // check if there are any stones left that are not disabled.
     let stoneIds = Object.keys(state.spheres[sphereId].stones);
     let allDisabled = true;

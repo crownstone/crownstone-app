@@ -3,8 +3,9 @@ import { core } from "../core";
 
 
 class LogProcessorClass {
-  store : any;
-  writeToFile:        boolean;
+  initialized =       false;
+  writeToFile =       false;
+
   log_info:           number = LOG_LEVEL.NONE;
   log_mesh:           number = LOG_LEVEL.NONE;
   log_notifications:  number = LOG_LEVEL.NONE;
@@ -17,26 +18,22 @@ class LogProcessorClass {
   log_store:          number = LOG_LEVEL.NONE;
   log_cloud:          number = LOG_LEVEL.NONE;
 
-  constructor() {
-    this.store = undefined;
-    this.writeToFile = false;
 
-  }
-
-  loadStore(store) {
-    this.store = store;
-
-    core.eventBus.on("databaseChange", (data) => {
-      if (data.change.changeUserDeveloperStatus || data.change.changeDeveloperData) {
-        this.refreshData();
-      }
-    });
-    this.refreshData();
+  init() {
+    if (!this.initialized) {
+      this.initialized = true;
+      core.eventBus.on("databaseChange", (data) => {
+        if (data.change.changeUserDeveloperStatus || data.change.changeDeveloperData) {
+          this.refreshData();
+        }
+      });
+      this.refreshData();
+    }
   }
 
   refreshData() {
-    if (this.store) {
-      let state = this.store.getState();
+    if (this.initialized) {
+      let state = core.store.getState();
       let dev = state.user.developer;
       let loggingEnabled = state.development.logging_enabled;
       let devState = state.development;

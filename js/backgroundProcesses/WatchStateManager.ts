@@ -6,12 +6,6 @@ class WatchStateManagerClass {
   _store;
   initialized = false;
 
-  constructor() {}
-
-  loadStore(store) {
-    this._store = store;
-    this.init()
-  }
 
   init() {
     if (this.initialized === false) {

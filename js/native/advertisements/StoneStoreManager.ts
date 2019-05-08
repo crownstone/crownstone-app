@@ -1,4 +1,5 @@
 import { Scheduler } from "../../logic/Scheduler";
+import { core } from "../../core";
 
 
 const TRIGGER_ID = "STONE_STORE_MANAGER_TRIGGER";
@@ -6,12 +7,9 @@ const TRIGGER_ID = "STONE_STORE_MANAGER_TRIGGER";
  * This manager will handle all of the store actions. It will tick on the scheduler and perform store actions for all crownstones as a batch.
  */
 export class StoneStoreManager {
-  store;
   actionsPerCrownstone = {}; // { crownstoneId: { type: action } }
 
-  constructor(store) {
-    this.store = store;
-
+  constructor() {
     Scheduler.setRepeatingTrigger(TRIGGER_ID,{repeatEveryNSeconds:2});
     Scheduler.loadCallback(TRIGGER_ID, () => { this._updateStore(); });
   }
@@ -44,7 +42,7 @@ export class StoneStoreManager {
 
 
     if (actions.length > 0) {
-      this.store.batchDispatch(actions);
+      core.store.batchDispatch(actions);
     }
     this.actionsPerCrownstone = {};
   }

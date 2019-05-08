@@ -9,17 +9,6 @@ const CHECK_TOON_SCHEDULE_TRIGGER = "CHECK_TOON_SCHEDULE_TRIGGER";
 class ToonIntegrationClass {
 
   _initialized = false;
-  store = null;
-
-  loadStore(store) {
-    LOG.info('LOADED STORE ToonIntegration', this._initialized);
-    if (this._initialized === false) {
-      this.store = store;
-      // reset last time fired to 0 so the time diff method will
-      this.init();
-
-    }
-  }
 
   init() {
     if (this._initialized === false) {
@@ -38,7 +27,7 @@ class ToonIntegrationClass {
 
   _evaluateSchedule() {
     // find in which Sphere we are present
-    let state = this.store.getState();
+    let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId(state);
 
     if (presentSphereId === null) { return; }
@@ -83,7 +72,7 @@ class ToonIntegrationClass {
                    changedProgramTime: toon.changedProgramTime,
                   }
                 };
-                this.store.dispatch(action);
+                core.store.dispatch(action);
               })
               .catch((err) => {
 
@@ -99,7 +88,7 @@ class ToonIntegrationClass {
 
   _handleExitSphere(sphereId) {
     // find in which Sphere we are present
-    let state = this.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     let toons  = sphere.thirdParty.toons;
 
@@ -136,7 +125,7 @@ class ToonIntegrationClass {
                   changedProgramTime: toon.changedProgramTime,
                 }
               };
-              this.store.dispatch(action);
+              core.store.dispatch(action);
             })
         }
         else {
