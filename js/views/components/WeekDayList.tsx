@@ -47,7 +47,7 @@ export class WeekDayList extends Component<any, any> {
             borderRadius: 0.5*size,
             borderColor: colors.white.rgba(0.4),
             borderWidth: 1,
-            backgroundColor: this.props.data[DAYS[i]] ? colors.green.hex : ( this.props.darkTheme === true ? colors.white.rgba(0.3) : colors.darkBackground.rgba(0.2)),
+            backgroundColor: this.props.data[DAYS[i]] ? colors.green.hex : ( this.props.darkTheme === true ? colors.white.rgba(0.3) : colors.csBlueDark.rgba(0.2)),
             alignItems:'center',
             justifyContent:'center'
           }}
@@ -55,7 +55,7 @@ export class WeekDayList extends Component<any, any> {
           <Text style={{
             fontSize:12,
             fontWeight: 'bold',
-            color: this.props.data[DAYS[i]] ? colors.white.hex : ( this.props.darkTheme === true ? colors.white.hex : colors.darkBackground.rgba(0.6)),
+            color: this.props.data[DAYS[i]] ? colors.white.hex : ( this.props.darkTheme === true ? colors.white.hex : colors.csBlueDark.rgba(0.6)),
             backgroundColor:"transparent"
           }}>{localizedDays[i]}</Text>
         </TouchableOpacity>

@@ -155,7 +155,7 @@ export class SphereEdit extends Component<any, any> {
     items.push({
       label: lang("Integrations"),
       type: 'navigation',
-      largeIcon: <IconButton name='ios-link' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkBackground.hex}}/>,
+      largeIcon: <IconButton name='ios-link' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlueDark.hex}}/>,
       callback: () => {
         NavigationUtil.navigate("SphereIntegrations", {sphereId: this.props.sphereId});
       }

@@ -38,7 +38,7 @@ export class ActivityLogItem extends Component<any, any> {
       return colors.darkPurple.hex;
     }
     else if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState' || this.props.data.type === 'skippedHeartbeat') {
-      return colors.darkBackground.hex;
+      return colors.csBlueDark.hex;
     }
     else if (this.props.data.type === 'tap2toggle') {
       return colors.csOrange.hex;

@@ -109,8 +109,8 @@ export class DeviceSchedule extends LiveComponent<any, any> {
             this._syncSchedules(stone);
           }
         }}>
-          <Icon name="md-sync" size={20} color={colors.darkBackground.hex} style={{paddingRight:5}} />
-          <Text style={{color: colors.darkBackground.hex}}>{ lang("Sync_schedules_from_Crown") }</Text>
+          <Icon name="md-sync" size={20} color={colors.csBlueDark.hex} style={{paddingRight:5}} />
+          <Text style={{color: colors.csBlueDark.hex}}>{ lang("Sync_schedules_from_Crown") }</Text>
         </TouchableOpacity>
       )
     }

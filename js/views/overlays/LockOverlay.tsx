@@ -104,9 +104,9 @@ export class LockOverlay extends Component<any, any> {
             height: 36,
             borderRadius: 18,
             borderWidth: 2,
-            borderColor: colors.darkBackground.rgba(0.5),
+            borderColor: colors.csBlueDark.rgba(0.5),
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ lang("OK___") }</Text>
+            <Text style={{fontSize: 14, color: colors.csBlueDark.rgba(0.8)}}>{ lang("OK___") }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
         </View>
@@ -121,9 +121,9 @@ export class LockOverlay extends Component<any, any> {
             height: 36,
             borderRadius: 18,
             borderWidth: 2,
-            borderColor: colors.darkBackground.rgba(0.5),
+            borderColor: colors.csBlueDark.rgba(0.5),
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.rgba(0.8)}}>{ lang("Cancel") }</Text>
+            <Text style={{fontSize: 14, color: colors.csBlueDark.rgba(0.8)}}>{ lang("Cancel") }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
           <TouchableOpacity onPress={() => { this._lockCrownstone(stone); }} style={[styles.centered, {
@@ -131,9 +131,9 @@ export class LockOverlay extends Component<any, any> {
             height: 36,
             borderRadius: 18,
             borderWidth: 3,
-            borderColor: colors.darkBackground.hex,
+            borderColor: colors.csBlueDark.hex,
           }]}>
-            <Text style={{fontSize: 14, color: colors.darkBackground.hex, fontWeight: 'bold'}}>{ lang("Lock_") }</Text>
+            <Text style={{fontSize: 14, color: colors.csBlueDark.hex, fontWeight: 'bold'}}>{ lang("Lock_") }</Text>
           </TouchableOpacity>
           <View style={{flex: 1}}/>
         </View>
@@ -165,12 +165,12 @@ export class LockOverlay extends Component<any, any> {
           name="md-lock"
           size={100}
           color="#fff"
-          buttonStyle={{width: iconSize, height: iconSize, backgroundColor:colors.darkBackground.hex, borderRadius: 0.5*iconSize}}
+          buttonStyle={{width: iconSize, height: iconSize, backgroundColor:colors.csBlueDark.hex, borderRadius: 0.5*iconSize}}
           style={{position:'relative', top:0}}
         />
         <View style={{flex:1}} />
         <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{ lang("Locking_a_Crownstone") }</Text>
-        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.darkBackground.hex, padding:15, textAlign:'center'}}>{this._getText()}</Text>
+        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.csBlueDark.hex, padding:15, textAlign:'center'}}>{this._getText()}</Text>
         <View style={{flex:1}} />
         { this._getButtons() }
         <View style={{flex:1}} />

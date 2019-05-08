@@ -64,7 +64,7 @@ export class DeviceUpdate extends Component<any, any> {
   }
 
   _getIcon() {
-    let iconColor = colors.darkBackground.hex;
+    let iconColor = colors.csBlueDark.hex;
     if (this.props.mandatory) {
       iconColor = colors.orange.hex;
     }

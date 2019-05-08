@@ -16,10 +16,10 @@ import {
 
 import {colors, screenWidth, availableScreenHeight} from '../../styles'
 import {Util} from "../../../util/Util";
+import {DeviceInformation} from "./DeviceSummary";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { StoneInformation } from "./DeviceSummary";
 
 export class GuidestoneSummary extends LiveComponent<any, any> {
   unsubscribeStoreEvents;
@@ -50,6 +50,7 @@ export class GuidestoneSummary extends LiveComponent<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let locationLabel =  lang("Tap_here_to_move_me_");
     let locationName =  lang("Not_in_room");
@@ -60,7 +61,11 @@ export class GuidestoneSummary extends LiveComponent<any, any> {
 
     return (
       <View style={{flex:1, paddingBottom:35}}>
-        { StoneInformation({stoneId: this.props.stoneId, sphereId: this.props.sphereId, canSelectRoom: Permissions.inSphere(this.props.sphereId).moveCrownstone}) }
+        <DeviceInformation
+          right={locationLabel}
+          rightValue={locationName}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate("RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
+        />
         <View style={{flex:1}} />
         <View style={{alignItems:'center'}}>
           <Text style={deviceStyles.subText}>{ lang("Device_Type_") }</Text>
@@ -83,7 +88,7 @@ export class GuidestoneSummary extends LiveComponent<any, any> {
           {
             stone.reachability.disabled  ?
               <ActivityIndicator animating={true} size='small' color={colors.white.hex} style={{paddingTop:20}} />
-            : undefined
+              : undefined
           }
         </View>
 

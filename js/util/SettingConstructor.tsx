@@ -105,7 +105,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     label: lang("App_Settings"),
     type: 'navigation',
     style: {color: '#000'},
-    mediumIcon: getIcon('ios-cog', 35, colors.white.hex, colors.darkBackground.hex),
+    mediumIcon: getIcon('ios-cog', 35, colors.white.hex, colors.csBlueDark.hex),
     callback: () => {
       clickCallback();
       NavigationUtil.navigate("SettingsApp");

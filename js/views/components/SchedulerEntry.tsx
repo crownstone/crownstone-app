@@ -61,9 +61,9 @@ export class SchedulerEntry extends Component<any, any> {
     let items = [];
 
     let activeColor = colors.green.hex;
-    let disableColor = colors.darkBackground.rgba(0.2);
+    let disableColor = colors.csBlueDark.rgba(0.2);
     let activeTextColor = colors.white.hex;
-    let disableTextColor = colors.darkBackground.rgba(0.6);
+    let disableTextColor = colors.csBlueDark.rgba(0.6);
 
     if (active === false) {
       activeColor = colors.darkGray2.hex;
@@ -130,7 +130,7 @@ export class SchedulerEntry extends Component<any, any> {
             name={"md-create"}
             size={14}
             color={colors.white.hex}
-            buttonStyle={{backgroundColor: colors.darkBackground.hex, width:20, height:20, borderRadius:10}}
+            buttonStyle={{backgroundColor: colors.csBlueDark.hex, width:20, height:20, borderRadius:10}}
           />
         </View>
       </View>

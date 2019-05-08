@@ -91,7 +91,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
       label: lang("Share_diagnostics"),
       value: user.uploadDiagnostics,
       type: 'switch',
-      icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkBackground.hex}} />,
+      icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlueDark.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadDiagnostics: newValue} });
     }});

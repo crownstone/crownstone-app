@@ -28,8 +28,6 @@ export const MID_ROW_SIZE    = 62;
 export const NORMAL_ROW_SIZE = 50;
 
 export let colors : colorInterface = {
-  darkBackground:       {hex:'#4f6b84'},
-  darkBackgroundOverlay:{hex:'#6e8dac'},
   csBlue:               {hex:'#003E52'},
   csBlueDark:           {hex:'#00283c'},
   csBlueLight:          {hex:'#006f84'},

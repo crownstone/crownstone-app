@@ -84,7 +84,7 @@ export class DeviceWhatsNew extends Component<any, any> {
         <IconButton
           name="c1-present"
           size={0.15*screenHeight}
-          color={colors.darkBackground.hex}
+          color={colors.csBlueDark.hex}
           buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.white.hex, borderRadius: 0.03*screenHeight}}
           style={{position:'relative', top: 0.0051*screenHeight}}
         />
