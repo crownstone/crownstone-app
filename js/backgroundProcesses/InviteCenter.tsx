@@ -33,7 +33,7 @@ class InviteCenterClass {
                     <Text style={styles.header}>{"Your invitation awaits!"}</Text>
                     <View style={{flex:1}} />
                     <View style={{...styles.centered, height:0.2*screenHeight}}>
-                      <ScaledImage source={require("../images/invitationLetter.png")} sourceWidth={150} sourceHeight={150} targetHeight={0.2*screenHeight} />
+                      <ScaledImage source={require("../images/invitationLetter.png")} sourceWidth={400} sourceHeight={400} targetHeight={0.2*screenHeight} />
                     </View>
                     <View style={{flex:1}} />
                     <Text style={styles.explanation}>{"You have been invited to join the sphere called " + sphereData.name + "!\n\nDo you accept?"}</Text>
