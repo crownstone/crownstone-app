@@ -21,8 +21,9 @@ import { syncUsersInSphere } from './sections/sync/syncUsersInSphere'
 import { user }              from './sections/user'
 
 import { toon }              from './sections/thirdParty/toon'
-import { xUtil } from "../util/StandAloneUtil";
-import { MapProvider } from "../backgroundProcesses/MapProvider";
+import { xUtil }             from "../util/StandAloneUtil";
+import { MapProvider }       from "../backgroundProcesses/MapProvider";
+import { InviteSyncer }      from "./sections/sync/syncInvites";
 
 function combineSections() {
   let result : any = {};
@@ -46,6 +47,7 @@ function combineSections() {
   xUtil.mixin(result, sync,              result);
   xUtil.mixin(result, syncEvents,        result);
   xUtil.mixin(result, syncUsersInSphere, result);
+  xUtil.mixin(result, InviteSyncer,      result);
   xUtil.mixin(result, user,              result);
 
   result["thirdParty"] = {toon:{}};

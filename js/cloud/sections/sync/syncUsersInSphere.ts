@@ -2,6 +2,7 @@ import {LOGe} from "../../../logging/Log";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
 import { PresenceSyncer } from "./modelSyncs/PresenceSyncer";
+import { core } from "../../../core";
 
 export const syncUsersInSphere = {
 
@@ -9,8 +10,8 @@ export const syncUsersInSphere = {
    * This method will check if there are any users in rooms in the active sphere. If so, actions will be dispatched to the store.
    * @param store
    */
-  syncUsers: function(store) {
-      let state = store.getState();
+  syncUsers: function() {
+      let state = core.store.getState();
       let activeSphereId = state.app.activeSphere;
 
       if (!activeSphereId) {
@@ -32,10 +33,10 @@ export const syncUsersInSphere = {
       }
 
       let presenceSyncer = new PresenceSyncer(actions, [], activeSphereId, sphere.config.cloudId || activeSphereId, MapProvider.cloud2localMap, getGlobalIdMap());
-      presenceSyncer.sync(store)
+      presenceSyncer.sync(core.store)
         .then(() => {
           if (actions.length > 0) {
-            store.batchDispatch(actions);
+            core.store.batchDispatch(actions);
           }
         })
         .catch((err) => { LOGe.cloud("SyncUsersInSphere: Error during background user sync: ", err); })

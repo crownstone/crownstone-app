@@ -47,7 +47,7 @@ export class RoomExplanation extends Component<any, any> {
       explanation =  lang("No_Crownstones_in_this_ro");
     }
 
-    if (shouldShowTrainingButton(state, this.props.sphereId, this.props.locationId) || true) {
+    if (shouldShowTrainingButton(state, this.props.sphereId, this.props.locationId)) {
       explanation = lang("Train_Room");
       boldExplanation = true;
       buttonCallback = () => { NavigationUtil.navigate("RoomTraining_roomSize", { sphereId: this.props.sphereId, locationId: this.props.locationId }); }

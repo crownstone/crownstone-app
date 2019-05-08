@@ -355,7 +355,7 @@ export function DeviceMenuIcon(props) {
   let innerSize = size-2*borderWidth;
 
   let innerPart = (
-    <View style={{width:size, height:size, borderRadius:0.5*size, borderWidth: borderWidth, borderColor: colors.csBlueDarkOverlay.rgba(0.8)}}>
+    <View style={{width:size, height:size, borderRadius:0.5*size, borderWidth: borderWidth, borderColor: colors.csBlueDark.rgba(0.8)}}>
       <View style={{
         width:innerSize,
         height:innerSize,

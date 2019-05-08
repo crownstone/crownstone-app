@@ -14,7 +14,7 @@ import { KeepAliveHandler }      from "./KeepAliveHandler";
 import { FirmwareWatcher }       from "./FirmwareWatcher";
 import { Scheduler }             from "../logic/Scheduler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
-import { LOG_EXTENDED_TO_FILE, LOG_TO_FILE, SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
+import { LOG_EXTENDED_TO_FILE, LOG_TO_FILE, CLOUD_POLLING_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
@@ -185,14 +185,15 @@ class BackgroundProcessHandlerClass {
    */
   startCloudService() {
     // sync every 10 minutes
-    Scheduler.setRepeatingTrigger(BACKGROUND_SYNC_TRIGGER, {repeatEveryNSeconds:SYNC_INTERVAL});
-    Scheduler.setRepeatingTrigger(BACKGROUND_USER_SYNC_TRIGGER, {repeatEveryNSeconds: SPHERE_USER_SYNC_INTERVAL});
+    Scheduler.setRepeatingTrigger(BACKGROUND_SYNC_TRIGGER,      {repeatEveryNSeconds: SYNC_INTERVAL});
+    Scheduler.setRepeatingTrigger(BACKGROUND_USER_SYNC_TRIGGER, {repeatEveryNSeconds: CLOUD_POLLING_INTERVAL});
 
     // if the app is open, update the user locations every 10 seconds
     Scheduler.loadCallback(BACKGROUND_USER_SYNC_TRIGGER, () => {
       if (SetupStateHandler.isSetupInProgress() === false) {
-        CLOUD.syncUsers(this.store);
+        CLOUD.syncUsers();
         MessageCenter.checkForMessages();
+        CLOUD.syncInvites()
       }
     });
 
@@ -379,12 +380,19 @@ class BackgroundProcessHandlerClass {
     let state = this.store.getState();
 
     // Catch a broken sphere.
-    let spheres = state.spheres;
+    let sphereIds = state.spheres;
     let brokenSphere = false;
-    Object.keys(spheres).forEach((sphereId) => {
-      let sphere = spheres[sphereId];
-      let corruptData = sphere.config.adminKey === null && sphere.config.memberKey === null && sphere.config.guestKey === null;
-      corruptData = sphere.config.iBeaconUUID === undefined || sphere.config.iBeaconUUID === null || corruptData;
+    Object.keys(sphereIds).forEach((sphereId) => {
+      let sphere = sphereIds[sphereId];
+      let corruptData = (!sphere.config.adminKey && !sphere.config.memberKey && !sphere.config.guestKey) || !sphere.config.iBeaconUUID;
+      let stoneIds = Object.keys(sphere.stones);
+      stoneIds.forEach((stoneId) => {
+        let stone = sphere.stones[stoneId];
+        corruptData = corruptData ||
+          !stone.config.iBeaconMajor ||
+          !stone.config.iBeaconMinor ||
+          !stone.config.macAddress;
+      })
       if (corruptData) {
         brokenSphere = true;
       }

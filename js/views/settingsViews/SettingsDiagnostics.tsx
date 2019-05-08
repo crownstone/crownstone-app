@@ -64,15 +64,24 @@ export class SettingsDiagnostics extends Component<any, any> {
     });
 
     let state = core.store.getState();
-    let spheres = state.spheres;
+    let sphereIds = state.spheres;
     let healthySpheres = true;
     let stoneCount = 0;
 
-    Object.keys(spheres).forEach((sphereId) => {
-      let sphere = spheres[sphereId];
-      if (!sphere.config.iBeaconUUID || !sphere.config.adminKey && !sphere.config.memberKey && !sphere.config.guestKey ) {
-        healthySpheres = false;
-      }
+    Object.keys(sphereIds).forEach((sphereId) => {
+      let sphere = sphereIds[sphereId];
+      let corruptData = (!sphere.config.adminKey && !sphere.config.memberKey && !sphere.config.guestKey) || !sphere.config.iBeaconUUID;
+      let stoneIds = Object.keys(sphere.stones);
+      stoneIds.forEach((stoneId) => {
+        let stone = sphere.stones[stoneId];
+        corruptData = corruptData ||
+          !stone.config.iBeaconMajor ||
+          !stone.config.iBeaconMinor ||
+          !stone.config.macAddress;
+      })
+
+      if (corruptData) { healthySpheres = false; }
+
       if (Permissions.inSphere(sphereId).canSetupCrownstone === true) {
         this.canSetupStones = true;
       }
