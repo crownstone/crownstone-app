@@ -19,6 +19,7 @@ class NotificationHandlerClass {
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
+      this.notificationPermissionGranted = false;
       LOG.notifications("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
@@ -29,6 +30,7 @@ class NotificationHandlerClass {
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
+      this.notificationPermissionGranted = false;
       LOG.notifications("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
@@ -37,7 +39,6 @@ class NotificationHandlerClass {
   configure() {
     LOG.notifications("NotificationHandler: Configuring Push");
     PushNotification.configure({
-
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: (tokenData) => {
         this.requesting = false;
@@ -93,6 +94,8 @@ class NotificationHandlerClass {
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
+        // fallback
+        this.notificationPermissionGranted = true;
         LOG.notifications("NotificationHandler: Received notification", notification);
         if (Platform.OS === 'android') {
           NotificationParser.handle(notification)
