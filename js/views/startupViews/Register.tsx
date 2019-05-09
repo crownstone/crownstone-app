@@ -47,10 +47,10 @@ export class Register extends Component<any, any> {
     CLOUD.setAccess(undefined);
 
     this.user = {
-      firstName: "floppy",
+      firstName: null,
       lastName: null,
-      email: "test@" + (Math.random()*1000).toString(35) + ".com",
-      password: "twa",
+      email: null,
+      password: null,
       picture: null,
     }
   }
