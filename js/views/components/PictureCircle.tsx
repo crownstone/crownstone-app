@@ -35,13 +35,20 @@ export class PictureCircle extends Component<any, any> {
 
   showOptions() {
     let buttons = [];
+    let pictureViewAddress = "PictureView";
+    let cameraRollViewAddress = "CameraRollView";
+    if (this.props.root) {
+      pictureViewAddress = "root" + pictureViewAddress;
+      cameraRollViewAddress = "root" + cameraRollViewAddress;
+    }
+
     if (Platform.OS === 'android') {
-      buttons.push({ text: lang("Take_Photo"), callback: () => {  NavigationUtil.navigate("PictureView",{selectCallback: this.props.callback});}});
-      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { NavigationUtil.navigate("CameraRollView",{selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Photo"), callback: () => {  NavigationUtil.navigate(pictureViewAddress,{selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { NavigationUtil.navigate(cameraRollViewAddress,{selectCallback: this.props.callback});}});
     }
     else {
-      buttons.push({ text: lang("Take_Picture"), callback: () => { NavigationUtil.navigate("PictureView",{selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
-      buttons.push({ text: lang("Choose_Existing"), callback: () => { NavigationUtil.navigate("CameraRollView",{selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Picture"), callback: () => { NavigationUtil.navigate(pictureViewAddress,{selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
+      buttons.push({ text: lang("Choose_Existing"), callback: () => { NavigationUtil.navigate(cameraRollViewAddress,{selectCallback: this.props.callback});}});
     }
     core.eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
   }
@@ -55,10 +62,10 @@ export class PictureCircle extends Component<any, any> {
       return (
         <TouchableOpacity
           onPress={() => { Alert.alert(
-lang("_Delete_this_picture__arg_header"),
-lang("_Delete_this_picture__arg_body",undefined),
-[{text:lang("_Delete_this_picture__arg_left")}, {
-text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); }}])}}
+            lang("_Delete_this_picture__arg_header"),
+            lang("_Delete_this_picture__arg_body",undefined),
+            [{text:lang("_Delete_this_picture__arg_left")}, {
+            text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); }}])}}
           style={{
             height:size,
             width:size,

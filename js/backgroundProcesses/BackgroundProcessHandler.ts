@@ -99,6 +99,22 @@ class BackgroundProcessHandlerClass {
       core.eventBus.on('userLoggedInFinished', () => {
         migrate();
 
+        // pass the store to the singletons
+        LOG.info("BackgroundProcessHandler: Starting singletons.");
+        this.startSingletons();
+
+        this.startCloudService();
+
+        this.startEventTriggers();
+
+        this.startBluetoothListener();
+
+        this.updateDeviceDetails();
+
+        LocationHandler.applySphereStateFromStore();
+
+        this.setupLogging();
+
         // init behaviour based on if we are in the foreground or the background.
         this._applyAppStateOnScanning(AppState.currentState);
 
@@ -124,25 +140,6 @@ class BackgroundProcessHandlerClass {
       core.eventBus.on("storePrepared", () => {
         LOG.info("BackgroundProcessHandler: Store is prepared.");
         this.storePrepared = true;
-
-        // pass the store to the singletons
-        LOG.info("BackgroundProcessHandler: Starting singletons.");
-        this.startSingletons();
-
-        this.startCloudService();
-
-        this.startEventTriggers();
-
-        this.startBluetoothListener();
-
-        this.updateDeviceDetails();
-
-        LocationHandler.applySphereStateFromStore();
-
-        this.setupLogging();
-
-        // init behaviour based on if we are in the foreground or the background.
-        this._applyAppStateOnScanning(AppState.currentState);
       });
 
       // Create the store from local storage. If there is no local store yet (first open), this is synchronous
@@ -263,23 +260,6 @@ class BackgroundProcessHandlerClass {
    *
    */
   startEventTriggers() {
-    // trigger the CalibrateTapToToggle tutorial for existing users when they open the app
-    let state = core.store.getState();
-    let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
-    core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => {
-      // do not show popup during setup.
-      if (SetupStateHandler.isSetupInProgress() === true) {
-        return;
-      }
-
-      let state = core.store.getState();
-      if (state && state.devices && deviceInDatabaseId && state.devices[deviceInDatabaseId] &&
-        (state.devices[deviceInDatabaseId].tapToToggleCalibration === null || state.devices[deviceInDatabaseId].tapToToggleCalibration === undefined)) {
-        if (Util.data.userHasPlugsInSphere(state,sphereId))
-          core.eventBus.emit("CalibrateTapToToggle");
-      }
-    });
-
     // listen to the state of the app: if it is in the foreground or background
     AppState.addEventListener('change', (appState) => {
       LOG.info("App State Change", appState);

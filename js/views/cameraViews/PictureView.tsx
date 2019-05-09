@@ -60,7 +60,7 @@ export class PictureView extends Component<any, any> {
     // somehow the camera does not take full screen size.
     return (
       <View style={{flex:1, width: screenWidth, height: screenHeight}}>
-                <View style={{width: screenWidth, height: 10, backgroundColor: colors.black.hex }} />
+        <View style={{width: screenWidth, height: 10, backgroundColor: colors.black.hex }} />
         <CameraKitCameraScreen
           ref={(cam) => this.cameraView = cam}
           cameraOptions={{
@@ -68,7 +68,8 @@ export class PictureView extends Component<any, any> {
             focusMode: 'on',
             zoomMode: 'on',
             ratioOverlay: this.props.forceAspectRatio === false ? undefined : '1:1',            // optional, ratio overlay on the camera and crop the image seamlessly
-            ratioOverlayColor: colors.black.rgba(0.7)
+            ratioOverlayColor: colors.black.rgba(0.7),
+            shouldSaveToCameraRoll:false
           }}
           allowCaptureRetake={true}
           actions={{
@@ -85,6 +86,7 @@ export class PictureView extends Component<any, any> {
           }}
           cameraFlipImage={require('../../images/camera/cameraFlipIcon.png')}
           captureButtonImage={require('../../images/camera/cameraButton.png')}
+          shouldSaveToCameraRoll={false}
         />
       </View>
     );

@@ -3,7 +3,7 @@ import { ScaledImage } from "./ScaledImage";
 import { Icon } from "./Icon";
 import { colors, screenWidth } from "../styles";
 import { FadeIn} from "./animated/FadeInView";
-import React from "react";
+import React, { useRef } from "react";
 import { TextEditInput } from "./editComponents/TextEditInput";
 
 
@@ -176,17 +176,25 @@ export function ThemedTextButtonWithIcon({label, icon, theme, callback, selected
   }
 }
 
-export function InterviewTextInput(props) {
+export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?}) {
+  const inputElement = useRef(null)
+  if (props.focussed === true) {
+    inputElement.current.focus()
+  }
   return (
     <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.menuTextSelected.hex, backgroundColor: colors.white.rgba(1)}}>
       <TextEditInput
-        autoFocus={true}
+        ref={inputElement}
+        focussed={props.focussed}
+        autoFocus={props.autofocus === undefined ? true : props.autofocus}
         style={{width: 0.8*screenWidth, padding:10}}
         placeholder={props.placeholder}
         placeholderTextColor='#888'
         autoCorrect={false}
+        keyboardType={props.keyboardType || "default"}
         value={props.value}
         callback={(newValue) => { props.callback(newValue) }}
+        endCallback={() => { if (props.onBlur) { props.onBlur() }}}
       />
     </View>
   )

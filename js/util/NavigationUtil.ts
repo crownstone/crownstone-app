@@ -66,6 +66,16 @@ export const NavigationUtil = {
     navigationStore.dispatch(navigateAction2);
   },
 
+  backAndNavigate: function(target, params = {}) {
+    const navigateAction2 = NavigationActions.navigate({
+      routeName: target,
+      params:params,
+    });
+
+    navigationStore.dispatch(NavigationActions.back());
+    navigationStore.dispatch(navigateAction2);
+  },
+
   openDrawer: function() {
     const action = DrawerActions.openDrawer();
     navigationStore.dispatch(action);

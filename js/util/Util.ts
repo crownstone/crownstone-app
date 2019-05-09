@@ -33,23 +33,20 @@ export const getImageFileFromUser = function(email) {
 
 export const processImage = function(pictureURI, targetFilename, scaleFactor = 0.5) {
   return new Promise((resolve, reject) => {
-    if (pictureURI !== undefined) {
-      let targetPath = FileUtil.getPath(targetFilename);
+    if (!pictureURI) { return resolve(); }
 
-      ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * scaleFactor, screenHeight * pxRatio * scaleFactor, 'JPEG', 90)
-        .then(({uri}) => {
-          return FileUtil.safeMoveFile(uri, targetPath);
-        })
-        .then(() => {
-          resolve(targetPath);
-        })
-        .catch((err) => {
-          reject("picture resizing error:" + err.message);
-        });
-    }
-    else {
-      resolve();
-    }
+    let targetPath = FileUtil.getPath(targetFilename);
+
+    ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * scaleFactor, screenHeight * pxRatio * scaleFactor, 'JPEG', 90)
+      .then(({uri}) => {
+        return FileUtil.safeMoveFile(uri, targetPath);
+      })
+      .then(() => {
+        resolve(targetPath);
+      })
+      .catch((err) => {
+        reject("picture resizing error:" + err.message);
+      });
   })
 };
 
@@ -69,6 +66,7 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
   // check if the image is an location on the disk or if it is from the assets.
   if (
     picture.substr(0, 4) !== 'file' &&
+    picture.substr(0, 2) !== 'ph' &&
     picture.substr(0, 6) !== 'assets' &&
     picture.substr(0, 4) !== 'http' &&
     picture.substr(0, 7) !== 'content'
@@ -80,6 +78,8 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
     pictureUri += '?r=' + core.sessionMemory.cacheBusterUniqueElement
   }
 
+
+  console.log("USING PICTURE URI")
   return pictureUri;
 };
 

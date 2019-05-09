@@ -203,8 +203,8 @@ export const getAppReducer = function(navReducer) {
     nav: (state, action) => {
       if (!state) { return navReducer(state,action); }
 
-      // console.log("NAV STATE", state)
-      // console.log("NAV ACTION", action)
+      console.log("NAV STATE", state)
+      console.log("NAV ACTION", action)
 
       if (action.type === "Navigation/NAVIGATE") {
         if (action.routeName !== "AppBase") {

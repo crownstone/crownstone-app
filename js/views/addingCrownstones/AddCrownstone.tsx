@@ -25,12 +25,9 @@ export class AddCrownstone extends LiveComponent<any, any> {
     header: null
   };
 
-  interviewState;
   interviewData;
 
   _interview : Interview;
-  responseHeaders : any;
-  selectedOptions = [];
   constructor(props) {
     super(props);
 
@@ -44,12 +41,6 @@ export class AddCrownstone extends LiveComponent<any, any> {
       always: false,
       locked: false,
     };
-
-
-    this.state = { activeSlide : 0, slides: [this.getCards().start], slideIds: ['start'], finished: false, transitioningToSlide: undefined };
-
-    this.selectedOptions = [];
-    this.responseHeaders = {};
   }
 
   getCards() : interviewCards {

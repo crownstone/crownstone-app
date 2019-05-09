@@ -61,6 +61,10 @@ export class RoomAdd extends LiveComponent<any, any> {
       })
     }
   }
+  
+  componentWillUnmount(): void {
+    this.cancelEdit();
+  }
 
   cancelEdit() {
     // clean up any pictures that were taken
@@ -73,6 +77,7 @@ export class RoomAdd extends LiveComponent<any, any> {
     this.removePictureQueue.forEach((pic) => {
       this._removePicture(pic);
     })
+    this.removePictureQueue = [];
   }
 
   _removePicture(image) {

@@ -199,13 +199,37 @@ const InitialStack = createStackNavigator(
     Login:              Views.Login,
     Logout:             Views.Logout,
     Register:           Views.Register,
-    RegisterConclusion: Views.RegisterConclusion,
     Tutorial:           Views.Tutorial,
   },
   {
     ...defaultHeader
   }
 );
+
+const InitialStackWrapper = createStackNavigator(
+  {
+    // test: {
+    //   screen: wrap("InterviewLight", InterviewLight),
+    // },
+    InitialStack: {
+      screen: InitialStack,
+    },
+    rootCameraRollView: {
+      screen:  wrap("CameraRollView", Views.CameraRollView),
+    },
+    rootPictureView: {
+      screen:  wrap("PictureView", Views.PictureView),
+    },
+
+  },
+  {
+    // initialRouteName: "AppNavigator",
+    mode: 'modal',
+    headerMode: 'none',
+  }
+);
+
+
 
 
 const RoomTrainingStack = createStackNavigator(
@@ -337,7 +361,7 @@ export const RootStack = createSwitchNavigator(
       screen: Initializer,
     },
     NewUser: {
-      screen: InitialStack,
+      screen: InitialStackWrapper,
     },
     AppBase: {
       screen: AppStack

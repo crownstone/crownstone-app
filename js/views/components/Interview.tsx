@@ -90,6 +90,15 @@ export class Interview extends Component<{
   }
 
 
+  back() {
+    if (this.state.activeCardIndex !== 0) {
+      this._carousel.snapToItem(this.state.activeCardIndex- 1);
+    }
+    else {
+      return false
+    }
+  }
+
   setLockedCard(cardId) {
     if (!cardId) { return; }
     this._lockedCard = true;

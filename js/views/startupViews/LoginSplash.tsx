@@ -40,7 +40,7 @@ export class LoginSplash extends Component<any, any> {
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} safeView={true}>
+      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} safeView={true} hideOrangeBar={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
