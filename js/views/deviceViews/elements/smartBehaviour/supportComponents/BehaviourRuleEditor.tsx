@@ -1,11 +1,12 @@
-import * as React from 'react'; import { Component } from 'react';
+import { LiveComponent }          from "../../../../LiveComponent";
+import * as React from 'react';
 import {
   Animated,
   TouchableOpacity,
   Text,
   View, TextStyle, ViewStyle
 } from "react-native";
-import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../../../../styles";
+import { availableScreenHeight, colors, screenWidth, styles } from "../../../../styles";
 import { SELECTABLE_TYPE } from "../../../../../Enums";
 import { RoomList } from "../../../../components/RoomList";
 import { core } from "../../../../../core";
@@ -13,19 +14,19 @@ import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { xUtil } from "../../../../../util/StandAloneUtil";
-import { BehaviourQuestion, BehaviourSuggestion } from "./BehaviourSuggestion";
+import { BehaviourSuggestion } from "./BehaviourSuggestion";
 import { NavigationUtil } from "../../../../../util/NavigationUtil";
 
 
 
-export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: string, stoneId: string, ruleId?: string}, any> {
+export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId: string, stoneId: string, ruleId?: string}, any> {
   references = [];
   amountOfLines = 0;
   rule : AicoreBehaviour;
   selectedChunk : selectableAicoreBehaviourChunk;
 
   exampleBehaviours : any;
-  baseHeight = availableScreenHeight - 300
+  baseHeight = availableScreenHeight - 300;
 
   constructor(props) {
     super(props);
@@ -100,7 +101,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
         segments = [];
         wordsOnLine = [];
       }
-    }
+    };
 
     ruleChunks.forEach((chunk,i) => {
       // refresh the selected chunk for the UI
@@ -128,7 +129,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
             segments.push(<View key={"label_element_" + i}><Text style={normal}>{wordsOnLine.join(" ")}</Text></View>);
           }
         }
-      }
+      };
 
 
       // this piece of code guesses the length of the line so we can do manual wrapping.
@@ -136,7 +137,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
       for (let i = 0; i < words.length; i++) {
         let lastWordLength = 0;
         if (words[i]) {
-          lastWordLength = getWordLength(words[i] + (lastChunk ? "" : ' '))
+          lastWordLength = getWordLength(words[i] + (lastChunk ? "" : ' '));
           letterLengthOnLine += lastWordLength;
         }
         if (letterLengthOnLine > screenWidth - paddingForRules*2 && !lastChunk) {
@@ -176,7 +177,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
         break;
       case SELECTABLE_TYPE.TIME:
         behaviourHeight += 130;
-        break
+        break;
       case SELECTABLE_TYPE.OPTION:
         behaviourHeight += 50;
         break
@@ -186,7 +187,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
       // selecting a behaviour type while none was selected before.
       let animation = [];
       this.setState({detail: selectedBehaviourType, selectedDetailField: false});
-      this.state.detailHeight.setValue(behaviourHeight)
+      this.state.detailHeight.setValue(behaviourHeight);
       animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 100, duration: 100}));
       animation.push(Animated.timing(this.state.mainBottomOpacity, {toValue: 0, delay: 0, duration: 100}));
       animation.push(Animated.timing(this.state.containerHeight  , {toValue: behaviourHeight, delay: 0, duration: 200}));
@@ -212,7 +213,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
       let animation = [];
       animation.push(Animated.timing(this.state.detailHeight,     {toValue: behaviourHeight, delay:0, duration: 200}));
       animation.push(Animated.timing(this.state.containerHeight,  {toValue: behaviourHeight, delay:0, duration: 200}));
-      animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 150}))
+      animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 150}));
       Animated.parallel(animation).start(() => {
         this.setState({detail: selectedBehaviourType, selectedDetailField: false}, () => {
           let animation = [];
@@ -224,7 +225,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
   }
 
   _shouldShowSuggestions() {
-    console.log(this.state, this)
+    console.log(this.state, this);
 
     let showPresenceSuggestion = this.rule.isUsingPresence() === false && this.state.userHidPresence === true;
     let showTimeSuggestion = this.rule.isAlwaysActive() === true && this.state.userHidTime === true;
@@ -240,7 +241,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
   }
 
   _getSuggestions() {
-    let {showPresenceSuggestion, showTimeSuggestion, showOptionSuggestion } = this._shouldShowSuggestions()
+    let {showPresenceSuggestion, showTimeSuggestion, showOptionSuggestion } = this._shouldShowSuggestions();
     let suggestionArray = [];
     let paddingIndex = 0;
     if (showPresenceSuggestion) {
@@ -308,7 +309,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
       getItems: () => {
         const state = core.store.getState();
         let sphereIds = Object.keys(state.spheres);
-        let activeSphere = sphereIds[0]
+        let activeSphere = sphereIds[0];
         const sphere = state.spheres[activeSphere];
         let items = [];
         Object.keys(sphere.locations).forEach((locationId) => {
@@ -320,7 +321,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
               showNavigationIcon={false}
               small={true}
             />})
-        })
+        });
 
         return items;
       },
@@ -341,6 +342,7 @@ export class BehaviourRuleEditor extends Component<{data:behaviour, sphereId: st
   /**
    * The example origin field is meant to allow the system to update the custom fields based on the user selection.
    * @param exampleOriginField
+   * @param useData
    * @private
    */
   _showTimeSelectionPopup(exampleOriginField, useData = true) {
@@ -681,7 +683,7 @@ function getWordLength(word) {
 function getLocationId(i) {
   let state = core.store.getState();
   let sphereIds = Object.keys(state.spheres);
-  let activeSphere = sphereIds[0]
+  let activeSphere = sphereIds[0];
 
   let sphere = state.spheres[activeSphere];
   let locationIds = Object.keys(sphere.locations).sort();

@@ -1,6 +1,5 @@
 
 import {LOG, LOGe} from "../../../logging/Log";
-import {Util} from "../../../util/Util";
 import {CLOUD} from "../../cloudAPI";
 import {HISTORY_PERSISTENCE} from "../../../ExternalConfig";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";

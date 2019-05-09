@@ -6,17 +6,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  StyleSheet,
   View
 } from 'react-native';
 import { Background } from "../../components/Background";
-import { availableModalHeight, colors, screenHeight, screenWidth, styles, topBarHeight } from "../../styles";
+import { availableModalHeight, colors, screenWidth} from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
 import { AddSphereTutorial_multiple } from "./elements/AddSphereTutorial_multiple";
 import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intended";
 import { core } from "../../../core";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
-import { FadeIn, HiddenFadeInView } from "../../components/animated/FadeInView";
+import { HiddenFadeInView } from "../../components/animated/FadeInView";
 
 export class AddSphereTutorial extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -25,7 +24,7 @@ export class AddSphereTutorial extends Component<any, any> {
       headerTruncatedBackTitle: lang("Back"),
     }
   };
-  _carousel
+  _carousel;
 
   constructor(props) {
     super(props);

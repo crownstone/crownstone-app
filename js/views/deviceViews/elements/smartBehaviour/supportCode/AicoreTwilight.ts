@@ -5,11 +5,11 @@ import { AicoreUtil } from "./AicoreUtil";
 import { xUtil } from "../../../../../util/StandAloneUtil";
 import { AicoreTimeData } from "./AicoreTimeData";
 
-const DEFAULT_DELAY_MINUTES = 5
+const DEFAULT_DELAY_MINUTES = 5;
 const EMPTY_RULE : twilight = {
   action:   { type: "DIM_WHEN_TURNED_ON", data: 0.6 },
   time:     { from: { type: "SUNSET", offsetMinutes:0}, to:{ type: "SUNRISE", offsetMinutes:0} },
-}
+};
 
 export class AicoreTwilight {
   originalRule : twilight;
@@ -71,9 +71,9 @@ export class AicoreTwilight {
         chunk = {label:chunk, changeAction: () => {}, data: null};
       }
       result.push({label: chunk.label, clickable: type !== null, type: type, data: chunk.data, hidden: hidden});
-    }
+    };
 
-    addToResult(chunks.intention)
+    addToResult(chunks.intention);
     if (chunks.action.label)          { addToResult(" "); addToResult(chunks.action,        SELECTABLE_TYPE.ACTION);   } else {  addToResult(chunks.action, SELECTABLE_TYPE.ACTION, true);    }
     if (chunks.time.label)            { addToResult(" "); addToResult(chunks.time,          SELECTABLE_TYPE.TIME);     } else {  addToResult(chunks.time, SELECTABLE_TYPE.TIME, true);      }
     addToResult(".");

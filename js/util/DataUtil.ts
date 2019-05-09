@@ -143,7 +143,13 @@ export const DataUtil = {
   /**
    * If the stone has an appliance, return that appliance, otherwise return the stone. This gets you the item that
    * contains the active behaviour
-   * @param sphere
+   * @param store
+   * @param sphereId
+   * @param stoneId
+   * @param sphereId
+   * @param stoneId
+   * @param sphereId
+   * @param stoneId
    * @param stone
    * @returns {*}
    */

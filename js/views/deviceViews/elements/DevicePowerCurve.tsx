@@ -15,7 +15,6 @@ import {
 
 import { screenWidth, availableScreenHeight, deviceStyles } from "../../styles";
 import {Graph} from "../../components/graph/Graph";
-import {Util} from "../../../util/Util";
 import {textStyle} from "./DeviceBehaviour";
 import { core } from "../../../core";
 import { xUtil } from "../../../util/StandAloneUtil";

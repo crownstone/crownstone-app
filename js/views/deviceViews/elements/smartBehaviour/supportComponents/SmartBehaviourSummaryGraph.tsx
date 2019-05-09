@@ -45,7 +45,7 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
         ai = new AicoreTwilight(rule.data);
         twilightArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId)})
       }
-    })
+    });
 
     return (
       <View style={{flexDirection:'row', width:screenWidth, height:90}}>

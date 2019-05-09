@@ -79,6 +79,7 @@ const TimeStepFORMAT = {
  * The minimumStep should correspond with the onscreen size of about 6 characters
  * @param {Date} [start]      The start date and time.
  * @param {Date} [end]        The end date and time.
+ * @param minimumStep
  */
 TimeStep.prototype.setRange = function(start, end, minimumStep) {
   if (!(start instanceof Date) || !(end instanceof Date)) {

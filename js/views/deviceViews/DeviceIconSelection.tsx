@@ -10,7 +10,6 @@ import {
 
 import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
-import {} from "../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";

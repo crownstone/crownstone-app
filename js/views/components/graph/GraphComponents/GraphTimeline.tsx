@@ -16,7 +16,6 @@ import {
   Line,
   Text,
   } from 'react-native-svg';
-import { Util } from "../../../../util/Util";
 import { TimeStep } from './TimeStep'
 import { xUtil } from "../../../../util/StandAloneUtil";
 

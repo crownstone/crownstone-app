@@ -19,7 +19,6 @@ import {colors, screenWidth, styles} from '../styles'
 
 import {IconCircle} from "./IconCircle";
 import {Scheduler} from "../../logic/Scheduler";
-import {Util} from "../../util/Util";
 import {Icon} from "./Icon";
 import {AnimatedIconCircle} from "./animated/AnimatedIconCircle";
 import { core } from "../../core";

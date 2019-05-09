@@ -7,12 +7,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import {colors, screenWidth} from "../../styles";
 import {Icon} from "../../components/Icon";
-import { NavigationUtil } from "../../../util/NavigationUtil";
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
 
 

@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 
 import { OverlayBox }           from '../components/overlays/OverlayBox'
-import { styles, colors, screenWidth, screenHeight } from "../styles";
+import { colors, screenWidth, screenHeight } from "../styles";
 import { core } from "../../core";
 import { ScaledImage } from "../components/ScaledImage";
 import { AicoreTimeCustomization } from "../deviceViews/elements/smartBehaviour/supportComponents/AicoreTimeCustomization";
@@ -47,7 +47,7 @@ export class AicoreTimeCustomizationOverlay extends Component<any, any> {
 
 
   close() {
-    this.callback = () => {}
+    this.callback = () => {};
     this.timeData = {};
     this.setState({
       visible:false,

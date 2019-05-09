@@ -31,8 +31,6 @@ class KamadaKawai {
 
   /**
    * Position the system
-   * @param nodesArray
-   * @param edgesArray
    */
   solve() {
     let nodes = this.nodes;
@@ -104,6 +102,10 @@ class KamadaKawai {
   /**
    * calculate the energy of a single node
    * @param m
+   * @param nodes
+   * @param nodeIdArray
+   * @param nodes
+   * @param nodeIdArray
    * @returns {*[]}
    * @private
    */
@@ -135,6 +137,10 @@ class KamadaKawai {
    * @param m
    * @param dE_dx
    * @param dE_dy
+   * @param nodes
+   * @param nodeIdArray
+   * @param nodes
+   * @param nodeIdArray
    * @private
    */
   _moveNode(m, dE_dx, dE_dy, nodes, nodeIdArray) {
@@ -171,6 +177,7 @@ class KamadaKawai {
   /**
    * Create the L matrix: edge length times shortest path
    * @param D_matrix
+   * @param nodeIdArray
    * @private
    */
   _createL_matrix(D_matrix, nodeIdArray) {
@@ -190,6 +197,7 @@ class KamadaKawai {
   /**
    * Create the K matrix: spring constants times shortest path
    * @param D_matrix
+   * @param nodeIdArray
    * @private
    */
   _createK_matrix(D_matrix, nodeIdArray) {

@@ -9,17 +9,16 @@ import {
   Alert,
   TouchableOpacity,
   Text,
-  View, Switch, ActivityIndicator, ViewStyle
+  View, ActivityIndicator, ViewStyle
 } from "react-native";
 
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
-import { styles, colors, screenWidth } from '../../styles'
+import { styles, colors} from '../../styles'
 import {Util} from "../../../util/Util";
 import { core } from "../../../core";
 import { StoneUtil } from "../../../util/StoneUtil";
 import { IconButton } from "../IconButton";
-import { HiddenFadeInView } from "../animated/FadeInView";
 import { SlideFadeInView } from "../animated/SlideFadeInView";
 
 
@@ -86,7 +85,7 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
       content = <ActivityIndicator animating={true} size='large' />;
     }
     else {
-      let iconSize = 40
+      let iconSize = 40;
       content = <IconButton name={"md-color-wand"}
                   size={iconSize*0.8}
                   buttonSize={iconSize}

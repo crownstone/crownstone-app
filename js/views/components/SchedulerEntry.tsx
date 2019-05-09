@@ -13,7 +13,6 @@ import {
 
 
 import {colors, screenWidth} from '../styles'
-import {Util} from "../../util/Util";
 import {StoneUtil} from "../../util/StoneUtil";
 import {IconButton} from "./IconButton";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";

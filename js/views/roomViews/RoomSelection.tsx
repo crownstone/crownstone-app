@@ -114,7 +114,7 @@ export class RoomSelection extends LiveComponent<any, any> {
   }
 
   render() {
-    let backgroundImage = core.background.menu
+    let backgroundImage = core.background.menu;
     return (
       <Background image={backgroundImage} hasNavBar={false} >
         <ScrollView>

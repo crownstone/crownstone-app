@@ -56,4 +56,4 @@ let ruleDb = {
       version: 1
     }
   }
-}
+};

@@ -19,7 +19,6 @@ import {colors, screenWidth, } from '../styles'
 import {IconButton} from "../components/IconButton";
 import {Background} from "../components/Background";
 import {ListEditableItems} from "../components/ListEditableItems";
-import {Util} from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {LOGe} from "../../logging/Log";

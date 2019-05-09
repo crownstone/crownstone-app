@@ -13,7 +13,7 @@ import {
 import { styles, colors} from '../styles'
 import { Background }                  from '../components/Background'
 import { ListEditableItems }           from '../components/ListEditableItems'
-import { Util, addDistanceToRssi }     from '../../util/Util'
+import { addDistanceToRssi }     from '../../util/Util'
 import {canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import {BehaviourUtil} from "../../util/BehaviourUtil";
 
@@ -465,4 +465,4 @@ export function getDelayLabel(delay, fullLengthText = false) {
       return Math.floor(delay / 60) + ' min';
     }
   }
-};
+}

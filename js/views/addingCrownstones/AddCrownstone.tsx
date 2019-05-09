@@ -3,12 +3,11 @@ import {
   Linking,
   Platform,
 } from "react-native";
-import { availableModalHeight, availableScreenHeight, colors, screenHeight, screenWidth } from "../styles";
+import { colors} from "../styles";
 import { core } from "../../core";
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { Pagination } from 'react-native-snap-carousel';
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { ScanningForSetupCrownstones } from "./ScanningForSetupCrownstones";
-import { TopbarBackButton } from "../components/topbar/TopbarButton";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { Interview } from "../components/Interview";
@@ -20,10 +19,10 @@ export class AddCrownstone extends LiveComponent<any, any> {
     header: null
   };
 
-  interviewState
-  interviewData
+  interviewState;
+  interviewData;
 
-  _interview : Interview
+  _interview : Interview;
   responseHeaders : any;
   selectedOptions = [];
   constructor(props) {

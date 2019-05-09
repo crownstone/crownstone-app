@@ -1,23 +1,21 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomAdd", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
-  ScrollView, TouchableOpacity,
+  TouchableOpacity,
   View
 } from "react-native";
 
-import { Background } from '../components/Background'
 import { IconCircle } from '../components/IconCircle'
-import { ListEditableItems } from '../components/ListEditableItems'
-import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
-import { LOG, LOGe } from "../../logging/Log";
+import { getLocationNamesInSphere} from '../../util/DataUtil'
 
-import { availableModalHeight, availableScreenHeight, colors, screenHeight, screenWidth, styles } from "../styles";
+import { availableModalHeight, colors, screenHeight} from "../styles";
 import {processImage} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -28,16 +26,13 @@ import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { CancelButton } from "../components/topbar/CancelButton";
-import { SetupCircle } from "../components/animated/SetupCircle";
-import { Icon } from "../components/Icon";
-import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { Interview } from "../components/Interview";
 import { PictureCircle } from "../components/PictureCircle";
 
 
 
-export class RoomAdd extends Component<any, any> {
+export class RoomAdd extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
@@ -47,8 +42,8 @@ export class RoomAdd extends Component<any, any> {
   };
 
   removePictureQueue = [];
-  _interview
-  newRoomData
+  _interview;
+  newRoomData;
 
   constructor(props) {
     super(props);
@@ -113,7 +108,7 @@ export class RoomAdd extends Component<any, any> {
                   lang("_Room_name_must_be_at_lea_header"),
                   lang("_Room_name_must_be_at_lea_body"),
                   [{text:lang("_Room_name_must_be_at_lea_left")}]
-                )
+                );
                 return false;
               }
               else if (!this.isRoomNameUnique(result.textfieldState)) {
@@ -237,7 +232,7 @@ export class RoomAdd extends Component<any, any> {
       cloudSphereId: MapProvider.local2cloudMap.spheres[this.props.sphereId]
     })
       .then(() => { core.store.batchDispatch(actions); })
-      .catch(() => {})
+      .catch(() => {});
 
     if (this.props.returnToRoute) {
       NavigationUtil.backTo(this.props.returnToRoute);

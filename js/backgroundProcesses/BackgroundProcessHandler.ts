@@ -19,7 +19,6 @@ import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 import { NotificationHandler }   from "./NotificationHandler";
-import { BatchCommandHandler }   from "../logic/BatchCommandHandler";
 import { BatchUploader }         from "./BatchUploader";
 import { MessageCenter }         from "./MessageCenter";
 import { CloudEventHandler }     from "./CloudEventHandler";
@@ -41,7 +40,6 @@ import DeviceInfo from 'react-native-device-info';
 import { core } from "../core";
 import { cleanLogs } from "../logging/LogUtil";
 import { migrate } from "./migration/StoreMigration";
-import { NotificationParser } from "../notifications/NotificationParser";
 import { CloudPoller } from "../logic/CloudPoller";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -391,7 +389,7 @@ class BackgroundProcessHandlerClass {
           !stone.config.iBeaconMajor ||
           !stone.config.iBeaconMinor ||
           !stone.config.macAddress;
-      })
+      });
       if (corruptData) {
         brokenSphere = true;
       }
@@ -404,7 +402,6 @@ class BackgroundProcessHandlerClass {
       return;
     }
 
-    core.store = core.store;
     core.storeInitialized = true;
 
     if (state.user.accessToken !== null) {

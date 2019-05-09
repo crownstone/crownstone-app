@@ -3,10 +3,7 @@ import { Alert } from 'react-native';
 import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
 import {LOG, LOGe} from '../../logging/Log'
-import { Util }                  from '../../util/Util'
 import { CLOUD }                 from '../../cloud/cloudAPI'
-import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
-import {SetupStateHandler} from "./SetupStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";

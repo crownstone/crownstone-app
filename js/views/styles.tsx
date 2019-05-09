@@ -1,5 +1,5 @@
-import * as React from 'react'; import { Component } from 'react';
-import { Dimensions, PixelRatio, Platform, StyleSheet, Text, View } from 'react-native'
+import * as React from 'react';
+import { Dimensions, PixelRatio, Platform, StyleSheet} from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
 

@@ -13,7 +13,6 @@ import {
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
 
-import {} from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";

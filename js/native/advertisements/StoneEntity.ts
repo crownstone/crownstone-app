@@ -387,7 +387,16 @@ export class StoneEntity {
 
   /**
    * This stone entity has sent an advertisement containing the state of ANOTHER crownstone. Handle this.
+   * @param stoneId
+   * @param stoneId
+   * @param externalId
+   * @param externalStone
+   * @param stoneId
+   * @param externalId
+   * @param externalStone
    * @param stone
+   * @param externalId
+   * @param externalStone
    * @param {crownstoneAdvertisement} advertisement
    */
   handleAdvertisementOfExternalCrownstone(stoneId: string, stone, externalId: string, externalStone, advertisement : crownstoneAdvertisement) {

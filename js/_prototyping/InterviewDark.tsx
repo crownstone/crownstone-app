@@ -1,14 +1,11 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Platform,
   Text, TextStyle,
-  View, ViewStyle
-} from "react-native";
+  View} from "react-native";
 import { core } from "../core";
-import { Background } from "../views/components/Background";
 import { colors, screenWidth } from "../views/styles";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
-import { FadeIn, FadeInView } from "../views/components/animated/FadeInView";
+import { FadeIn} from "../views/components/animated/FadeInView";
 import { TextButtonLightOnDark } from "../views/components/InterviewComponents";
 import { AicoreUtil } from "../views/deviceViews/elements/smartBehaviour/supportCode/AicoreUtil";
 import { AnimatedBackground } from "../views/components/animated/AnimatedBackground";
@@ -25,10 +22,10 @@ let questionStyle : TextStyle = {
 };
 
 export class InterviewDark extends Component<any, any> {
-  interviewState
-  interviewData
+  interviewState;
+  interviewData;
 
-  _carousel
+  _carousel;
   constructor(props) {
     super(props);
 
@@ -169,9 +166,9 @@ export class InterviewDark extends Component<any, any> {
                   if (!cardId) { return; }
 
                   let currentSlides = this.state.slides;
-                  currentSlides.splice(this.state.activeSlide + 1)
+                  currentSlides.splice(this.state.activeSlide + 1);
 
-                  currentSlides.push(this.getCards()[cardId])
+                  currentSlides.push(this.getCards()[cardId]);
                   this.setState({ slides: currentSlides }, () => {
                     setTimeout(() => {
                       this._carousel.snapToItem(currentSlides.length - 1);
@@ -194,7 +191,7 @@ export class InterviewDark extends Component<any, any> {
 
 function InterviewCard(props) {
   let question = props.card.question;
-  let answers = props.card.answers
+  let answers = props.card.answers;
   return (
     <View>
       <FadeIn><Text style={questionStyle}>{question}</Text></FadeIn>
@@ -217,7 +214,7 @@ function Answers({data, nextCard}) {
           }}
         />
       </FadeIn>);
-  })
+  });
 
   return (
     <View>{answers}</View>

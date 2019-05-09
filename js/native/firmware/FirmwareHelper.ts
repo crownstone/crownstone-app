@@ -1,7 +1,6 @@
 import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper}  from '../libInterface/BluenetPromise';
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
-import { Util }                  from '../../util/Util'
 import { SetupStateHandler } from "../setup/SetupStateHandler";
 import { ALWAYS_DFU_UPDATE } from "../../ExternalConfig";
 import {Scheduler} from "../../logic/Scheduler";

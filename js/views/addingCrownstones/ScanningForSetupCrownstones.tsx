@@ -1,21 +1,17 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
-  Alert,
-  Animated,
-  Platform, ScrollView, StatusBar,
-  Text, TextStyle, TouchableOpacity,
-  View, ViewStyle
-} from "react-native";
+  ScrollView, Text, TouchableOpacity,
+  View} from "react-native";
 import { Pagination } from 'react-native-snap-carousel';
-import { colors, screenHeight, screenWidth, styles, tabBarHeight, topBarHeight } from "../styles";
+import { colors, screenWidth, styles} from "../styles";
 import { core } from "../../core";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
-import { FadeIn, FadeInView, HiddenFadeInView } from "../components/animated/FadeInView";
+import { FadeIn, FadeInView} from "../components/animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Icon } from "../components/Icon";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";
@@ -69,7 +65,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
   }
 
   _startActiveScanning() {
-    BleUtil.startHighFrequencyScanning("ScanningForSetupCrownstones", true)
+    BleUtil.startHighFrequencyScanning("ScanningForSetupCrownstones", true);
     clearTimeout(this.noScansAtAllTimeout);
     clearTimeout(this.nearUnknownCrownstoneTimeout);
 
@@ -81,12 +77,12 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
 
       this.noScansAtAllTimeout         = setTimeout(() => { this.setState({showNoScans: true})}, 12000);
       this.extendedNoScansAtAllTimeout = setTimeout(() => { this.setState({extendedNoScans: true})}, 25000);
-    }
+    };
 
     postponeNoScansTimeout();
 
     // can I scan at all?
-    this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.crownstoneAdvertisementReceived, (handle) => { postponeNoScansTimeout(); }))
+    this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.crownstoneAdvertisementReceived, (handle) => { postponeNoScansTimeout(); }));
 
     this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.unverifiedAdvertisementData, (data) => {
       // near to a Crownstone that does not belong to me?
@@ -108,7 +104,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
         if (this.state.showNearUnverified) { this.setState({showNearUnverified: false}); }
         clearTimeout(this.nearUnknownCrownstoneTimeout);
       }
-    }))
+    }));
 
 
     this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (data : crownstoneAdvertisement) => {
@@ -129,7 +125,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
   }
 
   _stopActiveScanning() {
-    BleUtil.stopHighFrequencyScanning("ScanningForSetupCrownstones")
+    BleUtil.stopHighFrequencyScanning("ScanningForSetupCrownstones");
     clearTimeout(this.noScansAtAllTimeout);
     clearTimeout(this.extendedNoScansAtAllTimeout);
     clearTimeout(this.nearUnknownCrownstoneTimeout);

@@ -92,7 +92,7 @@ export function HiddenFadeInView(props) {
 }
 
 export function FadeIn(props) {
-  let [visible, setVisible] = useState(false)
+  let [visible, setVisible] = useState(false);
   if (visible === false) {
     setTimeout(() => { setVisible(true); }, 0);
   }
@@ -105,7 +105,7 @@ export function FadeIn(props) {
 }
 
 export function HiddenFadeIn(props) {
-  let [visible, setVisible] = useState(false)
+  let [visible, setVisible] = useState(false);
   if (visible === false) {
     setTimeout(() => { setVisible(true); }, 0);
   }

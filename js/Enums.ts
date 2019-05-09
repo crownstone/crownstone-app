@@ -30,7 +30,7 @@ export const SMART_BEHAVIOUR_TYPES = {
   TWILIGHT_MODE: "TWILIGHT_MODE",
   CHILD_SAFETY:  "CHILD_SAFETY",
   CUSTOM:        "CUSTOM",
-}
+};
 
 export const AICORE_TIME_TYPES = {
   ALL_DAY:"ALL_DAY",

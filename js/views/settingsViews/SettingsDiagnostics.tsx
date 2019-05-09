@@ -78,7 +78,7 @@ export class SettingsDiagnostics extends Component<any, any> {
           !stone.config.iBeaconMajor ||
           !stone.config.iBeaconMinor ||
           !stone.config.macAddress;
-      })
+      });
 
       if (corruptData) { healthySpheres = false; }
 

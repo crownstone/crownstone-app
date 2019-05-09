@@ -18,7 +18,6 @@ import {addCrownstoneExplanationAlert} from "../AddItemsToSphere";
 import {Icon} from "../../components/Icon";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
-import { NavigationActions, StackActions } from "react-navigation";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 
 

@@ -11,7 +11,6 @@
  */
 
 import {transferActivityLogs} from "../../../transferData/transferActivityLogs";
-import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {LOG} from "../../../../logging/Log";
 import {CLOUD} from "../../../cloudAPI";

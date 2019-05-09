@@ -74,4 +74,4 @@ export const createNewLocation = function(name, icon, sphereId) {
     .then(() => {
       core.store.batchDispatch(actions);
     })
-}
+};

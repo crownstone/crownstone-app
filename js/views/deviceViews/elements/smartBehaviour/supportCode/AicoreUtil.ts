@@ -131,11 +131,11 @@ export const AicoreUtil = {
     if (rule.options && rule.options.type) {
       switch (rule.options.type) {
         case "SPHERE_PRESENCE_AFTER":
-          optionPrefix += "Afterwards, I'll"
+          optionPrefix += "Afterwards, I'll";
           optionStr += "stay on if someone is still at home";
           break;
         case "LOCATION_PRESENCE_AFTER":
-          optionPrefix += "Afterwards, I'll"
+          optionPrefix += "Afterwards, I'll";
           optionStr += "stay on if someone is still in the room";
           break;
       }
@@ -173,7 +173,7 @@ export const AicoreUtil = {
       let str = "";
       if (obj.offsetMinutes !== 0) {
         let getTimeNotation = function(mins) {
-          mins = Math.abs(mins)
+          mins = Math.abs(mins);
           if (mins%60 === 0) {
             let hours = mins/60;
             if (hours === 1) {
@@ -187,7 +187,7 @@ export const AicoreUtil = {
           else {
             return Math.floor(mins/60) + " hrs, " + mins%60 + ' mins'
           }
-        }
+        };
 
         if (obj.offsetMinutes < 0) {
           str += getTimeNotation(obj.offsetMinutes) + " before "
@@ -259,4 +259,4 @@ export const AicoreUtil = {
     }
   }
 
-}
+};

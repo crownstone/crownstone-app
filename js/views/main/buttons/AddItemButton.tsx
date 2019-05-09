@@ -1,4 +1,4 @@
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   TouchableOpacity,
   View, ViewStyle
@@ -34,7 +34,7 @@ export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean
       flexDirection:'row',
       alignItems:'center',
       justifyContent:'center'
-    }
+    };
     let viewStyle : ViewStyle = {
       width: outerRadius,
       height:outerRadius,
@@ -42,7 +42,7 @@ export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean
       backgroundColor: setupIcon ? colors.menuTextSelected.hex : colors.white.rgba(0.55),
       alignItems:'center',
       justifyContent:'center',
-    }
+    };
 
     return (
       <HiddenFadeInView visible={props.arrangingRooms === false && props.inSphere} style={buttonStyle}>

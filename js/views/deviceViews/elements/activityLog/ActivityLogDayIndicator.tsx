@@ -9,7 +9,6 @@ import {
   Text,
   View
 } from 'react-native';
-import {Util} from "../../../../util/Util";
 import {colors, screenWidth} from "../../../styles";
 import {DAYS_FULL} from "../../DeviceScheduleEdit";
 import {Icon} from "../../../components/Icon";

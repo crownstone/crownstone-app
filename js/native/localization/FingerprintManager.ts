@@ -104,8 +104,8 @@ class FingerprintManagerClass {
   /**
    * Use this method to catch any case where the fingerprint would be incorrect due to bugs or old formats.
    *
-   * @param fingerprintRaw
    * @returns {boolean}
+   * @param stringifiedFingerprint
    */
   validateFingerprint(stringifiedFingerprint) {
     let fingerprint = JSON.parse(stringifiedFingerprint);

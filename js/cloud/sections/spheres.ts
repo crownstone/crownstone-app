@@ -3,7 +3,7 @@ import {transferSpheres} from "../transferData/transferSpheres";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { FileUtil } from "../../util/FileUtil";
-import { cloudApiBase, TokenStore } from "./cloudApiBase";
+import { TokenStore } from "./cloudApiBase";
 import { user } from "./user";
 import { stones } from "./stones";
 import { appliances } from "./appliances";
@@ -15,9 +15,7 @@ export const spheres = {
 
   /**
    * self contained method to create a sphere and set the keys and users correctly.
-   * @param store
    * @param sphereName
-   * @param eventBus
    * @param latitude
    * @param longitude
    * @returns {Promise.<T>}
@@ -198,7 +196,7 @@ export const spheres = {
 
   deleteSphere: function() {
     let sphereId = TokenStore.sphereId;
-    console.log("HERE", sphereId)
+    console.log("HERE", sphereId);
 
     let promises      = [];
     let applianceData = [];

@@ -5,15 +5,9 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("LockOverlay", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
-import {
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  View,
-} from "react-native";
 
 import { OverlayBox }           from '../components/overlays/OverlayBox'
-import { styles, colors, screenWidth, screenHeight } from "../styles";
+import { colors, screenWidth, screenHeight } from "../styles";
 import { core } from "../../core";
 
 export class SimpleOverlay extends Component<any, any> {
@@ -21,7 +15,7 @@ export class SimpleOverlay extends Component<any, any> {
   customContent : Component;
   callback : any;
   selection : string[];
-  getItems : () => any[]
+  getItems : () => any[];
 
   constructor(props) {
     super(props);

@@ -11,7 +11,7 @@ let stripAdditionalStates = (routeState, target) => {
   for (let i = routeState.index; i >= 0; i--) {
     if (routeState.routes[i].routeName === target) {
       // found it!
-      routeState.index = i
+      routeState.index = i;
       return true;
     }
     else {
@@ -27,7 +27,7 @@ let stripAdditionalStates = (routeState, target) => {
     routeState.routes.pop()
   }
   return false;
-}
+};
 
 
 
@@ -43,7 +43,7 @@ let getState = (routeState) => {
     routeState.routes[0] = getState(routeState.routes[0])
   }
   return routeState;
-}
+};
 
 let mergeStates = (targetState, oneOver) => {
   if (oneOver.routes && Array.isArray(oneOver.routes) && oneOver.routes.length > 0) {
@@ -62,7 +62,7 @@ let mergeStates = (targetState, oneOver) => {
       targetState.index = targetState.routes.length - 1;
     }
   }
-}
+};
 
 
 
@@ -78,8 +78,8 @@ function revertState(routeState) {
   let topLevel = findTopLevelRoutes(routeState) || routeState;
 
   if (topLevel.index === 0) {
-    console.log("removeElement higher")
-    let parent = getParent(routeState, topLevel.routeName)
+    console.log("removeElement higher");
+    let parent = getParent(routeState, topLevel.routeName);
     parent.index -= 1;
     parent.routes.pop();
   }
@@ -99,16 +99,16 @@ const getNameOfCurrentRoute = (routeState) => {
 };
 
 function getParent(state, routeName) {
-  console.log("searching", state, "for", routeName)
+  console.log("searching", state, "for", routeName);
   if (state.routes[state.index].routeName === routeName) {
     return state;
   }
 
   if (state.routes[state.index].routes) {
-    console.log("have children!", state.routes[state.index].routes)
+    console.log("have children!", state.routes[state.index].routes);
     let subLevel = state.routes[state.index];
     if (subLevel.routeName === routeName) {
-      console.log("found summin!")
+      console.log("found summin!");
       return state;
     }
     else {
@@ -122,7 +122,7 @@ function getParent(state, routeName) {
 
 
 function searchTreeForParentOfRoute(state, routeName) {
-  console.log("Searching", state, "for", routeName)
+  console.log("Searching", state, "for", routeName);
   if (state.routes) {
     for ( let i = 0; i < state.routes.length; i++) {
       if (state.routes[i].routeName === routeName) {
@@ -170,8 +170,9 @@ function changeStateToGoToRoute(state, routeName) {
   if (!routeName) { return }
 
   let parent = searchTreeForParentOfRoute(state, routeName);
-  if (!parent) { return };
-
+  if (!parent) {
+    return;
+  }
   let targetIndex = getIndexOfRouteName(parent, routeName);
   if (parent.index === targetIndex) {
     return changeStateToGoToRoute(state, parent.routeName)
@@ -222,7 +223,7 @@ export const getAppReducer = function(navReducer) {
           let newState = xUtil.deepExtend({}, state);
           changeStateToGoToRoute(newState, action.target);
           // console.log(state, newState)
-          action.type = "Navigation/COMPLETE_TRANSITION"
+          action.type = "Navigation/COMPLETE_TRANSITION";
           return navReducer(newState, action);
         }
       }
@@ -235,10 +236,10 @@ export const getAppReducer = function(navReducer) {
 
       if (action.type === "Navigation/COMPLETE_TRANSITION") {
         expectedCompletes = Math.max(expectedCompletes - 1, 0);
-        console.log("ExpectedCompletes after complete:", expectedCompletes)
+        console.log("ExpectedCompletes after complete:", expectedCompletes);
 
         if (expectedCompletes === 0) {
-          console.log("Working by the chopping block", choppingBlock)
+          console.log("Working by the chopping block", choppingBlock);
           if (choppingBlock.length > 0) {
             let newState = xUtil.deepExtend({}, state);
             while (choppingBlock.length > 0) {
@@ -270,7 +271,7 @@ export const getAppReducer = function(navReducer) {
       return navReducer(state,action);
     }
   });
-}
+};
 
 
 

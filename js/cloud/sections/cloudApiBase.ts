@@ -2,7 +2,7 @@ import {request, download, downloadFile} from '../cloudCore'
 import { DEBUG, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD } from "../../ExternalConfig";
 import { preparePictureURI } from '../../util/Util'
 import {LOG, LOGe, LOGi} from '../../logging/Log'
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
+
 const RNFS = require('react-native-fs');
 
 export const defaultHeaders = {
@@ -28,17 +28,17 @@ type requestType = 'query' | 'body';
 
 
 class TokenStoreClass {
-  accessToken
-  applianceId
-  deviceId
-  eventId
-  installationId
-  locationId
-  messageId
-  sphereId
-  stoneId
-  toonId
-  userId
+  accessToken;
+  applianceId;
+  deviceId;
+  eventId;
+  installationId;
+  locationId;
+  messageId;
+  sphereId;
+  stoneId;
+  toonId;
+  userId;
 
   constructor() {
 
@@ -47,7 +47,7 @@ class TokenStoreClass {
 
 }
 
-export const TokenStore = new TokenStoreClass()
+export const TokenStore = new TokenStoreClass();
 
 
 /**

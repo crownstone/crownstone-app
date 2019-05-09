@@ -1,12 +1,10 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Text, TextStyle, TouchableOpacity,
-  View, ViewStyle
-} from "react-native";
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+  TouchableOpacity,
+  View} from "react-native";
+import { Pagination } from 'react-native-snap-carousel';
 import { core } from "../../core";
 import { Interview } from "../components/Interview";
-import { LiveComponent } from "../LiveComponent";
 import { IconCircle } from "../components/IconCircle";
 import { getRandomC1Name } from "../../fonts/customIcons";
 import { colors, screenWidth, styles } from "../styles";
@@ -32,7 +30,7 @@ export class SetupCrownstone extends Component<any, any> {
 
   _interview: any;
   randomIcon: string;
-  storeEvents = []
+  storeEvents = [];
   newCrownstoneState : any;
   constructor(props) {
     super(props);
@@ -87,7 +85,7 @@ export class SetupCrownstone extends Component<any, any> {
             if (this.newCrownstoneState.configFinished) {
               this._wrapUp();
             }
-          }
+          };
 
           if (newStoneData.familiarCrownstone === true) {
             let state = core.store.getState();
@@ -126,7 +124,7 @@ export class SetupCrownstone extends Component<any, any> {
           }
           this._interview.setLockedCard("problemBle");
         })
-    }
+    };
 
     if (this.props.unownedVerified) {
       let resetPromise = () => {
@@ -138,7 +136,7 @@ export class SetupCrownstone extends Component<any, any> {
             .then(() => { resolve() })
             .catch((err) => { reject(err) })
         })
-      }
+      };
       BlePromiseManager.registerPriority(resetPromise, {from: 'Setup: resetting stone ' + this.props.setupStone.handle})
         .then(() => {
           return performSetup();
@@ -181,7 +179,7 @@ export class SetupCrownstone extends Component<any, any> {
     if (!sphere) return null;
     let locations = sphere.locations;
     let locationIds = Object.keys(locations);
-    let locationElements = []
+    let locationElements = [];
     locationIds.forEach((locationId) => {
       locationElements.push({id: locationId, name: locations[locationId].config.name, icon: locations[locationId].config.icon});
     });
@@ -221,7 +219,7 @@ export class SetupCrownstone extends Component<any, any> {
           this.newCrownstoneState.setupFinished = false;
           this.newCrownstoneState.configFinished = false;
 
-          console.log("HERE", this.newCrownstoneState)
+          console.log("HERE", this.newCrownstoneState);
           if (!this.newCrownstoneState.name) {
             return this._interview.resetStackToCard("start");
           }
@@ -244,7 +242,7 @@ export class SetupCrownstone extends Component<any, any> {
         label: "I'll try again later...",
         onSelect: (result) => { NavigationUtil.backTo("Main"); }
       },
-    ]
+    ];
 
     return {
       start: {

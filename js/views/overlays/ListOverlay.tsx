@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -6,24 +7,23 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ScrollView,
   TouchableOpacity,
   Text,
   View,
 } from "react-native";
 
 import { OverlayBox }           from '../components/overlays/OverlayBox'
-import { styles, colors, screenWidth, screenHeight } from "../styles";
+import { colors, screenWidth, screenHeight } from "../styles";
 import { core } from "../../core";
 import { ScaledImage } from "../components/ScaledImage";
 import { Separator } from "../components/Separator";
 
-export class ListOverlay extends Component<any, any> {
+export class ListOverlay extends LiveComponent<any, any> {
   unsubscribe : any;
   customContent : Component;
   callback : any;
   selection : string[];
-  getItems : () => any[]
+  getItems : () => any[];
 
   constructor(props) {
     super(props);
@@ -39,7 +39,7 @@ export class ListOverlay extends Component<any, any> {
     };
     this.unsubscribe = [];
 
-    this.callback = () => {}
+    this.callback = () => {};
     this.customContent = null;
     this.getItems = () => { return [] };
     this.selection = [];
@@ -78,13 +78,13 @@ export class ListOverlay extends Component<any, any> {
       return null;
     }
 
-    let items = this.getItems()
+    let items = this.getItems();
     let elements = [];
     if (this.state.separator) {
       elements.push(<Separator key={"listOverlay_Separator_first"}/>)
     }
     items.forEach((item, i) => {
-      let isSelected = this.selection.indexOf(item.id) !== -1
+      let isSelected = this.selection.indexOf(item.id) !== -1;
       elements.push(
         <TouchableOpacity
           key={"listOverlayElement_"+i}
@@ -140,9 +140,9 @@ export class ListOverlay extends Component<any, any> {
   }
 
   close() {
-    this.callback = () => {}
+    this.callback = () => {};
     this.customContent = null;
-    this.getItems = () => { return [] }
+    this.getItems = () => { return [] };
     this.selection = [];
     this.setState({
       allowMultipleSelections: false,

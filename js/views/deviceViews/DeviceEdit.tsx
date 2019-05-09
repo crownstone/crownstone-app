@@ -25,7 +25,6 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import {LOG, LOGe} from '../../logging/Log'
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {Util} from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import { INTENTS } from "../../native/libInterface/Constants";
 
@@ -471,7 +470,7 @@ lang("_Encountered_Cloud_Issue__body"),
     if (switchCraftChange) { changePromises.push(switchCraftChange); }
     Promise.all(changePromises)
       .then(() => { core.eventBus.emit("hideLoading"); } )
-      .catch((err) => { () => { core.eventBus.emit("hideLoading"); } });
+      .catch((err) => { core.eventBus.emit("hideLoading"); });
 
     let actions = [];
     if (

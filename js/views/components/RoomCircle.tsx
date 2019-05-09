@@ -23,7 +23,6 @@ import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {IconCircle} from "./IconCircle";
-import { AlternatingContent } from "./animated/AlternatingContent";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
@@ -380,7 +379,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
   _onHoldProgress() {
     if (this.touching) {
       let nextStep = Math.min(1, this.state.progress + 0.04);
-      this.setState({ progress: nextStep })
+      this.setState({ progress: nextStep });
       if (nextStep >= 0.95) {
         this.props.onHold();
         this._clearHold();

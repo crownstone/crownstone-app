@@ -153,7 +153,6 @@ class LocationHandlerClass {
   /**
    * Reset will clear the last time present from the check. This will cause the enter sphere event to work as it should.
    * @param sphereId
-   * @param reset
    */
   exitSphere(sphereId) {
     LOG.info('LocationHandler: LEAVING SPHERE', sphereId);
@@ -271,7 +270,7 @@ class LocationHandlerClass {
    * @param sphereId
    * @param locationId
    * @param behaviourType
-   * @param [ bleController ]
+   * @param bleController
    * @private
    */
   _triggerRoomEvent( store, sphereId, locationId, behaviourType, bleController? ) {

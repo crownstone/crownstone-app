@@ -9,7 +9,7 @@ let syncingUsersInSpheres = {};
 export const syncUsersInSphere = {
   /**
    * This method will check if there are any users in rooms in the active sphere. If so, actions will be dispatched to the store.
-   * @param store
+   * @param sphereId
    */
   syncUsers: function(sphereId = null) {
     return new Promise((resolve, reject) => {

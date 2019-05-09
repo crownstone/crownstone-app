@@ -18,10 +18,8 @@ import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {Util} from "../../util/Util";
-import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
-import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class RoomLayer extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values

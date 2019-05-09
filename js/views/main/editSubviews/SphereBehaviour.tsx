@@ -9,7 +9,6 @@ import * as React from 'react';
 import {
   ScrollView} from 'react-native';
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {} from "../../styles";
 import {LOG} from "../../../logging/Log";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";

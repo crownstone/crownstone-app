@@ -1,4 +1,4 @@
-import {LOG, LOGe} from "../../logging/Log";
+import {LOGe} from "../../logging/Log";
 import { Scheduler } from "../../logic/Scheduler";
 import {Util} from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";

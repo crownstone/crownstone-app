@@ -178,7 +178,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     let topPositionOfOverlay = (screenHeight - height) / 2;
     let designElementSize = 0.38 * screenWidth;
     let topPositionOfDesignElements = topPositionOfOverlay - 0.3*designElementSize;
-    let closeIconSize = 40
+    let closeIconSize = 40;
     let topPadding = 12;
     let padding = 0.03*screenWidth;
 

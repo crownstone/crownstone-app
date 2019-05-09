@@ -9,10 +9,8 @@ import {
   Alert,
   Platform} from 'react-native';
 
-import { Util }               from './Util'
 import { AppUtil }            from './AppUtil'
 import { colors }             from '../views/styles'
-import { Icon }               from '../views/components/Icon'
 import { IconButton }         from '../views/components/IconButton'
 import { AlternatingContent } from "../views/components/animated/AlternatingContent";
 import { core } from "../core";

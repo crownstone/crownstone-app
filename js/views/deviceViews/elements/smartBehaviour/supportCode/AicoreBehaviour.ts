@@ -5,12 +5,12 @@ import { AicoreUtil } from "./AicoreUtil";
 import { xUtil } from "../../../../../util/StandAloneUtil";
 import { AicoreTimeData } from "./AicoreTimeData";
 
-const DEFAULT_DELAY_MINUTES = 5
+const DEFAULT_DELAY_MINUTES = 5;
 const EMPTY_RULE : behaviour = {
   action:   { type: "BE_ON", data: 1 },
   time:     { type: "ALL_DAY" },
   presence: { type: "IGNORE" },
-}
+};
 
 export class AicoreBehaviour {
   originalRule : behaviour;
@@ -38,8 +38,8 @@ export class AicoreBehaviour {
   _getChunks() {
     let intentionStr = "I will be";
     let actionStr = AicoreUtil.extractActionString(this.rule);
-    let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.rule)
-    let { locationPrefix, locationStr } = AicoreUtil.extractLocationStrings(this.rule)
+    let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.rule);
+    let { locationPrefix, locationStr } = AicoreUtil.extractLocationStrings(this.rule);
     let timeStr   = AicoreUtil.extractTimeString(this.rule);
     let { optionPrefix, optionStr } = AicoreUtil.extractOptionStrings(this.rule);
 
@@ -88,9 +88,9 @@ export class AicoreBehaviour {
         chunk = {label:chunk, changeAction: () => {}, data: null};
       }
       result.push({label: chunk.label, clickable: type !== null, type: type, data: chunk.data, hidden: hidden});
-    }
+    };
 
-    addToResult(chunks.intention)
+    addToResult(chunks.intention);
     if (chunks.action.label)          { addToResult(" "); addToResult(chunks.action,        SELECTABLE_TYPE.ACTION);   } else {  addToResult(chunks.action, SELECTABLE_TYPE.ACTION, true);    }
     if (chunks.presencePrefix.label)  { addToResult(" "); addToResult(chunks.presencePrefix);                          }
     if (chunks.presence.label)        { addToResult(" "); addToResult(chunks.presence,      SELECTABLE_TYPE.PRESENCE); } else {  addToResult(chunks.presence,SELECTABLE_TYPE.PRESENCE, true);  }

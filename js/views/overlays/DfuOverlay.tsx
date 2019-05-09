@@ -19,7 +19,6 @@ import { OverlayContent }  from '../components/overlays/OverlayContent'
 import { OverlayBox }      from '../components/overlays/OverlayBox'
 import { FirmwareHandler } from "../../native/firmware/FirmwareHandler";
 import {LOG, LOGd, LOGe} from "../../logging/Log";
-import { Util }            from "../../util/Util";
 import { ProgressCircle }  from "../components/ProgressCircle";
 import {colors, screenHeight, screenWidth} from '../styles'
 import {Icon} from "../components/Icon";

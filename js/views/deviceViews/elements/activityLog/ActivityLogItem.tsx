@@ -9,7 +9,6 @@ import {
   Text,
   View
 } from 'react-native';
-import {Util} from "../../../../util/Util";
 import {colors, screenWidth} from "../../../styles";
 import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../../util/DataUtil";
 import {INTENTS} from "../../../../native/libInterface/Constants";

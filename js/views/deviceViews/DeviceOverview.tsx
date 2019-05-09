@@ -32,7 +32,6 @@ import { TopbarButton }         from "../components/topbar/TopbarButton";
 import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
 import { UsbSummary }           from "./elements/UsbSummary";
-import { Scheduler }            from "../../logic/Scheduler";
 import {DeviceActivityLog} from "./elements/DeviceActivityLog";
 import { STONE_TYPES } from "../../Enums";
 import { core } from "../../core";

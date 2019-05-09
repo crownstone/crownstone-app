@@ -20,7 +20,6 @@ import {getStonesAndAppliancesInSphere} from "../../../util/DataUtil";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
-import { NavigationActions, StackActions } from "react-navigation";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 
 export class SphereEditSettings extends LiveComponent<any, any> {
@@ -239,7 +238,7 @@ text:lang("_Are_you_sure_you_want_to__right"), onPress:() => {
                 this._processLocalDeletion();
               })
               .catch((err) => {
-                console.log("ERROR", err)
+                console.log("ERROR", err);
                 core.eventBus.emit('hideLoading');
                 Alert.alert(
 lang("_Could_not_delete_Sphere__header"),

@@ -5,7 +5,7 @@ import {
   Text,
   View, TextStyle, ViewStyle
 } from "react-native";
-import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../../../../styles";
+import { availableScreenHeight, colors, screenWidth, styles } from "../../../../styles";
 import { SELECTABLE_TYPE } from "../../../../../Enums";
 import { core } from "../../../../../core";
 import { BehaviourOptionList } from "./BehaviourOptionList";
@@ -23,7 +23,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
   selectedChunk : selectableAicoreBehaviourChunk;
 
   exampleBehaviours : any;
-  baseHeight = availableScreenHeight - 300
+  baseHeight = availableScreenHeight - 300;
 
   constructor(props) {
     super(props);
@@ -81,7 +81,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
         segments = [];
         wordsOnLine = [];
       }
-    }
+    };
 
     ruleChunks.forEach((chunk,i) => {
       // refresh the selected chunk for the UI
@@ -109,7 +109,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
             segments.push(<View key={"label_element_" + i}><Text style={normal}>{wordsOnLine.join(" ")}</Text></View>);
           }
         }
-      }
+      };
 
 
       // this piece of code guesses the length of the line so we can do manual wrapping.
@@ -117,7 +117,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
       for (let i = 0; i < words.length; i++) {
         let lastWordLength = 0;
         if (words[i]) {
-          lastWordLength = AicoreUtil.getWordLength(words[i] + (lastChunk ? "" : ' '))
+          lastWordLength = AicoreUtil.getWordLength(words[i] + (lastChunk ? "" : ' '));
           letterLengthOnLine += lastWordLength;
         }
         if (letterLengthOnLine > screenWidth - paddingForRules*2 && !lastChunk) {
@@ -155,7 +155,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
         break;
       case SELECTABLE_TYPE.TIME:
         behaviourHeight += 130;
-        break
+        break;
       case SELECTABLE_TYPE.OPTION:
         behaviourHeight += 50;
         break
@@ -165,7 +165,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
       // selecting a behaviour type while none was selected before.
       let animation = [];
       this.setState({detail: selectedBehaviourType, selectedDetailField: false});
-      this.state.detailHeight.setValue(behaviourHeight)
+      this.state.detailHeight.setValue(behaviourHeight);
       animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 100, duration: 100}));
       animation.push(Animated.timing(this.state.mainBottomOpacity, {toValue: 0, delay: 0, duration: 100}));
       animation.push(Animated.timing(this.state.containerHeight  , {toValue: behaviourHeight, delay: 0, duration: 200}));
@@ -188,7 +188,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
       let animation = [];
       animation.push(Animated.timing(this.state.detailHeight,     {toValue: behaviourHeight, delay:0, duration: 200}));
       animation.push(Animated.timing(this.state.containerHeight,  {toValue: behaviourHeight, delay:0, duration: 200}));
-      animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 150}))
+      animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 150}));
       Animated.parallel(animation).start(() => {
         this.setState({detail: selectedBehaviourType, selectedDetailField: false}, () => {
           let animation = [];
@@ -227,13 +227,14 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
   /**
    * The example origin field is meant to allow the system to update the custom fields based on the user selection.
    * @param exampleOriginField
+   * @param useData
    * @private
    */
   _showTimeSelectionPopup(exampleOriginField, useData = true) {
     core.eventBus.emit('showAicoreTimeCustomizationOverlay', {
       callback: (newTime : aicoreTime) => {
         if (newTime.type === "RANGE") {
-          let time = { from: newTime.from, to: newTime.to }
+          let time = { from: newTime.from, to: newTime.to };
           this.exampleBehaviours.time[exampleOriginField].setTime(newTime);
           this.rule.setTime(time);
 

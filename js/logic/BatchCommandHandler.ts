@@ -113,6 +113,7 @@ class BatchCommandHandlerClass {
    * This will commands one by one to the connected Crownstone.
    * @param connectedStoneInfo
    * @param activeOptions
+   * @param relayOnlyUsed
    * @returns { Promise<T> }
    */
   _handleAllCommandsForStone(connectedStoneInfo: connectionInfo, activeOptions : any = {}, relayOnlyUsed : boolean = false) {
@@ -302,6 +303,7 @@ class BatchCommandHandlerClass {
   /**
    * This searches for very recent readings of Crownstones that are near before we start to search for them.
    * @param rssiScanThreshold
+   * @param directTargets
    * @returns {any}
    * @private
    */
@@ -584,6 +586,7 @@ class BatchCommandHandlerClass {
    * It reduces the attempt counter in the affected processes by 1. If the attempt count is at 0, it will remove the command
    * from the list.
    * @param connectedCrownstone
+   * @param executionTimestamp
    * @param err
    */
   attemptHandler(connectedCrownstone, executionTimestamp, err) {
@@ -630,6 +633,7 @@ class BatchCommandHandlerClass {
 
   /**
    * @param { Boolean } priority        //  this will move any command to the top of the queue
+   * @param options
    */
   _execute(priority, options? : batchCommandEntryOptions) {
     this._scheduleExecute(priority, options);

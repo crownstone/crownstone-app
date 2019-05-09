@@ -9,7 +9,6 @@ import {
   SMART_BEHAVIOUR_TYPES
 } from "../../../../Enums";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
-import { DeviceSmartBehaviour_Editor } from "./DeviceSmartBehaviour_Editor";
 import { core } from "../../../../core";
 import { availableScreenHeight } from "../../../styles";
 import { ScaledImage } from "../../../components/ScaledImage";
@@ -44,22 +43,22 @@ export class DeviceSmartBehaviour_TypeStart extends Component<{stoneId: string, 
 
   _getPresenceExamples() {
     let examples : AicoreBehaviour[] = [];
-    examples.push(new AicoreBehaviour().setPresenceInSphere().setTimeWhenDark())
-    examples.push(new AicoreBehaviour().setPresenceInLocations(this._getLocationIds(2)).setTimeAllday())
-    examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setOptionStayOnWhilePeopleInSphere())
+    examples.push(new AicoreBehaviour().setPresenceInSphere().setTimeWhenDark());
+    examples.push(new AicoreBehaviour().setPresenceInLocations(this._getLocationIds(2)).setTimeAllday());
+    examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setOptionStayOnWhilePeopleInSphere());
     return examples;
   }
   _getSmartTimerExamples() {
     let examples : AicoreBehaviour[] = [];
     examples.push(new AicoreBehaviour().setPresenceInSphere().setTimeFromSunset(30).setTimeTo(23,0));
-    examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setOptionStayOnWhilePeopleInLocation())
-    examples.push(new AicoreBehaviour().ignorePresence().setTimeFromSunset(0).setTimeTo(22,0).setOptionStayOnWhilePeopleInSphere())
+    examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setOptionStayOnWhilePeopleInLocation());
+    examples.push(new AicoreBehaviour().ignorePresence().setTimeFromSunset(0).setTimeTo(22,0).setOptionStayOnWhilePeopleInSphere());
     return examples;
   }
   _getTwilightModeExamples() {
     let examples : AicoreTwilight[] = [];
-    examples.push(new AicoreTwilight().setDimAmount(0.5).setTimeWhenDark())
-    examples.push(new AicoreTwilight().setDimAmount(0.35).setTimeFrom(23,30).setTimeToSunrise())
+    examples.push(new AicoreTwilight().setDimAmount(0.5).setTimeWhenDark());
+    examples.push(new AicoreTwilight().setDimAmount(0.35).setTimeFrom(23,30).setTimeToSunrise());
     return examples;
   }
   _getChildSafetyExamples() {

@@ -10,7 +10,7 @@ function fromOldTo3_0() {
   let actions = [];
   let appVersion = DeviceInfo.getReadableVersion();
   if (xUtil.versions.isLower(state.app.migratedDataToVersion, appVersion) || !state.app.migratedDataToVersion) {
-    let locationMap = {}
+    let locationMap = {};
     Object.keys(state.spheres).forEach((sphereId) => {
       if (Object.keys(state.spheres[sphereId].locations).length === 0) {
         let localId = xUtil.getUUID();
@@ -24,7 +24,7 @@ function fromOldTo3_0() {
           });
         }
       }
-    })
+    });
 
     DataUtil.callOnAllStones(state, (sphereId, stoneId, stone) => {
       if (Permissions.inSphere(sphereId).editCrownstone) {

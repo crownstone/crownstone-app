@@ -5,7 +5,7 @@ import { ScaledImage } from "../views/components/ScaledImage";
 import { colors, screenHeight, styles } from "../views/styles";
 import * as React from "react";
 import { View, Text, Alert } from "react-native";
-import { TextButton, TextButtonLight, TextButtonSemitranslucentDark } from "../views/components/InterviewComponents";
+import { TextButton} from "../views/components/InterviewComponents";
 import { LOGe } from "../logging/Log";
 
 class InviteCenterClass {
@@ -67,14 +67,14 @@ class InviteCenterClass {
   }
 
   acceptInvitation(sphereId) {
-    core.eventBus.emit("showLoading", "Accepting invitation...")
+    core.eventBus.emit("showLoading", "Accepting invitation...");
     CLOUD.forSphere(sphereId).acceptInvitation()
       .then(() => {
         return CLOUD.sync()
       })
       .then(() => {
         OnScreenNotifications.removeNotification("invitationToSphere" + sphereId);
-        Alert.alert("Welcome!", "The invitation has been accepted!", [{text:"OK!"}])
+        Alert.alert("Welcome!", "The invitation has been accepted!", [{text:"OK!"}]);
         core.eventBus.emit("hideLoading");
         core.eventBus.emit("hideCustomOverlay");
       })
@@ -87,7 +87,7 @@ class InviteCenterClass {
   }
 
   declineInvitation(sphereId) {
-    core.eventBus.emit("showLoading", "Declining invitation...")
+    core.eventBus.emit("showLoading", "Declining invitation...");
     CLOUD.forSphere(sphereId).declineInvitation()
       .then(() => {
         OnScreenNotifications.removeNotification("invitationToSphere" + sphereId);

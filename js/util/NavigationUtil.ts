@@ -13,23 +13,23 @@ export const NavigationUtil = {
   },
 
   back() {
-    const navigateAction = NavigationActions.back()
+    const navigateAction = NavigationActions.back();
 
     navigationStore.dispatch(navigateAction);
   },
 
 
   backTo(target) {
-    console.log("I want to go back to: ", target)
+    console.log("I want to go back to: ", target);
     const navigateAction = {
       type: "Navigation/BACK",
       target: target
-    }
+    };
     navigationStore.dispatch(navigateAction);
   },
 
   backToTop() {
-    const navigateAction = NavigationActions.back()
+    const navigateAction = NavigationActions.back();
 
     navigationStore.dispatch(navigateAction);
   },
@@ -80,7 +80,7 @@ export const NavigationUtil = {
     let action = {
       type: 'Navigation/BACK',
       logout: true,
-    }
+    };
     navigationStore.dispatch(action);
   }
-}
+};

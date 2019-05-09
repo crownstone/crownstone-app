@@ -2,7 +2,6 @@ import {Scheduler} from "../logic/Scheduler";
 import {CLOUD} from "../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL} from "../ExternalConfig";
 import {LOGd, LOGe} from "../logging/Log";
-import {Util} from "../util/Util";
 import { xUtil } from "../util/StandAloneUtil";
 import { core } from "../core";
 

@@ -27,14 +27,14 @@ class OnScreenNotificationsClass {
   }
 
   removeAllNotificationsFrom(sourceId) {
-    let ids = Object.keys(this.notifications)
+    let ids = Object.keys(this.notifications);
     let changes = false;
     ids.forEach((id) => {
       if (this.notifications[id].source === sourceId) {
         changes = true;
         delete this.notifications[id];
       }
-    })
+    });
 
     if (changes) {
       core.eventBus.emit('onScreenNotificationsUpdated');
@@ -46,4 +46,4 @@ class OnScreenNotificationsClass {
 
 }
 
-export const OnScreenNotifications = new OnScreenNotificationsClass()
+export const OnScreenNotifications = new OnScreenNotificationsClass();

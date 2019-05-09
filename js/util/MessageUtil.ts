@@ -1,7 +1,6 @@
 
 
 import {CLOUD} from "../cloud/cloudAPI";
-import {Util} from "./Util";
 import {LOGe} from "../logging/Log";
 import {MapProvider} from "../backgroundProcesses/MapProvider";
 import { xUtil } from "./StandAloneUtil";

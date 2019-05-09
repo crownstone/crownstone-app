@@ -352,7 +352,6 @@ class BarnesHutSolver {
    *
    * @param parentBranch
    * @param region
-   * @param parentRange
    * @private
    */
   _insertRegion(parentBranch, region) {

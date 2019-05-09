@@ -40,7 +40,7 @@ export class LocalizationSetupStep2 extends Component<any, any> {
   }
 
   render() {
-    let ai = {name:"AI"}
+    let ai = {name:"AI"};
     if (this.state.visible) {
       ai = Util.data.getAiData(core.store.getState(), this.state.sphereId);
     }

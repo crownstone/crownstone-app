@@ -2,9 +2,8 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
   Text,
-  View, TextStyle, ViewStyle
-} from "react-native";
-import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../../../../styles";
+  View} from "react-native";
+import { colors, deviceStyles, screenWidth} from "../../../../styles";
 
 
 

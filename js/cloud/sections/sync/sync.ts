@@ -3,7 +3,6 @@ import {LOG, LOGe, LOGw} from '../../../logging/Log'
 import { AppUtil }                  from "../../../util/AppUtil";
 import { cleanupPowerUsage, syncPowerUsage }   from "./syncPowerUsage";
 import { syncEvents }               from "./syncEvents";
-import { MessageCenter }            from "../../../backgroundProcesses/MessageCenter";
 import { NotificationHandler }      from "../../../backgroundProcesses/NotificationHandler";
 import { UserSyncer }               from "./modelSyncs/UserSyncer";
 import { SphereSyncer }             from "./modelSyncs/SphereSyncer";
@@ -170,7 +169,7 @@ export const sync = {
 
 
         LOG.info("Sync after: START Executing cloud poll.");
-        CloudPoller.poll(true)
+        CloudPoller.poll(true);
         LOG.info("Sync after: DONE Executing cloud poll.");
 
         return reloadTrackingRequired;

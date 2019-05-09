@@ -169,7 +169,7 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
           }
         });
 
-        if (nearest) {
+        if (nearest && nearest.rssi) {
           let noun = null;
           if (nearest.rssi > -55) {
             noun =  lang("very");

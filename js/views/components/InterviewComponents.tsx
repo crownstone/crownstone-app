@@ -2,8 +2,7 @@ import { Text, TextStyle, TouchableOpacity, ViewStyle,View } from "react-native"
 import { ScaledImage } from "./ScaledImage";
 import { Icon } from "./Icon";
 import { colors, screenWidth } from "../styles";
-import { useState } from "react";
-import { FadeIn, FadeInView } from "./animated/FadeInView";
+import { FadeIn} from "./animated/FadeInView";
 import React from "react";
 import { TextEditInput } from "./editComponents/TextEditInput";
 

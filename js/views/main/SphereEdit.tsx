@@ -6,8 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert, Button,
-  RefreshControl,
+  Alert, RefreshControl,
   ScrollView
 } from "react-native";
 
@@ -16,8 +15,6 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { IconButton }        from '../components/IconButton'
 import { colors }            from './../styles';
 import { Permissions }       from "../../backgroundProcesses/PermissionManager";
-import {  }        from "../styles";
-import { eventBus }          from "../../util/EventBus";
 import { CLOUD }             from "../../cloud/cloudAPI";
 import { createNewSphere }   from "../../util/CreateSphere";
 import { core }              from "../../core";
@@ -116,7 +113,7 @@ export class SphereEdit extends Component<any, any> {
       type: 'navigation',
       largeIcon: <IconButton name='md-cube' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
-        console.log("HERE LA PROPOS", this.props)
+        console.log("HERE LA PROPOS", this.props);
         NavigationUtil.navigate("SphereRoomOverview", {sphereId: this.props.sphereId});
       }
     });

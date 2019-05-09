@@ -80,8 +80,8 @@ export class RoomExplanation extends Component<any, any> {
 /**
  * The right item is the flickering icon for localization.
  * @param state
- * @param enoughCrownstonesInLocations
- * @param label
+ * @param sphereId
+ * @param locationId
  */
 function shouldShowTrainingButton(state, sphereId, locationId) {
   let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId);

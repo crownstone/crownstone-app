@@ -1,7 +1,7 @@
 import { SetupHelper }        from './SetupHelper';
 import { BleUtil }            from '../../util/BleUtil';
 import { Util }               from '../../util/Util';
-import {LOG, LOGd, LOGe} from '../../logging/Log';
+import {LOGd, LOGe} from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
 import { DfuStateHandler }    from "../firmware/DfuStateHandler";
 import {Scheduler} from "../../logic/Scheduler";

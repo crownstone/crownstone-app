@@ -171,7 +171,7 @@ export const GraphingEngine = {
    *
    * One optimization can be used to reuse distances since this is a sliding window approach.
    * @param data
-   * @param group
+   * @param options
    * @returns {string}
    * @private
    */

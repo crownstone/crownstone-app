@@ -3,8 +3,7 @@ import {
   createStackNavigator,
   createBottomTabNavigator,
   createSwitchNavigator,
-  HeaderMode, createDrawerNavigator
-} from "react-navigation";
+  HeaderMode} from "react-navigation";
 import { TextStyle }          from "react-native";
 import { Provider, connect }  from 'react-redux';
 import { TabIcon }            from "./TabIcon";
@@ -19,10 +18,10 @@ interface headerModeObj {
 }
 const defaultMode : headerModeObj = {
   headerMode: 'float',
-}
+};
 const hiddenHeaderMode : headerModeObj = {
   headerMode: 'none',
-}
+};
 
 interface defaultHeaderStyle {
   headerStyle: any,
@@ -42,19 +41,19 @@ const defaultHeaderStyle : defaultHeaderStyle = {
     fontSize:14,
     fontWeight: 'bold',
   }
-}
+};
 const defaultHeader = {
   ...defaultMode,
   defaultNavigationOptions: {
     ...defaultHeaderStyle
   },
-}
+};
 const defaultBackButtonHeaderStyle = {
   ...defaultMode,
   defaultNavigationOptions: {
     ...defaultHeaderStyle,
   }
-}
+};
 
 
 const NewBehaviourStack = createStackNavigator(
@@ -351,18 +350,19 @@ export const RootStack = createSwitchNavigator(
     initialRouteName: "Splash",
     ...hiddenHeaderMode,
   }
-)
+);
 
 
 /**
  * this is a convenience method that will create a new stack navigator for each modal so that it has a header.
  * @param view
+ * @param ViewElement
  */
 function wrap(view, ViewElement) {
   let obj = {};
   obj[view] = {
     screen: ViewElement,
-  }
+  };
   return createStackNavigator(
     obj,
     {

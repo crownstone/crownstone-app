@@ -6,26 +6,17 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Alert,
   Animated,
   ScrollView,
-  Text,
   View
 } from 'react-native';
 
-import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
-import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
 
 import {
-  getPresentUsersInLocation,
-  getCurrentPowerUsageInLocation,
-  getStonesAndAppliancesInLocation,
-  canUseIndoorLocalizationInSphere,
-  enoughCrownstonesInLocationsForIndoorLocalization, DataUtil
-} from "../../util/DataUtil";
-import { styles, colors, screenHeight, tabBarHeight, topBarHeight, } from '../styles'
+  getStonesAndAppliancesInLocation} from "../../util/DataUtil";
+import { screenHeight, tabBarHeight, topBarHeight, } from '../styles'
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { LiveComponent }          from "../LiveComponent";
@@ -106,7 +97,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
                         showNavigationIcon={false}
                       />
                   });
-                })
+                });
 
                 return items;
               },

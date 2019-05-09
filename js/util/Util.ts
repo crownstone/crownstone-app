@@ -5,8 +5,6 @@ import { screenWidth, screenHeight, pxRatio } from '../views/styles'
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
-import {ALWAYS_DFU_UPDATE} from "../ExternalConfig";
-import {Permissions} from "../backgroundProcesses/PermissionManager";
 import { FileUtil } from "./FileUtil";
 import { core } from "../core";
 

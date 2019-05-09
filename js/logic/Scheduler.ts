@@ -91,7 +91,6 @@ class SchedulerClass {
   /**
    * Set a trigger that can be loaded with actions or callbacks. Will be fired on ticks.
    * @param id
-   * @param {Object} options       | Possible options:
    *                                    repeatEveryNSeconds
    */
   removeTrigger(id) {

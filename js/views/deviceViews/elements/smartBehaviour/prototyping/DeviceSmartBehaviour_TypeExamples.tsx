@@ -39,7 +39,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
     let examples = [];
     this.props.examples.forEach((example, index) => {
       examples.push(<BehaviourExample data={example} key={"behaviourExample_" + index} twilightRule={this.props.twilightRules} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
-    })
+    });
     return examples;
   }
 

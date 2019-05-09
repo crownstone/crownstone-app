@@ -7,14 +7,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
-  ScrollView,
   TouchableOpacity,
   Text,
   View
 } from 'react-native';
-import {OverlayBox} from "../components/overlays/OverlayBox";
 import {WNStyles} from "../overlays/WhatsNew/WhatsNewStyles";
-import {availableScreenHeight, colors, screenWidth, styles} from "../styles";
+import {colors, screenWidth, styles} from "../styles";
 import { core } from "../../core";
 
 

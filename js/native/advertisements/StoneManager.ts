@@ -305,8 +305,28 @@ class StoneManagerClass {
   /**
    * This is a suggestion for the cases where you can decypher an advertisement but you don't know this Crownstone.
    * Currently unused.
-   * @param handle
-   * @private
+   * @param stoneFromAdvertisement
+   * @param stoneFromAdvertisementId
+   * @param sphereId
+   * @param stoneFromServiceData
+   * @param stoneFromServiceDataId
+   * @param stoneFromAdvertisement
+   * @param stoneFromAdvertisementId
+   * @param sphereId
+   * @param stoneFromServiceData
+   * @param stoneFromServiceDataId
+   * @param stoneFromAdvertisement
+   * @param stoneFromAdvertisementId
+   * @param sphereId
+   * @param stoneFromServiceData
+   * @param stoneFromServiceDataId
+   * @param stoneFromAdvertisement
+   * @param stoneFromAdvertisementId
+   * @param sphereId
+   * @param stoneFromServiceData
+   * @param stoneFromServiceDataId
+   * @param stoneFromAdvertisement
+   * @param stoneFromAdvertisementId
    */
   // _factoryResetUnknownCrownstone(handle) {
   //   if (this.factoryResetUnknownStonesEnabled === false) { return; }

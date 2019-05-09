@@ -8,7 +8,6 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Text} from 'react-native';
 import {Background} from "../components/Background";
-import {} from "../styles";
 
 export class RoomDeleted extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {

@@ -5,7 +5,7 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSummary", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   ActivityIndicator,
   TouchableOpacity,
@@ -29,7 +29,6 @@ import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { RoomList } from "../../components/RoomList";
-import { SELECTABLE_TYPE } from "../../../Enums";
 
 export class DeviceSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
@@ -106,7 +105,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
     let currentState = stone.state.state;
     let label =  lang("Turn_On");
     let stateColor = colors.csBlueDark;
-    let stateColorInner = colors.csBlueDark.rgba(0.1)
+    let stateColorInner = colors.csBlueDark.rgba(0.1);
     if (currentState > 0) {
       label =  lang("Turn_Off");
       stateColor = colors.green;
@@ -288,7 +287,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
 
 export function StoneInformation(props : {stoneId: string, sphereId: string, canSelectRoom: boolean}) {
   let state = core.store.getState();
-  let sphere = state.spheres[props.sphereId]
+  let sphere = state.spheres[props.sphereId];
   if (!sphere) { return }
   const stone = sphere.stones[props.stoneId];
   if (!stone) { return }
@@ -319,7 +318,7 @@ export function StoneInformation(props : {stoneId: string, sphereId: string, can
                   showNavigationIcon={false}
                   small={true}
                 />})
-            })
+            });
 
             return items;
           },

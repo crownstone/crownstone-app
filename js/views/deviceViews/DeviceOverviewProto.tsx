@@ -7,7 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 
-import {  } from '../styles'
 import { Background } from '../components/Background'
 import { DeviceSummary }        from "./elements/DeviceSummary";
 import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";

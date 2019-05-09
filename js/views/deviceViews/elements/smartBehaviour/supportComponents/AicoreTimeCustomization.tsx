@@ -1,10 +1,10 @@
-import React, { useState,useEffect, Component } from 'react';
+import React, { useState,Component } from 'react';
 import {
   Alert,
   Text,
   View, TextStyle
 } from "react-native";
-import { availableScreenHeight, colors, deviceStyles, screenHeight, screenWidth, styles } from "../../../../styles";
+import { colors, screenWidth} from "../../../../styles";
 import Slider from '@react-native-community/slider';
 
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
@@ -193,7 +193,7 @@ function TimePart(props : {
                   timeReference.getDate((date) => {
                     let hours = date.getHours();
                     let minutes = date.getMinutes();
-                    setTime({hours:hours, minutes:minutes})
+                    setTime({hours:hours, minutes:minutes});
                     props.timeObj.setTime(hours, minutes);
                     setFinished(true);
                     props.setFinished(true);
@@ -269,7 +269,7 @@ function TimeSummary(props : any) {
 
 
 function TypeSelector(props) {
-  let i = 0
+  let i = 0;
   return (
     <View>
       <TimeButtonWithImage

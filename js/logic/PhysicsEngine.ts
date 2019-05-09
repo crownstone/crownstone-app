@@ -5,7 +5,6 @@ import ForceAtlas2BasedRepulsionSolver      from './physicsComponents/FA2BasedRe
 import ForceAtlas2BasedCentralGravitySolver from './physicsComponents/FA2BasedCentralGravitySolver';
 import MassMover from "./physicsComponents/MassMover";
 import KamadaKawai from "./physicsComponents/KamadaKawai";
-import {Util} from "../util/Util";
 import { xUtil } from "../util/StandAloneUtil";
 
 class PhysicsEngine {

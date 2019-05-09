@@ -298,16 +298,16 @@ export const xUtil = {
   deepCompare: function (a, b, d=0) {
     for (let prop in b) {
       if (b.hasOwnProperty(prop)) {
-        console.log("checking", prop, d)
+        console.log("checking", prop, d);
         if (a[prop] === undefined) {
-          console.log("undefined", prop)
+          console.log("undefined", prop);
           return false;
         }
         else if (b[prop].constructor === Object) {
           if (a[prop].constructor === Object) {
-            console.log("Going to compare", a[prop], b[prop])
+            console.log("Going to compare", a[prop], b[prop]);
             if (xUtil.deepCompare(a[prop], b[prop], d+1) === false) {
-              console.log("failed child", prop, a[prop], b[prop])
+              console.log("failed child", prop, a[prop], b[prop]);
               return false
             }
           }
@@ -331,7 +331,7 @@ export const xUtil = {
         }
         else {
           if (a[prop] !== b[prop]) {
-            console.log("not same", prop, a[prop], b[prop])
+            console.log("not same", prop, a[prop], b[prop]);
             return false;
           }
         }

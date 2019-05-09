@@ -6,19 +6,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  ActivityIndicator,
-  Switch,
   TouchableOpacity,
   Text,
-  View, ViewStyle
-} from "react-native";
+  View} from "react-native";
 
 import { Icon } from '../Icon';
 import { styles, colors}        from '../../styles'
 import {AnimatedCircle} from "../animated/AnimatedCircle";
-import {SlideFadeInView} from "../animated/SlideFadeInView";
-import { xUtil } from "../../../util/StandAloneUtil";
 import { core } from "../../../core";
 
 
@@ -32,7 +26,7 @@ export class DeviceEntryBasic extends Component<any, any> {
   }
 
   _getIcon(element, stone) {
-    let color = colors.green.rgba(0.8)
+    let color = colors.green.rgba(0.8);
     return (
       <AnimatedCircle size={60} color={color}>
         <Icon name={element.config.icon} size={35} color={'#ffffff'} />

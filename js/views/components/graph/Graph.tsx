@@ -16,7 +16,6 @@ import {
   Path,
   } from 'react-native-svg';
 import { GraphingEngine } from "../../../logic/GraphingEngine";
-import { Util }           from "../../../util/Util";
 import { DataStep }       from './GraphComponents/DataStep'
 import { GraphDefs }      from "./GraphComponents/GraphDefs";
 import { GraphDataAxis }  from "./GraphComponents/GraphDataAxis";

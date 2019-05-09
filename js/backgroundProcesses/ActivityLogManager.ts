@@ -1,4 +1,4 @@
-import {LOG, LOGe} from "../logging/Log";
+import {LOGe} from "../logging/Log";
 import {transferActivityLogs} from "../cloud/transferData/transferActivityLogs";
 import {MapProvider} from "./MapProvider";
 import {transferActivityRanges} from "../cloud/transferData/transferActivityRanges";

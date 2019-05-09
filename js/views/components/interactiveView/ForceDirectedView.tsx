@@ -459,7 +459,7 @@ export class ForceDirectedView extends Component<{
     this.unsubscribeGestureEvents.push(core.eventBus.on('physicsRun'+this.props.viewId, (iterations) => {
       this.recenterOnStable = true;
       this.physicsEngine.stabilize(iterations, false);
-    }))
+    }));
 
     this._viewRef.measureInWindow((x,y,width,height) => {
       console.log(x,y,width,height, this._viewRef)

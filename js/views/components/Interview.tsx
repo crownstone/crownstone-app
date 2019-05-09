@@ -1,17 +1,13 @@
 import * as React from 'react'; import { Component, useState } from "react";
 import {
-  Linking,
-  Platform, ScrollView, StatusBar,
-  Text, TextInput, TextStyle,
-  View, ViewStyle
-} from "react-native";
-import { availableModalHeight, availableScreenHeight, colors, screenHeight, screenWidth, styles } from "../styles";
+  ScrollView, Text, TextStyle,
+  View} from "react-native";
+import { availableModalHeight, colors, screenHeight, screenWidth, styles } from "../styles";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { FadeIn } from "../components/animated/FadeInView";
 import {
   InterviewTextInput,
-  TextButtonLight, TextButtonLightWithIcon,
-  TextButtonWithLargeImage, ThemedTextButtonWithIcon
+  TextButtonLight, TextButtonWithLargeImage, ThemedTextButtonWithIcon
 } from "../components/InterviewComponents";
 
 let headerStyle : TextStyle = {
@@ -46,10 +42,10 @@ export class Interview extends Component<{
   update?() : void
 }, any> {
 
-  interviewState
-  interviewData
+  interviewState;
+  interviewData;
 
-  _carousel
+  _carousel;
   responseHeaders : any;
   selectedOptions = [];
   _lockedCard = false;
@@ -210,7 +206,7 @@ export class Interview extends Component<{
             cards.push(allCards[cardId]);
           });
 
-          let activeCard = cards[this.state.activeCardIndex]
+          let activeCard = cards[this.state.activeCardIndex];
 
           if (this._lockedCard || activeCard.locked === true) {
             this.setState({cardIds: [this.state.cardIds[this.state.activeCardIndex]], activeCardIndex: 0});
@@ -229,8 +225,8 @@ function InterviewCard(props : {
   selectedOption?: number,
   nextCard: (nextCard:string, value: interviewReturnData, index:number, option: interviewOption) => void
 }) {
-  let [ editableInputState, setEditableInputState ] = useState("")
-  let [ textInput, setTextInput ] = useState("")
+  let [ editableInputState, setEditableInputState ] = useState("");
+  let [ textInput, setTextInput ] = useState("");
 
   let header = props.headerOverride || props.card.header;
   let subHeader = props.card.subHeader;
@@ -354,7 +350,7 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
         />
       );
     }
-  })
+  });
   return (
     <View>{options}</View>
   )

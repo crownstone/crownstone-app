@@ -18,14 +18,14 @@ import { core } from "../../../../core";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 
-let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"]
+let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"];
 
 export class DeviceSmartBehaviour_RuleOverview extends Component<any, any> {
 
   constructor(props) {
     super(props);
 
-    let weekday = new Date().getDay()
+    let weekday = new Date().getDay();
     this.state = { activeDay: dayArray[weekday]}
   }
 
@@ -57,7 +57,7 @@ export class DeviceSmartBehaviour_RuleOverview extends Component<any, any> {
         ai = new AicoreTwilight(rule.data);
         texts.push(<Text key={"description" + ruleId} style={{color: "#FFF"}}>{ai.getSentence()}</Text>)
       }
-    })
+    });
 
     return (
       <View style={{ width: screenWidth, alignItems:'center' }}>

@@ -14,11 +14,11 @@ import { core } from "../../../core";
 import { Svg, Circle } from 'react-native-svg';
 
 export class SetupCircle extends Component<any, any> {
-  borderWidth
-  innerDiameter
-  outerDiameter
-  iconSize
-  textSize
+  borderWidth;
+  innerDiameter;
+  outerDiameter;
+  iconSize;
+  textSize;
   unsubscribeSetupEvents = [];
   constructor(props) {
     super(props);

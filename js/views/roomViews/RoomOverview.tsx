@@ -7,37 +7,31 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import {
   Alert,
-  Animated,
   ScrollView,
-  Text,
   View
 } from 'react-native';
 
-import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }           from '../components/Background'
 import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
 import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
-import { Icon }                 from '../components/Icon'
 
 import {
   getPresentUsersInLocation,
   getCurrentPowerUsageInLocation,
   getStonesAndAppliancesInLocation,
   canUseIndoorLocalizationInSphere,
-  enoughCrownstonesInLocationsForIndoorLocalization, DataUtil
-} from "../../util/DataUtil";
+  enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
 import { styles, colors, screenHeight, tabBarHeight, topBarHeight, } from '../styles'
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { Permissions }            from "../../backgroundProcesses/PermissionManager";
-import { TopbarButton, TopbarRightMoreButton } from "../components/topbar/TopbarButton";
+import { TopbarRightMoreButton } from "../components/topbar/TopbarButton";
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { RoomDeleted }            from "../static/RoomDeleted";
 import { preparePictureURI }      from "../../util/Util";
-import { topBarStyle }            from "../components/topbar/TopbarStyles";
 import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";

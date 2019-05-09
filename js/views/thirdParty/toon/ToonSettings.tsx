@@ -18,7 +18,6 @@ import {colors, screenHeight, screenWidth} from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {ScaledImage} from "../../components/ScaledImage";
-import {Util} from "../../../util/Util";
 import {getActiveToonProgram} from "../../../backgroundProcesses/thirdParty/ToonIntegration";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";

@@ -1,18 +1,16 @@
-import { Component } from "react";
+import { LiveComponent }          from "../LiveComponent";
 import { Text, TouchableOpacity, View } from "react-native";
 import * as React from "react";
 import { colors, screenWidth, styles } from "../styles";
-import { Icon } from "./Icon";
 import { IconButton } from "./IconButton";
-import { HiddenFadeIn, HiddenFadeInView } from "./animated/FadeInView";
 import { SlideFadeInView } from "./animated/SlideFadeInView";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 import { core } from "../../core";
 
 
-export class NotificationLine extends Component<{notificationsVisible?: boolean}, any> {
+export class NotificationLine extends LiveComponent<{notificationsVisible?: boolean}, any> {
 
-  unsubscribe: any
+  unsubscribe: any;
   componentDidMount(): void {
     this.unsubscribe = core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); })
   }
@@ -40,7 +38,7 @@ export class NotificationLine extends Component<{notificationsVisible?: boolean}
           <View style={{flex:1}}/>
         </TouchableOpacity>
       )
-    })
+    });
 
     return (
       <SlideFadeInView

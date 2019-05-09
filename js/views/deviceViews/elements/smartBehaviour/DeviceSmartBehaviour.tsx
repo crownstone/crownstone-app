@@ -5,9 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
-import { colors, deviceStyles, screenHeight, screenWidth } from "../../../styles";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
-import { TopbarBackButton, TopbarButton } from "../../../components/topbar/TopbarButton";
+import { TopbarBackButton} from "../../../components/topbar/TopbarButton";
 import { DeviceSmartBehaviour_TypeSelectorBody } from "./DeviceSmartBehaviour_TypeSelector";
 import { core } from "../../../../core";
 import { Background } from "../../../components/Background";

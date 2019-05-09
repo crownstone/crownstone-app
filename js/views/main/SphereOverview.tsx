@@ -7,9 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Platform,
-  Text, TouchableOpacity,
-  View
+  Text, View
 } from "react-native";
 import { SetupStateHandler }        from '../../native/setup/SetupStateHandler'
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
@@ -19,12 +17,7 @@ import { LOG }                      from '../../logging/Log'
 import {
   availableScreenHeight,
   colors,
-  overviewStyles,
-  screenWidth,
-  tabBarHeight,
-  tabBarMargin,
-  topBarHeight
-} from "../styles";
+  overviewStyles} from "../styles";
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
@@ -38,10 +31,8 @@ import {Util} from "../../util/Util";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { AddSetupStoneButtonDescription } from "./buttons/AddSetupStoneButtonDescription";
-import { HiddenFadeInView } from "../components/animated/FadeInView";
 import { getStonesAndAppliancesInLocation } from "../../util/DataUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
-import { SphereRoomOverview } from "./editSubviews/SphereRoomOverview";
 import { CancelButton } from "../components/topbar/CancelButton";
 import { xUtil } from "../../util/StandAloneUtil";
 import { AutoArrangeButton } from "./buttons/AutoArrangeButton";
@@ -231,7 +222,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     let setRearrangeRooms = (value) => {
       this.setState({arrangingRooms: value}, () => { this._updateNavBar(); });
 
-    }
+    };
 
     if (this.state.zoomLevel !== ZOOM_LEVELS.sphere && activeSphereId) {
       return (
