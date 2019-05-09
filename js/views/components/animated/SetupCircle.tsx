@@ -81,7 +81,7 @@ export class SetupCircle extends Component<any, any> {
             />
           </Svg>
         </View>
-        <Text style={{color:colors.white.hex, fontSize:35, fontWeight:'bold'}}>{Math.round(levelProgress*100) + " %"}</Text>
+        <Text style={{color:colors.white.hex, fontSize:35, fontWeight:'bold'}}>{ lang("__",Math.round(levelProgress*100)) }</Text>
       </View>
     )
   }

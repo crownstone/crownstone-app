@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("BehaviourSuggestion", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   TouchableOpacity,
@@ -66,11 +72,11 @@ export function BehaviourQuestion(props) {
 
       <View style={{flex:1}} />
       <TouchableOpacity style={buttonStyle} onPress={props.yesCallback}>
-        <Text style={{fontSize:15, fontWeight:'bold', color:colors.white.rgba(0.55), textAlign:'center'}}>{"Yes"}</Text>
+        <Text style={{fontSize:15, fontWeight:'bold', color:colors.white.rgba(0.55), textAlign:'center'}}>{ lang("Yes") }</Text>
       </TouchableOpacity>
       <View style={{flex:1}} />
       <TouchableOpacity style={buttonStyle} onPress={props.noCallback}>
-        <Text style={{fontSize:15, fontWeight:'bold', color:colors.white.rgba(0.55), textAlign:'center'}}>{"No"}</Text>
+        <Text style={{fontSize:15, fontWeight:'bold', color:colors.white.rgba(0.55), textAlign:'center'}}>{ lang("No") }</Text>
       </TouchableOpacity>
       <View style={{flex:1}} />
     </View>

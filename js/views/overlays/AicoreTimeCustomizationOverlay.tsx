@@ -71,7 +71,7 @@ export class AicoreTimeCustomizationOverlay extends Component<any, any> {
         getDesignElement={(innerSize) => { return (
           <ScaledImage source={require('../../images/overlayCircles/time.png')} sourceWidth={600} sourceHeight={600} targetHeight={innerSize}/>
         );}}
-        title={"Time Selection"}
+        title={ lang("Time_Selection")}
       >
         <AicoreTimeCustomization width={width} timeData={this.timeData} save={(newTimeData) => {
           this.callback(newTimeData);

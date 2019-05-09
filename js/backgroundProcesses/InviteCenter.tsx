@@ -1,3 +1,9 @@
+
+import { Languages } from "../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("InviteCenter", key)(a,b,c,d,e);
+}
 import { CLOUD } from "../cloud/cloudAPI";
 import { core } from "../core";
 import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
@@ -23,23 +29,23 @@ class InviteCenterClass {
           OnScreenNotifications.setNotification({
             source: "InviteCenterClass",
             id: "invitationToSphere" + sphereData.id,
-            label:"You have been invited!",
+            label: lang("You_have_been_invited_"),
             icon: "ios-mail",
             callback: () => {
               core.eventBus.emit("showCustomOverlay", {
                 backgroundColor: colors.green.hex,
                 content: (
                   <View style={{flex:1}}>
-                    <Text style={styles.header}>{"Your invitation awaits!"}</Text>
+                    <Text style={styles.header}>{ lang("Your_invitation_awaits_") }</Text>
                     <View style={{flex:1}} />
                     <View style={{...styles.centered, height:0.2*screenHeight}}>
                       <ScaledImage source={require("../images/invitationLetter.png")} sourceWidth={400} sourceHeight={400} targetHeight={0.2*screenHeight} />
                     </View>
                     <View style={{flex:1}} />
-                    <Text style={styles.explanation}>{"You have been invited to join the sphere called " + sphereData.name + "!\n\nDo you accept?"}</Text>
+                    <Text style={styles.explanation}>{ lang("You_have_been_invited_to_j",sphereData.name) }</Text>
                     <View style={{flex:1}} />
                     <TextButton
-                      label={"Accept"}
+                      label={ lang("Accept")}
                       callback={() => { this.acceptInvitation(sphereData.id); }}
                       backgroundColor={colors.white.rgba(0.1)}
                       textColor={colors.csBlue.hex}
@@ -47,7 +53,7 @@ class InviteCenterClass {
                     />
                     <View style={{flex:0.5}} />
                     <TextButton
-                      label={"Decline"}
+                      label={ lang("Decline")}
                       callback={() => { this.declineInvitation(sphereData.id); }}
                       selected={false}
                       backgroundColor={colors.white.rgba(0.1)}
@@ -74,13 +80,19 @@ class InviteCenterClass {
       })
       .then(() => {
         OnScreenNotifications.removeNotification("invitationToSphere" + sphereId);
-        Alert.alert("Welcome!", "The invitation has been accepted!", [{text:"OK!"}]);
+        Alert.alert(
+lang("_Welcome___The_invitation__header"),
+lang("_Welcome___The_invitation__body"),
+[{text:lang("_Welcome___The_invitation__left")}]);
         core.eventBus.emit("hideLoading");
         core.eventBus.emit("hideCustomOverlay");
       })
       .catch((err) => {
         LOGe.cloud("Something went wrong while accepting the invitation", err);
-        Alert.alert("Something went wrong...", "You can try again later or accept via the email that was sent to you", [{text:"OK"}]);
+        Alert.alert(
+lang("_Something_went_wrong_____Y_header"),
+lang("_Something_went_wrong_____Y_body"),
+[{text:lang("_Something_went_wrong_____Y_left")}]);
         core.eventBus.emit("hideLoading");
         core.eventBus.emit("hideCustomOverlay");
       })
@@ -96,7 +108,10 @@ class InviteCenterClass {
       })
       .catch((err) => {
         LOGe.cloud("Something went wrong while declining the invitation", err);
-        Alert.alert("Something went wrong...", "You can try again later or decline via the email that was sent to you", [{text:"OK"}]);
+        Alert.alert(
+lang("_Something_went_wrong_____Yo_header"),
+lang("_Something_went_wrong_____Yo_body"),
+[{text:lang("_Something_went_wrong_____Yo_left")}]);
         core.eventBus.emit("hideLoading");
         core.eventBus.emit("hideCustomOverlay");
       })

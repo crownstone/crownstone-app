@@ -295,7 +295,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       else {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
-          return <RoomAdd sphereId={activeSphereId} returnToRoute={"Main"} height={availableScreenHeight} />
+          return <RoomAdd sphereId={activeSphereId} returnToRoute={ lang("Main")} height={availableScreenHeight} />
         }
 
         // retrofit: place all stones in a room.

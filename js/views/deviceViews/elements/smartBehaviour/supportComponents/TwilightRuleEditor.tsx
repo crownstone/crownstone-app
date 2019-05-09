@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("TwilightRuleEditor", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -201,18 +207,18 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
 
   _showDimAmountPopup() {
     let dimmerOptions = [];
-    dimmerOptions.push({ label: "90%", id: 0.9});
-    dimmerOptions.push({ label: "80%", id: 0.8});
-    dimmerOptions.push({ label: "70%", id: 0.7});
-    dimmerOptions.push({ label: "60%", id: 0.6});
-    dimmerOptions.push({ label: "50%", id: 0.5});
-    dimmerOptions.push({ label: "40%", id: 0.4});
-    dimmerOptions.push({ label: "30%", id: 0.3});
-    dimmerOptions.push({ label: "20%", id: 0.2});
-    dimmerOptions.push({ label: "10%", id: 0.1});
+    dimmerOptions.push({ label: lang("___"), id: 0.9});
+    dimmerOptions.push({ label: lang("___"), id: 0.8});
+    dimmerOptions.push({ label: lang("___"), id: 0.7});
+    dimmerOptions.push({ label: lang("___"), id: 0.6});
+    dimmerOptions.push({ label: lang("___"), id: 0.5});
+    dimmerOptions.push({ label: lang("___"), id: 0.4});
+    dimmerOptions.push({ label: lang("___"), id: 0.3});
+    dimmerOptions.push({ label: lang("___"), id: 0.2});
+    dimmerOptions.push({ label: lang("___"), id: 0.1});
 
     core.eventBus.emit('showListOverlay', {
-      title: "Dim how much?",
+      title: lang("Dim_how_much_"),
       getItems: () => { return dimmerOptions; },
       callback: (value) => {
         this.exampleBehaviours.action.dimming4.setDimAmount(value);
@@ -258,13 +264,13 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
       case SELECTABLE_TYPE.ACTION:
         details = (
           <BehaviourOptionList
-            header={"What should I be?"}
-            explanation={"My behaviour defines when I should be on. I will be off when I should not be on."}
+            header={ lang("What_should_I_be_")}
+            explanation={ lang("My_behaviour_defines_when_")}
             closeCallback={() => { this.toggleDetails(null); }}
-            closeLabel={"Sounds about right!"}
+            closeLabel={ lang("Sounds_about_right_")}
             elements={[
               {
-                label: "Dimmed 80%",
+                label: lang("Dimmed____"),
                 isSelected: () => {
                   // we check the selection by state because the 3rd option can be valid together with
                   // some of the others. This is sloppy for the UI.
@@ -278,7 +284,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
                 }
               },
               {
-                label: "Dimmed 60%",
+                label: lang("Dimmed____"),
                 isSelected: () => {
                   // we check the selection by state because the 3rd option can be valid together with
                   // some of the others. This is sloppy for the UI.
@@ -292,7 +298,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
                 }
               },
               {
-                label: "Dimmed 60%",
+                label: lang("Dimmed____"),
                 isSelected: () => {
                   // we check the selection by state because the 3rd option can be valid together with
                   // some of the others. This is sloppy for the UI.
@@ -306,7 +312,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
                 }
               },
               {
-                label: "Dimmed " + Math.round(this.exampleBehaviours.action.dimming4.getDimAmount() * 100) + "%",
+                label: lang("Dimmed__",Math.round(this.exampleBehaviours.action.dimming4.getDimAmount() * 100)),
                 subLabel: "(tap to change)",
                 isSelected: () => {
                   if (this.state.selectedDetailField === SELECTABLE_TYPE.ACTION + "3") {
@@ -322,9 +328,9 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
       case SELECTABLE_TYPE.TIME:
         details = (
           <BehaviourOptionList
-            header={"When should I do this?"}
+            header={ lang("When_should_I_do_this_")}
             closeCallback={() => { this.toggleDetails(null); }}
-            closeLabel={"Will do!"}
+            closeLabel={ lang("Will_do_")}
             elements={[
               {
                 label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.rule)) + ".",
@@ -371,7 +377,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
                 }
               },
               {
-                label: "Other...",
+                label: lang("Other___"),
                 subLabel: "(tap to create)",
                 isSelected: () => {
                   // we check the selection by state because the 4th and 5th option can both be valid with
@@ -403,7 +409,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
               width:0.5*screenWidth, height:60, borderRadius:20,
               backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
             }}>
-              <Text style={{fontSize:16, fontWeight:'bold'}}>Use Behaviour!</Text>
+              <Text style={{fontSize:16, fontWeight:'bold'}}>{ lang("Use_Behaviour_") }</Text>
             </TouchableOpacity>
           </Animated.View>
         </Animated.View>

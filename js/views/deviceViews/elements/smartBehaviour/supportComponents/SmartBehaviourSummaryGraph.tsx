@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SmartBehaviourSummaryGraph", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
@@ -54,9 +60,9 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
           <View style={{width:screenWidth*0.8, height:100}}>
             <DayNightIndicator id={this.id} />
             <View style={{postion:'absolute', left:0, top:15, width:screenWidth*0.8, height:75}}>
-              <SmartBehaviourSummaryGraphElement dataColor={colors.green.hex}       icon={'md-power'}        iconSize={17} times={onArray}       id={this.id} explanation={"When I will be on."} />
+              <SmartBehaviourSummaryGraphElement dataColor={colors.green.hex}       icon={'md-power'}        iconSize={17} times={onArray}       id={this.id} explanation={ lang("When_I_will_be_on_")} />
               <SmartBehaviourSummaryGraphElement dataColor={colors.csBlueDark.hex}  icon={'c1-locationPin1'} iconSize={14} times={presenceArray} id={this.id} explanation={"When I'll be on based on presence."} />
-              <SmartBehaviourSummaryGraphElement dataColor={colors.blinkColor2.hex} icon={'ios-leaf'}        iconSize={17} times={twilightArray} id={this.id} explanation={"When twilight mode is active."} />
+              <SmartBehaviourSummaryGraphElement dataColor={colors.blinkColor2.hex} icon={'ios-leaf'}        iconSize={17} times={twilightArray} id={this.id} explanation={ lang("When_twilight_mode_is_acti")} />
             </View>
             <TimeSelector id={this.id} />
           </View>
@@ -262,7 +268,7 @@ class TimeSelector extends Component<any, any> {
           backgroundColor:colors.white.hex,
           opacity: this.state.explanationOpacity,
           alignItems:'center', justifyContent: 'center'}}>
-          <Text style={explanationStyle(this.width)}>Now</Text>
+          <Text style={explanationStyle(this.width)}>{ lang("Now") }</Text>
         </Animated.View>
         <Animated.View style={{position:'absolute', top:16, left: width*(getMinutes(time)/(24*60)) - 2, width:5, height:54, opacity: this.state.timeOpacity, borderRadius:2, backgroundColor: colors.white.rgba(0.4)}} />
         <Animated.View style={{position:'absolute', top:15, left: width*(getMinutes(time)/(24*60)),     width:1, height:56, opacity: this.state.timeOpacity, backgroundColor: colors.white.rgba(1)}} />
@@ -361,7 +367,7 @@ class DayNightIndicator extends Component<any, any> {
           opacity: this.state.explanationOpacity
         }}>
           <AlternatingContent  style={{height:15, width: this.width}} contentArray={[
-            <Text style={explanationStyle(this.width, 'center')}>{"Sunrise"}</Text>,
+            <Text style={explanationStyle(this.width, 'center')}>{ lang("Sunrise") }</Text>,
             <Text style={explanationStyle(this.width, 'center')}>{sunriseTimeStr}</Text>,
           ]}/>
         </Animated.View>
@@ -373,7 +379,7 @@ class DayNightIndicator extends Component<any, any> {
           opacity: this.state.explanationOpacity
         }}>
           <AlternatingContent style={{height:15, width: this.width}} contentArray={[
-            <Text style={explanationStyle(this.width,'center')}>{"Sunset"}</Text>,
+            <Text style={explanationStyle(this.width,'center')}>{ lang("Sunset") }</Text>,
             <Text style={explanationStyle(this.width,'center')}>{sunsetTimeStr}</Text>,
           ]}/>
         </Animated.View>

@@ -304,7 +304,7 @@ export function StoneInformation(props : {stoneId: string, sphereId: string, can
     locationPart = (
       <TouchableOpacity style={{width:0.57*screenWidth}} onPress={() => {
         core.eventBus.emit('showListOverlay', {
-          title: "Select Room",
+          title: lang("Select_Room"),
           getItems: () => {
             const state = core.store.getState();
             const sphere = state.spheres[props.sphereId];
@@ -342,7 +342,7 @@ export function StoneInformation(props : {stoneId: string, sphereId: string, can
       <View style={{flex:1}} />
       <View>
         <Text style={{textAlign:'right', color: colors.white.hex, fontSize:20, fontStyle:"italic"}}>{lang("Energy_Usage_")}</Text>
-        <Text style={{textAlign:'right', color: colors.white.hex, fontSize:28, fontWeight:'bold'}}>{stone.state.currentUsage + " W"}</Text>
+        <Text style={{textAlign:'right', color: colors.white.hex, fontSize:28, fontWeight:'bold'}}>{ lang("_W",stone.state.currentUsage) }</Text>
       </View>
     </View>
   )

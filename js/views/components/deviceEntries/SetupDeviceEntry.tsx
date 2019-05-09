@@ -102,9 +102,9 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
           .catch((err) => {
             // console.log("ERROR", err)
             Alert.alert(
-            "Something went wrong...",
-            "I tried to make this Crownstone toggle, but something went wrong.\n\nPlease try again!",
-            [{text:'OK'}]
+lang("_Something_went_wrong______header"),
+lang("_Something_went_wrong______body"),
+[{text:lang("_Something_went_wrong______left")}]
             );
             this.setState({pendingCommand: false});
           })
@@ -136,7 +136,7 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.props.callback(); }}>
             <View style={{flexDirection: 'column'}}>
               <SlideFadeInView visible={!this.state.pendingCommand} height={20}><Text style={{fontSize: 17, fontWeight: '100'}}>{this.state.name}</Text></SlideFadeInView>
-              <SlideFadeInView visible={ this.state.pendingCommand} height={50}><Text style={{fontSize: 13, fontWeight: '100'}}>{"Briefly toggling this Crownstone!\nIf this is the right one, tap here to add it!"}</Text></SlideFadeInView>
+              <SlideFadeInView visible={ this.state.pendingCommand} height={50}><Text style={{fontSize: 13, fontWeight: '100'}}>{ lang("Briefly_toggling_this_Crow") }</Text></SlideFadeInView>
               <SlideFadeInView visible={!this.state.pendingCommand} height={30}>{this._getSubText()}</SlideFadeInView>
             </View>
           </TouchableOpacity>

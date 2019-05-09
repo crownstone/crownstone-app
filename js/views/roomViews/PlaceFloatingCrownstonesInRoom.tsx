@@ -80,7 +80,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
           sphereId={this.props.sphereId}
           callback={() => {
             core.eventBus.emit('showListOverlay', {
-              title: "Select Room",
+              title: lang("Select_Room"),
               getItems: () => {
                 const state = core.store.getState();
                 const sphere = state.spheres[this.props.sphereId];
@@ -169,11 +169,11 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
           hideRight={true}
           floatingCrownstones={true}
           viewingRemotely={false}
-          overlayText={"Place your Crownstones in a room."}
+          overlayText={ lang("Place_your_Crownstones_in_")}
         />
         <RoomExplanation
           state={state}
-          explanation={"Tap a Crownstone and select a room!"}
+          explanation={ lang("Tap_a_Crownstone_and_selec")}
           sphereId={this.props.sphereId}
           locationId={null}
         />

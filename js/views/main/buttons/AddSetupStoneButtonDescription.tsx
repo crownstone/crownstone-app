@@ -33,7 +33,7 @@ export class AddSetupStoneButtonDescription extends Component<any, any> {
         backgroundColor: colors.white.rgba(0.5),
       }}>
         <View style={{flex:1}} />
-        <Text style={{fontSize: 17, fontWeight:'bold', color: colors.menuTextSelected.hex}}>New Crownstone Detected</Text>
+        <Text style={{fontSize: 17, fontWeight:'bold', color: colors.menuTextSelected.hex}}>{ lang("New_Crownstone_Detected") }</Text>
         <Icon name={"md-arrow-round-forward"}  size={20} color={colors.menuTextSelected.hex} style={{padding:5}} />
         <Icon name={"md-arrow-round-forward"}  size={20} color={colors.menuTextSelected.hex} style={{padding:5}} />
         <View style={{width:5}} />

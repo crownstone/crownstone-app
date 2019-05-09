@@ -17,7 +17,7 @@ export class DeviceSmartBehaviour extends Component<any, any> {
     const { params } = navigation.state;
 
     return {
-      title: "A Crownstone",
+      title: lang("A_Crownstone"),
       headerLeft:  <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
     }
   };

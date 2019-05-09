@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("BehaviourRuleEditor", key)(a,b,c,d,e);
+}
 import { LiveComponent }          from "../../../../LiveComponent";
 import * as React from 'react';
 import {
@@ -83,7 +89,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
 
     let normal      : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30  };
     let selectable  : TextStyle = {...normal, textDecorationLine:'underline' };
-    let segmentStyle : ViewStyle = {...styles.centered, flexDirection:'row', width: screenWidth};
+    let segmentStyle : ViewStyle = {...(styles.centered as ViewStyle), flexDirection:'row', width: screenWidth};
 
     let ruleChunks = this.rule.getSelectableChunkData();
 
@@ -247,14 +253,14 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
     if (showPresenceSuggestion) {
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
       suggestionArray.push(<BehaviourSuggestion key={"presenceSuggestion"}
-        label={"Would you like me to react to presence?"}
+        label={ lang("Would_you_like_me_to_react")}
         callback={() => { this.toggleDetails(SELECTABLE_TYPE.PRESENCE); }}
       />);
     }
     if (showTimeSuggestion) {
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
       suggestionArray.push(<BehaviourSuggestion key={"timeSuggestion"}
-        label={"Shall I do this at a certain time?"}
+        label={ lang("Shall_I_do_this_at_a_certa")}
         callback={() => { this.toggleDetails(SELECTABLE_TYPE.TIME); }}
       />);
     }
@@ -280,18 +286,18 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
 
   _showDimAmountPopup() {
     let dimmerOptions = [];
-    dimmerOptions.push({ label: "90%", id: 0.9});
-    dimmerOptions.push({ label: "80%", id: 0.8});
-    dimmerOptions.push({ label: "70%", id: 0.7});
-    dimmerOptions.push({ label: "60%", id: 0.6});
-    dimmerOptions.push({ label: "50%", id: 0.5});
-    dimmerOptions.push({ label: "40%", id: 0.4});
-    dimmerOptions.push({ label: "30%", id: 0.3});
-    dimmerOptions.push({ label: "20%", id: 0.2});
-    dimmerOptions.push({ label: "10%", id: 0.1});
+    dimmerOptions.push({ label: lang("___"), id: 0.9});
+    dimmerOptions.push({ label: lang("___"), id: 0.8});
+    dimmerOptions.push({ label: lang("___"), id: 0.7});
+    dimmerOptions.push({ label: lang("___"), id: 0.6});
+    dimmerOptions.push({ label: lang("___"), id: 0.5});
+    dimmerOptions.push({ label: lang("___"), id: 0.4});
+    dimmerOptions.push({ label: lang("___"), id: 0.3});
+    dimmerOptions.push({ label: lang("___"), id: 0.2});
+    dimmerOptions.push({ label: lang("___"), id: 0.1});
 
     core.eventBus.emit('showListOverlay', {
-      title: "Dim how much?",
+      title: lang("Dim_how_much_"),
       getItems: () => { return dimmerOptions; },
       callback: (value) => {
         this.exampleBehaviours.action.dimming.setDimAmount(value);
@@ -305,7 +311,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
 
   _showLocationSelectionPopup() {
     core.eventBus.emit('showListOverlay', {
-      title: "Select Rooms",
+      title: lang("Select_Rooms"),
       getItems: () => {
         const state = core.store.getState();
         let sphereIds = Object.keys(state.spheres);
@@ -371,18 +377,18 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
       case SELECTABLE_TYPE.ACTION:
         details = (
           <BehaviourOptionList
-            header={"What should I be?"}
-            explanation={"My behaviour defines when I should be on. I will be off when I should not be on."}
+            header={ lang("What_should_I_be_")}
+            explanation={ lang("My_behaviour_defines_when_")}
             closeCallback={() => { this.toggleDetails(null); }}
-            closeLabel={"Sounds about right!"}
+            closeLabel={ lang("Sounds_about_right_")}
             elements={[
               {
-                label: "On",
+                label: lang("On"),
                 isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.on) },
                 onSelect: () => {this.rule.setActionState(1); this.forceUpdate(); }
               },
               {
-                label: "Dimmed " + Math.round((this.rule.willDim() ? this.rule.getDimAmount() : 0.5) * 100) + "%",
+                label: lang("Dimmed__", Math.round(this.rule.willDim() ? this.rule.getDimAmount() : 0.5 * 100)),
                 subLabel: "(tap to change)",
                 isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming)},
                 onSelect: () => { this._showDimAmountPopup(); }
@@ -394,7 +400,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
       case SELECTABLE_TYPE.PRESENCE:
         details = (
           <BehaviourOptionList
-            header={"Who shall I look for?"}
+            header={ lang("Who_shall_I_look_for_")}
             closeCallback={() => { this.toggleDetails(null); }}
             closeLabel={"That's it!"}
             elements={[
@@ -409,7 +415,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
                 onSelect: () => { this.rule.setPresenceNobody(); this.forceUpdate(); }
               },
               {
-                label: "Ignore presence",
+                label: lang("Ignore_presence"),
                 isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
                 onSelect: () => { this.rule.setPresenceIgnore(); this.setState({userHidPresence: true}) }
               },
@@ -420,12 +426,12 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
       case SELECTABLE_TYPE.LOCATION:
         details = (
           <BehaviourOptionList
-            header={"Where should I look?"}
+            header={ lang("Where_should_I_look_")}
             closeCallback={() => { this.toggleDetails(null); }}
-            closeLabel={"Got it!"}
+            closeLabel={ lang("Got_it_")}
             elements={[
               {
-                label: "Anywhere in the house!",
+                label: lang("Anywhere_in_the_house_"),
                 isSelected: () => {
                   // we check the selection by state because the second and custom option can both be valid. This is sloppy for the UI.
                   if (this.state.selectedDetailField === SELECTABLE_TYPE.LOCATION + "1") {
@@ -436,7 +442,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
                 onSelect: () => { this.rule.setPresenceInSphere(); this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "1"}) }
               },
               {
-                label: "In the room.",
+                label: lang("In_the_room_"),
                 isSelected: () => {
                   // we check the selection by state because the second and custom option can both be valid. This is sloppy for the UI.
                   if (this.state.selectedDetailField === SELECTABLE_TYPE.LOCATION + "2") {
@@ -450,7 +456,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
                 }
               },
               {
-                label: "Select room(s)...",
+                label: lang("Select_room_s____"),
                 subLabel: "(tap to select)",
                 isSelected: () => {
                   // we check the selection by state because the second and custom option can both be valid. This is sloppy for the UI.
@@ -468,9 +474,9 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
       case SELECTABLE_TYPE.TIME:
         details = (
           <BehaviourOptionList
-            header={"When should I do this?"}
+            header={ lang("When_should_I_do_this_")}
             closeCallback={() => { this.toggleDetails(null); }}
-            closeLabel={"Will do!"}
+            closeLabel={ lang("Will_do_")}
             elements={[
               {
                 label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.rule)) + ".",
@@ -502,7 +508,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
                 }
               },
               {
-                label: "Always.",
+                label: lang("Always_"),
                 isSelected: () => {
                   // we check the selection by state because the 4th and 5th option can both be valid with
                   // some of the others. This is sloppy for the UI.
@@ -532,7 +538,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
                 }
               },
               {
-                label: "Other...",
+                label: lang("Other___"),
                 subLabel: "(tap to create)",
                 isSelected: () => {
                   // we check the selection by state because the 4th and 5th option can both be valid with
@@ -553,9 +559,9 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
       case SELECTABLE_TYPE.OPTION:
         details = (
           <BehaviourOptionList
-            header={"Can I turn off afterwards?"}
+            header={ lang("Can_I_turn_off_afterwards_")}
             closeCallback={() => { this.toggleDetails(null); }}
-            closeLabel={"Will do!"}
+            closeLabel={ lang("Will_do_")}
             elements={[
               {
                 label: xUtil.capitalize(AicoreUtil.extractOptionStrings(this.exampleBehaviours.option.inRoom.rule).optionStr) + ".",
@@ -587,7 +593,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
                 }
               },
               {
-                label: "Yes, just turn off afterwards.",
+                label: lang("Yes__just_turn_off_afterwa"),
                 isSelected: () => {
                   // we check the selection by state because the 4th and 5th option can both be valid with
                   // some of the others. This is sloppy for the UI.
@@ -619,7 +625,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
               width:0.5*screenWidth, height:60, borderRadius:20,
               backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
             }}>
-              <Text style={{fontSize:16, fontWeight:'bold'}}>Use Behaviour!</Text>
+              <Text style={{fontSize:16, fontWeight:'bold'}}>{ lang("Use_Behaviour_") }</Text>
             </TouchableOpacity>
           </Animated.View>
         </Animated.View>

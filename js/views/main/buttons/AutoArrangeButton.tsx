@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AutoArrangeButton", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   Text,
@@ -24,7 +30,7 @@ export function AutoArrangeButton(props) {
           elevation: 1,
         }}
         onPress={() => { core.eventBus.emit('physicsRun'+props.viewId, 150)}}>
-        <Text style={{color: colors.csBlue.hex, fontWeight:'bold', paddingLeft:15, paddingRight:15, fontSize:16, textAlign:'center'}}>{"Auto arrange!"}</Text>
+        <Text style={{color: colors.csBlue.hex, fontWeight:'bold', paddingLeft:15, paddingRight:15, fontSize:16, textAlign:'center'}}>{ lang("Auto_arrange_") }</Text>
       </TouchableOpacity>
     </HiddenFadeInView>
   );

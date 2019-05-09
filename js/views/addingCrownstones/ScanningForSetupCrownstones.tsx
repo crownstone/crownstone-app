@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ScanningForSetupCrownstones", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -25,8 +31,8 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: "Add Crownstones",
-      headerLeft: <TopbarBackButton text={"Back"} onPress={() => { params.returnToRoute ? NavigationUtil.backTo(params.returnToRoute) : NavigationUtil.back() }} />
+      title: lang("Add_Crownstones"),
+      headerLeft: <TopbarBackButton text={ lang("Back")} onPress={() => { params.returnToRoute ? NavigationUtil.backTo(params.returnToRoute) : NavigationUtil.back() }} />
     }
   };
 
@@ -221,12 +227,12 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
           <View style={{flex:1, }} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, minHeight:40 }}>
             <View style={{flex:1}} />
-            <Text style={{color: colors.csBlueDark.hex, fontSize:16, fontWeight: "bold"}}>{stoneArray.length > 0 ? "Searching for more Crownstones..." : "Searching for new Crownstones..."}</Text>
+            <Text style={{color: colors.csBlueDark.hex, fontSize:16, fontWeight: "bold"}}>{ lang("Searching_for_more_Crownst",stoneArray.length,0) }</Text>
             <View style={{flex:1}} />
             <ActivityIndicator animating={true} size='large' color={colors.csBlueDark.hex} />
             <View style={{flex:1}} />
           </View>
-          <SlideFadeInView visible={stoneArray.length > 0} height={30}><Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>These Crownstones are visible near you:</Text></SlideFadeInView>
+          <SlideFadeInView visible={stoneArray.length > 0} height={30}><Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>{ lang("These_Crownstones_are_visi") }</Text></SlideFadeInView>
           <View style={{flex:1}} />
         </View>
         <ScrollView style={{position:'relative', top:-1}}>
@@ -237,17 +243,17 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
             renderer={this._renderer.bind(this)}
           />
           <SlideFadeInView duration={300} height={80} visible={showNothingYet} style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
-            <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>Nothing yet, but I'm still looking!</Text>
+            <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>{ lang("Nothing_yet__but_Im_still_") }</Text>
           </SlideFadeInView>
           <SlideFadeInView duration={300} height={90} visible={ids.length === 0 && this.state.showNoScans === true && this.state.extendedNoScans === false} style={{...styles.centered, width:screenWidth, height:90, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
-            <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center'}}>{"I can't find any BLE devices...\n\nMake sure you're in range of the Crownstone!"}</Text>
+            <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center'}}>{ lang("I_cant_find_any_BLE_device") }</Text>
           </SlideFadeInView>
           <SlideFadeInView duration={300} height={90} visible={ids.length === 0 && this.state.showNoScans === true && this.state.extendedNoScans === true} style={{...styles.centered, width:screenWidth, height:90, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
-            <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center'}}>{"I still can't find any BLE devices...\n\nMaybe reset your phone's Bluetooth?"}</Text>
+            <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center'}}>{ lang("I_still_cant_find_any_BLE_") }</Text>
           </SlideFadeInView>
           <SlideFadeInView duration={300} height={120} visible={showNearUnverified} style={{...styles.centered, width:screenWidth, height:120, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
             <TouchableOpacity style={{...styles.centered, width:screenWidth, height:120}} onPress={() => { NavigationUtil.navigate("SettingsFactoryResetStep1"); }}>
-              <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>You're really close to a Crownstone that is not in your Sphere, nor in setup mode. Would you like to try to recover it?</Text>
+              <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>{ lang("Youre_really_close_to_a_Cr") }</Text>
             </TouchableOpacity>
           </SlideFadeInView>
           <SlideFadeInView duration={300} height={80} visible={ids.length === 0 && this.state.showVerifiedUnowned === true} style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
@@ -255,9 +261,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
               style={{...styles.centered, width:screenWidth, height:120}}
               onPress={() => { NavigationUtil.navigate("SetupCrownstone", {sphereId: this.props.sphereId, setupStone: {handle: this.nearUnknownCrownstoneHandle}, unownedVerified: true}); }}
             >
-              <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>
-                I see a Crownstone that seems to be registered to your Sphere but I don't know which one it is... Shall I add it to your app?
-              </Text>
+              <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>{ lang("_________________I_see_a_C") }</Text>
             </TouchableOpacity>
           </SlideFadeInView>
         </ScrollView>

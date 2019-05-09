@@ -304,7 +304,7 @@ lang("_Reset_Done__Rediscovery__body"),
       }
     });
     items.push({
-      label: "Mesh Topology",
+      label: lang("Mesh_Topology"),
       type: 'navigation',
       icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueDark.hex}} />,
       callback:() => {

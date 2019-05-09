@@ -1,3 +1,9 @@
+
+import { Languages } from "../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("InterviewDark", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Text, TextStyle,
@@ -54,67 +60,67 @@ export class InterviewDark extends Component<any, any> {
         question:"When would you like me to be on?",
         backgroundImage: core.background.light,
           answers: [
-          {label: "When someone is in the room.", nextCard: 'timeAfterPresence', updateState: () => { this.interviewData.presence = "ROOM" }},
-          {label: "When someone is at home.",     nextCard: 'timeAfterPresence', updateState: () => { this.interviewData.presence = "HOME" }},
-          {label: "When it's dark outside.",      nextCard: 'presenceAfterTime', updateState: () => { this.interviewData.time = "DARK"     }},
-          {label: "Between certain times.",                                      updateState: () => { this.interviewData.time = "CUSTOM"   },
+          {label: lang("When_someone_is_in_the_roo"), nextCard: 'timeAfterPresence', updateState: () => { this.interviewData.presence = "ROOM" }},
+          {label: lang("When_someone_is_at_home_"),     nextCard: 'timeAfterPresence', updateState: () => { this.interviewData.presence = "HOME" }},
+          {label: lang("When_its_dark_outside_"),      nextCard: 'presenceAfterTime', updateState: () => { this.interviewData.time = "DARK"     }},
+          {label: lang("Between_certain_times_"),                                      updateState: () => { this.interviewData.time = "CUSTOM"   },
             callback:() => { this._showTimePopup("presenceAfterTime")}},
-          {label: "Always.",                      nextCard: 'locked',            updateState: () => { this.interviewData.always = true     }},
+          {label: lang("Always_"),                      nextCard: 'locked',            updateState: () => { this.interviewData.always = true     }},
         ]
       },
       timeAfterPresence: {
         question:"Always or only at certain times?",
           answers: [
-          {label: "When it's dark outside.", nextCard: "dimmable", updateState: () => { this.interviewData.time = "DARK"   }},
-          {label: "When the sun is up.",     nextCard: "dimmable", updateState: () => { this.interviewData.time = "LIGHT"  }},
-          {label: "Between certain times.",                      updateState: () => { this.interviewData.time = "CUSTOM" },
+          {label: lang("When_its_dark_outside_"), nextCard: "dimmable", updateState: () => { this.interviewData.time = "DARK"   }},
+          {label: lang("When_the_sun_is_up_"),     nextCard: "dimmable", updateState: () => { this.interviewData.time = "LIGHT"  }},
+          {label: lang("Between_certain_times_"),                      updateState: () => { this.interviewData.time = "CUSTOM" },
               callback:() => { this._showTimePopup("dimmable")}},
-          {label: "Always is fine.",         nextCard: "dimmable", updateState: () => { this.interviewData.time = "ALWAYS" }},
+          {label: lang("Always_is_fine_"),         nextCard: "dimmable", updateState: () => { this.interviewData.time = "ALWAYS" }},
         ]
       },
       allowedToTurnOff: {
         question: "Is it OK if I turn off at " + timeString + " even if there is someone around?",
           answers: [
-          {label: "Stay on as long as there's somebody in the room.", nextCard: "dimmable", updateState: () => { this.interviewData.option = "ROOM"; }},
-          {label: "Stay on as long as somebody is home.",             nextCard: "dimmable", updateState: () => { this.interviewData.option = "HOME"; }},
-          {label: "Yes, you can turn off at " + timeString + ".",     nextCard: "dimmable", updateState: () => { this.interviewData.option =  null;  }},
+          {label: lang("Stay_on_as_long_as_theres_"), nextCard: "dimmable", updateState: () => { this.interviewData.option = "ROOM"; }},
+          {label: lang("Stay_on_as_long_as_somebod"),             nextCard: "dimmable", updateState: () => { this.interviewData.option = "HOME"; }},
+          {label: lang("Yes__you_can_turn_off_at__",timeString),     nextCard: "dimmable", updateState: () => { this.interviewData.option =  null;  }},
         ]
       },
       presenceAfterTime: {
         question:"Should I react to your presence as well? I can turn off automatically if nobody is around!",
           answers: [
-          {label: "Yes, be on if someone is in the room.", nextCard: "dimmable", updateState: () => { this.interviewData.presence = "ROOM"; }},
-          {label: "Yes, be on if someone is at home.",     nextCard: "dimmable", updateState: () => { this.interviewData.presence = "HOME"; }},
-          {label: "No, you can ignore presence.",          nextCard: "dimmable", updateState: () => { this.interviewData.presence =  null;  }},
+          {label: lang("Yes__be_on_if_someone_is_i"), nextCard: "dimmable", updateState: () => { this.interviewData.presence = "ROOM"; }},
+          {label: lang("Yes__be_on_if_someone_is_at"),     nextCard: "dimmable", updateState: () => { this.interviewData.presence = "HOME"; }},
+          {label: lang("No__you_can_ignore_presenc"),          nextCard: "dimmable", updateState: () => { this.interviewData.presence =  null;  }},
         ]
       },
       button: {
         question:"Is there a wall switch connected to me?",
           answers: [
-          {label: "Yes.", nextCard: "switchCraft", updateState: () => { this.interviewData.switchCraft =  true;  }},
-          {label: "No.",                           updateState: () => { this.interviewData.switchCraft = false; this.finish() }},
+          {label: lang("Yes_"), nextCard: "switchCraft", updateState: () => { this.interviewData.switchCraft =  true;  }},
+          {label: lang("No_"),                           updateState: () => { this.interviewData.switchCraft = false; this.finish() }},
         ]
       },
       switchCraft: {
         question:"I can be controlled with both the wall switch as well as the app and my own behaviour by using Switchcraft!\n\nIs this switch already modified?",
           answers: [
-          {label: "Yes.",                 updateState: () => { this.interviewData.switchCraft =  true; this.finish();  }},
-          {label: "What's Switchcraft?", updateState: () => { this.interviewData.switchCraft =  false; this.finish();  }},
-          {label: "No.",                  updateState: () => { this.interviewData.switchCraft = false; this.finish(); }},
+          {label: lang("Yes_"),                 updateState: () => { this.interviewData.switchCraft =  true; this.finish();  }},
+          {label: lang("Whats_Switchcraft_"), updateState: () => { this.interviewData.switchCraft =  false; this.finish();  }},
+          {label: lang("No_"),                  updateState: () => { this.interviewData.switchCraft = false; this.finish(); }},
         ]
       },
       dimmable: {
         question:"Am I connected to a dimmable lamp?",
           answers: [
-          {label: "Yes.",  nextCard: "button", updateState: () => { this.interviewData.dimming =  true; }},
-          {label: "Nope.", nextCard: "button", updateState: () => { this.interviewData.dimming =  false;}},
+          {label: lang("Yes_"),  nextCard: "button", updateState: () => { this.interviewData.dimming =  true; }},
+          {label: lang("Nope_"), nextCard: "button", updateState: () => { this.interviewData.dimming =  false;}},
         ]
       },
       locked: {
         question:"Should I ignore any switch command until you unlock me?",
           answers: [
-          {label: "Yes, please."                        , updateState: () => { this.interviewData.locked = true;  this.finish(); }},
-          {label: "No, just don't switch automatically!", updateState: () => { this.interviewData.locked = false; this.finish(); }},
+          {label: lang("Yes__please_"), updateState: () => { this.interviewData.locked = true;  this.finish(); }},
+          {label: lang("No__just_dont_switch_autom"), updateState: () => { this.interviewData.locked = false; this.finish(); }},
         ]
       }
     }

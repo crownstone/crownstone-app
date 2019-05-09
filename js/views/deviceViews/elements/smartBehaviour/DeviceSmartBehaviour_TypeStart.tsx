@@ -1,8 +1,10 @@
-import { Languages } from "../../../../Languages";
+
+import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
+  return Languages.get("DeviceSmartBehaviour_TypeStart", key)(a, b, c, d, e);
 }
+
 import * as React from "react"; import { Component } from "react";
 import { DeviceSmartBehaviour_TypeExamples } from "./prototyping/DeviceSmartBehaviour_TypeExamples";
 import {
@@ -21,7 +23,7 @@ export class DeviceSmartBehaviour_TypeStart extends Component<{stoneId: string, 
     const { params } = navigation.state;
 
     return {
-      title: "A Crownstone"
+      title: lang("A_Crownstone")
     };
   };
 

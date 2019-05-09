@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SetupCrownstone", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
@@ -23,7 +29,7 @@ export class SetupCrownstone extends Component<any, any> {
     const { params } = navigation.state;
 
     return {
-      title: "New Crownstone",
+      title: lang("New_Crownstone"),
       headerLeft: params && params.disableBack ? null : undefined
     }
   };
@@ -204,7 +210,7 @@ export class SetupCrownstone extends Component<any, any> {
     });
 
     roomOptions.push({
-      label: "add a new room!",
+      label: lang("add_a_new_room_"),
       icon: "md-cube",
       theme: 'create',
       onSelect: () => {
@@ -214,7 +220,7 @@ export class SetupCrownstone extends Component<any, any> {
 
     let failedOptions = [
       {
-        label: "OK, try again!",
+        label: lang("OK__try_again_"),
         onSelect: (result) => {
           this.newCrownstoneState.setupFinished = false;
           this.newCrownstoneState.configFinished = false;
@@ -239,7 +245,7 @@ export class SetupCrownstone extends Component<any, any> {
         }
       },
       {
-        label: "I'll try again later...",
+        label: lang("Ill_try_again_later___"),
         onSelect: (result) => { NavigationUtil.backTo("Main"); }
       },
     ];
@@ -252,7 +258,7 @@ export class SetupCrownstone extends Component<any, any> {
         placeholder: namePlaceholder,
         options: [
           {
-            label: "Next",
+            label: lang("Next"),
             textAlign:'right',
             nextCard: 'icon',
             response: "That's a good name!",
@@ -300,7 +306,7 @@ export class SetupCrownstone extends Component<any, any> {
           );
         },
         options: [
-          {label: "Next", textAlign:'right', nextCard: 'rooms', response: "Cool, so that'll be my icon!",
+          {label: lang("Next"), textAlign:'right', nextCard: 'rooms', response: "Cool, so that'll be my icon!",
             onSelect: (result) => {
               let icon = result.customElementState || this.randomIcon;
               this.newCrownstoneState.icon = icon;
@@ -338,7 +344,7 @@ export class SetupCrownstone extends Component<any, any> {
         optionsBottom: true,
         options: [
           {
-            label: "Add more Crownstones!",
+            label: lang("Add_more_Crownstones_"),
             onSelect: (result) => {
               if (SetupStateHandler.areSetupStonesAvailable()) {
                 NavigationUtil.back();
@@ -348,7 +354,7 @@ export class SetupCrownstone extends Component<any, any> {
               }
           },
           {
-            label: "Take me to " + this.newCrownstoneState.location.name + "!",
+            label: lang("Take_me_to__",this.newCrownstoneState.location.name),
             onSelect: (result) => { NavigationUtil.navigateAndReplaceVia("Main", "RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id }); }
           },
         ]
@@ -363,7 +369,7 @@ export class SetupCrownstone extends Component<any, any> {
         optionsBottom: true,
         options: [
           {
-            label: "Add more Crownstones!",
+            label: lang("Add_more_Crownstones_"),
             onSelect: (result) => {
               if (SetupStateHandler.areSetupStonesAvailable()) {
                 NavigationUtil.back();
@@ -373,7 +379,7 @@ export class SetupCrownstone extends Component<any, any> {
             }
           },
           {
-            label: "Take me to " + this.newCrownstoneState.location.name + "!",
+            label: lang("Take_me_to__",this.newCrownstoneState.location.name),
             onSelect: (result) => { NavigationUtil.navigateAndReplaceVia("Main", "RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id }); }
           },
         ]
@@ -423,7 +429,7 @@ export class SetupCrownstone extends Component<any, any> {
         optionsBottom: true,
         options: [
           {
-            label: "I'll try again later...",
+            label: lang("Ill_try_again_later___"),
             onSelect: (result) => { NavigationUtil.backTo("Main"); }
           },
         ]

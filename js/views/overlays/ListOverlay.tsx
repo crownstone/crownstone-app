@@ -131,7 +131,7 @@ export class ListOverlay extends LiveComponent<any, any> {
               this.close();
             }}
           >
-            <Text style={{fontSize:15, fontWeight:'bold'}}>{this.state.saveLabel || "Save selection!"}</Text>
+            <Text style={{fontSize:15, fontWeight:'bold'}}>{ lang("Save_selection_",this.state.saveLabel) }</Text>
           </TouchableOpacity>
           <View style={{flex:0.2}} />
         </View>

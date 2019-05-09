@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AicoreTimeCustomization", key)(a,b,c,d,e);
+}
 import React, { useState,Component } from 'react';
 import {
   Alert,
@@ -51,7 +57,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
       <View style={{flex:1}}>
         <TimePart
           width={this.props.width}
-          initialLabel={"When should I start?"}
+          initialLabel={ lang("When_should_I_start_")}
           finalLabel={"I'll start at:"}
           visible={true}
           timeObj={this.fromTime}
@@ -63,8 +69,8 @@ export class AicoreTimeCustomization extends Component<any,any> {
         {this.state.fromFinished ? <View style={{ height: 20 }}/> : undefined}
         <TimePart
           width={this.props.width}
-          initialLabel={"When am I finished?"}
-          finalLabel={"This behaviour ends at:"}
+          initialLabel={ lang("When_am_I_finished_")}
+          finalLabel={ lang("This_behaviour_ends_at_")}
           visible={this.state.fromFinished}
           timeObj={this.toTime}
           initiallyFinished={this.state.toFinished}
@@ -74,12 +80,15 @@ export class AicoreTimeCustomization extends Component<any,any> {
         />
         <View style={{ flex: 1 }}/>
         {this.state.toFinished && this.state.fromFinished ? <TimeButtonWithImage
-            label={"Looks good!"}
+            label={ lang("Looks_good_")}
             TimeButtonWithImage
             image={require("../../../../../images/icons/timeIcon.png")}
             callback={() => {
               if (AicoreUtil.isSameTime(this.fromTime, this.toTime)) {
-                Alert.alert("The start and ending times can't be the same!", "Check the times you set to make sure they're not exactly the same.",[{text:"OK"}])
+                Alert.alert(
+lang("_The_start_and_ending_time_header"),
+lang("_The_start_and_ending_time_body"),
+[{text:lang("_The_start_and_ending_time_left")}])
               }
               else {
                 let tempBehaviour = new AicoreBehaviour();
@@ -135,12 +144,12 @@ function TimePart(props : {
           elements.push(
             <View key={"offsetSetup"} style={{ paddingTop: 5 }}>
               <FadeIn index={index++}>
-                <Text style={headerStyle}>Exactly or with an offset?</Text>
+                <Text style={headerStyle}>{ lang("Exactly_or_with_an_offset_") }</Text>
               </FadeIn>
               <View style={{ height: 5 }}/>
               <FadeIn index={index++}>
                 <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ fontSize: 12, color: colors.gray.hex }}>-2h</Text>
+                  <Text style={{ fontSize: 12, color: colors.gray.hex }}>{ lang("__h") }</Text>
                   <View>
                     <Slider
                       style={{ width: props.width - 0.06 * screenWidth - 75 - 20, height: 40 }}
@@ -156,7 +165,7 @@ function TimePart(props : {
                       }}
                     />
                   </View>
-                  <Text style={{ fontSize: 12, color: colors.gray.hex }}>+2h</Text>
+                  <Text style={{ fontSize: 12, color: colors.gray.hex }}>{ lang("__h") }</Text>
                 </View>
               </FadeIn>
               <FadeIn index={index++}>
@@ -187,7 +196,7 @@ function TimePart(props : {
                 basic={true}
                 key={"resultButton" + index}
                 index={index}
-                label={"Tap to select time!"}
+                label={ lang("Tap_to_select_time_")}
                 image={require("../../../../../images/icons/clock.png")}
                 callback={() => {
                   timeReference.getDate((date) => {
@@ -275,21 +284,21 @@ function TypeSelector(props) {
       <TimeButtonWithImage
         basic={true}
         index={i++}
-        label={"At sunrise..."}
+        label={ lang("At_sunrise___")}
         image={require("../../../../../images/icons/sunrise.png")}
         callback={() => { console.log(props); props.timeObj.setSunrise(); props.callback("SUNRISE") }}
       />
       <TimeButtonWithImage
         basic={true}
         index={i++}
-        label={"At sunset..."}
+        label={ lang("At_sunset___")}
         image={require("../../../../../images/icons/sunset.png")}
         callback={() => { props.timeObj.setSunset(); props.callback("SUNSET") }}
       />
       <TimeButtonWithImage
         basic={true}
         index={i++}
-        label={"At a specific time..."}
+        label={ lang("At_a_specific_time___")}
         image={require("../../../../../images/icons/clock.png")}
         callback={() => { props.timeObj.setClock(); props.callback("CLOCK") }}
       />

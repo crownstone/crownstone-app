@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AddCrownstone", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   Linking,
@@ -53,10 +59,10 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader:"What sort of Crownstone would you like to add?",
         optionsCenter: true,
         options: [
-          {label: "Plug",          image: require('../../images/addCrownstone/plugs.png'),      nextCard: 'installingPlug',              response: "A Plug it is!"},
-          {label: "Built-in One",  image: require('../../images/addCrownstone/builtin-v2.png'), nextCard: 'installingBuiltinOne_step1',  response: "Let's add a Built-in One!"},
-          {label: "Built-in Zero", image: require('../../images/addCrownstone/builtin-v1.png'), nextCard: 'installingBuiltinZero_step1', response: "Let's add a Built-in Zero!"},
-          {label: "I don't have\nCrownstones yet...", image: require('../../images/addCrownstone/buy.png'), nextCard: 'buy',             response: "Let's buy Crownstones!"},
+          {label: lang("Plug"),          image: require('../../images/addCrownstone/plugs.png'),      nextCard: 'installingPlug',              response: "A Plug it is!"},
+          {label: lang("Built_in_One"),  image: require('../../images/addCrownstone/builtin-v2.png'), nextCard: 'installingBuiltinOne_step1',  response: "Let's add a Built-in One!"},
+          {label: lang("Built_in_Zero"), image: require('../../images/addCrownstone/builtin-v1.png'), nextCard: 'installingBuiltinZero_step1', response: "Let's add a Built-in Zero!"},
+          {label: lang("I_dont_have_nCrownstones_y"), image: require('../../images/addCrownstone/buy.png'), nextCard: 'buy',             response: "Let's buy Crownstones!"},
         ]
       },
       buy: {
@@ -65,32 +71,32 @@ export class AddCrownstone extends LiveComponent<any, any> {
         backgroundImage: require('../../images/backgrounds/builtinDarkBackground.png'),
         optionsBottom: true,
         options: [
-          {label: "Visit the Shop!", textAlign:'right', onSelect: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}); }},
+          {label: lang("Visit_the_Shop_"), textAlign:'right', onSelect: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}); }},
         ]
       },
       installingPlug: {
         subHeader:"Insert the plug into a power outlet and hold your phone close by. Tap next when you're ready!",
         backgroundImage: require('../../images/backgrounds/plugBackground.png'),
         options: [
-          {label: "Next", textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
+          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingBuiltinZero_step1: {
         subHeader: "Is the Built-in Zero already installed?",
         backgroundImage: require('../../images/backgrounds/builtinZeroBackground.png'),
         options: [
-          {label: "Yes, behind a socket.",    nextCard: "installingBuiltin_endSocket"},
-          {label: "Yes, at a ceiling light.", nextCard: "installingBuiltin_endLight"},
-          {label: "Not yet!",                 nextCard: "installingBuiltin_step2"},
+          {label: lang("Yes__behind_a_socket_"),    nextCard: "installingBuiltin_endSocket"},
+          {label: lang("Yes__at_a_ceiling_light_"), nextCard: "installingBuiltin_endLight"},
+          {label: lang("Not_yet_"),                 nextCard: "installingBuiltin_step2"},
         ]
       },
       installingBuiltinOne_step1: {
         subHeader: "Is your Built-in One already installed?",
         backgroundImage: require('../../images/backgrounds/builtinOneBackground.png'),
         options: [
-          {label: "Yes, behind a socket.",    nextCard: "installingBuiltin_endSocket"},
-          {label: "Yes, at a ceiling light.", nextCard: "installingBuiltin_endLight"},
-          {label: "Not yet!",                 nextCard: "installingBuiltin_step2"},
+          {label: lang("Yes__behind_a_socket_"),    nextCard: "installingBuiltin_endSocket"},
+          {label: lang("Yes__at_a_ceiling_light_"), nextCard: "installingBuiltin_endLight"},
+          {label: lang("Not_yet_"),                 nextCard: "installingBuiltin_step2"},
         ]
       },
       installingBuiltin_step2: {
@@ -98,8 +104,8 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Do you wish to use this Crownstone behind a power socket or with a ceiling light?",
         backgroundImage: require('../../images/backgrounds/installationBackground.png'),
         options: [
-          {label: "Behind a socket.",      image: require('../../images/addCrownstone/socket.png'),        nextCard: "installingBuiltin_instructions_socket"},
-          {label: "With a ceiling light.", image: require('../../images/addCrownstone/ceilingLights.png'), nextCard: "installingBuiltin_instructions_light"},
+          {label: lang("Behind_a_socket_"),      image: require('../../images/addCrownstone/socket.png'),        nextCard: "installingBuiltin_instructions_socket"},
+          {label: lang("With_a_ceiling_light_"), image: require('../../images/addCrownstone/ceilingLights.png'), nextCard: "installingBuiltin_instructions_light"},
         ]
       },
       installingBuiltin_instructions_socket: {
@@ -107,7 +113,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Please follow the instructions in the manual for the installation.\n\nIn future releases, we will have a complete install guide here.",
         backgroundImage: require('../../images/backgrounds/socketBackground.png'),
         options: [
-          {label: "OK. I have installed it!",    nextCard: "installingBuiltin_endSocket"},
+          {label: lang("OK__I_have_installed_it_"),    nextCard: "installingBuiltin_endSocket"},
         ]
       },
       installingBuiltin_instructions_light: {
@@ -115,7 +121,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Please follow the instructions in the manual for the installation.\n\nIn future releases, we will have a complete install guide here.",
         backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
         options: [
-          {label: "OK. I have installed it!",    nextCard: "installingBuiltinOne_endLight"},
+          {label: lang("OK__I_have_installed_it_"),    nextCard: "installingBuiltinOne_endLight"},
         ]
       },
       installingBuiltinOne_endSocket: {
@@ -123,7 +129,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Hold your phone close to the socket with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
         backgroundImage: require('../../images/backgrounds/socketBackground.png'),
         options: [
-          {label: "Next", textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
+          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingBuiltinOne_endLight: {
@@ -131,7 +137,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Hold your phone near the ceiling light with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
         backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
         options: [
-          {label: "Next", textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
+          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
     }

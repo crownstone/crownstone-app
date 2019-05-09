@@ -25,7 +25,7 @@ export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any>
     const { params } = navigation.state;
 
     return {
-      title: "A Crownstone",
+      title: lang("A_Crownstone"),
     }
   };
 
@@ -39,41 +39,41 @@ export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any>
       <Background image={core.background.detailsDark}>
                 <View style={{ width: screenWidth, height:availableScreenHeight, alignItems:'center' }}>
           <View style={{height: 30}} />
-          <Text style={[deviceStyles.header]}>{ "Presence Aware" }</Text>
+          <Text style={[deviceStyles.header]}>{ lang("Presence_Aware") }</Text>
           <View style={{height: 0.2*iconHeight}} />
-          <Text style={deviceStyles.specification}>{"I'll be ON when..."}</Text>
+          <Text style={deviceStyles.specification}>{ lang("Ill_be_ON_when___") }</Text>
           <View style={{height: 0.2*iconHeight}} />
           <View style={{flexDirection:'row', padding:10}}>
             <View style={{flex:1}} />
             <TouchableOpacity style={bubbleStyle}>
-              <Text style={bubbleTextStyle}>... somebody is home ...</Text>
+              <Text style={bubbleTextStyle}>{ lang("____somebody_is_home____") }</Text>
             </TouchableOpacity>
             <View style={{flex:1}} />
             <TouchableOpacity style={bubbleStyle}>
-              <Text style={bubbleTextStyle}>... nobody is home ...</Text>
+              <Text style={bubbleTextStyle}>{ lang("____nobody_is_home____") }</Text>
             </TouchableOpacity>
             <View style={{flex:1}} />
           </View>
           <View style={{flexDirection:'row', padding:10}}>
             <View style={{flex:1}} />
             <TouchableOpacity style={bubbleStyle}>
-              <Text style={bubbleTextStyle}>... there are people certain room(s) ...</Text>
+              <Text style={bubbleTextStyle}>{ lang("____there_are_people_certa") }</Text>
             </TouchableOpacity>
             <View style={{flex:1}} />
             <TouchableOpacity style={bubbleStyle}>
-              <Text style={bubbleTextStyle}>... a certain room is empty ...</Text>
+              <Text style={bubbleTextStyle}>{ lang("____a_certain_room_is_empt") }</Text>
             </TouchableOpacity>
             <View style={{flex:1}} />
           </View>
           <View style={{flexDirection:'row', padding:10}}>
             <View style={{flex:1}} />
             <TouchableOpacity style={bubbleStyle}>
-              <Text style={bubbleTextStyle}>... someone is near me ...</Text>
+              <Text style={bubbleTextStyle}>{ lang("____someone_is_near_me____") }</Text>
             </TouchableOpacity>
             <View style={{flex:1}} />
           </View>
           <View style={{flex:1}} />
-          <Text style={bubbleTextStyle}>Pick one to continue!</Text>
+          <Text style={bubbleTextStyle}>{ lang("Pick_one_to_continue_") }</Text>
         </View>
       </Background>
     )

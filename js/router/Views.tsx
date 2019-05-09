@@ -1,3 +1,9 @@
+
+import { Languages } from "../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Views", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper'
 
@@ -94,7 +100,6 @@ export const Views = {
   DeviceEdit:                     withMappedNavigationProps()(DeviceEdit),
   DeviceIconSelection:            withMappedNavigationProps()(DeviceIconSelection),
   DeviceOverview:                 withMappedNavigationProps()(DeviceOverview),
-  // DeviceOverview:                 withMappedNavigationProps()((props) => { return <DeviceOverview {...props} sphereId={"6bb1dfe9-b4a7-c2aa-7a7c-d4d837b1451b"} stoneId={"5a1f3fd0-7c3f-3873-3141-a6e4c89dfe86"} />}),
   DeviceScheduleEdit:             withMappedNavigationProps()(DeviceScheduleEdit),
   DeviceSmartBehaviour:           withMappedNavigationProps()(DeviceSmartBehaviour),
   DeviceSmartBehaviour_Editor:       withMappedNavigationProps()(DeviceSmartBehaviour_Editor),

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Interview", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component, useState } from "react";
 import {
   ScrollView, Text, TextStyle,
@@ -176,7 +182,7 @@ export class Interview extends Component<{
 
   render() {
     if (this.state.invalid === true) {
-      return <View><Text>Something went wrong. Please retry.</Text></View>
+      return <View><Text>{ lang("Something_went_wrong__Plea") }</Text></View>
     }
 
     let allCards = this.props.getCards();

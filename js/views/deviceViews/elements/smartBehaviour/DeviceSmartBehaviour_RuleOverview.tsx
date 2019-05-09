@@ -62,7 +62,7 @@ export class DeviceSmartBehaviour_RuleOverview extends Component<any, any> {
     return (
       <View style={{ width: screenWidth, alignItems:'center' }}>
         <View style={{height: 30}} />
-        <Text style={[deviceStyles.header]}>{ "My Behaviour" }</Text>
+        <Text style={[deviceStyles.header]}>{ lang("My_Behaviour") }</Text>
         <View style={{height: 0.2*iconSize}} />
         <WeekDayList
           data={{

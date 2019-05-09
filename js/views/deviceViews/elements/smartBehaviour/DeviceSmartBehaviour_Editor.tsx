@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceSmartBehaviour_Editor", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ScrollView,
@@ -20,7 +26,7 @@ import { TwilightRuleEditor } from "./supportComponents/TwilightRuleEditor";
 export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "A Crownstone",
+      title: lang("A_Crownstone"),
     }
   };
 
@@ -32,9 +38,9 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
         <ScrollView style={{width: screenWidth}}>
           <View style={{flex:1, width: screenWidth, minHeight:availableScreenHeight, alignItems:'center'}}>
             <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ "Create my Behaviour" }</Text>
+            <Text style={[deviceStyles.header]}>{ lang("Create_my_Behaviour") }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-            <Text style={deviceStyles.specification}>{"Tap the underlined parts to customize them!"}</Text>
+            <Text style={deviceStyles.specification}>{ lang("Tap_the_underlined_parts_t") }</Text>
             { this.props.twilightRule ?
               <TwilightRuleEditor  sphereId={this.props.sphereId} stoneId={this.props.stoneId} data={this.props.data} /> :
               <BehaviourRuleEditor sphereId={this.props.sphereId} stoneId={this.props.stoneId} data={this.props.data} /> }

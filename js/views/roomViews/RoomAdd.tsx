@@ -188,7 +188,7 @@ export class RoomAdd extends LiveComponent<any, any> {
         },
 
         options: [
-          {label: "Create room!", textAlign:'right', onSelect: (result) => {
+          {label: lang("Create_room_"), textAlign:'right', onSelect: (result) => {
             this.createRoom()
           }}
         ]

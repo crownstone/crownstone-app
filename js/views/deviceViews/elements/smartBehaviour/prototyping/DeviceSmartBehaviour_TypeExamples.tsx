@@ -31,7 +31,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
     const { params } = navigation.state;
 
     return {
-      title: "A Crownstone",
+      title: lang("A_Crownstone"),
     }
   };
 
@@ -56,7 +56,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
             <View style={{height: 0.75*iconHeight}} />
             { this.props.image }
             <View style={{height: 0.5*iconHeight}} />
-            <Text style={deviceStyles.explanation}>Pick an example behaviour and change it to your liking! Keep in mind that I'll be off when I'm not supposed to be on.</Text>
+            <Text style={deviceStyles.explanation}>{ lang("Pick_an_example_behaviour_") }</Text>
             <View style={{height: 0.2*iconHeight}} />
               { this.getExamples() }
             <View style={{height:1, backgroundColor:colors.menuBackground.rgba(0.3), width: screenWidth}} />
