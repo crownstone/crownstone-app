@@ -36,7 +36,6 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
     }
   };
 
-
   nothingYetTimeout;
   iconTimeout;
   noScansAtAllTimeout;

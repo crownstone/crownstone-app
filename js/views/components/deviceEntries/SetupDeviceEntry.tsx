@@ -79,6 +79,8 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
 
 
   _getControl() {
+    if (SetupStateHandler.howManySetupStonesAvailable() === 0) { return <View /> }
+
     let content;
     let action = null;
     if (this.state.pendingCommand === true) {
@@ -96,15 +98,14 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
                 />;
       action = () => {
         this.setState({pendingCommand:true});
-
         StoneUtil.setupPulse(this.props.handle, this.props.sphereId)
           .then(() => {  this.setState({pendingCommand: false})})
           .catch((err) => {
             // console.log("ERROR", err)
             Alert.alert(
-lang("_Something_went_wrong______header"),
-lang("_Something_went_wrong______body"),
-[{text:lang("_Something_went_wrong______left")}]
+              lang("_Something_went_wrong______header"),
+              lang("_Something_went_wrong______body"),
+              [{text:lang("_Something_went_wrong______left")}]
             );
             this.setState({pendingCommand: false});
           })

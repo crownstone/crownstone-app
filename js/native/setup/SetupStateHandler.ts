@@ -223,6 +223,12 @@ class SetupStateHandlerClass {
     return (Object.keys(this._stonesInSetupStateAdvertisements).length > 0 || this._currentSetupState.busy);
   }
 
+
+  howManySetupStonesAvailable() {
+    if (this._currentSetupState.busy) { return 0; }
+    return Object.keys(this._stonesInSetupStateAdvertisements).length;
+  }
+
   isSetupInProgress() {
     return this._currentSetupState.busy;
   }

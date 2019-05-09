@@ -27,7 +27,6 @@ import { MessageInbox }                from '../views/messaging/MessageInbox'
 import { MessageAdd }                  from '../views/messaging/MessageAdd'
 import { PictureView }                 from '../views/cameraViews/PictureView'
 import { Register }                    from '../views/startupViews/Register'
-import { RegisterConclusion }          from '../views/startupViews/RegisterConclusion'
 import { RoomOverview }                from '../views/roomViews/RoomOverview'
 import { RoomEdit }                    from '../views/roomViews/RoomEdit'
 import { RoomAdd }                     from '../views/roomViews/RoomAdd'
@@ -113,7 +112,6 @@ export const Views = {
   MessageInbox:                   withMappedNavigationProps()(MessageInbox),
   PictureView:                    withMappedNavigationProps()(PictureView),
   Register:                       withMappedNavigationProps()(Register),
-  RegisterConclusion:             withMappedNavigationProps()(RegisterConclusion),
   RoomAdd:                        withMappedNavigationProps()(RoomAdd),
   RoomEdit:                       withMappedNavigationProps()(RoomEdit),
   RoomIconSelection:              withMappedNavigationProps()(RoomIconSelection),
