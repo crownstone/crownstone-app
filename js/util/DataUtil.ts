@@ -633,7 +633,7 @@ export const getMapOfCrownstonesInAllSpheresByIBeacon = function(state) {
       };
 
       let ibeaconString = iBeaconUUID + '_' + stoneConfig.iBeaconMajor + '_' + stoneConfig.iBeaconMinor;
-      map[ibeaconString.toLowerCase()] = data
+      map[ibeaconString.toLowerCase()] = data;
     }
   }
   return map;

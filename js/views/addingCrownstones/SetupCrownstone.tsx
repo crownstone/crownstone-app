@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -24,7 +25,7 @@ import KeepAwake from 'react-native-keep-awake';
 import { BlePromiseManager } from "../../logic/BlePromiseManager";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 
-export class SetupCrownstone extends Component<any, any> {
+export class SetupCrownstone extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 

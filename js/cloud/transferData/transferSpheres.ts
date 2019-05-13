@@ -61,7 +61,7 @@ export const transferSpheres = {
 
   updateOnCloud: function( data : transferSphereToCloudData ) {
     if (data.cloudId === undefined) {
-      return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
+      return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
     }
 
 

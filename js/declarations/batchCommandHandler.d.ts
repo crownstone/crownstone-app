@@ -84,6 +84,7 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'keepAliveState', state : number, timeout : number, changeState : boolean } |
   { commandName : 'toggle', stateForOn : number } |
   { commandName : 'multiSwitch', state : number, timeout : number, intent: number } |
+  { commandName : 'getBootloaderVersion' } |
   { commandName : 'getFirmwareVersion' } |
   { commandName : 'getHardwareVersion' } |
   { commandName : 'keepAliveBatchCommand' } |

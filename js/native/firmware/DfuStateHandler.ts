@@ -17,6 +17,8 @@ class DfuStateHandlerClass {
   _stonesInDfuMode : any = {};
   _dfuTimeouts : any = {};
 
+  _dfuInProgress = false;
+
   constructor() {
     this._uuid = xUtil.getUUID();
   }
@@ -154,6 +156,10 @@ class DfuStateHandlerClass {
 
   handleReservedForDfu(handle) {
     return (this._stonesInDfuMode[handle] !== undefined);
+  }
+
+  isDfuInProgress() {
+    return this._dfuInProgress;
   }
 
 }

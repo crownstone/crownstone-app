@@ -79,6 +79,15 @@ const AddCrownstoneStack = createStackNavigator(
     ...defaultHeader,
   }
 );
+const DfuCrownstoneStack = createStackNavigator(
+  {
+    DfuIntroduction: Views.DfuIntroduction,
+    DfuScanning:     Views.DfuScanning,
+  },
+  {
+    ...defaultHeader,
+  }
+);
 
 
 const EditSphereStack = createStackNavigator(
@@ -259,6 +268,9 @@ const AppStack = createStackNavigator(
     // test: {
     //   screen: wrap("InterviewLight", InterviewLight),
     // },
+    DfuCrownstoneStack: {
+      screen: DfuCrownstoneStack,
+    },
     AppNavigator: {
       screen: TabNavigator,
     },

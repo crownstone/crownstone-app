@@ -86,8 +86,27 @@ export const StoneUtil = {
     return StoneUtil.timestampToCrownstoneTime(new Date().valueOf())
   },
 
-  checkFirmwareVersion: function(sphereId, stoneId, stone) : Promise<bchReturnType>  {
+  getStoneObject: function(sphereId, stoneId) {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) { return null; }
+    let stone = sphere.stones[stoneId] || null;
+    return stone;
+  },
+
+  checkFirmwareVersion: function(sphereId, stoneId, stone?) : Promise<bchReturnType>  {
+    if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
+    if (!stone) { Promise.reject("NO_STONE") }
+
     let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from checkFirmware');
+    BatchCommandHandler.executePriority();
+    return promise;
+  },
+  checkBootloaderVersion: function(sphereId, stoneId, stone?) : Promise<bchReturnType>  {
+    if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
+    if (!stone) { Promise.reject("NO_STONE") }
+
+    let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getBootloaderVersion'},{},1, 'from checkBootloaderVersion');
     BatchCommandHandler.executePriority();
     return promise;
   },

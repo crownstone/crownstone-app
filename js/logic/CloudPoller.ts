@@ -17,9 +17,7 @@ class CloudPollerClass {
         })
     }
     else {
-      return new Promise((resolve, reject) => {
-        resolve();
-      })
+      return Promise.resolve();
     }
   }
 

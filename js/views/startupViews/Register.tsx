@@ -1,3 +1,4 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
@@ -29,7 +30,7 @@ import { FileUtil } from "../../util/FileUtil";
 import { Icon } from "../components/Icon";
 
 
-export class Register extends Component<any, any> {
+export class Register extends LiveComponent<any, any> {
   static navigationOptions = {
     header: null
   };

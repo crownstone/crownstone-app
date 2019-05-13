@@ -3,7 +3,6 @@ import { BleUtil }            from '../../util/BleUtil';
 import { Util }               from '../../util/Util';
 import {LOGd, LOGe} from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
-import { DfuStateHandler }    from "../firmware/DfuStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
@@ -75,11 +74,6 @@ class SetupStateHandlerClass {
       core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
-
-        // DFU takes preference over Setup. DFU can reserve a setup Crownstone for the setup process.
-        if (DfuStateHandler.handleReservedForDfu(handle)) {
-          return;
-        }
 
         let stoneData = MapProvider.stoneHandleMap[handle];
         if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {

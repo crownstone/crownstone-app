@@ -1,6 +1,5 @@
 import * as React from 'react'; import { Component } from 'react';
 import { LibMessages } from "../views/overlays/LibMessages";
-import { DfuOverlay } from "../views/overlays/DfuOverlay";
 import { LockOverlay } from "../views/overlays/LockOverlay";
 import { LocalizationSetupStep1 } from "../views/overlays/LocalizationSetupStep1";
 import { LocalizationSetupStep2 } from "../views/overlays/LocalizationSetupStep2";
@@ -29,7 +28,6 @@ export class Router extends Component {
         <AicoreTimeCustomizationOverlay key={"AicoreTimeCustomizationOverlay"}    />,
         <SimpleOverlay             key={"SimpleOverlay"}   />,
         <LibMessages               key={"LibMessages"}     />,
-        <DfuOverlay                key={"DfuOverlay"}      />,
         <LockOverlay               key={"LockOverlay"}     />,
         <LocalizationSetupStep1    key={"LocalizationSetupStep1"}    />,
         <LocalizationSetupStep2    key={"LocalizationSetupStep2"}    />,

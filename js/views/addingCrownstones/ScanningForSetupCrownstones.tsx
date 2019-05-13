@@ -226,7 +226,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
           <View style={{flex:1, }} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, minHeight:40 }}>
             <View style={{flex:1}} />
-            <Text style={{color: colors.csBlueDark.hex, fontSize:16, fontWeight: "bold"}}>{ lang("Searching_for_more_Crownst",stoneArray.length,0) }</Text>
+            <Text style={{color: colors.csBlueDark.hex, fontSize:16, fontWeight: "bold"}}>{ lang("Searching_for_more_Crownst",stoneArray.length > 0) }</Text>
             <View style={{flex:1}} />
             <ActivityIndicator animating={true} size='large' color={colors.csBlueDark.hex} />
             <View style={{flex:1}} />

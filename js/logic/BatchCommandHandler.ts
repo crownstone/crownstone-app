@@ -158,6 +158,9 @@ class BatchCommandHandlerClass {
             actionPromiseName = command.commandName;
             switch (command.commandName) {
               case 'getFirmwareVersion':
+                actionPromise = BluenetPromiseWrapper.getBootloaderVersion();
+                break;
+              case 'getFirmwareVersion':
                 actionPromise = BluenetPromiseWrapper.getFirmwareVersion();
                 break;
               case 'getHardwareVersion':

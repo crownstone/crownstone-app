@@ -1,6 +1,5 @@
 import { Alert }                    from "react-native"
 import {LOG, LOGd, LOGw} from "../../logging/Log";
-import { FirmwareHandler }          from "../firmware/FirmwareHandler";
 import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
 import { TIME_BETWEEN_TAP_TO_TOGGLES, TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY } from "../../ExternalConfig";
 import { addDistanceToRssi, Util }  from "../../util/Util";
@@ -11,6 +10,7 @@ import {INTENTS} from "../libInterface/Constants";
 import { xUtil } from "../../util/StandAloneUtil";
 import { BEHAVIOUR_TYPES } from "../../Enums";
 import { core } from "../../core";
+import { DfuStateHandler } from "../firmware/DfuStateHandler";
 
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
@@ -21,7 +21,6 @@ let SLIDING_WINDOW_FACTOR = 0.2; // [0.1 .. 1] higher is more responsive
  * Each Stone Entity will have a StoneBehaviour which only job is to respond to triggers to enact its behaviour.
  **/
 export class StoneBehaviour {
-
   store;
   sphereId;
   stoneId;
@@ -102,13 +101,13 @@ export class StoneBehaviour {
 
 
   _handleTapToToggle(state, stone, rssi) {
-    if (!state.app.tapToToggleEnabled)     { return false; }
-    if (state.development.broadcasting_enabled)     { return false; }
-    if (!stone.config.tapToToggle)         { return false; }
-    if (FirmwareHandler.isDfuInProgress()) { return false; }
+    if (!state.app.tapToToggleEnabled)          { return false; }
+    if (state.development.broadcasting_enabled) { return false; }
+    if (!stone.config.tapToToggle)              { return false; }
+    if (DfuStateHandler.isDfuInProgress())      { return false; }
 
     let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
-    if (!tapToToggleCalibration)           { return false; }
+    if (!tapToToggleCalibration)                { return false; }
 
     let now = new Date().valueOf();
 

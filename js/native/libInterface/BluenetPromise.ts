@@ -156,3 +156,10 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   broadcastSwitch:                (referenceId, stoneId, switchState) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState); },
 };
+
+
+
+
+
+
+
