@@ -4,6 +4,7 @@ import { FileUtil } from "./FileUtil";
 import { Languages } from "../Languages";
 import { core } from "../core";
 import { xUtil } from "./StandAloneUtil";
+import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
 
 const RNFS = require('react-native-fs');
 const sha1 = require('sha-1');
@@ -63,7 +64,7 @@ export const DfuUtil = {
         return releaseNotes;
       })
       .catch((err) => {
-        LOGe.info("DfuOverlay: Could not download release notes...", err);
+        LOGe.info("DFU UTIL: Could not download release notes...", err);
         let errorMessage = RELEASE_NOTES_ERROR;
         if (userConfig.firmwareVersionsAvailable[hardwareVersion] === undefined) {
           errorMessage += "\nNo firmware available form hardwareVersion" + hardwareVersion
@@ -88,7 +89,7 @@ export const DfuUtil = {
       let availableFW = state.user.firmwareVersionsAvailable[stone.config.hardwareVersion];
       if (!availableFW) { return; }
 
-      if (xUtil.versions.isLower(stone.config.firmwareVersion, availableFW) || true) {
+      if (xUtil.versions.isLower(stone.config.firmwareVersion, availableFW) || ALWAYS_DFU_UPDATE_BOOTLOADER || ALWAYS_DFU_UPDATE_FIRMWARE) {
         if (versionsAvailable[availableFW] === undefined) {
           versionsAvailable[availableFW] = stone.config.hardwareVersion
         }
@@ -123,7 +124,7 @@ function _download(sourceDetails, type) {
       })
     })
     .then((resultPath) => {
-      LOG.info("DfuHandler: Downloaded file", resultPath);
+      LOG.info("DfuUtil: Downloaded file", resultPath);
       return RNFS.readFile(resultPath, 'ascii');
     })
     .then((fileContent) => {
@@ -131,21 +132,21 @@ function _download(sourceDetails, type) {
         let hash = sha1(fileContent);
         LOG.info(type, "HASH", '"' + hash + '"', '"' + sourceDetails.sha1hash + '"');
         if (hash === sourceDetails.sha1hash) {
-          LOG.info("DfuHandler: Verified hash");
+          LOG.info("DfuUtil: Verified hash");
           resolve(toPath);
         }
         else {
-          FileUtil.safeDeleteFile(toPath).catch(() => {});
-          reject("Invalid hash");
+          return FileUtil.safeDeleteFile(toPath)
+            .then(() => { reject("Invalid hash");})
+            .catch(() => { reject("Invalid hash");});
         }
       })
     })
     .catch((err) => {
-      FileUtil.safeDeleteFile(toPath).catch(() => {});
-      LOGe.info("DfuHandler: Could not download file", err);
-
-      // propagate the error
-      throw err;
+      LOGe.info("DfuUtil: Could not download file", err);
+      return FileUtil.safeDeleteFile(toPath)
+        .catch(() => { throw err; })
+        .then(() => { throw err; })
     })
 }
 

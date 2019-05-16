@@ -62,6 +62,7 @@ export let colors : colorInterface = {
   darkRed:              {hex:'#cc0900'},
   menuRed:              {hex:'#e00'},
   iosBlue:              {hex:'#007aff'},
+  iosBlueDark:          {hex:'#002e5c'},
   lightBlue:            {hex:'#a9d0f1'},
   lightBlue2:           {hex:'#77c2f7'},
   blinkColor1:          {hex:'#2daeff'},

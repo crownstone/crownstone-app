@@ -77,7 +77,7 @@ export class Sphere extends Component<any, any> {
       }
     }
 
-    if (availableStones === 0 && floatingStones > 0) {
+    if (availableStones === 0 && floatingStones > 0 && noRoomsCurrentSphere) {
       // This dude cant add rooms and floating Crownstones need to be put in rooms. Tell him how to continue.
       return (
         <View style={viewStyle}>

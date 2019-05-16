@@ -35,6 +35,7 @@ import { preparePictureURI }      from "../../util/Util";
 import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -94,7 +95,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete",    (handle) => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete",  (handle) => {
       this.forceUpdate();
     }));
 
@@ -174,6 +175,7 @@ export class RoomOverview extends LiveComponent<any, any> {
             viewingRemotely={this.viewingRemotely}
             nearestInSphere={stoneId === this.nearestStoneIdInSphere}
             nearestInRoom={stoneId === this.nearestStoneIdInRoom}
+            dfuMode={item.dfuMode === true}
           />
         </View>
       );
@@ -186,18 +188,19 @@ export class RoomOverview extends LiveComponent<any, any> {
     let stoneIds = Object.keys(stones);
     let shownHandles = {};
 
-
     if (DfuStateHandler.areDfuStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
       let dfuStones = DfuStateHandler.getDfuStones();
+
       let dfuIds = Object.keys(dfuStones);
       dfuIds.forEach((dfuId) => {
-        shownHandles[dfuStones[dfuId].advertisement.handle] = true;
-        ids.push(dfuId);
-        dfuStones[dfuId].dfuMode = true;
-        stoneArray.push(dfuStones[dfuId]);
+        if (dfuStones[dfuId].data && dfuStones[dfuId].data.locationId === this.props.locationId) {
+          shownHandles[dfuStones[dfuId].advertisement.handle] = true;
+          ids.push(dfuId);
+          dfuStones[dfuId].dfuMode = true;
+          stoneArray.push(dfuStones[dfuId]);
+        }
       });
     }
-
 
     let tempStoneDataArray = [];
     stoneIds.forEach((stoneId) => {

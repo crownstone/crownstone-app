@@ -1,5 +1,5 @@
 import { Permissions } from "../backgroundProcesses/PermissionManager";
-import { ALWAYS_DFU_UPDATE } from "../ExternalConfig";
+import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
 
 export const xUtil = {
 
@@ -241,7 +241,7 @@ export const xUtil = {
     canUpdate: function(stone, state) {
       // only admins are allowed to update
       if (Permissions.activeSphere().seeUpdateCrownstone) {
-        if (ALWAYS_DFU_UPDATE)
+        if (ALWAYS_DFU_UPDATE_FIRMWARE || ALWAYS_DFU_UPDATE_BOOTLOADER)
           return true;
 
         let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};

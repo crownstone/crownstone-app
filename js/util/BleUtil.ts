@@ -138,7 +138,6 @@ export const BleUtil = {
    * @returns {function()}
    */
   startHighFrequencyScanning: function(id, noTimeout : boolean | number = false) {
-    console.log("START SCANNING HF", id);
     let enableTimeout = noTimeout === false;
     let timeoutDuration = HIGH_FREQUENCY_SCAN_MAX_DURATION;
     if (typeof noTimeout === 'number' && noTimeout > 0) {
@@ -168,7 +167,6 @@ export const BleUtil = {
   },
 
   stopHighFrequencyScanning: function(id) {
-    console.log("STOP SCANNING HF", id);
     if (this.highFrequencyScanUsers[id] !== undefined) {
       if (typeof this.highFrequencyScanUsers[id].timeout === 'function') {
         this.highFrequencyScanUsers[id].timeout();

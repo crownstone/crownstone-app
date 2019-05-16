@@ -4,10 +4,7 @@ import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import { SetupStateHandler } from "../setup/SetupStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import { core } from "../../core";
-import { xUtil } from "../../util/StandAloneUtil";
 import { StoneUtil } from "../../util/StoneUtil";
-
-
 
 export class DfuHelper {
   handle : any;
@@ -17,8 +14,8 @@ export class DfuHelper {
   abortedDFU = false;
 
   // Ensure the provided cloudhelper has already gotten information and downloaded the bootloader/fw.
-  constructor(sphereId, stoneId) {
-    let stone = StoneUtil.getStoneObject(sphereId, stoneId);
+  constructor(sphereId, stoneId, stone?) {
+    stone = stone ? stone : StoneUtil.getStoneObject(sphereId, stoneId);
     this.handle = stone.config.handle;
     this.sphereId = sphereId;
     this.stoneId = stoneId;

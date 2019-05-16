@@ -3154,21 +3154,6 @@ export default {
       Register:                           false,
     },
   },
-  RegisterConclusion:{
-    __filename: "../js/views/startupViews/RegisterConclusion.tsx",
-    An_email_has_been_sent_to:           function() { return "An email has been sent to:" },
-    Please_click_the_link_in_:           function() { return arguments[0] ? "Please click the link in the email and follow the instructions to reset your password." : "After you click the validation link in the email, you can login to the app using your email address." },
-    It_can_take_up_to_a_minut:           function() { return "It can take up to a minute for the email to be received. Make sure you check your spam folder as well." },
-    OK:                                  function() { return "Oké" },
-    Almost_Done_:                        function() { return "Almost Done!" },
-    __stringSameAsBaseLanguage: {
-      An_email_has_been_sent_to:          false,
-      Please_click_the_link_in_:          false,
-      It_can_take_up_to_a_minut:          false,
-      OK:                                 false,
-      Almost_Done_:                       false,
-    },
-  },
   ReviewInitialTests:{
     __filename: "../js/views/settingsViews/diagnostics/ReviewInitialTests.tsx",
     Problem_in_database__:               function() { return "Problem in database.." },

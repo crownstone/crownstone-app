@@ -5,15 +5,13 @@ import { core } from "../core";
 export class PermissionManagerClass {
   _initialized : boolean = false;
   _activeSphereId : string;
-  _userAlreadyLoggedIn : boolean = false;
   _enableUpdates : boolean = false;
 
   permissionClasses = {};
 
-  init(userAlreadyLoggedIn : boolean) {
+  init() {
     if (this._initialized === false) {
       this._initialized = true;
-      this._userAlreadyLoggedIn = userAlreadyLoggedIn;
 
       // sometimes the first event since state change can be wrong, we use this to ignore it.
       core.eventBus.on("databaseChange", (data) => {
@@ -31,17 +29,16 @@ export class PermissionManagerClass {
       core.eventBus.on('userLoggedIn', () => {
         LOG.info("PermissionManager: Update permissions due to userLoggedIn");
         this._enableUpdates = true;
-        this._userAlreadyLoggedIn = true;
         this._update(core.store.getState());
       });
 
       // in case the login event has already fired before we init the permission module.
-      if (userAlreadyLoggedIn === true) {
-        this._enableUpdates = true;
-        this._update(core.store.getState());
-      }
+      this._enableUpdates = true;
+      this._update(core.store.getState());
     }
   }
+
+
 
 
   /**
@@ -58,7 +55,7 @@ export class PermissionManagerClass {
     Object.keys(state.spheres).forEach((sphereId) => {
       if (this.permissionClasses[sphereId] === undefined) {
         LOG.info("PermissionManager: Creating PermissionClass for ", sphereId);
-        this.permissionClasses[sphereId] = new PermissionClass(core.store, sphereId, this._userAlreadyLoggedIn);
+        this.permissionClasses[sphereId] = new PermissionClass(sphereId);
       }
     });
   }

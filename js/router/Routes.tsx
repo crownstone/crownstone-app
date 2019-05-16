@@ -83,6 +83,8 @@ const DfuCrownstoneStack = createStackNavigator(
   {
     DfuIntroduction: Views.DfuIntroduction,
     DfuScanning:     Views.DfuScanning,
+    DfuBatch:        Views.DfuBatch,
+    DfuFinished:     Views.DfuFinished,
   },
   {
     ...defaultHeader,
@@ -268,11 +270,11 @@ const AppStack = createStackNavigator(
     // test: {
     //   screen: wrap("InterviewLight", InterviewLight),
     // },
-    DfuCrownstoneStack: {
-      screen: DfuCrownstoneStack,
-    },
     AppNavigator: {
       screen: TabNavigator,
+    },
+    DfuCrownstoneStack: {
+      screen: DfuCrownstoneStack,
     },
     AddCrownstoneStack: {
       screen: AddCrownstoneStack,

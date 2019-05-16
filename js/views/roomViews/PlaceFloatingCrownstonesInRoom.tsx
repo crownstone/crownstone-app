@@ -2,7 +2,7 @@
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("RoomOverview", key)(a,b,c,d,e);
+  return Languages.get("PlaceFloatingCrownstonesInRoom", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {

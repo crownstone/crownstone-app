@@ -4,76 +4,90 @@ import { navigationStore } from "../router/NavigationReducer";
 export const NavigationUtil = {
 
   navigate(target,params = {}) {
-    const navigateAction = NavigationActions.navigate({
-      routeName: target,
-      params: params,
-    });
+    setTimeout(() => {
+      const navigateAction = NavigationActions.navigate({
+        routeName: target,
+        params: params,
+      });
 
-    navigationStore.dispatch(navigateAction);
+      navigationStore.dispatch(navigateAction);
+    })
   },
 
   back() {
-    const navigateAction = NavigationActions.back();
-
-    navigationStore.dispatch(navigateAction);
+    setTimeout(() => {
+      const navigateAction = NavigationActions.back();
+      navigationStore.dispatch(navigateAction);
+    })
   },
 
 
   backTo(target) {
-    console.log("I want to go back to: ", target);
-    const navigateAction = {
-      type: "Navigation/BACK",
-      target: target
-    };
-    navigationStore.dispatch(navigateAction);
+    setTimeout(() => {
+      console.log("I want to go back to: ", target);
+      const navigateAction = {
+        type: "Navigation/BACK",
+        target: target
+      };
+      navigationStore.dispatch(navigateAction);
+    })
   },
 
   backToTop() {
-    const navigateAction = NavigationActions.back();
-
-    navigationStore.dispatch(navigateAction);
+    setTimeout(() => {
+      const navigateAction = NavigationActions.back();
+      navigationStore.dispatch(navigateAction);
+    })
   },
 
   reset(target, params = {}) {
-    const navigateAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: target, params: params })],
-    });
+    setTimeout(() => {
+      const navigateAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: target, params: params })],
+      });
 
-    navigationStore.dispatch(navigateAction);
+      navigationStore.dispatch(navigateAction);
+    })
   },
 
   navigateAndReplace: function(target, params = {}) {
-    const navigateAction = NavigationActions.navigate({
-      routeName: target,
-      params: {...params, __popBeforeAdd:1},
-    });
+    setTimeout(() => {
+      const navigateAction = NavigationActions.navigate({
+        routeName: target,
+        params: {...params, __popBeforeAdd:1},
+      });
 
-    navigationStore.dispatch(navigateAction);
+      navigationStore.dispatch(navigateAction);
+    });
   },
 
   navigateAndReplaceVia: function(via, target, params = {}) {
-    const navigateAction1 = NavigationActions.navigate({
-      routeName: via,
-      params: {...params, __popBeforeAdd:1},
-    });
-    const navigateAction2 = NavigationActions.navigate({
-      routeName: target,
-      params:params,
-    });
+    setTimeout(() => {
+      const navigateAction1 = NavigationActions.navigate({
+        routeName: via,
+        params: { ...params, __popBeforeAdd: 1 },
+      });
+      const navigateAction2 = NavigationActions.navigate({
+        routeName: target,
+        params: params,
+      });
 
-    navigationStore.dispatch(navigateAction1);
-    navigationStore.dispatch(navigateAction2);
+      navigationStore.dispatch(navigateAction1);
+      navigationStore.dispatch(navigateAction2);
+    });
   },
 
   backAndNavigate: function(target, params = {}) {
-    const navigateAction2 = NavigationActions.navigate({
-      routeName: target,
-      params:params,
-    });
+    setTimeout(() => {
+      const navigateAction2 = NavigationActions.navigate({
+        routeName: target,
+        params: params,
+      });
 
-    navigationStore.dispatch(NavigationActions.back());
-    navigationStore.dispatch(navigateAction2);
+      navigationStore.dispatch(NavigationActions.back());
+      navigationStore.dispatch(navigateAction2);
+    });
   },
 
   openDrawer: function() {
@@ -87,10 +101,12 @@ export const NavigationUtil = {
   },
 
   logout: function() {
-    let action = {
-      type: 'Navigation/BACK',
-      logout: true,
-    };
-    navigationStore.dispatch(action);
+    setTimeout(() => {
+      let action = {
+        type: 'Navigation/BACK',
+        logout: true,
+      };
+      navigationStore.dispatch(action);
+    });
   }
 };

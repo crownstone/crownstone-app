@@ -123,7 +123,6 @@ class BatchCommandHandlerClass {
       let directCommands = this._commandHandler.extractDirectCommands(core.store.getState(), connectedStoneInfo.stoneId, relayOnlyUsed);
 
       let meshNetworks = this._commandHandler.extractMeshCommands(core.store.getState(), connectedStoneInfo.stoneId, connectedStoneInfo.meshNetworkId, relayOnlyUsed);
-
       // check if we have to perform any mesh commands for this Crownstone.
       let meshSphereIds = Object.keys(meshNetworks);
       let promise = null;
@@ -157,7 +156,7 @@ class BatchCommandHandlerClass {
             MeshHelper._mergeOptions(action.options, activeOptions);
             actionPromiseName = command.commandName;
             switch (command.commandName) {
-              case 'getFirmwareVersion':
+              case 'getBootloaderVersion':
                 actionPromise = BluenetPromiseWrapper.getBootloaderVersion();
                 break;
               case 'getFirmwareVersion':
@@ -263,6 +262,9 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 1.0);
                 break;
               default:
+                console.log("-------------------Error BatchCommandHandler: COULD NOT PERFORM ACTION", commandsInSphere, action);
+                LOGe.bch("BatchCommandHandler: Error: COULD NOT PERFORM ACTION", commandsInSphere, action);
+                return reject("Failed to handle command");
                 performedAction = null;
             }
             break;

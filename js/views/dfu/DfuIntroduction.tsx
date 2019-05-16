@@ -6,9 +6,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Platform,
+  Platform, View
 } from "react-native";
-import { colors} from "../styles";
+import { colors, screenWidth, styles } from "../styles";
 import { Pagination } from 'react-native-snap-carousel';
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { NavigationUtil } from "../../util/NavigationUtil";
@@ -17,6 +17,7 @@ import { Interview } from "../components/Interview";
 import { LiveComponent } from "../LiveComponent";
 import { core } from "../../core";
 import { DfuUtil } from "../../util/DfuUtil";
+import { Icon } from "../components/Icon";
 
 export class DfuIntroduction extends LiveComponent<any, any> {
   static navigationOptions = {
@@ -28,15 +29,21 @@ export class DfuIntroduction extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = { releaseNotes: "Downloading..." }
+    this.state = { releaseNotes: "Downloading...", inSphere: false }
     this.interviewData = {};
   }
 
   componentWillMount() {
     let state = core.store.getState();
-    let sphereId = this.props.sphereId || Object.keys(state.spheres)[0];
+    let sphereId = this.props.sphereId;
+    let sphere = state.spheres[sphereId];
+    if (sphere) {
+      if (sphere.state.present === true) {
+        this.setState({inSphere: true});
+      }
+    }
 
-    DfuUtil.getReleaseNotes(sphereId, state.user.config)
+    DfuUtil.getReleaseNotes(sphereId, state.user)
       .then((notes) => {
         this.setState({ releaseNotes: notes });
       })
@@ -65,6 +72,26 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     }
   }
 
+  getNotInSphereCard() : interviewCards {
+    return {
+      start: {
+        header: "There is an update available for your Crownstones!",
+        subHeader:"... but need to be in your Sphere to update your Crownstones.",
+        optionsBottom: true,
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="c1-sphere" size={0.55*screenWidth} color={colors.white.rgba(1)} />
+            </View>
+          </View>
+        ),
+        options: [
+          {label: "I'll try again later!", onSelect: () => { NavigationUtil.back() }},
+        ]
+      },
+    }
+  }
+
 
   render() {
     let backgroundImage = require('../../images/backgrounds/upgradeBackgroundSoft.png');
@@ -76,10 +103,16 @@ export class DfuIntroduction extends LiveComponent<any, any> {
 
     return (
       <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeBar={true} dimStatusBar={true}>
-        <TopbarImitation leftStyle={{color: textColor}} left={Platform.OS === 'android' ? null : "Back to overview"} leftAction={() => { NavigationUtil.backTo("Main"); }} leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
+        <TopbarImitation
+          leftStyle={{color: textColor}}
+          left={Platform.OS === 'android' ? null : "Back"}
+          leftAction={() => { if (this._interview.back() === false) {NavigationUtil.back();} }}
+          leftButtonStyle={{width: 300}}
+          style={{backgroundColor:'transparent', paddingTop:0}}
+        />
         <Interview
           ref={     (i) => { this._interview = i; }}
-          getCards={ () => { return this.getCards();}}
+          getCards={ () => { return (this.state.inSphere ?  this.getCards() : this.getNotInSphereCard() ); }}
           update={   () => { this.forceUpdate() }}
         />
       </AnimatedBackground>

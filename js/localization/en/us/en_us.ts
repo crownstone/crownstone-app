@@ -1687,14 +1687,6 @@ export default {
     privacy_policy:                      function() { return "privacy policy" },
     Register:                            function() { return "Register" },
   },
-  RegisterConclusion:{
-    __filename: "../js/views/startupViews/RegisterConclusion.tsx",
-    An_email_has_been_sent_to:           function() { return "An email has been sent to:" },
-    Please_click_the_link_in_:           function() { return arguments[0] ? "Please click the link in the email and follow the instructions to reset your password." : "After you click the validation link in the email, you can login to the app using your email address." },
-    It_can_take_up_to_a_minut:           function() { return "It can take up to a minute for the email to be received. Make sure you check your spam folder as well." },
-    OK:                                  function() { return "OK" },
-    Almost_Done_:                        function() { return "Almost Done!" },
-  },
   ReviewInitialTests:{
     __filename: "../js/views/settingsViews/diagnostics/ReviewInitialTests.tsx",
     Problem_in_database__:               function() { return "Problem in database.." },
@@ -2173,6 +2165,7 @@ export default {
     Notifications:                       function() { return "Notifications" },
     Scheduler:                           function() { return "Scheduler" },
     BLE:                                 function() { return "BLE" },
+    DFU:                                 function() { return "DFU" },
     Batch_C_Handler:                     function() { return "Batch C Handler" },
     Events:                              function() { return "Events" },
     Store:                               function() { return "Store" },
@@ -2852,6 +2845,7 @@ export default {
   },
   __UNIVERSAL:{
     Back:                                function() { return "Back" },
+    Next:                                function() { return "Next" },
     DAY_Mon:                             function() { return "Mon"},
     DAY_Tue:                             function() { return "Tue"},
     DAY_Wed:                             function() { return "Wed"},

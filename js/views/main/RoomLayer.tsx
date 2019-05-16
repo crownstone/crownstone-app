@@ -78,7 +78,6 @@ export class RoomLayer extends LiveComponent<any, any> {
         sphereId={this.props.sphereId}
         radius={this._baseRadius}
         pos={{x: nodePosition.x, y: nodePosition.y}}
-        seeStonesInSetupMode={SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone}
         viewingRemotely={this.props.viewingRemotely}
         key={locationId || 'floating'}
         onHold={() => { this.props.setRearrangeRooms(true); }}
@@ -112,7 +111,7 @@ export class RoomLayer extends LiveComponent<any, any> {
 
   render() {
     let height = availableScreenHeight;
-    if (OnScreenNotifications.hasNotifications()) {
+    if (OnScreenNotifications.hasNotifications(this.props.sphereId)) {
       height -= 64;
     }
 

@@ -10,6 +10,7 @@ let defaultState = {
   log_scheduler:     LOG_LEVEL.error,
   log_ble:           LOG_LEVEL.error,
   log_bch:           LOG_LEVEL.error,
+  log_dfu:           LOG_LEVEL.error,
   log_events:        LOG_LEVEL.error,
   log_store:         LOG_LEVEL.error,
   log_cloud:         LOG_LEVEL.error,
@@ -43,6 +44,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_scheduler =     update(action.data.log_scheduler,     newState.log_scheduler);
         newState.log_notifications = update(action.data.log_notifications, newState.log_notifications);
         newState.log_ble =           update(action.data.log_ble,           newState.log_ble);
+        newState.log_dfu =           update(action.data.log_dfu,           newState.log_dfu);
         newState.log_bch =           update(action.data.log_bch,           newState.log_bch);
         newState.log_events =        update(action.data.log_events,        newState.log_events);
         newState.log_store =         update(action.data.log_store,         newState.log_store);

@@ -81,7 +81,7 @@ export class Login extends Component<any, any> {
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        NavigationUtil.reset("RegisterConclusion", {email:this.state.email.toLowerCase(), title: lang("Verification_Email_Sent")});
+        Alert.alert("An email was sent to " + this.state.email.toLowerCase() + "!","Please click the link there to validate your email address and log in again.", [{text:"OK"}]);
       })
       .catch((reply) => {
         let defaultAction = () => {core.eventBus.emit('hideLoading')};
@@ -98,7 +98,7 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        NavigationUtil.reset("RegisterConclusion", {email:this.state.email.toLowerCase(), title: lang("Reset_Email_Sent"), passwordReset:true});
+        Alert.alert("An email was sent to " + this.state.email.toLowerCase() + "!","Please follow the instructions there to reset your password and log in again.", [{text:"OK"}]);
       })
       .catch((reply) => {
         let content = "Please try again.";

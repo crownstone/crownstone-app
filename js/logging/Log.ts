@@ -9,7 +9,7 @@ import {
   LOG_SCHEDULER,
   RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
   LOG_TIME_DIFFS,
-  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH, LOG_TO_FILE
+  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH, LOG_TO_FILE, LOG_DFU
 } from "../ExternalConfig";
 import { LogProcessor } from "./LogProcessor";
 import { logToFile } from "./LogUtil";
@@ -70,6 +70,10 @@ class Logger {
 
   store(...any) {
     this._log('Store ------', LOG_STORE,     LogProcessor.log_store, arguments);
+  }
+
+  dfu(...any) {
+    this._log('DFU --------', LOG_DFU,     LogProcessor.log_dfu, arguments);
   }
 
   scheduler(...any) {

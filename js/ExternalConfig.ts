@@ -89,6 +89,7 @@ import DeviceInfo from 'react-native-device-info';
   export let LOG_MESH           = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_MESSAGES       = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_ADVERTISEMENTS = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
+  export let LOG_DFU            = LOG_LEVEL.ERROR;    // enabling LOG.dfu commands to be shown.
 
   /**
    * Specific logging settings used for debugging mostly. These will override developer settings only if true.
@@ -178,8 +179,8 @@ import DeviceInfo from 'react-native-device-info';
 
   // if this is enabled, you will always have the option to update the firmware and bootloader,
   // and all of them will be installed and a hard reset follows. This is to test the DFU.
-  export const ALWAYS_DFU_UPDATE = false;
-
+  export const ALWAYS_DFU_UPDATE_BOOTLOADER = false;
+  export const ALWAYS_DFU_UPDATE_FIRMWARE = false;
 /******************** /DEV EXCEPTIONS ********************/
 
 

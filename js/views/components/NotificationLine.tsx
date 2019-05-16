@@ -10,21 +10,38 @@ import { core } from "../../core";
 
 export class NotificationLine extends LiveComponent<{notificationsVisible?: boolean}, any> {
 
-  unsubscribe: any;
+  unsubscribe = [];
+  hasNotifications = false;
   componentDidMount(): void {
-    this.unsubscribe = core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); })
+    this.unsubscribe.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }))
+    this.unsubscribe.push(
+      core.eventBus.on("databaseChange", (data) => {
+        let change = data.change;
+        if (change.changeSpheres || change.updateActiveSphere) {
+          this.forceUpdate();
+        }
+      })
+    );
+
   }
 
   componentWillUnmount(): void {
-    this.unsubscribe();
+    this.unsubscribe.forEach((unsub) => { unsub(); });
   }
 
   _getNotifications() {
+    if (!this.props.notificationsVisible) { return; }
+
     let color = colors.menuTextSelected.hex;
     let notifications = [];
 
-    Object.keys(OnScreenNotifications.notifications).forEach((notificationId) => {
-      let notification = OnScreenNotifications.notifications[notificationId];
+    let state = core.store.getState();
+    let activeSphereId = state.app.activeSphere;
+
+    let availableNotifications = OnScreenNotifications.getNotifications(activeSphereId);
+
+    Object.keys(availableNotifications).forEach((notificationId) => {
+      let notification = availableNotifications[notificationId];
       notifications.push(
         <TouchableOpacity
           key={notificationId}
@@ -40,10 +57,12 @@ export class NotificationLine extends LiveComponent<{notificationsVisible?: bool
       )
     });
 
+    this.hasNotifications = Object.keys(availableNotifications).length > 0
+
     return (
       <SlideFadeInView
-        visible={OnScreenNotifications.hasNotifications()}
-        height={Math.max(1,OnScreenNotifications.count()) * 60 + 4}
+        visible={this.hasNotifications}
+        height={Math.max(1, Object.keys(availableNotifications).length) * 60 + 4}
       >
         <View style={{backgroundColor:colors.white.hex, height: 2, width: screenWidth}} />
         {notifications}
@@ -58,7 +77,7 @@ export class NotificationLine extends LiveComponent<{notificationsVisible?: bool
     return (
       <View>
         {notifications}
-        <SlideFadeInView visible={!this.props.notificationsVisible || OnScreenNotifications.hasNotifications() == false } height={2}>
+        <SlideFadeInView visible={!this.props.notificationsVisible || this.hasNotifications == false } height={2}>
           <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} />
         </SlideFadeInView>
       </View>

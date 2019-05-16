@@ -59,6 +59,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
       log_notifications: { label: lang("Notifications"),   explanation: ''},
       log_scheduler:     { label: lang("Scheduler"),       explanation: ''},
       log_ble:           { label: lang("BLE"),             explanation: ''},
+      log_dfu:           { label: lang("DFU"),             explanation: ''},
       log_bch:           { label: lang("Batch_C_Handler"), explanation: ''},
       log_events:        { label: lang("Events"),          explanation: ''},
       log_store:         { label: lang("Store"),           explanation: ''},

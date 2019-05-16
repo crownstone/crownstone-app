@@ -72,6 +72,7 @@ interface colorInterface {
   darkRed:      color,
   menuRed:      color,
   iosBlue:      color,
+  iosBlueDark:  color,
   lightBlue:    color,
   lightBlue2:   color,
   blinkColor1:  color,
@@ -182,6 +183,7 @@ interface onScreenNotificationPayload {
   source: string,
   id: string,
   label: string,
+  sphereId?: string,
   icon?: string,
   iconSize?: number,
   callback: () => void

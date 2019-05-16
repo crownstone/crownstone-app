@@ -98,7 +98,7 @@ export const StoneUtil = {
     if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
     if (!stone) { Promise.reject("NO_STONE") }
 
-    let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from checkFirmware');
+    let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from StoneUtil checkFirmware');
     BatchCommandHandler.executePriority();
     return promise;
   },
@@ -106,15 +106,15 @@ export const StoneUtil = {
     if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
     if (!stone) { Promise.reject("NO_STONE") }
 
-    let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getBootloaderVersion'},{},1, 'from checkBootloaderVersion');
+    let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getBootloaderVersion'},{},1, 'from StoneUtil checkBootloaderVersion');
     BatchCommandHandler.executePriority();
     return promise;
   },
 
   refreshFirmwareAndHardwareVersion: function(sphereId, stoneId, stone) {
     let results = {hardwareVersion: null, firmwareVersion: null};
-    let promiseFW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from checkFirmware').then((result : {data: string}) => { results.hardwareVersion = result.data; });
-    let promiseHW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware').then((result : {data: string}) => { results.firmwareVersion = result.data; });
+    let promiseFW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},2, 'from StoneUtil refreshFirmwareAndHardwareVersion').then((result : {data: string}) => { results.hardwareVersion = result.data; });
+    let promiseHW = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'},{},2, 'from StoneUtil refreshFirmwareAndHardwareVersion').then((result : {data: string}) => { results.firmwareVersion = result.data; });
     BatchCommandHandler.executePriority();
     return Promise.all([promiseFW, promiseHW])
       .then(() => {

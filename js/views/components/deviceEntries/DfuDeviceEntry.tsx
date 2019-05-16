@@ -17,6 +17,7 @@ import { Icon } from '../Icon';
 import { styles, colors} from '../../styles'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 export class DfuDeviceEntry extends Component<any, any> {
@@ -98,11 +99,7 @@ export class DfuDeviceEntry extends Component<any, any> {
 
   performDFU() {
     if (Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
-      core.eventBus.emit("updateCrownstoneFirmware", {
-        stoneId: this.props.stoneId,
-        sphereId: this.props.sphereId,
-        alreadyInDfuMode: true
-      });
+      NavigationUtil.navigate("DfuIntroduction", { sphereId: this.props.sphereId });
     }
     else {
       Alert.alert(

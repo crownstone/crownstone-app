@@ -4,12 +4,24 @@ import { core } from "../core";
 class OnScreenNotificationsClass {
   notifications : { [key:string] :onScreenNotificationPayload } = {};
 
-  hasNotifications() {
-    return Object.keys(this.notifications).length > 0;
+
+  getNotifications(sphereId) {
+    let ids = Object.keys(this.notifications);
+    let result = {};
+    ids.forEach((id) => {
+      if (!this.notifications[id].sphereId || this.notifications[id].sphereId === sphereId) {
+        result[id] = this.notifications[id];
+      }
+    })
+    return result;
   }
 
-  count() {
-    return Object.keys(this.notifications).length;
+  hasNotifications(sphereId) {
+    return Object.keys(this.getNotifications(sphereId)).length > 0;
+  }
+
+  count(sphereId) {
+    return Object.keys(this.getNotifications(sphereId)).length;
   }
 
   setNotification(notificationData: onScreenNotificationPayload) {

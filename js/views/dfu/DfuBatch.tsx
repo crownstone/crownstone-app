@@ -1,55 +1,37 @@
-
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("ScanningForDfu", key)(a,b,c,d,e);
-}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
-  ScrollView, Text, TouchableOpacity,
-  View} from "react-native";
+  ScrollView, Text, TouchableOpacity, Vibration,
+  View
+} from "react-native";
 import { Pagination } from 'react-native-snap-carousel';
 import { colors, screenWidth, styles} from "../styles";
 import { core } from "../../core";
-import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
-import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
-import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
 import { FadeIn, FadeInView, HiddenFadeInView } from "../components/animated/FadeInView";
-import { NavigationUtil } from "../../util/NavigationUtil";
 import { Icon } from "../components/Icon";
-import { TopbarBackButton, TopbarButton } from "../components/topbar/TopbarButton";
-import { SlideFadeInView } from "../components/animated/SlideFadeInView";
-import { BleUtil } from "../../util/BleUtil";
 import { NavigationEvents } from "react-navigation";
 import KeepAwake from 'react-native-keep-awake';
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { Scheduler } from "../../logic/Scheduler";
-import { DfuUtil } from "../../util/DfuUtil";
-import { DfuDeviceEntry } from "../components/deviceEntries/DfuDeviceEntry";
-import { DeviceEntryBasic } from "../components/deviceEntries/DeviceEntryBasic";
-import { DfuDeviceOverviewEntry } from "../components/deviceEntries/DfuDeviceOverviewEntry";
+import { DfuDeviceUpdaterEntry } from "../components/deviceEntries/DfuDeviceUpdaterEntry";
+import { SlideFadeInView } from "../components/animated/SlideFadeInView";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class DfuBatch extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      title: lang("Looking_for_Crownstones"),
-      headerLeft: <TopbarBackButton text={ lang("Back")} onPress={() => { params.returnToRoute ? NavigationUtil.backTo(params.returnToRoute) : NavigationUtil.back() }} />,
-      headerRight: <TopbarButton text={ lang("Next")} onPress={() => { params.onRight(); }} />
+      title: "Updating!",
+      headerLeft:null,
     }
   };
 
   iconTimeout
-  setupEvents = [];
   nativeEvents = [];
-  visibleDrawnStones = [];
-  stoneUpdateData;
-  visibleStones;
-  sphereId;
+  failedUpdate = {};
+  finishedUpdate = {};
+
   constructor(props) {
     super(props);
 
@@ -58,70 +40,30 @@ export class DfuBatch extends Component<any, any> {
       icon2Visible:  Math.random() < 0.5,
       icon3Visible:  Math.random() < 0.5,
       headerColor:  0,
+      updatingCrownstoneIndex: 0
     };
 
-    this.visibleStones = {};
 
-    let state = core.store.getState();
-
-    this.sphereId        = props.sphereId || Object.keys(state.spheres)[0];
-    this.stoneUpdateData = DfuUtil.getUpdatableStones(this.sphereId);
-    this.props.navigation.setParams({onRight: () => { this.next() }});
-
-    this.visibleDrawnStones = [];
   }
 
   componentDidMount() {
-  }
-
-  next() {
-    NavigationUtil.navigate("DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdates: this.visibleDrawnStones})
-  }
-
-  _parseIBeacon(data : ibeaconPackage[]) {
-    data.forEach((ibeacon) => {
-      let ibeaconString = (ibeacon.uuid + '_' + ibeacon.major + '_' + ibeacon.minor).toLowerCase();
-      if (MapProvider.stoneIBeaconMap[ibeaconString] !== undefined) {
-        this._updateList(MapProvider.stoneIBeaconMap[ibeaconString], ibeacon.rssi);
-      }
-    })
-  }
-
-  _parseAdvertisement(data : crownstoneAdvertisement | crownstoneBaseAdvertisement) {
-    let state = core.store.getState()
-    let sphereId = this.props.sphereId || Object.keys(state.spheres)[0];
-    if (MapProvider.stoneSphereHandleMap[sphereId][data.handle] !== undefined) {
-      this._updateList(MapProvider.stoneSphereHandleMap[sphereId][data.handle], data.rssi);
-    }
-  }
-
-  _updateList(stoneMap: StoneMap, rssi) {
-    let stoneId = stoneMap.id;
-    if (this.stoneUpdateData.stones[stoneId] !== undefined) {
-      if (this.visibleStones[stoneId] === undefined) {
-        this.visibleStones[stoneId] = {updatedAt: null, rssi: rssi || -90};
-      }
-      let factor = 0.1;
-      this.visibleStones[stoneId].rssi = factor*(rssi || -90) + (1-factor)*this.visibleStones[stoneId].rssi;
-      this.visibleStones[stoneId].updatedAt = new Date().valueOf();
-    }
+    this._cycleIcons();
   }
 
   _cycleIcons() {
     let toggleIndex = Math.ceil(Math.random()*3);
     switch(toggleIndex) {
       case 1:
-        this.setState({icon1Visible: !this.state.icon1Visible, headerColor: (this.state.headerColor + 1) % 4}); break;
+        this.setState({icon1Visible: !this.state.icon1Visible, headerColor: (this.state.headerColor + 1) % 6}); break;
       case 2:
-        this.setState({icon2Visible: !this.state.icon2Visible, headerColor: (this.state.headerColor + 1) % 4}); break;
+        this.setState({icon2Visible: !this.state.icon2Visible, headerColor: (this.state.headerColor + 1) % 6}); break;
       case 3:
-        this.setState({icon3Visible: !this.state.icon3Visible, headerColor: (this.state.headerColor + 1) % 4}); break;
+        this.setState({icon3Visible: !this.state.icon3Visible, headerColor: (this.state.headerColor + 1) % 6}); break;
     }
-    this.iconTimeout = setTimeout(() => { this._cycleIcons()}, 600);
+    this.iconTimeout = setTimeout(() => { this._cycleIcons()}, 900);
   }
 
   componentWillUnmount() {
-    this.setupEvents.forEach( (unsub) => { unsub(); });
     this.nativeEvents.forEach((unsub) => { unsub(); }); this.nativeEvents = [];
     clearTimeout(this.iconTimeout);
   }
@@ -129,83 +71,105 @@ export class DfuBatch extends Component<any, any> {
 
 
   _renderer(item, index, stoneId) {
-    let visible = this.visibleStones[stoneId] && (this.visibleStones[stoneId].updatedAt - new Date().valueOf() < 10000) || false || Math.random() < 0.4;
-    let backgroundColor = colors.lightGray.rgba(0.6);
-    let iconColor = colors.black.rgba(0.4);
-    let closeEnough = false;
-
-    if (visible) {
-      if (this.visibleStones[stoneId] && this.visibleStones[stoneId].rssi > -90 || Math.random() < 0.4) {
-        backgroundColor = colors.green.rgba(0.8);
-        iconColor = colors.csBlue.hex;
-        closeEnough = true;
-      }
-      else {
-        backgroundColor = colors.white.rgba(0.8);
-        iconColor = colors.csBlue.hex;
-      }
-    }
-
     return (
       <View key={stoneId + '_DFU_entry'}>
-        <FadeIn style={[styles.listView, {width: screenWidth, backgroundColor: backgroundColor}]}>
-          <DfuDeviceOverviewEntry
-            key={stoneId + '_DFU_entry'}
-            sphereId={this.sphereId}
+        <FadeIn style={{width: screenWidth, backgroundColor: "transparent"}}>
+          <DfuDeviceUpdaterEntry
+            sphereId={this.props.sphereId}
             stoneId={stoneId}
-            iconColor={iconColor}
-            backgroundColor={backgroundColor}
             handle={item.handle}
             item={item}
-            visible={visible}
-            closeEnough={closeEnough}
+            isUpdating={this.state.updatingCrownstoneIndex === index}
+            failed={ (attemptCount, cloudIssue = false) => {
+              this._getNext(stoneId, index, false, attemptCount, cloudIssue);
+            }}
+            success={(attemptCount) => {
+              this._getNext(stoneId, index, true, attemptCount);
+            }}
           />
         </FadeIn>
       </View>
     );
   }
 
+  _getNext(stoneId, index, success, attemptCount, cloudIssue = false) {
+    if (success) {
+      this.finishedUpdate[index] = {stoneId : stoneId, state: true};;
+      this.failedUpdate[index] = false;
+      if (this.state.updatingCrownstoneIndex + 1 === this.props.stoneIdsToUpdate.length) {
+        // DONE, do the retries
+        this._doRetries()
+      }
+      else {
+        // next one!
+        this.setState({updatingCrownstoneIndex: this.state.updatingCrownstoneIndex+1})
+      }
+    }
+    else {
+      this.finishedUpdate[index] = {stoneId : stoneId, state: false};
+      this.failedUpdate[index] = {stoneId : stoneId, attempts: attemptCount};
+      if (this.state.updatingCrownstoneIndex + 1 === this.props.stoneIdsToUpdate.length) {
+        // do the retries! If it failed by the cloud issue, we can tell the wrap up screen here.
+        this._doRetries(cloudIssue)
+      }
+      else {
+        // next one!
+        this.setState({updatingCrownstoneIndex: this.state.updatingCrownstoneIndex+1})
+      }
+    }
+  }
+
+  _doRetries(cloudIssue = false) {
+    let indexToRetry = null;
+    let maxRetries = 2;
+    let amountOfCrownstones = this.props.stoneIdsToUpdate.length
+    for (let i = 0; i < this.props.stoneIdsToUpdate.length; i++) {
+      let index = (i + this.state.updatingCrownstoneIndex+1) % amountOfCrownstones;
+      if (this.finishedUpdate[index] && this.finishedUpdate[index].state === false &&
+          this.failedUpdate[index]   && this.failedUpdate[index].attempts < maxRetries ||
+          !this.finishedUpdate[index]) {
+        indexToRetry = index;
+        break;
+      }
+    }
+    if (indexToRetry === null) {
+      // Finish. Notify user about failed updates and what to do next.
+      this.setState({updatingCrownstoneIndex: this.state.updatingCrownstoneIndex+1})
+      let amountOfSuccessfulUpdates = Object.keys(this.finishedUpdate).length;
+      Vibration.vibrate(400, false);
+      NavigationUtil.navigateAndReplace("DfuFinished", {
+        sphereId:     this.props.sphereId,
+        successCount: amountOfSuccessfulUpdates,
+        cloudIssue:   cloudIssue
+      });
+    }
+    else {
+      if (this.state.updatingCrownstoneIndex === indexToRetry) {
+        // ugly, but if we retry the same one, it wont do anything cuz theres no change...
+        this.setState({updatingCrownstoneIndex: 1e8}, () => { this.setState({updatingCrownstoneIndex: indexToRetry})})
+      }
+      else {
+        // do a retry
+        this.setState({updatingCrownstoneIndex: indexToRetry})
+      }
+
+    }
+  }
+
   _getStoneList() {
-    this.visibleDrawnStones = [];
     let stoneArray = [];
-    let idArray = [];
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    if (!sphere) { return { stoneArray, ids: [] }};
+    let stones = sphere.stones;
 
-
-
-    let ids = Object.keys(this.stoneUpdateData.stones);
-    ids.forEach((id) => {
-      let visible = this.visibleStones[id] && (this.visibleStones[id].updatedAt - new Date().valueOf() < 10000) || false;
-      if (visible) {
-        if (this.visibleStones[id].rssi > -90) {
-          stoneArray.push(this.stoneUpdateData.stones[id]);
-          idArray.push(id);
-          this.visibleDrawnStones.push(id);
-        }
+    this.props.stoneIdsToUpdate.forEach((stoneId) => {
+      if (stones[stoneId]) {
+        stoneArray.push(stones[stoneId]);
       }
     });
 
-
-    ids.forEach((id) => {
-      let visible = this.visibleStones[id] && (this.visibleStones[id].updatedAt - new Date().valueOf() < 10000) || false;
-      if (visible) {
-        if (this.visibleStones[id].rssi <= -90) {
-          stoneArray.push(this.stoneUpdateData.stones[id]);
-          idArray.push(id);
-        }
-      }
-    });
-
-
-    ids.forEach((id) => {
-      let visible = this.visibleStones[id] && (this.visibleStones[id].updatedAt - new Date().valueOf() < 10000) || false;
-      if (!visible) {
-        stoneArray.push(this.stoneUpdateData.stones[id]);
-        idArray.push(id);
-      }
-    });
-
-
-    return { stoneArray, ids };
+    return { stoneArray, ids: this.props.stoneIdsToUpdate };
   }
 
 
@@ -213,27 +177,29 @@ export class DfuBatch extends Component<any, any> {
     const { stoneArray, ids } = this._getStoneList();
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
+    let backgroundStyle = {position:'absolute', top:0, left:0, width: screenWidth, height: 110};
     return (
-      <Background hasNavBar={false} image={core.background.light}>
+      <Background hasNavBar={false} image={core.background.light} hideNotification={true}>
         <KeepAwake />
         <NavigationEvents
           onWillFocus={() => {  }}
           onWillBlur={ () => {  }}
         />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
-          <FadeInView duration={600} visible={this.state.headerColor < 2}   style={{position:'absolute', top:0, left:0, backgroundColor: colors.darkPurple.rgba(0.25),   width: screenWidth, height: 110}} />
-          <FadeInView duration={600} visible={this.state.headerColor >= 2}  style={{position:'absolute', top:0, left:0, backgroundColor: colors.iosBlue.rgba(0.4),  width: screenWidth, height: 110}} />
-          <FadeInView duration={600} visible={this.state.icon1Visible} style={{position:'absolute', top:-15, left:125}}><Icon name="c2-pluginFront" size={110} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
-          <FadeInView duration={600} visible={this.state.icon2Visible} style={{position:'absolute', top:35,  left:210}}><Icon name="c2-pluginFront" size={120} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
-          <FadeInView duration={600} visible={this.state.icon3Visible} style={{position:'absolute', top:-32, left:-30}}><Icon name="c2-pluginFront" size={175} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
+          <FadeInView duration={900} visible={this.state.headerColor < 2}                                 style={{...backgroundStyle, backgroundColor: colors.darkPurple.rgba(0.4)}} />
+          <FadeInView duration={900} visible={this.state.headerColor >= 2 && this.state.headerColor < 4}  style={{...backgroundStyle, backgroundColor: colors.iosBlue.rgba(0.4),  }} />
+          <FadeInView duration={900} visible={this.state.headerColor >= 4}                                style={{...backgroundStyle, backgroundColor: colors.green.rgba(0.6),    }} />
+          <FadeInView duration={900} visible={this.state.icon1Visible} style={{position:'absolute', top:-15, left:130}}><Icon name="ios-construct" size={90} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
+          <FadeInView duration={900} visible={this.state.icon2Visible} style={{position:'absolute', top:32,  left:245}}><Icon name="ios-bluetooth" size={100} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
+          <FadeInView duration={900} visible={this.state.icon3Visible} style={{position:'absolute', top:-28, left:-20}}><Icon name="ios-home"      size={170} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
           <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>
             <View style={{flex:1}} />
-            <Text style={{color: colors.black.hex, fontSize:16, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{"Collecting nearby Crownstones to update...\n\nTap next to continue!"}</Text>
+            <Text style={{color: colors.black.hex, fontSize:20, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{"Updating your Crownstones!"}</Text>
             <View style={{flex:1}} />
           </View>
         </View>
         <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
-          <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ "Crownstones turn green once you're near enough. These will be updated in the next step. You can do this multiple times to get all of them!" }</Text>
+          <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{"This can take a while so just put you phone down, relax and grab some coffee. I'll let you know when everything is ready!"}</Text>
         </View>
         <ScrollView style={{position:'relative', top:-1}}>
           <SeparatedItemList

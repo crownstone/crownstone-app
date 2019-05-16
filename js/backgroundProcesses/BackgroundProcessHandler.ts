@@ -41,6 +41,7 @@ import { core } from "../core";
 import { cleanLogs } from "../logging/LogUtil";
 import { migrate } from "./migration/StoreMigration";
 import { CloudPoller } from "../logic/CloudPoller";
+import { UpdateCenter } from "./UpdateCenter";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -84,7 +85,6 @@ class BackgroundProcessHandlerClass {
           Bluenet.setBackgroundScanning(false);
         }
 
-
         LOG.info("BackgroundProcessHandler: received userLoggedIn event.");
 
         // disable battery saving (meaning, no BLE scans reach the app)
@@ -97,6 +97,8 @@ class BackgroundProcessHandlerClass {
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
       core.eventBus.on('userLoggedInFinished', () => {
+        this.userLoggedIn = true;
+
         migrate();
 
         // pass the store to the singletons
@@ -112,6 +114,8 @@ class BackgroundProcessHandlerClass {
         this.updateDeviceDetails();
 
         LocationHandler.applySphereStateFromStore();
+
+        UpdateCenter.checkForFirmwareUpdates();
 
         this.setupLogging();
 
@@ -198,7 +202,9 @@ class BackgroundProcessHandlerClass {
       if (SetupStateHandler.isSetupInProgress() === false) {
         if (state.user.userId) {
           LOG.info("BackgroundProcessHandler: STARTING ROUTINE SYNCING IN BACKGROUND");
-          CLOUD.sync(core.store, true).catch((err) => { LOGe.cloud("Error during background sync: ", err)});
+          CLOUD.sync(core.store, true)
+            .then(() => { UpdateCenter.checkForFirmwareUpdates(); })
+            .catch((err) => { LOGe.cloud("Error during background sync: ", err)});
         }
       }
       else {
@@ -221,6 +227,7 @@ class BackgroundProcessHandlerClass {
       }
     });
   }
+
 
 
   /**
@@ -444,11 +451,10 @@ class BackgroundProcessHandlerClass {
     BatchUploader.init();
     MessageCenter.init();
     CloudEventHandler.init();
-    Permissions.init(this.userLoggedIn);
+    Permissions.init();
     ActivityLogManager.init();
     ToonIntegration.init();
     WatchStateManager.init();
-
     BleLogger.init();
   }
 }

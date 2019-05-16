@@ -50,7 +50,6 @@ class RoomCircleClass extends LiveComponent<any, any> {
   previousCircle: any;
   color: any;
 
-  unsubscribeSetupEvents = [];
   unsubscribeStoreEvents: any;
   unsubscribeControlEvents = [];
   renderState: any;
@@ -98,19 +97,12 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
     this.previousCircle = undefined;
 
-    this.unsubscribeSetupEvents = [];
-
     // set the usage initially
     this.usage = getCurrentPowerUsageInLocation(core.store.getState(), props.sphereId, props.locationId);
   }
 
 
   componentDidMount() {
-    this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange", () => {
-      this.forceUpdate();
-    }));
-
-
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       const state = core.store.getState();
@@ -155,7 +147,6 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
 
   componentWillUnmount() {
-    this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeControlEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
   }
@@ -169,26 +160,12 @@ class RoomCircleClass extends LiveComponent<any, any> {
     return this.energyLevels.length - 1;
   }
 
-  _areDfuStonesInLocation() {
-    let stonesInSetup = DfuStateHandler.getDfuHandles();
-    for (let i = 0; i < stonesInSetup.length; i++) {
-      if (MapProvider.stoneHandleMap[stonesInSetup[i]] && MapProvider.stoneHandleMap[stonesInSetup[i]].locationId === this.props.locationId) {
-        return true;
-      }
-    }
-    return false;
-  }
 
 
   _getColor(usage, prev = false) {
     if (this.props.viewingRemotely === true) {
       return colors.green.rgba(0.8);
     }
-
-    if (this._areDfuStonesInLocation() === true) {
-      return colors.purple.hex;
-    }
-
 
     let level = this._getLevel(usage);
     if (prev) {
@@ -203,10 +180,6 @@ class RoomCircleClass extends LiveComponent<any, any> {
   }
 
   getIcon() {
-    if (this._areDfuStonesInLocation() === true) {
-      return <Icon name="ios-settings" size={this.iconSize*1.3} color='#ffffff'/>;
-    }
-
     let icon = core.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
     return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
 

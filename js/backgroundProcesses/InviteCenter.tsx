@@ -14,11 +14,11 @@ import { View, Text, Alert } from "react-native";
 import { TextButton} from "../views/components/InterviewComponents";
 import { LOGe } from "../logging/Log";
 
-class InviteCenterClass {
+export const InviteCenter = {
 
-  availableInvites = {}; // sphereId: {role, state: 'accepted' | 'declined' | 'pending'}
+  availableInvites: {}, // sphereId: {role, state: 'accepted' | 'declined' | 'pending'}
 
-  checkForInvites() {
+  checkForInvites: function() {
     return CLOUD.getPendingInvites()
       .then((spheresImInvitedTo) => {
         if (spheresImInvitedTo.length === 0) {
@@ -46,7 +46,7 @@ class InviteCenterClass {
                     <View style={{flex:1}} />
                     <TextButton
                       label={ lang("Accept")}
-                      callback={() => { this.acceptInvitation(sphereData.id); }}
+                      callback={() => { InviteCenter.acceptInvitation(sphereData.id); }}
                       backgroundColor={colors.white.rgba(0.1)}
                       textColor={colors.csBlue.hex}
                       rounded={ true }
@@ -54,7 +54,7 @@ class InviteCenterClass {
                     <View style={{flex:0.5}} />
                     <TextButton
                       label={ lang("Decline")}
-                      callback={() => { this.declineInvitation(sphereData.id); }}
+                      callback={() => { InviteCenter.declineInvitation(sphereData.id); }}
                       selected={false}
                       backgroundColor={colors.white.rgba(0.1)}
                       borderColor={colors.csOrange.hex}
@@ -70,9 +70,9 @@ class InviteCenterClass {
         })
       })
       .catch((err) => {LOGe.cloud("Something went wrong while checking for invitations", err); })
-  }
+  },
 
-  acceptInvitation(sphereId) {
+  acceptInvitation: function(sphereId) {
     core.eventBus.emit("showLoading", "Accepting invitation...");
     CLOUD.forSphere(sphereId).acceptInvitation()
       .then(() => {
@@ -96,9 +96,9 @@ lang("_Something_went_wrong_____Y_body"),
         core.eventBus.emit("hideLoading");
         core.eventBus.emit("hideCustomOverlay");
       })
-  }
+  },
 
-  declineInvitation(sphereId) {
+  declineInvitation: function(sphereId) {
     core.eventBus.emit("showLoading", "Declining invitation...");
     CLOUD.forSphere(sphereId).declineInvitation()
       .then(() => {
@@ -116,8 +116,4 @@ lang("_Something_went_wrong_____Yo_body"),
         core.eventBus.emit("hideCustomOverlay");
       })
   }
-
-
 }
-
-export const InviteCenter = new InviteCenterClass();

@@ -142,7 +142,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
 
   render() {
     let height = availableScreenHeight;
-    if (OnScreenNotifications.hasNotifications()) {
+    if (OnScreenNotifications.hasNotifications(this.props.sphereId)) {
       height -= 64;
     }
     if (this.props.sphereId === null) {

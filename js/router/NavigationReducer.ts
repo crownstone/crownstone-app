@@ -78,7 +78,7 @@ function revertState(routeState) {
   let topLevel = findTopLevelRoutes(routeState) || routeState;
 
   if (topLevel.index === 0) {
-    console.log("removeElement higher");
+    // console.log("removeElement higher");
     let parent = getParent(routeState, topLevel.routeName);
     parent.index -= 1;
     parent.routes.pop();
@@ -99,16 +99,16 @@ const getNameOfCurrentRoute = (routeState) => {
 };
 
 function getParent(state, routeName) {
-  console.log("searching", state, "for", routeName);
+  // console.log("searching", state, "for", routeName);
   if (state.routes[state.index].routeName === routeName) {
     return state;
   }
 
   if (state.routes[state.index].routes) {
-    console.log("have children!", state.routes[state.index].routes);
+    // console.log("have children!", state.routes[state.index].routes);
     let subLevel = state.routes[state.index];
     if (subLevel.routeName === routeName) {
-      console.log("found summin!");
+      // console.log("found summin!");
       return state;
     }
     else {
@@ -122,7 +122,7 @@ function getParent(state, routeName) {
 
 
 function searchTreeForParentOfRoute(state, routeName) {
-  console.log("Searching", state, "for", routeName);
+  // console.log("Searching", state, "for", routeName);
   if (state.routes) {
     for ( let i = 0; i < state.routes.length; i++) {
       if (state.routes[i].routeName === routeName) {
@@ -203,14 +203,14 @@ export const getAppReducer = function(navReducer) {
     nav: (state, action) => {
       if (!state) { return navReducer(state,action); }
 
-      console.log("NAV STATE", state)
-      console.log("NAV ACTION", action)
+      // console.log("NAV STATE", state)
+      // console.log("NAV ACTION", action)
 
       if (action.type === "Navigation/NAVIGATE") {
         if (action.routeName !== "AppBase") {
           if (expectedCompletes > 0) { expectedCompletes += 1; }
           else                       { expectedCompletes += 2; }
-          console.log("ExpectedCompletes after Navigation:", expectedCompletes);
+          // console.log("ExpectedCompletes after Navigation:", expectedCompletes);
         }
       }
       else if (action.type === "Navigation/BACK") {
@@ -222,7 +222,7 @@ export const getAppReducer = function(navReducer) {
         else if (action.target !== undefined) {
           let newState = xUtil.deepExtend({}, state);
           changeStateToGoToRoute(newState, action.target);
-          // console.log(state, newState)
+          // // console.log(state, newState)
           action.type = "Navigation/COMPLETE_TRANSITION";
           return navReducer(newState, action);
         }
@@ -236,10 +236,10 @@ export const getAppReducer = function(navReducer) {
 
       if (action.type === "Navigation/COMPLETE_TRANSITION") {
         expectedCompletes = Math.max(expectedCompletes - 1, 0);
-        console.log("ExpectedCompletes after complete:", expectedCompletes);
+        // console.log("ExpectedCompletes after complete:", expectedCompletes);
 
         if (expectedCompletes === 0) {
-          console.log("Working by the chopping block", choppingBlock);
+          // console.log("Working by the chopping block", choppingBlock);
           if (choppingBlock.length > 0) {
             let newState = xUtil.deepExtend({}, state);
             while (choppingBlock.length > 0) {
@@ -262,7 +262,7 @@ export const getAppReducer = function(navReducer) {
               }
               choppingBlock.splice(0, 1);
             }
-            // console.log(newState)
+            // // console.log(newState)
             return navReducer(newState, action);
           }
         }

@@ -13,6 +13,7 @@ import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedVi
 import {SphereCircle} from "../components/SphereCircle";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
+import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 export class SphereLevel extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
@@ -82,6 +83,11 @@ export class SphereLevel extends LiveComponent<any, any> {
   }
 
   render() {
+    let height = availableScreenHeight;
+    if (OnScreenNotifications.hasNotifications(this.props.sphereId)) {
+      height -= 64;
+    }
+
     let state = core.store.getState();
     return (
       <ForceDirectedView
@@ -93,7 +99,7 @@ export class SphereLevel extends LiveComponent<any, any> {
         enablePhysics={true}
         nodeRadius={this._baseRadius}
         allowDrag={false}
-        height={availableScreenHeight-2}
+        height={height}
         zoomInCallback={ this.props.zoomInCallback }
         zoomOutCallback={ this.props.zoomOutCallback }
         renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }} />
