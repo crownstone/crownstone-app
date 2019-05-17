@@ -9,7 +9,6 @@ import * as React from 'react';
 import {
   Text, View
 } from "react-native";
-import { SetupStateHandler }        from '../../native/setup/SetupStateHandler'
 import { AnimatedBackground }       from '../components/animated/AnimatedBackground'
 import { Icon }                     from '../components/Icon'
 import { Sphere }                   from './Sphere'
@@ -30,7 +29,6 @@ import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
 import {Util} from "../../util/Util";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { AddSetupStoneButtonDescription } from "./buttons/AddSetupStoneButtonDescription";
 import { getStonesAndAppliancesInLocation } from "../../util/DataUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
 import { CancelButton } from "../components/topbar/CancelButton";
@@ -38,6 +36,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { AutoArrangeButton } from "./buttons/AutoArrangeButton";
 import { RoomAdd } from "../roomViews/RoomAdd";
 import { CLOUD } from "../../cloud/cloudAPI";
+import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
 
 const ZOOM_LEVELS = {
   sphere: 'sphere',
@@ -185,9 +184,11 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
 
-  _getAddButtonDescription(activeSphereId) {
+  _getAddButtonDescription(activeSphereId, noCrownstonesYet: boolean) {
     if (this.state.zoomLevel === ZOOM_LEVELS.room) {
-      return <AddSetupStoneButtonDescription visible={SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(activeSphereId).seeSetupCrownstone && this.state.arrangingRooms === false} />;
+      return <AddCrownstoneButtonDescription visible={
+        noCrownstonesYet && Permissions.inSphere(activeSphereId).seeSetupCrownstone && this.state.arrangingRooms === false
+      } />;
     }
   }
 
@@ -281,7 +282,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
       let viewingRemotely = true;
-      if (sphereIsPresent || SetupStateHandler.areSetupStonesAvailable() || DfuStateHandler.areDfuStonesAvailable() || (noStones === true && noRooms === true)) {
+      if (sphereIsPresent || DfuStateHandler.areDfuStonesAvailable() || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
         background = core.background.main;
       }
@@ -314,11 +315,11 @@ export class SphereOverview extends LiveComponent<any, any> {
 
       return (
         <AnimatedBackground image={background} hideNotification={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
-          { this._getAddButtonDescription(activeSphereId) }
+          { this._getAddButtonDescription(activeSphereId, noStones) }
           { this._getContent(state, amountOfSpheres, activeSphereId) }
           { this._getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) }
-          { this._getAddButtonDescription(activeSphereId) }
-          <AddItemButton inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} viewingRemotely={true }/>
+          { this._getAddButtonDescription(activeSphereId, noStones) }
+          <AddItemButton noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} viewingRemotely={true }/>
           <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
         </AnimatedBackground>
       );

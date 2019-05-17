@@ -47,7 +47,7 @@ class BroadcastCommandManagerClass {
     let state = core.store.getState();
     if (!(commandSummary.stone.config.firmwareVersion &&
           xUtil.versions.isHigherOrEqual(commandSummary.stone.config.firmwareVersion, "3.0.0") ||
-          state.developer.broadcasting_enabled
+          state.development.broadcasting_enabled
         )) {
       return false;
     }

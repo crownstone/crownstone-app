@@ -5,6 +5,7 @@ import { colors, screenWidth } from "../styles";
 import { FadeIn} from "./animated/FadeInView";
 import React, { useRef } from "react";
 import { TextEditInput } from "./editComponents/TextEditInput";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 let buttonStyle : ViewStyle = {
@@ -65,7 +66,7 @@ let selectedStyle : ViewStyle = {
 };
 
 let textStyle : TextStyle = {
-  fontSize: 16,
+  fontSize: xUtil.narrowScreen() ? 15 : 16,
   fontWeight: "bold",
   color: colors.csBlue.hex
 };
@@ -98,7 +99,7 @@ export function TextButtonWithLargeImage(props) {
       }, props.selected ? selectedAsymetricalStyle : {}]} onPress={() => { props.callback(); }}>
         { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
         <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
-        <ScaledImage source={props.image} sourceWidth={600} sourceHeight={450} targetHeight={90}/>
+        <ScaledImage source={props.image} sourceWidth={600} sourceHeight={450} targetWidth={0.28*screenWidth}/>
         <Text style={[textStyle,{color: props.textColor}]}>{props.label}</Text>
       </TouchableOpacity>
     </FadeIn>

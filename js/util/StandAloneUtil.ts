@@ -1,5 +1,8 @@
 import { Permissions } from "../backgroundProcesses/PermissionManager";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
+import { Dimensions } from 'react-native'
+import { screenHeight } from "../views/styles";
+const screenWidth = Dimensions.get('window').width;
 
 export const xUtil = {
 
@@ -369,7 +372,15 @@ export const xUtil = {
     if (!inputStr) { return "" }
 
     return inputStr[0].toUpperCase() + inputStr.substr(1)
-  }
+  },
+
+  narrowScreen: function() {
+    return screenWidth < 340;
+  },
+
+  shortScreen: function() {
+    return screenHeight < 600;
+  },
 };
 
 

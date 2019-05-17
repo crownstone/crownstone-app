@@ -15,14 +15,13 @@ import {
 } from 'react-native';
 
 
-import { screenWidth, colors, deviceStyles } from "../styles";
+import { screenWidth, colors, deviceStyles, screenHeight } from "../styles";
 import {Background} from "../components/Background";
 import {textStyle} from "../deviceViews/elements/DeviceBehaviour";
 import {IconButton} from "../components/IconButton";
 import { core } from "../../core";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
 
@@ -50,9 +49,15 @@ export class AddItemsToSphere extends Component<any, any> {
   };
 
   render() {
-    let seeCrownstoneInSetup = false;
-    if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
-      seeCrownstoneInSetup = true;
+    let hightlightAddCrownstoneButton = false;
+    if (Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
+      let state = core.store.getState();
+      let sphere = state.spheres[this.props.sphereId];
+      if (sphere) {
+        if (Object.keys(sphere.stones).length === 0) {
+          hightlightAddCrownstoneButton = true;
+        }
+      }
     }
 
     return (
@@ -76,13 +81,8 @@ export class AddItemsToSphere extends Component<any, any> {
               <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
                 NavigationUtil.navigateAndReplace("RoomAdd", { sphereId: this.props.sphereId });
               }} />
-              <AddItem icon={'c2-crownstone'} highlight={seeCrownstoneInSetup} label={ lang("Crownstone")} callback={() => {
-                if (seeCrownstoneInSetup) {
-                  NavigationUtil.navigateAndReplace("ScanningForSetupCrownstones", {sphereId: this.props.sphereId, returnToRoute: "Main"});
-                }
-                else {
-                  NavigationUtil.navigateAndReplace("AddCrownstone", {sphereId: this.props.sphereId});
-                }
+              <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} callback={() => {
+                NavigationUtil.navigateAndReplace("AddCrownstone", {sphereId: this.props.sphereId});
               }} />
             </View>
             <View  style={{flexDirection:'row'}}>

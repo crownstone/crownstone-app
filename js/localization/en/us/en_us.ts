@@ -95,10 +95,6 @@ export default {
     You_can_add_Rooms__People:           function() { return "You can add Rooms, People or Crownstones to your Sphere. As more devices will be integrated with the Crownstone, they will appear here as well!\n\nWhat do you want to add?" },
     Add_to_Sphere:                       function() { return "Add to Sphere" },
   },
-  AddSetupStoneButtonDescription:{
-    __filename: "../../js/views/main/buttons/AddSetupStoneButtonDescription.tsx",
-    New_Crownstone_Detected:             function() { return "New Crownstone Detected" },
-  },
   AddSphereTutorial:{
     __filename: "../../js/views/main/addSphereTutorial/AddSphereTutorial.tsx",
     New_Sphere:                          function() { return "New Sphere" },

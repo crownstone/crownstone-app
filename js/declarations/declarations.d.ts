@@ -35,8 +35,8 @@ interface color {
   rgba?(number) : string,
   name?: string,
   hsv?:string,
-  blend?(any, number) : color,
-  hsvBlend?(any, number) : color,
+  blend?(color, number) : color,
+  hsvBlend?(color, number) : color,
 }
 
 interface colorInterface {

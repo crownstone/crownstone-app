@@ -40,8 +40,6 @@ export class Sphere extends Component<any, any> {
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
     let floatingStones = Object.keys(getStonesAndAppliancesInLocation(state, this.props.sphereId, null)).length;
     let availableStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length - floatingStones : 0);
-    let setupCrownstoneNotification = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone;
-
 
     // on screen buttons are 0.11*screenWidth high.
     let viewStyle : ViewStyle = {
@@ -89,7 +87,7 @@ export class Sphere extends Component<any, any> {
     }
 
 
-    let shouldShowStatusCommunication = this.props.arrangingRooms === false && setupCrownstoneNotification === false;
+    let shouldShowStatusCommunication = noStones === false && this.props.arrangingRooms === false
 
     return (
       <View style={{width: screenWidth, height: availableScreenHeight}}>

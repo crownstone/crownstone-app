@@ -11,9 +11,9 @@ import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { SetupStateHandler } from "../../../native/setup/SetupStateHandler";
 
 
-export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean, sphereId: string, viewingRemotely: boolean}) {
+export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean, sphereId: string, viewingRemotely: boolean, noCrownstones: boolean}) {
   if (Permissions.inSphere(props.sphereId).addRoom) {
-    let setupIcon = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(props.sphereId).seeSetupCrownstone;
+    let setupIcon = props.noCrownstones && Permissions.inSphere(props.sphereId).seeSetupCrownstone;
 
     let outerRadius = 0.12*screenWidth;
     let iconSize = 0.09*screenWidth;

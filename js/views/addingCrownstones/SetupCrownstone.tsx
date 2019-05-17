@@ -14,7 +14,7 @@ import { core } from "../../core";
 import { Interview } from "../components/Interview";
 import { IconCircle } from "../components/IconCircle";
 import { getRandomC1Name } from "../../fonts/customIcons";
-import { colors, screenWidth, styles } from "../styles";
+import { colors, screenHeight, screenWidth, styles } from "../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
@@ -393,7 +393,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
-              <Icon name="ios-cloudy-night" size={0.6*screenWidth} color={colors.white.rgba(0.8)} />
+              <Icon name="ios-cloudy-night" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
             </View>
           </View>
         ),
@@ -408,7 +408,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
-              <Icon name="ios-bluetooth" size={0.6*screenWidth} color={colors.white.rgba(0.8)} />
+              <Icon name="ios-bluetooth" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
             </View>
           </View>
         ),
@@ -423,7 +423,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
-              <Icon name="ios-alert" size={0.6*screenWidth} color={colors.white.rgba(0.8)} />
+              <Icon name="ios-alert" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
             </View>
           </View>
         ),
