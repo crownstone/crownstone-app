@@ -9,6 +9,7 @@ class LogProcessorClass {
   log_info:           number = LOG_LEVEL.NONE;
   log_mesh:           number = LOG_LEVEL.NONE;
   log_notifications:  number = LOG_LEVEL.NONE;
+  log_broadcast:      number = LOG_LEVEL.NONE;
   log_native:         number = LOG_LEVEL.NONE;
   log_scheduler:      number = LOG_LEVEL.NONE;
   log_advertisements: number = LOG_LEVEL.NONE;
@@ -45,6 +46,7 @@ class LogProcessorClass {
       this.log_mesh           = loggingEnabled && devState.log_mesh           || LOG_LEVEL.NONE;
       this.log_dfu            = loggingEnabled && devState.log_dfu            || LOG_LEVEL.NONE;
       this.log_native         = loggingEnabled && devState.log_native         || LOG_LEVEL.NONE;
+      this.log_broadcast      = loggingEnabled && devState.log_broadcast      || LOG_LEVEL.NONE;
       this.log_notifications  = loggingEnabled && devState.log_notifications  || LOG_LEVEL.NONE;
       this.log_scheduler      = loggingEnabled && devState.log_scheduler      || LOG_LEVEL.NONE;
       this.log_ble            = loggingEnabled && devState.log_ble            || LOG_LEVEL.NONE;

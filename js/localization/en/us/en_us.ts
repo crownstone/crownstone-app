@@ -2166,6 +2166,7 @@ export default {
     Scheduler:                           function() { return "Scheduler" },
     BLE:                                 function() { return "BLE" },
     DFU:                                 function() { return "DFU" },
+    Broadcast:                           function() { return "Broadcast" },
     Batch_C_Handler:                     function() { return "Batch C Handler" },
     Events:                              function() { return "Events" },
     Store:                               function() { return "Store" },

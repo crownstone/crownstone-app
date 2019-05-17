@@ -1320,7 +1320,12 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func setDevicePreferences(_ rssiOffset: NSNumber, tapToToggle: NSNumber) {
     print("BluenetBridge: Called setDevicePreferences \(rssiOffset) \(tapToToggle)")
-    GLOBAL_BLUENET.bluenet.setDevicePreferences(rssiOffset: rssiOffset.int8Value, tapToToggle: tapToToggle.boolValue)
+    GLOBAL_BLUENET.bluenet.setDevicePreferences(
+      rssiOffset: rssiOffset.int8Value,
+      tapToToggle: tapToToggle.boolValue,
+      useBackgroundBroadcasts: false,
+      useBaseBroadcasts: false
+    );
   }
   
   @objc func setCrownstoneNames(_ names: NSDictionary) {

@@ -90,6 +90,7 @@ import DeviceInfo from 'react-native-device-info';
   export let LOG_MESSAGES       = LOG_LEVEL.ERROR;   // enabling LOG.mesh          commands to be shown.
   export let LOG_ADVERTISEMENTS = LOG_LEVEL.ERROR;   // enabling LOG.advertisement commands to be shown.
   export let LOG_DFU            = LOG_LEVEL.ERROR;    // enabling LOG.dfu commands to be shown.
+  export let LOG_BROADCAST      = LOG_LEVEL.ERROR;    // enabling LOG.broadcast commands to be shown.
 
 
   /**

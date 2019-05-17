@@ -56,6 +56,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
       log_info:          { label: lang("General"),         explanation: ''},
       log_native:        { label: lang("Native"),          explanation: ''},
       log_mesh:          { label: lang("Mesh"),            explanation: ''},
+      log_broadcast:     { label: lang("Broadcast"),       explanation: ''},
       log_notifications: { label: lang("Notifications"),   explanation: ''},
       log_scheduler:     { label: lang("Scheduler"),       explanation: ''},
       log_ble:           { label: lang("BLE"),             explanation: ''},

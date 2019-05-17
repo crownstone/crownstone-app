@@ -102,7 +102,6 @@ export class StoneBehaviour {
 
   _handleTapToToggle(state, stone, rssi) {
     if (!state.app.tapToToggleEnabled)          { return false; }
-    if (state.development.broadcasting_enabled) { return false; }
     if (!stone.config.tapToToggle)              { return false; }
     if (DfuStateHandler.isDfuInProgress())      { return false; }
 

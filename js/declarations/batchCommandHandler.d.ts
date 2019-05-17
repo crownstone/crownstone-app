@@ -106,6 +106,16 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'setMeshChannel', channel: number } |
   { commandName : 'setupPulse'}
 
+interface commandSummary {
+  stone     : any,
+  stoneId   : string,
+  sphereId  : string,
+  command   : commandInterface,
+  priority  : boolean,
+  attempts  : number,
+  options   : batchCommandEntryOptions,
+}
+
 
 interface batchCommands  {
   [propName: string] : batchCommandEntry
