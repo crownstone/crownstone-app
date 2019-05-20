@@ -529,12 +529,12 @@ export class ForceDirectedView extends Component<{
   }
 
   _recenter(fadeIn = false) {
+    if (!this.boundingBoxData || this.boundingBoxData.minX === undefined) { return }
+
     if (!this._recenteringInProgress) {
       this._recenteringInProgress = true;
     }
 
-    if (this.boundingBoxData.minX === undefined) {
-    }
 
     // determine offset to center everything.
     let offsetRequired = {

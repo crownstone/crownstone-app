@@ -137,7 +137,7 @@ class BackgroundProcessHandlerClass {
         NotificationHandler.request();
 
         // this will check if a whats-new overlay needs to be shown. Only happens on first boot of a new version.
-        this.showWhatsNew();
+        // this.showWhatsNew();
       });
 
       // wait for store to be prepared in order to continue.

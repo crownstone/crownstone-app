@@ -18,6 +18,7 @@ import {colors, } from '../../styles'
 import {Util} from "../../../util/Util";
 import {Scheduler} from "../../../logic/Scheduler";
 import { core } from "../../../core";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 const triggerId = "SettingsStoneBleDebug";
 
@@ -67,7 +68,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       if (this._major && ibeacon.major !== this._major)                    { return; }
       if (this._minor && ibeacon.minor !== this._minor)                    { return; }
 
-      this.setState({ibeaconPayload: JSON.stringify(ibeacon, undefined, 2), ibeaconTimestamp: new Date().valueOf()});
+      this.setState({ibeaconPayload: xUtil.stringify(ibeacon, 2), ibeaconTimestamp: new Date().valueOf()});
     })
   }
 
@@ -79,14 +80,14 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
     if (data.serviceData.crownstoneId === this._crownstoneId || !this._crownstoneId) {
       newData['advertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
-      newData["advertisementPayload"] = JSON.stringify(data, undefined, 2);
+      newData["advertisementPayload"] = xUtil.stringify(data, 2);
       newData["advertisementTimestamp"] = new Date().valueOf();
       changes = true;
     }
 
     if (data.handle === this._handle || !this._handle) {
       newData['directAdvertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
-      newData["directAdvertisementPayload"] = JSON.stringify(data, undefined, 2);
+      newData["directAdvertisementPayload"] = xUtil.stringify(data, 2);
       newData["directAdvertisementTimestamp"] = new Date().valueOf();
       changes = true;
     }
@@ -121,7 +122,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     }
 
     items.push({label: largeLabel, type: 'largeExplanation'});
-    items.push({label: lang("iBeacon_UUID___niBeacon_M",this._ibeaconUuid.toUpperCase(),this._major,this._minor), type: 'explanation', style: { paddingTop:0, paddingBottom:0 } });
+    items.push({label: lang("iBeacon_UUID___niBeacon_M",this._ibeaconUuid.toUpperCase(),this._major,this._minor, this._handle), type: 'explanation', style: { paddingTop:0, paddingBottom:0 } });
     items.push({label: lang("Latest_iBeacon_data_"), type: 'largeExplanation', style:{paddingTop:0}});
     items.push({__item:
       <View style={{backgroundColor: colors.white.hex, minHeight: 100}}>
@@ -162,3 +163,4 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     );
   }
 }
+

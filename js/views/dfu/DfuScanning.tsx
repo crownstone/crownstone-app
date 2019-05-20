@@ -24,6 +24,7 @@ import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Scheduler } from "../../logic/Scheduler";
 import { DfuUtil } from "../../util/DfuUtil";
 import { DfuDeviceOverviewEntry } from "../components/deviceEntries/DfuDeviceOverviewEntry";
+import { ScanningForDFUCrownstonesBanner } from "../components/animated/ScanningForDFUCrownstonesBanner";
 
 const triggerId = "ScanningForDfu";
 
@@ -39,7 +40,6 @@ export class DfuScanning extends Component<any, any> {
     }
   };
 
-  iconTimeout;
   nativeEvents = [];
   visibleDrawnStones = [];
   stoneUpdateData;
@@ -48,13 +48,6 @@ export class DfuScanning extends Component<any, any> {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      icon1Visible:  Math.random() < 0.5,
-      icon2Visible:  Math.random() < 0.5,
-      icon3Visible:  Math.random() < 0.5,
-      headerColor:  0,
-    };
 
     this.visibleStones = {};
 
@@ -85,7 +78,6 @@ export class DfuScanning extends Component<any, any> {
       this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (data) => { this._parseAdvertisement(data); }));
       Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds : 1});
       Scheduler.loadCallback(triggerId, () => { this.forceUpdate(); })
-      this._cycleIcons();
     }
   }
 
@@ -99,7 +91,6 @@ export class DfuScanning extends Component<any, any> {
       this.visibleStones = {};
 
       Scheduler.removeTrigger(triggerId);
-      clearTimeout(this.iconTimeout);
     }
   }
 
@@ -134,20 +125,6 @@ export class DfuScanning extends Component<any, any> {
       this.visibleStones[stoneId].updatedAt = new Date().valueOf();
     }
   }
-
-  _cycleIcons() {
-    let toggleIndex = Math.ceil(Math.random()*3);
-    switch(toggleIndex) {
-      case 1:
-        this.setState({icon1Visible: !this.state.icon1Visible, headerColor: (this.state.headerColor + 1) % 4}); break;
-      case 2:
-        this.setState({icon2Visible: !this.state.icon2Visible, headerColor: (this.state.headerColor + 1) % 4}); break;
-      case 3:
-        this.setState({icon3Visible: !this.state.icon3Visible, headerColor: (this.state.headerColor + 1) % 4}); break;
-    }
-    this.iconTimeout = setTimeout(() => { this._cycleIcons()}, 600);
-  }
-
 
 
   _renderer(item, index, stoneId) {
@@ -238,11 +215,7 @@ export class DfuScanning extends Component<any, any> {
           onWillBlur={ () => { this.stopScanning(); }}
         />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
-          <FadeInView duration={600} visible={this.state.headerColor < 2}   style={{position:'absolute', top:0, left:0, backgroundColor: colors.darkPurple.rgba(0.25),   width: screenWidth, height: 110}} />
-          <FadeInView duration={600} visible={this.state.headerColor >= 2}  style={{position:'absolute', top:0, left:0, backgroundColor: colors.iosBlue.rgba(0.4),  width: screenWidth, height: 110}} />
-          <FadeInView duration={600} visible={this.state.icon1Visible} style={{position:'absolute', top:-15, left:125}}><Icon name="c2-pluginFront" size={110} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
-          <FadeInView duration={600} visible={this.state.icon2Visible} style={{position:'absolute', top:35,  left:210}}><Icon name="c2-pluginFront" size={120} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
-          <FadeInView duration={600} visible={this.state.icon3Visible} style={{position:'absolute', top:-32, left:-30}}><Icon name="c2-pluginFront" size={175} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
+          <ScanningForDFUCrownstonesBanner height={110} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>
             <View style={{flex:1}} />
             <Text style={{color: colors.black.hex, fontSize:16, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{"Collecting nearby Crownstones to update..."}</Text>

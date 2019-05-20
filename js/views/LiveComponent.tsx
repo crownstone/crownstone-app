@@ -11,12 +11,21 @@ export class LiveComponent<a, b> extends Component<a, b> {
     super(props);
 
     let unmounter = this.componentWillUnmount;
+    // let renderer = this.render;
     this.componentWillUnmount = () => {
       this.___cleanup();
       if (unmounter) {
         unmounter.call(this)
       }
     }
+
+    // this.render = () => {
+    //   // @ts-ignore
+    //   // console.log("RENDERING", this.__proto__.constructor.name);
+    //   if (renderer) {
+    //     return renderer.call(this)
+    //   }
+    // }
   }
 
   forceUpdate() {
@@ -47,4 +56,5 @@ export class LiveComponent<a, b> extends Component<a, b> {
       AppState.removeEventListener('change', this.__appStateSubscription)
     }
   }
+
 }

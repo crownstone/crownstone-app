@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 
 
-import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
 import { availableScreenHeight, screenWidth } from "../styles";
 import { UserLayer }         from './UserLayer';

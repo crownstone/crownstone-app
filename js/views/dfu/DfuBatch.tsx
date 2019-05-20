@@ -16,6 +16,7 @@ import KeepAwake from 'react-native-keep-awake';
 import { DfuDeviceUpdaterEntry } from "../components/deviceEntries/DfuDeviceUpdaterEntry";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { BatchDFUCrownstonesBanner } from "../components/animated/BatchDFUCrownstonesBanner";
 
 
 export class DfuBatch extends Component<any, any> {
@@ -27,8 +28,6 @@ export class DfuBatch extends Component<any, any> {
     }
   };
 
-  iconTimeout
-  nativeEvents = [];
   failedUpdate = {};
   finishedUpdate = {};
 
@@ -42,33 +41,7 @@ export class DfuBatch extends Component<any, any> {
       headerColor:  0,
       updatingCrownstoneIndex: 0
     };
-
-
   }
-
-  componentDidMount() {
-    this._cycleIcons();
-  }
-
-  _cycleIcons() {
-    let toggleIndex = Math.ceil(Math.random()*3);
-    switch(toggleIndex) {
-      case 1:
-        this.setState({icon1Visible: !this.state.icon1Visible, headerColor: (this.state.headerColor + 1) % 6}); break;
-      case 2:
-        this.setState({icon2Visible: !this.state.icon2Visible, headerColor: (this.state.headerColor + 1) % 6}); break;
-      case 3:
-        this.setState({icon3Visible: !this.state.icon3Visible, headerColor: (this.state.headerColor + 1) % 6}); break;
-    }
-    this.iconTimeout = setTimeout(() => { this._cycleIcons()}, 900);
-  }
-
-  componentWillUnmount() {
-    this.nativeEvents.forEach((unsub) => { unsub(); }); this.nativeEvents = [];
-    clearTimeout(this.iconTimeout);
-  }
-
-
 
   _renderer(item, index, stoneId) {
     return (
@@ -177,21 +150,11 @@ export class DfuBatch extends Component<any, any> {
     const { stoneArray, ids } = this._getStoneList();
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
-    let backgroundStyle = {position:'absolute', top:0, left:0, width: screenWidth, height: 110};
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotification={true}>
         <KeepAwake />
-        <NavigationEvents
-          onWillFocus={() => {  }}
-          onWillBlur={ () => {  }}
-        />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
-          <FadeInView duration={900} visible={this.state.headerColor < 2}                                 style={{...backgroundStyle, backgroundColor: colors.darkPurple.rgba(0.4)}} />
-          <FadeInView duration={900} visible={this.state.headerColor >= 2 && this.state.headerColor < 4}  style={{...backgroundStyle, backgroundColor: colors.iosBlue.rgba(0.4),  }} />
-          <FadeInView duration={900} visible={this.state.headerColor >= 4}                                style={{...backgroundStyle, backgroundColor: colors.green.rgba(0.6),    }} />
-          <FadeInView duration={900} visible={this.state.icon1Visible} style={{position:'absolute', top:-15, left:130}}><Icon name="ios-construct" size={90} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
-          <FadeInView duration={900} visible={this.state.icon2Visible} style={{position:'absolute', top:32,  left:245}}><Icon name="ios-bluetooth" size={100} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
-          <FadeInView duration={900} visible={this.state.icon3Visible} style={{position:'absolute', top:-28, left:-20}}><Icon name="ios-home"      size={170} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
+          <BatchDFUCrownstonesBanner height={110} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>
             <View style={{flex:1}} />
             <Text style={{color: colors.black.hex, fontSize:20, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{"Updating your Crownstones!"}</Text>

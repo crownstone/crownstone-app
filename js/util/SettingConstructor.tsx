@@ -103,7 +103,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     label: lang("App_Settings"),
     type: 'navigation',
     style: {color: '#000'},
-    mediumIcon: getIcon('ios-cog', 35, colors.white.hex, colors.csBlueDark.hex),
+    mediumIcon: getIcon('ios-cog', 35, colors.white.hex, colors.green.hex),
     callback: () => {
       clickCallback();
       NavigationUtil.navigate("SettingsApp");
@@ -125,14 +125,14 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
   //   });
   // }
 
-  items.push({
-    id: 'whats new',
-    label: lang("androidWhats_new_Whats_ne",Platform.OS),
-    type: 'button',
-    style: {color: '#000'},
-    mediumIcon: getIcon('md-bulb', 31, colors.white.hex, colors.green.hex),
-    callback: () => { clickCallback(); core.eventBus.emit("showWhatsNew"); }
-  });
+  // items.push({
+  //   id: 'whats new',
+  //   label: lang("androidWhats_new_Whats_ne",Platform.OS),
+  //   type: 'button',
+  //   style: {color: '#000'},
+  //   mediumIcon: getIcon('md-bulb', 31, colors.white.hex, colors.green.hex),
+  //   callback: () => { clickCallback(); core.eventBus.emit("showWhatsNew"); }
+  // });
 
   insertExplanation(items,  lang("TROUBLESHOOTING"), false);
   items.push({

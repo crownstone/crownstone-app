@@ -26,6 +26,7 @@ import { BleUtil } from "../../util/BleUtil";
 import { NavigationEvents } from "react-navigation";
 import KeepAwake from 'react-native-keep-awake';
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import { ScanningForSetupCrownstonesBanner } from "../components/animated/ScanningForSetupCrownstonesBanner";
 
 export class ScanningForSetupCrownstones extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -37,7 +38,6 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
   };
 
   nothingYetTimeout;
-  iconTimeout;
   noScansAtAllTimeout;
   extendedNoScansAtAllTimeout;
   nearestUnverifiedData;
@@ -50,10 +50,6 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
     super(props);
 
     this.state = {
-      icon1Visible:  Math.random() < 0.5,
-      icon2Visible:  Math.random() < 0.5,
-      icon3Visible:  Math.random() < 0.5,
-      headerColor:  0,
       showNothingYet: false,
       showNoScans: false,
       extendedNoScans: false,
@@ -66,7 +62,6 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
     this.setupEvents.push(core.eventBus.on("setupStoneChange", () => { this.setState({showNothingYet: false}) }));
     this.setupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this._startNothingYetTimeout() }));
     this._startNothingYetTimeout();
-    this._cycleIcons();
   }
 
   _startActiveScanning() {
@@ -119,11 +114,15 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
 
       if (MapProvider.stoneSphereHandleMap[data.handle] === undefined) {
         this.nearUnknownCrownstoneHandle = data.handle;
-        this.setState({showVerifiedUnowned: true});
+        if (this.state.showVerifiedUnowned === false) {
+          this.setState({ showVerifiedUnowned: true });
+        }
       }
       else {
         if (data.handle === this.nearUnknownCrownstoneHandle) {
-          this.setState({showVerifiedUnowned: false})
+          if (this.state.showVerifiedUnowned === true) {
+            this.setState({ showVerifiedUnowned: false })
+          }
         }
       }
     }))
@@ -141,24 +140,10 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
     this.nothingYetTimeout = setTimeout(() => { this.setState({showNothingYet: true })}, 6000);
   }
 
-  _cycleIcons() {
-    let toggleIndex = Math.ceil(Math.random()*3);
-    switch(toggleIndex) {
-      case 1:
-        this.setState({icon1Visible: !this.state.icon1Visible, headerColor: (this.state.headerColor + 1) % 4}); break;
-      case 2:
-        this.setState({icon2Visible: !this.state.icon2Visible, headerColor: (this.state.headerColor + 1) % 4}); break;
-      case 3:
-        this.setState({icon3Visible: !this.state.icon3Visible, headerColor: (this.state.headerColor + 1) % 4}); break;
-    }
-    this.iconTimeout = setTimeout(() => { this._cycleIcons()}, 600);
-  }
-
   componentWillUnmount() {
     this.setupEvents.forEach( (unsub) => { unsub(); });
     this.nativeEvents.forEach((unsub) => { unsub(); }); this.nativeEvents = [];
     clearTimeout(this.nothingYetTimeout);
-    clearTimeout(this.iconTimeout);
     clearTimeout(this.noScansAtAllTimeout);
     clearTimeout(this.extendedNoScansAtAllTimeout);
     clearTimeout(this.nearUnknownCrownstoneTimeout);
@@ -218,11 +203,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
           onWillBlur={ () => { this._stopActiveScanning();  }}
         />
         <View style={{...styles.centered, width: screenWidth, height: 100, ...borderStyle, overflow:'hidden'}}>
-          <FadeInView duration={600} visible={this.state.headerColor < 2}   style={{position:'absolute', top:0, left:0, backgroundColor: colors.green.rgba(0.7),   width: screenWidth, height: 100}} />
-          <FadeInView duration={600} visible={this.state.headerColor >= 2}  style={{position:'absolute', top:0, left:0, backgroundColor: colors.iosBlue.rgba(0.3), width: screenWidth, height: 100}} />
-          <FadeInView duration={600} visible={this.state.icon1Visible} style={{position:'absolute', top:-25, left:105}}><Icon name="c2-pluginFront" size={100} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
-          <FadeInView duration={600} visible={this.state.icon2Visible} style={{position:'absolute', top:25,  left:175}}><Icon name="c2-pluginFront" size={100} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
-          <FadeInView duration={600} visible={this.state.icon3Visible} style={{position:'absolute', top:-32, left:-30}}><Icon name="c2-pluginFront" size={160} color={colors.white.hex} style={{backgroundColor:'transparent'}} /></FadeInView>
+          <ScanningForSetupCrownstonesBanner height={100}/>
           <View style={{flex:1, }} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, minHeight:40 }}>
             <View style={{flex:1}} />

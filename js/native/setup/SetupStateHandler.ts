@@ -1,5 +1,4 @@
 import { SetupHelper }        from './SetupHelper';
-import { BleUtil }            from '../../util/BleUtil';
 import { Util }               from '../../util/Util';
 import {LOGd, LOGe} from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
@@ -88,9 +87,6 @@ class SetupStateHandlerClass {
         if (this._ignoreStoneAfterSetup[handle]) {
           return;
         }
-
-        // we scan high frequency when we see a setup node
-        BleUtil.startHighFrequencyScanning(this._uuid);
 
         // store the data of this setup Crownstone
         if (this._stonesInSetupStateAdvertisements[handle] === undefined) {

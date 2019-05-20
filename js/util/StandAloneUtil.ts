@@ -381,6 +381,13 @@ export const xUtil = {
   shortScreen: function() {
     return screenHeight < 600;
   },
+
+  stringify: function(obj, space = 0) {
+    let allKeys = [];
+    JSON.stringify( obj, function( key, value ){ allKeys.push( key ); return value; } )
+    allKeys.sort();
+    return JSON.stringify( obj, allKeys, 2 );
+  }
 };
 
 

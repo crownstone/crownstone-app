@@ -71,8 +71,8 @@ const NewBehaviourStack = createStackNavigator(
 
 const AddCrownstoneStack = createStackNavigator(
   {
-    ScanningForSetupCrownstones: Views.ScanningForSetupCrownstones,
     AddCrownstone:               Views.AddCrownstone,
+    ScanningForSetupCrownstones: Views.ScanningForSetupCrownstones,
     SetupCrownstone:             Views.SetupCrownstone,
   },
   {

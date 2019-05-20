@@ -56,8 +56,8 @@ export class SimpleOverlay extends Component<any, any> {
 
   render() {
     let idealAspectRatio = 1.75;
-    let width = 0.85*screenWidth;
-    let height = Math.min(width*idealAspectRatio, 0.9 * screenHeight);
+    let width = 0.88*screenWidth;
+    let height = Math.max( Math.min(0.9*screenHeight, 520), Math.min(width*idealAspectRatio, 0.9 * screenHeight));
 
     return (
       <OverlayBox

@@ -111,7 +111,7 @@ export class DeviceEntry extends Component<any, any> {
         action = () => { this._basePressed(); }
       }
       else if (this.state.pendingCommand === true) {
-        content = <ActivityIndicator animating={true} size='large' />;
+        content = <ActivityIndicator animating={true} size='large' color={colors.black.rgba(0.5)} />;
       }
       else {
         content = <Switch value={stone.state.state > 0} onValueChange={() => { this._pressedDevice(stone); }}/>;

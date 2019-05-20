@@ -18,16 +18,17 @@ import {screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {MeshElement} from "../components/MeshElement";
 import { core } from "../../core";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class SettingsMeshTopologyHelp extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: lang("Mesh_Help")}
+    return {
+      title: lang("Mesh_Help"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
+    }
   };
-
-  constructor(props) {
-    super(props);
-  }
 
 
   render() {

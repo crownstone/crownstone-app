@@ -78,8 +78,6 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
     pictureUri += '?r=' + core.sessionMemory.cacheBusterUniqueElement
   }
 
-
-  console.log("USING PICTURE URI")
   return pictureUri;
 };
 

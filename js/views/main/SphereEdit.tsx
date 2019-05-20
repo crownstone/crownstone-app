@@ -113,7 +113,6 @@ export class SphereEdit extends Component<any, any> {
       type: 'navigation',
       largeIcon: <IconButton name='md-cube' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
-        console.log("HERE LA PROPOS", this.props);
         NavigationUtil.navigate("SphereRoomOverview", {sphereId: this.props.sphereId});
       }
     });

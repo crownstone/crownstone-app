@@ -18,14 +18,21 @@ import {
   enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
 import { colors, screenWidth, overviewStyles } from "../styles";
-import { SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
+import { xUtil } from "../../util/StandAloneUtil";
+
+
 
 
 export class StatusCommunication extends LiveComponent<any, any> {
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
+
+  amountOfVisible = 0;
+  constructor(props) {
+    super(props);
+  }
 
   componentDidMount() {
     // watch for setup stones
@@ -38,7 +45,22 @@ export class StatusCommunication extends LiveComponent<any, any> {
         (change.changeStoneState && change.changeStoneState.sphereIds[this.props.sphereId]) ||
         (change.stoneRssiUpdated && change.stoneRssiUpdated.sphereIds[this.props.sphereId])
       ) {
-        this.forceUpdate();
+        const store = core.store;
+        const state = store.getState();
+        if (!(state && state.spheres && state.spheres[this.props.sphereId])) { return }
+
+        let stones = state.spheres[this.props.sphereId].stones;
+        let stoneIds = Object.keys(stones);
+        let amountOfVisible = 0;
+        stoneIds.forEach((stoneId) => {
+          if (stones[stoneId].reachability.rssi > -100 && stones[stoneId].reachability.disabled === false) {
+            amountOfVisible += 1;
+          }
+        });
+        if (this.amountOfVisible !== amountOfVisible) {
+          this.amountOfVisible = amountOfVisible;
+          this.forceUpdate();
+        }
       }
     });
   }
@@ -64,16 +86,6 @@ export class StatusCommunication extends LiveComponent<any, any> {
     let requiresFingerprints = requireMoreFingerprints(state, currentSphereId);
     let addButtonShown = Permissions.inSphere(currentSphereId).addRoom === true;
 
-    let stones = state.spheres[this.props.sphereId].stones;
-    let stoneIds = Object.keys(stones);
-    let amountOfVisible = 0;
-    stoneIds.forEach((stoneId) => {
-      if (stones[stoneId].reachability.rssi > -100 && stones[stoneId].reachability.disabled === false) {
-        amountOfVisible += 1;
-      }
-    });
-
-
     let generalStyle : TextStyle = {
       position:'absolute',
       bottom: 0,
@@ -86,35 +98,29 @@ export class StatusCommunication extends LiveComponent<any, any> {
       overflow: 'hidden'
     };
 
-    if (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
-      return (
-        <View style={[generalStyle, {alignItems: 'center', justifyContent: 'center'}]}>
-          <Text style={overviewStyles.bottomText}>{ lang("New_Crownstone_Detected__") }</Text>
-        </View>
-      );
-    }
-    else if (this.props.viewingRemotely === true) {
+
+    if (this.props.viewingRemotely === true) {
       return (
         <View style={generalStyle}>
           <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex} ]}>{ lang("No_Crownstones_in_range_") }</Text>
         </View>
       );
     }
-    else if (amountOfVisible >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    else if (this.amountOfVisible >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
-          <Text style={descriptionTextStyle}>{ lang("I_see_",amountOfVisible) }</Text>
-          <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          <Text style={descriptionTextStyle}>{ lang("_so_the_indoor_localizati") }</Text>
+          <Text style={descriptionTextStyle}>{ lang("I_see_",this.amountOfVisible) }</Text>
+          <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
+          <Text style={descriptionTextStyle}>{ xUtil.narrowScreen() ? lang("NARROW_so_the_indoor_localizati") : lang("_so_the_indoor_localizati") }</Text>
         </View>
       )
     }
-    else if (amountOfVisible > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    else if (this.amountOfVisible > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
-          <Text style={descriptionTextStyle}>{ lang("I_see_only_",amountOfVisible) }</Text>
-          <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          <Text style={descriptionTextStyle}>{ lang("_so_I_paused_the_indoor_l") }</Text>
+          <Text style={descriptionTextStyle}>{ lang("I_see_only_",this.amountOfVisible) }</Text>
+          <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
+          <Text style={descriptionTextStyle}>{ xUtil.narrowScreen() ? lang("NARROW_so_I_paused_the_indoor_l") : lang("_so_I_paused_the_indoor_l") }</Text>
         </View>
       )
     }
@@ -132,15 +138,15 @@ export class StatusCommunication extends LiveComponent<any, any> {
         </View>
       )
     }
-    else if (amountOfVisible > 0) {
+    else if (this.amountOfVisible > 0) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",amountOfVisible) }</Text>
-          <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
+          <Text style={{backgroundColor:'transparent', color: colors.csBlue.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",this.amountOfVisible) }</Text>
+          <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
         </View>
       )
     }
-    else { //if (amountOfVisible === 0) {
+    else { //if (this.amountOfVisible === 0) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
           <Text style={overviewStyles.bottomText}>{ lang("Looking_for_Crownstones__") }</Text>
@@ -161,7 +167,7 @@ let inRangeStyle : TextStyle = {position: 'absolute',
 
 let descriptionTextStyle : TextStyle = {
   backgroundColor:'transparent',
-  color: colors.darkGreen.hex,
+  color: colors.csBlue.hex,
   fontSize:12,
   padding:3
 };

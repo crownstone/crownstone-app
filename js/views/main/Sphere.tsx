@@ -6,16 +6,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Platform,
   Text,
-  View, ViewStyle
+  View,
+  ViewStyle
 } from "react-native";
 
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
 import { LOG }       from '../../logging/Log'
 import { screenWidth, availableScreenHeight, colors, overviewStyles } from "../styles";
-import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Icon} from "../components/Icon";
@@ -32,7 +31,7 @@ export class Sphere extends Component<any, any> {
     let currentSphere = this.props.sphereId;
 
     let sphereIsPresent = state.spheres[currentSphere].state.present;
-    if (sphereIsPresent || SetupStateHandler.areSetupStonesAvailable() || DfuStateHandler.areDfuStonesAvailable()) {
+    if (sphereIsPresent ||  DfuStateHandler.areDfuStonesAvailable()) {
       viewingRemotely = false;
     }
 
@@ -59,17 +58,6 @@ export class Sphere extends Component<any, any> {
             <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
             <Text style={overviewStyles.mainText}>{ lang("No_Crownstones_added_yet_") }</Text>
             <Text style={overviewStyles.subText}>{ lang("Ask_the_admin_of_this_Sph") }</Text>
-          </View>
-        )
-      }
-      else if (!SetupStateHandler.areSetupStonesAvailable() === true) {
-        // This dude can add stones. Tell him how.
-        return (
-          <View style={viewStyle}>
-            <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
-            <Text style={overviewStyles.mainText}>{ lang("No_Crownstones_added_yet_") }</Text>
-            <Text style={overviewStyles.subText}>{ lang("Get_close_to_a_new_Crowns") }</Text>
-            <Text style={overviewStyles.subTextSmall}>{ lang("If_nothing_happens__ensur",Platform.OS) }</Text>
           </View>
         )
       }

@@ -43,7 +43,7 @@ export let colors : colorInterface = {
   white:                {hex:'#fff'},
   black:                {hex:'#000'},
   gray:                 {hex:'#ccc'},
-  notConnected:         {hex:'#64897f'},
+  notConnected:         {hex:'#00283c'},
   darkGray:             {hex:'#555'},
   darkGray2:            {hex:'#888'},
   lightGray2:           {hex:'#dedede'},
@@ -353,7 +353,7 @@ export const overviewStyles = StyleSheet.create({
   },
   bottomText: {
     backgroundColor:'transparent',
-    color: colors.darkGreen.hex,
+    color: colors.csBlue.hex,
     fontSize:12,
     padding:3
   },

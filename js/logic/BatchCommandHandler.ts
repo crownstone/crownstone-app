@@ -78,7 +78,6 @@ class BatchCommandHandlerClass {
             return this._commandHandler.load(stone, stoneId, sphereId, command, priority,  attempts, options );
           }
           else {
-            console.log(err, "Error in broadcast.");
             throw err;
           }
         });
@@ -262,7 +261,6 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 1.0);
                 break;
               default:
-                console.log("-------------------Error BatchCommandHandler: COULD NOT PERFORM ACTION", commandsInSphere, action);
                 LOGe.bch("BatchCommandHandler: Error: COULD NOT PERFORM ACTION", commandsInSphere, action);
                 return reject("Failed to handle command");
                 performedAction = null;

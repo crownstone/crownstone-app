@@ -2,7 +2,7 @@
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LockOverlay", key)(a,b,c,d,e);
+  return Languages.get("AicoreTimeCustomizationOverlay", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
 

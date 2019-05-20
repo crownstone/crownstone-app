@@ -100,7 +100,6 @@ lang("_I_do_not_have_access_to__body"),
       let images = [];
       let rows = [];
       this.state.pictures.forEach((edge, index) => {
-        console.log("SHOWING URL",edge.node.image.uri)
         images.push((
           <TouchableHighlight key={'image'+index} onPress={() => {
             clearTimeout(this.fetchPicturesTimeout);

@@ -6,6 +6,7 @@
 
 import { CLOUD}        from "../../../cloudAPI";
 import { SyncingBase } from "./SyncingBase";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 export class FirmwareBootloaderSyncer extends SyncingBase {
   userId : string;
@@ -41,7 +42,7 @@ export class FirmwareBootloaderSyncer extends SyncingBase {
     if (
       userInState &&
       firmwaresInCloud &&
-      JSON.stringify(userInState.firmwareVersionsAvailable) !== JSON.stringify(firmwaresInCloud)
+      xUtil.stringify(userInState.firmwareVersionsAvailable) !== xUtil.stringify(firmwaresInCloud)
     ) {
       this.actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionsAvailable: firmwaresInCloud}})
     }
@@ -51,7 +52,7 @@ export class FirmwareBootloaderSyncer extends SyncingBase {
     if (
       userInState &&
       bootloadersInCloud &&
-      JSON.stringify(userInState.bootloaderVersionsAvailable) !== JSON.stringify(bootloadersInCloud)
+      xUtil.stringify(userInState.bootloaderVersionsAvailable) !== xUtil.stringify(bootloadersInCloud)
     ) {
       this.actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {bootloaderVersionsAvailable: bootloadersInCloud}})
     }

@@ -20,7 +20,7 @@ export class SphereChangeButton extends Component<any, any> {
   render() {
     let outerRadius = 0.11*screenWidth;
     let size = 0.084*screenWidth;
-    let color = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
+    let color = this.props.viewingRemotely === false ? colors.csBlueDark.rgba(0.75) : colors.csBlueDark.rgba(0.55);
     return (
       <HiddenFadeInView
         visible={this.props.visible}

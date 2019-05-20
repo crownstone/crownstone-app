@@ -99,7 +99,6 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
         StoneUtil.setupPulse(this.props.handle, this.props.sphereId)
           .then(() => {  this.setState({pendingCommand: false})})
           .catch((err) => {
-            // console.log("ERROR", err)
             Alert.alert(
               lang("_Something_went_wrong______header"),
               lang("_Something_went_wrong______body"),

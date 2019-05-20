@@ -196,7 +196,6 @@ export const spheres = {
 
   deleteSphere: function() {
     let sphereId = TokenStore.sphereId;
-    console.log("HERE", sphereId);
 
     let promises      = [];
     let applianceData = [];
