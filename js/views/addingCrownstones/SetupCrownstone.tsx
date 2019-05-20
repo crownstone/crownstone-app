@@ -38,6 +38,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
   _interview: any;
   randomIcon: string;
   storeEvents = [];
+  abort = false;
   newCrownstoneState : any;
   constructor(props) {
     super(props);
@@ -82,8 +83,8 @@ export class SetupCrownstone extends LiveComponent<any, any> {
 
     const performSetup = () => {
       SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId)
-        .catch((err) => { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); })
-        .catch((err) => { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); })
+        .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); } throw err;})
+        .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); } throw err;})
         .then((newStoneData : any) => {
           this.newCrownstoneState.newStoneId    = newStoneData.id;
           this.newCrownstoneState.setupFinished = true;
@@ -118,6 +119,10 @@ export class SetupCrownstone extends LiveComponent<any, any> {
           }
         })
         .catch((err) => {
+          if (this.abort === true) {
+            return this._interview.setLockedCard("aborted");
+          }
+
           if (err.code) {
             if (err.code === 1) {
               this._interview.setLockedCard("problemBle");
@@ -172,7 +177,12 @@ export class SetupCrownstone extends LiveComponent<any, any> {
     });
 
     // navigate the interview to the finished state.
-    this._interview.setLockedCard("setupMore")
+    if (this.abort) {
+      this._interview.setLockedCard("successWhileAborting")
+    }
+    else {
+      this._interview.setLockedCard("setupMore")
+    }
   }
 
   getCards() : interviewCards {
@@ -225,8 +235,6 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         onSelect: (result) => {
           this.newCrownstoneState.setupFinished = false;
           this.newCrownstoneState.configFinished = false;
-
-          console.log("HERE", this.newCrownstoneState);
           if (!this.newCrownstoneState.name) {
             return this._interview.resetStackToCard("start");
           }
@@ -273,8 +281,6 @@ export class SetupCrownstone extends LiveComponent<any, any> {
               }
 
               this._startSetup();
-
-
               return true
             }}
         ]
@@ -331,7 +337,13 @@ export class SetupCrownstone extends LiveComponent<any, any> {
             </View>
           </View>
         ),
-        options: []
+        options: [
+          {
+            label: this.abort === true ? "Aborting..." : "Abort",
+            onSelect: (result) => { this.abort = true; this.forceUpdate(); },
+            dangerous: true,
+          }
+        ]
       },
       setupMore: {
         header:"That's it!",
@@ -340,6 +352,33 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         component: (
           <View style={{...styles.centered, flex:1}}>
             <Icon name="ios-checkmark-circle" size={0.5*screenWidth} color={colors.white.rgba(0.8)} />
+          </View>
+        ),
+        optionsBottom: true,
+        options: [
+          {
+            label: lang("Add_more_Crownstones_"),
+            onSelect: (result) => {
+              if (SetupStateHandler.areSetupStonesAvailable()) {
+                NavigationUtil.back();
+              }
+              else {
+                NavigationUtil.navigateAndReplaceVia("Main", "AddCrownstones", {sphereId: this.props.sphereId}); }
+              }
+          },
+          {
+            label: lang("Take_me_to__",this.newCrownstoneState.location.name),
+            onSelect: (result) => { NavigationUtil.navigateAndReplaceVia("Main", "RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id }); }
+          },
+        ]
+      },
+      successWhileAborting: {
+        header:"Setup complete.",
+        subHeader: "This Crownstone was added to your Sphere before I aborted the process. You can remove it from your Sphere in this Crownstone's settings if you'd like.",
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <Icon name="ios-checkmark-circle" size={0.4*screenWidth} color={colors.white.rgba(0.8)} />
           </View>
         ),
         optionsBottom: true,
@@ -418,6 +457,26 @@ export class SetupCrownstone extends LiveComponent<any, any> {
       problem: {
         header:"Something went wrong..",
         subHeader: "Please try again later!",
+        textColor: colors.white.hex,
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="ios-alert" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
+            </View>
+          </View>
+        ),
+        optionsBottom: true,
+        options: [
+          {
+            label: lang("Ill_try_again_later___"),
+            onSelect: (result) => { NavigationUtil.backTo("Main"); }
+          },
+        ]
+      },
+      aborted: {
+        header:"Aborted.",
+        subHeader: "The Crownstone was not added to your Sphere.",
         textColor: colors.white.hex,
         backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
         component: (

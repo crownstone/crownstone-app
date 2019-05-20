@@ -65,6 +65,14 @@ let selectedStyle : ViewStyle = {
   borderLeftWidth:   0,
 };
 
+let dangerStyle : ViewStyle = {
+  borderColor: colors.red.hex,
+  borderBottomWidth: 5,
+  borderRightWidth:  5,
+  borderTopWidth:    0,
+  borderLeftWidth:   0,
+};
+
 let textStyle : TextStyle = {
   fontSize: xUtil.narrowScreen() ? 15 : 16,
   fontWeight: "bold",
@@ -113,12 +121,13 @@ export function TextButton(props) {
         props.basic ? buttonBasicStyle : buttonStyle,
         {backgroundColor: props.backgroundColor},
         props.selected ? selectedStyle : {},
+        props.danger ? dangerStyle : {},
         props.rounded ? {borderBottomLeftRadius: 10} : {},
         props.borderColor ? {borderColor: props.borderColor} : {},
       ]} onPress={() => { props.callback(); }}>
       { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
       <Icon name={"md-arrow-dropright"} color={props.iconColor || props.textColor || colors.csBlue.hex} size={15} style={{padding:10}} />
-      <Text style={[textStyle, {color: props.textColor}]}>{props.label}</Text>
+      <Text style={[textStyle, {color: props.danger ? colors.red.hex : props.textColor}]}>{props.label}</Text>
     </TouchableOpacity>
   );
 }
@@ -152,8 +161,8 @@ export function TextButtonLightOnDark({label, callback, selected=false}) {
   return TextButton({label, callback, selected, backgroundColor: colors.white.rgba(0.3), textColor: colors.white.hex})
 }
 
-export function TextButtonLight({label, callback, selected=false, textAlign="left"}) {
-  return TextButton({label, callback, selected, backgroundColor: colors.white.rgba(1), textColor: colors.csBlue.hex, textAlign})
+export function TextButtonLight({label, callback, selected=false, textAlign="left", danger=false}) {
+  return TextButton({label, callback, selected, backgroundColor: colors.white.rgba(1), textColor: colors.csBlue.hex, textAlign, danger})
 }
 
 export function TextButtonLightWithIcon({label, icon, callback, selected=false, textAlign="left"}) {

@@ -360,6 +360,7 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
           key={"option_" + index}
           selected={props.selectedOption === index}
           label={option.label}
+          danger={option.dangerous}
           textAlign={option.textAlign}
           callback={cb}
         />

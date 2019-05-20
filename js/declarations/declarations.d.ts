@@ -144,6 +144,7 @@ interface interviewOption {
   icon?: any,
   image?: any,
   nextCard?: string,
+  dangerous?: boolean,
   response?: string,
   dynamicResponse?: (value) => string | string,
   textAlign?: string,
