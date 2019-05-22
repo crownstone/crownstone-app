@@ -27,6 +27,7 @@ import {
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { STONE_TYPES } from "../../../Enums";
 import { core } from "../../../core";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class ProblemWithLocalization extends Component<any, any> {
@@ -94,7 +95,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     let amountOfVisible = 0;
     let amountOfStones = stoneIds.length;
     stoneIds.forEach((stoneId) => {
-      if (stones[stoneId].reachability.rssi > -100 && stones[stoneId].reachability.disabled === false) {
+      if (StoneAvailabilityTracker.getRssi(stoneId) > -100) {
         amountOfVisible += 1;
       }
     });

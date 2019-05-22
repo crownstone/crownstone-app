@@ -20,6 +20,7 @@ import { addDistanceToRssi, Util }                    from '../../util/Util'
 import { OverlayBox }                                 from '../components/overlays/OverlayBox'
 import { styles, colors , screenHeight, screenWidth } from '../styles'
 import { core } from "../../core";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 
 export class TapToToggleCalibration extends Component<any, any> {
   unsubscribe : any;
@@ -77,10 +78,7 @@ export class TapToToggleCalibration extends Component<any, any> {
               if (sphere.state.present === true) {
                 let stoneIds = Object.keys(sphere.stones);
                 stoneIds.forEach((stoneId) => {
-                  let stone = sphere.stones[stoneId];
-                  if (stone.reachability.disabled === false) {
-                    minRSSI = Math.max(stone.reachability.rssi, minRSSI);
-                  }
+                  minRSSI = Math.max(StoneAvailabilityTracker.getRssi(stoneId), minRSSI);
                 });
               }
             });

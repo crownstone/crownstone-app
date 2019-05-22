@@ -40,6 +40,8 @@ open class BluenetJS: RCTEventEmitter {
       }
     })
     
+    
+    
     print("BluenetBridge: ----- BLUENET BRIDGE: Rerouting events")
     
     _ = GLOBAL_BLUENET.classifier.subscribe("__classifierProbabilities", callback:{ (data) -> Void in
@@ -90,11 +92,11 @@ open class BluenetJS: RCTEventEmitter {
     })
     
    
-    GLOBAL_BLUENET.bluenetOn("unverifiedAdvertisementData", {data -> Void in
-      if let castData = data as? Advertisement {
-        self.sendEvent(withName: "unverifiedAdvertisementData", body: castData.getDictionary())
-      }
-    })
+//    GLOBAL_BLUENET.bluenetOn("unverifiedAdvertisementData", {data -> Void in
+//      if let castData = data as? Advertisement {
+//        self.sendEvent(withName: "unverifiedAdvertisementData", body: castData.getDictionary())
+//      }
+//    })
     
     GLOBAL_BLUENET.bluenetLocalizationOn("locationStatus", {data -> Void in
       if let castData = data as? String {
@@ -103,11 +105,11 @@ open class BluenetJS: RCTEventEmitter {
     })
     
 
-    GLOBAL_BLUENET.bluenetOn("advertisementData", {data -> Void in
-      if let castData = data as? Advertisement {
-        self.sendEvent(withName: "crownstoneAdvertisementReceived", body: castData.handle)
-      }
-    })
+//    GLOBAL_BLUENET.bluenetOn("advertisementData", {data -> Void in
+//      if let castData = data as? Advertisement {
+//        self.sendEvent(withName: "crownstoneAdvertisementReceived", body: castData.handle)
+//      }
+//    })
 
     GLOBAL_BLUENET.bluenetOn("dfuProgress", {data -> Void in
       if let castData = data as? [String: NSNumber] {
@@ -128,17 +130,17 @@ open class BluenetJS: RCTEventEmitter {
     })
 
     
-    GLOBAL_BLUENET.bluenetOn("nearestSetupCrownstone", {data -> Void in
-      if let castData = data as? NearestItem {
-        self.sendEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
-      }
-    })
-    
-    GLOBAL_BLUENET.bluenetOn("nearestCrownstone", {data -> Void in
-      if let castData = data as? NearestItem {
-        self.sendEvent(withName: "nearestCrownstone", body: castData.getDictionary())
-      }
-    })
+//    GLOBAL_BLUENET.bluenetOn("nearestSetupCrownstone", {data -> Void in
+//      if let castData = data as? NearestItem {
+//        self.sendEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
+//      }
+//    })
+//    
+//    GLOBAL_BLUENET.bluenetOn("nearestCrownstone", {data -> Void in
+//      if let castData = data as? NearestItem {
+//        self.sendEvent(withName: "nearestCrownstone", body: castData.getDictionary())
+//      }
+//    })
     
     // forward the navigation event stream to react native
     GLOBAL_BLUENET.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in

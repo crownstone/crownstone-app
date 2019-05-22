@@ -1,5 +1,5 @@
 import {LOGd, LOGe} from '../../logging/Log'
-import {StoreManager} from "./storeManager";
+import { BATCH, StoreManager } from "./storeManager";
 
 
 const TransientTypes = {
@@ -25,6 +25,22 @@ export function PersistenceEnhancer({ getState }) {
 
     // certain types do not need to be persisted
     if (TransientTypes[action.type]) { return returnValue; }
+
+
+    // allow skipping of the persisting step.
+    if (action.__skipPersistence) { return returnValue; }
+
+    if (action.type === BATCH) {
+      let skip = true;
+      for (let i = 0; i < action.payload.length; i++) {
+        if (action.payload[i].__skipPersistence !== true) {
+          skip = false;
+          break;
+        }
+      }
+
+      if (skip) { return returnValue; }
+    }
 
     // state after update
     let newState = getState();

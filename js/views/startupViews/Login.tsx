@@ -36,6 +36,7 @@ import { Sentry }             from "react-native-sentry";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { createNewSphere } from "../../util/CreateSphere";
 
 
 export class Login extends Component<any, any> {
@@ -342,7 +343,6 @@ lang("_Incorrect_Email_or_Passw_body"),
   
   downloadSettings(store, userId) {
     let parts = 1/5;
-
     let promises = [];
 
     // get more data on the user
@@ -403,7 +403,7 @@ lang("_Incorrect_Email_or_Passw_body"),
         let state = store.getState();
         if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
           core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Creating_first_Sphere_")});
-          return CLOUD.createNewSphere(store, state.user.firstName + "'s Sphere", core.eventBus);
+          return createNewSphere( state.user.firstName + "'s Sphere");
         }
         else {
           core.eventBus.emit('updateProgress', {progress: this.progress, progressText: lang("Sphere_available_")});
@@ -433,7 +433,6 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
 
     Promise.all(promises)
       .then(() => {
-
         Sentry.captureBreadcrumb({
           category: 'login',
           data: {

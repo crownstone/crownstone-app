@@ -9,7 +9,7 @@ if (DISABLE_NATIVE !== true) {
   BluenetEmitter = new NativeEventEmitter(NativeModules.BluenetJS);
 }
 
-class NativeBusClass {
+export class NativeBusClass {
   topics: any;
   refMap: any;
 

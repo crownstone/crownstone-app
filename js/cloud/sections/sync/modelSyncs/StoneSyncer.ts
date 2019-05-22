@@ -42,7 +42,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
         this.syncUp(stonesInState, localStoneIdsSynced);
 
-        this.uploadDiagnostics(store, stonesInState, stonesInCloud);
+        // this.uploadDiagnostics(store, stonesInState, stonesInCloud);
 
         return Promise.all(this.transferPromises)
       })
@@ -287,69 +287,49 @@ export class StoneSyncer extends SyncingSphereItemBase {
   };
 
 
-  uploadDiagnostics(store, stonesInState, stonesInCloud) {
-    let userInState = store.getState().user;
-
-    if (!userInState.uploadDiagnostics) {
-      return;
-    }
-
-    if (!Permissions.inSphere(this.localSphereId).canUploadDiagnostics) {
-      return;
-    }
-
-    let cloudIdMap = this._getCloudIdMap(stonesInState);
-
-    stonesInCloud.forEach((stone_from_cloud) => { // underscores so its visually different from stoneInState
-      let localId = cloudIdMap[stone_from_cloud.id];
-
-      if (localId) {
-        let stoneInState = stonesInState[localId];
-
-        let cloudId = stone_from_cloud.id;
-        let uploaded = false;
-        if (stoneInState.reachability.lastSeen) {
-          uploaded = true;
-          this.transferPromises.push(
-            CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
-              timestamp: new Date().valueOf(),
-              type: 'lastSeen',
-              value: stoneInState.reachability.lastSeen
-            }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeen Diagnostic", err); })
-          );
-        }
-
-        if (stoneInState.reachability.lastSeenTemperature) {
-          uploaded = true;
-          this.transferPromises.push(
-            CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
-              timestamp: new Date().valueOf(),
-              type: 'lastSeenTemperature',
-              value: stoneInState.reachability.lastSeenTemperature
-            }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenTemperature Diagnostic", err); })
-          );
-        }
-
-        if (stoneInState.reachability.lastSeenViaMesh) {
-          uploaded = true;
-          this.transferPromises.push(
-            CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
-              timestamp: new Date().valueOf(),
-              type: 'lastSeenViaMesh',
-              value: stoneInState.reachability.lastSeenViaMesh
-            }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenViaMesh Diagnostic", err); })
-          );
-        }
-
-        if (uploaded) {
-          this.actions.push({
-            type: 'UPDATE_STONE_DIAGNOSTICS',
-            sphereId: this.localSphereId,
-            stoneId: localId,
-            data: {lastSeen: null, lastSeenTemperature: null, lastSeenViaMesh: null}
-          });
-        }
-      }
-    });
-  }
+  // uploadDiagnostics(store, stonesInState, stonesInCloud) {
+    // let userInState = store.getState().user;
+    //
+    // if (!userInState.uploadDiagnostics) {
+    //   return;
+    // }
+    //
+    // if (!Permissions.inSphere(this.localSphereId).canUploadDiagnostics) {
+    //   return;
+    // }
+    //
+    // let cloudIdMap = this._getCloudIdMap(stonesInState);
+    //
+    // stonesInCloud.forEach((stone_from_cloud) => { // underscores so its visually different from stoneInState
+    //   let localId = cloudIdMap[stone_from_cloud.id];
+    //
+    //   if (localId) {
+    //     let stoneInState = stonesInState[localId];
+    //
+    //     let cloudId = stone_from_cloud.id;
+    //     let uploaded = false;
+    //     if (stoneInState.reachability.lastSeen) {
+    //       uploaded = true;
+    //       this.transferPromises.push(
+    //         CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
+    //           timestamp: new Date().valueOf(),
+    //           type: 'lastSeen',
+    //           value: stoneInState.reachability.lastSeen
+    //         }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeen Diagnostic", err); })
+    //       );
+    //     }
+    //
+    //
+    //     // if (uploaded) {
+    //     //   // TODO: Needs a special sync time for the last seen field. It is also used for location purposes. We cant just set it to 0.
+    //     //   this.actions.push({
+    //     //     type: 'UPDATE_STONE_REACHABILITY',
+    //     //     sphereId: this.localSphereId,
+    //     //     stoneId: localId,
+    //     //     data: {lastSeen: null}
+    //     //   });
+    //     // }
+    //   }
+    // });
+  // }
 }

@@ -30,6 +30,7 @@ import {ScheduleUtil} from "../../../util/ScheduleUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class DeviceSchedule extends LiveComponent<any, any> {
@@ -98,7 +99,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
             alignItems:'center',
             flexDirection:'row'}}
           onPress={() => {
-          if (stone.reachability.disabled === true) {
+          if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
             Alert.alert(
               lang("_Cant_see_Crownstone___Yo_header"),
               lang("_Cant_see_Crownstone___Yo_body"),
@@ -223,7 +224,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
     if (canAddSchedule) {
       return (
         <TouchableOpacity onPress={() => {
-            if (stone.reachability.disabled === true) {
+            if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
               Alert.alert(
                 lang("_Cant_see_Crownstone___You_header"),
                 lang("_Cant_see_Crownstone___You_body"),

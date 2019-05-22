@@ -8,6 +8,7 @@ import { canUseIndoorLocalizationInSphere } from '../util/DataUtil'
 import {Permissions} from "./PermissionManager";
 import { BEHAVIOUR_TYPES, STONE_TYPES } from "../Enums";
 import { core } from "../core";
+import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 
@@ -44,7 +45,7 @@ class KeepAliveHandlerClass {
         let keepAliveId = (Math.floor(Math.random()*1e6)).toString(36);
 
         if (stone.config.type !== STONE_TYPES.guidestone) {
-          if (stone.config.handle && stone.reachability.disabled === false) {
+          if (stone.config.handle && StoneAvailabilityTracker.isDisabled(stoneId) === false) {
             let element = Util.data.getElement(core.store, sphereId, stoneId, stone);
             this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, {active:false, state:0}, 10, element, keepAliveId);
           }

@@ -10,6 +10,11 @@ import SplashScreen from 'react-native-splash-screen'
 import { Router } from "./js/router/Router";
 import { core } from "./js/core";
 
+import { useScreens } from 'react-native-screens';
+useScreens();
+
+
+
 export class Root extends Component<any, any> {
   unsubscribe = [];
   keyboardDidShowListener = null;
@@ -112,5 +117,3 @@ export class Root extends Component<any, any> {
     }
   };
 }
-
-

@@ -24,7 +24,7 @@ export const NavigationUtil = {
 
   backTo(target) {
     setTimeout(() => {
-      console.log("I want to go back to: ", target);
+      // console.log("I want to go back to: ", target);
       const navigateAction = {
         type: "Navigation/BACK",
         target: target

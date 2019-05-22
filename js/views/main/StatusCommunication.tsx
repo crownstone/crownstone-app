@@ -21,6 +21,7 @@ import { colors, screenWidth, overviewStyles } from "../styles";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 
 
 
@@ -53,7 +54,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
         let stoneIds = Object.keys(stones);
         let amountOfVisible = 0;
         stoneIds.forEach((stoneId) => {
-          if (stones[stoneId].reachability.rssi > -100 && stones[stoneId].reachability.disabled === false) {
+          if (StoneAvailabilityTracker.getRssi(stoneId) > -100) {
             amountOfVisible += 1;
           }
         });

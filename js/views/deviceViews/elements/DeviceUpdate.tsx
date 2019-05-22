@@ -16,6 +16,7 @@ import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../../s
 import { IconButton }   from "../../components/IconButton";
 import { Permissions }  from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 export class DeviceUpdate extends Component<any, any> {
 
@@ -72,11 +73,7 @@ export class DeviceUpdate extends Component<any, any> {
     return (
       <TouchableOpacity
         onPress={() => {
-          core.eventBus.emit('updateCrownstoneFirmware', {
-            stoneId: this.props.stoneId,
-            sphereId: this.props.sphereId,
-            skipIntroduction: true
-          });
+
         }}
       >
         <IconButton
@@ -94,7 +91,7 @@ export class DeviceUpdate extends Component<any, any> {
     const state    = core.store.getState();
     const sphere   = state.spheres[this.props.sphereId];
     const stone    = sphere.stones[this.props.stoneId];
-    const disabled = stone.reachability.disabled;
+    const disabled = StoneAvailabilityTracker.isDisabled(this.props.stoneId)
 
     return (
       <View style={{flex:1, alignItems:'center', padding: 30}}>
@@ -106,7 +103,7 @@ export class DeviceUpdate extends Component<any, any> {
         <View style={{flex:1}} />
         {disabled ? undefined : <TouchableOpacity
           onPress={() => {
-            core.eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId, skipIntroduction: true});
+
           }}
           style={[styles.centered, {
             width: 0.6 * screenWidth,

@@ -60,7 +60,6 @@ export class UsbSummary extends LiveComponent<any, any> {
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
 
-    // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let locationLabel =  lang("Tap_here_to_move_me_");

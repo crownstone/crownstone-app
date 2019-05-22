@@ -20,6 +20,7 @@ import {DeviceInformation} from "./DeviceSummary";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 export class GuidestoneSummary extends LiveComponent<any, any> {
   unsubscribeStoreEvents;
@@ -84,9 +85,9 @@ export class GuidestoneSummary extends LiveComponent<any, any> {
         <View style={{flex: 0.2}} />
         <View style={{alignItems:'center', height: 0.2*availableScreenHeight}}>
           <Text style={deviceStyles.subText}>{ lang("Reachable_") }</Text>
-          <Text style={deviceStyles.text}>{ lang("YesSearching___",stone.reachability.disabled,false) }</Text>
+          <Text style={deviceStyles.text}>{ lang("YesSearching___",StoneAvailabilityTracker.isDisabled(this.props.stoneId),false) }</Text>
           {
-            stone.reachability.disabled  ?
+            StoneAvailabilityTracker.isDisabled(this.props.stoneId)  ?
               <ActivityIndicator animating={true} size='small' color={colors.white.hex} style={{paddingTop:20}} />
               : undefined
           }

@@ -36,6 +36,7 @@ import { STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -314,7 +315,7 @@ lang("_Are_you_sure___Removing__header"),
 lang("_Are_you_sure___Removing__body"),
 [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
 text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
-              if (stone.reachability.disabled === true) {
+              if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
                 Alert.alert("Can't see this one!",
                   "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
                   [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
@@ -521,7 +522,7 @@ lang("_Crownstone_Locked__You_h_body",this.state.dimmingEnabled),
 [{text:lang("_Crownstone_Locked__You_h_left")}]);
         return;
       }
-      if (stone.reachability.disabled) {
+      if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
         Alert.alert(
 lang("_Cant_see_this_Crownstone_header"),
 lang("_Cant_see_this_Crownstone_body",this.state.dimmingEnabled),
@@ -579,7 +580,7 @@ lang("_Im_sorry_____I_couldnt_e_body"),
     if (stone.config.switchCraft !== this.state.switchCraft) {
       core.eventBus.emit("showLoading", "Configuring Switchcraft on this Crownstone...");
 
-      if (stone.reachability.disabled) {
+      if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
         Alert.alert(
 lang("_Cant_see_this_Crownstone__header"),
 lang("_Cant_see_this_Crownstone__body",this.state.dimmingEnabled),
@@ -625,7 +626,7 @@ lang("_Im_sorry_____I_couldnt_c_body"),
     else {
       return (
         <TouchableOpacity style={{paddingTop:15, paddingBottom:30}} onPress={() => {
-          if (stone.reachability.disabled) {
+          if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
             return Alert.alert(
 lang("_Cant_see_this_stone___I__header"),
 lang("_Cant_see_this_stone___I__body"),

@@ -238,7 +238,6 @@ text:lang("_Are_you_sure_you_want_to__right"), onPress:() => {
                 this._processLocalDeletion();
               })
               .catch((err) => {
-                console.log("ERROR", err);
                 core.eventBus.emit('hideLoading');
                 Alert.alert(
 lang("_Could_not_delete_Sphere__header"),

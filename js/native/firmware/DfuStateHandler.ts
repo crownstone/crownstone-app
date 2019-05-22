@@ -13,7 +13,6 @@ import { core } from "../../core";
 class DfuStateHandlerClass {
   _uuid : string;
   _initialized : boolean = false;
-  _ignoreDuringDfuOverlay : boolean = false;
   _stonesInDfuMode : any = {};
   _dfuTimeouts : any = {};
 
@@ -27,13 +26,6 @@ class DfuStateHandlerClass {
     LOG.info('LOADED STORE DfuStateHandler', this._initialized);
     if (this._initialized === false) {
       this._init();
-
-      core.eventBus.on("updateCrownstoneFirmware",      () => { this._ignoreDuringDfuOverlay = true; this._cleanupAll(); });
-      core.eventBus.on("updateCrownstoneFirmwareEnded", () => {
-        this._ignoreDuringDfuOverlay = false;
-        // scan hf just in case for a short time afterwards
-        BleUtil.startHighFrequencyScanning(this._uuid, 2500);
-      });
     }
   }
 
@@ -53,7 +45,7 @@ class DfuStateHandlerClass {
         // emit advertisements for other views
         core.eventBus.emit(Util.events.getDfuTopic(data.handle), data);
 
-        // we scan high frequency when we see a setup node
+        // we scan high frequency when we see a DFU node
         BleUtil.startHighFrequencyScanning(this._uuid, true);
 
         // store the data of this DFU Crownstone
@@ -77,20 +69,8 @@ class DfuStateHandlerClass {
       };
 
 
-      // add setup events in case they are from crownstones that did not finish their DFU process.
-      core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (data) => {
-        if (this._ignoreDuringDfuOverlay) { return; }
-
-        let stoneData = MapProvider.stoneHandleMap[data.handle];
-        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true && stoneData.stoneConfig.handle) {
-          handleDfuAdvertisement(data);
-        }
-      });
-
       // add advertisement events in case they are from crownstones that did not finish their DFU process.
       core.nativeBus.on(core.nativeBus.topics.advertisement, (data) => {
-        if (this._ignoreDuringDfuOverlay) { return; }
-
         let stoneData = MapProvider.stoneHandleMap[data.handle];
         if (stoneData && stoneData.stoneConfig.dfuResetRequired === true && stoneData.stoneConfig.handle) {
           handleDfuAdvertisement(data);
@@ -99,8 +79,6 @@ class DfuStateHandlerClass {
 
       // handle DFU events
       core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (data : crownstoneBaseAdvertisement) => {
-        if (this._ignoreDuringDfuOverlay) { return; }
-
         handleDfuAdvertisement(data);
       });
     }

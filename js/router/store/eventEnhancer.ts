@@ -299,8 +299,8 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_INSTALLATIONS":
     case "FINISHED_SPECIAL_DEVICES":
     case "FINISHED_SPECIAL_MESSAGES":
-      break;
     case "UPDATE_SYNC_ACTIVITY_TIME":
+    case "UPDATE_ACTIVITY_RANGE":
       break;
     case "ADD_TOON":
     case "TOON_UPDATE_SETTINGS":
@@ -316,7 +316,7 @@ function checkAction(action, affectedIds) {
     case "UPDATE_SPHERE_CLOUD_ID":
     case "UPDATE_ACTIVITY_LOG_CLOUD_ID":
       eventStatus['updatedCloudIds'] = affectedIds; break;
-    case "UPDATE_STONE_DIAGNOSTICS":
+    case "UPDATE_STONE_REACHABILITY":
     case "UPDATE_STONE_PREVIOUS_SWITCH_STATE":
       break;
     case "UPDATE_STONE_SWITCH_STATE_TRANSIENT":

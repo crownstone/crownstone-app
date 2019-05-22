@@ -16,6 +16,7 @@ import {Util} from "../../../util/Util";
 import {IconCircle} from "../../components/IconCircle";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class SettingsBleDebug extends LiveComponent<any, any> {
@@ -42,14 +43,14 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
 
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
-    if (stone && stone.state.state > 0 && stone.reachability.disabled === false) {
+    if (stone && stone.state.state > 0 && StoneAvailabilityTracker.isDisabled(stoneId) === false) {
       backgroundColor = colors.green.hex
     }
-    else if (stone && stone.reachability.disabled) {
+    else if (StoneAvailabilityTracker.isDisabled(stoneId)) {
       backgroundColor = colors.gray.hex;
     }
 
-    let rssiData = stone && stone.reachability.rssi > -1000 ? (stone.reachability.rssi + " in ") : '';
+    let rssiData = StoneAvailabilityTracker.getRssi(this.props.stoneId) > -1000 ? (StoneAvailabilityTracker.getRssi(this.props.stoneId) + " in ") : '';
 
       items.push({
       mediumIcon: <IconCircle

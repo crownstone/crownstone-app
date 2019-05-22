@@ -1,6 +1,7 @@
 import { BluenetPromiseWrapper } from "./BluenetPromise";
 import { Bluenet } from "./Bluenet";
 import { core } from "../../core";
+import { LOGe } from "../../logging/Log";
 
 
 class EncryptionManagerClass {
@@ -15,6 +16,12 @@ class EncryptionManagerClass {
       core.eventBus.on("sphereCreated",        () => { this.setKeySets(); });
       core.eventBus.on("KEYS_UPDATED",         () => { this.setKeySets(); });
       core.eventBus.on('userLoggedInFinished', () => { this.setKeySets(); });
+      core.eventBus.on("databaseChange",       (data) => {
+        let change = data.change;
+        if (change.changeSpheres || change.updateActiveSphere) {
+          this.setKeySets();
+        }
+      });
 
       this.setKeySets();
     }
@@ -41,7 +48,7 @@ class EncryptionManagerClass {
     }
     else {
       BluenetPromiseWrapper.setKeySets(keysets)
-        .catch((err) => { console.log("Error EncryptionManager:", err);})
+        .catch((err) => { LOGe.info("Error EncryptionManager:", err);})
     }
   }
 }

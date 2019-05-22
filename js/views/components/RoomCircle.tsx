@@ -19,8 +19,6 @@ import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/Da
 
 
 import { Svg, Circle } from 'react-native-svg';
-import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {IconCircle} from "./IconCircle";
 import { core } from "../../core";
@@ -57,6 +55,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
   scaledUp = true;
   touching = false;
   touchTimeout = null;
+  touchAnimation = null;
 
 
   constructor(props) {
@@ -148,6 +147,8 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
   componentWillUnmount() {
     this.unsubscribeControlEvents.forEach((unsubscribe) => { unsubscribe(); });
+    clearTimeout(this.touchTimeout);
+    cancelAnimationFrame(this.touchAnimation);
     this.unsubscribeStoreEvents();
   }
 
@@ -357,7 +358,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
         this.props.onHold();
         this._clearHold();
       } else {
-        this.touchTimeout = setTimeout(() => { this._onHoldProgress(); }, 20);
+        this.touchAnimation = requestAnimationFrame(() => { this._onHoldProgress(); });
       }
     }
   }
@@ -368,6 +369,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
       this.setState({ progress: 0 })
     }
     clearTimeout(this.touchTimeout);
+    cancelAnimationFrame(this.touchAnimation);
   }
 
   handleTouchReleased(data) {
@@ -396,7 +398,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
     this.scaledUp = false;
 
     let revertAnimations = [];
-    revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.scale,   {toValue: 1, duration: 100}));
     revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
     Animated.parallel(revertAnimations).start();
 

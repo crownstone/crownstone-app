@@ -35,7 +35,7 @@ import { preparePictureURI }      from "../../util/Util";
 import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -235,19 +235,15 @@ export class RoomOverview extends LiveComponent<any, any> {
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted/> }
-    let location = null;
-
-    if (this.props.locationId) {
-      location = sphere.locations[this.props.locationId];
-      if (!location) {
-        return <RoomDeleted/>
-      }
+    let location = sphere.locations[this.props.locationId];
+    if (!location) {
+      return <RoomDeleted/>
     }
 
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
 
-    let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
-    let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
+    let usage  = getCurrentPowerUsageInLocation(  state, this.props.sphereId, this.props.locationId);
+    let users  = getPresentUsersInLocation(       state, this.props.sphereId, this.props.locationId);
     let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
 
@@ -256,17 +252,15 @@ export class RoomOverview extends LiveComponent<any, any> {
 
     let backgroundImage = core.background.light;
 
-    if (this.props.locationId) {
-      if (location.config.picture) {
-        backgroundImage = { uri: preparePictureURI(location.config.picture) };
-      }
+    if (location.config.picture) {
+      backgroundImage = { uri: preparePictureURI(location.config.picture) };
     }
 
     let amountOfStonesInRoom = Object.keys(stones).length;
     let content = undefined;
     if (amountOfStonesInRoom > 0) {
       let {stoneArray, ids} = this._getStoneList(stones);
-      this._setNearestStoneInRoom(stoneArray, ids);
+      this._setNearestStoneInRoom(ids);
       this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
       let viewHeight = screenHeight-tabBarHeight-topBarHeight-100;
 
@@ -300,20 +294,20 @@ export class RoomOverview extends LiveComponent<any, any> {
         <RoomExplanation
           state={state}
           explanation={ this.props.explanation }
-          sphereId={ this.props.sphereId }
-          locationId={ this.props.locationId }
+          sphereId={    this.props.sphereId }
+          locationId={  this.props.locationId }
         />
         {content}
       </Background>
     );
   }
 
-  _setNearestStoneInRoom(stoneArray, ids) {
+  _setNearestStoneInRoom(ids) {
     let rssi = -1000;
-    for (let i = 0; i < stoneArray.length; i++) {
-      let stone = stoneArray[i].stone;
-      if (stone && stone.reachability && stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
-        rssi = stone.reachability.rssi;
+    for (let i = 0; i < ids.length; i++) {
+      let stoneRssi = StoneAvailabilityTracker.getRssi(ids[i]);
+      if (stoneRssi > rssi) {
+        rssi = stoneRssi;
         this.nearestStoneIdInRoom = ids[i];
       }
     }
@@ -323,9 +317,9 @@ export class RoomOverview extends LiveComponent<any, any> {
     let rssi = -1000;
     let stoneIds = Object.keys(allStones);
     for (let i = 0; i < stoneIds.length; i++) {
-      let stone = allStones[stoneIds[i]];
-      if (stone && stone.reachability && stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
-        rssi = stone.reachability.rssi;
+      let stoneRssi = StoneAvailabilityTracker.getRssi(stoneIds[i]);
+      if (stoneRssi > rssi) {
+        rssi = stoneRssi;
         this.nearestStoneIdInSphere = stoneIds[i];
       }
     }
@@ -333,18 +327,14 @@ export class RoomOverview extends LiveComponent<any, any> {
 }
 
 
-
-
 function getNavBarParams(state, props, viewingRemotely) {
-  let title = undefined;
   let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, props.sphereId);
-  if (props.locationId !== null) {
-    title = state.spheres[props.sphereId].locations[props.locationId].config.name;
-  }
-  else {
-    title =  lang("Floating");
-  }
+  let sphere = state.spheres[props.sphereId];
+  if (!sphere) { return }
+  let location = sphere.locations[props.locationId];
+  if (!location) { return }
 
+  let title = location.config.name;
   let rightAction = () => { };
   let spherePermissions = Permissions.inSphere(props.sphereId);
 

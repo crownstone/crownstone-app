@@ -1,11 +1,8 @@
-import {DISABLE_TIMEOUT, FALLBACKS_ENABLED} from "../../ExternalConfig";
 import { LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
 import { MapProvider }            from "../../backgroundProcesses/MapProvider";
 import { Scheduler }              from "../../logic/Scheduler";
 import { Util }                   from "../../util/Util";
 import { StoneEntity }            from "./StoneEntity";
-import { LocationHandler }        from "../localization/LocationHandler";
-import { DfuStateHandler }        from "../firmware/DfuStateHandler";
 import { StoneStoreManager }      from "./StoneStoreManager";
 import { core } from "../../core";
 
@@ -93,8 +90,6 @@ class StoneManagerClass {
           });
         }
       });
-
-      core.eventBus.on("CrownstoneDisabled", (sphereId) => { this._evaluateDisabledState(sphereId); });
 
       // // if we are syncing, this means we might get new crownstones to download, in the mean time we dont want to factory reset them
       // core.eventBus.on("CloudSyncStarting", () => { this._pauseFactoryResetCapability();   });
@@ -274,7 +269,7 @@ class StoneManagerClass {
 
     // emit event of valid crownstone
     if (advertisement.rssi && advertisement.rssi < 0) {
-      core.eventBus.emit("AdvertisementOfValidCrownstone", {stoneId: referenceByHandle.id, rssi: advertisement.rssi})
+      core.eventBus.emit("AdvertisementOfValidCrownstone", {stoneId: referenceByHandle.id, rssi: advertisement.rssi, payloadId: referenceByCrownstoneId.id})
     }
 
     // this is on manager level, not on entity level since setup crownstones do not have an entity but do need this functionality.
@@ -397,34 +392,6 @@ class StoneManagerClass {
           Util.mesh.setNetworkId(core.store, sphereId, stonesInNetwork_external, meshNetworkId);
         }
         LOGi.mesh("StoneManager: Merging networks:", meshNetworkId_advertiser, meshNetworkId_external, " into ", meshNetworkId);
-      }
-    }
-  }
-
-
-  _evaluateDisabledState(sphereId) {
-    let state = core.store.getState();
-    // check if there are any stones left that are not disabled.
-    let stoneIds = Object.keys(state.spheres[sphereId].stones);
-    let allDisabled = true;
-    stoneIds.forEach((stoneId) => {
-      if (state.spheres[sphereId].stones[stoneId].reachability.disabled === false) {
-        allDisabled = false;
-      }
-    });
-
-    // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
-    if (FALLBACKS_ENABLED) {
-      // if we are in DFU, do not leave the sphere by fallback
-      if (DfuStateHandler.areDfuStonesAvailable() !== true) {
-        if (allDisabled === true) {
-          LOGi.info("FALLBACK: StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
-          LocationHandler.exitSphere(sphereId);
-        }
-      }
-      else {
-        // reschedule the fallback if we are in dfu.
-        Scheduler.scheduleBackgroundCallback(() => { this._evaluateDisabledState(sphereId); }, DISABLE_TIMEOUT, "disable")
       }
     }
   }

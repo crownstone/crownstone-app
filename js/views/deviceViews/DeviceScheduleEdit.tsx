@@ -33,6 +33,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { WeekDayList } from "../components/WeekDayList";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 
 export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; // these are keys
 export let DAYS_FULL = [
@@ -227,7 +228,7 @@ lang("_Permission_Denied___You__body"),
           }
 
 
-          if (stone.reachability.disabled === true) {
+          if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
             Alert.alert(
 lang("_Cant_see_Crownstone__You_header"),
 lang("_Cant_see_Crownstone__You_body"),
@@ -341,7 +342,7 @@ lang("_Pick_a_day___You_need_to_body"),
       }
 
       if (changed) {
-        if (stone.reachability.disabled === true) {
+        if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
           Alert.alert(
 lang("_Cant_see_Crownstone__You__header"),
 lang("_Cant_see_Crownstone__You__body"),

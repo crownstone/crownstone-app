@@ -1,4 +1,4 @@
-import { Alert, AsyncStorage }          from 'react-native'
+import { Alert }          from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import CrownstoneReducer                from './reducer'
 import { NativeEnhancer }               from './nativeEnhancer'
@@ -8,6 +8,7 @@ import {LOG, LOGe} from '../../logging/Log'
 import { PersistenceEnhancer }          from "./persistenceEnhancer";
 import {Persistor} from "./Persistor";
 import { core } from "../../core";
+import AsyncStorage from "@react-native-community/async-storage";
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version

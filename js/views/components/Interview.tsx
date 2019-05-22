@@ -164,9 +164,11 @@ export class Interview extends Component<{
 
   getTextColorFromCard() {
     let cards = this.props.getCards();
-    let activeCard = cards[this.state.cardIds[this.state.activeCardIndex]];
-
-    return activeCard.textColor || null;
+    if (this.state.cardIds[this.state.activeCardIndex] && cards[this.state.cardIds[this.state.activeCardIndex]]) {
+      let activeCard = cards[this.state.cardIds[this.state.activeCardIndex]];
+      return activeCard.textColor || null;
+    }
+    return null;
   }
 
   checkStyleUpdates() {

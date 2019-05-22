@@ -279,49 +279,24 @@ class LocationHandlerClass {
   }
 
 
+  /**
+   * This method recovers the location state from the store. This is important to avoid double firing of the enter sphere event.
+   */
   applySphereStateFromStore() {
     LOG.info("LocationHandler: Apply the sphere state from the store.");
     let state = core.store.getState();
 
-    let lastSeenPerSphere = {};
-    Util.data.callOnAllStones(state, (sphereId, stoneId, stone) => {
-      lastSeenPerSphere[sphereId] = Math.max(stone.reachability.lastSeen || 0, lastSeenPerSphere[sphereId] || 0);
-    });
-
-
-    let sphereIds = Object.keys(lastSeenPerSphere);
-    let currentSphere = null;
-    let mostRecentSeenTime = 0;
-    for (let i = 0; i < sphereIds.length; i++) {
-      if (lastSeenPerSphere[sphereIds[i]] > mostRecentSeenTime) {
-        currentSphere = sphereIds[i];
-        mostRecentSeenTime = lastSeenPerSphere[sphereIds[i]];
+    let sphereIds = Object.keys(state.spheres);
+    let now = new Date().valueOf();
+    sphereIds.forEach((sphereId) => {
+      let sphereTimeout = 1000*(state.spheres[sphereId].config.exitDelay - KEEPALIVE_INTERVAL);
+      if (SphereUtil.getTimeLastSeenInSphere(state, sphereId) > (now - sphereTimeout)) {
+        this.enterSphere(sphereId);
       }
-    }
-
-    let leaveAllSpheres = () => {
-      Object.keys(state.spheres).forEach((sphereId) => {
-        LOG.info("LocationHandler: Apply exit sphere.", sphereId);
-        this.exitSphere(sphereId);
-      });
-    };
-
-    if (currentSphere === null) {
-      leaveAllSpheres();
-      return;
-    }
-
-    // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
-    let sphereTimeout = state.spheres[currentSphere].config.exitDelay - KEEPALIVE_INTERVAL;
-
-    if (mostRecentSeenTime > (new Date().valueOf() - sphereTimeout*1000)) {
-      LOG.info("LocationHandler: Apply enter sphere.", currentSphere);
-      this.enterSphere(currentSphere);
-    }
-    else {
-      // exit all spheres
-      leaveAllSpheres();
-    }
+      else {
+        this.exitSphere(sphereId)
+      }
+    })
   }
 
 

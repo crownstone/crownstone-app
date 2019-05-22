@@ -54,11 +54,7 @@ let defaultSettings = {
     updatedAt: 1
   },
   reachability: {
-    disabled: true,
     lastSeen: null,
-    lastSeenViaMesh: null,
-    lastSeenTemperature: null,
-    rssi: -1000,
   },
   schedules: { // this schedule will be overruled by the appliance if applianceId is not undefined.
     updatedAt: 1

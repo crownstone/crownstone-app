@@ -19,6 +19,7 @@ import { MeshUtil }            from "../../../util/MeshUtil";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class SettingsMeshDebug extends LiveComponent<any, any> {
@@ -47,10 +48,10 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
 
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
-    if (stone && stone.state.state > 0 && stone.reachability.disabled === false) {
+    if (stone && stone.state.state > 0 && StoneAvailabilityTracker.isDisabled(stoneId) === false) {
       backgroundColor = colors.green.hex
     }
-    else if (stone && stone.reachability.disabled) {
+    else if (StoneAvailabilityTracker.isDisabled(stoneId)) {
       backgroundColor = colors.gray.hex;
     }
     items.push({
@@ -85,7 +86,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
 
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
-      if (stone.reachability.disabled === false) {
+      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
         this.refreshAmountRequired += 1;
       }
     });
@@ -113,7 +114,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
 
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
-      if (stone.reachability.disabled === false) {
+      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
         BatchCommandHandler.loadPriority(stone, stoneId, sphereId, {
           commandName: 'setMeshChannel',
           channel: channel
@@ -159,7 +160,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
         locationColor = colors.iosBlue.hex;
       }
       let element = Util.data.getElement(store, sphereId, stoneId, stone);
-      if (stone.reachability.disabled === false) {
+      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
         this._pushCrownstoneItem(items, sphereId, element, stone, stoneId, locationTitle, locationColor);
       }
     });

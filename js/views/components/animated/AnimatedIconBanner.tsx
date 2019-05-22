@@ -47,7 +47,6 @@ export class AnimatedIconBanner extends Component<
   }
 
   _cycleIcons() {
-    console.log("CYCLE!")
     let toggleIndex = Math.floor(Math.random()*this.amountOfIcons);
 
     let newState = {...this.state};

@@ -112,7 +112,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
           cloudIssue = true;
         }
 
-        console.log("err",err, this.DFU.errorInformation)
+        // console.log("err",err, this.DFU.errorInformation)
         this.props.failed(attemptCount, cloudIssue);
       })
   }

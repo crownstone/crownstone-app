@@ -8,7 +8,7 @@ import { DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL } from '../ExternalConfig'
 import { StoneUtil }             from "../util/StoneUtil";
 import { Permissions }           from "../backgroundProcesses/PermissionManager";
 import { CommandManager }        from "./bchComponents/CommandManager";
-import { RssiLogger }            from "../native/advertisements/RssiLogger";
+import { StoneAvailabilityTracker }            from "../native/advertisements/StoneAvailabilityTracker";
 import { BroadcastCommandManager } from "./bchComponents/BroadcastCommandManager";
 import { xUtil } from "../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../Enums";
@@ -314,8 +314,8 @@ class BatchCommandHandlerClass {
     return new Promise((resolve, reject) => {
       let state = core.store.getState();
 
-      let nearestDirect = RssiLogger.getNearestStoneId(directTargets, 2, rssiScanThreshold);
-      if (!nearestDirect && rssiScanThreshold !== null) { nearestDirect = RssiLogger.getNearestStoneId(directTargets,    2); }
+      let nearestDirect = StoneAvailabilityTracker.getNearestStoneId(directTargets, 2, rssiScanThreshold);
+      if (!nearestDirect && rssiScanThreshold !== null) { nearestDirect = StoneAvailabilityTracker.getNearestStoneId(directTargets,    2); }
 
       let foundId = nearestDirect;
       let foundSphereId = directTargets[nearestDirect];
@@ -680,7 +680,7 @@ class BatchCommandHandlerClass {
    * @private
    */
   _searchScan(objectsToScan : any[], rssiThreshold = null, highPriorityActive = false, timeout = 5000) : Promise<connectionInfo> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve : (connectionInfo) => void, reject) => {
 
       let unsubscribeListeners = [];
 

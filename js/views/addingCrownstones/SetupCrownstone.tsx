@@ -447,7 +447,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         component: (
           <View style={{...styles.centered, flex:1}}>
             <View>
-              <Icon name="ios-bluetooth" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
+              <Icon name="ios-bluetooth" size={0.25*screenHeight} color={colors.white.rgba(0.8)} />
             </View>
           </View>
         ),

@@ -4,6 +4,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.swmansion.rnscreens.RNScreensPackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -39,6 +41,8 @@ public class MainApplication extends Application implements ReactApplication {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
 					new MainReactPackage(),
+            new AsyncStoragePackage(),
+            new RNScreensPackage(),
             new ReactSliderPackage(),
             new RNGestureHandlerPackage(),
 					new VectorIconsPackage(),

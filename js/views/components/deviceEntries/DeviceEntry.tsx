@@ -28,6 +28,7 @@ import { xUtil } from "../../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../../Enums";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -101,7 +102,7 @@ export class DeviceEntry extends Component<any, any> {
   _getControl(stone) {
     let content;
     let action = null;
-    if (stone.reachability.disabled === false) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false) {
       if (stone.errors.hasError) {
         content = <Switch value={stone.state.state === 1} disabled={true} />;
         action = () => { this._basePressed(); }
@@ -140,7 +141,7 @@ export class DeviceEntry extends Component<any, any> {
   _getIcon(element, stone, state) {
     let customStyle = undefined;
     let color = (
-      stone.reachability.disabled === true ?
+      StoneAvailabilityTracker.isDisabled(this.props.stoneId) === true ?
           colors.gray.hex :
           (stone.state.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
@@ -166,7 +167,8 @@ export class DeviceEntry extends Component<any, any> {
       </View>
       );
     }
-    else if (((xUtil.versions.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) && stone.reachability.disabled === false) {
+    else if (((xUtil.versions.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) &&
+      StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false) {
       return (
         <View style={[{
           width:60,
@@ -189,7 +191,7 @@ export class DeviceEntry extends Component<any, any> {
       );
     }
     else {
-      if (stone.reachability.disabled) {
+      if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
         customStyle = {borderWidth:1, borderColor: colors.darkGray2.hex}
       }
       return (
@@ -243,8 +245,8 @@ export class DeviceEntry extends Component<any, any> {
                 statusTextOverride={this.props.statusText}
                 statusText={this.state.statusText}
                 deviceType={stone.config.type}
-                rssi={stone.reachability.rssi}
-                disabled={stone.reachability.disabled}
+                rssi={StoneAvailabilityTracker.getRssi(this.props.stoneId)}
+                disabled={StoneAvailabilityTracker.isDisabled(this.props.stoneId)}
                 currentUsage={stone.state.currentUsage}
                 nearestInSphere={this.props.nearestInSphere}
                 nearestInRoom={this.props.nearestInRoom}

@@ -27,6 +27,7 @@ import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 export class DeviceSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
@@ -129,7 +130,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
     let borderWidth = 5;
 
 
-    if (stone.reachability.disabled) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
       return (
         <View style={{width:0.75*screenWidth, height:size*1.05, alignItems:'center'}}>
           <View style={{flex:2}} />
@@ -228,7 +229,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
       alignItems: 'center',
       justifyContent: "center"
     };
-    if (stone.reachability.disabled === false && stone.config.locked === false) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false && stone.config.locked === false) {
       return (
         <TouchableOpacity
           onPress={() => {core.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
@@ -249,7 +250,6 @@ export class DeviceSummary extends LiveComponent<any, any> {
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
 
-    // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let locationLabel =  lang("Location_");
@@ -264,7 +264,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
       locationLabel =  lang("Tap_here_to_move_me_");
     }
 
-    let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && stone.reachability.disabled === false;
+    let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
 
     return (
       <View style={{flex:1, paddingBottom: 35}}>
@@ -324,7 +324,7 @@ export class DeviceButton extends Component<{sphereId: string, stoneId: string, 
       stateColor = colors.green.hex;
     }
 
-    if (stone.reachability.disabled) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
       stateColor = colors.gray.hex;
     }
 
