@@ -35,7 +35,7 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
       bitMask           : 0,
     },
     uniqueElement             : Math.random(),
-  }
+  };
 
   return {
     handle              : stone.config.handle,

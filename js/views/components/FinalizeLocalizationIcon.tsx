@@ -6,12 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Platform,
-  Text,
   View
 } from 'react-native';
 import { Icon } from './Icon'
-import {colors, statusBarHeight, topBarHeight} from '../styles'
+import {colors} from '../styles'
 
 export class FinalizeLocalizationIcon extends Component<any, any> {
   render() {

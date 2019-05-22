@@ -1,29 +1,28 @@
 import { CLOUD }                    from '../../cloudAPI'
 import {LOG, LOGe, LOGw} from '../../../logging/Log'
-import { Platform }                 from 'react-native'
 import { AppUtil }                  from "../../../util/AppUtil";
 import { cleanupPowerUsage, syncPowerUsage }   from "./syncPowerUsage";
 import { syncEvents }               from "./syncEvents";
-import { MessageCenter }            from "../../../backgroundProcesses/MessageCenter";
 import { NotificationHandler }      from "../../../backgroundProcesses/NotificationHandler";
 import { UserSyncer }               from "./modelSyncs/UserSyncer";
 import { SphereSyncer }             from "./modelSyncs/SphereSyncer";
 import { DeviceSyncer }             from "./modelSyncs/DeviceSyncer";
 import { FirmwareBootloaderSyncer } from "./modelSyncs/FirmwareBootloaderSyncer";
 import { getGlobalIdMap }           from "./modelSyncs/SyncingBase";
-import { eventBus }                 from "../../../util/EventBus";
 import { KeySyncer }                from "./modelSyncs/KeySyncer";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 import { Sentry }                   from "react-native-sentry";
 import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
 import { cleanupActivity }          from "./cleanActivityLogs";
+import { core } from "../../../core";
+import { CloudPoller } from "../../../logic/CloudPoller";
 
 
 
 /**
  * We claim the cloud is leading for the availability of items.
- * @param store
+ * @param core.store
  * @returns {Promise.<TResult>|*}
  */
 export const sync = {
@@ -31,26 +30,26 @@ export const sync = {
   __currentlySyncing: false,
   __syncTriggerDatabaseEvents: true,
 
-  sync: function (store, background = true) {
-    if (this.__currentlySyncing) {
+  sync: function (background = true) {
+    if (CLOUD.__currentlySyncing) {
       LOG.info("SYNC: Skip Syncing, sync already in progress.");
       return new Promise((resolve, reject) => { resolve(true) });
     }
 
-    let state = store.getState();
+    let state = core.store.getState();
     if (!state.user.userId) {
       // do not sync if we're not logged in
       return;
     }
 
     let cancelFallbackCallback = Scheduler.scheduleBackgroundCallback(() => {
-      if (this.__currentlySyncing === true) {
-        this.__currentlySyncing = false;
+      if (CLOUD.__currentlySyncing === true) {
+        CLOUD.__currentlySyncing = false;
       }
     }, 30000);
 
     LOG.info("Sync: Start Syncing.");
-    this.__currentlySyncing = true;
+    CLOUD.__currentlySyncing = true;
 
     // set the authentication tokens
     let userId = state.user.userId;
@@ -58,7 +57,7 @@ export const sync = {
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
 
-    eventBus.emit("CloudSyncStarting");
+    core.eventBus.emit("CloudSyncStarting");
 
     Sentry.captureBreadcrumb({
       category: 'sync',
@@ -74,38 +73,38 @@ export const sync = {
     let userSyncer = new UserSyncer(actions, [], globalCloudIdMap);
 
     LOG.info("Sync: START Sync Events.");
-    return syncEvents(store)
+    return syncEvents(core.store)
       // in case the event sync fails, check if the user accessToken is invalid, try to regain it if that's the case and try again.
-      .catch(getUserIdCheckError(state, store, () => {
+      .catch(getUserIdCheckError(state, core.store, () => {
         LOG.info("Sync: RETRY Sync Events.");
-        return this.syncEvents(store);
+        return syncEvents(core.store);
       }))
       .then(() => {
         LOG.info("Sync: DONE Sync Events.");
         LOG.info("Sync: START userSyncer sync.");
-        return userSyncer.sync(store)
+        return userSyncer.sync(core.store)
       })
-      .catch(getUserIdCheckError(state, store, () => {
+      .catch(getUserIdCheckError(state, core.store, () => {
         LOG.info("Sync: RETRY userSyncer Sync.");
-        return userSyncer.sync(store)
+        return userSyncer.sync(core.store)
       }))
       .then(() => {
         LOG.info("Sync: DONE userSyncer sync.");
         LOG.info("Sync: START FirmwareBootloader sync.");
         let firmwareBootloaderSyncer = new FirmwareBootloaderSyncer(actions, [], globalCloudIdMap);
-        return firmwareBootloaderSyncer.sync(store);
+        return firmwareBootloaderSyncer.sync(core.store);
       })
       .then(() => {
         LOG.info("Sync: DONE FirmwareBootloader sync.");
         LOG.info("Sync: START SphereSyncer sync.");
         let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap, globalSphereMap);
-        return sphereSyncer.sync(store);
+        return sphereSyncer.sync(core.store);
       })
       .then(() => {
         LOG.info("Sync: DONE SphereSyncer sync.");
         LOG.info("Sync: START KeySyncer sync.");
         let keySyncer = new KeySyncer(actions, [], globalCloudIdMap);
-        return keySyncer.sync(store);
+        return keySyncer.sync(core.store);
       })
       .then(() => {
         LOG.info("Sync: DONE KeySyncer sync.");
@@ -148,7 +147,7 @@ export const sync = {
         actions.forEach((action) => {
           action.triggeredBySync = true;
 
-          if (this.__syncTriggerDatabaseEvents === false) {
+          if (CLOUD.__syncTriggerDatabaseEvents === false) {
             action.__noEvents = true
           }
 
@@ -162,22 +161,22 @@ export const sync = {
         });
 
         if (actions.length > 0) {
-          store.batchDispatch(actions);
+          core.store.batchDispatch(actions);
         }
 
         LOG.info("Sync: Requesting notification permissions during updating of the device.");
         NotificationHandler.request();
 
 
-        LOG.info("Sync after: START MessageCenter checkForMessages.");
-        MessageCenter.checkForMessages();
-        LOG.info("Sync after: DONE MessageCenter checkForMessages.");
+        LOG.info("Sync after: START Executing cloud poll.");
+        CloudPoller.poll(true);
+        LOG.info("Sync after: DONE Executing cloud poll.");
 
         return reloadTrackingRequired;
       })
       .then((reloadTrackingRequired) => {
-        this.__currentlySyncing = false;
-        this.__syncTriggerDatabaseEvents = true;
+        CLOUD.__currentlySyncing = false;
+        CLOUD.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
 
         Sentry.captureBreadcrumb({
@@ -187,10 +186,10 @@ export const sync = {
           }
         });
 
-        eventBus.emit("CloudSyncComplete");
+        core.eventBus.emit("CloudSyncComplete");
 
         if (reloadTrackingRequired) {
-          eventBus.emit("CloudSyncComplete_spheresChanged");
+          core.eventBus.emit("CloudSyncComplete_spheresChanged");
         }
 
       })
@@ -201,7 +200,7 @@ export const sync = {
         });
 
         // if (actions.length > 0) {
-        //   store.batchDispatch(actions);
+        //   core.store.batchDispatch(actions);
         // }
 
         Sentry.captureBreadcrumb({
@@ -212,10 +211,10 @@ export const sync = {
           }
         });
 
-        this.__currentlySyncing = false;
-        this.__syncTriggerDatabaseEvents = true;
+        CLOUD.__currentlySyncing = false;
+        CLOUD.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
-        eventBus.emit("CloudSyncComplete");
+        core.eventBus.emit("CloudSyncComplete");
         LOGe.cloud("Sync: error during sync:", err);
 
         throw err;
@@ -236,7 +235,7 @@ let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
         .then((response) => {
           CLOUD.setAccess(response.id);
           CLOUD.setUserId(response.userId);
-          store.dispatch({type:'USER_APPEND', data: {accessToken: response.id}});
+          core.store.dispatch({type:'USER_APPEND', data: {accessToken: response.id}});
           return retryThisAfterRecovery();
         })
         .catch((err) => {

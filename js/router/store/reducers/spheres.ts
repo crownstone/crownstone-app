@@ -11,6 +11,7 @@ let defaultSettings = {
   config: {
     name: undefined,
     iBeaconUUID: undefined, // ibeacon uuid
+    uid: null,
     adminKey: null,
     memberKey: null,
     guestKey: null,
@@ -64,6 +65,7 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
       if (action.data) {
         let newState = {...state};
         newState.name        = update(action.data.name,        newState.name);
+        newState.uid         = update(action.data.uid,         newState.uid);
         newState.aiName      = update(action.data.aiName,      newState.aiName);
         newState.aiSex       = update(action.data.aiSex,       newState.aiSex);
         newState.exitDelay   = update(action.data.exitDelay,   newState.exitDelay);
@@ -130,7 +132,7 @@ let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
     default:
       return state;
   }
-}
+};
 
 let floatingLocationReducer = (state = defaultSettings.layout.floatingLocation, action : any = {}) => {
   switch (action.type) {
@@ -149,7 +151,7 @@ let floatingLocationReducer = (state = defaultSettings.layout.floatingLocation, 
     default:
       return state;
   }
-}
+};
 
 let layoutReducer = combineReducers({
   floatingLocation: floatingLocationReducer,

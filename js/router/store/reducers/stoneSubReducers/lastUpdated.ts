@@ -1,4 +1,4 @@
-import { update, getTime, refreshDefaults } from '../reducerUtil'
+import { getTime, refreshDefaults } from '../reducerUtil'
 
 
 

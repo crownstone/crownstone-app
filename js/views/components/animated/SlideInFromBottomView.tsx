@@ -1,15 +1,6 @@
-
-import { Languages } from "../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SlideInFromBottomView", key)(a,b,c,d,e);
-}
 import * as React from 'react'; import { Component } from 'react';
-import {
-  Animated,
-  
-  Dimensions,
-} from 'react-native';
+import { Animated } from 'react-native';
+import { screenHeight, screenWidth } from "../../styles";
 
 export class SlideInFromBottomView extends Component<any, any> {
   visible : boolean;
@@ -17,30 +8,25 @@ export class SlideInFromBottomView extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    let height = Dimensions.get('window').height;
-
-    this.state = {viewHeight: new Animated.Value(props.visible ? height - props.height : height)};
+    this.state = {viewTopOffset: new Animated.Value(props.visible ? screenHeight - props.height : screenHeight)};
     this.visible = props.visible || false;
   }
 
   componentWillUpdate(nextProps) {
-    let height = Dimensions.get('window').height;
     if (this.visible !== nextProps.visible) {
       if (nextProps.visible === true) {
-        Animated.timing(this.state.viewHeight, {toValue: height - nextProps.height, duration:150}).start();
+        Animated.timing(this.state.viewTopOffset, {toValue: screenHeight - nextProps.height, duration:150}).start();
       }
       else {
-        Animated.timing(this.state.viewHeight,  {toValue: height, duration:150}).start();
+        Animated.timing(this.state.viewTopOffset,  {toValue: screenHeight, duration:150}).start();
       }
       this.visible = nextProps.visible;
     }
   }
 
   render() {
-    let width  = Dimensions.get('window').width;
-
     return (
-      <Animated.View style={[this.props.style, {position:'absolute', top: this.state.viewHeight, left:0, width: width, overflow:'hidden', height: this.props.height}]}>
+      <Animated.View style={[this.props.style, {position:'absolute', top: this.state.viewTopOffset, left:0, width: screenWidth, overflow:'hidden', height: this.props.height}]}>
         {this.props.children}
       </Animated.View>
     );

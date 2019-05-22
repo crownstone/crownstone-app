@@ -7,11 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Dimensions,
-  Image,
-  PixelRatio,
-  TouchableHighlight,
-  Text,
   View
 } from 'react-native';
 import {Icon} from "../Icon";

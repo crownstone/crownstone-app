@@ -7,10 +7,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
-  Platform,
-  Text,
+  Text, TextStyle,
   View
-} from 'react-native';
+} from "react-native";
 
 import { colors} from '../styles'
 import { preparePictureURI } from '../../util/Util'
@@ -73,7 +72,7 @@ export class ProfilePicture extends Component<any, any> {
   }
 }
 
-let nameStyle = {
+let nameStyle : TextStyle = {
   color:'#fff',
   fontSize:10,
   fontWeight:'200',

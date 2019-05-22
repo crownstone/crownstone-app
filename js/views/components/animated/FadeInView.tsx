@@ -9,6 +9,7 @@ import {
   Animated,
   View
 } from 'react-native';
+import { useState } from "react";
 
 export class FadeInView extends Component<any, any> {
   visible : boolean;
@@ -86,9 +87,32 @@ export class FadeInView extends Component<any, any> {
 }
 
 
-export class HiddenFadeInView extends Component<any, any> {
-  render() {
-    return <FadeInView {...this.props} hidden={true} />
-  }
+export function HiddenFadeInView(props) {
+  return <FadeInView {...props} hidden={true} />
 }
 
+export function FadeIn(props) {
+  let [visible, setVisible] = useState(false);
+  if (visible === false) {
+    setTimeout(() => { setVisible(true); }, 0);
+  }
+
+  return (
+    <FadeInView visible={visible} delay={props.index * 65 || 0} {...props}>
+      {props.children}
+    </FadeInView>
+  );
+}
+
+export function HiddenFadeIn(props) {
+  let [visible, setVisible] = useState(false);
+  if (visible === false) {
+    setTimeout(() => { setVisible(true); }, 0);
+  }
+
+  return (
+    <HiddenFadeInView visible={visible} delay={props.index * 65 || 0}>
+      {props.children}
+    </HiddenFadeInView>
+  );
+}

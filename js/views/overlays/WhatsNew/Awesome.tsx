@@ -6,8 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Image,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,

@@ -5,80 +5,40 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
-  Text,
-  View
-} from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
-
-import {colors, screenWidth} from '../../../styles'
+import { TopbarBackButton} from "../../../components/topbar/TopbarButton";
+import { DeviceSmartBehaviour_TypeSelectorBody } from "./DeviceSmartBehaviour_TypeSelector";
+import { core } from "../../../../core";
+import { Background } from "../../../components/Background";
+import { DeviceSmartBehaviour_RuleOverview } from "./DeviceSmartBehaviour_RuleOverview";
+import { View } from "react-native";
 
 export class DeviceSmartBehaviour extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    return {
+      title: lang("A_Crownstone"),
+      headerLeft:  <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
+    }
+  };
+
 
   render() {
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    if (!sphere) return <View />;
+    let stone = sphere.stones[this.props.stoneId];
+    if (!stone) return;
+    let rulesCreated = Object.keys(stone.rules).length > 0;
+
     return (
-      <View style={{flex:1, flexDirection: 'column', alignItems:'center',padding: 30}}>
-        <View style={{height:30, width: screenWidth, backgroundColor:'transparent'}} />
-      </View>
+      <Background image={core.background.detailsDark} hasNavBar={false}>
+        {
+          rulesCreated ?
+          <DeviceSmartBehaviour_RuleOverview     {...this.props} /> :
+          <DeviceSmartBehaviour_TypeSelectorBody {...this.props} />
+        }
+      </Background>
     )
   }
 }
-
-
-export const textStyle = StyleSheet.create({
-  title: {
-    color:colors.white.hex,
-    fontSize:30,
-    paddingBottom:10,
-    fontWeight:'bold'
-  },
-  explanation: {
-    color:colors.white.hex,
-    width:screenWidth,
-    textAlign:'center',
-    fontSize:13,
-    padding:5,
-    paddingLeft:15,
-    paddingRight:15,
-    fontWeight:'400'
-  },
-  case: {
-    color:colors.white.hex,
-    width:screenWidth,
-    textAlign:'center',
-    fontSize:13,
-    padding:5,
-    fontWeight:'400',
-  },
-  value: {
-    color:colors.white.hex,
-    textAlign:'center',
-    fontSize:15,
-    fontWeight:'600'
-  },
-  specification: {
-    color:colors.white.hex,
-    width:screenWidth,
-    textAlign:'center',
-    fontSize:15,
-    padding:15,
-    fontWeight:'600'
-  },
-  softWarning: {
-    color: colors.white.hex,
-    width:screenWidth,
-    textAlign:'center',
-    fontStyle:'italic',
-    fontSize:13,
-    padding:15,
-    fontWeight:'600'
-  }
-});

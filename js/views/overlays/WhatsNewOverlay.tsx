@@ -6,16 +6,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Image,
   Platform,
-  StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { colors, screenHeight, screenWidth} from '../styles'
-import {eventBus} from "../../util/EventBus";
+
 const Swiper = require("react-native-swiper");
 import { Awesome } from "./WhatsNew/Awesome";
 import {ActivityLog} from "./WhatsNew/2.2.0/ActivityLog";
@@ -29,7 +26,8 @@ import { AlexaIntegration } from "./WhatsNew/2.3.0/AlexaIntegration";
 import { AppleWatch } from "./WhatsNew/2.3.0/AppleWatch";
 import { AndroidLib } from "./WhatsNew/2.3.0/AndroidLib";
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
+import { core } from "../../core";
 
 export class WhatsNewOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -42,7 +40,7 @@ export class WhatsNewOverlay extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on("showWhatsNew", () => {
+    this.unsubscribe.push(core.eventBus.on("showWhatsNew", () => {
       this.setState({visible: true});
     }));
   }
@@ -80,7 +78,7 @@ export class WhatsNewOverlay extends Component<any, any> {
 
   _closePopup() {
     this.setState({visible: false});
-    this.props.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} })
+    core.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} })
   }
 
   render() {
@@ -96,19 +94,8 @@ export class WhatsNewOverlay extends Component<any, any> {
         height={height}
         canClose={true}
         style={{padding:0}}
-        closeCallback={() => {
-          this._closePopup()
-        }}
-      >
-        <Text style={{
-          fontSize: 18,
-          fontWeight:'bold',
-          backgroundColor:'transparent',
-          color:colors.csBlue.hex,
-          marginTop:25,
-          marginBottom:25,
-          overflow:'hidden'
-        }}>{ lang("Your_App_was_updated_") }</Text>
+        title={lang("Your_App_was_updated_")}
+        closeCallback={() => { this._closePopup() }}>
         <Swiper style={{}} showsPagination={true} height={height-80} width={width}
           loadMinimal={true}
           loadMinimalSize={2}

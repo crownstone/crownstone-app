@@ -9,6 +9,8 @@ let defaultState = {
   shownWhatsNewVersion: '0',
   hasSeenDeviceSettings: false,
   hasZoomedOutForSphereOverview: false,
+
+  migratedDataToVersion: null,
   updatedAt: 1
 };
 
@@ -17,7 +19,7 @@ export default (state = defaultState, action : any = {}) => {
   let newState;
   switch (action.type) {
     case 'RESET_APP_SETTINGS':
-      return {...defaultState}
+      return {...defaultState};
 
     case 'SET_NOTIFICATION_TOKEN':
       if (action.data) {
@@ -55,6 +57,8 @@ export default (state = defaultState, action : any = {}) => {
         newState.indoorLocalizationEnabled = update(action.data.indoorLocalizationEnabled,  newState.indoorLocalizationEnabled);
         newState.tapToToggleEnabled        = update(action.data.tapToToggleEnabled,         newState.tapToToggleEnabled);
         newState.shownWhatsNewVersion      = update(action.data.shownWhatsNewVersion,       newState.shownWhatsNewVersion);
+
+        newState.migratedDataToVersion     = update(action.data.migratedDataToVersion,      newState.migratedDataToVersion);
 
         newState.hasSeenDeviceSettings         = update(action.data.hasSeenDeviceSettings,          newState.hasSeenDeviceSettings);
         newState.hasZoomedOutForSphereOverview = update(action.data.hasZoomedOutForSphereOverview,  newState.hasZoomedOutForSphereOverview);

@@ -1,15 +1,13 @@
-import { AppState }           from "react-native"
 import {LOG, LOGe}            from "../logging/Log";
-import { NativeBus }          from "../native/libInterface/NativeBus";
 import { CLOUD }              from "../cloud/cloudAPI";
 import { LocalNotifications } from "../notifications/LocalNotifications";
 import { Util }               from "../util/Util";
 import { MapProvider }        from "./MapProvider";
 import { xUtil }              from "../util/StandAloneUtil";
+import { core } from "../core";
 
 class MessageCenterClass {
   _initialized: boolean = false;
-  _store: any;
   _enterSphereInProgress : boolean = false;
   _exitSphereInProgress  : boolean = false;
   _enterRoomInProgress   : boolean = false;
@@ -17,15 +15,14 @@ class MessageCenterClass {
 
   constructor() { }
 
-  loadStore(store: any) {
+  init() {
     LOG.info('LOADED STORE MessageCenter', this._initialized);
     if (this._initialized === false) {
-      this._store = store;
 
-      NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => { this._enterSphere(sphereId); });
-      NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this._exitSphere(sphereId); });
-      NativeBus.on(NativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
-      NativeBus.on(NativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
+      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this._enterSphere(sphereId); });
+      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this._exitSphere(sphereId); });
+      core.nativeBus.on(core.nativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
+      core.nativeBus.on(core.nativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
 
     }
     this._initialized = true;
@@ -167,17 +164,17 @@ class MessageCenterClass {
 
   storeMessage(cloudMessage) {
     let actions = [];
-    let state = this._store.getState();
+    let state = core.store.getState();
     this._generateMessageStoringActions(actions, state, cloudMessage);
     if (actions.length > 0) {
-      this._store.batchDispatch(actions);
+      core.store.batchDispatch(actions);
     }
   }
 
   deliveredMessage(localSphereId, localMessageId) {
-    let state = this._store.getState();
+    let state = core.store.getState();
     if (localMessageId) {
-      this._store.dispatch({
+      core.store.dispatch({
         type: "I_RECEIVED_MESSAGE",
         sphereId: localSphereId,
         messageId: localMessageId,
@@ -190,9 +187,9 @@ class MessageCenterClass {
   }
 
   readMessage(localSphereId, localMessageId) {
-    let state = this._store.getState();
+    let state = core.store.getState();
     if (localMessageId) {
-      this._store.dispatch({
+      core.store.dispatch({
         type: "I_READ_MESSAGE",
         sphereId: localSphereId,
         messageId: localMessageId,
@@ -202,7 +199,7 @@ class MessageCenterClass {
   }
 
   newMessageStateInSphere(localSphereId, newMessageReceived : boolean = true) {
-    this._store.dispatch({
+    core.store.dispatch({
       type: "SET_SPHERE_MESSAGE_STATE",
       sphereId: localSphereId,
       data: {newMessageFound: newMessageReceived}
@@ -214,7 +211,7 @@ class MessageCenterClass {
     this._enterSphereInProgress = true;
 
     LOG.info("MessageCenter: enter sphere / already in sphere", localSphereId);
-    this._handleMessageInSphere(localSphereId, 'enter')
+    return this._handleMessageInSphere(localSphereId, 'enter')
       .then(() => { this._enterSphereInProgress = false; })
       .catch(() => {          this._enterSphereInProgress = false; })
   }
@@ -224,7 +221,7 @@ class MessageCenterClass {
     this._exitSphereInProgress = true;
 
     LOG.info("MessageCenter: exit sphere", localSphereId);
-    this._handleMessageInSphere(localSphereId, 'exit')
+    return this._handleMessageInSphere(localSphereId, 'exit')
       .then(() => { this._exitSphereInProgress = false; })
       .catch(() => {          this._exitSphereInProgress = false; })
   }
@@ -234,7 +231,7 @@ class MessageCenterClass {
     this._enterRoomInProgress = true;
 
     LOG.info("MessageCenter: enter room / already in room", data);
-    this._handleMessageInLocation(data.region, data.location, 'enter')
+    return this._handleMessageInLocation(data.region, data.location, 'enter')
       .then(() => { this._enterRoomInProgress = false; })
       .catch(() => {          this._enterRoomInProgress = false; })
   }
@@ -244,13 +241,13 @@ class MessageCenterClass {
     this._exitRoomInProgress = true;
 
     LOG.info("MessageCenter: exit room", data);
-    this._handleMessageInLocation(data.region, data.location, 'exit')
+    return this._handleMessageInLocation(data.region, data.location, 'exit')
       .then(() => { this._exitRoomInProgress = false; })
       .catch(() => {          this._exitRoomInProgress = false; })
   }
 
   _handleMessageInLocation(localSphereId, localLocationId, triggerEvent) {
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     return CLOUD.forSphere(localSphereId).getNewMessagesInLocation(localLocationId)
       .then((messages) => {
@@ -265,7 +262,7 @@ class MessageCenterClass {
           });
 
           if (actions.length > 0) {
-            this._store.batchDispatch(actions);
+            core.store.batchDispatch(actions);
           }
         }
       })
@@ -273,7 +270,7 @@ class MessageCenterClass {
   }
 
   _handleMessageInSphere(localSphereId, triggerEvent) {
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     return CLOUD.forSphere(localSphereId).getNewMessagesInSphere()
       .then((messages) => {
@@ -286,7 +283,7 @@ class MessageCenterClass {
             }
           });
           if (actions.length > 0) {
-            this._store.batchDispatch(actions);
+            core.store.batchDispatch(actions);
           }
         }
       })
@@ -297,17 +294,20 @@ class MessageCenterClass {
    * This will check for messages in the current location. It is self contained and can be called whenever.
    */
   checkForMessages() {
-    let state = this._store.getState();
+    let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId(state);
 
     if (presentSphereId) {
       let presentLocationId = Util.data.getUserLocationIdInSphere(state, presentSphereId, state.user.userId);
       if (presentLocationId) {
-        this._enterRoom({region: presentSphereId, location: presentLocationId});
+        return this._enterRoom({region: presentSphereId, location: presentLocationId});
       }
       else {
-        this._enterSphere(presentSphereId);
+        return this._enterSphere(presentSphereId);
       }
+    }
+    else {
+      return new Promise((resolve, reject) => { resolve(); })
     }
   }
 }

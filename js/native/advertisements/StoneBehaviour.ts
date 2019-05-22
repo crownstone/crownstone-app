@@ -1,7 +1,5 @@
 import { Alert }                    from "react-native"
 import {LOG, LOGd, LOGw} from "../../logging/Log";
-import { eventBus }                 from "../../util/EventBus";
-import { FirmwareHandler }          from "../firmware/FirmwareHandler";
 import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
 import { TIME_BETWEEN_TAP_TO_TOGGLES, TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY } from "../../ExternalConfig";
 import { addDistanceToRssi, Util }  from "../../util/Util";
@@ -11,6 +9,8 @@ import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {INTENTS} from "../libInterface/Constants";
 import { xUtil } from "../../util/StandAloneUtil";
 import { BEHAVIOUR_TYPES } from "../../Enums";
+import { core } from "../../core";
+import { DfuStateHandler } from "../firmware/DfuStateHandler";
 
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
@@ -21,7 +21,6 @@ let SLIDING_WINDOW_FACTOR = 0.2; // [0.1 .. 1] higher is more responsive
  * Each Stone Entity will have a StoneBehaviour which only job is to respond to triggers to enact its behaviour.
  **/
 export class StoneBehaviour {
-
   store;
   sphereId;
   stoneId;
@@ -49,7 +48,7 @@ export class StoneBehaviour {
 
 
   subscribe() {
-    this.subscriptions.push(eventBus.on("ignoreTriggers", () => {
+    this.subscriptions.push(core.eventBus.on("ignoreTriggers", () => {
       this.temporaryIgnore = true;
       this.temporaryIgnoreTimeout = setTimeout(() => {
         if (this.temporaryIgnore === true) {
@@ -57,12 +56,12 @@ export class StoneBehaviour {
         }
       }, 30000 );
     }));
-    this.subscriptions.push(eventBus.on("useTriggers", () => {
+    this.subscriptions.push(core.eventBus.on("useTriggers", () => {
       this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout);
     }));
 
     // if we detect a setup stone, we disable tap to toggle temporarily
-    this.subscriptions.push(eventBus.on("setupStoneChange", (setupCrownstonesAvailable) => {
+    this.subscriptions.push(core.eventBus.on("setupStoneChange", (setupCrownstonesAvailable) => {
       this.tapToToggleDisabledTemporarily = setupCrownstonesAvailable;
     }));
   }
@@ -102,13 +101,12 @@ export class StoneBehaviour {
 
 
   _handleTapToToggle(state, stone, rssi) {
-    if (!state.app.tapToToggleEnabled)     { return false; }
-    if (state.development.broadcasting_enabled)     { return false; }
-    if (!stone.config.tapToToggle)         { return false; }
-    if (FirmwareHandler.isDfuInProgress()) { return false; }
+    if (!state.app.tapToToggleEnabled)          { return false; }
+    if (!stone.config.tapToToggle)              { return false; }
+    if (DfuStateHandler.isDfuInProgress())      { return false; }
 
     let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
-    if (!tapToToggleCalibration)           { return false; }
+    if (!tapToToggleCalibration)                { return false; }
 
     let now = new Date().valueOf();
 
@@ -139,7 +137,7 @@ export class StoneBehaviour {
 
         BatchCommandHandler.loadPriority(stone, this.stoneId, this.sphereId, {commandName:'toggle', stateForOn: stone.config.dimmingEnabled ? 0.99 : 1.00}, {}, 2, 'Tap To Toggle!')
           .then((newSwitchState : {data: number}) => {
-            eventBus.emit("NEW_ACTIVITY_LOG", {
+            core.eventBus.emit("NEW_ACTIVITY_LOG", {
               command:     "tap2toggle",
               commandUuid: xUtil.getUUID(),
               connectedTo: this.stoneId,

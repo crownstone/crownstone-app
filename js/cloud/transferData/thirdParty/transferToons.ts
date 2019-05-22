@@ -1,5 +1,5 @@
 import { CLOUD } from "../../cloudAPI";
-import {LOG, LOGe} from "../../../logging/Log";
+import {LOGe} from "../../../logging/Log";
 
 
 import { transferUtil } from "../shared/transferUtil";
@@ -43,7 +43,7 @@ export const transferToons = {
     if (!Permissions.inSphere(data.localSphereId).setToonInCloud) { return new Promise((resolve, reject) => { resolve() })}
 
     if (data.cloudId === undefined) {
-      return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
+      return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
     }
 
     let payload = {};

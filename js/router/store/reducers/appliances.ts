@@ -123,6 +123,8 @@ let combinedApplianceReducer = combineReducers({
 // stonesReducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'DANGER_REMOVE_ALL_APPLIANCES':
+      return {};
     case 'REMOVE_APPLIANCE':
       let stateCopy = {...state};
       delete stateCopy[action.applianceId];

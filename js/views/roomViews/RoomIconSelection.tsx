@@ -6,20 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Image,
-  PixelRatio,
-  TouchableHighlight,
   ScrollView,
-  Text,
   View
 } from 'react-native';
 
 import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
 import {colors, screenWidth} from "../styles";
-import {BackAction} from "../../util/Back";
-const Actions = require('react-native-router-flux').Actions;
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
+
+
 
 
 let categories = [
@@ -207,14 +205,15 @@ let listOfIcons = {
 
 export const getRandomRoomIcon = () => {
   let allKeys = Object.keys(listOfIcons);
-  let key = allKeys[Math.floor(Math.random()*allKeys.length)]
+  let key = allKeys[Math.floor(Math.random()*allKeys.length)];
   return listOfIcons[key][Math.floor(Math.random()*listOfIcons[key].length)]
-}
+};
 
-export class RoomIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
+export class RoomIconSelection extends Component<{navigation:any, callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Pick_an_Icon"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
     }
   };
 
@@ -224,16 +223,18 @@ export class RoomIconSelection extends Component<{callback(icon: string) : void,
 
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={core.background.light}>
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <IconSelection
             categories={categories}
             icons={listOfIcons}
+            iconColor={colors.csBlue.hex}
+            iconBackgroundColor={colors.white.rgba(0.3)}
             selectedIcon={this.props.icon}
             callback={(newIcon) => {
               this.props.callback(newIcon);
-              BackAction();
+              NavigationUtil.back();
             }}
           />
         </ScrollView>

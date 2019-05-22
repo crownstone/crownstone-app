@@ -340,7 +340,7 @@ export const glyphMapC3 = {
   'c3-addRoundedBold':  0xf004,
   'c3-addRoundedfilled':0xf005,
   'c3-addCircle':       0xf006,
-}
+};
 
 export const getRandomC3Name = function() {
   return getRandomName(glyphMapC3);

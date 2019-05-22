@@ -1,34 +1,19 @@
-import {eventBus} from "../util/EventBus";
-import {LOG, LOGe} from "../logging/Log";
-import {Util} from "../util/Util";
+import {LOGe} from "../logging/Log";
 import {transferActivityLogs} from "../cloud/transferData/transferActivityLogs";
 import {MapProvider} from "./MapProvider";
 import {transferActivityRanges} from "../cloud/transferData/transferActivityRanges";
 import { xUtil } from "../util/StandAloneUtil";
+import { core } from "../core";
 
 
 class ActivityLogManagerClass {
-
-  _initialized = false
-  store = null
-
+  _initialized = false;
   _stagedActions = [];
-
-
-  loadStore(store) {
-    LOG.info('LOADED STORE ActivityLogManager', this._initialized);
-    if (this._initialized === false) {
-      this.store = store;
-      // reset last time fired to 0 so the time diff method will
-      this.init();
-
-    }
-  }
 
   init() {
     if (this._initialized === false) {
-      eventBus.on("NEW_ACTIVITY_LOG", (data) => { if (data.command) {this._handleActivity(data);}});
-      eventBus.on("disconnect",       this._commit.bind(this));
+      core.eventBus.on("NEW_ACTIVITY_LOG", (data) => { if (data.command) {this._handleActivity(data);}});
+      core.eventBus.on("disconnect",       this._commit.bind(this));
       this._initialized = true;
 
     }
@@ -53,7 +38,7 @@ class ActivityLogManagerClass {
       return this._handleActivityRange(data);
     }
 
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     let action = {
       type: "ADD_ACTIVITY_LOG",
@@ -67,7 +52,7 @@ class ActivityLogManagerClass {
         userId: state.user.userId,
         timestamp: new Date().valueOf(),
       }
-    }
+    };
     let unknownAction = false;
     switch (data.command) {
       case 'keepAliveState':
@@ -92,7 +77,7 @@ class ActivityLogManagerClass {
   }
 
   _handleActivityRange(data) {
-    let state = this.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[data.sphereId];
     let stone = sphere.stones[data.target];
 
@@ -128,7 +113,7 @@ class ActivityLogManagerClass {
       stoneId:  data.target,
       rangeId: null,
       data: {}
-    }
+    };
     let actionData = {
       count:           1,
       delayInCommand:  data.timeout || sphere.config.exitDelay,
@@ -136,7 +121,7 @@ class ActivityLogManagerClass {
       type:            data.command,
       cloudId:         null,
       userId:          state.user.userId,
-    }
+    };
     if (viaMesh) { actionData["lastMeshTime"]   = now; }
     else         { actionData["lastDirectTime"] = now; }
 
@@ -158,9 +143,9 @@ class ActivityLogManagerClass {
 
   _commit() {
     if (this._stagedActions.length > 0) {
-      this.store.batchDispatch(this._stagedActions);
+      core.store.batchDispatch(this._stagedActions);
 
-      let state = this.store.getState();
+      let state = core.store.getState();
 
       let stoneActions : ActivityContainer = {};
       for (let i = 0; i < this._stagedActions.length; i++) {
@@ -216,11 +201,11 @@ class ActivityLogManagerClass {
               return transferActivityRanges.batchUpdateOnCloud(state, actions, stoneActions[stoneId].updatedRangeData);
             })
             .then(() => {
-              this.store.batchDispatch(actions);
+              core.store.batchDispatch(actions);
             })
             .catch((err) => {
               LOGe.cloud("ActivityLogManager: Error in activity log uploading:", err);
-              this.store.batchDispatch(actions);
+              core.store.batchDispatch(actions);
             })
           }
         })

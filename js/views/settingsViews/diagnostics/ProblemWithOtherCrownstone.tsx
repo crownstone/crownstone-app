@@ -6,14 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  Linking,
-  TouchableOpacity,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
@@ -34,6 +26,7 @@ import {Util} from "../../../util/Util";
 import {TestRunner} from "./TestRunner";
 import {SlideFadeInView} from "../../components/animated/SlideFadeInView";
 import { diagnosticStyles } from "./DiagnosticStyles";
+import { core } from "../../../core";
 
 
 export class ProblemWithOtherCrownstone extends Component<any, any> {
@@ -63,7 +56,7 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
   }
 
   _factoryResetMyLostCrownstone(handle) {
-    let referenceId = Util.data.getReferenceId(this.props.store.getState());
+    let referenceId = Util.data.getReferenceId(core.store.getState());
     let proxy = BleUtil.getProxy(handle, referenceId);
     return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
       .then(() => { this.setState({factoryResetSuccess: true}); })
@@ -176,7 +169,7 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
           }
         });
 
-        if (nearest) {
+        if (nearest && nearest.rssi) {
           let noun = null;
           if (nearest.rssi > -55) {
             noun =  lang("very");
@@ -187,7 +180,7 @@ export class ProblemWithOtherCrownstone extends Component<any, any> {
             noun =  lang("somewhat")}
           else if (nearest.rssi > -85) {
             noun =  lang("not_that")}
-          let state = this.props.store.getState();
+          let state = core.store.getState();
           let sphereId = Util.data.getPresentSphereId(state);
           let nearSummary = MapProvider.stoneHandleMap[nearest.handle];
           if (!nearSummary) {

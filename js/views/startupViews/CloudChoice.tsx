@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 
 import { setupStyle, CancelButton } from '../setupViews/SetupShared'
-var Actions = require('react-native-router-flux').Actions;
 
 
 import { Background } from '../components/Background'
@@ -28,7 +27,7 @@ import { Icon } from '../components/Icon';
 export class CloudChoice extends Component<any, any> {
   render() {
     return (
-      <Background background={require('../../images/mainBackground.png')}>
+      <Background background={require('../../images/backgrounds/mainBackground.png')}>
         <View style={styles.shadedStatusBar} />
         <View style={setupStyle.lineDistance} />
         <Text style={[setupStyle.h3, styles.centered, {flex:1,textAlign:'center'}]}>{ lang("PLEASE_SELECT") }</Text>

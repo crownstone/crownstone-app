@@ -5,33 +5,27 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereCrownstoneOverview", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
-  Text,
-  View
-} from 'react-native';
-import {colors, OrangeLine} from "../../styles";
-import {IconCircle} from "../../components/IconCircle";
+  ScrollView} from 'react-native';
+import {colors, } from "../../styles";
 import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {DeviceEntry} from "../../components/deviceEntries/DeviceEntry";
 import {addCrownstoneExplanationAlert} from "../AddItemsToSphere";
 import {Icon} from "../../components/Icon";
-import {IconButton} from "../../components/IconButton";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {BackAction} from "../../../util/Back";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
-const Actions = require('react-native-router-flux').Actions;
+
 
 export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-    let state = params.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[params.sphereId] ;
     return {
       title: lang("Crownstones_in_",sphere.config.name),
@@ -41,7 +35,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   unsubscribe : any;
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (change.stoneRssiUpdated || change.changeSpheres || change.updateActiveSphere) {
         this.forceUpdate();
@@ -56,8 +50,6 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId) {
     items.push({
       __item: <DeviceEntry
-        eventBus={this.props.eventBus}
-        store={this.props.store}
         stoneId={stoneId}
         sphereId={sphereId}
         touchable={false}
@@ -70,7 +62,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   _getItems() {
     let items = [];
 
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let stones = sphere.stones;
@@ -84,7 +76,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
 
     let rooms = state.spheres[this.props.sphereId].locations;
     let roomIds = Object.keys(rooms);
-    roomIds.sort((a,b) => { return rooms[a].config.name > rooms[b].config.name ? 1 : -1 })
+    roomIds.sort((a,b) => { return rooms[a].config.name > rooms[b].config.name ? 1 : -1 });
 
     let renderStonesInRoom = (roomId) => {
       let stonesInRoom = Util.data.getStonesInLocation(state, this.props.sphereId, roomId);
@@ -96,26 +88,26 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
         }
 
         items.push({label: label, type:'explanation', below:false});
-        let elementIds = {}
+        let elementIds = {};
         stoneIdsInRoom.forEach((stoneId) => {
           let stone = stones[stoneId];
           elementIds[stoneId] = Util.data.getElement(store, this.props.sphereId, stoneId, stone);
-        })
-        stoneIdsInRoom.sort((a,b) => { return elementIds[a].config.name > elementIds[b].config.name ? 1 : -1 })
+        });
+        stoneIdsInRoom.sort((a,b) => { return elementIds[a].config.name > elementIds[b].config.name ? 1 : -1 });
 
         stoneIdsInRoom.forEach((stoneId) => {
           let stone = stones[stoneId];
-          let element = elementIds[stoneId]
+          let element = elementIds[stoneId];
           this._pushCrownstoneItem(items, this.props.sphereId, element, stone, stoneId);
         })
       }
-    }
+    };
 
     roomIds.forEach((roomId) => {
       renderStonesInRoom(roomId)
-    })
+    });
 
-    renderStonesInRoom(null)
+    renderStonesInRoom(null);
 
     items.push({label: lang("This_is_an_overview_of_al"), type:'explanation', below:true});
 
@@ -127,18 +119,18 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
       type: 'button',
       callback: () => {
         if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
-          addCrownstoneExplanationAlert(() => { BackAction('sphereOverview'); } )
+          addCrownstoneExplanationAlert(() => {
+            NavigationUtil.reset("AppNavigator");
+          });
         }
         else {
           Alert.alert(
-lang("_Ask_your_Sphere_Admin__A_header"),
-lang("_Ask_your_Sphere_Admin__A_body"),
-[{text:lang("_Ask_your_Sphere_Admin__A_left")}]);
+            lang("_Ask_your_Sphere_Admin__A_header"),
+            lang("_Ask_your_Sphere_Admin__A_body"),
+            [{text:lang("_Ask_your_Sphere_Admin__A_left")}]);
         }
       }
     });
-
-
 
     items.push({type:'spacer'});
     items.push({type:'spacer'});
@@ -148,9 +140,8 @@ lang("_Ask_your_Sphere_Admin__A_body"),
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false}>
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+      <Background image={core.background.menu} hasNavBar={false}>
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>

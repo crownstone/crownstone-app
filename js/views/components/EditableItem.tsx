@@ -7,8 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   
-  Dimensions,
-  PixelRatio,
   Text,
   View
 } from 'react-native';
@@ -31,7 +29,7 @@ import { TextEditBar }       from './editComponents/TextEditBar'
 import { TimePicker }        from './editComponents/TimePicker'
 import { TextBlob }          from "./editComponents/TextBlob";
 
-import {styles, colors, NORMAL_ROW_SIZE, LARGE_ROW_SIZE, EXTRA_LARGE_ROW_SIZE} from '../styles'
+import {styles, colors, NORMAL_ROW_SIZE, EXTRA_LARGE_ROW_SIZE} from '../styles'
 import {CollapsableBar} from "./editComponents/Collapsable";
 
 
@@ -152,7 +150,7 @@ export class EditableItem extends Component<any, any> {
       default:
         return (
           <View>
-            <View style={[styles.listView, {NORMAL_ROW_SIZE, flex:1} ]}>
+            <View style={[styles.listView, {height: NORMAL_ROW_SIZE, flex:1} ]}>
               <Text>{ lang("___UNHANDLED_for_",this.props.label,this.props.type) }</Text>
             </View>
           </View>

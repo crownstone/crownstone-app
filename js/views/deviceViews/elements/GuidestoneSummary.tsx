@@ -5,32 +5,28 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("GuidestoneSummary", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Animated,
   ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
   StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {colors, screenWidth, availableScreenHeight} from '../../styles'
 import {Util} from "../../../util/Util";
 import {DeviceInformation} from "./DeviceSummary";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 export class GuidestoneSummary extends LiveComponent<any, any> {
-  unsubscribeStoreEvents
+  unsubscribeStoreEvents;
   componentDidMount() {
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
       if (
@@ -50,7 +46,7 @@ export class GuidestoneSummary extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
@@ -69,7 +65,7 @@ export class GuidestoneSummary extends LiveComponent<any, any> {
         <DeviceInformation
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { Actions.roomSelection({sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate("RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
         />
         <View style={{flex:1}} />
         <View style={{alignItems:'center'}}>
@@ -89,11 +85,11 @@ export class GuidestoneSummary extends LiveComponent<any, any> {
         <View style={{flex: 0.2}} />
         <View style={{alignItems:'center', height: 0.2*availableScreenHeight}}>
           <Text style={deviceStyles.subText}>{ lang("Reachable_") }</Text>
-          <Text style={deviceStyles.text}>{ lang("YesSearching___",stone.reachability.disabled,false) }</Text>
+          <Text style={deviceStyles.text}>{ lang("YesSearching___",StoneAvailabilityTracker.isDisabled(this.props.stoneId),false) }</Text>
           {
-            stone.reachability.disabled  ?
+            StoneAvailabilityTracker.isDisabled(this.props.stoneId)  ?
               <ActivityIndicator animating={true} size='small' color={colors.white.hex} style={{paddingTop:20}} />
-            : undefined
+              : undefined
           }
         </View>
 

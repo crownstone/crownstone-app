@@ -6,14 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  Linking,
   TouchableOpacity,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
@@ -25,6 +18,7 @@ import { TestResult} from "./DiagnosticUtil";
 import {FadeInView} from "../../components/animated/FadeInView";
 import {TestRunner} from "./TestRunner";
 import { diagnosticStyles } from "./DiagnosticStyles";
+import { core } from "../../../core";
 
 
 export class ReviewInitialTests extends Component<any, any> {
@@ -69,7 +63,7 @@ export class ReviewInitialTests extends Component<any, any> {
           <View style={{flex:1}}>
             <View style={{flex:1}} />
             <FadeInView visible={this.state.visible} delay={750}>
-              <TouchableOpacity onPress={() => { AppUtil.resetDatabase(this.props.store, eventBus); }} style={diagnosticStyles.buttonStyle}>
+              <TouchableOpacity onPress={() => { AppUtil.resetDatabase(core.store, eventBus); }} style={diagnosticStyles.buttonStyle}>
                 <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Restore_database") }</Text>
               </TouchableOpacity>
             </FadeInView>

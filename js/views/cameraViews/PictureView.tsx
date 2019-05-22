@@ -6,20 +6,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  CameraRoll,
-  Image,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
-  Text,
   View
 } from 'react-native';
 
 import { CameraKitCamera, CameraKitCameraScreen } from 'react-native-camera-kit';
-const Actions = require('react-native-router-flux').Actions;
-import {colors, screenWidth, screenHeight, OrangeLine} from '../styles'
-import { SessionMemory } from '../../util/SessionMemory'
-import {BackAction} from "../../util/Back";
+
+import {colors, screenWidth, screenHeight, } from '../styles'
+
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class PictureView extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -32,28 +27,28 @@ export class PictureView extends Component<any, any> {
 
   componentDidMount() {
     // should be front
-    if (this.props.initialView !== 'back' && SessionMemory.cameraSide !== 'front') {
+    if (this.props.initialView !== 'back' && core.sessionMemory.cameraSide !== 'front') {
       setTimeout(() => {
         this.cameraView.camera.changeCamera();
-        SessionMemory.cameraSide = 'front';
+        core.sessionMemory.cameraSide = 'front';
       }, 150);
     }
     // should be back
-    else if (this.props.initialView === 'back' && SessionMemory.cameraSide !== 'back') {
+    else if (this.props.initialView === 'back' && core.sessionMemory.cameraSide !== 'back') {
       setTimeout(() => {
         this.cameraView.camera.changeCamera();
-        SessionMemory.cameraSide = 'back';
+        core.sessionMemory.cameraSide = 'back';
       }, 150);
     }
   }
 
   onBottomButtonPressed(event) {
     if (event.type === 'left') {
-      BackAction();
+      NavigationUtil.back();
     }
     else if (event.type === 'right') {
       this.props.selectCallback(event.captureImages[0].uri);
-      BackAction();
+      NavigationUtil.back();
     }
     else {
 
@@ -65,7 +60,6 @@ export class PictureView extends Component<any, any> {
     // somehow the camera does not take full screen size.
     return (
       <View style={{flex:1, width: screenWidth, height: screenHeight}}>
-        <OrangeLine/>
         <View style={{width: screenWidth, height: 10, backgroundColor: colors.black.hex }} />
         <CameraKitCameraScreen
           ref={(cam) => this.cameraView = cam}
@@ -74,7 +68,8 @@ export class PictureView extends Component<any, any> {
             focusMode: 'on',
             zoomMode: 'on',
             ratioOverlay: this.props.forceAspectRatio === false ? undefined : '1:1',            // optional, ratio overlay on the camera and crop the image seamlessly
-            ratioOverlayColor: colors.black.rgba(0.7)
+            ratioOverlayColor: colors.black.rgba(0.7),
+            shouldSaveToCameraRoll:false
           }}
           allowCaptureRetake={true}
           actions={{
@@ -91,6 +86,7 @@ export class PictureView extends Component<any, any> {
           }}
           cameraFlipImage={require('../../images/camera/cameraFlipIcon.png')}
           captureButtonImage={require('../../images/camera/cameraButton.png')}
+          shouldSaveToCameraRoll={false}
         />
       </View>
     );

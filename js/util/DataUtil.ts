@@ -1,11 +1,10 @@
-import { Platform } from 'react-native'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOGe } from '../logging/Log'
 
-import { Alert } from 'react-native';
 import { STONE_TYPES } from "../Enums";
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
+import { core } from "../core";
 
 
 export const DataUtil = {
@@ -144,7 +143,13 @@ export const DataUtil = {
   /**
    * If the stone has an appliance, return that appliance, otherwise return the stone. This gets you the item that
    * contains the active behaviour
-   * @param sphere
+   * @param store
+   * @param sphereId
+   * @param stoneId
+   * @param sphereId
+   * @param stoneId
+   * @param sphereId
+   * @param stoneId
    * @param stone
    * @returns {*}
    */
@@ -319,13 +324,10 @@ export const DataUtil = {
     return items;
   },
 
-  getLayoutDataRooms: function(state, sphereId, showSetupCrownstone = false) {
-    let initialPositions = {}
-    let sphere = state.spheres[sphereId]
+  getLayoutDataRooms: function(state, sphereId) {
+    let initialPositions = {};
+    let sphere = state.spheres[sphereId];
     let rooms = sphere.locations;
-
-    let floatingStones = getFloatingStones(state, sphereId);
-    let showFloatingCrownstones = floatingStones.length > 0 || showSetupCrownstone;
 
     let roomIdArray = Object.keys(rooms).sort();
     let usePhysics = false;
@@ -334,14 +336,6 @@ export const DataUtil = {
       let room = rooms[roomIdArray[i]];
       initialPositions[roomIdArray[i]] = {x: room.layout.x, y: room.layout.y};
       if (room.layout.setOnThisDevice === false) {
-        usePhysics = true
-      }
-    }
-
-    if (showFloatingCrownstones) {
-      roomIdArray.push(null);
-      initialPositions['null'] = {x: sphere.layout.floatingLocation.x, y: sphere.layout.floatingLocation.y};
-      if ( sphere.layout.floatingLocation.setOnThisDevice === false ) {
         usePhysics = true
       }
     }
@@ -639,10 +633,9 @@ export const getMapOfCrownstonesInAllSpheresByIBeacon = function(state) {
       };
 
       let ibeaconString = iBeaconUUID + '_' + stoneConfig.iBeaconMajor + '_' + stoneConfig.iBeaconMinor;
-      map[ibeaconString.toLowerCase()] = data
+      map[ibeaconString.toLowerCase()] = data;
     }
-  };
-
+  }
   return map;
 };
 
@@ -702,8 +695,8 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
 
 
 
-export const prepareStoreForUser = function(store) {
-  const state = store.getState();
+export const prepareStoreForUser = function() {
+  const state = core.store.getState();
   let spheres = state.spheres;
   let sphereIds = Object.keys(spheres);
   let actions = [];
@@ -724,7 +717,7 @@ export const prepareStoreForUser = function(store) {
     });
   });
 
-  store.batchDispatch(actions);
+  core.store.batchDispatch(actions);
 };
 
 

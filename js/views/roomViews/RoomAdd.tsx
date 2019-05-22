@@ -1,86 +1,83 @@
+import { LiveComponent }          from "../LiveComponent";
 
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomAdd", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
-  Platform,
-  ScrollView,
-  Switch,
-  Text,
+  TouchableOpacity,
   View
-} from 'react-native';
+} from "react-native";
 
-import { Background } from '../components/Background'
 import { IconCircle } from '../components/IconCircle'
-import { ListEditableItems } from '../components/ListEditableItems'
-import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
-import {LOG, LOGe} from '../../logging/Log'
-const Actions = require('react-native-router-flux').Actions;
-import {colors, OrangeLine} from '../styles'
+import { getLocationNamesInSphere} from '../../util/DataUtil'
+
+import { availableModalHeight, colors, screenHeight, styles } from "../styles";
 import {processImage} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {BackAction} from "../../util/Back";
-import {TopbarButton} from "../components/topbar/TopbarButton";
-import {CancelButton} from "../components/topbar/CancelButton";
+
 import {getRandomRoomIcon} from "./RoomIconSelection";
 import { xUtil } from "../../util/StandAloneUtil";
 import { FileUtil } from "../../util/FileUtil";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { CancelButton } from "../components/topbar/CancelButton";
+import { AnimatedBackground } from "../components/animated/AnimatedBackground";
+import { Interview } from "../components/Interview";
+import { PictureCircle } from "../components/PictureCircle";
 
 
 
-export class RoomAdd extends Component<any, any> {
+export class RoomAdd extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
       title: lang("Create_Room"),
-      headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : BackAction() }}/>,
-      headerRight: <TopbarButton
-        text={ lang("Create")}
-        onPress={() => {
-          params.rightAction ? params.rightAction() : () => {}
-        }}
-      />
+      headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : navigation.goBack(); }}/>,
     }
   };
 
-  refName : string;
   removePictureQueue = [];
+  _interview;
+  newRoomData;
 
   constructor(props) {
     super(props);
-    let initialState = {name:'', icon: getRandomRoomIcon(), selectedStones: {}, picture: null};
-    this.refName = "listItems";
+    this.newRoomData =  {
+      name:'',
+      icon: getRandomRoomIcon(),
+      picture: null
+    };
 
-    if (props.movingCrownstone) {
-      let selectedStones = {};
-      selectedStones[props.movingCrownstone] = true;
-      initialState.selectedStones = selectedStones;
+    if (this.props.navigation) {
+      this.props.navigation.setParams({
+        leftAction: () => {
+          this.cancelEdit();
+        }
+      })
     }
-
-    this.state = initialState;
-
-    this.props.navigation.setParams({leftAction: () => { this.cancelEdit(); }, rightAction: () => { this.createRoom(); }})
+  }
+  
+  componentWillUnmount(): void {
+    this.cancelEdit();
   }
 
   cancelEdit() {
     // clean up any pictures that were taken
     this._removeUnusedPictures();
-    this._removePicture(this.state.picture)
-    BackAction();
+    this._removePicture(this.newRoomData.picture);
+    NavigationUtil.back();
   }
 
   _removeUnusedPictures() {
     this.removePictureQueue.forEach((pic) => {
       this._removePicture(pic);
     })
+    this.removePictureQueue = [];
   }
 
   _removePicture(image) {
@@ -90,218 +87,184 @@ export class RoomAdd extends Component<any, any> {
   }
 
 
-  _pushCrownstoneItem(items, device, stone, stoneId, subtext = '') {
-    items.push({
-      mediumIcon: <IconCircle
-        icon={device.config.icon}
-        size={52}
-        backgroundColor={stone.state.state > 0 && stone.reachability.disabled === false ? colors.green.hex : colors.menuBackground.hex}
-        color={colors.white.hex}
-        style={{position:'relative', top:2}} />,
-      label: device.config.name,
-      subtext: subtext,
-      type: 'checkbar',
-      showAddIcon: true,
-      value: this.state.selectedStones[stoneId] === true,
-      callback: () => {
-        this.state.selectedStones[stoneId] = !this.state.selectedStones[stoneId] === true;
-        this.setState({selectedStones: this.state.selectedStones})
+  isRoomNameUnique(newName) {
+    // check if the room name is unique.
+    let existingLocations = getLocationNamesInSphere(core.store.getState(), this.props.sphereId);
+    return existingLocations[newName] === undefined
+  }
+
+  getCards() : interviewCards {
+    return {
+      start: {
+        header:"Let's make a room!",
+        subHeader: "What would you like to call this room?",
+        hasTextInputField: true,
+        placeholder: "My new room",
+        options: [
+          {
+            label: "Next",
+            textAlign:'right',
+            nextCard: 'icon',
+            response: "Good choice!",
+            onSelect: (result) => {
+              let name = result.textfieldState;
+              if (name == "") {
+                Alert.alert(
+                  lang("_Room_name_must_be_at_lea_header"),
+                  lang("_Room_name_must_be_at_lea_body"),
+                  [{text:lang("_Room_name_must_be_at_lea_left")}]
+                );
+                return false;
+              }
+              else if (!this.isRoomNameUnique(result.textfieldState)) {
+                Alert.alert(
+                  lang("_Room_already_exists___Pl_header"),
+                  lang("_Room_already_exists___Pl_body"),
+                  [{text:lang("_Room_already_exists___Pl_left")}]
+                );
+                return false;
+              }
+              else {
+                this.newRoomData.name = name;
+              }
+              return true
+            }}
+        ]
       },
-      style: {color: colors.iosBlue.hex},
-    });
-  }
+      icon: {
+        header: "Let's pick an icon!",
+        subHeader: "You can give your room and optionally a background picture!",
+        explanation: "You can always change this later in the room's settings.",
+        editableItem: (state, setState) => {
+          return (
+            <View style={{flex:1,flexDirection: xUtil.shortScreen() ? 'row' : 'column'}}>
+              <View style={{flex:1}} />
+              <TouchableOpacity style={styles.centered} onPress={() => {
+                NavigationUtil.navigate("RoomIconSelection",{
+                  icon: state && state.icon || state,
+                  callback: (newIcon) => {
+                    let newState = {};
+                    if (state !== "") {
+                      newState = {...state};
+                    }
+                    newState["icon"] = newIcon;
+                    setState(newState);
+                  }
+                });
+              }}>
+                <IconCircle
+                  icon={state && state.icon || this.newRoomData.icon}
+                  size={0.18*screenHeight}
+                  color={colors.white.hex}
+                  borderColor={colors.csOrange.hex}
+                  backgroundColor={colors.csBlueDark.hex}
+                  showEdit={true}
+                  borderWidth={0.01*screenHeight}
+                />
+              </TouchableOpacity>
+              <View style={{flex:1}} />
+              <PictureCircle
+                value={state && state.picture || this.newRoomData.picture}
+                callback={(pictureUrl) => {
+                  this.newRoomData.picture = pictureUrl;
 
-  _getItems(floatingStones) {
-    let items = [];
-    items.push({label: lang("NEW_ROOM"), type:'explanation', below:false});
-    items.push({label: lang("Room_Name"), type: 'textEdit', placeholder: lang("My_New_Room"), value: this.state.name, callback: (newText) => {
-      this.setState({name:newText});
-    }});
-    items.push({label: lang("Icon"), type: 'icon', value: this.state.icon,
-      callback: () => {
-        Actions.roomIconSelection({
-          icon: this.state.icon,
-          sphereId: this.props.sphereId,
-          callback: (newIcon) => { this.setState({icon:newIcon}); }
-        }
-      )}
-    });
-    items.push({
-      label: lang("Picture"),
-      type:  'picture',
-      value: this.state.picture,
-      forceAspectRatio: false,
-      placeholderText: lang("Optional"),
-      callback:(image) => {
-        this.setState({picture:image}); },
-      removePicture:() => {
-        this.removePictureQueue.push(this.state.picture);
-        this.setState({picture: null});
-      }
-    })
+                  let newState = {};
+                  if (state !== "") {
+                    newState = {...state};
+                  }
+                  newState["picture"] = pictureUrl;
+                  setState(newState);
+                }}
+                removePicture={() => {
+                  this.removePictureQueue.push(this.newRoomData.picture);
+                  this.newRoomData.picture = null;
+                  let newState = {};
+                  if (state !== "") {
+                    newState = {...state};
+                  }
+                  newState["picture"] = null;
+                  setState(newState);
+                }}
+                size={0.18*screenHeight} />
+              <View style={{flex:1}} />
+            </View>
+          );
+        },
 
-    let floatingStoneIds = Object.keys(floatingStones);
-    floatingStoneIds.sort((a,b) => { return (floatingStones[a].device.config.name < floatingStones[b].device.config.name) ? -1 : 1 })
-
-    let shownMovingStone = false;
-    if (floatingStoneIds.length > 0) {
-      items.push({label: lang("ADD_CROWNSTONES_TO_ROOM"), type:'explanation', below:false});
-      let nearestId = this._getNearestStone(floatingStoneIds, floatingStones);
-      floatingStoneIds.forEach((stoneId) => {
-        // check if we have already shown the moving stone
-        shownMovingStone = this.props.movingCrownstone === stoneId ? true : shownMovingStone;
-
-        let device = floatingStones[stoneId].device;
-        let stone = floatingStones[stoneId].stone;
-        let subtext = stone.reachability.disabled === false ?
-          (nearestId === stoneId ? 'Nearest' : stone.reachability.rssi > -60 ? 'Very near' : stone.reachability.rssi > -70 ? 'Near' : undefined)
-          : undefined;
-
-        this._pushCrownstoneItem(items, device, stone, stoneId, subtext);
-      });
-      items.push({label: lang("You_can_select_floating_C"), type:'explanation', below: true, style:{paddingBottom:0}});
+        options: [
+          {label: lang("Create_room_"), textAlign:'right', onSelect: (result) => {
+            this.createRoom()
+          }}
+        ]
+      },
     }
-
-    if (shownMovingStone === false && this.props.movingCrownstone !== undefined) {
-      items.push({label: lang("CURRENTLY_MOVING_CROWNSTO"), type:'explanation', below:false});
-      let stoneId = this.props.movingCrownstone;
-      let state = this.props.store.getState();
-      let stone = state.spheres[this.props.sphereId].stones[stoneId];
-      let device = stone;
-      if (stone.config.applianceId) {
-        device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId]
-      }
-
-      this._pushCrownstoneItem(items, device, stone, stoneId);
-    }
-
-    items.push({type:'spacer'});
-
-    return items;
-  }
-
-  _getNearestStone(floatingStoneIds, floatingStones) {
-    let rssi = -1000;
-    let id = undefined;
-    for (let i = 0; i < floatingStoneIds.length; i++) {
-      let stone = floatingStones[floatingStoneIds[i]].stone;
-      if (stone.reachability.rssi && rssi < stone.reachability.rssi && stone.reachability.disabled === false) {
-        rssi = stone.reachability.rssi;
-        id = floatingStoneIds[i];
-      }
-    }
-    return id;
   }
 
   createRoom() {
-    // make sure all text fields are blurred
-    this.props.eventBus.emit("inputComplete");
-    setTimeout(() => { this._createRoom(); }, 20);
-  }
+    this._removeUnusedPictures();
+    let localId = xUtil.getUUID();
 
-  _createRoom() {
-    const state = this.props.store.getState();
+    // create room.
+    core.store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: localId, data:{name: this.newRoomData.name, icon: this.newRoomData.icon}});
 
-    if (this.state.name.length === 0) {
-      Alert.alert(
-lang("_Room_name_must_be_at_lea_header"),
-lang("_Room_name_must_be_at_lea_body"),
-[{text:lang("_Room_name_must_be_at_lea_left")}]
-      )
+    // if we have a picture:
+    if (this.newRoomData.picture !== null) {
+      processImage(this.newRoomData.picture, localId + ".jpg", 1.0)
+        .then((picture) => {
+          core.store.dispatch({
+            type:'UPDATE_LOCATION_CONFIG',
+            sphereId: this.props.sphereId,
+            locationId: localId,
+            data: {
+              picture: picture,
+              pictureTaken: new Date().valueOf(),
+              pictureId: null
+            }});
+        })
+    }
+
+    let actions = [];
+    transferLocations.createOnCloud(actions, {
+      localId: localId,
+      localData: {
+        config: {
+          name: this.newRoomData.name,
+          icon: this.newRoomData.icon,
+        },
+      },
+      localSphereId: this.props.sphereId,
+      cloudSphereId: MapProvider.local2cloudMap.spheres[this.props.sphereId]
+    })
+      .then(() => { core.store.batchDispatch(actions); })
+      .catch(() => {});
+
+    if (this.props.returnToRoute) {
+      NavigationUtil.backTo(this.props.returnToRoute);
+    }
+    else if (this.props.goBack) {
+      NavigationUtil.back();
     }
     else {
-      // check if the room name is unique.
-      let existingLocations = getLocationNamesInSphere(state, this.props.sphereId);
-      if (existingLocations[this.state.name] === undefined) {
-        this.props.eventBus.emit('showLoading', lang("Creating_room___"));
-        let actions = [];
-        let localId = xUtil.getUUID();
-
-        // todo Move to create new location method once it is implemented in transferLocations
-        actions.push({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: localId, data:{name: this.state.name, icon: this.state.icon}});
-        transferLocations.createOnCloud(actions, {
-          localId: localId,
-          localData: {
-            config: {
-              name: this.state.name,
-              icon: this.state.icon,
-            },
-          },
-          localSphereId: this.props.sphereId,
-          cloudSphereId: MapProvider.local2cloudMap.spheres[this.props.sphereId]
-        })
-          .then(() => {
-            // move the selected stones into the location.
-            let floatingStoneIds = Object.keys(this.state.selectedStones);
-            floatingStoneIds.forEach((floatingStoneId) => {
-              if (this.state.selectedStones[floatingStoneId] === true) {
-                actions.push({sphereId: this.props.sphereId, stoneId: floatingStoneId, type: "UPDATE_STONE_LOCATION", data: {locationId: localId}});
-              }
-            });
-
-            // if we have a picture:
-            if (this.state.picture !== null) {
-              processImage(this.state.picture, localId + ".jpg", 1.0)
-                .then((picture) => {
-                  this.props.store.dispatch({
-                    type:'UPDATE_LOCATION_CONFIG',
-                    sphereId: this.props.sphereId,
-                    locationId: localId,
-                    data: {
-                      picture: picture,
-                      pictureTaken: new Date().valueOf(),
-                      pictureId: null
-                    }});
-                })
-            }
-
-            this.props.store.batchDispatch(actions);
-            if (this.props.returnToRoute) {
-              Actions.popTo(this.props.returnToRoute);
-            }
-            else {
-              Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, seeStoneInSetupMode: false, __popBeforeAddCount: 2});
-            }
-            this.props.eventBus.emit('hideLoading');
-          })
-          .catch((err) => {
-            LOGe.info("RoomAdd: Something went wrong with creation of rooms", err);
-            let defaultActions = () => {this.props.eventBus.emit('hideLoading');};
-            Alert.alert(
-              lang("_Whoops___Something_went__header"),
-              lang("_Whoops___Something_went__body"),
-              [{text:lang("_Whoops___Something_went__left"), onPress: defaultActions}], { onDismiss: defaultActions })
-          })
-      }
-      else {
-        Alert.alert(
-          lang("_Room_already_exists___Pl_header"),
-          lang("_Room_already_exists___Pl_body"),
-          [{text:lang("_Room_already_exists___Pl_left")}]
-        );
-      }
+      NavigationUtil.navigate("RoomOverview",{sphereId: this.props.sphereId, locationId: localId, title: this.newRoomData.name, __popBeforeAddCount: 2});
     }
   }
 
-  render() {
-    let state = this.props.store.getState();
-    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
-    if (!this.props.sphereId) {
-      BackAction();
-      return <View />
+  render() {
+    let backgroundImage = require('../../images/backgrounds/lightBackground.png');
+    if (this._interview) {
+      backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
     }
 
-    let floatingStones = getStonesAndAppliancesInLocation(state, this.props.sphereId, null);
-    let items = this._getItems(floatingStones);
-
     return (
-      <Background image={backgroundImage} hasNavBar={ false } >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
-          <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} />
-        </ScrollView>
-      </Background>
+      <AnimatedBackground hasNavBar={false} image={backgroundImage}>
+        <Interview
+          ref={     (i) => { this._interview = i; }}
+          getCards={ () => { return this.getCards();}}
+          update={   () => { this.forceUpdate() }}
+          height={ this.props.height || availableModalHeight }
+        />
+      </AnimatedBackground>
     );
   }
 }

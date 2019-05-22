@@ -1,11 +1,5 @@
 import {
-  Platform,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
-  Text,
-  View
-} from 'react-native';
+  StyleSheet} from 'react-native';
 
 import { colors, topBarHeight, statusBarHeight} from '../../styles'
 
@@ -54,5 +48,10 @@ export const topBarStyle = StyleSheet.create({
     fontSize: 17,
     fontWeight:'bold',
     color: colors.menuTextSelected.hex
+  },
+  leftText:{
+    fontSize: 14,
+    fontWeight:'bold',
+    color: colors.white.hex
   }
 });

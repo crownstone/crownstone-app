@@ -6,39 +6,34 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
   Alert,
-  DatePickerIOS,
   Platform,
-  PixelRatio,
   ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   TimePickerAndroid,
   TouchableOpacity,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
 
-import {colors, screenWidth, OrangeLine} from '../styles'
+import {colors, screenWidth, } from '../styles'
 import {IconButton} from "../components/IconButton";
 import {Background} from "../components/Background";
 import {ListEditableItems} from "../components/ListEditableItems";
-import {Util} from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {Scheduler} from "../../logic/Scheduler";
-import {LOG, LOGe} from "../../logging/Log";
+import {LOGe} from "../../logging/Log";
 import {StoneUtil} from "../../util/StoneUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
 
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
-import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/topbar/CancelButton";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import { xUtil } from "../../util/StandAloneUtil";
+import { WeekDayList } from "../components/WeekDayList";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 
 export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; // these are keys
 export let DAYS_FULL = [
@@ -63,7 +58,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
 
     return {
       title: title,
-      headerLeft: <CancelButton onPress={BackAction} />,
+      headerLeft: <CancelButton onPress={() => { NavigationUtil.back(); }} />,
       headerRight: <TopbarButton
         text={rightLabel}
         onPress={() => {
@@ -80,7 +75,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
     super(props);
 
     if (props.scheduleId !== null && props.scheduleId !== undefined) {
-      const store = props.store;
+      const store = core.store;
       const state = store.getState();
       const schedule = state.spheres[props.sphereId].stones[props.stoneId].schedules[props.scheduleId];
       let stateData = {...schedule, time: StoneUtil.crownstoneTimeToTimestamp(schedule.time)};
@@ -131,7 +126,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
 
   _getAndroidUI() {
     let items = [];
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     items.push({type:'lightExplanation', label: lang("TAP_THE_TIME_TO_CHANGE_IT"), below: false});
@@ -158,7 +153,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not pick time for android.", err) })
       }}>
         <Text style={{flex:1, fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6) }}>
-          {Util.getTimeFormat(this.state.time, false)}
+          {xUtil.getTimeFormat(this.state.time, false)}
         </Text>
       </TouchableOpacity>
     });
@@ -170,7 +165,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
 
   _getIosUI() {
     let items = [];
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     items.push({label: lang("PICK_A_TIME"), type: 'lightExplanation',  below:false});
@@ -210,7 +205,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
 
     items.push({label: lang("REPEAT"), type: 'lightExplanation',  below:false});
     items.push({__item:
-      <RepeatWeekday data={this.state.activeDays} onChange={(newData) => { this.setState({activeDays: newData}); }} />
+      <WeekDayList data={this.state.activeDays} onChange={(newData) => { this.setState({activeDays: newData}); }} />
     });
 
     if (this.props.scheduleId !== null && this.props.scheduleId !== undefined) {
@@ -233,7 +228,7 @@ lang("_Permission_Denied___You__body"),
           }
 
 
-          if (stone.reachability.disabled === true) {
+          if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
             Alert.alert(
 lang("_Cant_see_Crownstone__You_header"),
 lang("_Cant_see_Crownstone__You_body"),
@@ -247,8 +242,8 @@ lang("_Are_you_sure___Remove_sc_header"),
 lang("_Are_you_sure___Remove_sc_body"),
 [{text: lang("_Are_you_sure___Remove_sc_left"), style: 'cancel'}, {
 text: lang("_Are_you_sure___Remove_sc_right"), style:'destructive', onPress: () => {
-                BackAction();
-                this.props.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
+                NavigationUtil.back();
+                core.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
               }}]
             )
           }
@@ -258,7 +253,7 @@ lang("_Are_you_sure___Removing__header"),
 lang("_Are_you_sure___Removing__body"),
 [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
 text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
-                let state = this.props.store.getState();
+                let state = core.store.getState();
                 let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
                 let schedule = stone.schedules[this.props.scheduleId];
                 this._deleteSchedule(stone, schedule);
@@ -305,7 +300,7 @@ lang("_Pick_a_day___You_need_to_body"),
   _createSchedule() {
     let validated = this._validate();
     if (validated) {
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       this._addScheduleEntry(
         stone,
@@ -325,7 +320,7 @@ lang("_Pick_a_day___You_need_to_body"),
     if (this.props.scheduleId) {
       // check for changes:
       let changed = false;
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       let schedule = stone.schedules[this.props.scheduleId];
       for (let i = 0; i < DAYS.length; i++) {
@@ -337,7 +332,7 @@ lang("_Pick_a_day___You_need_to_body"),
       if (
         schedule.active !== this.state.active ||
         schedule.switchState !== this.state.switchState ||
-        Util.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(schedule.time)) !== Util.getTimeFormat(this.state.time) ||
+        xUtil.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(schedule.time)) !== xUtil.getTimeFormat(this.state.time) ||
         schedule.fadeDuration !== this.state.fadeDuration ||
         schedule.intervalInMinutes !== this.state.intervalInMinutes ||
         schedule.ignoreLocationTriggers !== this.state.ignoreLocationTriggers ||
@@ -347,11 +342,11 @@ lang("_Pick_a_day___You_need_to_body"),
       }
 
       if (changed) {
-        if (stone.reachability.disabled === true) {
+        if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
           Alert.alert(
 lang("_Cant_see_Crownstone__You__header"),
 lang("_Cant_see_Crownstone__You__body"),
-[{text:lang("_Cant_see_Crownstone__You__left"), onPress: () => { BackAction();}}],
+[{text:lang("_Cant_see_Crownstone__You__left"), onPress: () => { NavigationUtil.back();}}],
             {cancelable: false}
           );
           return;
@@ -376,14 +371,14 @@ lang("_Cant_see_Crownstone__You__body"),
         }
         else if (schedule.active === false && this.state.active === false) {
           // schedule is not active, just set it in the database
-          this.props.store.dispatch({
+          core.store.dispatch({
             type: "UPDATE_STONE_SCHEDULE",
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             scheduleId: this.props.scheduleId,
             data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
           });
-          BackAction();
+          NavigationUtil.back();
         }
         else {
           // schedule is active, tell the Crownstone to update it.
@@ -391,19 +386,19 @@ lang("_Cant_see_Crownstone__You__body"),
         }
       }
       else {
-        this.props.store.dispatch({
+        core.store.dispatch({
           type: "UPDATE_STONE_SCHEDULE",
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
           scheduleId: this.props.scheduleId,
           data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
         });
-        BackAction();
+        NavigationUtil.back();
       }
     }
     else {
       LOGe.info("DeviceScheduleEdit: _updateSchedule should not be called without this.props.scheduleId");
-      BackAction();
+      NavigationUtil.back();
     }
   }
 
@@ -428,20 +423,20 @@ lang("_Cant_see_Crownstone__You__body"),
   }
 
   _addScheduleEntry(stone, scheduleConfig, config) {
-    this.props.eventBus.emit("showLoading", config.loadingLabel);
+    core.eventBus.emit("showLoading", config.loadingLabel);
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'addSchedule', scheduleConfig: scheduleConfig })
       .then((scheduleEntryIndex : {data: string}) => {
-        this.props.eventBus.emit("showLoading", "Done!");
+        core.eventBus.emit("showLoading", "Done!");
         Scheduler.scheduleCallback(() => {
-          this.props.eventBus.emit("hideLoading");
-          this.props.store.dispatch({
+          core.eventBus.emit("hideLoading");
+          core.store.dispatch({
             type: config.actionType,
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             scheduleId: config.scheduleId,
             data: {scheduleEntryIndex:scheduleEntryIndex.data, ...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays) }
           });
-          BackAction();
+          NavigationUtil.back();
         }, 500, 'Deactivate Schedule UI callback');
       })
       .catch((err) => {
@@ -449,7 +444,7 @@ lang("_Cant_see_Crownstone__You__body"),
           Alert.alert(
 lang("_Schedules_are_full__argu_header"),
 lang("_Schedules_are_full__argu_body",config.fullLabel),
-[{text:lang("_Schedules_are_full__argu_left"), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
+[{text:lang("_Schedules_are_full__argu_left"), onPress:() => { core.eventBus.emit("hideLoading"); }}, {
 text:lang("_Schedules_are_full__argu_right"), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
@@ -458,7 +453,7 @@ text:lang("_Schedules_are_full__argu_right"), onPress: () => { this._addSchedule
           Alert.alert(
 lang("_Whoops__arguments___No___header"),
 lang("_Whoops__arguments___No___body",config.alertLabel),
-[{text:lang("_Whoops__arguments___No___left"), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
+[{text:lang("_Whoops__arguments___No___left"), onPress:() => { core.eventBus.emit("hideLoading"); }}, {
 text:lang("_Whoops__arguments___No___right"), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
@@ -469,27 +464,27 @@ text:lang("_Whoops__arguments___No___right"), onPress: () => { this._addSchedule
   }
 
   _updateScheduleEntry(stone, scheduleConfig) {
-    this.props.eventBus.emit("showLoading", 'Updating this Schedule on the Crownstone!');
+    core.eventBus.emit("showLoading", 'Updating this Schedule on the Crownstone!');
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'setSchedule', scheduleConfig: scheduleConfig })
       .then(() => {
-        this.props.eventBus.emit("showLoading", "Done!");
+        core.eventBus.emit("showLoading", "Done!");
         Scheduler.scheduleCallback(() => {
-          this.props.eventBus.emit("hideLoading");
-          this.props.store.dispatch({
+          core.eventBus.emit("hideLoading");
+          core.store.dispatch({
             type: 'UPDATE_STONE_SCHEDULE',
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             scheduleId: this.props.scheduleId,
             data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
           });
-          BackAction();
+          NavigationUtil.back();
         }, 500, 'Update Schedule UI callback');
       })
       .catch((err) => {
         Alert.alert(
 lang("_Whoops___I_could_not_tel_header"),
 lang("_Whoops___I_could_not_tel_body"),
-[{text:lang("_Whoops___I_could_not_tel_left"), onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {
+[{text:lang("_Whoops___I_could_not_tel_left"), onPress:() => { core.eventBus.emit("hideLoading"); }}, {
 text:lang("_Whoops___I_could_not_tel_right"), onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
           {cancelable: false}
         )
@@ -499,27 +494,27 @@ text:lang("_Whoops___I_could_not_tel_right"), onPress: () => { this._updateSched
   }
 
   _disableSchedule(stone, schedule) {
-    this.props.eventBus.emit("showLoading", "Deactivating Schedule on Crownstone!");
+    core.eventBus.emit("showLoading", "Deactivating Schedule on Crownstone!");
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'clearSchedule', scheduleEntryIndex: schedule.scheduleEntryIndex })
       .then(() => {
-        this.props.eventBus.emit("showLoading", "Done!");
+        core.eventBus.emit("showLoading", "Done!");
         Scheduler.scheduleCallback(() => {
-          this.props.eventBus.emit("hideLoading");
-          this.props.store.dispatch({
+          core.eventBus.emit("hideLoading");
+          core.store.dispatch({
             type: "UPDATE_STONE_SCHEDULE",
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             scheduleId: this.props.scheduleId,
             data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
           });
-          BackAction();
+          NavigationUtil.back();
         }, 500, 'Deactivate Schedule UI callback');
       })
       .catch(() => {
         Alert.alert(
 lang("_Whoops___I_could_not_tell_header"),
 lang("_Whoops___I_could_not_tell_body"),
-[{text:lang("_Whoops___I_could_not_tell_left"), onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {
+[{text:lang("_Whoops___I_could_not_tell_left"), onPress:() => { core.eventBus.emit("hideLoading"); NavigationUtil.back(); }}, {
 text:lang("_Whoops___I_could_not_tell_right"), onPress: () => { this._disableSchedule(stone, schedule); } }],
           {cancelable: false}
         )
@@ -528,21 +523,21 @@ text:lang("_Whoops___I_could_not_tell_right"), onPress: () => { this._disableSch
   }
 
   _deleteSchedule(stone, schedule) {
-    this.props.eventBus.emit("showLoading", "Removing Schedule from Crownstone!");
+    core.eventBus.emit("showLoading", "Removing Schedule from Crownstone!");
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'clearSchedule', scheduleEntryIndex: schedule.scheduleEntryIndex })
       .then(() => {
-        this.props.eventBus.emit("showLoading", "Done!");
+        core.eventBus.emit("showLoading", "Done!");
         Scheduler.scheduleCallback(() => {
-          this.props.eventBus.emit("hideLoading");
-          this.props.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
-          BackAction();
+          core.eventBus.emit("hideLoading");
+          core.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
+          NavigationUtil.back();
         }, 500, 'Disable Schedule UI callback');
       })
       .catch(() => {
         Alert.alert(
 lang("_Whoops___I_could_not_tell__header"),
 lang("_Whoops___I_could_not_tell__body"),
-[{text:lang("_Whoops___I_could_not_tell__left"), onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {
+[{text:lang("_Whoops___I_could_not_tell__left"), onPress:() => { core.eventBus.emit("hideLoading"); NavigationUtil.back(); }}, {
 text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSchedule(stone, schedule); } }],
           {cancelable: false}
         )
@@ -552,8 +547,7 @@ text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSch
 
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <OrangeLine/>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
         <ScrollView style={{flex:1}}>
           <View style={{alignItems:'center', width: screenWidth}}>
             { Platform.OS === 'android' ? this._getAndroidUI() : this._getIosUI() }
@@ -564,57 +558,3 @@ text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSch
   }
 }
 
-class RepeatWeekday extends Component<any, any> {
-  _getDays(size) {
-    let localizedDays = [lang("DAY_Mon"), lang("DAY_Tue"), lang("DAY_Wed"), lang("DAY_Thu"), lang("DAY_Fri"), lang("DAY_Sat"), lang("DAY_Sun")];
-    let items = [];
-
-    items.push(<View key={'selectableDayFlexStart'} style={{flex:1}} />);
-    for (let i = 0; i < DAYS.length; i++) {
-      items.push(
-        <TouchableOpacity
-          key={'selectableDay'+i}
-          onPress={() => {
-            let newState = {...this.props.data};
-            newState[DAYS[i]] = !this.props.data[DAYS[i]];
-            this.props.onChange(newState);
-          }}
-          style={{
-            width: size,
-            height: size,
-            borderRadius: 0.5*size,
-            backgroundColor: this.props.data[DAYS[i]] ? colors.green.hex : colors.darkBackground.rgba(0.2),
-            alignItems:'center',
-            justifyContent:'center'
-          }}
-        >
-          <Text style={{
-            fontSize:11,
-            fontWeight: this.props.data[DAYS[i]] ? 'bold' : '300',
-            color: this.props.data[DAYS[i]] ? colors.white.hex : colors.darkBackground.rgba(0.6),
-            backgroundColor:"transparent"
-          }}>{localizedDays[i]}</Text>
-        </TouchableOpacity>
-      );
-      items.push(<View key={'selectableDayFlex'+i} style={{flex:1}} />)
-    }
-
-    return items;
-  }
-
-  render() {
-    let size = screenWidth/10;
-    return (
-      <View style={{
-        height: size*1.5,
-        width: screenWidth,
-        backgroundColor: colors.white.hex,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center'
-      }}>
-        { this._getDays(size) }
-      </View>
-    )
-  }
-}

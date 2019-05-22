@@ -1,4 +1,3 @@
-import { eventBus }              from '../util/EventBus'
 import { Util }                  from '../util/Util'
 import { BlePromiseManager }     from './BlePromiseManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
@@ -9,17 +8,17 @@ import { DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL } from '../ExternalConfig'
 import { StoneUtil }             from "../util/StoneUtil";
 import { Permissions }           from "../backgroundProcesses/PermissionManager";
 import { CommandManager }        from "./bchComponents/CommandManager";
-import { RssiLogger }            from "../native/advertisements/RssiLogger";
+import { StoneAvailabilityTracker }            from "../native/advertisements/StoneAvailabilityTracker";
 import { BroadcastCommandManager } from "./bchComponents/BroadcastCommandManager";
 import { xUtil } from "../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../Enums";
+import { core } from "../core";
 
 
 /**
  * This can be used to batch commands over the mesh or 1:1 to the Crownstones.
  */
 class BatchCommandHandlerClass {
-  store: any;
   sphereId  : any;
   activePromiseId : string = null;
 
@@ -33,12 +32,9 @@ class BatchCommandHandlerClass {
     this._commandHandler = new CommandManager();
   }
 
-  loadStore(store) {
-    this.store = store;
-  }
 
   closeKeptOpenConnection() {
-    eventBus.emit("BatchCommandHandlerCloseConnection");
+    core.eventBus.emit("BatchCommandHandlerCloseConnection");
   }
 
   /**
@@ -72,7 +68,7 @@ class BatchCommandHandlerClass {
 
   _load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, priority: boolean, attempts: number = 1, label = '') : Promise<bchReturnType>  {
     let commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options };
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     if (BroadcastCommandManager.canBroadcast(commandSummary) && state.development.broadcasting_enabled) {
       return BroadcastCommandManager.broadcast(commandSummary)
@@ -82,7 +78,6 @@ class BatchCommandHandlerClass {
             return this._commandHandler.load(stone, stoneId, sphereId, command, priority,  attempts, options );
           }
           else {
-            console.log(err, "Error in broadcast.");
             throw err;
           }
         });
@@ -117,16 +112,16 @@ class BatchCommandHandlerClass {
    * This will commands one by one to the connected Crownstone.
    * @param connectedStoneInfo
    * @param activeOptions
+   * @param relayOnlyUsed
    * @returns { Promise<T> }
    */
   _handleAllCommandsForStone(connectedStoneInfo: connectionInfo, activeOptions : any = {}, relayOnlyUsed : boolean = false) {
     return new Promise((resolve, reject) => {
 
       // get everything we CAN and WILL do now with this Crownstone.
-      let directCommands = this._commandHandler.extractDirectCommands(this.store.getState(), connectedStoneInfo.stoneId, relayOnlyUsed);
+      let directCommands = this._commandHandler.extractDirectCommands(core.store.getState(), connectedStoneInfo.stoneId, relayOnlyUsed);
 
-      let meshNetworks = this._commandHandler.extractMeshCommands(this.store.getState(), connectedStoneInfo.stoneId, connectedStoneInfo.meshNetworkId, relayOnlyUsed);
-
+      let meshNetworks = this._commandHandler.extractMeshCommands(core.store.getState(), connectedStoneInfo.stoneId, connectedStoneInfo.meshNetworkId, relayOnlyUsed);
       // check if we have to perform any mesh commands for this Crownstone.
       let meshSphereIds = Object.keys(meshNetworks);
       let promise = null;
@@ -160,6 +155,9 @@ class BatchCommandHandlerClass {
             MeshHelper._mergeOptions(action.options, activeOptions);
             actionPromiseName = command.commandName;
             switch (command.commandName) {
+              case 'getBootloaderVersion':
+                actionPromise = BluenetPromiseWrapper.getBootloaderVersion();
+                break;
               case 'getFirmwareVersion':
                 actionPromise = BluenetPromiseWrapper.getFirmwareVersion();
                 break;
@@ -180,14 +178,14 @@ class BatchCommandHandlerClass {
                 break;
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive().then(() => {
-                  eventBus.emit("NEW_ACTIVITY_LOG", {
+                  core.eventBus.emit("NEW_ACTIVITY_LOG", {
                     command: "keepAlive",
                     commandUuid: action.commandUuid,
                     connectedTo: connectedStoneInfo.stoneId,
                     target:      connectedStoneInfo.stoneId,
                     sphereId:    connectedStoneInfo.sphereId
                   });
-                })
+                });
                 break;
               case 'commandFactoryReset':
                 actionPromise = BluenetPromiseWrapper.commandFactoryReset();
@@ -196,7 +194,7 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.keepAliveState(command.changeState, command.state, command.timeout)
                   .then(() => {
                     let com = command as any;
-                    eventBus.emit("NEW_ACTIVITY_LOG", {
+                    core.eventBus.emit("NEW_ACTIVITY_LOG", {
                       command:     "keepAliveState",
                       commandUuid: action.commandUuid,
                       connectedTo: connectedStoneInfo.stoneId,
@@ -206,7 +204,7 @@ class BatchCommandHandlerClass {
                       state:       com.state,
                       sphereId:    connectedStoneInfo.sphereId
                     });
-                  })
+                  });
                 break;
               case 'getSchedules':
                 actionPromise = BluenetPromiseWrapper.getSchedules();
@@ -232,6 +230,9 @@ class BatchCommandHandlerClass {
               case 'sendNoOp':
                 actionPromise = BluenetPromiseWrapper.sendNoOp();
                 break;
+              case 'setupPulse':
+                actionPromise = BluenetPromiseWrapper.setupPulse();
+                break;
               case 'sendMeshNoOp':
                 actionPromise = BluenetPromiseWrapper.sendMeshNoOp();
                 break;
@@ -244,7 +245,7 @@ class BatchCommandHandlerClass {
               case 'multiSwitch':
                 let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, timeout: command.timeout, intent: command.intent, state: command.state};
                 actionPromise = BluenetPromiseWrapper.multiSwitch([stoneSwitchPacket]).then(() => {
-                  eventBus.emit("NEW_ACTIVITY_LOG", {
+                  core.eventBus.emit("NEW_ACTIVITY_LOG", {
                     command:     "multiswitch",
                     commandUuid: action.commandUuid,
                     connectedTo: connectedStoneInfo.stoneId,
@@ -260,6 +261,8 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 1.0);
                 break;
               default:
+                LOGe.bch("BatchCommandHandler: Error: COULD NOT PERFORM ACTION", commandsInSphere, action);
+                return reject("Failed to handle command");
                 performedAction = null;
             }
             break;
@@ -303,15 +306,16 @@ class BatchCommandHandlerClass {
   /**
    * This searches for very recent readings of Crownstones that are near before we start to search for them.
    * @param rssiScanThreshold
+   * @param directTargets
    * @returns {any}
    * @private
    */
   _getConnectionTarget(rssiScanThreshold, directTargets) : Promise<connectionInfo> {
     return new Promise((resolve, reject) => {
-      let state = this.store.getState();
+      let state = core.store.getState();
 
-      let nearestDirect = RssiLogger.getNearestStoneId(directTargets, 2, rssiScanThreshold);
-      if (!nearestDirect && rssiScanThreshold !== null) { nearestDirect = RssiLogger.getNearestStoneId(directTargets,    2); }
+      let nearestDirect = StoneAvailabilityTracker.getNearestStoneId(directTargets, 2, rssiScanThreshold);
+      if (!nearestDirect && rssiScanThreshold !== null) { nearestDirect = StoneAvailabilityTracker.getNearestStoneId(directTargets,    2); }
 
       let foundId = nearestDirect;
       let foundSphereId = directTargets[nearestDirect];
@@ -355,7 +359,7 @@ class BatchCommandHandlerClass {
 
       let executingPromiseId = this.activePromiseId;
 
-      let state = this.store.getState();
+      let state = core.store.getState();
       let { directTargets, relayOnlyTargets } = this._commandHandler.extractConnectionTargets(state);
 
       // We will not use the relayOnlyTargets for now since the handling of the mesh should be improved for this.
@@ -469,9 +473,9 @@ class BatchCommandHandlerClass {
         })
         .then(() => {
           if (this.activePromiseId !== executingPromiseId) { throw BCH_ERROR_CODES.TASK_HAS_BEEN_SUPERSEDED; }
-          if (Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store) {
+          if (Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && core.store) {
             // check if we have to tell this crownstone what time it is.
-            let state = this.store.getState();
+            let state = core.store.getState();
             let stone = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId];
             let lastTime = stone.lastUpdated.stoneTime;
             // if it is more than 5 hours ago, tell this crownstone the time.
@@ -479,7 +483,7 @@ class BatchCommandHandlerClass {
               // this will never halt the chain since it's optional.
               return BluenetPromiseWrapper.setTime(StoneUtil.nowToCrownstoneTime())
                 .then(() => {
-                  this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
+                  core.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
                 })
                 .catch((err) => {
                   LOGw.bch("BatchCommandHandler: Could not set the time of Crownstone", err);
@@ -490,7 +494,7 @@ class BatchCommandHandlerClass {
             }
           }
           else {
-            LOGd.bch("BatchCommandHandler: Decided not to set the time Permissions.setStoneTime:", Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime, Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store);
+            LOGd.bch("BatchCommandHandler: Decided not to set the time Permissions.setStoneTime:", Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime, Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && core.store);
           }
         })
         .then(() => {
@@ -533,12 +537,12 @@ class BatchCommandHandlerClass {
         scheduleCloseTimeout(timeout);
       }
 
-      this._unsubscribeCloseListener = eventBus.on("BatchCommandHandlerCloseConnection", () => {
+      this._unsubscribeCloseListener = core.eventBus.on("BatchCommandHandlerCloseConnection", () => {
         this._cleanKeepOpen();
         resolve();
       });
 
-      this._unsubscribeLoadListener = eventBus.on("BatchCommandHandlerLoadAction", () => {
+      this._unsubscribeLoadListener = core.eventBus.on("BatchCommandHandlerLoadAction", () => {
         // remove all listeners before moving on.
         this._cleanKeepOpen();
 
@@ -585,6 +589,7 @@ class BatchCommandHandlerClass {
    * It reduces the attempt counter in the affected processes by 1. If the attempt count is at 0, it will remove the command
    * from the list.
    * @param connectedCrownstone
+   * @param executionTimestamp
    * @param err
    */
   attemptHandler(connectedCrownstone, executionTimestamp, err) {
@@ -607,7 +612,7 @@ class BatchCommandHandlerClass {
     }
 
     // get all todos that would have been done to reduce their attempt counts.
-    let directCommands = this._commandHandler.extractDirectCommands(this.store.getState(), connectedCrownstone.stoneId);
+    let directCommands = this._commandHandler.extractDirectCommands(core.store.getState(), connectedCrownstone.stoneId);
     let directCommandSphereIds = Object.keys(directCommands);
     directCommandSphereIds.forEach((sphereId) => {
       let commandsInSphere = directCommands[sphereId];
@@ -621,7 +626,7 @@ class BatchCommandHandlerClass {
   }
 
   executePriority(options? : batchCommandEntryOptions) {
-    eventBus.emit('PriorityCommandSubmitted');
+    core.eventBus.emit('PriorityCommandSubmitted');
     this._execute(true, options);
   }
 
@@ -631,6 +636,7 @@ class BatchCommandHandlerClass {
 
   /**
    * @param { Boolean } priority        //  this will move any command to the top of the queue
+   * @param options
    */
   _execute(priority, options? : batchCommandEntryOptions) {
     this._scheduleExecute(priority, options);
@@ -674,7 +680,7 @@ class BatchCommandHandlerClass {
    * @private
    */
   _searchScan(objectsToScan : any[], rssiThreshold = null, highPriorityActive = false, timeout = 5000) : Promise<connectionInfo> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve : (connectionInfo) => void, reject) => {
 
       let unsubscribeListeners = [];
 
@@ -699,7 +705,7 @@ class BatchCommandHandlerClass {
 
       // if we're busy with a low priority command, we will stop the search if a high priority execute comes in.
       if (highPriorityActive !== true) {
-        unsubscribeListeners.push(eventBus.on('PriorityCommandSubmitted', () => {
+        unsubscribeListeners.push(core.eventBus.on('PriorityCommandSubmitted', () => {
           LOGi.bch("BatchCommandHandler: Stopped listening for Crownstones due to Priority Execute.");
           // remove the listeners
           cleanup();
@@ -715,7 +721,7 @@ class BatchCommandHandlerClass {
       // cleanup timeout
       objectsToScan.forEach((topic) => {
         // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
-        unsubscribeListeners.push( eventBus.on(topic.topic, (data) => {
+        unsubscribeListeners.push( core.eventBus.on(topic.topic, (data) => {
           LOGd.bch("BatchCommandHandler: Got an event:", data.id, data.rssi, data.handle);
           if (rssiThreshold === null || data.rssi > rssiThreshold) {
             // remove the listeners

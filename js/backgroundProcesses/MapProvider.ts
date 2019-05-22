@@ -6,9 +6,9 @@ import {
   getMapOfCrownstonesInAllSpheresByIBeacon,
   getMapOfCrownstonesInAllSpheresByStoneId
 } from "../util/DataUtil";
-import {eventBus} from "../util/EventBus";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import {LOG} from "../logging/Log";
+import { core } from "../core";
 
 /**
  * Map format
@@ -34,7 +34,6 @@ import {LOG} from "../logging/Log";
 
 
 class MapProviderClass {
-  _store : any;
   _initialized : boolean = false;
   stoneSphereHandleMap : StoneSphereHandleMap = {};
   stoneHandleMap  : StoneHandleMap = {};
@@ -44,12 +43,11 @@ class MapProviderClass {
   cloud2localMap  : globalIdMap = getGlobalIdMap();
   local2cloudMap  : globalIdMap = getGlobalIdMap();
 
-  loadStore(store) {
+  init() {
     if (this._initialized === false) {
-      this._store = store;
 
-      eventBus.on("CloudSyncComplete", () => { this._updateCloudIdMap(); });
-      eventBus.on("databaseChange", (data) => {
+      core.eventBus.on("CloudSyncComplete", () => { this._updateCloudIdMap(); });
+      core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
 
         if (
@@ -65,6 +63,7 @@ class MapProviderClass {
           change.changeStoneHandle   ||
           change.changeDeviceData    ||
           change.updatedToon         ||
+          change.updatedCloudIds     ||
           change.updateStoneConfig   ||
           change.changeMessage
         ) {
@@ -79,7 +78,7 @@ class MapProviderClass {
 
   refreshAll() {
     LOG.info("MapProvider: Refreshing All.");
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(     state);
     this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle( state);
@@ -91,7 +90,7 @@ class MapProviderClass {
 
   _updateCloudIdMap() {
     LOG.info("MapProvider: Refreshing CloudIdMap.");
-    let state = this._store.getState();
+    let state = core.store.getState();
     this.cloud2localMap = getGlobalIdMap();
     this.local2cloudMap = getGlobalIdMap();
 

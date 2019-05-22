@@ -7,19 +7,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
   ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
-  ScrollView,
   StyleSheet,
-  Switch,
-  TextInput,
   Text,
-  View
-} from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+  View, ViewStyle
+} from "react-native";
 
 import { colors, screenWidth, screenHeight } from '../../styles'
 import { Util }                from "../../../util/Util";
@@ -29,19 +22,22 @@ import { AnimatedCircle }      from "../../components/animated/AnimatedCircle";
 import { DimmerButton }        from "../../components/DimmerButton";
 import { INTENTS }             from "../../../native/libInterface/Constants";
 import { Permissions}          from "../../../backgroundProcesses/PermissionManager";
-import { EventBusClass}        from "../../../util/EventBus";
 import { LockedStateUI}        from "../../components/LockedStateUI";
 import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { xUtil } from "../../../util/StandAloneUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 export class DeviceSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
-  unsubscribeStoreEvents
+  unsubscribeStoreEvents;
 
   constructor(props) {
     super(props);
     this.state = {pendingCommand: false};
 
-    const state = props.store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[props.sphereId];
     const stone = sphere.stones[props.stoneId];
     this.storedSwitchState = stone.state.state;
@@ -49,12 +45,11 @@ export class DeviceSummary extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    const { store } = this.props;
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      let state = store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       if (!stone || !stone.config) { return; }
 
@@ -83,7 +78,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
    * this will store the switchstate if it is not already done. Used for dimmers which use the "TRANSIENT" action.
    */
   safeStoreUpdate() {
-    const state = this.props.store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return; }
 
@@ -95,7 +90,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
       if (stone.state.state === 0) {
         data['currentUsage'] = 0;
       }
-      this.props.store.dispatch({
+      core.store.dispatch({
         type: 'UPDATE_STONE_SWITCH_STATE',
         sphereId: this.props.sphereId,
         stoneId: this.props.stoneId,
@@ -108,12 +103,12 @@ export class DeviceSummary extends LiveComponent<any, any> {
 
   _triggerApplianceSelection(stone) {
     this.safeStoreUpdate();
-    Actions.applianceSelection({
+    NavigationUtil.navigate("ApplianceSelection",{
       sphereId: this.props.sphereId,
       applianceId: stone.config.applianceId,
       stoneId: this.props.stoneId,
       callback: (applianceId) => {
-        this.props.store.dispatch({
+        core.store.dispatch({
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
           type: 'UPDATE_STONE_CONFIG',
@@ -135,7 +130,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
     let borderWidth = 5;
 
 
-    if (stone.reachability.disabled) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
       return (
         <View style={{width:0.75*screenWidth, height:size*1.05, alignItems:'center'}}>
           <View style={{flex:2}} />
@@ -162,7 +157,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
             BatchCommandHandler.executePriority();
             return promise;
           }}
-          unlockDataCallback={() => { this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
+          unlockDataCallback={() => { core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
         />
       );
     }
@@ -173,7 +168,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
         if (newState === 0) {
           data['currentUsage'] = 0;
         }
-        this.props.store.dispatch({
+        core.store.dispatch({
           type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
@@ -204,7 +199,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
             this.props.stoneId,
             stone,
             newState,
-            this.props.store,
+            core.store,
             {},
             () => { this.setState({pendingCommand:false}); this.storedSwitchState = newState; },
             INTENTS.manual,
@@ -225,7 +220,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
   }
 
   _getLockIcon(stone) {
-    let wrapperStyle = {
+    let wrapperStyle : ViewStyle = {
       width: 35,
       height: 35,
       position: 'absolute',
@@ -234,10 +229,10 @@ export class DeviceSummary extends LiveComponent<any, any> {
       alignItems: 'center',
       justifyContent: "center"
     };
-    if (stone.reachability.disabled === false && stone.config.locked === false) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false && stone.config.locked === false) {
       return (
         <TouchableOpacity
-          onPress={() => {this.props.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
+          onPress={() => {core.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
           style={wrapperStyle}>
           <Icon name={"md-unlock"} color={colors.white.rgba(0.5)} size={30}/>
         </TouchableOpacity>
@@ -249,13 +244,12 @@ export class DeviceSummary extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
 
-    // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let locationLabel =  lang("Location_");
@@ -270,7 +264,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
       locationLabel =  lang("Tap_here_to_move_me_");
     }
 
-    let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && stone.reachability.disabled === false;
+    let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
 
     return (
       <View style={{flex:1, paddingBottom: 35}}>
@@ -279,20 +273,18 @@ export class DeviceSummary extends LiveComponent<any, any> {
           leftValue={stone.state.currentUsage + ' W'}
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { Actions.roomSelection({sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'deviceOverview'}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate( "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'DeviceOverview'}); } : null}
         />
         <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>
           <DeviceButton
-            store={this.props.store}
-            eventBus={this.props.eventBus}
             stoneId={this.props.stoneId}
             sphereId={this.props.sphereId}
             callback={(stone) => { spherePermissions.canChangeAppliance ? this._triggerApplianceSelection(stone) : null }}
           />
         </View>
         <View style={{flex:1}} />
-        <Text style={deviceStyles.explanation}>{Util.spreadString(showDimmingText ? lang("The_dimmer_is_starting_up") : lang("tap_icon_to_set_device_ty"))}</Text>
+        <Text style={deviceStyles.explanation}>{xUtil.spreadString(showDimmingText ? lang("The_dimmer_is_starting_up") : lang("tap_icon_to_set_device_ty"))}</Text>
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />
@@ -302,12 +294,12 @@ export class DeviceSummary extends LiveComponent<any, any> {
   }
 }
 
-export class DeviceButton extends Component<{store: any, sphereId: string, stoneId: string, eventBus: EventBusClass, callback?(any): void}, any> {
+export class DeviceButton extends Component<{sphereId: string, stoneId: string, callback?(any): void}, any> {
   unsubscribeStoreEvents;
 
   componentDidMount() {
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (change.stoneUsageUpdatedTransient && change.stoneUsageUpdatedTransient.stoneIds[this.props.stoneId]) {
         this.forceUpdate();
@@ -320,11 +312,11 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
-    const element = Util.data.getElement(this.props.store, this.props.sphereId, this.props.stoneId, stone);
+    const element = Util.data.getElement(core.store, this.props.sphereId, this.props.stoneId, stone);
 
     let currentState = stone.state.state;
     let stateColor = colors.menuBackground.hex;
@@ -332,7 +324,7 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
       stateColor = colors.green.hex;
     }
 
-    if (stone.reachability.disabled) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
       stateColor = colors.gray.hex;
     }
 
@@ -352,7 +344,7 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
     if (this.props.callback) {
       return (
         <TouchableOpacity onPress={() => {
-          const store = this.props.store;
+          const store = core.store;
           const state = store.getState();
           const sphere = state.spheres[this.props.sphereId];
           const stone = sphere.stones[this.props.stoneId];
@@ -380,7 +372,7 @@ export class DeviceInformation extends Component<any, any> {
         <View style={{width:screenWidth, flexDirection:'row', paddingLeft:10, paddingRight:10}}>
           {this.props.leftTapAction ?  <TouchableOpacity onPress={this.props.leftTapAction}><Text style={deviceStyles.text}>{this.props.leftValue}</Text></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.leftValue}</Text>}
           <View style={{flex:1}} />
-          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction} style={{flexDirection:'row'}}><Text style={deviceStyles.clickableTexct}>{this.props.rightValue}</Text><Icon name={"md-log-in"} size={20} color={colors.white.hex} style={{paddingLeft:5}} /></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.rightValue}</Text>}
+          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction} style={{flexDirection:'row'}}><Text style={deviceStyles.clickableText}>{this.props.rightValue}</Text><Icon name={"md-log-in"} size={20} color={colors.white.hex} style={{paddingLeft:5}} /></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.rightValue}</Text>}
         </View>
       </View>
     )
@@ -395,7 +387,7 @@ let deviceStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight:'600'
   },
-  clickableTexct: {
+  clickableText: {
     color: textColor.hex,
     fontSize: 18,
     fontWeight:'600',

@@ -6,27 +6,19 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
   ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
   PanResponder,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
-  View
-} from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+  View, ViewStyle, TextStyle
+} from "react-native";
+
 
 import {colors, screenWidth} from '../styles'
-import {eventBus} from "../../util/EventBus";
 import {AnimatedDial} from "./AnimatedDial";
 import {Icon} from "./Icon";
 import {LOGe} from "../../logging/Log";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { core } from "../../core";
 
 export class LockedStateUI extends Component<any, any> {
   _panResponder;
@@ -39,7 +31,6 @@ export class LockedStateUI extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.props = props;
     this.state = {level: 0, unlockingInProgress: false, unlocked: false};
     this.loadingAmountRequired = 3000;
 
@@ -61,7 +52,7 @@ export class LockedStateUI extends Component<any, any> {
             this.controlling = true;
             this._startTime = new Date().valueOf();
             this._updateLoop();
-            eventBus.emit("UIGestureControl", false);
+            core.eventBus.emit("UIGestureControl", false);
           }
         }
       },
@@ -77,7 +68,7 @@ export class LockedStateUI extends Component<any, any> {
           else {
             this.setState({level: 0});
           }
-          eventBus.emit("UIGestureControl", true)
+          core.eventBus.emit("UIGestureControl", true)
         }
       },
       onPanResponderTerminate: (evt, gestureState) => {
@@ -128,8 +119,8 @@ export class LockedStateUI extends Component<any, any> {
 
 
   _getContent() {
-    let viewStyle = {width: this.props.size, height: this.props.size, position:'absolute', top:0, left:0, alignItems:'center', justifyContent:'center'};
-    let textStyle = {fontSize:12, textAlign:'center', color: colors.white.hex, paddingTop:5, fontWeight: 'bold'};
+    let viewStyle : ViewStyle = {width: this.props.size, height: this.props.size, position:'absolute', top:0, left:0, alignItems:'center', justifyContent:'center'};
+    let textStyle : TextStyle = {fontSize:12, textAlign:'center', color: colors.white.hex, paddingTop:5, fontWeight: 'bold'};
     if (!Permissions.inSphere(this.props.sphereId).canUnlockCrownstone) {
       return (
         <View style={viewStyle}>

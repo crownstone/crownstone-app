@@ -6,24 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {ErrorContent} from "../../content/ErrorContent";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import { core } from "../../../core";
 
 
 export class DeviceError extends Component<any, any> {
@@ -33,7 +27,7 @@ export class DeviceError extends Component<any, any> {
       return (
         <TouchableOpacity
           onPress={() => {
-            StoneUtil.clearErrors(this.props.sphereId, this.props.stoneId, stone, this.props.store);
+            StoneUtil.clearErrors(this.props.sphereId, this.props.stoneId, stone, core.store);
           }}
           style={[styles.centered, {
             width: 0.6 * screenWidth,
@@ -53,7 +47,7 @@ export class DeviceError extends Component<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     return (

@@ -6,16 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  Animated,
-  ActivityIndicator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  Platform,
-  Switch,
-  TouchableOpacity,
-  TouchableHighlight,
   Text,
   View
 } from 'react-native';

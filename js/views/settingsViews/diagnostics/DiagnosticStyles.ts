@@ -1,6 +1,7 @@
 import { colors, screenWidth } from "../../styles";
+import { StyleSheet } from 'react-native'
 
-export const diagnosticStyles = {
+export const diagnosticStyles = StyleSheet.create({
   explanationStyle: {fontSize:15, paddingLeft:20, paddingRight:20, textAlign:'center'},
   headerStyle:      {fontSize:15, paddingLeft:20, paddingRight:20, padding:30, textAlign:'center', fontWeight:'bold'},
   titleStyle:       {fontSize:30, paddingLeft:20, paddingRight:20, paddingTop:25, textAlign:'center', fontWeight:'bold'},
@@ -39,7 +40,7 @@ export const diagnosticStyles = {
     paddingLeft:10,
     marginTop:20,
   }
-};
+});
 
 
 export const DiagnosticStates = {

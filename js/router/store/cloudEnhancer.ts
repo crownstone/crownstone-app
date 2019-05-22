@@ -1,9 +1,8 @@
 import { CLOUD }         from '../../cloud/cloudAPI'
 import { Util }          from '../../util/Util'
 import { BATCH }         from './storeManager'
-import {LOG, LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
+import {LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
 import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
-import {eventBus} from "../../util/EventBus";
 import {transferSchedules} from "../../cloud/transferData/transferSchedules";
 import {transferUser} from "../../cloud/transferData/transferUser";
 import {transferStones} from "../../cloud/transferData/transferStones";
@@ -13,8 +12,8 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {LOG_LEVEL} from "../../logging/LogLevels";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
-import {transferActivityLogs} from "../../cloud/transferData/transferActivityLogs";
-import {transferToons} from "../../cloud/transferData/thirdParty/transferToons";
+import { core } from "../../core";
+import { xUtil } from "../../util/StandAloneUtil";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -81,17 +80,17 @@ function handleAction(action, returnValue, newState, oldState) {
     case 'USER_UPDATE':
       handleUserInCloud(action, newState);
       break;
-    case 'UPDATE_APPLIANCE_CONFIG':
-      handleApplianceInCloud(action, newState);
-      break;
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
-      handleApplianceBehaviourInCloud(action, newState);
-      break;
+    // case 'UPDATE_APPLIANCE_CONFIG':
+    //   // handleApplianceInCloud(action, newState);
+    //   break;
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear':
+    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
+    //   // handleApplianceBehaviourInCloud(action, newState);
+    //   break;
 
 
     case 'ADD_STONE':
@@ -171,16 +170,16 @@ function handleUserInCloud(action, state) {
   if (action.data.picture) {
     // in case the user has a pending delete profile picture request, we will finish this immediately so a new
     // picture will not be deleted.
-    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'removeProfilePicture' });
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'removeProfilePicture' });
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_USER',
       id: 'uploadProfilePicture',
       specialType: 'uploadProfilePicture'
     });
   }
   else if (action.data.picture === null) {
-    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'uploadProfilePicture' });
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'uploadProfilePicture' });
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_USER',
       id: 'removeProfilePicture',
       specialType: 'removeProfilePicture'
@@ -228,6 +227,12 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
   let stoneId    = action.stoneId;
   let locationId = action.data.locationId;
 
+  if (MapProvider.local2cloudMap.locations[locationId] === undefined) {
+    console.log("NO CLOUD ID FOR THIS ENTRY");
+    // the location is not synced to the cloud yet... We should wait for a sync to properly handle this.
+    return;
+  }
+
   let data = { locationId: MapProvider.local2cloudMap.locations[locationId] || locationId };
   CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
 }
@@ -264,8 +269,8 @@ function handleLocationInCloud(action, state) {
   if (action.data.picture) {
     // in case the user has a pending delete location picture request, we will finish this immediately so a new
     // picture will not be deleted.
-    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'removeLocationPicture' + action.locationId });
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'removeLocationPicture' + action.locationId });
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
       id: 'uploadLocationPicture' + action.locationId,
       localId: action.locationId,
@@ -276,8 +281,8 @@ function handleLocationInCloud(action, state) {
   else if (action.data.picture === null) {
     // in case the user has a pending upload location picture request, we will finish this immediately so a new
     // picture will not be uploaded.
-    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'uploadLocationPicture' + action.locationId });
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'uploadLocationPicture' + action.locationId });
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
       id: 'removeLocationPicture'+ action.locationId,
       localId: action.locationId,
@@ -362,7 +367,7 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
     let stone = state.spheres[sphereId].stones[stoneId];
     let data  = { power: stone.state.currentUsage, powerFactor: stone.state.powerFactor, timestamp: action.updatedAt };
 
-    let dateId = Util.getDateHourId(action.updatedAt);
+    let dateId = xUtil.getDateHourId(action.updatedAt);
 
     // get the index the new item will have. This is used to mark them as synced. If there is no previous item, it is 0.
     let oldStone = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] || null;
@@ -420,7 +425,7 @@ function handleInstallation(action, state) {
 
 function handleMessageReceived(action, state) {
   let message = state.spheres[action.sphereId].messages[action.messageId];
-  eventBus.emit("submitCloudEvent", {
+  core.eventBus.emit("submitCloudEvent", {
     type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
     sphereId: action.sphereId,
     id: action.messageId + '_' + 'receivedMessage',
@@ -432,7 +437,7 @@ function handleMessageReceived(action, state) {
 
 function handleMessageRead(action, state) {
   let message = state.spheres[action.sphereId].messages[action.messageId];
-  eventBus.emit("submitCloudEvent", {
+  core.eventBus.emit("submitCloudEvent", {
     type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
     sphereId: action.sphereId,
     id: action.messageId + '_' + 'readMessage',
@@ -450,7 +455,7 @@ function handleMessageRemove(action, state, oldState) {
 
   // if user is sender, delete in cloud.
   if (message.config.senderId === oldState.user.userId) {
-    eventBus.emit("submitCloudEvent", {
+    core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_MESSAGES',
       sphereId: action.sphereId,
       id: action.messageId,
@@ -479,7 +484,7 @@ function handleStoneScheduleAdd(action, state) {
 
   transferSchedules.createOnCloud(actions, payload)
     .then(() => {
-      eventBus.emit("submitCloudEvent", actions);
+      core.eventBus.emit("submitCloudEvent", actions);
     }).catch((err) => {});
 
 }
@@ -518,5 +523,5 @@ function handleStoneScheduleRemoval(action, state, oldState) {
     cloudId: oldSchedule && oldSchedule.cloudId || null, // if old does not exist, this is a create event which does not have a cloudId
   };
 
-  eventBus.emit("submitCloudEvent", payload);
+  core.eventBus.emit("submitCloudEvent", payload);
 }

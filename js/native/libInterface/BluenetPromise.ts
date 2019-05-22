@@ -1,13 +1,13 @@
-import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
+import { Alert} from 'react-native';
 import { DISABLE_NATIVE } from '../../ExternalConfig'
-import { LOG, LOGi }      from '../../logging/Log'
+import { LOGi }      from '../../logging/Log'
 import { Bluenet }        from './Bluenet'
-import { eventBus }       from '../../util/EventBus'
 import { Sentry }         from "react-native-sentry";
+import { core } from "../../core";
 
 export const BluenetPromise : any = function(functionName, param, param2, param3, param4, param5) {
   return new Promise((resolve, reject) => {
-	  let id = (Math.random() * 1e8).toString(36)
+	  let id = (Math.random() * 1e8).toString(36);
     if (DISABLE_NATIVE === true) {
       resolve()
     }
@@ -58,6 +58,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);
+      // @ts-ignore
       Bluenet[functionName].apply(this, bluenetArguments);
     }
   })
@@ -69,13 +70,13 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   isPeripheralReady:   () => { return BluenetPromise('isPeripheralReady');    },
   connect:             (handle, referenceId, highPriority = true) => {
     // tell the app that something is connecting.
-    eventBus.emit("connecting", handle, " with priority:", highPriority);
+    core.eventBus.emit("connecting", handle, " with priority:", highPriority);
 
     // connect
     if (handle) {
       return BluenetPromise('connect', handle, referenceId)
         .then(() => {
-          eventBus.emit("connected", handle);
+          core.eventBus.emit("connected", handle);
         })
     }
     else if (highPriority) {
@@ -91,14 +92,14 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   // this never rejects
   disconnectCommand: () => {
     return BluenetPromise('disconnectCommand')
-      .then( () => { eventBus.emit("disconnect"); })
-      .catch(() => { eventBus.emit("disconnect"); })
+      .then( () => { core.eventBus.emit("disconnect"); })
+      .catch(() => { core.eventBus.emit("disconnect"); })
   },
   // this never rejects
   phoneDisconnect: () => {
     return BluenetPromise('phoneDisconnect')
-      .then( () => { eventBus.emit("disconnect"); })
-      .catch(() => { eventBus.emit("disconnect"); })
+      .then( () => { core.eventBus.emit("disconnect"); })
+      .catch(() => { core.eventBus.emit("disconnect"); })
   },
   keepAliveState:                 (changeState, state, timeout) => { return BluenetPromise('keepAliveState', changeState, state, timeout); }, //* Bool (or Number 0 or 1), Number  (0 .. 1), Number (seconds)
   keepAlive:                      ()           => { return BluenetPromise('keepAlive');                   },
@@ -149,7 +150,16 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   sendMeshNoOp:                   () => { return BluenetPromise('sendMeshNoOp'); },
   setMeshChannel:                 (channel) => { return BluenetPromise('setMeshChannel', channel); },
 
-  getTrackingState:               () => { return BluenetPromise('getTrackingState'); }, // return type: trackingState
+  getTrackingState:               () => { return BluenetPromise('getTrackingState'); },         // return type: trackingState
   isDevelopmentEnvironment:       () => { return BluenetPromise('isDevelopmentEnvironment'); }, // return type: boolean
+  setupPulse:                     () => { return BluenetPromise('setupPulse'); },               // return type: void
+
   broadcastSwitch:                (referenceId, stoneId, switchState) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState); },
 };
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import { Alert } from 'react-native'
+import { xUtil } from "../util/StandAloneUtil";
 
 export function prepareEndpointAndBody(options : any, id : any, accessToken : any, doNotStringify? : boolean) {
   let endPoint = options.endPoint;
@@ -19,7 +19,7 @@ export function prepareEndpointAndBody(options : any, id : any, accessToken : an
   let body = undefined;
   if (options.type === 'body' || options.type === undefined) {
     if (typeof options.data === 'object' && doNotStringify !== true) {
-      body = JSON.stringify(options.data);
+      body = xUtil.stringify(options.data);
     }
     else {
       body = options.data;

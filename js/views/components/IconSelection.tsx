@@ -6,12 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Image,
-  PixelRatio,
   TouchableOpacity,
-  ScrollView,
-  Text,
   View
 } from 'react-native';
 
@@ -21,7 +16,6 @@ import { SlideInView } from './animated/SlideInView'
 import { NavigationBar } from './editComponents/NavigationBar'
 import { Separator } from './Separator'
 import { CustomIcon } from '../../fonts/customIcons'
-import {Icon} from "./Icon";
 
 let borderColor = 'rgba(0,0,0,0.1)';
 let ROW_HEIGHT = 70;
@@ -46,9 +40,9 @@ export class IconSelection extends Component<any, any> {
     }
 
     if (props.debug) {
-      AMOUNT_OF_ITEMS_IN_ROW = 3
-      ROW_HEIGHT = 250
-      ICON_SIZE = screenWidth / (AMOUNT_OF_ITEMS_IN_ROW + 1)
+      AMOUNT_OF_ITEMS_IN_ROW = 3;
+      ROW_HEIGHT = 250;
+      ICON_SIZE = screenWidth / (AMOUNT_OF_ITEMS_IN_ROW + 1);
       let iconKeys = Object.keys(props.icons);
       let newOnes = {};
       iconKeys.forEach((key) => {
@@ -139,7 +133,7 @@ export class IconSelection extends Component<any, any> {
 
   _getIcon(icons, iconIndex) {
     if (iconIndex < icons.length) {
-      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : "transparent";
+      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : this.props.iconBackgroundColor || "transparent";
       if (this.props.debug === true && this.duplicates[icons[iconIndex]]) {
         backgroundColor = colors.red.hex;
       }
@@ -150,7 +144,7 @@ export class IconSelection extends Component<any, any> {
           style={   [styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ] }
           onPress={ () => {this.props.callback(icons[iconIndex])} }
         >
-          <CustomIcon name={icons[iconIndex]} size={ICON_SIZE} color={ colors.white.hex} />
+          <CustomIcon name={icons[iconIndex]} size={ICON_SIZE} color={this.props.iconColor || colors.white.hex} />
         </TouchableOpacity>
       );
     }

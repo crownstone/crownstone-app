@@ -5,7 +5,7 @@ import ForceAtlas2BasedRepulsionSolver      from './physicsComponents/FA2BasedRe
 import ForceAtlas2BasedCentralGravitySolver from './physicsComponents/FA2BasedCentralGravitySolver';
 import MassMover from "./physicsComponents/MassMover";
 import KamadaKawai from "./physicsComponents/KamadaKawai";
-import {Util} from "../util/Util";
+import { xUtil } from "../util/StandAloneUtil";
 
 class PhysicsEngine {
 
@@ -116,7 +116,7 @@ class PhysicsEngine {
       useDynamicEdges: true,
       center: center
     };
-    this.options = Util.deepExtend({}, this.baseOptions);
+    this.options = xUtil.deepExtend({}, this.baseOptions);
     this.timestep = 0.5;
     this.layoutFailed = false;
 
@@ -125,8 +125,8 @@ class PhysicsEngine {
 
   setOptions(options) {
     if (options) {
-      let baseOptions = Util.deepExtend({}, this.options);
-      this.options = Util.deepExtend(baseOptions, options);
+      let baseOptions = xUtil.deepExtend({}, this.options);
+      this.options = xUtil.deepExtend(baseOptions, options);
       this.init()
     }
   }
@@ -572,7 +572,7 @@ class PhysicsEngine {
             this.onChange(() => { iterate(count) }); // this is async
           }
         }
-      }
+      };
       iterate(count);
 
     }

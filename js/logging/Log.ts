@@ -1,10 +1,6 @@
-import { Platform } from 'react-native';
 import {
   LOG_INFO,
   LOG_ADVERTISEMENTS,
-  LOG_ERRORS,
-  LOG_WARNINGS,
-  LOG_VERBOSE,
   LOG_EVENTS,
   LOG_CLOUD,
   LOG_BLE,
@@ -13,13 +9,12 @@ import {
   LOG_SCHEDULER,
   RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
   LOG_TIME_DIFFS,
-  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH, LOG_TO_FILE
+  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH, LOG_TO_FILE, LOG_DFU, LOG_BROADCAST
 } from "../ExternalConfig";
-import {LogProcessor} from "./LogProcessor";
-import {logToFile} from "./LogUtil";
-import {LOG_LEVEL} from "./LogLevels";
-const DeviceInfo = require('react-native-device-info');
-
+import { LogProcessor } from "./LogProcessor";
+import { logToFile } from "./LogUtil";
+import { LOG_LEVEL } from "./LogLevels";
+import DeviceInfo from 'react-native-device-info';
 let lastLogTime = 0;
 
 class Logger {
@@ -47,6 +42,10 @@ class Logger {
   
   info(...any) {
     this._log('------------', LOG_INFO,      LogProcessor.log_info, arguments);
+  }
+
+  broadcast(...any) {
+    this._log('------------', LOG_BROADCAST,    LogProcessor.log_broadcast, arguments);
   }
 
   notifications(...any) {
@@ -77,6 +76,10 @@ class Logger {
     this._log('Store ------', LOG_STORE,     LogProcessor.log_store, arguments);
   }
 
+  dfu(...any) {
+    this._log('DFU --------', LOG_DFU,     LogProcessor.log_dfu, arguments);
+  }
+
   scheduler(...any) {
     this._log('Scheduler --', LOG_SCHEDULER, LogProcessor.log_scheduler, arguments);
   }
@@ -95,7 +98,7 @@ class Logger {
 
   _log(type, globalCheckField, dbCheckField, allArguments) {
     if (Math.min(globalCheckField, dbCheckField) <= this.level) {
-      let prefix = ''
+      let prefix = '';
       let now = new Date().valueOf();
       if (LOG_TIMESTAMPS) {
         prefix += now + ' - '
@@ -112,10 +115,12 @@ class Logger {
       }
 
       if (LOG_TO_FILE || LogProcessor.writeToFile === true) {
+        // @ts-ignore
         logToFile.apply(this, args);
       }
 
       if (RELEASE_MODE_USED === false) {
+        // @ts-ignore
         console.log.apply(this, args);
       }
     }

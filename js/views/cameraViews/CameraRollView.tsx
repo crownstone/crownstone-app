@@ -13,19 +13,21 @@ import {
   Platform,
   ScrollView,
   TouchableHighlight,
-  Text,
-  View
-} from 'react-native';
+  View, GetPhotosParamType
+} from "react-native";
 
-const Actions = require('react-native-router-flux').Actions;
-import {styles, OrangeLine} from '../styles'
-import {LOG, LOGe} from '../../logging/Log'
-import {BackAction} from "../../util/Back";
+
+import {styles, } from '../styles'
+import {LOGe} from '../../logging/Log'
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
+
 
 export class CameraRollView extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Choose_a_Picture"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
     }
   };
 
@@ -49,7 +51,7 @@ export class CameraRollView extends Component<any, any> {
 
   fetchPictures() {
     if (this.active === true) {
-      let query = {
+      let query : GetPhotosParamType = {
         first: 10,
         assetType: 'Photos',
       };
@@ -73,7 +75,7 @@ export class CameraRollView extends Component<any, any> {
         }
       }).catch((err) => {
         if (err.code === "E_UNABLE_TO_LOAD") {
-          let defaultActions = () => {BackAction();};
+          let defaultActions = () => { NavigationUtil.back();};
           Alert.alert(
 lang("_I_do_not_have_access_to__header"),
 lang("_I_do_not_have_access_to__body"),
@@ -103,7 +105,7 @@ lang("_I_do_not_have_access_to__body"),
             clearTimeout(this.fetchPicturesTimeout);
             this.active = false;
             this.props.selectCallback(edge.node.image.uri);
-            BackAction();
+            NavigationUtil.back();
             }}>
             <Image source={{uri: edge.node.image.uri}} style={{width:size,height:size}}/>
           </TouchableHighlight>
@@ -126,7 +128,6 @@ lang("_I_do_not_have_access_to__body"),
   render() {
     return (
       <View style={[styles.fullscreen, {backgroundColor:'#fff'}]}>
-        <OrangeLine/>
         {this.drawPictures()}
       </View>
     );

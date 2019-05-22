@@ -1,40 +1,31 @@
-import { NativeBus }          from '../libInterface/NativeBus';
 import { BleUtil }            from '../../util/BleUtil';
-import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
 import { LOG }                from '../../logging/Log';
 import { DFU_MODE_TIMEOUT }   from '../../ExternalConfig';
 import { MapProvider }        from "../../backgroundProcesses/MapProvider";
 import {Scheduler} from "../../logic/Scheduler";
 import { xUtil } from "../../util/StandAloneUtil";
+import { core } from "../../core";
 
 /**
  * This class keeps track of the Crownstones in DFU state.
  */
 class DfuStateHandlerClass {
   _uuid : string;
-  _store : any;
   _initialized : boolean = false;
-  _ignoreDuringDfuOverlay : boolean = false;
   _stonesInDfuMode : any = {};
   _dfuTimeouts : any = {};
+
+  _dfuInProgress = false;
 
   constructor() {
     this._uuid = xUtil.getUUID();
   }
 
-  loadStore(store) {
+  init() {
     LOG.info('LOADED STORE DfuStateHandler', this._initialized);
     if (this._initialized === false) {
-      this._store = store;
       this._init();
-
-      eventBus.on("updateCrownstoneFirmware",      () => { this._ignoreDuringDfuOverlay = true; this._cleanupAll(); });
-      eventBus.on("updateCrownstoneFirmwareEnded", () => {
-        this._ignoreDuringDfuOverlay = false;
-        // scan hf just in case for a short time afterwards
-        BleUtil.startHighFrequencyScanning(this._uuid, 2500);
-      });
     }
   }
 
@@ -52,9 +43,9 @@ class DfuStateHandlerClass {
         }
 
         // emit advertisements for other views
-        eventBus.emit(Util.events.getDfuTopic(data.handle), data);
+        core.eventBus.emit(Util.events.getDfuTopic(data.handle), data);
 
-        // we scan high frequency when we see a setup node
+        // we scan high frequency when we see a DFU node
         BleUtil.startHighFrequencyScanning(this._uuid, true);
 
         // store the data of this DFU Crownstone
@@ -66,11 +57,11 @@ class DfuStateHandlerClass {
 
           this._stonesInDfuMode[handle] = {advertisement: data, data: MapProvider.stoneHandleMap[handle]};
           LOG.info("DfuStateHandler: Found new DFU Crownstone.");
-          eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
+          core.eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
         }
 
         if (emitDiscovery) {
-          eventBus.emit("dfuStonesDetected");
+          core.eventBus.emit("dfuStonesDetected");
         }
 
         // (re)start setup timeout
@@ -78,20 +69,8 @@ class DfuStateHandlerClass {
       };
 
 
-      // add setup events in case they are from crownstones that did not finish their DFU process.
-      NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
-        if (this._ignoreDuringDfuOverlay) { return; }
-
-        let stoneData = MapProvider.stoneHandleMap[data.handle];
-        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true && stoneData.stoneConfig.handle) {
-          handleDfuAdvertisement(data);
-        }
-      });
-
       // add advertisement events in case they are from crownstones that did not finish their DFU process.
-      NativeBus.on(NativeBus.topics.advertisement, (data) => {
-        if (this._ignoreDuringDfuOverlay) { return; }
-
+      core.nativeBus.on(core.nativeBus.topics.advertisement, (data) => {
         let stoneData = MapProvider.stoneHandleMap[data.handle];
         if (stoneData && stoneData.stoneConfig.dfuResetRequired === true && stoneData.stoneConfig.handle) {
           handleDfuAdvertisement(data);
@@ -99,9 +78,7 @@ class DfuStateHandlerClass {
       });
 
       // handle DFU events
-      NativeBus.on(NativeBus.topics.dfuAdvertisement, (data : crownstoneBaseAdvertisement) => {
-        if (this._ignoreDuringDfuOverlay) { return; }
-
+      core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (data : crownstoneBaseAdvertisement) => {
         handleDfuAdvertisement(data);
       });
     }
@@ -135,10 +112,10 @@ class DfuStateHandlerClass {
     delete this._stonesInDfuMode[handle];
     delete this._dfuTimeouts[handle];
 
-    eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
+    core.eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
     if (Object.keys(this._stonesInDfuMode).length === 0) {
       LOG.info("DfuStateHandler: No DFU stones visible. Disabling HF scanning.");
-      eventBus.emit("noDfuStonesVisible");
+      core.eventBus.emit("noDfuStonesVisible");
       BleUtil.stopHighFrequencyScanning(this._uuid);
     }
   }
@@ -157,6 +134,10 @@ class DfuStateHandlerClass {
 
   handleReservedForDfu(handle) {
     return (this._stonesInDfuMode[handle] !== undefined);
+  }
+
+  isDfuInProgress() {
+    return this._dfuInProgress;
   }
 
 }

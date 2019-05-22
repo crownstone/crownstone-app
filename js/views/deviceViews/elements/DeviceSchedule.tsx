@@ -5,23 +5,15 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSchedule", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  ActivityIndicator,
   Alert,
-  DatePickerIOS,
   TouchableOpacity,
-  Platform,
-  PixelRatio,
   ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
-  TimePickerAndroid,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { styles, colors, screenWidth, screenHeight, availableScreenHeight, deviceStyles } from "../../styles";
 import {IconButton} from "../../components/IconButton";
@@ -30,25 +22,26 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
 import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
-import {LOG, LOGe} from "../../../logging/Log";
-import {eventBus} from "../../../util/EventBus";
+import {LOGe} from "../../../logging/Log";
 import {SchedulerEntry} from "../../components/SchedulerEntry";
 import {Scheduler} from "../../../logic/Scheduler";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {ScheduleUtil} from "../../../util/ScheduleUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class DeviceSchedule extends LiveComponent<any, any> {
 
-  unsubscribeStoreEvents
+  unsubscribeStoreEvents;
   componentDidMount() {
-    const { store } = this.props;
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      let state = store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       if (!stone || !stone.config) { return; }
 
@@ -106,7 +99,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
             alignItems:'center',
             flexDirection:'row'}}
           onPress={() => {
-          if (stone.reachability.disabled === true) {
+          if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
             Alert.alert(
               lang("_Cant_see_Crownstone___Yo_header"),
               lang("_Cant_see_Crownstone___Yo_body"),
@@ -117,8 +110,8 @@ export class DeviceSchedule extends LiveComponent<any, any> {
             this._syncSchedules(stone);
           }
         }}>
-          <Icon name="md-sync" size={20} color={colors.darkBackground.hex} style={{paddingRight:5}} />
-          <Text style={{color: colors.darkBackground.hex}}>{ lang("Sync_schedules_from_Crown") }</Text>
+          <Icon name="md-sync" size={20} color={colors.csBlueDark.hex} style={{paddingRight:5}} />
+          <Text style={{color: colors.csBlueDark.hex}}>{ lang("Sync_schedules_from_Crown") }</Text>
         </TouchableOpacity>
       )
     }
@@ -146,7 +139,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
         },
       }
     };
-    eventBus.emit("showLoading", lang("Downloading_schedules_fro"));
+    core.eventBus.emit("showLoading", lang("Downloading_schedules_fro"));
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSchedules'}, {},1, 'sync schedules from DeviceSchedule')
       .then((stoneSchedules : {data: [bridgeScheduleEntry]}) => {
         let dbSchedules = stone.schedules;
@@ -179,12 +172,12 @@ export class DeviceSchedule extends LiveComponent<any, any> {
           }
         }
 
-        this.props.store.batchDispatch(syncActions);
-        eventBus.emit("showLoading", lang("Done_"));
-        Scheduler.scheduleCallback(() => { eventBus.emit("hideLoading"); }, 400);
+        core.store.batchDispatch(syncActions);
+        core.eventBus.emit("showLoading", lang("Done_"));
+        Scheduler.scheduleCallback(() => { core.eventBus.emit("hideLoading"); }, 400);
       })
       .catch((err) => {
-        eventBus.emit("hideLoading");
+        core.eventBus.emit("hideLoading");
         LOGe.info("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
         Alert.alert(
           lang("_Could_not_Sync__Move_clo_header"),
@@ -224,14 +217,14 @@ export class DeviceSchedule extends LiveComponent<any, any> {
         color="#fff"
         addIcon={canAddSchedule}
         buttonSize={iconSize}
-        buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
+        buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}
       />
     );
 
     if (canAddSchedule) {
       return (
         <TouchableOpacity onPress={() => {
-            if (stone.reachability.disabled === true) {
+            if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
               Alert.alert(
                 lang("_Cant_see_Crownstone___You_header"),
                 lang("_Cant_see_Crownstone___You_body"),
@@ -239,7 +232,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
               );
             }
             else {
-              Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
+             NavigationUtil.navigate("DeviceScheduleEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
             }
         }}>
           { button }
@@ -256,7 +249,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     const schedules = stone.schedules;
@@ -273,7 +266,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
         </View>
       )
     }
-    else if (!Util.versions.canIUse(stone.config.firmwareVersion, '1.5.0')) {
+    else if (!xUtil.versions.canIUse(stone.config.firmwareVersion, '1.5.0')) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
           { this._getHeader(state, iconSize, lang("This_Crownstone_needs_to_")) }

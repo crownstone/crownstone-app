@@ -7,24 +7,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Image,
-  TouchableHighlight,
-  ScrollView,
   Text,
   TouchableOpacity,
-  StyleSheet,
   View
-} from 'react-native';
+} from "react-native";
 
-import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
-const Actions = require('react-native-router-flux').Actions;
 import {
-  getStonesAndAppliancesInLocation,
-  getFloatingStones
-} from '../../util/DataUtil'
+  DataUtil, enoughCrownstonesInLocationsForIndoorLocalization,
+  getStonesAndAppliancesInLocation
+} from "../../util/DataUtil";
 import { colors } from '../styles'
-import {BackAction} from "../../util/Back";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.
@@ -40,37 +34,24 @@ export class RoomExplanation extends Component<any, any> {
     let sphereId = this.props.sphereId;
     let locationId = this.props.locationId;
     let explanation = this.props.explanation;
+    let boldExplanation = false;
 
     // check if we have special cases
     let amountOfStonesInRoom = Object.keys(getStonesAndAppliancesInLocation(state, sphereId, locationId)).length;
-    let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(sphereId).seeSetupCrownstone;
-    let canSeeSetupCrownstones = Permissions.inSphere(this.props.sphereId).seeSetupCrownstone;
 
     // if the button callback is not undefined at draw time, we draw a button, not a view
     let buttonCallback = undefined;
 
-    // In case we see a crownstone in setup mode:
-    if (canSeeSetupCrownstones && explanation === undefined && seeStoneInSetupMode === true && locationId === null) {
-      explanation =  lang("Crownstones_in_setup_mode")}
-
-    // in case there are no crownstones in the room.
-    else if (explanation === undefined && amountOfStonesInRoom === 0) {
+    if (amountOfStonesInRoom === 0) {
       // in floating Crownstones
-      if (locationId === null) {
-        explanation =  lang("No_Crownstones_found_")}
-      // there are no crownstones in the sphere
-      else if (Object.keys(state.spheres[sphereId].stones).length === 0 && canSeeSetupCrownstones) {
-        explanation =  lang("To_add_a_Crownstones_to_y")}
-      // there are floating crownstones
-      else if (getFloatingStones(state, sphereId).length > 0) {
-        explanation =  lang("Tap_here_to_see_all_Crown");
-        buttonCallback = () => { BackAction(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
-      }
-      else {
-        explanation =  lang("No_Crownstones_in_this_ro");
-      }
+      explanation =  lang("No_Crownstones_in_this_ro");
     }
 
+    if (shouldShowTrainingButton(state, this.props.sphereId, this.props.locationId)) {
+      explanation = lang("Train_Room");
+      boldExplanation = true;
+      buttonCallback = () => { NavigationUtil.navigate("RoomTraining_roomSize", { sphereId: this.props.sphereId, locationId: this.props.locationId }); }
+    }
 
     if (explanation === undefined) {
       return <View />
@@ -79,7 +60,7 @@ export class RoomExplanation extends Component<any, any> {
       return (
         <TouchableOpacity style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}} onPress={buttonCallback}>
           <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
-            <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
+            <Text style={{fontSize: 15, fontWeight: boldExplanation ? 'bold' : '100', color: colors.csBlueDark.hex, textAlign:'center'}}>{explanation}</Text>
           </View>
         </TouchableOpacity>
       );
@@ -94,4 +75,37 @@ export class RoomExplanation extends Component<any, any> {
       );
     }
   }
+}
+
+/**
+ * The right item is the flickering icon for localization.
+ * @param state
+ * @param sphereId
+ * @param locationId
+ */
+function shouldShowTrainingButton(state, sphereId, locationId) {
+  let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId);
+  let sphere = state.spheres[sphereId];
+  if (!sphere) { return false; }
+
+  let location = sphere.locations[locationId];
+  if (!location) { return false; }
+
+  if (!state.app.indoorLocalizationEnabled) { return false; } // do not show localization if it is disabled
+  if (sphere.state.present === true)             { return false; } // cant train a room when not in the sphere
+  if (!enoughCrownstonesInLocations)        { return false; } // not enough crownstones to train this room
+
+  if (location.config.fingerprintRaw !== null) { return false; } // there already is a fingerprint, dont show animated training icon.
+
+  // this will show a one-time popup for localization
+  if (state.user.seenRoomFingerprintAlert !== true) {
+    let aiData = DataUtil.getAiData(state, sphereId);
+    core.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
+    Alert.alert(
+      lang("_Lets_teach_____arguments_header",aiData.name),
+      lang("_Lets_teach_____arguments_body",aiData.name),
+      [{text: lang("_Lets_teach_____arguments_left")}]
+    );
+  }
+  return true;
 }

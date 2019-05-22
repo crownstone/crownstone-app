@@ -6,12 +6,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Image,
-  Text,
-  View
-} from 'react-native';
+  Text} from 'react-native';
 import {Background} from "../components/Background";
-import {OrangeLine, styles} from "../styles";
 
 export class RoomDeleted extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -22,9 +18,8 @@ export class RoomDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={require('../../images/mainBackgroundLightNotConnected.png')}>
-        <OrangeLine/>
-        <Text>{ lang("Room_Deleted_") }</Text>
+      <Background image={require('../../images/backgrounds/mainBackgroundLightNotConnected.png')}>
+                <Text>{ lang("Room_Deleted_") }</Text>
       </Background>
     )
   }

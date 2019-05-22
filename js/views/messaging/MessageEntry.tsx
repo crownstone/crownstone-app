@@ -7,18 +7,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
-  Alert,
-  Animated,
-  Image,
-  TouchableHighlight,
-  ScrollView,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  View
-} from 'react-native';
+  View, ViewStyle
+} from "react-native";
 
-const Actions = require('react-native-router-flux').Actions;
 import {colors, screenWidth} from '../styles'
 import {IconButton} from "../components/IconButton";
 import {ANYWHERE_IN_SPHERE} from "./MessageAdd";
@@ -26,6 +19,7 @@ import {ProfilePicture} from "../components/ProfilePicture";
 import {DoubleTapDelete} from "../components/DoubleTapDelete";
 import {StackedIcons} from "../components/StackedIcons";
 import {MessageUtil} from "../../util/MessageUtil";
+import { core } from "../../core";
 
 export class MessageEntry extends Component<{
   deleteMessage(): void
@@ -206,7 +200,7 @@ export class MessageEntry extends Component<{
           <DoubleTapDelete key={'deleteButton'+this.props.messageId} callback={() => {
             // we delete it and mark it read if required.
             if (this.props.read === false) {
-              this.props.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
+              core.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
             }
 
             this.props.deleteMessage();
@@ -216,7 +210,7 @@ export class MessageEntry extends Component<{
     );
 
 
-    let style = {
+    let style : ViewStyle = {
       flexDirection:  'row',
       width:          screenWidth,
       minHeight:      rowHeight,
@@ -227,11 +221,12 @@ export class MessageEntry extends Component<{
     if (this.props.message.config.sendFailed || this.props.read === false) {
       return (
         <TouchableOpacity
+          style={style}
           onPress={() => {
             if (this.props.message.config.sendFailed) {
-              this.props.store.dispatch({type: "APPEND_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { sendFailed: false, sent: false }});
+              core.store.dispatch({type: "APPEND_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { sendFailed: false, sent: false }});
               MessageUtil.uploadMessage(
-                this.props.store,
+                core.store,
                 this.props.sphereId,
                 this.props.messageId,
                 this.props.message.config,
@@ -240,10 +235,10 @@ export class MessageEntry extends Component<{
             }
 
             if (this.props.read === false) {
-              this.props.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
+              core.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
             }
           }}
-        style={style}>
+        >
           { content }
         </TouchableOpacity>
       );

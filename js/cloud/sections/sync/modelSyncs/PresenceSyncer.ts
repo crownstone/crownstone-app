@@ -86,7 +86,7 @@ export class PresenceSyncer extends SyncingSphereItemBase {
               data:       { userId: userId }
             });
           }
-        })
+        });
 
         // we ARE in the location according to our DB, but are NOT according to the CLOUD.
         locationsInSphere[localLocationId].presentUsers.forEach((userId) => {

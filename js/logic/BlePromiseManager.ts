@@ -1,7 +1,7 @@
 import {LOG, LOGe} from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { PROMISE_MANAGER_FALLBACK_TIMEOUT } from "../ExternalConfig";
-import { eventBus } from "../util/EventBus";
+import { core } from "../core";
 
 
 class BlePromiseManagerClass {
@@ -19,13 +19,13 @@ class BlePromiseManagerClass {
     return this._register(promise, message, false, customTimeoutMs);
   }
 
-  registerPriority(promise : () => Promise<any>, message, customTimeoutMs: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) {
+  registerPriority(promise : () => Promise<any>, message, customTimeoutMs: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) : Promise<any> {
     // this can interrupt any BatchCommandHandler pending low priority processes.
-    eventBus.emit('PriorityCommandSubmitted');
+    core.eventBus.emit('PriorityCommandSubmitted');
     return this._register(promise, message, true, customTimeoutMs);
   }
 
-  _register(promise : () => Promise<any>, message, priorityCommand : boolean = false, timeout: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) {
+  _register(promise : () => Promise<any>, message, priorityCommand : boolean = false, timeout: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) : Promise<any> {
     LOG.info("BlePromiseManager: registered promise in manager");
     return new Promise((resolve, reject) => {
       let container = { promise: promise, resolve: resolve, reject: reject, message: message, completed: false, timeout: timeout };

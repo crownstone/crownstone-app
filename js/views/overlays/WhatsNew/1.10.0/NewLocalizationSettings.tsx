@@ -8,7 +8,6 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
   Platform,
-  StyleSheet,
   ScrollView,
   Text,
   View,

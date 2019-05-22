@@ -5,22 +5,14 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("UserLayer", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Animated,
-  Dimensions,
-  Image,
-  NativeModules,
-  PanResponder,
-  Platform,
-  ScrollView,
-  TouchableHighlight,
-  Text,
   View
 } from 'react-native';
 import {getPresentUsersInLocation} from "../../util/DataUtil";
 import {UserPicture} from "../components/animated/UserPicture";
 import {TextCircle} from "../components/animated/TextCircle";
+import { core } from "../../core";
 
 
 export class UserLayer extends LiveComponent<any, any> {
@@ -93,10 +85,10 @@ export class UserLayer extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    const store = this.props.store;
+    const store = core.store;
 
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       const state = store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
         return;
@@ -120,7 +112,7 @@ export class UserLayer extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const locationIds = Object.keys(sphere.locations);

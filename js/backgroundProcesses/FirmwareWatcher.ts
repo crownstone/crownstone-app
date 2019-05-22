@@ -1,20 +1,17 @@
 import { BatchCommandHandler } from '../logic/BatchCommandHandler'
 import {LOG, LOGe} from "../logging/Log";
-import { eventBus }            from "../util/EventBus";
 import { Util } from "../util/Util";
+import { core } from "../core";
 
 class FirmwareWatcherClass {
   _initialized: boolean = false;
-  store: any;
 
-  constructor() { }
-
-  loadStore(store: any) {
+  init() {
     LOG.info('LOADED STORE FirmwareWatcher', this._initialized);
     if (this._initialized === false) {
-      this.store = store;
       // once the user is logged in, we will check if there are crownstones that we do not know the firmware of.
-      eventBus.on('enterSphere', (sphereId) => { this.checkFirmware(sphereId); });
+
+      core.eventBus.on('enterSphere', (sphereId) => { this.checkFirmware(sphereId); });
     }
     this._initialized = true;
   }
@@ -22,7 +19,7 @@ class FirmwareWatcherClass {
   checkFirmware(sphereId) {
     LOG.info("FirmwareWatcher: Starting Firmware Check");
 
-    let state = this.store.getState();
+    let state = core.store.getState();
     if (!state.spheres[sphereId]) {
       LOGe.info("FirmwareWatcher: Can not find this Sphere in the state.", sphereId);
       return;
@@ -41,7 +38,7 @@ class FirmwareWatcherClass {
           !stone.config.hardwareVersion || stone.config.hardwareVersion === '0') {
         BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},100, 'from checkFirmware in Firmware Watcher')
           .then((firmwareVersion : {data: string}) => {
-            this.store.dispatch({
+            core.store.dispatch({
               type: "UPDATE_STONE_CONFIG",
               stoneId: stoneId,
               sphereId: sphereId,
@@ -53,7 +50,7 @@ class FirmwareWatcherClass {
           .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
         BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'}, {},100, 'from checkFirmware in Firmware Watcher')
           .then((hardwareVersion : {data: string}) => {
-            this.store.dispatch({
+            core.store.dispatch({
               type: "UPDATE_STONE_CONFIG",
               stoneId: stoneId,
               sphereId: sphereId,

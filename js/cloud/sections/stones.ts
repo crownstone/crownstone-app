@@ -1,4 +1,6 @@
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import { cloudApiBase, TokenStore } from "./cloudApiBase";
+import { CLOUD } from "../cloudAPI";
 
 export const stones = {
   /**
@@ -8,7 +10,7 @@ export const stones = {
    * @returns {*}
    */
   createStone: function(data : any, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Spheres/{id}/ownedStones/',
       {data:data, background: background},
@@ -26,7 +28,7 @@ export const stones = {
    */
   updateStone: function(localStoneId, data, background = true) {
     let cloudStoneId = MapProvider.local2cloudMap.stones[localStoneId] || localStoneId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'PUT',
       '/Spheres/{id}/ownedStones/' + cloudStoneId,
       {background: background, data: data},
@@ -41,7 +43,7 @@ export const stones = {
    * @returns {*}
    */
   updateStoneSwitchState: function(switchState, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Stones/{id}/currentSwitchState?switchState='  + switchState,
       {background: background},
@@ -56,7 +58,7 @@ export const stones = {
    * @returns {*}
    */
   updatePowerUsage: function(data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Stones/{id}/currentPowerUsage/',
       { background: background, data: data },
@@ -71,7 +73,7 @@ export const stones = {
    * @returns {*}
    */
   updateBatchPowerUsage: function(data : any[], background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Stones/{id}/batchPowerUsage/',
       { background: background, data: data },
@@ -95,9 +97,9 @@ export const stones = {
    * @returns {*}
    */
   updateStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true, doNotSetUpdatedTimes = false) {
-    console.warn("WARNING DEPRECATED updateStoneLocationLink")
+    console.warn("WARNING DEPRECATED updateStoneLocationLink");
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
         'PUT',
         '/Stones/{id}/locations/rel/' + cloudLocationId,
         {background: background},
@@ -105,8 +107,8 @@ export const stones = {
       .then(() => {
         if (doNotSetUpdatedTimes !== true) {
           let promises = [];
-          promises.push(this.forSphere(localSphereId).updateStone(this._stoneId,      {locationId: cloudLocationId, updatedAt: updatedAt}));
-          promises.push(this.forSphere(localSphereId).updateLocation(localLocationId, {updatedAt: updatedAt}));
+          promises.push(CLOUD.forSphere(localSphereId).updateStone(TokenStore.stoneId,{locationId: cloudLocationId, updatedAt: updatedAt}));
+          promises.push(CLOUD.forSphere(localSphereId).updateLocation(localLocationId,   {updatedAt: updatedAt}));
           // we set the updatedAt time in the cloud since changing the links does not update the time there
           return Promise.all(promises);
         }
@@ -128,17 +130,17 @@ export const stones = {
    * @returns {*}
    */
   deleteStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true) {
-    console.warn("WARNING DEPRECATED deleteStoneLocationLink")
+    console.warn("WARNING DEPRECATED deleteStoneLocationLink");
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
         'DELETE',
         '/Stones/{id}/locations/rel/' + cloudLocationId,
         {background: background},
       )
       .then(() => {
         let promises = [];
-        promises.push(this.forSphere(localSphereId).updateStone(this._stoneId, {updatedAt: updatedAt}));
-        promises.push(this.forSphere(localSphereId).updateLocation(localLocationId, {updatedAt: updatedAt}));
+        promises.push(CLOUD.forSphere(localSphereId).updateStone(TokenStore.stoneId,{updatedAt: updatedAt}));
+        promises.push(CLOUD.forSphere(localSphereId).updateLocation(localLocationId,   {updatedAt: updatedAt}));
         // we set the updatedAt time in the cloud since changing the links does not update the time there
         return Promise.all(promises);
       })
@@ -152,7 +154,7 @@ export const stones = {
    * @returns {*}
    */
   getStonesInSphere: function(background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Spheres/{id}/ownedStones',
       {background: background, data: {filter:{"include":["schedules", "locations"]}}}
@@ -167,7 +169,7 @@ export const stones = {
    */
   getStone: function(localStoneId) {
     let cloudStoneId = MapProvider.local2cloudMap.stones[localStoneId] || localStoneId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Stones/' + cloudStoneId
     );
@@ -180,7 +182,7 @@ export const stones = {
    * @returns {*}
    */
   findStone: function(address) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Spheres/{id}/ownedStones/',
       {data:{filter:{where:{address:address}}}},
@@ -196,7 +198,7 @@ export const stones = {
   deleteStone: function(localStoneId) {
     let cloudStoneId = MapProvider.local2cloudMap.stones[localStoneId] || localStoneId; // the OR is in case a cloudId has been put into this method.
     if (cloudStoneId) {
-      return this._setupRequest(
+      return cloudApiBase._setupRequest(
         'DELETE',
         '/Spheres/{id}/ownedStones/' + cloudStoneId
       );
@@ -206,7 +208,7 @@ export const stones = {
 
 
   sendStoneDiagnosticInfo: function(data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Stones/{id}/diagnostics',
       { background: background, data: data },

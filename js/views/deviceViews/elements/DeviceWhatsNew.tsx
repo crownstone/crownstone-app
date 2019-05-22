@@ -6,21 +6,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../../styles";
 import {IconButton} from "../../components/IconButton";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 export class DeviceWhatsNew extends Component<any, any> {
@@ -59,7 +54,7 @@ export class DeviceWhatsNew extends Component<any, any> {
       case '2.0.0':
       case '2.0.1':
         this._clearFlag(firmwareVersion);
-        return Actions.deviceEdit({ sphereId: this.props.sphereId, stoneId: this.props.stoneId });
+        return NavigationUtil.navigate("DeviceEdit",{ sphereId: this.props.sphereId, stoneId: this.props.stoneId });
 
       default:
 
@@ -67,7 +62,7 @@ export class DeviceWhatsNew extends Component<any, any> {
   }
 
   _clearFlag(firmwareVersion) {
-    this.props.store.dispatch({
+    core.store.dispatch({
       type:"UPDATE_STONE_LOCAL_CONFIG",
       sphereId: this.props.sphereId,
       stoneId: this.props.stoneId,
@@ -76,7 +71,7 @@ export class DeviceWhatsNew extends Component<any, any> {
   }
 
   render() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
     let firmwareVersion = stone.config.firmwareVersion;
@@ -89,7 +84,7 @@ export class DeviceWhatsNew extends Component<any, any> {
         <IconButton
           name="c1-present"
           size={0.15*screenHeight}
-          color={colors.darkBackground.hex}
+          color={colors.csBlueDark.hex}
           buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.white.hex, borderRadius: 0.03*screenHeight}}
           style={{position:'relative', top: 0.0051*screenHeight}}
         />

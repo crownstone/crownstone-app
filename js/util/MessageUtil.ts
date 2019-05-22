@@ -1,9 +1,9 @@
 
 
 import {CLOUD} from "../cloud/cloudAPI";
-import {Util} from "./Util";
-import {LOG, LOGe} from "../logging/Log";
+import {LOGe} from "../logging/Log";
 import {MapProvider} from "../backgroundProcesses/MapProvider";
+import { xUtil } from "./StandAloneUtil";
 
 export const MessageUtil = {
   uploadMessage: function(store, sphereId, messageId, message, recipients) {
@@ -28,7 +28,8 @@ export const MessageUtil = {
           data: { cloudId: cloudId }
         });
 
-        return Util.promiseBatchPerformer(recipients, (recipientId) => {
+
+        return xUtil.promiseBatchPerformer(recipients, (recipientId) => {
           return CLOUD.forMessage(cloudId).addRecipient(recipientId);
         });
       })

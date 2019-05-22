@@ -137,7 +137,7 @@ class BluenetManager {
             //print("Scan received", castData.handle, castData.rssi, castData.referenceId, castData.scanResponse, verified)
             if verified {
               if let referenceId = castData.referenceId {
-                var handleDict = dataStore.store.dictionary(forKey: "handles")
+                let handleDict = dataStore.store.dictionary(forKey: "handles")
                 if var theDict = handleDict {
                   theDict[castData.handle] = true
 

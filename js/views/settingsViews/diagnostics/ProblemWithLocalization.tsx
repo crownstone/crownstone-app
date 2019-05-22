@@ -6,14 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   Platform,
-  Linking,
-  TouchableOpacity,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
@@ -33,6 +26,8 @@ import {
 } from "../../../util/DataUtil";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { STONE_TYPES } from "../../../Enums";
+import { core } from "../../../core";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class ProblemWithLocalization extends Component<any, any> {
@@ -89,7 +84,7 @@ export class ProblemWithLocalization extends Component<any, any> {
 
 
   _getLocalizationInfo() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId(state);
     let enoughForLocalization = enoughCrownstonesForIndoorLocalization(state, presentSphereId);
     let enoughForLocalizationInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, presentSphereId);
@@ -100,7 +95,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     let amountOfVisible = 0;
     let amountOfStones = stoneIds.length;
     stoneIds.forEach((stoneId) => {
-      if (stones[stoneId].reachability.rssi > -100 && stones[stoneId].reachability.disabled === false) {
+      if (StoneAvailabilityTracker.getRssi(stoneId) > -100) {
         amountOfVisible += 1;
       }
     });
@@ -157,7 +152,7 @@ export class ProblemWithLocalization extends Component<any, any> {
           else {
             header = lang("The_more_Crownstones_you_expl")
           }
-          header += lang("__Apart_from_the_amount__")
+          header += lang("__Apart_from_the_amount__");
           // does not work right here
           return (
             <DiagSingleButtonGoBack
@@ -254,7 +249,7 @@ export class ProblemWithLocalization extends Component<any, any> {
       );
     }
 
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let sphereId = Util.data.getPresentSphereId(state);
     let stones = state.spheres[sphereId].stones;
 
@@ -273,7 +268,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     }
     else {
       let stone = stones[this.state.userInputProblemCrownstoneId];
-      let element = Util.data.getElement(this.props.store, sphereId, this.state.userInputProblemCrownstoneId, stone);
+      let element = Util.data.getElement(core.store, sphereId, this.state.userInputProblemCrownstoneId, stone);
       let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId) && stone.config.locationId !== null;
       let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null && element.behaviour.onAway.active === true && element.behaviour.onNear.active === true;
 
@@ -341,7 +336,7 @@ export class ProblemWithLocalization extends Component<any, any> {
       );
     }
 
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let sphereId = Util.data.getPresentSphereId(state);
     let stones = state.spheres[sphereId].stones;
 
@@ -416,7 +411,7 @@ export class ProblemWithLocalization extends Component<any, any> {
 
   _handleThingsTurnOff() {
     // check how many users in sphere
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let presentSphereId = Util.data.getPresentSphereId(state);
 
     let sphere = state.spheres[presentSphereId];

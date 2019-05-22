@@ -6,25 +6,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-import {Util} from "../../../../util/Util";
 import {colors, screenWidth} from "../../../styles";
 import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../../util/DataUtil";
 import {INTENTS} from "../../../../native/libInterface/Constants";
 import {IconButton} from "../../../components/IconButton";
 import {BorderCircle} from "../../../components/BorderCircle";
 import {Icon} from "../../../components/Icon";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 export class ActivityLogItem extends Component<any, any> {
@@ -46,7 +37,7 @@ export class ActivityLogItem extends Component<any, any> {
       return colors.darkPurple.hex;
     }
     else if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState' || this.props.data.type === 'skippedHeartbeat') {
-      return colors.darkBackground.hex;
+      return colors.csBlueDark.hex;
     }
     else if (this.props.data.type === 'tap2toggle') {
       return colors.csOrange.hex;
@@ -73,11 +64,11 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === 'multiswitch') {
       switch (this.props.data.intent) {
         case INTENTS.manual:
-          return 'md-power'
+          return 'md-power';
         case INTENTS.sphereEnter:
-          return 'ios-globe'
+          return 'ios-globe';
         case INTENTS.sphereExit:
-          return 'ios-globe'
+          return 'ios-globe';
         case INTENTS.enter:
           // check if we have room or near
           if (canDoIndoorLocalization) {
@@ -125,7 +116,7 @@ export class ActivityLogItem extends Component<any, any> {
   _getTitle(canDoIndoorLocalization, roomConfig) {
     let targetState = (this.props.data.switchedToState === 0 ? lang("off") :  lang("on"));
 
-    let timeIndicator = Util.getTimeFormat(this.props.data.timestamp) + ' - ';
+    let timeIndicator = xUtil.getTimeFormat(this.props.data.timestamp) + ' - ';
     if (this.props.data.type === 'keepAlive' || this.props.data.type === 'keepAliveState') {
       return timeIndicator + lang("Heartbeat_");
     }
@@ -214,11 +205,11 @@ export class ActivityLogItem extends Component<any, any> {
     else if (this.props.data.type === 'multiswitch') {
       switch (this.props.data.intent) {
         case INTENTS.manual:
-          return timeIndicator + lang("Switch_")
+          return timeIndicator + lang("Switch_");
         case INTENTS.sphereEnter:
-          return timeIndicator + lang("Entered_the_Sphere_")
+          return timeIndicator + lang("Entered_the_Sphere_");
         case INTENTS.sphereExit:
-          return timeIndicator + lang("Left_the_Sphere_")
+          return timeIndicator + lang("Left_the_Sphere_");
         case INTENTS.enter:
           // check if we have room or near
           if (canDoIndoorLocalization) {
@@ -251,7 +242,7 @@ export class ActivityLogItem extends Component<any, any> {
       personPrefix =  lang("Someone_else")}
     let initialLabel =  lang("Switched_");
     if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
-      targetState = Math.round((this.props.data.switchedToState/0.99)*100) + " %"
+      targetState = Math.round((this.props.data.switchedToState/0.99)*100) + " %";
       initialLabel =  lang("Dimmed_to_");
     }
     if (this.props.data.presumedDuplicate) {
@@ -297,7 +288,7 @@ export class ActivityLogItem extends Component<any, any> {
         else {
           // exit sphere
           if (this.props.data.switchedToState === -1) {
-            return lang("Last_heartbeat_sent_at_",Util.getTimeFormat(this.props.data.endTime));
+            return lang("Last_heartbeat_sent_at_",xUtil.getTimeFormat(this.props.data.endTime));
           }
           else if (this.props.data.switchedToState > 0 && this.props.data.switchedToState < 0.99) {
             return lang("___because_everyone_left_",initialLabel, Math.round((this.props.data.switchedToState/0.99)*100));

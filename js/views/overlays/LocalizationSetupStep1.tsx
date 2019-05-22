@@ -7,9 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Dimensions,
-  Image,
-  PixelRatio,
   Text,
   TouchableOpacity,
   View,
@@ -19,7 +16,6 @@ import { FinalizeLocalizationIcon } from '../components/FinalizeLocalizationIcon
 import { Icon }                     from '../components/Icon'
 import { HiddenFadeInView }               from '../components/animated/FadeInView'
 import { styles, colors, screenHeight, screenWidth } from '../styles'
-import { eventBus } from '../../util/EventBus'
 
 import Svg,{
   Circle,
@@ -28,6 +24,7 @@ import Svg,{
   Defs,
   Stop
 } from 'react-native-svg';
+import { core } from "../../core";
 
 
 export class LocalizationSetupStep1 extends Component<any, any> {
@@ -103,7 +100,7 @@ export class LocalizationSetupStep1 extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on("showLocalizationSetupStep1", () => {
+    this.unsubscribe.push(core.eventBus.on("showLocalizationSetupStep1", () => {
       // we reset the entire state because we might show this video twice.
       this.setState({
         innerCirclesAmount: 0.0,

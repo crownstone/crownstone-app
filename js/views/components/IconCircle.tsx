@@ -6,11 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Image,
-  PixelRatio,
-  TouchableHighlight,
-  Text,
   View
 } from 'react-native';
 
@@ -30,7 +25,7 @@ import { styles, colors} from '../styles'
  *   showEdit        : Bool     // show an edit icon in the corner
  * }
  */
-export class IconCircle extends Component<any, any> {
+export class IconCircle extends Component<{icon, size?, iconSize?, color?, borderColor?, borderWidth?, backgroundColor?, showAdd?, showEdit?, style?}, any> {
   _getEditIcon(size) {
     if (this.props.showEdit === true) {
       return (

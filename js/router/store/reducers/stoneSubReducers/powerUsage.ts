@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from '../reducerUtil'
-import {Util} from "../../../../util/Util";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 let defaultState = {
@@ -142,7 +142,7 @@ export default (state = {}, action : any = {}) => {
       return state;
     case 'UPDATE_STONE_STATE': // this action is only used for measurement from advertisements
       if (action.data && action.data.currentUsage !== undefined && action.updatedAt) {
-        let dateId = Util.getDateHourId(action.updatedAt);
+        let dateId = xUtil.getDateHourId(action.updatedAt);
         if (dateId !== 'unknown') {
           return {
             ...state,
@@ -159,7 +159,7 @@ export default (state = {}, action : any = {}) => {
         };
 
         // check hour sync state:
-        if (action.dateId !== Util.getDateHourId(new Date().valueOf())) {
+        if (action.dateId !== xUtil.getDateHourId(new Date().valueOf())) {
           let allSynced = true;
           // we can't really binary search this since due to crashes or quits, this set can have an un-synced gap.
           for (let i = 0; i < newState[action.dateId].data.length; i++) {

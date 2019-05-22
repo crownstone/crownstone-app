@@ -6,20 +6,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Image,
-  PixelRatio,
-  TouchableHighlight,
-  ScrollView,
-  Text,
-  View
-} from 'react-native';
+  ScrollView} from 'react-native';
 
 import { Background }  from '../components/Background'
 import { IconSelection }  from '../components/IconSelection'
-import {OrangeLine} from "../styles";
-import {BackAction} from "../../util/Back";
-const Actions = require('react-native-router-flux').Actions;
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { core } from "../../core";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
+
+
 
 
 
@@ -280,6 +275,7 @@ export class DeviceIconSelection extends Component<{callback(icon: string) : voi
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Pick_an_Icon"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
     }
   };
 
@@ -289,8 +285,7 @@ export class DeviceIconSelection extends Component<{callback(icon: string) : voi
 
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <OrangeLine/>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
         <ScrollView>
           <IconSelection
             categories={categories}
@@ -298,7 +293,7 @@ export class DeviceIconSelection extends Component<{callback(icon: string) : voi
             selectedIcon={this.props.icon}
             callback={(newIcon) => {
               this.props.callback(newIcon);
-              BackAction();
+              NavigationUtil.back();
             }}
           />
         </ScrollView>

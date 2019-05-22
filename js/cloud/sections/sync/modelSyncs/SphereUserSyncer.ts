@@ -6,7 +6,7 @@
 
 import {CLOUD} from "../../../cloudAPI";
 import {SyncingSphereItemBase} from "./SyncingBase";
-import {LOG, LOGe} from "../../../../logging/Log";
+import {LOGe} from "../../../../logging/Log";
 
 export class SphereUserSyncer extends SyncingSphereItemBase {
   userId: string;

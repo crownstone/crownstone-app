@@ -7,11 +7,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Text,
-  View
-} from 'react-native';
+  Text, TextStyle,
+  View, ViewStyle
+} from "react-native";
 import {Icon} from "../Icon";
 import {colors} from "../../styles";
+import { core } from "../../../core";
 
 export class AnimatedDoubleTap extends Component<any, any> {
   unsubscribe : any;
@@ -34,7 +35,7 @@ export class AnimatedDoubleTap extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("showDoubleTapGesture", () => { this.animateDoubleTap(); });
+    this.unsubscribe = core.eventBus.on("showDoubleTapGesture", () => { this.animateDoubleTap(); });
   }
   componentWillUnmount() {
     this.unsubscribe();
@@ -103,8 +104,8 @@ export class AnimatedDoubleTap extends Component<any, any> {
   }
 
   render() {
-    let base = {width: this.props.width, height: this.props.height, backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, justifyContent: 'center', alignItems:'center', overflow:'hidden'};
-    let textStyle = {fontSize: 25, color: colors.white.hex, fontWeight: 'bold', position:'relative', top: -40, left:35, fontStyle:'italic'};
+    let base : ViewStyle = {width: this.props.width, height: this.props.height, backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, justifyContent: 'center', alignItems:'center', overflow:'hidden'};
+    let textStyle : TextStyle = {fontSize: 25, color: colors.white.hex, fontWeight: 'bold', position:'relative', top: -40, left:35, fontStyle:'italic'};
     return (
       <View style={base}>
         <Animated.View style={[base, {opacity: this.state.oneOpacity}]}>

@@ -5,10 +5,8 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsOverview", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Alert,
-  Dimensions,
   Linking,
   TouchableHighlight,
   ScrollView,
@@ -18,10 +16,11 @@ import {
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {styles, colors, OrangeLine} from '../styles'
+import {styles, colors, } from '../styles'
 import { SettingConstructor } from '../../util/SettingConstructor'
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
+import { core } from "../../core";
 
 export class SettingsOverview extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -38,7 +37,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (change.changeUserData || change.changeSpheres || change.changeStones || change.changeAppSettings || change.changeUserDeveloperStatus) {
         this.forceUpdate();
@@ -51,9 +50,9 @@ export class SettingsOverview extends LiveComponent<any, any> {
   }
 
   _getItems() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
-    let items = SettingConstructor(store, state, this.props.eventBus);
+    let items = SettingConstructor(store, state);
 
     items.push({type:'spacer'});
     items.push({type:'explanation',
@@ -83,8 +82,7 @@ export class SettingsOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu}>
-        <OrangeLine/>
+      <Background image={core.background.menu}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
           <Text style={[styles.version,{paddingBottom: 20}]}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>

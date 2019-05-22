@@ -14,7 +14,7 @@ const BluenetAPI = {
   startScanning:            () => { console.log("BluenetBridgeCall: startScanning:       "); },
   startScanningForCrownstones:           () => { console.log("BluenetBridgeCall: startScanningForCrownstones:           "); },
   startScanningForCrownstonesUniqueOnly: () => { console.log("BluenetBridgeCall: startScanningForCrownstonesUniqueOnly: "); },
-  stopScanning:             () => { console.log("BluenetBridgeCall: stopScanning:    "); },
+  stopScanning:             () => { console.log("BluenetBridgeCall: stopDFU:    "); },
   keepAliveState:           () => { console.log("BluenetBridgeCall: keepAliveState:  "); },
   keepAlive:                () => { console.log("BluenetBridgeCall: keepAlive:       "); },
   requestBleState:          () => { console.log("BluenetBridgeCall: requestBleState: "); },// Send events "bleStatus" and "locationStatus" with the current state.
@@ -91,7 +91,8 @@ const BluenetAPI = {
   stopAdvertising:          () => { console.log("BluenetBridgeCall:  stopAdvertising: "); },
 
   setCrownstoneNames:       () => { console.log("BluenetBridgeCall:  setCrownstoneNames: "); },
-}
+  setupPulse:               () => { console.log("BluenetBridgeCall:  setupPulse: "); },
+};
 
 if (DISABLE_NATIVE === true) {
   // LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");

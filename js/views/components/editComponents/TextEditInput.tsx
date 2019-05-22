@@ -9,8 +9,8 @@ import {
   Keyboard,
   TextInput,
 } from 'react-native';
+import { core } from "../../../core";
 
-import { eventBus } from '../../../util/EventBus'
 
 export class TextEditInput extends Component<any, any> {
   isInFocus : boolean;
@@ -30,7 +30,7 @@ export class TextEditInput extends Component<any, any> {
 
     // make sure we submit the data if the keyboard is hidden.
     this.blurListener = Keyboard.addListener('keyboardDidHide', () => { this._blur(); });
-    this.unsubscribe  = eventBus.on("inputComplete",            () => { this._blur(); });
+    this.unsubscribe  = core.eventBus.on("inputComplete",            () => { this._blur(); });
   }
 
   componentWillUnmount() {
@@ -41,7 +41,11 @@ export class TextEditInput extends Component<any, any> {
     this.blurListener.remove();
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    if (this.props.focusOnMount) {
+      this.focus();
+    }
+  }
 
   focus() {
     (this.refs[this.refName] as any).focus()
@@ -58,7 +62,7 @@ export class TextEditInput extends Component<any, any> {
     this.blurValue   = undefined;
     if (!this.props.autoFocus) {
       (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
-        eventBus.emit("focus", py+height);
+        core.eventBus.emit("focus", py+height);
         this.focusEmitted = true;
       })
     }
@@ -75,7 +79,7 @@ export class TextEditInput extends Component<any, any> {
         if (this.props.endCallback) {
           this.props.endCallback(this.props.value);
         }
-        eventBus.emit('blur');
+        core.eventBus.emit('blur');
         this.focusEmitted = false;
       }
     }

@@ -5,26 +5,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 
 import {
-  Alert,
-  Animated,
-  Dimensions,
-  Image,
-  Linking,
-  Platform,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
-  Text,
-  View
-} from 'react-native';
-import {eventBus} from "./EventBus";
+  Alert} from 'react-native';
 import {Permissions} from "../backgroundProcesses/PermissionManager";
 import {
   enoughCrownstonesForIndoorLocalization,
   enoughCrownstonesInLocationsForIndoorLocalization,
   requireMoreFingerprints
 } from "./DataUtil";
-const Actions = require('react-native-router-flux').Actions;
+import { core } from "../core";
+
 
 export const SphereUtil = {
 
@@ -128,18 +117,7 @@ export const SphereUtil = {
         );
       }
       else if (enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId)) {
-        eventBus.emit("showLocalizationSetupStep2", sphereId);
-      }
-      else {
-        Actions.roomOverview({
-          sphereId: sphereId,
-          locationId: null,
-          title: lang("First_things_first___"),
-          hideRight: true,
-          usedForIndoorLocalizationSetup: true,
-          overlayText: lang("Place_your_Crownstones_in"),
-          explanation: lang("Tap_a_Crownstone_to_see_i")
-        });
+        core.eventBus.emit("showLocalizationSetupStep2", sphereId);
       }
     };
 
@@ -158,4 +136,4 @@ export const SphereUtil = {
     return false;
   }
 
-}
+};

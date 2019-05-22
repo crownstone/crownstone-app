@@ -6,33 +6,32 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
   Image,
-  StyleSheet,
-  ScrollView,
-  TouchableHighlight,
-  TouchableOpacity,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupShared'
-import {colors, screenHeight, OrangeLine} from './../styles'
+import {colors, screenHeight, } from './../styles'
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { core } from "../../core";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 export class SettingsFactoryResetStep1 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: lang("Factory_Reset")}
+    return {
+      title: lang("Factory_Reset"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
+    }
   };
 
   render() {
     let imageSize = 0.40;
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} safeView={true}>
-        <OrangeLine/>
-        <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
+      <Background hasNavBar={false} image={core.background.detailsDark} safeView={true}>
+                <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>{ lang("If_youre_physically_next_") }</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={[setupStyle.information, {color:colors.white.hex}]}>{ lang("Please_take_the_Crownston") }</Text>
@@ -44,9 +43,9 @@ export class SettingsFactoryResetStep1 extends Component<any, any> {
           <View style={setupStyle.buttonContainer}>
             <View style={{flex:1}} />
             <NextButton onPress={ () => {
-              Actions.settingsFactoryResetStep2();
+              NavigationUtil.navigate("SettingsFactoryResetStep2");
               // trigger to start the process
-              setTimeout(() => { this.props.eventBus.emit("StartFactoryResetProcess"); }, 1000)
+              setTimeout(() => { core.eventBus.emit("StartFactoryResetProcess"); }, 1000)
             }} />
           </View>
         </View>

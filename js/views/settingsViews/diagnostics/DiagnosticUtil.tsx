@@ -6,24 +6,20 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
   ActivityIndicator,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
 import {FadeInView} from "../../components/animated/FadeInView";
 import {colors, screenWidth} from "../../styles";
-import {BackAction} from "../../../util/Back";
-import {Actions} from "react-native-router-flux";
+
 import {AppUtil} from "../../../util/AppUtil";
 import {IconButton} from "../../components/IconButton";
 import {Icon} from "../../components/Icon";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import { diagnosticStyles } from "./DiagnosticStyles";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 class DiagResponseBase extends Component<{
@@ -224,7 +220,7 @@ export class DiagSingleButtonMeshTopology extends Component<{
         header={ this.props.header }
         explanation={ this.props.explanation }
         label={ lang("To_Mesh_Topology")}
-        onPress={() => { Actions.settingsMeshTopology(); }}
+        onPress={() => { NavigationUtil.navigate("SettingsMeshTopology"); }}
       />
     );
   }
@@ -245,7 +241,7 @@ export class DiagSingleButtonGoBack extends Component<{
         header={ this.props.header }
         explanation={ this.props.explanation }
         label={ lang("OK")}
-        onPress={() => { BackAction(); }}
+        onPress={() => { NavigationUtil.back(); }}
       />
     );
   }
@@ -264,7 +260,9 @@ export class DiagSingleButtonToOverview extends Component<{
         header={ this.props.header }
         explanation={ this.props.explanation }
         label={ lang("Go_to_Overview")}
-        onPress={() => { Actions.jump("overview") }}
+        onPress={() => {
+          NavigationUtil.navigateAndReplace("AppNavigator");
+        }}
       />
     );
   }
@@ -304,7 +302,7 @@ export class DiagSingleBleTroubleshooter extends Component<{
         header={ this.props.header }
         explanation={ this.props.explanation }
         label={ lang("Open_Troubleshooter")}
-        onPress={() => { Actions.settingsBleTroubleshooting(); }}
+        onPress={() => { NavigationUtil.navigate("SettingsBleTroubleshooting"); }}
       />
     );
   }
@@ -323,7 +321,7 @@ export class DiagSingleButtonHelp extends Component<{
         header={ this.props.header }
         explanation={ this.props.explanation }
         label={ lang("To_Help_screen")}
-        onPress={() => { Actions.settingsFAQ(); }}
+        onPress={() => { NavigationUtil.navigate("SettingsFAQ"); }}
       />
     );
   }

@@ -6,14 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  Linking,
-  TouchableOpacity,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
@@ -30,6 +22,7 @@ import {ProblemWithLocalization} from "./ProblemWithLocalization";
 import {Util} from "../../../util/Util";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { diagnosticStyles } from "./DiagnosticStyles";
+import { core } from "../../../core";
 
 
 export class InSphere extends Component<any, any> {
@@ -146,7 +139,7 @@ export class InSphere extends Component<any, any> {
       );
     }
     else if (this.state.userInputProblemType === 'inviting') {
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let presentSphereId = Util.data.getPresentSphereId(state);
 
       if (Permissions.inSphere(presentSphereId).inviteGuestToSphere === false) {

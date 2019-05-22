@@ -7,21 +7,17 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
   Animated,
-  Dimensions,
-  TouchableHighlight,
-  PixelRatio,
   ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
 
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
-import {colors, screenWidth, OrangeLine} from './../styles'
+import {colors, screenWidth, } from './../styles'
 import { IconCircle } from "../components/IconCircle";
+import { core } from "../../core";
 
 let FLOATING_NETWORK_KEY = '__null';
 
@@ -35,11 +31,11 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = { leftOffset: new Animated.Value() };
+    this.state = { leftOffset: new Animated.Value(0) };
   }
 
   componentDidMount() {
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if ( change.meshIdUpdated ) {
         this.forceUpdate();
@@ -88,10 +84,9 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
-    let sphere = state.spheres[sphereId];
     let locationIds = Object.keys(state.spheres[sphereId].locations);
     locationIds.push(null); // to account for all floating crownstones
 
@@ -107,7 +102,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
         }
         networks[key].push({
           location: locationId === null ? null : state.spheres[sphereId].locations[locationId],
-          element: Util.data.getElement(this.props.store, sphereId, null, stone) // we get away with using no stone id since it is only used for self repair. Without ID, the self repair won't do anything.
+          element: Util.data.getElement(core.store, sphereId, null, stone) // we get away with using no stone id since it is only used for self repair. Without ID, the self repair won't do anything.
         });
       });
     });
@@ -130,9 +125,8 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
     networkKeys = Object.keys(networks);
 
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
-        <OrangeLine/>
-        <ScrollView>
+      <Background image={core.background.detailsDark}>
+                <ScrollView>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,

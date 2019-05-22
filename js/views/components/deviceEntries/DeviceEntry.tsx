@@ -6,19 +6,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
   Animated,
   ActivityIndicator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  Platform,
   Switch,
   TouchableOpacity,
-  TouchableHighlight,
   Text,
-  View
-} from 'react-native';
+  View, ViewStyle
+} from "react-native";
 
 import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
@@ -26,13 +20,15 @@ import { styles, colors}        from '../../styles'
 import { AlternatingContent }                 from '../animated/AlternatingContent';
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
 import { INTENTS }                            from '../../../native/libInterface/Constants';
-import { Actions }                            from 'react-native-router-flux';
 import { StoneUtil }                          from "../../../util/StoneUtil";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
 import {SlideFadeInView} from "../animated/SlideFadeInView";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../../Enums";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -41,7 +37,7 @@ export class DeviceEntry extends Component<any, any> {
   animating = false;
   id = xUtil.getUUID();
 
-  showMeshMessageTimeout
+  showMeshMessageTimeout;
 
   constructor(props) {
     super(props);
@@ -59,7 +55,7 @@ export class DeviceEntry extends Component<any, any> {
 
   componentDidMount() {
     // this event makes the background of the device entry blink to incidate the error.
-    this.unsubscribe.push(this.props.eventBus.on('showErrorInOverview', (stoneId) => {
+    this.unsubscribe.push(core.eventBus.on('showErrorInOverview', (stoneId) => {
       if (stoneId === this.props.stoneId) {
         Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 90 }).start();
         setTimeout(() => {
@@ -87,7 +83,7 @@ export class DeviceEntry extends Component<any, any> {
       this.props.sphereId,
       this.props.stoneId,
       stone, newState,
-      this.props.store,
+      core.store,
       {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
       (err, result) => {
         let newState = {pendingCommand:false};
@@ -106,7 +102,7 @@ export class DeviceEntry extends Component<any, any> {
   _getControl(stone) {
     let content;
     let action = null;
-    if (stone.reachability.disabled === false) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false) {
       if (stone.errors.hasError) {
         content = <Switch value={stone.state.state === 1} disabled={true} />;
         action = () => { this._basePressed(); }
@@ -116,7 +112,7 @@ export class DeviceEntry extends Component<any, any> {
         action = () => { this._basePressed(); }
       }
       else if (this.state.pendingCommand === true) {
-        content = <ActivityIndicator animating={true} size='large' />;
+        content = <ActivityIndicator animating={true} size='large' color={colors.black.rgba(0.5)} />;
       }
       else {
         content = <Switch value={stone.state.state > 0} onValueChange={() => { this._pressedDevice(stone); }}/>;
@@ -125,7 +121,7 @@ export class DeviceEntry extends Component<any, any> {
     }
 
 
-    let wrapperStyle = {height: this.baseHeight, width: 60, alignItems:'flex-end', justifyContent:'center'};
+    let wrapperStyle : ViewStyle = {height: this.baseHeight, width: 60, alignItems:'flex-end', justifyContent:'center'};
     if (action) {
       return (
         <TouchableOpacity onPress={() => { action() }} style={wrapperStyle}>
@@ -139,13 +135,13 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _basePressed() {
-    Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+    NavigationUtil.navigate("DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
   }
 
   _getIcon(element, stone, state) {
     let customStyle = undefined;
     let color = (
-      stone.reachability.disabled === true ?
+      StoneAvailabilityTracker.isDisabled(this.props.stoneId) === true ?
           colors.gray.hex :
           (stone.state.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
@@ -171,7 +167,8 @@ export class DeviceEntry extends Component<any, any> {
       </View>
       );
     }
-    else if (((Util.versions.canUpdate(stone, state) === true) || Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) && stone.reachability.disabled === false) {
+    else if (((xUtil.versions.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) &&
+      StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false) {
       return (
         <View style={[{
           width:60,
@@ -194,7 +191,7 @@ export class DeviceEntry extends Component<any, any> {
       );
     }
     else {
-      if (stone.reachability.disabled) {
+      if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
         customStyle = {borderWidth:1, borderColor: colors.darkGray2.hex}
       }
       return (
@@ -207,7 +204,7 @@ export class DeviceEntry extends Component<any, any> {
 
 
   _getExplanationText(state) {
-    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12}
+    let explanationStyle = { color: colors.iosBlue.hex, fontSize: 12};
 
     if (this.props.hideExplanation !== true && (this.props.locationId === null || state.app.hasSeenDeviceSettings === false)) {
       return (
@@ -220,7 +217,7 @@ export class DeviceEntry extends Component<any, any> {
 
 
   render() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let element = stone.config.applianceId ? state.spheres[this.props.sphereId].appliances[stone.config.applianceId] : stone;
@@ -230,7 +227,7 @@ export class DeviceEntry extends Component<any, any> {
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
     });
 
-    let WrapperElement = TouchableOpacity;
+    let WrapperElement : any = TouchableOpacity;
     if (this.props.touchable === false) {
       WrapperElement = View
     }
@@ -248,8 +245,8 @@ export class DeviceEntry extends Component<any, any> {
                 statusTextOverride={this.props.statusText}
                 statusText={this.state.statusText}
                 deviceType={stone.config.type}
-                rssi={stone.reachability.rssi}
-                disabled={stone.reachability.disabled}
+                rssi={StoneAvailabilityTracker.getRssi(this.props.stoneId)}
+                disabled={StoneAvailabilityTracker.isDisabled(this.props.stoneId)}
                 currentUsage={stone.state.currentUsage}
                 nearestInSphere={this.props.nearestInSphere}
                 nearestInRoom={this.props.nearestInRoom}
@@ -262,7 +259,7 @@ export class DeviceEntry extends Component<any, any> {
               </SlideFadeInView>
             </View>
           </WrapperElement>
-          {useControl === true && Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}
+          {useControl === true && xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}
         </View>
       </Animated.View>
     );

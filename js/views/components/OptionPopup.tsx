@@ -6,20 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
   Keyboard,
   Platform,
-  StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, ScrollView
+} from "react-native";
 
 import { HiddenFadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
-import { styles, screenHeight, screenWidth } from './../styles'
-import { eventBus } from '../../util/EventBus'
+import { styles, screenHeight, screenWidth, tabBarMargin } from "./../styles";
+import { core } from "../../core";
 
 
 export class OptionPopup extends Component<any, any> {
@@ -36,11 +34,11 @@ export class OptionPopup extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on('showPopup', (data) => {
+    this.unsubscribe.push(core.eventBus.on('showPopup', (data) => {
       Keyboard.dismiss();
       this.setState({title: data.title || null, buttons:data.buttons, visible:true});
     }));
-    this.unsubscribe.push(eventBus.on('hidePopup', () => {this.setState({visible:false})}));
+    this.unsubscribe.push(core.eventBus.on('hidePopup', () => {this.setState({visible:false})}));
   }
 
   componentWillUnmount() {
@@ -55,7 +53,7 @@ export class OptionPopup extends Component<any, any> {
     let buttons = [];
     this.state.buttons.forEach((button, index) => {
       buttons.push(
-        <TouchableOpacity style={styles.joinedButtons} onPress={() => {eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
+        <TouchableOpacity style={styles.joinedButtons} onPress={() => {core.eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
           <Text style={styles.buttonText}>{button.text}</Text>
         </TouchableOpacity>
       );
@@ -65,11 +63,24 @@ export class OptionPopup extends Component<any, any> {
       }
     });
 
-    return (
-      <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>
-        {buttons}
-      </View>
-    )
+    if (buttonContainerHeight > screenHeight - 65) {
+      return (
+        <ScrollView style={{height: screenHeight - 50, width:screenWidth}} contentOffset={{x:0,y:buttonContainerHeight - (screenHeight - 65)}}>
+          <View style={styles.centered}>
+            <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>
+              {buttons}
+            </View>
+          </View>
+        </ScrollView>
+      );
+    }
+    else {
+      return (
+        <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>
+          {buttons}
+        </View>
+      );
+    }
   }
 
   getChildrenAndroid() {
@@ -85,7 +96,7 @@ export class OptionPopup extends Component<any, any> {
 
     this.state.buttons.forEach((button, index) => {
       buttons.push(
-        <TouchableHighlight style={styles.buttonAndroid} onPress={() => {eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
+        <TouchableHighlight style={styles.buttonAndroid} onPress={() => {core.eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
           <Text style={styles.buttonTextAndroid}>{button.text}</Text>
         </TouchableHighlight>
       );
@@ -93,7 +104,7 @@ export class OptionPopup extends Component<any, any> {
     });
 
     buttons.push(
-      <TouchableHighlight style={styles.buttonAndroid} onPress={() => { eventBus.emit("hidePopup");}} key={'option_button_cancel'}>
+      <TouchableHighlight style={styles.buttonAndroid} onPress={() => { core.eventBus.emit("hidePopup");}} key={'option_button_cancel'}>
         <Text style={styles.buttonTextAndroid}>{ lang("Cancel") }</Text>
       </TouchableHighlight>
     );
@@ -125,11 +136,11 @@ export class OptionPopup extends Component<any, any> {
           height={screenHeight}
           visible={this.state.visible}>
           <SlideInFromBottomView
-            style={[styles.centered, {backgroundColor: 'transparent'}]}
-            height={180}
+            style={[styles.centered, {justifyContent:'flex-end', backgroundColor: 'transparent'}]}
+            height={screenHeight}
             visible={this.state.visible}>
             {this.getChildrenIOS()}
-            <TouchableOpacity style={styles.button} onPress={() => { eventBus.emit("hidePopup");}}>
+            <TouchableOpacity style={{...styles.button, marginBottom: 5 + tabBarMargin*0.5}} onPress={() => { core.eventBus.emit("hidePopup");}}>
               <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>{ lang("Cancel") }</Text>
             </TouchableOpacity>
           </SlideInFromBottomView>

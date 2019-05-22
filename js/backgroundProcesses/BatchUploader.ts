@@ -1,8 +1,9 @@
 import {Scheduler} from "../logic/Scheduler";
 import {CLOUD} from "../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL} from "../ExternalConfig";
-import {LOG, LOGd, LOGe} from "../logging/Log";
-import {Util} from "../util/Util";
+import {LOGd, LOGe} from "../logging/Log";
+import { xUtil } from "../util/StandAloneUtil";
+import { core } from "../core";
 
 const TRIGGER_ID = 'BATCH_UPLOADER_INTERVAL';
 
@@ -11,15 +12,11 @@ class BatchUploadClass {
     power: {},
     energy: {},
   };
-  _store: any;
   _initialized = false;
 
-  constructor() {}
 
-  loadStore(store) {
-    this._store = store;
+  init() {
     if (this._initialized === false) {
-      this._store = store;
       this._initialized = true;
 
       Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: CLOUD_BATCH_UPDATE_INTERVAL});
@@ -29,7 +26,7 @@ class BatchUploadClass {
   }
 
   batchUpload() {
-    if (this._store.getState().user.uploadHighFrequencyPowerUsage === false) {
+    if (core.store.getState().user.uploadHighFrequencyPowerUsage === false) {
       // clear queue if the uploading is disabled.
       this.queue = {
         power: {},
@@ -62,7 +59,7 @@ class BatchUploadClass {
     let powerKeys = Object.keys(this.queue.power);
     let successfulUploads = 0;
     let actions = [];
-    Util.promiseBatchPerformer(powerKeys, (key) => {
+    xUtil.promiseBatchPerformer(powerKeys, (key) => {
       let stoneId = this.queue.power[key].stoneId;
       let sphereId = this.queue.power[key].sphereId;
       let dateId = this.queue.power[key].dateId;
@@ -96,7 +93,7 @@ class BatchUploadClass {
       }
 
       // set the sync states
-      this._store.batchDispatch(actions);
+      core.store.batchDispatch(actions);
     })
     .catch((err) => {
       LOGe.cloud("BatchUploader: Error during upload session", err);

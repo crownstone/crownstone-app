@@ -1,21 +1,22 @@
-import { Alert, AsyncStorage }          from 'react-native'
+import { Alert }          from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import CrownstoneReducer                from './reducer'
 import { NativeEnhancer }               from './nativeEnhancer'
 import { CloudEnhancer }                from './cloudEnhancer'
 import { EventEnhancer }                from './eventEnhancer'
-import { eventBus }                     from '../../util/EventBus'
 import {LOG, LOGe} from '../../logging/Log'
 import { PersistenceEnhancer }          from "./persistenceEnhancer";
 import {Persistor} from "./Persistor";
+import { core } from "../../core";
+import AsyncStorage from "@react-native-community/async-storage";
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version
 export const BATCH = 'BATCHING_REDUCER.BATCH';
 
 // modified for application
-function batchActions(actions) {
-  return this.dispatch({ type: BATCH, payload: actions });
+function batchActions(context, actions) {
+  return context.dispatch({ type: BATCH, payload: actions });
 }
 
 function enableBatching(reducer) {
@@ -69,7 +70,7 @@ class StoreManagerClass {
   _initializeStore(userId) {
     LOG.info("StoreManager: initializing Store");
     this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer, PersistenceEnhancer));
-    this.store.batchDispatch = batchActions;
+    this.store.batchDispatch = (actions) => { return batchActions(this.store, actions); };
 
     if (userId !== null) {
       this.persistor.initialize(userId, this.store)
@@ -77,14 +78,14 @@ class StoreManagerClass {
           // we emit the storeInitialized event just in case of race conditions.
           this.storeInitialized = true;
           // this setTimeout ensures that any errors that crash the app will not trigger a DatabaseFailure message
-          setTimeout(() => { eventBus.emit('storeManagerInitialized'); } , 0)
+          setTimeout(() => { core.eventBus.emit('storeManagerInitialized'); } , 0)
         })
         .catch((err) => {
           LOGe.store("StoreManager: failed to initialize.", err);
           Alert.alert("Problem with the database.","Please log in again.",[{text:"OK", onPress: () => {
               this.persistor.endSession();
               this.storeInitialized = true;
-              eventBus.emit('storeManagerInitialized');
+              core.eventBus.emit('storeManagerInitialized');
             }
           }],{cancelable: false});
         })
@@ -92,7 +93,7 @@ class StoreManagerClass {
     else {
       // we emit the storeInitialized event just in case of race conditions.
       this.storeInitialized = true;
-      eventBus.emit('storeManagerInitialized');
+      core.eventBus.emit('storeManagerInitialized');
     }
   }
 

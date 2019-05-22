@@ -6,14 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Image,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
   Text,
   View
 } from 'react-native';
-let Actions = require('react-native-router-flux').Actions;
+
 
 import { PictureCircle }  from '../PictureCircle'
 import { styles} from '../../styles'

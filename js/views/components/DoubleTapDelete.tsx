@@ -6,10 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  TouchableOpacity,
-  Text,
-  View
-} from 'react-native';
+  TouchableOpacity} from 'react-native';
 
 import { colors } from '../styles'
 import {Icon} from "./Icon";

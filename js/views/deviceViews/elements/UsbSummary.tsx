@@ -5,26 +5,18 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("UsbSummary", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Animated,
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
-  Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
 
-import { colors, screenWidth, screenHeight } from '../../styles'
+
+import { screenWidth} from '../../styles'
 import { Util }                from "../../../util/Util";
 import { Permissions}          from "../../../backgroundProcesses/PermissionManager";
 import {DeviceButton, DeviceInformation} from "./DeviceSummary";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 export class UsbSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
@@ -34,7 +26,7 @@ export class UsbSummary extends LiveComponent<any, any> {
     super(props);
     this.state = {pendingCommand: false};
 
-    const state = props.store.getState();
+    const state = core.store.getState();
     const sphere = state.spheres[props.sphereId];
     const stone = sphere.stones[props.stoneId];
     this.storedSwitchState = stone.state.state;
@@ -42,7 +34,7 @@ export class UsbSummary extends LiveComponent<any, any> {
 
   componentDidMount() {
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
       if (
@@ -62,13 +54,12 @@ export class UsbSummary extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
 
-    // stone.reachability.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let locationLabel =  lang("Tap_here_to_move_me_");
@@ -84,13 +75,11 @@ export class UsbSummary extends LiveComponent<any, any> {
         <DeviceInformation
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { Actions.roomSelection({sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate("RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
         />
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>
           <DeviceButton
-            store={this.props.store}
-            eventBus={this.props.eventBus}
             stoneId={this.props.stoneId}
             sphereId={this.props.sphereId}
           />

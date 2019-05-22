@@ -7,17 +7,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Dimensions,
-  Image,
-  NativeModules,
-  TouchableOpacity,
   Text,
   View
 } from 'react-native';
-import {colors, styles} from "../../styles";
+import {colors} from "../../styles";
 import {Icon} from "../../components/Icon";
 import {IconCircle} from "../../components/IconCircle";
-import {Actions} from "react-native-router-flux";
+import { core } from "../../../core";
+
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -87,19 +84,19 @@ class LocalizationDebugCircleClass extends Component<any, any> {
 
 
   componentDidMount() {
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTap(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeTouched' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeTouched' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTouch(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeReleased' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeReleased' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTouchReleased(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeDragging' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeDragging' + this.props.viewId + this.props.locationId, (data) => {
       this.handleDragging(data);
     }));
   }
@@ -112,7 +109,7 @@ class LocalizationDebugCircleClass extends Component<any, any> {
 
 
   getIcon() {
-    let icon = this.props.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
+    let icon = core.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
     return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
   }
 
@@ -168,7 +165,7 @@ class LocalizationDebugCircleClass extends Component<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
 
     this.renderState = state;

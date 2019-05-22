@@ -7,14 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Animated,
-  ActivityIndicator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  Switch,
   TouchableOpacity,
-  TouchableHighlight,
   Text,
   View
 } from 'react-native';
@@ -22,8 +15,9 @@ import {
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
 import { styles, colors} from '../../styles'
-import {NativeBus} from "../../../native/libInterface/NativeBus";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 
 export class DfuDeviceEntry extends Component<any, any> {
@@ -48,7 +42,7 @@ export class DfuDeviceEntry extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.dfuEvents.push(NativeBus.on(NativeBus.topics.dfuAdvertisement, (data : crownstoneBaseAdvertisement) => {
+    this.dfuEvents.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (data : crownstoneBaseAdvertisement) => {
       if (data.handle === this.props.handle) {
         if (data.rssi < 0) {
           if (this.state.rssi === null) {
@@ -105,11 +99,7 @@ export class DfuDeviceEntry extends Component<any, any> {
 
   performDFU() {
     if (Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
-      this.props.eventBus.emit("updateCrownstoneFirmware", {
-        stoneId: this.props.stoneId,
-        sphereId: this.props.sphereId,
-        alreadyInDfuMode: true
-      });
+      NavigationUtil.navigate("DfuIntroduction", { sphereId: this.props.sphereId });
     }
     else {
       Alert.alert(

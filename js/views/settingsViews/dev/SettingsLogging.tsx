@@ -5,24 +5,19 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsLogging", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Alert,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
-  Text,
-  View
-} from 'react-native';
+  ScrollView} from 'react-native';
 
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import {colors, OrangeLine} from '../../styles'
+import {colors, } from '../../styles'
 import {LOG_LEVEL} from "../../../logging/LogLevels";
-import {BackAction} from "../../../util/Back";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
 import {IconButton} from "../../components/IconButton";
 import {clearLogs} from "../../../logging/LogUtil";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 export class SettingsLogging extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -33,7 +28,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
   unsubscribe;
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (change.changeDeveloperData) {
         this.forceUpdate();
@@ -49,21 +44,23 @@ export class SettingsLogging extends LiveComponent<any, any> {
   _getItems() {
     let items = [];
 
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
 
     items.push({
       type:'explanation',
       label: lang("SET_LOGGING_LEVELS"),
-    })
+    });
 
     let logLevelsData = {
       log_info:          { label: lang("General"),         explanation: ''},
       log_native:        { label: lang("Native"),          explanation: ''},
       log_mesh:          { label: lang("Mesh"),            explanation: ''},
+      log_broadcast:     { label: lang("Broadcast"),       explanation: ''},
       log_notifications: { label: lang("Notifications"),   explanation: ''},
       log_scheduler:     { label: lang("Scheduler"),       explanation: ''},
       log_ble:           { label: lang("BLE"),             explanation: ''},
+      log_dfu:           { label: lang("DFU"),             explanation: ''},
       log_bch:           { label: lang("Batch_C_Handler"), explanation: ''},
       log_events:        { label: lang("Events"),          explanation: ''},
       log_store:         { label: lang("Store"),           explanation: ''},
@@ -87,7 +84,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
       {label: lang("info"),     value: LOG_LEVEL.info},
       {label: lang("debug"),    value: LOG_LEVEL.debug},
       {label: lang("verbose"),  value: LOG_LEVEL.verbose},
-    ]
+    ];
 
     logLevels.forEach((level) => {
       items.push({
@@ -104,10 +101,10 @@ export class SettingsLogging extends LiveComponent<any, any> {
         callback: (newValue) => {
           let data = {};
           data[level] = newValue;
-          this.props.store.dispatch({type: "DEFINE_LOGGING_DETAILS", data: data})
+          core.store.dispatch({type: "DEFINE_LOGGING_DETAILS", data: data})
         }
       })
-    })
+    });
 
 
     items.push({
@@ -156,7 +153,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
         clearAllLogs();
         Bluenet.enableLoggingToFile(false);
 
-        BackAction();
+        NavigationUtil.back();
       }
     });
 
@@ -169,9 +166,8 @@ export class SettingsLogging extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+      <Background image={core.background.menu} >
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

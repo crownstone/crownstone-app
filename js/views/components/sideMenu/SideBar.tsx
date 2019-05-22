@@ -8,30 +8,24 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Navigator,
-  Dimensions,
   Image,
-  Linking,
-  PixelRatio,
   TouchableOpacity,
-  StyleSheet,
   ScrollView,
   Text,
-  View
-} from 'react-native';
-import { eventBus }                 from '../../../util/EventBus'
-import { Actions }                  from 'react-native-router-flux';
+  View, TextStyle
+} from "react-native";
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
 import { Icon }                     from '../Icon'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
-import { NativeBus }                from '../../../native/libInterface/NativeBus'
 import { AppUtil }                  from '../../../util/AppUtil'
 import { SettingConstructor }       from '../../../util/SettingConstructor'
-import {LOG, LOGe} from "../../../logging/Log";
+import {LOGe} from "../../../logging/Log";
 import { StoreManager }             from "../../../router/store/storeManager";
 import { SphereUtil }               from "../../../util/SphereUtil";
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
@@ -47,7 +41,7 @@ export class SideBar extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on("databaseChange", (data) => {
+    this.unsubscribe.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (
         change.changeUserData            ||
@@ -63,8 +57,8 @@ export class SideBar extends LiveComponent<any, any> {
       }
     }));
     // trigger a redraw then the sphere is entered/left
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.enterSphere, () => { this.forceUpdate(); }));
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.exitSphere,  () => { this.forceUpdate(); }));
+    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.enterSphere, () => { this.forceUpdate(); }));
+    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.exitSphere,  () => { this.forceUpdate(); }));
   }
 
   componentWillUnmount() {
@@ -77,7 +71,7 @@ export class SideBar extends LiveComponent<any, any> {
     let actionItems = [];
 
     let state = this.store.getState();
-    let finalizeLocalization = SphereUtil.finalizeLocalizationData(state)
+    let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
 
     if (finalizeLocalization.showItem) {
       actionItems.push({
@@ -85,7 +79,7 @@ export class SideBar extends LiveComponent<any, any> {
         label: lang("Setup_localization"),
         icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
         callback: () => {
-          Actions.drawerClose()
+         // NavigationUtil.navigate(drawerClose();
           finalizeLocalization.action()
         }
       });
@@ -97,7 +91,7 @@ export class SideBar extends LiveComponent<any, any> {
     let menuItems = [];
 
     let state = this.store.getState();
-    let highlight = SphereUtil.newMailAvailable(state)
+    let highlight = SphereUtil.newMailAvailable(state);
 
     menuItems.push({
       id: 'messages',
@@ -110,8 +104,8 @@ export class SideBar extends LiveComponent<any, any> {
       />,
       highlight: highlight,
       callback: () => {
-        Actions.drawerClose();
-        Actions.messageInbox();
+       // NavigationUtil.navigate(drawerClose();
+       NavigationUtil.navigate("MessageInbox");
       }
     });
     return menuItems;
@@ -119,7 +113,7 @@ export class SideBar extends LiveComponent<any, any> {
 
   _getSettingsItems() {
     let state = this.store.getState();
-    let settingItems = SettingConstructor(this.store, state, eventBus, () => { Actions.drawerClose() });
+    let settingItems = SettingConstructor(this.store, state);
 
     settingItems.push({
       id: 'quit',
@@ -182,7 +176,7 @@ text: lang("_Are_you_sure___Crownston_right"), onPress: () => {
     }
     return (
       <View style={{flexDirection:'column', flex:1, height:screenHeight,  backgroundColor: color}}>
-        <Image source={require('../../../images/menuBackground.png')} style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight}} />
+        <Image source={require('../../../images/backgrounds/menuBackground.png')} style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight}} />
         <View style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight}}>
           <MenuTopBar />
           <MenuCategoryImage />
@@ -213,15 +207,13 @@ class MenuItem extends Component<any, any> {
   render(){
     let backgroundColor = colors.lightGray.rgba(0.5);
     let foregroundColor = colors.darkGray.rgba(0.5);
-    let weight = '300';
-    let fontStyle = 'normal';
+    let style : TextStyle = {paddingLeft: 15, fontSize:16, fontWeight: '300', fontStyle: 'normal', color: foregroundColor};
 
     if (this.props.highlight) {
-      weight    = 'bold';
-      fontStyle = 'italic';
-    //   backgroundColor = colors.csOrange.rgba(0.5);
-    //   foregroundColor = colors.white.hex;
+      style.fontWeight = 'bold';
+      style.fontStyle  = 'italic';
     }
+
     return (
       <TouchableOpacity style={{
         flexDirection:'row',
@@ -239,7 +231,7 @@ class MenuItem extends Component<any, any> {
         <View style={[styles.centered,{width:25, marginRight:10}]}>
           {this.props.icon}
         </View>
-        <Text style={{paddingLeft: 15, fontSize:16, fontWeight: weight, fontStyle: fontStyle, color: foregroundColor}}>{this.props.label}</Text>
+        <Text style={style}>{this.props.label}</Text>
       </TouchableOpacity>
     );
   }

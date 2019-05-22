@@ -5,13 +5,9 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomCircle", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Animated,
-  Dimensions,
-  Image,
-  NativeModules,
-  TouchableOpacity,
   Text,
   View
 } from 'react-native';
@@ -20,20 +16,18 @@ import { styles, colors } from '../styles'
 import { getCurrentPowerUsageInLocation } from '../../util/DataUtil'
 import { Icon } from './Icon';
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { Svg, Circle } from 'react-native-svg';
-import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {IconCircle} from "./IconCircle";
-import { AlternatingContent } from "./animated/AlternatingContent";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
 };
 
-const FLOATING_CROWNSTONE_LOCATION_ID = null;
 
 class RoomCircleClass extends LiveComponent<any, any> {
   initializedPosition: any;
@@ -54,12 +48,15 @@ class RoomCircleClass extends LiveComponent<any, any> {
   previousCircle: any;
   color: any;
 
-  unsubscribeSetupEvents = [];
   unsubscribeStoreEvents: any;
   unsubscribeControlEvents = [];
   renderState: any;
 
   scaledUp = true;
+  touching = false;
+  touchTimeout = null;
+  touchAnimation = null;
+
 
   constructor(props) {
     super(props);
@@ -75,6 +72,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
       scale: new Animated.Value(1),
       opacity: new Animated.Value(1),
       setupProgress: 20,
+      progress: 0
     };
 
     this.energyLevels = [
@@ -85,7 +83,6 @@ class RoomCircleClass extends LiveComponent<any, any> {
     ];
 
     this.usage = 0;
-    this.props = props;
     // calculate the size of the circle based on the screen size
     this.borderWidth = props.radius / 15;
     this.innerDiameter = 2 * props.radius - 4.5 * this.borderWidth;
@@ -99,36 +96,15 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
     this.previousCircle = undefined;
 
-    this.unsubscribeSetupEvents = [];
-
     // set the usage initially
-    this.usage = getCurrentPowerUsageInLocation(props.store.getState(), props.sphereId, props.locationId);
+    this.usage = getCurrentPowerUsageInLocation(core.store.getState(), props.sphereId, props.locationId);
   }
 
 
   componentDidMount() {
-    const {store} = this.props;
-
-    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID) {
-      this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled", (handle) => {
-        this.setState({setupProgress: 20});
-      }));
-      this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress", (data) => {
-        this.setState({setupProgress: data.progress});
-      }));
-      this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete", (handle) => {
-        this.setState({setupProgress: 20});
-      }));
-    }
-
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("dfuStoneChange", () => {
-      this.forceUpdate();
-    }));
-
-
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
-      const state = store.getState();
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+      const state = core.store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
         return;
       }
@@ -136,39 +112,33 @@ class RoomCircleClass extends LiveComponent<any, any> {
       let usage = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
 
       // in the case the room is deleted, do not redraw.
-      if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID && state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
+      if (state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
         return;
       }
 
-      if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID) {
-        if (usage !== this.usage || state.spheres[this.props.sphereId].locations[this.props.locationId].config != this.renderState.spheres[this.props.sphereId].locations[this.props.locationId].config) {
-          this.usage = usage;
-          this.forceUpdate();
-        }
-      }
-      else if (usage !== this.usage) {
+      if (usage !== this.usage || state.spheres[this.props.sphereId].locations[this.props.locationId].config != this.renderState.spheres[this.props.sphereId].locations[this.props.locationId].config) {
         this.usage = usage;
         this.forceUpdate();
       }
     });
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTouched' + this.props.viewId, (data) => {
       this.handleTouchReleased(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTap(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeTouched' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeTouched' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTouch(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeReleased' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeReleased' + this.props.viewId + this.props.locationId, (data) => {
       this.handleTouchReleased(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeDragging' + this.props.viewId + this.props.locationId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeDragging' + this.props.viewId + this.props.locationId, (data) => {
       this.handleDragging(data);
     }));
   }
@@ -176,8 +146,9 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
 
   componentWillUnmount() {
-    this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeControlEvents.forEach((unsubscribe) => { unsubscribe(); });
+    clearTimeout(this.touchTimeout);
+    cancelAnimationFrame(this.touchAnimation);
     this.unsubscribeStoreEvents();
   }
 
@@ -190,31 +161,11 @@ class RoomCircleClass extends LiveComponent<any, any> {
     return this.energyLevels.length - 1;
   }
 
-  _areDfuStonesInLocation() {
-    let stonesInSetup = DfuStateHandler.getDfuHandles();
-    for (let i = 0; i < stonesInSetup.length; i++) {
-      if (MapProvider.stoneHandleMap[stonesInSetup[i]] && MapProvider.stoneHandleMap[stonesInSetup[i]].locationId === this.props.locationId) {
-        return true;
-      }
-    }
-    return false;
-  }
 
 
   _getColor(usage, prev = false) {
     if (this.props.viewingRemotely === true) {
       return colors.green.rgba(0.8);
-    }
-
-    if (this._areDfuStonesInLocation() === true) {
-      return colors.purple.hex;
-    }
-
-    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
-      if (prev)  {
-        return colors.lightGray.hex;
-      }
-      return colors.blinkColor1.hex;
     }
 
     let level = this._getLevel(usage);
@@ -230,35 +181,8 @@ class RoomCircleClass extends LiveComponent<any, any> {
   }
 
   getIcon() {
-    if (this._areDfuStonesInLocation() === true) {
-      return <Icon name="ios-settings" size={this.iconSize*1.3} color='#ffffff'/>;
-    }
-
-    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
-      let smallSize = this.iconSize*1.1*0.6;
-
-      return (
-        <AlternatingContent
-          style={{width:this.iconSize*1.1, height: this.iconSize, justifyContent:'center', alignItems:'center'}}
-          fadeDuration={500}
-          switchDuration={2000}
-          contentArray={[
-            <View style={{width:this.iconSize*1.1, height: this.iconSize}}>
-              <Icon name="ios-sunny" size={smallSize} color={colors.blinkColor2.hex} style={{position:'absolute', top:-smallSize*0.024, left:smallSize*0.465}} />
-              <Icon name="c2-crownstone" size={this.iconSize*1.1} color='#ffffff' style={{position:'absolute', top:this.iconSize*0.15, left:0}} />
-            </View>,
-            <Icon name="c1-tap" size={this.iconSize*0.9} style={{paddingLeft:0.1*this.iconSize}} color='#ffffff'/>,
-            <Icon name="c3-addRounded" size={this.iconSize*0.9} color='#ffffff'/>
-          ]} />
-      );
-    }
-    else if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID) {
-      return <Icon name="c2-pluginFilled" size={this.iconSize} color='#ffffff'/>;
-    }
-    else {
-      let icon = this.props.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
-      return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
-    }
+    let icon = core.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
+    return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
 
   }
 
@@ -301,28 +225,8 @@ class RoomCircleClass extends LiveComponent<any, any> {
   _getUsageCircle(usage, newColor) {
     let colorOfLowerLayer = this._getColor(usage, true);
     let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
-    if (usage == 0 && !(this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true)) {
-      return (
-        <View style={{position:'absolute', top:0, left:0}}>
-          <Svg width={this.outerDiameter} height={this.outerDiameter}>
-            <Circle
-              r={this.props.radius - this.borderWidth}
-              stroke={colorOfLowerLayer}
-              strokeWidth={this.borderWidth}
-              x={this.props.radius}
-              y={this.props.radius}
-              strokeLinecap="round"
-              fill="white"
-            />
-          </Svg>
-        </View>
-      );
-    }
 
     let levelProgress = this._getFactor(usage);
-    if (this.props.locationId === FLOATING_CROWNSTONE_LOCATION_ID && this.props.seeStonesInSetupMode === true) {
-      levelProgress = this.state.setupProgress / 20;
-    }
     return (
       <View style={{position:'absolute', top:0, left:0}}>
         <Svg width={this.outerDiameter} height={this.outerDiameter}>
@@ -335,7 +239,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
             strokeLinecap="round"
             fill="white"
           />
-          <Circle
+          {usage ? <Circle
             r={this.props.radius - this.borderWidth}
             stroke={newColor}
             strokeWidth={this.borderWidth}
@@ -345,12 +249,34 @@ class RoomCircleClass extends LiveComponent<any, any> {
             y={this.props.radius}
             strokeLinecap="round"
             fill="rgba(0,0,0,0)"
-          />
+          /> : undefined}
         </Svg>
       </View>
     )
   }
 
+  _getProgressCircle(percentage) {
+    if (percentage > 0) {
+      let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
+      return (
+        <View style={{ position: 'absolute', top: 0, left: 0 }}>
+          <Svg width={this.outerDiameter} height={this.outerDiameter}>
+            <Circle
+              r={this.props.radius - 10}
+              stroke={colors.white.blend(colors.purple, percentage).hex}
+              strokeWidth={10}
+              strokeDasharray={[pathLength * percentage, pathLength]}
+              rotation="-89.9"
+              x={this.props.radius}
+              y={this.props.radius}
+              strokeLinecap="round"
+              fill="rgba(0,0,0,0)"
+            />
+          </Svg>
+        </View>
+      );
+    }
+  }
 
   _getFactor(usage) {
     let level = this._getLevel(usage);
@@ -370,14 +296,13 @@ class RoomCircleClass extends LiveComponent<any, any> {
   }
 
   render() {
-    const store = this.props.store;
-    const state = store.getState();
+    const state = core.store.getState();
 
     // do not show the fingerprint required alert bubbles if the user does not want to use indoor localization
     if (state.app.indoorLocalizationEnabled) {
       let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
       this.showAlert = null;
-      if (this.props.locationId !== FLOATING_CROWNSTONE_LOCATION_ID && this.props.viewingRemotely !== true) {
+      if (this.props.viewingRemotely !== true) {
         if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
           this.showAlert = ALERT_TYPES.fingerprintNeeded;
         }
@@ -399,6 +324,7 @@ class RoomCircleClass extends LiveComponent<any, any> {
         <View>
           {this.getCircle()}
           {this.showAlert !== null ? this._getAlertIcon() : undefined}
+          {this._getProgressCircle(this.state.progress) }
         </View>
       </Animated.View>
     )
@@ -415,6 +341,35 @@ class RoomCircleClass extends LiveComponent<any, any> {
     tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70 }));
     tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, duration: 100}));
     Animated.parallel(tapAnimations).start();
+
+    this.touching = true;
+    this.touchTimeout = setTimeout(() => { this._onHoldAnimation(); }, 250);
+  }
+
+  _onHoldAnimation() {
+    Animated.timing(this.state.opacity, {toValue: 1, duration: 100}).start(() => { this._onHoldProgress() })
+  }
+
+  _onHoldProgress() {
+    if (this.touching) {
+      let nextStep = Math.min(1, this.state.progress + 0.04);
+      this.setState({ progress: nextStep });
+      if (nextStep >= 0.95) {
+        this.props.onHold();
+        this._clearHold();
+      } else {
+        this.touchAnimation = requestAnimationFrame(() => { this._onHoldProgress(); });
+      }
+    }
+  }
+
+  _clearHold() {
+    this.touching = false;
+    if (this.state.progress > 0) {
+      this.setState({ progress: 0 })
+    }
+    clearTimeout(this.touchTimeout);
+    cancelAnimationFrame(this.touchAnimation);
   }
 
   handleTouchReleased(data) {
@@ -430,6 +385,9 @@ class RoomCircleClass extends LiveComponent<any, any> {
       revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
       Animated.parallel(revertAnimations).start();
     }
+
+
+    this._clearHold();
   }
 
   handleDragging(data) {
@@ -440,9 +398,11 @@ class RoomCircleClass extends LiveComponent<any, any> {
     this.scaledUp = false;
 
     let revertAnimations = [];
-    revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.scale,   {toValue: 1, duration: 100}));
     revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
     Animated.parallel(revertAnimations).start();
+
+    this._clearHold();
   }
 
   handleTap(data) {
@@ -455,18 +415,20 @@ class RoomCircleClass extends LiveComponent<any, any> {
     this.state.scale.setValue(1);
     this.state.opacity.setValue(1);
 
-    if (this.showAlert !== null) {
-      if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
-        if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
-          handled = true;
-          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
+    if (this.touching === true) {
+      if (this.showAlert !== null) {
+        if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
+          if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
+            handled = true;
+            NavigationUtil.navigate("RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+          }
         }
       }
+      if (handled === false) {
+        NavigationUtil.navigate("RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+      }
     }
-
-    if (handled === false) {
-      Actions.roomOverview({ sphereId: this.props.sphereId, locationId: this.props.locationId });
-    }
+    this._clearHold();
   }
 }
 

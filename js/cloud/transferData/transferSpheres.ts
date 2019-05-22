@@ -1,5 +1,5 @@
 import { CLOUD }        from "../cloudAPI";
-import {LOG, LOGe} from "../../logging/Log";
+import {LOGe} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 
 
@@ -36,7 +36,8 @@ let fieldMap : fieldMap = [
   {local:'guestKey',           cloud:  null },
 
   // used for local
-  {local:'cloudId',            cloud:  'id',  cloudToLocalOnly: true  },
+  {local:'uid',                cloud: 'uid',  cloudToLocalOnly: true },
+  {local:'cloudId',            cloud:  'id',  cloudToLocalOnly: true },
 ];
 
 export const transferSpheres = {
@@ -60,7 +61,7 @@ export const transferSpheres = {
 
   updateOnCloud: function( data : transferSphereToCloudData ) {
     if (data.cloudId === undefined) {
-      return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
+      return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
     }
 
 

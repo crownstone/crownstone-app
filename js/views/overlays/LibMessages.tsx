@@ -7,16 +7,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Image,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 
-import { NativeBus }          from '../../native/libInterface/NativeBus'
 import { IconButton }         from '../components/IconButton'
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import {colors, screenHeight, screenWidth, styles} from '../styles'
+import { core } from "../../core";
 
 export class LibMessages extends Component<any, any> {
   unsubscribe : any;
@@ -35,11 +34,11 @@ export class LibMessages extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.libPopup, (data) => {
+    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.libPopup, (data) => {
       this.setState({visible: true, ...data});
     }));
 
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.libAlert, (data) => {
+    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.libAlert, (data) => {
       Alert.alert(
         lang("arguments___arguments___O_header",data.header),
         lang("arguments___arguments___O_body",data.body),

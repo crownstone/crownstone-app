@@ -6,26 +6,21 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   TouchableOpacity,
-  PixelRatio,
   ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
 
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../../styles";
 import { tutorialStyle } from "../../../tutorialViews/TutorialStyle";
 import { ScaledImage } from "../../../components/ScaledImage";
-import { eventBus } from "../../../../util/EventBus";
 import { createNewSphere } from "../../../../util/CreateSphere";
-import { BackAction } from "../../../../util/Back";
+import { core } from "../../../../core";
+import { NavigationUtil } from "../../../../util/NavigationUtil";
 
 
 export class AddSphereTutorial_intended extends Component<any, any> {
@@ -37,7 +32,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
       borderWidth: 3,
       borderColor: colors.white.hex,
       backgroundColor: colors.csBlue.rgba(0.5)
-    }]
+    }];
 
     return (
       <ScrollView style={{height: screenHeight - topBarHeight, width: screenWidth}}>
@@ -56,7 +51,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <TouchableOpacity
             onPress={() => {
-              BackAction();
+              NavigationUtil.back();
             }}
             style={buttonStyle}>
             <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("I_dont_need_a_sphere") }</Text>
@@ -64,14 +59,14 @@ export class AddSphereTutorial_intended extends Component<any, any> {
           <View style={{height:15}} />
           <TouchableOpacity
             onPress={() => {
-              let state = this.props.store.getState();
-              createNewSphere(eventBus, this.props.store, state.user.firstName+"'s Sphere")
+              let state = core.store.getState();
+              createNewSphere(state.user.firstName+"'s Sphere")
                 .then((sphereId) => {
-                  this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: sphereId}});
-                  Actions.aiStart({sphereId: sphereId, resetViewStack: true})
+                  core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: sphereId}});
+                  NavigationUtil.reset("AiStart",{sphereId: sphereId, resetViewStack: true});
                 })
                 .catch((err) => {
-                  Alert("Whoops!", "Something went wrong with the creation of your Sphere.", [{text:"OK"}])
+                  Alert.alert(lang("Whoops!"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])
                 });
             }}
             style={buttonStyle}>

@@ -1,12 +1,11 @@
-import { NativeBus } from '../native/libInterface/NativeBus';
 import { Bluenet  }  from '../native/libInterface/Bluenet';
 import {LOG, LOGd} from '../logging/Log'
 import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
-import { Util } from './Util'
 
 import { DirectCommand } from '../logic/DirectCommand'
 import {Scheduler} from "../logic/Scheduler";
 import { xUtil } from "./StandAloneUtil";
+import { core } from "../core";
 
 
 export const BleUtil = {
@@ -35,12 +34,12 @@ export const BleUtil = {
 
   getNearestSetupCrownstone: function(timeoutMilliseconds) {
     this.cancelSetupSearch();
-    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearestSetup, this.pendingSetupSearch, timeoutMilliseconds)
+    return this._getNearestCrownstoneFromEvent(core.nativeBus.topics.nearestSetup, this.pendingSetupSearch, timeoutMilliseconds)
   },
 
   getNearestCrownstone: function(timeoutMilliseconds) {
     this.cancelSearch();
-    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearest, this.pendingSearch, timeoutMilliseconds)
+    return this._getNearestCrownstoneFromEvent(core.nativeBus.topics.nearest, this.pendingSearch, timeoutMilliseconds)
   },
 
   _getNearestCrownstoneFromEvent: function(event, stateContainer, timeoutMilliseconds = 10000) {
@@ -71,7 +70,7 @@ export const BleUtil = {
         }
       };
 
-      stateContainer.unsubscribe = NativeBus.on(event, sortingCallback);
+      stateContainer.unsubscribe = core.nativeBus.on(event, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
       stateContainer.timeout = Scheduler.scheduleCallback(() => {
@@ -111,8 +110,8 @@ export const BleUtil = {
         resolve(advertisement.setupPackage);
       };
 
-      LOGd.info("detectCrownstone: Subscribing TO ", NativeBus.topics.advertisement);
-      cleanup.unsubscribe = NativeBus.on(NativeBus.topics.advertisement, sortingCallback);
+      LOGd.info("detectCrownstone: Subscribing TO ", core.nativeBus.topics.advertisement);
+      cleanup.unsubscribe = core.nativeBus.on(core.nativeBus.topics.advertisement, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
       cleanup.timeout = Scheduler.scheduleCallback(() => {

@@ -1,8 +1,8 @@
-import { eventBus }     from '../../util/EventBus'
 import {LOGd, LOGe}         from '../../logging/Log'
 import {MeshUtil} from "../../util/MeshUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../../Enums";
+import { core } from "../../core";
 
 
 /**
@@ -34,7 +34,7 @@ export class CommandManager {
           cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
           promise:  { resolve: resolve, reject: reject, pending: false }
         };
-        eventBus.emit("BatchCommandHandlerLoadAction");
+        core.eventBus.emit("BatchCommandHandlerLoadAction");
       });
     }
   }
@@ -157,7 +157,11 @@ export class CommandManager {
    * If a target network id is provided, the filter will only allow stones which match that id unless the stoneId specifically matches the targetStoneId
    * If only a targetStoneId is provided, the filter will allow only matching stoneIds
    *
+   * @param state
+   * @param state
+   * @param addMeshEnabledCommands
    * @param targetStoneId     // database id of stone. If provided, we only put todos for this stone in the list.
+   * @param addMeshEnabledCommands
    * @returns directCommadns
    * @private
    */
@@ -190,7 +194,16 @@ export class CommandManager {
    * If a target network id is provided, the filter will only allow stones which match that id unless the stoneId specifically matches the targetStoneId
    * If only a targetStoneId is provided, the filter will allow only matching stoneIds
    *
+   * @param state
+   * @param state
+   * @param targetNetworkId
+   * @param allowRelayOnly
+   * @param state
+   * @param targetNetworkId
+   * @param allowRelayOnly
    * @param targetStoneId     // database id of stone. If provided, we only put todos for this stone in the list.
+   * @param targetNetworkId
+   * @param allowRelayOnly
    * @returns directCommadns
    * @private
    */
@@ -371,6 +384,7 @@ export class CommandManager {
 /**
  * Extract the payload from the commands for the 4 supported states.
  * @param batchCommand
+ * @param stoneConfig
  * @returns {any}
  * @private
  */

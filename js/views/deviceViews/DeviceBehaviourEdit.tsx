@@ -5,28 +5,22 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceBehaviourEdit", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
-  PixelRatio,
   ScrollView,
-  Switch,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  Vibration,
-  View
-} from 'react-native';
+  Vibration} from 'react-native';
 import { styles, colors} from '../styles'
 import { Background }                  from '../components/Background'
 import { ListEditableItems }           from '../components/ListEditableItems'
-import { Util, addDistanceToRssi }     from '../../util/Util'
-import { NativeBus }                   from '../../native/libInterface/NativeBus'
-import {canUseIndoorLocalizationInSphere, enoughCrownstonesInLocationsForIndoorLocalization} from '../../util/DataUtil'
+import { addDistanceToRssi }     from '../../util/Util'
+import {canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import {BehaviourUtil} from "../../util/BehaviourUtil";
-import {BackAction} from "../../util/Back";
+
 import { xUtil } from "../../util/StandAloneUtil";
-const Actions = require('react-native-router-flux').Actions;
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 
 let toggleOptions = [];
@@ -52,6 +46,7 @@ export class DeviceBehaviourEdit extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: lang("Behaviour"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />,
     }
   };
 
@@ -76,15 +71,15 @@ export class DeviceBehaviourEdit extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
       // if the stone has been deleted, close everything.
       if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
-        return BackAction();
+        return NavigationUtil.back();
       }
 
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       let applianceId = stone.config.applianceId;
 
@@ -112,11 +107,12 @@ export class DeviceBehaviourEdit extends LiveComponent<any, any> {
           (this.element.behaviour['onNear'].active === true || this.element.behaviour['onAway'].active === true) &&
           this.stone.config.nearThreshold === null) {
       Alert.alert(
-lang("_Near_behaviour_disabled__header"),
-lang("_Near_behaviour_disabled__body"),
-[{text:lang("_Near_behaviour_disabled__left")},
-          {
-text:lang("_Near_behaviour_disabled__right"), onPress: () => {Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.viewingRemotely});}}
+        lang("_Near_behaviour_disabled__header"),
+        lang("_Near_behaviour_disabled__body"),
+        [{text:lang("_Near_behaviour_disabled__left")},
+                  {
+        text:lang("_Near_behaviour_disabled__right"), onPress: () => {
+          NavigationUtil.navigate("DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.viewingRemotely});}}
         ]);
     }
 
@@ -127,11 +123,11 @@ text:lang("_Near_behaviour_disabled__right"), onPress: () => {Actions.deviceBeha
 
   defineThreshold(uuid, major, minor) {
     // show loading screen
-    this.props.eventBus.emit("showLoading", "Determining range...");
+    core.eventBus.emit("showLoading", "Determining range...");
 
 
     // make sure we don't strangely trigger stuff while doing this.
-    this.props.eventBus.emit("ignoreTriggers");
+    core.eventBus.emit("ignoreTriggers");
 
     let measurements = [];
 
@@ -147,14 +143,14 @@ text:lang("_Near_behaviour_disabled__right"), onPress: () => {Actions.deviceBeha
 lang("_Im_not_sure_yet_____I_co_header"),
 lang("_Im_not_sure_yet_____I_co_body"),
 [{text:lang("_Im_not_sure_yet_____I_co_left"), onPress: () => {
-        this.props.eventBus.emit("hideLoading");
-        this.props.eventBus.emit("useTriggers");
+        core.eventBus.emit("hideLoading");
+        core.eventBus.emit("useTriggers");
       }}], { cancelable: false });
     }, 15000);
 
 
     // listen to all advertisements
-    this.unsubscribeNative = NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+    this.unsubscribeNative = core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => {
       data.forEach((iBeaconAdvertisement) => {
         // filter for our crownstone with only valid rssi measurements. We force the strings to lowercase to avoid os interpretation of UUIDs
         if (
@@ -182,7 +178,7 @@ lang("_Im_not_sure_yet_____I_co_body"),
         let averageCorrected = addDistanceToRssi(average, 0.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
 
         // update trigger range.
-        this.props.store.dispatch({
+        core.store.dispatch({
           type:     "UPDATE_STONE_CONFIG",
           sphereId: this.props.sphereId,
           stoneId:  this.props.stoneId,
@@ -190,7 +186,7 @@ lang("_Im_not_sure_yet_____I_co_body"),
         });
 
         // tell the user it was a success!
-        this.props.eventBus.emit("showLoading", "Great!");
+        core.eventBus.emit("showLoading", "Great!");
 
         // notify the user when the measurement is complete!
         Vibration.vibrate(400, false);
@@ -199,8 +195,8 @@ lang("_Im_not_sure_yet_____I_co_body"),
 lang("_Great___Ill_make_sure_to_header"),
 lang("_Great___Ill_make_sure_to_body"),
 [{text: lang("_Great___Ill_make_sure_to_left"), onPress: () => {
-            this.props.eventBus.emit("hideLoading");
-            this.props.eventBus.emit("useTriggers");
+            core.eventBus.emit("hideLoading");
+            core.eventBus.emit("useTriggers");
           }
         }], { cancelable: false });
       }
@@ -225,7 +221,7 @@ lang("_Great___Ill_make_sure_to_body"),
       let delays = timeOptions;
       let explanation = null;
       if (stone.config.firmwareVersion) {
-        if (Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '2.0.0')) {
+        if (xUtil.versions.isHigherOrEqual(stone.config.firmwareVersion, '2.0.0')) {
           delays = timeOptionsV2;
         }
         else {
@@ -233,7 +229,7 @@ lang("_Great___Ill_make_sure_to_body"),
           // not very clean but it is a one time event. I do not want to change the default value from 2 minutes to 2 seconds,
           // because that would not be the optimal setting for normal users.
           if (element.behaviour[eventLabel].delay !== timeOptionsV2[0].value) {
-            this.props.store.dispatch({
+            core.store.dispatch({
               ...requiredData,
               type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel,
               data: {delay: timeOptionsV2[0].value}
@@ -255,10 +251,10 @@ lang("_Great___Ill_make_sure_to_body"),
         buttons: delays.length === 1,
         valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
         value: element.behaviour[eventLabel].delay,
-        valueLabel: Util.getDelayLabel(element.behaviour[eventLabel].delay, true),
+        valueLabel: getDelayLabel(element.behaviour[eventLabel].delay, true),
         items: delays,
         callback: (newValue) => {
-          this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
+          core.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
         }
       });
 
@@ -284,10 +280,10 @@ lang("_Great___Ill_make_sure_to_body"),
         items: options,
         callback: (newValue) => {
           if (newValue === -1) {
-            this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {active: false}})
+            core.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {active: false}})
           }
           else {
-            this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {state: newValue ? 1 : 0, active: true}})
+            core.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {state: newValue ? 1 : 0, active: true}})
           }
         }
       }
@@ -299,8 +295,8 @@ lang("_Great___Ill_make_sure_to_body"),
     toggleOptions.push({label: lang("do_nothing"), value: -1});
 
     let toggleOptionsExitSphere = [];
-    toggleOptionsExitSphere.push({label: lang("turn_on_after_",Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))),  value: 1});
-    toggleOptionsExitSphere.push({label: lang("turn_off_after_",Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))), value: 0});
+    toggleOptionsExitSphere.push({label: lang("turn_on_after_",getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))),  value: 1});
+    toggleOptionsExitSphere.push({label: lang("turn_off_after_",getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay))), value: 0});
     toggleOptionsExitSphere.push({label: lang("do_nothing"), value: -1});
 
     let toggleOptionsExit = [];
@@ -319,7 +315,7 @@ lang("_Great___Ill_make_sure_to_body"),
       items.push(generateDropdown(eventLabel, 'Leave Sphere', toggleOptionsExitSphere));
       if (element.behaviour[eventLabel].active === true) {
         items.push({
-          label: lang("Leaving_the_sphere_will_b",Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true)),
+          label: lang("Leaving_the_sphere_will_b",getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true)),
           style: {paddingBottom: 5},
           type: 'explanation',
           below: true
@@ -353,7 +349,7 @@ lang("_Great___Ill_make_sure_to_body"),
           label: defineNearLabel,
           style: {color: colors.iosBlue.hex},
           callback: () => {
-            let state = this.props.store.getState();
+            let state = core.store.getState();
             let iBeaconUUID = state.spheres[this.props.sphereId].config.iBeaconUUID;
 
             Alert.alert(
@@ -363,7 +359,7 @@ lang("_How_near_is_near___You_c_body"),
                 
 text: lang("_How_near_is_near___You_c_right"), onPress: () => {
                   // show loading bar
-                  this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
+                  core.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
                   this.pocketTimeout = setTimeout(() => {
                     this.defineThreshold(iBeaconUUID, stone.config.iBeaconMajor, stone.config.iBeaconMinor);
                   }, 5000);
@@ -416,7 +412,7 @@ text: lang("_How_near_is_near___You_c_right"), onPress: () => {
 
     items.push({label: lang("EXCEPTIONS"), type: 'explanation', style: styles.topExplanation, below:false});
     items.push({label: lang("Only_turn_on_if_it_s_dark"), style:{fontSize:15}, type: 'switch', value: element.config.onlyOnWhenDark === true, callback: (newValue) => {
-      this.props.store.dispatch({type: 'UPDATE_'+dataTypeString+'_CONFIG', ...requiredData, data: { onlyOnWhenDark : newValue } })
+      core.store.dispatch({type: 'UPDATE_'+dataTypeString+'_CONFIG', ...requiredData, data: { onlyOnWhenDark : newValue } })
     }});
 
     let times = BehaviourUtil.getEveningTimes(state.spheres[this.props.sphereId]);
@@ -428,7 +424,7 @@ text: lang("_How_near_is_near___You_c_right"), onPress: () => {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
@@ -445,7 +441,7 @@ text: lang("_How_near_is_near___You_c_right"), onPress: () => {
       options = this.constructOptions(state, stone, stone, canDoIndoorLocalization);
     }
 
-    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
+    let backgroundImage = core.background.menu;
     return (
       <Background hasNavBar={false} image={backgroundImage} >
         <ScrollView>
@@ -453,5 +449,20 @@ text: lang("_How_near_is_near___You_c_right"), onPress: () => {
         </ScrollView>
       </Background>
     )
+  }
+}
+
+
+export function getDelayLabel(delay, fullLengthText = false) {
+  if (delay < 60) {
+    return Math.floor(delay) + ' seconds';
+  }
+  else {
+    if (fullLengthText === true) {
+      return Math.floor(delay / 60) + ' minutes';
+    }
+    else {
+      return Math.floor(delay / 60) + ' min';
+    }
   }
 }

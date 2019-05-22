@@ -1,22 +1,15 @@
-import { eventBus } from "../util/EventBus";
 import { Util } from "../util/Util";
 import { Bluenet } from "../native/libInterface/Bluenet";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { SphereUtil } from "../util/SphereUtil";
+import { core } from "../core";
+import { LOGi } from "../logging/Log";
 
 
 class BroadcastStateManagerClass {
-  _store : any;
   _initialized : boolean = false;
   _advertising : boolean = false;
-  _advertisingEnabled : boolean = false;
   _sphereIdInLocationState : string = null;
-
-  constructor() {}
-
-  loadStore(store) {
-    this._store = store;
-  }
 
 
   init() {
@@ -27,11 +20,8 @@ class BroadcastStateManagerClass {
     // We do not need to watch the foreground-background, this is done automatically
     // We need to start advertising when the peripheral is ready.
     if (this._initialized === false) {
-      let state = this._store.getState();
-      this._advertisingEnabled = state.development.broadcasting_enabled;
-
-      console.log("INITIALIZING BroadcastStateManagerClass")
-      eventBus.on("databaseChange", (data) => {
+      // console.log("INITIALIZING BroadcastStateManagerClass");
+      core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
         if (change.changeAppSettings || change.changeDeviceData) {
           this._reloadDevicePreferences();
@@ -47,11 +37,11 @@ class BroadcastStateManagerClass {
         }
       });
 
-      eventBus.on("enterSphere", (enteringSphereId) => {
+      core.eventBus.on("enterSphere", (enteringSphereId) => {
         this._handleEnterSphere(enteringSphereId);
       });
 
-      eventBus.on("exitSphere", (exitSphereId) => {
+      core.eventBus.on("exitSphere", (exitSphereId) => {
         this._handleExitSphere(exitSphereId);
       });
 
@@ -70,9 +60,7 @@ class BroadcastStateManagerClass {
    * @private
    */
   _handleActiveSphereUpdate() {
-    if (this._advertisingEnabled === false) { return; }
-
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     let amountOfPresentSpheres = SphereUtil.getAmountOfPresentSpheres(state);
     let presentSphere = SphereUtil.getPresentSphere(state);
@@ -103,9 +91,7 @@ class BroadcastStateManagerClass {
 
 
   _handleEnterSphere(sphereId) {
-    if (this._advertisingEnabled === false) { return; }
-
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereData = SphereUtil.getActiveSphere(state);
@@ -140,14 +126,12 @@ class BroadcastStateManagerClass {
    * @private
    */
   _handleExitSphere(sphereId) {
-    if (this._advertisingEnabled === false) { return; }
-
-    let state = this._store.getState();
+    let state = core.store.getState();
     let amountOfPresentSpheres = SphereUtil.getAmountOfPresentSpheres(state);
     let activeSphereData = SphereUtil.getActiveSphere(state);
 
     if (amountOfPresentSpheres === 0) {
-      console.log("Stopping the broadcasting. Leaving: ",state.spheres[sphereId].config.name);
+      LOGi.broadcast("Stopping the broadcasting. Leaving: ",state.spheres[sphereId].config.name);
       return this._stopAdvertising();
     }
 
@@ -174,27 +158,20 @@ class BroadcastStateManagerClass {
       this._startAdvertising();
     }
 
-    let state = this._store.getState();
-    console.log("Settings Sphere As Present:",state.spheres[sphereId].config.name);
+    let state = core.store.getState();
+    LOGi.broadcast("Settings Sphere As Present:",state.spheres[sphereId].config.name);
     this._sphereIdInLocationState = sphereId;
     Bluenet.setLocationState(0, 0, 0, sphereId);
   }
 
   _reloadAdvertisingState() {
-    let state = this._store.getState();
-    this._advertisingEnabled = state.development.broadcasting_enabled;
-    if (this._advertisingEnabled) {
-      this._startAdvertising();
-    }
-    else {
-      this._stopAdvertising();
-    }
+    this._startAdvertising();
   }
 
   _startAdvertising() {
     BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
-        console.log("Bluenet.startAdvertising()")
+        LOGi.broadcast("Bluenet.startAdvertising()");
         this._advertising = true;
         Bluenet.startAdvertising();
       });
@@ -203,7 +180,7 @@ class BroadcastStateManagerClass {
   _stopAdvertising() {
     BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
-        console.log("Bluenet.stopAdvertising()")
+        LOGi.broadcast("Bluenet.stopAdvertising()");
         this._sphereIdInLocationState = null;
         this._advertising = false;
         Bluenet.stopAdvertising();
@@ -211,7 +188,7 @@ class BroadcastStateManagerClass {
   }
 
   _reloadDevicePreferences() {
-    let state = this._store.getState();
+    let state = core.store.getState();
 
     let rssiOffset = 0;
     let tapToToggleEnabled = state.app.tapToToggleEnabled;
@@ -226,4 +203,4 @@ class BroadcastStateManagerClass {
 
 }
 
-export const BroadcastStateManager = new BroadcastStateManagerClass()
+export const BroadcastStateManager = new BroadcastStateManagerClass();

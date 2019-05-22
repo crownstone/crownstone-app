@@ -6,21 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Linking,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  View
-} from 'react-native';
+  Image} from 'react-native';
 import {styles} from "../styles";
 
 
 export class Logout extends Component<any, any> {
+  static navigationOptions = {
+    header: null
+  };
+
   render() {
     return (
-      <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../../images/setupBackground.png')} />
+      <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../../images/backgrounds/setupBackground.png')} />
     );
   }
 }

@@ -6,24 +6,14 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SphereLevel", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {
-  Animated,
-  Dimensions,
-  Image,
-  NativeModules,
-  PanResponder,
-  Platform,
-  ScrollView,
-  TouchableHighlight,
-  Text,
-  View
-} from 'react-native';
 
-import { screenWidth} from '../styles'
+import { availableScreenHeight, screenWidth } from "../styles";
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 import {SphereCircle} from "../components/SphereCircle";
 import { xUtil } from "../../util/StandAloneUtil";
+import { core } from "../../core";
+import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 export class SphereLevel extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values
@@ -39,7 +29,7 @@ export class SphereLevel extends LiveComponent<any, any> {
     super(props);
 
     this._baseRadius = 0.15 * screenWidth;
-    this.viewId = xUtil.getUUID()
+    this.viewId = xUtil.getUUID();
     this._currentSphere = props.sphereId;
     this._showingFloatingRoom = false
   }
@@ -53,7 +43,7 @@ export class SphereLevel extends LiveComponent<any, any> {
 
     this.unsubscribeSetupEvents = [];
 
-    this.unsubscribeStoreEvents = this.props.eventBus.on('databaseChange', (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
 
       if (change.changeLocations) {
@@ -83,10 +73,8 @@ export class SphereLevel extends LiveComponent<any, any> {
     return (
       <SphereCircle
         viewId={this.viewId}
-        eventBus={this.props.eventBus}
         sphereId={sphereId}
         radius={this._baseRadius}
-        store={this.props.store}
         pos={{x: nodePosition.x, y: nodePosition.y}}
         key={sphereId}
         selectSphere={() => { this.props.selectSphere(sphereId) }}
@@ -95,7 +83,12 @@ export class SphereLevel extends LiveComponent<any, any> {
   }
 
   render() {
-    let state = this.props.store.getState()
+    let height = availableScreenHeight;
+    if (OnScreenNotifications.hasNotifications(this.props.sphereId)) {
+      height -= 64;
+    }
+
+    let state = core.store.getState();
     return (
       <ForceDirectedView
         viewId={this.viewId}
@@ -106,6 +99,7 @@ export class SphereLevel extends LiveComponent<any, any> {
         enablePhysics={true}
         nodeRadius={this._baseRadius}
         allowDrag={false}
+        height={height}
         zoomInCallback={ this.props.zoomInCallback }
         zoomOutCallback={ this.props.zoomOutCallback }
         renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }} />

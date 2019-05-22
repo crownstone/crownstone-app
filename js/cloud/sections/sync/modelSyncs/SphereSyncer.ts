@@ -117,7 +117,7 @@ export class SphereSyncer extends SyncingBase {
         return applianceSyncer.sync(store);
       })
       .then(() => {
-        LOG.info("SphereSync ",localId,": DONE applianceSyncer sync.");
+        LOG.info("SphereSync ",localId,": DONE presenceSyncer sync.");
         LOG.info("SphereSync ",localId,": START stoneSyncer sync.");
         // sync stones
         return stoneSyncer.sync(store);
@@ -152,7 +152,7 @@ export class SphereSyncer extends SyncingBase {
           updatedAt: sphere_from_cloud.floatingLocationPosition.updatedAt,
         }
       })
-    }
+    };
     if (localSphere) {
       if (localSphere.layout.floatingLocation.x === null || localSphere.layout.floatingLocation.y === null) {
         if (sphere_from_cloud.floatingLocationPosition) {

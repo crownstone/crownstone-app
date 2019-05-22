@@ -1,17 +1,15 @@
 //
-//  CalendarManagerBridge.m
+//  NativeBridge.m
 //  Crownstone
 //
 //  Created by Alex de Mulder on 16/03/16.
 //  Copyright © 2016 Facebook. All rights reserved.
 //
 
-// CalendarManagerBridge.m
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
 @interface RCT_EXTERN_MODULE(BluenetJS, RCTEventEmitter)
-
 
 RCT_EXTERN_METHOD(clearKeySets)
 RCT_EXTERN_METHOD(setKeySets:(NSArray *)keySets callback:(RCTResponseSenderBlock)callback)
@@ -132,10 +130,8 @@ RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggl
 
 RCT_EXTERN_METHOD(setCrownstoneNames:(NSDictionary *)names)
 
-
-
-
-
+// Setup
+RCT_EXTERN_METHOD(setupPulse:(RCTResponseSenderBlock)callback)
 
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end

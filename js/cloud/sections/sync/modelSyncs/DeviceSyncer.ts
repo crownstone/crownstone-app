@@ -14,9 +14,9 @@ import { Platform } from 'react-native'
 import {Util} from "../../../../util/Util";
 import {SyncingBase} from "./SyncingBase";
 import {CLOUD} from "../../../cloudAPI";
-import {LOG, LOGe} from "../../../../logging/Log";
+import {LOG} from "../../../../logging/Log";
 import {APP_NAME} from "../../../../ExternalConfig";
-import { SessionMemory } from "../../../../util/SessionMemory";
+import { core } from "../../../../core";
 
 
 interface matchingSpecs {
@@ -84,7 +84,7 @@ export class DeviceSyncer extends SyncingBase {
     }
     else {
       // this
-      this._updateLocalDevice(state, specs, devicesInState[matchingSpecs.id], matchingSpecs)
+      this._updateLocalDevice(state, specs, devicesInState[matchingSpecs.id], matchingSpecs);
       this.globalCloudIdMap.devices[matchingSpecs.id] = matchingSpecs.id
     }
 
@@ -192,7 +192,7 @@ export class DeviceSyncer extends SyncingBase {
 
     // if our locale and deviceType is different or missing in the cloud, we restore it
     if (specs.locale !== matchingSpecs.deviceInCloud.locale || specs.deviceType !== matchingSpecs.deviceInCloud.deviceType) {
-      LOG.info("Sync: Updating cloud device with deviceType and locale.")
+      LOG.info("Sync: Updating cloud device with deviceType and locale.");
       this.transferPromises.push(
         CLOUD.updateDevice(matchingSpecs.id, {
           locale: specs.locale,
@@ -252,14 +252,14 @@ export class DeviceSyncer extends SyncingBase {
           });
 
           // check if we have to update this installation in the cloud.
-          if (installation.developmentApp !== SessionMemory.developmentEnvironment) {
-            return CLOUD.updateInstallation(installationId, {developmentApp: SessionMemory.developmentEnvironment}).catch(() => {})
+          if (installation.developmentApp !== core.sessionMemory.developmentEnvironment) {
+            return CLOUD.updateInstallation(installationId, {developmentApp: core.sessionMemory.developmentEnvironment}).catch(() => {})
           }
         }))
     }
     else if (deviceId && state && state.devices && state.devices[deviceId] && state.devices[deviceId].installationId === null) {
       this.transferPromises.push(
-        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, developmentApp: SessionMemory.developmentEnvironment })
+        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, developmentApp: core.sessionMemory.developmentEnvironment })
           .then((installation) => {
             this.actions.push({
               type: 'ADD_INSTALLATION',

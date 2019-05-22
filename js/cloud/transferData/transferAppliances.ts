@@ -1,5 +1,5 @@
 import { CLOUD }        from "../cloudAPI";
-import {LOG, LOGe} from "../../logging/Log";
+import {LOGe} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
@@ -41,7 +41,7 @@ export const transferAppliances = {
 
   updateOnCloud: function( data : transferToCloudData ) {
     if (data.cloudId === undefined) {
-      return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
+      return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
     }
 
     let payload = {};

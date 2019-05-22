@@ -5,10 +5,8 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Graph", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Animated,
-  Platform,
   View
 } from 'react-native';
 import { colors } from '../../styles'
@@ -18,12 +16,12 @@ import {
   Path,
   } from 'react-native-svg';
 import { GraphingEngine } from "../../../logic/GraphingEngine";
-import { Util }           from "../../../util/Util";
 import { DataStep }       from './GraphComponents/DataStep'
 import { GraphDefs }      from "./GraphComponents/GraphDefs";
 import { GraphDataAxis }  from "./GraphComponents/GraphDataAxis";
 import { GraphTimeline }  from './GraphComponents/GraphTimeline';
 import { GraphAxis }      from "./GraphComponents/GraphAxis";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 let RANGE = 40000; // ms
 let OVERSHOOT = 4000; // ms
@@ -118,7 +116,7 @@ export class Graph extends LiveComponent<any, any> {
       options.labels = {enabled: options.labels};
     }
 
-    Util.deepExtend(options, this.options);
+    xUtil.deepExtend(options, this.options);
   }
 
   loadData() {

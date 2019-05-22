@@ -6,24 +6,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  Animated,
-  ActivityIndicator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  Platform,
-  Switch,
-  TouchableOpacity,
-  TouchableHighlight,
-  Text,
-  View
-} from 'react-native';
+  Animated} from 'react-native';
 
 import { Util } from '../../../util/Util'
 import { colors, screenWidth } from '../../styles'
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { core } from "../../../core";
 
 export class DeviceCommandProgressBar extends Component<any, any> {
   unsubscribe = [];
@@ -46,7 +35,7 @@ export class DeviceCommandProgressBar extends Component<any, any> {
   componentDidMount() {
 
     // this makes the loading bar roll. It waits on the mesh propagation timeout which is used for multiswitching. It is emitted from the MeshHelper
-    this.unsubscribe.push(this.props.eventBus.on(Util.events.getIgnoreTopic(this.props.stoneId), (data) => {
+    this.unsubscribe.push(core.eventBus.on(Util.events.getIgnoreTopic(this.props.stoneId), (data) => {
       if (!data.timeoutMs) { return; }
       this.state.progressWidth.stopAnimation();
       this.state.progressWidth.setValue(0.15*screenWidth);
@@ -58,7 +47,7 @@ export class DeviceCommandProgressBar extends Component<any, any> {
     }));
 
     // this shows that the command has been emitted successfully and animates the progress bar to the end quickly
-    this.unsubscribe.push(this.props.eventBus.on(Util.events.getIgnoreConditionFulfilledTopic(this.props.stoneId), (data) => {
+    this.unsubscribe.push(core.eventBus.on(Util.events.getIgnoreConditionFulfilledTopic(this.props.stoneId), (data) => {
       // the Crownstone pending state should be false again when this event is received. If it is not, a new command was sent. Since this event is only used to
       // show the state of the last switch command, we ignore it if there is a pendingCommand
       if (this.props.pendingCommand)      { return; }
@@ -69,13 +58,13 @@ export class DeviceCommandProgressBar extends Component<any, any> {
     }));
 
     // Shows the progress on connecting to a crownstone
-    this.unsubscribe.push(this.props.eventBus.on('connecting', (handle) => {
+    this.unsubscribe.push(core.eventBus.on('connecting', (handle) => {
       // if we do not know this stone, ignore the event. This happens during a setup (or recovery)
       let connectedStone = MapProvider.stoneSphereHandleMap[this.props.sphereId][handle];
       if (!connectedStone) { return; }
 
       // get the most recent mesh network id of this stone.
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
       // if we are connected with this stone or one in it's meshnetwork, we show progress
@@ -90,12 +79,12 @@ export class DeviceCommandProgressBar extends Component<any, any> {
     }));
 
     // Shows the progress on connecting to a crownstone
-    this.unsubscribe.push(this.props.eventBus.on('disconnect', () => {
+    this.unsubscribe.push(core.eventBus.on('disconnect', () => {
       this._connectingToRelatedCrownstone = false;
     }));
 
     // Shows the progress on when a crownstone has connected with the app
-    this.unsubscribe.push(this.props.eventBus.on('connected', (handle) => {
+    this.unsubscribe.push(core.eventBus.on('connected', (handle) => {
       // these events are only relevant if we switched this Crownstone
       if (!this.props.pendingCommand) { return; }
 
@@ -104,7 +93,7 @@ export class DeviceCommandProgressBar extends Component<any, any> {
       if (!connectedStone) { return; }
 
       // get the most recent mesh network id of this stone.
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
       let isInMesh = connectedStone.stoneConfig.meshNetworkId === null;

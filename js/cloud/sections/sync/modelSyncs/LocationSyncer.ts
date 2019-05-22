@@ -70,7 +70,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
           localId: localId,
           localSphereId: this.localSphereId,
           cloudData: location_from_cloud
-        })
+        });
 
         // download image
         this._downloadLocationImage(localId, location_from_cloud.id, location_from_cloud.imageId);
@@ -80,7 +80,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
       this.syncChildren(localId, localId ? locationsInState[localId] : null, location_from_cloud);
     });
 
-    this.globalSphereMap.locations = {...this.globalSphereMap.locations, ...cloudIdMap}
+    this.globalSphereMap.locations = {...this.globalSphereMap.locations, ...cloudIdMap};
     this.globalCloudIdMap.locations = {...this.globalCloudIdMap.locations, ...cloudIdMap};
     return localLocationIdsSynced;
   }
@@ -102,7 +102,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
           updatedAt: location_from_cloud.sphereOverviewPosition.updatedAt,
         }
       })
-    }
+    };
     if (localLocation) {
       if (localLocation.layout.x === null || localLocation.layout.y === null) {
         if (location_from_cloud.sphereOverviewPosition) {
@@ -213,7 +213,6 @@ export class LocationSyncer extends SyncingSphereItemBase {
 
 
     if (shouldUpdateInCloud(locationInState.config, location_from_cloud)) {
-
       if (!Permissions.inSphere(this.localSphereId).canUploadLocations) { return }
 
       this.transferPromises.push(
@@ -227,7 +226,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
         .catch(() => {})
       );
     }
-    else if (shouldUpdateLocally(locationInState.config, location_from_cloud)) {
+    else if (shouldUpdateLocally(locationInState.config, location_from_cloud) || !locationInState.config.uid) {
       transferLocations.updateLocal(this.actions, {
         localId:   localId,
         localSphereId: this.localSphereId,

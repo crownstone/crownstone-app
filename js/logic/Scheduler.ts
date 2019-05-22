@@ -1,10 +1,8 @@
 import { AppState } from 'react-native'
-import { NativeBus } from '../native/libInterface/NativeBus';
-import {LOG, LOGd, LOGe, LOGi, LOGw} from '../logging/Log'
-import { Util } from '../util/Util'
-import {eventBus} from "../util/EventBus";
+import {LOG, LOGe, LOGw} from '../logging/Log'
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 import { xUtil } from "../util/StandAloneUtil";
+import { core } from "../core";
 
 
 interface scheduledCallback {
@@ -28,7 +26,6 @@ interface scheduleTrigger {
 
 class SchedulerClass {
   _initialized : any;
-  store : any;
   triggers : scheduleTrigger;
   singleFireTriggers : scheduledCallback;
   allowTicksAfterTime : any;
@@ -36,7 +33,6 @@ class SchedulerClass {
 
   constructor() {
     this._initialized = false;
-    this.store = undefined;
     this.triggers = {};
 
     this.singleFireTriggers = {};
@@ -45,13 +41,6 @@ class SchedulerClass {
   }
 
 
-  loadStore(store) {
-    LOG.info('LOADED STORE SchedulerClass', this._initialized);
-    if (this._initialized === false) {
-      this.store = store;
-      this.init();
-    }
-  }
 
   reset() {
     this.triggers = {};
@@ -62,9 +51,9 @@ class SchedulerClass {
   init() {
     if (this._initialized === false) {
       // we use the local event instead of the native one to also trigger when enter is triggered by fallback.
-      eventBus.on("enterSphere", this.flushAll.bind(this));
-      NativeBus.on(NativeBus.topics.exitSphere, this.flushAll.bind(this));
-      NativeBus.on(NativeBus.topics.iBeaconAdvertisement, () => {
+      core.eventBus.on("enterSphere", this.flushAll.bind(this));
+      core.nativeBus.on(core.nativeBus.topics.exitSphere, this.flushAll.bind(this));
+      core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, () => {
         this.tick();
       });
 
@@ -102,7 +91,6 @@ class SchedulerClass {
   /**
    * Set a trigger that can be loaded with actions or callbacks. Will be fired on ticks.
    * @param id
-   * @param {Object} options       | Possible options:
    *                                    repeatEveryNSeconds
    */
   removeTrigger(id) {
@@ -292,7 +280,7 @@ class SchedulerClass {
       }
     }
     let uuid = label + xUtil.getUUID();
-    LOGd.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
+    LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
 
     // fallback to try to fire this callback after exactly the amount of ms
     let timeoutId = null;
@@ -320,14 +308,13 @@ class SchedulerClass {
 
     let now = new Date().valueOf();
 
-    LOGi.scheduler("Tick", now);
+    LOG.scheduler("Tick", now);
 
     // we use this to avoid a race condition where the user has updated the database, and a tick from advertisements
     // instantly overwrites the value again. This can happen when a Crownstone's first advertisement after switching is
     // still the old state.
     if (now > this.allowTicksAfterTime) {
-      LOGi.scheduler("Tick allowed");
-      let state = this.store.getState();
+      let state = core.store.getState();
       let triggerIds = Object.keys(this.triggers);
 
       // check if we have to fire the trigger
@@ -344,7 +331,7 @@ class SchedulerClass {
           // We use round in the conversion from millis to seconds so 1.5seconds is also accepted when the target is 2 seconds
           // due to timer inaccuracy this gives the most reliable results.
           if (Math.round(0.001 * (now - trigger.lastTriggerTime)) >= trigger.options.repeatEveryNSeconds) {
-            LOGi.scheduler("FIRING Trigger:", triggerId);
+            LOG.scheduler("FIRING Trigger:", triggerId);
             this.flush(trigger, state);
           }
         }
@@ -360,7 +347,7 @@ class SchedulerClass {
   }
 
   fireTrigger(triggerId) {
-    let state = this.store.getState();
+    let state = core.store.getState();
     let trigger = this.triggers[triggerId];
 
     if (trigger)
@@ -402,7 +389,7 @@ class SchedulerClass {
   flushAll() {
     LOG.scheduler("Flush All!");
     let triggerIds = Object.keys(this.triggers);
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     triggerIds.forEach((triggerId) => {
       this.flush(this.triggers[triggerId], state);
@@ -450,7 +437,7 @@ class SchedulerClass {
 
     // update the store
     if (actionsToDispatch.length > 0) {
-      this.store.batchDispatch(actionsToDispatch);
+      core.store.batchDispatch(actionsToDispatch);
     }
 
     trigger.actions = [];

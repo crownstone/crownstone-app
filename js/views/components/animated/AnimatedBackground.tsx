@@ -7,13 +7,13 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Image,
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 
-import { styles, screenHeight, topBarHeight, tabBarHeight} from '../../styles'
+import { styles, screenHeight, topBarHeight, tabBarHeight, screenWidth, statusBarHeight, colors } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
+import { NotificationLine } from "../NotificationLine";
 
 
 export class AnimatedBackground extends Component<any, any> {
@@ -68,8 +68,12 @@ export class AnimatedBackground extends Component<any, any> {
         <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>
           <BackgroundImage height={height} image={this.animatedImage} />
         </Animated.View>
-        { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}
-        { this.props.safeView ? <SafeAreaView style={{flex:1}}>{this.props.children}</SafeAreaView> : this.props.children }
+        { this.props.dimStatusBar ? <View style={{width:screenWidth, height: statusBarHeight, backgroundColor: colors.black.rgba(0.3)}} /> : undefined }
+        { this.props.hideOrangeBar !== true ? <NotificationLine notificationsVisible={!this.props.hideNotification} /> : true }
+        <View style={{flex:1, overflow:"hidden"}}>
+          { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}
+          { this.props.safeView ? <SafeAreaView style={{flex:1}}>{this.props.children}</SafeAreaView> : this.props.children }
+        </View>
       </View>
     );
   }

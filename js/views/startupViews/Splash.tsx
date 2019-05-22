@@ -6,21 +6,17 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Linking,
   Image,
-  StyleSheet,
-  TouchableOpacity,
   Text,
-  View
-} from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+  View, TextStyle
+} from "react-native";
 import { Background } from './../components/Background'
 import { colors} from './../styles'
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
+import { core } from "../../core";
 
-let versionStyle = {
+let versionStyle : TextStyle = {
   backgroundColor:"transparent",
   color: colors.white.rgba(0.4),
   fontWeight:'300',
@@ -32,7 +28,7 @@ export class Splash extends Component<any, any> {
     let factor = 0.25;
 
     return (
-      <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true} safeView={true}>
+      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} safeView={true} hideOrangeBar={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>

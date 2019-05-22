@@ -13,7 +13,7 @@ import {
 
 import { Icon } from '../Icon';
 import {styles, colors, screenWidth, LARGE_ROW_SIZE, MID_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
-import { eventBus } from "../../../util/EventBus";
+import { core } from "../../../core";
 
 
 export class NavigationBar extends Component<any, any> {
@@ -31,7 +31,7 @@ export class NavigationBar extends Component<any, any> {
 
   componentDidMount() {
     // this event makes the background of the device entry blink to incidate the error.
-    this.unsubscribe.push(eventBus.on('highlight_nav_field', (fieldId) => {
+    this.unsubscribe.push(core.eventBus.on('highlight_nav_field', (fieldId) => {
       if (fieldId === this.props.fieldId) {
         Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 50 }).start();
         setTimeout(() => {

@@ -7,25 +7,17 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Dimensions,
-  Image,
-  NativeModules,
-  TouchableOpacity,
   Text,
   View
 } from 'react-native';
 
-import { styles, colors } from '../styles'
-import { getCurrentPowerUsageInLocation } from '../../util/DataUtil'
+import { colors } from '../styles'
 import { Icon } from './Icon';
-import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
-const Actions = require('react-native-router-flux').Actions;
 
-import { Svg, Circle } from 'react-native-svg';
-import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
+
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {IconCircle} from "./IconCircle";
+import { core } from "../../core";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -55,9 +47,9 @@ class SphereCircleClass extends Component<any, any> {
   jumpDuration: number;
   fadeDuration: number;
 
-  unsubscribeSetupEvents = []
+  unsubscribeSetupEvents = [];
   unsubscribeStoreEvents: any;
-  unsubscribeControlEvents = []
+  unsubscribeControlEvents = [];
   renderState: any;
 
   scaledUp = true;
@@ -78,7 +70,6 @@ class SphereCircleClass extends Component<any, any> {
       setupProgress: 20,
     };
 
-    this.props = props;
     // calculate the size of the circle based on the screen size
     this.borderWidth = props.radius / 24;
     this.innerDiameter = 2 * props.radius - 4.5 * this.borderWidth;
@@ -102,26 +93,24 @@ class SphereCircleClass extends Component<any, any> {
 
 
   componentDidMount() {
-    const {store} = this.props;
-
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       // const state = store.getState();
     });
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('viewWasTapped' + this.props.viewId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('viewWasTapped' + this.props.viewId, (data) => {
       this.handleTouchReleased(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.sphereId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeWasTapped' + this.props.viewId + this.props.sphereId, (data) => {
       this.handleTap(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeTouched' + this.props.viewId + this.props.sphereId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeTouched' + this.props.viewId + this.props.sphereId, (data) => {
       this.handleTouch(data);
     }));
 
-    this.unsubscribeControlEvents.push(this.props.eventBus.on('nodeReleased' + this.props.viewId + this.props.sphereId, (data) => {
+    this.unsubscribeControlEvents.push(core.eventBus.on('nodeReleased' + this.props.viewId + this.props.sphereId, (data) => {
       this.handleTouchReleased(data);
     }));
   }
@@ -133,7 +122,7 @@ class SphereCircleClass extends Component<any, any> {
 
   getSphereName(name, color) {
     let a = 16; let b = 0.6;
-    let textSize = Math.max(Math.min(this.textSize, ((a - name.length)/a + b)*this.textSize ), 0.75*this.textSize)
+    let textSize = Math.max(Math.min(this.textSize, ((a - name.length)/a + b)*this.textSize ), 0.75*this.textSize);
 
     return (
       <Text
@@ -150,7 +139,7 @@ class SphereCircleClass extends Component<any, any> {
     // let newColor = colors.csBlue.hex;
     let textColor = colors.white.hex;
     if (sphere.state.present === false) {
-      backgroundColor = colors.csBlue.hex;
+      backgroundColor = colors.csBlueDark.hex;
     }
 
     let innerOffset = 0.5*(this.outerDiameter - this.innerDiameter);
@@ -194,7 +183,7 @@ class SphereCircleClass extends Component<any, any> {
   }
 
   render() {
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
 

@@ -84,6 +84,7 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'keepAliveState', state : number, timeout : number, changeState : boolean } |
   { commandName : 'toggle', stateForOn : number } |
   { commandName : 'multiSwitch', state : number, timeout : number, intent: number } |
+  { commandName : 'getBootloaderVersion' } |
   { commandName : 'getFirmwareVersion' } |
   { commandName : 'getHardwareVersion' } |
   { commandName : 'keepAliveBatchCommand' } |
@@ -102,7 +103,18 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'lockSwitch',     value: boolean } |
   { commandName : 'setSwitchCraft', value: boolean } |
   { commandName : 'allowDimming',   value: boolean } |
-  { commandName : 'setMeshChannel', channel: number }
+  { commandName : 'setMeshChannel', channel: number } |
+  { commandName : 'setupPulse'}
+
+interface commandSummary {
+  stone     : any,
+  stoneId   : string,
+  sphereId  : string,
+  command   : commandInterface,
+  priority  : boolean,
+  attempts  : number,
+  options   : batchCommandEntryOptions,
+}
 
 
 interface batchCommands  {

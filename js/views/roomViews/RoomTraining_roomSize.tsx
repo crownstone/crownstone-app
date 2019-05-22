@@ -6,41 +6,38 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
-  Alert,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
   Text,
   View,
-  Vibration
-} from 'react-native';
+  ViewStyle, TextStyle
+} from "react-native";
 
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { Background }   from '../components/Background'
-import {colors, screenWidth, screenHeight, OrangeLine} from '../styles'
+import {colors, screenWidth, screenHeight, } from '../styles'
 import { Icon }         from '../components/Icon';
 import { Util }         from "../../util/Util";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 
-let buttonTextStyle = {
+let buttonTextStyle : TextStyle = {
   backgroundColor:'transparent',
   fontSize:15,
   fontWeight:'500',
   color: colors.white.hex,
   textAlign:'left',
 };
-let squareMeterStyle = {
+let squareMeterStyle : TextStyle = {
   ...buttonTextStyle,
   position:'relative',
   top:-2,
   fontSize:12,
 };
 
-let buttonStyle = {
+let buttonStyle : ViewStyle = {
   backgroundColor: colors.white.rgba(0.3),
   borderRadius:2,
   height: 0.15*screenHeight,
@@ -48,12 +45,12 @@ let buttonStyle = {
   alignItems:'center'
 };
 
-let iconContainerStyle = {
+let iconContainerStyle : ViewStyle = {
   width:0.3*screenWidth,
   alignItems:'center'
 };
 
-let textContainerStyle = {
+let textContainerStyle : ViewStyle = {
   flexDirection:'row',
   width:0.7*screenWidth,
   paddingLeft: 10
@@ -69,19 +66,19 @@ export class RoomTraining_roomSize extends Component<any, any> {
         paramsToUse = NAVBAR_PARAMS_CACHE;
       }
       else {
-        paramsToUse = getNavBarParams(params.store.getState(), params, true);
+        paramsToUse = getNavBarParams(core.store.getState(), params, true);
       }
     }
 
     return {
       title: paramsToUse.title,
-      headerTruncatedBackTitle: lang("Back"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />,
     }
   };
 
   _getButton(sampleSize, iconSize, text, roomSize) {
     return (
-      <TouchableOpacity style={buttonStyle} onPress={() => { Actions.roomTraining({sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
+      <TouchableOpacity style={buttonStyle} onPress={() => { NavigationUtil.navigate("RoomTraining",{sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
         <View style={iconContainerStyle}>
           <Icon name="md-cube" size={iconSize} color={colors.green.hex} style={{backgroundColor:"transparent"}} />
         </View>
@@ -95,14 +92,13 @@ export class RoomTraining_roomSize extends Component<any, any> {
   }
 
   render() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let ai = Util.data.getAiData(state, this.props.sphereId);
     let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <OrangeLine/>
-        <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
+                <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <View style={{flex:1}} />
           <Text style={{
             backgroundColor:'transparent',

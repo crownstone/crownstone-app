@@ -8,27 +8,20 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  ActivityIndicator,
-  Dimensions,
-  Image,
-  Linking,
-  PixelRatio,
   ScrollView,
-  Switch,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
+  Text, TextStyle,
   View
-} from 'react-native';
-import {BackAction} from "../../../util/Back";
+} from "react-native";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import {colors, OrangeLine, screenHeight, screenWidth} from "../../styles";
+import {colors, screenHeight, screenWidth} from "../../styles";
 import {IconButton} from "../../components/IconButton";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {ScaledImage} from "../../components/ScaledImage";
-import {Util} from "../../../util/Util";
 import {getActiveToonProgram} from "../../../backgroundProcesses/thirdParty/ToonIntegration";
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 export class ToonSettings extends LiveComponent<any, any> {
@@ -47,7 +40,7 @@ export class ToonSettings extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (change.updatedToon && this.deleting !== true) {
         this.forceUpdate();
@@ -70,7 +63,7 @@ export class ToonSettings extends LiveComponent<any, any> {
       type: 'switch',
       icon: <IconButton name="md-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
       callback: (newValue) => {
-        this.props.store.dispatch({
+        core.store.dispatch({
           type: 'TOON_UPDATE_SETTINGS',
           sphereId: this.props.sphereId,
           toonId: this.props.toonId,
@@ -79,7 +72,7 @@ export class ToonSettings extends LiveComponent<any, any> {
       }
     });
 
-    let updatedAt = toon.updatedScheduleTime ? Util.getDateTimeFormat(toon.updatedScheduleTime) : "NEVER"
+    let updatedAt = toon.updatedScheduleTime ? xUtil.getDateTimeFormat(toon.updatedScheduleTime) : "NEVER";
     items.push({
       type: 'explanation',
       label: lang("LAST_SCHEDULE_UPDATE__",updatedAt),
@@ -99,10 +92,10 @@ export class ToonSettings extends LiveComponent<any, any> {
       style: {color: colors.black.hex},
       icon: <IconButton name={'md-calendar'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green2.hex}}/>,
       callback: () => {
-        this.props.eventBus.emit("showLoading", "Refreshing Toon Schedule...")
+        core.eventBus.emit("showLoading", "Refreshing Toon Schedule...");
           CLOUD.forToon(toon.cloudId).thirdParty.toon.updateToonSchedule(false)
             .then((toon) => {
-              this.props.store.dispatch({
+              core.store.dispatch({
                 type: 'TOON_UPDATE_SCHEDULE',
                 sphereId: this.props.sphereId,
                 toonId:   this.props.toonId,
@@ -111,10 +104,10 @@ export class ToonSettings extends LiveComponent<any, any> {
                   updatedScheduleTime: toon.updatedScheduleTime,
                 }
               });
-              this.props.eventBus.emit("hideLoading")
+              core.eventBus.emit("hideLoading")
             })
             .catch((err) => {
-              this.props.eventBus.emit("hideLoading")
+              core.eventBus.emit("hideLoading");
               Alert.alert(
                 lang("_Whoops__Something_went_w_header"),
                 lang("_Whoops__Something_went_w_body"),
@@ -141,19 +134,19 @@ export class ToonSettings extends LiveComponent<any, any> {
             [
               {text: lang("_Are_you_sure__You_will_h_left"), style: 'cancel'},
               {text: lang("_Are_you_sure__You_will_h_right"), onPress: () => {
-                this.props.eventBus.emit("showLoading", "Removing the integration with Toon...")
+                core.eventBus.emit("showLoading", "Removing the integration with Toon...");
                 this.deleting = true;
                 CLOUD.forSphere(this.props.sphereId).thirdParty.toon.deleteToonsInCrownstoneCloud(false)
                   .then(() => {
-                    this.props.store.dispatch({
+                    core.store.dispatch({
                       type: 'REMOVE_ALL_TOONS',
                       sphereId: this.props.sphereId,
                     });
-                    BackAction('sphereIntegrations')
-                    this.props.eventBus.emit("hideLoading")
+                    NavigationUtil.backTo('SphereIntegrations');
+                    core.eventBus.emit("hideLoading")
                   })
                   .catch((err) => {
-                    this.props.eventBus.emit("hideLoading")
+                    core.eventBus.emit("hideLoading");
                     Alert.alert("Whoops", "Something went wrong...", [{text:'OK'}])
                   })
               }}
@@ -170,19 +163,18 @@ export class ToonSettings extends LiveComponent<any, any> {
 
 
   render() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
-    let textStyle = {
+    let textStyle : TextStyle = {
       fontSize: 14,
-      textAlign:'center',
+      textAlign: 'center',
       color:colors.menuBackground.hex,
       paddingLeft: 0.075*screenWidth, paddingRight:0.075*screenWidth
     };
 
     return (
-      <Background image={this.props.backgrounds.menu} hasNavBar={false} safeView={false}>
-        <OrangeLine/>
-        <ScrollView style={{flex:1}}>
+      <Background image={core.background.menu} hasNavBar={false} safeView={false}>
+                <ScrollView style={{flex:1}}>
           <View style={{flex:1, width: screenWidth, minHeight: screenHeight, alignItems:'center' }}>
             <View style={{height:375, alignItems:'center'}}>
               <View style={{flex:1}} />
@@ -218,7 +210,7 @@ class ToonSchedule extends Component<any, any> {
   availableWidth = screenWidth - 2*this.padding;
 
   getDay(dayNumber) {
-    let days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+    let days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
     let day = days[dayNumber];
     let schedule = JSON.parse(this.props.toon.schedule);
     let dayData = schedule[day];
@@ -266,7 +258,7 @@ class ToonSchedule extends Component<any, any> {
             }} />
 
           { duration > 3*60 ? <View style={{alignSelf:'flex-end'}}>
-            <Text style={{fontSize:10, height:10}}>{entry.end.hour+ ":" + Util.pad(entry.end.minute)}</Text>
+            <Text style={{fontSize:10, height:10}}>{entry.end.hour+ ":" + xUtil.pad(entry.end.minute)}</Text>
           </View> : undefined }
         </View>
       )

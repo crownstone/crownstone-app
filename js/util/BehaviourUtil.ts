@@ -3,6 +3,7 @@ import { BatchCommandHandler } from '../logic/BatchCommandHandler';
 import {LOG, LOGe} from '../logging/Log';
 import { Util } from './Util';
 import { BEHAVIOUR_TYPES } from "../Enums";
+import { xUtil } from "./StandAloneUtil";
 const SunCalc = require('suncalc');
 
 export const BehaviourUtil = {
@@ -262,8 +263,8 @@ export const BehaviourUtil = {
     return {
       morning: times.morning,
       evening: times.evening,
-      morningReadable: Util.getTimeFormat(times.morning),
-      eveningReadable: Util.getTimeFormat(times.evening),
+      morningReadable: xUtil.getTimeFormat(times.morning),
+      eveningReadable: xUtil.getTimeFormat(times.evening),
     };
   }
 };

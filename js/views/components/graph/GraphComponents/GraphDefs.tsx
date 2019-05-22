@@ -1,15 +1,4 @@
-
-import { Languages } from "../../../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("GraphDefs", key)(a,b,c,d,e);
-}
 import * as React from 'react'; import { Component } from 'react';
-import {
-  Animated,
-  Platform,
-  View
-} from 'react-native';
 import { colors } from '../../../styles'
 import {
   ClipPath,

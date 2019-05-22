@@ -11,9 +11,8 @@
  */
 
 import {transferActivityLogs} from "../../../transferData/transferActivityLogs";
-import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
-import {LOG, LOGe} from "../../../../logging/Log";
+import {LOG} from "../../../../logging/Log";
 import {CLOUD} from "../../../cloudAPI";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import { xUtil } from "../../../../util/StandAloneUtil";
@@ -23,7 +22,7 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
   localStoneId: string;
   cloudStoneId: string;
 
-  activityLogUploadBatch : [[transferNewToCloudStoneData]]
+  activityLogUploadBatch : transferNewToCloudStoneData[][];
   maxBatchSize;
 
   constructor(
@@ -91,7 +90,7 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
           if (this.activityLogUploadBatch.length > 0) {
             let uploadCounter = 0;
             this.transferPromises.push(
-              Util.promiseBatchPerformer(this.activityLogUploadBatch, (uploadBatch) => {
+              xUtil.promiseBatchPerformer(this.activityLogUploadBatch, (uploadBatch) => {
                 uploadCounter++;
                 LOG.info("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length, ' which has ', uploadBatch.length, ' data points');
                 // console.log("SYNC: Uploading Activitylog batch: ", uploadCounter, ' from ', this.activityLogUploadBatch.length,' which has ', uploadBatch.length, ' data points');
@@ -104,7 +103,7 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
             type: 'UPDATE_SYNC_ACTIVITY_TIME',
             sphereId: this.localSphereId,
             stoneId: this.localStoneId
-          })
+          });
 
           return Promise.all(this.transferPromises);
         })
@@ -168,12 +167,10 @@ export class ActivityLogSyncer extends SyncingSphereItemBase {
       if (!activityLogInState.cloudId) {
         // fill the batch uploader.
         if (this.activityLogUploadBatch.length === 0) {
-          // @ts-ignore
           this.activityLogUploadBatch.push([]);
         }
 
         if (this.activityLogUploadBatch[this.activityLogUploadBatch.length-1].length >= this.maxBatchSize) {
-          // @ts-ignore
           this.activityLogUploadBatch.push([]);
         }
 

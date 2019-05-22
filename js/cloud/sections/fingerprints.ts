@@ -1,9 +1,10 @@
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import { cloudApiBase } from "./cloudApiBase";
 
 export const fingerprints = {
   createFingerprint: function (localLocationId, data, background: true) {
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Devices/{id}/fingerprint?locationId='+cloudLocationId,
       { background: background, data: data },
@@ -12,7 +13,7 @@ export const fingerprints = {
   },
 
   getFingerprintsInLocations: function (cloudLocationIdArray, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Devices/{id}/fingerprintsForLocations?locationIds='+JSON.stringify(cloudLocationIdArray),
       { background: background },
@@ -20,7 +21,7 @@ export const fingerprints = {
   },
 
   getFingerprints: function (fingerprintIdArray, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Devices/{id}/fingerprints?fingerprintIds='+JSON.stringify(fingerprintIdArray),
       { background: background },
@@ -28,7 +29,7 @@ export const fingerprints = {
   },
 
   updateFingerprint: function (fingerprintId, data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'PUT',
       '/Devices/{id}/fingerprint?fingerprintId='+fingerprintId,
       { background: background, data:data },
@@ -38,7 +39,7 @@ export const fingerprints = {
 
 
   getMatchingFingerprintsInLocations: function (cloudLocationIdArray, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Devices/{id}/fingerprintsMatching?locationIds='+JSON.stringify(cloudLocationIdArray),
       { background: background }
@@ -47,7 +48,7 @@ export const fingerprints = {
 
 
   linkFingerprints: function (fingerprintIdArray, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Devices/{id}/fingerprintsLink?fingerprintIds='+JSON.stringify(fingerprintIdArray),
       { background: background }
@@ -56,7 +57,7 @@ export const fingerprints = {
 
 
   getFingerprintUpdateTimes: function (fingerprintIdArray, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Devices/{id}/fingerprintsUpdatedAt?fingerprintIds='+JSON.stringify(fingerprintIdArray),
       { background: background }

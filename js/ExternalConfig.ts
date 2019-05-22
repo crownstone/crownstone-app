@@ -1,6 +1,6 @@
 import {LOG_LEVEL} from "./logging/LogLevels";
 
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
 
 /******************** RELEASE FLAGS ********************/
 
@@ -50,7 +50,6 @@ const DeviceInfo = require('react-native-device-info');
    * Silence cloud will silently reject all cloud calls.
    */
   export let DISABLE_NATIVE = DeviceInfo.isEmulator();
-  console.log(DeviceInfo.isEmulator())
   export let SILENCE_CLOUD  = false;
 
   /**
@@ -90,6 +89,8 @@ const DeviceInfo = require('react-native-device-info');
   export let LOG_MESH           = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_MESSAGES       = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_ADVERTISEMENTS = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
+  export let LOG_DFU            = LOG_LEVEL.ERROR;    // enabling LOG.dfu commands to be shown.
+  export let LOG_BROADCAST      = LOG_LEVEL.ERROR;    // enabling LOG.broadcast commands to be shown.
 
   /**
    * Specific logging settings used for debugging mostly. These will override developer settings only if true.
@@ -144,7 +145,7 @@ const DeviceInfo = require('react-native-device-info');
   export const SYNC_INTERVAL = 60*10; // s --> 10 minutes
 
   // interval for syncing sphere users with the cloud so you see their faces in the app.
-  export const SPHERE_USER_SYNC_INTERVAL = 10; // s --> 10 seconds
+  export const CLOUD_POLLING_INTERVAL = 15; // s --> 10 seconds
 
   // The amount of time to wait until the promise manager gives up on a pending promise.
   export const PROMISE_MANAGER_FALLBACK_TIMEOUT = 60000; // ms --> 1 minute
@@ -179,8 +180,8 @@ const DeviceInfo = require('react-native-device-info');
 
   // if this is enabled, you will always have the option to update the firmware and bootloader,
   // and all of them will be installed and a hard reset follows. This is to test the DFU.
-  export const ALWAYS_DFU_UPDATE = false;
-
+  export const ALWAYS_DFU_UPDATE_BOOTLOADER = false;
+  export const ALWAYS_DFU_UPDATE_FIRMWARE = false;
 /******************** /DEV EXCEPTIONS ********************/
 
 

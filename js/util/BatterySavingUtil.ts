@@ -5,22 +5,11 @@ import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { Util } from "./Util";
 import { Scheduler } from "../logic/Scheduler";
 import {BleUtil} from "./BleUtil";
+import { core } from "../core";
 
 class BatterySavingClass {
-  store: any;
   _initialized: boolean = false;
   _cancelPostponedBatterySaving : any = null;
-
-  constructor() { }
-
-  loadStore(store) {
-    LOG.info('LOADED STORE BatterySavingUtil', this._initialized);
-    if (this._initialized === false) {
-      this.store = store;
-    }
-    this._initialized = true;
-  }
-
 
   /**
    * This method is used to check if we should start scanning
@@ -48,7 +37,7 @@ class BatterySavingClass {
     }
 
 
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     // if needed requirements:
     //  - app is in foreground OR
@@ -98,7 +87,7 @@ class BatterySavingClass {
       return;
     }
 
-    let state = this.store.getState();
+    let state = core.store.getState();
 
     // if possible requirements:
     //  - user is NOT in the foreground AND

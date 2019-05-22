@@ -13,10 +13,10 @@ import {
 
 import { Icon } from '../Icon';
 import { styles, colors, screenWidth} from '../../styles'
-import {eventBus} from "../../../util/EventBus";
 import {SlideInView} from "../animated/SlideInView";
 import {Separator} from "../Separator";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { core } from "../../../core";
 
 
 export class CollapsableBar extends Component<any, any> {
@@ -30,7 +30,7 @@ export class CollapsableBar extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on('expandFAQQuestion', (id) => {
+    this.unsubscribe.push(core.eventBus.on('expandFAQQuestion', (id) => {
       if (id !== this.uuid && this.state.open === true) {
         this.setState({open: false});
       }
@@ -46,7 +46,7 @@ export class CollapsableBar extends Component<any, any> {
       this.setState({open: false});
     }
     else {
-      eventBus.emit("expandFAQQuestion", this.uuid);
+      core.eventBus.emit("expandFAQQuestion", this.uuid);
       this.setState({open: true});
     }
   }

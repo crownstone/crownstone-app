@@ -6,25 +6,18 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   TouchableOpacity,
-  PixelRatio,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
+
 
 import {styles, colors, screenWidth, screenHeight} from '../../styles'
 import {Icon} from "../../components/Icon";
-import {eventBus} from "../../../util/EventBus";
 import {Util} from "../../../util/Util";
 import { tutorialStyle } from "../TutorialStyle";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { core } from "../../../core";
 
 
 export class TutorialDevices extends Component<any, any> {
@@ -43,23 +36,18 @@ export class TutorialDevices extends Component<any, any> {
           <View style={{flex:1}} />
           <TouchableOpacity
             onPress={() => {
-              eventBus.emit("userLoggedInFinished");
+              core.eventBus.emit("userLoggedInFinished");
               let spheres = this.props.state.spheres;
               let sphereIds = Object.keys(spheres);
 
               let goToSphereOverview = () => {
-                if (Platform.OS === 'android') {
-                  Actions.drawer({type: 'reset'});
-                }
-                else {
-                  Actions.tabBar({type: 'reset'});
-                }
+                NavigationUtil.navigate("AppNavigator");
               };
 
               // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment
               if (sphereIds.length === 1) {
                 if (Util.data.getUserLevelInSphere(this.props.state, sphereIds[0]) === 'admin' && !this.props.state.spheres[sphereIds[0]].config.aiSex) {
-                  Actions.aiStart();
+                  NavigationUtil.navigate("AiStart")
                 }
                 else {
                   goToSphereOverview()

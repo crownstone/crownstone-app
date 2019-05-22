@@ -1,6 +1,5 @@
 import {toonConfig} from "../../../sensitiveData/toonConfig";
 import {request} from "../../cloudCore";
-import {refreshDefaults} from "../../../router/store/reducers/reducerUtil";
 import {cloudApiBase} from "../cloudApiBase";
 
 /**
@@ -15,7 +14,7 @@ export const toon = {
       client_secret: toonConfig.clientSecret,
       code: code,
       grant_type:'authorization_code'
-    }
+    };
 
     let options = {endPoint: "https://api.toon.eu/token", data: payload, type: 'body-urlencoded', options: {}};
     let headers = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -35,7 +34,7 @@ export const toon = {
 
 
   updateToonInCrownstoneCloud: function(cloudId, data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'PUT',
       '/Spheres/{id}/Toons/' + cloudId,
       {data: data, background: background},
@@ -44,7 +43,7 @@ export const toon = {
   },
 
   createToonInCrownstoneCloud: function(data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Spheres/{id}/Toons',
       {data: data, background: background},
@@ -53,7 +52,7 @@ export const toon = {
   },
 
   setToonToHome: function(deviceId, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Toons/{id}/setProgram',
       { data: {program: 'home', ignoreDeviceId: deviceId }, background: background},
@@ -62,7 +61,7 @@ export const toon = {
   },
 
   setToonToAway: function(deviceId, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Toons/{id}/setProgram',
       { data: {program: 'away', ignoreDeviceId: deviceId }, background: background},
@@ -71,7 +70,7 @@ export const toon = {
   },
 
   updateToonSchedule: function(background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Toons/{id}/updateSchedule',
       { background: background },
@@ -80,7 +79,7 @@ export const toon = {
   },
 
   deleteToonsInCrownstoneCloud: function(background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'DELETE',
       '/Spheres/{id}/Toons',
       {background: background},

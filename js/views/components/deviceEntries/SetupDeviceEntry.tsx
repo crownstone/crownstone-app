@@ -7,86 +7,54 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  Animated,
-  ActivityIndicator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  Switch,
   TouchableOpacity,
-  TouchableHighlight,
   Text,
-  View
-} from 'react-native';
+  View, ActivityIndicator, ViewStyle
+} from "react-native";
 
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
-import { styles, colors, screenWidth } from '../../styles'
+import { styles, colors} from '../../styles'
 import {Util} from "../../../util/Util";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import { core } from "../../../core";
+import { StoneUtil } from "../../../util/StoneUtil";
+import { IconButton } from "../IconButton";
+import { SlideFadeInView } from "../animated/SlideFadeInView";
 
 
-export class SetupDeviceEntry extends Component<any, any> {
+export class SetupDeviceEntry extends Component<{handle, sphereId, item, callback: any}, any> {
   baseHeight : any;
-  currentLoadingWidth : any;
   setupEvents : any;
   rssiTimeout : any = null;
 
   constructor(props) {
     super(props);
 
-    this.baseHeight = props.height || 80;
+    this.baseHeight = props.height || 90;
 
     this.state = {
-      progressWidth: new Animated.Value(0),
       name: props.item.name,
       subtext:  lang("Tap_here_to_add_it_to_thi"),
-      disabled: false,
-      setupInProgress: false,
       showRssi: false,
-      rssi: null
+      rssi: null,
+      pendingCommand: false,
     };
 
-    this.currentLoadingWidth = 0;
     this.setupEvents = [];
   }
 
-  componentDidMount() {
-    this.setupEvents.push(this.props.eventBus.on(Util.events.getSetupTopic(this.props.handle), (data) => {
-      if (data.rssi < 0) {
-        if (this.state.rssi === null) {
-          this.setState({rssi: data.rssi, showRssi: true});
-        }
-        else {
-          this.setState({rssi: Math.round(0.2 * data.rssi + 0.8 * this.state.rssi), showRssi: true});
-        }
-        clearTimeout(this.rssiTimeout);
-        this.rssiTimeout = setTimeout(() => { this.setState({showRssi: false, rssi: null}) }, 5000);
-      }
-    }));
-
-    this.setupEvents.push(this.props.eventBus.on("setupStarted",  (handle) => {
-      if (this.props.handle === handle) {
-        this.setProgress('pending');
-      }
-    }));
-
-    this.setupEvents.push(this.props.eventBus.on("setupCancelled", (handle) => {
-      this.setProgress(0);
-    }));
-    this.setupEvents.push(this.props.eventBus.on("setupComplete", (handle) => {
-      if (this.props.handle !== handle) {
-        this.setProgress(0);
-      }
-    }));
-    this.setupEvents.push(this.props.eventBus.on("setupInProgress", (data) => {
-      if (this.props.handle === data.handle) {
-        this.setProgress(data.progress);
+  componentDidMount() {this.setupEvents.push(core.eventBus.on(Util.events.getSetupTopic(this.props.handle), (data) => {
+    if (data.rssi < 0) {
+      if (this.state.rssi === null) {
+        this.setState({rssi: data.rssi, showRssi: true});
       }
       else {
-        this.setProgress(-1);
+        this.setState({rssi: Math.round(0.2 * data.rssi + 0.8 * this.state.rssi), showRssi: true});
       }
-    }));
+      clearTimeout(this.rssiTimeout);
+      this.rssiTimeout = setTimeout(() => { this.setState({showRssi: false, rssi: null}) }, 5000);
+    }
+  }));
   }
 
   componentWillUnmount() { // cleanup
@@ -94,27 +62,13 @@ export class SetupDeviceEntry extends Component<any, any> {
     this.setupEvents.forEach((unsubscribe) => { unsubscribe(); });
   }
 
-  _getActivityIndicator() {
-    if (this.state.setupInProgress) {
-      return (
-        <View style={{height: this.baseHeight, width: 60, alignItems: 'flex-end', justifyContent: 'center'}}>
-          <ActivityIndicator animating={true} size="large"/>
-        </View>
-      );
-    }
-  }
-
   _getIcon() {
     let color = colors.blinkColor1.hex;
-    if (this.state.disabled === true)
-      color = colors.gray.hex;
-    else if (this.state.setupInProgress === true)
-       color = colors.blinkColor2.hex;
 
     return (
       <View style={[{
-        width:60,
-        height:60,
+        width:  60,
+        height: 60,
         borderRadius:30,
         backgroundColor: color,
         }, styles.centered]}>
@@ -124,78 +78,73 @@ export class SetupDeviceEntry extends Component<any, any> {
   }
 
 
-  setProgress(value : any = 0) {
-    switch(value) {
-      case -1:
-        this.setState({subtext:'Another Crownstone is pairing.', setupInProgress:false, disabled: true});
-        break;
-      case 0:
-        this.setState({subtext:'Click here to add it to this Sphere!', disabled: false, setupInProgress: false});
-        break;
-      case 'pending':
-        this.setState({subtext:'Starting setup...', setupInProgress: true});
-        Animated.timing(this.state.progressWidth, {toValue: 0, duration: 100}).start();
-        return;
-      case 1:
-        this.setState({subtext:"Claiming... Please stay close!", setupInProgress: true});
-        break;
-      case 3:
-        this.setState({subtext:"Registering in the Cloud...", setupInProgress: true});
-        break;
-      case 4:
-        this.setState({subtext:"Setting up Crownstone...", setupInProgress: true});
-        break;
-      case 19:
-        this.setState({subtext:"Finalizing setup..."});
-        break;
-      default: {
-        this.setState({setupInProgress: true});
-      }
+  _getControl() {
+    let content;
+    let action = null;
+    if (this.state.pendingCommand === true) {
+      content = <ActivityIndicator animating={true} size='large' />;
+    }
+    else {
+      let iconSize = 40;
+      content = <IconButton name={"md-color-wand"}
+                  size={iconSize*0.8}
+                  buttonSize={iconSize}
+                  radius={iconSize*0.5}
+                  button={true}
+                  color={ colors.blinkColor1.rgba(1)}
+                  buttonStyle={{ backgroundColor: colors.white.hex, borderWidth: 2, borderColor: colors.blinkColor1.hex }}
+                />;
+      action = () => {
+        this.setState({pendingCommand:true});
+        StoneUtil.setupPulse(this.props.handle, this.props.sphereId)
+          .then(() => {  this.setState({pendingCommand: false})})
+          .catch((err) => {
+            Alert.alert(
+              lang("_Something_went_wrong______header"),
+              lang("_Something_went_wrong______body"),
+              [{text:lang("_Something_went_wrong______left")}]
+            );
+            this.setState({pendingCommand: false});
+          })
+      };
     }
 
 
-    let max = 19;
-    let loadingWidth = screenWidth * (Math.max(0,value)/max);
-    if (this.currentLoadingWidth !== loadingWidth) {
-      this.currentLoadingWidth = loadingWidth;
-      Animated.timing(this.state.progressWidth, {toValue: loadingWidth, duration: 100}).start();
+    let wrapperStyle : ViewStyle = {height: this.baseHeight, width: 60, alignItems:'flex-end', justifyContent:'center'};
+    if (action) {
+      return (
+        <TouchableOpacity onPress={() => { action() }} style={wrapperStyle}>
+          {content}
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return <View style={wrapperStyle}>{content}</View>;
     }
   }
 
+
   render() {
-    let loadingHeight = 5;
     return (
       <View style={{flexDirection: 'column', height: this.baseHeight, flex: 1}}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.setupStone(); }}>
+          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.props.callback(); }}>
             {this._getIcon()}
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.setupStone(); }}>
+          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.props.callback(); }}>
             <View style={{flexDirection: 'column'}}>
-              <Text style={{fontSize: 17, fontWeight: '100'}}>{this.state.name}</Text>
-              {this._getSubText()}
+              <SlideFadeInView visible={!this.state.pendingCommand} height={20}><Text style={{fontSize: 17, fontWeight: '100'}}>{this.state.name}</Text></SlideFadeInView>
+              <SlideFadeInView visible={ this.state.pendingCommand} height={50}><Text style={{fontSize: 13, fontWeight: '100'}}>{"Toggling... You should hear two clicks."}</Text></SlideFadeInView>
+              <SlideFadeInView visible={!this.state.pendingCommand} height={30}>{this._getSubText()}</SlideFadeInView>
             </View>
           </TouchableOpacity>
-          {this._getActivityIndicator()}
+          { this._getControl() }
         </View>
-        <Animated.View style={{position:'relative', left:-15, top: 0, width: this.state.progressWidth, height:loadingHeight, backgroundColor:colors.green2.hex}} />
       </View>
     );
   }
 
-  setupStone() {
-    if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
-      if (this.state.disabled === false && this.state.setupInProgress !== true) {
-        SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {  })
-      }
-    }
-    else {
-      Alert.alert(
-lang("_You_dont_have_permission_header"),
-lang("_You_dont_have_permission_body"),
-[{text: lang("_You_dont_have_permission_left")}])
-    }
-  }
+
 
   _getSubText() {
     if (this.state.showRssi && SetupStateHandler.isSetupInProgress() === false) {

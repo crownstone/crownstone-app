@@ -1,18 +1,11 @@
-
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("Icon", key)(a,b,c,d,e);
-}
 import * as React from 'react';
-import { View } from 'react-native';
 import { Component } from 'react';
 
-import Ionicon from 'react-native-vector-icons/dist/Ionicons';
 import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
 import {CustomIcon, CustomIcon2, CustomIcon3} from '../../fonts/customIcons'
 
 import { iconCorrections } from '../../fonts/iconCorrections'
+import { Ionicons3 } from "../../fonts/ionicons3";
 
 export class Icon extends Component<any, any> {
   render() {
@@ -20,7 +13,7 @@ export class Icon extends Component<any, any> {
 
     // guard against missing icon names
     if (!this.props.name) {
-      return <Ionicon {...this.props} name="ios-leaf" style={[{backgroundColor:'transparent'}, this.props.style]} />;
+      return <Ionicons3 {...this.props} name="ios-leaf" style={[{backgroundColor:'transparent'}, this.props.style]} />;
     }
 
     let prefix = this.props.name.substr(0,3);
@@ -32,7 +25,7 @@ export class Icon extends Component<any, any> {
       if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
         offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
       }
-      return <Ionicon {...this.props} name="ios-document" style={[{backgroundColor:'transparent'}, this.props.style]} />
+      return <Ionicons3 {...this.props} name="ios-document" style={[{backgroundColor:'transparent'}, this.props.style]} />
     }
     if (prefix == 'c1-') {
       let correction = iconCorrections.c1[this.props.name];
@@ -69,7 +62,7 @@ export class Icon extends Component<any, any> {
       if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
         offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
       }
-      return <Ionicon {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
+      return <Ionicons3 {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
     }
   }
 }

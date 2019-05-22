@@ -1,6 +1,6 @@
-import { eventBus } from '../../util/EventBus'
 import { BATCH } from './storeManager'
-import {LOG, LOGw} from '../../logging/Log'
+import {LOGw} from '../../logging/Log'
+import { core } from "../../core";
 
 
 /**
@@ -48,7 +48,7 @@ export function EventEnhancer({ getState }) {
       }
     }
 
-    eventBus.emit("databaseChange", {...action, change: eventData});
+    core.eventBus.emit("databaseChange", {...action, change: eventData});
 
     // This will likely be the action itself, unless
     // a middleware further in chain changed it.
@@ -299,8 +299,8 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_INSTALLATIONS":
     case "FINISHED_SPECIAL_DEVICES":
     case "FINISHED_SPECIAL_MESSAGES":
-      break;
     case "UPDATE_SYNC_ACTIVITY_TIME":
+    case "UPDATE_ACTIVITY_RANGE":
       break;
     case "ADD_TOON":
     case "TOON_UPDATE_SETTINGS":
@@ -314,16 +314,18 @@ function checkAction(action, affectedIds) {
     case "UPDATE_LOCATION_CLOUD_ID":
     case "UPDATE_STONE_CLOUD_ID":
     case "UPDATE_SPHERE_CLOUD_ID":
-      break;
-    case "UPDATE_STONE_DIAGNOSTICS":
+    case "UPDATE_ACTIVITY_LOG_CLOUD_ID":
+      eventStatus['updatedCloudIds'] = affectedIds; break;
+    case "UPDATE_STONE_REACHABILITY":
     case "UPDATE_STONE_PREVIOUS_SWITCH_STATE":
       break;
     case "UPDATE_STONE_SWITCH_STATE_TRANSIENT":
       eventStatus['stoneUsageUpdatedTransient'] = affectedIds; break;
     case "USER_UPDATE_PICTURE":
-    case "UPDATE_ACTIVITY_LOG_CLOUD_ID":
       break;
     case "ADD_ACTIVITY_LOG":
+    case "ADD_ACTIVITY_RANGE":
+    case "REMOVE_ACTIVITY_RANGE":
     case "REMOVE_ACTIVITY_LOG":
       eventStatus['stoneChangeLogs'] = affectedIds; break;
     default:

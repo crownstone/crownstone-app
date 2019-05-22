@@ -1,6 +1,6 @@
 import localization_en_us from "./localization/en/us/en_us";
 
-const DEFAULT_STRING = "TRANSLATION_IN_PROGRESS"
+const DEFAULT_STRING = "TRANSLATION_IN_PROGRESS";
 
 class LanguageManager {
 
@@ -23,7 +23,7 @@ class LanguageManager {
       // this will avoid 1000 "Back" references
       if (this.textSource[file] === undefined || this.textSource[file][key] === undefined) {
         if (!this.textSource['__UNIVERSAL'][key]) {
-          console.log("Could not find", key, " in file", file, " and universal")
+          console.log("Could not find", key, " in file", file, " and universal");
           return "__MISSING_STRING__"
         }
 
@@ -41,4 +41,4 @@ class LanguageManager {
   }
 }
 
-export const Languages = new LanguageManager()
+export const Languages = new LanguageManager();

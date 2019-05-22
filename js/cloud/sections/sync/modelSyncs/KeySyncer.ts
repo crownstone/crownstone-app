@@ -7,7 +7,7 @@
 
 import { CLOUD}               from "../../../cloudAPI";
 import { SyncingBase }        from "./SyncingBase";
-import {eventBus} from "../../../../util/EventBus";
+import { core } from "../../../../core";
 
 export class KeySyncer extends SyncingBase {
   userId : string;
@@ -43,7 +43,7 @@ export class KeySyncer extends SyncingBase {
         if (sphere.config.adminKey  !== keys.adminKey  ||
             sphere.config.memberKey !== keys.memberKey ||
             sphere.config.guestKey  !== keys.guestKey) {
-          eventBus.emit("KEYS_UPDATED", { sphereId: localSphereId, keys: keys, presentInSphere: sphere.state.present });
+          core.eventBus.emit("KEYS_UPDATED", { sphereId: localSphereId, keys: keys, presentInSphere: sphere.state.present });
         }
       }
 

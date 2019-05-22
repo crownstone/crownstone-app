@@ -1,11 +1,12 @@
 /**
  * Created by alex on 25/08/16.
  */
+import { cloudApiBase } from "./cloudApiBase";
 
 export const preferences = {
 
   getPreferences: function (background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Devices/{id}/preferences',
       {background: background},
@@ -14,7 +15,7 @@ export const preferences = {
   },
 
   createPreference: function (data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Devices/{id}/preferences',
       {data: data, background: background},
@@ -23,7 +24,7 @@ export const preferences = {
   },
 
   updatePreference: function (preferenceCloudId, data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'PUT',
       '/Devices/{id}/preferences/' + preferenceCloudId,
       {data: data, background: background},
@@ -32,7 +33,7 @@ export const preferences = {
   },
 
   deletePreference: function (preferenceCloudId, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'DELETE',
       '/Devices/{id}/preferences/' + preferenceCloudId,
       { background: background },

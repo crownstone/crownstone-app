@@ -1,30 +1,34 @@
-import { Alert, AppState }       from 'react-native';
-import { eventBus } from "../../util/EventBus";
 import { BluenetPromiseWrapper } from "./BluenetPromise";
 import { Bluenet } from "./Bluenet";
+import { core } from "../../core";
+import { LOGe } from "../../logging/Log";
 
 
 class EncryptionManagerClass {
   _initialized : boolean = false;
-  store : any;
   _uuid : string;
   _readyForLocalization = false;
 
-  loadStore(store) {
+  init() {
     if (this._initialized === false) {
-      this.store = store;
       this._initialized = true;
 
-      eventBus.on("sphereCreated",        () => { this.setKeySets(); });
-      eventBus.on("KEYS_UPDATED",         () => { this.setKeySets(); });
-      eventBus.on('userLoggedInFinished', () => { this.setKeySets(); });
+      core.eventBus.on("sphereCreated",        () => { this.setKeySets(); });
+      core.eventBus.on("KEYS_UPDATED",         () => { this.setKeySets(); });
+      core.eventBus.on('userLoggedInFinished', () => { this.setKeySets(); });
+      core.eventBus.on("databaseChange",       (data) => {
+        let change = data.change;
+        if (change.changeSpheres || change.updateActiveSphere) {
+          this.setKeySets();
+        }
+      });
 
       this.setKeySets();
     }
   }
 
   setKeySets() {
-    let state = this.store.getState();
+    let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
     let keysets : keySet[] = [];
 
@@ -44,9 +48,9 @@ class EncryptionManagerClass {
     }
     else {
       BluenetPromiseWrapper.setKeySets(keysets)
-        .catch((err) => { console.log("Error EncryptionManager:", err);})
+        .catch((err) => { LOGe.info("Error EncryptionManager:", err);})
     }
   }
 }
 
-export const EncryptionManager = new EncryptionManagerClass()
+export const EncryptionManager = new EncryptionManagerClass();

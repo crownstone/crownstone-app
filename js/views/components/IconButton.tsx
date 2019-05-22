@@ -1,9 +1,3 @@
-
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("IconButton", key)(a,b,c,d,e);
-}
 import * as React from 'react'; import { Component } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Icon } from './Icon'
@@ -12,24 +6,40 @@ import { styles, colors} from '../styles'
 /**
 
  */
-export class IconButton extends Component<any, any> {
+export class IconButton extends Component<
+  {
+    name:             string,
+    size:             number,
+    color:            string,
+    buttonSize?:      number,
+    button?:          boolean,
+    addIcon?:         boolean,
+    radius?:          number,
+    plusSize?:        number,
+    addColor?:        string,
+    buttonStyle?:     any,
+    style?:           any,
+    showLoadingIcon?: boolean
+  }, any> {
+
+
   render() {
+    let iconSize = this.props.buttonSize || 30;
     if (this.props.addIcon) {
-      let iconSize = this.props.buttonSize;
       let plusSize = this.props.plusSize || 0.3*iconSize;
       return (
         <View style={{width:iconSize+plusSize, height:iconSize+0.2*plusSize, overflow:'hidden'}}>
         <View style={[{
-          width: this.props.buttonSize || 30,
-          height: this.props.buttonSize || 30,
-          borderRadius: this.props.radius || (this.props.buttonSize || 30)/5,
+          width: iconSize,
+          height: iconSize,
+          borderRadius: this.props.radius || iconSize/5,
           padding:0,
           margin:0,
           position:'relative',
           left: 0.5*plusSize,
           top: 0.2*plusSize
         }, styles.centered, this.props.buttonStyle]}>
-          {this.props.showLoadingIcon ? <ActivityIndicator animating={true} size={this.props.buttonSize > 50 ? 'large' :  lang("small")}  /> : <Icon {...this.props} /> }
+          {this.props.showLoadingIcon ? <ActivityIndicator animating={true} size={iconSize > 50 ? 'large' : 'small' }  /> : <Icon {...this.props} /> }
         </View>
         <View style={[{
           width:plusSize,
@@ -52,14 +62,14 @@ export class IconButton extends Component<any, any> {
     else {
       return (
         <View style={[{
-          width: this.props.buttonSize || 30,
-          height: this.props.buttonSize || 30,
-          borderRadius: this.props.radius || (this.props.buttonSize || 30)/5,
+          width: iconSize,
+          height: iconSize,
+          borderRadius: this.props.radius || (iconSize)/5,
           padding:0,
           margin:0,
           }, styles.centered, this.props.buttonStyle
         ]}>
-          {this.props.showLoadingIcon ? <ActivityIndicator animating={true} size={this.props.buttonSize > 50 ? 'large' :  lang("small")}  /> : <Icon {...this.props} /> }
+          {this.props.showLoadingIcon ? <ActivityIndicator animating={true} size={iconSize > 50 ? 'large' :  'small'}  /> : <Icon {...this.props} /> }
         </View>
       )
     }

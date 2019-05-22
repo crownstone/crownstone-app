@@ -8,22 +8,19 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Platform,
   Linking,
-  TouchableOpacity,
-  TouchableHighlight,
   ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {colors, OrangeLine, screenWidth} from "../styles";
+import {colors, } from "../styles";
 import {IconButton} from "../components/IconButton";
-import {Actions} from "react-native-router-flux";
-import {Icon} from "../components/Icon";
+
 import {NavigationBar} from "../components/editComponents/NavigationBar";
-import { Sentry } from "react-native-sentry";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class SettingsFAQ extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -133,7 +130,7 @@ export class SettingsFAQ extends Component<any, any> {
             label={ lang("Revert_to_Cloud_Data")}
             icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              Actions.settingsRedownloadFromCloud()
+              NavigationUtil.navigate("SettingsRedownloadFromCloud");
             }}
           />
           <View style={{flex:1}} />
@@ -152,7 +149,7 @@ export class SettingsFAQ extends Component<any, any> {
             label={ lang("Revert_to_Cloud_Data")}
             icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              Actions.settingsRedownloadFromCloud()
+              NavigationUtil.navigate("SettingsRedownloadFromCloud");
             }}
           />
           <View style={{flex:1}} />
@@ -171,7 +168,7 @@ export class SettingsFAQ extends Component<any, any> {
             label={ lang("Revert_to_Cloud_Data")}
             icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              Actions.settingsRedownloadFromCloud()
+              NavigationUtil.navigate("SettingsRedownloadFromCloud");
             }}
           />
           <View style={{flex:1}} />
@@ -209,7 +206,7 @@ export class SettingsFAQ extends Component<any, any> {
             label={ lang("Reset_Crownstone")}
             icon={<IconButton name={'ios-build'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              Actions.settingsFactoryResetStep1()
+              NavigationUtil.navigate("SettingsFactoryResetStep1");
             }}
           />
           <View style={{flex:1}} />
@@ -228,7 +225,7 @@ export class SettingsFAQ extends Component<any, any> {
       type:'navigation',
       icon: <IconButton name={'ios-bluetooth'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex }}/>,
       callback: () => {
-        Actions.settingsBleTroubleshooting()
+        NavigationUtil.navigate("SettingsBleTroubleshooting");
       }
     });
     items.push({
@@ -255,9 +252,8 @@ export class SettingsFAQ extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
-        <OrangeLine/>
-        <ScrollView>
+      <Background image={core.background.menu} >
+                <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>

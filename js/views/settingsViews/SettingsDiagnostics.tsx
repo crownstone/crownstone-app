@@ -6,21 +6,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
   Animated,
-  Alert,
-  Platform,
-  Linking,
   TouchableOpacity,
-  TouchableHighlight,
   ScrollView,
-  Switch,
   Text,
   View
 } from 'react-native';
 
 import { Background } from '../components/Background'
-import {availableScreenHeight, colors, OrangeLine, screenWidth} from "../styles";
+import {availableScreenHeight, colors, screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {Bluenet} from "../../native/libInterface/Bluenet";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
@@ -31,6 +25,7 @@ import {TestResult} from "./diagnostics/DiagnosticUtil";
 import {InSphere} from "./diagnostics/InSphere";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { DiagnosticStates, diagnosticStyles } from "./diagnostics/DiagnosticStyles";
+import { core } from "../../core";
 
 export class SettingsDiagnostics extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -68,16 +63,25 @@ export class SettingsDiagnostics extends Component<any, any> {
       testPhase: DiagnosticStates.INITIAL_TESTS,
     });
 
-    let state = this.props.store.getState();
-    let spheres = state.spheres;
+    let state = core.store.getState();
+    let sphereIds = state.spheres;
     let healthySpheres = true;
     let stoneCount = 0;
 
-    Object.keys(spheres).forEach((sphereId) => {
-      let sphere = spheres[sphereId];
-      if (!sphere.config.iBeaconUUID || !sphere.config.adminKey && !sphere.config.memberKey && !sphere.config.guestKey ) {
-        healthySpheres = false;
-      }
+    Object.keys(sphereIds).forEach((sphereId) => {
+      let sphere = sphereIds[sphereId];
+      let corruptData = (!sphere.config.adminKey && !sphere.config.memberKey && !sphere.config.guestKey) || !sphere.config.iBeaconUUID;
+      let stoneIds = Object.keys(sphere.stones);
+      stoneIds.forEach((stoneId) => {
+        let stone = sphere.stones[stoneId];
+        corruptData = corruptData ||
+          !stone.config.iBeaconMajor ||
+          !stone.config.iBeaconMinor ||
+          !stone.config.macAddress;
+      });
+
+      if (corruptData) { healthySpheres = false; }
+
       if (Permissions.inSphere(sphereId).canSetupCrownstone === true) {
         this.canSetupStones = true;
       }
@@ -153,7 +157,7 @@ export class SettingsDiagnostics extends Component<any, any> {
         return (
           <ReviewInitialTests
             {...this.state}
-            store={this.props.store}
+            store={core.store}
             canSetupStones={this.canSetupStones}
             nextPhase={(ibeacons, verifiedAdvertisements) => {
               if (!ibeacons || !verifiedAdvertisements ) {
@@ -170,7 +174,7 @@ export class SettingsDiagnostics extends Component<any, any> {
           <NoStones
             {...this.state}
             canSetupStones={this.canSetupStones}
-            store={this.props.store}
+            store={core.store}
           />
         );
       case DiagnosticStates.NOT_IN_SPHERE:
@@ -178,7 +182,7 @@ export class SettingsDiagnostics extends Component<any, any> {
           <NotInSphere
             {...this.state}
             canSetupStones={this.canSetupStones}
-            store={this.props.store}
+            store={core.store}
             amInSphere={() => {
               this.setState({ibeacons: true, verifiedAdvertisements: true, testPhase: DiagnosticStates.IN_SPHERE})
             }}
@@ -189,7 +193,7 @@ export class SettingsDiagnostics extends Component<any, any> {
           <InSphere
             {...this.state}
             canSetupStones={this.canSetupStones}
-            store={this.props.store}
+            store={core.store}
           />
         );
     }
@@ -198,9 +202,8 @@ export class SettingsDiagnostics extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu}>
-        <OrangeLine/>
-        <ScrollView>
+      <Background image={core.background.menu}>
+                <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center'}}>
             <Text style={diagnosticStyles.titleStyle}>{ lang("Diagnostics") }</Text>
           </View>

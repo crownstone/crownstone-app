@@ -1,11 +1,12 @@
 /**
  * Created by alex on 25/08/16.
  */
+import { cloudApiBase } from "./cloudApiBase";
 
 export const activityRanges = {
 
   getActivityRanges: function (data, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'GET',
       '/Stones/{id}/activityRanges',
       {data: data, background: background},
@@ -14,7 +15,7 @@ export const activityRanges = {
   },
 
   batchCreateActivityRanges: function (data, timestamp, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'POST',
       '/Stones/{id}/activityRangeBatch?timestamp=' + timestamp,
       {data: data, background: background},
@@ -23,7 +24,7 @@ export const activityRanges = {
   },
 
   batchUpdateActivityRanges: function (data, timestamp, background = true) {
-    return this._setupRequest(
+    return cloudApiBase._setupRequest(
       'PUT',
       '/Stones/{id}/activityRangeBatch?timestamp=' + timestamp,
       {data: data, background: background},

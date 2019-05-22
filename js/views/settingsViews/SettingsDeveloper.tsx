@@ -5,17 +5,11 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsDeveloper", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
-  Text,
-  View
-} from 'react-native';
+  ScrollView} from 'react-native';
 
-import { Actions } from 'react-native-router-flux';
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { Bluenet } from '../../native/libInterface/Bluenet'
@@ -24,10 +18,12 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { colors } from '../styles'
 import {Util} from "../../util/Util";
 import {clearLogs} from "../../logging/LogUtil";
-import {BackAction} from "../../util/Back";
+
 import {MeshUtil} from "../../util/MeshUtil";
 import {CLOUD_ADDRESS} from "../../ExternalConfig";
 import {Scheduler} from "../../logic/Scheduler";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class SettingsDeveloper extends LiveComponent<any, any> {
@@ -41,7 +37,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   unsubscribe : any = [];
 
   componentDidMount() {
-    this.unsubscribe.push(this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings || change.stoneRssiUpdated) {
         this.forceUpdate();
@@ -55,7 +51,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
   
   _getItems() {
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
     let user = state.user;
     let dev = state.development;
@@ -90,7 +86,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         type: 'navigation',
         icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         callback: () => {
-          Actions.settingsLogging()
+          NavigationUtil.navigate("SettingsLogging");
         }
       });
       items.push({
@@ -119,10 +115,10 @@ text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}
       icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback: () => {
         if (CLOUD.__currentlySyncing === false) {
-          this.props.eventBus.emit("showLoading", lang("Syncing___"));
+          core.eventBus.emit("showLoading", lang("Syncing___"));
           CLOUD.sync(store, true)
-            .then(() => { this.props.eventBus.emit("showLoading",lang("Done_")); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
-            .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert(
+            .then(() => { core.eventBus.emit("showLoading",lang("Done_")); setTimeout(() => { core.eventBus.emit("hideLoading");}, 500); })
+            .catch((err) => { core.eventBus.emit("hideLoading"); Alert.alert(
               lang("_Error_during_sync__argum_header"),
               lang("_Error_during_sync__argum_body",err,err.message,JSON.stringify(err)),
               [{text:lang("_Error_during_sync__argum_left")}]) })
@@ -140,11 +136,11 @@ lang("_Sync_already_in_progress_body"),
       style: {color: colors.black.hex},
       icon: <IconButton name="ios-jet" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
       callback:() => {
-        this.props.eventBus.emit("showLoading", lang("Requesting_Notifications_"));
+        core.eventBus.emit("showLoading", lang("Requesting_Notifications_"));
 
         let clearScheduledTimeout = null;
         let cleanup = null;
-        let unsubscribe = this.props.eventBus.on("NotificationReceived", (data) => {
+        let unsubscribe = core.eventBus.on("NotificationReceived", (data) => {
           if (data.type === "testNotification") {
             Alert.alert(
 lang("_Notification_Received____header"),
@@ -157,7 +153,7 @@ lang("_Notification_Received____body"),
         this.unsubscribe.push(unsubscribe);
 
         clearScheduledTimeout = Scheduler.scheduleActiveCallback(() => {
-          cleanup()
+          cleanup();
           Alert.alert(
 lang("_Nothing_Received_____May_header"),
 lang("_Nothing_Received_____May_body"),
@@ -165,12 +161,12 @@ lang("_Nothing_Received_____May_body"),
         }, 4000);
 
         cleanup = () => {
-          clearScheduledTimeout()
-          unsubscribe()
-          this.props.eventBus.emit("hideLoading");
-        }
+          clearScheduledTimeout();
+          unsubscribe();
+          core.eventBus.emit("hideLoading");
+        };
 
-        let deviceId = Util.data.getDeviceIdFromState(state, state.user.appIdentifier)
+        let deviceId = Util.data.getDeviceIdFromState(state, state.user.appIdentifier);
         if (deviceId) {
           CLOUD.forDevice(deviceId).sendTestNotification().catch((err) => {
             cleanup();
@@ -199,14 +195,14 @@ lang("_No_device_Id___There_was_body"),
       type: 'navigation',
       icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightBlue2.hex}} />,
       callback:() => {
-        Actions.settingsBleDebug()
+        NavigationUtil.navigate("SettingsBleDebug");
       }});
     items.push({
       label: lang("Localization_Debug"),
       type: 'navigation',
       icon: <IconButton name="md-locate" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback:() => {
-        Actions.settingsLocalizationDebug()
+        NavigationUtil.navigate("SettingsLocalizationDebug");
       }});
 
     items.push({label: lang("ACTIVITY_LOGS"), type: 'explanation'});
@@ -230,7 +226,7 @@ lang("_No_device_Id___There_was_body"),
     }
 
 
-    let broadcastLevels = []
+    let broadcastLevels = [];
     for (let i = -16; i <= 14; i = i+2) {
       broadcastLevels.push({value: i, label: lang("_dB",i)});
     }
@@ -246,7 +242,7 @@ lang("_No_device_Id___There_was_body"),
       }});
     let deviceId = Util.data.getCurrentDeviceId(state);
     if (deviceId) {
-      let device = state.devices[deviceId]
+      let device = state.devices[deviceId];
       items.push({
         type: 'dropdown',
         label: lang("RSSI_Offset"),
@@ -258,7 +254,7 @@ lang("_No_device_Id___There_was_body"),
         value: device.rssiOffset,
         items: broadcastLevels,
         callback: (newValue) => {
-          this.props.store.dispatch({ type: "SET_RSSI_OFFSET", deviceId: deviceId, data: {rssiOffset: newValue}})
+          core.store.dispatch({ type: "SET_RSSI_OFFSET", deviceId: deviceId, data: {rssiOffset: newValue}})
         }
       })
     }
@@ -273,7 +269,7 @@ lang("_No_device_Id___There_was_body"),
       type: 'navigation',
       icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
       callback:() => {
-        Actions.settingsMeshDebug()
+        NavigationUtil.navigate("SettingsMeshDebug");
       }});
     items.push({
       label: lang("Show_RSSI_in_Topology"),
@@ -287,13 +283,13 @@ lang("_No_device_Id___There_was_body"),
       label: lang("Reset_networks"),
       type:  'button',
       style: {color: colors.black.hex},
-      icon:  <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkGreen.hex}} />,
+      icon:  <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback:() => {
         Alert.alert(
 lang("_Are_you_sure___This_will_header"),
 lang("_Are_you_sure___This_will_body"),
 [{text:lang("_Are_you_sure___This_will_left"), onPress: () => {
-              const store = this.props.store;
+              const store = core.store;
               const state = store.getState();
               let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
               MeshUtil.clearMeshNetworkIds(store, sphereId);
@@ -307,6 +303,13 @@ lang("_Reset_Done__Rediscovery__body"),
         )
       }
     });
+    items.push({
+      label: lang("Mesh_Topology"),
+      type: 'navigation',
+      icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueDark.hex}} />,
+      callback:() => {
+        NavigationUtil.navigate("SettingsMeshTopology");
+      }});
 
     if (user.betaAccess) {
       items.push({label: lang("ALPHA_FEATURES_WILL_LOOK_"), type: 'explanation', below: false});
@@ -326,7 +329,7 @@ lang("_Reset_Done__Rediscovery__body"),
             type: 'SET_BETA_ACCESS',
             data: {betaAccess: newValue}
           });
-        }
+        };
         if (newValue) {
           Alert.alert(
 lang("_EXPERIMENTAL___Switchcra_header"),
@@ -360,7 +363,7 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
         clearAllLogs();
         Bluenet.enableLoggingToFile(false);
 
-        BackAction();
+        NavigationUtil.back();
     }});
 
     items.push({label: lang("CLOUD_URL__",CLOUD_ADDRESS), type: 'explanation'});
@@ -373,7 +376,7 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={core.background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

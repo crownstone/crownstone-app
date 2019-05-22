@@ -1,5 +1,5 @@
 import { CLOUD } from "../cloudAPI";
-import {LOG, LOGe} from "../../logging/Log";
+import {LOGe} from "../../logging/Log";
 
 
 import { transferUtil } from "./shared/transferUtil";
@@ -7,11 +7,12 @@ import { transferUtil } from "./shared/transferUtil";
 let fieldMap : fieldMap = [
   {local: 'name',      cloud: 'name'},
   {local: 'icon',      cloud: 'icon'},
+  {local: 'uid',       cloud: 'uid',  cloudToLocalOnly: false},
   {local: 'updatedAt', cloud: 'updatedAt'},
   {local: 'pictureId', cloud:'imageId', cloudToLocalOnly: true},
 
   // used for local config
-  {local: 'cloudId',           cloud: 'id' ,  cloudToLocalOnly: true },
+  {local: 'cloudId',           cloud: 'id',  cloudToLocalOnly: true },
   {local: 'fingerprintRaw',    cloud: null},
   {local: 'fingerprintParsed', cloud: null},
 ];
@@ -19,7 +20,7 @@ let fieldMap : fieldMap = [
 export const transferLocations = {
   fieldMap: fieldMap,
 
-  createOnCloud: function( actions, data : transferNewToCloudData ) {
+  createOnCloud: function(actions, data : transferNewToCloudData ) {
     let payload = {};
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
@@ -27,7 +28,7 @@ export const transferLocations = {
     return CLOUD.forSphere(data.cloudSphereId).createLocation(payload)
       .then((result) => {
         // update cloudId in local database.
-        actions.push({type: 'UPDATE_LOCATION_CLOUD_ID', sphereId: data.localSphereId, locationId: data.localId, data: { cloudId: result.id }});
+        actions.push({type: 'UPDATE_LOCATION_CLOUD_ID', sphereId: data.localSphereId, locationId: data.localId, data: { cloudId: result.id, uid: result.uid }});
         return result.id;
       })
       .catch((err) => {
@@ -38,7 +39,7 @@ export const transferLocations = {
 
   updateOnCloud: function( data : transferToCloudData ) {
     if (data.cloudId === undefined) {
-      return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
+      return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
     }
 
     let payload = {};

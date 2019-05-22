@@ -1,7 +1,6 @@
-import { Alert, NativeModules, NativeEventEmitter } from 'react-native';
-import {LOG, LOGe, LOGi} from '../../logging/Log'
-import { Util } from "../../util/Util";
-import {DISABLE_NATIVE} from "../../ExternalConfig";
+import { NativeModules, NativeEventEmitter } from 'react-native';
+import { LOGe, LOGi } from '../../logging/Log'
+import { DISABLE_NATIVE } from "../../ExternalConfig";
 import { xUtil } from "../../util/StandAloneUtil";
 
 let BluenetEmitter = { addListener: (a,b) => { return {remove:() => {}} }};
@@ -10,7 +9,7 @@ if (DISABLE_NATIVE !== true) {
   BluenetEmitter = new NativeEventEmitter(NativeModules.BluenetJS);
 }
 
-class NativeBusClass {
+export class NativeBusClass {
   topics: any;
   refMap: any;
 

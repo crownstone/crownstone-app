@@ -11,7 +11,6 @@
  */
 
 import {transferSchedules} from "../../../transferData/transferSchedules";
-import {Util} from "../../../../util/Util";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import { xUtil } from "../../../../util/StandAloneUtil";

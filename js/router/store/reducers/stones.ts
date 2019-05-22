@@ -1,42 +1,45 @@
-import { combineReducers } from 'redux'
+import { combineReducers }      from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
-import powerUsageReducer from './stoneSubReducers/powerUsage'
-import scheduleReducer   from './stoneSubReducers/schedule'
-import meshReducer       from './stoneSubReducers/mesh'
-import activityLogsReducer from './stoneSubReducers/activityLog'
-import activityRangesReducer from './stoneSubReducers/activityRange'
-import reachabilityReducer from './stoneSubReducers/reachability'
-import lastUpdatedReducer from './stoneSubReducers/lastUpdated'
+import powerUsageReducer        from './stoneSubReducers/powerUsage'
+import scheduleReducer          from './stoneSubReducers/schedule'
+import ruleReducer              from './stoneSubReducers/rules'
+import meshReducer              from './stoneSubReducers/mesh'
+import activityLogsReducer      from './stoneSubReducers/activityLog'
+import activityRangesReducer    from './stoneSubReducers/activityRange'
+import reachabilityReducer      from './stoneSubReducers/reachability'
+import lastUpdatedReducer       from './stoneSubReducers/lastUpdated'
 import { STONE_TYPES } from "../../../Enums";
 
 let defaultSettings = {
   config: {
+    name: 'Crownstone Plug',
     icon: 'c2-pluginFilled',
-    applianceId: null,
     crownstoneId: undefined,
-    cloudId: null,
-    dimmingAvailable: false,
-    dimmingEnabled: false,
-    firmwareVersion: null,
-    firmwareVersionSeenInOverview: null,
-    bootloaderVersion: null,
-    dfuResetRequired: false,
-    hardwareVersion: null,
+    type: STONE_TYPES.plug,
+    uid: undefined,
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,
     handle: undefined,
+
+    cloudId: null,
+    dimmingEnabled: false,
+    dimmingAvailable: false,
+    switchCraft: false,
+
+    firmwareVersion: null,
+    firmwareVersionSeenInOverview: null,
+    bootloaderVersion: null,
+    hardwareVersion: null,
+
+    dfuResetRequired: false,
     locationId: null,
     macAddress: undefined,
     meshNetworkId: null,
-    name: 'Crownstone Plug',
-    nearThreshold: null,
-    onlyOnWhenDark: false,
     tapToToggle: true,
     hidden: false,
     locked: false,
-    switchCraft: false,
-    type: STONE_TYPES.plug,
+    applianceId: null,
     updatedAt: 1,
   },
   lastUpdated: {
@@ -51,14 +54,13 @@ let defaultSettings = {
     updatedAt: 1
   },
   reachability: {
-    disabled: true,
     lastSeen: null,
-    lastSeenViaMesh: null,
-    lastSeenTemperature: null,
-    rssi: -1000,
   },
   schedules: { // this schedule will be overruled by the appliance if applianceId is not undefined.
     updatedAt: 1
+  },
+  rules: {
+    // id: behaviourWrapper
   },
   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
     onHomeEnter: { /* toggleState */ },
@@ -155,6 +157,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         let newState = {...state};
         newState.applianceId       = update(action.data.applianceId,       newState.applianceId);
         newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);
+        newState.uid               = update(action.data.uid,               newState.uid);
         newState.cloudId           = update(action.data.cloudId,           newState.cloudId);
         newState.dimmingEnabled    = update(action.data.dimmingEnabled,    newState.dimmingEnabled);
         newState.dimmingAvailable  = update(action.data.dimmingAvailable,  newState.dimmingAvailable);
@@ -172,8 +175,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.macAddress        = update(action.data.macAddress,        newState.macAddress);
         newState.meshNetworkId     = update(action.data.meshNetworkId,     newState.meshNetworkId);
         newState.name              = update(action.data.name,              newState.name);
-        newState.nearThreshold     = update(action.data.nearThreshold,     newState.nearThreshold);
-        newState.onlyOnWhenDark    = update(action.data.onlyOnWhenDark,    newState.onlyOnWhenDark);
         newState.tapToToggle       = update(action.data.tapToToggle,       newState.tapToToggle);
         newState.switchCraft       = update(action.data.switchCraft,       newState.switchCraft);
         newState.type              = update(action.data.type,              newState.type);
@@ -378,6 +379,7 @@ let combinedStoneReducer = combineReducers({
   config:     stoneConfigReducer,
   state:      stoneStateReducer,
   behaviour:  stoneBehavioursReducer,
+  rules:      ruleReducer,
   schedules:  scheduleReducer,
   errors:     stoneErrorsReducer,
   powerUsage: powerUsageReducer,

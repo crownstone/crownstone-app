@@ -4,7 +4,7 @@ import { xUtil } from "./StandAloneUtil";
 
 const EXCLUDE_FROM_CLEAR = {
   showLoading: true,
-}
+};
 
 export class EventBusClass {
   _topics : object;

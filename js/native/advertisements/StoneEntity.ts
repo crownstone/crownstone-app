@@ -1,23 +1,20 @@
 import { LOG_LEVEL }        from "../../logging/LogLevels";
-import {LOG, LOGd, LOGi, LOGw} from "../../logging/Log";
+import {LOGd, LOGi, LOGw} from "../../logging/Log";
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED } from "../../ExternalConfig";
-import { eventBus }         from "../../util/EventBus";
 import { Util }             from "../../util/Util";
 import { Scheduler }        from "../../logic/Scheduler";
 import { LocationHandler }  from "../localization/LocationHandler";
 import { StoneMeshTracker } from "./StoneMeshTracker";
 import { StoneBehaviour }   from "./StoneBehaviour";
 import { StoneStoreManager } from "./StoneStoreManager";
-import {generateFakeAdvertisement} from "./Debug";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-
-let RSSI_TIMEOUT = 5000;
+import { core } from "../../core";
+import { xUtil } from "../../util/StandAloneUtil";
 
 const UPDATE_CONFIG_FROM_ADVERTISEMENT     = 'UPDATE_CONFIG_FROM_ADVERTISEMENT';
 const UPDATE_STATE_FROM_ADVERTISEMENT      = 'UPDATE_STATE_FROM_ADVERTISEMENT';
 const UPDATE_STONE_TIME_LAST_SEEN          = 'UPDATE_STONE_TIME_LAST_SEEN';
 const UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH = 'UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH';
-const UPDATE_STONE_RSSI                    = 'UPDATE_STONE_RSSI';
 
 
 export const conditionMap = {
@@ -66,7 +63,7 @@ export class StoneEntity {
     this.meshTracker = new StoneMeshTracker(store, sphereId, stoneId);
 
     this.subscribe();
-    // eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
+    // core.eventBus.on("ADVERTISEMENT_DEBUGGING", (state) => {
     //   this._debug(state);
     // })
   }
@@ -108,7 +105,7 @@ export class StoneEntity {
     // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
     // This is to avoid the case where a state that was recorded pre-connection is shown post-connection
     // (ie. switch off instead of on)
-    this.subscriptions.push(eventBus.on("connecting", (handle) => {
+    this.subscriptions.push(core.eventBus.on("connecting", (handle) => {
       let state = this.store.getState();
       let sphere = state.spheres[this.sphereId];
       let stone = sphere.stones[this.stoneId];
@@ -119,7 +116,7 @@ export class StoneEntity {
     }));
 
     // these timeouts are required for mesh propagation
-    this.subscriptions.push(eventBus.on(Util.events.getIgnoreTopic(this.stoneId), (data) => {
+    this.subscriptions.push(core.eventBus.on(Util.events.getIgnoreTopic(this.stoneId), (data) => {
       if (!data.timeoutMs) { return; }
 
       // clear any previous timeouts
@@ -178,8 +175,6 @@ export class StoneEntity {
       LOGd.advertisements("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
     }
 
-    this._updateDisabledState();
-    this._updateRssi(ibeaconPackage.rssi);
     this._handleBehaviour(state, stone);
 
     // fallback to ensure we never miss an enter event caused by a bug in ios 10
@@ -194,7 +189,7 @@ export class StoneEntity {
 
   _emitUpdateEvents(stone, rssi) {
     // These events are used in the Batch Command Handler
-    eventBus.emit(Util.events.getCrownstoneTopic(this.sphereId, this.stoneId), {
+    core.eventBus.emit(Util.events.getCrownstoneTopic(this.sphereId, this.stoneId), {
       handle: stone.config.handle,
       stone: stone,
       stoneId: this.stoneId,
@@ -203,7 +198,7 @@ export class StoneEntity {
     });
 
     if (stone.config.meshNetworkId) {
-      eventBus.emit(Util.events.getMeshTopic(this.sphereId, stone.config.meshNetworkId), {
+      core.eventBus.emit(Util.events.getMeshTopic(this.sphereId, stone.config.meshNetworkId), {
         handle: stone.config.handle,
         stoneId: this.stoneId,
         stone: stone,
@@ -214,48 +209,6 @@ export class StoneEntity {
     }
   }
 
-
-  _updateDisabledState() {
-    const state = this.store.getState();
-    if (!this._validate(state)) { return; }
-
-    let sphere = state.spheres[this.sphereId];
-    let stone = sphere.stones[this.stoneId];
-
-    // if we hear this stone and yet it is set to disabled, we re-enable it.
-    if (stone.reachability.disabled === true) {
-      this.store.dispatch({
-        type: 'UPDATE_STONE_DISABILITY',
-        sphereId: this.sphereId,
-        stoneId: this.stoneId,
-        data: {disabled: false}
-      });
-    }
-
-    if (this.disabledTimeout && typeof this.disabledTimeout === 'function') {
-      this.disabledTimeout();
-    }
-
-    let disableCallback = () => {
-      // cleanup
-      this.disabledTimeout = undefined;
-
-      let state = this.store.getState();
-      if (!this._validate(state)) { return; }
-
-      LOGi.advertisements("StoneStateHandler: Disabling stone ", this.stoneId);
-      this.store.dispatch({
-        type: 'UPDATE_STONE_DISABILITY',
-        sphereId: this.sphereId,
-        stoneId: this.stoneId,
-        data: {disabled: true, rssi: -1000}
-      });
-
-      eventBus.emit("CrownstoneDisabled", this.sphereId);
-    };
-
-    this.disabledTimeout = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + this.stoneId + "_");
-  }
 
   _updateExternalRssiIndicator(stoneId, stone, externalId, externalStone, rssi ) {
     if (stone.mesh[externalId] && stone.mesh[externalId].rssi === rssi) {
@@ -346,55 +299,22 @@ export class StoneEntity {
   }
 
 
-  _updateRssi(rssi) {
-    const state = this.store.getState();
-    if (!this._validate(state)) { return; }
-    let sphere = state.spheres[this.sphereId];
-    let stone = sphere.stones[this.stoneId];
-
-    // the lastKnownRSSI is used for behaviour
-    if (rssi < 0) { this.lastKnownRSSI = rssi; }
-
-    // only update rssi if there is a measurable difference and check if rssi is smaller than 0 to make sure its a valid measurement.
-    if (stone.reachability.rssi !== rssi && rssi < 0) {
-      this.storeManager.loadAction(this.stoneId, UPDATE_STONE_RSSI, {
-        type: 'UPDATE_STONE_RSSI',
-        sphereId: this.sphereId,
-        stoneId: this.stoneId,
-        data: { rssi: rssi },
-        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-      });
-    }
-
-    if (this.clearRssiTimeout && typeof this.clearRssiTimeout === 'function') {
-      this.clearRssiTimeout();
-    }
-
-    let clearRSSICallback = () => {
-      this.store.dispatch({
-        type: 'UPDATE_STONE_RSSI',
-        sphereId: this.sphereId,
-        stoneId: this.stoneId,
-        data: {rssi: -1000}
-      });
-      this.clearRssiTimeout = undefined;
-      delete this.clearRssiTimeout;
-    };
-
-    this.clearRssiTimeout = Scheduler.scheduleCallback(clearRSSICallback, RSSI_TIMEOUT, "updateRSSI_" + this.stoneId + "_");
-  }
-
-
   /**
    * This stone entity has sent an advertisement containing the state of ANOTHER crownstone. Handle this.
+   * @param stoneId
+   * @param stoneId
+   * @param externalId
+   * @param externalStone
+   * @param stoneId
+   * @param externalId
+   * @param externalStone
    * @param stone
+   * @param externalId
+   * @param externalStone
    * @param {crownstoneAdvertisement} advertisement
    */
   handleAdvertisementOfExternalCrownstone(stoneId: string, stone, externalId: string, externalStone, advertisement : crownstoneAdvertisement) {
-    this._updateStoneLastSeen();
-
-    // if this crownstone was disabled, change this since we saw it directly
-    this._updateDisabledState();
+    this._updateStoneLastSeen(stone);
 
     // if this crownstone was disabled, change this since we saw it directly
     this._updateExternalRssiIndicator(stoneId, stone, externalId, externalStone, advertisement.serviceData.rssiOfExternalCrownstone);
@@ -410,10 +330,8 @@ export class StoneEntity {
    * @param {crownstoneAdvertisement} advertisement
    */
   handleDirectAdvertisement(stone, advertisement : crownstoneAdvertisement) {
-    this._updateStoneLastSeen();
+    this._updateStoneLastSeen(stone);
 
-    // if this crownstone was disabled, change this since we saw it directly
-    this._updateDisabledState();
 
     // update the state entity
     this._handleAdvertisementContent(stone, advertisement);
@@ -429,27 +347,13 @@ export class StoneEntity {
    * @param {crownstoneAdvertisement} advertisement
    */
   handleContentViaMesh(stone, advertisement : crownstoneAdvertisement) {
-    eventBus.emit(Util.events.getViaMeshTopic(this.sphereId, stone.config.meshNetworkId), {
+    core.eventBus.emit(Util.events.getViaMeshTopic(this.sphereId, stone.config.meshNetworkId), {
       id: this.stoneId,
       serviceData: advertisement.serviceData
     });
 
-    // if this crownstone was disabled, change this since we saw it indirectly
-    this._updateDisabledState();
-
     // update the state entity
     this._handleAdvertisementContent(stone, advertisement);
-
-    // last seen via mesh.
-    this.storeManager.loadAction(this.stoneId, UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH, {
-      type: 'UPDATE_STONE_DIAGNOSTICS',
-      sphereId: this.sphereId,
-      stoneId: this.stoneId,
-      data: {
-        lastSeenViaMesh: new Date().valueOf(),
-      },
-      __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-    });
   }
 
   _handleBehaviour(state, stone) {
@@ -539,7 +443,7 @@ export class StoneEntity {
 
         // clean up timeout
         if (result === true) {
-          eventBus.emit(Util.events.getIgnoreConditionFulfilledTopic(this.stoneId));
+          core.eventBus.emit(Util.events.getIgnoreConditionFulfilledTopic(this.stoneId));
           LOGi.advertisements("StoneEntity: Conditions met for cancellation of advertisement ignore.");
           this._clearTimeout();
         }
@@ -651,8 +555,9 @@ export class StoneEntity {
 
 
   _errorsHaveChanged(stoneErrors, advertisementErrors : errorData) {
-    if (stoneErrors.hasError === false) { return true };
-
+    if (stoneErrors.hasError === false) {
+      return true;
+    }
     if (
       stoneErrors.overCurrent       !== advertisementErrors.overCurrent       ||
       stoneErrors.overCurrentDimmer !== advertisementErrors.overCurrentDimmer ||
@@ -668,7 +573,7 @@ export class StoneEntity {
   }
 
   handleErrors(stone, advertisement : crownstoneAdvertisement) {
-    if (Util.versions.canIUse(stone.config.firmwareVersion, '2.0.0')) {
+    if (xUtil.versions.canIUse(stone.config.firmwareVersion, '2.0.0')) {
       if (advertisement.serviceData.hasError === true) {
         LOGi.advertisements("StoneEntity: GOT ERROR", advertisement.serviceData);
         if (advertisement.serviceData.errorMode) {
@@ -681,7 +586,7 @@ export class StoneEntity {
               data: { hasError: true }
             });
             if (Permissions.inSphere(this.sphereId).canClearErrors) {
-              eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
+              core.eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
             }
           }
 
@@ -701,7 +606,7 @@ export class StoneEntity {
               }
             });
             if (Permissions.inSphere(this.sphereId).canClearErrors) {
-              eventBus.emit('updateErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
+              core.eventBus.emit('updateErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
             }
           }
         }
@@ -737,6 +642,11 @@ export class StoneEntity {
       measuredUsage = 0;
     }
 
+    // do not feed duplicates
+    if (stone.state.state === switchState && stone.state.currentUsage === measuredUsage) {
+      return;
+    }
+
     this.storeManager.loadAction(this.stoneId, UPDATE_STATE_FROM_ADVERTISEMENT, {
       type: 'UPDATE_STONE_STATE',
       sphereId: this.sphereId,
@@ -746,7 +656,6 @@ export class StoneEntity {
         currentUsage: measuredUsage,
         powerFactor: powerFactor,
         applianceId: stone.config.applianceId,
-        lastSeenTemperature : serviceData.temperature
       },
       updatedAt: currentTime,
       __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
@@ -759,15 +668,19 @@ export class StoneEntity {
    * Util method to avoid code duplication
    * @private
    */
-  _updateStoneLastSeen() {
-    this.storeManager.loadAction(this.stoneId, UPDATE_STONE_TIME_LAST_SEEN, {
-      type: 'UPDATE_STONE_DIAGNOSTICS',
-      sphereId: this.sphereId,
-      stoneId: this.stoneId,
-      data: {
-        lastSeen: new Date().valueOf(),
-      },
-      __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-    });
+  _updateStoneLastSeen(stone) {
+    let now = new Date().valueOf();
+    // only update if the difference is more than 3 seconds.
+    if (now - stone.reachability.lastSeen > 3000) {
+      this.storeManager.loadAction(this.stoneId, UPDATE_STONE_TIME_LAST_SEEN, {
+        type: 'UPDATE_STONE_REACHABILITY',
+        sphereId: this.sphereId,
+        stoneId: this.stoneId,
+        data: {
+          lastSeen: new Date().valueOf(),
+        },
+        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+      });
+    }
   }
 }

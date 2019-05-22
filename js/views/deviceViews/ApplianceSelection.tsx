@@ -5,16 +5,10 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("ApplianceSelection", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
-  Dimensions,
-  TouchableHighlight,
-  TouchableOpacity,
-  PixelRatio,
   ScrollView,
-  Switch,
-  Text,
   View
 } from 'react-native';
 
@@ -23,12 +17,15 @@ import { ApplianceEntry } from '../components/ApplianceEntry'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 
-const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, OrangeLine} from './../styles'
+
+import {styles, colors, } from './../styles'
 import { Icon } from '../components/Icon';
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {EventBusClass} from "../../util/EventBus";
-import {BackAction} from "../../util/Back";
+
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopbarBackButton } from "../components/topbar/TopbarButton";
 
 export class ApplianceSelection extends LiveComponent<{
   sphereId: string,
@@ -44,6 +41,7 @@ export class ApplianceSelection extends LiveComponent<{
     const { params } = navigation.state;
     return {
       title: lang("Select_Device_Type"),
+      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />,
     }
   };
 
@@ -51,12 +49,12 @@ export class ApplianceSelection extends LiveComponent<{
   unsubscribe : any;
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
       // if the stone has been deleted, close everything.
       if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
-        return BackAction();
+        return NavigationUtil.back();
       }
 
       if (change.changeAppliances && change.changeAppliances.sphereIds[this.props.sphereId]) {
@@ -72,7 +70,7 @@ export class ApplianceSelection extends LiveComponent<{
 
   _getItems() {
     let items = [];
-    const store = this.props.store;
+    const store = core.store;
     const state = store.getState();
 
     let appliances = state.spheres[this.props.sphereId].appliances;
@@ -83,7 +81,7 @@ export class ApplianceSelection extends LiveComponent<{
       applianceIds.forEach((applianceId) => {
         let appliance = appliances[applianceId];
 
-        let selectCallback = () => { this.props.callback(applianceId); BackAction(); };
+        let selectCallback = () => { this.props.callback(applianceId); NavigationUtil.back(); };
         let deleteCallback = () => {
           Alert.alert(
 lang("_Are_you_sure___We_will_b_header"),
@@ -119,7 +117,7 @@ text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () 
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-        Actions.applianceAdd({
+       NavigationUtil.navigate("ApplianceAdd",{
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
           callback: (applianceId) => {
@@ -135,7 +133,7 @@ text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () 
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-        this.props.callback(null); BackAction();
+        this.props.callback(null); NavigationUtil.back();
       }
     });
 
@@ -144,10 +142,10 @@ text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () 
   }
 
   _removeAppliance(store, state, applianceId) {
-    this.props.eventBus.emit('showLoading','Removing this appliance in the Cloud.');
+    core.eventBus.emit('showLoading','Removing this appliance in the Cloud.');
     CLOUD.deleteAppliance(applianceId)
       .then(() => {
-        this.props.eventBus.emit('hideLoading');
+        core.eventBus.emit('hideLoading');
         let stones = state.spheres[this.props.sphereId].stones;
         for (let stoneId in stones) {
           if (stones.hasOwnProperty(stoneId)) {
@@ -159,7 +157,7 @@ text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () 
         store.dispatch({sphereId: this.props.sphereId, applianceId: applianceId, type: 'REMOVE_APPLIANCE'});
       })
       .catch((err) => {
-        let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
+        let defaultAction = () => { core.eventBus.emit('hideLoading');};
         Alert.alert(
 lang("_Encountered_Cloud_Issue__header"),
 lang("_Encountered_Cloud_Issue__body"),
@@ -171,8 +169,7 @@ lang("_Encountered_Cloud_Issue__body"),
 
   render() {
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} >
-        <OrangeLine/>
+      <Background hasNavBar={false} image={core.background.detailsDark} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

@@ -6,16 +6,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Dimensions,
-  Image,
-  PixelRatio,
-  TouchableHighlight,
-  Text,
   View
 } from 'react-native';
 
 
-import { styles, colors} from '../styles'
+import { colors } from '../styles'
 
 export class BorderCircle extends Component<any, any> {
   render() {

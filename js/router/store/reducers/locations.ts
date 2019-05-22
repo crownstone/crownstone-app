@@ -6,6 +6,7 @@ let defaultSettings = {
   config: {
     name:'Untitled Room',
     icon: undefined,
+    uid: null,
     picture: null,
     pictureTaken: null,
     pictureId: null,
@@ -52,6 +53,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
       if (action.data) {
         let newState = {...state};
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        newState.uid     = update(action.data.uid, newState.uid);
         return newState;
       }
       return state;
@@ -93,6 +95,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
       if (action.data) {
         let newState = {...state};
         newState.name               = update(action.data.name,              newState.name);
+        newState.uid                = update(action.data.uid,               newState.uid);
         newState.icon               = update(action.data.icon,              newState.icon);
         newState.cloudId            = update(action.data.cloudId,           newState.cloudId);
         newState.picture            = update(action.data.picture,           newState.picture);
@@ -134,17 +137,17 @@ let layoutReducer = (state = defaultSettings.layout, action : any = {}) => {
       return state;
     case 'CLEAR_LOCATION_POSITIONS':
       let newState = {...state};
-      newState.x = null
-      newState.y = null
-      newState.setOnThisDevice = false
-      newState.updatedAt = null
+      newState.x = null;
+      newState.y = null;
+      newState.setOnThisDevice = false;
+      newState.updatedAt = null;
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.layout);
     default:
       return state;
   }
-}
+};
 
 let combinedLocationReducer = combineReducers({
   config:       locationConfigReducer,

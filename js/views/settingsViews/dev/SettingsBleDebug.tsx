@@ -5,22 +5,19 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsBleDebug", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
-  Alert,
-  TouchableHighlight,
-  ScrollView,
-  Switch,
-  Text,
-  View
-} from 'react-native';
+  ScrollView} from 'react-native';
 
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
-import {colors, OrangeLine} from '../../styles'
+import {colors, } from '../../styles'
 import {Util} from "../../../util/Util";
 import {IconCircle} from "../../components/IconCircle";
-const Actions = require('react-native-router-flux').Actions;
+import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+
 
 export class SettingsBleDebug extends LiveComponent<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -32,7 +29,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
   unsubscribe : any;
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (change.stoneRssiUpdated || change.changeSpheres || change.updateActiveSphere) {
         this.forceUpdate();
@@ -46,14 +43,14 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
 
   _pushCrownstoneItem(items, sphereId, element, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
-    if (stone && stone.state.state > 0 && stone.reachability.disabled === false) {
+    if (stone && stone.state.state > 0 && StoneAvailabilityTracker.isDisabled(stoneId) === false) {
       backgroundColor = colors.green.hex
     }
-    else if (stone && stone.reachability.disabled) {
+    else if (StoneAvailabilityTracker.isDisabled(stoneId)) {
       backgroundColor = colors.gray.hex;
     }
 
-    let rssiData = stone && stone.reachability.rssi > -1000 ? (stone.reachability.rssi + " in ") : '';
+    let rssiData = StoneAvailabilityTracker.getRssi(this.props.stoneId) > -1000 ? (StoneAvailabilityTracker.getRssi(this.props.stoneId) + " in ") : '';
 
       items.push({
       mediumIcon: <IconCircle
@@ -67,7 +64,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
       subtextStyle: {color:locationColor},
       type: 'navigation',
       callback: () => {
-        Actions.settingsStoneBleDebug({sphereId: sphereId, stoneId: stoneId})
+        NavigationUtil.navigate("SettingsStoneBleDebug",{sphereId: sphereId, stoneId: stoneId});
       },
     });
   }
@@ -75,7 +72,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
   _getItems() {
     let items = [];
 
-    const store = this.props.store;
+    const store = core.store;
     let state = store.getState();
     let sphereId = Util.data.getReferenceId(state);
     if (!sphereId) { return [{label: lang("You_have_to_be_in_a_spher"), type: 'largeExplanation'}]; }
@@ -97,7 +94,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
       this._pushCrownstoneItem(items, sphereId, element, stone, stoneId, locationTitle, locationColor);
     });
 
-    this._pushCrownstoneItem(items, sphereId, null, null, null, null, colors.csOrange.hex)
+    this._pushCrownstoneItem(items, sphereId, null, null, null, null, colors.csOrange.hex);
 
 
     return items;
@@ -105,9 +102,8 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
-        <OrangeLine/>
-        <ScrollView keyboardShouldPersistTaps="always">
+      <Background image={core.background.menu} >
+                <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

@@ -5,16 +5,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  DatePickerIOS,
-  Platform,
-  PixelRatio,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  TextInput,
-  TimePickerAndroid,
   TouchableOpacity,
   Text,
   View
@@ -49,9 +39,7 @@ export class WeekDayList extends Component<any, any> {
         <TouchableOpacity
           key={'selectableDay'+i}
           onPress={() => {
-            let newState = {...this.props.data};
-            newState[DAYS[i]] = !this.props.data[DAYS[i]];
-            this.props.onChange(newState);
+            this.props.onChange(DAYS[i]);
           }}
           style={{
             width: size,
@@ -59,15 +47,15 @@ export class WeekDayList extends Component<any, any> {
             borderRadius: 0.5*size,
             borderColor: colors.white.rgba(0.4),
             borderWidth: 1,
-            backgroundColor: this.props.data[DAYS[i]] ? colors.green.hex : ( this.props.darkTheme === true ? colors.white.rgba(0.3) : colors.darkBackground.rgba(0.2)),
+            backgroundColor: this.props.data[DAYS[i]] ? colors.green.hex : ( this.props.darkTheme === true ? colors.white.rgba(0.3) : colors.csBlueDark.rgba(0.2)),
             alignItems:'center',
             justifyContent:'center'
           }}
         >
           <Text style={{
             fontSize:12,
-            fontWeight: this.props.data[DAYS[i]] ? 'bold' : '300',
-            color: this.props.data[DAYS[i]] ? colors.white.hex : ( this.props.darkTheme === true ? colors.white.hex : colors.darkBackground.rgba(0.6)),
+            fontWeight: 'bold',
+            color: this.props.data[DAYS[i]] ? colors.white.hex : ( this.props.darkTheme === true ? colors.white.hex : colors.csBlueDark.rgba(0.6)),
             backgroundColor:"transparent"
           }}>{localizedDays[i]}</Text>
         </TouchableOpacity>
@@ -83,7 +71,7 @@ export class WeekDayList extends Component<any, any> {
   }
 
   render() {
-    let size = screenWidth/10;
+    let size = screenWidth/9;
     return (
       <View style={{
         height: size*1.5,

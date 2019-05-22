@@ -6,28 +6,27 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
   Alert,
   BackHandler,
-  Image,
-  ScrollView,
   StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
   Text,
   View,
   Platform
 } from 'react-native';
 
-const Actions = require('react-native-router-flux').Actions;
+
 
 import { Background } from '../components/Background'
-import {LOG, LOGe} from '../../logging/Log'
-import {styles, colors, screenWidth, screenHeight, topBarHeight, OrangeLine} from '../styles'
+import {LOGe} from '../../logging/Log'
+import {styles, colors, screenWidth, screenHeight, topBarHeight, } from '../styles'
 import { Icon } from '../components/Icon';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
-import {BackAction} from "../../util/Back";
+import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
+
+
 
 export class AiStart extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -41,11 +40,13 @@ export class AiStart extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    let state = props.store.getState();
+    let state = core.store.getState();
     if (Object.keys(state.spheres).length === 0) {
       LOGe.info("User does not have a sphere on startup.");
-      Actions.tabBar();
+      NavigationUtil.reset("Main");
     }
+
+
 
     let possibleNames = [
       {name:'Amy',     gender:'female'},
@@ -109,16 +110,16 @@ export class AiStart extends Component<any, any> {
     }
   }
 
+
   render() {
-    let state = this.props.store.getState();
+    let state = core.store.getState();
     let userFirstName = state.user.firstName;
 
     let availableHeight = screenHeight - topBarHeight - 3*16 - 30 - 50 - 50;
 
     return (
-      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <OrangeLine/>
-        <View style={[styles.centered, {flex:1}]}>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
+                <View style={[styles.centered, {flex:1}]}>
           <View style={{flex:1}} />
           <Icon name="c1-house" size={0.26*availableHeight} color={colors.white.hex} />
           <View style={{flex:1}} />
@@ -169,7 +170,7 @@ export class AiStart extends Component<any, any> {
       );
     }
     else {
-      let state = this.props.store.getState();
+      let state = core.store.getState();
       let sphereId = this.props.sphereId || Object.keys(state.spheres)[0];
       let title =  lang("Thank_you_");
       let detail =  lang("Its_nice_to_finally_meet_");
@@ -193,26 +194,26 @@ export class AiStart extends Component<any, any> {
         }
       }
       let defaultAction = () => {
-        this.props.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
-        this.props.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {aiName: this.state.aiName, aiSex: this.state.aiSex}});
+        core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
+        core.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {aiName: this.state.aiName, aiSex: this.state.aiSex}});
         if (this.props.canGoBack === true) {
-          BackAction();
+          NavigationUtil.back();
         }
         else if (this.props.resetViewStack === true) {
           if (Platform.OS === 'android') {
-            Actions.drawer({type: 'reset'});
+            NavigationUtil.reset("AppNavigator");
           }
           else {
-            Actions.tabBar({type: 'reset'});
+            NavigationUtil.reset("AppNavigator");
           }
         }
         else {
           this.restoreBackButton();
           if (Platform.OS === 'android') {
-            Actions.sphereOverview();
+            NavigationUtil.reset("AppNavigator");
           }
           else {
-            Actions.tabBar();
+            NavigationUtil.reset("AppNavigator");
           }
         }
       };

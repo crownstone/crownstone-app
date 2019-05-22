@@ -1,15 +1,12 @@
-import { NativeBus }          from '../libInterface/NativeBus';
 import { SetupHelper }        from './SetupHelper';
-import { BleUtil }            from '../../util/BleUtil';
-import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
-import {LOG, LOGd, LOGe} from '../../logging/Log';
+import {LOGd, LOGe} from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
-import { DfuStateHandler }    from "../firmware/DfuStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../Enums";
+import { core } from "../../core";
 
 
 
@@ -18,7 +15,6 @@ import { STONE_TYPES } from "../../Enums";
  */
 class SetupStateHandlerClass {
   _uuid : string;
-  _store : any;
   _setupModeTimeouts : any;
   _stonesInSetupStateAdvertisements : any;
   _stonesInSetupStateTypes : any;
@@ -30,7 +26,6 @@ class SetupStateHandlerClass {
   constructor() {
     this._uuid = xUtil.getUUID();
 
-    this._store = undefined;
     this._setupModeTimeouts = {};
     this._stonesInSetupStateAdvertisements = {};
     this._stonesInSetupStateTypes = {};
@@ -45,22 +40,15 @@ class SetupStateHandlerClass {
     this._currentSetupState = {busy: false, handle: undefined, name: undefined, type: undefined, icon: undefined};
   }
 
-  loadStore(store) {
-    LOG.info('LOADED STORE SetupStateHandler', this._initialized);
-    if (this._initialized === false) {
-      this._store = store;
-      this._init();
-    }
-  }
 
-  _init() {
+  init() {
     if (this._initialized === false) {
       this._initialized = true;
       // these events are emitted from the setupUtil
-      eventBus.on("setupStarted",   (handle) => {});
+      core.eventBus.on("setupStarted",   (handle) => {});
 
       // when the setup is finished, we clean up the handle from the list of stones in setup mode
-      eventBus.on("setupComplete",  (handle) => {
+      core.eventBus.on("setupComplete",  (handle) => {
         this._ignoreStoneAfterSetup[handle] = true;
 
         // we ignore the stone that just completed setup for 5 seconds after completion to avoid duplicates in the view.
@@ -72,24 +60,19 @@ class SetupStateHandlerClass {
         this._resetSetupState();
         // cleaning up the entry of the setup stone
         this._cleanup(handle);
-        eventBus.emit("setupCleanedUp");
+        core.eventBus.emit("setupCleanedUp");
       });
 
       // if we cancel the setup mode because of an error, we reset the timeout for this handle.
-      eventBus.on("setupCancelled", (handle) => {
+      core.eventBus.on("setupCancelled", (handle) => {
         this._resetSetupState();
         this._setSetupTimeout(handle);
-        eventBus.emit("setupCleanedUp");
+        core.eventBus.emit("setupCleanedUp");
       });
 
-      NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+      core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
-
-        // DFU takes preference over Setup. DFU can reserve a setup Crownstone for the setup process.
-        if (DfuStateHandler.handleReservedForDfu(handle)) {
-          return;
-        }
 
         let stoneData = MapProvider.stoneHandleMap[handle];
         if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {
@@ -98,15 +81,12 @@ class SetupStateHandlerClass {
         }
 
         // emit advertisements for other views
-        eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
+        core.eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
 
         // if we just completed the setup of this stone, we ignore it for a while to avoid duplicates.
         if (this._ignoreStoneAfterSetup[handle]) {
           return;
         }
-
-        // we scan high frequency when we see a setup node
-        BleUtil.startHighFrequencyScanning(this._uuid);
 
         // store the data of this setup Crownstone
         if (this._stonesInSetupStateAdvertisements[handle] === undefined) {
@@ -117,11 +97,11 @@ class SetupStateHandlerClass {
 
           this._stonesInSetupStateAdvertisements[handle] = setupAdvertisement;
           this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
-          eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
+          core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
         }
 
         if (emitDiscovery) {
-          eventBus.emit("setupStonesDetected");
+          core.eventBus.emit("setupStonesDetected");
         }
 
         // (re)start setup timeout
@@ -152,24 +132,27 @@ class SetupStateHandlerClass {
     delete this._stonesInSetupStateAdvertisements[handle];
     delete this._stonesInSetupStateTypes[handle];
     delete this._setupModeTimeouts[handle];
-    eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
+    core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
     if (Object.keys(this._stonesInSetupStateAdvertisements).length === 0) {
-      eventBus.emit("noSetupStonesVisible");
+      core.eventBus.emit("noSetupStonesVisible");
     }
   }
 
-  _getTypeData(advertisement) {
-    if (advertisement.serviceData.deviceType      == 'plug')
-      return {name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:STONE_TYPES.plug,       handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'builtin')
-      return {name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:STONE_TYPES.builtin,    handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'guidestone')
-      return {name: 'Guidestone',         icon: 'c2-crownstone',    type:STONE_TYPES.guidestone, handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'crownstoneUSB')
-      return {name: 'Crownstone USB',     icon: 'c1-router',        type:STONE_TYPES.crownstoneUSB, handle: advertisement.handle};
+  _getTypeData(advertisement : crownstoneAdvertisement) {
+    let payload = {};
+    if (     advertisement.serviceData.deviceType == 'plug')          { payload = {name: 'Crownstone Plug',        icon: 'c2-pluginFilled', type:STONE_TYPES.plug,        }; }
+    else if (advertisement.serviceData.deviceType == 'builtin')       { payload = {name: 'Crownstone Builtin',     icon: 'c2-crownstone',   type:STONE_TYPES.builtin,     }; }
+    else if (advertisement.serviceData.deviceType == 'builtinOne')    { payload = {name: 'Crownstone Builtin One', icon: 'c2-crownstone',   type:STONE_TYPES.builtinOne,  }; }
+    else if (advertisement.serviceData.deviceType == 'guidestone')    { payload = {name: 'Guidestone',             icon: 'c2-crownstone',   type:STONE_TYPES.guidestone,  }; }
+    else if (advertisement.serviceData.deviceType == 'crownstoneUSB') { payload = {name: 'Crownstone USB',         icon: 'c1-router',       type:STONE_TYPES.crownstoneUSB}; }
     else {
       LOGe.info("UNKNOWN DEVICE in setup procedure", advertisement);
+      return undefined;
     }
+
+    payload["handle"] = advertisement.handle;
+
+    return payload;
   }
   
   setupStone(handle, sphereId) {
@@ -190,7 +173,7 @@ class SetupStateHandlerClass {
   }
 
   setupExistingStone(handle, sphereId, stoneId, silent : boolean = false) {
-    let stoneConfig = this._store.getState().spheres[sphereId].stones[stoneId].config;
+    let stoneConfig = core.store.getState().spheres[sphereId].stones[stoneId].config;
     return this._setupStone(handle, sphereId, stoneConfig.name, stoneConfig.type, stoneConfig.icon, silent);
   }
 
@@ -216,9 +199,9 @@ class SetupStateHandlerClass {
       this._setupModeTimeouts[handle] = null;
     }
 
-    eventBus.emit("setupStarting");
+    core.eventBus.emit("setupStarting");
 
-    return helper.claim(this._store, sphereId, silent);
+    return helper.claim(sphereId, silent);
   }
 
   getSetupStones() {
@@ -228,6 +211,12 @@ class SetupStateHandlerClass {
 
   areSetupStonesAvailable() {
     return (Object.keys(this._stonesInSetupStateAdvertisements).length > 0 || this._currentSetupState.busy);
+  }
+
+
+  howManySetupStonesAvailable() {
+    if (this._currentSetupState.busy) { return 0; }
+    return Object.keys(this._stonesInSetupStateAdvertisements).length;
   }
 
   isSetupInProgress() {

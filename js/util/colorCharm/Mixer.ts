@@ -85,6 +85,7 @@ export class Mixer {
   /**
    *
    * @param generalizedColorArray
+   * @param colorSpace
    * @returns {Array}
    * @private
    */
@@ -113,7 +114,7 @@ export class Mixer {
 
   /**
    *
-   * @param [Array] colors | in HEX
+   * @param colors
    * @param colorSpace
    * @returns {Array}
    * @private
