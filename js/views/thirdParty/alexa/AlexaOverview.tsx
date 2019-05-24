@@ -14,17 +14,16 @@ import {Background} from "../../components/Background";
 import { styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class AlexaOverview extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Amazon_Alexa"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang('Amazon_Alexa')});
+  }
+
 
   render() {
-
     return (
       <Background image={core.background.menu} hasNavBar={false}>
                 <ScrollView >

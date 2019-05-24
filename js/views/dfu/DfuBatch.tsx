@@ -10,23 +10,17 @@ import { core } from "../../core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
 import { FadeIn, FadeInView, HiddenFadeInView } from "../components/animated/FadeInView";
-import { Icon } from "../components/Icon";
-// import { NavigationEvents } from "react-navigation";
 import KeepAwake from 'react-native-keep-awake';
 import { DfuDeviceUpdaterEntry } from "../components/deviceEntries/DfuDeviceUpdaterEntry";
-import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { BatchDFUCrownstonesBanner } from "../components/animated/BatchDFUCrownstonesBanner";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class DfuBatch extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: "Updating!",
-      headerLeft:null,
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: "Updating!"});
+  }
 
   failedUpdate = {};
   finishedUpdate = {};

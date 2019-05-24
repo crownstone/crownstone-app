@@ -34,6 +34,7 @@ import { WeekDayList } from "../components/WeekDayList";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; // these are keys
 export let DAYS_FULL = [
@@ -47,27 +48,14 @@ export let DAYS_FULL = [
 ];
 
 export class DeviceScheduleEdit extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-
-    let title =  lang("Add_Schedule");
-    let rightLabel =  lang("Create");
-    if (params.scheduleId) {
-      title =  lang("Edit_Schedule");
-      rightLabel =  lang("Save")}
-
-    return {
-      title: title,
-      headerLeft: <CancelButton onPress={() => { NavigationUtil.back(); }} />,
-      headerRight: <TopbarButton
-        text={rightLabel}
-        onPress={() => {
-          params.rightAction ? params.rightAction() : () => {}
-        }}
-      />
+  static options(props) {
+    if (props.scheduleId) {
+      return TopBarUtil.getOptions({title:  lang("Edit_Schedule"), cancelModal: true, save:()=>{}});
     }
-  };
-
+    else {
+      return TopBarUtil.getOptions({title:  lang("Add_Schedule"), cancelModal: true, create:()=>{}});
+    }
+  }
 
   datePickerReference : any;
 
@@ -109,18 +97,18 @@ export class DeviceScheduleEdit extends Component<any, any> {
     }
 
     if (this.props.scheduleId) {
-      // this.props.navigation.setParams({rightAction: () => {
-      //     this._handleTime()
-      //       .then(() => {this._updateSchedule(); })
-      //       .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
-      //   }})
+      TopBarUtil.updateOptions(this.props.componentId, {create: () => {
+          this._handleTime()
+            .then(() => {this._updateSchedule(); })
+            .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
+        }})
     }
     else {
-      // this.props.navigation.setParams({rightAction: () => {
-      //     this._handleTime()
-      //       .then(() => {this._createSchedule(); })
-      //       .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
-      //   }})
+      TopBarUtil.updateOptions(this.props.componentId, {save: () => {
+          this._handleTime()
+            .then(() => {this._createSchedule(); })
+            .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
+        }})
     }
   }
 
@@ -378,7 +366,7 @@ lang("_Cant_see_Crownstone__You__body"),
             scheduleId: this.props.scheduleId,
             data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
           });
-          NavigationUtil.back();
+          NavigationUtil.dismissModal();
         }
         else {
           // schedule is active, tell the Crownstone to update it.
@@ -393,12 +381,12 @@ lang("_Cant_see_Crownstone__You__body"),
           scheduleId: this.props.scheduleId,
           data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
         });
-        NavigationUtil.back();
+        NavigationUtil.dismissModal();
       }
     }
     else {
       LOGe.info("DeviceScheduleEdit: _updateSchedule should not be called without this.props.scheduleId");
-      NavigationUtil.back();
+      NavigationUtil.dismissModal();
     }
   }
 

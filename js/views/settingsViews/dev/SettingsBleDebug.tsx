@@ -17,14 +17,13 @@ import {IconCircle} from "../../components/IconCircle";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class SettingsBleDebug extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("BLE_Debug"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("BLE_Debug")});
+  }
 
   unsubscribe : any;
 

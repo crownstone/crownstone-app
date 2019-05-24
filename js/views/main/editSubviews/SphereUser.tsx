@@ -20,12 +20,13 @@ import {ProfilePicture} from "../../components/ProfilePicture";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class SphereUser extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("Sphere_User")}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Sphere_User")})
+  }
 
   deleting : boolean = false;
   unsubscribe : any;

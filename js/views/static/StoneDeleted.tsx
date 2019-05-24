@@ -8,13 +8,12 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Text} from 'react-native';
 import {Background} from "../components/Background";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class StoneDeleted extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Deleted"),
-    }
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Deleted")})
   };
 
   render() {

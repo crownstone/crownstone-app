@@ -32,10 +32,6 @@ let versionStyle : TextStyle = {
 };
 
 export class LoginSplash extends Component<any, any> {
-  static navigationOptions = {
-    header: null
-  };
-
   render() {
     let factor = 0.25;
 

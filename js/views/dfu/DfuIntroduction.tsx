@@ -9,7 +9,6 @@ import {
   Platform, View
 } from "react-native";
 import { colors, screenWidth, styles } from "../styles";
-import { Pagination } from 'react-native-snap-carousel';
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
@@ -20,9 +19,6 @@ import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 
 export class DfuIntroduction extends LiveComponent<any, any> {
-  static navigationOptions = {
-    header: null
-  };
 
   interviewData;
   _interview : Interview;

@@ -16,13 +16,12 @@ import { ListEditableItems } from '../../components/ListEditableItems'
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class SphereIntegrations extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Integrations"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Integrations")})
+  }
 
 
   _getItemsAlternative() {

@@ -19,13 +19,14 @@ import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
 import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
 export class SettingsPrivacy extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("Privacy")}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Privacy")});
+  }
 
   unsubscribe : any;
 

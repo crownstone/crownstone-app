@@ -24,16 +24,12 @@ import { Icon } from "../components/Icon";
 import KeepAwake from 'react-native-keep-awake';
 import { BlePromiseManager } from "../../logic/BlePromiseManager";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SetupCrownstone extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-
-    return {
-      title: lang("New_Crownstone"),
-      headerLeft: params && params.disableBack ? null : undefined
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("New_Crownstone")});
+  }
 
   _interview: any;
   randomIcon: string;

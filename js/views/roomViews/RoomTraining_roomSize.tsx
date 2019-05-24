@@ -20,7 +20,7 @@ import { Icon }         from '../components/Icon';
 import { Util }         from "../../util/Util";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopbarBackButton } from "../components/topbar/TopbarButton";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 let buttonTextStyle : TextStyle = {
@@ -57,24 +57,10 @@ let textContainerStyle : ViewStyle = {
 };
 
 export class RoomTraining_roomSize extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-
-    let paramsToUse = params;
-    if (!params.title) {
-      if (NAVBAR_PARAMS_CACHE !== null) {
-        paramsToUse = NAVBAR_PARAMS_CACHE;
-      }
-      else {
-        paramsToUse = getNavBarParams(core.store.getState(), params, true);
-      }
-    }
-
-    return {
-      title: paramsToUse.title,
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />,
-    }
-  };
+  static options(props) {
+    let ai = Util.data.getAiData(core.store.getState(), props.sphereId);
+    return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name), closeModal: true });
+  }
 
   _getButton(sampleSize, iconSize, text, roomSize) {
     return (
@@ -140,10 +126,3 @@ export class RoomTraining_roomSize extends Component<any, any> {
 }
 
 
-function getNavBarParams(state, props, viewingRemotely) {
-  let ai = Util.data.getAiData(state, props.sphereId);
-  NAVBAR_PARAMS_CACHE = {title: lang("Teaching_",ai.name)};
-  return NAVBAR_PARAMS_CACHE;
-}
-
-let NAVBAR_PARAMS_CACHE = null;

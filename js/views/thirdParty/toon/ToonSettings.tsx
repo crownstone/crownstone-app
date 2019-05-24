@@ -22,15 +22,13 @@ import {getActiveToonProgram} from "../../../backgroundProcesses/thirdParty/Toon
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class ToonSettings extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: lang("Toon")
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang('Toon')});
+  }
 
   unsubscribe;
   deleting;

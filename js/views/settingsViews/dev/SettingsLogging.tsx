@@ -18,13 +18,14 @@ import {IconButton} from "../../components/IconButton";
 import {clearLogs} from "../../../logging/LogUtil";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class SettingsLogging extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Logging"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Logging")});
+  }
+
+
   unsubscribe;
 
   componentDidMount() {

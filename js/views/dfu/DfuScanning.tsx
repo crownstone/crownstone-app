@@ -25,20 +25,16 @@ import { Scheduler } from "../../logic/Scheduler";
 import { DfuUtil } from "../../util/DfuUtil";
 import { DfuDeviceOverviewEntry } from "../components/deviceEntries/DfuDeviceOverviewEntry";
 import { ScanningForDFUCrownstonesBanner } from "../components/animated/ScanningForDFUCrownstonesBanner";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 const triggerId = "ScanningForDfu";
 
 const DFU_BATCH_RSSI_THRESHOLD = -85;
 
 export class DfuScanning extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: lang("Looking_for_Crownstones"),
-      headerLeft: <TopbarBackButton text={ lang("Back")} onPress={() => { params.returnToRoute ? NavigationUtil.backTo(params.returnToRoute) : NavigationUtil.back() }} />,
-      headerRight: <TopbarButton text={ lang("Next")} onPress={() => { params.onRight(); }} />
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Looking_for_Crownstones"), next: () => {}});
+  }
 
   nativeEvents = [];
   visibleDrawnStones = [];
@@ -52,7 +48,7 @@ export class DfuScanning extends Component<any, any> {
     this.visibleStones = {};
 
     this.stoneUpdateData = DfuUtil.getUpdatableStones(this.props.sphereId);
-    // this.props.navigation.setParams({onRight: () => { this.next() }});
+    TopBarUtil.updateOptions(this.props.componentId, {next: () => { this.next(); }})
 
     this.visibleDrawnStones = [];
   }

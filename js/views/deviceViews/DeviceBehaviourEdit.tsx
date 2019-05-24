@@ -21,6 +21,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 let toggleOptions = [];
@@ -43,12 +44,9 @@ timeOptionsV2.push({label: lang("minutes", 15),   value: 900});
 timeOptionsV2.push({label: lang("minutes", 30),  value: 1800});
 
 export class DeviceBehaviourEdit extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Behaviour"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />,
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Behaviour"), closeModal: true});
+  }
 
   detectionTimeout : any;
   unsubscribeNative : any;

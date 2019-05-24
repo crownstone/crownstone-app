@@ -19,23 +19,20 @@ import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
 import { FadeIn, FadeInView} from "../components/animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { Icon } from "../components/Icon";
-import { TopbarBackButton } from "../components/topbar/TopbarButton";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { BleUtil } from "../../util/BleUtil";
 // import { NavigationEvents } from "react-navigation";
 import KeepAwake from 'react-native-keep-awake';
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { ScanningForSetupCrownstonesBanner } from "../components/animated/ScanningForSetupCrownstonesBanner";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class ScanningForSetupCrownstones extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: lang("Add_Crownstones"),
-      headerLeft: <TopbarBackButton text={ lang("Back")} onPress={() => { params.returnToRoute ? NavigationUtil.backTo(params.returnToRoute) : NavigationUtil.back() }} />
-    }
-  };
+  static options(props) {
+    // headerLeft: <TopbarBackButton text={ lang("Back")} onPress={() => { params.returnToRoute ? NavigationUtil.backTo(params.returnToRoute) : NavigationUtil.back() }} />
+    return TopBarUtil.getOptions({title:  lang("Add_Crownstones")});
+  }
+
 
   nothingYetTimeout;
   noScansAtAllTimeout;

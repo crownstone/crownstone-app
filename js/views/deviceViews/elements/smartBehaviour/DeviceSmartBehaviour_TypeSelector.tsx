@@ -31,21 +31,18 @@ import {
 import { core } from "../../../../core";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { SMART_BEHAVIOUR_TYPES } from "../../../../Enums";
+import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-
-    return {
-      title: lang("A_Crownstone"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("A_Crownstone")});
+  }
 
 
   render() {
     return (
       <Background image={core.background.detailsDark} hasNavBar={false}>
-                <DeviceSmartBehaviour_TypeSelectorBody {...this.props} />
+        <DeviceSmartBehaviour_TypeSelectorBody {...this.props} />
       </Background>
     )
   }

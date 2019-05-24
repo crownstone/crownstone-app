@@ -13,6 +13,7 @@ import { IconSelection }  from '../components/IconSelection'
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 
@@ -272,12 +273,9 @@ let listOfIcons = {
 };
 
 export class DeviceIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Pick_an_Icon"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Pick_an_Icon"), closeModal: true });
+  }
 
   constructor(props) {
     super(props)

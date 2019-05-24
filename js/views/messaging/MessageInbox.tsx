@@ -28,26 +28,11 @@ import {MessageEntry} from "./MessageEntry";
 import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
 
-    let state = core.store.getState();
-    let activeSphere = state.app.activeSphere;
-
-    let title =  lang("Messages");
-    if (activeSphere && state.spheres[activeSphere]) {
-      let sphere = state.spheres[activeSphere];
-      title +=  lang("_in_",sphere.config.name);
-    }
-
-    return {
-      title: title,
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
 
   unsubscribeStoreEvents : any;
 

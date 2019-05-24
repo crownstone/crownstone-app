@@ -20,6 +20,7 @@ import {TutorialDevices} from "./elements/TutorialDevices";
 import {TutorialBehaviour} from "./elements/TutorialBehaviour";
 import {LOGi} from "../../logging/Log";
 import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
@@ -27,9 +28,9 @@ Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
 };
 
 export class Tutorial extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("Welcome_")}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Welcome_")});
+  }
 
   unsubscribeSwipeEvent : any;
   touchEndTimeout: any;

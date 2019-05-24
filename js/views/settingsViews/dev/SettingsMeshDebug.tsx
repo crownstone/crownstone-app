@@ -20,14 +20,13 @@ import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class SettingsMeshDebug extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Mesh_Debug"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Mesh_Debug")});
+  }
 
   unsubscribe : any;
   refreshAmountRequired = 0;

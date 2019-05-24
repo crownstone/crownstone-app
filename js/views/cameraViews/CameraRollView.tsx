@@ -20,16 +20,13 @@ import {
 import {styles, } from '../styles'
 import {LOGe} from '../../logging/Log'
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopbarBackButton } from "../components/topbar/TopbarButton";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class CameraRollView extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Choose_a_Picture"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang('Choose_a_Picture'), closeModal: true});
+  }
 
   pictureIndex : any;
   state : any;

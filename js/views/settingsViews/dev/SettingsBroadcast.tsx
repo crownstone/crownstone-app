@@ -12,13 +12,13 @@ import {
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { core } from "../../../core";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class SettingsBroadcast extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Broadcast"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Broadcast")});
+  }
+
   unsubscribe;
 
   componentDidMount() {

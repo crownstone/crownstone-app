@@ -33,6 +33,7 @@ export class TopbarButton extends Component<any, any> {
       if (typeof this.props.text === 'function') {
         text = this.props.text();
       }
+
       return (
         <TouchableOpacity onPress={() => {this.props.onPress();}}  style={[alignmentStyle, this.props.style]}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>

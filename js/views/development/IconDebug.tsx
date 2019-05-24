@@ -12,15 +12,14 @@ import {iconCorrections} from "../../fonts/iconCorrections";
 import {DebugIconSelection} from "./DebugIconSelection";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 
 export class IconDebug extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: "Pick an Icon",
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  "Pick an Icon", closeModal: true});
+  }
 
   c1Maps = {};
   iconCorrectionsMap = {};

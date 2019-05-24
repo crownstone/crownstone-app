@@ -15,13 +15,12 @@ import {colors, screenWidth, screenHeight, } from '../styles'
 
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class PictureView extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Take_Picture"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang('Take_Picture')});
+  }
 
   cameraView;
 

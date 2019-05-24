@@ -22,12 +22,14 @@ import { TextEditInput } from "../../components/editComponents/TextEditInput";
 import { LOGe } from "../../../logging/Log";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class ToonAdd extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("Toon")}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Toon")})
+  }
+
 
 
   unsubscribeNativeEvent : any;

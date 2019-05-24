@@ -26,26 +26,16 @@ import {CancelButton} from "../components/topbar/CancelButton";
 import { xUtil } from "../../util/StandAloneUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
 export const ANYWHERE_IN_SPHERE = '__sphere__';
 
 export class MessageAdd extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: lang("New_Message"),
-      headerTruncatedBackTitle: lang("Back"),
-      headerLeft: <CancelButton onPress={ () => { NavigationUtil.back(); }} />,
-      headerRight: <TopbarButton
-        text={ lang("Create")}
-        onPress={() => {
-          params.rightAction ? params.rightAction() : () => {}
-        }}
-      />
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("New_Message"), cancelModal: true, create: () => {}})
+  }
 
   constructor(props) {
     super(props);
@@ -59,7 +49,7 @@ export class MessageAdd extends Component<any, any> {
     };
 
     this.state.recipients[EVERYONE_IN_SPHERE] = true;
-    // this.props.navigation.setParams({rightAction: () => { this._createMessage();}})
+    TopBarUtil.updateOptions(this.props.componentId, {create: () => { this._createMessage();}})
   }
 
   _createMessage() {

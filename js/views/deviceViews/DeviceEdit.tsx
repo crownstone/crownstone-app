@@ -28,8 +28,6 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import { INTENTS } from "../../native/libInterface/Constants";
 
-import {CancelButton} from "../components/topbar/CancelButton";
-import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
 import { STONE_TYPES } from "../../Enums";
@@ -37,22 +35,13 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: lang("Edit_Device"),
-      headerLeft: <CancelButton onPress={ () => { NavigationUtil.back(); }} />,
-      headerRight: <TopbarButton
-        text={ lang("Save")}
-        onPress={() => {
-          params.rightAction ? params.rightAction() : () => {}
-        }}
-      />
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Add_Device_Type"), cancelModal: true, save:()=>{}});
+  }
 
   deleting : boolean = false;
   unsubscribeStoreEvents : any;
@@ -89,7 +78,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
       refreshingStoneVersions: false
     };
 
-    // this.props.navigation.setParams({rightAction: () => { this._updateCrownstone();}})
+    TopBarUtil.updateOptions(this.props.componentId, {save: () => { this._updateCrownstone();}})
   }
 
   componentDidMount() {

@@ -25,15 +25,14 @@ import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 
 export class AiStart extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Your_AI"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Your_AI")});
+  }
 
   backButtonFunction : any;
 

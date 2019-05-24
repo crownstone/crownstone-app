@@ -31,10 +31,6 @@ import { Icon } from "../components/Icon";
 
 
 export class Register extends LiveComponent<any, any> {
-  static navigationOptions = {
-    header: null
-  };
-
   user;
 
   _interview : Interview;

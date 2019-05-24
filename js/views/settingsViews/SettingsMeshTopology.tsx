@@ -19,29 +19,25 @@ import { Util } from '../../util/Util'
 import {colors, } from './../styles'
 import { MeshElement } from "../components/MeshElement";
 import {ForceDirectedView} from "../components/interactiveView/ForceDirectedView";
-import {TopbarButton} from "../components/topbar/TopbarButton";
 import {Icon} from "../components/Icon";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {MeshUtil} from "../../util/MeshUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 let MESH_TIMEOUT = 3*24*3600*1000;
 
 
 export class SettingsMeshTopology extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("Mesh_Topology"), headerRight:
-      <TopbarButton
-        text={ lang("Networks")}
-        style={{width:100}}
-        onPress={() => { NavigationUtil.navigate( "SettingsMeshOverview"); }}
-      />,
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({
+      title: lang("Mesh_Topology"),
+      nav: {id: 'networks', label: lang('Networks'), callback: () => { NavigationUtil.navigate("SettingsMeshOverview"); }}
+    });
+  }
 
   _baseRadius = 50;
   unsubscribeStoreEvents : any;

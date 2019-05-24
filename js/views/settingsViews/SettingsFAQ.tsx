@@ -21,13 +21,13 @@ import {IconButton} from "../components/IconButton";
 import {NavigationBar} from "../components/editComponents/NavigationBar";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SettingsFAQ extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("FAQ"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("FAQ")});
+  }
+
 
   _getItems() {
     let items = [];

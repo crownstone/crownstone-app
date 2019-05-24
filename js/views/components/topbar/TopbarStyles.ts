@@ -28,7 +28,6 @@ export const topBarStyle = StyleSheet.create({
     justifyContent:'center'
   },
   topBarRightTouch: {
-    // backgroundColor:'#ff0',
     height:barHeight,
     width:80,
   },

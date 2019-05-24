@@ -18,18 +18,13 @@ import {screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {MeshElement} from "../components/MeshElement";
 import { core } from "../../core";
-import { TopbarBackButton } from "../components/topbar/TopbarButton";
-import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class SettingsMeshTopologyHelp extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Mesh_Help"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
-    }
-  };
-
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Mesh_Help")});
+  }
 
   render() {
     let mockData = {deviceIcon: 'c1-studiolight', locationIcon: 'c1-cinema', locationTitle: lang("Movie_Room"), element:{config:{name:lang("Device")}}, stone:{config:{name:'Device', firmwareVersion: '2.3.0'}}};

@@ -26,13 +26,12 @@ import {InSphere} from "./diagnostics/InSphere";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { DiagnosticStates, diagnosticStyles } from "./diagnostics/DiagnosticStyles";
 import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SettingsDiagnostics extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Diagnostics"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Diagnostics")});
+  }
 
   canSetupStones = false;
   constructor(props) {

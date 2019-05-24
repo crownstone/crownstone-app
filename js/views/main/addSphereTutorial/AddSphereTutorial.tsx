@@ -16,11 +16,11 @@ import { AddSphereTutorial_intended } from "./elements/AddSphereTutorial_intende
 import { core } from "../../../core";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
-import { getModalBackButton } from "../../components/ModalBackButton";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class AddSphereTutorial extends Component<any, any> {
   static options(props) {
-    return { topBar: { title: {text: lang("New_Sphere")}, ...getModalBackButton()}}
+    return TopBarUtil.getOptions({ title: lang("New_Sphere"), closeModal: true});
   }
 
   _carousel;

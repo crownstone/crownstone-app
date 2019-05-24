@@ -20,29 +20,17 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import {colors, } from './../styles'
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
-import {CancelButton} from "../components/topbar/CancelButton";
-import {TopbarButton} from "../components/topbar/TopbarButton";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 
 export class RoomEdit extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: lang("Edit_Room"),
-      headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : navigation.goBack(null) }}/>,
-      headerRight: <TopbarButton
-        text={ lang("Save")}
-        onPress={() => {
-          params.rightAction ? params.rightAction() : () => {}
-        }}
-      />,
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Edit_Room"), cancelModal: true, save:()=>{}});
+  }
 
   deleting : boolean = false;
   viewingRemotely : boolean = false;
@@ -63,8 +51,7 @@ export class RoomEdit extends LiveComponent<any, any> {
       picture: room.config.picture,
       pictureId: room.config.pictureId,
     };
-
-    // this.props.navigation.setParams({leftAction: () => { this.cancelEdit(); }, rightAction: () => { this._updateRoom(); }})
+    TopBarUtil.updateOptions(this.props.componentId, {save:() => { this._updateRoom(); }});
   }
 
   componentDidMount() {

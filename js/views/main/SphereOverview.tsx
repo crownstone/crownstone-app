@@ -36,7 +36,7 @@ import { RoomAdd } from "../roomViews/RoomAdd";
 import { CLOUD } from "../../cloud/cloudAPI";
 import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
 import { Navigation } from "react-native-navigation";
-import { refreshOptions } from "../../logic/RefreshOptions";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 const ZOOM_LEVELS = {
   sphere: 'sphere',
@@ -45,8 +45,8 @@ const ZOOM_LEVELS = {
 
 export class SphereOverview extends LiveComponent<any, any> {
   static options(props) {
-    getNavBarParams(core.store.getState(), props, {}, null);
-    return refreshOptions(NAVBAR_PARAMS_CACHE);
+    getTopBarProps(core.store.getState(), props, {}, null);
+    return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
   unsubscribeSetupEvents : any;
@@ -145,8 +145,8 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
   _updateNavBar() {
-    getNavBarParams(core.store.getState(), this.props, this.state, this.viewId);
-    Navigation.mergeOptions(this.props.componentId, refreshOptions(NAVBAR_PARAMS_CACHE))
+    getTopBarProps(core.store.getState(), this.props, this.state, this.viewId);
+    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
 
@@ -321,7 +321,7 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 }
 
-function getNavBarParams(state, props, viewState, viewId) {
+function getTopBarProps(state, props, viewState, viewId) {
   let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
   LOG.info("UPDATING SPHERE OVERVIEW NAV BAR", viewState.zoomLevel === ZOOM_LEVELS.sphere , (sphereId === null && Object.keys(state.spheres).length > 0));
   if (viewState.arrangingRooms === true) {
@@ -342,7 +342,7 @@ function getNavBarParams(state, props, viewState, viewId) {
     if (sphereId === null) {
       NAVBAR_PARAMS_CACHE = {
         title: lang("Hello_there_"),
-        right: {id: 'edit', component:'topbarRightMoreButton', props: {onPress:() => { NavigationUtil.launchModal( "SphereEdit")}}}
+        edit: () => { NavigationUtil.launchModal( "SphereEdit", {sphereId:sphereId})},
       }
     }
     else {
@@ -351,8 +351,9 @@ function getNavBarParams(state, props, viewState, viewId) {
       NAVBAR_PARAMS_CACHE = {
         title: sphere.config.name,
         left: finalizeLocalization.showItem ?
-          {id: 'localization', component:'topbarLeftButton', props: {item: <FinalizeLocalizationIcon />, onPress:finalizeLocalization.action}} : null,
-        right: {id: 'edit', component:'topbarRightMoreButton', props: {onPress:() => { NavigationUtil.launchModal( "SphereEdit", {sphereId:sphereId})}}},
+          {id: 'localization', component:'topbarLeftButton', props: {item: <FinalizeLocalizationIcon />, onPress:finalizeLocalization.action}} :
+          null,
+        edit: () => { NavigationUtil.launchModal( "SphereEdit", {sphereId:sphereId})},
       }
     }
   }

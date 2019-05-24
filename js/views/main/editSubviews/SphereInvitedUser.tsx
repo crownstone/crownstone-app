@@ -21,12 +21,13 @@ import {colors, screenWidth, } from '../../styles'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class SphereInvitedUser extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("Invited_User")}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Invited_User")})
+  }
 
   deleting : boolean;
   unsubscribe : any;

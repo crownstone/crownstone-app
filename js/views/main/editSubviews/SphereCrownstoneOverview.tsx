@@ -18,18 +18,16 @@ import {Icon} from "../../components/Icon";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 
 export class SphereCrownstoneOverview extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
+  static options(props) {
     let state = core.store.getState();
-    let sphere = state.spheres[params.sphereId] ;
-    return {
-      title: lang("Crownstones_in_",sphere.config.name),
-    }
-  };
+    let sphere = state.spheres[props.sphereId] ;
+    return TopBarUtil.getOptions({title: lang("Crownstones_in_",sphere.config.name)});
+  }
 
   unsubscribe : any;
 
@@ -138,7 +136,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false}>
-                <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>

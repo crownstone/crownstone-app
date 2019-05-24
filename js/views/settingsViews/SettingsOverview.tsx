@@ -21,14 +21,12 @@ import { SettingConstructor } from '../../util/SettingConstructor'
 
 import DeviceInfo from 'react-native-device-info';
 import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SettingsOverview extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Settings"),
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Settings")});
+  }
 
   unsubscribe : any;
 

@@ -19,7 +19,7 @@ import { CLOUD }             from "../../cloud/cloudAPI";
 import { createNewSphere }   from "../../util/CreateSphere";
 import { core }              from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { getModalBackButton } from "../components/ModalBackButton";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SphereEdit extends Component<any, any> {
   static options(props) {
@@ -27,13 +27,12 @@ export class SphereEdit extends Component<any, any> {
     if (props.sphereId) {
       let sphere = state.spheres[props.sphereId];
       if (sphere) {
-        return { topBar: { title: {text: sphere.config.name}, ...getModalBackButton() } }
+        return TopBarUtil.getOptions({title: sphere.config.name, closeModal: true})
       }
     }
 
-    return { topBar: { topBar: { title: {text: lang("Welcome_")}, ...getModalBackButton()}}}
+    return TopBarUtil.getOptions({title:  lang("Welcome_"), closeModal: true})
   }
-
 
 
   unsubscribe = [];

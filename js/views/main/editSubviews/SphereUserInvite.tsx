@@ -18,12 +18,13 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { TopbarBackButton } from "../../components/topbar/TopbarButton";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class SphereUserInvite extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("Invite"),
-    headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Invite")});
+  }
+
 
   inputStates : any;
 

@@ -24,16 +24,14 @@ import { core } from "../../../../../core";
 import { NavigationUtil } from "../../../../../util/NavigationUtil";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
+import { TopBarUtil } from "../../../../../util/TopBarUtil";
 
 
 export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[], image: any, header:string, twilightRules: boolean, sphereId: string, stoneId: string}, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("A_Crownstone")});
+  }
 
-    return {
-      title: lang("A_Crownstone"),
-    }
-  };
 
   getExamples() {
     let examples = [];

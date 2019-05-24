@@ -25,32 +25,17 @@ import { RoomTraining_training } from './trainingComponents/RoomTraining_trainin
 import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
 import { Util } from "../../util/Util";
 
-import {CancelButton} from "../components/topbar/CancelButton";
 import {CLOUD} from "../../cloud/cloudAPI";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class RoomTraining extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-
-    let paramsToUse = params;
-    if (!params.title) {
-      if (NAVBAR_PARAMS_CACHE !== null) {
-        paramsToUse = NAVBAR_PARAMS_CACHE;
-      }
-      else {
-        paramsToUse = getNavBarParams(core.store.getState(), params, true);
-      }
-    }
-
-    return {
-      title: params.title ? params.title : paramsToUse.title,
-      headerLeft: params.topBarSettings ? <CancelButton onPress={params.topBarSettings.leftAction} /> : undefined,
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
+  static options(props) {
+    let ai = Util.data.getAiData(core.store.getState(), props.sphereId);
+    return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name), cancel: () => { props.topBarSettings && props.topBarSettings.leftAction() } });
+  }
 
   collectedData : any;
   amountOfInvalidPoints : number;
@@ -260,11 +245,3 @@ text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); 
   }
 }
 
-
-function getNavBarParams(state, props, viewingRemotely) {
-  let ai = Util.data.getAiData(state, props.sphereId);
-  NAVBAR_PARAMS_CACHE = {title: lang("Teaching_",ai.name)};
-  return NAVBAR_PARAMS_CACHE;
-}
-
-let NAVBAR_PARAMS_CACHE = null;

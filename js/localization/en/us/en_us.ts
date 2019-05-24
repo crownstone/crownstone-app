@@ -2839,8 +2839,11 @@ export default {
     Ill_try_it_:                         function() { return "I'll try it!" },
   },
   __UNIVERSAL:{
-    Back:                                function() { return "Back" },
+    Create:                              function() { return "Create" },
+    Cancel:                              function() { return "Cancel" },
+    Save:                                function() { return "Save" },
     Next:                                function() { return "Next" },
+    Back:                                function() { return "Back" },
     DAY_Mon:                             function() { return "Mon"},
     DAY_Tue:                             function() { return "Tue"},
     DAY_Wed:                             function() { return "Wed"},

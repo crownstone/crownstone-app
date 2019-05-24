@@ -16,16 +16,14 @@ import { colors, deviceStyles, screenHeight, screenWidth } from "../styles";
 import {IconButton} from "../components/IconButton";
 import {AppUtil} from "../../util/AppUtil";
 import { core } from "../../core";
-import { TopbarBackButton } from "../components/topbar/TopbarButton";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class SettingsRedownloadFromCloud extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Reset_from_Cloud"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Reset_from_Cloud"), closeModal: true});
+  }
+
 
   render() {
     return (

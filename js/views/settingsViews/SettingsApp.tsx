@@ -20,12 +20,13 @@ import {Util} from "../../util/Util";
 import {KeepAliveHandler} from "../../backgroundProcesses/KeepAliveHandler";
 import {LocationHandler} from "../../native/localization/LocationHandler";
 import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("App_Settings")}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("App_Settings")});
+  }
 
   unsubscribe : any;
   initialKeepAliveState = false;

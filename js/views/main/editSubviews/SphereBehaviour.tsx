@@ -13,13 +13,13 @@ import {LOG} from "../../../logging/Log";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class SphereBehaviour extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Sphere_behaviour"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Sphere_behaviour")})
+  }
+
 
   unsubscribeStoreEvents: any;
 

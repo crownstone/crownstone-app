@@ -21,17 +21,15 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class SphereRoomOverview extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
+  static options(props) {
     let state = core.store.getState();
-    let sphere = state.spheres[params.sphereId] ;
-    return {
-      title: lang("Rooms_in_",sphere.config.name),
-    }
-  };
+    let sphere = state.spheres[props.sphereId] ;
+    return TopBarUtil.getOptions({title: lang("Rooms_in_",sphere.config.name)});
+  }
 
   unsubscribe : any;
 

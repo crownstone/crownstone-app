@@ -25,21 +25,17 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { CancelButton } from "../components/topbar/CancelButton";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { Interview } from "../components/Interview";
 import { PictureCircle } from "../components/PictureCircle";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 
 export class RoomAdd extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: lang("Create_Room"),
-      headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : navigation.goBack(); }}/>,
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Create_Room"), cancelModal: true});
+  }
 
   removePictureQueue = [];
   _interview;
@@ -53,12 +49,8 @@ export class RoomAdd extends LiveComponent<any, any> {
       picture: null
     };
 
-    if (this.props.navigation) {
-      // this.props.navigation.setParams({
-      //   leftAction: () => {
-      //     this.cancelEdit();
-      //   }
-      // })
+    if (this.props.componentId) {
+      TopBarUtil.updateOptions(this.props.componentId, { cancel: () => { this.cancelEdit();}});
     }
   }
   

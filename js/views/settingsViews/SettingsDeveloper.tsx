@@ -24,15 +24,13 @@ import {CLOUD_ADDRESS} from "../../ExternalConfig";
 import {Scheduler} from "../../logic/Scheduler";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class SettingsDeveloper extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Developer"),
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Developer")});
+  }
 
   unsubscribe : any = [];
 

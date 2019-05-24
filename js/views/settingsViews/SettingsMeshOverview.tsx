@@ -18,13 +18,14 @@ import { Util } from '../../util/Util'
 import {colors, screenWidth, } from './../styles'
 import { IconCircle } from "../components/IconCircle";
 import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 let FLOATING_NETWORK_KEY = '__null';
 
 export class SettingsMeshOverview extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("Mesh_Overview")}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Mesh_Overview")});
+  }
 
   unsubscribeStoreEvents : any;
   lastOffset : number = null;

@@ -17,18 +17,15 @@ import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class SphereUserOverview extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
+  static options(props) {
     let state = core.store.getState();
-    let sphere = state.spheres[params.sphereId] ;
-    return {
-      title: lang("Users_in_",sphere.config.name),
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
+    let sphere = state.spheres[props.sphereId] ;
+    return TopBarUtil.getOptions({title: lang("Users_in_",sphere.config.name)});
+  }
 
   unsubscribeStoreEvents : any;
 

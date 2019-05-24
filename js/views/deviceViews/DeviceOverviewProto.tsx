@@ -10,31 +10,18 @@ import * as React from 'react';
 import { Background } from '../components/Background'
 import { DeviceSummary }        from "./elements/DeviceSummary";
 import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
-import { TopbarButton }         from "../components/topbar/TopbarButton";
 import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
 import { core } from "../../core";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class DeviceOverviewProto extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    let paramsToUse = params;
-    if (!params.title) {
-      if (NAVBAR_PARAMS_CACHE !== null) {
-        paramsToUse = NAVBAR_PARAMS_CACHE;
-      } else {
-        paramsToUse = getNavBarParams(core.store, core.store.getState(), params);
-      }
-    }
-
-    return {
-      title: paramsToUse.title,
-      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction}
-                                 item={paramsToUse.rightItem}/>,
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
+  static options(props) {
+    let state = core.store.getState();
+    const stone = state.spheres[props.sphereId].stones[props.stoneId];
+    return TopBarUtil.getOptions({title:  stone.config.name});
+  }
 
   unsubscribeStoreEvents: any;
   unsubscribeSwiperEvents: any = [];
@@ -89,14 +76,6 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
         return this.forceUpdate();
       }
 
-      let applianceId = stone.config.applianceId;
-      if (
-        change.changeAppSettings ||
-        change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
-        applianceId && change.updateApplianceConfig && change.updateApplianceConfig.applianceIds[applianceId]
-      ) {
-        this._updateNavBar();
-      }
     });
   }
 
@@ -123,16 +102,8 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
         });
       }
     }
-
-    NAVBAR_PARAMS_CACHE = null;
-
   }
 
-  _updateNavBar() {
-    let state = core.store.getState();
-    let params = getNavBarParams(core.store, state, this.props);
-    // this.props.navigation.setParams(params)
-  }
 
 
   render() {
@@ -155,13 +126,4 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
   }
 
 }
-
-function getNavBarParams(store, state, props) {
-  const stone = state.spheres[props.sphereId].stones[props.stoneId];
-
-  NAVBAR_PARAMS_CACHE = {title: stone.config.name};
-  return NAVBAR_PARAMS_CACHE;
-}
-
-let NAVBAR_PARAMS_CACHE = null;
 

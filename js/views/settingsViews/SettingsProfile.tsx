@@ -25,11 +25,12 @@ import { NotificationHandler } from "../../backgroundProcesses/NotificationHandl
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SettingsProfile extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("My_Account")}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("My_Account")});
+  }
 
   unsubscribe : any;
   renderState : any;

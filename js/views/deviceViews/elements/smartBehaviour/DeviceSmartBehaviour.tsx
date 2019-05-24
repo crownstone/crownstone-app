@@ -11,16 +11,13 @@ import { core } from "../../../../core";
 import { Background } from "../../../components/Background";
 import { DeviceSmartBehaviour_RuleOverview } from "./DeviceSmartBehaviour_RuleOverview";
 import { View } from "react-native";
+import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 export class DeviceSmartBehaviour extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("A_Crownstone"), closeModal: true });
+  }
 
-    return {
-      title: lang("A_Crownstone"),
-      headerLeft:  <TopbarBackButton text={lang("Back")} onPress={() => { navigation.goBack(null) }} />
-    }
-  };
 
 
   render() {

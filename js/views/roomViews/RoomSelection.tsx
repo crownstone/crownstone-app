@@ -23,13 +23,12 @@ import { Icon } from '../components/Icon';
 
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class RoomSelection extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Move_where_"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Move_where_")})
+  }
 
   unsubscribe : any;
 

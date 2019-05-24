@@ -21,14 +21,13 @@ import { Background } from "../../../components/Background";
 import { core } from "../../../../core";
 import { BehaviourRuleEditor } from "./supportComponents/BehaviourRuleEditor";
 import { TwilightRuleEditor } from "./supportComponents/TwilightRuleEditor";
+import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string}, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("A_Crownstone"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("A_Crownstone")});
+  }
 
 
   render() {

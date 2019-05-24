@@ -18,14 +18,14 @@ import {Background} from "../../components/Background";
 import {IconButton} from "../../components/IconButton";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class SwitchCraftInformation extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Switchcraft"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Switchcraft")});
+  }
+
   // "SwitchCraft is a new, experimental feature of the Crownstone that allows you to switch your lights with both Crownstone and an existing wall switch." +
   render() {
     return (

@@ -19,14 +19,14 @@ import {getPresentUsersInLocation} from "../../../util/DataUtil";
 import {AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION} from "../../../ExternalConfig";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { core } from "../../../core";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class SettingsLocalizationDebug extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Localization_Debug"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Localization_Debug")});
+  }
+
 
   _baseRadius;
   unsubscribeNativeEvents = [];

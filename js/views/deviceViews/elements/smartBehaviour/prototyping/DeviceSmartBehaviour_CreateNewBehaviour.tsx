@@ -19,15 +19,12 @@ import {
   screenWidth} from "../../../../styles";
 import { Background } from "../../../../components/Background";
 import { core } from "../../../../../core";
+import { TopBarUtil } from "../../../../../util/TopBarUtil";
 
 export class DeviceSmartBehaviour_CreateNewBehaviour extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-
-    return {
-      title: lang("A_Crownstone"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("A_Crownstone")});
+  }
 
 
   render() {

@@ -24,23 +24,19 @@ import { Util } from "../../../util/Util";
 import { Icon } from "../../components/Icon";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
+import { Navigation } from "react-native-navigation";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 
 export class SphereRoomArranger extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
+  static options(props) {
+    return TopBarUtil.getOptions({
       title: lang("Drag_it_around_"),
-      headerLeft: <CancelButton onPress={ () => {navigation.goBack();}} />,
-      headerRight: <TopbarButton
-        text={ lang("Save")}
-        onPress={() => {
-          params.rightAction ? params.rightAction() : () => {}
-        }}
-      />
-    }
-  };
+      cancel: () => { NavigationUtil.back() },
+      save: () => {}
+    });
+  }
 
   _baseRadius;
   unsubscribeSetupEvents = [];
@@ -57,7 +53,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
     this.viewId = xUtil.getUUID();
     this.refName = (Math.random() * 1e9).toString(36);
 
-    // this.props.navigation.setParams({rightAction: () => { this._storePositions();}})
+    TopBarUtil.updateOptions(this.props.componentId,{save: () => { this._storePositions();}});
   }
 
 

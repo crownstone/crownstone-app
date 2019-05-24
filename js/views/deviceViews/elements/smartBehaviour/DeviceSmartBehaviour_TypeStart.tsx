@@ -16,16 +16,14 @@ import { availableScreenHeight } from "../../../styles";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
+import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 
 export class DeviceSmartBehaviour_TypeStart extends Component<{stoneId: string, sphereId: string, type: string}, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("A_Crownstone")});
+  }
 
-    return {
-      title: lang("A_Crownstone")
-    };
-  };
 
 
   _getLocationIds(amount) {

@@ -26,7 +26,6 @@ import { DevicePowerCurve }     from "./elements/DevicePowerCurve";
 import { DeviceSchedule }       from "./elements/DeviceSchedule";
 import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
 import { Permissions }          from "../../backgroundProcesses/PermissionManager";
-import { DeviceWhatsNew }       from "./elements/DeviceWhatsNew";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
 import { TopbarButton }         from "../components/topbar/TopbarButton";
 import { SphereDeleted }        from "../static/SphereDeleted";
@@ -38,31 +37,18 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { Navigation } from "react-native-navigation";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   core.eventBus.emit("setNewSwiperIndex", nextState.index);
 };
 
 export class DeviceOverview extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-
-    let paramsToUse = params;
-    if (!params.title) {
-      if (NAVBAR_PARAMS_CACHE !== null) {
-        paramsToUse = NAVBAR_PARAMS_CACHE;
-      }
-      else {
-        paramsToUse = getNavBarParams(core.store, core.store.getState(), params, 0, false);
-      }
-    }
-
-    return {
-      title: paramsToUse.title,
-      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>,
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
+  static options(props) {
+    getTopBarProps(core.store, core.store.getState(), props, 0, false);
+    return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
+  }
 
   unsubscribeStoreEvents : any;
   unsubscribeSwiperEvents : any = [];
@@ -181,8 +167,8 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
   _updateNavBar(swiperIndex, scrolling) {
     let state = core.store.getState();
-    let params = getNavBarParams(core.store, state, this.props, swiperIndex, scrolling);
-    // this.props.navigation.setParams(params)
+    getTopBarProps(core.store, state, this.props, swiperIndex, scrolling);
+    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
 
@@ -194,17 +180,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
     if (!stone) { return <StoneDeleted /> }
     let summaryIndex = 0;
     this.summaryIndex = summaryIndex;
-
-    let whatsNewEnabledFirmwares = {
-      '2.0.0': true,
-      '2.0.1': true,
-    };
-    let showWhatsNew = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone &&
-                       stone.config.firmwareVersionSeenInOverview &&
-                       (stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) &&
-                        whatsNewEnabledFirmwares[stone.config.firmwareVersion];
-
-    if (showWhatsNew) { this.showWhatsNewVersion = stone.config.firmwareVersion; }
 
     // check what we want to show the user:
     let hasError        = stone.errors.hasError;
@@ -232,7 +207,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
       }
     };
 
-    let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog, showWhatsNew, deviceType, stone.config);
+    let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog, deviceType, stone.config);
     return (
       <Background image={core.background.detailsDark}>
         { content.length > 1 ? <Swiper
@@ -259,7 +234,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
   _getContent(
     hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog,
-    showWhatsNew, deviceType, stoneConfig) {
+    deviceType, stoneConfig) {
     let content = [];
     let props = {sphereId: this.props.sphereId, stoneId: this.props.stoneId};
 
@@ -277,13 +252,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
       content.push(<DeviceUpdate key={'updateSlide'} mandatory={false} canUpdate={canUpdate} {...props} />);
     }
 
-    if (showWhatsNew) {
-      content.push(<DeviceWhatsNew key={'deviceWhatsNewSlide'} {...props} />);
-    }
-
-    // content.push(<DeviceActivityLog key={'activityLogSlide'} {...props} />);
-    // return content;
-
     if (stoneConfig.dfuResetRequired) {
       return content;
     }
@@ -297,8 +265,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
     else {
       content.push(<DeviceSummary key={'summarySlide'}  {...props} />);
     }
-
-    return content
 
     if (hasBehaviour) {
       content.push(<DeviceBehaviour key={'behaviourSlide'} {...props} />);
@@ -322,7 +288,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 }
 
 
-function getNavBarParams(store, state, props, swiperIndex, scrolling) {
+function getTopBarProps(store, state, props, swiperIndex, scrolling) {
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
   const element = Util.data.getElement(store, props.sphereId, props.stoneId, stone);
 
@@ -391,7 +357,18 @@ lang("_Crownstone_is_Locked___Y_body"),
     )
   }
 
-  NAVBAR_PARAMS_CACHE = {title: element.config.name, rightLabel: rightLabel, rightAction: rightAction, rightItem: rightItem};
+  NAVBAR_PARAMS_CACHE = {
+    title: element.config.name,
+    right: {
+      id: 'edit',
+      component:'topbarButton',
+      props: {
+        text: rightLabel,
+        onPress: rightAction,
+        item: rightItem,
+      }
+    },
+  };
   return NAVBAR_PARAMS_CACHE;
 }
 

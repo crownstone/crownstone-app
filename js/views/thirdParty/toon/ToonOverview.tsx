@@ -20,16 +20,14 @@ import {CLOUD} from "../../../cloud/cloudAPI";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class ToonOverview extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: lang("Toon"),
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang('Toon')});
+  }
+
 
   unsubscribe;
   deleting;

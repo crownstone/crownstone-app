@@ -19,28 +19,17 @@ import {getRandomC1Name} from "../../fonts/customIcons";
 import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
-import {CancelButton} from "../components/topbar/CancelButton";
-import {TopbarButton} from "../components/topbar/TopbarButton";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 
 export class ApplianceAdd extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: lang("Add_Device_Type"),
-      headerLeft: <CancelButton onPress={ () => { NavigationUtil.back(); }} />,
-      headerRight: <TopbarButton
-        text={ lang("Create")}
-        onPress={() => {
-          params.rightAction ? params.rightAction() : () => {}
-        }}
-      />
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title:  lang("Add_Device_Type"), cancelModal: true, create:()=>{}});
+  }
 
   refName : string;
 
@@ -49,7 +38,7 @@ export class ApplianceAdd extends Component<any, any> {
     this.state = {name:'', icon: getRandomC1Name(), selectedStones: {}};
     this.refName = "listItems";
 
-    // this.props.navigation.setParams({rightAction: () => { this.createDevice();}})
+    TopBarUtil.updateOptions(this.props.componentId, { create: () => { this.createDevice() }})
   }
 
   _getItems() {

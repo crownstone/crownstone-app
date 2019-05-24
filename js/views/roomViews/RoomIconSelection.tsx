@@ -16,6 +16,8 @@ import {colors, screenWidth} from "../styles";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";
+import { Util } from "../../util/Util";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 
@@ -210,12 +212,9 @@ export const getRandomRoomIcon = () => {
 };
 
 export class RoomIconSelection extends Component<{navigation:any, callback(icon: string) : void, icon: string, backgrounds: any}, any> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: lang("Pick_an_Icon"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
-    }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Pick_an_Icon"), closeModal: true });
+  }
 
   constructor(props) {
     super(props)

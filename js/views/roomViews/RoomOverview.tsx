@@ -28,7 +28,6 @@ import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { Permissions }            from "../../backgroundProcesses/PermissionManager";
-import { TopbarRightMoreButton } from "../components/topbar/TopbarButton";
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { RoomDeleted }            from "../static/RoomDeleted";
 import { preparePictureURI }      from "../../util/Util";
@@ -37,34 +36,14 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Navigation } from "react-native-navigation";
-import { refreshOptions } from "../../logic/RefreshOptions";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
   static options(props) {
-    getNavBarParams(core.store.getState(), props, true);
-    return refreshOptions(NAVBAR_PARAMS_CACHE);
+    getTopBarProps(core.store.getState(), props, true);
+    return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
-
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-
-    let paramsToUse = params;
-    if (!params.title) {
-      if (NAVBAR_PARAMS_CACHE !== null) {
-        paramsToUse = NAVBAR_PARAMS_CACHE;
-      }
-      else {
-        paramsToUse = getNavBarParams(core.store.getState(), params, true);
-      }
-    }
-
-    return {
-      title: paramsToUse.title,
-      headerRight: paramsToUse.headerRight,
-      headerTruncatedBackTitle: lang("Back"),
-    }
-  };
 
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
@@ -231,8 +210,8 @@ export class RoomOverview extends LiveComponent<any, any> {
 
 
   _updateNavBar() {
-    getNavBarParams(core.store.getState(), this.props, this.viewingRemotely);
-    Navigation.mergeOptions(this.props.componentId, refreshOptions(NAVBAR_PARAMS_CACHE))
+    getTopBarProps(core.store.getState(), this.props, this.viewingRemotely);
+    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
 
@@ -333,7 +312,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 }
 
 
-function getNavBarParams(state, props, viewingRemotely) {
+function getTopBarProps(state, props, viewingRemotely) {
   let enoughCrownstonesInLocations = enoughCrownstonesInLocationsForIndoorLocalization(state, props.sphereId);
   let sphere = state.spheres[props.sphereId];
   if (!sphere) { return }

@@ -27,11 +27,13 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SettingsFactoryResetStep2 extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    return { title: lang("Resettings")}
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: lang("Resettings")});
+  }
+
 
   lookingForCrownstone : boolean = true;
   uuid : string = xUtil.getUUID();
