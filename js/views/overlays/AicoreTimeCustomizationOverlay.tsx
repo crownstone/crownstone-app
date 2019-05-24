@@ -12,6 +12,7 @@ import { core } from "../../core";
 import { ScaledImage } from "../components/ScaledImage";
 import { AicoreTimeCustomization } from "../deviceViews/elements/smartBehaviour/supportComponents/AicoreTimeCustomization";
 import { xUtil } from "../../util/StandAloneUtil";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class AicoreTimeCustomizationOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -20,22 +21,18 @@ export class AicoreTimeCustomizationOverlay extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {
-      visible: false,
-    };
+    this.state = { visible: false };
     this.unsubscribe = [];
 
-    this.timeData = {};
-    this.callback = () => {}
+    this.timeData = props.data.time ? xUtil.deepExtend({}, props.data.time) : null;
+    this.callback = props.data.callback;
   }
 
   componentDidMount() {
+    this.setState({ visible: true });
     this.unsubscribe.push(core.eventBus.on("showAicoreTimeCustomizationOverlay", (data) => {
       this.callback = data.callback;
       this.timeData = data.time ? xUtil.deepExtend({}, data.time) : null;
-      this.setState({
-        visible: true,
-      });
     }));
   }
 
@@ -44,14 +41,12 @@ export class AicoreTimeCustomizationOverlay extends Component<any, any> {
     this.unsubscribe = [];
   }
 
-
-
   close() {
     this.callback = () => {};
     this.timeData = {};
     this.setState({
       visible:false,
-    });
+    }, () => {  NavigationUtil.closeOverlay(this.props.componentId); });
   }
 
   render() {

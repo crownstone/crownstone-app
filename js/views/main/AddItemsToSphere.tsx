@@ -20,33 +20,30 @@ import {Background} from "../components/Background";
 import {textStyle} from "../deviceViews/elements/DeviceBehaviour";
 import {IconButton} from "../components/IconButton";
 import { core } from "../../core";
-import { TopbarBackButton } from "../components/topbar/TopbarButton";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
 
 let iconSize = 100;
 
-export const addCrownstoneExplanationAlert = (actionOnOK = () => {}) => {
-  Alert.alert(
-    lang("_Adding_a_Crownstone__Plu_header"),
-    lang("_Adding_a_Crownstone__Plu_body"),
-    [{text: lang("_Adding_a_Crownstone__Plu_left"), style:'cancel',onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},
-          {
-    text: lang("_Adding_a_Crownstone__Plu_right"), onPress: () => { actionOnOK() }}]
-  );
-};
-
 export class AddItemsToSphere extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    if (params === undefined) { return }
-
+  static options(props) {
     return {
-      title: lang("Add_to_Sphere"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back(); }} />
+      topBar: {
+        title: {text: lang("Add_to_Sphere")},
+        leftButtons: [{
+          id: 'back',
+          component: {
+            name:'topbarLeftButton',
+            passProps: {
+              text: lang("Back"), onPress:() => { NavigationUtil.dismissModal(); }
+            }
+          },
+        }],
+      }
     }
-  };
+  }
+
 
   render() {
     let hightlightAddCrownstoneButton = false;
@@ -79,18 +76,18 @@ export class AddItemsToSphere extends Component<any, any> {
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row', alignItems:'center'}}>
               <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
-                NavigationUtil.navigateAndReplace("RoomAdd", { sphereId: this.props.sphereId });
+                NavigationUtil.navigate("RoomAdd", { sphereId: this.props.sphereId });
               }} />
               <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} callback={() => {
-                NavigationUtil.navigateAndReplace("AddCrownstone", {sphereId: this.props.sphereId});
+                NavigationUtil.launchModal("AddCrownstone", {sphereId: this.props.sphereId});
               }} />
             </View>
             <View  style={{flexDirection:'row'}}>
               <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => {
-                NavigationUtil.navigateAndReplace("SphereUserInvite",{sphereId: this.props.sphereId});
+                NavigationUtil.navigate("SphereUserInvite",{sphereId: this.props.sphereId});
               }} />
               <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => {
-                NavigationUtil.navigateAndReplaceVia("SphereEdit","SphereIntegrations",{sphereId: this.props.sphereId})
+                // NavigationUtil.navigate("SphereEdit","SphereIntegrations",{sphereId: this.props.sphereId})
               }} />
             </View>
           </View>

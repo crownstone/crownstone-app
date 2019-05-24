@@ -264,8 +264,8 @@ lang("_Error_during_Factory_Res_body"),
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark} safeView={true}>
-                <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
+        <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>{ lang("Hold_your_phone_next_to_t") }</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={[setupStyle.information, {color:colors.white.hex}]}>{this.state.text}</Text>

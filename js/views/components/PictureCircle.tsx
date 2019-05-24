@@ -43,12 +43,12 @@ export class PictureCircle extends Component<any, any> {
     }
 
     if (Platform.OS === 'android') {
-      buttons.push({ text: lang("Take_Photo"), callback: () => {  NavigationUtil.navigate(pictureViewAddress,{selectCallback: this.props.callback});}});
-      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { NavigationUtil.navigate(cameraRollViewAddress,{selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Photo"), callback: () => {  NavigationUtil.navigate( pictureViewAddress,{selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { NavigationUtil.navigate( cameraRollViewAddress,{selectCallback: this.props.callback});}});
     }
     else {
-      buttons.push({ text: lang("Take_Picture"), callback: () => { NavigationUtil.navigate(pictureViewAddress,{selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
-      buttons.push({ text: lang("Choose_Existing"), callback: () => { NavigationUtil.navigate(cameraRollViewAddress,{selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Picture"), callback: () => { NavigationUtil.navigate( pictureViewAddress,{selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
+      buttons.push({ text: lang("Choose_Existing"), callback: () => { NavigationUtil.navigate( cameraRollViewAddress,{selectCallback: this.props.callback});}});
     }
     core.eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
   }

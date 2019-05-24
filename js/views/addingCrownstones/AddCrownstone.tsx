@@ -21,8 +21,8 @@ import { LiveComponent } from "../LiveComponent";
 
 
 export class AddCrownstone extends LiveComponent<any, any> {
-  static navigationOptions = {
-    header: null
+  static options = {
+    topBar: { visible: false }
   };
 
   interviewData;
@@ -69,7 +69,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader:"Insert the plug into a power outlet and hold your phone close by. Tap next when you're ready!",
         backgroundImage: require('../../images/backgrounds/plugBackground.png'),
         options: [
-          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
+          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingBuiltinZero_step1: {
@@ -120,7 +120,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Hold your phone close to the socket with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
         backgroundImage: require('../../images/backgrounds/socketBackground.png'),
         options: [
-          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
+          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
       installingBuiltinOne_endLight: {
@@ -128,13 +128,11 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Hold your phone near the ceiling light with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
         backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
         options: [
-          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate("ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
+          {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
     }
   }
-
-
 
 
   render() {
@@ -150,7 +148,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : "Back"}
-          leftAction={() => { if (this._interview.back() === false) { NavigationUtil.backTo("Main"); }}}
+          leftAction={() => { if (this._interview.back() === false) { NavigationUtil.dismissAllModals(); }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
           ref={     (i) => { this._interview = i; }}

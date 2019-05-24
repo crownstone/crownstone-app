@@ -18,28 +18,23 @@ import { Permissions }       from "../../backgroundProcesses/PermissionManager";
 import { CLOUD }             from "../../cloud/cloudAPI";
 import { createNewSphere }   from "../../util/CreateSphere";
 import { core }              from "../../core";
-import { TopbarBackButton }  from "../components/topbar/TopbarButton";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { getModalBackButton } from "../components/ModalBackButton";
 
 export class SphereEdit extends Component<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
+  static options(props) {
     let state = core.store.getState();
-    if (params.sphereId) {
-      let sphere = state.spheres[params.sphereId];
+    if (props.sphereId) {
+      let sphere = state.spheres[props.sphereId];
       if (sphere) {
-        return {
-          title: sphere.config.name,
-          headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
-        }
+        return { topBar: { title: {text: sphere.config.name}, ...getModalBackButton() } }
       }
     }
 
-    return {
-      title: lang("Welcome_"),
-      headerLeft: <TopbarBackButton text={lang("Back")} onPress={() => { NavigationUtil.back() }} />
-    }
-  };
+    return { topBar: { topBar: { title: {text: lang("Welcome_")}, ...getModalBackButton()}}}
+  }
+
+
 
   unsubscribe = [];
 
@@ -79,7 +74,7 @@ export class SphereEdit extends Component<any, any> {
             createNewSphere(state.user.firstName + "'s Sphere")
               .then((sphereId) => {
                 setTimeout(() => {
-                  NavigationUtil.navigate("AiStart");
+                  NavigationUtil.navigate( "AiStart");
                 }, 100)
               })
               .catch((err) => {
@@ -97,7 +92,7 @@ export class SphereEdit extends Component<any, any> {
           largeIcon: <IconButton plusSize={25} addIcon={true} name="c1-sphere" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.csBlueLight.hex}} />,
           type: 'navigation',
           callback: () => {
-            NavigationUtil.navigate("AddSphereTutorial");
+            NavigationUtil.navigate( "AddSphereTutorial");
           }
         });
         items.push({label: lang("Careful_a_sphere_is_not"),    type:'explanation', below: true});
@@ -113,7 +108,7 @@ export class SphereEdit extends Component<any, any> {
       type: 'navigation',
       largeIcon: <IconButton name='md-cube' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
-        NavigationUtil.navigate("SphereRoomOverview", {sphereId: this.props.sphereId});
+        NavigationUtil.navigate( "SphereRoomOverview", {sphereId: this.props.sphereId});
       }
     });
 
@@ -123,7 +118,7 @@ export class SphereEdit extends Component<any, any> {
       type: 'navigation',
       largeIcon: <IconButton name='c2-pluginFilled' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
       callback: () => {
-        NavigationUtil.navigate("SphereCrownstoneOverview", {sphereId: this.props.sphereId});
+        NavigationUtil.navigate( "SphereCrownstoneOverview", {sphereId: this.props.sphereId});
       }
     });
 
@@ -133,7 +128,7 @@ export class SphereEdit extends Component<any, any> {
       fieldId: 'sphereEdit_users',
       largeIcon: <IconButton name='c1-people' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
       callback: () => {
-        NavigationUtil.navigate("SphereUserOverview", {sphereId: this.props.sphereId});
+        NavigationUtil.navigate( "SphereUserOverview", {sphereId: this.props.sphereId});
       }
     });
 
@@ -143,7 +138,7 @@ export class SphereEdit extends Component<any, any> {
         type: 'navigation',
         largeIcon: <IconButton name='c1-brain' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft: 3, marginRight: 7}}/>,
         callback: () => {
-          NavigationUtil.navigate("SphereBehaviour", {sphereId: this.props.sphereId});
+          NavigationUtil.navigate( "SphereBehaviour", {sphereId: this.props.sphereId});
         }
       });
     }
@@ -153,7 +148,7 @@ export class SphereEdit extends Component<any, any> {
       type: 'navigation',
       largeIcon: <IconButton name='ios-link' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlueDark.hex}}/>,
       callback: () => {
-        NavigationUtil.navigate("SphereIntegrations", {sphereId: this.props.sphereId});
+        NavigationUtil.navigate( "SphereIntegrations", {sphereId: this.props.sphereId});
       }
     });
 
@@ -163,7 +158,7 @@ export class SphereEdit extends Component<any, any> {
       largeIcon: <IconButton name="ios-cog" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,
       type: 'navigation',
       callback: () => {
-        NavigationUtil.navigate("SphereEditSettings", {sphereId: this.props.sphereId});
+        NavigationUtil.navigate( "SphereEditSettings", {sphereId: this.props.sphereId});
       }
     });
 
@@ -173,7 +168,7 @@ export class SphereEdit extends Component<any, any> {
       largeIcon: <IconButton plusSize={25} addIcon={true} name="c1-sphere" buttonSize={55} size={40} radius={radius} color="#fff" buttonStyle={{backgroundColor: colors.csBlueLight.hex}} />,
       type: 'navigation',
       callback: () => {
-        NavigationUtil.navigate("AddSphereTutorial", {sphereId: this.props.sphereId});
+        NavigationUtil.launchModal( "AddSphereTutorial", {sphereId: this.props.sphereId});
       }
     });
     items.push({label: lang("Careful_a_sphere_is_not"),  type:'explanation', below: true});

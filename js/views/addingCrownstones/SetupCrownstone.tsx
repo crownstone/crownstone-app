@@ -73,7 +73,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
 
 
   _disableBackButton() {
-    this.props.navigation.setParams({disableBack: true});
+    // this.props.navigation.setParams({disableBack: true});
     // TODO: disable android back button
   }
 
@@ -225,7 +225,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
       icon: "md-cube",
       theme: 'create',
       onSelect: () => {
-        NavigationUtil.navigate("RoomAdd", {sphereId: sphereId, returnToRoute:'SetupCrownstone_step1'});
+        NavigationUtil.navigate( "RoomAdd", {sphereId: sphereId, returnToRoute:'SetupCrownstone_step1'});
       }
     });
 
@@ -292,7 +292,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         editableItem: (state, setState) => {
           return (
             <TouchableOpacity onPress={() => {
-              NavigationUtil.navigate("DeviceIconSelection",{
+              NavigationUtil.navigate( "DeviceIconSelection",{
                 icon: state,
                 callback: (newIcon) => {
                   setState(newIcon);

@@ -79,7 +79,7 @@ export class SideBar extends LiveComponent<any, any> {
         label: lang("Setup_localization"),
         icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
         callback: () => {
-         // NavigationUtil.navigate(drawerClose();
+         // NavigationUtil.navigate( drawerClose();
           finalizeLocalization.action()
         }
       });
@@ -104,8 +104,8 @@ export class SideBar extends LiveComponent<any, any> {
       />,
       highlight: highlight,
       callback: () => {
-       // NavigationUtil.navigate(drawerClose();
-       NavigationUtil.navigate("MessageInbox");
+       // NavigationUtil.navigate( drawerClose();
+       NavigationUtil.navigate( "MessageInbox");
       }
     });
     return menuItems;

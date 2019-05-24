@@ -298,7 +298,7 @@ export class ToonAdd extends Component<any, any> {
     }
 
     return (
-      <Background image={core.background.menu} hasNavBar={false} safeView={true}>
+      <Background image={core.background.menu} hasNavBar={false}>
                 { content }
       </Background>
     );

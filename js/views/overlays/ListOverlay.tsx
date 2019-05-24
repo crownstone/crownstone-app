@@ -17,9 +17,9 @@ import { colors, screenWidth, screenHeight } from "../styles";
 import { core } from "../../core";
 import { ScaledImage } from "../components/ScaledImage";
 import { Separator } from "../components/Separator";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class ListOverlay extends LiveComponent<any, any> {
-  unsubscribe : any;
   customContent : Component;
   callback : any;
   selection : string[];
@@ -28,50 +28,30 @@ export class ListOverlay extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      allowMultipleSelections: false,
-      image: null,
-      maxSelections: null,
-      saveLabel: null,
-      showSaveButton:false,
-      separator:true,
-      title: "",
+      allowMultipleSelections: props.data.allowMultipleSelections || false,
+      image:                   props.data.image,
+      maxSelections:           props.data.maxSelections,
+      saveLabel:               null,
+      showSaveButton:             false,
+      separator:props.data.separator === undefined ? true : props.data.separator,
+      title: props.data.title,
       visible: false,
     };
-    this.unsubscribe = [];
 
-    this.callback = () => {};
-    this.customContent = null;
-    this.getItems = () => { return [] };
-    this.selection = [];
+    this.customContent = props.data.customContent || null;
+    this.getItems = props.data.getItems;
+    this.callback = props.data.callback;
+    if (props.data.selection && Array.isArray(props.data.selection) === false) {
+      this.selection = [props.data.selection];
+    }
+    else {
+      this.selection = props.data.selection || [];
+    }
   }
 
   componentDidMount() {
-    this.unsubscribe.push(core.eventBus.on("showListOverlay", (data) => {
-      this.customContent = data.customContent || null;
-      this.getItems = data.getItems;
-      this.callback = data.callback;
-      if (data.selection && Array.isArray(data.selection) === false) {
-        this.selection = [data.selection];
-      }
-      else {
-        this.selection = data.selection || [];
-      }
-      this.setState({
-        visible: true,
-        image: data.image,
-        separator: data.separator === undefined ? true : data.separator,
-        title: data.title,
-        allowMultipleSelections: data.allowMultipleSelections || false,
-        maxSelections: data.maxSelections,
-      });
-    }));
+    this.setState({ visible: true });
   }
-
-  componentWillUnmount() {
-    this.unsubscribe.forEach((callback) => {callback()});
-    this.unsubscribe = [];
-  }
-
 
   getElements() {
     if (!this.state.visible) {
@@ -153,7 +133,7 @@ export class ListOverlay extends LiveComponent<any, any> {
       separator:true,
       title: "",
       visible:false,
-    });
+    }, () => {  NavigationUtil.closeOverlay(this.props.componentId); });
   }
 
   render() {

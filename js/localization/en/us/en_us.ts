@@ -1009,10 +1009,6 @@ export default {
     _Something_went_wrong_____Yo_left:   function() { return "OK" },
   },
   LibMessages:{
-    __filename: "../js/views/overlays/LibMessages.tsx",
-    arguments___arguments___O_header:    function() { return arguments[0] },
-    arguments___arguments___O_body:      function() { return arguments[0] },
-    arguments___arguments___O_left:      function() { return "OK" },
     OK:                                  function() { return arguments[0] || "OK" },
   },
   ListOverlay:{

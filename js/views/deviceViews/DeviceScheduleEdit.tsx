@@ -109,18 +109,18 @@ export class DeviceScheduleEdit extends Component<any, any> {
     }
 
     if (this.props.scheduleId) {
-      this.props.navigation.setParams({rightAction: () => {
-          this._handleTime()
-            .then(() => {this._updateSchedule(); })
-            .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
-        }})
+      // this.props.navigation.setParams({rightAction: () => {
+      //     this._handleTime()
+      //       .then(() => {this._updateSchedule(); })
+      //       .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
+      //   }})
     }
     else {
-      this.props.navigation.setParams({rightAction: () => {
-          this._handleTime()
-            .then(() => {this._createSchedule(); })
-            .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
-        }})
+      // this.props.navigation.setParams({rightAction: () => {
+      //     this._handleTime()
+      //       .then(() => {this._createSchedule(); })
+      //       .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
+      //   }})
     }
   }
 

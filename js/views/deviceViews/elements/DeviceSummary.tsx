@@ -103,7 +103,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
 
   _triggerApplianceSelection(stone) {
     this.safeStoreUpdate();
-    NavigationUtil.navigate("ApplianceSelection",{
+    NavigationUtil.navigate( "ApplianceSelection",{
       sphereId: this.props.sphereId,
       applianceId: stone.config.applianceId,
       stoneId: this.props.stoneId,
@@ -273,7 +273,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
           leftValue={stone.state.currentUsage + ' W'}
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate( "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'DeviceOverview'}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate(  "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'DeviceOverview'}); } : null}
         />
         <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>

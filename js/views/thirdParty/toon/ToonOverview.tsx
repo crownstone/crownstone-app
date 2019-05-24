@@ -60,7 +60,7 @@ export class ToonOverview extends LiveComponent<any, any> {
         label: sphere.thirdParty.toons[toonId].toonAddress,
         type: 'navigation',
         callback: () => {
-          NavigationUtil.navigate("ToonSettings",{ sphereId: this.props.sphereId, toonId: toonId })
+          NavigationUtil.navigate( "ToonSettings",{ sphereId: this.props.sphereId, toonId: toonId })
         }
       });
     });
@@ -110,7 +110,7 @@ text:lang("_Are_you_sure__You_will_h_right"), onPress:() => {
     let sphere = state.spheres[this.props.sphereId];
 
     return (
-      <Background image={core.background.menu} hasNavBar={false} safeView={true}>
+      <Background image={core.background.menu} hasNavBar={false}>
                 <View style={{flex:1, alignItems:'center'}}>
           <View style={{flex:1}} />
           <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />

@@ -62,7 +62,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
               type: (userId === state.user.userId || spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
               icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
-                NavigationUtil.navigate("SphereInvitedUser",{
+                NavigationUtil.navigate( "SphereInvitedUser",{
                   title: users[userId].email,
                   userId: userId,
                   invitePending: true,
@@ -77,7 +77,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
               type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
               icon: <ProfilePicture picture={users[userId].picture} borderless={false} />,
               callback: () => {
-                NavigationUtil.navigate("SphereUser",{
+                NavigationUtil.navigate( "SphereUser",{
                   title: users[userId].firstName,
                   userId: userId,
                   sphereId: this.props.sphereId
@@ -125,7 +125,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
         labelStyle: {color: colors.menuTextSelected.hex, fontWeight:'bold'},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft: 3, marginRight: 7}}/>,
         callback: () => {
-          NavigationUtil.navigate("SphereUserInvite",{
+          NavigationUtil.navigate( "SphereUserInvite",{
             sphereId: this.props.sphereId
           });
         }

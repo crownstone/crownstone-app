@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   View
 } from 'react-native';
-import { SafeAreaView } from 'react-navigation';
+// import { SafeAreaView } from 'react-navigation';
 
 import { styles, screenHeight, topBarHeight, tabBarHeight,  } from "../styles";
 import {BackgroundImage} from "./BackgroundImage";
@@ -24,7 +24,6 @@ export class Background extends Component<{
   image:             any,
   topImage?:         any,
   shadedStatusBar?:  boolean,
-  safeView?:         boolean,
   statusBarStyle?:   any
 }, any> {
   render() {
@@ -36,14 +35,14 @@ export class Background extends Component<{
       height -= tabBarHeight;
     }
     return (
-      <View style={[styles.fullscreen, {height:height, overflow:"hidden"}]} >
+      <View style={[styles.fullscreen, {height:height, overflow:"hidden", backgroundColor:"transparent"}]} >
         <BackgroundImage height={height} image={this.props.image} />
         {this.props.topImage ? <View style={[styles.fullscreen, {height:height, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
         <View style={[styles.fullscreen, {height:height}]} >
           { this.props.hideOrangeBar !== true ? <NotificationLine notificationsVisible={!this.props.hideNotification} /> : true }
           <View style={{flex:1, overflow:'hidden'}}>
             { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}
-            { this.props.safeView ? <SafeAreaView style={{flex:1}}>{this.props.children}</SafeAreaView> : this.props.children }
+            {this.props.children}
           </View>
         </View>
       </View>

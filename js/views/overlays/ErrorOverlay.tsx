@@ -32,19 +32,20 @@ export class ErrorOverlay extends Component<any, any> {
     this.state = {
       visible: false,
       maxOpacity: 1,
-      stoneId: null,
-      sphereId: null,
+      stoneId:  props.data.stoneId,
+      sphereId: props.data.sphereId,
     };
     this.unsubscribe = [];
   }
 
   componentDidMount() {
+    this.setState({ visible: true });
     this.unsubscribe.push(core.eventBus.on("showErrorOverlay", (data) => { // { stoneId : stoneId, sphereId: sphereId }
       if (this.state.visible === false) {
         this.setState({
           visible: true,
           maxOpacity: 1,
-          stoneId: data.stoneId,
+          stoneId:  data.stoneId,
           sphereId: data.sphereId,
         });
       }
@@ -82,7 +83,7 @@ export class ErrorOverlay extends Component<any, any> {
       <TouchableOpacity
         onPress={() => {
           let locationId = stone.config.locationId;
-          NavigationUtil.navigate("RoomOverview",{
+          NavigationUtil.navigate( "RoomOverview",{
             sphereId: this.state.sphereId,
             locationId: locationId,
             errorCrownstone: this.state.stoneId
@@ -90,7 +91,9 @@ export class ErrorOverlay extends Component<any, any> {
           this.setState({maxOpacity: SEE_THROUGH_OPACITY});
           setTimeout(() => {
             core.eventBus.emit("showErrorInOverview", this.state.stoneId);
-            this.setState({visible: false, stoneId: null, sphereId: null});
+            this.setState(
+              {visible: false, stoneId: null, sphereId: null},
+              () => {  NavigationUtil.closeOverlay(this.props.componentId); });
           }, 300);
         }}
         style={[styles.centered, {

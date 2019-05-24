@@ -54,11 +54,11 @@ export class RoomAdd extends LiveComponent<any, any> {
     };
 
     if (this.props.navigation) {
-      this.props.navigation.setParams({
-        leftAction: () => {
-          this.cancelEdit();
-        }
-      })
+      // this.props.navigation.setParams({
+      //   leftAction: () => {
+      //     this.cancelEdit();
+      //   }
+      // })
     }
   }
   
@@ -70,7 +70,6 @@ export class RoomAdd extends LiveComponent<any, any> {
     // clean up any pictures that were taken
     this._removeUnusedPictures();
     this._removePicture(this.newRoomData.picture);
-    NavigationUtil.back();
   }
 
   _removeUnusedPictures() {
@@ -140,7 +139,7 @@ export class RoomAdd extends LiveComponent<any, any> {
             <View style={{flex:1,flexDirection: xUtil.shortScreen() ? 'row' : 'column'}}>
               <View style={{flex:1}} />
               <TouchableOpacity style={styles.centered} onPress={() => {
-                NavigationUtil.navigate("RoomIconSelection",{
+                NavigationUtil.navigate( "RoomIconSelection",{
                   icon: state && state.icon || state,
                   callback: (newIcon) => {
                     let newState = {};
@@ -245,7 +244,7 @@ export class RoomAdd extends LiveComponent<any, any> {
       NavigationUtil.back();
     }
     else {
-      NavigationUtil.navigate("RoomOverview",{sphereId: this.props.sphereId, locationId: localId, title: this.newRoomData.name, __popBeforeAddCount: 2});
+      NavigationUtil.navigate( "RoomOverview",{sphereId: this.props.sphereId, locationId: localId, title: this.newRoomData.name, __popBeforeAddCount: 2});
     }
   }
 

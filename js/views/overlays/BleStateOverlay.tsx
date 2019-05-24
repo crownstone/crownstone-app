@@ -14,6 +14,7 @@ import { IconButton }         from '../components/IconButton'
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { colors , screenHeight} from '../styles'
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class BleStateOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -23,19 +24,20 @@ export class BleStateOverlay extends Component<any, any> {
 
     this.state = {
       visible: false,
-      notificationType: 'unknown' //"unauthorized", "poweredOff", "poweredOn", "unknown"
+      notificationType: props.notificationType //"unauthorized", "poweredOff", "poweredOn", "unknown"
     };
     this.unsubscribe = [];
   }
 
   componentDidMount() {
+    this.setState({ visible: true });
     this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.bleStatus, (status) => {
       switch (status) {
         case "poweredOff":
           this.setState({visible: true, notificationType: status});
           break;
         case "poweredOn":
-          this.setState({visible: false, notificationType: status});
+          this.setState({visible: false, notificationType: status}, () => { NavigationUtil.closeOverlay(this.props.componentId); });
           break;
         case "unauthorized":
           this.setState({visible: true, notificationType: status});

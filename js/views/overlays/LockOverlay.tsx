@@ -19,29 +19,21 @@ import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
 import { Scheduler }            from "../../logic/Scheduler";
 import { Permissions }          from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class LockOverlay extends Component<any, any> {
-  unsubscribe : any;
 
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
-      sphereId: null,
-      stoneId: null
+      sphereId: props.data.sphereId,
+      stoneId: props.data.stoneId,
     };
-    this.unsubscribe = [];
   }
 
   componentDidMount() {
-    this.unsubscribe.push(core.eventBus.on("showLockOverlay", (data) => {
-      this.setState({ visible: true, sphereId: data.sphereId, stoneId: data.stoneId });
-    }));
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe.forEach((callback) => {callback()});
-    this.unsubscribe = [];
+    this.setState({ visible: true });
   }
 
   _getText() {
@@ -75,7 +67,7 @@ export class LockOverlay extends Component<any, any> {
         Scheduler.scheduleCallback(() => {
           core.eventBus.emit("hideLoading");
           core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.state.sphereId, stoneId: this.state.stoneId, data: {locked: true}});
-          this.setState({visible: false, sphereId: null});
+          this.setState({visible: false, sphereId: null}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });
         }, 500, 'Locked Crownstone');
       })
       .catch((err) => {
@@ -84,7 +76,7 @@ export class LockOverlay extends Component<any, any> {
           lang("_Im_sorry____Something_we_header"),
           lang("_Im_sorry____Something_we_body"),
           [{text:lang("_Im_sorry____Something_we_left")}]);
-        this.setState({visible: false, sphereId: null});
+        this.setState({visible: false, sphereId: null}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });
       });
     BatchCommandHandler.executePriority();
   }
@@ -99,7 +91,9 @@ export class LockOverlay extends Component<any, any> {
       return (
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 1}}/>
-          <TouchableOpacity onPress={() => { this.setState({visible: false}); }} style={[styles.centered, {
+          <TouchableOpacity
+            onPress={() => { this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); }); }}
+            style={[styles.centered, {
             width: 110,
             height: 36,
             borderRadius: 18,
@@ -116,7 +110,9 @@ export class LockOverlay extends Component<any, any> {
       return (
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 1}}/>
-          <TouchableOpacity onPress={() => { this.setState({visible: false})}} style={[styles.centered, {
+          <TouchableOpacity
+            onPress={() => { this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); })}}
+            style={[styles.centered, {
             width: 110,
             height: 36,
             borderRadius: 18,

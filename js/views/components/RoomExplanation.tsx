@@ -50,7 +50,7 @@ export class RoomExplanation extends Component<any, any> {
     if (shouldShowTrainingButton(state, this.props.sphereId, this.props.locationId)) {
       explanation = lang("Train_Room");
       boldExplanation = true;
-      buttonCallback = () => { NavigationUtil.navigate("RoomTraining_roomSize", { sphereId: this.props.sphereId, locationId: this.props.locationId }); }
+      buttonCallback = () => { NavigationUtil.navigate( "RoomTraining_roomSize", { sphereId: this.props.sphereId, locationId: this.props.locationId }); }
     }
 
     if (explanation === undefined) {

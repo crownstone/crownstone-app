@@ -190,7 +190,7 @@ export class MessageInbox extends LiveComponent<any, any> {
 
         let iconButton = (
           <TouchableOpacity
-            onPress={() => { NavigationUtil.navigate("MessageAdd",{ sphereId: activeSphere }); }}
+            onPress={() => { NavigationUtil.navigate( "MessageAdd",{ sphereId: activeSphere }); }}
           >
             <IconButton
               name="ios-mail"

@@ -26,7 +26,7 @@ export class AlexaOverview extends Component<any, any> {
   render() {
 
     return (
-      <Background image={core.background.menu} hasNavBar={false} safeView={true}>
+      <Background image={core.background.menu} hasNavBar={false}>
                 <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />

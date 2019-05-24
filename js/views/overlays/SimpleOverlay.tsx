@@ -9,6 +9,7 @@ import * as React from 'react'; import { Component } from 'react';
 import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { colors, screenWidth, screenHeight } from "../styles";
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class SimpleOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -21,20 +22,15 @@ export class SimpleOverlay extends Component<any, any> {
     super(props);
     this.state = {
       visible: false,
+      backgroundColor: props.data.backgroundColor || null,
     };
     this.unsubscribe = [];
 
-    this.customContent = null;
+    this.customContent = props.data.content || null;
   }
 
   componentDidMount() {
-    this.unsubscribe.push(core.eventBus.on("showCustomOverlay", (data) => {
-      this.customContent = data.content || null;
-      this.setState({
-        backgroundColor: data.backgroundColor || null,
-        visible: true,
-      });
-    }));
+    this.setState({ visible: true });
     this.unsubscribe.push(core.eventBus.on("hideCustomOverlay", () => {
       this.close();
     }));
@@ -51,7 +47,7 @@ export class SimpleOverlay extends Component<any, any> {
     this.setState({
       visible:false,
       backgroundColor:null
-    });
+    }, () => {  NavigationUtil.closeOverlay(this.props.componentId); });
   }
 
   render() {

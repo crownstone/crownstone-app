@@ -57,9 +57,19 @@ export class TopbarButton extends Component<any, any> {
 
 
 export class TopbarLeftButton extends Component<any, any> {
-
   render() {
     return <TopbarButton {...this.props} alignmentStyle={topBarStyle.topBarLeftTouch}/>
+  }
+}
+
+export class TopbarLeftButtonNav extends Component<any, any> {
+  render() {
+    return <TopbarButton {...this.props} alignmentStyle={{ // backgroundColor:'#ff0',
+      height:barHeight,
+      width:80,
+      alignItems:'flex-start',
+      justifyContent:'center'
+    }}/>
   }
 }
 
@@ -105,6 +115,6 @@ export class TopbarRightButton extends Component<any, any> {
 export class TopbarRightMoreButton extends Component<any, any> {
 
   render() {
-    return <TopbarButton {...this.props} alignmentStyle={topBarStyle.topBarRightTouch} icon={<Icon name={'md-more'} color={colors.white.hex} size={30} style={{paddingRight:5}} />}/>
+    return <TopbarButton {...this.props} alignmentStyle={{ height:barHeight, width:80}} icon={<Icon name={'md-more'} color={colors.white.hex} size={30} />}/>
   }
 }

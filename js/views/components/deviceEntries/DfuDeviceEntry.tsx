@@ -99,7 +99,7 @@ export class DfuDeviceEntry extends Component<any, any> {
 
   performDFU() {
     if (Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
-      NavigationUtil.navigate("DfuIntroduction", { sphereId: this.props.sphereId });
+      NavigationUtil.navigate( "DfuIntroduction", { sphereId: this.props.sphereId });
     }
     else {
       Alert.alert(

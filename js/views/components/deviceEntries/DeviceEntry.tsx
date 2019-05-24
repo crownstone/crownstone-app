@@ -135,7 +135,7 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _basePressed() {
-    NavigationUtil.navigate("DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+    NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
   }
 
   _getIcon(element, stone, state) {

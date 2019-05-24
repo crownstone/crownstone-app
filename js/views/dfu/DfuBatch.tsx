@@ -11,7 +11,7 @@ import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
 import { FadeIn, FadeInView, HiddenFadeInView } from "../components/animated/FadeInView";
 import { Icon } from "../components/Icon";
-import { NavigationEvents } from "react-navigation";
+// import { NavigationEvents } from "react-navigation";
 import KeepAwake from 'react-native-keep-awake';
 import { DfuDeviceUpdaterEntry } from "../components/deviceEntries/DfuDeviceUpdaterEntry";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";

@@ -42,6 +42,7 @@ import { cleanLogs } from "../logging/LogUtil";
 import { migrate } from "./migration/StoreMigration";
 import { CloudPoller } from "../logic/CloudPoller";
 import { UpdateCenter } from "./UpdateCenter";
+import { OverlayManager } from "./OverlayManager";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -437,25 +438,26 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
+    ActivityLogManager.init();
+    BatchUploader.init();
+    BleLogger.init();
+    CloudEventHandler.init();
+    DfuStateHandler.init();
     EncryptionManager.init();
-    MapProvider.init();
+    FirmwareWatcher.init();
     LogProcessor.init();
     LocationHandler.init();
+    KeepAliveHandler.init();
+    MapProvider.init();
+    MessageCenter.init();
+    NotificationHandler.init();
+    OverlayManager.init();
+    Permissions.init();
     Scheduler.init();
     StoneManager.init();
-    DfuStateHandler.init();
     SetupStateHandler.init();
-    KeepAliveHandler.init();
-    FirmwareWatcher.init();
-    NotificationHandler.init();
-    BatchUploader.init();
-    MessageCenter.init();
-    CloudEventHandler.init();
-    Permissions.init();
-    ActivityLogManager.init();
     ToonIntegration.init();
     WatchStateManager.init();
-    BleLogger.init();
   }
 }
 

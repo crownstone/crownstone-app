@@ -117,7 +117,7 @@ text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () 
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-       NavigationUtil.navigate("ApplianceAdd",{
+       NavigationUtil.navigate( "ApplianceAdd",{
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
           callback: (applianceId) => {

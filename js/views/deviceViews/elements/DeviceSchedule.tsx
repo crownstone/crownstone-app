@@ -232,7 +232,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
               );
             }
             else {
-             NavigationUtil.navigate("DeviceScheduleEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
+             NavigationUtil.navigate( "DeviceScheduleEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
             }
         }}>
           { button }

@@ -78,7 +78,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
   _getButton(sampleSize, iconSize, text, roomSize) {
     return (
-      <TouchableOpacity style={buttonStyle} onPress={() => { NavigationUtil.navigate("RoomTraining",{sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
+      <TouchableOpacity style={buttonStyle} onPress={() => { NavigationUtil.navigate( "RoomTraining",{sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
         <View style={iconContainerStyle}>
           <Icon name="md-cube" size={iconSize} color={colors.green.hex} style={{backgroundColor:"transparent"}} />
         </View>

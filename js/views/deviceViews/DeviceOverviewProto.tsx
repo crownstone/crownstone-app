@@ -131,7 +131,7 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
   _updateNavBar() {
     let state = core.store.getState();
     let params = getNavBarParams(core.store, state, this.props);
-    this.props.navigation.setParams(params)
+    // this.props.navigation.setParams(params)
   }
 
 

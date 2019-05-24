@@ -252,11 +252,11 @@ export class DeviceSummary extends LiveComponent<any, any> {
         <View style={{flex:1}} />
         <DeviceMenuIcon icon={'c2-crownstone'} selected={true} callback={() => {}} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon icon={'c1-brain'} selected={false} callback={() => { NavigationUtil.navigate("StoneBehaviour", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
+        <DeviceMenuIcon icon={'c1-brain'} selected={false} callback={() => { NavigationUtil.navigate( "StoneBehaviour", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
         <View style={{flex:1}} />
         <DeviceMenuIcon image={require("../../../images/icons/graph.png")} selected={false} callback={() => {}} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon icon={'ios-settings'} selected={false} callback={() => {NavigationUtil.navigate("DeviceEdit", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
+        <DeviceMenuIcon icon={'ios-settings'} selected={false} callback={() => {NavigationUtil.navigate( "DeviceEdit", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
         <View style={{flex:1}} />
       </View>
     )

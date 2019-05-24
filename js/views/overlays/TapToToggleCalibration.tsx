@@ -21,34 +21,28 @@ import { OverlayBox }                                 from '../components/overla
 import { styles, colors , screenHeight, screenWidth } from '../styles'
 import { core } from "../../core";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class TapToToggleCalibration extends Component<any, any> {
-  unsubscribe : any;
 
   constructor(props) {
     super(props);
 
-    this.state = { visible: false, step:0, tutorial: true, canClose: false};
-    this.unsubscribe = [];
+    this.state = {
+      visible: false,
+      step: props.data.tutorial === false ? 1 : 0,
+      tutorial: props.data.tutorial === undefined ? true : props.data.tutorial,
+      canClose: false};
+
+    let state = core.store.getState();
+    if (state.app.tapToToggleEnabled !== false) {
+      core.eventBus.emit("ignoreTriggers");
+    }
   }
+
 
   componentDidMount() {
-    this.unsubscribe.push(core.eventBus.on("CalibrateTapToToggle", (data : any = {}) => {
-      let state = core.store.getState();
-      if (state.app.tapToToggleEnabled !== false) {
-        core.eventBus.emit("ignoreTriggers");
-        this.setState({
-          visible: true,
-          step: data.tutorial === false ? 1 : 0,
-          tutorial: data.tutorial === undefined ? true  : data.tutorial
-        });
-      }
-    }));
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe.forEach((callback) => {callback()});
-    this.unsubscribe = [];
+    this.setState({ visible: true });
   }
 
 
@@ -189,7 +183,7 @@ export class TapToToggleCalibration extends Component<any, any> {
           props.title =  lang("Done_");
           props.header =  lang("The_new_distance_has_been");
           props.explanation =  lang("Once_you_press_Done_the_n");
-          props.nextCallback = () => {core.eventBus.emit("useTriggers"); this.setState({visible: false})},
+          props.nextCallback = () => {core.eventBus.emit("useTriggers"); this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); })},
           props.nextLabel =  lang("Done")}
         break;
       case 3:
@@ -200,7 +194,7 @@ export class TapToToggleCalibration extends Component<any, any> {
           explanation: lang("Once_the_phone_vibrates__"),
           back: true,
           backCallback: () => {this.setState({step:1});},
-          nextCallback: () => {this.setState({visible: false});},
+          nextCallback: () => {this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });},
           nextLabel: lang("Finish_")};
         break;
     }
@@ -212,7 +206,7 @@ export class TapToToggleCalibration extends Component<any, any> {
         header:  lang("Tap_to_toggle_can_only_be"),
         explanation: lang("Try_it_again_later_when_y"),
         back: false,
-        nextCallback: () => { this.setState({visible: false});},
+        nextCallback: () => { this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });},
         nextLabel: lang("OK")};
     }
 
@@ -274,7 +268,7 @@ export class TapToToggleCalibration extends Component<any, any> {
         [{text:lang("_Training_Tap_to_Toggle_L_left")}])
     }
     core.eventBus.emit("useTriggers");
-    this.setState({visible: false});
+    this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });
   }
 
   render() {

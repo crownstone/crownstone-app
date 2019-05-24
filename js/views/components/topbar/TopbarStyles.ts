@@ -24,7 +24,6 @@ export const topBarStyle = StyleSheet.create({
     // backgroundColor:'#ff0',
     height:barHeight,
     width:80,
-    paddingLeft: 10,
     alignItems:'flex-start',
     justifyContent:'center'
   },
@@ -32,7 +31,6 @@ export const topBarStyle = StyleSheet.create({
     // backgroundColor:'#ff0',
     height:barHeight,
     width:80,
-    paddingRight: 10,
   },
   topBarCenter: {
     textAlign: 'center',

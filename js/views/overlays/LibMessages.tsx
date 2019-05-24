@@ -15,40 +15,21 @@ import {
 import { IconButton }         from '../components/IconButton'
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import {colors, screenHeight, screenWidth, styles} from '../styles'
-import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class LibMessages extends Component<any, any> {
-  unsubscribe : any;
 
   constructor(props) {
     super(props);
 
     this.state = {
       visible: false,
-      header: null,
-      body: null,
-      type: null,
-      buttonText: null,
+      ...props.data
     };
-    this.unsubscribe = [];
   }
 
   componentDidMount() {
-    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.libPopup, (data) => {
-      this.setState({visible: true, ...data});
-    }));
-
-    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.libAlert, (data) => {
-      Alert.alert(
-        lang("arguments___arguments___O_header",data.header),
-        lang("arguments___arguments___O_body",data.body),
-        [{text: data.buttonText || lang("arguments___arguments___O_left")}])
-    }));
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe.forEach((callback) => {callback()});
-    this.unsubscribe = [];
+    this.setState({ visible: true });
   }
 
   render() {
@@ -69,7 +50,7 @@ export class LibMessages extends Component<any, any> {
         </Text>
         <View style={{flex:1}} />
         <TouchableOpacity
-          onPress={() => { this.setState({visible: false}) }}
+          onPress={() => { this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); }) }}
           style={[styles.centered, {
             width: 0.4 * screenWidth,
             height: 36,

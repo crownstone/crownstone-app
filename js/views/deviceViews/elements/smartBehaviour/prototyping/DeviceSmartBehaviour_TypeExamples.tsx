@@ -78,7 +78,7 @@ class BehaviourExample extends Component<{data: AicoreBehaviour | AicoreTwilight
         backgroundColor:colors.white.rgba(0.3),
         width: screenWidth,
         alignItems:'center'}}
-      onPress={() => { NavigationUtil.navigate("DeviceSmartBehaviour_Editor", {...this.props})}}>
+      onPress={() => { NavigationUtil.navigate( "DeviceSmartBehaviour_Editor", {...this.props})}}>
         <View style={{width:screenWidth-20}}>
           <Text style={{
             fontWeight:'500',

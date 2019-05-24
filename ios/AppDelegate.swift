@@ -14,24 +14,13 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var bridge: RCTBridge!
-    
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let jsCodeLocation = RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+        ReactNativeNavigation.bootstrap(jsCodeLocation, launchOptions: launchOptions)
         
-        let rootView = RCTRootView(bundleURL:jsCodeLocation, moduleName: "Crownstone", initialProperties: nil, launchOptions:launchOptions)
-        
-        self.bridge = rootView?.bridge
-        
-        self.window = UIWindow(frame: UIScreen.main.bounds)
         let rootViewController = UIViewController()
-        
         GLOBAL_BLUENET.initController(viewController: rootViewController)
-        
-        rootViewController.view = rootView
-        
-        self.window!.rootViewController = rootViewController;
-        self.window!.makeKeyAndVisible()
         
         RNSplashScreen.show()
         return true

@@ -112,7 +112,7 @@ export class DeviceBehaviourEdit extends LiveComponent<any, any> {
         [{text:lang("_Near_behaviour_disabled__left")},
                   {
         text:lang("_Near_behaviour_disabled__right"), onPress: () => {
-          NavigationUtil.navigate("DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.viewingRemotely});}}
+          NavigationUtil.navigate( "DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.viewingRemotely});}}
         ]);
     }
 

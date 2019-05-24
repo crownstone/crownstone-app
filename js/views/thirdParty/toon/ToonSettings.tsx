@@ -173,7 +173,7 @@ export class ToonSettings extends LiveComponent<any, any> {
     };
 
     return (
-      <Background image={core.background.menu} hasNavBar={false} safeView={false}>
+      <Background image={core.background.menu} hasNavBar={false}>
                 <ScrollView style={{flex:1}}>
           <View style={{flex:1, width: screenWidth, minHeight: screenHeight, alignItems:'center' }}>
             <View style={{height:375, alignItems:'center'}}>

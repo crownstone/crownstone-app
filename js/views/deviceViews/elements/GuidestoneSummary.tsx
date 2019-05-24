@@ -65,7 +65,7 @@ export class GuidestoneSummary extends LiveComponent<any, any> {
         <DeviceInformation
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate("RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate( "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
         />
         <View style={{flex:1}} />
         <View style={{alignItems:'center'}}>

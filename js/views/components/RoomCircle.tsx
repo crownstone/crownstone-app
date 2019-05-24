@@ -420,12 +420,12 @@ class RoomCircleClass extends LiveComponent<any, any> {
         if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
           if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
             handled = true;
-            NavigationUtil.navigate("RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+            NavigationUtil.navigate( "RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
           }
         }
       }
       if (handled === false) {
-        NavigationUtil.navigate("RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+        NavigationUtil.navigate( "RoomOverview",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
       }
     }
     this._clearHold();

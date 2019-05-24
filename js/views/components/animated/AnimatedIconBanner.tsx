@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { FadeInView } from "./FadeInView";
 import { colors, screenWidth } from "../../styles";
 import { Icon } from "../Icon";
-import { NavigationEvents } from "react-navigation";
+// import { NavigationEvents } from "react-navigation";
 
 interface iconData {
   name: string,
@@ -102,10 +102,10 @@ export class AnimatedIconBanner extends Component<
         width: screenWidth, height: this.props.height,
         overflow:'hidden'
       }}>
-        <NavigationEvents
-          onWillFocus={() => { this.start(); }}
-          onWillBlur={ () => { this.stop(); }}
-        />
+        {/*<NavigationEvents*/}
+        {/*  onWillFocus={() => { this.start(); }}*/}
+        {/*  onWillBlur={ () => { this.stop(); }}*/}
+        {/*/>*/}
         { this._getColors() }
         { this._getIcons() }
       </View>

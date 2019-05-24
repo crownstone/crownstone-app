@@ -19,7 +19,7 @@ export const UpdateCenter = {
           label: "Update available!",
           icon: "c1-update-arrow",
           callback: () => {
-            NavigationUtil.navigate("DfuIntroduction", {sphereId: sphereId});
+            NavigationUtil.navigate( "DfuIntroduction", {sphereId: sphereId});
           }
         });
       }

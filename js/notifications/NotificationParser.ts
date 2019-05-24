@@ -30,11 +30,11 @@ class NotificationParserClass {
   _handleLocalNotifications(messageData) {
     switch (messageData.type) {
       case 'newMessage':
-        NavigationUtil.navigate("MessageInbox");
+        NavigationUtil.navigate( "MessageInbox");
 
         // actually go to the message tab
         if (Platform.OS === 'ios') {
-          NavigationUtil.navigate("Messages");
+          NavigationUtil.navigate( "Messages");
         }
 
         break;

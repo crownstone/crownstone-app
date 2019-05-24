@@ -2,6 +2,7 @@ import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings([
   'Module RCTImageLoader requires',
   'Module ToastManager',
+  'Require cycles*',
   'Warning: componentWillUpdate is deprecated',
   'Warning: componentWillMount is deprecated',
   'Warning: componentWillReceiveProps is deprecated',
@@ -11,12 +12,13 @@ YellowBox.ignoreWarnings([
 ])
 
 import 'react-native-gesture-handler'
-import { AppRegistry, Platform } from 'react-native';
-import { Root } from './App';
+import { Platform } from 'react-native';
 
 import { config } from './sentrySettings'
 import { Sentry, SentryLog } from 'react-native-sentry';
-import {USE_SENTRY} from "./js/ExternalConfig";
+import { USE_SENTRY } from "./js/ExternalConfig";
+import { loadRoutes } from "./js/router/Routes";
+import { BackgroundProcessHandler } from "./js/backgroundProcesses/BackgroundProcessHandler";
 
 if (USE_SENTRY) {
   let sentryConfig = {
@@ -46,4 +48,8 @@ if (USE_SENTRY) {
   });
 }
 
-AppRegistry.registerComponent('Crownstone', () => Root);
+
+loadRoutes();
+BackgroundProcessHandler.start();
+
+// AppRegistry.registerComponent('Crownstone', () => Root);

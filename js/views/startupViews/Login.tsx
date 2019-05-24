@@ -40,10 +40,6 @@ import { createNewSphere } from "../../util/CreateSphere";
 
 
 export class Login extends Component<any, any> {
-  static navigationOptions = {
-    header: null
-  };
-
   progress : number;
 
   emailInputRef    = null;
@@ -225,7 +221,7 @@ lang("_Incorrect_Email_or_Passw_body"),
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} safeView={true} hideOrangeBar={true}>
+      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} hideOrangeBar={true}>
         <TopbarImitation leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>
@@ -468,7 +464,7 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
           }
           else {
             core.eventBus.emit("userLoggedInFinished");
-            NavigationUtil.navigate("AppNavigator");
+            NavigationUtil.navigate( "AppNavigator");
           }
         }, 100);
       })

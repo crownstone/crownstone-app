@@ -9,7 +9,6 @@ import {
   Animated,
   View
 } from 'react-native';
-import { SafeAreaView } from 'react-navigation';
 
 import { styles, screenHeight, topBarHeight, tabBarHeight, screenWidth, statusBarHeight, colors } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
@@ -72,7 +71,8 @@ export class AnimatedBackground extends Component<any, any> {
         { this.props.hideOrangeBar !== true ? <NotificationLine notificationsVisible={!this.props.hideNotification} /> : true }
         <View style={{flex:1, overflow:"hidden"}}>
           { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}
-          { this.props.safeView ? <SafeAreaView style={{flex:1}}>{this.props.children}</SafeAreaView> : this.props.children }
+          {this.props.children}
+          {/*{ this.props.safeView ? <SafeAreaView style={{flex:1}}>{this.props.children}</SafeAreaView> : this.props.children }*/}
         </View>
       </View>
     );

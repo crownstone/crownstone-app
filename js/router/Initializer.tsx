@@ -8,6 +8,8 @@ import SplashScreen        from 'react-native-splash-screen'
 import { Splash }          from "../views/startupViews/Splash";
 import { core } from "../core";
 import { NavigationUtil } from "../util/NavigationUtil";
+import { Navigation } from "react-native-navigation";
+import { Stacks } from "./Stacks";
 
 
 export class Initializer extends Component<any, any> {
@@ -31,10 +33,10 @@ export class Initializer extends Component<any, any> {
       }
 
       if (BackgroundProcessHandler.userLoggedIn) {
-        NavigationUtil.navigate("AppBase");
+        NavigationUtil.setRoot(Stacks.loggedIn());
       }
       else {
-        NavigationUtil.navigate("NewUser");
+        NavigationUtil.setRoot(Stacks.newUser());
       }
     };
 

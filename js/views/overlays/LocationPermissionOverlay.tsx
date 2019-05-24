@@ -16,6 +16,7 @@ import { OverlayBox }   from '../components/overlays/OverlayBox'
 import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -25,28 +26,30 @@ export class LocationPermissionOverlay extends Component<any, any> {
 
     this.state = {
       visible: false,
-      notificationType: 'unknown',
+      notificationType: props.status
     };
     this.unsubscribe = [];
   }
 
   componentDidMount() {
+    this.setState({ visible: true });
     this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.locationStatus, (status) => {
       switch (status) {
         case "off":
-          this.setState({visible: true, notificationType: status});
+          this.setState({notificationType: status});
           break;
         case "on":
-          this.setState({visible: false, notificationType: status});
+          this.setState({visible: false, notificationType: status},
+            () => {  NavigationUtil.closeOverlay(this.props.componentId); });
           break;
         case "unknown":
-          this.setState({visible: true, notificationType: status});
+          this.setState({notificationType: status});
           break;
         case "noPermission":
-          this.setState({visible: true, notificationType: status});
+          this.setState({notificationType: status});
           break;
         default: // "unknown":
-          this.setState({visible: true, notificationType: status});
+          this.setState({notificationType: status});
           break;
       }
     }));

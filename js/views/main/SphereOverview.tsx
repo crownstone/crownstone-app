@@ -20,7 +20,6 @@ import {
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
 import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
-import { TopbarButton, TopbarLeftButton, TopbarRightMoreButton } from "../components/topbar/TopbarButton";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
 import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
@@ -31,12 +30,13 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { getStonesAndAppliancesInLocation } from "../../util/DataUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
-import { CancelButton } from "../components/topbar/CancelButton";
 import { xUtil } from "../../util/StandAloneUtil";
 import { AutoArrangeButton } from "./buttons/AutoArrangeButton";
 import { RoomAdd } from "../roomViews/RoomAdd";
 import { CLOUD } from "../../cloud/cloudAPI";
 import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
+import { Navigation } from "react-native-navigation";
+import { refreshOptions } from "../../logic/RefreshOptions";
 
 const ZOOM_LEVELS = {
   sphere: 'sphere',
@@ -44,26 +44,10 @@ const ZOOM_LEVELS = {
 };
 
 export class SphereOverview extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    if (params === undefined) { return }
-
-    let paramsToUse = params;
-    if (!params.title) {
-      if (NAVBAR_PARAMS_CACHE !== null) {
-        paramsToUse = NAVBAR_PARAMS_CACHE;
-      }
-      else {
-        paramsToUse = getNavBarParams(core.store.getState(), params, {}, null);
-      }
-    }
-
-    return {
-      title: paramsToUse.title,
-      headerLeft: paramsToUse.headerLeft,
-      headerRight: paramsToUse.headerRight,
-    };
-  };
+  static options(props) {
+    getNavBarParams(core.store.getState(), props, {}, null);
+    return refreshOptions(NAVBAR_PARAMS_CACHE);
+  }
 
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
@@ -161,9 +145,8 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
   _updateNavBar() {
-    let state = core.store.getState();
-    let params = getNavBarParams(state, this.props, this.state, this.viewId);
-    this.props.navigation.setParams(params);
+    getNavBarParams(core.store.getState(), this.props, this.state, this.viewId);
+    Navigation.mergeOptions(this.props.componentId, refreshOptions(NAVBAR_PARAMS_CACHE))
   }
 
 
@@ -326,7 +309,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     }
     else {
       return (
-        <AnimatedBackground image={background} hasTopBar={false} safeView={true}>
+        <AnimatedBackground image={background} hasTopBar={false}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Icon name="c1-sphere" size={150} color={colors.csBlue.hex}/>
             <Text style={overviewStyles.mainText}>{ lang("No_Spheres_available_") }</Text>
@@ -338,31 +321,28 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 }
 
-
 function getNavBarParams(state, props, viewState, viewId) {
   let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
   LOG.info("UPDATING SPHERE OVERVIEW NAV BAR", viewState.zoomLevel === ZOOM_LEVELS.sphere , (sphereId === null && Object.keys(state.spheres).length > 0));
   if (viewState.arrangingRooms === true) {
     NAVBAR_PARAMS_CACHE = {
       title: lang("Move_rooms_around"),
-      headerLeft: <CancelButton onPress={() => { core.eventBus.emit("reset_positions" + viewId); }} />,
-      headerRight: <TopbarButton text={ lang("Save")} onPress={() => { core.eventBus.emit("save_positions" + viewId); }}
-      />
+      left:  {id: 'cancel', component:'topbarCancelButton', props: {onPress:() => { core.eventBus.emit("reset_positions" + viewId); }}},
+      right: {id: 'save',   component:'topbarButton',       props: {onPress:() => { core.eventBus.emit("save_positions" + viewId);  }, text:lang("Save")}}
     }
   }
   else if (viewState.zoomLevel === ZOOM_LEVELS.sphere || (sphereId === null && Object.keys(state.spheres).length > 0)) {
     NAVBAR_PARAMS_CACHE = {
       title: lang("Sphere_Overview"),
-      headerLeft: null,
-      headerRight: null,
+      left: null,
+      right: null,
     }
   }
   else {
     if (sphereId === null) {
       NAVBAR_PARAMS_CACHE = {
         title: lang("Hello_there_"),
-        headerRight: <TopbarRightMoreButton onPress={() => { NavigationUtil.navigate("SphereEdit") }} />,
-        headerLeft: null
+        right: {id: 'edit', component:'topbarRightMoreButton', props: {onPress:() => { NavigationUtil.launchModal( "SphereEdit")}}}
       }
     }
     else {
@@ -370,16 +350,15 @@ function getNavBarParams(state, props, viewState, viewId) {
 
       NAVBAR_PARAMS_CACHE = {
         title: sphere.config.name,
-        headerLeft: finalizeLocalization.showItem ? <TopbarLeftButton item={<FinalizeLocalizationIcon />} onPress={finalizeLocalization.action} /> : null,
-        headerRight: <TopbarRightMoreButton onPress={() => { NavigationUtil.navigate("SphereEdit", {sphereId: sphereId}) }} />,
+        left: finalizeLocalization.showItem ?
+          {id: 'localization', component:'topbarLeftButton', props: {item: <FinalizeLocalizationIcon />, onPress:finalizeLocalization.action}} : null,
+        right: {id: 'edit', component:'topbarRightMoreButton', props: {onPress:() => { NavigationUtil.launchModal( "SphereEdit", {sphereId:sphereId})}}},
       }
     }
   }
-
-
   return NAVBAR_PARAMS_CACHE;
-
 }
+
 
 let NAVBAR_PARAMS_CACHE = null;
 

@@ -68,7 +68,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     type: 'navigation',
     callback: () => {
       clickCallback();
-      NavigationUtil.navigate("SettingsProfile");
+      NavigationUtil.navigate( "SettingsProfile");
     }
   });
   items.push({
@@ -78,7 +78,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     type: 'navigation',
     callback:() => {
       clickCallback();
-      NavigationUtil.navigate("SettingsPrivacy");
+      NavigationUtil.navigate( "SettingsPrivacy");
     }
   });
   insertExplanation(items, lang("PrivacyLabel"), true);
@@ -93,7 +93,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
   //     mediumIcon: getIcon('md-share', 35, colors.white.hex, colors.menuBackground.hex),
   //     callback: () => {
   //       clickCallback();
-  //       NavigationUtil.navigate("SettingsMeshTopology");
+  //       NavigationUtil.navigate( "SettingsMeshTopology");
   //     }
   //   });
   // }
@@ -106,7 +106,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     mediumIcon: getIcon('ios-cog', 35, colors.white.hex, colors.green.hex),
     callback: () => {
       clickCallback();
-      NavigationUtil.navigate("SettingsApp");
+      NavigationUtil.navigate( "SettingsApp");
     }
   });
 
@@ -142,7 +142,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     mediumIcon: getIcon('md-analytics', 28, colors.white.hex, colors.csBlue.hex),
     callback: () => {
       clickCallback();
-      NavigationUtil.navigate("SettingsDiagnostics");
+      NavigationUtil.navigate( "SettingsDiagnostics");
     }
   });
   items.push({
@@ -153,7 +153,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     callback: () => {
       // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
       clickCallback();
-      NavigationUtil.navigate("SettingsFAQ");
+      NavigationUtil.navigate( "SettingsFAQ");
     }
   });
 

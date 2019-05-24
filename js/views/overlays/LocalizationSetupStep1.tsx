@@ -25,6 +25,7 @@ import Svg,{
   Stop
 } from 'react-native-svg';
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class LocalizationSetupStep1 extends Component<any, any> {
@@ -100,37 +101,8 @@ export class LocalizationSetupStep1 extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(core.eventBus.on("showLocalizationSetupStep1", () => {
-      // we reset the entire state because we might show this video twice.
-      this.setState({
-        innerCirclesAmount: 0.0,
-        outerCircleAmount: 0.0,
-        visible: true,
-        bigHouseSize: 0.35*screenWidth,
-        homeOpacity: new Animated.Value(0),
-        smallHomeOpacity: new Animated.Value(0),
-        textOpacity: new Animated.Value(0),
-        c1_left: new Animated.Value(-0.5*screenWidth),
-        c1_top: new Animated.Value(0),
-        c1_opacity: new Animated.Value(0),
-        c2_left: new Animated.Value(1.5*screenWidth),
-        c2_top: new Animated.Value(0),
-        c2_opacity: new Animated.Value(0),
-        c3_left: new Animated.Value(-0.5*screenWidth),
-        c3_top: new Animated.Value(screenHeight),
-        c3_opacity: new Animated.Value(0),
-        c4_left: new Animated.Value(1.5*screenWidth),
-        c4_top: new Animated.Value(screenHeight),
-        c4_opacity: new Animated.Value(0),
-      });
-      setTimeout(() => {
-        this._startAnimation();
-      }, this.fadeInDuration + 50)
-    }));
-
-    if (this.state.visible === true) {
-      this._startAnimation();
-    }
+    this.setState({ visible: true });
+    this._startAnimation();
   }
 
   componentWillUnmount() {
@@ -344,7 +316,9 @@ export class LocalizationSetupStep1 extends Component<any, any> {
             <View style={{flex:1}} />
             <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Once_youve_added_all_your") }</Text>
               <View style={{flex:1}} />
-              <TouchableOpacity onPress={() => {this.setState({visible: false});}} style={{borderWidth:2, borderRadius:0.04*this.h, borderColor: contentColor, width:0.3*this.w, height:0.08*this.h, justifyContent:'center', alignItems:'center'}}>
+              <TouchableOpacity
+                onPress={() => {this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });}}
+                style={{borderWidth:2, borderRadius:0.04*this.h, borderColor: contentColor, width:0.3*this.w, height:0.08*this.h, justifyContent:'center', alignItems:'center'}}>
                 <Text style={{fontSize: 20, fontWeight:'800', color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("OK_") }</Text>
               </TouchableOpacity>
               <View style={{flex:1}} />

@@ -37,7 +37,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
       <TopbarButton
         text={ lang("Networks")}
         style={{width:100}}
-        onPress={() => { NavigationUtil.navigate("SettingsMeshOverview"); }}
+        onPress={() => { NavigationUtil.navigate( "SettingsMeshOverview"); }}
       />,
       headerTruncatedBackTitle: lang("Back"),
     }
@@ -182,7 +182,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
             <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{ lang("No_Crownstones_in_Sphere_",sphere.config.name) }</Text>
           </View>
           <TouchableOpacity
-            onPress={() => { NavigationUtil.navigate("SettingsMeshTopologyHelp"); }}
+            onPress={() => { NavigationUtil.navigate( "SettingsMeshTopologyHelp"); }}
             style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
             <Icon name={'ios-help-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
           </TouchableOpacity>
@@ -262,7 +262,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
           }}
         />
         <TouchableOpacity
-          onPress={() => { NavigationUtil.navigate("SettingsMeshTopologyHelp"); }}
+          onPress={() => { NavigationUtil.navigate( "SettingsMeshTopologyHelp"); }}
           style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
           <Icon name={'ios-help-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
         </TouchableOpacity>

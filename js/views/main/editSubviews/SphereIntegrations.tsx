@@ -40,13 +40,13 @@ export class SphereIntegrations extends Component<any, any> {
         let sphere = state.spheres[this.props.sphereId];
         let toonIds = Object.keys(sphere.thirdParty.toons);
         if (toonIds.length === 1) {
-          NavigationUtil.navigate("ToonSettings",{sphereId: this.props.sphereId, toonId: toonIds[0]});
+          NavigationUtil.navigate( "ToonSettings",{sphereId: this.props.sphereId, toonId: toonIds[0]});
         }
         else if (toonIds.length > 1) {
-          NavigationUtil.navigate("ToonOverview",{sphereId: this.props.sphereId});
+          NavigationUtil.navigate( "ToonOverview",{sphereId: this.props.sphereId});
         }
         else {
-          NavigationUtil.navigate("ToonAdd",{sphereId: this.props.sphereId});
+          NavigationUtil.navigate( "ToonAdd",{sphereId: this.props.sphereId});
         }
       }
     });
@@ -57,7 +57,7 @@ export class SphereIntegrations extends Component<any, any> {
       type: 'navigation',
       largeIcon: <ScaledImage source={require('../../../images/thirdParty/logo/amazonAlexa.png')} targetWidth={52} targetHeight={52} sourceWidth={264} sourceHeight={265}/>,
       callback: () => {
-       NavigationUtil.navigate("AlexaOverview",{sphereId: this.props.sphereId});
+       NavigationUtil.navigate( "AlexaOverview",{sphereId: this.props.sphereId});
       }
     });
 

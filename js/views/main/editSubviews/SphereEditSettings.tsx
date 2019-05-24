@@ -23,12 +23,22 @@ import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 
 export class SphereEditSettings extends LiveComponent<any, any> {
-  static navigationOptions = ({ navigation }) => {
+  static options(props) {
     return {
-      title: lang("Sphere_Menu"),
-      headerTruncatedBackTitle: lang("Back"),
+      topBar: {
+        title: {text: lang("Sphere_Menu")},
+        leftButtons: [{
+          id: 'back',
+          component: {
+            name:'topbarLeftButton',
+            passProps: {
+              text: lang("Back"), onPress:() => { NavigationUtil.dismissModal(); }
+            }
+          },
+        }],
+      }
     }
-  };
+  }
 
   deleting : boolean;
   validationState : any;
@@ -122,7 +132,7 @@ lang("_Sphere_name_must_be_at_l_body"),
       type: spherePermissions.editSphere ? 'navigation' : 'info',
       icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
-        NavigationUtil.navigate("AiStart", {sphereId: this.props.sphereId, canGoBack: true});
+        NavigationUtil.navigate( "AiStart", {sphereId: this.props.sphereId, canGoBack: true});
       }
     });
     items.push({label: lang("_will_do__very_best_help_",ai.name,ai.his),  type:'explanation', style:{paddingBottom:0}, below:true});
@@ -136,7 +146,7 @@ lang("_Sphere_name_must_be_at_l_body"),
       callback: () => {
         NavigationUtil.back();
         setTimeout(() => { core.eventBus.emit("highlight_nav_field", "sphereEdit_users");}, 200);
-        setTimeout(() => { NavigationUtil.navigate("SphereUserOverview",{sphereId: this.props.sphereId}); }, 500);
+        setTimeout(() => { NavigationUtil.navigate( "SphereUserOverview",{sphereId: this.props.sphereId}); }, 500);
       }
     });
 

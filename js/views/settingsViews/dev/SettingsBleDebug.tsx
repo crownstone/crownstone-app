@@ -64,7 +64,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
       subtextStyle: {color:locationColor},
       type: 'navigation',
       callback: () => {
-        NavigationUtil.navigate("SettingsStoneBleDebug",{sphereId: sphereId, stoneId: stoneId});
+        NavigationUtil.navigate( "SettingsStoneBleDebug",{sphereId: sphereId, stoneId: stoneId});
       },
     });
   }

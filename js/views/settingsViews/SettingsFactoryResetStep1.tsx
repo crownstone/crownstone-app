@@ -30,7 +30,7 @@ export class SettingsFactoryResetStep1 extends Component<any, any> {
   render() {
     let imageSize = 0.40;
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark} safeView={true}>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
                 <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>{ lang("If_youre_physically_next_") }</Text>
           <View style={setupStyle.lineDistance} />
@@ -43,7 +43,7 @@ export class SettingsFactoryResetStep1 extends Component<any, any> {
           <View style={setupStyle.buttonContainer}>
             <View style={{flex:1}} />
             <NextButton onPress={ () => {
-              NavigationUtil.navigate("SettingsFactoryResetStep2");
+              NavigationUtil.navigate( "SettingsFactoryResetStep2");
               // trigger to start the process
               setTimeout(() => { core.eventBus.emit("StartFactoryResetProcess"); }, 1000)
             }} />

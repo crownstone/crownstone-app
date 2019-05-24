@@ -54,7 +54,7 @@ export class DeviceWhatsNew extends Component<any, any> {
       case '2.0.0':
       case '2.0.1':
         this._clearFlag(firmwareVersion);
-        return NavigationUtil.navigate("DeviceEdit",{ sphereId: this.props.sphereId, stoneId: this.props.stoneId });
+        return NavigationUtil.navigate( "DeviceEdit",{ sphereId: this.props.sphereId, stoneId: this.props.stoneId });
 
       default:
 

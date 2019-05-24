@@ -64,7 +64,6 @@ export class Register extends LiveComponent<any, any> {
     // clean up any pictures that were taken
     this._removeUnusedPictures();
     this._removePicture(this.user.picture);
-    NavigationUtil.back();
   }
 
   _removeUnusedPictures() {
@@ -344,7 +343,7 @@ export class Register extends LiveComponent<any, any> {
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : "Back"}
-          leftAction={() => { if (this._interview.back() === false) {NavigationUtil.back();} }}
+          leftAction={() => { if (this._interview.back() === false) { this.cancelEdit(); NavigationUtil.back();} }}
           leftButtonStyle={{width: 300}}
           style={{backgroundColor:'transparent', paddingTop:0}}
         />

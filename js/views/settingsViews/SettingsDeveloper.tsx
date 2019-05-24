@@ -86,7 +86,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         type: 'navigation',
         icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         callback: () => {
-          NavigationUtil.navigate("SettingsLogging");
+          NavigationUtil.navigate( "SettingsLogging");
         }
       });
       items.push({
@@ -195,14 +195,14 @@ lang("_No_device_Id___There_was_body"),
       type: 'navigation',
       icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightBlue2.hex}} />,
       callback:() => {
-        NavigationUtil.navigate("SettingsBleDebug");
+        NavigationUtil.navigate( "SettingsBleDebug");
       }});
     items.push({
       label: lang("Localization_Debug"),
       type: 'navigation',
       icon: <IconButton name="md-locate" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback:() => {
-        NavigationUtil.navigate("SettingsLocalizationDebug");
+        NavigationUtil.navigate( "SettingsLocalizationDebug");
       }});
 
     items.push({label: lang("ACTIVITY_LOGS"), type: 'explanation'});
@@ -269,7 +269,7 @@ lang("_No_device_Id___There_was_body"),
       type: 'navigation',
       icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
       callback:() => {
-        NavigationUtil.navigate("SettingsMeshDebug");
+        NavigationUtil.navigate( "SettingsMeshDebug");
       }});
     items.push({
       label: lang("Show_RSSI_in_Topology"),
@@ -308,7 +308,7 @@ lang("_Reset_Done__Rediscovery__body"),
       type: 'navigation',
       icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueDark.hex}} />,
       callback:() => {
-        NavigationUtil.navigate("SettingsMeshTopology");
+        NavigationUtil.navigate( "SettingsMeshTopology");
       }});
 
     if (user.betaAccess) {

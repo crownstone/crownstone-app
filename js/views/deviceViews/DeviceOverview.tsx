@@ -182,7 +182,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
   _updateNavBar(swiperIndex, scrolling) {
     let state = core.store.getState();
     let params = getNavBarParams(core.store, state, this.props, swiperIndex, scrolling);
-    this.props.navigation.setParams(params)
+    // this.props.navigation.setParams(params)
   }
 
 
@@ -298,6 +298,8 @@ export class DeviceOverview extends LiveComponent<any, any> {
       content.push(<DeviceSummary key={'summarySlide'}  {...props} />);
     }
 
+    return content
+
     if (hasBehaviour) {
       content.push(<DeviceBehaviour key={'behaviourSlide'} {...props} />);
     }
@@ -362,7 +364,7 @@ function getNavBarParams(store, state, props, swiperIndex, scrolling) {
     case summaryIndex:
       if (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) {
         rightLabel =  lang("Edit");
-        rightAction = () => { NavigationUtil.navigate("DeviceEdit",{sphereId: props.sphereId, stoneId: props.stoneId});};
+        rightAction = () => { NavigationUtil.navigate( "DeviceEdit",{sphereId: props.sphereId, stoneId: props.stoneId});};
       }
       break;
     case behaviourIndex:
@@ -375,7 +377,7 @@ lang("_Crownstone_is_Locked___Y_body"),
 [{text:lang("_Crownstone_is_Locked___Y_left")}])};
         }
         else {
-          rightAction = () => { NavigationUtil.navigate("DeviceBehaviourEdit",{sphereId: props.sphereId, stoneId: props.stoneId}); }
+          rightAction = () => { NavigationUtil.navigate( "DeviceBehaviourEdit",{sphereId: props.sphereId, stoneId: props.stoneId}); }
         }
       }
       break;

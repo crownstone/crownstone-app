@@ -36,9 +36,16 @@ import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { Navigation } from "react-native-navigation";
+import { refreshOptions } from "../../logic/RefreshOptions";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
+  static options(props) {
+    getNavBarParams(core.store.getState(), props, true);
+    return refreshOptions(NAVBAR_PARAMS_CACHE);
+  }
+
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
@@ -224,9 +231,8 @@ export class RoomOverview extends LiveComponent<any, any> {
 
 
   _updateNavBar() {
-    let state = core.store.getState();
-    let params = getNavBarParams(state, this.props, this.viewingRemotely);
-    this.props.navigation.setParams(params);
+    getNavBarParams(core.store.getState(), this.props, this.viewingRemotely);
+    Navigation.mergeOptions(this.props.componentId, refreshOptions(NAVBAR_PARAMS_CACHE))
   }
 
 
@@ -340,7 +346,7 @@ function getNavBarParams(state, props, viewingRemotely) {
 
   if (spherePermissions.editRoom === true) {
     rightAction = () => {
-      NavigationUtil.navigate("RoomEdit",{ sphereId: props.sphereId, locationId: props.locationId });
+      NavigationUtil.launchModal( "RoomEdit",{ sphereId: props.sphereId, locationId: props.locationId });
     };
   }
   else if (spherePermissions.editRoom === false && enoughCrownstonesInLocations === true) {
@@ -352,14 +358,15 @@ function getNavBarParams(state, props, viewingRemotely) {
           [{text:lang("_Youre_not_in_the_Sphere__left")}])
       }
       else {
-        NavigationUtil.navigate("RoomTraining_roomSize",{ sphereId: props.sphereId, locationId: props.locationId });
+        NavigationUtil.launchModal( "RoomTraining_roomSize",{ sphereId: props.sphereId, locationId: props.locationId });
       }
     };
   }
 
-
-
-  NAVBAR_PARAMS_CACHE = {title: title, headerRight: <TopbarRightMoreButton onPress={rightAction} />};
+  NAVBAR_PARAMS_CACHE = {
+    title: title,
+    right: {id: 'edit', component:'topbarRightMoreButton', props: {onPress:rightAction}}
+  };
   return NAVBAR_PARAMS_CACHE;
 }
 

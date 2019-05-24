@@ -18,7 +18,7 @@ import { FadeIn, FadeInView, HiddenFadeInView } from "../components/animated/Fad
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Icon } from "../components/Icon";
 import { TopbarBackButton, TopbarButton } from "../components/topbar/TopbarButton";
-import { NavigationEvents } from "react-navigation";
+// import { NavigationEvents } from "react-navigation";
 import KeepAwake from 'react-native-keep-awake';
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Scheduler } from "../../logic/Scheduler";
@@ -52,13 +52,13 @@ export class DfuScanning extends Component<any, any> {
     this.visibleStones = {};
 
     this.stoneUpdateData = DfuUtil.getUpdatableStones(this.props.sphereId);
-    this.props.navigation.setParams({onRight: () => { this.next() }});
+    // this.props.navigation.setParams({onRight: () => { this.next() }});
 
     this.visibleDrawnStones = [];
   }
 
   next() {
-    NavigationUtil.navigate("DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})
+    NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})
   }
 
   componentDidMount() {
@@ -210,10 +210,10 @@ export class DfuScanning extends Component<any, any> {
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotification={true}>
         <KeepAwake />
-        <NavigationEvents
-          onWillFocus={() => { this.startScanning(); }}
-          onWillBlur={ () => { this.stopScanning(); }}
-        />
+        {/*<NavigationEvents*/}
+        {/*  onWillFocus={() => { this.startScanning(); }}*/}
+        {/*  onWillBlur={ () => { this.stopScanning(); }}*/}
+        {/*/>*/}
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <ScanningForDFUCrownstonesBanner height={110} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>

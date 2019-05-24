@@ -49,7 +49,7 @@ export class ApplianceAdd extends Component<any, any> {
     this.state = {name:'', icon: getRandomC1Name(), selectedStones: {}};
     this.refName = "listItems";
 
-    this.props.navigation.setParams({rightAction: () => { this.createDevice();}})
+    // this.props.navigation.setParams({rightAction: () => { this.createDevice();}})
   }
 
   _getItems() {
@@ -59,7 +59,7 @@ export class ApplianceAdd extends Component<any, any> {
       this.setState({name:newText});
     }});
     items.push({label: lang("Icon"), type: 'icon', value: this.state.icon, callback: () => {
-       NavigationUtil.navigate("DeviceIconSelection",{
+       NavigationUtil.navigate( "DeviceIconSelection",{
           icon: this.state.icon,
           callback: (newIcon) => { this.setState({icon:newIcon}); }
         }

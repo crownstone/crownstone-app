@@ -14,10 +14,11 @@ import {
   View, ScrollView
 } from "react-native";
 
-import { HiddenFadeInView }   from './animated/FadeInView'
-import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
-import { styles, screenHeight, screenWidth, tabBarMargin } from "./../styles";
+import { HiddenFadeInView }   from '../components/animated/FadeInView'
+import { SlideInFromBottomView }  from '../components/animated/SlideInFromBottomView'
+import { styles, screenHeight, screenWidth, tabBarMargin } from "../styles";
 import { core } from "../../core";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 
 export class OptionPopup extends Component<any, any> {
@@ -26,19 +27,19 @@ export class OptionPopup extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      title: null,
+      title: props.data.title || null,
       visible: false,
-      buttons: [],
+      buttons: props.data.buttons,
     };
     this.unsubscribe = [];
   }
 
   componentDidMount() {
-    this.unsubscribe.push(core.eventBus.on('showPopup', (data) => {
-      Keyboard.dismiss();
-      this.setState({title: data.title || null, buttons:data.buttons, visible:true});
+    this.setState({visible: true})
+    Keyboard.dismiss();
+    this.unsubscribe.push(core.eventBus.on('hidePopup', () => {
+      this.setState({visible:false}, () => { NavigationUtil.closeOverlay(this.props.componentId); });
     }));
-    this.unsubscribe.push(core.eventBus.on('hidePopup', () => {this.setState({visible:false})}));
   }
 
   componentWillUnmount() {
@@ -53,7 +54,7 @@ export class OptionPopup extends Component<any, any> {
     let buttons = [];
     this.state.buttons.forEach((button, index) => {
       buttons.push(
-        <TouchableOpacity style={styles.joinedButtons} onPress={() => {core.eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
+        <TouchableOpacity style={styles.joinedButtons} onPress={() => { core.eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
           <Text style={styles.buttonText}>{button.text}</Text>
         </TouchableOpacity>
       );

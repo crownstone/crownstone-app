@@ -160,7 +160,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
         label: lang("Developer_Menu"),
         icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
         type: 'navigation',
-        callback:() => { NavigationUtil.navigate("SettingsDeveloper"); }
+        callback:() => { NavigationUtil.navigate( "SettingsDeveloper"); }
       });
       items.push({type: 'spacer'});
     }

@@ -122,7 +122,7 @@ export class ForceDirectedView extends Component<{
   }
 
   _convertToScreenSpace(x,y) {
-    let convertedY = y - (screenHeight - this.frameHeight - tabBarHeight);
+    let convertedY = y - (this.props.height - this.frameHeight);
 
     // center of the view in absolute coordinates
     let cx = 0.5*screenWidth;

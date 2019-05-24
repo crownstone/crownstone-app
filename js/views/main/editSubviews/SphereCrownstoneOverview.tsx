@@ -14,7 +14,6 @@ import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {DeviceEntry} from "../../components/deviceEntries/DeviceEntry";
-import {addCrownstoneExplanationAlert} from "../AddItemsToSphere";
 import {Icon} from "../../components/Icon";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
@@ -119,9 +118,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
       type: 'button',
       callback: () => {
         if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
-          addCrownstoneExplanationAlert(() => {
-            NavigationUtil.reset("AppNavigator");
-          });
+          NavigationUtil.navigate("AddCrownstone", {sphereId: this.props.sphereId});
         }
         else {
           Alert.alert(

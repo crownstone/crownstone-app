@@ -59,7 +59,7 @@ export class MessageAdd extends Component<any, any> {
     };
 
     this.state.recipients[EVERYONE_IN_SPHERE] = true;
-    this.props.navigation.setParams({rightAction: () => { this._createMessage();}})
+    // this.props.navigation.setParams({rightAction: () => { this._createMessage();}})
   }
 
   _createMessage() {
@@ -207,7 +207,7 @@ lang("_No_recipients____I_cant__body"),
         type: 'navigation',
         icon:  <IconButton name={userData[1].icon} size={24} buttonSize={34} radius={17} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/>,
         callback: () => {
-         NavigationUtil.navigate("SelectFromList",{items: userData, title: lang("Recipients"), callback: (selection) => {
+         NavigationUtil.navigate( "SelectFromList",{items: userData, title: lang("Recipients"), callback: (selection) => {
             this.setState({recipients: selection});
           }});
         }
@@ -232,7 +232,7 @@ lang("_No_recipients____I_cant__body"),
         type: 'navigation',
         icon: <IconButton name='ios-body' size={23} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/>,
         callback: () => {
-         NavigationUtil.navigate("SelectFromList",{items: userData, title: lang("Recipients"), callback: (selection) => {
+         NavigationUtil.navigate( "SelectFromList",{items: userData, title: lang("Recipients"), callback: (selection) => {
             this.setState({recipients: selection});
           }});
         }
@@ -266,7 +266,7 @@ lang("_No_recipients____I_cant__body"),
 
     // show locations
     let selectLocation = () => {
-     NavigationUtil.navigate("SelectFromList",{items: locationItems , title: lang("Leave_where_"), submitOnSelect: true, callback: (selection) => {
+     NavigationUtil.navigate( "SelectFromList",{items: locationItems , title: lang("Leave_where_"), submitOnSelect: true, callback: (selection) => {
         let selectedIds = Object.keys(selection);
         if (selectedIds.length > 0) {
           this.setState({triggerLocationId: Object.keys(selection)[0]});

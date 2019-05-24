@@ -220,7 +220,7 @@ export class DiagSingleButtonMeshTopology extends Component<{
         header={ this.props.header }
         explanation={ this.props.explanation }
         label={ lang("To_Mesh_Topology")}
-        onPress={() => { NavigationUtil.navigate("SettingsMeshTopology"); }}
+        onPress={() => { NavigationUtil.navigate( "SettingsMeshTopology"); }}
       />
     );
   }
@@ -302,7 +302,7 @@ export class DiagSingleBleTroubleshooter extends Component<{
         header={ this.props.header }
         explanation={ this.props.explanation }
         label={ lang("Open_Troubleshooter")}
-        onPress={() => { NavigationUtil.navigate("SettingsBleTroubleshooting"); }}
+        onPress={() => { NavigationUtil.navigate( "SettingsBleTroubleshooting"); }}
       />
     );
   }
@@ -321,7 +321,7 @@ export class DiagSingleButtonHelp extends Component<{
         header={ this.props.header }
         explanation={ this.props.explanation }
         label={ lang("To_Help_screen")}
-        onPress={() => { NavigationUtil.navigate("SettingsFAQ"); }}
+        onPress={() => { NavigationUtil.navigate( "SettingsFAQ"); }}
       />
     );
   }

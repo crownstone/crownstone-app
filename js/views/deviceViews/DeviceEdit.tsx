@@ -89,7 +89,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
       refreshingStoneVersions: false
     };
 
-    this.props.navigation.setParams({rightAction: () => { this._updateCrownstone();}})
+    // this.props.navigation.setParams({rightAction: () => { this._updateCrownstone();}})
   }
 
   componentDidMount() {
@@ -143,7 +143,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
         type: 'icon',
         value: this.state.applianceIcon,
         callback: () => {
-         NavigationUtil.navigate("DeviceIconSelection",{
+         NavigationUtil.navigate( "DeviceIconSelection",{
             icon: this.state.applianceIcon,
             callback: (newIcon) => {
               this.setState({applianceIcon: newIcon})
@@ -247,7 +247,7 @@ lang("_Permission_Required__Onl_body"),
             label: lang("Enable_Switchcraft"),
             type: 'switch',
             experimental: true, hasHelp: true, onHelp: () => {
-             NavigationUtil.navigate("SwitchCraftInformation()")
+             NavigationUtil.navigate( "SwitchCraftInformation()")
             },
             icon: <IconButton name="md-power" size={22} button={true} color="#fff"
                               buttonStyle={{backgroundColor: colors.purple.hex}}/>,
@@ -287,7 +287,7 @@ lang("_Permission_Required__Onl_body"),
       items.push({label: lang("SELECT_WHICH_DEVICE_TYPE_"), type: 'explanation', below: false, style:{paddingTop:0}});
       items.push({
         label: lang("Select___"), type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
-         NavigationUtil.navigate("ApplianceSelection",{
+         NavigationUtil.navigate( "ApplianceSelection",{
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             applianceId: this.state.applianceId,

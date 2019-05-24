@@ -224,7 +224,7 @@ text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); 
           ai={ai}
           next={() => {
             this.setState({phase:1});
-            this.props.navigation.setParams({topBarSettings:{leftAction: cancelMethod }});
+            // this.props.navigation.setParams({topBarSettings:{leftAction: cancelMethod }});
             this.start();
           }}
           sampleSize={this.props.sampleSize}
@@ -239,7 +239,7 @@ text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); 
           ai={ai}
           next={() => {
             this.setState({phase:2});
-            this.props.navigation.setParams({topBarSettings:{title: lang("All_Done_"), leftAction: undefined }})
+            // this.props.navigation.setParams({topBarSettings:{title: lang("All_Done_"), leftAction: undefined }})
           }}
           progress={this.state.progress}
           opacity={this.state.opacity}
