@@ -48,6 +48,7 @@ if (USE_SENTRY) {
   });
 }
 
+console.log("STARTING APP FOR SOME REASON")
 
 loadRoutes();
 BackgroundProcessHandler.start();

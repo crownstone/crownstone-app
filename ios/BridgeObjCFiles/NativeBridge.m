@@ -133,5 +133,12 @@ RCT_EXTERN_METHOD(setCrownstoneNames:(NSDictionary *)names)
 // Setup
 RCT_EXTERN_METHOD(setupPulse:(RCTResponseSenderBlock)callback)
 
+
+// events
+RCT_EXTERN_METHOD(subscribeToNearest)
+RCT_EXTERN_METHOD(unsubscribeNearest)
+RCT_EXTERN_METHOD(subscribeToUnverified)
+RCT_EXTERN_METHOD(unsubscribeUnverified)
+
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end

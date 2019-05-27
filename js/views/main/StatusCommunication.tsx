@@ -42,10 +42,10 @@ export class StatusCommunication extends LiveComponent<any, any> {
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
+
       if (
-        (change.changeStoneState && change.changeStoneState.sphereIds[this.props.sphereId]) ||
-        (change.stoneRssiUpdated && change.stoneRssiUpdated.sphereIds[this.props.sphereId])
-      ) {
+        (change.changeStoneState && change.changeStoneState.sphereIds[this.props.sphereId])
+         ) {
         const store = core.store;
         const state = store.getState();
         if (!(state && state.spheres && state.spheres[this.props.sphereId])) { return }

@@ -475,7 +475,7 @@ class SchedulerClass {
   }
 
   _addActionIfDispatch(actionsToDispatch, action, currentState) {
-    if (action.updatedAt > currentState.updatedAt || action.type === 'UPDATE_STONE_RSSI') {
+    if (action.updatedAt > currentState.updatedAt) {
       actionsToDispatch.push(action);
     }
   }

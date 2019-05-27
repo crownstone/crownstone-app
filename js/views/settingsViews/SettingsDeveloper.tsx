@@ -37,7 +37,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   componentDidMount() {
     this.unsubscribe.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings || change.stoneRssiUpdated) {
+      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings) {
         this.forceUpdate();
       }
     }));

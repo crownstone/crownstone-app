@@ -98,10 +98,8 @@ export class RoomOverview extends LiveComponent<any, any> {
         (change.updateStoneConfig)     ||
         (change.changeFingerprint)     ||
         (change.changeSphereUsers      && change.changeSphereUsers.sphereIds[this.props.sphereId])     ||
-        (change.stoneRssiUpdated       && change.stoneRssiUpdated.sphereIds[this.props.sphereId])      ||
         (change.stoneUsageUpdated      && change.stoneUsageUpdated.sphereIds[this.props.sphereId])     ||
         (change.changeSphereState      && change.changeSphereState.sphereIds[this.props.sphereId])     ||
-        (change.changeStoneState       && change.changeStoneState.sphereIds[this.props.sphereId])      ||
         (change.stoneLocationUpdated   && change.stoneLocationUpdated.sphereIds[this.props.sphereId])  ||
         (change.changeStones)
       ) {

@@ -14,7 +14,7 @@ import { Scheduler }                from '../../logic/Scheduler';
 import {LOG, LOGe} from '../../logging/Log';
 import { Util }                     from '../../util/Util';
 import { KEEPALIVE_INTERVAL } from '../../ExternalConfig';
-import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
+import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil';
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
@@ -163,12 +163,6 @@ class LocationHandlerClass {
       LOG.info('Applying EXIT SPHERE');
       // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);
-
-      // clear all rssi's
-      clearRSSIs(core.store, sphereId);
-
-      // disable all crownstones
-      disableStones(core.store, sphereId);
 
       // check if you are present in any sphere. If not, stop scanning (BLE, not iBeacon).
       let presentSomewhere = false;

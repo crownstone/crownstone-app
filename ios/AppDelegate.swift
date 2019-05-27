@@ -11,30 +11,29 @@ import UserNotifications
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
-    func sourceURL(for bridge: RCTBridge!) -> URL! {
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
         #if DEBUG
             print("DEBUG")
-            return RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+            let jsBundleUrl =  RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
         #else
             print("RELEASE")
-            return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
+            let jsBundleUrl =  Bundle.main.url(forResource: "main", withExtension: "jsbundle")
         #endif
-
-    }
-    
-    var window: UIWindow?
-    var bridge: RCTBridge!
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        self.bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
         
-        ReactNativeNavigation.bootstrap(self.sourceURL(for: self.bridge), launchOptions: launchOptions)
-        
+        print("Bootstrapping the RNN")
+        ReactNativeNavigation.bootstrap(jsBundleUrl!, launchOptions: launchOptions)
+        print("INIT BLUENET")
         let rootViewController = UIViewController()
         GLOBAL_BLUENET.initController(viewController: rootViewController)
         
+        print("SHOW SPLASH")
         RNSplashScreen.show()
+        print("DONE")
+        
         return true
     }
     

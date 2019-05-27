@@ -27,7 +27,7 @@ export class ScaledImage extends Component<{source: any, targetWidth?: number, t
     }
 
     return (
-      <Image source={this.props.source} style={[{width: width, height: height}, this.props.style]} />
+      <Image source={this.props.source} style={[{width: width, height: height, resizeMode:'center'}, this.props.style]} />
     );
   }
 }

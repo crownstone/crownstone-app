@@ -76,7 +76,7 @@ export class AddItemsToSphere extends Component<any, any> {
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row', alignItems:'center'}}>
               <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
-                NavigationUtil.navigate("RoomAdd", { sphereId: this.props.sphereId });
+                NavigationUtil.launchModal("RoomAdd", { sphereId: this.props.sphereId });
               }} />
               <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} callback={() => {
                 NavigationUtil.launchModal("AddCrownstone", {sphereId: this.props.sphereId});
@@ -84,10 +84,11 @@ export class AddItemsToSphere extends Component<any, any> {
             </View>
             <View  style={{flexDirection:'row'}}>
               <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => {
-                NavigationUtil.navigate("SphereUserInvite",{sphereId: this.props.sphereId});
+                NavigationUtil.launchModal("SphereUserInvite",{sphereId: this.props.sphereId});
               }} />
               <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => {
-                // NavigationUtil.navigate("SphereEdit","SphereIntegrations",{sphereId: this.props.sphereId})
+                NavigationUtil.launchModal("SphereEdit",{sphereId: this.props.sphereId})
+                NavigationUtil.launchModal("SphereIntegrations",{sphereId: this.props.sphereId})
               }} />
             </View>
           </View>

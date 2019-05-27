@@ -713,41 +713,11 @@ export const prepareStoreForUser = function() {
 
     stoneIds.forEach((stoneId) => {
       actions.push({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId});
-      actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
     });
   });
 
   core.store.batchDispatch(actions);
 };
-
-
-
-export const clearRSSIs = function(store, sphereId) {
-  const state = store.getState();
-  let actions = [];
-  let stones = state.spheres[sphereId].stones;
-  let stoneIds = Object.keys(stones);
-
-  stoneIds.forEach((stoneId) => {
-    actions.push({type:'UPDATE_STONE_RSSI', sphereId:sphereId, stoneId:stoneId, data: { rssi: -1000 }});
-  });
-
-  store.batchDispatch(actions);
-};
-
-export const disableStones = function(store, sphereId) {
-  const state = store.getState();
-  let actions = [];
-  let stones = state.spheres[sphereId].stones;
-  let stoneIds = Object.keys(stones);
-
-  stoneIds.forEach((stoneId) => {
-    actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
-  });
-
-  store.batchDispatch(actions);
-};
-
 
 
 export const canUseIndoorLocalizationInSphere = function (state, sphereId) {

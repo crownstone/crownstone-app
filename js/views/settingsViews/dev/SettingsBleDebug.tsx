@@ -30,7 +30,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
   componentDidMount() {
     this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if (change.stoneRssiUpdated || change.changeSpheres || change.updateActiveSphere) {
+      if (change.changeSpheres || change.updateActiveSphere) {
         this.forceUpdate();
       }
     });

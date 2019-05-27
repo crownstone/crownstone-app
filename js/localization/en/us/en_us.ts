@@ -2842,6 +2842,7 @@ export default {
     Create:                              function() { return "Create" },
     Cancel:                              function() { return "Cancel" },
     Save:                                function() { return "Save" },
+    Edit:                                function() { return "Edit" },
     Next:                                function() { return "Next" },
     Back:                                function() { return "Back" },
     DAY_Mon:                             function() { return "Mon"},

@@ -151,8 +151,6 @@ function checkAction(action, affectedIds) {
       eventStatus['changeSphereUserPresence'] = affectedIds; break;
     case 'UPDATE_STONE_HANDLE':
       eventStatus['changeStoneHandle'] = affectedIds; break;
-    case 'UPDATE_STONE_DISABILITY':
-      eventStatus['changeStoneState'] = affectedIds; break;
     case 'ADD_STONE':
       eventStatus['addStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
@@ -182,8 +180,6 @@ function checkAction(action, affectedIds) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
       eventStatus['updateStoneBehaviour'] = affectedIds; break;
-    case "UPDATE_STONE_RSSI":
-      eventStatus['stoneRssiUpdated'] = affectedIds; break;
     case 'ADD_STONE_SCHEDULE':
     case 'REMOVE_STONE_SCHEDULE':
       eventStatus['changeStoneSchedule'] = affectedIds;

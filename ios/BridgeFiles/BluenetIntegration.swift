@@ -1325,7 +1325,7 @@ open class BluenetJS: RCTEventEmitter {
   @objc func subscribeToNearest() {
      if GLOBAL_BLUENET.subscribedToNearest() { return }
     
-    GLOBAL_BLUENET.bluenetOnNearest("		", {data -> Void in
+    GLOBAL_BLUENET.bluenetOnNearest("nearestSetupCrownstone", {data -> Void in
       if let castData = data as? NearestItem {
         self.sendEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
       }

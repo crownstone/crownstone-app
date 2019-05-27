@@ -62,7 +62,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
           change.changeStoneState       && change.changeStoneState.stoneIds[this.props.stoneId] ||
           change.powerUsageUpdated      && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
           change.updateStoneConfig      && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
-          applianceId && change.updateApplianceConfig    && change.updateApplianceConfig.applianceIds[applianceId]
+          applianceId && change.updateApplianceConfig && change.updateApplianceConfig.applianceIds[applianceId]
         )
       ) {
         this.forceUpdate();
