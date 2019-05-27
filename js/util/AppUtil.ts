@@ -15,6 +15,7 @@ import { Sentry } from "react-native-sentry";
 import {Scheduler} from "../logic/Scheduler";
 import { core } from "../core";
 import { NavigationUtil } from "./NavigationUtil";
+import { Stacks } from "../router/Stacks";
 
 export const AppUtil = {
   quit: function() {
@@ -123,7 +124,7 @@ export const AppUtil = {
     // clear position for this device.
     let state = store.getState();
     let deviceId = Util.data.getCurrentDeviceId(state);
-    NavigationUtil.logout();
+    NavigationUtil.setRoot(Stacks.logout());
 
     // clear all events listeners, should fix a lot of redraw issues which will crash at logout
     core.eventBus.clearAllEvents();

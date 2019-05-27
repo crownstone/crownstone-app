@@ -124,6 +124,50 @@ class NavStateManager {
     this.overlayName = {};
   }
 
+  backTo(name) : string {
+    let targetId = null;
+    let spliceTarget = null;
+    if (this.modals.length > 0) {
+      let toplevelModal = this.modals[this.modals.length -1];
+
+      for (let i = toplevelModal.length -1; i >= 0; i--) {
+        if (toplevelModal[i].name === name) {
+          targetId = toplevelModal[i].id;
+          spliceTarget = i;
+          break;
+        }
+      }
+
+      if (spliceTarget !== null) {
+        this.modals[this.modals.length - 1].splice(spliceTarget)
+      }
+    }
+    else {
+      if (this.views.length > 0) {
+        for (let i = this.views.length -1; i >= 0; i--) {
+          if (this.views[i].name === name) {
+            targetId = this.views[i].id;
+            spliceTarget = i;
+            break;
+          }
+        }
+
+        if (spliceTarget !== null) {
+          this.views.splice(spliceTarget)
+        }
+      }
+      else {
+        console.log("Maybe something is wrong?")
+      }
+    }
+
+    if (targetId !== null) {
+      this._getId();
+    }
+
+    return targetId;
+  }
+
 }
 
 
@@ -217,75 +261,10 @@ export const NavigationUtil = {
     NavState.pop();
   },
 
-
   backTo(target) {
-
+    let componentId = NavState.backTo(target);
+    if (componentId) {
+      Navigation.popTo(componentId)
+    }
   },
-
-  backToTop() {
-    setTimeout(() => {
-      const navigateAction = NavigationActions.back();
-      navigationStore.dispatch(navigateAction);
-    })
-  },
-
-  reset(target, params = {}) {
-    setTimeout(() => {
-      const navigateAction = StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: target, params: params })],
-      });
-
-      navigationStore.dispatch(navigateAction);
-    })
-  },
-
-  navigateAndReplace: function(target, params = {}) {
-    setTimeout(() => {
-      const navigateAction = NavigationActions.navigate({
-        routeName: target,
-        params: {...params, __popBeforeAdd:1},
-      });
-
-      navigationStore.dispatch(navigateAction);
-    });
-  },
-
-  navigateAndReplaceVia: function(via, target, params = {}) {
-    setTimeout(() => {
-      const navigateAction1 = NavigationActions.navigate({
-        routeName: via,
-        params: { ...params, __popBeforeAdd: 1 },
-      });
-      const navigateAction2 = NavigationActions.navigate({
-        routeName: target,
-        params: params,
-      });
-
-      navigationStore.dispatch(navigateAction1);
-      navigationStore.dispatch(navigateAction2);
-    });
-  },
-
-  backAndNavigate: function(target, params = {}) {
-    setTimeout(() => {
-      const navigateAction2 = NavigationActions.navigate({
-        routeName: target,
-        params: params,
-      });
-
-      navigationStore.dispatch(NavigationActions.back());
-      navigationStore.dispatch(navigateAction2);
-    });
-  },
-
-  logout: function() {
-    setTimeout(() => {
-      let action = {
-        type: 'Navigation/BACK',
-        logout: true,
-      };
-      navigationStore.dispatch(action);
-    });
-  }
 };

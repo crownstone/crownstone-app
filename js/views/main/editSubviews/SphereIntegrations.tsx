@@ -45,7 +45,7 @@ export class SphereIntegrations extends Component<any, any> {
           NavigationUtil.navigate( "ToonOverview",{sphereId: this.props.sphereId});
         }
         else {
-          NavigationUtil.navigate( "ToonAdd",{sphereId: this.props.sphereId});
+          NavigationUtil.launchModal( "ToonAdd",{sphereId: this.props.sphereId});
         }
       }
     });

@@ -27,9 +27,8 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class ToonAdd extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Toon")})
+    return TopBarUtil.getOptions({title: lang("Toon"), closeModal: true})
   }
-
 
 
   unsubscribeNativeEvent : any;
@@ -129,10 +128,12 @@ export class ToonAdd extends Component<any, any> {
           this.setState({success:true, processing:false}, () => {
             setTimeout(() => {
               if (agreementIds.length > 1) {
-                NavigationUtil.navigateAndReplace("ToonOverview",{sphereId: this.props.sphereId})
+                NavigationUtil.dismissModal()
+                NavigationUtil.navigate("ToonOverview",{sphereId: this.props.sphereId})
               }
               else {
-                NavigationUtil.navigateAndReplace("SoonSettings",{sphereId: this.props.sphereId, toonId: agreementIds[0].agreementId})
+                NavigationUtil.dismissModal()
+                NavigationUtil.navigate("ToonSettings",{sphereId: this.props.sphereId, toonId: agreementIds[0].agreementId})
               }
             }, 1500);
           })
@@ -301,7 +302,7 @@ export class ToonAdd extends Component<any, any> {
 
     return (
       <Background image={core.background.menu} hasNavBar={false}>
-                { content }
+        { content }
       </Background>
     );
   }

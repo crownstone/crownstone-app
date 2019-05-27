@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
   ScrollView, Text, TouchableOpacity,
   View} from "react-native";
-import { Pagination } from 'react-native-snap-carousel';
 import { colors, screenWidth, styles} from "../styles";
 import { core } from "../../core";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
@@ -26,6 +25,7 @@ import KeepAwake from 'react-native-keep-awake';
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { ScanningForSetupCrownstonesBanner } from "../components/animated/ScanningForSetupCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { Bluenet } from "../../native/libInterface/Bluenet";
 
 export class ScanningForSetupCrownstones extends Component<any, any> {
   static options(props) {

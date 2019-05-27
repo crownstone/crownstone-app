@@ -26,6 +26,7 @@ import loginStyles from './LoginStyles'
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { Stacks } from "../../router/Stacks";
 
 
 
@@ -42,7 +43,7 @@ export class AiStart extends Component<any, any> {
     let state = core.store.getState();
     if (Object.keys(state.spheres).length === 0) {
       LOGe.info("User does not have a sphere on startup.");
-      NavigationUtil.reset("Main");
+      NavigationUtil.setRoot(Stacks.loggedIn());
     }
 
 
@@ -199,21 +200,11 @@ export class AiStart extends Component<any, any> {
           NavigationUtil.back();
         }
         else if (this.props.resetViewStack === true) {
-          if (Platform.OS === 'android') {
-            NavigationUtil.reset("AppNavigator");
-          }
-          else {
-            NavigationUtil.reset("AppNavigator");
-          }
+          NavigationUtil.setRoot(Stacks.loggedIn());
         }
         else {
           this.restoreBackButton();
-          if (Platform.OS === 'android') {
-            NavigationUtil.reset("AppNavigator");
-          }
-          else {
-            NavigationUtil.reset("AppNavigator");
-          }
+          NavigationUtil.setRoot(Stacks.loggedIn());
         }
       };
       Alert.alert(title, detail, [{text: button, onPress: defaultAction}], { cancelable: false })

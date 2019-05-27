@@ -36,7 +36,6 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
 
 
   lookingForCrownstone : boolean = true;
-  uuid : string = xUtil.getUUID();
 
   constructor(props) {
     super(props);
@@ -54,7 +53,6 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
     // this is done with an event to avoid double starting due to additional construction by the navigation lib.
     core.eventBus.on("StartFactoryResetProcess", () => {
       // we scan high frequency when we see a setup node
-      BleUtil.startHighFrequencyScanning(this.uuid, true);
       this.searchForStone()
     });
   }
@@ -62,7 +60,6 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
   componentWillUnmount() {
     // Restore trigger state
     core.eventBus.emit("useTriggers");
-    BleUtil.startHighFrequencyScanning(this.uuid);
     BleUtil.cancelAllSearches();
   }
 
@@ -171,7 +168,7 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
               Alert.alert(
 lang("_No_unknown_Crownstone_ne_header"),
 lang("_No_unknown_Crownstone_ne_body",description),
-[{text:lang("_No_unknown_Crownstone_ne_left"), style: 'cancel', onPress: () => { NavigationUtil.backToTop(); }},{
+[{text:lang("_No_unknown_Crownstone_ne_left"), style: 'cancel', onPress: () => { NavigationUtil.dismissModal(); }},{
 text:lang("_No_unknown_Crownstone_ne_right"), onPress: () => {
                   this._removeOwnedCrownstone(nearestNormal.handle);
                 }}],
@@ -231,7 +228,7 @@ lang("_No_nearby_Crownstones____body"),
       .then(() => {
         let defaultAction = () => {
           // pop twice to get back to the settings.
-          NavigationUtil.backToTop();
+          NavigationUtil.dismissModal();
         };
         Alert.alert(
 lang("_Success___This_Crownston_header"),

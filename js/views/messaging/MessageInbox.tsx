@@ -32,6 +32,17 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
+  static options(props) {
+    let state = core.store.getState();
+    let activeSphere = state.app.activeSphere;
+    let title =  lang("Messages");
+    if (activeSphere && state.spheres[activeSphere]) {
+      let sphere = state.spheres[activeSphere];
+      title +=  lang("_in_",sphere.config.name);
+    }
+
+    return TopBarUtil.getOptions({title: title});
+  }
 
 
   unsubscribeStoreEvents : any;
@@ -175,7 +186,7 @@ export class MessageInbox extends LiveComponent<any, any> {
 
         let iconButton = (
           <TouchableOpacity
-            onPress={() => { NavigationUtil.navigate( "MessageAdd",{ sphereId: activeSphere }); }}
+            onPress={() => { NavigationUtil.launchModal( "MessageAdd",{ sphereId: activeSphere }); }}
           >
             <IconButton
               name="ios-mail"

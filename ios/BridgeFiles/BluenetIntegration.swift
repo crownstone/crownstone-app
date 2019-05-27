@@ -65,21 +65,13 @@ open class BluenetJS: RCTEventEmitter {
       if let castData = data as? Advertisement {
         if (castData.operationMode == .setup) {
           self.sendEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
-          
-          
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
         }
         else if (castData.operationMode == .dfu) {
           self.sendEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
-          
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
         }
         else {
           self.sendEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
-          //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
         }
-  
-        //self.bridge.eventDispatcher().sendAppEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
       }
     })
     
@@ -91,25 +83,15 @@ open class BluenetJS: RCTEventEmitter {
       }
     })
     
-   
-//    GLOBAL_BLUENET.bluenetOn("unverifiedAdvertisementData", {data -> Void in
-//      if let castData = data as? Advertisement {
-//        self.sendEvent(withName: "unverifiedAdvertisementData", body: castData.getDictionary())
-//      }
-//    })
-    
+  
     GLOBAL_BLUENET.bluenetLocalizationOn("locationStatus", {data -> Void in
       if let castData = data as? String {
         self.sendEvent(withName: "locationStatus", body: castData)
       }
     })
     
+    
 
-//    GLOBAL_BLUENET.bluenetOn("advertisementData", {data -> Void in
-//      if let castData = data as? Advertisement {
-//        self.sendEvent(withName: "crownstoneAdvertisementReceived", body: castData.handle)
-//      }
-//    })
 
     GLOBAL_BLUENET.bluenetOn("dfuProgress", {data -> Void in
       if let castData = data as? [String: NSNumber] {
@@ -130,17 +112,7 @@ open class BluenetJS: RCTEventEmitter {
     })
 
     
-//    GLOBAL_BLUENET.bluenetOn("nearestSetupCrownstone", {data -> Void in
-//      if let castData = data as? NearestItem {
-//        self.sendEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
-//      }
-//    })
-//    
-//    GLOBAL_BLUENET.bluenetOn("nearestCrownstone", {data -> Void in
-//      if let castData = data as? NearestItem {
-//        self.sendEvent(withName: "nearestCrownstone", body: castData.getDictionary())
-//      }
-//    })
+
     
     // forward the navigation event stream to react native
     GLOBAL_BLUENET.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in
@@ -1350,5 +1322,43 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
 
+  @objc func subscribeToNearest() {
+     if GLOBAL_BLUENET.subscribedToNearest() { return }
+    
+    GLOBAL_BLUENET.bluenetOnNearest("		", {data -> Void in
+      if let castData = data as? NearestItem {
+        self.sendEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
+      }
+    })
+
+    GLOBAL_BLUENET.bluenetOnNearest("nearestCrownstone", {data -> Void in
+      if let castData = data as? NearestItem {
+        self.sendEvent(withName: "nearestCrownstone", body: castData.getDictionary())
+      }
+    })
+  }
   
+  @objc func unsubscribeNearest() {
+    GLOBAL_BLUENET.bluenetClearNearest()
+  }
+  
+  @objc func subscribeToUnverified() {
+    if GLOBAL_BLUENET.subscribedToUnverified() { return }
+    
+    GLOBAL_BLUENET.bluenetOnUnverified("unverifiedAdvertisementData", {data -> Void in
+      if let castData = data as? Advertisement {
+        self.sendEvent(withName: "unverifiedAdvertisementData", body: castData.getDictionary())
+      }
+    })
+
+    GLOBAL_BLUENET.bluenetOnUnverified("advertisementData", {data -> Void in
+      if let castData = data as? Advertisement {
+        self.sendEvent(withName: "crownstoneAdvertisementReceived", body: castData.handle)
+      }
+    })
+  }
+  
+  @objc func unsubscribeUnverified() {
+    GLOBAL_BLUENET.bluenetClearUnverified()
+  }
 }

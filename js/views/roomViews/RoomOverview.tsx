@@ -90,10 +90,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 
       if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId] ||
           change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
-        if (this.props.navigation.state.routeName === "RoomOverview") {
           this.forceUpdate()
-        }
-        return;
       }
 
       if (

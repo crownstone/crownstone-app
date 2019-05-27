@@ -29,7 +29,7 @@ export class DfuFinished extends LiveComponent<any, any> {
         textColor: colors.white.hex,
         backgroundImage:  require('../../images/backgrounds/upgradeBackgroundFailed.png'),
         options: [
-          {label: "Not right now...", onSelect: () => { NavigationUtil.backTo("Main") }},
+          {label: "Not right now...", onSelect: () => { NavigationUtil.dismissModal() }},
           {label: "Yes!",     onSelect: () => { NavigationUtil.back() }},
         ]
       },
@@ -52,7 +52,7 @@ export class DfuFinished extends LiveComponent<any, any> {
           </View>
         ),
         options: [
-          {label: "That's enough for now...", onSelect: () => { NavigationUtil.backTo("Main") }},
+          {label: "That's enough for now...", onSelect: () => { NavigationUtil.dismissModal()}},
           {label: "Let's do the rest of them!", onSelect: () => { NavigationUtil.back() }},
         ]
       },

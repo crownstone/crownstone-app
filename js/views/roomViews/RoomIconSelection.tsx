@@ -213,7 +213,7 @@ export const getRandomRoomIcon = () => {
 
 export class RoomIconSelection extends Component<{navigation:any, callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Pick_an_Icon"), closeModal: true });
+    return TopBarUtil.getOptions({title: lang("Pick_an_Icon") });
   }
 
   constructor(props) {

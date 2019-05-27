@@ -11,13 +11,25 @@ import UserNotifications
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
+    func sourceURL(for bridge: RCTBridge!) -> URL! {
+        #if DEBUG
+            print("DEBUG")
+            return RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+        #else
+            print("RELEASE")
+            return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
+        #endif
+
+    }
+    
     var window: UIWindow?
     var bridge: RCTBridge!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let jsCodeLocation = RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
-        ReactNativeNavigation.bootstrap(jsCodeLocation, launchOptions: launchOptions)
+        self.bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
+        
+        ReactNativeNavigation.bootstrap(self.sourceURL(for: self.bridge), launchOptions: launchOptions)
         
         let rootViewController = UIViewController()
         GLOBAL_BLUENET.initController(viewController: rootViewController)
@@ -25,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         RNSplashScreen.show()
         return true
     }
+    
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

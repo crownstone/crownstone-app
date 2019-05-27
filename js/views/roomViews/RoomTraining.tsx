@@ -34,7 +34,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 export class RoomTraining extends Component<any, any> {
   static options(props) {
     let ai = Util.data.getAiData(core.store.getState(), props.sphereId);
-    return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name), cancel: () => { props.topBarSettings && props.topBarSettings.leftAction() } });
+    return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name)});
   }
 
   collectedData : any;
@@ -82,7 +82,7 @@ export class RoomTraining extends Component<any, any> {
 
       this.stop(true);
 
-      let defaultAction = () => { NavigationUtil.backTo('SphereOverview'); };
+      let defaultAction = () => { NavigationUtil.dismissModal() };
       Alert.alert(
         lang("_No_Crownstones_in_range__header"),
         lang("_No_Crownstones_in_range__body"),
@@ -123,10 +123,10 @@ export class RoomTraining extends Component<any, any> {
 
       this.stop(true);
 
-      let defaultAction = () => { NavigationUtil.backTo('SphereOverview'); };
+      let defaultAction = () => { NavigationUtil.dismissModal(); };
       Alert.alert(
-lang("_I_can_not_see_enough_Cro_header"),
-lang("_I_can_not_see_enough_Cro_body",averageAmountOfMeasurements),
+        lang("_I_can_not_see_enough_Cro_header"),
+        lang("_I_can_not_see_enough_Cro_body",averageAmountOfMeasurements),
 [{text:lang("_I_can_not_see_enough_Cro_left"), onPress: defaultAction}],
         { onDismiss: defaultAction }
       )
@@ -149,6 +149,7 @@ lang("_I_can_not_see_enough_Cro_body",averageAmountOfMeasurements),
     Vibration.vibrate(400, false);
 
     this.setState({text:'Finished!', phase:2});
+    TopBarUtil.replaceOptions(this.props.componentId, {title: lang("All_Done_")});
     const store = core.store;
     FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId)
       .then((stringifiedFingerprint : any) => {
@@ -190,17 +191,17 @@ lang("_I_can_not_see_enough_Cro_body",averageAmountOfMeasurements),
     let cancelMethod = () => {
       FingerprintManager.pauseCollectingFingerprint();
       Alert.alert(
-lang("_Do_you_want_to_cancel_tr_header"),
-lang("_Do_you_want_to_cancel_tr_body"),
-[{text:lang("_Do_you_want_to_cancel_tr_left"), onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
-          {
-text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); NavigationUtil.backTo('SphereOverview'); }}
+        lang("_Do_you_want_to_cancel_tr_header"),
+        lang("_Do_you_want_to_cancel_tr_body"),
+[
+         {text:lang("_Do_you_want_to_cancel_tr_left"), onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
+         {text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); NavigationUtil.dismissModal(); }}
         ],
         { cancelable : false }
       )
     };
 
-    let quitMethod = () => { NavigationUtil.backTo('RoomOverview'); };
+    let quitMethod = () => { NavigationUtil.dismissModal(); };
 
     let content = undefined;
     if (this.state.phase === 0) {
@@ -209,7 +210,7 @@ text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); 
           ai={ai}
           next={() => {
             this.setState({phase:1});
-            // this.props.navigation.setParams({topBarSettings:{leftAction: cancelMethod }});
+            TopBarUtil.updateOptions(this.props.componentId, {cancel: cancelMethod});
             this.start();
           }}
           sampleSize={this.props.sampleSize}
@@ -222,10 +223,6 @@ text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); 
       content = (
         <RoomTraining_training
           ai={ai}
-          next={() => {
-            this.setState({phase:2});
-            // this.props.navigation.setParams({topBarSettings:{title: lang("All_Done_"), leftAction: undefined }})
-          }}
           progress={this.state.progress}
           opacity={this.state.opacity}
           iconIndex={this.state.iconIndex}

@@ -26,6 +26,16 @@ export const Stacks = {
     return {
       stack: {
         children: [
+          { component: {name: "Tutorial"} },
+        ],
+      },
+    }
+  },
+
+  tutorial: function() {
+    return {
+      stack: {
+        children: [
           { component: {name: "LoginSplash"} },
         ],
         options: {

@@ -19,7 +19,7 @@ export class RoomTraining_finished extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1}}>
-                <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
+        <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:20,

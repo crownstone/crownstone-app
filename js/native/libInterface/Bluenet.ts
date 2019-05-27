@@ -92,6 +92,11 @@ const BluenetAPI = {
 
   setCrownstoneNames:       () => { console.log("BluenetBridgeCall:  setCrownstoneNames: "); },
   setupPulse:               () => { console.log("BluenetBridgeCall:  setupPulse: "); },
+
+  subscribeToNearest:       () => { console.log("BluenetBridgeCall:  subscribeToNearest "); },
+  unsubscribeNearest:       () => { console.log("BluenetBridgeCall:  unsubscribeNearest "); },
+  subscribeToUnverified:    () => { console.log("BluenetBridgeCall:  subscribeToUnverified "); },
+  unsubscribeUnverified:    () => { console.log("BluenetBridgeCall:  unsubscribeUnverified "); },
 };
 
 if (DISABLE_NATIVE === true) {

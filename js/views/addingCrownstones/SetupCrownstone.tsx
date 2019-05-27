@@ -251,7 +251,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
       },
       {
         label: lang("Ill_try_again_later___"),
-        onSelect: (result) => { NavigationUtil.backTo("Main"); }
+        onSelect: (result) => { NavigationUtil.dismissModal(); }
       },
     ];
 
@@ -359,12 +359,16 @@ export class SetupCrownstone extends LiveComponent<any, any> {
                 NavigationUtil.back();
               }
               else {
-                NavigationUtil.navigateAndReplaceVia("Main", "AddCrownstones", {sphereId: this.props.sphereId}); }
+                NavigationUtil.backTo("AddCrownstones");
               }
+            }
           },
           {
             label: lang("Take_me_to__",this.newCrownstoneState.location.name),
-            onSelect: (result) => { NavigationUtil.navigateAndReplaceVia("Main", "RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id }); }
+            onSelect: (result) => {
+              NavigationUtil.dismissModal();
+              NavigationUtil.navigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id });
+            }
           },
         ]
       },
@@ -386,12 +390,16 @@ export class SetupCrownstone extends LiveComponent<any, any> {
                 NavigationUtil.back();
               }
               else {
-                NavigationUtil.navigateAndReplaceVia("Main", "AddCrownstones", {sphereId: this.props.sphereId}); }
+                NavigationUtil.backTo("AddCrownstones");
               }
+            }
           },
           {
             label: lang("Take_me_to__",this.newCrownstoneState.location.name),
-            onSelect: (result) => { NavigationUtil.navigateAndReplaceVia("Main", "RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id }); }
+            onSelect: (result) => {
+              NavigationUtil.dismissModal();
+              NavigationUtil.navigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id });
+            }
           },
         ]
       },
@@ -411,12 +419,16 @@ export class SetupCrownstone extends LiveComponent<any, any> {
                 NavigationUtil.back();
               }
               else {
-                NavigationUtil.navigateAndReplaceVia("Main", "AddCrownstones", {sphereId: this.props.sphereId}); }
+                NavigationUtil.backTo("AddCrownstones");
+              }
             }
           },
           {
             label: lang("Take_me_to__",this.newCrownstoneState.location.name),
-            onSelect: (result) => { NavigationUtil.navigateAndReplaceVia("Main", "RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id }); }
+            onSelect: (result) => {
+              NavigationUtil.dismissModal();
+              NavigationUtil.navigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id });
+            }
           },
         ]
       },
@@ -466,7 +478,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         options: [
           {
             label: lang("Ill_try_again_later___"),
-            onSelect: (result) => { NavigationUtil.backTo("Main"); }
+            onSelect: (result) => { NavigationUtil.dismissModal(); }
           },
         ]
       },
@@ -486,7 +498,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         options: [
           {
             label: lang("Ill_try_again_later___"),
-            onSelect: (result) => { NavigationUtil.backTo("Main"); }
+            onSelect: (result) => { NavigationUtil.dismissModal(); }
           },
         ]
       }

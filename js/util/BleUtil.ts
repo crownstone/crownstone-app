@@ -24,21 +24,27 @@ export const BleUtil = {
     delete stateContainer.unsubscribe;
     delete stateContainer.timeout;
   },
+
+
   cancelAllSearches: function() {
     this.cancelSearch();
     this.cancelSetupSearch();
   },
+
   cancelSearch:        function() { this._cancelSearch(this.pendingSearch); },
   cancelSetupSearch:   function() { this._cancelSearch(this.pendingSetupSearch); },
 
-
   getNearestSetupCrownstone: function(timeoutMilliseconds) {
     this.cancelSetupSearch();
+
+    Bluenet.subscribeToNearest();
     return this._getNearestCrownstoneFromEvent(core.nativeBus.topics.nearestSetup, this.pendingSetupSearch, timeoutMilliseconds)
   },
 
   getNearestCrownstone: function(timeoutMilliseconds) {
     this.cancelSearch();
+
+    Bluenet.subscribeToNearest();
     return this._getNearestCrownstoneFromEvent(core.nativeBus.topics.nearest, this.pendingSearch, timeoutMilliseconds)
   },
 
@@ -110,7 +116,7 @@ export const BleUtil = {
         resolve(advertisement.setupPackage);
       };
 
-      LOGd.info("detectCrownstone: Subscribing TO ", core.nativeBus.topics.advertisement);
+      LOGd.info("detectCrownstone: Subscribing To ", core.nativeBus.topics.advertisement);
       cleanup.unsubscribe = core.nativeBus.on(core.nativeBus.topics.advertisement, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.

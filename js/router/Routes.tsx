@@ -29,30 +29,32 @@ export const loadRoutes = function() {
 
 };
 
-Navigation.setDefaultOptions({
-  topBar: {
-    background: { color: colors.csBlueDark.hex },
-    title: {
-      color: colors.white.hex,
-      fontFamily: ".SFUIDisplay-Bold"
-    },
-  },
-  bottomTabs: {
-    backgroundColor: colors.csBlueDark.hex,
-  },
-  bottomTab: {
-    textColor: colors.white.hex,
-    selectedTextColor: colors.menuTextSelected.hex,
-    fontSize: 11,
-    iconColor: colors.white.hex,
-    selectedIconColor: colors.menuTextSelected.hex,
-  }
-});
-
 Navigation.events().registerAppLaunchedListener(() => {
   if (Platform.OS === 'ios') {
     SplashScreen.hide();
   }
+
+  Navigation.setDefaultOptions({
+    topBar: {
+      background: { color: colors.csBlueDark.hex },
+      title: {
+        color: colors.white.hex,
+        fontFamily: ".SFUIDisplay-Bold"
+      },
+    },
+    bottomTabs: {
+      backgroundColor: colors.csBlueDark.hex,
+    },
+    bottomTab: {
+      textColor: colors.white.hex,
+      selectedTextColor: colors.menuTextSelected.hex,
+      fontSize: 11,
+      iconColor: colors.white.hex,
+      selectedIconColor: colors.menuTextSelected.hex,
+    }
+  });
+
+
 
   Navigation.setRoot({
     root: Stacks.initial()

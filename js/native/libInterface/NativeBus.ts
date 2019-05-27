@@ -2,6 +2,7 @@ import { NativeModules, NativeEventEmitter } from 'react-native';
 import { LOGe, LOGi } from '../../logging/Log'
 import { DISABLE_NATIVE } from "../../ExternalConfig";
 import { xUtil } from "../../util/StandAloneUtil";
+import { Bluenet } from "./Bluenet";
 
 let BluenetEmitter = { addListener: (a,b) => { return {remove:() => {}} }};
 
@@ -14,6 +15,10 @@ export class NativeBusClass {
   refMap: any;
 
   _registeredEvents = {};
+
+  subscribersForNearest = 0;
+  subscribersForUnverified = 0;
+
 
   constructor() {
     this.topics = {
@@ -66,6 +71,9 @@ export class NativeBusClass {
       return;
     }
 
+    // if required, enable topics we dont use often
+    this._checkTopicAvailability(topic);
+
     // generate unique id
     let id = xUtil.getUUID();
 
@@ -75,6 +83,10 @@ export class NativeBusClass {
     let removeCallback = () => {
       if (this._registeredEvents[id]) {
         subscription.remove();
+
+        // disable unused topics if possible.
+        this._cleanupTopicAvailability(topic);
+
         this._registeredEvents[id] = undefined;
         delete this._registeredEvents[id];
       }
@@ -94,6 +106,43 @@ export class NativeBusClass {
         this._registeredEvents[key]();
       }
     });
+  }
+
+
+  _checkTopicAvailability(topic) {
+    if (topic === this.topics.nearest || topic === this.topics.nearestSetup) {
+      if (this.subscribersForNearest === 0) {
+        Bluenet.subscribeToNearest();
+      }
+      this.subscribersForNearest++;
+    }
+    else if (topic === this.topics.crownstoneAdvertisementReceived || topic === this.topics.unverifiedAdvertisementData) {
+      if (this.subscribersForUnverified === 0) {
+        Bluenet.subscribeToUnverified();
+      }
+      this.subscribersForUnverified++;
+    }
+  }
+
+  _cleanupTopicAvailability(topic) {
+    if (topic === this.topics.nearest || topic === this.topics.nearestSetup) {
+      if (this.subscribersForNearest > 0) {
+        this.subscribersForNearest--;
+      }
+
+      if (this.subscribersForNearest === 0) {
+        Bluenet.unsubscribeNearest();
+      }
+    }
+    else if (topic === this.topics.crownstoneAdvertisementReceived || topic === this.topics.unverifiedAdvertisementData) {
+      if (this.subscribersForUnverified > 0) {
+        this.subscribersForUnverified--;
+      }
+
+      if (this.subscribersForUnverified === 0) {
+        Bluenet.unsubscribeUnverified();
+      }
+    }
   }
 }
 

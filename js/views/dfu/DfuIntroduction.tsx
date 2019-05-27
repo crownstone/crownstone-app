@@ -62,7 +62,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
         subHeader: this.state.releaseNotes,
         optionsBottom: true,
         options: [
-          {label: lang("Start_the_update_"), onSelect: () => { NavigationUtil.navigateAndReplace("DfuScanning", {sphereId: this.props.sphereId})}},
+          {label: lang("Start_the_update_"), onSelect: () => { NavigationUtil.navigate("DfuScanning", {sphereId: this.props.sphereId})}},
         ]
       },
     }

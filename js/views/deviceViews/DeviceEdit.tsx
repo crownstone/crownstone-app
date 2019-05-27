@@ -40,7 +40,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class DeviceEdit extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Add_Device_Type"), cancelModal: true, save:()=>{}});
+    return TopBarUtil.getOptions({title:  lang("Edit_Device"), cancelModal: true, save:()=>{}});
   }
 
   deleting : boolean = false;
@@ -305,10 +305,11 @@ lang("_Are_you_sure___Removing__body"),
 [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
 text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
               if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
+                core.eventBus.emit('hideLoading');
                 Alert.alert("Can't see this one!",
                   "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
                   [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
-                    {text:'Cancel',style: 'cancel', onPress: () => {core.eventBus.emit('hideLoading');}}]
+                    {text:'Cancel',style: 'cancel', onPress: () => {}}]
                 )
               }
               else {
@@ -337,13 +338,12 @@ text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () 
           this._removeCloudReset(stone);
         })
         .catch((err) => {
+          core.eventBus.emit('hideLoading');
           Alert.alert(
-lang("_Cant_see_this_one___We_c_header"),
-lang("_Cant_see_this_one___We_c_body"),
-[{text:lang("_Cant_see_this_one___We_c_left"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
-              {
-text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {core.eventBus.emit('hideLoading');}}])
-        })
+            lang("_Cant_see_this_one___We_c_header"),
+            lang("_Cant_see_this_one___We_c_body"),
+     [{text:lang("_Cant_see_this_one___We_c_left"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+              {text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {}}])})
     })
   }
 
@@ -369,9 +369,9 @@ text:lang("_Cant_see_this_one___We_c_right"), style: "cancel", onPress: () => {c
         LOG.info("error while asking the cloud to remove this crownstone", err);
         core.eventBus.emit('hideLoading');
         Alert.alert(
-lang("_Encountered_Cloud_Issue__header"),
-lang("_Encountered_Cloud_Issue__body"),
-[{text:lang("_Encountered_Cloud_Issue__left")}])
+          lang("_Encountered_Cloud_Issue__header"),
+          lang("_Encountered_Cloud_Issue__body"),
+  [{text:lang("_Encountered_Cloud_Issue__left")}])
       })
   }
 
@@ -398,12 +398,13 @@ lang("_Encountered_Cloud_Issue__body"),
           })
           .catch((err) => {
             LOGe.info("ERROR:",err);
+            core.eventBus.emit('hideLoading');
             Alert.alert(
               lang("_Encountered_a_problem____header"),
               lang("_Encountered_a_problem____body"),
               [{text:lang("_Encountered_a_problem____left"), onPress: () => {
-                core.eventBus.emit('hideLoading');
-                NavigationUtil.backTo('RoomOverview');
+                NavigationUtil.dismissModal();
+                NavigationUtil.back();
               }}]
             )
           });
@@ -413,11 +414,12 @@ lang("_Encountered_Cloud_Issue__body"),
       })
       .catch((err) => {
         LOG.info("error while asking the cloud to remove this crownstone", err);
+        core.eventBus.emit('hideLoading');
         Alert.alert(
           lang("_Encountered_Cloud_Issue___header"),
           lang("_Encountered_Cloud_Issue___body"),
           [{text:lang("_Encountered_Cloud_Issue___left"), onPress: () => {
-            core.eventBus.emit('hideLoading');}
+          }
           }])
       })
   }
@@ -431,12 +433,13 @@ lang("_Encountered_Cloud_Issue__body"),
     if (factoryReset === false) {
      labelText =  lang("I_have_removed_this_Crowns")}
 
+    core.eventBus.emit('hideLoading');
     Alert.alert(
       lang("_Success__arguments___OKn_header"),
       lang("_Success__arguments___OKn_body",labelText),
 [{text:lang("_Success__arguments___OKn_left"), onPress: () => {
-        core.eventBus.emit('hideLoading');
-        NavigationUtil.backTo('RoomOverview');
+        NavigationUtil.dismissModal();
+        NavigationUtil.back();
         core.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }}]
     )

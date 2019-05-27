@@ -285,7 +285,7 @@ export class Register extends LiveComponent<any, any> {
           {
             label: "I'll validate my account and log in!",
             onSelect: () => {
-              NavigationUtil.backTo("Login");
+              NavigationUtil.back();
             }
           },
         ]

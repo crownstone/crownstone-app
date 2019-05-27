@@ -59,7 +59,7 @@ let textContainerStyle : ViewStyle = {
 export class RoomTraining_roomSize extends Component<any, any> {
   static options(props) {
     let ai = Util.data.getAiData(core.store.getState(), props.sphereId);
-    return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name), closeModal: true });
+    return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name), closeModal: true});
   }
 
   _getButton(sampleSize, iconSize, text, roomSize) {

@@ -133,7 +133,7 @@ export class RoomEdit extends LiveComponent<any, any> {
 
         // jump back to root
         core.eventBus.emit('hideLoading');
-        NavigationUtil.backTo('SphereOverview');
+        NavigationUtil.dismissModal();
 
         // reload fingerprints.
         LocationHandler.loadFingerprints();
@@ -209,14 +209,14 @@ lang("_Encountered_Cloud_Issue__body"),
               lang("_Retrain_Room__Only_do_th_body"),
               [{text: lang("_Retrain_Room__Only_do_th_left"), style: 'cancel'},
                             {
-              text: lang("_Retrain_Room__Only_do_th_right"), onPress: () => { NavigationUtil.navigate( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
+              text: lang("_Retrain_Room__Only_do_th_right"), onPress: () => { NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
             ])
           }});
           items.push({label: lang("If_the_indoor_localizatio",ai), type: 'explanation',  below:true});
         }
         else {
           items.push({label: lang("Teach__to_find_you_",ai), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
-            NavigationUtil.navigate( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId});
+            NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId});
           }});
           items.push({label: lang("Teach__to_identify_when_y",ai), type: 'explanation',  below:true});
         }

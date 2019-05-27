@@ -59,6 +59,13 @@ export class SphereOverview extends LiveComponent<any, any> {
     this.state = { zoomLevel: ZOOM_LEVELS.room, zoomInstructionsVisible: false, arrangingRooms: false };
     this.viewId = xUtil.getUUID();
     this._setActiveSphere();
+
+    Navigation.events().bindComponent(this);
+
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    console.log("HERE", buttonId)
   }
 
   componentDidMount() {

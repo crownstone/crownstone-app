@@ -37,6 +37,11 @@ export const TopBarUtil = {
     Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, true));
   },
 
+  replaceOptions: function(componentId, props: topbarOptions) {
+    console.log("REPLACE", componentId)
+    Navigation.mergeOptions(componentId, TopBarUtil.getOptions(props, false));
+  },
+
   getOptions: function(props : topbarOptions, partialUpdate = false) {
     if (props === null) { return; }
 
@@ -94,7 +99,7 @@ export const TopBarUtil = {
     if (!partialUpdate || props.title) { results.topBar["title"] = {text: props.title}; }
     if (!partialUpdate || leftButtons.length  > 0) { results.topBar["leftButtons"] = leftButtons; }
     if (!partialUpdate || rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons; }
-
+    console.log("Setting settings", results)
     return results;
   },
 }
@@ -121,7 +126,7 @@ function getButtonComponent(id, label, callback) {
     id: id,
     component: {
       name: 'topbarButton',
-      passProps: { text: label, onPress: callback }
+      passProps: { text: label, onPress: callback },
     },
   }
 }
@@ -130,10 +135,12 @@ function getButtonComponent(id, label, callback) {
 function getEditComponent(callback) {
   return {
     id: 'edit',
+    icon: require("../images/icons/cog.png"),
     component: {
       name: 'topbarRightMoreButton',
       passProps: { onPress: callback }
     },
+    // systemItem: 'edit'
   }
 }
 

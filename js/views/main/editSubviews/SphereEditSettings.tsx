@@ -21,6 +21,7 @@ import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { Stacks } from "../../../router/Stacks";
 
 export class SphereEditSettings extends LiveComponent<any, any> {
   static options(props) {
@@ -222,7 +223,7 @@ text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
     // stop tracking sphere.
     Bluenet.stopTrackingIBeacon(state.spheres[this.props.sphereId].config.iBeaconUUID);
     core.store.batchDispatch(actions);
-    NavigationUtil.reset("AppNavigator");
+    NavigationUtil.setRoot(Stacks.loggedIn());
   }
 
   _deleteSphere(state) {

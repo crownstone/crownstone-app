@@ -230,12 +230,10 @@ export class RoomAdd extends LiveComponent<any, any> {
       .catch(() => {});
 
     if (this.props.returnToRoute) {
-      NavigationUtil.backTo(this.props.returnToRoute);
-    }
-    else if (this.props.goBack) {
-      NavigationUtil.back();
+      NavigationUtil.dismissModal();
     }
     else {
+      NavigationUtil.dismissModal();
       NavigationUtil.navigate( "RoomOverview",{sphereId: this.props.sphereId, locationId: localId, title: this.newRoomData.name, __popBeforeAddCount: 2});
     }
   }

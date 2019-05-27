@@ -20,6 +20,7 @@ import {Icon} from "../../components/Icon";
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 import { diagnosticStyles } from "./DiagnosticStyles";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { Stacks } from "../../../router/Stacks";
 
 
 class DiagResponseBase extends Component<{
@@ -261,7 +262,7 @@ export class DiagSingleButtonToOverview extends Component<{
         explanation={ this.props.explanation }
         label={ lang("Go_to_Overview")}
         onPress={() => {
-          NavigationUtil.navigateAndReplace("AppNavigator");
+          NavigationUtil.setRoot(Stacks.loggedIn());
         }}
       />
     );

@@ -104,7 +104,7 @@ export class DfuBatch extends Component<any, any> {
       this.setState({updatingCrownstoneIndex: this.state.updatingCrownstoneIndex+1})
       let amountOfSuccessfulUpdates = Object.keys(this.finishedUpdate).length;
       Vibration.vibrate(400, false);
-      NavigationUtil.navigateAndReplace("DfuFinished", {
+      NavigationUtil.navigate("DfuFinished", {
         sphereId:     this.props.sphereId,
         successCount: amountOfSuccessfulUpdates,
         cloudIssue:   cloudIssue

@@ -330,7 +330,7 @@ function getTopBarProps(store, state, props, swiperIndex, scrolling) {
     case summaryIndex:
       if (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) {
         rightLabel =  lang("Edit");
-        rightAction = () => { NavigationUtil.navigate( "DeviceEdit",{sphereId: props.sphereId, stoneId: props.stoneId});};
+        rightAction = () => { NavigationUtil.launchModal( "DeviceEdit",{sphereId: props.sphereId, stoneId: props.stoneId});};
       }
       break;
     case behaviourIndex:
@@ -343,7 +343,7 @@ lang("_Crownstone_is_Locked___Y_body"),
 [{text:lang("_Crownstone_is_Locked___Y_left")}])};
         }
         else {
-          rightAction = () => { NavigationUtil.navigate( "DeviceBehaviourEdit",{sphereId: props.sphereId, stoneId: props.stoneId}); }
+          rightAction = () => { NavigationUtil.launchModal( "DeviceBehaviourEdit",{sphereId: props.sphereId, stoneId: props.stoneId}); }
         }
       }
       break;

@@ -32,6 +32,8 @@ class Portal : NSObject {
   var watchBridge : WatchBridge!
   
   var subscriptions = [voidCallback]()
+  var nearestSubscriptions = [voidCallback]()
+  var unverifiedSubscriptions = [voidCallback]()
     
   open func initController(viewController: UIViewController) {
     self.watchBridge = WatchBridge()
@@ -55,7 +57,34 @@ class Portal : NSObject {
     
     // store the environment so the app can request it. This is used to determine which notification key we should use in our installation model in the cloud.
     self.devEnvironment = isDevelopmentEnvironment()
-
+  }
+  
+  func subscribedToNearest() -> Bool {
+    return self.nearestSubscriptions.count > 0
+  }
+  func subscribedToUnverified() -> Bool {
+    return self.unverifiedSubscriptions.count > 0
+  }
+  func bluenetOnNearest(_ topic: String, _ callback: @escaping eventCallback) {
+    self.nearestSubscriptions.append(self.bluenet.on(topic, callback))
+  }
+  
+  func bluenetClearNearest() {
+    for unsubscribeCallback in self.nearestSubscriptions {
+      unsubscribeCallback()
+    }
+    self.nearestSubscriptions = []
+  }
+  
+  func bluenetClearUnverified() {
+    for unsubscribeCallback in self.nearestSubscriptions {
+      unsubscribeCallback()
+    }
+    self.unverifiedSubscriptions = []
+  }
+  
+  func bluenetOnUnverified(_ topic: String, _ callback: @escaping eventCallback) {
+    self.unverifiedSubscriptions.append(self.bluenet.on(topic, callback))
   }
   
   func bluenetOn(_ topic: String, _ callback: @escaping eventCallback) {
@@ -91,6 +120,14 @@ class Portal : NSObject {
     
     // cleanup
     for unsubscribeCallback in self.subscriptions {
+      unsubscribeCallback()
+    }
+    
+    for unsubscribeCallback in self.nearestSubscriptions {
+      unsubscribeCallback()
+    }
+    
+    for unsubscribeCallback in self.unverifiedSubscriptions {
       unsubscribeCallback()
     }
   }

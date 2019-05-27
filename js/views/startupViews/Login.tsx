@@ -37,6 +37,7 @@ import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { createNewSphere } from "../../util/CreateSphere";
+import { Stacks } from "../../router/Stacks";
 
 
 export class Login extends Component<any, any> {
@@ -460,11 +461,11 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
           core.eventBus.emit('hideProgress');
 
           if (state.user.isNew !== false) {
-            NavigationUtil.reset("Tutorial");
+            NavigationUtil.setRoot(Stacks.tutorial());
           }
           else {
             core.eventBus.emit("userLoggedInFinished");
-            NavigationUtil.navigate( "AppNavigator");
+            NavigationUtil.setRoot(Stacks.loggedIn());
           }
         }, 100);
       })
