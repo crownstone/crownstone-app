@@ -168,7 +168,7 @@ export class SettingsFAQ extends Component<any, any> {
             label={ lang("Revert_to_Cloud_Data")}
             icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              NavigationUtil.navigate( "SettingsRedownloadFromCloud");
+              NavigationUtil.launchModal( "SettingsRedownloadFromCloud");
             }}
           />
           <View style={{flex:1}} />
@@ -206,7 +206,7 @@ export class SettingsFAQ extends Component<any, any> {
             label={ lang("Reset_Crownstone")}
             icon={<IconButton name={'ios-build'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              NavigationUtil.navigate( "SettingsFactoryResetStep1");
+              NavigationUtil.launchModal( "SettingsFactoryResetStep1");
             }}
           />
           <View style={{flex:1}} />
@@ -225,7 +225,7 @@ export class SettingsFAQ extends Component<any, any> {
       type:'navigation',
       icon: <IconButton name={'ios-bluetooth'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex }}/>,
       callback: () => {
-        NavigationUtil.navigate( "SettingsBleTroubleshooting");
+        NavigationUtil.launchModal( "SettingsBleTroubleshooting");
       }
     });
     items.push({

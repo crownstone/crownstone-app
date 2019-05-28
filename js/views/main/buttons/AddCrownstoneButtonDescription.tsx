@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("AddCrownstoneButtonDescription", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Text,
@@ -32,7 +38,7 @@ export class AddCrownstoneButtonDescription extends Component<any, any> {
         backgroundColor: colors.white.rgba(0.7),
       }}>
         <View style={{flex:1}} />
-        <Text style={{fontSize: fontSize, fontWeight:'bold', color: colors.green.hex}}>{"Add Crownstones now!"}</Text>
+        <Text style={{fontSize: fontSize, fontWeight:'bold', color: colors.green.hex}}>{ lang("Add_Crownstones_now_") }</Text>
         { xUtil.narrowScreen() === false ? <Icon name={"md-arrow-round-forward"}  size={20} color={colors.green.hex} style={{padding:5}} /> : undefined }
         <Icon name={"md-arrow-round-forward"}  size={20} color={colors.menuTextSelected.blend(colors.green, 0.5).hex} style={{padding:5}} />
         <Icon name={"md-arrow-round-forward"}  size={20} color={colors.menuTextSelected.hex} style={{padding:5}} />

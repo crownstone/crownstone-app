@@ -22,26 +22,14 @@ import {IconButton} from "../components/IconButton";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
+import { TopBarUtil } from "../../util/TopBarUtil";
 
 
 let iconSize = 100;
 
 export class AddItemsToSphere extends Component<any, any> {
   static options(props) {
-    return {
-      topBar: {
-        title: {text: lang("Add_to_Sphere")},
-        leftButtons: [{
-          id: 'back',
-          component: {
-            name:'topbarLeftButton',
-            passProps: {
-              text: lang("Back"), onPress:() => { NavigationUtil.dismissModal(); }
-            }
-          },
-        }],
-      }
-    }
+    return TopBarUtil.getOptions({title: lang("Add_to_Sphere"), closeModal:true});
   }
 
 
@@ -76,7 +64,7 @@ export class AddItemsToSphere extends Component<any, any> {
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row', alignItems:'center'}}>
               <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
-                NavigationUtil.launchModal("RoomAdd", { sphereId: this.props.sphereId });
+                NavigationUtil.launchModal("RoomAdd", { sphereId: this.props.sphereId, isModal: true });
               }} />
               <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} callback={() => {
                 NavigationUtil.launchModal("AddCrownstone", {sphereId: this.props.sphereId});
@@ -87,7 +75,6 @@ export class AddItemsToSphere extends Component<any, any> {
                 NavigationUtil.launchModal("SphereUserInvite",{sphereId: this.props.sphereId});
               }} />
               <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => {
-                NavigationUtil.launchModal("SphereEdit",{sphereId: this.props.sphereId})
                 NavigationUtil.launchModal("SphereIntegrations",{sphereId: this.props.sphereId})
               }} />
             </View>

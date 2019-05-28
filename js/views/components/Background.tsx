@@ -6,8 +6,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  KeyboardAvoidingView, Platform,
   View
-} from 'react-native';
+} from "react-native";
 // import { SafeAreaView } from 'react-navigation';
 
 import { styles, screenHeight, topBarHeight, tabBarHeight,  } from "../styles";
@@ -24,6 +25,7 @@ export class Background extends Component<{
   image:             any,
   topImage?:         any,
   shadedStatusBar?:  boolean,
+  keyboardAvoid?:  boolean,
   statusBarStyle?:   any
 }, any> {
   render() {
@@ -34,8 +36,10 @@ export class Background extends Component<{
     if (this.props.hasNavBar !== false && this.props.fullScreen !== true) {
       height -= tabBarHeight;
     }
+
+
     return (
-      <View style={[styles.fullscreen, {height:height, overflow:"hidden", backgroundColor:"transparent"}]} >
+      <KeyboardAvoidingView style={[styles.fullscreen, {height:height, overflow:"hidden", backgroundColor:"transparent"}]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
         <BackgroundImage height={height} image={this.props.image} />
         {this.props.topImage ? <View style={[styles.fullscreen, {height:height, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
         <View style={[styles.fullscreen, {height:height}]} >
@@ -45,7 +49,7 @@ export class Background extends Component<{
             {this.props.children}
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

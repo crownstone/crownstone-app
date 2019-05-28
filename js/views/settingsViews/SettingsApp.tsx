@@ -97,12 +97,26 @@ export class SettingsApp extends LiveComponent<any, any> {
           this.triggerTapToToggleCalibration = false;
         }
     }});
+
+    if (state.app.tapToToggleEnabled) {
+      items.push({
+        label: lang("Calibrate_Tap_to_Toggle"),
+        type:'button',
+        style: {color:'#000'},
+        icon: <IconButton name="md-flask" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuBackground.hex}} />,
+        callback: () => { core.eventBus.emit("CalibrateTapToToggle", {tutorial:true}); }
+      });
+    }
+
     if (state.app.indoorLocalizationEnabled) {
       items.push({label: lang("Tap_to_toggle_allows_you_"), type: 'explanation', below: true});
     }
     else {
       items.push({label: lang("If_indoor_localization_is"), type: 'explanation', below: true});
     }
+
+
+
 
 
     items.push({label: lang("BATTERY_USAGE"), type: 'explanation', alreadyPadded: true, below: false});

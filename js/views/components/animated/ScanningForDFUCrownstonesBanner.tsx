@@ -3,10 +3,11 @@ import * as React from "react";
 import { colors, screenWidth } from "../../styles";
 import { AnimatedIconBanner } from "./AnimatedIconBanner";
 
-export class ScanningForDFUCrownstonesBanner extends Component<{height: number}, any> {
+export class ScanningForDFUCrownstonesBanner extends Component<{height: number, componentId: any}, any> {
   render() {
     return (
       <AnimatedIconBanner
+        componentId={this.props.componentId}
         height={this.props.height}
         icons={[
           { name: 'c2-pluginFront', size: 100, top:-25, left:105 },

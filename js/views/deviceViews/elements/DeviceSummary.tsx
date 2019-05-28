@@ -28,6 +28,7 @@ import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import { OverlayUtil } from "../../overlays/OverlayUtil";
 
 export class DeviceSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
@@ -273,7 +274,9 @@ export class DeviceSummary extends LiveComponent<any, any> {
           leftValue={stone.state.currentUsage + ' W'}
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate(  "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId, locationId: this.props.locationId, returnToRoute: 'DeviceOverview'}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => {
+            OverlayUtil.callRoomSelectionOverlayForStonePlacement(this.props.sphereId, this.props.stoneId)
+          } : null }
         />
         <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>

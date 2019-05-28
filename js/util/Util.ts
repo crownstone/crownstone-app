@@ -7,6 +7,7 @@ import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
 import { FileUtil } from "./FileUtil";
 import { core } from "../core";
+import { Scheduler } from "../logic/Scheduler";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -89,7 +90,17 @@ export const addDistanceToRssi = function(rssi, distanceInMeters) {
 };
 
 
-
+export const delay = function(ms, performAfterDelay = null) {
+  return new Promise((resolve, reject) => {
+    // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
+    Scheduler.scheduleCallback(() => {
+      if (performAfterDelay !== null && typeof performAfterDelay === 'function') {
+        performAfterDelay()
+      }
+      resolve();
+    }, ms, 'dfuDelay');
+  })
+};
 
 export const Util = {
   mesh: MeshUtil,

@@ -78,7 +78,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
       refreshingStoneVersions: false
     };
 
-    TopBarUtil.updateOptions(this.props.componentId, {save: () => { this._updateCrownstone();}})
+    TopBarUtil.updateOptions(this.props.componentId, {save: () => { this._updateCrownstone(); }})
   }
 
   componentDidMount() {
@@ -403,8 +403,7 @@ text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () 
               lang("_Encountered_a_problem____header"),
               lang("_Encountered_a_problem____body"),
               [{text:lang("_Encountered_a_problem____left"), onPress: () => {
-                NavigationUtil.dismissModal();
-                NavigationUtil.back();
+                NavigationUtil.dismissModalAndBack();
               }}]
             )
           });
@@ -438,8 +437,7 @@ text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () 
       lang("_Success__arguments___OKn_header"),
       lang("_Success__arguments___OKn_body",labelText),
 [{text:lang("_Success__arguments___OKn_left"), onPress: () => {
-        NavigationUtil.dismissModal();
-        NavigationUtil.back();
+        NavigationUtil.dismissModalAndBack();
         core.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }}]
     )
@@ -502,7 +500,7 @@ text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () 
       core.store.batchDispatch(actions);
     }
 
-    NavigationUtil.back();
+    NavigationUtil.dismissModal();
   }
 
   _setDimState(stone) {

@@ -133,7 +133,7 @@ export class RoomEdit extends LiveComponent<any, any> {
 
         // jump back to root
         core.eventBus.emit('hideLoading');
-        NavigationUtil.dismissModal();
+        NavigationUtil.dismissModalAndBack();
 
         // reload fingerprints.
         LocationHandler.loadFingerprints();
@@ -309,7 +309,7 @@ lang("_Encountered_Cloud_Issue__body"),
           icon: this.state.icon
         }});
     }
-    NavigationUtil.back();
+    NavigationUtil.dismissModal();
   }
 
   cancelEdit() {
@@ -327,7 +327,7 @@ lang("_Encountered_Cloud_Issue__body"),
       this._removePicture(this.state.picture)
     }
 
-    NavigationUtil.back();
+    NavigationUtil.dismissModal();
   }
 
   render() {

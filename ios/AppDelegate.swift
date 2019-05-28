@@ -24,15 +24,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let jsBundleUrl =  Bundle.main.url(forResource: "main", withExtension: "jsbundle")
         #endif
         
-        print("Bootstrapping the RNN")
         ReactNativeNavigation.bootstrap(jsBundleUrl!, launchOptions: launchOptions)
-        print("INIT BLUENET")
         let rootViewController = UIViewController()
         GLOBAL_BLUENET.initController(viewController: rootViewController)
         
-        print("SHOW SPLASH")
         RNSplashScreen.show()
-        print("DONE")
         
         return true
     }

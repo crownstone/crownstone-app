@@ -28,7 +28,7 @@ export class SettingsFactoryResetStep1 extends Component<any, any> {
     let imageSize = 0.40;
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
-                <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
+        <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>{ lang("If_youre_physically_next_") }</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={[setupStyle.information, {color:colors.white.hex}]}>{ lang("Please_take_the_Crownston") }</Text>

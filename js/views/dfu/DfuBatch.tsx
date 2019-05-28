@@ -1,10 +1,14 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DfuBatch", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
-  ScrollView, Text, TouchableOpacity, Vibration,
+  ScrollView, Text, Vibration,
   View
 } from "react-native";
-import { Pagination } from 'react-native-snap-carousel';
 import { colors, screenWidth, styles} from "../styles";
 import { core } from "../../core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
@@ -19,7 +23,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class DfuBatch extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Updating!"});
+    return TopBarUtil.getOptions({title: lang("Updating_"), disableBack: true});
   }
 
   failedUpdate = {};
@@ -148,15 +152,15 @@ export class DfuBatch extends Component<any, any> {
       <Background hasNavBar={false} image={core.background.light} hideNotification={true}>
         <KeepAwake />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
-          <BatchDFUCrownstonesBanner height={110} />
+          <BatchDFUCrownstonesBanner componentId={this.props.componentId} height={110} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>
             <View style={{flex:1}} />
-            <Text style={{color: colors.black.hex, fontSize:20, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{"Updating your Crownstones!"}</Text>
+            <Text style={{color: colors.black.hex, fontSize:20, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Updating_your_Crownstones_") }</Text>
             <View style={{flex:1}} />
           </View>
         </View>
         <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
-          <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{"This can take a while so just put you phone down, relax and grab some coffee. I'll let you know when everything is ready!"}</Text>
+          <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("This_can_take_a_while_so_j") }</Text>
         </View>
         <ScrollView style={{position:'relative', top:-1}}>
           <SeparatedItemList

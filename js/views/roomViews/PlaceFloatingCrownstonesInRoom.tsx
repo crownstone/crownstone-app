@@ -24,6 +24,7 @@ import { core } from "../../core";
 import { Background } from "../components/Background";
 import { DeviceEntryBasic } from "../components/deviceEntries/DeviceEntryBasic";
 import { RoomList } from "../components/RoomList";
+import { OverlayUtil } from "../overlays/OverlayUtil";
 
 
 export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
@@ -78,36 +79,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
           stoneId={stoneId}
           sphereId={this.props.sphereId}
           callback={() => {
-            core.eventBus.emit('showListOverlay', {
-              title: lang("Select_Room"),
-              getItems: () => {
-                const state = core.store.getState();
-                const sphere = state.spheres[this.props.sphereId];
-                let items = [];
-                Object.keys(sphere.locations).forEach((locationId) => {
-                  let location = sphere.locations[locationId];
-                  items.push({
-                    id: locationId,
-                    component:
-                      <RoomList
-                        icon={location.config.icon}
-                        name={location.config.name}
-                        hideSubtitle={true}
-                        showNavigationIcon={false}
-                      />
-                  });
-                });
-
-                return items;
-              },
-              callback: (locationId) => {
-                core.store.dispatch({type:"UPDATE_STONE_LOCATION", sphereId: this.props.sphereId, stoneId: stoneId, data:{locationId: locationId}})
-              },
-              allowMultipleSelections: false,
-              selection: null,
-              separator: false,
-              image: require("../../images/overlayCircles/roomsCircle.png")
-            });
+            OverlayUtil.callRoomSelectionOverlayForStonePlacement(this.props.sphereId, stoneId);
           }}
         />
       </View>

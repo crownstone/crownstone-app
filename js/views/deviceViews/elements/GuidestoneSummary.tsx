@@ -21,6 +21,7 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import { OverlayUtil } from "../../overlays/OverlayUtil";
 
 export class GuidestoneSummary extends LiveComponent<any, any> {
   unsubscribeStoreEvents;
@@ -65,7 +66,9 @@ export class GuidestoneSummary extends LiveComponent<any, any> {
         <DeviceInformation
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate( "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => {
+            OverlayUtil.callRoomSelectionOverlayForStonePlacement(this.props.sphereId, this.props.stoneId)
+          } : null }
         />
         <View style={{flex:1}} />
         <View style={{alignItems:'center'}}>

@@ -19,6 +19,9 @@ import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 
 export class DfuIntroduction extends LiveComponent<any, any> {
+  static options = {
+    topBar: { visible: false }
+  };
 
   interviewData;
   _interview : Interview;
@@ -53,8 +56,8 @@ export class DfuIntroduction extends LiveComponent<any, any> {
         subHeader:"This process can take a few minutes. Would you like to start now?",
         optionsBottom: true,
         options: [
-          {label: lang("Not_right_now___"), onSelect: () => { NavigationUtil.back() }},
-          {label: lang("Lets_do_it_"),     nextCard: 'updateInformation'},
+          {label: lang("Not_right_now___"), onSelect: () => { NavigationUtil.dismissModal(); }},
+          {label: lang("Lets_do_it_"), nextCard: 'updateInformation'},
         ]
       },
       updateInformation: {
@@ -82,7 +85,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
           </View>
         ),
         options: [
-          {label: "I'll try again later!", onSelect: () => { NavigationUtil.back() }},
+          {label: lang("Ill_try_again_later_"), onSelect: () => { NavigationUtil.back() }},
         ]
       },
     }
@@ -102,7 +105,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : "Back"}
-          leftAction={() => { if (this._interview.back() === false) {NavigationUtil.back();} }}
+          leftAction={() => { if (this._interview.back() === false) {NavigationUtil.dismissModal();} }}
           leftButtonStyle={{width: 300}}
           style={{backgroundColor:'transparent', paddingTop:0}}
         />

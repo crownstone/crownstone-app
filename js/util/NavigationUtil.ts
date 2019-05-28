@@ -3,21 +3,6 @@
 
 
 import { Navigation } from "react-native-navigation";
-import { Stacks } from "../router/Stacks";
-
-let NavigationActions = {
-  navigate: function(any?) {},
-  back: function(any?) {},
-}
-
-let StackActions = {
-  navigate: function(any?) {},
-  reset: function(any?) {},
-}
-
-let navigationStore = {
-  dispatch: function(any) {},
-}
 
 
 class NavStateManager {
@@ -28,9 +13,14 @@ class NavStateManager {
   modals = [];
   views  = [];
   overlayIncoming = false;
+  overlayIncomingName = null;
 
   addView(componentId, name) {
     if (this.overlayIncoming === true) {
+      if (this.overlayIncomingName === name) {
+        this.overlayIncomingName = null;
+      }
+
       // overlays will be closed by their OWN id, it is not tracked by the activeView.
       this.overlayName[name] = {id:componentId, name: name};
       this.overlayId[componentId] = {id:componentId, name: name};
@@ -44,6 +34,15 @@ class NavStateManager {
       this.views.push({id:componentId, name: name});
     }
     this.activeView = componentId;
+  }
+
+  popView() {
+    if (this.views.length > 0) {
+      this.views.pop();
+    }
+    else {
+      console.log("Maybe something is wrong?")
+    }
   }
 
   pop() {
@@ -86,6 +85,15 @@ class NavStateManager {
     }
   }
 
+  _getViewId() {
+    if (this.views.length > 0) {
+     return this.views[this.views.length - 1].id;
+    }
+    else {
+      console.log("Maybe something is wrong?")
+    }
+  }
+
   modalActive() {
     this.modals.push([]);
   }
@@ -95,8 +103,9 @@ class NavStateManager {
     this._getId();
   }
 
-  showOverlay() {
+  showOverlay(targetName) {
     this.overlayIncoming = true;
+    this.overlayIncomingName = targetName;
   }
 
   closeOverlay(componentId) {
@@ -108,9 +117,8 @@ class NavStateManager {
   }
 
   isOverlayOpen(targetName) {
-    return this.overlayName[targetName] !== undefined;
+    return this.overlayName[targetName] !== undefined || this.overlayIncomingName === targetName;
   }
-
 
   allModalsDismissed() {
     this.modals = [];
@@ -167,7 +175,6 @@ class NavStateManager {
 
     return targetId;
   }
-
 }
 
 
@@ -175,6 +182,7 @@ const NavState = new NavStateManager();
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
+  console.log("View has appeared", componentId, componentName)
   NavState.addView(componentId, componentName);
 });
 
@@ -192,11 +200,13 @@ export const NavigationUtil = {
    * @param props
    */
   showOverlay(target, props) {
+    console.log("is this overlay open?", target, NavState.isOverlayOpen(target))
+
     if (NavState.isOverlayOpen(target)) {
       return;
     }
 
-    NavState.showOverlay();
+    NavState.showOverlay(target);
     Navigation.showOverlay({
       component: {
         id: target,
@@ -234,14 +244,32 @@ export const NavigationUtil = {
   },
 
   dismissModal: function() {
-    console.log("Closing modal", NavState.activeView);
-    Navigation.dismissModal(NavState.activeView)
+    let backFrom = NavState.activeView;
+    Navigation.dismissModal(backFrom)
+      .then(() => { console.log("Going back from ", backFrom, " success!")})
+      .catch((err) => {console.log("Going back from ", backFrom, " FAILED!", err)  })
     NavState.modalDismissed();
   },
+
+  dismissModalAndBack: function() {
+    NavigationUtil.baseStackBack();
+    NavigationUtil.dismissModal();
+  },
+
   dismissAllModals: function() {
     console.log("Closing all modals");
     Navigation.dismissAllModals()
     NavState.allModalsDismissed();
+  },
+
+  dismissModalAndNavigate(target,props) {
+    NavigationUtil.navigateFromBaseStack(target, props);
+    NavigationUtil.dismissModal()
+  },
+
+  dismissAllModalsAndNavigate(target,props) {
+    NavigationUtil.navigateFromBaseStack(target, props);
+    NavigationUtil.dismissAllModals()
   },
 
   navigate: function(target, props = {}) {
@@ -255,16 +283,45 @@ export const NavigationUtil = {
     });
   },
 
-  back() {
-    console.log("Going back from", NavState.activeView)
-    Navigation.pop(NavState.activeView)
-    NavState.pop();
+  navigateFromBaseStack(target, props) {
+    let goFrom = NavState._getViewId();
+    console.log("Navigating from", goFrom, "to", target)
+    Navigation.push(goFrom, {
+      component: {
+        id: target,
+        name: target,
+        passProps: props,
+      },
+    });
   },
+
+  back() {
+    let backFrom = NavState.activeView;
+    console.log("Going back from", backFrom)
+    NavState.pop();
+    Navigation.pop(backFrom)
+      .then(() => { console.log("Going back from ", backFrom, " success!")})
+      .catch((err) => {console.log("Going back from ", backFrom, " FAILED!", err)  })
+  },
+
+  baseStackBack() {
+    let backFrom = NavState._getViewId();
+    console.log("Going back baseStackBack", backFrom)
+    NavState.popView();
+    Navigation.pop(backFrom)
+      .then(() => { console.log("Going back baseStackBack ", backFrom, " success!")})
+      .catch((err) => {console.log("Going back baseStackBack ", backFrom, " FAILED!", err)  })
+  },
+
+
 
   backTo(target) {
     let componentId = NavState.backTo(target);
     if (componentId) {
       Navigation.popTo(componentId)
+    }
+    else {
+      throw "CAN NOT FIND THIS COMPONENT " + target
     }
   },
 };

@@ -4,7 +4,12 @@ import SplashScreen from "react-native-splash-screen";
 import { Platform } from "react-native";
 import { Stacks } from "./Stacks";
 import { colors } from "../views/styles"
-import { TopbarButton, TopbarLeftButtonNav, TopbarRightMoreButton } from "../views/components/topbar/TopbarButton";
+import {
+  TopbarButton,
+  TopbarEmptyButton,
+  TopbarLeftButtonNav,
+  TopbarRightMoreButton
+} from "../views/components/topbar/TopbarButton";
 import { CancelButton } from "../views/components/topbar/CancelButton";
 
 let viewsLoaded = false;
@@ -24,6 +29,7 @@ export const loadRoutes = function() {
   Navigation.registerComponent("topbarLeftButton",         () => TopbarLeftButtonNav);
   Navigation.registerComponent("topbarRightMoreButton",    () => TopbarRightMoreButton);
   Navigation.registerComponent("topbarButton",             () => TopbarButton);
+  Navigation.registerComponent("topbarEmptyButton",        () => TopbarEmptyButton);
 
 
 

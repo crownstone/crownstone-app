@@ -2,7 +2,7 @@
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("ScanningForDfu", key)(a,b,c,d,e);
+  return Languages.get("DfuScanning", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
@@ -16,9 +16,6 @@ import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
 import { FadeIn, FadeInView, HiddenFadeInView } from "../components/animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { Icon } from "../components/Icon";
-import { TopbarBackButton, TopbarButton } from "../components/topbar/TopbarButton";
-// import { NavigationEvents } from "react-navigation";
 import KeepAwake from 'react-native-keep-awake';
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { Scheduler } from "../../logic/Scheduler";
@@ -26,6 +23,7 @@ import { DfuUtil } from "../../util/DfuUtil";
 import { DfuDeviceOverviewEntry } from "../components/deviceEntries/DfuDeviceOverviewEntry";
 import { ScanningForDFUCrownstonesBanner } from "../components/animated/ScanningForDFUCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { ViewStateWatcher } from "../components/ViewStateWatcher";
 
 const triggerId = "ScanningForDfu";
 
@@ -206,20 +204,17 @@ export class DfuScanning extends Component<any, any> {
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotification={true}>
         <KeepAwake />
-        {/*<NavigationEvents*/}
-        {/*  onWillFocus={() => { this.startScanning(); }}*/}
-        {/*  onWillBlur={ () => { this.stopScanning(); }}*/}
-        {/*/>*/}
+        <ViewStateWatcher componentId={this.props.componentId} onFocus={() => { this.startScanning(); }} onBlur={ () => { this.stopScanning(); }} />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
-          <ScanningForDFUCrownstonesBanner height={110} />
+          <ScanningForDFUCrownstonesBanner height={110} componentId={this.props.componentId} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>
             <View style={{flex:1}} />
-            <Text style={{color: colors.black.hex, fontSize:16, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{"Collecting nearby Crownstones to update..."}</Text>
+            <Text style={{color: colors.black.hex, fontSize:16, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Collecting_nearby_Crownsto") }</Text>
             <View style={{flex:1}} />
           </View>
         </View>
         <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
-          <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ "Crownstones turn green once you're near enough. These will be updated when you press next. You can do this multiple times to get all of them!" }</Text>
+          <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Crownstones_turn_green_onc") }</Text>
         </View>
         <ScrollView style={{position:'relative', top:-1}}>
           <SeparatedItemList

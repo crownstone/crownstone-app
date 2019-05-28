@@ -20,20 +20,19 @@ import { FadeIn, FadeInView} from "../components/animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { BleUtil } from "../../util/BleUtil";
-// import { NavigationEvents } from "react-navigation";
 import KeepAwake from 'react-native-keep-awake';
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { ScanningForSetupCrownstonesBanner } from "../components/animated/ScanningForSetupCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { Bluenet } from "../../native/libInterface/Bluenet";
+import { Navigation } from "react-native-navigation";
+import { ViewStateWatcher } from "../components/ViewStateWatcher";
 
 export class ScanningForSetupCrownstones extends Component<any, any> {
   static options(props) {
-    // headerLeft: <TopbarBackButton text={ lang("Back")} onPress={() => { params.returnToRoute ? NavigationUtil.backTo(params.returnToRoute) : NavigationUtil.back() }} />
-    return TopBarUtil.getOptions({title:  lang("Add_Crownstones")});
+    return TopBarUtil.getOptions({title:  lang("Add_Crownstones"), closeModal: true});
   }
 
-
+  navigationEventListener;
   nothingYetTimeout;
   noScansAtAllTimeout;
   extendedNoScansAtAllTimeout;
@@ -58,6 +57,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
   componentDidMount() {
     this.setupEvents.push(core.eventBus.on("setupStoneChange", () => { this.setState({showNothingYet: false}) }));
     this.setupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this._startNothingYetTimeout() }));
+    this.navigationEventListener = Navigation.events().bindComponent(this);
     this._startNothingYetTimeout();
   }
 
@@ -109,7 +109,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
       // near to one I own?
       if (data.isInDFUMode === true || data.serviceData.setupMode === true) { return; }
 
-      if (MapProvider.stoneSphereHandleMap[data.handle] === undefined) {
+      if (MapProvider.stoneHandleMap[data.handle] === undefined) {
         this.nearUnknownCrownstoneHandle = data.handle;
         if (this.state.showVerifiedUnowned === false) {
           this.setState({ showVerifiedUnowned: true });
@@ -195,12 +195,13 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
     return (
       <Background hasNavBar={false} image={core.background.light}>
         <KeepAwake />
-        {/*<NavigationEvents*/}
-        {/*  onWillFocus={() => { this._startActiveScanning(); }}*/}
-        {/*  onWillBlur={ () => { this._stopActiveScanning();  }}*/}
-        {/*/>*/}
+        <ViewStateWatcher
+          componentId={this.props.componentId}
+          onFocus={() => { this._startActiveScanning(); }}
+          onBlur={ () => { this._stopActiveScanning();  }}
+        />
         <View style={{...styles.centered, width: screenWidth, height: 100, ...borderStyle, overflow:'hidden'}}>
-          <ScanningForSetupCrownstonesBanner height={100}/>
+          <ScanningForSetupCrownstonesBanner componentId={this.props.componentId} height={100}/>
           <View style={{flex:1, }} />
           <View style={{...styles.centered, flexDirection:'row', flex:1, minHeight:40 }}>
             <View style={{flex:1}} />
@@ -229,16 +230,16 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
             <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center'}}>{ lang("I_still_cant_find_any_BLE_") }</Text>
           </SlideFadeInView>
           <SlideFadeInView duration={300} height={120} visible={showNearUnverified} style={{...styles.centered, width:screenWidth, height:120, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
-            <TouchableOpacity style={{...styles.centered, width:screenWidth, height:120}} onPress={() => { NavigationUtil.navigate( "SettingsFactoryResetStep1"); }}>
+            <TouchableOpacity style={{...styles.centered, width:screenWidth, height:120}} onPress={() => { NavigationUtil.launchModal( "SettingsFactoryResetStep1"); }}>
               <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>{ lang("Youre_really_close_to_a_Cr") }</Text>
             </TouchableOpacity>
           </SlideFadeInView>
           <SlideFadeInView duration={300} height={80} visible={ids.length === 0 && this.state.showVerifiedUnowned === true} style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
             <TouchableOpacity
-              style={{...styles.centered, width:screenWidth, height:120}}
+              style={{...styles.centered, width:screenWidth, height:120, padding:10}}
               onPress={() => { NavigationUtil.navigate( "SetupCrownstone", {sphereId: this.props.sphereId, setupStone: {handle: this.nearUnknownCrownstoneHandle}, unownedVerified: true}); }}
             >
-              <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold"}}>{ lang("_________________I_see_a_C") }</Text>
+              <Text style={{color: colors.csBlueDark.hex, fontSize:14, fontWeight: "bold", textAlign:'center'}}>{ lang("_________________I_see_a_C") }</Text>
             </TouchableOpacity>
           </SlideFadeInView>
         </ScrollView>

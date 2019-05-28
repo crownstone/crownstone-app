@@ -8,6 +8,7 @@ interface topbarOptions {
   right? : topbarComponent,
 
   // left button presets
+  disableBack? : boolean,
   cancelModal? : boolean,
   closeModal? : boolean,
   cancel? : () => void,
@@ -55,6 +56,9 @@ export const TopBarUtil = {
       })
     }
 
+    if (props.disableBack === true) {
+      leftButtons.push({id: 'disableBack', component: { name: 'topbarEmptyButton' }});
+    }
     if (props.closeModal !== undefined) {
       leftButtons.push(getLeftButtonCloseModal('back', Languages.get("__UNIVERSAL", "Back")));
     }
@@ -99,6 +103,8 @@ export const TopBarUtil = {
     if (!partialUpdate || leftButtons.length  > 0) { results.topBar["leftButtons"] = leftButtons; }
     if (!partialUpdate || rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons; }
 
+
+    console.log("Setting Topbar Options", results)
     return results;
   },
 }

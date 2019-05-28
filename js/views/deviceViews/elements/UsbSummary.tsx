@@ -17,6 +17,7 @@ import { Permissions}          from "../../../backgroundProcesses/PermissionMana
 import {DeviceButton, DeviceInformation} from "./DeviceSummary";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { OverlayUtil } from "../../overlays/OverlayUtil";
 
 export class UsbSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
@@ -75,7 +76,9 @@ export class UsbSummary extends LiveComponent<any, any> {
         <DeviceInformation
           right={locationLabel}
           rightValue={locationName}
-          rightTapAction={spherePermissions.moveCrownstone ? () => { NavigationUtil.navigate( "RoomSelection",{sphereId: this.props.sphereId,stoneId: this.props.stoneId,locationId: this.props.locationId}); } : null}
+          rightTapAction={spherePermissions.moveCrownstone ? () => {
+            OverlayUtil.callRoomSelectionOverlayForStonePlacement(this.props.sphereId, this.props.stoneId)
+          } : null }
         />
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>

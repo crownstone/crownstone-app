@@ -59,6 +59,12 @@ export class TopbarButton extends Component<any, any> {
 }
 
 
+export class TopbarEmptyButton extends Component<any, any> {
+  render() {
+    return <View />
+  }
+}
+
 export class TopbarLeftButton extends Component<any, any> {
   render() {
     return <TopbarButton {...this.props} alignmentStyle={topBarStyle.topBarLeftTouch}/>

@@ -7,9 +7,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Animated,
   TouchableOpacity,
-  View} from "react-native";
-import { Pagination } from 'react-native-snap-carousel';
+  View
+} from "react-native";
 import { core } from "../../core";
 import { Interview } from "../components/Interview";
 import { IconCircle } from "../components/IconCircle";
@@ -25,6 +26,8 @@ import KeepAwake from 'react-native-keep-awake';
 import { BlePromiseManager } from "../../logic/BlePromiseManager";
 import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { delay } from "../../util/Util";
+import { BleUtil } from "../../util/BleUtil";
 
 export class SetupCrownstone extends LiveComponent<any, any> {
   static options(props) {
@@ -69,7 +72,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
 
 
   _disableBackButton() {
-    // this.props.navigation.setParams({disableBack: true});
+    TopBarUtil.updateOptions(this.props.componentId, {title:  lang("New_Crownstone"), disableBack: true})
     // TODO: disable android back button
   }
 
@@ -119,6 +122,9 @@ export class SetupCrownstone extends LiveComponent<any, any> {
             return this._interview.setLockedCard("aborted");
           }
 
+          console.log("FAILED>>>> err",err)
+
+
           if (err.code) {
             if (err.code === 1) {
               this._interview.setLockedCard("problemBle");
@@ -147,9 +153,15 @@ export class SetupCrownstone extends LiveComponent<any, any> {
       };
       BlePromiseManager.registerPriority(resetPromise, {from: 'Setup: resetting stone ' + this.props.setupStone.handle})
         .then(() => {
+          return delay(2000);
+        })
+        .then(() => {
+          return BlePromiseManager.registerPriority(() => { return BleUtil.detectSetupCrownstone(this.props.setupStone.handle); }, {from: 'Setup: searching for stone ' + this.props.setupStone.handle})
+        })
+        .then(() => {
           return performSetup();
         })
-        .catch(() => {
+        .catch((err) => {
           this._interview.setLockedCard("problem");
         })
     }
@@ -221,7 +233,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
       icon: "md-cube",
       theme: 'create',
       onSelect: () => {
-        NavigationUtil.navigate( "RoomAdd", {sphereId: sphereId, returnToRoute:'SetupCrownstone_step1'});
+        NavigationUtil.navigate( "RoomAdd", {sphereId: sphereId, isModal: false});
       }
     });
 
@@ -252,6 +264,21 @@ export class SetupCrownstone extends LiveComponent<any, any> {
       {
         label: lang("Ill_try_again_later___"),
         onSelect: (result) => { NavigationUtil.dismissModal(); }
+      },
+    ];
+
+    let successOptions = [
+      {
+        label: lang("Add_more_Crownstones_"),
+        onSelect: (result) => {
+          NavigationUtil.back();
+        }
+      },
+      {
+        label: lang("Take_me_to__",this.newCrownstoneState.location.name),
+        onSelect: (result) => {
+          NavigationUtil.dismissAllModalsAndNavigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id });
+        }
       },
     ];
 
@@ -335,7 +362,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         ),
         options: [
           {
-            label: this.abort === true ? "Aborting..." : "Abort",
+            label: lang("Aborting___Abort",this.abort,true),
             onSelect: (result) => { this.abort = true; this.forceUpdate(); },
             dangerous: true,
           }
@@ -351,30 +378,12 @@ export class SetupCrownstone extends LiveComponent<any, any> {
           </View>
         ),
         optionsBottom: true,
-        options: [
-          {
-            label: lang("Add_more_Crownstones_"),
-            onSelect: (result) => {
-              if (SetupStateHandler.areSetupStonesAvailable()) {
-                NavigationUtil.back();
-              }
-              else {
-                NavigationUtil.backTo("AddCrownstones");
-              }
-            }
-          },
-          {
-            label: lang("Take_me_to__",this.newCrownstoneState.location.name),
-            onSelect: (result) => {
-              NavigationUtil.dismissModal();
-              NavigationUtil.navigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id });
-            }
-          },
-        ]
+        options: successOptions
       },
       successWhileAborting: {
         header:"Setup complete.",
         subHeader: "This Crownstone was added to your Sphere before I aborted the process. You can remove it from your Sphere in this Crownstone's settings if you'd like.",
+        textColor: colors.white.hex,
         backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
         component: (
           <View style={{...styles.centered, flex:1}}>
@@ -382,26 +391,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
           </View>
         ),
         optionsBottom: true,
-        options: [
-          {
-            label: lang("Add_more_Crownstones_"),
-            onSelect: (result) => {
-              if (SetupStateHandler.areSetupStonesAvailable()) {
-                NavigationUtil.back();
-              }
-              else {
-                NavigationUtil.backTo("AddCrownstones");
-              }
-            }
-          },
-          {
-            label: lang("Take_me_to__",this.newCrownstoneState.location.name),
-            onSelect: (result) => {
-              NavigationUtil.dismissModal();
-              NavigationUtil.navigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id });
-            }
-          },
-        ]
+        options: successOptions
       },
       iKnowThisOne: {
         header:"I know this one!",
@@ -411,26 +401,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
           "What would you like to do now?",
         backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.png'),
         optionsBottom: true,
-        options: [
-          {
-            label: lang("Add_more_Crownstones_"),
-            onSelect: (result) => {
-              if (SetupStateHandler.areSetupStonesAvailable()) {
-                NavigationUtil.back();
-              }
-              else {
-                NavigationUtil.backTo("AddCrownstones");
-              }
-            }
-          },
-          {
-            label: lang("Take_me_to__",this.newCrownstoneState.location.name),
-            onSelect: (result) => {
-              NavigationUtil.dismissModal();
-              NavigationUtil.navigate("RoomOverview", {sphereId: this.props.sphereId, locationId: this.newCrownstoneState.location.id });
-            }
-          },
-        ]
+        options: successOptions
       },
       problemCloud: {
         header:"Something went wrong..",

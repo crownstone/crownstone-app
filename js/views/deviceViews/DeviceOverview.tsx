@@ -27,7 +27,6 @@ import { DeviceSchedule }       from "./elements/DeviceSchedule";
 import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
 import { Permissions }          from "../../backgroundProcesses/PermissionManager";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
-import { TopbarButton }         from "../components/topbar/TopbarButton";
 import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
 import { UsbSummary }           from "./elements/UsbSummary";
@@ -298,15 +297,6 @@ function getTopBarProps(store, state, props, swiperIndex, scrolling) {
 
   let spherePermissions = Permissions.inSphere(props.sphereId);
 
-  let whatsNewEnabledFirmwares = {
-    '2.0.0': true,
-    '2.0.1': true,
-  };
-  let showWhatsNew = Permissions.inSphere(props.sphereId).canUpdateCrownstone &&
-    stone.config.firmwareVersionSeenInOverview &&
-    (stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) &&
-    whatsNewEnabledFirmwares[stone.config.firmwareVersion];
-
   // check what we want to show the user:
   let hasError   = stone.errors.hasError;
   let mustUpdate = xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
@@ -314,8 +304,7 @@ function getTopBarProps(store, state, props, swiperIndex, scrolling) {
 
   // only shift the indexes (move the edit button to the next pages) if we do not have a mandatory view
   if (!hasError && !mustUpdate) {
-    if (showWhatsNew) { summaryIndex++; behaviourIndex++; }
-    if (canUpdate)    { summaryIndex++; behaviourIndex++; }
+    if (canUpdate) { summaryIndex++; behaviourIndex++; }
   }
 
   // if this stone requires to be dfu-ed to continue working, block all other actions.

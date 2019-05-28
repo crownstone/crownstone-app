@@ -50,7 +50,15 @@ export class RoomAdd extends LiveComponent<any, any> {
     };
 
     if (this.props.componentId) {
-      TopBarUtil.updateOptions(this.props.componentId, { cancel: () => { this.cancelEdit();}});
+      TopBarUtil.updateOptions(this.props.componentId, { cancel: () => {
+        this.cancelEdit();
+        if (this.props.isModal) {
+          NavigationUtil.dismissModal();
+        }
+        else {
+          NavigationUtil.back();
+        }
+      }});
     }
   }
   
@@ -229,12 +237,11 @@ export class RoomAdd extends LiveComponent<any, any> {
       .then(() => { core.store.batchDispatch(actions); })
       .catch(() => {});
 
-    if (this.props.returnToRoute) {
-      NavigationUtil.dismissModal();
+    if (this.props.isModal !== true) {
+      NavigationUtil.back();
     }
     else {
-      NavigationUtil.dismissModal();
-      NavigationUtil.navigate( "RoomOverview",{sphereId: this.props.sphereId, locationId: localId, title: this.newRoomData.name, __popBeforeAddCount: 2});
+      NavigationUtil.dismissAllModalsAndNavigate( "RoomOverview",{sphereId: this.props.sphereId, locationId: localId, title: this.newRoomData.name});
     }
   }
 

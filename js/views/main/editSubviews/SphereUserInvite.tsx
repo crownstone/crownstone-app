@@ -16,15 +16,13 @@ import { CLOUD } from '../../../cloud/cloudAPI'
 import {LOGe} from '../../../logging/Log'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
-import { TopbarBackButton } from "../../components/topbar/TopbarButton";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class SphereUserInvite extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Invite")});
+    return TopBarUtil.getOptions({title: lang("Invite"), closeModal: true});
   }
-
 
   inputStates : any;
 
@@ -159,8 +157,8 @@ export class SphereUserInvite extends Component<any, any> {
   render() {
 
     return (
-      <Background image={core.background.menu} >
-                <ScrollView>
+      <Background hasNavBar={false} image={core.background.menu} >
+        <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>

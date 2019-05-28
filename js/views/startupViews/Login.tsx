@@ -79,7 +79,10 @@ export class Login extends Component<any, any> {
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        Alert.alert("An email was sent to " + this.state.email.toLowerCase() + "!","Please click the link there to validate your email address and log in again.", [{text:"OK"}]);
+        Alert.alert(
+lang("_An_email_was_sent_to_____a_header",this.state.email.toLowerCase()),
+lang("_An_email_was_sent_to_____a_body"),
+[{text:lang("_An_email_was_sent_to_____a_left")}]);
       })
       .catch((reply) => {
         let defaultAction = () => {core.eventBus.emit('hideLoading')};
@@ -96,7 +99,10 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        Alert.alert("An email was sent to " + this.state.email.toLowerCase() + "!","Please follow the instructions there to reset your password and log in again.", [{text:"OK"}]);
+        Alert.alert(
+lang("_An_email_was_sent_to_____ar_header",this.state.email.toLowerCase()),
+lang("_An_email_was_sent_to_____ar_body"),
+[{text:lang("_An_email_was_sent_to_____ar_left")}]);
       })
       .catch((reply) => {
         let content = "Please try again.";
@@ -222,7 +228,7 @@ lang("_Incorrect_Email_or_Passw_body"),
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} hideOrangeBar={true}>
+      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} hideOrangeBar={true} keyboardAvoid={true}>
         <TopbarImitation leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>

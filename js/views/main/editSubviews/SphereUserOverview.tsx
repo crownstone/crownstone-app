@@ -122,9 +122,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
         labelStyle: {color: colors.menuTextSelected.hex, fontWeight:'bold'},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft: 3, marginRight: 7}}/>,
         callback: () => {
-          NavigationUtil.navigate( "SphereUserInvite",{
-            sphereId: this.props.sphereId
-          });
+          NavigationUtil.launchModal( "SphereUserInvite",{ sphereId: this.props.sphereId });
         }
       });
     }
@@ -140,7 +138,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false}>
-                <ScrollView>
+        <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>

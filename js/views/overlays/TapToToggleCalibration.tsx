@@ -211,7 +211,7 @@ export class TapToToggleCalibration extends Component<any, any> {
     }
 
     return (
-      <View style={{flex:1, alignItems:'center'}}>
+      <View style={{flex:1, alignItems:'center', paddingBottom:30}}>
         <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{props.title}</Text>
         <Image source={props.image} style={{width:0.45*screenWidth, height:0.45*screenWidth, margin:0.025*screenHeight}} />
         <Text style={{fontSize: 14, fontWeight: 'bold', color: colors.csBlue.hex, textAlign:'center'}}>{props.header}</Text>

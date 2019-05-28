@@ -32,7 +32,6 @@ import { RoomEdit }                    from '../views/roomViews/RoomEdit'
 import { RoomAdd }                     from '../views/roomViews/RoomAdd'
 import { RoomTraining }                from '../views/roomViews/RoomTraining'
 import { RoomTraining_roomSize }       from '../views/roomViews/RoomTraining_roomSize'
-import { RoomSelection }               from '../views/roomViews/RoomSelection'
 import { RoomIconSelection }           from '../views/roomViews/RoomIconSelection'
 import { SphereOverview }              from '../views/main/SphereOverview'
 import { SelectFromList }              from '../views/selection/SelectFromList'
@@ -142,7 +141,6 @@ export const Views = {
   RoomEdit:                          RoomEdit,
   RoomIconSelection:                 RoomIconSelection,
   RoomOverview:                      RoomOverview,
-  RoomSelection:                     RoomSelection,
   RoomTraining:                      RoomTraining,
   RoomTraining_roomSize:             RoomTraining_roomSize,
   SelectFromList:                    SelectFromList,

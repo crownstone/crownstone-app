@@ -2,9 +2,9 @@ import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper}  from '../libInterface/BluenetPromise';
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import { SetupStateHandler } from "../setup/SetupStateHandler";
-import {Scheduler} from "../../logic/Scheduler";
 import { core } from "../../core";
 import { StoneUtil } from "../../util/StoneUtil";
+import { delay } from "../../util/Util";
 
 export class DfuHelper {
   handle : any;
@@ -65,68 +65,6 @@ export class DfuHelper {
         })
     })
   }
-
-  // getBootloaderVersion() {
-  //   let setupPromise = () => {
-  //     return new Promise((resolve, reject) => {
-  //       BluenetPromiseWrapper.connect(this.handle, this.sphereId)
-  //         .then(() => {
-  //           LOG.info("DfuHelper: DFU progress: Reconnected.");
-  //           return BluenetPromiseWrapper.getBootloaderVersion();
-  //         })
-  //         .then((bootloaderVersion) => {
-  //           LOG.info("DfuHelper: DFU progress: Obtained bootloader version:", bootloaderVersion);
-  //           this.stoneBootloaderVersion = bootloaderVersion;
-  //           return BluenetPromiseWrapper.phoneDisconnect();
-  //         })
-  //         .then(() => { return delay(1000); })
-  //         .then(() => {
-  //           resolve(this.stoneBootloaderVersion);
-  //         })
-  //         .catch((err) => {
-  //           LOGe.info("DfuHelper: Error during getBootloaderVersion.", err);
-  //           BluenetPromiseWrapper.phoneDisconnect().catch(() => {});
-  //           reject(err);
-  //         })
-  //     })
-  //   };
-  //
-  //   // we load the DFU into the promise manager with priority so we are not interrupted
-  //   return BlePromiseManager.registerPriority(setupPromise, {from: 'Setup: determining bootloader version: ' + this.handle});
-  // }
-
-  // performPhase(phaseNumber, crownstoneMode: crownstoneModes) : Promise<any> {
-  //   if (this.phases.length < phaseNumber - 1) {
-  //     return new Promise((resolve, reject) => {
-  //       reject("This phase does not exist in the queue" + JSON.stringify(this.phases));
-  //     })
-  //   }
-  //
-  //
-  //   switch (this.phases[phaseNumber]) {
-  //     case bootloaderUpdate:
-  //       return this._updateBootloader(crownstoneMode).then(() => { return 'BOOTLOADER_UPLOADED'});
-  //     case firmwareUpdate:
-  //       return this._updateFirmware(crownstoneMode).then(() => { return 'FIRMWARE_UPLOADED'});
-  //     case resetAfterUpdate:
-  //       return this._reset(crownstoneMode);
-  //     case setupAfterUpdate:
-  //       return this._setup(crownstoneMode);
-  //     default:
-  //       break;
-  //   }
-  // }
-
-  // dfuSegmentFinishedAtPhase(phaseNumber) {
-  //   if (phaseNumber < this.phases.length && (this.phases[phaseNumber] === resetAfterUpdate || this.phases[phaseNumber] === setupAfterUpdate)) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-  //
-  // finish() {
-  //   this.eventSubscriptions.forEach((unsubscribe) => { unsubscribe(); });
-  // }
 
   restartInAppMode() {
     let action = () => {
@@ -237,15 +175,4 @@ export class DfuHelper {
   }
 }
 
-const delay = function(ms, performAfterDelay = null) {
-  return new Promise((resolve, reject) => {
-    // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-    Scheduler.scheduleCallback(() => {
-      if (performAfterDelay !== null && typeof performAfterDelay === 'function') {
-        performAfterDelay()
-      }
-      resolve();
-    }, ms, 'dfuDelay');
-  })
-};
 

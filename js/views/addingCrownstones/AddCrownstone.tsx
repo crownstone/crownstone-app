@@ -148,7 +148,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : "Back"}
-          leftAction={() => { if (this._interview.back() === false) { NavigationUtil.dismissAllModals(); }}}
+          leftAction={() => { if (this._interview.back() === false) { NavigationUtil.dismissModal(); }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
           ref={     (i) => { this._interview = i; }}

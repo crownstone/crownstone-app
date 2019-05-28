@@ -2,11 +2,13 @@ import { Component } from "react";
 import * as React from "react";
 import { colors, screenWidth } from "../../styles";
 import { AnimatedIconBanner } from "./AnimatedIconBanner";
+import { ViewStateWatcher } from "../ViewStateWatcher";
 
-export class BatchDFUCrownstonesBanner extends Component<{height: number}, any> {
+export class BatchDFUCrownstonesBanner extends Component<{height: number, componentId: any}, any> {
   render() {
     return (
       <AnimatedIconBanner
+        componentId={this.props.componentId}
         height={this.props.height}
         icons={[
           { name: "ios-construct", size: 90,  top:-15, left:130 },

@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { FadeInView } from "./FadeInView";
 import { colors, screenWidth } from "../../styles";
 import { Icon } from "../Icon";
-// import { NavigationEvents } from "react-navigation";
+import { ViewStateWatcher } from "../ViewStateWatcher";
 
 interface iconData {
   name: string,
@@ -15,7 +15,7 @@ interface iconData {
 }
 
 export class AnimatedIconBanner extends Component<
-  {icons: iconData[], colors: string[], duration?: number, height: number},
+  {icons: iconData[], colors: string[], duration?: number, height: number, componentId: any},
   any> {
 
   iconTimeout;
@@ -58,10 +58,12 @@ export class AnimatedIconBanner extends Component<
   }
 
   start() {
+    console.log("STARTING ANIMATION")
     this._cycleIcons();
   }
 
   stop() {
+    console.log("STOPPING ANIMATION")
     clearTimeout(this.iconTimeout);
   }
 
@@ -102,10 +104,11 @@ export class AnimatedIconBanner extends Component<
         width: screenWidth, height: this.props.height,
         overflow:'hidden'
       }}>
-        {/*<NavigationEvents*/}
-        {/*  onWillFocus={() => { this.start(); }}*/}
-        {/*  onWillBlur={ () => { this.stop(); }}*/}
-        {/*/>*/}
+        <ViewStateWatcher
+          componentId={ this.props.componentId }
+          onFocus={() => { this.start(); }}
+          onBlur={ () => { this.stop(); }}
+        />
         { this._getColors() }
         { this._getIcons() }
       </View>

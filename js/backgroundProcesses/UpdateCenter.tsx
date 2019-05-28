@@ -1,3 +1,9 @@
+
+import { Languages } from "../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("UpdateCenter", key)(a,b,c,d,e);
+}
 import { core } from "../core";
 import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
 import * as React from "react";
@@ -16,10 +22,10 @@ export const UpdateCenter = {
           source: "UpdateCenter",
           id: "UpdateCenter" + sphereId,
           sphereId: sphereId,
-          label: "Update available!",
+          label: lang("Update_available_"),
           icon: "c1-update-arrow",
           callback: () => {
-            NavigationUtil.navigate( "DfuIntroduction", {sphereId: sphereId});
+            NavigationUtil.launchModal( "DfuIntroduction", {sphereId: sphereId});
           }
         });
       }

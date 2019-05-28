@@ -87,8 +87,7 @@ export const BleUtil = {
     })
   },
 
-  detectCrownstone: function(stoneHandle) {
-    this.cancelSearch();
+  _detect: function(handle, topic) {
     return new Promise((resolve, reject) => {
       let count = 0;
       let highFrequencyRequestUUID = xUtil.getUUID();
@@ -96,9 +95,9 @@ export const BleUtil = {
 
       let cleanup = {unsubscribe:()=>{}, timeout: undefined};
       let sortingCallback = (advertisement) => {
-        LOG.info("detectCrownstone: Advertisement in detectCrownstone", stoneHandle, advertisement);
+        LOG.info("detectCrownstone: Advertisement in detectCrownstone", handle, advertisement);
 
-        if (advertisement.handle === stoneHandle)
+        if (advertisement.handle === handle)
           count += 1;
 
         // three consecutive measurements before timeout is OK
@@ -116,8 +115,8 @@ export const BleUtil = {
         resolve(advertisement.setupPackage);
       };
 
-      LOGd.info("detectCrownstone: Subscribing To ", core.nativeBus.topics.advertisement);
-      cleanup.unsubscribe = core.nativeBus.on(core.nativeBus.topics.advertisement, sortingCallback);
+      LOGd.info("detectCrownstone: Subscribing To ", topic);
+      cleanup.unsubscribe = core.nativeBus.on(topic, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
       cleanup.timeout = Scheduler.scheduleCallback(() => {
@@ -127,6 +126,18 @@ export const BleUtil = {
       }, 10000, 'detectCrownstone timeout');
     })
   },
+
+  detectCrownstone: function(stoneHandle) {
+    this.cancelSearch();
+    return this._detect(stoneHandle, core.nativeBus.topics.advertisement);
+  },
+
+  detectSetupCrownstone: function(stoneHandle) {
+    this.cancelSetupSearch();
+    return this._detect(stoneHandle, core.nativeBus.topics.setupAdvertisement);
+  },
+
+
 
   /**
    *

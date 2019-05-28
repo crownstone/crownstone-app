@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DfuDeviceUpdaterEntry", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -141,7 +147,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
   _getDetailText() {
     if (this.state.isUpdating) {
       if (this.state.phase === "PREPERATION" || !this.state.phase) {
-        return <Text style={{fontSize: 12, fontWeight: '100'}}>{"Preparing..."}</Text>
+        return <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Preparing___") }</Text>
       }
       else {
         let progressLabel = null;
@@ -150,7 +156,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
           case "FIRMWARE":    progressLabel = "Updating Firmware..."; break;
           case "SETUP":       progressLabel = "Finalizing..."; break;
         }
-         return <Text style={{fontSize: 12, fontWeight: '100'}}>{"Step " + (this.state.currentStep+1) + " / " + this.state.totalSteps + ": " + progressLabel}</Text>
+         return <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Step______",this.state.currentStep || 1,this.state.totalSteps,progressLabel) }</Text>
       }
     }
   }
@@ -174,11 +180,11 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
             <View style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}>
               <View style={{flexDirection: 'column'}}>
                 <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : '100'}}>{stone.config.name}</Text>
-                { this.state.isUpdating ? <Text style={{fontSize: 14, fontWeight: '100'}}>{"Update in progress..."}</Text> : undefined }
-                { shouldStillUpdate ? <Text style={{fontSize: 14, fontWeight: '100'}}>{"Waiting for update..."}</Text>: undefined }
+                { this.state.isUpdating ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("Update_in_progress___") }</Text> : undefined }
+                { shouldStillUpdate ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("Waiting_for_update___") }</Text>: undefined }
                 { this._getDetailText() }
-                { this.state.updateSuccessful ? <Text style={{fontSize: 14, fontWeight: 'bold'}}>{"Update finished!"}</Text> : undefined }
-                { this.state.updateFailed ?     <Text style={{fontSize: 14, fontWeight: 'bold'}}>{"Update failed, I'll retry it!"}</Text> : undefined }
+                { this.state.updateSuccessful ? <Text style={{fontSize: 14, fontWeight: 'bold'}}>{ lang("Update_finished_") }</Text> : undefined }
+                { this.state.updateFailed ?     <Text style={{fontSize: 14, fontWeight: 'bold'}}>{ lang("Update_failed__Ill_retry_i") }</Text> : undefined }
               </View>
             </View>
             { this.props.isUpdating ? <ActivityIndicator animating={true} size='large' color={colors.csBlueDark.hex} /> : null}

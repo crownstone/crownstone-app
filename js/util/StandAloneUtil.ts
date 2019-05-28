@@ -382,7 +382,7 @@ export const xUtil = {
     JSON.stringify( obj, function( key, value ){ allKeys.push( key ); return value; } )
     allKeys.sort();
     return JSON.stringify( obj, allKeys, 2 );
-  }
+  },
 };
 
 

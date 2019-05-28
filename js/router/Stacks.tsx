@@ -22,7 +22,7 @@ export const Stacks = {
     }
   },
 
-  newUser: function() {
+  tutorial: function() {
     return {
       stack: {
         children: [
@@ -32,7 +32,7 @@ export const Stacks = {
     }
   },
 
-  tutorial: function() {
+  newUser: function() {
     return {
       stack: {
         children: [
@@ -94,12 +94,10 @@ export const Stacks = {
   },
 
   logout: function() {
-    Navigation.setRoot({
-      root: {
-        component: {
-          name: "Logout"
-        },
+    return {
+      component: {
+        name: "Logout"
       }
-    });
+    }
   },
 }

@@ -5392,7 +5392,7 @@ prop-types@*:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-prop-types@15.x.x, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.1, prop-types@^15.7.2:
+prop-types@15.x.x, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -5527,6 +5527,13 @@ react-native-camera-kit@7.3.5:
   integrity sha512-c4lfJCzKxhB5SZCpfbRzUwNcgj2X1ehyMCMu5eRk9oC6ucqwb4pA5cORzf82fLefTbAwBTPlk5h5zj/lCGQtMg==
   dependencies:
     lodash "^4.14.2"
+
+react-native-camera-roll-picker@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-camera-roll-picker/-/react-native-camera-roll-picker-1.3.0.tgz#7d28465da32f66155da7e8ae2ce79b0debeb6743"
+  integrity sha512-D9rG0jjyhcfB5GKvC9dU3wjlRf+1Dj4H/B9sZmBU1CppDBofHjNCTtVQsLQMhXAG6XbHZqHUqqJik0RKCuPZEQ==
+  dependencies:
+    prop-types "^15.6.0"
 
 react-native-cli@^2.0.1:
   version "2.0.1"

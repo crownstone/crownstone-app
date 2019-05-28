@@ -41,7 +41,6 @@ export class StoneEntity {
 
   lastKnownTimestamp = 0;
   lastKnownUniqueElement;
-  lastKnownRSSI : number;
   disabledTimeout;
   clearRssiTimeout;
 
@@ -175,7 +174,7 @@ export class StoneEntity {
       LOGd.advertisements("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
     }
 
-    this._handleBehaviour(state, stone);
+    this._handleBehaviour(state, stone, ibeaconPackage.rssi);
 
     // fallback to ensure we never miss an enter event caused by a bug in ios 10
     if (FALLBACKS_ENABLED) {
@@ -356,9 +355,9 @@ export class StoneEntity {
     this._handleAdvertisementContent(stone, advertisement);
   }
 
-  _handleBehaviour(state, stone) {
+  _handleBehaviour(state, stone, rssi) {
     // update the behaviour controller.
-    this.behaviour.update(state, stone, this.lastKnownRSSI);
+    this.behaviour.update(state, stone, rssi);
   }
 
 

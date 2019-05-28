@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DfuFinished", key)(a,b,c,d,e);
+}
 import * as React from 'react';
 import {
   Platform, View
@@ -12,12 +18,11 @@ import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 
 export class DfuFinished extends LiveComponent<any, any> {
+  static options = {
+    topBar: { visible: false }
+  };
 
   _interview : Interview;
-  constructor(props) {
-    super(props);
-
-  }
 
 
   getFailedCard() : interviewCards {
@@ -29,8 +34,8 @@ export class DfuFinished extends LiveComponent<any, any> {
         textColor: colors.white.hex,
         backgroundImage:  require('../../images/backgrounds/upgradeBackgroundFailed.png'),
         options: [
-          {label: "Not right now...", onSelect: () => { NavigationUtil.dismissModal() }},
-          {label: "Yes!",     onSelect: () => { NavigationUtil.back() }},
+          {label: lang("Not_right_now___"), onSelect: () => { NavigationUtil.dismissModal() }},
+          {label: lang("Yes_"),     onSelect: () => { NavigationUtil.backTo("DfuScanning") }},
         ]
       },
     }
@@ -52,8 +57,8 @@ export class DfuFinished extends LiveComponent<any, any> {
           </View>
         ),
         options: [
-          {label: "That's enough for now...", onSelect: () => { NavigationUtil.dismissModal()}},
-          {label: "Let's do the rest of them!", onSelect: () => { NavigationUtil.back() }},
+          {label: lang("Thats_enough_for_now___"), onSelect: () => { NavigationUtil.dismissModal()}},
+          {label: lang("Lets_do_the_rest_of_them_"), onSelect: () => {  NavigationUtil.backTo("DfuScanning") }},
         ]
       },
     }
@@ -73,7 +78,7 @@ export class DfuFinished extends LiveComponent<any, any> {
           </View>
         ),
         options: [
-          {label: "Great!", onSelect: () => { NavigationUtil.back() }},
+          {label: lang("Great_"), onSelect: () => { NavigationUtil.dismissModal() }},
         ]
       },
     }
@@ -95,7 +100,7 @@ export class DfuFinished extends LiveComponent<any, any> {
           </View>
         ),
         options: [
-          {label: "I'll try again later!", onSelect: () => { NavigationUtil.backTo("DfuScanning") }},
+          {label: lang("Ill_try_again_later_"), onSelect: () => { NavigationUtil.backTo("DfuScanning") }},
         ]
       },
     }

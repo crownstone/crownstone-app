@@ -2,11 +2,10 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceEntry", key)(a,b,c,d,e);
+  return Languages.get("DfuDeviceOverviewEntry", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  TouchableOpacity,
   Text,
   View} from "react-native";
 
@@ -53,16 +52,16 @@ export class DfuDeviceOverviewEntry extends Component<any, any> {
             <View style={{flexDirection: 'column'}}>
               <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : '100'}}>{stone.config.name}</Text>
               { this.props.visible && !this.props.closeEnough ?
-                <Text style={{fontSize: 14, fontWeight: '100'}}>{"In range but not close enough yet!"}</Text> :
+                <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("In_range_but_not_close_eno") }</Text> :
                 undefined }
               { !this.props.visible && !this.props.closeEnough ?
-                <Text style={{fontSize: 14, fontWeight: '100'}}>{"Searching..."}</Text> :
+                <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("Searching___") }</Text> :
                 undefined }
               { !this.props.visible && !this.props.closeEnough && locationName ?
-                <Text style={{fontSize: 12, fontWeight: '100'}}>{"Located in " + locationName + "."}</Text> :
+                <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Located_in__",locationName) }</Text> :
                 undefined }
               { this.props.closeEnough ?
-                <Text style={{fontSize: 15, fontWeight: 'bold'}}>{"Close enough for update!"}</Text> :
+                <Text style={{fontSize: 15, fontWeight: 'bold'}}>{ lang("Close_enough_for_update_") }</Text> :
                 undefined }
             </View>
           </View>

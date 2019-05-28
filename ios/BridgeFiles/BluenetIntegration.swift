@@ -40,8 +40,6 @@ open class BluenetJS: RCTEventEmitter {
       }
     })
     
-    
-    
     print("BluenetBridge: ----- BLUENET BRIDGE: Rerouting events")
     
     _ = GLOBAL_BLUENET.classifier.subscribe("__classifierProbabilities", callback:{ (data) -> Void in
@@ -57,7 +55,6 @@ open class BluenetJS: RCTEventEmitter {
         self.sendEvent(withName: "classifierResult", body: dict)
       }
     })
-    
     
     
     // forward the event streams to react native
