@@ -95,7 +95,7 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
         <TouchableOpacity
           key="nearFarWarning"
           style={{flexDirection: 'row'}}
-          onPress={() => { NavigationUtil.navigate( "DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});}}
+          onPress={() => { NavigationUtil.launchModal( "DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});}}
         >
           <Text style={textStyle.warning}>{ lang("Near_away_is_disabled_unt") }</Text>
         </TouchableOpacity>
@@ -144,7 +144,7 @@ export class DeviceBehaviour extends LiveComponent<any, any> {
         <View style={{flex: 2}} />
         { element.config.onlyOnWhenDark === true && state.app.indoorLocalizationEnabled ?
         <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {
-          NavigationUtil.navigate( "DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+          NavigationUtil.launchModal( "DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
         }}>
           <Text style={textStyle.value}>{ lang("I_will_") }</Text>
           <Text style={[textStyle.value,{fontStyle: 'italic'}]}>{ lang("only_") }</Text>
@@ -280,14 +280,14 @@ class BehaviourResponse extends Component<any, any> {
     else {
       return (
         <TouchableOpacity style={{alignItems:'center'}} onPress={() => {
-          NavigationUtil.navigate( "DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+          NavigationUtil.launchModal( "DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
         }}>
           {content}
         </TouchableOpacity>
       );
     }
   }
-}
+} 
 
 export const textStyle = StyleSheet.create({
   title: {

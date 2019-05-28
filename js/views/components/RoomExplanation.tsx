@@ -50,7 +50,7 @@ export class RoomExplanation extends Component<any, any> {
     if (shouldShowTrainingButton(state, this.props.sphereId, this.props.locationId)) {
       explanation = lang("Train_Room");
       boldExplanation = true;
-      buttonCallback = () => { NavigationUtil.navigate( "RoomTraining_roomSize", { sphereId: this.props.sphereId, locationId: this.props.locationId }); }
+      buttonCallback = () => { NavigationUtil.launchModal( "RoomTraining_roomSize", { sphereId: this.props.sphereId, locationId: this.props.locationId }); }
     }
 
     if (explanation === undefined) {
@@ -92,20 +92,10 @@ function shouldShowTrainingButton(state, sphereId, locationId) {
   if (!location) { return false; }
 
   if (!state.app.indoorLocalizationEnabled) { return false; } // do not show localization if it is disabled
-  if (sphere.state.present === true)             { return false; } // cant train a room when not in the sphere
+  if (sphere.state.present === true)        { return false; } // cant train a room when not in the sphere
   if (!enoughCrownstonesInLocations)        { return false; } // not enough crownstones to train this room
 
   if (location.config.fingerprintRaw !== null) { return false; } // there already is a fingerprint, dont show animated training icon.
 
-  // this will show a one-time popup for localization
-  if (state.user.seenRoomFingerprintAlert !== true) {
-    let aiData = DataUtil.getAiData(state, sphereId);
-    core.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
-    Alert.alert(
-      lang("_Lets_teach_____arguments_header",aiData.name),
-      lang("_Lets_teach_____arguments_body",aiData.name),
-      [{text: lang("_Lets_teach_____arguments_left")}]
-    );
-  }
   return true;
 }

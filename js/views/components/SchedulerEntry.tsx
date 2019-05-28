@@ -139,7 +139,7 @@ export class SchedulerEntry extends Component<any, any> {
       return (
         <TouchableOpacity
           onPress={() => {
-           NavigationUtil.navigate( "DeviceScheduleEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
+           NavigationUtil.launchModal( "DeviceScheduleEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
           }}
           style={{
             flexDirection: 'row',

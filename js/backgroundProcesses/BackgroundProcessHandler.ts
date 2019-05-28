@@ -43,6 +43,7 @@ import { migrate } from "./migration/StoreMigration";
 import { CloudPoller } from "../logic/CloudPoller";
 import { UpdateCenter } from "./UpdateCenter";
 import { OverlayManager } from "./OverlayManager";
+import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -454,6 +455,7 @@ class BackgroundProcessHandlerClass {
     OverlayManager.init();
     Permissions.init();
     Scheduler.init();
+    StoneAvailabilityTracker.init();
     StoneManager.init();
     SetupStateHandler.init();
     ToonIntegration.init();

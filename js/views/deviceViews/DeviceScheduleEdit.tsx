@@ -230,7 +230,7 @@ lang("_Are_you_sure___Remove_sc_header"),
 lang("_Are_you_sure___Remove_sc_body"),
 [{text: lang("_Are_you_sure___Remove_sc_left"), style: 'cancel'}, {
 text: lang("_Are_you_sure___Remove_sc_right"), style:'destructive', onPress: () => {
-                NavigationUtil.back();
+                NavigationUtil.dismissModal();
                 core.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
               }}]
             )
@@ -334,7 +334,7 @@ lang("_Pick_a_day___You_need_to_body"),
           Alert.alert(
 lang("_Cant_see_Crownstone__You__header"),
 lang("_Cant_see_Crownstone__You__body"),
-[{text:lang("_Cant_see_Crownstone__You__left"), onPress: () => { NavigationUtil.back();}}],
+[{text:lang("_Cant_see_Crownstone__You__left"), onPress: () => { NavigationUtil.dismissModal();}}],
             {cancelable: false}
           );
           return;
@@ -424,7 +424,7 @@ lang("_Cant_see_Crownstone__You__body"),
             scheduleId: config.scheduleId,
             data: {scheduleEntryIndex:scheduleEntryIndex.data, ...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays) }
           });
-          NavigationUtil.back();
+          NavigationUtil.dismissModal();
         }, 500, 'Deactivate Schedule UI callback');
       })
       .catch((err) => {
@@ -465,7 +465,7 @@ text:lang("_Whoops__arguments___No___right"), onPress: () => { this._addSchedule
             scheduleId: this.props.scheduleId,
             data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
           });
-          NavigationUtil.back();
+          NavigationUtil.dismissModal();
         }, 500, 'Update Schedule UI callback');
       })
       .catch((err) => {
@@ -495,14 +495,14 @@ text:lang("_Whoops___I_could_not_tel_right"), onPress: () => { this._updateSched
             scheduleId: this.props.scheduleId,
             data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
           });
-          NavigationUtil.back();
+          NavigationUtil.dismissModal();
         }, 500, 'Deactivate Schedule UI callback');
       })
       .catch(() => {
         Alert.alert(
 lang("_Whoops___I_could_not_tell_header"),
 lang("_Whoops___I_could_not_tell_body"),
-[{text:lang("_Whoops___I_could_not_tell_left"), onPress:() => { core.eventBus.emit("hideLoading"); NavigationUtil.back(); }}, {
+[{text:lang("_Whoops___I_could_not_tell_left"), onPress:() => { core.eventBus.emit("hideLoading"); NavigationUtil.dismissModal(); }}, {
 text:lang("_Whoops___I_could_not_tell_right"), onPress: () => { this._disableSchedule(stone, schedule); } }],
           {cancelable: false}
         )
@@ -518,14 +518,14 @@ text:lang("_Whoops___I_could_not_tell_right"), onPress: () => { this._disableSch
         Scheduler.scheduleCallback(() => {
           core.eventBus.emit("hideLoading");
           core.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
-          NavigationUtil.back();
+          NavigationUtil.dismissModal();
         }, 500, 'Disable Schedule UI callback');
       })
       .catch(() => {
         Alert.alert(
 lang("_Whoops___I_could_not_tell__header"),
 lang("_Whoops___I_could_not_tell__body"),
-[{text:lang("_Whoops___I_could_not_tell__left"), onPress:() => { core.eventBus.emit("hideLoading"); NavigationUtil.back(); }}, {
+[{text:lang("_Whoops___I_could_not_tell__left"), onPress:() => { core.eventBus.emit("hideLoading"); NavigationUtil.dismissModal(); }}, {
 text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSchedule(stone, schedule); } }],
           {cancelable: false}
         )

@@ -1,16 +1,64 @@
 import { core } from "../../core";
-import { DISABLE_TIMEOUT, FALLBACKS_ENABLED } from "../../ExternalConfig";
+import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, KEEPALIVE_INTERVAL } from "../../ExternalConfig";
+import { Scheduler } from "../../logic/Scheduler";
 
 let RSSI_TIMEOUT = 5000;
+
+const TRIGGER_ID = "StoneAvailabilityTracker"
 
 class StoneAvailabilityTrackerClass {
   log = {};
   sphereLog = {}
+  initialized = false;
+
+  init() {
+    if (this.initialized === false) {
+      this.initialized = true;
+
+      core.eventBus.on("iBeaconOfValidCrownstone",       (data) => { this._update(data, true); });
+      core.eventBus.on("AdvertisementOfValidCrownstone", (data) => { this._update(data, false); });
+
+      Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: 4});
+      Scheduler.loadCallback(TRIGGER_ID, this.notify.bind(this), false);
+    }
+  }
+
+  notify() {
+    let logStoneIds = Object.keys(this.log);
+    let stoneIds = {};
+    let sphereIds = {};
+
+    let now = new Date().valueOf();
+
+    for (let i = 0; i < logStoneIds.length; i++) {
+      let stoneId = logStoneIds[i];
+      //rssi has expired and we have not marked it yet. do it now.
+      if (now - this.log[stoneId].t > RSSI_TIMEOUT && this.log[stoneId].rssi !== -1000) {
+        stoneIds[stoneId] = true;
+        sphereIds[this.log[stoneId].sphereId] = true;
+        this.log[stoneId].rssi = -1000;
+      }
+      // stone is active. Cast.
+      if (now - this.log[stoneId].t < RSSI_TIMEOUT) {
+        stoneIds[stoneId] = true;
+        sphereIds[this.log[stoneId].sphereId] = true;
+      }
+      // stone has expired and we will remove it.
+      if (now - this.log[stoneId].t > DISABLE_TIMEOUT) {
+        stoneIds[stoneId] = true;
+        sphereIds[this.log[stoneId].sphereId] = true;
+
+        // these have expired. Delete them.
+        delete this.sphereLog[this.log[stoneId].sphereId][stoneId];
+        delete this.log[stoneId];
+      }
+    }
 
 
-  constructor() {
-    core.eventBus.on("iBeaconOfValidCrownstone",       (data) => { this._update(data, true); });
-    core.eventBus.on("AdvertisementOfValidCrownstone", (data) => { this._update(data, false); });
+    // cast if there is something to cast
+    if (Object.keys(stoneIds).length > 0) {
+      core.eventBus.emit("databaseChange", {change: {changeStoneState: {stoneIds, sphereIds}}}); // discover a new crownstone!
+    }
   }
 
   _update(data, beacon) {
@@ -19,7 +67,13 @@ class StoneAvailabilityTrackerClass {
     }
 
     if (this.log[data.stoneId] === undefined) {
-      this.log[data.stoneId] = {t: null, beaconRssi: null, advRssi: null };
+      this.log[data.stoneId] = {t: null, beaconRssi: null, advRssi: null, sphereId: data.sphereId };
+      // new Crownstone detected this run!
+      let stoneIds = {};
+      let sphereIds = {};
+      stoneIds[data.stoneId] = true;
+      sphereIds[data.sphereId] = true;
+      core.eventBus.emit("databaseChange", {change: {changeStoneState: {stoneIds, sphereIds}}}); // discover a new crownstone!
     }
 
     if (this.sphereLog[data.sphereId][data.stoneId] === undefined) {

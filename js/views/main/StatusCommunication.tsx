@@ -95,53 +95,58 @@ export class StatusCommunication extends LiveComponent<any, any> {
       opacity: this.props.opacity || 1,
       left: addButtonShown ? (0.11 * screenWidth) + 5: 0,   // 0.11*screenwidth is the width of the add icon
       width: addButtonShown ? (1 - (0.11 * 2)) * screenWidth - 10 : screenWidth,
-      height: 25,
-      overflow: 'hidden'
+      height: 50,
+      overflow: 'hidden',
+      flexDirection:'column',
     };
 
 
     if (this.props.viewingRemotely === true) {
       return (
-        <View style={generalStyle}>
+        <View style={generalStyle} pointerEvents={'none'}>
           <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex} ]}>{ lang("No_Crownstones_in_range_") }</Text>
         </View>
       );
     }
     else if (this.amountOfVisible >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
-        <View style={[inRangeStyle, generalStyle]}>
-          <Text style={descriptionTextStyle}>{ lang("I_see_",this.amountOfVisible) }</Text>
-          <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
+        <View style={generalStyle} pointerEvents={'none'}>
+          <View style={inRangeStyle}>
+            <Text style={descriptionTextStyle}>{ lang("I_see_",this.amountOfVisible) }</Text>
+            <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
+          </View>
           <Text style={descriptionTextStyle}>{ xUtil.narrowScreen() ? lang("NARROW_so_the_indoor_localizati") : lang("_so_the_indoor_localizati") }</Text>
         </View>
       )
     }
     else if (this.amountOfVisible > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
-        <View style={[inRangeStyle, generalStyle]}>
-          <Text style={descriptionTextStyle}>{ lang("I_see_only_",this.amountOfVisible) }</Text>
-          <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
+        <View style={generalStyle} pointerEvents={'none'}>
+          <View style={inRangeStyle}>
+            <Text style={descriptionTextStyle}>{ lang("I_see_only_",this.amountOfVisible) }</Text>
+            <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
+          </View>
           <Text style={descriptionTextStyle}>{ xUtil.narrowScreen() ? lang("NARROW_so_I_paused_the_indoor_l") : lang("_so_I_paused_the_indoor_l") }</Text>
         </View>
       )
     }
     else if (enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
-        <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]}>
+        <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]} pointerEvents={'none'}>
           <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_all_rooms_have_been_t") }</Text>
         </View>
       )
     }
     else if (!enoughForLocalizationInLocations && enoughForLocalization) {
       return (
-        <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]}>
+        <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]} pointerEvents={'none'}>
           <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_enough_Crownstones_pl") }</Text>
         </View>
       )
     }
     else if (this.amountOfVisible > 0) {
       return (
-        <View style={[inRangeStyle, generalStyle]}>
+        <View style={[inRangeStyle, generalStyle]} pointerEvents={'none'}>
           <Text style={{backgroundColor:'transparent', color: colors.csBlue.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",this.amountOfVisible) }</Text>
           <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
         </View>
@@ -149,7 +154,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
     }
     else { //if (this.amountOfVisible === 0) {
       return (
-        <View style={[inRangeStyle, generalStyle]}>
+        <View style={[inRangeStyle, generalStyle]} pointerEvents={'none'}>
           <Text style={overviewStyles.bottomText}>{ lang("Looking_for_Crownstones__") }</Text>
         </View>
       )
@@ -158,7 +163,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
 
 }
 
-let inRangeStyle : TextStyle = {position: 'absolute',
+let inRangeStyle : TextStyle = {
   flexDirection:'row',
   width: screenWidth,
   backgroundColor: 'transparent',

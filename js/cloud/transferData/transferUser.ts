@@ -38,7 +38,6 @@ let fieldMap : fieldMap = [
   {local:'betaAccess',                          cloud: null},
   {local:'seenTapToToggle',                     cloud: null},
   {local:'seenTapToToggleDisabledDuringSetup',  cloud: null},
-  {local:'seenRoomFingerprintAlert',            cloud: null},
   {local:'appIdentifier',                       cloud: null},
   {local:'developer',                           cloud: null},
   {local:'logging',                             cloud: null},

@@ -16,7 +16,6 @@ let defaultSettings = {
   betaAccess: false,
   seenTapToToggle: false,
   seenTapToToggleDisabledDuringSetup: false,
-  seenRoomFingerprintAlert: false,
   appIdentifier: null,
   developer: false,
   uploadDiagnostics: true,
@@ -79,13 +78,6 @@ export default (state = defaultSettings, action : any = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.seenTapToToggleDisabledDuringSetup = update(action.data.seenTapToToggleDisabledDuringSetup, newState.seenTapToToggleDisabledDuringSetup);
-        return newState;
-      }
-      return state;
-    case 'USER_SEEN_ROOM_FINGERPRINT_ALERT':
-      if (action.data) {
-        let newState = {...state};
-        newState.seenRoomFingerprintAlert   = update(action.data.seenRoomFingerprintAlert,   newState.seenRoomFingerprintAlert);
         return newState;
       }
       return state;

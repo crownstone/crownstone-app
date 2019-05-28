@@ -199,7 +199,7 @@ class StoneManagerClass {
 
     let stoneId = stoneData.id;
 
-    core.eventBus.emit("iBeaconOfValidCrownstone", {stoneId: stoneId, rssi: ibeaconPackage.rssi});
+    core.eventBus.emit("iBeaconOfValidCrownstone", {stoneId: stoneId, rssi: ibeaconPackage.rssi, sphereId: sphereId});
 
     // create an entity for this crownstone if one does not exist yet.
     if (!this.entities[stoneId]) { this.createEntity(sphereId, stoneId); }
@@ -269,7 +269,7 @@ class StoneManagerClass {
 
     // emit event of valid crownstone
     if (advertisement.rssi && advertisement.rssi < 0) {
-      core.eventBus.emit("AdvertisementOfValidCrownstone", {stoneId: referenceByHandle.id, rssi: advertisement.rssi, payloadId: referenceByCrownstoneId.id})
+      core.eventBus.emit("AdvertisementOfValidCrownstone", {stoneId: referenceByHandle.id, rssi: advertisement.rssi, payloadId: referenceByCrownstoneId.id, sphereId: advertisement.referenceId})
     }
 
     // this is on manager level, not on entity level since setup crownstones do not have an entity but do need this functionality.

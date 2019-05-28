@@ -39,7 +39,9 @@ export class WeekDayList extends Component<any, any> {
         <TouchableOpacity
           key={'selectableDay'+i}
           onPress={() => {
-            this.props.onChange(DAYS[i]);
+            let newData = {...this.props.data};
+            newData[DAYS[i]] = !newData[DAYS[i]];
+            this.props.onChange(newData);
           }}
           style={{
             width: size,

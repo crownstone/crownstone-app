@@ -76,12 +76,12 @@ export class StoneBehaviour {
   update(state, stone, rssi) {
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore === true) {
-      LOGd.info("StoneBehaviour: IGNORE: temporary ignore enabled.");
+      LOGd.native("StoneBehaviour: IGNORE: temporary ignore enabled.");
       return;
     }
 
     if (stone.config.locked === true) {
-      LOGd.info("StoneBehaviour: IGNORE: stone is locked.");
+      LOGd.native("StoneBehaviour: IGNORE: stone is locked.");
       return;
     }
 
