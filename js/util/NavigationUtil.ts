@@ -226,7 +226,7 @@ export const NavigationUtil = {
     Navigation.dismissOverlay(componentId);
   },
 
-  setRoot(rootStack) {
+  setRoot(rootStack : StackData) {
     NavState.setRoot();
     Navigation.setRoot({ root: rootStack });
   },

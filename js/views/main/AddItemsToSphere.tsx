@@ -75,7 +75,7 @@ export class AddItemsToSphere extends Component<any, any> {
                 NavigationUtil.launchModal("SphereUserInvite",{sphereId: this.props.sphereId});
               }} />
               <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => {
-                NavigationUtil.launchModal("SphereIntegrations",{sphereId: this.props.sphereId})
+                NavigationUtil.launchModal("SphereIntegrations",{sphereId: this.props.sphereId, isModal: true})
               }} />
             </View>
           </View>

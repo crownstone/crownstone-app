@@ -94,8 +94,8 @@ export class SphereInvitedUser extends Component<any, any> {
                 this.deleting = true;
                 CLOUD.forSphere(this.props.sphereId).revokeInvite(user.email)
                   .then(() => {
+                    core.eventBus.emit('hideLoading');
                     let defaultAction = () => {
-                      core.eventBus.emit('hideLoading');
                       core.store.dispatch({
                         type: 'REMOVE_SPHERE_USER',
                         sphereId: this.props.sphereId,

@@ -42,7 +42,7 @@ export class TutorialDevices extends Component<any, any> {
               let sphereIds = Object.keys(spheres);
 
               let goToSphereOverview = () => {
-                NavigationUtil.setRoot(Stacks.loggedIn);
+                NavigationUtil.setRoot(Stacks.loggedIn());
               };
 
               // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment
@@ -51,12 +51,12 @@ export class TutorialDevices extends Component<any, any> {
                   NavigationUtil.setRoot(Stacks.aiStart({sphereId: sphereIds[0]}));
                 }
                 else {
-                  goToSphereOverview()
+                  goToSphereOverview();
                 }
                 return;
               }
               else {
-                goToSphereOverview()
+                goToSphereOverview();
               }
             }}
             style={[styles.centered, {

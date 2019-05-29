@@ -69,7 +69,7 @@ export class AddSphereTutorial_intended extends Component<any, any> {
                   NavigationUtil.setRoot(Stacks.aiStart({sphereId}));
                 })
                 .catch((err) => {
-                  Alert.alert(lang("Whoops!"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])
+                  Alert.alert(lang("Whoops"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])
                 });
             }}
             style={buttonStyle}>

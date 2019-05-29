@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 
 import { colors}             from '../../styles'
-import { SetupStateHandler } from "../../../native/setup/SetupStateHandler";
 import { STONE_TYPES } from "../../../Enums";
 
 export class DeviceEntrySubText extends Component<any, any> {
@@ -96,7 +95,7 @@ export class DeviceEntrySubText extends Component<any, any> {
     }
     else if (disabled === true) {
       return (
-        <Text style={{fontSize: 12}}>{ lang("Please_wait_until_the_set",SetupStateHandler.isSetupInProgress()) }</Text>
+        <Text style={{fontSize: 12}}>{ lang("Searching") }</Text>
       );
     }
     else {

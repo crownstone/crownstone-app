@@ -14,7 +14,6 @@ console.log("------------------------------------------")
 // parse all files in js folder
 let {fileMap, fileList, translationData} = extractionMethods.parseFilesRecursivelyInPath(config.BASE_CODE_PATH)
 
-
 console.log("Done! Searched ", fileList.length, " files. Parsing results...")
 
 console.log("\nChecking for new strings in existing files...")

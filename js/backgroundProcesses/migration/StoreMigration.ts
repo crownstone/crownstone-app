@@ -66,5 +66,5 @@ function fromOldTo3_0() {
 }
 
 export function migrate() {
-  fromOldTo3_0();
+  // fromOldTo3_0();
 }

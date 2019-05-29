@@ -35,8 +35,8 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({
       title: lang("Mesh_Topology"),
-      nav: {id: 'networks', label: lang('Networks'), callback: () => { NavigationUtil.navigate("SettingsMeshOverview"); }}
-    });
+      nav: {id: 'networks', text: lang('Networks'), callback: () => { NavigationUtil.navigate("SettingsMeshOverview"); }}
+    })
   }
 
   _baseRadius = 50;

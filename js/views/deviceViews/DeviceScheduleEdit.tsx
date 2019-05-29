@@ -428,11 +428,12 @@ lang("_Cant_see_Crownstone__You__body"),
         }, 500, 'Deactivate Schedule UI callback');
       })
       .catch((err) => {
+        core.eventBus.emit("hideLoading");
         if (err === "NO_SCHEDULE_ENTRIES_AVAILABLE")  {
           Alert.alert(
 lang("_Schedules_are_full__argu_header"),
 lang("_Schedules_are_full__argu_body",config.fullLabel),
-[{text:lang("_Schedules_are_full__argu_left"), onPress:() => { core.eventBus.emit("hideLoading"); }}, {
+[{text:lang("_Schedules_are_full__argu_left")}, {
 text:lang("_Schedules_are_full__argu_right"), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
@@ -441,7 +442,7 @@ text:lang("_Schedules_are_full__argu_right"), onPress: () => { this._addSchedule
           Alert.alert(
 lang("_Whoops__arguments___No___header"),
 lang("_Whoops__arguments___No___body",config.alertLabel),
-[{text:lang("_Whoops__arguments___No___left"), onPress:() => { core.eventBus.emit("hideLoading"); }}, {
+[{text:lang("_Whoops__arguments___No___left")}, {
 text:lang("_Whoops__arguments___No___right"), onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
@@ -469,11 +470,12 @@ text:lang("_Whoops__arguments___No___right"), onPress: () => { this._addSchedule
         }, 500, 'Update Schedule UI callback');
       })
       .catch((err) => {
+        core.eventBus.emit("hideLoading");
         Alert.alert(
-lang("_Whoops___I_could_not_tel_header"),
-lang("_Whoops___I_could_not_tel_body"),
-[{text:lang("_Whoops___I_could_not_tel_left"), onPress:() => { core.eventBus.emit("hideLoading"); }}, {
-text:lang("_Whoops___I_could_not_tel_right"), onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
+          lang("_Whoops___I_could_not_tel_header"),
+          lang("_Whoops___I_could_not_tel_body"),
+          [{text:lang("_Whoops___I_could_not_tel_left")}, {
+          text:lang("_Whoops___I_could_not_tel_right"), onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
           {cancelable: false}
         )
       });
@@ -499,12 +501,13 @@ text:lang("_Whoops___I_could_not_tel_right"), onPress: () => { this._updateSched
         }, 500, 'Deactivate Schedule UI callback');
       })
       .catch(() => {
+        core.eventBus.emit("hideLoading");
         Alert.alert(
-lang("_Whoops___I_could_not_tell_header"),
-lang("_Whoops___I_could_not_tell_body"),
-[{text:lang("_Whoops___I_could_not_tell_left"), onPress:() => { core.eventBus.emit("hideLoading"); NavigationUtil.dismissModal(); }}, {
-text:lang("_Whoops___I_could_not_tell_right"), onPress: () => { this._disableSchedule(stone, schedule); } }],
-          {cancelable: false}
+          lang("_Whoops___I_could_not_tell_header"),
+          lang("_Whoops___I_could_not_tell_body"),
+          [{text:lang("_Whoops___I_could_not_tell_left"), onPress:() => {  NavigationUtil.dismissModal(); }}, {
+          text:lang("_Whoops___I_could_not_tell_right"), onPress: () => { this._disableSchedule(stone, schedule); } }],
+                    {cancelable: false}
         )
       });
     BatchCommandHandler.executePriority();
@@ -522,10 +525,11 @@ text:lang("_Whoops___I_could_not_tell_right"), onPress: () => { this._disableSch
         }, 500, 'Disable Schedule UI callback');
       })
       .catch(() => {
+        core.eventBus.emit("hideLoading");
         Alert.alert(
 lang("_Whoops___I_could_not_tell__header"),
 lang("_Whoops___I_could_not_tell__body"),
-[{text:lang("_Whoops___I_could_not_tell__left"), onPress:() => { core.eventBus.emit("hideLoading"); NavigationUtil.dismissModal(); }}, {
+[{text:lang("_Whoops___I_could_not_tell__left"), onPress:() => { NavigationUtil.dismissModal(); }}, {
 text:lang("_Whoops___I_could_not_tell__right"), onPress: () => { this._deleteSchedule(stone, schedule); } }],
           {cancelable: false}
         )

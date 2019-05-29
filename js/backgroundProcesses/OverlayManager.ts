@@ -8,7 +8,6 @@ class OverlayManagerClass {
 
   init() {
     if (this._initialized === false) {
-
       core.eventBus.on('showAicoreTimeCustomizationOverlay', (data) => { NavigationUtil.showOverlay('AicoreTimeCustomizationOverlay',{data: data}); })
 
       // ble status popup

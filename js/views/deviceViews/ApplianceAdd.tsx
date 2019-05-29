@@ -23,10 +23,11 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
 
 
-export class ApplianceAdd extends Component<any, any> {
+export class ApplianceAdd extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  lang("Add_Device_Type"), cancelModal: true, create:()=>{}});
   }
@@ -37,8 +38,10 @@ export class ApplianceAdd extends Component<any, any> {
     super(props);
     this.state = {name:'', icon: getRandomC1Name(), selectedStones: {}};
     this.refName = "listItems";
+  }
 
-    TopBarUtil.updateOptions(this.props.componentId, { create: () => { this.createDevice() }})
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'create') { this.createDevice() }
   }
 
   _getItems() {
@@ -94,15 +97,14 @@ lang("_Device_name_must_be_at_l_body"),
           core.store.batchDispatch(actions);
           core.eventBus.emit('hideLoading');
           this.props.callback(localId);
-          NavigationUtil.back();
+          NavigationUtil.dismissModal();
         })
         .catch((err) => {
-          let defaultAction = () => { core.eventBus.emit('hideLoading');};
+          core.eventBus.emit('hideLoading');
           Alert.alert(
-lang("_Encountered_Cloud_Issue__header"),
-lang("_Encountered_Cloud_Issue__body"),
-[{text:lang("_Encountered_Cloud_Issue__left"), onPress: defaultAction }],
-            { onDismiss: defaultAction }
+            lang("_Encountered_Cloud_Issue__header"),
+            lang("_Encountered_Cloud_Issue__body"),
+            [{text:lang("_Encountered_Cloud_Issue__left")}],
           )
         });
     }
@@ -112,7 +114,7 @@ lang("_Encountered_Cloud_Issue__body"),
     let backgroundImage = core.background.menu;
 
     if (this.props.sphereId === null) {
-      NavigationUtil.back();
+      NavigationUtil.dismissModal();
       return <View />
     }
 

@@ -23,7 +23,7 @@ interface topbarOptions {
 
 interface topbarNavComponent {
   id: string,
-  label: string,
+  text: string,
   callback : () => void
 }
 interface topbarComponent {
@@ -60,11 +60,11 @@ export const TopBarUtil = {
       leftButtons.push({id: 'disableBack', component: { name: 'topbarEmptyButton' }});
     }
     if (props.closeModal !== undefined) {
-      leftButtons.push(getLeftButtonCloseModal('back', Languages.get("__UNIVERSAL", "Back")));
+      leftButtons.push(getLeftButtonCloseModal('closeModal', Languages.get("__UNIVERSAL", "Back")));
     }
 
     if (props.cancelModal !== undefined) {
-      leftButtons.push(getLeftButtonCloseModal('cancel', Languages.get("__UNIVERSAL", "Cancel")));
+      leftButtons.push(getLeftButtonCloseModal('cancelModal', Languages.get("__UNIVERSAL", "Cancel")));
     }
 
     if (props.cancel && typeof props.cancel === "function") {
@@ -81,21 +81,21 @@ export const TopBarUtil = {
         },
       })
     }
-    if (props.nav) {
-      rightButtons.push(getButtonComponent(props.nav.id, props.nav.label, props.nav.callback ));
-    }
 
-    if (props.edit && typeof props.edit === "function") {
-      rightButtons.push(getEditComponent(props.edit));
+    if (props.nav) {
+      rightButtons.push(getButtonComponent(props.nav.id, props.nav.text));
     }
-    if (props.next && typeof props.next === "function") {
-      rightButtons.push(getButtonComponent('next', Languages.get("__UNIVERSAL", "Next"), props.next));
+    if (props.edit) {
+      rightButtons.push(getButtonComponent('edit', Languages.get("__UNIVERSAL", "Edit")()));
     }
-    if (props.save && typeof props.save === "function") {
-      rightButtons.push(getButtonComponent('save', Languages.get("__UNIVERSAL", "Save"), props.save));
+    if (props.next) {
+      rightButtons.push(getButtonComponent('next', Languages.get("__UNIVERSAL", "Next")()));
     }
-    if (props.create && typeof props.create === "function") {
-      rightButtons.push(getButtonComponent('create', Languages.get("__UNIVERSAL", "Create"), props.create));
+    if (props.save) {
+      rightButtons.push(getButtonComponent('save', Languages.get("__UNIVERSAL", "Save")()));
+    }
+    if (props.create) {
+      rightButtons.push(getButtonComponent('create', Languages.get("__UNIVERSAL", "Create")()));
     }
 
     let results = { topBar: {} };
@@ -126,25 +126,10 @@ function getLeftButtonCloseModal(id, label) {
   return getLeftButton(id,label,() => { NavigationUtil.dismissModal(); })
 }
 
-function getButtonComponent(id, label, callback) {
+function getButtonComponent(id, label) {
   return {
     id: id,
-    component: {
-      name: 'topbarButton',
-      passProps: { text: label, onPress: callback },
-    },
-  }
-}
-
-
-function getEditComponent(callback) {
-  return {
-    id: 'edit',
-    component: {
-      name: 'topbarRightMoreButton',
-      passProps: { onPress: callback }
-    },
-    // systemItem: 'edit'
+    text:label,
   }
 }
 

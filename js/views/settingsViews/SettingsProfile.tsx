@@ -175,6 +175,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     CLOUD.requestPasswordResetEmail({email: email.toLowerCase()})
       .then(() => {
         core.eventBus.emit('showLoading', 'Email sent!');
+        setTimeout(() => {core.eventBus.emit('hideLoading');},200)
         let defaultAction = () => {
           AppUtil.logOut(core.store);
         };
@@ -186,11 +187,11 @@ export class SettingsProfile extends LiveComponent<any, any> {
         )
       })
       .catch((reply) => {
-        let defaultAction = () => {core.eventBus.emit('hideLoading'); };
+        core.eventBus.emit('hideLoading');
         Alert.alert(
           lang("_Cannot_Send_Email_argume_header"),
           lang("_Cannot_Send_Email_argume_body",reply.data),
-          [{text: lang("_Cannot_Send_Email_argume_left"), onPress: defaultAction}], { onDismiss: defaultAction });
+          [{text: lang("_Cannot_Send_Email_argume_left")}]);
       });
   }
 

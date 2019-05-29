@@ -189,3 +189,5 @@ interface onScreenNotificationPayload {
   iconSize?: number,
   callback: () => void
 }
+
+type StackData = { component: any } | { stack: any } | { bottomTabs: any }

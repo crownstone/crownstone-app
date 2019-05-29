@@ -10,16 +10,17 @@ import {
   Image,
   TouchableOpacity,
   Text,
-  View, TextStyle
+  View, TextStyle, SafeAreaView
 } from "react-native";
 
 import { Background } from './../components/Background'
-import { colors, screenWidth} from './../styles'
+import { colors, screenWidth, tabBarMargin } from "./../styles";
 import loginStyles from './LoginStyles'
 
 import DeviceInfo from 'react-native-device-info';
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import FastImage from "react-native-fast-image";
 
 let versionStyle : TextStyle = {
   position:'absolute',
@@ -32,12 +33,16 @@ let versionStyle : TextStyle = {
 };
 
 export class LoginSplash extends Component<any, any> {
+  componentDidMount() {
+    FastImage.preload([{uri:core.background.light}])
+  }
+
   render() {
     let factor = 0.25;
 
     return (
       <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} hideOrangeBar={true}>
-        <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
+        <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1, marginBottom: tabBarMargin}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
           <View style={{flex:2}} />

@@ -11,6 +11,7 @@ import {
   TopbarRightMoreButton
 } from "../views/components/topbar/TopbarButton";
 import { CancelButton } from "../views/components/topbar/CancelButton";
+import { OverlayManager } from "../backgroundProcesses/OverlayManager";
 
 let viewsLoaded = false;
 
@@ -31,8 +32,7 @@ export const loadRoutes = function() {
   Navigation.registerComponent("topbarButton",             () => TopbarButton);
   Navigation.registerComponent("topbarEmptyButton",        () => TopbarEmptyButton);
 
-
-
+  OverlayManager.init();
 };
 
 Navigation.events().registerAppLaunchedListener(() => {

@@ -1,11 +1,15 @@
 import * as React from 'react'; import { Component, PureComponent } from "react";
 import { AppState } from 'react-native';
+import { Navigation } from "react-native-navigation";
+import { NavigationUtil } from "../util/NavigationUtil";
 
 
 export class LiveComponent<a, b> extends Component<a, b> {
   ___subscribedToAppState = false;
   ___shouldForceUpdate = false;
   ___hasOverriddenUnmount = false;
+  ___navListener = null;
+
 
   constructor(props) {
     super(props);
@@ -26,7 +30,19 @@ export class LiveComponent<a, b> extends Component<a, b> {
     //     return renderer.call(this)
     //   }
     // }
+
+    let buttonPress = this.navigationButtonPressed;
+    if (props.componentId) {
+      this.___navListener = Navigation.events().bindComponent(this);
+
+      this.navigationButtonPressed = (data) => {
+        buttonPress.call(this,data);
+        if (data.buttonId === 'closeModal') { NavigationUtil.dismissModal() }
+      }
+    }
   }
+
+  navigationButtonPressed(data) {}
 
   forceUpdate() {
     if (AppState.currentState !== 'active') {
@@ -52,6 +68,10 @@ export class LiveComponent<a, b> extends Component<a, b> {
   };
 
   ___cleanup() {
+    if (this.___navListener) {
+      this.___navListener.remove();
+    }
+
     if (this.___subscribedToAppState) {
       AppState.removeEventListener('change', this.__appStateSubscription)
     }

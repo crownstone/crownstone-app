@@ -74,11 +74,11 @@ export class SphereUser extends LiveComponent<any, any> {
             store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: this.props.sphereId, userId: this.props.userId, data:{accessLevel: permission}});
           })
           .catch((err) => {
-            Alert.alert(
-lang("_Something_went_wrong__Pl_header"),
-lang("_Something_went_wrong__Pl_body"),
-[{text:lang("_Something_went_wrong__Pl_left")}]);
             core.eventBus.emit('hideLoading');
+            Alert.alert(
+              lang("_Something_went_wrong__Pl_header"),
+              lang("_Something_went_wrong__Pl_body"),
+              [{text:lang("_Something_went_wrong__Pl_left")}]);
             LOGe.info("Something went wrong during Updating user permissions.", err);
           })
         }
@@ -96,8 +96,8 @@ lang("_Something_went_wrong__Pl_body"),
         core.eventBus.emit('showLoading', 'Removing user from Sphere...');
         CLOUD.forSphere(this.props.sphereId).deleteUserFromSphere(this.props.userId)
           .then((result) => {
+            core.eventBus.emit('hideLoading');
             Alert.alert("User has been removed!", "The next time the user logs into the app, the users' device will be removed.", [{text:"OK", onPress:() => {
-              core.eventBus.emit('hideLoading');
               core.store.dispatch({
                 type: 'REMOVE_SPHERE_USER',
                 sphereId: this.props.sphereId,

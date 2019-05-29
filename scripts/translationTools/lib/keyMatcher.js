@@ -5,6 +5,12 @@ const config = require("../config/config");
 let fileList = [];
 let fileMap = {};
 
+/**
+ * This checks if all source files are in the translation file
+ * @param dirPath
+ * @returns {{fileMap, fileList: Array}}
+ */
+
 let scanFilesRecursivelyInPath = function(dirPath) {
   let files = fs.readdirSync( dirPath )
 
@@ -24,9 +30,6 @@ let scanFilesRecursivelyInPath = function(dirPath) {
       // console.log( "'%s' is a directory.", elementPath );
       scanFilesRecursivelyInPath(elementPath)
     }
-    // else {
-    //   console.log("IGNORING", elementPath, ext)
-    // }
   };
 
   return {fileMap, fileList}

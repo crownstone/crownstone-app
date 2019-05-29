@@ -37,6 +37,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { SphereUtil } from "../../util/SphereUtil";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -78,6 +79,11 @@ export class RoomOverview extends LiveComponent<any, any> {
 
     this._updateNavBar();
   }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'edit') { NAVBAR_PARAMS_CACHE.edit() }
+  }
+
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
@@ -285,7 +291,7 @@ export class RoomOverview extends LiveComponent<any, any> {
   _setNearestStoneInRoom(ids) {
     let rssi = -1000;
     for (let i = 0; i < ids.length; i++) {
-      let stoneRssi = StoneAvailabilityTracker.getRssi(ids[i]);
+      let stoneRssi = StoneAvailabilityTracker.getAvgRssi(ids[i]);
       if (stoneRssi > rssi) {
         rssi = stoneRssi;
         this.nearestStoneIdInRoom = ids[i];
@@ -297,7 +303,7 @@ export class RoomOverview extends LiveComponent<any, any> {
     let rssi = -1000;
     let stoneIds = Object.keys(allStones);
     for (let i = 0; i < stoneIds.length; i++) {
-      let stoneRssi = StoneAvailabilityTracker.getRssi(stoneIds[i]);
+      let stoneRssi = StoneAvailabilityTracker.getAvgRssi(stoneIds[i]);
       if (stoneRssi > rssi) {
         rssi = stoneRssi;
         this.nearestStoneIdInSphere = stoneIds[i];
@@ -339,7 +345,7 @@ function getTopBarProps(state, props, viewingRemotely) {
 
   NAVBAR_PARAMS_CACHE = {
     title: title,
-    right: {id: 'edit', component:'topbarRightMoreButton', props: {onPress:rightAction}}
+    edit: rightAction
   };
   return NAVBAR_PARAMS_CACHE;
 }

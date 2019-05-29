@@ -41,7 +41,6 @@ export class ApplianceSelection extends LiveComponent<{
     return TopBarUtil.getOptions({title:  lang('Select_Device_Type'), closeModal: true});
   }
 
-
   unsubscribe : any;
 
   componentDidMount() {
@@ -50,7 +49,7 @@ export class ApplianceSelection extends LiveComponent<{
 
       // if the stone has been deleted, close everything.
       if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
-        return NavigationUtil.back();
+        return NavigationUtil.dismissModal();
       }
 
       if (change.changeAppliances && change.changeAppliances.sphereIds[this.props.sphereId]) {
@@ -77,7 +76,7 @@ export class ApplianceSelection extends LiveComponent<{
       applianceIds.forEach((applianceId) => {
         let appliance = appliances[applianceId];
 
-        let selectCallback = () => { this.props.callback(applianceId); NavigationUtil.back(); };
+        let selectCallback = () => { this.props.callback(applianceId); NavigationUtil.dismissModal(); };
         let deleteCallback = () => {
           Alert.alert(
 lang("_Are_you_sure___We_will_b_header"),
@@ -113,7 +112,7 @@ text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () 
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-       NavigationUtil.navigate( "ApplianceAdd",{
+       NavigationUtil.launchModal( "ApplianceAdd",{
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
           callback: (applianceId) => {
@@ -129,7 +128,7 @@ text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () 
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-        this.props.callback(null); NavigationUtil.back();
+        this.props.callback(null); NavigationUtil.dismissModal();
       }
     });
 
@@ -153,13 +152,11 @@ text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () 
         store.dispatch({sphereId: this.props.sphereId, applianceId: applianceId, type: 'REMOVE_APPLIANCE'});
       })
       .catch((err) => {
-        let defaultAction = () => { core.eventBus.emit('hideLoading');};
+        core.eventBus.emit('hideLoading');
         Alert.alert(
 lang("_Encountered_Cloud_Issue__header"),
 lang("_Encountered_Cloud_Issue__body"),
-[{text:lang("_Encountered_Cloud_Issue__left"), onPress: defaultAction }],
-          { onDismiss: defaultAction }
-        )
+[{text:lang("_Encountered_Cloud_Issue__left")}] )
       });
   }
 

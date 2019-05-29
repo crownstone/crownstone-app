@@ -86,23 +86,25 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
     }
     else {
       let iconSize = 40;
-      content = <IconButton name={"md-color-wand"}
-                  size={iconSize*0.8}
-                  buttonSize={iconSize}
-                  radius={iconSize*0.5}
-                  button={true}
-                  color={ colors.blinkColor1.rgba(1)}
-                  buttonStyle={{ backgroundColor: colors.white.hex, borderWidth: 2, borderColor: colors.blinkColor1.hex }}
-                />;
+      content = (
+        <IconButton name={"md-color-wand"}
+          size={iconSize*0.8}
+          buttonSize={iconSize}
+          radius={iconSize*0.5}
+          button={true}
+          color={ colors.blinkColor1.rgba(1)}
+          buttonStyle={{ backgroundColor: colors.white.hex, borderWidth: 2, borderColor: colors.blinkColor1.hex }}
+        />
+      );
       action = () => {
         this.setState({pendingCommand:true});
         StoneUtil.setupPulse(this.props.handle, this.props.sphereId)
           .then(() => {  this.setState({pendingCommand: false})})
           .catch((err) => {
             Alert.alert(
-              lang("_Something_went_wrong______header"),
-              lang("_Something_went_wrong______body"),
-              [{text:lang("_Something_went_wrong______left")}]
+              "Something went wrong...",
+              "You can try it again if you're close to the Crownstone.",
+              [{text:"OK"}]
             );
             this.setState({pendingCommand: false});
           })

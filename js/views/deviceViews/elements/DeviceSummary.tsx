@@ -104,7 +104,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
 
   _triggerApplianceSelection(stone) {
     this.safeStoreUpdate();
-    NavigationUtil.navigate( "ApplianceSelection",{
+    NavigationUtil.launchModal( "ApplianceSelection",{
       sphereId: this.props.sphereId,
       applianceId: stone.config.applianceId,
       stoneId: this.props.stoneId,

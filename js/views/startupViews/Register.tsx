@@ -86,7 +86,7 @@ export class Register extends LiveComponent<any, any> {
             <View style={{flex:1, width:screenWidth}}>
               <InterviewTextInput
                 autofocus={true}
-                focussed={this.focussingIndex === 0 || undefined}
+                // focussed={this.focussingIndex === 0 || undefined}
                 placeholder={"First name"}
                 value={state && state.firstName || this.user.firstName}
                 callback={(newValue) => {
@@ -102,7 +102,7 @@ export class Register extends LiveComponent<any, any> {
               <InterviewTextInput
                 autofocus={false}
                 placeholder={"Last name"}
-                focussed={this.focussingIndex === 1 || undefined}
+                focussed={this.focussingIndex === 1}
                 value={state && state.lastName || this.user.lastName}
                 callback={(newValue) => {
                   let newState = {};
@@ -315,11 +315,12 @@ export class Register extends LiveComponent<any, any> {
         if (reply.data && reply.data.error && reply.data.error.message) {
           let message = reply.data.error.message.split("` ");
           message = message[message.length - 1];
-          let defaultAction = () => {core.eventBus.emit('hideLoading')};
+          core.eventBus.emit('hideLoading')
           Alert.alert(
             lang("_Registration_Error_argum_header"),
             lang("_Registration_Error_argum_body",message),
-            [{text: lang("_Registration_Error_argum_left"), onPress: defaultAction}], { onDismiss: defaultAction});
+            [{text: lang("_Registration_Error_argum_left")}],
+            );
         }
         return false;
       })

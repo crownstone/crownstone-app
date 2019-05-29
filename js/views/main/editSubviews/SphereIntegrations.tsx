@@ -20,7 +20,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 
 export class SphereIntegrations extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Integrations")})
+    return TopBarUtil.getOptions({title: lang("Integrations"), closeModal: props.isModal ? true : undefined })
   }
 
 

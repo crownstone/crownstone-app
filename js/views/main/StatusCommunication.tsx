@@ -132,21 +132,21 @@ export class StatusCommunication extends LiveComponent<any, any> {
     }
     else if (enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
-        <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]} pointerEvents={'none'}>
+        <View style={[generalStyle, inRangeStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]} pointerEvents={'none'}>
           <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_all_rooms_have_been_t") }</Text>
         </View>
       )
     }
     else if (!enoughForLocalizationInLocations && enoughForLocalization) {
       return (
-        <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]} pointerEvents={'none'}>
+        <View style={[generalStyle, inRangeStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]} pointerEvents={'none'}>
           <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_enough_Crownstones_pl") }</Text>
         </View>
       )
     }
     else if (this.amountOfVisible > 0) {
       return (
-        <View style={[inRangeStyle, generalStyle]} pointerEvents={'none'}>
+        <View style={[generalStyle, {flexDirection:'row'}]} pointerEvents={'none'} >
           <Text style={{backgroundColor:'transparent', color: colors.csBlue.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",this.amountOfVisible) }</Text>
           <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
         </View>
@@ -154,7 +154,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
     }
     else { //if (this.amountOfVisible === 0) {
       return (
-        <View style={[inRangeStyle, generalStyle]} pointerEvents={'none'}>
+        <View style={generalStyle} pointerEvents={'none'}>
           <Text style={overviewStyles.bottomText}>{ lang("Looking_for_Crownstones__") }</Text>
         </View>
       )

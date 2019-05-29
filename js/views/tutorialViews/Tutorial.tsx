@@ -9,9 +9,8 @@ import {
   View
 } from 'react-native';
 
-import {colors, screenHeight, topBarHeight, } from '../styles'
+import { availableModalHeight, colors, screenHeight, screenWidth, topBarHeight } from "../styles";
 import { Background } from '../components/Background'
-const Swiper = require("react-native-swiper");
 import {TutorialSphere} from "./elements/TutorialSphere";
 import {TutorialGetStarted} from "./elements/TutorialGetStarted";
 import {TutorialLocalization} from "./elements/TutorialLocalization";
@@ -21,67 +20,74 @@ import {TutorialBehaviour} from "./elements/TutorialBehaviour";
 import {LOGi} from "../../logging/Log";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import Carousel, { Pagination } from "react-native-snap-carousel";
+import { HiddenFadeInView } from "../components/animated/FadeInView";
 
 
-Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
-  core.eventBus.emit("setNewSwiperIndex", nextState.index);
-};
 
 export class Tutorial extends Component<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  lang("Welcome_")});
   }
 
-  unsubscribeSwipeEvent : any;
-  touchEndTimeout: any;
   requestedPermission;
 
+  _carousel
   constructor(props) {
     super(props);
 
-    this.requestedPermission = false;
-    this.state = {swiperIndex: 0, scrolling:false};
-    this.unsubscribeSwipeEvent = core.eventBus.on("setNewSwiperIndex", (nextIndex) => {
-      if (this.state.swiperIndex !== nextIndex) {
-        this.setState({swiperIndex: nextIndex, scrolling: false});
-      }
-    });
+    this.state = {activeSlide: 0};
   }
 
-
-  componentWillUnmount() {
-    this.unsubscribeSwipeEvent();
-    clearTimeout(this.touchEndTimeout);
-  }
 
   componentWillUpdate(nextProps, nextState) {
-    if (nextState.swiperIndex === 3 && this.requestedPermission === false) {
+    if (nextState.activeSlide === 3 && this.requestedPermission === false) {
       LOGi.info("Tutorial: Requested location permission.");
       Bluenet.requestLocationPermission();
       this.requestedPermission = true;
     }
   }
 
+  _renderItem({item, index}) {
+    return item;
+  }
 
   render() {
-    let checkScrolling = (newState) => {
-      if (this.state.scrolling !== newState) {
-        this.setState({scrolling: newState});
-      }
-    };
+    let components = this._getContent();
 
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark} >
-                <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight}
-          dot={<View style={{backgroundColor: colors.white.rgba(0.35), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.black.rgba(0.1)}} />}
-          activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}
-          loop={false}
-          bounces={true}
-          onScrollBeginDrag={  () => { checkScrolling(true);  }}
-          onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
-        >
-          { this._getContent() }
-        </Swiper>
+      <Background hasNavBar={false} image={core.background.detailsDark}>
+        <View style={{height: availableModalHeight, width:screenWidth}}>
+          <Carousel
+            useScrollView={true}
+            ref={(c) => { this._carousel = c; }}
+            data={components}
+            removeClippedSubviews={false /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
+            renderItem={this._renderItem}
+            sliderWidth={screenWidth}
+            itemWidth={screenWidth}
+            onSnapToItem={(index) => this.setState({ activeSlide: index }) }
+          />
+          <HiddenFadeInView visible={this.state.activeSlide !== components.length - 1} style={{position:'absolute', bottom:0, width:screenWidth}}>
+            <Pagination
+              dotsLength={components.length}
+              activeDotIndex={this.state.activeSlide}
+              containerStyle={{ backgroundColor: colors.black.rgba(0.3 )}}
+              dotStyle={{
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                marginHorizontal: 8,
+                backgroundColor: 'rgba(255, 255, 255, 0.92)'
+              }}
+              inactiveDotStyle={{
+                // Define styles for inactive dots here
+              }}
+              inactiveDotOpacity={0.4}
+              inactiveDotScale={0.6}
+            />
+          </HiddenFadeInView>
+        </View>
       </Background>
     )
   }
@@ -99,29 +105,3 @@ export class Tutorial extends Component<any, any> {
     return content;
   }
 }
-
-let swiperStyles = StyleSheet.create({
-  wrapper: {
-  },
-  slide1: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  slide2: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  slide3: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: '#fff',
-    fontSize: 30,
-    fontWeight: 'bold',
-  }
-});
-

@@ -94,6 +94,10 @@ export class DeviceOverview extends LiveComponent<any, any> {
     }
   }
 
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'edit') { NAVBAR_PARAMS_CACHE.nav.onPress() }
+  }
+
   componentDidMount() {
     let state = core.store.getState();
     if (state.app.hasSeenDeviceSettings === false) {
@@ -167,7 +171,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
   _updateNavBar(swiperIndex, scrolling) {
     let state = core.store.getState();
     getTopBarProps(core.store, state, this.props, swiperIndex, scrolling);
-    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
+    TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
   }
 
 
@@ -346,18 +350,36 @@ lang("_Crownstone_is_Locked___Y_body"),
     )
   }
 
-  NAVBAR_PARAMS_CACHE = {
-    title: element.config.name,
-    right: {
-      id: 'edit',
-      component:'topbarButton',
-      props: {
+  if (rightItem) {
+    NAVBAR_PARAMS_CACHE = {
+      title: element.config.name,
+      right: {
+        id: 'loading',
+        component:'topbarButton',
+        props: {
+          text: rightLabel,
+          onPress: rightAction,
+          item: rightItem,
+        }
+      },
+    };
+  }
+  else if (rightAction === null) {
+    NAVBAR_PARAMS_CACHE = {
+      title: element.config.name,
+    };
+  }
+  else {
+    NAVBAR_PARAMS_CACHE = {
+      title: element.config.name,
+      nav: {
+        id: 'edit',
         text: rightLabel,
         onPress: rightAction,
-        item: rightItem,
-      }
-    },
-  };
+      },
+    };
+  }
+
   return NAVBAR_PARAMS_CACHE;
 }
 

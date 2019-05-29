@@ -1,10 +1,8 @@
-import { Navigation } from "react-native-navigation";
 import { Languages } from "../Languages";
-import { colors } from "../views/styles";
 
 export const Stacks = {
 
-  initial: function() {
+  initial: function() : StackData {
     return {
       component: {
         name: "Initializer"
@@ -12,7 +10,7 @@ export const Stacks = {
     }
   },
 
-  aiStart: function(props) {
+  aiStart: function(props) : StackData {
     return {
       stack: {
         children: [
@@ -22,7 +20,7 @@ export const Stacks = {
     }
   },
 
-  tutorial: function() {
+  tutorial: function() : StackData {
     return {
       stack: {
         children: [
@@ -32,7 +30,7 @@ export const Stacks = {
     }
   },
 
-  newUser: function() {
+  newUser: function() : StackData {
     return {
       stack: {
         children: [
@@ -45,7 +43,7 @@ export const Stacks = {
     }
   },
 
-  loggedIn: function() {
+  loggedIn: function() : StackData {
     return {
       bottomTabs: {
         children: [
@@ -93,7 +91,7 @@ export const Stacks = {
     }
   },
 
-  logout: function() {
+  logout: function() : StackData {
     return {
       component: {
         name: "Logout"

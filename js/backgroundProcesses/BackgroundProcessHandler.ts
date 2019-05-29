@@ -42,7 +42,6 @@ import { cleanLogs } from "../logging/LogUtil";
 import { migrate } from "./migration/StoreMigration";
 import { CloudPoller } from "../logic/CloudPoller";
 import { UpdateCenter } from "./UpdateCenter";
-import { OverlayManager } from "./OverlayManager";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -218,13 +217,12 @@ class BackgroundProcessHandlerClass {
     CLOUD.setNetworkErrorHandler((err) => {
       if (this.connectionPopupActive === false) {
         this.connectionPopupActive = true;
-        let defaultAction = () => { this.connectionPopupActive = false; core.eventBus.emit('hideLoading');};
+        this.connectionPopupActive = false; core.eventBus.emit('hideLoading');
         LOGw.cloud("Could not connect to the cloud.", err);
         Alert.alert(
           "Connection Problem",
           "Could not connect to the Cloud. Please check your internet connection.",
-          [{text: 'OK', onPress: defaultAction }],
-          { onDismiss: defaultAction }
+          [{text: 'OK'}],
         );
       }
     });
@@ -452,7 +450,6 @@ class BackgroundProcessHandlerClass {
     MapProvider.init();
     MessageCenter.init();
     NotificationHandler.init();
-    OverlayManager.init();
     Permissions.init();
     Scheduler.init();
     StoneAvailabilityTracker.init();

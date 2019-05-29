@@ -508,7 +508,7 @@ export default {
     _Nearest_:                           function() { return "(Nearest)" },
     _Very_near_:                         function() { return "(Very near)" },
     _Near_:                              function() { return "(Near)" },
-    Please_wait_until_the_set:           function() { return arguments[0] ? "Please wait until the setup process is complete." : "Searching..." },
+    Searching:                           function() { return "Searching..." },
   },
   DeviceError:{
     __filename: "../js/views/deviceViews/elements/DeviceError.tsx",

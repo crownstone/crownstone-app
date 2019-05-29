@@ -299,13 +299,13 @@ lang("_Permission_Required__Onl_body"),
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
+          core.eventBus.emit('hideLoading');
           Alert.alert(
-lang("_Are_you_sure___Removing__header"),
-lang("_Are_you_sure___Removing__body"),
-[{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
-text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
+            lang("_Are_you_sure___Removing__header"),
+            lang("_Are_you_sure___Removing__body"),
+            [{text: lang("_Are_you_sure___Removing__left"), style: 'cancel'}, {
+            text: lang("_Are_you_sure___Removing__right"), style:'destructive', onPress: () => {
               if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-                core.eventBus.emit('hideLoading');
                 Alert.alert("Can't see this one!",
                   "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
                   [{text:lang("Delete_anyway"), onPress: () => {this._removeCloudOnly()}, style: 'destructive'},

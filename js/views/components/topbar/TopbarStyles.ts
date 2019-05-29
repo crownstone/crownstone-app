@@ -43,12 +43,10 @@ export const topBarStyle = StyleSheet.create({
   },
   text:{
     fontSize: 17,
-    fontWeight:'bold',
     color: colors.menuTextSelected.hex
   },
   leftText:{
     fontSize: 14,
-    fontWeight:'bold',
     color: colors.white.hex
   }
 });

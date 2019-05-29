@@ -79,17 +79,16 @@ export class Login extends Component<any, any> {
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        Alert.alert(
-lang("_An_email_was_sent_to_____a_header",this.state.email.toLowerCase()),
-lang("_An_email_was_sent_to_____a_body"),
-[{text:lang("_An_email_was_sent_to_____a_left")}]);
+        Alert.alert("An email was sent to " + this.state.email.toLowerCase() + "!",
+          "Follow the instructions in the mail to verify your email address.",
+          [{text:"OK"}]);
       })
       .catch((reply) => {
-        let defaultAction = () => {core.eventBus.emit('hideLoading')};
+        core.eventBus.emit('hideLoading');
         Alert.alert(
 lang("_Cannot_Send_Email_argume_header"),
 lang("_Cannot_Send_Email_argume_body",reply.data),
-[{text: lang("_Cannot_Send_Email_argume_left"), onPress: defaultAction}], { onDismiss: defaultAction });
+[{text: lang("_Cannot_Send_Email_argume_left")}]);
       });
   }
 
@@ -99,10 +98,9 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        Alert.alert(
-lang("_An_email_was_sent_to_____ar_header",this.state.email.toLowerCase()),
-lang("_An_email_was_sent_to_____ar_body"),
-[{text:lang("_An_email_was_sent_to_____ar_left")}]);
+        Alert.alert("An email was sent to " + this.state.email.toLowerCase() + "!",
+"Follow the instructions in the mail to reset your password.",
+[{text:"OK"}]);
       })
       .catch((reply) => {
         let content = "Please try again.";
@@ -117,22 +115,22 @@ lang("_An_email_was_sent_to_____ar_body"),
             validationLink = true;
           }
         }
-        let defaultAction = () => {core.eventBus.emit('hideLoading')};
 
+        core.eventBus.emit('hideLoading');
         if (validationLink) {
           Alert.alert(
 lang("_Your_email_address_has_n_header"),
 lang("_Your_email_address_has_n_body"),
 [{text: lang("_Your_email_address_has_n_left"), style:'cancel', onPress: () => this.requestVerificationEmail()},
             {
-text: lang("_Your_email_address_has_n_right"), onPress: defaultAction}
-          ], { onDismiss: defaultAction });
+text: lang("_Your_email_address_has_n_right")}
+          ]);
         }
         else {
           Alert.alert(
 lang("arguments___arguments___O_header",title),
 lang("arguments___arguments___O_body",content),
-[{text: lang("arguments___arguments___O_left"), onPress: defaultAction}], {onDismiss: defaultAction});
+[{text: lang("arguments___arguments___O_left")}]);
         }
       });
   }
@@ -147,21 +145,21 @@ lang("arguments___arguments___O_body",content),
     }
 
     core.eventBus.emit('showLoading', lang("Logging_in___"));
-    let defaultAction = () => {core.eventBus.emit('hideLoading')};
     let unverifiedEmailCallback = () => {
+      core.eventBus.emit('hideLoading')
       Alert.alert(
         lang("_Your_email_address_has_no_header"),
         lang("_Your_email_address_has_no_body"),
         [{text: lang("_Your_email_address_has_no_left"), onPress: () => this.requestVerificationEmail()},
-           {text: lang("_Your_email_address_has_no_right"), onPress: defaultAction}
-      ],
-      { onDismiss: defaultAction });
+           {text: lang("_Your_email_address_has_no_right")}
+      ]);
     };
     let invalidLoginCallback = () => {
+      core.eventBus.emit('hideLoading')
       Alert.alert(
 lang("_Incorrect_Email_or_Passw_header"),
 lang("_Incorrect_Email_or_Passw_body"),
-[{text: lang("_Incorrect_Email_or_Passw_left"), onPress: defaultAction}], { onDismiss: defaultAction });
+[{text: lang("_Incorrect_Email_or_Passw_left")}]);
     };
 
     CLOUD.login({
@@ -191,14 +189,11 @@ lang("_Incorrect_Email_or_Passw_body"),
             core.eventBus.emit('hideLoading');
           }
           else {
-            let defaultAction = () => {
-              core.eventBus.emit('hideLoading')
-            };
+            core.eventBus.emit('hideLoading')
             Alert.alert(
               lang("_Connection_Problem__Coul_header"),
               lang("_Connection_Problem__Coul_body"),
-              [{text: lang("_Connection_Problem__Coul_left"), onPress: defaultAction}],
-              {onDismiss: defaultAction}
+              [{text: lang("_Connection_Problem__Coul_left")}],
             );
           }
         }

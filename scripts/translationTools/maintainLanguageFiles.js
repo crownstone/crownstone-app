@@ -10,8 +10,8 @@ const TRANSLATED_LANGUAGES = [
   ['nl','nl'],
 ]
 
-let BASE = {}
-let DATA = {}
+let BASE = {};
+let DATA = {};
 
 function isArgvTrue(label) {
   let idx = process.argv.indexOf("--"+label);

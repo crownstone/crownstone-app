@@ -137,11 +137,11 @@ export class DeviceBehaviourEdit extends LiveComponent<any, any> {
       // notify the user when the measurement failed
       Vibration.vibrate(400, false);
 
+      core.eventBus.emit("hideLoading");
       Alert.alert(
 lang("_Im_not_sure_yet_____I_co_header"),
 lang("_Im_not_sure_yet_____I_co_body"),
 [{text:lang("_Im_not_sure_yet_____I_co_left"), onPress: () => {
-        core.eventBus.emit("hideLoading");
         core.eventBus.emit("useTriggers");
       }}], { cancelable: false });
     }, 15000);
@@ -189,11 +189,11 @@ lang("_Im_not_sure_yet_____I_co_body"),
         // notify the user when the measurement is complete!
         Vibration.vibrate(400, false);
 
+        core.eventBus.emit("hideLoading");
         Alert.alert(
 lang("_Great___Ill_make_sure_to_header"),
 lang("_Great___Ill_make_sure_to_body"),
 [{text: lang("_Great___Ill_make_sure_to_left"), onPress: () => {
-            core.eventBus.emit("hideLoading");
             core.eventBus.emit("useTriggers");
           }
         }], { cancelable: false });

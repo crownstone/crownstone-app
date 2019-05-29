@@ -77,7 +77,7 @@ export class SphereEdit extends Component<any, any> {
                 }, 100)
               })
               .catch((err) => {
-                Alert.alert(lang("Whoops!"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])
+                Alert.alert(lang("Whoops"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])
               });
           }
         });

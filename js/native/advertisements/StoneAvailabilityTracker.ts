@@ -1,6 +1,9 @@
 import { core } from "../../core";
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, KEEPALIVE_INTERVAL } from "../../ExternalConfig";
 import { Scheduler } from "../../logic/Scheduler";
+import { DfuStateHandler } from "../firmware/DfuStateHandler";
+import { LOGi } from "../../logging/Log";
+import { LocationHandler } from "../localization/LocationHandler";
 
 let RSSI_TIMEOUT = 5000;
 
@@ -27,7 +30,7 @@ class StoneAvailabilityTrackerClass {
     let logStoneIds = Object.keys(this.log);
     let stoneIds = {};
     let sphereIds = {};
-
+    let disabledSpheres = {};
     let now = new Date().valueOf();
 
     for (let i = 0; i < logStoneIds.length; i++) {
@@ -49,15 +52,22 @@ class StoneAvailabilityTrackerClass {
         sphereIds[this.log[stoneId].sphereId] = true;
 
         // these have expired. Delete them.
+        disabledSpheres[this.log[stoneId].sphereId] = true;
         delete this.sphereLog[this.log[stoneId].sphereId][stoneId];
         delete this.log[stoneId];
       }
     }
 
-
     // cast if there is something to cast
     if (Object.keys(stoneIds).length > 0) {
       core.eventBus.emit("databaseChange", {change: {changeStoneState: {stoneIds, sphereIds}}}); // discover a new crownstone!
+    }
+
+    let disabledSphereIds = Object.keys(disabledSpheres);
+    if (disabledSphereIds.length > 0) {
+      disabledSphereIds.forEach((sphereId) => {
+        this._evaluateDisabledState(sphereId);
+      })
     }
   }
 
@@ -67,13 +77,14 @@ class StoneAvailabilityTrackerClass {
     }
 
     if (this.log[data.stoneId] === undefined) {
-      this.log[data.stoneId] = {t: null, beaconRssi: null, advRssi: null, sphereId: data.sphereId };
+      this.log[data.stoneId] = {t: null, beaconRssi: null, advRssi: null, sphereId: data.sphereId, avgRssi: data.rssi };
       // new Crownstone detected this run!
       let stoneIds = {};
       let sphereIds = {};
       stoneIds[data.stoneId] = true;
       sphereIds[data.sphereId] = true;
       core.eventBus.emit("databaseChange", {change: {changeStoneState: {stoneIds, sphereIds}}}); // discover a new crownstone!
+      core.eventBus.emit("rssiChange", {stoneId: data.stoneId, sphereId: data.sphereId, rssi:data.rssi}); // Major change in RSSI
     }
 
     if (this.sphereLog[data.sphereId][data.stoneId] === undefined) {
@@ -90,6 +101,15 @@ class StoneAvailabilityTrackerClass {
     else {
       this.log[data.stoneId].beaconRssi = data.rssi;
       this.sphereLog[data.sphereId][data.stoneId].beaconRssi = data.rssi;
+    }
+
+
+    if (beacon) {
+      let prevRssi = this.log[data.stoneId].avgRssi;
+      this.log[data.stoneId].avgRssi = 0.7*this.log[data.stoneId].avgRssi + 0.3*data.rssi;
+      if (Math.abs(this.log[data.stoneId].avgRssi - prevRssi) > 8) {
+        core.eventBus.emit("rssiChange", {stoneId: data.stoneId, sphereId: data.sphereId, rssi:data.rssi}); // Major change in RSSI
+      }
     }
   }
 
@@ -108,6 +128,15 @@ class StoneAvailabilityTrackerClass {
     }
 
     return nearestId;
+  }
+
+  getAvgRssi(stoneId) {
+    if (this.log[stoneId]) {
+      if (new Date().valueOf() - this.log[stoneId].t < RSSI_TIMEOUT) {
+        return this.log[stoneId].avgRssi || -1000;
+      }
+    }
+    return -1000;
   }
 
   getRssi(stoneId) {
@@ -129,42 +158,36 @@ class StoneAvailabilityTrackerClass {
   }
 
 
+  _evaluateDisabledState(sphereId) {
+    let state = core.store.getState();
+    // check if there are any stones left that are not disabled.
+    let stoneIds = Object.keys(state.spheres[sphereId].stones);
+    let allDisabled = true;
+    stoneIds.forEach((stoneId) => {
+      if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
+        allDisabled = false;
+      }
+    });
 
-
-
-
-
-
-
-
-
-  // TODO: this class should do some sort of fall back
-  // _evaluateDisabledState(sphereId) {
-  //   let state = core.store.getState();
-  //   // check if there are any stones left that are not disabled.
-  //   let stoneIds = Object.keys(state.spheres[sphereId].stones);
-  //   let allDisabled = true;
-  //   stoneIds.forEach((stoneId) => {
-  //     if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
-  //       allDisabled = false;
-  //     }
-  //   });
-  //
-  //   // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
-  //   if (FALLBACKS_ENABLED) {
-  //     // if we are in DFU, do not leave the sphere by fallback
-  //     if (DfuStateHandler.areDfuStonesAvailable() !== true) {
-  //       if (allDisabled === true) {
-  //         LOGi.info("FALLBACK: StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
-  //         LocationHandler.exitSphere(sphereId);
-  //       }
-  //     }
-  //     else {
-  //       // reschedule the fallback if we are in dfu.
-  //       Scheduler.scheduleBackgroundCallback(() => { this._evaluateDisabledState(sphereId); }, DISABLE_TIMEOUT, "disable")
-  //     }
-  //   }
-  // }
+    // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
+    if (FALLBACKS_ENABLED) {
+      // if we are in DFU, do not leave the sphere by fallback
+      if (DfuStateHandler.areDfuStonesAvailable() !== true) {
+        if (allDisabled === true) {
+          LOGi.info("FALLBACK: StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
+          LocationHandler.exitSphere(sphereId);
+        }
+      }
+      else {
+        // reschedule the fallback if we are in dfu.
+        Scheduler.scheduleBackgroundCallback(
+          () => { this._evaluateDisabledState(sphereId); },
+          DISABLE_TIMEOUT,
+          "disable"
+        );
+      }
+    }
+  }
 }
 
 export const StoneAvailabilityTracker = new StoneAvailabilityTrackerClass();

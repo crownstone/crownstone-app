@@ -24,6 +24,7 @@ import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { Navigation } from "react-native-navigation";
 
 
 
@@ -51,7 +52,10 @@ export class RoomEdit extends LiveComponent<any, any> {
       picture: room.config.picture,
       pictureId: room.config.pictureId,
     };
-    TopBarUtil.updateOptions(this.props.componentId, {save:() => { this._updateRoom(); }});
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'save') { this._updateRoom(); }
   }
 
   componentDidMount() {
@@ -140,12 +144,11 @@ export class RoomEdit extends LiveComponent<any, any> {
       })
       .catch((err) => {
         this.deleting = false;
-        let defaultAction = () => { core.eventBus.emit('hideLoading');};
+        core.eventBus.emit('hideLoading');
         Alert.alert(
-lang("_Encountered_Cloud_Issue__header"),
-lang("_Encountered_Cloud_Issue__body"),
-[{text:lang("_Encountered_Cloud_Issue__left"), onPress: defaultAction }],
-          { onDismiss: defaultAction }
+          lang("_Encountered_Cloud_Issue__header"),
+          lang("_Encountered_Cloud_Issue__body"),
+          [{text:lang("_Encountered_Cloud_Issue__left")}],
         )
       });
   }
@@ -337,7 +340,7 @@ lang("_Encountered_Cloud_Issue__body"),
     let backgroundImage = core.background.menu;
     return (
       <Background hasNavBar={false} image={backgroundImage}>
-                <ScrollView>
+        <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>

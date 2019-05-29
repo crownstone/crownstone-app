@@ -32,7 +32,6 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
     return TopBarUtil.getOptions({title:  lang("Add_Crownstones"), closeModal: true});
   }
 
-  navigationEventListener;
   nothingYetTimeout;
   noScansAtAllTimeout;
   extendedNoScansAtAllTimeout;
@@ -57,7 +56,6 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
   componentDidMount() {
     this.setupEvents.push(core.eventBus.on("setupStoneChange", () => { this.setState({showNothingYet: false}) }));
     this.setupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this._startNothingYetTimeout() }));
-    this.navigationEventListener = Navigation.events().bindComponent(this);
     this._startNothingYetTimeout();
   }
 

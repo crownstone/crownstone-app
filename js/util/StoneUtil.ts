@@ -160,8 +160,8 @@ export const StoneUtil = {
       })
       .catch((err) => {
         LOGe.info("ErrorOverlay: Could not reset errors of Crownstone", err);
-        let defaultAction = () => { core.eventBus.emit("hideLoading"); };
-        Alert.alert(lang("Failed_to_reset_error___"), lang("You_can_move_closer_and_t"),[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+        core.eventBus.emit("hideLoading");
+        Alert.alert(lang("Failed_to_reset_error___"), lang("You_can_move_closer_and_t"),[{text:'OK'}]);
       });
 
     BatchCommandHandler.executePriority()

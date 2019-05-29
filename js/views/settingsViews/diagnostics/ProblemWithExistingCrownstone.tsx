@@ -459,7 +459,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
         <DiagSingleButtonGoBack
           visible={this.state.visible}
           header={ lang("I_can_hear_the_Crownstone")}
-          explanation={lang("You_can_try_to_take_the_p2")}
+          explanation={lang("You_can_try_to_take_the_p")}
         />
       );
     }

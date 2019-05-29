@@ -19,15 +19,15 @@ export class ScaledImage extends Component<{source: any, targetWidth?: number, t
     }
     else if (this.props.targetWidth) {
       width = this.props.targetWidth;
-      height = this.props.targetWidth/factor;
+      height = Math.round(this.props.targetWidth/factor);
     }
     else if (this.props.targetHeight) {
       height = this.props.targetHeight;
-      width = this.props.targetHeight*factor;
+      width =  Math.round(this.props.targetHeight*factor);
     }
 
     return (
-      <Image source={this.props.source} style={[{width: width, height: height, resizeMode:'center'}, this.props.style]} />
+      <Image source={this.props.source} resizeMode={'contain'} style={[{width: width, height: height}, this.props.style]} />
     );
   }
 }
