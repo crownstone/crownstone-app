@@ -64,7 +64,10 @@ export class SettingsApp extends LiveComponent<any, any> {
 
     this.unsubscribe();
 
-    if (this.triggerTapToToggleCalibration) {
+    const store = core.store;
+    let state = store.getState();
+    let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
+    if (!tapToToggleCalibration) {
       core.eventBus.emit("CalibrateTapToToggle");
     }
   }
@@ -104,7 +107,7 @@ export class SettingsApp extends LiveComponent<any, any> {
         type:'button',
         style: {color:'#000'},
         icon: <IconButton name="md-flask" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuBackground.hex}} />,
-        callback: () => { core.eventBus.emit("CalibrateTapToToggle", {tutorial:true}); }
+        callback: () => { core.eventBus.emit("CalibrateTapToToggle", {tutorial: this.triggerTapToToggleCalibration}); }
       });
     }
 

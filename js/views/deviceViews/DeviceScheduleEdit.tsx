@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceScheduleEdit", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   Platform,
@@ -27,14 +27,13 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
 
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
-import {CancelButton} from "../components/topbar/CancelButton";
-import {TopbarButton} from "../components/topbar/TopbarButton";
 import { xUtil } from "../../util/StandAloneUtil";
 import { WeekDayList } from "../components/WeekDayList";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
 export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; // these are keys
 export let DAYS_FULL = [
@@ -47,7 +46,7 @@ export let DAYS_FULL = [
   lang('DAY_Sunday'),
 ];
 
-export class DeviceScheduleEdit extends Component<any, any> {
+export class DeviceScheduleEdit extends LiveComponent<any, any> {
   static options(props) {
     if (props.scheduleId) {
       return TopBarUtil.getOptions({title:  lang("Edit_Schedule"), cancelModal: true, save:()=>{}});
@@ -96,19 +95,18 @@ export class DeviceScheduleEdit extends Component<any, any> {
       }
     }
 
-    if (this.props.scheduleId) {
-      TopBarUtil.updateOptions(this.props.componentId, {create: () => {
-          this._handleTime()
-            .then(() => {this._updateSchedule(); })
-            .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
-        }})
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'create') {
+      this._handleTime()
+        .then(() => {this._createSchedule(); })
+        .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
     }
-    else {
-      TopBarUtil.updateOptions(this.props.componentId, {save: () => {
-          this._handleTime()
-            .then(() => {this._createSchedule(); })
-            .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
-        }})
+    else if (buttonId === 'save') {
+      this._handleTime()
+      .then(() => {this._updateSchedule(); })
+      .catch((err) => { LOGe.info("DeviceScheduleEdit: Could not get time.", err); })
     }
   }
 
@@ -288,6 +286,7 @@ lang("_Pick_a_day___You_need_to_body"),
   _createSchedule() {
     let validated = this._validate();
     if (validated) {
+      console.log("STARTING")
       let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       this._addScheduleEntry(
@@ -415,6 +414,7 @@ lang("_Cant_see_Crownstone__You__body"),
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'addSchedule', scheduleConfig: scheduleConfig })
       .then((scheduleEntryIndex : {data: string}) => {
         core.eventBus.emit("showLoading", "Done!");
+        console.log("DONE")
         Scheduler.scheduleCallback(() => {
           core.eventBus.emit("hideLoading");
           core.store.dispatch({

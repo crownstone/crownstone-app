@@ -104,7 +104,7 @@ export const TopBarUtil = {
     if (!partialUpdate || rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons; }
 
 
-    console.log("Setting Topbar Options", results)
+    // console.log("Setting Topbar Options", results)
     return results;
   },
 }

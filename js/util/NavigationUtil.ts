@@ -299,7 +299,7 @@ export const NavigationUtil = {
     let backFrom = NavState.activeView;
     console.log("Going back from", backFrom)
     NavState.pop();
-    Navigation.pop(backFrom)
+    return Navigation.pop(backFrom)
       .then(() => { console.log("Going back from ", backFrom, " success!")})
       .catch((err) => {console.log("Going back from ", backFrom, " FAILED!", err)  })
   },

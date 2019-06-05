@@ -24,12 +24,14 @@ import { DfuDeviceOverviewEntry } from "../components/deviceEntries/DfuDeviceOve
 import { ScanningForDFUCrownstonesBanner } from "../components/animated/ScanningForDFUCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
+import { LOGe } from "../../logging/Log";
+import { LiveComponent } from "../LiveComponent";
 
 const triggerId = "ScanningForDfu";
 
 const DFU_BATCH_RSSI_THRESHOLD = -85;
 
-export class DfuScanning extends Component<any, any> {
+export class DfuScanning extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Looking_for_Crownstones"), next: () => {}});
   }
@@ -46,13 +48,13 @@ export class DfuScanning extends Component<any, any> {
     this.visibleStones = {};
 
     this.stoneUpdateData = DfuUtil.getUpdatableStones(this.props.sphereId);
-    TopBarUtil.updateOptions(this.props.componentId, {next: () => { this.next(); }})
-
     this.visibleDrawnStones = [];
   }
 
-  next() {
-    NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'next') {
+      NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})
+    }
   }
 
   componentDidMount() {

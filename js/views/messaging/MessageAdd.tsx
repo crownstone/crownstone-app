@@ -21,18 +21,17 @@ import { ListEditableItems } from "../components/ListEditableItems";
 import { ProfilePicture } from "../components/ProfilePicture";
 import {MessageUtil} from "../../util/MessageUtil";
 
-import {TopbarButton} from "../components/topbar/TopbarButton";
-import {CancelButton} from "../components/topbar/CancelButton";
 import { xUtil } from "../../util/StandAloneUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
 export const ANYWHERE_IN_SPHERE = '__sphere__';
 
-export class MessageAdd extends Component<any, any> {
+export class MessageAdd extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("New_Message"), cancelModal: true, create: () => {}})
   }
@@ -49,7 +48,10 @@ export class MessageAdd extends Component<any, any> {
     };
 
     this.state.recipients[EVERYONE_IN_SPHERE] = true;
-    TopBarUtil.updateOptions(this.props.componentId, {create: () => { this._createMessage();}})
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'create') {  this._createMessage(); }
   }
 
   _createMessage() {
@@ -113,7 +115,7 @@ lang("_No_recipients____I_cant__body"),
       recipients
     );
 
-    NavigationUtil.back();
+    NavigationUtil.dismissModal();
   }
 
   _getLocationItems(sphere) {

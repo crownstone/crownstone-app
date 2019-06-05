@@ -20,3 +20,13 @@ unsubscribeNearest() --> stops the flow of nearestSetupCrownstone and nearestCro
 
 subscribeToUnverified() --> starts the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events to the app
 unsubscribeUnverified() --> stops the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events
+
+new keyset interface:
+interface keySet  {
+  adminKey:       string,
+  memberKey:      string,
+  basicKey:       string,
+  serviceDataKey: string,
+  referenceId:    string,
+  iBeaconUuid:    string,
+}

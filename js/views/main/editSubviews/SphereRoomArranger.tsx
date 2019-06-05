@@ -52,10 +52,11 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
 
     this.viewId = xUtil.getUUID();
     this.refName = (Math.random() * 1e9).toString(36);
-
-    TopBarUtil.updateOptions(this.props.componentId,{save: () => { this._storePositions();}});
   }
 
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'save') {  this._storePositions(); }
+  }
 
   componentDidMount() {
     // to ensure

@@ -30,8 +30,8 @@ export class TapToToggleCalibration extends Component<any, any> {
 
     this.state = {
       visible: false,
-      step: props.data.tutorial === false ? 1 : 0,
-      tutorial: props.data.tutorial === undefined ? true : props.data.tutorial,
+      step: props && props.data && props.data.tutorial === false ? 1 : 0,
+      tutorial: props && props.data && props.data.tutorial === undefined ? true : props.data.tutorial,
       canClose: false};
 
     let state = core.store.getState();
