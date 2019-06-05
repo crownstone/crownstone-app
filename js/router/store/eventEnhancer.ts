@@ -324,6 +324,10 @@ function checkAction(action, affectedIds) {
     case "REMOVE_ACTIVITY_RANGE":
     case "REMOVE_ACTIVITY_LOG":
       eventStatus['stoneChangeLogs'] = affectedIds; break;
+    case "ADD_SPHERE_KEY":
+    case "UPDATE_SPHERE_KEY":
+    case "REMOVE_SPHERE_KEY":
+      break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

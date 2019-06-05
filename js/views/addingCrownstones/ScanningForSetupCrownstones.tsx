@@ -24,7 +24,6 @@ import KeepAwake from 'react-native-keep-awake';
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { ScanningForSetupCrownstonesBanner } from "../components/animated/ScanningForSetupCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { Navigation } from "react-native-navigation";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
 
 export class ScanningForSetupCrownstones extends Component<any, any> {
@@ -191,7 +190,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
-      <Background hasNavBar={false} image={core.background.light}>
+      <Background hasNavBar={false} image={core.background.light} hideNotification={true}>
         <KeepAwake />
         <ViewStateWatcher
           componentId={this.props.componentId}

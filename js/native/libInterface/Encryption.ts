@@ -35,12 +35,13 @@ class EncryptionManagerClass {
 
     for (let i = 0; i < sphereIds.length; i++) {
       let sphere = state.spheres[sphereIds[i]];
-      let sphereKeys = sphere.keys;
+      let sphereKeyIds = Object.keys(sphere.keys);
 
       let keyMap = {};
-      for (let j = 0; j < sphereKeys.length; j++) {
-        if (sphereKeys[j].ttl === 0) {
-          keyMap[sphereKeys[j].keyType] = sphereKeys[j].key;
+      for (let i = 0; i < sphereKeyIds.length; i++) {
+        let key = sphere.keys[sphereKeyIds[i]];
+        if (key.ttl === 0) {
+          keyMap[key.keyType] = key.key;
         }
       }
 

@@ -159,9 +159,10 @@ class BroadcastStateManagerClass {
     }
 
     let state = core.store.getState();
-    LOGi.broadcast("Settings Sphere As Present:",state.spheres[sphereId].config.name);
+    let sphere = state.spheres[sphereId];
+    LOGi.broadcast("Settings Sphere As Present:",sphere.config.name);
     this._sphereIdInLocationState = sphereId;
-    Bluenet.setLocationState(0, 0, 0, sphereId);
+    Bluenet.setLocationState(sphere.config.uid, 0, 0, sphereId);
   }
 
   _reloadAdvertisingState() {

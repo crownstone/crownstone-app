@@ -27,6 +27,8 @@ export class KeySyncer extends SyncingBase {
 
 
   syncDown(keysInCloud, store) {
+    let keysUpdated = false;
+    let keyActions = [];
     keysInCloud.forEach((keySet) => {
       let localSphereId = this.globalCloudIdMap.spheres[keySet.sphereId];
 
@@ -42,28 +44,27 @@ export class KeySyncer extends SyncingBase {
 
         if (localKey === undefined) {
           // add key
-          this.actions.push({type:'ADD_SPHERE_KEY', sphereId: localSphereId, keyId: cloud_sphere_key.id, data: {
+          keyActions.push({type:'ADD_SPHERE_KEY', sphereId: localSphereId, keyId: cloud_sphere_key.id, data: {
             key:       cloud_sphere_key.key,
             keyType:   cloud_sphere_key.keyType,
             createdAt: new Date(cloud_sphere_key.createdAt).valueOf(),
             ttl:       cloud_sphere_key.ttl
           }})
-          core.eventBus.emit("KEYS_UPDATED");
+          keysUpdated = true;
         }
         else if (
           localKey.key       !== cloud_sphere_key.key     ||
           localKey.keyType   !== cloud_sphere_key.keyType ||
           localKey.ttl       !== cloud_sphere_key.ttl     ||
-          localKey.createdAt !== cloud_sphere_key.createdAt) {
+          localKey.createdAt !== new Date(cloud_sphere_key.createdAt).valueOf()) {
             // update key
-          this.actions.push({type:'UPDATE_SPHERE_KEY', sphereId: localSphereId, keyId: cloud_sphere_key.id, data: {
+          keyActions.push({type:'UPDATE_SPHERE_KEY', sphereId: localSphereId, keyId: cloud_sphere_key.id, data: {
             key:       cloud_sphere_key.key,
             keyType:   cloud_sphere_key.keyType,
             createdAt: new Date(cloud_sphere_key.createdAt).valueOf(),
             ttl:       cloud_sphere_key.ttl
           }})
-
-          core.eventBus.emit("KEYS_UPDATED");
+          keysUpdated = true;
         }
         else {
           // do nothing.
@@ -72,14 +73,20 @@ export class KeySyncer extends SyncingBase {
 
 
 
-      localSphereKeys.forEach((localKeyId) => {
+      Object.keys(localSphereKeys).forEach((localKeyId) => {
         if (cloudKeyMap[localKeyId] === undefined) {
           // remove key
-          this.actions.push({type:'REMOVE_SPHERE_KEY', sphereId: localSphereId, keyId: localKeyId})
-          core.eventBus.emit("KEYS_UPDATED");
+          keyActions.push({type:'REMOVE_SPHERE_KEY', sphereId: localSphereId, keyId: localKeyId})
+
+          keysUpdated = true;
         }
       })
     })
+
+    if (keysUpdated) {
+      core.store.batchDispatch(keyActions);
+      core.eventBus.emit("KEYS_UPDATED");
+    }
   }
 
 }

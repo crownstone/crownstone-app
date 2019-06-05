@@ -6,12 +6,30 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import { core } from "../core";
 import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
-import * as React from "react";
-import { DfuUtil } from "../util/DfuUtil";
 import { NavigationUtil } from "../util/NavigationUtil";
+import { DfuUtil } from "../util/DfuUtil";
+import { LOG } from "../logging/Log";
 
-export const UpdateCenter = {
-  checkForFirmwareUpdates: function() {
+class UpdateCenterClass {
+  _initialized: boolean = false;
+
+  constructor() { }
+
+  init() {
+    LOG.info('Init UpdateCenter', this._initialized);
+    if (this._initialized === false) {
+      core.eventBus.on("databaseChange", (data) => {
+        let change = data.change;
+
+        if (change.changeStones || change.updateStoneCoreConfig) {
+          this.checkForFirmwareUpdates();
+        }
+      });
+    }
+    this._initialized = true;
+  }
+
+  checkForFirmwareUpdates() {
     let state = core.store.getState();
     let spheres = state.spheres;
 
@@ -35,3 +53,5 @@ export const UpdateCenter = {
     })
   }
 }
+
+export const UpdateCenter = new UpdateCenterClass();

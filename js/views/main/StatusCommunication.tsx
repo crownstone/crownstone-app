@@ -100,8 +100,6 @@ export class StatusCommunication extends LiveComponent<any, any> {
       flexDirection:'column',
     };
 
-    console.log("generalStyle", generalStyle, screenWidth)
-
 
     if (this.props.viewingRemotely === true) {
       return (

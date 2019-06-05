@@ -90,15 +90,19 @@ export class SetupHelper {
           })
           .then((cloudResponse : any) => {
             LOG.info("setup progress: registered in cloud");
+            this.cloudResponse = cloudResponse;
+            this.stoneIdInCloud = cloudResponse.id;
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 });
             return this.getMeshDeviceKeyFromCloud(sphereId, cloudResponse.id);
           })
           .then((meshDeviceKey) => {
             LOG.info("setup progress: DeviceKeyReceveived in cloud");
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 5 });
             return this.setupCrownstone(sphereId, meshDeviceKey);
           })
           .then(() => {
             LOG.info("setup progress: setupCrownstone done");
-            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 18 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 });
 
             // fast setup will require much less time in 'stand-by' after the setup has completed.
             let fastSetupEnabled = xUtil.versions.isHigherOrEqual(this.firmwareVersion, '2.1.0');
@@ -275,12 +279,13 @@ export class SetupHelper {
     const state = core.store.getState();
     let sphere = state.spheres[sphereId];
     let sphereData = sphere.config;
-    let sphereKeys = sphere.keys;
+    let sphereKeyIds = Object.keys(sphere.keys);
 
     let keyMap = {};
-    for (let i = 0; i < sphereKeys.length; i++) {
-      if (sphereKeys[i].ttl === 0) {
-        keyMap[sphereKeys[i].keyType] = sphereKeys[i].key;
+    for (let i = 0; i < sphereKeyIds.length; i++) {
+      let key = sphere.keys[sphereKeyIds[i]];
+      if (key.ttl === 0) {
+        keyMap[key.keyType] = key.key;
       }
     }
 
@@ -300,7 +305,7 @@ export class SetupHelper {
     data["ibeaconMinor"]       = this.cloudResponse.minor;
 
     let unsubscribe = core.nativeBus.on(core.nativeBus.topics.setupProgress, (progress) => {
-      core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 + progress });
+      core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 5 + progress });
     });
 
     return new Promise((resolve, reject) => {

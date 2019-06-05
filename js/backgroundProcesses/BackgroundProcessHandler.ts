@@ -456,6 +456,7 @@ class BackgroundProcessHandlerClass {
     StoneManager.init();
     SetupStateHandler.init();
     ToonIntegration.init();
+    UpdateCenter.init();
     WatchStateManager.init();
   }
 }

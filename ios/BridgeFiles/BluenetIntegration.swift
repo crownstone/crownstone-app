@@ -700,6 +700,7 @@ open class BluenetJS: RCTEventEmitter {
     let adminKey           = data["adminKey"] as? String
     let memberKey          = data["memberKey"] as? String
     let basicKey           = data["basicKey"] as? String
+    let serviceDataKey     = data["serviceDataKey"] as? String
     let meshNetworkKey     = data["meshNetworkKey"] as? String
     let meshApplicationKey = data["meshApplicationKey"] as? String
     let meshDeviceKey      = data["meshDeviceKey"] as? String
@@ -715,6 +716,7 @@ open class BluenetJS: RCTEventEmitter {
       adminKey != nil &&
       memberKey != nil &&
       basicKey != nil &&
+      serviceDataKey != nil &&
       meshNetworkKey != nil &&
       meshApplicationKey != nil &&
       meshDeviceKey != nil &&
@@ -728,6 +730,7 @@ open class BluenetJS: RCTEventEmitter {
         adminKey: adminKey!,
         memberKey: memberKey!,
         basicKey: basicKey!,
+        serviceDataKey: serviceDataKey!,
         meshNetworkKey: meshNetworkKey!,
         meshApplicationKey: meshApplicationKey!,
         meshDeviceKey: meshDeviceKey!,
@@ -741,12 +744,12 @@ open class BluenetJS: RCTEventEmitter {
             callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
           }
           else {
-            callback([["error" : true, "data": "UNKNOWN ERROR IN setupCrownstone \(err)"]])
+            callback([["error" : true, "data": "UNKNOWN ERROR IN setupCrownstone \(err) "]])
           }
         }
     }
     else {
-      callback([["error" : true, "data": "Missing one of the datafields required for setup."]])
+      callback([["error" : true, "data": "Missing one of the datafields required for setup. 1\(crownstoneId != nil) 2\(sphereId != nil) 3\(adminKey != nil) 4\(memberKey != nil) 5\(basicKey != nil) 6\(serviceDataKey != nil) 7\(meshApplicationKey != nil) 8\(meshNetworkKey != nil) 9\(meshDeviceKey != nil) 10\(meshAccessAddress != nil) 11\(ibeaconUUID != nil) 12\(ibeaconMajor != nil) 13\(ibeaconMinor != nil)"]])
     }
   }
   

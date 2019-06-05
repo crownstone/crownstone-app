@@ -68,7 +68,7 @@ class BluenetManager {
         
         var sets = [KeySet]()
         for (referenceId, set) in keySets! {
-            sets.append(KeySet(adminKey: set["adminKey"], memberKey: set["memberKey"], guestKey: set["guestKey"], referenceId: referenceId))
+            sets.append(KeySet(adminKey: set["adminKey"], memberKey: set["memberKey"], basicKey: set["basicKey"], serviceDataKey: set["serviceDataKey"], referenceId: referenceId))
         }
         bluenet.loadKeysets(encryptionEnabled: true, keySets: sets)
     }
