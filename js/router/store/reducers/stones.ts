@@ -9,6 +9,7 @@ import activityLogsReducer      from './stoneSubReducers/activityLog'
 import activityRangesReducer    from './stoneSubReducers/activityRange'
 import reachabilityReducer      from './stoneSubReducers/reachability'
 import lastUpdatedReducer       from './stoneSubReducers/lastUpdated'
+import stoneKeyReducer          from './stoneSubReducers/stoneKeys'
 import { STONE_TYPES } from "../../../Enums";
 
 let defaultSettings = {
@@ -89,6 +90,9 @@ let defaultSettings = {
 
   },
   activityRanges: {
+
+  },
+  keys: {
 
   }
 };
@@ -388,6 +392,7 @@ let combinedStoneReducer = combineReducers({
   activityLogs:   activityLogsReducer,
   activityRanges: activityRangesReducer,
   reachability:   reachabilityReducer,
+  keys:       stoneKeyReducer,
 });
 
 // stonesReducer

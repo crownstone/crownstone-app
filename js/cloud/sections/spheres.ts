@@ -30,8 +30,10 @@ export const spheres = {
       payload['gpsLocation'] = {lat:latitude, lng: longitude}
     }
     let localId = xUtil.getUUID();
+    let sphereCloudId = null;
     return CLOUD.forUser(state.user.userId).createSphere(payload, false)
       .then((response) => {
+        sphereCloudId = response.id;
         // add the sphere to the database once it had been added in the cloud.
         return transferSpheres.createLocal(creationActions, {localId: localId, cloudData: response})
       })
@@ -59,11 +61,16 @@ export const spheres = {
       .then((keyResult) => {
         if (Array.isArray(keyResult)) {
           keyResult.forEach((keySet) => {
-            creationActions.push({type:'SET_SPHERE_KEYS', sphereId: localId, data:{
-              adminKey:  keySet.keys.admin  || null,
-              memberKey: keySet.keys.member || null,
-              guestKey:  keySet.keys.guest  || null
-            }})
+            // these sets are per sphere.
+            let localSphereId = MapProvider.cloud2localMap[keySet.sphereId] || localId;
+            keySet.sphereKeys.forEach((sphereKey) => {
+              creationActions.push({type:'ADD_SPHERE_KEY', sphereId: localSphereId, keyId: sphereKey.id, data: {
+                key: sphereKey.key,
+                keyType: sphereKey.keyType,
+                createdAt: new Date(sphereKey.createdAt).valueOf(),
+                ttl: sphereKey.ttl
+              }})
+            })
           });
 
           core.eventBus.emit('sphereCreated');

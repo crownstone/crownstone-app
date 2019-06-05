@@ -30,33 +30,55 @@ export class KeySyncer extends SyncingBase {
     keysInCloud.forEach((keySet) => {
       let localSphereId = this.globalCloudIdMap.spheres[keySet.sphereId];
 
-      let keys = {
-        adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
-        memberKey: keySet.keys.member || null,
-        guestKey:  keySet.keys.guest  || null
-      };
-
       let state = store.getState();
       let sphere = state.spheres[localSphereId];
-      // if we are present in this sphere, we need to update the keys asap.
-      if (sphere && sphere.state.present) {
-        if (sphere.config.adminKey  !== keys.adminKey  ||
-            sphere.config.memberKey !== keys.memberKey ||
-            sphere.config.guestKey  !== keys.guestKey) {
-          core.eventBus.emit("KEYS_UPDATED", { sphereId: localSphereId, keys: keys, presentInSphere: sphere.state.present });
-        }
-      }
+      let localSphereKeys = sphere.keys;
 
-      if (sphere) {
-        if (sphere.config.adminKey !== keys.adminKey ||
-            sphere.config.memberKey !== keys.memberKey ||
-            sphere.config.guestKey !== keys.guestKey) {
-          this.actions.push({type: 'SET_SPHERE_KEYS', sphereId: localSphereId, data: keys});
+      let cloud_sphere_keys = keySet.sphereKeys;
+      let cloudKeyMap = {};
+      cloud_sphere_keys.forEach((cloud_sphere_key) => {
+        cloudKeyMap[cloud_sphere_key.id] = true;
+        let localKey = localSphereKeys[cloud_sphere_key.id];
+
+        if (localKey === undefined) {
+          // add key
+          this.actions.push({type:'ADD_SPHERE_KEY', sphereId: localSphereId, keyId: cloud_sphere_key.id, data: {
+            key:       cloud_sphere_key.key,
+            keyType:   cloud_sphere_key.keyType,
+            createdAt: new Date(cloud_sphere_key.createdAt).valueOf(),
+            ttl:       cloud_sphere_key.ttl
+          }})
+          core.eventBus.emit("KEYS_UPDATED");
         }
-      }
-      else {
-        this.actions.push({type: 'SET_SPHERE_KEYS', sphereId: localSphereId, data: keys});
-      }
+        else if (
+          localKey.key       !== cloud_sphere_key.key     ||
+          localKey.keyType   !== cloud_sphere_key.keyType ||
+          localKey.ttl       !== cloud_sphere_key.ttl     ||
+          localKey.createdAt !== cloud_sphere_key.createdAt) {
+            // update key
+          this.actions.push({type:'UPDATE_SPHERE_KEY', sphereId: localSphereId, keyId: cloud_sphere_key.id, data: {
+            key:       cloud_sphere_key.key,
+            keyType:   cloud_sphere_key.keyType,
+            createdAt: new Date(cloud_sphere_key.createdAt).valueOf(),
+            ttl:       cloud_sphere_key.ttl
+          }})
+
+          core.eventBus.emit("KEYS_UPDATED");
+        }
+        else {
+          // do nothing.
+        }
+      })
+
+
+
+      localSphereKeys.forEach((localKeyId) => {
+        if (cloudKeyMap[localKeyId] === undefined) {
+          // remove key
+          this.actions.push({type:'REMOVE_SPHERE_KEY', sphereId: localSphereId, keyId: localKeyId})
+          core.eventBus.emit("KEYS_UPDATED");
+        }
+      })
     })
   }
 

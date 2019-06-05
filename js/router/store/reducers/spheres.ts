@@ -6,6 +6,7 @@ import appliancesReducer from './appliances'
 import messageReducer from './messages'
 import thirdPartyReducer from './thirdParty'
 import { update, getTime, refreshDefaults } from './reducerUtil'
+import sphereKeyReducer from "./sphereKeys";
 
 let defaultSettings = {
   config: {
@@ -40,6 +41,9 @@ let defaultSettings = {
     longitude: null,
     newMessageFound: false,
   },
+  keys: {
+    // these will be filled with an x number of keys used for encryption.
+  }
 };
 
 let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) => {
@@ -168,6 +172,7 @@ let combinedSphereReducer = combineReducers({
   appliances: appliancesReducer,
   state:      sphereStateReducer,
   thirdParty: thirdPartyReducer,
+  keys:       sphereKeyReducer,
 });
 
 // spheresReducer

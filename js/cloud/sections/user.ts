@@ -1,4 +1,5 @@
 import { cloudApiBase } from "./cloudApiBase";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
 
 export const user = {
   /**
@@ -118,12 +119,20 @@ export const user = {
     );
   },
 
-  getKeys: function(background = true) {
+  getKeys: function(sphereId = undefined, stoneId = undefined, background = true) {
+    let cloudSphereId = null;
+    let cloudStoneId = null;
+
+    if (sphereId) { cloudSphereId = MapProvider.local2cloudMap.spheres[sphereId] || sphereId; }
+    if (stoneId)  { cloudStoneId  = MapProvider.local2cloudMap.stones[stoneId]   || stoneId;  }
+
     return cloudApiBase._setupRequest(
       'GET',
-      'users/{id}/keys',
-      {background : background}
+      'users/{id}/keysV2',
+      {data: { sphereId: cloudSphereId, stoneId: cloudStoneId }, background : background},
+      "query"
     );
   },
+
 
 };

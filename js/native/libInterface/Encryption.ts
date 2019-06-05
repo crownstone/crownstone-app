@@ -2,6 +2,7 @@ import { BluenetPromiseWrapper } from "./BluenetPromise";
 import { Bluenet } from "./Bluenet";
 import { core } from "../../core";
 import { LOGe } from "../../logging/Log";
+import { KEY_TYPES } from "../../Enums";
 
 
 class EncryptionManagerClass {
@@ -34,12 +35,22 @@ class EncryptionManagerClass {
 
     for (let i = 0; i < sphereIds.length; i++) {
       let sphere = state.spheres[sphereIds[i]];
+      let sphereKeys = sphere.keys;
+
+      let keyMap = {};
+      for (let j = 0; j < sphereKeys.length; j++) {
+        if (sphereKeys[j].ttl === 0) {
+          keyMap[sphereKeys[j].keyType] = sphereKeys[j].key;
+        }
+      }
+
       keysets.push({
-        adminKey:    sphere.config.adminKey,
-        memberKey:   sphere.config.memberKey,
-        guestKey:    sphere.config.guestKey,
-        referenceId: sphereIds[i],
-        iBeaconUuid: sphere.config.iBeaconUUID
+        adminKey:       keyMap[KEY_TYPES.ADMIN_KEY],
+        memberKey:      keyMap[KEY_TYPES.MEMBER_KEY],
+        basicKey:       keyMap[KEY_TYPES.BASIC_KEY],
+        serviceDataKey: keyMap[KEY_TYPES.SERVICE_DATA_KEY],
+        referenceId:    sphereIds[i],
+        iBeaconUuid:    sphere.config.iBeaconUUID
       });
     }
 
