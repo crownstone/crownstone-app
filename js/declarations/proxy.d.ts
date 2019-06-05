@@ -167,11 +167,12 @@ interface nearestStone  {
 }
 
 interface keySet  {
-  adminKey:    string,
-  memberKey:   string,
-  guestKey:    string,
-  referenceId: string,
-  iBeaconUuid: string,
+  adminKey:       string,
+  memberKey:      string,
+  basicKey:       string,
+  serviceDataKey: string,
+  referenceId:    string,
+  iBeaconUuid:    string,
 }
 
 interface crownstoneModes {

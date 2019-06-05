@@ -183,15 +183,16 @@ open class BluenetJS: RCTEventEmitter {
       for keyData in castSets {
         let adminKey     = keyData["adminKey"]  as? String
         let memberKey    = keyData["memberKey"] as? String
-        let guestKey     = keyData["guestKey"]  as? String
+        let basicKey     = keyData["basicKey"]  as? String
+        let serviceDataKey = keyData["serviceDataKey"]  as? String
         let referenceId  = keyData["referenceId"]  as? String
-        if (adminKey == nil && memberKey == nil && guestKey == nil || referenceId == nil) {
-          callback([["error" : true, "data": "Missing the Keys required for Bluenet Settings. At least one of the following should be provided: adminKey, memberKey, guestKey and referenceId."]])
+        if (adminKey == nil && memberKey == nil && basicKey == nil || referenceId == nil) {
+          callback([["error" : true, "data": "Missing the Keys required for Bluenet Settings. At least one of the following should be provided: adminKey, memberKey, basicKey and referenceId."]])
           return
         }
-        sets.append(KeySet(adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!))
+        sets.append(KeySet(adminKey: adminKey, memberKey: memberKey, basicKey: basicKey, serviceDataKey: serviceDataKey, referenceId: referenceId!))
         
-        watchSets[referenceId!] = ["adminKey": adminKey, "memberKey": memberKey, "guestKey": guestKey]
+        watchSets[referenceId!] = ["adminKey": adminKey, "memberKey": memberKey, "basicKey": basicKey, "serviceDataKey": serviceDataKey]
         
       }
     }
@@ -694,30 +695,42 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func setupCrownstone(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called setupCrownstone")
-    let crownstoneId      = data["crownstoneId"] as? NSNumber
-    let adminKey          = data["adminKey"] as? String
-    let memberKey         = data["memberKey"] as? String
-    let guestKey          = data["guestKey"] as? String
-    let meshAccessAddress = data["meshAccessAddress"] as? String
-    let ibeaconUUID       = data["ibeaconUUID"] as? String
-    let ibeaconMajor      = data["ibeaconMajor"] as? NSNumber
-    let ibeaconMinor      = data["ibeaconMinor"] as? NSNumber
+    let crownstoneId       = data["crownstoneId"] as? NSNumber
+    let sphereId           = data["sphereId"] as? NSNumber
+    let adminKey           = data["adminKey"] as? String
+    let memberKey          = data["memberKey"] as? String
+    let basicKey           = data["basicKey"] as? String
+    let meshNetworkKey     = data["meshNetworkKey"] as? String
+    let meshApplicationKey = data["meshApplicationKey"] as? String
+    let meshDeviceKey      = data["meshDeviceKey"] as? String
+    let meshAccessAddress  = data["meshAccessAddress"] as? String // legacy
+    let ibeaconUUID        = data["ibeaconUUID"] as? String
+    let ibeaconMajor       = data["ibeaconMajor"] as? NSNumber
+    let ibeaconMinor       = data["ibeaconMinor"] as? NSNumber
     
-    print("BluenetBridge: data \(data) 1\(crownstoneId != nil) 2\(adminKey != nil) 3\(memberKey != nil) 4\(guestKey != nil)")
-    print("BluenetBridge: 5\(meshAccessAddress != nil) 6\(ibeaconUUID != nil) 7\(ibeaconMajor != nil)  8\(ibeaconMinor != nil)")
-    if (crownstoneId != nil &&
+   
+    if (
+      crownstoneId != nil &&
+      sphereId != nil &&
       adminKey != nil &&
       memberKey != nil &&
-      guestKey != nil &&
+      basicKey != nil &&
+      meshNetworkKey != nil &&
+      meshApplicationKey != nil &&
+      meshDeviceKey != nil &&
       meshAccessAddress != nil &&
       ibeaconUUID != nil &&
       ibeaconMajor != nil &&
       ibeaconMinor != nil) {
       GLOBAL_BLUENET.bluenet.setup.setup(
         crownstoneId: (crownstoneId!).uint16Value,
+        sphereId: (sphereId!).uint8Value,
         adminKey: adminKey!,
         memberKey: memberKey!,
-        guestKey: guestKey!,
+        basicKey: basicKey!,
+        meshNetworkKey: meshNetworkKey!,
+        meshApplicationKey: meshApplicationKey!,
+        meshDeviceKey: meshDeviceKey!,
         meshAccessAddress: meshAccessAddress!,
         ibeaconUUID: ibeaconUUID!,
         ibeaconMajor: (ibeaconMajor!).uint16Value,
@@ -733,7 +746,7 @@ open class BluenetJS: RCTEventEmitter {
         }
     }
     else {
-      callback([["error" : true, "data": "Missing one of the datafields required for setup. 1:\(String(describing: crownstoneId)) 2:\(adminKey) 3:\(String(describing: memberKey)) 4:\(String(describing: guestKey)) 5:\(meshAccessAddress) 6:\(String(describing: ibeaconUUID)) 7:\(ibeaconMajor) 8:\(ibeaconMinor)"]])
+      callback([["error" : true, "data": "Missing one of the datafields required for setup."]])
     }
   }
   

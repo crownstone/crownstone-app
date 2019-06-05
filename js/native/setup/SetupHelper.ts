@@ -9,7 +9,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
 import {StoneUtil} from "../../util/StoneUtil";
-import { STONE_TYPES } from "../../Enums";
+import { KEY_TYPES, STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
 
@@ -27,6 +27,7 @@ export class SetupHelper {
   firmwareVersion : any;
   hardwareVersion : any;
   cloudResponse   : any;
+  meshDeviceKey   : any;
   stoneIdInCloud  : any;
   stoneWasAlreadyInCloud : boolean = false;
 
@@ -52,6 +53,7 @@ export class SetupHelper {
     this.firmwareVersion = undefined; // ie. 1.1.1
     this.hardwareVersion = undefined; // ie. 1.1.1
     this.stoneIdInCloud = undefined; // shorthand to the cloud id
+    this.meshDeviceKey = undefined; // shorthand to the cloud id
     this.stoneWasAlreadyInCloud = false; // is the stone is already in the cloud during setup of this stone.
 
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
@@ -86,10 +88,11 @@ export class SetupHelper {
           })
           .then((cloudResponse : any) => {
             LOG.info("setup progress: registered in cloud");
-            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 });
-            this.cloudResponse = cloudResponse;
-            this.stoneIdInCloud = cloudResponse.id;
-            return this.setupCrownstone(sphereId);
+            return this.getMeshDeviceKeyFromCloud(sphereId, cloudResponse.id);
+          })
+          .then((meshDeviceKey) => {
+            LOG.info("setup progress: DeviceKeyReceveived in cloud");
+            return this.setupCrownstone(sphereId, meshDeviceKey);
           })
           .then(() => {
             LOG.info("setup progress: setupCrownstone done");
@@ -194,6 +197,27 @@ export class SetupHelper {
     return BlePromiseManager.registerPriority(setupPromise, {from: 'Setup: claiming stone: ' + this.handle});
   }
 
+  getMeshDeviceKeyFromCloud(sphereId, stoneId) {
+    return CLOUD.getKeys(sphereId, stoneId, false)
+      .then((keyData) => {
+        if (keyData.length !== 1) { throw {code: networkError, message: "Invalid key data count"}; }
+
+        let cloudStoneId = MapProvider.local2cloudMap.stones[stoneId]   || stoneId;
+        if (keyData[0] && keyData[0].stoneKeys && keyData[0].stoneKeys[cloudStoneId]) {
+          let stoneKeys = keyData[0].stoneKeys[cloudStoneId];
+          for ( let i = 0; i < stoneKeys.length; i++) {
+            let stoneKey = stoneKeys[i];
+            if (stoneKey.keyType === KEY_TYPES.MESH_DEVICE_KEY && stoneKey.ttl === 0) {
+              return stoneKey.key;
+            }
+          }
+        }
+
+        throw {code: networkError, message: "Invalid key data"};
+      })
+  }
+
+
   registerInCloud(sphereId) {
     return new Promise((resolve, reject) => {
       const processFailure = (err?) => {
@@ -243,19 +267,33 @@ export class SetupHelper {
     })
   }
 
-  setupCrownstone(sphereId) {
+  setupCrownstone(sphereId, meshDeviceKey) {
     const state = core.store.getState();
-    let sphereData = state.spheres[sphereId].config;
+    let sphere = state.spheres[sphereId];
+    let sphereData = sphere.config;
+    let sphereKeys = sphere.keys;
+
+    let keyMap = {};
+    for (let i = 0; i < sphereKeys.length; i++) {
+      if (sphereKeys[i].ttl === 0) {
+        keyMap[sphereKeys[i].keyType] = sphereKeys[i].key;
+      }
+    }
 
     let data = {};
-    data["crownstoneId"]      = this.cloudResponse.uid;
-    data["adminKey"]          = sphereData.adminKey;
-    data["memberKey"]         = sphereData.memberKey;
-    data["guestKey"]          = sphereData.guestKey;
-    data["meshAccessAddress"] = sphereData.meshAccessAddress;
-    data["ibeaconUUID"]       = sphereData.iBeaconUUID;
-    data["ibeaconMajor"]      = this.cloudResponse.major;
-    data["ibeaconMinor"]      = this.cloudResponse.minor;
+    data["crownstoneId"]       = this.cloudResponse.uid;
+    data["sphereId"]           = sphereData.uid;
+    data["adminKey"]           = keyMap[KEY_TYPES.ADMIN_KEY];
+    data["memberKey"]          = keyMap[KEY_TYPES.MEMBER_KEY];
+    data["basicKey"]           = keyMap[KEY_TYPES.BASIC_KEY];
+    data["serviceDataKey"]     = keyMap[KEY_TYPES.SERVICE_DATA_KEY];
+    data["meshNetworkKey"]     = keyMap[KEY_TYPES.MESH_NETWORK_KEY];
+    data["meshApplicationKey"] = keyMap[KEY_TYPES.MESH_APPLICATION_KEY];
+    data["meshDeviceKey"]      = meshDeviceKey;
+    data["meshAccessAddress"]  = sphereData.meshAccessAddress; // legacy
+    data["ibeaconUUID"]        = sphereData.iBeaconUUID;
+    data["ibeaconMajor"]       = this.cloudResponse.major;
+    data["ibeaconMinor"]       = this.cloudResponse.minor;
 
     let unsubscribe = core.nativeBus.on(core.nativeBus.topics.setupProgress, (progress) => {
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 + progress });
