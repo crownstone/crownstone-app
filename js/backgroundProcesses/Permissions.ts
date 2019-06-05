@@ -5,7 +5,7 @@ import { core } from "../core";
 export class PermissionBase {
   canEditSphere           = false; // a or m
 
-  useKeepAliveState       = false; // g
+  useKeepAliveState       = false; // m
   setStoneTime            = false; // a or m
   setToonInCloud          = false; // a
   setBehaviourInCloud     = false; // a

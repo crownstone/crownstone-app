@@ -109,9 +109,9 @@ export class SphereEditSettings extends LiveComponent<any, any> {
             }
             else {
               Alert.alert(
-lang("_Sphere_name_must_be_at_l_header"),
-lang("_Sphere_name_must_be_at_l_body"),
-[{text: lang("_Sphere_name_must_be_at_l_left")}]);
+                lang("_Sphere_name_must_be_at_l_header"),
+                lang("_Sphere_name_must_be_at_l_body"),
+                [{text: lang("_Sphere_name_must_be_at_l_left")}]);
             }
           }
         }
@@ -145,9 +145,12 @@ lang("_Sphere_name_must_be_at_l_body"),
       type: 'navigation',
       icon: <IconButton name='c1-people' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
       callback: () => {
-        NavigationUtil.back();
-        setTimeout(() => { core.eventBus.emit("highlight_nav_field", "sphereEdit_users");}, 200);
-        setTimeout(() => { NavigationUtil.navigate( "SphereUserOverview",{sphereId: this.props.sphereId}); }, 500);
+        core.eventBus.emit("highlight_nav_field", "sphereEdit_users");
+        NavigationUtil.back().then(() => {
+          setTimeout(() => {
+            NavigationUtil.navigate("SphereUserOverview", { sphereId: this.props.sphereId });
+          },100);
+        })
       }
     });
 

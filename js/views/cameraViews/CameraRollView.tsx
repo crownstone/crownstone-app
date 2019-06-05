@@ -15,12 +15,20 @@ export class CameraRollView extends Component<any, any> {
     return TopBarUtil.getOptions({title:  lang('Choose_a_Picture'), closeModal: true});
   }
 
+  selected = false;
+
   render() {
    return (
      <CameraRollPicker
        callback={(x) => {
-         this.props.selectCallback(x[0].uri);
-         NavigationUtil.back();
+         // avoid double presses and wrong input.
+         if (x && Array.isArray(x) && x.length > 0 && x[0] && x[0].uri) {
+           if (this.selected === false) {
+             this.selected = true;
+             this.props.selectCallback(x[0].uri);
+             NavigationUtil.back();
+           }
+         }
        }}
        selectSingleItem={true}
        groupTypes={"All"}

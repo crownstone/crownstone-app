@@ -83,19 +83,25 @@ interface behaviourWrapper {
 // TYPE: EVENT
 // events can trigger a switch event. The handleSwitch rule will determine how the aicore responds to this. The PULSE event type will not influence this.
 type aicoreEvent = {
-  type:       "TIME",
+  type:       "TIME_OF_DAY",
   action:     eventAction,
   effect:     effectData,
   conditions: eventCondition[],
   time:       aicoreTimeData,
 } | {
+  type:       "TIME",
+  action:     eventAction,
+  effect:     effectData,
+  conditions: eventCondition[],
+  timestamp:  number, // timestamp,
+} | {
   type:       "PRESENCE_ENTER" | "PRESENCE_EXIT",
   action:     eventAction,
   effect:     effectData,
   conditions: eventCondition[],
-  presence:   aicorePresenceData,
+  presence:   aicorePresence,
 } | {
-  type:       "OTHER_CROWNSTONE_STATE_CHANGE" | "OTHER_CROWNSTONE_SWITCHCRAFT",
+  type:       "OTHER_CROWNSTONE_STATE_CHANGE" | "OTHER_CROWNSTONE_SWITCHCRAFT", // state change is turning on or off.
   action:     eventAction,
   effect:     effectData,
   conditions: eventCondition[],

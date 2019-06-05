@@ -78,8 +78,12 @@ export class DeviceEdit extends LiveComponent<any, any> {
       refreshingStoneVersions: false
     };
 
-    TopBarUtil.updateOptions(this.props.componentId, {save: () => { this._updateCrownstone(); }})
   }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'save') {  this._updateCrownstone(); }
+  }
+
 
   componentDidMount() {
     // tell the component exactly when it should redraw

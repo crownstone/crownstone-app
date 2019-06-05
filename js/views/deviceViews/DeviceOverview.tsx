@@ -224,7 +224,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
           scrollEnabled={this.state.swipeEnabled}
           bounces={true}
           loadMinimal={true}
-          loadMinimalSize={3}
+          loadMinimalSize={2}
           onScrollBeginDrag={ () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
@@ -331,9 +331,9 @@ function getTopBarProps(store, state, props, swiperIndex, scrolling) {
         rightLabel =  lang("Change");
         if (stone.config.locked === true) {
           rightAction = () => { Alert.alert(
-lang("_Crownstone_is_Locked___Y_header"),
-lang("_Crownstone_is_Locked___Y_body"),
-[{text:lang("_Crownstone_is_Locked___Y_left")}])};
+            lang("_Crownstone_is_Locked___Y_header"),
+            lang("_Crownstone_is_Locked___Y_body"),
+  [{text:lang("_Crownstone_is_Locked___Y_left")}])};
         }
         else {
           rightAction = () => { NavigationUtil.launchModal( "DeviceBehaviourEdit",{sphereId: props.sphereId, stoneId: props.stoneId}); }
