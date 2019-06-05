@@ -75,7 +75,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     return {
       start: {
         header: "There is an update available for your Crownstones!",
-        subHeader:"... but need to be in your Sphere to update your Crownstones.",
+        subHeader: "... but need to be in your Sphere to update your Crownstones.",
         optionsBottom: true,
         component: (
           <View style={{...styles.centered, flex:1}}>

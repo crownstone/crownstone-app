@@ -16,6 +16,7 @@ import { Interview } from "../components/Interview";
 import { LiveComponent } from "../LiveComponent";
 import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
+import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
 
 export class DfuFinished extends LiveComponent<any, any> {
   static options = {
@@ -24,6 +25,10 @@ export class DfuFinished extends LiveComponent<any, any> {
 
   _interview : Interview;
 
+
+  componentDidMount() {
+    UpdateCenter.checkForFirmwareUpdates();
+  }
 
   getFailedCard() : interviewCards {
     return {

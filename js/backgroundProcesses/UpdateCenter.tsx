@@ -29,6 +29,9 @@ export const UpdateCenter = {
           }
         });
       }
+      else {
+        OnScreenNotifications.removeNotification("UpdateCenter" + sphereId);
+      }
     })
   }
 }

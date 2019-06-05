@@ -304,7 +304,7 @@ function getTopBarProps(store, state, props, swiperIndex, scrolling) {
   // check what we want to show the user:
   let hasError   = stone.errors.hasError;
   let mustUpdate = xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
-  let canUpdate  = Permissions.inSphere(props.sphereId).canUpdateCrownstone && xUtil.versions.canUpdate(stone, state) && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
+  let canUpdate  = Permissions.inSphere(props.sphereId).canUpdateCrownstone && xUtil.versions.canUpdate(stone, state) && StoneAvailabilityTracker.isDisabled(props.stoneId) === false;
 
   // only shift the indexes (move the edit button to the next pages) if we do not have a mandatory view
   if (!hasError && !mustUpdate) {

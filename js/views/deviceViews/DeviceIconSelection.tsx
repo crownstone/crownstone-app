@@ -272,6 +272,13 @@ let listOfIcons = {
   // __new: []
 };
 
+export const getRandomDeviceIcon = function() {
+  let keys = Object.keys(listOfIcons);
+  let index = Math.floor(Math.random()*keys.length);
+  let set = listOfIcons[keys[index]];
+  return set[Math.floor(Math.random()*set.length)]
+}
+
 export class DeviceIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  lang("Pick_an_Icon"), closeModal: true });

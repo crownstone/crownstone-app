@@ -17,6 +17,7 @@ import { IconButton }   from "../../components/IconButton";
 import { Permissions }  from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 export class DeviceUpdate extends Component<any, any> {
 
@@ -88,9 +89,6 @@ export class DeviceUpdate extends Component<any, any> {
   }
 
   render() {
-    const state    = core.store.getState();
-    const sphere   = state.spheres[this.props.sphereId];
-    const stone    = sphere.stones[this.props.stoneId];
     const disabled = StoneAvailabilityTracker.isDisabled(this.props.stoneId)
 
     return (
@@ -103,7 +101,7 @@ export class DeviceUpdate extends Component<any, any> {
         <View style={{flex:1}} />
         {disabled ? undefined : <TouchableOpacity
           onPress={() => {
-
+            NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
           }}
           style={[styles.centered, {
             width: 0.6 * screenWidth,
@@ -111,7 +109,7 @@ export class DeviceUpdate extends Component<any, any> {
             borderRadius: 25,
             borderWidth: 3,
             borderColor: colors.white.hex,
-            backgroundColor: colors.csBlue.rgba(0.5)
+            backgroundColor: colors.csBlueDark.rgba(0.5)
           }]}>
           <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("Lets_get_started_") }</Text>
         </TouchableOpacity>}

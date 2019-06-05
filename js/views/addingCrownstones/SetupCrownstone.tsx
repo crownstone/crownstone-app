@@ -14,7 +14,6 @@ import {
 import { core } from "../../core";
 import { Interview } from "../components/Interview";
 import { IconCircle } from "../components/IconCircle";
-import { getRandomC1Name } from "../../fonts/customIcons";
 import { colors, screenHeight, screenWidth, styles } from "../styles";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
@@ -28,6 +27,7 @@ import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise"
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { delay } from "../../util/Util";
 import { BleUtil } from "../../util/BleUtil";
+import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
 
 export class SetupCrownstone extends LiveComponent<any, any> {
   static options(props) {
@@ -42,7 +42,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    this.randomIcon = getRandomC1Name();
+    this.randomIcon = getRandomDeviceIcon();
 
     this.newCrownstoneState = {
       name:           null,
@@ -110,7 +110,10 @@ export class SetupCrownstone extends LiveComponent<any, any> {
             this.newCrownstoneState.location.name = location ? location.config.name    : null;
             this.newCrownstoneState.location.icon = location ? location.config.icon    : null;
 
-            this._interview.setLockedCard("iKnowThisOne");
+            // this check is here because the user MIGHT go back somehow, destroying the view
+            if (this._interview) {
+              this._interview.setLockedCard("iKnowThisOne");
+            }
             return;
           }
           else {
@@ -121,9 +124,6 @@ export class SetupCrownstone extends LiveComponent<any, any> {
           if (this.abort === true) {
             return this._interview.setLockedCard("aborted");
           }
-
-          console.log("FAILED>>>> err",err)
-
 
           if (err.code) {
             if (err.code === 1) {
@@ -315,7 +315,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         editableItem: (state, setState) => {
           return (
             <TouchableOpacity onPress={() => {
-              NavigationUtil.navigate( "DeviceIconSelection",{
+              NavigationUtil.launchModal( "DeviceIconSelection",{
                 icon: state,
                 callback: (newIcon) => {
                   setState(newIcon);

@@ -12,6 +12,7 @@ import {StoneUtil} from "../../util/StoneUtil";
 import { STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
+import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
 
 
 const networkError = 'network_error';
@@ -73,6 +74,7 @@ export class SetupHelper {
           })
           .then((firmwareVersion) => {
             this.firmwareVersion = firmwareVersion;
+            this.firmwareVersion = "1.1.0";
             LOG.info("setup progress: have firmware version: ", firmwareVersion);
             return BluenetPromiseWrapper.getHardwareVersion();
           })
@@ -159,6 +161,8 @@ export class SetupHelper {
 
               // Resolve the setup promise.
               resolve({id:localId, familiarCrownstone: familiarCrownstone});
+
+              UpdateCenter.checkForFirmwareUpdates();
 
             }, fastSetupEnabled ? 50 : 2500, 'setup20 resolver timeout');
           })

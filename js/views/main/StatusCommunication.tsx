@@ -100,6 +100,8 @@ export class StatusCommunication extends LiveComponent<any, any> {
       flexDirection:'column',
     };
 
+    console.log("generalStyle", generalStyle, screenWidth)
+
 
     if (this.props.viewingRemotely === true) {
       return (
@@ -132,14 +134,14 @@ export class StatusCommunication extends LiveComponent<any, any> {
     }
     else if (enoughForLocalizationInLocations && requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
-        <View style={[generalStyle, inRangeStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]} pointerEvents={'none'}>
+        <View style={[generalStyle, inRangeStyle]} pointerEvents={'none'}>
           <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_all_rooms_have_been_t") }</Text>
         </View>
       )
     }
     else if (!enoughForLocalizationInLocations && enoughForLocalization) {
       return (
-        <View style={[generalStyle, inRangeStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]} pointerEvents={'none'}>
+        <View style={[generalStyle, inRangeStyle]} pointerEvents={'none'}>
           <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{ lang("Not_enough_Crownstones_pl") }</Text>
         </View>
       )
@@ -165,7 +167,6 @@ export class StatusCommunication extends LiveComponent<any, any> {
 
 let inRangeStyle : TextStyle = {
   flexDirection:'row',
-  width: screenWidth,
   backgroundColor: 'transparent',
   justifyContent: 'center',
   alignItems: 'center',
