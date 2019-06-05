@@ -106,7 +106,13 @@ export class DfuBatch extends Component<any, any> {
     if (indexToRetry === null) {
       // Finish. Notify user about failed updates and what to do next.
       this.setState({updatingCrownstoneIndex: this.state.updatingCrownstoneIndex+1})
-      let amountOfSuccessfulUpdates = Object.keys(this.finishedUpdate).length;
+      let amountOfSuccessfulUpdates = 0;
+      Object.keys(this.finishedUpdate).forEach((taskId) => {
+        if (this.finishedUpdate[taskId].state === true) {
+          amountOfCrownstones++;
+        }
+      })
+
       Vibration.vibrate(400, false);
       NavigationUtil.navigate("DfuFinished", {
         sphereId:     this.props.sphereId,

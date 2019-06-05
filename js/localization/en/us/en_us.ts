@@ -2124,6 +2124,7 @@ export default {
     __filename: "../js/views/settingsViews/dev/SettingsLogging.tsx",
     SET_LOGGING_LEVELS:                  function() { return "SET LOGGING LEVELS" },
     General:                             function() { return "General" },
+    PromiseManager:                      function() { return "PromiseManager" },
     Native:                              function() { return "Native" },
     Mesh:                                function() { return "Mesh" },
     Notifications:                       function() { return "Notifications" },

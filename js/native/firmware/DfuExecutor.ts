@@ -8,12 +8,15 @@ import { FileUtil } from "../../util/FileUtil";
 import { DfuUtil } from "../../util/DfuUtil";
 import { DfuStateHandler } from "./DfuStateHandler";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../../ExternalConfig";
+import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
+import { BluenetPromiseWrapper } from "../libInterface/BluenetPromise";
 
 
 export const DfuExecutionInformation = {
   GETTING_INFORMATION:          "GETTING_INFORMATION",
   OBTAINED_INFORMATION_CLOUD:   "OBTAINED_INFORMATION_CLOUD",
   OBTAINED_VERSIONS_FROM_STONE: "OBTAINED_VERSIONS_FROM_STONE",
+  VERSION_OBTAINING_FAILED:     "VERSION_OBTAINING_FAILED",
   OBTAINED_STEPS:               "OBTAINED_STEPS",
   DOWNLOAD_STARTED:             "DOWNLOAD_STARTED",
   DOWNLOAD_SUCCESS:             "DOWNLOAD_SUCCESS",
@@ -220,7 +223,15 @@ export class DfuExecutor {
       .then((crownstoneMode) => {
         return this._prepareAndGetVersions(crownstoneMode)
       })
-      .catch((err) => { this._handleError(err, DfuPhases.PREPARATION, DfuExecutionInformation.DOWNLOAD_FAILED); })
+      .catch((err) => { this._handleError(err, DfuPhases.PREPARATION, DfuExecutionInformation.VERSION_OBTAINING_FAILED); })
+      .then(() => {
+        // check if we were able to get the BL version. if not, we go to DFU.
+        if (this.currentBootloaderVersion === null) {
+          LOGi.dfu("Executor: getting the bootloader from DFU....");
+          return this._getBootloaderVersionFromDFU()
+        }
+      })
+      .catch((err) => { this._handleError(err, DfuPhases.PREPARATION, DfuExecutionInformation.VERSION_OBTAINING_FAILED); })
       .then(() => {
         if (this.stopDFU) { throw DFU_CANCELLED; }
         LOGi.dfu("Executor: ble preperation finished.");
@@ -280,6 +291,8 @@ export class DfuExecutor {
         DfuStateHandler._dfuInProgress = false;
         this.runningDfuProcess = false;
         LOGi.dfu("Executor: DFU failed.");
+
+        // TODO: put back in app mode.
         throw err;
       })
   }
@@ -317,11 +330,50 @@ export class DfuExecutor {
     return Promise.all(blePromises).then(() => {})
   }
 
+
+  _getBootloaderVersionFromDFU() {
+    return this._searchForCrownstone()
+      .then((crownstoneMode) => {
+        LOGi.dfu("Executor: crownstone located.", crownstoneMode);
+        return this.dfuHelper.putInDFU(crownstoneMode);
+      })
+      .then(() => {
+        LOGi.dfu("Executor: crownstone put in dfu mode.");
+        return this._searchForCrownstone();
+      })
+      .then(() => {
+        let stone = StoneUtil.getStoneObject(this.sphereId, this.stoneId)
+        if (!stone) { throw "NO_STONE" }
+        console.log("Getting proxy", stone.config.handle, this.sphereId)
+        let proxy = BleUtil.getProxy(stone.config.handle, this.sphereId);
+        return proxy.performPriority(BluenetPromiseWrapper.getBootloaderVersion)
+      })
+      .then((bootloaderVersion) => {
+        if (!(bootloaderVersion && bootloaderVersion.data)) {
+          throw "Failed to get Bootloader!"
+        }
+        else {
+          this.currentBootloaderVersion = bootloaderVersion.data;
+        }
+
+        LOGi.dfu("Executor: Stone bootloader version received.", this.currentBootloaderVersion);
+        core.store.dispatch({
+          type: "UPDATE_STONE_CONFIG",
+          stoneId: this.stoneId,
+          sphereId: this.sphereId,
+          data: {
+            bootloaderVersion: bootloaderVersion.data,
+          }
+        });
+      })
+  }
+
   _getBootloaderVersionFromStone() {
     return StoneUtil.checkBootloaderVersion(this.sphereId, this.stoneId)
       .then((bootloaderVersion) => {
         if (!(bootloaderVersion && bootloaderVersion.data)) {
-          this.currentBootloaderVersion = "1.4.0";
+          this.currentBootloaderVersion = null;
+          return;
         }
         else {
           this.currentBootloaderVersion = bootloaderVersion.data;
@@ -404,8 +456,10 @@ export class DfuExecutor {
 
   _handleBootloader(bootloaderCandidate) {
     if (this.stopDFU) { return Promise.reject(DFU_CANCELLED); }
+
     if (xUtil.versions.isHigherOrEqual(this.currentBootloaderVersion, bootloaderCandidate.version) && !this._debugRepeatBootloader()) {
       LOGi.dfu("Executor: bootloader is up-to-date!");
+      this._setProgress(DfuPhases.BOOTLOADER, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
       return Promise.resolve();
     }
 
@@ -474,6 +528,7 @@ export class DfuExecutor {
     if (this.stopDFU) { return Promise.reject(DFU_CANCELLED); }
     if (xUtil.versions.isHigherOrEqual(this.currentFirmwareVersion, firmwareCandidate.version) && !this._debugRepeatFirmware()) {
       LOGi.dfu("Executor: Firmware is up-to-date!");
+      this._setProgress(DfuPhases.FIRMWARE, this.currentStep++, 1, DfuExecutionInformation.UPDATE_SUCCESS);
       return Promise.resolve();
     }
 

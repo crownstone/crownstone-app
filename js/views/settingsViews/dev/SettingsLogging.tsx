@@ -54,18 +54,19 @@ export class SettingsLogging extends LiveComponent<any, any> {
     });
 
     let logLevelsData = {
-      log_info:          { label: lang("General"),         explanation: ''},
-      log_native:        { label: lang("Native"),          explanation: ''},
-      log_mesh:          { label: lang("Mesh"),            explanation: ''},
-      log_broadcast:     { label: lang("Broadcast"),       explanation: ''},
-      log_notifications: { label: lang("Notifications"),   explanation: ''},
-      log_scheduler:     { label: lang("Scheduler"),       explanation: ''},
-      log_ble:           { label: lang("BLE"),             explanation: ''},
-      log_dfu:           { label: lang("DFU"),             explanation: ''},
-      log_bch:           { label: lang("Batch_C_Handler"), explanation: ''},
-      log_events:        { label: lang("Events"),          explanation: ''},
-      log_store:         { label: lang("Store"),           explanation: ''},
-      log_cloud:         { label: lang("Cloud"),           explanation: ''},
+      log_info:           { label: lang("General"),         explanation: ''},
+      log_promiseManager: { label: lang("PromiseManager"),  explanation: ''},
+      log_native:         { label: lang("Native"),          explanation: ''},
+      log_mesh:           { label: lang("Mesh"),            explanation: ''},
+      log_broadcast:      { label: lang("Broadcast"),       explanation: ''},
+      log_notifications:  { label: lang("Notifications"),   explanation: ''},
+      log_scheduler:      { label: lang("Scheduler"),       explanation: ''},
+      log_ble:            { label: lang("BLE"),             explanation: ''},
+      log_dfu:            { label: lang("DFU"),             explanation: ''},
+      log_bch:            { label: lang("Batch_C_Handler"), explanation: ''},
+      log_events:         { label: lang("Events"),          explanation: ''},
+      log_store:          { label: lang("Store"),           explanation: ''},
+      log_cloud:          { label: lang("Cloud"),           explanation: ''},
     };
 
     let logLevels = Object.keys(logLevelsData);

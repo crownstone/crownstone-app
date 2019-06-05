@@ -72,7 +72,6 @@ export class SphereOverview extends LiveComponent<any, any> {
 
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
-    this.unsubscribeSetupEvents.push(core.eventBus.on("setupStonesDetected",  () => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
 
     // tell the component exactly when it should redraw

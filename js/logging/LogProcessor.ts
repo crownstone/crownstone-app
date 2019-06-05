@@ -7,6 +7,7 @@ class LogProcessorClass {
   writeToFile =       false;
 
   log_info:           number = LOG_LEVEL.NONE;
+  log_promiseManager: number = LOG_LEVEL.NONE;
   log_mesh:           number = LOG_LEVEL.NONE;
   log_notifications:  number = LOG_LEVEL.NONE;
   log_broadcast:      number = LOG_LEVEL.NONE;
@@ -43,6 +44,7 @@ class LogProcessorClass {
       this.writeToFile = dev === true && loggingEnabled === true;
 
       this.log_info           = loggingEnabled && devState.log_info           || LOG_LEVEL.NONE;
+      this.log_promiseManager = loggingEnabled && devState.log_promiseManager || LOG_LEVEL.NONE;
       this.log_mesh           = loggingEnabled && devState.log_mesh           || LOG_LEVEL.NONE;
       this.log_dfu            = loggingEnabled && devState.log_dfu            || LOG_LEVEL.NONE;
       this.log_native         = loggingEnabled && devState.log_native         || LOG_LEVEL.NONE;

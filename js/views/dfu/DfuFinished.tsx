@@ -52,7 +52,7 @@ export class DfuFinished extends LiveComponent<any, any> {
     return {
       start: {
         header:"Crownstones successfully updated!",
-        subHeader:"There just are " + amountOfStones + " left to go!",
+        subHeader: amountOfStones == 1 ? "There is just " + amountOfStones + " left to go!" :  "There are just " + amountOfStones + " left to go!",
         optionsBottom: true,
         component: (
           <View style={{...styles.centered, flex:1}}>

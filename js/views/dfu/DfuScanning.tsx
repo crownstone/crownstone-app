@@ -6,9 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  ActivityIndicator,
+  ActivityIndicator, Alert,
   ScrollView, Text, TouchableOpacity,
-  View} from "react-native";
+  View
+} from "react-native";
 import { Pagination } from 'react-native-snap-carousel';
 import { colors, screenWidth, styles} from "../styles";
 import { core } from "../../core";
@@ -53,7 +54,12 @@ export class DfuScanning extends LiveComponent<any, any> {
 
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'next') {
-      NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})
+      if (this.visibleDrawnStones.length === 0) {
+        Alert.alert("No Crownstones in range yet.","Please go near your Crownstones until they show up green in the list.",[{text:"OK"}])
+      }
+      else {
+        NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})
+      }
     }
   }
 

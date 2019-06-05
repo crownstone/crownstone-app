@@ -74,7 +74,7 @@ export class DeviceUpdate extends Component<any, any> {
     return (
       <TouchableOpacity
         onPress={() => {
-
+          NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
         }}
       >
         <IconButton

@@ -26,7 +26,7 @@ class BlePromiseManagerClass {
   }
 
   _register(promise : () => Promise<any>, message, priorityCommand : boolean = false, timeout: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) : Promise<any> {
-    LOG.info("BlePromiseManager: registered promise in manager");
+    LOG.promiseManager("BlePromiseManager: registered promise in manager");
     return new Promise((resolve, reject) => {
       let container = { promise: promise, resolve: resolve, reject: reject, message: message, completed: false, timeout: timeout };
       if (this.promiseInProgress === undefined) {
@@ -34,11 +34,11 @@ class BlePromiseManagerClass {
       }
       else {
         if (priorityCommand === true) {
-          LOG.info('BlePromiseManager: adding to top of stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
+          LOG.promiseManager('BlePromiseManager: adding to top of stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
           this.pendingPromises.unshift(container);
         }
         else {
-          LOG.info('BlePromiseManager: adding to stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
+          LOG.promiseManager('BlePromiseManager: adding to stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
           this.pendingPromises.push(container);
         }
       }
@@ -46,13 +46,13 @@ class BlePromiseManagerClass {
   }
 
   executePromise(promiseContainer) {
-    LOG.info('BlePromiseManager: executing promise: ', promiseContainer.message);
+    LOG.promiseManager('BlePromiseManager: executing promise: ', promiseContainer.message);
     this.promiseInProgress = promiseContainer;
 
     // This timeout is a fallback to ensure the promise manager will not get jammed with a single promise.
     // It guarantees uniqueness
     this.clearPendingPromiseTimeout = Scheduler.scheduleCallback(() => {
-      LOGe.info('BlePromiseManager: Forced timeout after', PROMISE_MANAGER_FALLBACK_TIMEOUT*0.001 , 'seconds for', promiseContainer.message);
+      LOGe.promiseManager('BlePromiseManager: Forced timeout after', PROMISE_MANAGER_FALLBACK_TIMEOUT*0.001 , 'seconds for', promiseContainer.message);
       this.clearPendingPromiseTimeout = null;
       this.finalize(promiseContainer, () => {
         promiseContainer.reject('Forced timeout after ' + PROMISE_MANAGER_FALLBACK_TIMEOUT*0.001 + ' seconds.');
@@ -61,11 +61,11 @@ class BlePromiseManagerClass {
 
     promiseContainer.promise()
       .then((data) => {
-        LOG.info("BlePromiseManager: resolved: ", promiseContainer.message);
+        LOG.promiseManager("BlePromiseManager: resolved: ", promiseContainer.message);
         this.finalize(promiseContainer, () => { promiseContainer.resolve(data); });
       })
       .catch((err) => {
-        LOG.info("BlePromiseManager: rejected: ", promiseContainer.message);
+        LOG.promiseManager("BlePromiseManager: rejected: ", promiseContainer.message);
         this.finalize(promiseContainer, () => { promiseContainer.reject(err); });
       })
   }
@@ -95,7 +95,7 @@ class BlePromiseManagerClass {
   }
 
   getNextPromise() {
-    LOG.info('BlePromiseManager: get next');
+    LOG.promiseManager('BlePromiseManager: get next');
     if (this.pendingPromises.length > 0) {
       let nextPromise = this.pendingPromises[0];
       this.executePromise(nextPromise);

@@ -9,7 +9,7 @@ import {
   LOG_SCHEDULER,
   RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
   LOG_TIME_DIFFS,
-  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH, LOG_TO_FILE, LOG_DFU, LOG_BROADCAST
+  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH, LOG_TO_FILE, LOG_DFU, LOG_BROADCAST, LOG_PROMISE_MANAGER
 } from "../ExternalConfig";
 import { LogProcessor } from "./LogProcessor";
 import { logToFile } from "./LogUtil";
@@ -42,6 +42,10 @@ class Logger {
   
   info(...any) {
     this._log('------------', LOG_INFO,      LogProcessor.log_info, arguments);
+  }
+
+  promiseManager(...any) {
+    this._log('------------', LOG_PROMISE_MANAGER, LogProcessor.log_promiseManager, arguments);
   }
 
   broadcast(...any) {

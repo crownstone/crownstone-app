@@ -18,12 +18,12 @@ export class DirectCommand {
    * @returns {*}
    */
   perform(action, props = []) {
-    LOG.info("DirectCommand: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
+    LOG.bch("DirectCommand: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this.performCommand(action,props, false);
   }
 
   performPriority(action, props = []) {
-    LOG.info("DirectCommand: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
+    LOG.bch("DirectCommand: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this.performCommand(action, props, true)
   }
 
@@ -31,20 +31,27 @@ export class DirectCommand {
   performCommand(action, props = [], priorityCommand) {
     let actionPromise = () => {
       if (this.handle) {
+        let resultData = undefined;
         return BluenetPromiseWrapper.connect(this.handle, this.referenceId)
-          .then(() => { LOG.info("DirectCommand: connected, performing: ", action, props); return action.apply(this, props); })
+          .then(() => { LOG.bch("DirectCommand: connected, performing: ", action, props); return action.apply(this, props); })
           .catch((err) => {
             if (err === 'NOT_CONNECTED') {
               return BluenetPromiseWrapper.connect(this.handle, this.referenceId)
-                .then(() => { LOG.info("DirectCommand: second attempt, performing: ", action, props); return action.apply(this, props); })
+                .then(() => { LOG.bch("DirectCommand: second attempt, performing: ", action, props); return action.apply(this, props); })
             }
           })
-          .then(() => { LOG.info("DirectCommand: completed", action, 'disconnecting'); return BluenetPromiseWrapper.disconnectCommand(); })
+          .then((data) => {
+            resultData = {data:data};
+            LOG.bch("DirectCommand: completed", action, 'disconnecting', data);
+            return BluenetPromiseWrapper.phoneDisconnect();
+          })
           .catch((err) => {
-            LOGe.ble("DirectCommand: BLE Single command Error:", err);
-            return new Promise((resolve,reject) => {
-              BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
-            })
+            LOGe.bch("DirectCommand: BLE Single command Error:", err);
+            throw err;
+          })
+          .then(() => {
+            LOG.bch("DirectCommand: finished. forwarding data:", resultData);
+            return resultData;
           })
       }
       else {
@@ -110,9 +117,9 @@ export class DirectCommand {
           .then(() => {
             return actionStep(undefined);
           })
-          .then(() => { LOG.info("DirectCommand: performMultipleCommands: completed", actions, 'disconnecting'); return BluenetPromiseWrapper.disconnectCommand(); })
+          .then(() => { LOG.bch("DirectCommand: performMultipleCommands: completed", actions, 'disconnecting'); return BluenetPromiseWrapper.disconnectCommand(); })
           .catch((err) => {
-            LOGe.ble("performMultipleCommands: BLE Single command Error:", err);
+            LOGe.bch("performMultipleCommands: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
               BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
             })

@@ -85,7 +85,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
           </View>
         ),
         options: [
-          {label: lang("Ill_try_again_later_"), onSelect: () => { NavigationUtil.back() }},
+          {label: lang("Ill_try_again_later_"), onSelect: () => { NavigationUtil.dismissModal() }},
         ]
       },
     }

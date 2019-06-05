@@ -82,15 +82,16 @@ import DeviceInfo from 'react-native-device-info';
    * Main logging settings.
    * These will override developer settings only if true but they are currently on by default in developer settings.
    */
-  export let LOG_INFO           = LOG_LEVEL.ERROR;    // enabling LOG.info           commands to be shown.
-  export let LOG_NOTIFICATIONS  = LOG_LEVEL.ERROR;    // enabling LOG.notifications  commands to be shown.
-  export let LOG_WARNINGS       = LOG_LEVEL.ERROR;    // enabling LOG.warn           commands to be shown.
-  export let LOG_ERRORS         = LOG_LEVEL.ERROR;    // enabling LOG.error          commands to be shown.
-  export let LOG_MESH           = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
-  export let LOG_MESSAGES       = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
-  export let LOG_ADVERTISEMENTS = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
-  export let LOG_DFU            = LOG_LEVEL.ERROR;    // enabling LOG.dfu commands to be shown.
-  export let LOG_BROADCAST      = LOG_LEVEL.ERROR;    // enabling LOG.broadcast commands to be shown.
+  export let LOG_INFO            = LOG_LEVEL.ERROR;    // enabling LOG.info           commands to be shown.
+  export let LOG_PROMISE_MANAGER = LOG_LEVEL.ERROR;    // enabling LOG.promiseManager commands to be shown.
+  export let LOG_NOTIFICATIONS   = LOG_LEVEL.ERROR;    // enabling LOG.notifications  commands to be shown.
+  export let LOG_WARNINGS        = LOG_LEVEL.ERROR;    // enabling LOG.warn           commands to be shown.
+  export let LOG_ERRORS          = LOG_LEVEL.ERROR;    // enabling LOG.error          commands to be shown.
+  export let LOG_MESH            = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
+  export let LOG_MESSAGES        = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
+  export let LOG_ADVERTISEMENTS  = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
+  export let LOG_DFU             = LOG_LEVEL.ERROR;    // enabling LOG.dfu commands to be shown.
+  export let LOG_BROADCAST       = LOG_LEVEL.ERROR;    // enabling LOG.broadcast commands to be shown.
 
   /**
    * Specific logging settings used for debugging mostly. These will override developer settings only if true.
