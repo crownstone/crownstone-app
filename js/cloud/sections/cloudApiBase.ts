@@ -39,12 +39,6 @@ class TokenStoreClass {
   stoneId;
   toonId;
   userId;
-
-  constructor() {
-
-  }
-
-
 }
 
 export const TokenStore = new TokenStoreClass();
@@ -74,7 +68,7 @@ export const cloudApiBase = {
   },
   _uploadImage: function(options) {
     let formData = new FormData();
-    let path = preparePictureURI(options.path);
+    let path = preparePictureURI(options.path, false);
     let filename = path.split('/');
     filename = filename[filename.length-1];
     // cast to any because the typescript typings are incorrect for FormData
@@ -88,14 +82,14 @@ export const cloudApiBase = {
         }
         else {
           LOGi.cloud("CloudAPIBase: file exists, continue upload");
-          let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), TokenStore.accessToken, true);
+          let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, TokenStore), TokenStore.accessToken, true);
           return this._finalizeRequest(promise, options);
         }
       })
       .catch((err) => { LOGe.cloud("_uploadImage: failed to check if file exists:", err); })
   },
   _download: function(options, toPath, beginCallback?, progressCallback?) {
-    return download(options, _getId(options.endPoint, this), TokenStore.accessToken, toPath, beginCallback, progressCallback)
+    return download(options, _getId(options.endPoint, TokenStore), TokenStore.accessToken, toPath, beginCallback, progressCallback)
   },
   downloadFile: function(url, targetPath, callbacks) {
     return downloadFile(url, targetPath, callbacks);

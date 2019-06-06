@@ -67,10 +67,10 @@ export const DfuUtil = {
         LOGe.info("DFU UTIL: Could not download release notes...", err);
         let errorMessage = RELEASE_NOTES_ERROR;
         if (userConfig.firmwareVersionsAvailable[hardwareVersion] === undefined) {
-          errorMessage += "\nNo firmware available form hardwareVersion" + hardwareVersion
+          errorMessage += "\nNo firmware available form hardwareVersion: " + hardwareVersion + "\n"
         }
         if (userConfig.bootloaderVersionsAvailable[hardwareVersion] === undefined) {
-          errorMessage += "\nNo bootloader available form hardwareVersion" + hardwareVersion
+          errorMessage += "\nNo bootloader available form hardwareVersion: " + hardwareVersion + "\n"
         }
 
         return errorMessage;

@@ -120,7 +120,6 @@ export class UserLayer extends LiveComponent<any, any> {
     let users = {};
     let userArray = [];
 
-
     // for each location, get the users in there.
     locationIds.forEach((locationId) => {
       let node = this.props.nodes[locationId];

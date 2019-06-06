@@ -37,7 +37,6 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { SphereUtil } from "../../util/SphereUtil";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -81,7 +80,8 @@ export class RoomOverview extends LiveComponent<any, any> {
   }
 
   navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'edit') { NAVBAR_PARAMS_CACHE.edit() }
+    if (buttonId === 'edit')  { NAVBAR_PARAMS_CACHE.edit(); }
+    if (buttonId === 'train') { NAVBAR_PARAMS_CACHE.nav.callback(); }
   }
 
 
@@ -321,6 +321,9 @@ function getTopBarProps(state, props, viewingRemotely) {
   if (!location) { return }
 
   let title = location.config.name;
+
+  NAVBAR_PARAMS_CACHE = { title: title }
+
   let rightAction = () => { };
   let spherePermissions = Permissions.inSphere(props.sphereId);
 
@@ -328,6 +331,7 @@ function getTopBarProps(state, props, viewingRemotely) {
     rightAction = () => {
       NavigationUtil.launchModal( "RoomEdit",{ sphereId: props.sphereId, locationId: props.locationId });
     };
+    NAVBAR_PARAMS_CACHE["edit"] = rightAction;
   }
   else if (spherePermissions.editRoom === false && enoughCrownstonesInLocations === true) {
     rightAction = () => {
@@ -341,13 +345,13 @@ function getTopBarProps(state, props, viewingRemotely) {
         NavigationUtil.launchModal( "RoomTraining_roomSize",{ sphereId: props.sphereId, locationId: props.locationId });
       }
     };
+    NAVBAR_PARAMS_CACHE["nav"] = {id:'train',text:'Train', callback: rightAction};
   }
 
-  NAVBAR_PARAMS_CACHE = {
-    title: title,
-    edit: rightAction
-  };
   return NAVBAR_PARAMS_CACHE;
 }
 
 let NAVBAR_PARAMS_CACHE = null;
+
+
+

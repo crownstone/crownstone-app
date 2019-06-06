@@ -43,6 +43,7 @@ import { migrate } from "./migration/StoreMigration";
 import { CloudPoller } from "../logic/CloudPoller";
 import { UpdateCenter } from "./UpdateCenter";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
+import { KEY_TYPES } from "../Enums";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -368,7 +369,19 @@ class BackgroundProcessHandlerClass {
     let brokenSphere = false;
     Object.keys(sphereIds).forEach((sphereId) => {
       let sphere = sphereIds[sphereId];
-      let corruptData = (!sphere.config.adminKey && !sphere.config.memberKey && !sphere.config.guestKey) || !sphere.config.iBeaconUUID;
+      let sphereHasKeys = (!sphere.config.adminKey && !sphere.config.memberKey && !sphere.config.guestKey);
+      if (!sphereHasKeys && sphere.keys) {
+        Object.keys(sphere.keys).forEach((keyId) => {
+          let key = sphere.keys[keyId];
+          if (key.ttl === 0) {
+            if (key.keyType === KEY_TYPES.ADMIN_KEY ||key.keyType === KEY_TYPES.MEMBER_KEY ||key.keyType === KEY_TYPES.BASIC_KEY) {
+              sphereHasKeys = true;
+            }
+          }
+        })
+      }
+
+      let corruptData = !sphereHasKeys || !sphere.config.iBeaconUUID;
       let stoneIds = Object.keys(sphere.stones);
       stoneIds.forEach((stoneId) => {
         let stone = sphere.stones[stoneId];

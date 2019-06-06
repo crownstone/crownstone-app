@@ -757,8 +757,6 @@ export default {
     Great_:                              function() { return "Great!" },
     Ill_try_again_later_:                function() { return "I'll try again later!" },
   },
-  DfuHelper:{
-  },
   DfuIntroduction:{
     __filename: "../js/views/overlays/DfuOverlay.tsx",
     __:                                  function() { return arguments[0] + " %" },
@@ -767,8 +765,7 @@ export default {
     Start_the_update_:                   function() { return "Start the update!" },
     Ill_try_again_later_:                function() { return "I'll try again later!" },
   },
-  DfuOverlay:{
-    __filename: "../js/views/overlays/DfuOverlay.tsx",
+  DfuHelper:{
     _Are_you_sure___You_can_a_header:    function() { return "Are you sure?" },
     _Are_you_sure___You_can_a_body:      function() { return "You can always update this Crownstone later by tapping on it again." },
     _Are_you_sure___You_can_a_left:      function() { return "Not yet" },

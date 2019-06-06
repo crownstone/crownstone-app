@@ -11,19 +11,22 @@ export const syncUsersInSphere = {
    * This method will check if there are any users in rooms in the active sphere. If so, actions will be dispatched to the store.
    * @param sphereId
    */
-  syncUsers: function(sphereId = null) {
+  syncUsers: function(cloudSphereId = null) {
     return new Promise((resolve, reject) => {
       let state = core.store.getState();
-      if (!sphereId) {
+      let localSphereId = MapProvider.cloud2localMap.spheres[cloudSphereId] || cloudSphereId;
+      if (!localSphereId) {
         let sphereId = state.app.activeSphere;
         if (!sphereId) {
           return resolve();
         }
       }
-      // avoid duplicates
-      if (syncingUsersInSpheres[sphereId]) { return resolve(); }
+      let resolvedCloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || cloudSphereId || localSphereId;
 
-      let sphere = state.spheres[sphereId];
+      // avoid duplicates
+      if (syncingUsersInSpheres[localSphereId]) { return resolve(); }
+
+      let sphere = state.spheres[localSphereId];
       if (!sphere) {
         return resolve();
       }
@@ -34,9 +37,10 @@ export const syncUsersInSphere = {
         return resolve();
       }
 
+
       let actions = [];
-      syncingUsersInSpheres[sphereId] = true;
-      let presenceSyncer = new PresenceSyncer(actions, [], sphereId, sphere.config.cloudId || sphereId, MapProvider.cloud2localMap, getGlobalIdMap());
+      syncingUsersInSpheres[localSphereId] = true;
+      let presenceSyncer = new PresenceSyncer(actions, [], localSphereId, sphere.config.cloudId || resolvedCloudSphereId, MapProvider.cloud2localMap, getGlobalIdMap());
       presenceSyncer.sync(core.store)
         .then(() => {
           if (actions.length > 0) {
@@ -47,11 +51,12 @@ export const syncUsersInSphere = {
           LOGe.cloud("SyncUsersInSphere: Error during background user sync: ", err);
         })
         .then(() => {
-          syncingUsersInSpheres[sphereId] = false;
-          delete syncingUsersInSpheres[sphereId];
+          syncingUsersInSpheres[localSphereId] = false;
+          delete syncingUsersInSpheres[localSphereId];
           resolve();
         })
         .catch((err) => {
+          delete syncingUsersInSpheres[localSphereId];
           resolve();
         })
     })
