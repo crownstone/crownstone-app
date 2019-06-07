@@ -130,7 +130,7 @@ export class SettingsFAQ extends Component<any, any> {
             label={ lang("Revert_to_Cloud_Data")}
             icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              NavigationUtil.navigate( "SettingsRedownloadFromCloud");
+              NavigationUtil.launchModal( "SettingsRedownloadFromCloud");
             }}
           />
           <View style={{flex:1}} />
@@ -149,7 +149,7 @@ export class SettingsFAQ extends Component<any, any> {
             label={ lang("Revert_to_Cloud_Data")}
             icon={<IconButton name={'md-cloud-download'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex }}/>}
             callback={() => {
-              NavigationUtil.navigate( "SettingsRedownloadFromCloud");
+              NavigationUtil.launchModal( "SettingsRedownloadFromCloud");
             }}
           />
           <View style={{flex:1}} />

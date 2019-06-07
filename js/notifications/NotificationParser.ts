@@ -32,11 +32,6 @@ class NotificationParserClass {
       case 'newMessage':
         NavigationUtil.navigate( "MessageInbox");
 
-        // actually go to the message tab
-        if (Platform.OS === 'ios') {
-          NavigationUtil.navigate( "Messages");
-        }
-
         break;
     }
   }

@@ -29,6 +29,8 @@ import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { Navigation } from "react-native-navigation";
+import { ViewStateWatcher } from "../components/ViewStateWatcher";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
@@ -87,6 +89,7 @@ export class MessageInbox extends LiveComponent<any, any> {
 
 
   componentDidMount() {
+    this.checkForMessages();
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
@@ -96,21 +99,43 @@ export class MessageInbox extends LiveComponent<any, any> {
         change.updateActiveSphere ||
         change.changeSphereState
       ) {
-        let state = core.store.getState();
-        let activeSphere = state.app.activeSphere;
-        if (activeSphere) {
-          let sphere = state.spheres[activeSphere];
-          if (sphere.state.newMessageFound) {
-            MessageCenter.newMessageStateInSphere(activeSphere, false);
-          }
-        }
-
+        this.checkForMessages();
         this.forceUpdate();
       }
     });
   }
 
+  checkForMessages() {
+    let state = core.store.getState();
+    let activeSphere = state.app.activeSphere;
+    if (activeSphere) {
+      let sphere = state.spheres[activeSphere];
+      if (sphere.state.newMessageFound) {
+        Navigation.mergeOptions(this.props.componentId, {
+          bottomTab: {
+            badge: '1'
+          }
+        })
+      }
+    }
+  }
+
+  clearMessageBadge() {
+    let state = core.store.getState();
+    let activeSphere = state.app.activeSphere;
+    if (activeSphere) {
+      MessageCenter.newMessageStateInSphere(activeSphere, false);
+    }
+    Navigation.mergeOptions(this.props.componentId, {
+      bottomTab: {
+        badge: null
+      }
+    });
+  }
+
+
   componentWillUnmount() {
+    this.clearMessageBadge();
     this.unsubscribeStoreEvents();
   }
 
@@ -235,6 +260,7 @@ export class MessageInbox extends LiveComponent<any, any> {
 
         return (
           <Background image={core.background.detailsDark}>
+            <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             { scrollView }
           </Background>
         );
@@ -242,6 +268,7 @@ export class MessageInbox extends LiveComponent<any, any> {
       else {
         return (
           <Background image={core.background.detailsDark}>
+            <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>{ lang("Add_some_Crownstones_to_u") }</Text>
             <View style={{flex:1}} />
@@ -252,6 +279,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     else {
       return (
         <Background image={core.background.detailsDark}>
+          <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>{ lang("Add_a_Sphere_to_use_messa") }</Text>
           <View style={{flex:1}} />

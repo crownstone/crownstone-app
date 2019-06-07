@@ -30,17 +30,25 @@ class BroadcastCommandManagerClass {
     }
   }
 
-  _broadCastMultiSwitch(commandSummary) {
+  _broadCastMultiSwitch(commandSummary) : Promise<bchReturnType> {
     LOGi.broadcast("Switching via broadcast");
-    return BluenetPromiseWrapper.broadcastSwitch(commandSummary.sphereId, commandSummary.stone.config.crownstoneId, commandSummary.command.state)
-      .then(() => {
-        LOGi.broadcast("Success broadcast", commandSummary.command.state);
-        return { data: null }
-      })
-      .catch((err) => {
-        LOGi.broadcast("ERROR broadcast", commandSummary.command.state);
-        throw err
-      })
+    // TODO: Remove hack for advertisements.
+    return new Promise((resolve, reject) => {
+      let result : bchReturnType = {data:null};
+      setTimeout(() => { resolve(result); }, 100);
+      BluenetPromiseWrapper.broadcastSwitch(commandSummary.sphereId, commandSummary.stone.config.crownstoneId, commandSummary.command.state)
+        .then(() => {
+          LOGi.broadcast("Success broadcast", commandSummary.command.state);
+          return { data: null }
+        })
+        .catch((err) => {
+          LOGi.broadcast("ERROR broadcast", commandSummary.command.state);
+          throw err
+        })
+    })
+
+
+
   }
 
   canBroadcast(commandSummary : commandSummary) {

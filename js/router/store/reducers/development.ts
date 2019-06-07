@@ -21,6 +21,8 @@ let defaultState = {
   show_only_own_activity_log: false,
   nativeExtendedLogging:      false,
 
+  preview: false,
+
   broadcasting_enabled: false,
 };
 
@@ -53,6 +55,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_events =         update(action.data.log_events,         newState.log_events);
         newState.log_store =          update(action.data.log_store,          newState.log_store);
         newState.log_cloud =          update(action.data.log_cloud,          newState.log_cloud);
+        newState.preview =            update(action.data.preview,            newState.preview);
         newState.broadcasting_enabled =       update(action.data.broadcasting_enabled,       newState.broadcasting_enabled);
         newState.nativeExtendedLogging =      update(action.data.nativeExtendedLogging,      newState.nativeExtendedLogging);
         newState.show_rssi_values_in_mesh =   update(action.data.show_rssi_values_in_mesh,   newState.show_rssi_values_in_mesh);

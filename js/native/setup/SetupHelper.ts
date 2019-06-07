@@ -76,7 +76,6 @@ export class SetupHelper {
           })
           .then((firmwareVersion) => {
             this.firmwareVersion = firmwareVersion;
-            this.firmwareVersion = "1.1.0";
             LOG.info("setup progress: have firmware version: ", firmwareVersion);
             return BluenetPromiseWrapper.getHardwareVersion();
           })
