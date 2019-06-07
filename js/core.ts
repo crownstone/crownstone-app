@@ -9,7 +9,7 @@ export const core : core = {
     mainDarkLogo           : require('./images/backgrounds/backgroundWLogo.png'),
     mainDark               : require('./images/backgrounds/background.png'),
     light                  : require('./images/backgrounds/lightBackground2.png'),
-    detailsDark            : require('./images/backgrounds/darkBackground.png'),
+    detailsDark            : require('./images/backgrounds/darkBackground4.png'),
   },
   eventBus: eventBus,
   nativeBus: NativeBus,

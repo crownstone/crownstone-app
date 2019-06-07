@@ -30,7 +30,9 @@ export const NORMAL_ROW_SIZE = 50;
 export let colors : colorInterface = {
   csBlue:               {hex:'#003E52'},
   csBlueDark:           {hex:'#00283c'},
+  csBlueDarker:         {hex:'#00212b'},
   csBlueLight:          {hex:'#006f84'},
+  csBlueLightDesat:     {hex:'#2c9aa8'},
   csOrange:             {hex:'#ff8400'},
   darkCsOrange:         {hex:'#d97500'},
   lightCsOrange:        {hex:'#ffa94d'},

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 // import { SafeAreaView } from 'react-navigation';
 
-import { styles, screenHeight, topBarHeight, tabBarHeight,  } from "../styles";
+import { styles, screenHeight, topBarHeight, tabBarHeight, colors, screenWidth } from "../styles";
 import {BackgroundImage} from "./BackgroundImage";
 import { NotificationLine } from "./NotificationLine";
 
@@ -29,11 +29,13 @@ export class Background extends Component<{
   statusBarStyle?:   any
 }, any> {
   render() {
+    let hasNavBar = false;
     let height = screenHeight;
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {
       height -= topBarHeight;
     }
     if (this.props.hasNavBar !== false && this.props.fullScreen !== true) {
+      hasNavBar = true;
       height -= tabBarHeight;
     }
 
@@ -48,6 +50,7 @@ export class Background extends Component<{
             { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}
             {this.props.children}
           </View>
+          { hasNavBar ? <View style={{backgroundColor:colors.csBlueLightDesat.rgba(0.3), width:screenWidth, height:1}} /> : null}
         </View>
       </KeyboardAvoidingView>
     );

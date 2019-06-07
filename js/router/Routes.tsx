@@ -43,14 +43,14 @@ Navigation.events().registerAppLaunchedListener(() => {
 
   Navigation.setDefaultOptions({
     topBar: {
-      background: { color: colors.csBlueDark.hex },
+      background: { color: colors.csBlueDarker.hex },
       title: {
         color: colors.white.hex,
         fontFamily: Platform.OS === 'ios' ? ".SFUIDisplay-Bold" : undefined,
       },
     },
     bottomTabs: {
-      backgroundColor: colors.csBlueDark.hex,
+      backgroundColor: colors.csBlueDarker.hex,
     },
     bottomTab: {
       textColor: colors.white.hex,
