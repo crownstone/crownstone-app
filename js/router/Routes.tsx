@@ -12,6 +12,7 @@ import {
 } from "../views/components/topbar/TopbarButton";
 import { CancelButton } from "../views/components/topbar/CancelButton";
 import { OverlayManager } from "../backgroundProcesses/OverlayManager";
+import { IconDebug } from "../views/development/IconDebug";
 
 let viewsLoaded = false;
 
@@ -45,7 +46,7 @@ Navigation.events().registerAppLaunchedListener(() => {
       background: { color: colors.csBlueDark.hex },
       title: {
         color: colors.white.hex,
-        fontFamily: ".SFUIDisplay-Bold"
+        fontFamily: Platform.OS === 'ios' ? ".SFUIDisplay-Bold" : undefined,
       },
     },
     bottomTabs: {
@@ -60,9 +61,17 @@ Navigation.events().registerAppLaunchedListener(() => {
     }
   });
 
-
-
   Navigation.setRoot({
     root: Stacks.initial()
   });
+
+  // overwrite for Icon Debug view
+  // Navigation.setRoot({
+  //   root: {
+  //     component: {
+  //       name: 'IconDebug'
+  //     }
+  //   }
+  // });
+  // Navigation.registerComponent("IconDebug",        () => IconDebug);
 });

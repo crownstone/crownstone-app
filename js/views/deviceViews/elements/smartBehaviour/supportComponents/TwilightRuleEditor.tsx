@@ -402,6 +402,7 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
         <Animated.View style={{opacity: this.state.detailOpacity, height: this.state.detailHeight, position:'absolute', top:0}}>{details}</Animated.View>
         <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
           <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
+            <View style={{flex:1}} />
             <TouchableOpacity onPress={() => {
               this._storeRule();
               NavigationUtil.backTo("DeviceSmartBehaviour")
@@ -433,10 +434,10 @@ export class TwilightRuleEditor extends Component<{data:twilight,sphereId: strin
       }
     }
     core.store.dispatch({
-      type:"ADD_STONE_RULE",
+      type: this.props.ruleId ? "UPDATE_STONE_RULE" : "ADD_STONE_RULE",
       sphereId: this.props.sphereId,
       stoneId: this.props.stoneId,
-      ruleId: this.props.ruleId || undefined,
+      ruleId: this.props.ruleId || xUtil.getUUID(),
       data: {
         type:"TWILIGHT",
         data: this.rule.stringify(),

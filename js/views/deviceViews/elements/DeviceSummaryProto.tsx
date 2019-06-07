@@ -3,7 +3,7 @@ import { LiveComponent }          from "../../LiveComponent";
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceSummary", key)(a,b,c,d,e);
+  return Languages.get("DeviceSummaryProto", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {
@@ -250,13 +250,13 @@ export class DeviceSummary extends LiveComponent<any, any> {
     return (
       <View style={{width:screenWidth, height:screenWidth/5, marginTop:10, marginBottom:10, alignItems:'center', flexDirection:'row'}}>
         <View style={{flex:1}} />
-        <DeviceMenuIcon icon={'c2-crownstone'} selected={true} callback={() => {}} />
+        <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.rgba(1.0)} callback={() => {}} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon icon={'c1-brain'} selected={false} callback={() => { NavigationUtil.navigate( "StoneBehaviour", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
+        <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.rgba(0.7)}  callback={() => { NavigationUtil.launchModal( "DeviceSmartBehaviour", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon image={require("../../../images/icons/graph.png")} selected={false} callback={() => {}} />
+        <DeviceMenuIcon label={"Power usage"} image={require("../../../images/icons/graph.png")} backgroundColor={colors.green.rgba(0.33)}  callback={() => {}} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon icon={'ios-settings'} selected={false} callback={() => {NavigationUtil.navigate( "DeviceEdit", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
+        <DeviceMenuIcon label={"Settings"} icon={'ios-settings'} backgroundColor={colors.green.rgba(0.0)}  callback={() => {NavigationUtil.launchModal( "DeviceEdit", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
         <View style={{flex:1}} />
       </View>
     )
@@ -271,7 +271,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
     let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
 
     return (
-      <View style={{flex:1, paddingBottom: 35}}>
+      <View style={{flex:1, paddingBottom: 35, paddingTop:8}}>
         { this._getBackgroundIconOverlay(stone) }
         { this._getMenuIcons() }
         <View style={{flex:1.5}} />
@@ -354,38 +354,30 @@ export function DeviceMenuIcon(props) {
   let borderWidth = 4;
   let innerSize = size-2*borderWidth;
 
-  let innerPart = (
-    <View style={{width:size, height:size, borderRadius:0.5*size, borderWidth: borderWidth, borderColor: colors.csBlueDark.rgba(0.8)}}>
-      <View style={{
-        width:innerSize,
-        height:innerSize,
-        borderRadius:0.5*innerSize,
-        borderWidth: 2,
-        borderColor: colors.white.hex,
-        backgroundColor: props.selected ? colors.green.hex : "transparent",
-        alignItems:'center',
-        justifyContent:'center'
-      }}>
-        {
-          props.image ?
-            <Image source={props.image} style={{width:innerSize*0.55, height:innerSize*0.55}} /> :
-            <Icon name={props.icon} color={colors.white.hex} size={innerSize*0.65} />
-        }
+  return (
+    <TouchableOpacity onPress={() => { if (props.callback) { props.callback() }}} style={{alignItems:'center', justifyContent:'center'}}>
+      <Text style={{fontSize: 12, color:colors.white.hex, textAlign:'center', padding:2}}>{props.label}</Text>
+      <View style={{width:size, height:size, borderRadius:0.5*size, borderWidth: borderWidth, borderColor: colors.csBlueDark.rgba(0.8)}}>
+        <View style={{
+          width:innerSize,
+          height:innerSize,
+          borderRadius:0.5*innerSize,
+          borderWidth: 2,
+          borderColor: colors.white.hex,
+          backgroundColor: props.backgroundColor || "transparent",
+          alignItems:'center',
+          justifyContent:'center'
+        }}>
+          {
+            props.image ?
+              <Image source={props.image} style={{width:innerSize*0.55, height:innerSize*0.55}} /> :
+              <Icon name={props.icon} color={colors.white.hex} size={innerSize*0.65} />
+          }
+        </View>
       </View>
-    </View>
-  );
+    </TouchableOpacity>
+  )
 
-
-  if (props.callback) {
-    return (
-      <TouchableOpacity onPress={props.callback}>
-        {innerPart}
-      </TouchableOpacity>
-    )
-  }
-  else {
-    return <View>{innerPart}</View>
-  }
 
 }
 

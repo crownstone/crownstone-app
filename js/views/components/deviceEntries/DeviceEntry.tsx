@@ -135,7 +135,14 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _basePressed() {
-    NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+    let state = core.store.getState();
+    console.log("HERE", state.user.developer, state.development.preview)
+    if (state.user.developer && state.development.preview) {
+      NavigationUtil.navigate( "DeviceOverviewProto",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+    }
+    else {
+      NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+    }
   }
 
   _getIcon(element, stone, state) {

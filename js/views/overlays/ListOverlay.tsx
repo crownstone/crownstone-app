@@ -3,7 +3,7 @@ import { LiveComponent }          from "../LiveComponent";
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("LockOverlay", key)(a,b,c,d,e);
+  return Languages.get("ListOverlay", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
@@ -14,7 +14,6 @@ import {
 
 import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { colors, screenWidth, screenHeight } from "../styles";
-import { core } from "../../core";
 import { ScaledImage } from "../components/ScaledImage";
 import { Separator } from "../components/Separator";
 import { NavigationUtil } from "../../util/NavigationUtil";

@@ -41,7 +41,7 @@ export class WeekDayList extends Component<any, any> {
           onPress={() => {
             let newData = {...this.props.data};
             newData[DAYS[i]] = !newData[DAYS[i]];
-            this.props.onChange(newData);
+            this.props.onChange(newData, DAYS[i]);
           }}
           style={{
             width: size,

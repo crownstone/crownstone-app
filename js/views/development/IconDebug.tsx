@@ -107,6 +107,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
       "ios-warning",
       "ios-more",
       "ios-wifi",
+      "ios-fastforward",
     ];
     let ioniconsMdList = [
       "md-arrow-dropright",
@@ -171,7 +172,7 @@ export class IconDebug extends Component<{callback(icon: string) : void, icon: s
     icons['ionicons-md']  = ioniconsMdList;
 
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark}>
+      <Background fullScreen={true} image={core.background.detailsDark} hideOrangeBar={true}>
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <DebugIconSelection

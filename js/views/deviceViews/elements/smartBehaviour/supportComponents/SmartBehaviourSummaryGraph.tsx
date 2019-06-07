@@ -390,6 +390,9 @@ class DayNightIndicator extends Component<any, any> {
 
 function getMinutes(timeString) {
   // this is for times like 14:00
+  if (!timeString) {
+    return 0
+  }
   let elements = timeString.split(":");
   return Number(elements[0]) * 60 + Number(elements[1])
 }

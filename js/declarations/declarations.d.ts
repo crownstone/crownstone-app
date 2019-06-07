@@ -50,6 +50,7 @@ interface colorInterface {
   menuBackgroundDarker: color,
   menuText:             color,
   menuTextSelected:     color,
+  menuTextSelectedDark: color,
   white:        color,
   black:        color,
   gray:         color,

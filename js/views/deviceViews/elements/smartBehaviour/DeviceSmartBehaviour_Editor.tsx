@@ -13,7 +13,6 @@ import {
 
 import {
   availableModalHeight,
-  availableScreenHeight,
   deviceStyles,
   screenWidth
 } from "../../../styles";
@@ -24,18 +23,21 @@ import { TwilightRuleEditor } from "./supportComponents/TwilightRuleEditor";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 
-export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string}, any> {
+export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string, ruleId: any}, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  lang("A_Crownstone")});
   }
 
-
   render() {
+    if (this.props.ruleId) {
+
+    }
+
     return (
       <Background image={core.background.detailsDark} hasNavBar={false}>
-                <View style={{height:availableModalHeight,width:screenWidth}}>
+      <View style={{height:availableModalHeight,width:screenWidth}}>
         <ScrollView style={{width: screenWidth}}>
-          <View style={{flex:1, width: screenWidth, minHeight:availableScreenHeight, alignItems:'center'}}>
+          <View style={{flex:1, width: screenWidth, minHeight:availableModalHeight, alignItems:'center'}}>
             <View style={{height: 30}} />
             <Text style={[deviceStyles.header]}>{ lang("Create_my_Behaviour") }</Text>
             <View style={{height: 0.02*availableModalHeight}} />

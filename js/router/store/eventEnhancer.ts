@@ -328,6 +328,10 @@ function checkAction(action, affectedIds) {
     case "UPDATE_SPHERE_KEY":
     case "REMOVE_SPHERE_KEY":
       break;
+  case "ADD_STONE_RULE":
+  case "UDPATE_STONE_RULE":
+  case "REMOVE_STONE_RULE":
+    eventStatus['stoneChangeRules'] = affectedIds; break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

@@ -286,7 +286,6 @@ lang("_Pick_a_day___You_need_to_body"),
   _createSchedule() {
     let validated = this._validate();
     if (validated) {
-      console.log("STARTING")
       let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       this._addScheduleEntry(

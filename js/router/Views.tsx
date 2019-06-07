@@ -99,6 +99,7 @@ import { LockOverlay } from "../views/overlays/LockOverlay";
 import { SimpleOverlay } from "../views/overlays/SimpleOverlay";
 import { TapToToggleCalibration } from "../views/overlays/TapToToggleCalibration";
 import { OptionPopup } from "../views/overlays/OptionPopup";
+import { DeviceOverviewProto } from "../views/deviceViews/DeviceOverviewProto";
 
 
 export const Views = {
@@ -124,6 +125,7 @@ export const Views = {
   DeviceEdit:                        DeviceEdit,
   DeviceIconSelection:               DeviceIconSelection,
   DeviceOverview:                    DeviceOverview,
+  DeviceOverviewProto:               DeviceOverviewProto,
   DeviceScheduleEdit:                DeviceScheduleEdit,
   DeviceSmartBehaviour:              DeviceSmartBehaviour,
   DeviceSmartBehaviour_Editor:       DeviceSmartBehaviour_Editor,

@@ -2,7 +2,7 @@
 import { Languages } from "../../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
+  return Languages.get("DeviceSmartBehaviour_TypeExamples", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
@@ -47,7 +47,7 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
 
     return (
       <Background image={core.background.detailsDark} hasNavBar={false}>
-                <ScrollView style={{height:availableScreenHeight, width: screenWidth,}}>
+        <ScrollView style={{height:availableScreenHeight, width: screenWidth,}}>
           <View style={{ width: screenWidth, alignItems:'center', paddingBottom:30 }}>
             <View style={{height: 30}} />
             <Text style={deviceStyles.header}>{this.props.header}</Text>

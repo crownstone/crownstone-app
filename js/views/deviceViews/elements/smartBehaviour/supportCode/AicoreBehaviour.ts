@@ -62,10 +62,12 @@ export class AicoreBehaviour {
     let chunks = this._getChunks();
 
     let sentence = "";
+
     sentence += chunks.intention.label;
     sentence += chunks.action.label         ? " " + chunks.action.label         : "";
     sentence += chunks.presencePrefix.label ? " " + chunks.presencePrefix.label : "";
     sentence += chunks.presence.label       ? " " + chunks.presence.label       : "";
+    sentence += chunks.locationPrefix.label ? " " + chunks.locationPrefix.label : "";
     sentence += chunks.location.label       ? " " + chunks.location.label       : "";
     sentence += chunks.time.label           ? " " + chunks.time.label           : "";
     sentence += ".";

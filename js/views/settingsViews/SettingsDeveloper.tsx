@@ -340,10 +340,33 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
           storeIt();
         }
       }});
-    items.push({label: lang("This_will_give_you_early_"), type: 'explanation', below: true});
+    items.push({
+      label: lang("FeaturePreview"),
+      value: dev.preview,
+      icon: <IconButton name={"ios-fastforward"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelectedDark.hex}}/>,
+      type: 'switch',
+      callback:(newValue) => {
+        let storeIt = () => {
+          store.dispatch({
+            type: 'CHANGE_DEV_SETTINGS',
+            data: {preview: newValue}
+          });
+        };
+        if (newValue) {
+          Alert.alert(
+            lang("_EXPERIMENTAL___Preview_header"),
+            lang("_EXPERIMENTAL___Preview_body"),
+            [{text:lang("_EXPERIMENTAL___Preview_left"), style:'cancel'}, {
+              text:lang("_EXPERIMENTAL___Preview_right"), onPress: storeIt}]
+          );
+        }
+        else {
+          storeIt();
+        }
+      }});
 
 
-    items.push({label: lang("RESET_DEVELOPER_STATE"), type: 'explanation', alreadyPadded: true});
+    items.push({label: lang("RESET_DEVELOPER_STATE"), type: 'explanation'});
     items.push({
       label: lang("Disable_Developer_Mode"),
       type: 'button',

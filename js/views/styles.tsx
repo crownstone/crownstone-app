@@ -40,6 +40,7 @@ export let colors : colorInterface = {
   // menuBackgroundDarker: {hex:'#001122'},
   menuText:             {hex:'#fff'},
   menuTextSelected:     {hex:'#2daeff'},
+  menuTextSelectedDark: {hex:'#2472ad'},
   white:                {hex:'#fff'},
   black:                {hex:'#000'},
   gray:                 {hex:'#ccc'},

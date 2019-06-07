@@ -381,6 +381,7 @@ const ioniconCorrectionsIOS = {
   'ios-warning':                   {change: true, top: -0.020, left: +0.000},
   'ios-more':                      {change: true, top: +0.045, left: +0.000},
   'ios-wifi':                      {change: true, top: +0.045, left: +0.000},
+  'ios-fastforward':               {change: true, top: +0.050, left: +0.050},
 
   'md-wifi':                       {change: true, top: -0.020, left: +0.005},
   'md-arrow-dropright':            {change: true, top: +0.045, left: +0.055},

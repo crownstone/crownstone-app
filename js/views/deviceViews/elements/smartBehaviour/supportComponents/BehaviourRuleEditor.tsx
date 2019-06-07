@@ -25,7 +25,7 @@ import { NavigationUtil } from "../../../../../util/NavigationUtil";
 
 
 
-export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId: string, stoneId: string, ruleId?: string}, any> {
+export class BehaviourRuleEditor extends LiveComponent<{data: behaviour, sphereId: string, stoneId: string, ruleId?: string}, any> {
   references = [];
   amountOfLines = 0;
   rule : AicoreBehaviour;
@@ -649,7 +649,7 @@ export class BehaviourRuleEditor extends LiveComponent<{data:behaviour, sphereId
       }
     }
     core.store.dispatch({
-      type:"ADD_STONE_RULE",
+      type: this.props.ruleId ? "UPDATE_STONE_RULE" : "ADD_STONE_RULE",
       sphereId: this.props.sphereId,
       stoneId: this.props.stoneId,
       ruleId: this.props.ruleId || xUtil.getUUID(),

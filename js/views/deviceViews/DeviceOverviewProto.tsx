@@ -8,7 +8,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 
 import { Background } from '../components/Background'
-import { DeviceSummary }        from "./elements/DeviceSummary";
+import { DeviceSummary }        from "./elements/DeviceSummaryProto";
 import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
 import { SphereDeleted }        from "../static/SphereDeleted";
 import { StoneDeleted }         from "../static/StoneDeleted";
