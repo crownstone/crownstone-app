@@ -59,7 +59,7 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
         <TouchableWithoutFeedback style={{width:screenWidth*0.8, height:100}} onPress={() => { core.eventBus.emit("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH"+this.id)}}>
           <View style={{width:screenWidth*0.8, height:100}}>
             <DayNightIndicator id={this.id} />
-            <View style={{postion:'absolute', left:0, top:15, width:screenWidth*0.8, height:75}}>
+            <View style={{position:'absolute', left:0, top:15, width:screenWidth*0.8, height:75}}>
               <SmartBehaviourSummaryGraphElement dataColor={colors.green.hex}       icon={'md-power'}        iconSize={17} times={onArray}       id={this.id} explanation={ lang("When_I_will_be_on_")} />
               <SmartBehaviourSummaryGraphElement dataColor={colors.csBlueDark.hex}  icon={'c1-locationPin1'} iconSize={14} times={presenceArray} id={this.id} explanation={"When I'll be on based on presence."} />
               <SmartBehaviourSummaryGraphElement dataColor={colors.blinkColor2.hex} icon={'ios-leaf'}        iconSize={17} times={twilightArray} id={this.id} explanation={ lang("When_twilight_mode_is_acti")} />
