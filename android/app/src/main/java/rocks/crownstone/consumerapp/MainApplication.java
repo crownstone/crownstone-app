@@ -6,7 +6,6 @@ import android.util.Log;
 import com.facebook.react.ReactApplication;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.swmansion.rnscreens.RNScreensPackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -42,11 +41,10 @@ public class MainApplication extends Application implements ReactApplication {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
 					new MainReactPackage(),
-            new FastImageViewPackage(),
-            new AsyncStoragePackage(),
-            new RNScreensPackage(),
-            new ReactSliderPackage(),
-            new RNGestureHandlerPackage(),
+					new FastImageViewPackage(),
+					new AsyncStoragePackage(),
+					new ReactSliderPackage(),
+					new RNGestureHandlerPackage(),
 					new VectorIconsPackage(),
 					new SvgPackage(),
 					new ImageResizerPackage(),
