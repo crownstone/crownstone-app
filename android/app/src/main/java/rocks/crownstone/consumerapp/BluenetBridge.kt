@@ -80,6 +80,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private var lastLocationId: String? = null
 	private var currentSphereId = "" // TODO: get rid of this, as we should support multisphere. Currently needed because scans don't have the sphere id, nor location updates.
 
+	private var nearestStoneSub: SubscriptionId = null
+	private var nearestSetupSub: SubscriptionId = null
+
+
 	init {
 
 	}
@@ -176,8 +180,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
 			bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, ::onRegionExit)
 			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, ::onIbeaconScan)
-			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
-			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
+//			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
+//			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
 			bluenet.subscribe(BluenetEvent.DFU_PROGRESS, ::onDfuProgress)
 			val logLevel =     if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.VERBOSE else Log.Level.ERROR
 			val logLevelFile = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.DEBUG else Log.Level.INFO
@@ -472,6 +476,50 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.initFileLogging(reactContext.currentActivity)
 		bluenet.clearLogFiles()
 	}
+
+	@ReactMethod
+	@Synchronized
+	fun subscribeToNearest() {
+		// Starts the flow of nearestSetupCrownstone and nearestCrownstone events to the app.
+		// Can be called multiple times safely
+		if (nearestStoneSub == null) {
+			nearestStoneSub = bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
+		}
+		if (nearestSetupSub == null) {
+			nearestSetupSub = bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
+		}
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun unsubscribeNearest() {
+		// Stops the flow of nearestSetupCrownstone and nearestCrownstone events to the app.
+		// Can be called multiple times safely
+		if (nearestStoneSub != null) {
+			bluenet.unsubscribe(nearestStoneSub)
+			nearestStoneSub = null
+		}
+		if (nearestSetupSub != null) {
+			bluenet.unsubscribe(nearestSetupSub)
+			nearestSetupSub = null
+		}
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun subscribeToUnverified() {
+		// Starts the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events to the app.
+		// Can be called multiple times safely
+//		bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun unsubscribeUnverified() {
+		// Starts the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events to the app.
+		// Can be called multiple times safely
+	}
+
 //endregion
 
 
