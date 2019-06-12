@@ -115,7 +115,7 @@ class SmartBehaviourRule extends Component<any, any> {
     if      (this.props.rule.type === "BEHAVIOUR") { ai = new AicoreBehaviour(this.props.rule.data); }
     else if (this.props.rule.type === "TWILIGHT")  { ai = new AicoreTwilight(this.props.rule.data);  }
     return (
-        <View style={{padding:15, flexDirection: 'row', width: screenWidth, alignItems:'center', jusityContent:'center'}}>
+        <View style={{padding:15, flexDirection: 'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
           <SlideSideFadeInView width={50} visible={this.props.editMode}>
             <TouchableOpacity onPress={() => {
               core.store.dispatch({
