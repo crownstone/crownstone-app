@@ -948,6 +948,18 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
+	fun setupPulse(callback: Callback) {
+		// Crownstone is already connected
+		// This call will turn the relay on, wait 1 second, turn it off, disconnect
+		bluenet.control.setSwitch(100)
+				.then { bluenet.waitPromise(1000) }.unwrap()
+				.then { bluenet.control.setSwitch(0) }.unwrap()
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
 	fun bootloaderToNormalMode(address: String, callback: Callback) {
 		Log.i(TAG, "bootloaderToNormalMode $address")
 		bluenet.connect(address)
