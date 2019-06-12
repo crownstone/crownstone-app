@@ -267,16 +267,21 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			var adminKey: String? = null
 			var memberKey: String? = null
 			var guestKey: String? = null
+			var serviceDataKey: String? = null
+
 			if (keySetJson.hasKey("adminKey")) {
 				adminKey = keySetJson.getString("adminKey")
 			}
 			if (keySetJson.hasKey("memberKey")) {
 				memberKey = keySetJson.getString("memberKey")
 			}
-			if (keySetJson.hasKey("guestKey")) {
-				guestKey = keySetJson.getString("guestKey")
+			if (keySetJson.hasKey("basicKey")) {
+				guestKey = keySetJson.getString("basicKey")
 			}
-			val keySet = KeySet(adminKey, memberKey, guestKey)
+			if (keySetJson.hasKey("serviceDataKey")) {
+				serviceDataKey = keySetJson.getString("serviceDataKey")
+			}
+			val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey)
 			val keyData = KeyData(keySet, ibeaconUuid)
 			keys.put(sphereId, keyData)
 		}
