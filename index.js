@@ -11,7 +11,7 @@ YellowBox.ignoreWarnings([
   'Module RCTImagePickerManager requires main queue setup since it overrides `init`',
 ])
 
-import 'react-native-gesture-handler'
+// import 'react-native-console-time-polyfill';
 import { Platform } from 'react-native';
 
 import { config } from './sentrySettings'

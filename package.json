@@ -23,7 +23,6 @@
     "react-native-device-info": "1.0.1",
     "react-native-fast-image": "^6.0.0",
     "react-native-fs": "~2.13.3",
-    "react-native-gesture-handler": "^1.1.0",
     "react-native-image-resizer": "~1.0.0",
     "react-native-keep-awake": "4.0.0",
     "react-native-navigation": "2.20.2",

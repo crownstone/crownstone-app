@@ -8,7 +8,7 @@ import { AicoreTimeData } from "./AicoreTimeData";
 const DEFAULT_DELAY_MINUTES = 5;
 const EMPTY_RULE : twilight = {
   action:   { type: "DIM_WHEN_TURNED_ON", data: 0.6 },
-  time:     { from: { type: "SUNSET", offsetMinutes:0}, to:{ type: "SUNRISE", offsetMinutes:0} },
+  time:     { type:"RANGE", from: { type: "SUNSET", offsetMinutes:0}, to:{ type: "SUNRISE", offsetMinutes:0} },
 };
 
 export class AicoreTwilight {
@@ -95,71 +95,134 @@ export class AicoreTwilight {
     return this;
   }
 
+  setTimeAllday() : AicoreTwilight {
+    this.rule.time = { type: "ALL_DAY" };
+    return this;
+  }
   setTimeWhenDark() : AicoreTwilight {
-    this.rule.time = { from: {type:"SUNSET", offsetMinutes:0}, to: {type:"SUNRISE", offsetMinutes:0} };
+    this.rule.time = { type: "RANGE", from: {type:"SUNSET", offsetMinutes:0}, to: {type:"SUNRISE", offsetMinutes:0} };
     return this;
   }
   setTimeWhenSunUp() : AicoreTwilight {
-    this.rule.time = { from: {type:"SUNRISE", offsetMinutes:0}, to: {type:"SUNSET", offsetMinutes:0} };
+    this.rule.time = { type: "RANGE", from: {type:"SUNRISE", offsetMinutes:0}, to: {type:"SUNSET", offsetMinutes:0} };
     return this;
   }
   setTimeFromSunrise(offsetMinutes : number = 0) : AicoreTwilight {
-    this.rule.time.from = { type: "SUNRISE", offsetMinutes: offsetMinutes };
+    // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
+    if (this.rule.time.type !== "RANGE") { this.setTimeWhenSunUp(); }
+
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.from = { type: "SUNRISE", offsetMinutes: offsetMinutes };
+    }
     return this;
   }
   setTimeFromSunset(offsetMinutes : number = 0) : AicoreTwilight {
-    this.rule.time.from = { type: "SUNSET", offsetMinutes: offsetMinutes };
+    // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
+    if (this.rule.time.type !== "RANGE") { this.setTimeWhenDark(); }
+
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.from = { type: "SUNSET", offsetMinutes: offsetMinutes };
+    }
     return this;
   }
   setTimeToSunrise(offsetMinutes : number = 0) : AicoreTwilight {
-    this.rule.time.to = { type: "SUNRISE", offsetMinutes: offsetMinutes };
+    // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
+    if (this.rule.time.type !== "RANGE") { this.setTimeWhenDark(); }
+
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.to = { type: "SUNRISE", offsetMinutes: offsetMinutes };
+    }
     return this;
   }
   setTimeToSunset(offsetMinutes : number = 0) : AicoreTwilight {
-    this.rule.time.to = { type: "SUNSET", offsetMinutes: offsetMinutes };
+    // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
+    if (this.rule.time.type !== "RANGE") { this.setTimeWhenSunUp(); }
+
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.to = { type: "SUNSET", offsetMinutes: offsetMinutes };
+    }
     return this;
   }
   setTimeFrom(hours: number, minutes: number) : AicoreTwilight {
-    if (hours < 14) {
-      this.setTimeWhenSunUp();
-    }
-    else {
-      this.setTimeWhenDark();
+    // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
+    if (this.rule.time.type !== "RANGE") {
+      if (hours < 14) {
+        this.setTimeWhenSunUp();
+      }
+      else {
+        this.setTimeWhenDark();
+      }
     }
 
-    this.rule.time.from = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.from = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
+    }
     return this;
   }
 
 
   setTimeTo(hours: number, minutes: number) : AicoreTwilight {
-    if (hours > 20) {
-      this.setTimeFrom(18,0);
-    }
-    else if (hours > 8) {
-      this.setTimeFrom(8,0);
-    }
-    else {
-      this.setTimeFrom(0,0);
+    // if the time was ALL_DAY, set it to an acceptable range, given the name of this method.
+    if (this.rule.time.type !== "RANGE") {
+      if (hours > 20) {
+        this.setTimeFrom(18,0);
+      }
+      else if (hours > 8) {
+        this.setTimeFrom(8,0);
+      }
+      else {
+        this.setTimeFrom(0,0);
+      }
     }
 
-    this.rule.time.to = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.to = { type: "CLOCK", data: {hours: hours, minutes: minutes} };
+    }
     return this;
   }
 
-  setTime(time: aicoreTimeRangeTwilight) : AicoreTwilight {
+  setTime(time: aicoreTime) : AicoreTwilight {
     this.rule.time = time;
     return this;
   }
 
   insertTimeDataFrom(timeData: AicoreTimeData) {
-    this.rule.time.from = timeData.data;
+    if (this.rule.time.type !== "RANGE") {
+      this.setTimeWhenDark();
+    }
+
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.from = timeData.data;
+    }
   }
 
   insertTimeDataTo(timeData: AicoreTimeData) {
-    this.rule.time.to = timeData.data;
+    if (this.rule.time.type !== "RANGE") {
+      this.setTimeWhenDark();
+    }
+
+    if (this.rule.time.type !== "ALL_DAY") {
+      this.rule.time.to = timeData.data;
+    }
   }
 
+
+  ignorePresence() : AicoreTwilight { return this; }
+  setPresenceIgnore() : AicoreTwilight { return this; }
+  setPresenceSomebody() : AicoreTwilight { return this; }
+  setPresenceNobody() : AicoreTwilight { return this; }
+  setPresenceSomebodyInSphere() : AicoreTwilight { return this; }
+  setPresenceNobodyInSphere() : AicoreTwilight { return this; }
+  setPresenceSpecificUserInSphere(userProfileId: number) : AicoreTwilight { return this; }
+  setPresenceInSphere() : AicoreTwilight { return this; }
+  setPresenceInLocations(locationIds: string[]) { return this; }
+  setPresenceSomebodyInStoneLocation(locationIds: string[]) : AicoreTwilight { return this; }
+  setPresenceSomebodyInLocations(locationIds: string[]) : AicoreTwilight { return this; }
+  setPresenceNobodyInLocations(locationIds: string[]) : AicoreTwilight { return this; }
+  setPresenceSpecificUserInLocations(locationIds: string[], userProfileId: number) : AicoreTwilight { return this; }
+  setNoOptions() : AicoreTwilight { return this; }
+  setOptionStayOnWhilePeopleInSphere() : AicoreTwilight { return this; }
+  setOptionStayOnWhilePeopleInLocation() : AicoreTwilight { return this; }
 
   _getSphereDelay() {
     // todo: implement customization.
@@ -173,25 +236,38 @@ export class AicoreTwilight {
   doesActionMatch(otherAicoreTwilight: AicoreTwilight) : boolean {
     return xUtil.deepCompare(this.rule.action, otherAicoreTwilight.rule.action);
   }
+  doesPresenceTypeMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
+  doesPresenceLocationMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
+  doesPresenceMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
+  doesOptionMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
   doesTimeMatch(otherAicoreTwilight: AicoreTwilight) : boolean {
     let match = xUtil.deepCompare(this.rule.time, otherAicoreTwilight.rule.time);
     return match;
   }
 
+
+
+  willDim() : boolean {
+    return this.rule.action.data < 1;
+  }
+
   getDimAmount() : number {
     return this.rule.action.data;
   }
-  getTime() : aicoreTimeRangeTwilight {
+  getLocationIds() : string[] {
+    return [];
+  }
+  getTime() : aicoreTime {
     return this.rule.time;
   }
   getHour() : number {
-    if (this.rule.time.to.type === "CLOCK") {
+    if (this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK") {
       return this.rule.time.to.data.hours;
     }
     return null;
   }
   getMinutes() : number {
-    if (this.rule.time.to.type === "CLOCK") {
+    if (this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK") {
       return this.rule.time.to.data.minutes;
     }
     return null;
@@ -202,20 +278,34 @@ export class AicoreTwilight {
    * @param sphereId
    */
   getFromTimeString(sphereId) {
-    return AicoreUtil.getTimeStrInTimeFormat(this.rule.time.from, sphereId);
+    if (this.rule.time.type !== "ALL_DAY") {
+      return AicoreUtil.getTimeStrInTimeFormat(this.rule.time.from, sphereId);
+    }
+    return null;
   }
   /**
    * SphereId is used to get the lat lon of the sphere for the time of day times
    * @param sphereId
    */
   getToTimeString(sphereId) {
-    return AicoreUtil.getTimeStrInTimeFormat(this.rule.time.to, sphereId);
+    if (this.rule.time.type !== "ALL_DAY") {
+      return AicoreUtil.getTimeStrInTimeFormat(this.rule.time.to, sphereId);
+    }
+    return null;
   }
 
+  isUsingPresence() : boolean {
+    return false;
+  }
+  isAlwaysActive() : boolean {
+    return this.rule.time.type === "ALL_DAY";
+  }
   isUsingClockEndTime(): boolean {
-    return this.rule.time.to.type === "CLOCK";
+    return this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK";
   }
-
+  hasNoOptions(): boolean {
+    return true;
+  }
 
   fromString(dataString) {
     this.rule = JSON.parse(dataString);

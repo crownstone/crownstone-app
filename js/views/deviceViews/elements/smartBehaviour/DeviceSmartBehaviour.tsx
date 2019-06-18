@@ -71,7 +71,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
           <DeviceSmartBehaviour_TypeSelectorBody sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
         }
       </Background>
-    )
+    );
   }
 }
 

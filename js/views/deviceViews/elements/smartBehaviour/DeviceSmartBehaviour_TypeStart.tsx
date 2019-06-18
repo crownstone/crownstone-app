@@ -19,9 +19,9 @@ import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 
-export class DeviceSmartBehaviour_TypeStart extends Component<{stoneId: string, sphereId: string, type: string}, any> {
+export class DeviceSmartBehaviour_TypeStart extends Component<{stoneId: string, sphereId: string, type: string, label: string}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("A_Crownstone")});
+    return TopBarUtil.getOptions({title:  props.label });
   }
 
 

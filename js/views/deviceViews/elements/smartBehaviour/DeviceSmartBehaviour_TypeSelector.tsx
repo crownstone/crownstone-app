@@ -11,7 +11,6 @@ import {
   View, TextStyle, ViewStyle, ScrollView
 } from "react-native";
 
-
 import {
   availableScreenHeight,
   colors,
@@ -35,7 +34,7 @@ import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("A_Crownstone")});
+    return TopBarUtil.getOptions({title:  lang("New_Behaviour")});
   }
 
 
@@ -58,46 +57,46 @@ export class DeviceSmartBehaviour_TypeSelectorBody extends Component<any, any> {
 
     return (
       <ScrollView>
-      <View style={{ width: screenWidth, minHeight:availableScreenHeight, alignItems:'center' }}>
-        <View style={{height: 30}} />
-        <Text style={[deviceStyles.header]}>{ lang("New_Behaviour") }</Text>
-        <View style={{height: 0.2*iconHeight}} />
-        <Text style={deviceStyles.specification}>{ lang("What_sort_of_behaviour_sha") }</Text>
-        <View style={{height: 0.2*iconHeight}} />
-        <View style={{flex:1}} />
-        <View style={blockWrapperStyle}>
-          <TypeBlock
-            {...this.props}
-            image={{source: require('../../../../images/icons/presence.png'), width: 125, height: 162}}
-            type={SMART_BEHAVIOUR_TYPES.PRESENCE}
-            label={ lang("Presence_aware")}
-          />
-          <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} />
-          <TypeBlock
-            {...this.props}
-            image={{source: require('../../../../images/icons/smartTimer.png'), width: 140, height: 140}}
-            type={SMART_BEHAVIOUR_TYPES.SMART_TIMER}
-            label={ lang("Smart_timer")}
-          />
+        <View style={{ width: screenWidth, minHeight:availableScreenHeight, alignItems:'center' }}>
+          <View style={{height: 30}} />
+          <Text style={[deviceStyles.header]}>{ lang("Pick_a_type") }</Text>
+          <View style={{height: 0.2*iconHeight}} />
+          <Text style={deviceStyles.specification}>{ lang("What_sort_of_behaviour_sha") }</Text>
+          <View style={{height: 0.2*iconHeight}} />
+          <View style={{flex:1}} />
+          <View style={blockWrapperStyle}>
+            <TypeBlock
+              {...this.props}
+              image={{source: require('../../../../images/icons/presence.png'), width: 125, height: 162}}
+              type={SMART_BEHAVIOUR_TYPES.PRESENCE}
+              label={ lang("Presence_aware")}
+            />
+            <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} />
+            <TypeBlock
+              {...this.props}
+              image={{source: require('../../../../images/icons/smartTimer.png'), width: 140, height: 140}}
+              type={SMART_BEHAVIOUR_TYPES.SMART_TIMER}
+              label={ lang("Smart_timer")}
+            />
+          </View>
+          <HorizontalGradientLine width={0.9*screenWidth} color={colors.csBlueDark.hex} inverted={true} />
+          <View style={blockWrapperStyle}>
+            <TypeBlock
+              {...this.props}
+              image={{source: require('../../../../images/icons/childLock.png'), width: 124, height: 128}}
+              type={SMART_BEHAVIOUR_TYPES.CHILD_SAFETY}
+              label={ lang("Child_safety")}
+            />
+            <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} inverted={true} />
+            <TypeBlock
+              {...this.props}
+              image={{source: require('../../../../images/icons/twilight.png'), width: 149, height: 112}}
+              type={SMART_BEHAVIOUR_TYPES.TWILIGHT_MODE}
+              label={ lang("Twilight_mode")}
+            />
+          </View>
+          <View style={{flex: 10}} />
         </View>
-        <HorizontalGradientLine width={0.9*screenWidth} color={colors.csBlueDark.hex} inverted={true} />
-        <View style={blockWrapperStyle}>
-          <TypeBlock
-            {...this.props}
-            image={{source: require('../../../../images/icons/childLock.png'), width: 124, height: 128}}
-            type={SMART_BEHAVIOUR_TYPES.CHILD_SAFETY}
-            label={ lang("Child_safety")}
-          />
-          <VerticalGradientLine height={blockHeight} color={colors.csBlueDark.hex} inverted={true} />
-          <TypeBlock
-            {...this.props}
-            image={{source: require('../../../../images/icons/twilight.png'), width: 149, height: 112}}
-            type={SMART_BEHAVIOUR_TYPES.TWILIGHT_MODE}
-            label={ lang("Twilight_mode")}
-          />
-        </View>
-        <View style={{flex: 10}} />
-      </View>
       </ScrollView>
     );
   }
@@ -171,7 +170,7 @@ class TypeBlock extends Component<any, any> {
         onPress={() => {
           NavigationUtil.navigate(
             "DeviceSmartBehaviour_TypeStart",
-            {sphereId: this.props.sphereId, stoneId: this.props.stoneId, type: this.props.type});
+            {sphereId: this.props.sphereId, stoneId: this.props.stoneId, type: this.props.type, label: this.props.label});
         }}>
         <View style={iconBlockStyle}>
           { !this.props.image ? undefined :

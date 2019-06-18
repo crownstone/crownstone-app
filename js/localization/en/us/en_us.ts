@@ -674,6 +674,7 @@ export default {
     Twilight_mode:                       function() { return "Twilight mode" },
     ___:                                 function() { return "0.0" },
     New_Behaviour:                       function() { return "New Behaviour" },
+    Pick_a_type:                         function() { return "Pick a type to start with!" },
     What_sort_of_behaviour_sh:           function() { return "What sort of behaviour shall I learn?" },
     A_Crownstone:                        function() { return "A Crownstone" },
     What_sort_of_behaviour_sha:          function() { return "What sort of behaviour shall I learn?" },

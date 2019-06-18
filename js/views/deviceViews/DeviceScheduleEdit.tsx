@@ -413,7 +413,6 @@ lang("_Cant_see_Crownstone__You__body"),
     BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'addSchedule', scheduleConfig: scheduleConfig })
       .then((scheduleEntryIndex : {data: string}) => {
         core.eventBus.emit("showLoading", "Done!");
-        console.log("DONE")
         Scheduler.scheduleCallback(() => {
           core.eventBus.emit("hideLoading");
           core.store.dispatch({

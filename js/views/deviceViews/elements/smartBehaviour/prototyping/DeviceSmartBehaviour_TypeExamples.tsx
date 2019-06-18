@@ -24,15 +24,9 @@ import { core } from "../../../../../core";
 import { NavigationUtil } from "../../../../../util/NavigationUtil";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
-import { TopBarUtil } from "../../../../../util/TopBarUtil";
 
 
 export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[], image: any, header:string, twilightRules: boolean, sphereId: string, stoneId: string}, any> {
-  static options(props) {
-    return TopBarUtil.getOptions({title:  lang("A_Crownstone")});
-  }
-
-
   getExamples() {
     let examples = [];
     this.props.examples.forEach((example, index) => {
@@ -40,7 +34,6 @@ export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[]
     });
     return examples;
   }
-
 
   render() {
     let iconHeight   = 0.10*availableScreenHeight;
