@@ -6,7 +6,7 @@ import {
 
 export class SlideFadeInView extends Component<{visible, height, delay?, duration?, style?}, any> {
   visible : boolean;
-  height : number;
+  height  : number;
 
   constructor(props) {
     super(props);

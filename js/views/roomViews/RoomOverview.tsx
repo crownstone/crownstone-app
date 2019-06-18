@@ -96,33 +96,25 @@ export class RoomOverview extends LiveComponent<any, any> {
 
       if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId] ||
           change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
-          this.forceUpdate()
+          return this.forceUpdate()
       }
 
       if (
         (change.updateApplianceConfig) ||
         (change.updateStoneConfig)     ||
         (change.changeFingerprint)     ||
-        (change.changeSphereUsers      && change.changeSphereUsers.sphereIds[this.props.sphereId])     ||
-        (change.stoneUsageUpdated      && change.stoneUsageUpdated.sphereIds[this.props.sphereId])     ||
-        (change.changeSphereState      && change.changeSphereState.sphereIds[this.props.sphereId])     ||
-        (change.stoneLocationUpdated   && change.stoneLocationUpdated.sphereIds[this.props.sphereId])  ||
+        (change.userPositionUpdate     && change.userPositionUpdate.locationIds[this.props.locationId])   ||
+        (change.updateLocationConfig   && change.updateLocationConfig.locationIds[this.props.locationId]) ||
+        (change.changeSphereUsers      && change.changeSphereUsers.sphereIds[this.props.sphereId])        ||
+        (change.changeStoneState       && change.changeStoneState.sphereIds[this.props.sphereId])         ||
+        (change.stoneUsageUpdated      && change.stoneUsageUpdated.sphereIds[this.props.sphereId])        ||
+        (change.changeSphereState      && change.changeSphereState.sphereIds[this.props.sphereId])        ||
+        (change.stoneLocationUpdated   && change.stoneLocationUpdated.sphereIds[this.props.sphereId])     ||
         (change.changeStones)
       ) {
         this.forceUpdate();
         this._updateNavBar();
         return;
-      }
-
-      // actions specifically for location that are not floating
-      if (this.props.locationId !== null) {
-        if (
-          (change.userPositionUpdate   && change.userPositionUpdate.locationIds[this.props.locationId])   ||
-          (change.updateLocationConfig && change.updateLocationConfig.locationIds[this.props.locationId])
-        ) {
-          this.forceUpdate();
-          this._updateNavBar();
-        }
       }
     });
   }

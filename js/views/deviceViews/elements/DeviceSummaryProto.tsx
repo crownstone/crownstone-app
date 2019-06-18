@@ -252,11 +252,11 @@ export class DeviceSummary extends LiveComponent<any, any> {
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.rgba(1.0)} callback={() => {}} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.rgba(0.7)}  callback={() => { NavigationUtil.launchModal( "DeviceSmartBehaviour", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
+        <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.33).hex}  callback={() => { NavigationUtil.launchModal( "DeviceSmartBehaviour", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Power usage"} image={require("../../../images/icons/graph.png")} backgroundColor={colors.green.rgba(0.33)}  callback={() => {}} />
+        <DeviceMenuIcon label={"Power usage"} image={require("../../../images/icons/graph.png")} backgroundColor={colors.green.blend(colors.csBlueDark,0.7).hex}  callback={() => {}} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Settings"} icon={'ios-settings'} backgroundColor={colors.green.rgba(0.0)}  callback={() => {NavigationUtil.launchModal( "DeviceEdit", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
+        <DeviceMenuIcon label={"Settings"} icon={'ios-settings'} backgroundColor={colors.green.blend(colors.csBlueDark,1).hex}  callback={() => {NavigationUtil.launchModal( "DeviceEdit", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
         <View style={{flex:1}} />
       </View>
     )

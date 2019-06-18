@@ -53,7 +53,7 @@ export class ScanningForSetupCrownstones extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.setupEvents.push(core.eventBus.on("setupStoneChange", () => { this.setState({showNothingYet: false}) }));
+    this.setupEvents.push(core.eventBus.on("setupStoneChange",     () => { this.setState({showNothingYet: false}) }));
     this.setupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this._startNothingYetTimeout() }));
     this._startNothingYetTimeout();
   }

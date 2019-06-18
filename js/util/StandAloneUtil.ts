@@ -217,6 +217,10 @@ export const xUtil = {
         return true;
       }
 
+      if (versionClean === compareWithVersionClean && versionClean && compareWithVersionClean) {
+        return true;
+      }
+
       return xUtil.versions.isHigher(version, compareWithVersion);
     },
 
@@ -244,8 +248,9 @@ export const xUtil = {
     canUpdate: function(stone, state) {
       // only admins are allowed to update
       if (Permissions.activeSphere().seeUpdateCrownstone) {
-        if (ALWAYS_DFU_UPDATE_FIRMWARE || ALWAYS_DFU_UPDATE_BOOTLOADER)
+        if (ALWAYS_DFU_UPDATE_FIRMWARE || ALWAYS_DFU_UPDATE_BOOTLOADER) {
           return true;
+        }
 
         let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
         return xUtil.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);

@@ -3,6 +3,7 @@ import { BluenetPromiseWrapper } from "../../native/libInterface/BluenetPromise"
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { LOGi } from "../../logging/Log";
+import { MINIMUM_FIRMWARE_VERSION_BROADCAST } from "../../ExternalConfig";
 
 export const BROADCAST_ERRORS = {
   CANNOT_BROADCAST:     { message: "CANNOT_BROADCAST",     fatal: false},
@@ -45,6 +46,9 @@ class BroadcastCommandManagerClass {
           LOGi.broadcast("ERROR broadcast", commandSummary.command.state);
           throw err
         })
+        .catch((err) => {
+          LOGi.broadcast("Swallow broadcast error", err);
+        })
     })
 
 
@@ -53,17 +57,24 @@ class BroadcastCommandManagerClass {
 
   canBroadcast(commandSummary : commandSummary) {
     let state = core.store.getState();
-    if (!(commandSummary.stone.config.firmwareVersion &&
-          xUtil.versions.isHigherOrEqual(commandSummary.stone.config.firmwareVersion, "3.0.0") ||
-          state.development.broadcasting_enabled
-        )) {
+    if (!commandSummary.stone.config.firmwareVersion) {
       return false;
+    }
+
+    if (xUtil.versions.isLower(commandSummary.stone.config.firmwareVersion, MINIMUM_FIRMWARE_VERSION_BROADCAST)) {
+      if (state.development.broadcasting_enabled === true) {
+        // bypass
+      }
+      else {
+        return false
+      }
     }
 
     // check if this is a valid command
     if (!(commandSummary && commandSummary.command && commandSummary.command.commandName)) {
       return false;
     }
+
 
     if ((Platform.OS === 'ios' && AppState.currentState === 'active') || Platform.OS === 'android') {
       // allow broadcast attempt for whitelisted commands

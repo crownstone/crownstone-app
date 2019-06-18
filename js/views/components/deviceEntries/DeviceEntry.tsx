@@ -136,7 +136,6 @@ export class DeviceEntry extends Component<any, any> {
 
   _basePressed() {
     let state = core.store.getState();
-    console.log("HERE", state.user.developer, state.development.preview)
     if (state.user.developer && state.development.preview) {
       NavigationUtil.navigate( "DeviceOverviewProto",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
     }

@@ -4,7 +4,7 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOGd, LOGe, LOGi, LOGv, LOGw } from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
-import { DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL } from '../ExternalConfig'
+import { DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL } from "../ExternalConfig";
 import { StoneUtil }             from "../util/StoneUtil";
 import { Permissions }           from "../backgroundProcesses/PermissionManager";
 import { CommandManager }        from "./bchComponents/CommandManager";
@@ -70,7 +70,7 @@ class BatchCommandHandlerClass {
     let commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options };
     let state = core.store.getState();
 
-    if (BroadcastCommandManager.canBroadcast(commandSummary) && state.development.broadcasting_enabled) {
+    if (BroadcastCommandManager.canBroadcast(commandSummary) || state.development.broadcasting_enabled) {
       return BroadcastCommandManager.broadcast(commandSummary)
         .catch((err) => {
           if (err && err.fatal == false) {

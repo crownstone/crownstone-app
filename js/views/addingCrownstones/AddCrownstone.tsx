@@ -112,10 +112,10 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Please follow the instructions in the manual for the installation.\n\nIn future releases, we will have a complete install guide here.",
         backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),
         options: [
-          {label: lang("OK__I_have_installed_it_"),    nextCard: "installingBuiltinOne_endLight"},
+          {label: lang("OK__I_have_installed_it_"),    nextCard: "installingBuiltin_endLight"},
         ]
       },
-      installingBuiltinOne_endSocket: {
+      installingBuiltin_endSocket: {
         header: "Let's get close!",
         subHeader: "Hold your phone close to the socket with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
         backgroundImage: require('../../images/backgrounds/socketBackground.png'),
@@ -123,7 +123,7 @@ export class AddCrownstone extends LiveComponent<any, any> {
           {label: lang("Next"), textAlign:'right', onSelect: () => { NavigationUtil.navigate( "ScanningForSetupCrownstones", { sphereId: this.props.sphereId }) }},
         ]
       },
-      installingBuiltinOne_endLight: {
+      installingBuiltin_endLight: {
         header: "Let's get close!",
         subHeader: "Hold your phone near the ceiling light with the Crownstone.\n\nMake sure the power is back on and press next to continue!",
         backgroundImage: require('../../images/backgrounds/ceilingLightBackground.png'),

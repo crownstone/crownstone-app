@@ -19,7 +19,7 @@ import { core } from "../../../../core";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { LiveComponent } from "../../../LiveComponent";
-import { SlideSideFadeInView } from "../../../components/animated/SlideFadeInView";
+import { SlideFadeInView, SlideSideFadeInView } from "../../../components/animated/SlideFadeInView";
 import { Icon } from "../../../components/Icon";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
@@ -94,13 +94,13 @@ export class DeviceSmartBehaviour_RuleOverview extends LiveComponent<any, any> {
           <View style={{flex:1}} />
           {ruleComponents}
           <View style={{flex:1}} />
-          <SlideInView visible={this.props.editMode} height={80}>
+          <SlideFadeInView visible={this.props.editMode} height={80}>
             <BehaviourSuggestion
               key={"addSuggestion"}
               label={"Add another behaviour!"}
               callback={() => { NavigationUtil.navigate('DeviceSmartBehaviour_TypeSelector', this.props); }}
             />
-          </SlideInView>
+          </SlideFadeInView>
           <View style={{flex:3}} />
         </View>
       </ScrollView>

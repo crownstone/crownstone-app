@@ -71,6 +71,8 @@ import DeviceInfo from 'react-native-device-info';
    */
   export let MINIMUM_REQUIRED_FIRMWARE_VERSION = '2.0.0';
 
+  export let MINIMUM_FIRMWARE_VERSION_BROADCAST = '3.0.0';
+
 /******************** /APP ********************/
 
 
