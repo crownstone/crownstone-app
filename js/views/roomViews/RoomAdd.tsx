@@ -192,6 +192,8 @@ export class RoomAdd extends LiveComponent<any, any> {
 
         options: [
           {label: lang("Create_room_"), textAlign:'right', onSelect: (result) => {
+            let icon = result.customElementState.icon;
+            this.newRoomData.icon = icon;
             this.createRoom()
           }}
         ]

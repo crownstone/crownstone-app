@@ -46,7 +46,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
 
     this.newCrownstoneState = {
       name:           null,
-      icon:           null,
+      icon:           this.randomIcon,
       location:       {id:null, name: null, icon:null},
       configFinished: false,
       setupFinished:  false,

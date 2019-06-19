@@ -298,7 +298,7 @@ export class DeviceIconSelection extends Component<{callback(icon: string) : voi
             selectedIcon={this.props.icon}
             callback={(newIcon) => {
               this.props.callback(newIcon);
-              NavigationUtil.back();
+              NavigationUtil.dismissModal();
             }}
           />
         </ScrollView>

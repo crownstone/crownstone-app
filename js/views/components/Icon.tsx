@@ -12,9 +12,10 @@ export class Icon extends Component<any, any> {
     let offsetStyle = {};
 
     // guard against missing icon names
-    if (!this.props.name) {
+    if (!this.props.name || typeof this.props.name !== 'string') {
       return <Ionicons3 {...this.props} name="ios-leaf" style={[{backgroundColor:'transparent'}, this.props.style]} />;
     }
+
 
     let prefix = this.props.name.substr(0,3);
 
