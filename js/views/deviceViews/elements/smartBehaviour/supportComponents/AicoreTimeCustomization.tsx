@@ -79,16 +79,17 @@ export class AicoreTimeCustomization extends Component<any,any> {
           }}
         />
         <View style={{ flex: 1 }}/>
-        {this.state.toFinished && this.state.fromFinished ? <TimeButtonWithImage
+        {this.state.toFinished && this.state.fromFinished ?
+          <TimeButtonWithImage
+            basic={true}
             label={ lang("Looks_good_")}
-            TimeButtonWithImage
             image={require("../../../../../images/icons/timeIcon.png")}
             callback={() => {
               if (AicoreUtil.isSameTime(this.fromTime, this.toTime)) {
                 Alert.alert(
-lang("_The_start_and_ending_time_header"),
-lang("_The_start_and_ending_time_body"),
-[{text:lang("_The_start_and_ending_time_left")}])
+                  lang("_The_start_and_ending_time_header"),
+                  lang("_The_start_and_ending_time_body"),
+                 [{text:lang("_The_start_and_ending_time_left")}])
               }
               else {
                 let tempBehaviour = new AicoreBehaviour();

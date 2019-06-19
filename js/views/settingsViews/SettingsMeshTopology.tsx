@@ -16,7 +16,7 @@ import {
 
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
-import {colors, } from './../styles'
+import { availableScreenHeight, colors } from "./../styles";
 import { MeshElement } from "../components/MeshElement";
 import {ForceDirectedView} from "../components/interactiveView/ForceDirectedView";
 import {Icon} from "../components/Icon";
@@ -26,6 +26,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 
 let MESH_TIMEOUT = 3*24*3600*1000;
@@ -238,11 +239,19 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
       // used for comparative measurements.
       this._debugPrints(sphereId, connections, edgeId, stones);
     });
+    let height = availableScreenHeight - 1; // 1 is for the bottom light line above the navbar
+    let offset = 2;
+    if (OnScreenNotifications.hasNotifications(this.props.sphereId)) {
+      offset += 64;
+    }
+    height -= offset;
 
     return (
       <Background image={core.background.menu}>
-                <ForceDirectedView
+        <ForceDirectedView
           viewId={this.viewId}
+          height={height}
+          heightOffset={offset}
           nodeIds={stoneIds}
           nodeRadius={this._baseRadius}
           edges={edges}

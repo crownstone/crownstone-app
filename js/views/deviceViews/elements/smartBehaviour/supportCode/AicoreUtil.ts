@@ -158,7 +158,7 @@ export const AicoreUtil = {
   },
 
   getClockTimeStr(hours, minutes) {
-    return hours + ":" + (minutes < 10 ? minutes + "0" : minutes);
+    return hours + ":" + (minutes < 10 ? "0" + minutes : minutes);
   },
 
   getTimeStr(timeObj: aicoreTimeData) {

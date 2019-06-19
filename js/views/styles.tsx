@@ -32,6 +32,7 @@ export let colors : colorInterface = {
   csBlueDark:           {hex:'#00283c'},
   csBlueDarker:         {hex:'#00212b'},
   csBlueLight:          {hex:'#006f84'},
+  csBlueLighter:        {hex:'#00b6cd'},
   csBlueLightDesat:     {hex:'#2c9aa8'},
   csOrange:             {hex:'#ff8400'},
   darkCsOrange:         {hex:'#d97500'},

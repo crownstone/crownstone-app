@@ -33,7 +33,8 @@ import { xUtil } from "../../../util/StandAloneUtil";
 export class ForceDirectedView extends Component<{
   nodeIds: string[],
   viewId: string,
-  height?: number,
+  height: number,
+  heightOffset?: number,
   edges?: any,
   positionGetter?: any
   nodeRadius: number,
@@ -85,6 +86,7 @@ export class ForceDirectedView extends Component<{
 
   viewWidth : number = screenWidth;
   viewHeight : number = availableScreenHeight;
+  viewHeightOffset : number = 0;
   frameHeight : number = availableScreenHeight;
 
   boundingBoxData : any = {};
@@ -113,6 +115,7 @@ export class ForceDirectedView extends Component<{
     this._drawToken = props.drawToken;
 
     this.frameHeight = this.props.height || availableScreenHeight;
+    this.viewHeightOffset = this.props.heightOffset || 0;
     if (Platform.OS === 'android') {
       this.viewWidth =  8 * screenWidth;
       this.viewHeight = 8 * this.frameHeight;
@@ -122,7 +125,9 @@ export class ForceDirectedView extends Component<{
   }
 
   _convertToScreenSpace(x,y) {
-    let convertedY = y - (this.props.height - this.frameHeight);
+    console.log(y, this.props.height, this.frameHeight, this.viewHeightOffset)
+
+    let convertedY = y - (this.props.height - this.frameHeight) - this.viewHeightOffset;
 
     // center of the view in absolute coordinates
     let cx = 0.5*screenWidth;
@@ -158,7 +163,7 @@ export class ForceDirectedView extends Component<{
     let x1 = convertedPosition.x;
     let y1 = convertedPosition.y;
 
-
+    console.log(x,y,x1,y1)
     let nodeIds = Object.keys(this.nodes);
     let diameter = 2*this.props.nodeRadius;
     let found = false;
@@ -167,6 +172,8 @@ export class ForceDirectedView extends Component<{
       let node = this.nodes[nodeIds[i]];
       if (node.x + diameter > x1 && node.y + diameter > y1 && node.x < x1 && node.y < y1) {
         found = true;
+
+
         // null is a special ID since it implies a floating crownstone. This null is not a string, but actual null.
         let nodeId = nodeIds[i] === 'null' ? null : nodeIds[i];
 
@@ -909,7 +916,11 @@ export class ForceDirectedView extends Component<{
     });
 
     return (
-      <View ref={(v) => { this._viewRef = v; }} {...this._panResponder.panHandlers} style={{backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, width: screenWidth, overflow:'hidden'}}>
+      <View
+        ref={(v) => { this._viewRef = v; }}
+        {...this._panResponder.panHandlers}
+        style={{backgroundColor: 'transparent', width: screenWidth, height:this.props.height, position: 'absolute', top: 0, left: 0, verflow:'hidden'}}
+      >
         <Animated.View
           style={
           [animatedStyle,
@@ -927,7 +938,7 @@ export class ForceDirectedView extends Component<{
           { this.getNodes() }
           { children }
         </Animated.View>
-        <AnimatedDoubleTap width={screenWidth} height={this.frameHeight} eventBus={eventBus} />
+        <AnimatedDoubleTap width={screenWidth} height={this.props.height} eventBus={eventBus} />
       </View>
     );
   }

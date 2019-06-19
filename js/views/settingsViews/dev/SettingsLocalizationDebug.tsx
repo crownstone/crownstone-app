@@ -10,7 +10,7 @@ import {
   Text,
   View
 } from 'react-native';
-import {colors, screenWidth} from "../../styles";
+import { availableScreenHeight, colors, screenWidth } from "../../styles";
 import {Util} from "../../../util/Util";
 import {Background} from "../../components/Background";
 import {ForceDirectedView} from "../../components/interactiveView/ForceDirectedView";
@@ -20,6 +20,7 @@ import {AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION} from "../../../ExternalCo
 import { xUtil } from "../../../util/StandAloneUtil";
 import { core } from "../../../core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
 
 
 export class SettingsLocalizationDebug extends LiveComponent<any, any> {
@@ -176,6 +177,14 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     let sphereId = Util.data.getReferenceId(state);
     this.sphereId = sphereId;
 
+    let height = availableScreenHeight - 1; // 1 is for the bottom light line above the navbar
+    let offset = 2;
+    if (OnScreenNotifications.hasNotifications(this.props.sphereId)) {
+      offset += 64;
+    }
+    height -= offset;
+
+
     if (sphereId === null) {
       return <View style={{flex: 1}} ><Text>{ lang("You_have_to_be_in_a_Spher") }</Text></View>;
     }
@@ -194,6 +203,8 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
           </View>
           <ForceDirectedView
             ref={this.refName}
+            height={height}
+            heightOffset={offset}
             viewId={this.viewId}
             topOffset={0.3*this._baseRadius}
             bottomOffset={0}

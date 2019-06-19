@@ -139,7 +139,7 @@ class SphereCircleClass extends Component<any, any> {
     // let newColor = colors.csBlue.hex;
     let textColor = colors.white.hex;
     if (sphere.state.present === false) {
-      backgroundColor = colors.csBlueDark.hex;
+      backgroundColor = colors.csBlueDarker.hex;
     }
 
     let innerOffset = 0.5*(this.outerDiameter - this.innerDiameter);

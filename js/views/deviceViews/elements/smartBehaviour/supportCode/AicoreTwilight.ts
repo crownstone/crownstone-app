@@ -303,6 +303,9 @@ export class AicoreTwilight {
   isUsingClockEndTime(): boolean {
     return this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK";
   }
+  isUsingSunsetAsEndTime(): boolean {
+    return this.rule.time.type === "RANGE" && this.rule.time.to.type === "SUNSET";
+  }
   hasNoOptions(): boolean {
     return true;
   }

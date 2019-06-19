@@ -426,6 +426,8 @@ const ioniconCorrectionsIOS = {
   'md-time':                       {change: true, top: +0.040, left: +0.000},
   'md-trash':                      {change: true, top: +0.030, left: +0.000},
   'md-unlock':                     {change: true, top: +0.010, left: +0.000},
+  'md-albums':                     {change: true, top: +0.020, left: +0.020},
+  'md-copy':                       {change: true, top: +0.020, left: +0.020},
 };
 
 

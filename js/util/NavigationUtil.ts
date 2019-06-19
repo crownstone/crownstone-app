@@ -41,7 +41,7 @@ class NavStateManager {
       this.views.pop();
     }
     else {
-      console.log("Maybe something is wrong?")
+      console.warn("Maybe something is wrong?")
     }
   }
 
@@ -51,7 +51,7 @@ class NavStateManager {
         this.modals[this.modals.length - 1].pop();
       }
       else {
-        console.log("Maybe wanted to dismiss the modal?")
+        console.warn("Maybe wanted to dismiss the modal?")
       }
     }
     else {
@@ -59,7 +59,7 @@ class NavStateManager {
         this.views.pop();
       }
       else {
-        console.log("Maybe something is wrong?")
+        console.warn("Maybe something is wrong?")
       }
     }
 
@@ -72,7 +72,7 @@ class NavStateManager {
         this.activeView = this.modals[this.modals.length - 1].id;
       }
       else {
-        console.log("Maybe wanted to dismiss the modal?")
+        console.warn("Maybe wanted to dismiss the modal?")
       }
     }
     else {
@@ -80,7 +80,7 @@ class NavStateManager {
         this.activeView = this.views[this.views.length - 1].id;
       }
       else {
-        console.log("Maybe something is wrong?")
+        console.warn("Maybe something is wrong?")
       }
     }
   }
@@ -90,7 +90,7 @@ class NavStateManager {
      return this.views[this.views.length - 1].id;
     }
     else {
-      console.log("Maybe something is wrong?")
+      console.warn("Maybe something is wrong?")
     }
   }
 
@@ -141,7 +141,7 @@ class NavStateManager {
       for (let i = toplevelModal.length -1; i >= 0; i--) {
         if (toplevelModal[i].name === name) {
           targetId = toplevelModal[i].id;
-          spliceTarget = i;
+          spliceTarget = i + 1; // we want to keep the target, and remove the rest.
           break;
         }
       }
@@ -155,7 +155,7 @@ class NavStateManager {
         for (let i = this.views.length -1; i >= 0; i--) {
           if (this.views[i].name === name) {
             targetId = this.views[i].id;
-            spliceTarget = i;
+            spliceTarget = i + 1; // we want to keep the target, and remove the rest.
             break;
           }
         }
@@ -165,7 +165,7 @@ class NavStateManager {
         }
       }
       else {
-        console.log("Maybe something is wrong?")
+        console.warn("Maybe something is wrong?")
       }
     }
 
@@ -182,12 +182,13 @@ const NavState = new NavStateManager();
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
-  console.log("View has appeared", componentId, componentName)
+  // console.log("View has appeared", componentId, componentName)
   NavState.addView(componentId, componentName);
 });
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidDisappearListener(({ componentId, componentName }) => {
+
 });
 
 
@@ -200,7 +201,7 @@ export const NavigationUtil = {
    * @param props
    */
   showOverlay(target, props) {
-    console.log("is this overlay open?", target, NavState.isOverlayOpen(target))
+    // console.log("is this overlay open?", target, NavState.isOverlayOpen(target))
 
     if (NavState.isOverlayOpen(target)) {
       return;
@@ -257,7 +258,7 @@ export const NavigationUtil = {
   },
 
   dismissAllModals: function() {
-    console.log("Closing all modals");
+    // console.log("Closing all modals");
     Navigation.dismissAllModals()
     NavState.allModalsDismissed();
   },
@@ -273,7 +274,7 @@ export const NavigationUtil = {
   },
 
   navigate: function(target, props = {}) {
-    console.log("Navigating from", NavState.activeView, "to", target, props)
+    // console.log("Navigating from", NavState.activeView, "to", target, props)
     Navigation.push(NavState.activeView, {
       component: {
         id: target,
@@ -285,7 +286,7 @@ export const NavigationUtil = {
 
   navigateFromBaseStack(target, props) {
     let goFrom = NavState._getViewId();
-    console.log("Navigating from", goFrom, "to", target)
+    // console.log("Navigating from", goFrom, "to", target)
     Navigation.push(goFrom, {
       component: {
         id: target,
@@ -297,7 +298,7 @@ export const NavigationUtil = {
 
   back() {
     let backFrom = NavState.activeView;
-    console.log("Going back from", backFrom)
+    // console.log("Going back from", backFrom)
     NavState.pop();
     return Navigation.pop(backFrom)
       .then(() => { console.log("Going back from ", backFrom, " success!")})
@@ -306,7 +307,7 @@ export const NavigationUtil = {
 
   baseStackBack() {
     let backFrom = NavState._getViewId();
-    console.log("Going back baseStackBack", backFrom)
+    // console.log("Going back baseStackBack", backFrom)
     NavState.popView();
     Navigation.pop(backFrom)
       .then(() => { console.log("Going back baseStackBack ", backFrom, " success!")})

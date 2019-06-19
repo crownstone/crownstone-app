@@ -37,10 +37,11 @@ export class ZoomInstructionOverlay extends Component<any, any> {
           marginBottom:25,
           overflow:'hidden'
         }}>{ lang("You_can_go_to_the_sphere_") }</Text>
+        <View style={{flex:1, minHeight:30}} />
         <Image source={require('../../images/tutorial/zoomForSphereOverview.png')} style={{width:564*size, height:851*size}} />
-        <View style={{height:30}} />
+        <View style={{flex:1, minHeight:30}} />
         <Text style={WNStyles.detail}>{ lang("Youll_have_to_do_this_onc") }</Text>
-        <View style={{height:30}} />
+        <View style={{flex:1, minHeight:30}} />
         <TouchableOpacity
           onPress={() => { core.eventBus.emit("hideCustomOverlay") }}
           style={[styles.centered, {
@@ -53,6 +54,7 @@ export class ZoomInstructionOverlay extends Component<any, any> {
         >
           <Text style={{fontSize: 15, color: colors.blue.hex}}>{ lang("Ill_try_it_") }</Text>
         </TouchableOpacity>
+        <View style={{height:15}} />
       </View>
     );
   }
@@ -60,18 +62,6 @@ export class ZoomInstructionOverlay extends Component<any, any> {
 }
 
 export const WNStyles = StyleSheet.create({
-  important: {
-    fontSize: 14,
-    fontWeight:'bold',
-    color: colors.red.hex,
-    textAlign:'center'
-  },
-  text: {
-    fontSize: 15,
-    fontWeight:'bold',
-    color: colors.csBlue.hex,
-    textAlign:'center'
-  },
   detail: {
     fontSize: 13,
     color: colors.csBlue.rgba(0.75),
@@ -79,7 +69,6 @@ export const WNStyles = StyleSheet.create({
   },
   innerScrollView: {
     alignItems: 'center',
-    paddingBottom: 50,
     paddingLeft: 10,
     paddingRight: 10,
   },

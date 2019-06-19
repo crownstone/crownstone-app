@@ -42,7 +42,7 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
             <Text style={[deviceStyles.header]}>{ header }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{ lang("Tap_the_underlined_parts_t") }</Text>
-            <RuleEditor sphereId={this.props.sphereId} stoneId={this.props.stoneId} data={this.props.data} twilightRule={this.props.twilightRule}/>
+            <RuleEditor {...this.props} />
           </View>
         </ScrollView>
         </View>

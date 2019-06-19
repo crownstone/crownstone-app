@@ -108,11 +108,15 @@ export class RoomLayer extends LiveComponent<any, any> {
     this.props.setRearrangeRooms(false);
   }
 
+
+
   render() {
-    let height = availableScreenHeight;
+    let height = availableScreenHeight - 1; // 1 is for the bottom light line above the navbar
+    let offset = 2;
     if (OnScreenNotifications.hasNotifications(this.props.sphereId)) {
-      height -= 64;
+      offset += 64;
     }
+    height -= offset;
 
     if (this.props.sphereId === null) {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
@@ -134,6 +138,7 @@ export class RoomLayer extends LiveComponent<any, any> {
           zoomOutCallback={this.props.zoomOutCallback}
           zoomInCallback={this.props.zoomInCallback}
           height={height}
+          heightOffset={offset}
           renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}>
           {
             this.props.arrangingRooms === false ?

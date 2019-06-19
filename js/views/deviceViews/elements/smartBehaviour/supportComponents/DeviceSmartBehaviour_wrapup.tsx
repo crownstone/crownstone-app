@@ -50,11 +50,11 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
 
     if (this.props.twilightRule) {
       // @ts-ignore
-      this.rule = new AicoreTwilight(this.props.data);
+      this.rule = new AicoreTwilight(this.props.rule);
     }
     else {
       // @ts-ignore
-      this.rule = new AicoreBehaviour(this.props.data);
+      this.rule = new AicoreBehaviour(this.props.rule);
     }
   }
 
@@ -78,12 +78,11 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
 
   getOptionContext() {
     if (!this.rule.hasNoOptions()) {
-      let optionData = [];
       // @ts-ignore
       if (this.rule.rule.options.type === "SPHERE_PRESENCE_AFTER") {
         return (
           <Text style={deviceStyles.specification}>{
-            "I won't turn off as long as someone is home. This is done by automatically another rule that will keep me on for you. This will last until sunrise, give it a try!"
+            "After this behaviour, I won't turn off as long as someone is home. This is done by automatically adding another rule that will keep me on for you. This will last until sunrise, give it a try!"
           }</Text>
         );
       }
@@ -96,12 +95,6 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
         );
       }
     }
-    console.log(this.rule)
-    return (
-      <Text style={deviceStyles.specification}>{
-        "no mas..."
-      }</Text>
-    );
   }
 
   render() {
@@ -129,10 +122,8 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
               darkTheme={true}
               onChange={(fullData, day) => { this.setState({activeDays: fullData}); }}
             />
+
             <View style={{flex:1}} />
-
-            { this.getOptionContext() }
-
             <View style={{flexDirection:'row'}}>
               <View style={{flex:1}} />
               <TouchableOpacity onPress={() => {

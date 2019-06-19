@@ -7,6 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
+  Image,
   Text, TextStyle,
   TouchableWithoutFeedback,
   View
@@ -41,28 +42,32 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
       if (rule.type === "BEHAVIOUR") {
         ai = new AicoreBehaviour(rule.data);
         if (ai.isUsingPresence()) {
-          presenceArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId)})
+          presenceArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), endsWithOption: !ai.hasNoOptions(), partial: this.props.partiallyActiveRuleIdMap[ruleId] || false})
         }
         else {
-          onArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId)})
+          onArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), partial: this.props.partiallyActiveRuleIdMap[ruleId] || false})
+        }
+
+        if (!ai.hasNoOptions()) {
+          presenceArray.push({start: ai.getToTimeString(this.props.sphereId), end: AicoreUtil.getTimeStrInTimeFormat({ type: "SUNRISE", offsetMinutes: 0}, this.props.sphereId), option:true, partial: this.props.partiallyActiveRuleIdMap[ruleId] || false})
         }
       }
       else if (rule.type === "TWILIGHT") {
         ai = new AicoreTwilight(rule.data);
-        twilightArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId)})
+        twilightArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), partial: this.props.partiallyActiveRuleIdMap[ruleId] || false})
       }
     });
 
     return (
-      <View style={{flexDirection:'row', width:screenWidth, height:90}}>
+      <View style={{flexDirection:'row', width:screenWidth, height:90, overflow:'hidden'}}>
         <View style={{flex:1}} />
-        <TouchableWithoutFeedback style={{width:screenWidth*0.8, height:100}} onPress={() => { core.eventBus.emit("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH"+this.id)}}>
-          <View style={{width:screenWidth*0.8, height:100}}>
+        <TouchableWithoutFeedback style={{width:screenWidth*0.8, height:90}} onPress={() => { core.eventBus.emit("TOUCHED_SMART_BEHAVIOUR_SUMMARY_GRAPH"+this.id)}}>
+          <View style={{width:screenWidth*0.8, height:90}}>
             <DayNightIndicator id={this.id} />
             <View style={{position:'absolute', left:0, top:15, width:screenWidth*0.8, height:75}}>
-              <SmartBehaviourSummaryGraphElement dataColor={colors.green.hex}       icon={'md-power'}        iconSize={17} times={onArray}       id={this.id} explanation={ lang("When_I_will_be_on_")} />
-              <SmartBehaviourSummaryGraphElement dataColor={colors.csBlueDark.hex}  icon={'c1-locationPin1'} iconSize={14} times={presenceArray} id={this.id} explanation={"When I'll be on based on presence."} />
-              <SmartBehaviourSummaryGraphElement dataColor={colors.blinkColor2.hex} icon={'ios-leaf'}        iconSize={17} times={twilightArray} id={this.id} explanation={ lang("When_twilight_mode_is_acti")} />
+              <SmartBehaviourSummaryGraphElement dataColor={colors.green}       icon={'md-power'}        iconSize={17} times={onArray}       id={this.id} explanation={ lang("When_I_will_be_on_")} />
+              <SmartBehaviourSummaryGraphElement dataColor={colors.csBlueDark}  icon={'c1-locationPin1'} iconSize={14} times={presenceArray} id={this.id} explanation={"When I'll be on based on presence."} />
+              <SmartBehaviourSummaryGraphElement dataColor={colors.blinkColor2} icon={'ios-leaf'}        iconSize={17} times={twilightArray} id={this.id} explanation={ lang("When_twilight_mode_is_acti")} />
             </View>
             <TimeSelector id={this.id} />
           </View>
@@ -124,7 +129,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     }
   }
 
-  getSubItem(startMinutes, endMinutes) {
+  getSubItem(startMinutes, endMinutes, isOption) {
     let width = this.width;
 
     let startX = width * startMinutes / (24*60);
@@ -140,27 +145,40 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
           width:           endX - startX,
           height:          this.lineHeight,
           borderRadius:    0.5*this.lineHeight,
-          backgroundColor: this.props.dataColor
-        }} />
+          backgroundColor: this.props.dataColor.hex,
+          overflow:        'hidden',
+          opacity:         isOption? 0.5 : 1.0
+        }}>
+        { isOption ? <Image source={require("../../../../../images/patterns/csBlueStripe.png")} style={{width:endX - startX, height:this.lineHeight}} resizeMode={"repeat"} /> : null}
+      </View>
     )
   }
 
-  getItem(start, end) {
-    let startMinutes = getMinutes(start);
-    let endMinutes = getMinutes(end);
+  getItem(itemData) {
+    let startMinutes = getMinutes(itemData.start);
+    let endMinutes = getMinutes(itemData.end);
 
     if (endMinutes < startMinutes) {
-      // we need 2 parts
-      return [
-        this.getSubItem(startMinutes, getMinutes("24:00")),
-        this.getSubItem(getMinutes("00:00"), endMinutes),
-      ]
+
+      if (itemData.partial) {
+        return [
+          this.getSubItem(getMinutes("00:00"), endMinutes, itemData.option),
+        ]
+      }
+      else {
+        // we need 2 parts
+        return [
+          this.getSubItem(startMinutes, getMinutes("24:00"), itemData.option),
+          this.getSubItem(getMinutes("00:00"), endMinutes, itemData.option),
+        ]
+      }
     }
-    if (endMinutes == startMinutes) {
-      return [this.getSubItem(getMinutes("00:00"), getMinutes("24:00"))]
-    }
-    else {
-      return [this.getSubItem(startMinutes, endMinutes)]
+    if (!itemData.partial) {
+      if (endMinutes == startMinutes) {
+        return [this.getSubItem(getMinutes("00:00"), getMinutes("24:00"), itemData.option)]
+      } else {
+        return [this.getSubItem(startMinutes, endMinutes, itemData.option)]
+      }
     }
 
   }
@@ -170,7 +188,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     let elements = [];
 
     this.props.times.forEach((time) => {
-      elements = elements.concat(this.getItem(time.start, time.end))
+      elements = elements.concat(this.getItem(time))
     });
 
     return elements

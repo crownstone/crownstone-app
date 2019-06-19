@@ -14,6 +14,7 @@ let defaultSettings = {
     Sun: true
   },
   version: 1,
+  deleted: false,
   syncedToCrownstone: false,
   updatedAt: 1
 };
@@ -37,6 +38,7 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
         newState.data               = update(action.data.data,        newState.data);
         newState.cloudId            = update(action.data.cloudId,     newState.cloudId);
         newState.version            = update(action.data.version,     newState.version);
+        newState.deleted            = update(action.data.deleted,     newState.deleted);
         newState.syncedToCrownstone = update(action.data.syncedToCrownstone,  newState.syncedToCrownstone);
 
         newState.activeDays.Mon     = update(action.data.activeDays && action.data.activeDays.Mon, newState.activeDays.Mon);

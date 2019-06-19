@@ -108,6 +108,8 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
         }
       }
     }
+
+    console.log(this.rule)
   }
 
 
@@ -260,7 +262,12 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
   _shouldShowSuggestions() {
     let showPresenceSuggestion = this.rule.isUsingPresence() === false && this.state.userHidPresence === true;
     let showTimeSuggestion = this.rule.isAlwaysActive() === true && this.state.userHidTime === true;
-    let showOptionSuggestion = this.rule.isUsingClockEndTime() && this.rule.getHour() > 21 && this.rule.hasNoOptions();
+    let showOptionSuggestion = this.props.twilightRule === false &&
+      (
+        (this.rule.isUsingClockEndTime() && this.rule.getHour() >= 20)
+        || this.rule.isUsingSunsetAsEndTime()
+      ) &&
+      this.rule.hasNoOptions();
 
     return {
       showPresenceSuggestion,
@@ -764,7 +771,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                     if (this.state.selectedDetailField === SELECTABLE_TYPE.OPTION + "3") {
                       return true;
                     }
-                    return this.rule.doesOptionMatch(this.exampleBehaviours.option.noOption);
+                    return this.rule.doesOptionMatch(this.exampleBehaviours.option.noOption) || this.rule.hasNoOptions();
                   },
                   onSelect: () => {
                     this.rule.setNoOptions();

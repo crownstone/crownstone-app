@@ -38,11 +38,11 @@ export function BehaviourSuggestion(props) {
         width:size,
         height:size,
         borderRadius:size*0.5,
-        backgroundColor: colors.green.rgba(0.75),
+        backgroundColor: props.iconColor || colors.green.rgba(0.75),
         borderColor: colors.white.rgba(0.5),
         borderWidth: 2
       }, styles.centered]}>
-        <Icon name={'md-add'} size={size*0.75} color={colors.white.hex} />
+        { props.iconObject || <Icon name={props.icon || 'md-add'} size={props.iconSize || size*0.75} color={colors.white.hex} /> }
       </View>
     </View>
   );
