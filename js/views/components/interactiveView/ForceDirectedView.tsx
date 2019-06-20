@@ -125,8 +125,6 @@ export class ForceDirectedView extends Component<{
   }
 
   _convertToScreenSpace(x,y) {
-    console.log(y, this.props.height, this.frameHeight, this.viewHeightOffset)
-
     let convertedY = y - (this.props.height - this.frameHeight) - this.viewHeightOffset;
 
     // center of the view in absolute coordinates
@@ -163,7 +161,6 @@ export class ForceDirectedView extends Component<{
     let x1 = convertedPosition.x;
     let y1 = convertedPosition.y;
 
-    console.log(x,y,x1,y1)
     let nodeIds = Object.keys(this.nodes);
     let diameter = 2*this.props.nodeRadius;
     let found = false;
@@ -219,7 +216,7 @@ export class ForceDirectedView extends Component<{
     else if (nextProps.nodeIds.indexOf(null) !== this.props.nodeIds.indexOf(null)) {
       this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
     }
-    else if (xUtil.deepCompare(nextProps.initialPositions, this.props.initialPositions) === false) {
+    else if (nextProps.initialPositions && this.props.initialPositions && xUtil.deepCompare(nextProps.initialPositions, this.props.initialPositions) === false) {
       this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
     }
     else {

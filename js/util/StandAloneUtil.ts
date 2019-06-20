@@ -309,6 +309,15 @@ export const xUtil = {
         if (a[prop] === undefined) {
           return false;
         }
+        else if (b[prop] && !a[prop] || a[prop] && !b[prop]) {
+          return false;
+        }
+        else if (!b[prop] && !a[prop] && a[prop] != b[prop]) {
+          return false;
+        }
+        else if (!b[prop] && !a[prop] && a[prop] == b[prop]) {
+          continue;
+        }
         else if (b[prop].constructor === Object) {
           if (a[prop].constructor === Object) {
             if (xUtil.deepCompare(a[prop], b[prop], d+1) === false) {

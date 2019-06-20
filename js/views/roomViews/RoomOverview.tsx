@@ -265,7 +265,6 @@ export class RoomOverview extends LiveComponent<any, any> {
           amountOfStonesInRoom={amountOfStonesInRoom}
           hideRight={this.props.hideRight}
           usage={usage}
-          floatingCrownstones={this.props.locationId === null}
           viewingRemotely={this.viewingRemotely}
           overlayText={this.props.overlayText}
         />

@@ -8,6 +8,8 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Platform,
   StyleSheet,
+  Image,
+  ImageBackground,
   Text,
   View
 } from 'react-native';
@@ -91,25 +93,7 @@ export class RoomBanner extends Component<any, any> {
 
   }
 
-  getIcons() {
-    let color1 = colors.green.hex;
-    let color2 = colors.darkGreen.hex;
-    let color3 = colors.blue.hex;
-
-    return (
-      <View style={{flexDirection:'row', height:0.7*ELEMENT_HEIGHT}}>
-        <Icon name="c2-pluginFront" size={100} color={color1} style={{position:'absolute', backgroundColor:'transparent', top:-25, left:105}} />
-        <Icon name="c2-pluginFront" size={100} color={color2} style={{position:'absolute', backgroundColor:'transparent', top:20,  left:175}} />
-        <Icon name="c2-pluginFront" size={160} color={color3} style={{position:'absolute', backgroundColor:'transparent', top:-32, left:-30}} />
-      </View>
-    )
-  }
-
   getLeftContent(leftRatio) {
-    if (this.props.floatingCrownstones === true && this.props.overlayText === undefined) {
-      return this.getIcons();
-    }
-
     return (
       <View style={{height:0.7*ELEMENT_HEIGHT, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
         <View style={[bannerStyles.whiteLeft, {height: 0.5*ELEMENT_HEIGHT, width:(leftRatio-0.05)*screenWidth+ELEMENT_OFFSET}]} />
@@ -138,22 +122,10 @@ export class RoomBanner extends Component<any, any> {
 
   render() {
     let leftRatio = this.props.hideRight === true ? 0.95 : LEFT_RATIO;
-    let backgroundColor = undefined;
-
-    if (this.props.floatingCrownstones === true && this.props.overlayText === undefined) {
-      backgroundColor = this.props.color || colors.iosBlue.rgba(0.3);
-    }
-    else if (this.props.noCrownstones === true && this.props.viewingRemotely === false) {
-      backgroundColor = this.props.color || colors.green.rgba(0.8);
-      leftRatio = 0.95;
-    }
-    else {
-      backgroundColor = this.props.color || colors.green.rgba(0.7);
-    }
-
     return (
-      <View style={{width:screenWidth, height:ELEMENT_HEIGHT, backgroundColor: backgroundColor, justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2), overflow:"hidden"}}>
-        <View style={{flexDirection:'row'}}>
+      <View style={{width:screenWidth, height:ELEMENT_HEIGHT, borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2), overflow:"hidden"}}>
+        <Image source={require("../../images/backgrounds/RoomBannerBackground.png")} style={{width: screenWidth, height: ELEMENT_HEIGHT, opacity: 0.7, position:'absolute', top:0, left:0}} resizeMode={"cover"} />
+        <View style={{flexDirection:'row', width: screenWidth, height: ELEMENT_HEIGHT, alignItems:'center', justifyContent:'center', position:'absolute', top:0, left:0}}>
           {this.getLeftContent(leftRatio)}
           <View style={{flex:1}} />
           {this.getRightContent()}
