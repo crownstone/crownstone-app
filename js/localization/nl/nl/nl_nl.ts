@@ -3128,7 +3128,6 @@ export default {
       Will_do_:                           false,
       Can_I_turn_off_afterwards:          false,
       Use_Behaviour_:                     false,
-      ___:                                false,
       On:                                 false,
       Dimmed__:                           false,
       Ignore_presence:                    false,
@@ -3145,6 +3144,7 @@ export default {
       Can_I_turn_off_afterwards_:         false,
       Yes__just_turn_off_afterwa:         false,
       Dimmed____:                         false,
+      x_percent:                          false,
     },
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourRuleEditor.tsx",
     Would_you_like_me_to_reac:           function() { return "Would you like me to react to presence?" },
@@ -3159,7 +3159,6 @@ export default {
     Will_do_:                            function() { return "Will do!" },
     Can_I_turn_off_afterwards:           function() { return "Can I turn off afterwards?" },
     Use_Behaviour_:                      function() { return "Use Behaviour!" },
-    ___:                                 function() { return "10%" },
     On:                                  function() { return "On" },
     Dimmed__:                            function() { return "Dimmed " + arguments[0] + "%" },
     Ignore_presence:                     function() { return "Ignore presence" },
@@ -3176,6 +3175,7 @@ export default {
     Can_I_turn_off_afterwards_:          function() { return "Can I turn off afterwards?" },
     Yes__just_turn_off_afterwa:          function() { return "Yes, just turn off afterwards." },
     Dimmed____:                          function() { return "Dimmed 60%" },
+    x_percent:                           function() { return arguments[0] + " %" },
   },
   ScanningForSetupCrownstones:{
     __stringSameAsBaseLanguage: {

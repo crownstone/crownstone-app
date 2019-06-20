@@ -219,7 +219,7 @@ export class ForceDirectedView extends Component<{
     else if (nextProps.nodeIds.indexOf(null) !== this.props.nodeIds.indexOf(null)) {
       this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
     }
-    else if (JSON.stringify(nextProps.initialPositions) !== JSON.stringify(this.props.initialPositions)) {
+    else if (xUtil.deepCompare(nextProps.initialPositions, this.props.initialPositions) === false) {
       this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
     }
     else {

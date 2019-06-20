@@ -316,15 +316,15 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
 
   _showDimAmountPopup() {
     let dimmerOptions = [];
-    dimmerOptions.push({ label: lang("___"), id: 0.9});
-    dimmerOptions.push({ label: lang("___"), id: 0.8});
-    dimmerOptions.push({ label: lang("___"), id: 0.7});
-    dimmerOptions.push({ label: lang("___"), id: 0.6});
-    dimmerOptions.push({ label: lang("___"), id: 0.5});
-    dimmerOptions.push({ label: lang("___"), id: 0.4});
-    dimmerOptions.push({ label: lang("___"), id: 0.3});
-    dimmerOptions.push({ label: lang("___"), id: 0.2});
-    dimmerOptions.push({ label: lang("___"), id: 0.1});
+    dimmerOptions.push({ label: lang("x_percent",90), id: 0.9});
+    dimmerOptions.push({ label: lang("x_percent",80), id: 0.8});
+    dimmerOptions.push({ label: lang("x_percent",70), id: 0.7});
+    dimmerOptions.push({ label: lang("x_percent",60), id: 0.6});
+    dimmerOptions.push({ label: lang("x_percent",50), id: 0.5});
+    dimmerOptions.push({ label: lang("x_percent",40), id: 0.4});
+    dimmerOptions.push({ label: lang("x_percent",30), id: 0.3});
+    dimmerOptions.push({ label: lang("x_percent",20), id: 0.2});
+    dimmerOptions.push({ label: lang("x_percent",10), id: 0.1});
 
     core.eventBus.emit('showListOverlay', {
       title: lang("Dim_how_much_"),
@@ -344,9 +344,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
       title: lang("Select_Rooms"),
       getItems: () => {
         const state = core.store.getState();
-        let sphereIds = Object.keys(state.spheres);
-        let activeSphere = sphereIds[0];
-        const sphere = state.spheres[activeSphere];
+        const sphere = state.spheres[this.props.sphereId];
         let items = [];
         Object.keys(sphere.locations).forEach((locationId) => {
           let location = sphere.locations[locationId];

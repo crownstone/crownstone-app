@@ -1627,7 +1627,7 @@ export default {
     Will_do_:                            function() { return "Will do!" },
     Can_I_turn_off_afterwards:           function() { return "Can I turn off afterwards?" },
     Use_Behaviour_:                      function() { return "Use Behaviour!" },
-    ___:                                 function() { return "10%" },
+    x_percent:                           function() { return arguments[0] + " %" },
     On:                                  function() { return "On" },
     Dimmed__:                            function() { return "Dimmed " + arguments[0] + "%" },
     Ignore_presence:                     function() { return "Ignore presence" },
