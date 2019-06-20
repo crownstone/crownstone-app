@@ -2,7 +2,7 @@
 import { Languages } from "../../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("BehaviourRuleEditor", key)(a,b,c,d,e);
+  return Languages.get("RuleEditor", key)(a,b,c,d,e);
 }
 import { LiveComponent }          from "../../../../LiveComponent";
 import * as React from 'react';
@@ -108,8 +108,6 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
         }
       }
     }
-
-    console.log(this.rule)
   }
 
 
@@ -370,6 +368,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
         }
         this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "3"})
       },
+      themeColor: colors.lightGreen2.hex,
       allowMultipleSelections: true,
       selection: this.rule.getLocationIds(),
       image: require("../../../../../images/overlayCircles/roomsCircle.png")
@@ -411,7 +410,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
           details = (
             <BehaviourOptionList
               header={ lang("What_should_I_be_")}
-              explanation={ lang("My_behaviour_defines_when_")}
+              explanation={ lang("My_behaviour_defines_when")}
               closeCallback={() => { this.toggleDetails(null); }}
               closeLabel={ lang("Sounds_about_right_")}
               elements={[
@@ -549,7 +548,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
           details = (
             <BehaviourOptionList
               header={ lang("What_should_I_be_")}
-              explanation={ lang("My_behaviour_defines_when_")}
+              explanation={ lang("My_behaviour_defines_when")}
               closeCallback={() => { this.toggleDetails(null); }}
               closeLabel={ lang("Sounds_about_right_")}
               elements={[

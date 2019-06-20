@@ -263,7 +263,7 @@ export default {
     Battery_Improvements_:               function() { return "Battery Improvements!" },
     The_Crownstone_app_will_n:           function() { return "The Crownstone app will now use 20% less power in the background for the localization features!\n\nThis means longer battery life and more improvements still to come!" },
   },
-  BehaviourRuleEditor:{
+  RuleEditor:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourRuleEditor.tsx",
     Would_you_like_me_to_reac:           function() { return "Would you like me to react to presence?" },
     Shall_I_do_this_at_a_cert:           function() { return "Shall I do this at a certain time?" },
@@ -294,6 +294,8 @@ export default {
     My_behaviour_defines_when_:          function() { return "My behaviour defines when I should be on. I will be off when I should not be on." },
     Can_I_turn_off_afterwards_:          function() { return "Can I turn off afterwards?" },
     Yes__just_turn_off_afterwa:          function() { return "Yes, just turn off afterwards." },
+    ___:                                 function() { return "10%" },
+    Dimmed____:                          function() { return "Dimmed 60%" },
   },
   BehaviourSuggestion:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourSuggestion.tsx",
@@ -2785,21 +2787,6 @@ export default {
     __filename: "../js/views/tutorialViews/elements/TutorialSphere.tsx",
     Spheres:                             function() { return "Spheres" },
     Your_sphere_is_your_colle:           function() { return "Your sphere is your collection of Crownstones. This is usually your house, office or personal space." + "\n\nOnly one sphere can be active at a time. It contains rooms, Crownstones, device types and possibly other users." + "\n\nYou can invite other people (as admins, members or guests) to your sphere so they can use your Crownstones." },
-  },
-  TwilightRuleEditor:{
-    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/TwilightRuleEditor.tsx",
-    What_should_I_be_:                   function() { return "What should I be?" },
-    My_behaviour_defines_when:           function() { return "My behaviour defines when I should be on. I will be off when I should not be on." },
-    Sounds_about_right_:                 function() { return "Sounds about right!" },
-    When_should_I_do_this_:              function() { return "When should I do this?" },
-    Will_do_:                            function() { return "Will do!" },
-    Use_Behaviour_:                      function() { return "Use Behaviour!" },
-    ___:                                 function() { return "10%" },
-    Dimmed____:                          function() { return "Dimmed 60%" },
-    Dimmed__:                            function() { return "Dimmed " + arguments[0] + "%" },
-    Other___:                            function() { return "Other..." },
-    Dim_how_much_:                       function() { return "Dim how much?" },
-    My_behaviour_defines_when_:          function() { return "My behaviour defines when I should be on. I will be off when I should not be on." },
   },
   UpdateCenter:{
     __filename: "../../js/backgroundProcesses/UpdateCenter.tsx",

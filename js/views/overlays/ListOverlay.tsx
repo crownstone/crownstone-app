@@ -23,6 +23,7 @@ export class ListOverlay extends LiveComponent<any, any> {
   callback : any;
   selection : string[];
   getItems : () => any[];
+  themeColor: string;
 
   constructor(props) {
     super(props);
@@ -37,6 +38,7 @@ export class ListOverlay extends LiveComponent<any, any> {
       visible: false,
     };
 
+    this.themeColor = props.data.themeColor || colors.green.hex;
     this.customContent = props.data.customContent || null;
     this.getItems = props.data.getItems;
     this.callback = props.data.callback;
@@ -67,7 +69,7 @@ export class ListOverlay extends LiveComponent<any, any> {
       elements.push(
         <TouchableOpacity
           key={"listOverlayElement_"+i}
-          style={{paddingLeft: 30, backgroundColor: isSelected ? colors.green.hex : colors.white.hex}}
+          style={{paddingLeft: 30, backgroundColor: isSelected ? this.themeColor : colors.white.hex}}
           onPress={() => {
             if (this.state.allowMultipleSelections) {
               if (isSelected) {
@@ -104,7 +106,7 @@ export class ListOverlay extends LiveComponent<any, any> {
         <View style={{flex:1, flexDirection:'row'}}>
           <View style={{flex:1}} />
           <TouchableOpacity
-            style={{height:50, flex:3, borderColor:colors.white.hex, borderWidth:2, backgroundColor:colors.green.hex, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}
+            style={{height:50, flex:3, borderColor:colors.white.hex, borderWidth:2, backgroundColor: this.themeColor, borderRadius: 20, alignItems: 'center', justifyContent:'center'}}
             onPress={() => {
               this.callback(this.selection);
               this.close();

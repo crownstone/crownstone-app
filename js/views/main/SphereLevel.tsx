@@ -13,7 +13,6 @@ import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedVi
 import {SphereCircle} from "../components/SphereCircle";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
-import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 export class SphereLevel extends LiveComponent<any, any> {
   state:any; // used to avoid warnings for setting state values

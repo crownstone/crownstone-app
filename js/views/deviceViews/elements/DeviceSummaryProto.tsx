@@ -327,6 +327,7 @@ export function StoneInformation(props : {stoneId: string, sphereId: string, can
             core.store.dispatch({type:"UPDATE_STONE_LOCATION", sphereId: props.sphereId, stoneId: props.stoneId, data:{locationId: locationId}})
           },
           allowMultipleSelections: false,
+          themeColor: colors.lightGreen2.hex,
           selection: stone.config.locationId,
           image: require("../../../images/overlayCircles/roomsCircle.png")
         })

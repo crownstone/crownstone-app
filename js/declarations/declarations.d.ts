@@ -69,6 +69,7 @@ interface colorInterface {
   blue2:        color,
   green:        color,
   lightGreen:   color,
+  lightGreen2:  color,
   darkGreen:    color,
   green2:       color,
   orange:       color,

@@ -58,6 +58,7 @@ export let colors : colorInterface = {
   blue:                 {hex:'#0075c9'},
   blue2:                {hex:'#2698e9'},
   green:                {hex:'#a0eb58'},
+  lightGreen2:          {hex:'#bae97b'},
   lightGreen:           {hex:'#caff91'},
   darkGreen:            {hex:'#1f4c43'},
   green2:               {hex:'#4cd864'},

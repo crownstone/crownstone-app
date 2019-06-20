@@ -41,9 +41,10 @@ type dayOfWeek = {
   Sun: boolean
 }
 
-type eventAction = { type: "TURN_ON",  fadeDuration: number, data: number } |
-                   { type: "TURN_OFF", fadeDuration: number }               |
-                   { type: "COPY_STATE" | "TOGGLE" | "PULSE" }
+type eventAction = { type: "TURN_ON",  fadeDuration: number, data: number }  |
+                   { type: "TURN_OFF", fadeDuration: number }                |
+                   { type: "PULSE",    mode: "FADE" | "BLINK", amount: number } |
+                   { type: "COPY_STATE" | "TOGGLE" }
 
 type eventCondition = { type: "PRESENCE", data: aicorePresence } |
                       { type: "TIME", from: aicoreTimeData, to: aicoreTimeData }
