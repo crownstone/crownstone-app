@@ -294,7 +294,6 @@ export default {
     My_behaviour_defines_when_:          function() { return "My behaviour defines when I should be on. I will be off when I should not be on." },
     Can_I_turn_off_afterwards_:          function() { return "Can I turn off afterwards?" },
     Yes__just_turn_off_afterwa:          function() { return "Yes, just turn off afterwards." },
-    ___:                                 function() { return "10%" },
     Dimmed____:                          function() { return "Dimmed 60%" },
   },
   BehaviourSuggestion:{
