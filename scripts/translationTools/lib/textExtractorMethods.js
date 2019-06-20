@@ -35,6 +35,10 @@ let parseFilesRecursivelyInPath = function(dirPath) {
   return {fileMap, fileList, translationData}
 }
 
+let clearTranslationData = function() {
+  translationData = {};
+}
+
 
 let parseFile = function(filePath, allowReplace) {
   let content    = fs.readFileSync(filePath, "utf8")
@@ -85,7 +89,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   let contentData = {content: content};
 
   if (reactLabelMatches !== null) {
-    let ignoreFields = {key: true, color: true, ellipsizeMode: true, returnKeyType: true, autoCapitalize: true}
+    let ignoreFields = {key: true, color: true, ellipsizeMode: true, returnKeyType: true, autoCapitalize: true, pointerEvents: true, resizeMode: true, groupTypes: true}
     for ( let i = 0; i < reactLabelMatches.length; i++) {
       let match = reactLabelMatches[i];
       let resultArray = [];
@@ -213,6 +217,7 @@ function extractAlert(match, filename, filePath, contentData) {
     translationData[filename] = {__filename: '"' + filePath + '"'}
   }
 
+
   let headerTextKey      = util.prepareTextKey(translationData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_header');
   let bodyTextKey        = util.prepareTextKey(translationData, filename, header+body+buttonLeftData.result+buttonRightData.result,'_body');
 
@@ -256,7 +261,7 @@ function extractAlert(match, filename, filePath, contentData) {
   let replacement = match[0].replace(headerResult.parsedText,'\nLanguages.alert("' + filename + '", "' + headerTextKey + '")' + headerFunctionCall)
   replacement = replacement.replace(bodyResult.parsedText,'\nLanguages.alert("' + filename + '", "' + bodyTextKey + '")' + bodyFunctionCall )
   replacement = replacement.replace(fullMatchRemainder,remainder)
-
+  console.log("MATCHING", match[0], replacement)
   contentData.content = contentData.content.replace(match[0], replacement);
 }
 
@@ -363,4 +368,4 @@ function createTranslationFileAndReplaceContents(filename, filePath, extractData
 
 
 
-module.exports = {parseFile, parseFilesRecursivelyInPath}
+module.exports = {parseFile, parseFilesRecursivelyInPath, clearTranslationData}

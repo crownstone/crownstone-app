@@ -102,9 +102,9 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
           .then(() => {  this.setState({pendingCommand: false})})
           .catch((err) => {
             Alert.alert(
-              "Something went wrong...",
-              "You can try it again if you're close to the Crownstone.",
-              [{text:"OK"}]
+lang("_Something_went_wrong_____header"),
+lang("_Something_went_wrong_____body"),
+[{text:lang("_Something_went_wrong_____left")}]
             );
             this.setState({pendingCommand: false});
           })

@@ -112,13 +112,13 @@ export class DeviceSmartBehaviour_RuleOverview extends LiveComponent<any, any> {
           <View style={{flex:1}} />
           <SlideFadeInView visible={this.props.editMode} height={80}>
             <BehaviourSuggestion
-              label={"Add more..."}
+              label={ lang("Add_more___")}
               callback={() => { NavigationUtil.navigate('DeviceSmartBehaviour_TypeSelector', this.props); }}
             />
           </SlideFadeInView>
           <SlideFadeInView visible={this.props.editMode} height={80}>
             <BehaviourSuggestion
-              label={"Copy from..."}
+              label={ lang("Copy_from___")}
               callback={() => { NavigationUtil.navigate('DeviceSmartBehaviour_TypeSelector', this.props); }}
               icon={'md-log-in'}
               iconSize={14}
@@ -127,7 +127,7 @@ export class DeviceSmartBehaviour_RuleOverview extends LiveComponent<any, any> {
           </SlideFadeInView>
           <SlideFadeInView visible={this.props.editMode} height={80}>
             <BehaviourSuggestion
-              label={"Copy to..."}
+              label={ lang("Copy_to___")}
               callback={() => { NavigationUtil.navigate('DeviceSmartBehaviour_TypeSelector', this.props); }}
               icon={'md-log-out'}
               iconSize={14}

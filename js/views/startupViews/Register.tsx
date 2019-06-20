@@ -87,7 +87,7 @@ export class Register extends LiveComponent<any, any> {
               <InterviewTextInput
                 autofocus={true}
                 // focussed={this.focussingIndex === 0 || undefined}
-                placeholder={"First name"}
+                placeholder={ lang("First_name")}
                 value={state && state.firstName || this.user.firstName}
                 callback={(newValue) => {
                   let newState = {};
@@ -101,7 +101,7 @@ export class Register extends LiveComponent<any, any> {
               />
               <InterviewTextInput
                 autofocus={false}
-                placeholder={"Last name"}
+                placeholder={ lang("Last_name")}
                 focussed={this.focussingIndex === 1}
                 value={state && state.lastName || this.user.lastName}
                 callback={(newValue) => {
@@ -119,15 +119,21 @@ export class Register extends LiveComponent<any, any> {
         },
         options: [
           {
-            label: "That's me!",
+            label: lang("Thats_me_"),
             nextCard: 'picture',
             onSelect: (result) => {
               if (!result.customElementState.firstName && !result.customElementState.lastName && !this.user.firstName && !this.user.lastName) {
-                Alert.alert("What should I call you?", "I'd really like to know your name!", [{text:"Fine..."}]);
+                Alert.alert(
+lang("_What_should_I_call_you___header"),
+lang("_What_should_I_call_you___body"),
+[{text:lang("_What_should_I_call_you___left")}]);
                 return false;
               }
               else if (!result.customElementState.firstName && !this.user.firstName) {
-                Alert.alert("How should I adress you?", "Could you tell me your first name?", [{text:"Fine..."}]);
+                Alert.alert(
+lang("_How_should_I_adress_you__header"),
+lang("_How_should_I_adress_you__body"),
+[{text:lang("_How_should_I_adress_you__left")}]);
                 return false;
               }
 
@@ -177,7 +183,7 @@ export class Register extends LiveComponent<any, any> {
           )
         },
         options: [{
-          label: this.user.picture ? "You bet I do!" : "Not just yet...",
+          label: lang("You_bet_I_do_Not_just_yet",this.user.picture),
           textAlign:'right',
           nextCard:"email",
         }]
@@ -192,8 +198,8 @@ export class Register extends LiveComponent<any, any> {
               <InterviewTextInput
                 autofocus={true}
                 focussed={this.focussingIndex === 0 || undefined}
-                placeholder={"Email address"}
-                keyboardType={"email-address"}
+                placeholder={ lang("Email_address")}
+                keyboardType={ lang("email_address")}
                 value={state && state.email || this.user.email}
                 callback={(newValue) => {
                   let newState = {};
@@ -208,8 +214,8 @@ export class Register extends LiveComponent<any, any> {
               />
               <InterviewTextInput
                 autofocus={false}
-                placeholder={"Password"}
-                keyboardType={'ascii-capable'}
+                placeholder={lang("Password")}
+                keyboardType={ lang("ascii_capable")}
                 focussed={this.focussingIndex === 1 || undefined}
                 value={state && state.password || this.user.password}
                 callback={(newValue) => {
@@ -244,19 +250,28 @@ export class Register extends LiveComponent<any, any> {
         },
         options: [
           {
-            label: "I'm ready!",
+            label: lang("Im_ready_"),
             onSelect: (result) => {
               if (!result.customElementState.email && !this.user.email) {
-                Alert.alert("How can I reach you?", "I'd really like to know your email address!", [{ text: "OK" }]);
+                Alert.alert(
+lang("_How_can_I_reach_you___Id_header"),
+lang("_How_can_I_reach_you___Id_body"),
+[{text: lang("_How_can_I_reach_you___Id_left") }]);
                 return false;
               }
               else if ((result.customElementState.email && emailChecker(result.customElementState.email) === false) ||
                 (this.user.email && emailChecker(this.user.email) === false)) {
-                Alert.alert("I don't understand...", "That does not seem to be a valid email address!", [{ text: "I'll fix it!" }]);
+                Alert.alert(
+lang("_I_dont_understand_____Th_header"),
+lang("_I_dont_understand_____Th_body"),
+[{text: lang("_I_dont_understand_____Th_left") }]);
                 return false;
               }
               else if (!result.customElementState.password && !this.user.password) {
-                Alert.alert("I want to be secure...", "Please set a password for your account!", [{ text: "OK" }]);
+                Alert.alert(
+lang("_I_want_to_be_secure______header"),
+lang("_I_want_to_be_secure______body"),
+[{text: lang("_I_want_to_be_secure______left") }]);
                 return false;
               }
 
@@ -283,7 +298,7 @@ export class Register extends LiveComponent<any, any> {
         optionsBottom: true,
         options: [
           {
-            label: "I'll validate my account and log in!",
+            label: lang("Ill_validate_my_account_a"),
             onSelect: () => {
               NavigationUtil.back();
             }

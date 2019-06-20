@@ -55,7 +55,10 @@ export class DfuScanning extends LiveComponent<any, any> {
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'next') {
       if (this.visibleDrawnStones.length === 0) {
-        Alert.alert("No Crownstones in range yet.","Please go near your Crownstones until they show up green in the list.",[{text:"OK"}])
+        Alert.alert(
+lang("_No_Crownstones_in_range__header"),
+lang("_No_Crownstones_in_range__body"),
+[{text:lang("_No_Crownstones_in_range__left")}])
       }
       else {
         NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})

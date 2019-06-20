@@ -68,8 +68,8 @@ export class Sphere extends Component<any, any> {
       return (
         <View style={viewStyle}>
           <Icon name="c2-pluginFront" size={150} color={colors.menuBackground.hex}/>
-          <Text style={overviewStyles.mainText}>{"Crownstones require rooms."}</Text>
-          <Text style={overviewStyles.subText}>{"Ask the admin of this Sphere to handle this."}</Text>
+          <Text style={overviewStyles.mainText}>{ lang("Crownstones_require_rooms") }</Text>
+          <Text style={overviewStyles.subText}>{ lang("Ask_the_admin_of_this_SphHandle") }</Text>
         </View>
       )
     }

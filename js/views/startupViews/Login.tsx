@@ -79,9 +79,10 @@ export class Login extends Component<any, any> {
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        Alert.alert("An email was sent to " + this.state.email.toLowerCase() + "!",
-          "Follow the instructions in the mail to verify your email address.",
-          [{text:"OK"}]);
+        Alert.alert(
+lang("_An_email_was_sent_to_____header",this.state.email.toLowerCase()),
+lang("_An_email_was_sent_to_____body"),
+[{text:lang("_An_email_was_sent_to_____left")}]);
       })
       .catch((reply) => {
         core.eventBus.emit('hideLoading');
@@ -98,9 +99,10 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
       .then(() => {
         core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
-        Alert.alert("An email was sent to " + this.state.email.toLowerCase() + "!",
-"Follow the instructions in the mail to reset your password.",
-[{text:"OK"}]);
+        Alert.alert(
+lang("_An_email_was_sent_to______header",this.state.email.toLowerCase()),
+lang("_An_email_was_sent_to______body"),
+[{text:lang("_An_email_was_sent_to______left")}]);
       })
       .catch((reply) => {
         let content = "Please try again.";

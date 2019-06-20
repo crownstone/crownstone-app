@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DeviceSmartBehaviour_wrapup", key)(a,b,c,d,e);
+}
 import { LiveComponent }          from "../../../../LiveComponent";
 import * as React from 'react';
 import {
@@ -24,7 +30,7 @@ import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 
 export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string, stoneId: string, rule: string, twilightRule: boolean, ruleId?: string}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "When?" });
+    return TopBarUtil.getOptions({title: lang("When_")});
   }
 
   rule : AicoreBehaviour | AicoreTwilight;
@@ -81,17 +87,13 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
       // @ts-ignore
       if (this.rule.rule.options.type === "SPHERE_PRESENCE_AFTER") {
         return (
-          <Text style={deviceStyles.specification}>{
-            "After this behaviour, I won't turn off as long as someone is home. This is done by automatically adding another rule that will keep me on for you. This will last until sunrise, give it a try!"
-          }</Text>
+          <Text style={deviceStyles.specification}>{ lang("After_this_behaviour__I_w") }</Text>
         );
       }
       else {
         // in room
         return (
-          <Text style={deviceStyles.specification}>{
-            "I won't turn off as long as someone is in the room. This is done by automatically another rule that will keep me on for you. This will last until sunrise, give it a try!"
-          }</Text>
+          <Text style={deviceStyles.specification}>{ lang("I_wont_turn_off_as_long_a") }</Text>
         );
       }
     }
@@ -110,10 +112,7 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
             <View style={{height: 30}} />
             <Text style={[deviceStyles.header]}>{ header }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-            <Text style={deviceStyles.specification}>{
-              "Tap the days below to let me know when I should act on this behaviour!\n\n" +
-              "If a behaviour is started on an active day, it will not just stop at midnight but logically finish up."
-            }</Text>
+            <Text style={deviceStyles.specification}>{ lang("Tap_the_days_below_to_let") }</Text>
 
             <View style={{flex:1}} />
             <WeekDayList
@@ -137,7 +136,10 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
                 }
 
                 if (!atleastOneDay) {
-                  Alert.alert("Never?", "Please pick at least 1 day for this behaviour!", [{text:"OK"}])
+                  Alert.alert(
+lang("_Never___Please_pick_at_l_header"),
+lang("_Never___Please_pick_at_l_body"),
+[{text:lang("_Never___Please_pick_at_l_left")}])
                   return;
                 }
 
@@ -148,7 +150,7 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
                 width:0.5*screenWidth, height:60, borderRadius:20,
                 backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
               }}>
-                <Text style={{fontSize:16, fontWeight:'bold'}}>{ "That's it!" }</Text>
+                <Text style={{fontSize:16, fontWeight:'bold'}}>{ lang("Thats_it_") }</Text>
               </TouchableOpacity>
               <View style={{flex:1}} />
             </View>

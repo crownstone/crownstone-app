@@ -24,7 +24,7 @@ import { RuleEditor } from "./supportComponents/RuleEditor";
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string, ruleId: any, label:string}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Rule Editor" });
+    return TopBarUtil.getOptions({title: lang("Rule_Editor")});
   }
 
   render() {

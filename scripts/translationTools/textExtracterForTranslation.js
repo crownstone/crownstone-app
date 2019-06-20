@@ -14,6 +14,9 @@ console.log("------------------------------------------")
 // parse all files in js folder
 let {fileMap, fileList, translationData} = extractionMethods.parseFilesRecursivelyInPath(config.BASE_CODE_PATH)
 
+// clear the cache in order to get reproducible results.
+extractionMethods.clearTranslationData();
+
 console.log("Done! Searched ", fileList.length, " files. Parsing results...")
 
 console.log("\nChecking for new strings in existing files...")
@@ -32,7 +35,11 @@ Object.keys(translationData).forEach((filename) => {
         }
       })
 
-      console.log("New strings detected in existing file:", util.padd(filename,30), "with", translationKeys.length, "new entries.", conflict ? "Conflicting keys found!" : "No Conflict.")
+      console.log("New strings detected in existing file:",
+        util.padd(filename,30),
+        "with", translationKeys.length, "new entries.",
+        conflict ? "Conflicting keys found!" : "No Conflict."
+      );
 
       if (!conflict) {
         console.log("----- Preparing for merge...")

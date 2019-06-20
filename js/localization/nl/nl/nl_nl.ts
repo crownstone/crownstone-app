@@ -1,13 +1,4 @@
 export default {
-  ActivityLog:{
-    __filename: "../js/views/overlays/WhatsNew/2.2.0/ActivityLog.tsx",
-    Activity_Log_:                       function() { return "Activity Log!" },
-    Ever_wonder_why_a_Crownst:           function() { return "Ever wonder why a Crownstone switched? Why is it on?\n\n" + "In the new Activity Log, you can see exactly why this is!\n\n" + "You can find the new log in the Crownstone settings (by tapping on a Crownstone icon in a room) and navigating to the right.\n\n" },
-    __stringSameAsBaseLanguage: {
-      Activity_Log_:                      false,
-      Ever_wonder_why_a_Crownst:          false,
-    },
-  },
   ActivityLogItem:{
     __filename: "../js/views/deviceViews/elements/activityLog/ActivityLogItem.tsx",
     You:                                 function() { return "Jij" },
@@ -317,17 +308,6 @@ export default {
     __filename: "../../js/views/overlays/AicoreTimeCustomizationOverlay.tsx",
     Time_Selection:                      function() { return "Time Selection" },
   },
-  AlexaIntegration:{
-    __stringSameAsBaseLanguage: {
-      Amazon_Alexa_:                      false,
-      Crownstone_is_now_availab:          false,
-      Crownstone_is_now_availabl:         false,
-    },
-    __filename: "../../js/views/overlays/WhatsNew/2.3.0/AlexaIntegration.tsx",
-    Amazon_Alexa_:                       function() { return "Amazon Alexa!" },
-    Crownstone_is_now_availab:           function() { return "Crownstone is now available as a skill for Amazon Alexa!\n\n" + "It is available in the German, US and UK stores so you might need to get it from there!" },
-    Crownstone_is_now_availabl:          function() { return "Crownstone is now available as a skill for Amazon Alexa!\n\n" + "It is available in the German, US and UK stores so you might need to get it from there!" },
-  },
   AlexaOverview:{
     __stringSameAsBaseLanguage: {
       Working_with_Alexa:                 false,
@@ -348,17 +328,6 @@ export default {
     Were_hard_at_work_adding_:           () => { return "We're hard at work adding more features, like dimming and location based utterances." },
     Expect_more_to_come_and_e:           () => { return "Expect more to come and enjoy using Alexa!" },
     Amazon_Alexa:                        () => { return "Amazon Alexa" },
-  },
-  AndroidLib:{
-    __stringSameAsBaseLanguage: {
-      Brand_new_Android_:                 false,
-      Over_the_last_few_months_:          false,
-      Over_the_last_few_months_w:         false,
-    },
-    __filename: "../../js/views/overlays/WhatsNew/2.3.0/AndroidLib.tsx",
-    Brand_new_Android_:                  function() { return "Brand new Android!" },
-    Over_the_last_few_months_:           function() { return "Over the last few months we have completely rewritten the Android core solve a lot of problems!\n\n" + "With this big upgrade, we'll be ready to handle the ever evolving Android ecosystem!" },
-    Over_the_last_few_months_w:          function() { return "Over the last few months we have completely rewritten the Android core solve a lot of problems!\n\n" + "With this big upgrade, we'll be ready to handle the ever evolving Android ecosystem!" },
   },
   AnimatedDoubleTap:{
     __filename: "../js/views/components/animated/AnimatedDoubleTap.tsx",
@@ -391,17 +360,6 @@ export default {
       OK:                                 false,
       Logging_out_and_closing_a:          false,
     },
-  },
-  AppleWatch:{
-    __stringSameAsBaseLanguage: {
-      Apple_Watch_:                       false,
-      Quickly_scan_for_nearby_C:          false,
-      Quickly_scan_for_nearby_Cr:         false,
-    },
-    __filename: "../../js/views/overlays/WhatsNew/2.3.0/AppleWatch.tsx",
-    Apple_Watch_:                        function() { return "Apple Watch!" },
-    Quickly_scan_for_nearby_C:           function() { return "Quickly scan for nearby Crownstones and switch them on and off!\n\n" + "If you have an Apple Watch, the companion app will be automatically installed. Alternatively you can use the Apple Watch app to install it." },
-    Quickly_scan_for_nearby_Cr:          function() { return "Quickly scan for nearby Crownstones and switch them on and off!\n\n" + "If you have an Apple Watch, the companion app will be automatically installed. Alternatively you can use the Apple Watch app to install it." },
   },
   ApplianceAdd:{
     __filename: "../js/views/deviceViews/ApplianceAdd.tsx",
@@ -475,33 +433,6 @@ export default {
     __filename: "../../js/views/main/buttons/AutoArrangeButton.tsx",
     Auto_arrange_:                       function() { return "Auto arrange!" },
   },
-  AutomaticRecentering:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.2/AutomaticRecentering.tsx",
-    If_you_scroll_too_far_in_:           function() { return "Als je te ver scrolt in het sfeeroverzicht, zal ik je weergave centreren en de sneltoets voor dubbele tik weergeven!" },
-    __stringSameAsBaseLanguage: {
-      If_you_scroll_too_far_in_:          false,
-    },
-  },
-  Awesome:{
-    __filename: "../js/views/overlays/WhatsNew/Awesome.tsx",
-    Thats_it_for_this_update_:           function() { return "Dit is het voor deze update!" },
-    Enjoy_the_new_version_:              function() { return "Geniet van de nieuwe versie!" },
-    Thanks_:                             function() { return "Bedankt!" },
-    __stringSameAsBaseLanguage: {
-      Thats_it_for_this_update_:          false,
-      Enjoy_the_new_version_:             false,
-      Thanks_:                            false,
-    },
-  },
-  BatteryImprovements:{
-    __filename: "../js/views/overlays/WhatsNew/2.0.0/BatteryImprovements.tsx",
-    Battery_Improvements_:               function() { return "Batterij verbeteringen!" },
-    The_Crownstone_app_will_n:           function() { return "De Crownstone-app verbruikt nu minder ernergie op de achtergrond voor de lokalisatiefuncties! Hoe meer Crownstones je hebt, hoe efficiënter het wordt! "},
-    __stringSameAsBaseLanguage: {
-      Battery_Improvements_:              false,
-      The_Crownstone_app_will_n:          false,
-    },
-  },
   BehaviourSuggestion:{
     __stringSameAsBaseLanguage: {
       Yes:                                false,
@@ -510,33 +441,6 @@ export default {
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourSuggestion.tsx",
     Yes:                                 function() { return "Yes" },
     No:                                  function() { return "No" },
-  },
-  BugsFixedAndroid:{
-    __filename: "../js/views/overlays/WhatsNew/2.1.2/BugsFixedAndroid.tsx",
-    Bug_fixes_:                          function() { return "Bug fixes." },
-    __Fixed_bug_that_caused_i:           function() { return "- Bug verholpen waardoor interne lokalisatie niet werkte.\n\n" + "- Dichtbij/ver weg triggers problemen verholpen.\n\n" + "-  Omschakelen als hub fix." },
-    __stringSameAsBaseLanguage: {
-      Bug_fixes_:                         false,
-      __Fixed_bug_that_caused_i:          false,
-    },
-  },
-  BugsFixedAndroid1_10_2:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.2/BugsFixedAndroid1.10.2.tsx",
-    Issues_that_caused_the_ap:           function() { return "De problemen die ervoor zorgden dat de app crashte toen de firmware-update was voltooid, zijn nu opgelost." },
-    You_can_safely_update_all:           function() { return "Je kunt nu veilig alle Crownstones bijwerken :)" },
-    __stringSameAsBaseLanguage: {
-      Issues_that_caused_the_ap:          false,
-      You_can_safely_update_all:          false,
-    },
-  },
-  BugsFixediOS1_10_2:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.2/BugsFixediOS1.10.2.tsx",
-    Many_other_issues_have_be:           function() { return "Bij deze update zijn veel problemen opgelost:" },
-    __You_can_invite_members_:           function() { return "- U kunt leden en gasten uitnodigen naar uw Sphere zonder problemen." + "\n\n- Batterijbesparing verbeterd wanneer geen lokalisatie wordt gebruikt.." + "\n\n- Probleem opgelost waarbij de app niet in sfeer zou verschijnen binnen bereik zijn van uw Crownstones." + "\n\n- Geanimeerde gebruiker die van kamer naar kamer gaat." },
-    __stringSameAsBaseLanguage: {
-      Many_other_issues_have_be:          false,
-      __You_can_invite_members_:          false,
-    },
   },
   CameraRollView:{
     __filename: "../js/views/cameraViews/CameraRollView.tsx",
@@ -1186,18 +1090,26 @@ export default {
       Create_my_Behaviour:                false,
       Tap_the_underlined_parts_:          false,
       Tap_the_underlined_parts_t:         false,
+      Rule_Editor:                        false,
     },
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor.tsx",
     Create_my_Behaviour:                 function() { return "Create my Behaviour" },
     Tap_the_underlined_parts_:           function() { return "Tap the underlined parts to customize them!" },
     Tap_the_underlined_parts_t:          function() { return "Tap the underlined parts to customize them!" },
+    Rule_Editor:                         function() { return "Rule Editor" },
   },
   DeviceSmartBehaviour_RuleOverview:{
     __stringSameAsBaseLanguage: {
       My_Behaviour:                       false,
+      Add_more___:                        false,
+      Copy_from___:                       false,
+      Copy_to___:                         false,
     },
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_RuleOverview.tsx",
     My_Behaviour:                        function() { return "My Behaviour" },
+    Add_more___:                         function() { return "Add more..." },
+    Copy_from___:                        function() { return "Copy from..." },
+    Copy_to___:                          function() { return "Copy to..." },
   },
   DeviceSmartBehaviour_TypeExamples:{
     __stringSameAsBaseLanguage: {
@@ -1236,6 +1148,27 @@ export default {
     },
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart.tsx",
   },
+  DeviceSmartBehaviour_wrapup:{
+    __stringSameAsBaseLanguage: {
+      After_this_behaviour__I_w:          false,
+      I_wont_turn_off_as_long_a:          false,
+      Tap_the_days_below_to_let:          false,
+      Thats_it_:                          false,
+      _Never___Please_pick_at_l_header:   false,
+      _Never___Please_pick_at_l_body:     false,
+      _Never___Please_pick_at_l_left:     false,
+      When_:                              false,
+    },
+    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/DeviceSmartBehaviour_wrapup.tsx",
+    After_this_behaviour__I_w:           function() { return "After this behaviour, I won't turn off as long as someone is home. This is done by automatically adding another rule that will keep me on for you. This will last until sunrise, give it a try!" },
+    I_wont_turn_off_as_long_a:           function() { return "I won't turn off as long as someone is in the room. This is done by automatically another rule that will keep me on for you. This will last until sunrise, give it a try!" },
+    Tap_the_days_below_to_let:           function() { return "Tap the days below to let me know when I should act on this behaviour!\n\n" + "If a behaviour is started on an active day, it will not just stop at midnight but logically finish up." },
+    Thats_it_:                           function() { return "That's it!" },
+    _Never___Please_pick_at_l_header:    function() { return "Never?" },
+    _Never___Please_pick_at_l_body:      function() { return "Please pick at least 1 day for this behaviour!" },
+    _Never___Please_pick_at_l_left:      function() { return "OK" },
+    When_:                               function() { return "When?" },
+  },
   DeviceSummary:{
     __filename: "../js/views/deviceViews/elements/DeviceSummary.tsx",
     Energy_Usage_:                       function() { return "Energie verbruik:" },
@@ -1263,51 +1196,11 @@ export default {
       Once_I_hear_from_this_Cro:          false,
     },
   },
-  DeviceSummaryProto:{
-    __stringSameAsBaseLanguage: {
-      _W:                                 false,
-      Select_Room:                        false,
-      Energy_Usage_:                      false,
-      Turn_On:                            false,
-      Turn_Off:                           false,
-      Location_:                          false,
-      Not_in_room:                        false,
-      Located_in_:                        false,
-      Tap_here_to_move_me_:               false,
-      The_dimmer_is_starting_up:          false,
-      tap_icon_to_set_device_ty:          false,
-      Searching___:                       false,
-      Once_I_hear_from_this_Cro:          false,
-    },
-    __filename: "../../js/views/deviceViews/elements/DeviceSummaryProto.tsx",
-    _W:                                  function() { return arguments[0] + " W" },
-    Select_Room:                         function() { return "Select Room" },
-    Energy_Usage_:                       function() { return "Energy Usage" },
-    Turn_On:                             function() { return "Turn On" },
-    Turn_Off:                            function() { return "Turn Off" },
-    Location_:                           function() { return "Room" },
-    Not_in_room:                         function() { return "Not in room" },
-    Located_in_:                         function() { return "Located in:" },
-    Tap_here_to_move_me_:                function() { return "Tap here to move me!" },
-    The_dimmer_is_starting_up:           function() { return "The dimmer is starting up!\nI'll dim as soon as I can!" },
-    tap_icon_to_set_device_ty:           function() { return "tap icon to set device type" },
-    Searching___:                        function() { return "Searching..." },
-    Once_I_hear_from_this_Cro:           function() { return "Once I hear from this Crownstone, the button will reappear." },
-  },
   DeviceUpdate:{
     __filename: "../js/views/deviceViews/elements/DeviceUpdate.tsx",
     Lets_get_started_:                   function() { return "Laten we beginnen!" },
     __stringSameAsBaseLanguage: {
       Lets_get_started_:                  false,
-    },
-  },
-  DeviceWhatsNew:{
-    __filename: "../js/views/deviceViews/elements/DeviceWhatsNew.tsx",
-    Update_Complete_:                    function() { return "Update compleet!" },
-    Whats_New:                           function() { return "Wat is er nieuw" },
-    __stringSameAsBaseLanguage: {
-      Update_Complete_:                   false,
-      Whats_New:                          false,
     },
   },
   DfuBatch:{
@@ -1425,6 +1318,9 @@ export default {
       Collecting_nearby_Crownsto:         false,
       Crownstones_turn_green_onc:         false,
       Looking_for_Crownstones:            false,
+      _No_Crownstones_in_range__header:   false,
+      _No_Crownstones_in_range__body:     false,
+      _No_Crownstones_in_range__left:     false,
     },
     __filename: "../../js/views/dfu/DfuScanning.tsx",
     Collecting_nearby_Crownst:           function() { return "Collecting nearby Crownstones to update..." },
@@ -1432,6 +1328,9 @@ export default {
     Collecting_nearby_Crownsto:          function() { return "Collecting nearby Crownstones to update..." },
     Crownstones_turn_green_onc:          function() { return "Crownstones turn green once you're near enough. These will be updated when you press next. You can do this multiple times to get all of them!" },
     Looking_for_Crownstones:             function() { return "Looking around..." },
+    _No_Crownstones_in_range__header:    function() { return "No Crownstones in range yet." },
+    _No_Crownstones_in_range__body:      function() { return "Please go near your Crownstones until they show up green in the list." },
+    _No_Crownstones_in_range__left:      function() { return "OK" },
   },
   DiagnosticUtil:{
     __filename: "../js/views/settingsViews/diagnostics/DiagnosticUtil.tsx",
@@ -1460,26 +1359,6 @@ export default {
       No:                                 false,
       Yes:                                false,
       ____:                               false,
-    },
-  },
-  Diagnostics:{
-    __filename: "../js/views/overlays/WhatsNew/2.2.0/Diagnostics.tsx",
-    Crownstone_Diagnostics:              function() { return "Crownstone Diagnose" },
-    Sometimes__things_dont_se:           function() { return "Soms werken dingen niet zoals je verwacht...\n\n" + "Alles gebruikt onzichtbare berichtjes, wat het moeilijk maakt om het probleem uit te zoeken!\n\n" + "Het Diagnose scherm is er om uit te zoeken wat het probleem nu eigenlijk is!\n\n" + "Je kan het vinden in het Instellingen menu!\n\n" },
-    __stringSameAsBaseLanguage: {
-      Crownstone_Diagnostics:             false,
-      Sometimes__things_dont_se:          false,
-    },
-  },
-  Dimmer:{
-    __filename: "../js/views/overlays/WhatsNew/2.0.0/Dimmer.tsx",
-    Dimmer_is_Here_:                     function() { return "De dimmer is daar!" },
-    You_can_enable_dimming_pe:           function() { return "Je kan per Crownstone de dimmer activeren." },
-    Set_the_mood_just_right__:           function() { return "Breng sfeer!" },
-    __stringSameAsBaseLanguage: {
-      Dimmer_is_Here_:                    false,
-      You_can_enable_dimming_pe:          false,
-      Set_the_mood_just_right__:          false,
     },
   },
   DimmerButton:{
@@ -1520,31 +1399,6 @@ export default {
       __Yours__:                          false,
     },
   },
-  FastSetup:{
-    __filename: "../js/views/overlays/WhatsNew/2.1.0/FastSetup.tsx",
-    By_speeding_up_the_setup_:           function() { return "Het setup proces is versnelt in de nieuwe 2.1.2 firmware. Dit betekent minder problemen met Android telefoons." },
-    __stringSameAsBaseLanguage: {
-      By_speeding_up_the_setup_:          false,
-    },
-  },
-  FirmwareUpdate:{
-    __filename: "../js/views/overlays/WhatsNew/2.0.0/FirmwareUpdate.tsx",
-    New_firmware_available_:             function() { return "Nieuwe firmware beschikbaar!" },
-    The_new_firmware_enables_:           function() { return "De nieuwe firmware bevat mesh en dimmer functies. Het heeft ook veel verbeteringen wat betreft veiligheid!\n" + "Deze update is verplicht omdat Crownstones anders niet onderling via het mesh samen kunnen werken." },
-    __stringSameAsBaseLanguage: {
-      New_firmware_available_:            false,
-      The_new_firmware_enables_:          false,
-    },
-  },
-  FirmwareUpdateFix:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.2/FirmwareUpdateFix.tsx",
-    Issues_that_caused_the_ap:           function() { return "Een probleem waarin de app crashed na een firmware update is opgelost." },
-    You_can_safely_update_all:           function() { return "Je kan nu alle Crownstones updaten :)" },
-    __stringSameAsBaseLanguage: {
-      Issues_that_caused_the_ap:          false,
-      You_can_safely_update_all:          false,
-    },
-  },
   GraphAxis:{
     __filename: "../js/views/components/graph/GraphComponents/GraphAxis.tsx",
     _W_:                                 function() { return "(W)" },
@@ -1573,15 +1427,6 @@ export default {
       YesNot_Yet:                         false,
       Reachable_:                         false,
       YesSearching___:                    false,
-    },
-  },
-  IPhoneXSupport:{
-    __filename: "../js/views/overlays/WhatsNew/2.1.0/IPhoneXSupport.tsx",
-    iPhone_X_support_:                   function() { return "iPhone X ondersteuning!" },
-    Enjoy_the_Crownstone_app_:           function() { return "Geniet van de Crownstone app op het mooie grote scherm van de iPhone X!" },
-    __stringSameAsBaseLanguage: {
-      iPhone_X_support_:                  false,
-      Enjoy_the_Crownstone_app_:          false,
     },
   },
   InSphere:{
@@ -1911,17 +1756,6 @@ export default {
       Press_and_hold_nto_unlock:          false,
     },
   },
-  Locking:{
-    __filename: "../js/views/overlays/WhatsNew/2.0.0/Locking.tsx",
-    Lock_your_Crownstones_:              function() { return "Zet Crownstones op slot!" },
-    You_can_lock_a_Crownstone:           function() { return "Je kan een Crownstone digitaal op slot zetten zodat het niet per ongeluk wordt geschakeld." },
-    Useful_for_a_fridge__pc_a:           function() { return "Handig voor een koelkast, computer, en andere apparatuur!" },
-    __stringSameAsBaseLanguage: {
-      Lock_your_Crownstones_:             false,
-      You_can_lock_a_Crownstone:          false,
-      Useful_for_a_fridge__pc_a:          false,
-    },
-  },
   Login:{
     __filename: "../js/views/startupViews/Login.tsx",
     Back:                                function() { return "Terug" },
@@ -2027,7 +1861,19 @@ export default {
       Done:                               false,
       Forgot_Password_:                   false,
       Log_In:                             false,
+      _An_email_was_sent_to_____header:   false,
+      _An_email_was_sent_to_____body:     false,
+      _An_email_was_sent_to_____left:     false,
+      _An_email_was_sent_to______header:  false,
+      _An_email_was_sent_to______body:    false,
+      _An_email_was_sent_to______left:    false,
     },
+    _An_email_was_sent_to_____header:    function() { return "An email was sent to " + arguments[0] + "!" },
+    _An_email_was_sent_to_____body:      function() { return "Follow the instructions in the mail to verify your email address." },
+    _An_email_was_sent_to_____left:      function() { return "OK" },
+    _An_email_was_sent_to______header:   function() { return "An email was sent to " + arguments[0] + "!" },
+    _An_email_was_sent_to______body:     function() { return "Follow the instructions in the mail to reset your password." },
+    _An_email_was_sent_to______left:     function() { return "OK" },
   },
   LoginSplash:{
     __filename: "../js/views/startupViews/LoginSplash.tsx",
@@ -2042,15 +1888,6 @@ export default {
       version__:                          false,
     },
   },
-  Mesh:{
-    __filename: "../js/views/overlays/WhatsNew/2.0.0/Mesh.tsx",
-    Crownstones_now_Mesh__nLe:           function() { return "Crownstones in een Mesh!\nLekker kletsen samen!" },
-    Your_Crownstones_can_now_:           function() { return "Je Crownstones kunnen nu onderling communiceren\n\n" + "Deze eigenschap betekent dat je Crownstones kan aansturen via andere Crownstones, levert betere AANKOMST/VERTREK bepaling, en maakt het mogelijk om snel meerdere Crownstones tegelijk te schakelen!" },
-    __stringSameAsBaseLanguage: {
-      Crownstones_now_Mesh__nLe:          false,
-      Your_Crownstones_can_now_:          false,
-    },
-  },
   MeshElement:{
     __filename: "../js/views/components/MeshElement.tsx",
     _Update_Required__The_fir_header:    function() { return "Update Vereist" },
@@ -2060,15 +1897,6 @@ export default {
       _Update_Required__The_fir_header:   false,
       _Update_Required__The_fir_body:     false,
       _Update_Required__The_fir_left:     false,
-    },
-  },
-  MeshTopology:{
-    __filename: "../js/views/overlays/WhatsNew/2.1.0/MeshTopology.tsx",
-    Mesh_Topology_Visualizati:           function() { return "Mesh netwerk visualisatie" },
-    Weve_added_a_visualisatio:           function() { return "Mesh netwerken kunnen nu worden gevisualiseerd. Dit maakt het mogelijk om snel de kwaliteit van de verbindingen tussen Crownstones te observeren." },
-    __stringSameAsBaseLanguage: {
-      Mesh_Topology_Visualizati:          false,
-      Weve_added_a_visualisatio:          false,
     },
   },
   MessageAdd:{
@@ -2170,78 +1998,6 @@ export default {
       Tap_the_envelope_icon_to_:          false,
       Add_some_Crownstones_to_u:          false,
       Add_a_Sphere_to_use_messa:          false,
-    },
-  },
-  Messages:{
-    __filename: "../js/views/overlays/WhatsNew/1.11.0/Messages.tsx",
-    You_can_now_leave_a_messa:           function() { return "Je kan nu een berichtje achterlaten voor jezelf of iemand anders!" },
-    Its_like_you_leave_a_digi:           function() { return "Het is alsof je een post-it achterlaat in een ruimte of in je Sfeer." },
-    __stringSameAsBaseLanguage: {
-      You_can_now_leave_a_messa:          false,
-      Its_like_you_leave_a_digi:          false,
-    },
-  },
-  MoveRooms:{
-    __filename: "../js/views/overlays/WhatsNew/2.2.0/MoveRooms.tsx",
-    Custom_screen_positions_:            function() { return "Verankeren van schermposities" },
-    You_can_now_choose_where_:           function() { return "Je kan nu kiezen waar je de icoontjes van je kamers wil plaatsen.\n\n" + "Je kan dit vinden in het nieuwe Sfeer menu, onder kamers!\n\n" },
-    __stringSameAsBaseLanguage: {
-      Custom_screen_positions_:           false,
-      You_can_now_choose_where_:          false,
-    },
-  },
-  MultiSphere:{
-    __stringSameAsBaseLanguage: {
-      Multiple_Spheres_:                  false,
-      You_can_now_create_multip:          false,
-      You_can_now_create_multipl:         false,
-    },
-    __filename: "../../js/views/overlays/WhatsNew/2.3.0/MultiSphere.tsx",
-    Multiple_Spheres_:                   function() { return "Multiple Spheres!" },
-    You_can_now_create_multip:           function() { return "You can now create multiple Spheres if you have multiple properties you'd like to use your Crownstones with!\n\n" + "Spheres not meant to replace rooms, they are stand-alone collections of Crownstones." },
-    You_can_now_create_multipl:          function() { return "You can now create multiple Spheres if you have multiple properties you'd like to use your Crownstones with!\n\n" + "Spheres not meant to replace rooms, they are stand-alone collections of Crownstones." },
-  },
-  NewDeviceUI:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.0/NewDeviceUI.tsx",
-    The_Crownstone_settings_h:           function() { return "De Crownstone instellingen hebben een facelift gekregen. Je kan naar links en rechts vegen om alle opties te zien. Ga naar beneden voor meer..." },
-    You_get_there_by_tapping_:           function() { return "Klik op de Crownstones in het kameroverzicht en klik \"instellingen\"." + "\n\nIn het nieuwe overzicht, klik op het icoontje om een apparaat in te stellen, veeg naar links om het gedrag in te stellen en om het verbruikte vermogen te zien." },
-    __stringSameAsBaseLanguage: {
-      The_Crownstone_settings_h:          false,
-      You_get_there_by_tapping_:          false,
-    },
-  },
-  NewDeviceUIGraph:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.0/NewDeviceUIGraph.tsx",
-    You_can_now_see_a_running:           function() { return "Je kan nu een real-time grafiek zien van het energieverbruik gemeten door een Crownstone. Zie onder voor meer." },
-    You_access_it_by_swiping_:           function() { return "Het energieverbruik kan worden gevonden via het naar links vegen in het overzicht per Crownstone.\n\nDeze grafiek is een preview. Het wordt nog ooier. " + "In de toekomst wordt het overzicht bijvoorbeeld nog dynamischer. Er komt ook een overzicht voor de gehele Sfeer." },
-    __stringSameAsBaseLanguage: {
-      You_can_now_see_a_running:          false,
-      You_access_it_by_swiping_:          false,
-    },
-  },
-  NewLocalizationSettings:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.0/NewLocalizationSettings.tsx",
-    There_are_new_settings_to:           function() { return "Er zijn nieuwe instellingen waarmee je de Crownstone App zonder localisatie kan gebruiken." },
-    __stringSameAsBaseLanguage: {
-      There_are_new_settings_to:          false,
-    },
-  },
-  NewScheduler:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.0/NewScheduler.tsx",
-    You_can_tell_the_Crownsto:           function() { return "Je kunt de Crownstone op een specifiek tijdstip een bepaalde actie laten ondernemen!" },
-    In_order_to_use_the_sched:           function() { return "Om het schema te kunnen gebruiken moet de Crownstone eerst zijn firmware updaten. " + "De nieuwe firmware zou nu ook beschikbaar moeten zijn!" + "\n\nAls de update beschikbaar is, laten de Crownstones in de kamer een pijltje omhoog zien. Klik erop om de update te starten." + "\n\nAls je het pijltje niet direct ziet, kom later terug om te zien of de update dan wel beschikbaar is!" },
-    __stringSameAsBaseLanguage: {
-      You_can_tell_the_Crownsto:          false,
-      In_order_to_use_the_sched:          false,
-    },
-  },
-  NewSphereSettings:{
-    __filename: "../js/views/overlays/WhatsNew/2.2.0/NewSphereSettings.tsx",
-    New_Sphere_menu_:                    function() { return "Nieuw Sfeer menu!" },
-    Press_Edit_in_the_top_rig:           function() { return "Klik Bewerk in de rechter bovenhoek en personaliseer jouw Sfeer!\n\n" },
-    __stringSameAsBaseLanguage: {
-      New_Sphere_menu_:                   false,
-      Press_Edit_in_the_top_rig:          false,
     },
   },
   NoStones:{
@@ -2389,15 +2145,6 @@ export default {
     },
     __filename: "../../js/views/overlays/OverlayUtil.tsx",
     Select_Room:                         function() { return "Select Room" },
-  },
-  PhysicsBasedSphereUI:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.0/PhysicsBasedSphereUI.tsx",
-    The_Sphere_overview_now_p:           function() { return "Het Sfeer overzicht plaatst de kamers nu automatisch. Scroll naar beneden voor meer." },
-    You_can_move_it_around_as:           function() { return "Je kunt hem bewegen, maar ook inzoomen. Dubbeltik op de achtergrond om de camera te resetten." },
-    __stringSameAsBaseLanguage: {
-      The_Sphere_overview_now_p:          false,
-      You_can_move_it_around_as:          false,
-    },
   },
   PictureCircle:{
     __filename: "../js/views/components/PictureCircle.tsx",
@@ -3038,7 +2785,55 @@ export default {
       __:                                 false,
       privacy_policy:                     false,
       Register:                           false,
+      First_name:                         false,
+      Last_name:                          false,
+      Email_address:                      false,
+      email_address:                      false,
+      ascii_capable:                      false,
+      _What_should_I_call_you___header:   false,
+      _What_should_I_call_you___body:     false,
+      _What_should_I_call_you___left:     false,
+      _How_should_I_adress_you__header:   false,
+      _How_should_I_adress_you__body:     false,
+      _How_should_I_adress_you__left:     false,
+      _How_can_I_reach_you___Id_header:   false,
+      _How_can_I_reach_you___Id_body:     false,
+      _How_can_I_reach_you___Id_left:     false,
+      _I_dont_understand_____Th_header:   false,
+      _I_dont_understand_____Th_body:     false,
+      _I_dont_understand_____Th_left:     false,
+      _I_want_to_be_secure______header:   false,
+      _I_want_to_be_secure______body:     false,
+      _I_want_to_be_secure______left:     false,
+      Thats_me_:                          false,
+      You_bet_I_do_Not_just_yet:          false,
+      Im_ready_:                          false,
+      Ill_validate_my_account_a:          false,
     },
+    First_name:                          function() { return "First name" },
+    Last_name:                           function() { return "Last name" },
+    Email_address:                       function() { return "Email address" },
+    email_address:                       function() { return "email-address" },
+    ascii_capable:                       function() { return "ascii-capable" },
+    _What_should_I_call_you___header:    function() { return "What should I call you?" },
+    _What_should_I_call_you___body:      function() { return "I'd really like to know your name!" },
+    _What_should_I_call_you___left:      function() { return "Fine..." },
+    _How_should_I_adress_you__header:    function() { return "How should I adress you?" },
+    _How_should_I_adress_you__body:      function() { return "Could you tell me your first name?" },
+    _How_should_I_adress_you__left:      function() { return "Fine..." },
+    _How_can_I_reach_you___Id_header:    function() { return "How can I reach you?" },
+    _How_can_I_reach_you___Id_body:      function() { return "I'd really like to know your email address!" },
+    _How_can_I_reach_you___Id_left:      function() { return "OK" },
+    _I_dont_understand_____Th_header:    function() { return "I don't understand..." },
+    _I_dont_understand_____Th_body:      function() { return "That does not seem to be a valid email address!" },
+    _I_dont_understand_____Th_left:      function() { return "I'll fix it!" },
+    _I_want_to_be_secure______header:    function() { return "I want to be secure..." },
+    _I_want_to_be_secure______body:      function() { return "Please set a password for your account!" },
+    _I_want_to_be_secure______left:      function() { return "OK" },
+    Thats_me_:                           function() { return "That's me!" },
+    You_bet_I_do_Not_just_yet:           function() { return arguments[0] ? "You bet I do!" : "Not just yet..." },
+    Im_ready_:                           function() { return "I'm ready!" },
+    Ill_validate_my_account_a:           function() { return "I'll validate my account and log in!" },
   },
   ReviewInitialTests:{
     __filename: "../js/views/settingsViews/diagnostics/ReviewInitialTests.tsx",
@@ -3228,15 +3023,6 @@ export default {
       Pick_an_Icon:                       false,
     },
   },
-  RoomImages:{
-    __filename: "../js/views/overlays/WhatsNew/2.1.0/RoomImages.tsx",
-    Customize_Rooms_:                    function() { return "Customize Rooms!" },
-    If_youre_the_admin_of_you:           function() { return "If you're the admin of your Sphere, this update enables to add a picture to a room!" },
-    __stringSameAsBaseLanguage: {
-      Customize_Rooms_:                   false,
-      If_youre_the_admin_of_you:          false,
-    },
-  },
   RoomList:{
     __filename: "../js/views/components/RoomList.tsx",
     Number_of_Crownstones__:             function() { return "Number of Crownstones: " + arguments[0] },
@@ -3257,23 +3043,6 @@ export default {
       _Youre_not_in_the_Sphere__left:     false,
       Edit:                               false,
       Train:                              false,
-    },
-  },
-  RoomSelection:{
-    __filename: "../js/views/roomViews/RoomSelection.tsx",
-    ROOMS_IN_CURRENT_SPHERE:             function() { return "ROOMS IN CURRENT SPHERE" },
-    Add_a_room:                          function() { return "Add a room" },
-    DECOUPLE_THIS_CROWNSTONE:            function() { return "DECOUPLE THIS CROWNSTONE" },
-    Not_in_a_specific_room:              function() { return "Not in a specific room" },
-    If_you_do_not_add_the_Cro:           function() { return "If you do not add the Crownstone to a room, it can not be used for indoor localization purposes." },
-    Move_where_:                         function() { return "Move where?" },
-    __stringSameAsBaseLanguage: {
-      ROOMS_IN_CURRENT_SPHERE:            false,
-      Add_a_room:                         false,
-      DECOUPLE_THIS_CROWNSTONE:           false,
-      Not_in_a_specific_room:             false,
-      If_you_do_not_add_the_Cro:          false,
-      Move_where_:                        false,
     },
   },
   RoomTraining:{
@@ -3620,13 +3389,6 @@ export default {
       You_wait_for_a_few_second:          false,
       Enjoy_using_your_Crownsto:          false,
     },
-  },
-  SettingsBroadcast:{
-    __stringSameAsBaseLanguage: {
-      Broadcast:                          false,
-    },
-    __filename: "../../js/views/settingsViews/dev/SettingsBroadcast.tsx",
-    Broadcast:                           () => { return "Broadcast" },
   },
   SettingsDeveloper:{
     __filename: "../js/views/settingsViews/SettingsDeveloper.tsx",
@@ -4365,8 +4127,14 @@ export default {
       _Barely_visible_:                   false,
       _Too_far_away_:                     false,
       Toggling____You_should_he:          false,
+      _Something_went_wrong_____header:   false,
+      _Something_went_wrong_____body:     false,
+      _Something_went_wrong_____left:     false,
     },
     Toggling____You_should_he:           function() { return "Toggling... You should hear two clicks." },
+    _Something_went_wrong_____header:    function() { return "Something went wrong..." },
+    _Something_went_wrong_____body:      function() { return "You can try it again if you're close to the Crownstone." },
+    _Something_went_wrong_____left:      function() { return "OK" },
   },
   SetupShared:{
     __filename: "../js/views/settingsViews/SetupShared.tsx",
@@ -4432,7 +4200,11 @@ export default {
     __stringSameAsBaseLanguage: {
       No_Crownstones_added_yet_:          false,
       Ask_the_admin_of_this_Sph:          false,
+      Ask_the_admin_of_this_SphHandle:    false,
+      Crownstones_require_rooms:          false,
     },
+    Ask_the_admin_of_this_SphHandle:     function() { return "Ask the admin of this Sphere to handle this." },
+    Crownstones_require_rooms:           function() { return "Crownstones require rooms." },
   },
   SphereBehaviour:{
     __filename: "../js/views/main/editSubviews/SphereBehaviour.tsx",
@@ -4943,35 +4715,6 @@ export default {
       Switchcraft:                        false,
     },
   },
-  Switchcraft:{
-    __filename: "../js/views/overlays/WhatsNew/2.1.0/Switchcraft.tsx",
-    Introducing___:                      function() { return "Introducing..." },
-    Switchcraft_allows_you_to:           function() { return "Switchcraft allows you to use most wall switches with your built-in Crownstones. " + "If the Crownstone is connected to a ceiling light, you can modify your wall switch a little to use it with the Crownstone.\n\n" + "We have tested this feature a lot and are happy with the results so far! Since we can't test all possible wall switches, Switchcraft is " + "first released as a beta feature. Go to 'My Account' and select 'Join Beta Program' to enable the Switchcraft option for built-in Crownstones!" },
-    __stringSameAsBaseLanguage: {
-      Introducing___:                     false,
-      Switchcraft_allows_you_to:          false,
-    },
-  },
-  SyncingSchedules:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.2/SyncingSchedules.tsx",
-    You_can_now_download_the_:           function() { return "You can now download the schedules from the Crownstone." },
-    IMPORTANT__ALL_EXISTING_S:           function() { return "IMPORTANT: ALL EXISTING SCHEDULES NEED TO BE SYNCED UPDATED." },
-    Use_this_to_change_or_del:           function() { return "Use this to change or delete schedules on the Crownstone if they are not in the app." },
-    __stringSameAsBaseLanguage: {
-      You_can_now_download_the_:          false,
-      IMPORTANT__ALL_EXISTING_S:          false,
-      Use_this_to_change_or_del:          false,
-    },
-  },
-  SyncingSchedulesToTheCloud:{
-    __filename: "../js/views/overlays/WhatsNew/1.11.0/SyncingSchedulesToTheCloud.tsx",
-    Schedules_are_now_synchro:           function() { return "Schedules are now synchronized between phones via the cloud!" },
-    This_happens_automaticall:           function() { return "This happens automatically so everyone will see the same schedules!" },
-    __stringSameAsBaseLanguage: {
-      Schedules_are_now_synchro:          false,
-      This_happens_automaticall:          false,
-    },
-  },
   Tabs:{
     Overview:                            function() { return "Overview" },
     Messages:                            function() { return "Messages" },
@@ -5077,17 +4820,6 @@ export default {
       Training_Tap_to_Toggle:             false,
     },
   },
-  TimezoneScheduler:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.2/TimezoneScheduler.tsx",
-    Schedules_now_support_day:           function() { return "Roosters ondersteunen nu zomertijd, wintertijd en meerdere tijdzones." },
-    IMPORTANT__ALL_EXISTING_S:           function() { return "BELANGRIJK: ALLE ROOSTERS MOETEN OP DE CROWNSTONES WORDEN AANGEPAST" },
-    _______________Because_th:           function() { return "Omdat de tijd die naar de Crownstone wordt verzonden is aangepast zullen de roosters niet meer kloppen. Synchroniseer met de Crownstones om de klok weer gelijk te laten lopen." },
-    __stringSameAsBaseLanguage: {
-      Schedules_now_support_day:          false,
-      IMPORTANT__ALL_EXISTING_S:          false,
-      _______________Because_th:          false,
-    },
-  },
   ToonAdd:{
     __filename: "../js/views/thirdParty/toon/ToonAdd.tsx",
     _No_Toon_Found__This_acco_header:    function() { return "Geen Toon gevonden" },
@@ -5125,15 +4857,6 @@ export default {
       Sometimes__Toon_is_set_to:          false,
       This_application_uses_the:          false,
       Toon:                               false,
-    },
-  },
-  ToonIsNew:{
-    __filename: "../js/views/overlays/WhatsNew/2.2.0/ToonIsNew.tsx",
-    Crownstone_works_with_Too:           function() { return "Crownstone werkt met Toon" },
-    Sometimes__Toon_is_set_to:           function() { return "Soms staat Toon op \"Weg\" terwijl je toch thuis bent..." + "\n\n... in dat geval kan Crownstone het volledig automatisch corrigeren naar \"Thuis\"\n\n" + "Laat je telefoon dit automatisch doorgeven aan Toon!\n\n\n" },
-    __stringSameAsBaseLanguage: {
-      Crownstone_works_with_Too:          false,
-      Sometimes__Toon_is_set_to:          false,
     },
   },
   ToonOverview:{
@@ -5274,22 +4997,6 @@ export default {
       Tap_here_to_move_me_:               false,
       Not_in_room:                        false,
       Located_in_:                        false,
-    },
-  },
-  WhatsNew:{
-    __filename: "../js/views/overlays/WhatsNew/1.10.0/WhatsNew.tsx",
-    One_of_the_new_things_is_:           function() { return "Nieuw in de app is de Wat is Nieuw popup!" },
-    Swipe_left_to_see_more_of:           function() { return "Veeg naar links om meer features te zien." },
-    __stringSameAsBaseLanguage: {
-      One_of_the_new_things_is_:          false,
-      Swipe_left_to_see_more_of:          false,
-    },
-  },
-  WhatsNewOverlay:{
-    __filename: "../js/views/overlays/WhatsNewOverlay.tsx",
-    Your_App_was_updated_:               function() { return "De app is geűpdated!" },
-    __stringSameAsBaseLanguage: {
-      Your_App_was_updated_:              false,
     },
   },
   ZoomInstructionOverlay:{
