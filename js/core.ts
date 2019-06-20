@@ -14,7 +14,6 @@ export const core : core = {
   eventBus: eventBus,
   nativeBus: NativeBus,
   store: {},
-  storeInitialized: false,
   sessionMemory: {
     loginEmail: null,
     cameraSide: 'front',

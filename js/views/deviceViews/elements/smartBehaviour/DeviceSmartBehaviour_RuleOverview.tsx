@@ -151,7 +151,7 @@ function SmartBehaviourRule(props) {
         <SlideSideFadeInView width={50} visible={props.editMode}>
           <TouchableOpacity onPress={() => {
             core.store.dispatch({
-              type: "REMOVE_STONE_RULE",
+              type: "MARK_STONE_RULE_FOR_DELETION",
               sphereId: props.sphereId,
               stoneId: props.stoneId,
               ruleId: props.ruleId,
@@ -161,7 +161,7 @@ function SmartBehaviourRule(props) {
           </TouchableOpacity>
         </SlideSideFadeInView>
         <View style={{flex:1}}>
-          <Text style={{color: props.faded ? colors.white.rgba(0.4) : colors.white.hex, fontSize:16, textAlign:'center'}}>{ai.getSentence()}</Text>
+          <Text style={{color: props.faded ? colors.white.rgba(0.4) : colors.white.hex, fontSize:16, textAlign:'center', textDecorationLine: props.rule.deleted ? 'line-through' : 'none'}}>{ai.getSentence()}</Text>
         </View>
         <SlideSideFadeInView width={50} visible={props.editMode}>
           <TouchableOpacity onPress={() => {

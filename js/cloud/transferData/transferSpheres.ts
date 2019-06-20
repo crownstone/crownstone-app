@@ -30,11 +30,6 @@ let fieldMap : fieldMap = [
   {local:'meshAccessAddress',  cloud: 'meshAccessAddress',},
   {local:'updatedAt',          cloud: 'updatedAt'},
 
-  // keys are set elsewhere
-  {local:'adminKey',           cloud:  null },
-  {local:'memberKey',          cloud:  null },
-  {local:'guestKey',           cloud:  null },
-
   // used for local
   {local:'uid',                cloud: 'uid',  cloudToLocalOnly: true },
   {local:'cloudId',            cloud:  'id',  cloudToLocalOnly: true },

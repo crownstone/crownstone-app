@@ -1,7 +1,7 @@
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOGe } from '../logging/Log'
 
-import { STONE_TYPES } from "../Enums";
+import { KEY_TYPES, STONE_TYPES } from "../Enums";
 
 import DeviceInfo from 'react-native-device-info';
 import { core } from "../core";
@@ -342,7 +342,6 @@ export const DataUtil = {
       return null;
     }
     let userId = state.user.userId;
-
     if (!(
       state.spheres &&
       state.spheres[sphereId] &&
@@ -351,23 +350,61 @@ export const DataUtil = {
       return null;
     }
 
-    if (state.spheres[sphereId].users[userId])
+    if (state.spheres[sphereId].users[userId]) {
       return state.spheres[sphereId].users[userId].accessLevel;
-    else {
-      if (state.spheres[sphereId].config.adminKey !== null) {
-        LOGe.info("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
-        return 'admin';
-      }
-      else if (state.spheres[sphereId].config.memberKey !== null) {
-        LOGe.info("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
-        return 'member';
-      }
-      else if (state.spheres[sphereId].config.guestKey !== null) {
-        LOGe.info("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
-        return 'guest';
-      }
     }
   },
+
+
+  verifyDatabase(includeStones : boolean) {
+    let state = core.store.getState();
+
+    // Catch a broken sphere.
+    let sphereIds = state.spheres;
+    for (let i = 0; i < sphereIds.length; i++) {
+      let sphere = state.spheres[sphereIds[i]];
+      if (DataUtil.verifyDatabaseSphere(sphere) === false) {
+        return false;
+      }
+
+      if (includeStones === true) {
+        if (DataUtil.verifyDatabaseStonesInSphere(sphere) === false) {
+          return false;
+        }
+      }
+    }
+    return true;
+  },
+
+  verifyDatabaseSphere(sphere) {
+    if (sphere.keys) {
+      Object.keys(sphere.keys).forEach((keyId) => {
+        let key = sphere.keys[keyId];
+        if (key.ttl === 0) {
+          if (!(key.keyType === KEY_TYPES.ADMIN_KEY ||key.keyType === KEY_TYPES.MEMBER_KEY || key.keyType === KEY_TYPES.BASIC_KEY)) {
+            return false;
+          }
+        }
+      })
+    }
+
+    if (!sphere.config.iBeaconUUID) { return false; }
+
+    return true;
+  },
+
+  verifyDatabaseStonesInSphere(sphere) {
+    let stoneIds = Object.keys(sphere.stones);
+    for (let i = 0; i < stoneIds.length; i++) {
+      let stone = sphere.stones[stoneIds[i]];
+      if (!stone.config.iBeaconMajor ||
+          !stone.config.iBeaconMinor ||
+          !stone.config.macAddress) {
+        return false;
+      }
+    }
+    return true;
+  }
 };
 
 export const getAmountOfStonesInLocation = function(state, sphereId, locationId) {

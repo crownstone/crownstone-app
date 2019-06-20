@@ -38,7 +38,6 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
         newState.data               = update(action.data.data,        newState.data);
         newState.cloudId            = update(action.data.cloudId,     newState.cloudId);
         newState.version            = update(action.data.version,     newState.version);
-        newState.deleted            = update(action.data.deleted,     newState.deleted);
         newState.syncedToCrownstone = update(action.data.syncedToCrownstone,  newState.syncedToCrownstone);
 
         newState.activeDays.Mon     = update(action.data.activeDays && action.data.activeDays.Mon, newState.activeDays.Mon);
@@ -53,6 +52,14 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
         return newState;
       }
       return state;
+    case 'MARK_STONE_RULE_FOR_DELETION':
+      if (action.data) {
+        let newState = {...state};
+        newState.deleted = update(action.data.deleted, newState.deleted);
+        return newState;
+      }
+      return state;
+
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings);
     default:

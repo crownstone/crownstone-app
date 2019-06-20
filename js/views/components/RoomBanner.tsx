@@ -9,7 +9,6 @@ import {
   Platform,
   StyleSheet,
   Image,
-  ImageBackground,
   Text,
   View
 } from 'react-native';
@@ -123,7 +122,7 @@ export class RoomBanner extends Component<any, any> {
   render() {
     let leftRatio = this.props.hideRight === true ? 0.95 : LEFT_RATIO;
     return (
-      <View style={{width:screenWidth, height:ELEMENT_HEIGHT, borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2), overflow:"hidden"}}>
+      <View style={{width:screenWidth, height:ELEMENT_HEIGHT, backgroundColor: colors.white.hex, borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2), overflow:"hidden"}}>
         <Image source={require("../../images/backgrounds/RoomBannerBackground.png")} style={{width: screenWidth, height: ELEMENT_HEIGHT, opacity: 0.7, position:'absolute', top:0, left:0}} resizeMode={"cover"} />
         <View style={{flexDirection:'row', width: screenWidth, height: ELEMENT_HEIGHT, alignItems:'center', justifyContent:'center', position:'absolute', top:0, left:0}}>
           {this.getLeftContent(leftRatio)}

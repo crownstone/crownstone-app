@@ -123,8 +123,6 @@ function checkAction(action, affectedIds) {
       eventStatus['changeLocationPositions'] = affectedIds; break;
     case 'SET_SPHERE_STATE':
       eventStatus['changeSphereState'] = affectedIds; break;
-    case 'SET_SPHERE_KEYS':
-      eventStatus['setKeys'] = affectedIds; break;
     case 'ADD_SPHERE':
       eventStatus['addSphere'] = affectedIds;
       eventStatus['changeSpheres'] = affectedIds;
@@ -330,6 +328,7 @@ function checkAction(action, affectedIds) {
       break;
   case "ADD_STONE_RULE":
   case "UDPATE_STONE_RULE":
+  case "MARK_STONE_RULE_FOR_DELETION":
   case "REMOVE_STONE_RULE":
     eventStatus['stoneChangeRules'] = affectedIds; break;
     default:

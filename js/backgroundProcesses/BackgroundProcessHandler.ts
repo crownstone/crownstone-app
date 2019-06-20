@@ -7,7 +7,7 @@ import { CLOUD }                 from "../cloud/cloudAPI";
 import { AppUtil }               from "../util/AppUtil";
 import { Util }                  from "../util/Util";
 
-import { prepareStoreForUser }   from "../util/DataUtil";
+import { DataUtil, prepareStoreForUser } from "../util/DataUtil";
 
 import { StoreManager }          from "../router/store/storeManager";
 import { KeepAliveHandler }      from "./KeepAliveHandler";
@@ -43,7 +43,7 @@ import { migrate } from "./migration/StoreMigration";
 import { CloudPoller } from "../logic/CloudPoller";
 import { UpdateCenter } from "./UpdateCenter";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
-import { KEY_TYPES } from "../Enums";
+import { StoneDataSyncer } from "./StoneDataSyncer";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -100,8 +100,6 @@ class BackgroundProcessHandlerClass {
       // This event is triggered on boot by the start store or by the login process.
       core.eventBus.on('userLoggedInFinished', () => {
         this.userLoggedIn = true;
-
-        migrate();
 
         // pass the store to the singletons
         LOG.info("BackgroundProcessHandler: Starting singletons.");
@@ -360,50 +358,9 @@ class BackgroundProcessHandlerClass {
 
   _verifyStore() {
     core.store = StoreManager.getStore();
-
-    // if we have an accessToken, we proceed with logging in automatically
     let state = core.store.getState();
 
-    // Catch a broken sphere.
-    let sphereIds = state.spheres;
-    let brokenSphere = false;
-    Object.keys(sphereIds).forEach((sphereId) => {
-      let sphere = sphereIds[sphereId];
-      let sphereHasKeys = (!sphere.config.adminKey && !sphere.config.memberKey && !sphere.config.guestKey);
-      if (!sphereHasKeys && sphere.keys) {
-        Object.keys(sphere.keys).forEach((keyId) => {
-          let key = sphere.keys[keyId];
-          if (key.ttl === 0) {
-            if (key.keyType === KEY_TYPES.ADMIN_KEY ||key.keyType === KEY_TYPES.MEMBER_KEY ||key.keyType === KEY_TYPES.BASIC_KEY) {
-              sphereHasKeys = true;
-            }
-          }
-        })
-      }
-
-      let corruptData = !sphereHasKeys || !sphere.config.iBeaconUUID;
-      let stoneIds = Object.keys(sphere.stones);
-      stoneIds.forEach((stoneId) => {
-        let stone = sphere.stones[stoneId];
-        corruptData = corruptData ||
-          !stone.config.iBeaconMajor ||
-          !stone.config.iBeaconMinor ||
-          !stone.config.macAddress;
-      });
-      if (corruptData) {
-        brokenSphere = true;
-      }
-    });
-
-    if (brokenSphere) {
-      Alert.alert("Something went wrong...","I have identified a problem with the Sphere on your phone... I'll have to redownload it from the Cloud to fix this.", [{text:'OK', onPress: () => {
-        AppUtil.resetDatabase(core.store, core.eventBus);
-      }}], {cancelable:false});
-      return;
-    }
-
-    core.storeInitialized = true;
-
+    // if we have an accessToken, we proceed with logging in automatically
     if (state.user.accessToken !== null) {
       // in the background we check if we're authenticated, if not we log out.
       CLOUD.setAccess(state.user.accessToken);
@@ -437,6 +394,19 @@ class BackgroundProcessHandlerClass {
           }
         });
       this.userLoggedIn = true;
+
+      if (state.user.isNew === false) {
+        migrate();
+
+        let healthyDatabase = DataUtil.verifyDatabase(true);
+        if (!healthyDatabase) {
+          Alert.alert("Something went wrong...","I have identified a problem with the Sphere on your phone... I'll have to redownload it from the Cloud to fix this.", [{text:'OK', onPress: () => {
+              AppUtil.resetDatabase(core.store, core.eventBus);
+            }}], {cancelable:false});
+          return;
+        }
+      }
+
       core.eventBus.emit("userLoggedIn");
       core.eventBus.emit("storePrepared");
       if (state.user.isNew === false) {
@@ -467,6 +437,7 @@ class BackgroundProcessHandlerClass {
     Scheduler.init();
     StoneAvailabilityTracker.init();
     StoneManager.init();
+    StoneDataSyncer.init();
     SetupStateHandler.init();
     ToonIntegration.init();
     UpdateCenter.init();

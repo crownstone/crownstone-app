@@ -55,15 +55,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         return newState;
       }
       return state;
-    case 'SET_SPHERE_KEYS':
-      if (action.data) {
-        let newState = {...state};
-        newState.adminKey  = update(action.data.adminKey,  newState.adminKey);
-        newState.memberKey = update(action.data.memberKey, newState.memberKey);
-        newState.guestKey  = update(action.data.guestKey,  newState.guestKey);
-        return newState;
-      }
-      return state;
     case 'ADD_SPHERE':
     case 'UPDATE_SPHERE_CONFIG':
       if (action.data) {

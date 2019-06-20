@@ -63,6 +63,14 @@ let defaultSettings = {
   rules: {
     // id: behaviourWrapper
   },
+  abilities: {
+    dimmingEnabled: false,
+    dimmingStatePreference: false,
+    switchCraftEnabled: false,
+    switchCraftPulseSwitch: false,
+    switchCraftDoubleTapDimming: false,
+
+  },
   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
     onHomeEnter: { /* toggleState */ },
     onHomeExit:  { /* toggleState */ },

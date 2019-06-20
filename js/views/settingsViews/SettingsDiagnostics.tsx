@@ -27,6 +27,7 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { DiagnosticStates, diagnosticStyles } from "./diagnostics/DiagnosticStyles";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { DataUtil } from "../../util/DataUtil";
 
 export class SettingsDiagnostics extends Component<any, any> {
   static options(props) {
@@ -66,24 +67,9 @@ export class SettingsDiagnostics extends Component<any, any> {
     let sphereIds = state.spheres;
     let healthySpheres = true;
     let stoneCount = 0;
-
+    healthySpheres = DataUtil.verifyDatabase(true);
     Object.keys(sphereIds).forEach((sphereId) => {
       let sphere = sphereIds[sphereId];
-      let corruptData = (!sphere.config.adminKey && !sphere.config.memberKey && !sphere.config.guestKey) || !sphere.config.iBeaconUUID;
-      let stoneIds = Object.keys(sphere.stones);
-      stoneIds.forEach((stoneId) => {
-        let stone = sphere.stones[stoneId];
-        corruptData = corruptData ||
-          !stone.config.iBeaconMajor ||
-          !stone.config.iBeaconMinor ||
-          !stone.config.macAddress;
-      });
-
-      if (corruptData) { healthySpheres = false; }
-
-      if (Permissions.inSphere(sphereId).canSetupCrownstone === true) {
-        this.canSetupStones = true;
-      }
       stoneCount += Object.keys(sphere.stones).length;
     });
 

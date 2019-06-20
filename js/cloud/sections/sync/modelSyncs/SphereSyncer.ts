@@ -19,6 +19,7 @@ import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {ToonSyncer} from "./thirdParty/ToonSyncer";
 import { PresenceSyncer } from "./PresenceSyncer";
 import { xUtil } from "../../../../util/StandAloneUtil";
+import { DataUtil } from "../../../../util/DataUtil";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;
@@ -215,8 +216,7 @@ export class SphereSyncer extends SyncingBase {
 
   syncLocalSphereDown(localId, sphereInState, sphere_from_cloud) {
     // somehow sometimes all keys go missing or the ibeacon uuid goes missing. If this is the case, redownload from cloud.
-    let corruptData = sphereInState.config.adminKey === null && sphereInState.config.memberKey === null &&sphereInState.config.guestKey === null;
-    corruptData = sphereInState.config.iBeaconUUID === undefined || sphereInState.config.iBeaconUUID === null || corruptData;
+    let corruptData = DataUtil.verifyDatabaseSphere(sphereInState) === false;
 
     if (shouldUpdateInCloud(sphereInState.config, sphere_from_cloud) && !corruptData) {
       if (!Permissions.inSphere(localId).canUploadSpheres) { return }
