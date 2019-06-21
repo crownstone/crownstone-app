@@ -608,6 +608,7 @@ export default {
   DeviceSummary:{
     __filename: "../js/views/deviceViews/elements/DeviceSummary.tsx",
     Energy_Usage_:                       function() { return "Energy Usage" },
+    _W:                                  function() { return arguments[0] + " W" },
     Turn_On:                             function() { return "Turn On" },
     Turn_Off:                            function() { return "Turn Off" },
     Location_:                           function() { return "Room" },

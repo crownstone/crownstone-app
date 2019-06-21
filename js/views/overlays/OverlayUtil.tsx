@@ -7,6 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import { core } from "../../core";
 import { RoomList } from "../components/RoomList";
 import * as React from "react";
+import { colors } from "../styles";
 
 
 export const OverlayUtil = {
@@ -39,6 +40,7 @@ export const OverlayUtil = {
 
       },
       allowMultipleSelections: false,
+      themeColor: colors.lightGreen2.hex,
       selection: null,
       separator: false,
       image: require("../../images/overlayCircles/roomsCircle.png")

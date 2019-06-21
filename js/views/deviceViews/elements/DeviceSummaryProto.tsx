@@ -3,7 +3,7 @@ import { LiveComponent }          from "../../LiveComponent";
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceSummaryProto", key)(a,b,c,d,e);
+  return Languages.get("DeviceSummary", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {
@@ -30,6 +30,7 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { RoomList } from "../../components/RoomList";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import { OverlayUtil } from "../../overlays/OverlayUtil";
 
 export class DeviceSummary extends LiveComponent<any, any> {
   storedSwitchState = 0;
@@ -304,38 +305,12 @@ export function StoneInformation(props : {stoneId: string, sphereId: string, can
   if (props.canSelectRoom) {
     locationPart = (
       <TouchableOpacity style={{width:0.57*screenWidth}} onPress={() => {
-        core.eventBus.emit('showListOverlay', {
-          title: lang("Select_Room"),
-          getItems: () => {
-            const state = core.store.getState();
-            const sphere = state.spheres[props.sphereId];
-            let items = [];
-            Object.keys(sphere.locations).forEach((locationId) => {
-              let location = sphere.locations[locationId];
-              items.push( {id: locationId, component:<RoomList
-                  icon={location.config.icon}
-                  name={location.config.name}
-                  hideSubtitle={true}
-                  showNavigationIcon={false}
-                  small={true}
-                />})
-            });
-
-            return items;
-          },
-          callback: (locationId) => {
-            core.store.dispatch({type:"UPDATE_STONE_LOCATION", sphereId: props.sphereId, stoneId: props.stoneId, data:{locationId: locationId}})
-          },
-          allowMultipleSelections: false,
-          themeColor: colors.lightGreen2.hex,
-          selection: stone.config.locationId,
-          image: require("../../../images/overlayCircles/roomsCircle.png")
-        })
+        OverlayUtil.callRoomSelectionOverlayForStonePlacement(this.props.sphereId, this.props.stoneId)
       }}>
         <Text style={{color: colors.white.hex, fontSize:20, fontStyle:"italic"}}>{lang("Location_")}</Text>
         <Text style={{color: colors.white.hex, fontSize:28, fontWeight:'bold'}}>{location.config.name}</Text>
       </TouchableOpacity>
-    )
+    );
   }
 
   return (

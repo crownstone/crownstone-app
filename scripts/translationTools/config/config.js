@@ -1,7 +1,6 @@
 const FILE_EXCLUSIONS = {
   'DebugIconSelection': true,
   'IconDebug': true,
-  'DeviceSummaryProto':true,
   'styles':true,
 };
 

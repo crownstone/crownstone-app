@@ -1,5 +1,5 @@
 
-import { Languages } from "../../../../../Languages"
+import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour_TypeExamples", key)(a,b,c,d,e);
@@ -17,13 +17,13 @@ import {
   availableScreenHeight,
   colors,
   deviceStyles,
-  screenWidth} from "../../../../styles";
-import { Background } from "../../../../components/Background";
-import { Icon } from "../../../../components/Icon";
-import { core } from "../../../../../core";
-import { NavigationUtil } from "../../../../../util/NavigationUtil";
-import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
-import { AicoreTwilight } from "../supportCode/AicoreTwilight";
+  screenWidth} from "../../../styles";
+import { Background } from "../../../components/Background";
+import { Icon } from "../../../components/Icon";
+import { core } from "../../../../core";
+import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
+import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 
 
 export class DeviceSmartBehaviour_TypeExamples extends Component<{examples:any[], image: any, header:string, twilightRules: boolean, sphereId: string, stoneId: string}, any> {

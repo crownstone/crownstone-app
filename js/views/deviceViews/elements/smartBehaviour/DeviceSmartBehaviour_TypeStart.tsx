@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 
 import * as React from "react"; import { Component } from "react";
-import { DeviceSmartBehaviour_TypeExamples } from "./prototyping/DeviceSmartBehaviour_TypeExamples";
+import { DeviceSmartBehaviour_TypeExamples } from "./DeviceSmartBehaviour_TypeExamples";
 import {
   SMART_BEHAVIOUR_TYPES
 } from "../../../../Enums";
