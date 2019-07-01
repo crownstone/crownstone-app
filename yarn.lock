@@ -5516,10 +5516,10 @@ react-lifecycles-compat@2.0.0:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-2.0.0.tgz#71d9c4cde47114c4102454f76da055c2bc48c948"
   integrity sha512-txfpPCQYiazVdcbMRhatqWKcAxJweUu2wDXvts5/7Wyp6+Y9cHojqXHsLPEckzutfHlxZhG8Oiundbmp8Fd6eQ==
 
-react-native-camera-kit@7.3.5:
-  version "7.3.5"
-  resolved "https://registry.yarnpkg.com/react-native-camera-kit/-/react-native-camera-kit-7.3.5.tgz#227bb651f0920863a79740a151aa430dbedd3530"
-  integrity sha512-c4lfJCzKxhB5SZCpfbRzUwNcgj2X1ehyMCMu5eRk9oC6ucqwb4pA5cORzf82fLefTbAwBTPlk5h5zj/lCGQtMg==
+react-native-camera-kit@7.3.7:
+  version "7.3.7"
+  resolved "https://registry.yarnpkg.com/react-native-camera-kit/-/react-native-camera-kit-7.3.7.tgz#5b04ec2bd54304306ba32605e7a15b21d839c353"
+  integrity sha512-w/Zy8BuK3YxtVtTNW2PVHzsqkfWM/cApIIQqUAle/UBze3e/SzVVIZ7fveU1XUm6y0ld9WZZyuwl1aism5X4OQ==
   dependencies:
     lodash "^4.14.2"
 
@@ -5545,10 +5545,10 @@ react-native-console-time-polyfill@^0.0.6:
   resolved "https://registry.yarnpkg.com/react-native-console-time-polyfill/-/react-native-console-time-polyfill-0.0.6.tgz#7823d86fe83439c74480d1b124a92b1a78571889"
   integrity sha1-eCPYb+g0OcdEgNGxJKkrGnhXGIk=
 
-react-native-device-info@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-1.0.1.tgz#4bca46388773ade9a8599dfe0c55d87756b0622b"
-  integrity sha512-TjDO4lPtMmM7Cuj1SanmCPw3RBhXvnUcOHTvX+2QeI2BjrCGjxmc3xFSmBkKn/oy2G67qWdDDgpE4HTSw9ZhUA==
+react-native-device-info@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-2.1.2.tgz#5c553498e8930410aa65796b83f8f8c8fb9893b4"
+  integrity sha512-q14hVR0eLRXnKeRyKX4naydXstCWetCIL+K+vUqREGkVj6qKoBouKd2yd8AxBfyomQN4uP3XRT6hTCwErIj9Ew==
 
 react-native-fast-image@6.0.3:
   version "6.0.3"
@@ -5584,10 +5584,10 @@ react-native-navigation@2.20.2:
     react-lifecycles-compat "2.0.0"
     tslib "1.9.3"
 
-react-native-push-notification@3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-3.1.2.tgz#a6129fb2897773a19c7b42bba1b51a9a4aac7df3"
-  integrity sha512-MjjPNXb2Cw7g1D41DtVbTVuGFCAtADxb91pAEFSkQ0AZ2gIooqYkWFHBL6woc15QHhtaZS8VT2GQoyW5OWlxIg==
+react-native-push-notification@3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-3.1.3.tgz#f8dab43aec734dbb1a8bbc50caf82dd682655392"
+  integrity sha512-bOZBApQ2zQ41/kSX047jm06XeDl2ylCwMuraT+4yRrlMQ6FDoAxIBh+Q+6jE1B5tVzot62mZnPcV6JaFTWtYeg==
 
 react-native-same-toast@1.0.1:
   version "1.0.1"
