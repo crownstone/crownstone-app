@@ -153,17 +153,6 @@ class BackgroundProcessHandlerClass {
     this.started = true;
   }
 
-
-  showWhatsNew() {
-    let state = core.store.getState();
-    if (!state.app.shownWhatsNewVersion || state.app.shownWhatsNewVersion === '0') {
-      core.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} })
-    }
-    else if (state.app.shownWhatsNewVersion !== DeviceInfo.getReadableVersion()) {
-      Scheduler.scheduleCallback(() => { core.eventBus.emit("showWhatsNew"); }, 100);
-    }
-  }
-
   setupLogging() {
     let state = core.store.getState();
     Bluenet.enableLoggingToFile((state.user.developer === true && state.development.logging_enabled === true) || LOG_TO_FILE === true);
@@ -395,16 +384,14 @@ class BackgroundProcessHandlerClass {
         });
       this.userLoggedIn = true;
 
-      if (state.user.isNew === false) {
-        migrate();
+      migrate();
 
-        let healthyDatabase = DataUtil.verifyDatabase(true);
-        if (!healthyDatabase) {
-          Alert.alert("Something went wrong...","I have identified a problem with the Sphere on your phone... I'll have to redownload it from the Cloud to fix this.", [{text:'OK', onPress: () => {
-              AppUtil.resetDatabase(core.store, core.eventBus);
-            }}], {cancelable:false});
-          return;
-        }
+      let healthyDatabase = DataUtil.verifyDatabase(true);
+      if (!healthyDatabase) {
+        Alert.alert("Something went wrong...","I have identified a problem with the Sphere on your phone... I'll have to redownload it from the Cloud to fix this.", [{text:'OK', onPress: () => {
+            AppUtil.resetDatabase(core.store, core.eventBus);
+          }}], {cancelable:false});
+        return;
       }
 
       core.eventBus.emit("userLoggedIn");

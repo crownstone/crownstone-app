@@ -13,8 +13,8 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, StyleSheet
+} from "react-native";
 
 
 const sha1    = require('sha-1');
@@ -522,4 +522,3 @@ class LoginButton extends Component<any, any> {
     }
   }
 }
-

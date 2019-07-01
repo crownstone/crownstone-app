@@ -14,7 +14,7 @@ class StoneDataSyncerClass {
 
       core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
-        if (change.stoneChangeRules) {
+        if (change.stoneChangeRules || change.stoneChangeAbilities) {
           this.update();
         }
       });

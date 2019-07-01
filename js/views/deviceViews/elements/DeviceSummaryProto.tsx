@@ -28,7 +28,6 @@ import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { RoomList } from "../../components/RoomList";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import { OverlayUtil } from "../../overlays/OverlayUtil";
 

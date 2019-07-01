@@ -184,7 +184,7 @@ export class SphereEdit extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false} >
-                <ScrollView>
+        <ScrollView>
           <RefreshControl
             refreshing={this.state.syncing}
             onRefresh={() => { this.setState({syncing: true}); CLOUD.sync(core.store, true) }}

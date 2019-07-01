@@ -6,6 +6,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Alert,
+  ActivityIndicator,
   ScrollView,
   Text, TouchableOpacity,
   View
@@ -61,13 +63,14 @@ export class DeviceSmartBehaviour_RuleOverview extends LiveComponent<any, any> {
 
 
       if (active || partiallyActive) {
+        let rule = rules[ruleId];
         activeRules[ruleId] = rules[ruleId];
         if (partiallyActive) {
           partiallyActiveRuleIdMap[ruleId] = true;
         }
         ruleComponents.push(<SmartBehaviourRule
           key={"description" + ruleId}
-          rule={rules[ruleId]}
+          rule={rule}
           sphereId={this.props.sphereId}
           stoneId={this.props.stoneId}
           ruleId={ruleId}
@@ -150,18 +153,30 @@ function SmartBehaviourRule(props) {
       <View style={{padding:15, flexDirection: 'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
         <SlideSideFadeInView width={50} visible={props.editMode}>
           <TouchableOpacity onPress={() => {
-            core.store.dispatch({
-              type: "MARK_STONE_RULE_FOR_DELETION",
-              sphereId: props.sphereId,
-              stoneId: props.stoneId,
-              ruleId: props.ruleId,
-            })
+            Alert.alert(
+              "Are you sure?",
+              "I'll delete this rule from the Crownstone as soon as I can. Once that is done it will be removed from the list, until then, it will be crossed through.",
+              [{text:"OK", onPress:() => {
+                core.store.dispatch({
+                  type: "MARK_STONE_RULE_FOR_DELETION",
+                  sphereId: props.sphereId,
+                  stoneId: props.stoneId,
+                  ruleId: props.ruleId,
+                });
+              }}, {text:"Nope"}])
+
           }} style={{width:50}}>
             <Icon name={'ios-trash'} color={colors.white.rgba(0.6)} size={30} />
           </TouchableOpacity>
         </SlideSideFadeInView>
+        { props.rule.syncedToCrownstone === false ? <ActivityIndicator size={"small"} color={colors.white.hex} /> : undefined }
         <View style={{flex:1}}>
-          <Text style={{color: props.faded ? colors.white.rgba(0.4) : colors.white.hex, fontSize:16, textAlign:'center', textDecorationLine: props.rule.deleted ? 'line-through' : 'none'}}>{ai.getSentence()}</Text>
+          <Text style={{
+            color: props.rule.syncedToCrownstone === false  || props.faded ? colors.white.rgba(0.4) : colors.white.hex,
+            fontSize:16,
+            textAlign:'center',
+            textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
+          }}>{ai.getSentence()}</Text>
         </View>
         <SlideSideFadeInView width={50} visible={props.editMode}>
           <TouchableOpacity onPress={() => {

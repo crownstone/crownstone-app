@@ -28,15 +28,6 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     return {
       topBar: {
         title: {text: lang("Sphere_Menu")},
-        leftButtons: [{
-          id: 'back',
-          component: {
-            name:'topbarLeftButton',
-            passProps: {
-              text: lang("Back"), onPress:() => { NavigationUtil.dismissModal(); }
-            }
-          },
-        }],
       }
     }
   }

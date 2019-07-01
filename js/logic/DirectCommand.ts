@@ -39,6 +39,9 @@ export class DirectCommand {
               return BluenetPromiseWrapper.connect(this.handle, this.referenceId)
                 .then(() => { LOG.bch("DirectCommand: second attempt, performing: ", action, props); return action.apply(this, props); })
             }
+            else {
+              throw err;
+            }
           })
           .then((data) => {
             resultData = {data:data};
