@@ -304,7 +304,7 @@ export function StoneInformation(props : {stoneId: string, sphereId: string, can
   if (props.canSelectRoom) {
     locationPart = (
       <TouchableOpacity style={{width:0.57*screenWidth}} onPress={() => {
-        OverlayUtil.callRoomSelectionOverlayForStonePlacement(this.props.sphereId, this.props.stoneId)
+        OverlayUtil.callRoomSelectionOverlayForStonePlacement(props.sphereId, props.stoneId)
       }}>
         <Text style={{color: colors.white.hex, fontSize:20, fontStyle:"italic"}}>{lang("Location_")}</Text>
         <Text style={{color: colors.white.hex, fontSize:28, fontWeight:'bold'}}>{location.config.name}</Text>
