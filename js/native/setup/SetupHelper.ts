@@ -288,20 +288,21 @@ export class SetupHelper {
       }
     }
 
-    let data = {};
-    data["crownstoneId"]       = this.cloudResponse.uid;
-    data["sphereId"]           = sphereData.uid;
-    data["adminKey"]           = keyMap[KEY_TYPES.ADMIN_KEY];
-    data["memberKey"]          = keyMap[KEY_TYPES.MEMBER_KEY];
-    data["basicKey"]           = keyMap[KEY_TYPES.BASIC_KEY];
-    data["serviceDataKey"]     = keyMap[KEY_TYPES.SERVICE_DATA_KEY];
-    data["meshNetworkKey"]     = keyMap[KEY_TYPES.MESH_NETWORK_KEY];
-    data["meshApplicationKey"] = keyMap[KEY_TYPES.MESH_APPLICATION_KEY];
-    data["meshDeviceKey"]      = meshDeviceKey;
-    data["meshAccessAddress"]  = sphereData.meshAccessAddress; // legacy
-    data["ibeaconUUID"]        = sphereData.iBeaconUUID;
-    data["ibeaconMajor"]       = this.cloudResponse.major;
-    data["ibeaconMinor"]       = this.cloudResponse.minor;
+    let data = {
+      crownstoneId:       this.cloudResponse.uid,
+      sphereId:           sphereData.uid,
+      adminKey:           keyMap[KEY_TYPES.ADMIN_KEY],
+      memberKey:          keyMap[KEY_TYPES.MEMBER_KEY],
+      basicKey:           keyMap[KEY_TYPES.BASIC_KEY],
+      serviceDataKey:     keyMap[KEY_TYPES.SERVICE_DATA_KEY],
+      meshNetworkKey:     keyMap[KEY_TYPES.MESH_NETWORK_KEY],
+      meshApplicationKey: keyMap[KEY_TYPES.MESH_APPLICATION_KEY],
+      meshDeviceKey:      meshDeviceKey,
+      meshAccessAddress:  sphereData.meshAccessAddress,
+      ibeaconUUID:        sphereData.iBeaconUUID,
+      ibeaconMajor:       this.cloudResponse.major,
+      ibeaconMinor:       this.cloudResponse.minor,
+    };
 
     let unsubscribe = core.nativeBus.on(core.nativeBus.topics.setupProgress, (progress) => {
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 5 + progress });

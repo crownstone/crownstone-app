@@ -14,7 +14,7 @@ interface BluenetPromiseWrapperProtocol {
   keepAliveState(changeState : boolean, state : number, timeout: number): Promise< void >,
   phoneDisconnect()                             : Promise< void >,
   toggleSwitchState(stateForOn)                 : Promise< number >,
-  setupCrownstone(dataObject)                   : Promise< void >,
+  setupCrownstone(dataObject: setupData)        : Promise< void >,
   requestLocation()                             : Promise< locationType >,
   recover(handle: string)                       : Promise< void >,
   clearFingerprintsPromise()                    : Promise< void >,
@@ -178,4 +178,20 @@ interface keySet  {
 interface crownstoneModes {
   setupMode: boolean,
   dfuMode: boolean,
+}
+
+interface setupData {
+  crownstoneId:       number,
+  sphereId:           number,
+  adminKey:           string,
+  memberKey:          string,
+  basicKey:           string,
+  serviceDataKey:     string,
+  meshNetworkKey:     string,
+  meshApplicationKey: string,
+  meshDeviceKey:      string,
+  meshAccessAddress:  string,
+  ibeaconUUID:        string,
+  ibeaconMajor:       number,
+  ibeaconMinor:       number,
 }
