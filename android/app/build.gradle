@@ -119,6 +119,7 @@ android {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
         versionCode 49
         versionName "2.3.0"
         ndk {
@@ -148,6 +149,11 @@ android {
             // jniDebuggable false
             // zipAlignEnabled true
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     dexOptions {
@@ -202,6 +208,7 @@ dependencies {
     implementation project(':react-native-fast-image')
     implementation project(':@react-native-community_async-storage')
     implementation project(':@react-native-community_slider')
+    implementation project(':react-native-navigation')
 //    compile ('com.google.android.gms:play-services-gcm:9.6.1') {
 //        force = true;
 //    }
