@@ -19,6 +19,8 @@ buildscript {
     }
     repositories {
         google()
+        mavenLocal()
+        mavenCentral()
         jcenter()
 //        maven { url "https://maven.google.com" } // for gradleVersion < 4.1
     }
@@ -51,13 +53,15 @@ allprojects {
                 }
             }
         }
-        mavenLocal()
         google()
+        mavenLocal()
+        mavenCentral()
         jcenter()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url "$rootDir/../node_modules/react-native/android"
         }
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -67,6 +71,22 @@ subprojects {
             android {
                 compileSdkVersion rootProject.ext.compileSdkVersion
                 buildToolsVersion rootProject.ext.buildToolsVersion
+            }
+        }
+    }
+}
+
+// From http://wix.github.io/react-native-navigation/#/docs/Installing
+subprojects { subproject ->
+    afterEvaluate {
+        if ((subproject.plugins.hasPlugin('android') || subproject.plugins.hasPlugin('android-library'))) {
+            android {
+                variantFilter { variant ->
+                    def names = variant.flavors*.name
+                    if (names.contains("reactNative51") || names.contains("reactNative55") || names.contains("reactNative56") || (names.contains("reactNative57") && !names.contains("reactNative57_5"))) {
+                        setIgnore(true)
+                    }
+                }
             }
         }
     }

@@ -1,9 +1,6 @@
 package rocks.crownstone.consumerapp;
 
-import android.app.Application;
-import android.util.Log;
 
-import com.facebook.react.ReactApplication;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
@@ -22,50 +19,57 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.reactnativenavigation.NavigationApplication;
+import com.reactnativenavigation.react.NavigationReactNativeHost;
+import com.reactnativenavigation.react.ReactGateway;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class MainApplication extends Application implements ReactApplication {
-
-	private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-		@Override
-		public boolean getUseDeveloperSupport() {
-			return BuildConfig.DEBUG;
-		}
-
-		@Override
-		protected List<ReactPackage> getPackages() {
-			return Arrays.<ReactPackage>asList(
-					new BluenetBridgePacket(),
-					new MainReactPackage(),
-					new FastImageViewPackage(),
-					new AsyncStoragePackage(),
-					new ReactSliderPackage(),
-					new VectorIconsPackage(),
-					new SvgPackage(),
-					new ImageResizerPackage(),
-					new RNFSPackage(),
-					new KCKeepAwakePackage(),
-					new RNCameraKitPackage(),
-					new SplashScreenReactPackage(),
-					new RNSentryPackage(),
-					new RNDeviceInfo(),
-					new ReactNativePushNotificationPackage()
-			);
-		}
-
-
-		@Override
-		protected String getJSMainModuleName() {
-			return "index";
-		}
-	};
+public class MainApplication extends NavigationApplication {
 
 	@Override
-	public ReactNativeHost getReactNativeHost() {
-		return mReactNativeHost;
+	protected ReactGateway createReactGateway() {
+		ReactNativeHost host = new NavigationReactNativeHost(this, isDebug(), createAdditionalReactPackages()) {
+			@Override
+			protected String getJSMainModuleName() {
+				return "index";
+			}
+		};
+		return new ReactGateway(this, isDebug(), host);
+	}
+
+	@Override
+	public boolean isDebug() {
+		return BuildConfig.DEBUG;
+	}
+
+	protected List<ReactPackage> getPackages() {
+		// Add additional packages you require here
+		// No need to add RnnPackage and MainReactPackage
+		return Arrays.<ReactPackage>asList(
+				new BluenetBridgePacket(),
+				new MainReactPackage(),
+				new FastImageViewPackage(),
+				new AsyncStoragePackage(),
+				new ReactSliderPackage(),
+				new VectorIconsPackage(),
+				new SvgPackage(),
+				new ImageResizerPackage(),
+				new RNFSPackage(),
+				new KCKeepAwakePackage(),
+				new RNCameraKitPackage(),
+				new SplashScreenReactPackage(),
+				new RNSentryPackage(),
+				new RNDeviceInfo(),
+				new ReactNativePushNotificationPackage()
+		);
+	}
+
+	@Override
+	public List<ReactPackage> createAdditionalReactPackages() {
+		return getPackages();
 	}
 
 	@Override
