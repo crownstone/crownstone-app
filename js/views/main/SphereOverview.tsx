@@ -68,8 +68,6 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    FastImage.preload([{uri:core.background.light},{uri:core.background.detailsDark}])
-
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));

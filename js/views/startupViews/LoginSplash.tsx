@@ -34,7 +34,6 @@ let versionStyle : TextStyle = {
 
 export class LoginSplash extends Component<any, any> {
   componentDidMount() {
-    FastImage.preload([{uri:core.background.light}])
   }
 
   render() {
