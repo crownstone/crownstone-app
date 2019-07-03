@@ -84,6 +84,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	private var nearestStoneSub: SubscriptionId? = null
 	private var nearestSetupSub: SubscriptionId? = null
+	private var sendUnverifiedAdvertisements = false
 
 
 	init {
@@ -374,11 +375,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun getTrackingState(callback: Callback) {
-		// Return { "isMonitoring": bool, "isRanging": bool }
 		Log.i(TAG, "getTrackingState")
 		val data = Arguments.createMap()
-		data.putBoolean("isMonitoring", true) // TODO: what does this mean?
-		data.putBoolean("isRanging", true) // TODO: what does this mean?
+		data.putBoolean("isMonitoring", true) // True when tracking iBeacons.
+		data.putBoolean("isRanging", true) // True when tracking iBeacons (delivered every second).
 		resolveCallback(callback, data)
 	}
 
@@ -518,7 +518,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun subscribeToUnverified() {
 		// Starts the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events to the app.
 		// Can be called multiple times safely
-//		bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
+		sendUnverifiedAdvertisements = true
 	}
 
 	@ReactMethod
@@ -526,6 +526,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun unsubscribeUnverified() {
 		// Starts the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events to the app.
 		// Can be called multiple times safely
+		sendUnverifiedAdvertisements = false
 	}
 
 //endregion
@@ -1739,7 +1740,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val device = data as ScannedDevice
 
 		if (device.isStone()) {
-			sendEvent("crownstoneAdvertisementReceived", device.address) // Any advertisement, verified and unverified from crownstones.
+			if (sendUnverifiedAdvertisements) {
+				sendEvent("crownstoneAdvertisementReceived", device.address) // Any advertisement, verified and unverified from crownstones.
+			}
 		}
 
 		if (device.operationMode == OperationMode.DFU) {
@@ -1775,7 +1778,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			}
 //			sendEvent("anyVerifiedAdvertisementData", Arguments.fromBundle(advertisementBundle)) // Any verfied advertisement, normal, setup and dfu mode.
 		}
-		else {
+		else if (sendUnverifiedAdvertisements) {
 			sendEvent("unverifiedAdvertisementData", advertisementMap)
 		}
 	}
