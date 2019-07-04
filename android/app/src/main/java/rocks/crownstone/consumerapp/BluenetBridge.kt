@@ -248,6 +248,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// keys can be either in plain string or hex string format, check length to determine which
 
 		val keys = Keys()
+		val sphereSettings = SphereSettingsMap()
 //		val iter = keySets.keySetIterator()
 //		while (iter.hasNextKey()) {
 //			val sphereId = iter.nextKey()
@@ -293,10 +294,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				serviceDataKey = keySetJson.getString("serviceDataKey")
 			}
 			val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey)
-			val keyData = KeyData(keySet, ibeaconUuid)
-			keys.put(sphereId, keyData)
+
+			val settings = SphereSettings(keySet, null, ibeaconUuid, 0)
+			sphereSettings.put(sphereId, settings)
 		}
-		bluenet.loadKeys(keys)
+		bluenet.setSphereSettings(sphereSettings)
 		resolveCallback(callback)
 	}
 
@@ -304,21 +306,28 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun clearKeySets() {
 		Log.i(TAG, "clearKeySets")
-		bluenet.clearKeys()
+//		bluenet.clearKeys()
+		bluenet.clearSphereSettings()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun setDevicePreferences(rssiOffset: Int, tapToToggleEnabled: Boolean) {
+		// Current rssi offset and whether tap to toggle is enabled.
+		// Cache these, to be used for broadcasting.
 		Log.i(TAG, "setDevicePreferences rssiOffset=$rssiOffset tapToToggleEnabled=$tapToToggleEnabled")
-		// TODO
+		bluenet.setTapToToggle(null, tapToToggleEnabled, rssiOffset)
 	}
 
 	@ReactMethod
 	@Synchronized
-	fun setLocationState(a: Int, b: Int, c: Int, enteringSphereId: String) {
-		Log.i(TAG, "setLocationState a=$a b=$b c=$c enteringSphereId=$enteringSphereId")
-		// TODO
+	fun setLocationState(sphereUid: Int, locationUid: Int, profile: Int, sphereId: SphereId) {
+		// Current sphere short id, location short id, and profile.
+		// Cache these for each sphere, to be used for broadcasting.
+		Log.i(TAG, "setLocationState sphereUid=$sphereUid locationUid=$locationUid profile=$profile sphereId=$sphereId")
+		bluenet.setSphereShortId(sphereId, Conversion.toUint8(sphereUid))
+		bluenet.setLocation(sphereId, Conversion.toUint8(locationUid))
+		bluenet.setProfile(sphereId, Conversion.toUint8(profile))
 	}
 
 
