@@ -20,7 +20,6 @@ import loginStyles from './LoginStyles'
 import DeviceInfo from 'react-native-device-info';
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import FastImage from "react-native-fast-image";
 
 let versionStyle : TextStyle = {
   position:'absolute',
@@ -33,10 +32,6 @@ let versionStyle : TextStyle = {
 };
 
 export class LoginSplash extends Component<any, any> {
-  componentDidMount() {
-    FastImage.preload([{uri:core.background.light}])
-  }
-
   render() {
     let factor = 0.25;
 

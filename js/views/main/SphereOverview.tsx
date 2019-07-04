@@ -37,7 +37,6 @@ import { CLOUD } from "../../cloud/cloudAPI";
 import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
 import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import FastImage from "react-native-fast-image";
 
 
 const ZOOM_LEVELS = {
@@ -68,8 +67,6 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    FastImage.preload([{uri:core.background.light},{uri:core.background.detailsDark}])
-
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
