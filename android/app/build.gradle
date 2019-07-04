@@ -119,6 +119,7 @@ android {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
         versionCode 49
         versionName "2.3.0"
         ndk {
@@ -150,6 +151,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     dexOptions {
         jumboMode = true
     }
@@ -176,10 +182,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-fast-image')
-    implementation project(':@react-native-community_async-storage')
-    implementation project(':@react-native-community_slider')
-    implementation project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
@@ -203,6 +205,10 @@ dependencies {
     implementation project(":react-native-camera-kit")
     implementation project(':react-native-sentry')
     implementation project(':react-native-device-info')
+    implementation project(':react-native-fast-image')
+    implementation project(':@react-native-community_async-storage')
+    implementation project(':@react-native-community_slider')
+    implementation project(':react-native-navigation')
 //    compile ('com.google.android.gms:play-services-gcm:9.6.1') {
 //        force = true;
 //    }

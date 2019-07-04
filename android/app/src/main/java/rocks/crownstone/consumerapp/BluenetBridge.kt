@@ -31,6 +31,7 @@ import nl.komponents.kovenant.unwrap
 import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
 import rocks.crownstone.bluenet.encryption.KeySet
+import rocks.crownstone.bluenet.encryption.MeshKeySet
 import rocks.crownstone.bluenet.packets.ControlPacket
 import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeout
 import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeoutItem
@@ -47,6 +48,7 @@ import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
 import rocks.crownstone.bluenet.util.Conversion
 import rocks.crownstone.bluenet.util.Log
+import rocks.crownstone.bluenet.util.SubscriptionId
 import rocks.crownstone.bluenet.util.Util
 import rocks.crownstone.localization.*
 import java.io.File
@@ -80,8 +82,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private var lastLocationId: String? = null
 	private var currentSphereId = "" // TODO: get rid of this, as we should support multisphere. Currently needed because scans don't have the sphere id, nor location updates.
 
-	private var nearestStoneSub: SubscriptionId = null
-	private var nearestSetupSub: SubscriptionId = null
+	private var nearestStoneSub: SubscriptionId? = null
+	private var nearestSetupSub: SubscriptionId? = null
+	private var sendUnverifiedAdvertisements = false
 
 
 	init {
@@ -245,17 +248,22 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// keys can be either in plain string or hex string format, check length to determine which
 
 		val keys = Keys()
+		val sphereSettings = SphereSettingsMap()
 //		val iter = keySets.keySetIterator()
 //		while (iter.hasNextKey()) {
 //			val sphereId = iter.nextKey()
 //			val keySetJson = keySets.getMap(sphereId)
 		for (i in 0 until keySets.size()) {
-			val keySetJson = keySets.getMap(i)
+			val keySetJson = keySets.getMap(i) ?: continue
 			if (!keySetJson.hasKey("referenceId")) {
 				rejectCallback(callback, "Missing referenceId: $keySets")
 				return
 			}
 			val sphereId = keySetJson.getString("referenceId")
+			if (sphereId == null) {
+				rejectCallback(callback, "Invalid referenceId: $sphereId")
+				return
+			}
 			if (!keySetJson.hasKey("iBeaconUuid")) {
 				rejectCallback(callback, "Missing iBeaconUuid: $keySets")
 				return
@@ -286,10 +294,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				serviceDataKey = keySetJson.getString("serviceDataKey")
 			}
 			val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey)
-			val keyData = KeyData(keySet, ibeaconUuid)
-			keys.put(sphereId, keyData)
+
+			val settings = SphereSettings(keySet, null, ibeaconUuid, 0)
+			sphereSettings.put(sphereId, settings)
 		}
-		bluenet.loadKeys(keys)
+		bluenet.setSphereSettings(sphereSettings)
 		resolveCallback(callback)
 	}
 
@@ -297,21 +306,28 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun clearKeySets() {
 		Log.i(TAG, "clearKeySets")
-		bluenet.clearKeys()
+//		bluenet.clearKeys()
+		bluenet.clearSphereSettings()
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun setDevicePreferences(rssiOffset: Int, tapToToggleEnabled: Boolean) {
+		// Current rssi offset and whether tap to toggle is enabled.
+		// Cache these, to be used for broadcasting.
 		Log.i(TAG, "setDevicePreferences rssiOffset=$rssiOffset tapToToggleEnabled=$tapToToggleEnabled")
-		// TODO
+		bluenet.setTapToToggle(null, tapToToggleEnabled, rssiOffset)
 	}
 
 	@ReactMethod
 	@Synchronized
-	fun setLocationState(a: Int, b: Int, c: Int, enteringSphereId: String) {
-		Log.i(TAG, "setLocationState a=$a b=$b c=$c enteringSphereId=$enteringSphereId")
-		// TODO
+	fun setLocationState(sphereUid: Int, locationUid: Int, profile: Int, sphereId: SphereId) {
+		// Current sphere short id, location short id, and profile.
+		// Cache these for each sphere, to be used for broadcasting.
+		Log.i(TAG, "setLocationState sphereUid=$sphereUid locationUid=$locationUid profile=$profile sphereId=$sphereId")
+		bluenet.setSphereShortId(sphereId, Conversion.toUint8(sphereUid))
+		bluenet.setLocation(sphereId, Conversion.toUint8(locationUid))
+		bluenet.setProfile(sphereId, Conversion.toUint8(profile))
 	}
 
 
@@ -368,11 +384,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun getTrackingState(callback: Callback) {
-		// Return { "isMonitoring": bool, "isRanging": bool }
 		Log.i(TAG, "getTrackingState")
 		val data = Arguments.createMap()
-		data.putBoolean("isMonitoring", true) // TODO: what does this mean?
-		data.putBoolean("isRanging", true) // TODO: what does this mean?
+		data.putBoolean("isMonitoring", true) // True when tracking iBeacons.
+		data.putBoolean("isRanging", true) // True when tracking iBeacons (delivered every second).
 		resolveCallback(callback, data)
 	}
 
@@ -495,12 +510,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun unsubscribeNearest() {
 		// Stops the flow of nearestSetupCrownstone and nearestCrownstone events to the app.
 		// Can be called multiple times safely
-		if (nearestStoneSub != null) {
-			bluenet.unsubscribe(nearestStoneSub)
+		val nearestStoneSubVal = nearestStoneSub
+		if (nearestStoneSubVal != null) {
+			bluenet.unsubscribe(nearestStoneSubVal)
 			nearestStoneSub = null
 		}
-		if (nearestSetupSub != null) {
-			bluenet.unsubscribe(nearestSetupSub)
+		val nearestSetupSubVal = nearestSetupSub
+		if (nearestSetupSubVal != null) {
+			bluenet.unsubscribe(nearestSetupSubVal)
 			nearestSetupSub = null
 		}
 	}
@@ -510,7 +527,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun subscribeToUnverified() {
 		// Starts the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events to the app.
 		// Can be called multiple times safely
-//		bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
+		sendUnverifiedAdvertisements = true
 	}
 
 	@ReactMethod
@@ -518,6 +535,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun unsubscribeUnverified() {
 		// Starts the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events to the app.
 		// Can be called multiple times safely
+		sendUnverifiedAdvertisements = false
 	}
 
 //endregion
@@ -937,23 +955,38 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// keys can be either in plain string or hex string format, check length to determine which
 
 		val crownstoneId: Uint8
+		val sphereId: Uint8
 		var adminKey: String?
 		var memberKey: String?
 		var guestKey: String?
+		var serviceDataKey: String?
+		var meshDevKey: String?
+		var meshAppKey: String?
+		var meshNetKey: String?
 		val iBeaconUuid: UUID
 		val iBeaconMajor: Uint16
 		val iBeaconMinor: Uint16
 		var meshAccessAddress: Uint32
 
 		try {
+			sphereId = config.getInt("sphereId").toShort()
 			crownstoneId = config.getInt("crownstoneId").toShort()
 			adminKey = config.getString("adminKey")
 			memberKey = config.getString("memberKey")
-			guestKey = config.getString("guestKey")
+			guestKey = config.getString("basicKey")
+			serviceDataKey = config.getString("serviceDataKey")
+			meshDevKey = config.getString("meshDeviceKey")
+			meshAppKey = config.getString("meshApplicationKey")
+			meshNetKey = config.getString("meshNetworkKey")
+
 			iBeaconUuid = UUID.fromString(config.getString("ibeaconUUID"))
 			iBeaconMajor = config.getInt("ibeaconMajor")
 			iBeaconMinor = config.getInt("ibeaconMinor")
 			val meshAccessAddressStr = config.getString("meshAccessAddress")
+			if (meshAccessAddressStr == null) {
+				rejectCallback(callback, "missing meshAccessAddress")
+				return
+			}
 			val meshAccessAddressBytes = Conversion.hexStringToBytes(meshAccessAddressStr)
 			if (meshAccessAddressBytes.size != 4) {
 				rejectCallback(callback, "invalid meshAccessAddress")
@@ -974,16 +1007,16 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			return
 		}
 
-		Log.v(TAG, "cs id=$crownstoneId, keys=[$adminKey $memberKey $guestKey], meshaddr=$meshAccessAddress, ibeacon=[$iBeaconUuid $iBeaconMajor $iBeaconMinor]")
 
-		val keySet = KeySet(adminKey, memberKey, guestKey)
+		val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey)
+		val meshKeySet = MeshKeySet(meshDevKey, meshAppKey, meshNetKey)
 		val ibeaconData = IbeaconData(iBeaconUuid, iBeaconMajor, iBeaconMinor, 0)
 
 		val subId = bluenet.subscribe(BluenetEvent.SETUP_PROGRESS, ::onSetupProgress)
 
 		// Maybe refresh services, because there is a good chance that this crownstone was just factory reset / recovered.
 		// Not sure if this is helpful, as it would've gone wrong already on connect (when session nonce is read in normal mode)
-		bluenet.setup.setup(crownstoneId, keySet, meshAccessAddress, ibeaconData)
+		bluenet.setup.setup(crownstoneId, sphereId, keySet, meshKeySet, meshAccessAddress, ibeaconData)
 				.success { resolveCallback(callback) }
 				.fail {
 					sendEvent("setupProgress", 0) // TODO: is this required?
@@ -1138,7 +1171,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val listPacket = MultiSwitchListPacket()
 		var success = true
 		for (i in 0 until switchItems.size()) {
-			val itemMap = switchItems.getMap(i)
+			val itemMap = switchItems.getMap(i) ?: continue
 			val crownstoneId = Conversion.toUint8(itemMap.getInt("crownstoneId"))
 			val timeout = Conversion.toUint16(itemMap.getInt("timeout"))
 			val intentInt = itemMap.getInt("intent")
@@ -1549,7 +1582,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// keepAliveItems = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
 		val sameTimeoutPacket = KeepAliveSameTimeout(timeout)
 		for (i in 0 until keepAliveItems.size()) {
-			val entry = keepAliveItems.getMap(i)
+			val entry = keepAliveItems.getMap(i) ?: continue
 			val crownstoneId = Conversion.toUint8(entry.getInt("crownstoneId"))
 			val actionSwitch = KeepAliveActionSwitch()
 			if (entry.getBoolean("action")) {
@@ -1716,7 +1749,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val device = data as ScannedDevice
 
 		if (device.isStone()) {
-			sendEvent("crownstoneAdvertisementReceived", device.address) // Any advertisement, verified and unverified from crownstones.
+			if (sendUnverifiedAdvertisements) {
+				sendEvent("crownstoneAdvertisementReceived", device.address) // Any advertisement, verified and unverified from crownstones.
+			}
 		}
 
 		if (device.operationMode == OperationMode.DFU) {
@@ -1752,7 +1787,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			}
 //			sendEvent("anyVerifiedAdvertisementData", Arguments.fromBundle(advertisementBundle)) // Any verfied advertisement, normal, setup and dfu mode.
 		}
-		else {
+		else if (sendUnverifiedAdvertisements) {
 			sendEvent("unverifiedAdvertisementData", advertisementMap)
 		}
 	}
