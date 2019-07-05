@@ -1,6 +1,7 @@
 import { Languages } from "../Languages";
 import { Navigation } from "react-native-navigation";
 import { NavigationUtil } from "./NavigationUtil";
+import { Platform } from "react-native";
 
 interface topbarOptions {
   title?: string,
@@ -100,9 +101,16 @@ export const TopBarUtil = {
 
     let results = { topBar: {} };
     if (!partialUpdate || props.title) { results.topBar["title"] = {text: props.title}; }
-    if (!partialUpdate || leftButtons.length  > 0) { results.topBar["leftButtons"] = leftButtons; }
+    if (!partialUpdate || leftButtons.length  > 0) {
     if (!partialUpdate || rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons; }
-
+      // this is here so it wont interfere with the back button.
+      if (Platform.OS === 'android' && leftButtons.length !== 0) {
+        results.topBar["leftButtons"] = leftButtons;
+      }
+      else {
+        results.topBar["leftButtons"] = leftButtons;
+      }
+    }
 
     // console.log("Setting Topbar Options", results)
     return results;
@@ -110,9 +118,10 @@ export const TopBarUtil = {
 }
 
 
-function getLeftButton(id,label,callback) {
+function getLeftButton(id, label, callback) {
   return {
     id: id,
+    showAsAction: 'always',
     component: {
       name: id === 'cancel' ? 'topbarCancelButton' : 'topbarLeftButton',
       passProps: {

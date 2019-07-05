@@ -6,8 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  Linking,
   ScrollView,
   TouchableOpacity,
   Text,
@@ -15,7 +13,7 @@ import {
 } from 'react-native';
 
 
-import { screenWidth, colors, deviceStyles, screenHeight } from "../styles";
+import { screenWidth, colors, deviceStyles } from "../styles";
 import {Background} from "../components/Background";
 import {textStyle} from "../deviceViews/elements/DeviceBehaviour";
 import {IconButton} from "../components/IconButton";
@@ -31,7 +29,6 @@ export class AddItemsToSphere extends Component<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Add_to_Sphere"), closeModal:true});
   }
-
 
   render() {
     let hightlightAddCrownstoneButton = false;

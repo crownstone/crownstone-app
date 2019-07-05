@@ -2,23 +2,35 @@ import * as React from 'react';
 import { Dimensions, PixelRatio, Platform, StyleSheet} from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
+import { Navigation } from "react-native-navigation";
 
 export const deviceModel = DeviceInfo.getModel();
 
-export const topBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
-export const tabBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 34 : 0 ); // Status bar in iOS is 20 high
-export const tabBarHeight    = (Platform.OS === 'android' ? 0  :  (deviceModel === 'iPhone X' ? 49 + 34: 49));
-export const statusBarHeight = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 44 : 20); // Status bar in iOS is 20 high
-export const topBarHeight    = Platform.OS === 'android' ? 54  :  (deviceModel === 'iPhone X' ? 44 : 44 ) + statusBarHeight; // Status bar in iOS is 20 high
+export let topBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
+export let tabBarMargin    = (deviceModel.indexOf('iPhone X') != -1 ? 34 : 0 ); // Status bar in iOS is 20 high
+export let tabBarHeight    = (deviceModel.indexOf('iPhone X') != -1 ? 49 + 34: 49);
+export let statusBarHeight = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 44 : 20); // Status bar in iOS is 20 high
+export let topBarHeight    = Platform.OS === 'android' ? 54  :  (deviceModel === 'iPhone X' ? 44 : 44 ) + statusBarHeight; // Status bar in iOS is 20 high
 
-export const screenWidth = Dimensions.get('window').width;
+export let screenWidth = Dimensions.get('window').width;
 
 export let screenHeight = Platform.OS === 'android' ?
   Dimensions.get('window').height - 24 :  // android includes the top bar in the window height but we cant draw there.
   Dimensions.get('window').height;
 
-export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
-export const availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+export let availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+
+Navigation.constants()
+  .then((constants) => {
+    statusBarHeight = constants.statusBarHeight;
+    topBarHeight = constants.topBarHeight;
+    tabBarHeight = constants.bottomTabsHeight;
+    availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+    availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+  })
+
+
 
 export const pxRatio = PixelRatio.get();
 

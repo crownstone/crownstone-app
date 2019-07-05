@@ -44,6 +44,7 @@ import { CloudPoller } from "../logic/CloudPoller";
 import { UpdateCenter } from "./UpdateCenter";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { StoneDataSyncer } from "./StoneDataSyncer";
+import { BackButtonHandler } from "./BackButtonHandler";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -408,6 +409,7 @@ class BackgroundProcessHandlerClass {
 
   startSingletons() {
     ActivityLogManager.init();
+    BackButtonHandler.init();
     BatchUploader.init();
     BleLogger.init();
     CloudEventHandler.init();

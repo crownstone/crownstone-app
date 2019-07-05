@@ -6,8 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  BackHandler,
-  Platform,
   TouchableOpacity,
   Text,
   View, ScrollView
@@ -39,47 +37,6 @@ interface overlayBoxProps {
 //    true: disable the back button
 //    function: execute that function when the back button is pressed
 export class OverlayBox extends Component<overlayBoxProps, any> {
-  backButtonFunction : any = null;
-
-  componentDidMount() {
-    if (Platform.OS === 'android' && this.props.overrideBackButton && this.props.visible === true) {
-      this.overRideBackButton();
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (Platform.OS === 'android' && this.props.overrideBackButton && nextProps.visible !== this.props.visible) {
-      if (nextProps.visible === true && this.backButtonFunction === null) {
-        this.overRideBackButton();
-      }
-      else if (this.backButtonFunction !== null) {
-        this.cleanupBackButton();
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    if (Platform.OS === 'android' && this.backButtonFunction !== null) {
-      this.cleanupBackButton();
-    }
-  }
-
-  overRideBackButton() {
-    // Execute callback function and return true to override.
-    this.backButtonFunction = () => {
-      if (typeof this.props.overrideBackButton === 'function') {
-        this.props.overrideBackButton();
-      }
-      return true;
-    };
-    BackHandler.addEventListener('hardwareBackPress', this.backButtonFunction);
-  }
-
-  cleanupBackButton() {
-    BackHandler.removeEventListener('hardwareBackPress', this.backButtonFunction);
-    this.backButtonFunction = null;
-  }
-
   _getExtraContent(width, height, size, padding, top) {
     if (this.props.getDesignElement) {
       let left = 10;

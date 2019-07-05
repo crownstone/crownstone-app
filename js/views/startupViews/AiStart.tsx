@@ -7,7 +7,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  BackHandler,
   StyleSheet,
   TouchableOpacity,
   Text,
@@ -45,8 +44,6 @@ export class AiStart extends Component<any, any> {
       LOGe.info("User does not have a sphere on startup.");
       NavigationUtil.setRoot(Stacks.loggedIn());
     }
-
-
 
     let possibleNames = [
       {name:'Amy',     gender:'female'},
@@ -87,29 +84,6 @@ export class AiStart extends Component<any, any> {
     this.state = {aiName: name, aiSex: sex};
   }
 
-  componentDidMount() {
-    if (this.props.canGoBack !== true) {
-      this.disableBackButton();
-    }
-  }
-
-  componentWillUnmount() {
-    this.restoreBackButton();
-  }
-
-  disableBackButton() {
-    // Execute callback function and return true to override.
-    this.backButtonFunction = () => { return true; };
-    BackHandler.addEventListener('hardwareBackPress', this.backButtonFunction);
-  }
-
-  restoreBackButton() {
-    if (typeof this.backButtonFunction === 'function') {
-      BackHandler.removeEventListener('hardwareBackPress', this.backButtonFunction);
-      this.backButtonFunction = null;
-    }
-  }
-
 
   render() {
     let state = core.store.getState();
@@ -119,7 +93,7 @@ export class AiStart extends Component<any, any> {
 
     return (
       <Background hasNavBar={false} image={core.background.detailsDark}>
-                <View style={[styles.centered, {flex:1}]}>
+        <View style={[styles.centered, {flex:1}]}>
           <View style={{flex:1}} />
           <Icon name="c1-house" size={0.26*availableHeight} color={colors.white.hex} />
           <View style={{flex:1}} />
@@ -203,7 +177,6 @@ export class AiStart extends Component<any, any> {
           NavigationUtil.setRoot(Stacks.loggedIn());
         }
         else {
-          this.restoreBackButton();
           NavigationUtil.setRoot(Stacks.loggedIn());
         }
       };

@@ -12,7 +12,6 @@ import {
 } from "../views/components/topbar/TopbarButton";
 import { CancelButton } from "../views/components/topbar/CancelButton";
 import { OverlayManager } from "../backgroundProcesses/OverlayManager";
-import { IconDebug } from "../views/development/IconDebug";
 
 let viewsLoaded = false;
 
@@ -41,7 +40,7 @@ Navigation.events().registerAppLaunchedListener(() => {
     SplashScreen.hide();
   }
 
-  Navigation.setDefaultOptions({
+  let defaultOptions = {
     topBar: {
       background: { color: colors.csBlueDarker.hex },
       title: {
@@ -59,7 +58,15 @@ Navigation.events().registerAppLaunchedListener(() => {
       iconColor: colors.white.hex,
       selectedIconColor: colors.menuTextSelected.hex,
     }
-  });
+  };
+
+  if (Platform.OS === 'android') {
+    defaultOptions.topBar["leftButtonColor"]  = "#fff";
+    defaultOptions.topBar["rightButtonColor"] = "#fff";
+    defaultOptions.topBar["backButton"]       = { color: "#fff" };
+  }
+
+  Navigation.setDefaultOptions(defaultOptions);
 
   Navigation.setRoot({
     root: Stacks.initial()

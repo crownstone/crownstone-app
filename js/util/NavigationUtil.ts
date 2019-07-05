@@ -116,7 +116,7 @@ class NavStateManager {
     }
   }
 
-  isOverlayOpen(targetName) {
+  isThisOverlayOpen(targetName) {
     return this.overlayName[targetName] !== undefined || this.overlayIncomingName === targetName;
   }
 
@@ -175,14 +175,42 @@ class NavStateManager {
 
     return targetId;
   }
+
+  isOverlayOpen() {
+    return Object.keys(this.overlayId).length > 0;
+
+  }
+
+  isModalOpen() {
+    return this.modals.length > 0;
+  }
+
+  canGoBack() {
+    if (this.modals.length > 0) {
+      if (this.modals[this.modals.length - 1].length > 1) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      if (this.views.length > 1) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+  }
 }
 
 
-const NavState = new NavStateManager();
+export const NavState = new NavStateManager();
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
-  // console.log("View has appeared", componentId, componentName)
+  console.log("View has appeared", componentId, componentName)
   NavState.addView(componentId, componentName);
 });
 
@@ -201,9 +229,9 @@ export const NavigationUtil = {
    * @param props
    */
   showOverlay(target, props) {
-    // console.log("is this overlay open?", target, NavState.isOverlayOpen(target))
+    // console.log("is this overlay open?", target, NavState.isThisOverlayOpen(target))
 
-    if (NavState.isOverlayOpen(target)) {
+    if (NavState.isThisOverlayOpen(target)) {
       return;
     }
 
@@ -245,6 +273,7 @@ export const NavigationUtil = {
   },
 
   dismissModal: function() {
+    console.log("CALLING dismissModal")
     let backFrom = NavState.activeView;
     Navigation.dismissModal(backFrom)
       .then(() => { console.log("Going back from ", backFrom, " success!")})
@@ -297,8 +326,8 @@ export const NavigationUtil = {
   },
 
   back() {
+    console.log("CALLING BACK")
     let backFrom = NavState.activeView;
-    // console.log("Going back from", backFrom)
     NavState.pop();
     return Navigation.pop(backFrom)
       .then(() => { console.log("Going back from ", backFrom, " success!")})

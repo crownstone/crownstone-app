@@ -31,7 +31,6 @@ import { PictureCircle } from "../components/PictureCircle";
 import { TopBarUtil } from "../../util/TopBarUtil";
 
 
-
 export class RoomAdd extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  lang("Create_Room"), cancelModal: true});
