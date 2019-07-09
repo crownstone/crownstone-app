@@ -294,6 +294,7 @@ export class SetupHelper {
       adminKey:           keyMap[KEY_TYPES.ADMIN_KEY],
       memberKey:          keyMap[KEY_TYPES.MEMBER_KEY],
       basicKey:           keyMap[KEY_TYPES.BASIC_KEY],
+      localizationKey:    keyMap[KEY_TYPES.LOCALIZATION_KEY],
       serviceDataKey:     keyMap[KEY_TYPES.SERVICE_DATA_KEY],
       meshNetworkKey:     keyMap[KEY_TYPES.MESH_NETWORK_KEY],
       meshApplicationKey: keyMap[KEY_TYPES.MESH_APPLICATION_KEY],

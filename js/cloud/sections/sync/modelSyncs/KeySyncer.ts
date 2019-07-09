@@ -4,7 +4,6 @@
  *
  */
 
-
 import { CLOUD}               from "../../../cloudAPI";
 import { SyncingBase }        from "./SyncingBase";
 import { core } from "../../../../core";

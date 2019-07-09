@@ -167,12 +167,13 @@ interface nearestStone  {
 }
 
 interface keySet  {
-  adminKey:       string,
-  memberKey:      string,
-  basicKey:       string,
-  serviceDataKey: string,
-  referenceId:    string,
-  iBeaconUuid:    string,
+  adminKey:        string,
+  memberKey:       string,
+  basicKey:        string,
+  localizationKey: string,
+  serviceDataKey:  string,
+  referenceId:     string,
+  iBeaconUuid:     string,
 }
 
 interface crownstoneModes {
@@ -186,6 +187,7 @@ interface setupData {
   adminKey:           string,
   memberKey:          string,
   basicKey:           string,
+  localizationKey:    string,
   serviceDataKey:     string,
   meshNetworkKey:     string,
   meshApplicationKey: string,
