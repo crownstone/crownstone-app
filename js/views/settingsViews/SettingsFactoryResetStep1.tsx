@@ -18,8 +18,9 @@ import {colors, screenHeight, } from './../styles'
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
-export class SettingsFactoryResetStep1 extends Component<any, any> {
+export class SettingsFactoryResetStep1 extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Factory_Reset"), closeModal: true});
   }

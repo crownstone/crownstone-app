@@ -17,8 +17,9 @@ import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { LiveComponent } from "../../LiveComponent";
 
-export class SphereIntegrations extends Component<any, any> {
+export class SphereIntegrations extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Integrations"), closeModal: props.isModal ? true : undefined })
   }

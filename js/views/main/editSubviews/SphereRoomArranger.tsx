@@ -24,7 +24,6 @@ import { Util } from "../../../util/Util";
 import { Icon } from "../../components/Icon";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
-import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
@@ -33,8 +32,8 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({
       title: lang("Drag_it_around_"),
-      cancel: () => { NavigationUtil.back() },
-      save: () => {}
+      cancel: true,
+      save:   true,
     });
   }
 
@@ -55,7 +54,8 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
   }
 
   navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'save') {  this._storePositions(); }
+    if (buttonId === 'save')   { this._storePositions(); }
+    if (buttonId === 'cancel') { NavigationUtil.back();  }
   }
 
   componentDidMount() {

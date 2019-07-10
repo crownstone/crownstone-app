@@ -63,7 +63,13 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
   navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'edit') { NAVBAR_PARAMS_CACHE.edit() }
+    if (buttonId === 'edit') {
+      let { sphereId, sphere } = SphereUtil.getActiveSphere(core.store.getState());
+      NavigationUtil.launchModal( "SphereEdit", { sphereId: sphereId })
+    }
+    if (buttonId === 'save')   { core.eventBus.emit("save_positions" + this.viewId);  }
+    if (buttonId === 'cancel') { core.eventBus.emit("reset_positions" + this.viewId); }
+    if (buttonId === 'localization') { SphereUtil.finalizeLocalizationData(core.store.getState()).action() }
   }
 
   componentDidMount() {
@@ -331,22 +337,21 @@ function getTopBarProps(state, props, viewState, viewId) {
   if (viewState.arrangingRooms === true) {
     NAVBAR_PARAMS_CACHE = {
       title: lang("Move_rooms_around"),
-      left:  {id: 'cancel', component:'topbarCancelButton', props: {onPress:() => { core.eventBus.emit("reset_positions" + viewId); }}},
-      right: {id: 'save',   component:'topbarButton',       props: {onPress:() => { core.eventBus.emit("save_positions" + viewId);  }, text:lang("Save")}}
+      cancel: true,
+      save:   true,
     }
   }
   else if (viewState.zoomLevel === ZOOM_LEVELS.sphere || (sphereId === null && Object.keys(state.spheres).length > 0)) {
     NAVBAR_PARAMS_CACHE = {
       title: lang("Sphere_Overview"),
-      left: null,
-      right: null,
+      disableBack: true,
     }
   }
   else {
     if (sphereId === null) {
       NAVBAR_PARAMS_CACHE = {
         title: lang("Hello_there_"),
-        edit: () => { NavigationUtil.launchModal( "SphereEdit", {sphereId:sphereId})},
+        edit: true
       }
     }
     else {
@@ -354,10 +359,8 @@ function getTopBarProps(state, props, viewState, viewId) {
 
       NAVBAR_PARAMS_CACHE = {
         title: sphere.config.name,
-        left: finalizeLocalization.showItem ?
-          {id: 'localization', component:'topbarLeftButton', props: {item: <FinalizeLocalizationIcon />, onPress:finalizeLocalization.action}} :
-          null,
-        edit: () => { NavigationUtil.launchModal( "SphereEdit", {sphereId:sphereId})},
+        leftIcon: finalizeLocalization.showItem ? {id: 'localization', icon: require('../../images/icons/localizationIcon.png')} : null,
+        edit: true,
       }
     }
   }
@@ -365,5 +368,5 @@ function getTopBarProps(state, props, viewState, viewId) {
 }
 
 
-let NAVBAR_PARAMS_CACHE = null;
+let NAVBAR_PARAMS_CACHE : topbarOptions = null;
 

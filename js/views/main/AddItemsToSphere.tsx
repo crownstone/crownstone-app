@@ -21,14 +21,16 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
 
 let iconSize = 100;
 
-export class AddItemsToSphere extends Component<any, any> {
+export class AddItemsToSphere extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Add_to_Sphere"), closeModal:true});
   }
+
 
   render() {
     let hightlightAddCrownstoneButton = false;

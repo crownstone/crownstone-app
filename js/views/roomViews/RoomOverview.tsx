@@ -80,8 +80,18 @@ export class RoomOverview extends LiveComponent<any, any> {
   }
 
   navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'edit')  { NAVBAR_PARAMS_CACHE.edit(); }
-    if (buttonId === 'train') { NAVBAR_PARAMS_CACHE.nav.callback(); }
+    if (buttonId === 'edit')  { NavigationUtil.launchModal( "RoomEdit",{ sphereId: this.props.sphereId, locationId: this.props.locationId }); }
+    if (buttonId === 'train') {
+      if (this.viewingRemotely === true) {
+        Alert.alert(
+          lang("_Youre_not_in_the_Sphere__header"),
+          lang("_Youre_not_in_the_Sphere__body"),
+          [{text:lang("_Youre_not_in_the_Sphere__left")}])
+      }
+      else {
+        NavigationUtil.launchModal( "RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+      }
+    }
   }
 
 
@@ -315,34 +325,19 @@ function getTopBarProps(state, props, viewingRemotely) {
 
   NAVBAR_PARAMS_CACHE = { title: title }
 
-  let rightAction = () => { };
   let spherePermissions = Permissions.inSphere(props.sphereId);
 
   if (spherePermissions.editRoom === true) {
-    rightAction = () => {
-      NavigationUtil.launchModal( "RoomEdit",{ sphereId: props.sphereId, locationId: props.locationId });
-    };
-    NAVBAR_PARAMS_CACHE["edit"] = rightAction;
+    NAVBAR_PARAMS_CACHE["edit"] = true;
   }
   else if (spherePermissions.editRoom === false && enoughCrownstonesInLocations === true) {
-    rightAction = () => {
-      if (viewingRemotely === true) {
-        Alert.alert(
-          lang("_Youre_not_in_the_Sphere__header"),
-          lang("_Youre_not_in_the_Sphere__body"),
-          [{text:lang("_Youre_not_in_the_Sphere__left")}])
-      }
-      else {
-        NavigationUtil.launchModal( "RoomTraining_roomSize",{ sphereId: props.sphereId, locationId: props.locationId });
-      }
-    };
-    NAVBAR_PARAMS_CACHE["nav"] = {id:'train',text:'Train', callback: rightAction};
+    NAVBAR_PARAMS_CACHE["nav"] = {id:'train',text:'Train'};
   }
 
   return NAVBAR_PARAMS_CACHE;
 }
 
-let NAVBAR_PARAMS_CACHE = null;
+let NAVBAR_PARAMS_CACHE : topbarOptions = null;
 
 
 

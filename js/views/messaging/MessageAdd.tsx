@@ -33,7 +33,7 @@ export const ANYWHERE_IN_SPHERE = '__sphere__';
 
 export class MessageAdd extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("New_Message"), cancelModal: true, create: () => {}})
+    return TopBarUtil.getOptions({title: lang("New_Message"), cancelModal: true, create: true})
   }
 
   constructor(props) {

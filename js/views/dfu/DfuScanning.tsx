@@ -34,7 +34,7 @@ const DFU_BATCH_RSSI_THRESHOLD = -85;
 
 export class DfuScanning extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Looking_for_Crownstones"), next: () => {}});
+    return TopBarUtil.getOptions({title: lang("Looking_for_Crownstones"), next: true});
   }
 
   nativeEvents = [];
@@ -56,9 +56,9 @@ export class DfuScanning extends LiveComponent<any, any> {
     if (buttonId === 'next') {
       if (this.visibleDrawnStones.length === 0) {
         Alert.alert(
-lang("_No_Crownstones_in_range__header"),
-lang("_No_Crownstones_in_range__body"),
-[{text:lang("_No_Crownstones_in_range__left")}])
+          lang("_No_Crownstones_in_range__header"),
+          lang("_No_Crownstones_in_range__body"),
+          [{text:lang("_No_Crownstones_in_range__left")}])
       }
       else {
         NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})

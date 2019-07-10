@@ -17,9 +17,10 @@ import {IconButton} from "../components/IconButton";
 import {AppUtil} from "../../util/AppUtil";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
 
-export class SettingsRedownloadFromCloud extends Component<any, any> {
+export class SettingsRedownloadFromCloud extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Reset_from_Cloud"), closeModal: true});
   }

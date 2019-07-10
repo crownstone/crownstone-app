@@ -25,8 +25,9 @@ import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { ScanningForSetupCrownstonesBanner } from "../components/animated/ScanningForSetupCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
+import { LiveComponent } from "../LiveComponent";
 
-export class ScanningForSetupCrownstones extends Component<any, any> {
+export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  lang("Add_Crownstones"), closeModal: true});
   }

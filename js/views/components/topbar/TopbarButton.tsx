@@ -20,6 +20,7 @@ let barHeight = topBarHeight - statusBarHeight;
 
 export class TopbarButton extends Component<any, any> {
   render() {
+    console.log("HERE")
     let alignmentStyle = this.props.alignmentStyle || topBarStyle.topBarRightTouch;
     let style = [alignmentStyle, this.props.style] //, {position:'relative', left:16, paddingRight:16, backgroundColor:"#f00"}
 

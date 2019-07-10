@@ -40,7 +40,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class DeviceEdit extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Edit_Device"), cancelModal: true, save:()=>{}});
+    return TopBarUtil.getOptions({title:  lang("Edit_Device"), cancelModal: true, save: true});
   }
 
   deleting : boolean = false;

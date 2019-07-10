@@ -29,9 +29,10 @@ import {CLOUD} from "../../cloud/cloudAPI";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
 
-export class RoomTraining extends Component<any, any> {
+export class RoomTraining extends LiveComponent<any, any> {
   static options(props) {
     let ai = Util.data.getAiData(core.store.getState(), props.sphereId);
     return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name)});
@@ -51,6 +52,21 @@ export class RoomTraining extends Component<any, any> {
     this.invalidMeasurements = [];
     this.invalidPointThreshold = Math.round(0.75*props.sampleSize);
     this.noSignalTimeout = undefined;
+  }
+
+  navigationButtonPressed({buttonId}) {
+    if (buttonId === 'cancel') {
+      FingerprintManager.pauseCollectingFingerprint();
+      Alert.alert(
+        lang("_Do_you_want_to_cancel_tr_header"),
+        lang("_Do_you_want_to_cancel_tr_body"),
+        [
+          {text:lang("_Do_you_want_to_cancel_tr_left"), onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
+          {text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); NavigationUtil.dismissModal(); }}
+        ],
+        { cancelable : false }
+      )
+    }
   }
 
   componentDidMount() {
@@ -188,19 +204,6 @@ export class RoomTraining extends Component<any, any> {
     let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
 
-    let cancelMethod = () => {
-      FingerprintManager.pauseCollectingFingerprint();
-      Alert.alert(
-        lang("_Do_you_want_to_cancel_tr_header"),
-        lang("_Do_you_want_to_cancel_tr_body"),
-[
-         {text:lang("_Do_you_want_to_cancel_tr_left"), onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
-         {text:lang("_Do_you_want_to_cancel_tr_right"), onPress: () => { this.stop(true); NavigationUtil.dismissModal(); }}
-        ],
-        { cancelable : false }
-      )
-    };
-
     let quitMethod = () => { NavigationUtil.dismissModal(); };
 
     let content = undefined;
@@ -210,7 +213,7 @@ export class RoomTraining extends Component<any, any> {
           ai={ai}
           next={() => {
             this.setState({phase:1});
-            TopBarUtil.updateOptions(this.props.componentId, {cancel: cancelMethod});
+            TopBarUtil.updateOptions(this.props.componentId, {cancel: true});
             this.start();
           }}
           sampleSize={this.props.sampleSize}

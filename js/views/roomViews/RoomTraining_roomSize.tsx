@@ -21,6 +21,7 @@ import { Util }         from "../../util/Util";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
 
 let buttonTextStyle : TextStyle = {
@@ -56,7 +57,7 @@ let textContainerStyle : ViewStyle = {
   paddingLeft: 10
 };
 
-export class RoomTraining_roomSize extends Component<any, any> {
+export class RoomTraining_roomSize extends LiveComponent<any, any> {
   static options(props) {
     let ai = Util.data.getAiData(core.store.getState(), props.sphereId);
     return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name), closeModal: true});

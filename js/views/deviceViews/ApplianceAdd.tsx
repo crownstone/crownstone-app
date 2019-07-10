@@ -29,7 +29,7 @@ import { LiveComponent } from "../LiveComponent";
 
 export class ApplianceAdd extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Add_Device_Type"), cancelModal: true, create:()=>{}});
+    return TopBarUtil.getOptions({title:  lang("Add_Device_Type"), cancelModal: true, create: true});
   }
 
   refName : string;

@@ -18,8 +18,9 @@ import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { LiveComponent } from "../../LiveComponent";
 
-export class SphereUserInvite extends Component<any, any> {
+export class SphereUserInvite extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Invite"), closeModal: true});
   }

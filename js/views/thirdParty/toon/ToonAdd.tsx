@@ -23,9 +23,10 @@ import { LOGe } from "../../../logging/Log";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { LiveComponent } from "../../LiveComponent";
 
 
-export class ToonAdd extends Component<any, any> {
+export class ToonAdd extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Toon"), closeModal: true})
   }

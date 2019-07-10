@@ -24,13 +24,12 @@ import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
-import { Navigation } from "react-native-navigation";
 
 
 
 export class RoomEdit extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Edit_Room"), cancelModal: true, save:()=>{}});
+    return TopBarUtil.getOptions({title:  lang("Edit_Room"), cancelModal: true, save: true});
   }
 
   deleting : boolean = false;

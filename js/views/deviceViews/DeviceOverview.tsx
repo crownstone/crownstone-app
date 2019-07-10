@@ -36,7 +36,6 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
-import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
@@ -95,7 +94,16 @@ export class DeviceOverview extends LiveComponent<any, any> {
   }
 
   navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'edit') { NAVBAR_PARAMS_CACHE.nav.onPress() }
+    if (buttonId === 'deviceEdit')    {
+      NavigationUtil.launchModal( "DeviceEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+    }
+    if (buttonId === 'locked')        {
+      Alert.alert(
+        lang("_Crownstone_is_Locked___Y_header"),
+        lang("_Crownstone_is_Locked___Y_body"),
+        [{text:lang("_Crownstone_is_Locked___Y_left")}]);
+    }
+    if (buttonId === 'behaviourEdit') { NavigationUtil.launchModal( "DeviceBehaviourEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});  }
   }
 
   componentDidMount() {
@@ -317,54 +325,34 @@ function getTopBarProps(store, state, props, swiperIndex, scrolling) {
   }
 
   let rightLabel = null;
-  let rightItem  = null;
-  let rightAction = null;
+  let rightId  = null;
   switch (swiperIndex) {
     case summaryIndex:
       if (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) {
         rightLabel =  lang("Edit");
-        rightAction = () => { NavigationUtil.launchModal( "DeviceEdit",{sphereId: props.sphereId, stoneId: props.stoneId});};
+        rightId = 'deviceEdit';
       }
       break;
     case behaviourIndex:
       if (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
         rightLabel =  lang("Change");
         if (stone.config.locked === true) {
-          rightAction = () => { Alert.alert(
-            lang("_Crownstone_is_Locked___Y_header"),
-            lang("_Crownstone_is_Locked___Y_body"),
-  [{text:lang("_Crownstone_is_Locked___Y_left")}])};
+          rightId = 'locked';
         }
         else {
-          rightAction = () => { NavigationUtil.launchModal( "DeviceBehaviourEdit",{sphereId: props.sphereId, stoneId: props.stoneId}); }
+          rightId = 'behaviourEdit';
         }
       }
       break;
   }
 
   if (scrolling) {
-    rightItem = (
-      <View style={{ flex:1, alignItems:'flex-end', justifyContent:'center', paddingTop: 0 }}>
-        <ActivityIndicator animating={true} size='small' color={colors.iosBlue.hex} />
-      </View>
-    )
-  }
-
-  if (rightItem) {
     NAVBAR_PARAMS_CACHE = {
       title: element.config.name,
-      right: {
-        id: 'loading',
-        component:'topbarButton',
-        props: {
-          text: rightLabel,
-          onPress: rightAction,
-          item: rightItem,
-        }
-      },
+      rightLoading: true,
     };
   }
-  else if (rightAction === null) {
+  else if (rightId === null) {
     NAVBAR_PARAMS_CACHE = {
       title: element.config.name,
     };
@@ -373,9 +361,8 @@ function getTopBarProps(store, state, props, swiperIndex, scrolling) {
     NAVBAR_PARAMS_CACHE = {
       title: element.config.name,
       nav: {
-        id: 'edit',
+        id: rightId,
         text: rightLabel,
-        onPress: rightAction,
       },
     };
   }
@@ -383,7 +370,7 @@ function getTopBarProps(store, state, props, swiperIndex, scrolling) {
   return NAVBAR_PARAMS_CACHE;
 }
 
-let NAVBAR_PARAMS_CACHE = null;
+let NAVBAR_PARAMS_CACHE : topbarOptions = null;
 
 
 let swiperStyles = StyleSheet.create({

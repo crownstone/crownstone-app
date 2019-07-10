@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
-  Text,
+  Text,Image,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -26,6 +26,7 @@ import Svg,{
 } from 'react-native-svg';
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { ScaledImage } from "../components/ScaledImage";
 
 
 export class LocalizationSetupStep1 extends Component<any, any> {
@@ -312,7 +313,7 @@ export class LocalizationSetupStep1 extends Component<any, any> {
           <View style={{flex:1}} />
           <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Weve_added_this_button_to") }</Text>
             <View style={{flex:1}} />
-            <FinalizeLocalizationIcon />
+            <ScaledImage source={require('../../images/icons/localizationIcon.png')} sourceWidth={100} sourceHeight={91} targetWidth={50} />
             <View style={{flex:1}} />
             <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Once_youve_added_all_your") }</Text>
               <View style={{flex:1}} />

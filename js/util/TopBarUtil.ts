@@ -2,36 +2,7 @@ import { Languages } from "../Languages";
 import { Navigation } from "react-native-navigation";
 import { NavigationUtil } from "./NavigationUtil";
 import { Platform } from "react-native";
-
-interface topbarOptions {
-  title?: string,
-  left? : topbarComponent,
-  right? : topbarComponent,
-
-  // left button presets
-  disableBack? : boolean,
-  cancelModal? : boolean,
-  closeModal? : boolean,
-  cancel? : () => void,
-
-  // right button presets
-  nav?: topbarNavComponent,
-  edit? : () => void,
-  save? : () => void,
-  next? : () => void,
-  create? : () => void,
-}
-
-interface topbarNavComponent {
-  id: string,
-  text: string,
-  callback : () => void
-}
-interface topbarComponent {
-  id: string,
-  component: string,
-  props? : {}
-}
+import { LoadingTopBarButton } from "../views/components/topbar/LoadingTopBarButton";
 
 export const TopBarUtil = {
 
@@ -47,41 +18,48 @@ export const TopBarUtil = {
     if (props === null) { return; }
 
     let leftButtons = [];
-    if (props.left) {
-      leftButtons.push({
-        id: props.left.id,
-        component: {
-          name: props.left.component,
-          passProps: props.left.props || {}
-        },
-      })
-    }
+    // if (props.left) {
+    //   leftButtons.push({
+    //     id: props.left.id,
+    //     component: {
+    //       name: props.left.component,
+    //       passProps: props.left.props || {}
+    //     },
+    //   })
+    // }
 
-    if (props.disableBack === true) {
+    if (props.disableBack === true && Platform.OS === 'ios') {
       leftButtons.push({id: 'disableBack', component: { name: 'topbarEmptyButton' }});
     }
     if (props.closeModal !== undefined) {
-      leftButtons.push(getLeftButtonCloseModal('closeModal', Languages.get("__UNIVERSAL", "Back")));
+      leftButtons.push(getLeftButton('closeModal', Languages.get("__UNIVERSAL", "Back")));
     }
 
     if (props.cancelModal !== undefined) {
-      leftButtons.push(getLeftButtonCloseModal('cancelModal', Languages.get("__UNIVERSAL", "Cancel")));
+      leftButtons.push(getLeftButton('cancelModal', Languages.get("__UNIVERSAL", "Cancel")));
     }
 
-    if (props.cancel && typeof props.cancel === "function") {
-      leftButtons.push(getLeftButton('cancel', Languages.get("__UNIVERSAL", "Cancel"), props.cancel));
+    if (props.cancel) {
+      leftButtons.push(getLeftButton('cancel', Languages.get("__UNIVERSAL", "Cancel")));
+    }
+    if (props.leftIcon) {
+      leftButtons.push({
+          id: props.leftIcon.id,
+          icon: props.leftIcon.icon,
+          showAsAction: 'always',
+        })
     }
 
     let rightButtons = [];
-    if (props.right) {
-      rightButtons.push({
-        id: props.right.id,
-        component: {
-          name: props.right.component,
-          passProps: props.right.props || {}
-        },
-      })
-    }
+    // if (props.right) {
+    //   rightButtons.push({
+    //     id: props.right.id,
+    //     component: {
+    //       name: props.right.component,
+    //       passProps: props.right.props || {}
+    //     },
+    //   })
+    // }
 
     if (props.nav) {
       rightButtons.push(getButtonComponent(props.nav.id, props.nav.text));
@@ -98,44 +76,57 @@ export const TopBarUtil = {
     if (props.create) {
       rightButtons.push(getButtonComponent('create', Languages.get("__UNIVERSAL", "Create")()));
     }
+    if (props.rightLoading && Platform.OS === 'ios') {
+      rightButtons.push({
+        id: 'loading',
+        component:'topbarButton',
+        props: {
+          item: LoadingTopBarButton,
+        }
+      });
+    }
 
     let results = { topBar: {} };
     if (!partialUpdate || props.title) { results.topBar["title"] = {text: props.title}; }
-    if (!partialUpdate || leftButtons.length  > 0) {
     if (!partialUpdate || rightButtons.length > 0) { results.topBar["rightButtons"] = rightButtons; }
+    if (!partialUpdate || leftButtons.length  > 0) {
       // this is here so it wont interfere with the back button.
-      if (Platform.OS === 'android' && leftButtons.length !== 0) {
+      if (Platform.OS === 'android' && (leftButtons.length !== 0 || props.disableBack)) {
         results.topBar["leftButtons"] = leftButtons;
+        // results.topBar.
       }
-      else {
+      else if (Platform.OS === 'ios') {
         results.topBar["leftButtons"] = leftButtons;
       }
     }
 
-    // console.log("Setting Topbar Options", results)
+    console.log("Setting Topbar Options", results)
     return results;
   },
 }
 
 
-function getLeftButton(id, label, callback) {
-  return {
-    id: id,
-    showAsAction: 'always',
-    component: {
-      name: id === 'cancel' ? 'topbarCancelButton' : 'topbarLeftButton',
-      passProps: {
-        text: label, onPress: callback
-      }
+function getLeftButton(id, label) {
+  if (Platform.OS === 'android') {
+    return {
+      id: id,
+      icon: require('../images/icons/backArrow.png'),
+      showAsAction: 'always',
+    }
+  }
+  else {
+    return {
+      id: id,
+      text: label
     }
   }
 }
 
-function getLeftButtonCloseModal(id, label) {
-  return getLeftButton(id,label,() => { NavigationUtil.dismissModal(); })
-}
-
 function getButtonComponent(id, label) {
+  if (Platform.OS === 'android') {
+    label = label.toUpperCase();
+  }
+
   return {
     id: id,
     text:label,

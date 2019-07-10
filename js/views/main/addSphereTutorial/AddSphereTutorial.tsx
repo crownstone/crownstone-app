@@ -17,8 +17,9 @@ import { core } from "../../../core";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { HiddenFadeInView } from "../../components/animated/FadeInView";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { LiveComponent } from "../../LiveComponent";
 
-export class AddSphereTutorial extends Component<any, any> {
+export class AddSphereTutorial extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({ title: lang("New_Sphere"), closeModal: true});
   }

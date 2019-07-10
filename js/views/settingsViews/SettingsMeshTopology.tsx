@@ -28,15 +28,13 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
-
 let MESH_TIMEOUT = 3*24*3600*1000;
-
 
 export class SettingsMeshTopology extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({
       title: lang("Mesh_Topology"),
-      nav: {id: 'networks', text: lang('Networks'), callback: () => { NavigationUtil.navigate("SettingsMeshOverview"); }}
+      nav: {id: 'networks', text: lang('Networks')}
     })
   }
 
@@ -52,6 +50,12 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     super(props);
     this.viewId = xUtil.getUUID();
     this.state = { leftOffset: new Animated.Value(0) };
+  }
+
+  navigationButtonPressed({buttonId}) {
+    if (buttonId === 'networks') {
+      NavigationUtil.navigate("SettingsMeshOverview");
+    }
   }
 
   componentDidMount() {

@@ -13,10 +13,11 @@ import {DebugIconSelection} from "./DebugIconSelection";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
 
 
-export class IconDebug extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
+export class IconDebug extends LiveComponent<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  "Pick an Icon", closeModal: true});
   }

@@ -14,6 +14,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopbarBackButton } from "../components/topbar/TopbarButton";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { LiveComponent } from "../LiveComponent";
 
 
 
@@ -279,7 +280,7 @@ export const getRandomDeviceIcon = function() {
   return set[Math.floor(Math.random()*set.length)]
 }
 
-export class DeviceIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
+export class DeviceIconSelection extends LiveComponent<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  lang("Pick_an_Icon"), closeModal: true });
   }

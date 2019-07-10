@@ -33,7 +33,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class RoomAdd extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Create_Room"), cancelModal: true});
+    return TopBarUtil.getOptions({title:  lang("Create_Room"), cancel: true});
   }
 
   removePictureQueue = [];
@@ -47,20 +47,20 @@ export class RoomAdd extends LiveComponent<any, any> {
       icon: getRandomRoomIcon(),
       picture: null
     };
+  }
 
-    if (this.props.componentId) {
-      TopBarUtil.updateOptions(this.props.componentId, { cancel: () => {
-        this.cancelEdit();
-        if (this.props.isModal) {
-          NavigationUtil.dismissModal();
-        }
-        else {
-          NavigationUtil.back();
-        }
-      }});
+  navigationButtonPressed({buttonId}) {
+    if (buttonId === 'cancel') {
+      this.cancelEdit();
+      if (this.props.isModal) {
+        NavigationUtil.dismissModal();
+      }
+      else {
+        NavigationUtil.back();
+      }
     }
   }
-  
+
   componentWillUnmount(): void {
     this.cancelEdit();
   }

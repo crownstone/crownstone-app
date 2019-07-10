@@ -49,10 +49,10 @@ export let DAYS_FULL = [
 export class DeviceScheduleEdit extends LiveComponent<any, any> {
   static options(props) {
     if (props.scheduleId) {
-      return TopBarUtil.getOptions({title:  lang("Edit_Schedule"), cancelModal: true, save:()=>{}});
+      return TopBarUtil.getOptions({title:  lang("Edit_Schedule"), cancelModal: true, save: true});
     }
     else {
-      return TopBarUtil.getOptions({title:  lang("Add_Schedule"), cancelModal: true, create:()=>{}});
+      return TopBarUtil.getOptions({title:  lang("Add_Schedule"), cancelModal: true, create: true});
     }
   }
 

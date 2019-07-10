@@ -84,7 +84,7 @@ function getTopBarProps(store, state, props, viewState) {
   if (viewState.editMode === true) {
     NAVBAR_PARAMS_CACHE = {
       title: element.config.name,
-      nav: {id:"save", text:"Save", callback: () => {}},
+      save: true,
       closeModal: true,
     };
   }
@@ -99,4 +99,4 @@ function getTopBarProps(store, state, props, viewState) {
   return NAVBAR_PARAMS_CACHE;
 }
 
-let NAVBAR_PARAMS_CACHE = null;
+let NAVBAR_PARAMS_CACHE : topbarOptions = null;
