@@ -280,6 +280,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			var memberKey: String? = null
 			var guestKey: String? = null
 			var serviceDataKey: String? = null
+			var localizationKey: String? = null
 
 			if (keySetJson.hasKey("adminKey")) {
 				adminKey = keySetJson.getString("adminKey")
@@ -293,7 +294,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			if (keySetJson.hasKey("serviceDataKey")) {
 				serviceDataKey = keySetJson.getString("serviceDataKey")
 			}
-			val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey)
+			if (keySetJson.hasKey("localizationKey")) {
+				localizationKey = keySetJson.getString("localizationKey")
+			}
+			val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey, localizationKey)
 
 			val settings = SphereSettings(keySet, null, ibeaconUuid, 0)
 			sphereSettings.put(sphereId, settings)
@@ -960,6 +964,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		var memberKey: String?
 		var guestKey: String?
 		var serviceDataKey: String?
+		var localizationKey: String?
 		var meshDevKey: String?
 		var meshAppKey: String?
 		var meshNetKey: String?
@@ -975,6 +980,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			memberKey = config.getString("memberKey")
 			guestKey = config.getString("basicKey")
 			serviceDataKey = config.getString("serviceDataKey")
+			localizationKey = config.getString("localizationKey")
 			meshDevKey = config.getString("meshDeviceKey")
 			meshAppKey = config.getString("meshApplicationKey")
 			meshNetKey = config.getString("meshNetworkKey")
@@ -1008,7 +1014,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 
 
-		val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey)
+		val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey, localizationKey)
 		val meshKeySet = MeshKeySet(meshDevKey, meshAppKey, meshNetKey)
 		val ibeaconData = IbeaconData(iBeaconUuid, iBeaconMajor, iBeaconMinor, 0)
 
