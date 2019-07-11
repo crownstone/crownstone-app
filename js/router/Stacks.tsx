@@ -37,7 +37,7 @@ export const Stacks = {
           { component: {name: "LoginSplash"} },
         ],
         options: {
-          topBar: { visible: false }
+          topBar: { visible: false, height:0 }
         }
       },
     }

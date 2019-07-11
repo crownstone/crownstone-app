@@ -22,7 +22,7 @@ import { LiveComponent } from "../LiveComponent";
 
 export class AddCrownstone extends LiveComponent<any, any> {
   static options = {
-    topBar: { visible: false }
+    topBar: { visible: false, height: 0 }
   };
 
   interviewData;

@@ -20,7 +20,7 @@ import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
 
 export class DfuFinished extends LiveComponent<any, any> {
   static options = {
-    topBar: { visible: false }
+    topBar: { visible: false, height: 0 }
   };
 
   _interview : Interview;
