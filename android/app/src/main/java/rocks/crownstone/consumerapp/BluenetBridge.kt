@@ -1152,10 +1152,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun broadcastSwitch(referenceId: String, stoneId: String, switchValDouble: Double, callback: Callback) {
-		Log.i(TAG, "broadcastSwitch referenceId=$referenceId stoneId=$stoneId switchVal=$switchValDouble")
-		resolveCallback(callback)
-		// TODO
+	fun broadcastSwitch(referenceId: String, stoneIdInt: Int, switchValDouble: Double, callback: Callback) {
+		Log.i(TAG, "broadcastSwitch referenceId=$referenceId stoneId=$stoneIdInt switchVal=$switchValDouble")
+		val stoneId = Conversion.toUint8(stoneIdInt)
+		val switchVal = convertSwitchVal(switchValDouble)
+		bluenet.broadCast.switch(referenceId, stoneId, switchVal)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
@@ -1864,6 +1867,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			DeviceType.CROWNSTONE_BUILTIN -> "builtin"
 			DeviceType.CROWNSTONE_DONGLE -> "crownstoneUSB"
 			DeviceType.GUIDESTONE -> "guidestone"
+			DeviceType.CROWNSTONE_BUILTIN_ONE -> "builtinOne"
 			else -> "undefined"
 		}
 		serviceDataMap.putString("deviceType", deviceTypeString)
