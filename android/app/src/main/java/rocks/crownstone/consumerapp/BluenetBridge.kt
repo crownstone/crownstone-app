@@ -1870,6 +1870,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			DeviceType.CROWNSTONE_BUILTIN_ONE -> "builtinOne"
 			else -> "undefined"
 		}
+		if (deviceTypeString == "undefined") {
+			Log.e(TAG, "Device type undefined: $device")
+		}
 		serviceDataMap.putString("deviceType", deviceTypeString)
 
 		serviceDataMap.putInt("rssiOfExternalCrownstone", serviceData.externalRssi.toInt())
