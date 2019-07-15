@@ -1683,6 +1683,10 @@ export default {
   },
   SettingConstructor:{
     __filename: "../js/util/SettingConstructor.tsx",
+    _Are_you_sure___Crownston_header:    function() { return "Are you sure?" },
+    _Are_you_sure___Crownston_body:      function() { return "Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either." },
+    _Are_you_sure___Crownston_left:      function() { return "Cancel" },
+    _Are_you_sure___Crownston_right:     function() { return "OK" },
     _Log_out__Are_you_sure__I_header:    function() { return "Log out" },
     _Log_out__Are_you_sure__I_body:      function() { return "Are you sure? I will tidy up and close the app. Next time you open it you can log in again!" },
     _Log_out__Are_you_sure__I_left:      function() { return "Cancel" },

@@ -15,6 +15,7 @@ import { IconButton }         from '../views/components/IconButton'
 import { AlternatingContent } from "../views/components/animated/AlternatingContent";
 import { core } from "../core";
 import { NavigationUtil } from "./NavigationUtil";
+import { LOGe } from "../logging/Log";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -159,7 +160,6 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
 
   if (Platform.OS !== 'android') {
     items.push({id: 'settingsSpacer', type: 'spacer'})
-  }
 
   items.push({
     id:'Log Out',
@@ -175,8 +175,33 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
           {text: lang("_Log_out__Are_you_sure__I_right"), onPress: () => { AppUtil.logOut(store); }}
         ])
       }});
+  }
 
 
+  if (Platform.OS !== 'android') {
+    items.push({id: 'settingsSpacer', type: 'spacer'})
+    items.push({
+      id: 'quit',
+      label: lang("Force_Quit"),
+      icon:  getIcon("md-remove-circle", 32, colors.white.hex, colors.darkRed.hex),
+      callback: () => {
+        Alert.alert(
+          lang("_Are_you_sure___Crownston_header"),
+          lang("_Are_you_sure___Crownston_body"),
+          [{text: lang("_Are_you_sure___Crownston_left"), style: 'cancel'},
+            {
+              text: lang("_Are_you_sure___Crownston_right"), onPress: () => {
+                try {
+                  AppUtil.quit();
+                }
+                catch(err) {
+                  LOGe.info("Failed to quit.", err);
+                }
+              }}
+          ])
+      }
+    });
+  }
 
   return items;
 };

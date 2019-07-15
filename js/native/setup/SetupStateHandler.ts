@@ -97,7 +97,12 @@ class SetupStateHandlerClass {
 
           this._stonesInSetupStateAdvertisements[handle] = setupAdvertisement;
           this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
-          core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
+          if (this._stonesInSetupStateTypes[handle] === undefined && core.sessionMemory.developmentEnvironment === false) {
+            delete this._stonesInSetupStateTypes[handle];
+          }
+          else {
+            core.eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
+          }
         }
 
         if (emitDiscovery) {

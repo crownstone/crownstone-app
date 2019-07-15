@@ -30,7 +30,7 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
   constructor(props) {
     super(props);
 
-    this.baseHeight = props.height || 90;
+    this.baseHeight = props.height || 100;
 
     this.state = {
       name: props.item.name,
@@ -102,9 +102,9 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
           .then(() => {  this.setState({pendingCommand: false})})
           .catch((err) => {
             Alert.alert(
-lang("_Something_went_wrong_____header"),
-lang("_Something_went_wrong_____body"),
-[{text:lang("_Something_went_wrong_____left")}]
+              lang("_Something_went_wrong_____header"),
+              lang("_Something_went_wrong_____body"),
+      [{text:lang("_Something_went_wrong_____left")}]
             );
             this.setState({pendingCommand: false});
           })
