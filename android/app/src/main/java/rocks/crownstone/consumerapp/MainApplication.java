@@ -22,6 +22,7 @@ import com.facebook.soloader.SoLoader;
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
 import com.reactnativenavigation.react.ReactGateway;
+//import com.reactnativenavigation.react.SyncUiImplementation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,11 @@ public class MainApplication extends NavigationApplication {
 			protected String getJSMainModuleName() {
 				return "index";
 			}
+
+//			@Override
+//			protected UIImplementationProvider getUIImplementationProvider() {
+//				return new SyncUiImplementation.Provider();
+//			}
 		};
 		return new ReactGateway(this, isDebug(), host);
 	}
@@ -77,6 +83,6 @@ public class MainApplication extends NavigationApplication {
 		super.onCreate();
 		long size = 50L * 1024L * 1024L; // 50 MB
 		ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
-		SoLoader.init(this, /* native exopackage */ false);
+//		SoLoader.init(this, /* native exopackage */ false);
 	}
 }

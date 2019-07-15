@@ -77,7 +77,11 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js"
+//        root     : "../../",
+        entryFile: "index.js",
+//        bundleAssetName: "index.android.bundle",
+//        bundleInAlpha: true,
+//        bundleInBeta: true,
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
