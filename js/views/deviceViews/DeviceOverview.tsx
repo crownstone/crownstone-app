@@ -196,10 +196,10 @@ export class DeviceOverview extends LiveComponent<any, any> {
     let hasError        = stone.errors.hasError;
     let mustUpdate      = xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
     let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && xUtil.versions.canUpdate(stone, state) && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
-    let hasBehaviour    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
-    let hasPowerMonitor = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
-    let hasScheduler    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
-    let hasActivityLog  = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin;
+    let hasBehaviour    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
+    let hasPowerMonitor = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
+    let hasScheduler    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
+    let hasActivityLog  = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
     let deviceType      = stone.config.type;
 
     // if this stone requires to be dfu-ed to continue working, block all other actions.

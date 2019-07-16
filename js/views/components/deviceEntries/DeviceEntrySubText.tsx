@@ -18,7 +18,7 @@ export class DeviceEntrySubText extends Component<any, any> {
     let currentUsage = this.props.currentUsage;
     let rssi = this.props.rssi;
     let disabled = this.props.disabled;
-    let measuresPower = this.props.deviceType === STONE_TYPES.plug || this.props.deviceType === STONE_TYPES.builtin;
+    let measuresPower = this.props.deviceType === STONE_TYPES.plug || this.props.deviceType === STONE_TYPES.builtin || this.props.deviceType === STONE_TYPES.builtinOne;
 
     if (this.props.statusTextOverride) {
       return (

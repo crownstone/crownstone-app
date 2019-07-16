@@ -115,7 +115,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
   constructStoneOptions(stone, state) {
     let items = [];
-    let canSwitch = stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.plug;
+    let canSwitch = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
     let hasAppliance = canSwitch && this.state.applianceId;
 
     if (this.state.applianceId && hasAppliance) {
@@ -234,12 +234,11 @@ lang("_Permission_Required__Onl_body"),
         });
       }
 
-      if (state.user.betaAccess && this.state.stoneType === STONE_TYPES.builtin) {
-        if (xUtil.versions.canIUse(stone.config.firmwareVersion, '2.1.0')) {
+      if (this.state.stoneType === STONE_TYPES.builtinOne) {
           items.push({
             label: lang("Enable_Switchcraft"),
             type: 'switch',
-            experimental: true, hasHelp: true, onHelp: () => {
+            hasHelp: true, onHelp: () => {
              NavigationUtil.navigate( "SwitchCraftInformation()")
             },
             icon: <IconButton name="md-power" size={22} button={true} color="#fff"
@@ -254,21 +253,6 @@ lang("_Permission_Required__Onl_body"),
             type: 'explanation',
             below: true
           });
-        }
-        else {
-          items.push({label: lang("SWITCHCRAFT"), type: 'explanation', below: false, alreadyPadded: true});
-          items.push({
-            label: lang("Firmware_update_required_"),
-            type: 'disabledInfo',
-            icon: <IconButton name="md-power" size={22} button={true} color="#fff"
-                              buttonStyle={{backgroundColor: colors.purple.hex}}/>,
-          });
-          items.push({
-            label: lang("Use_modified_wall_switches"),
-            type: 'explanation',
-            below: true
-          });
-        }
       }
     }
     else {

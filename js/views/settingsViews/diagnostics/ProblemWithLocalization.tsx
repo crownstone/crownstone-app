@@ -355,7 +355,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     }
     else {
       let stone = stones[this.state.userInputProblemCrownstoneId];
-      if (stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin && this.state.stoneTypeWarningRead === true) {
+      if (stone.config.type === STONE_TYPES.plug || ((stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne) && this.state.stoneTypeWarningRead === true)) {
         if (stone.config.tapToToggle) {
           return (
             <DiagSingleButtonGoBack
@@ -386,7 +386,7 @@ export class ProblemWithLocalization extends Component<any, any> {
           }
         }
       }
-      else if (stone.config.type === STONE_TYPES.builtin) {
+      else if (stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne) {
         return (
           <DiagSingleButton
             visible={this.state.visible}

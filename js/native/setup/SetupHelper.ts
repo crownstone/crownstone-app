@@ -114,7 +114,7 @@ export class SetupHelper {
               // if we know this crownstone, its localId is in the mapProvider which we can look for with the cloudId
               let localId = MapProvider.cloud2localMap.stones[this.stoneIdInCloud] || this.stoneIdInCloud;
               let isPlug = this.type === STONE_TYPES.plug;
-              let canSwitch = this.type === STONE_TYPES.plug || this.type === STONE_TYPES.builtin;
+              let canSwitch = this.type === STONE_TYPES.plug || this.type === STONE_TYPES.builtin || this.type === STONE_TYPES.builtinOne;
               let familiarCrownstone = false;
               let finalizeSetupStoneAction = {
                 type:           "ADD_STONE",
