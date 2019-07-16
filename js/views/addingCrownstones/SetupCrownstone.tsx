@@ -73,7 +73,6 @@ export class SetupCrownstone extends LiveComponent<any, any> {
 
   _disableBackButton() {
     TopBarUtil.updateOptions(this.props.componentId, {title:  lang("New_Crownstone"), disableBack: true})
-    // TODO: disable android back button
   }
 
 

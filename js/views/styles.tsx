@@ -23,9 +23,12 @@ export let availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMarg
 
 Navigation.constants()
   .then((constants) => {
-    statusBarHeight = constants.statusBarHeight;
-    topBarHeight = constants.topBarHeight;
-    tabBarHeight = constants.bottomTabsHeight;
+    let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
+    statusBarHeight = Platform.OS === 'android' ? 0 : tmpStatusBarHeight;
+
+    topBarHeight = constants.topBarHeight > 0 ? constants.topBarHeight : topBarHeight;
+    tabBarHeight = constants.bottomTabsHeight > 0 ? constants.bottomTabsHeight : tabBarHeight;
+
     availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
     availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
   })

@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { colors} from "../styles";
 import { core } from "../../core";
-import { Pagination } from 'react-native-snap-carousel';
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { ScanningForSetupCrownstones } from "./ScanningForSetupCrownstones";
 import { NavigationUtil } from "../../util/NavigationUtil";

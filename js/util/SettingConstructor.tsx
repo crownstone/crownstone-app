@@ -178,7 +178,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
   }
 
 
-  if (Platform.OS !== 'android') {
+  if (Platform.OS === 'android') {
     items.push({id: 'settingsSpacer', type: 'spacer'})
     items.push({
       id: 'quit',

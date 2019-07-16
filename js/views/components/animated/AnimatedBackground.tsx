@@ -6,9 +6,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
+  Animated, Platform,
   View
-} from 'react-native';
+} from "react-native";
 
 import { styles, screenHeight, topBarHeight, tabBarHeight, screenWidth, statusBarHeight, colors } from "../../styles";
 import {BackgroundImage} from "../BackgroundImage";
@@ -69,7 +69,7 @@ export class AnimatedBackground extends Component<any, any> {
         <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>
           <BackgroundImage height={height} image={this.animatedImage} />
         </Animated.View>
-        { this.props.dimStatusBar ? <View style={{width:screenWidth, height: statusBarHeight, backgroundColor: colors.black.rgba(0.3)}} /> : undefined }
+        { this.props.dimStatusBar && Platform.OS !== 'android' ? <View style={{width:screenWidth, height: statusBarHeight, backgroundColor: colors.black.rgba(0.3)}} /> : undefined }
         { this.props.hideOrangeBar !== true ? <NotificationLine notificationsVisible={!this.props.hideNotification} /> : true }
         <View style={{flex:1, overflow:"hidden"}}>
           { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}

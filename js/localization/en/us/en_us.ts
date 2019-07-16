@@ -1691,6 +1691,7 @@ export default {
     _Log_out__Are_you_sure__I_body:      function() { return "Are you sure? I will tidy up and close the app. Next time you open it you can log in again!" },
     _Log_out__Are_you_sure__I_left:      function() { return "Cancel" },
     _Log_out__Are_you_sure__I_right:     function() { return "OK" },
+    Force_Quit:                          function() { return "Force Quit" },
     My_Account:                          function() { return "My Account" },
     My_AccountLabel:                     function() { return "MY PROFILE" },
     Privacy:                             function() { return "Privacy" },

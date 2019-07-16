@@ -6,8 +6,10 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component, useState } from "react";
 import {
+  Platform,
   ScrollView, Text, TextStyle,
-  View} from "react-native";
+  View
+} from "react-native";
 import { availableModalHeight, colors, screenHeight, screenWidth, styles } from "../styles";
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { FadeIn } from "../components/animated/FadeInView";
@@ -58,20 +60,23 @@ export class Interview extends Component<{
 
   activeBackground = null;
   activeTextColor  = null;
+  activeCardIndex  = null;
+  transitioningToCardId  = null;
   constructor(props) {
     super(props);
 
     let cards = this.props.getCards();
     if (cards && cards.start) {
       this.state = {
-        activeCardIndex: 0,
         cardIds: ['start'],
-        transitioningToCardId: undefined
       };
     }
     else {
       this.state = {invalid:true}
     }
+
+    this.activeCardIndex = 0;
+    this.transitioningToCardId = undefined;
 
     this.selectedOptions = [];
     this.responseHeaders = {};
@@ -83,7 +88,9 @@ export class Interview extends Component<{
 
     let currentIds = [cardId];
 
-    this.setState({ cardIds: currentIds, transitioningToCardId: cardId }, () => {
+    this.transitioningToCardId = cardId;
+
+    this.setState({ cardIds: currentIds }, () => {
       this.checkStyleUpdates();
       setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1); }, 0);
     })
@@ -91,8 +98,8 @@ export class Interview extends Component<{
 
 
   back() {
-    if (this.state.activeCardIndex !== 0) {
-      this._carousel.snapToItem(this.state.activeCardIndex- 1);
+    if (this.activeCardIndex !== 0) {
+      this._carousel.snapToItem(this.activeCardIndex- 1);
     }
     else {
       return false
@@ -104,14 +111,13 @@ export class Interview extends Component<{
     this._lockedCard = true;
 
     let currentIds = this.state.cardIds;
-    currentIds.splice(this.state.activeCardIndex + 1);
-
+    currentIds.splice(this.activeCardIndex + 1);
     currentIds.push(cardId);
-
-    this.setState({ cardIds: currentIds, transitioningToCardId: cardId }, () => {
+    this.transitioningToCardId = cardId;
+    this.setState({ cardIds: currentIds }, () => {
       this.checkStyleUpdates();
       setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1); }, 0);
-    })
+    });
   }
 
   renderCard({item, index}) {
@@ -121,23 +127,23 @@ export class Interview extends Component<{
           if (!cardId) { return; }
 
           let currentIds = this.state.cardIds;
-          currentIds.splice(this.state.activeCardIndex + 1);
+          currentIds.splice(this.activeCardIndex + 1);
 
-          if (this.selectedOptions.length <= this.state.activeCardIndex) {
+          if (this.selectedOptions.length <= this.activeCardIndex) {
             this.selectedOptions.push(selectedIndex)
           }
           else {
-            this.selectedOptions[this.state.activeCardIndex] = selectedIndex;
+            this.selectedOptions[this.activeCardIndex] = selectedIndex;
           }
           this.responseHeaders[cardId] = option.dynamicResponse && option.dynamicResponse(value) || option.response;
 
           currentIds.push(cardId);
 
+          this.transitioningToCardId = cardId;
 
-
-          this.setState({ cardIds: currentIds, transitioningToCardId: cardId }, () => {
+          this.setState({ cardIds: currentIds }, () => {
             this.checkStyleUpdates();
-            setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1); }, 0);
+            setTimeout(() => { this._carousel.snapToItem(currentIds.length - 1, true); }, 0);
           })
         }}
         card={item}
@@ -150,10 +156,10 @@ export class Interview extends Component<{
 
   getBackgroundFromCard() {
     let cards = this.props.getCards();
-    let activeCard = cards[this.state.cardIds[this.state.activeCardIndex]];
+    let activeCard = cards[this.state.cardIds[this.activeCardIndex]];
     let backgroundImage = null;
-    if (this.state.transitioningToCardId !== undefined) {
-      backgroundImage = cards[this.state.transitioningToCardId].backgroundImage;
+    if (this.transitioningToCardId !== undefined) {
+      backgroundImage = cards[this.transitioningToCardId].backgroundImage;
     }
     else if (activeCard.backgroundImage !== undefined) {
       backgroundImage = activeCard.backgroundImage;
@@ -164,8 +170,8 @@ export class Interview extends Component<{
 
   getTextColorFromCard() {
     let cards = this.props.getCards();
-    if (this.state.cardIds[this.state.activeCardIndex] && cards[this.state.cardIds[this.state.activeCardIndex]]) {
-      let activeCard = cards[this.state.cardIds[this.state.activeCardIndex]];
+    if (this.state.cardIds[this.activeCardIndex] && cards[this.state.cardIds[this.activeCardIndex]]) {
+      let activeCard = cards[this.state.cardIds[this.activeCardIndex]];
       return activeCard.textColor || null;
     }
     return null;
@@ -207,15 +213,16 @@ export class Interview extends Component<{
         ref={(c) => {
           this._carousel = c;
         }}
-        // removeClippedSubviews={false /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
+        removeClippedSubviews={Platform.OS === 'android' ? false : undefined /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
         data={cards}
         renderItem={this.renderCard.bind(this)}
-        itemHeight={this.props.height || screenHeight}
+        itemHeight={this.props.height || availableModalHeight}
         sliderWidth={screenWidth}
         itemWidth={screenWidth}
-        onSnapToItem={(index) => { this.setState({ activeCardIndex: index, transitioningToCardId: undefined }, () => {
+        onSnapToItem={(index) => {
+          this.transitioningToCardId = undefined;
+          this.activeCardIndex = index;
           this.checkStyleUpdates();
-
 
           let allCards = this.props.getCards();
           let cards = [];
@@ -223,12 +230,17 @@ export class Interview extends Component<{
             cards.push(allCards[cardId]);
           });
 
-          let activeCard = cards[this.state.activeCardIndex];
+          let activeCard = cards[this.activeCardIndex];
 
           if (this._lockedCard || activeCard.locked === true) {
-            this.setState({cardIds: [this.state.cardIds[this.state.activeCardIndex]], activeCardIndex: 0});
+            // we first go to index 0, then reset the stack with only the locked card. Once that is done, we set the appropriate pointers.
+            this._carousel.snapToItem(0, false, false)
+            this.setState({ cardIds: [this.state.cardIds[this.activeCardIndex]]}, () => {
+              this.activeCardIndex = 0;
+              this.transitioningToCardId = undefined;
+            });
           }
-        })}}
+        }}
       />
     );
   }
@@ -260,12 +272,14 @@ function InterviewCard(props : {
     textfieldState: textInput
   };
 
+  let overrideTextColor = props.card.textColor ? {color: props.card.textColor} : {};
+
   return (
     <ScrollView style={{height: props.height || availableModalHeight}}>
       <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
-        { header      ? <Text style={[headerStyle, {color: props.card.textColor}]}>{header}</Text>           : undefined }
-        { subHeader   ? <Text style={[subHeaderStyle, {color: props.card.textColor}]}>{subHeader}</Text>     : undefined }
-        { explanation ? <Text style={[explanationStyle, {color: props.card.textColor}]}>{explanation}</Text> : undefined }
+        { header      ? <Text style={[headerStyle, overrideTextColor]}>{header}</Text>           : undefined }
+        { subHeader   ? <Text style={[subHeaderStyle, overrideTextColor]}>{subHeader}</Text>     : undefined }
+        { explanation ? <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> : undefined }
         {
           props.card.hasTextInputField ?
             <InterviewTextInput placeholder={props.card.placeholder} value={textInput} callback={(text) => { setTextInput(text); }} /> :

@@ -17,7 +17,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 
 import { emailChecker, getImageFileFromUser, processImage } from "../../util/Util";
 
-import { colors, screenHeight, screenWidth, styles } from "../styles";
+import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../styles";
 
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
@@ -124,16 +124,16 @@ export class Register extends LiveComponent<any, any> {
             onSelect: (result) => {
               if (!result.customElementState.firstName && !result.customElementState.lastName && !this.user.firstName && !this.user.lastName) {
                 Alert.alert(
-lang("_What_should_I_call_you___header"),
-lang("_What_should_I_call_you___body"),
-[{text:lang("_What_should_I_call_you___left")}]);
+                  lang("_What_should_I_call_you___header"),
+                  lang("_What_should_I_call_you___body"),
+                  [{text:lang("_What_should_I_call_you___left")}]);
                 return false;
               }
               else if (!result.customElementState.firstName && !this.user.firstName) {
                 Alert.alert(
-lang("_How_should_I_adress_you__header"),
-lang("_How_should_I_adress_you__body"),
-[{text:lang("_How_should_I_adress_you__left")}]);
+                  lang("_How_should_I_adress_you__header"),
+                  lang("_How_should_I_adress_you__body"),
+                  [{text:lang("_How_should_I_adress_you__left")}]);
                 return false;
               }
 
@@ -254,24 +254,24 @@ lang("_How_should_I_adress_you__body"),
             onSelect: (result) => {
               if (!result.customElementState.email && !this.user.email) {
                 Alert.alert(
-lang("_How_can_I_reach_you___Id_header"),
-lang("_How_can_I_reach_you___Id_body"),
-[{text: lang("_How_can_I_reach_you___Id_left") }]);
+                  lang("_How_can_I_reach_you___Id_header"),
+                  lang("_How_can_I_reach_you___Id_body"),
+                  [{text: lang("_How_can_I_reach_you___Id_left") }]);
                 return false;
               }
               else if ((result.customElementState.email && emailChecker(result.customElementState.email) === false) ||
                 (this.user.email && emailChecker(this.user.email) === false)) {
                 Alert.alert(
-lang("_I_dont_understand_____Th_header"),
-lang("_I_dont_understand_____Th_body"),
-[{text: lang("_I_dont_understand_____Th_left") }]);
+                  lang("_I_dont_understand_____Th_header"),
+                  lang("_I_dont_understand_____Th_body"),
+                  [{text: lang("_I_dont_understand_____Th_left") }]);
                 return false;
               }
               else if (!result.customElementState.password && !this.user.password) {
                 Alert.alert(
-lang("_I_want_to_be_secure______header"),
-lang("_I_want_to_be_secure______body"),
-[{text: lang("_I_want_to_be_secure______left") }]);
+                  lang("_I_want_to_be_secure______header"),
+                  lang("_I_want_to_be_secure______body"),
+                  [{text: lang("_I_want_to_be_secure______left") }]);
                 return false;
               }
 
@@ -292,7 +292,7 @@ lang("_I_want_to_be_secure______body"),
         backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.png'),
         component: (
           <View style={{...styles.centered, flex:1}}>
-            <Icon name="ios-checkmark-circle" size={0.5*screenWidth} color={colors.white.rgba(0.8)} />
+            <Icon name="ios-checkmark-circle" size={0.5*screenWidth} color={colors.white.hex} />
           </View>
         ),
         optionsBottom: true,
