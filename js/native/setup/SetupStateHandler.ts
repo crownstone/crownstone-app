@@ -7,6 +7,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
 
 
@@ -22,6 +23,7 @@ class SetupStateHandlerClass {
   _initialized : boolean;
   _ignoreStoneAfterSetup : any;
 
+  _lastAutoSetupTimestamp = 0;
 
   constructor() {
     this._uuid = xUtil.getUUID();
@@ -70,7 +72,7 @@ class SetupStateHandlerClass {
         core.eventBus.emit("setupCleanedUp");
       });
 
-      core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+      core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement : crownstoneAdvertisement) => {
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
 
@@ -79,6 +81,22 @@ class SetupStateHandlerClass {
           LOGd.info("SetupStateHandler: Fallback for DFU stones is called. Stopping setup event propagation.");
           return;
         }
+
+        // This could provide the keys on a silver platter. TODO: make secure.
+        // let now = new Date().valueOf();
+        // if (stoneData && now - this._lastAutoSetupTimestamp > 10000) {
+        //   if (Permissions.inSphere(stoneData.sphereId).canSetupCrownstone) {
+        //     this._lastAutoSetupTimestamp = now;
+        //     return this._setupStone(
+        //       handle,
+        //       stoneData.sphereId,
+        //       stoneData.stoneConfig.name,
+        //       stoneData.stoneConfig.type,
+        //       stoneData.stoneConfig.icon,
+        //       true
+        //     );
+        //   }
+        // }
 
         // emit advertisements for other views
         core.eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);

@@ -1500,7 +1500,7 @@ export default {
     __filename: "../js/views/components/RoomBanner.tsx",
     Not_in_Sphere:                       function() { return "Not in Sphere" },
     Nobody_Present:                      function() { return "Nobody Present" },
-    No_Crownstones_in_this_ro:           function() { return "No Crownstones in this room" },
+    No_Crownstones_in_this_ro:           function() { return "Empty room!" },
     _Crownstone:                         function() { return arguments[0] + " Crownstone" },
     _Crownstones:                        function() { return arguments[0] + " Crownstones" },
     _W:                                  function() { return arguments[0] + " W" },

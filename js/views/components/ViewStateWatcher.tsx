@@ -10,7 +10,6 @@ export class ViewStateWatcher extends Component<{onFocus?: () => void, onBlur?: 
   componentDidMount() {
     this.appearListener = Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
       if (componentId === this.props.componentId) {
-        console.log("CALLING ON FOCUS")
         if (this.props.onFocus) {
           this.props.onFocus();
         }

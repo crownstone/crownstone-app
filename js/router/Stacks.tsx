@@ -67,7 +67,7 @@ export const Stacks = {
               ],
               options: {
                 bottomTab: {
-                  text:  Languages.get("Tabs","Messages")(),
+                  text: Languages.get("Tabs","Messages")(),
                   icon: require('../images/icons/mail.png'),
                 }
               }
@@ -80,7 +80,7 @@ export const Stacks = {
               ],
               options: {
                 bottomTab: {
-                  text:  Languages.get("Tabs","Settings")(),
+                  text: Languages.get("Tabs","Settings")(),
                   icon: require('../images/icons/cog.png'),
                 }
               }

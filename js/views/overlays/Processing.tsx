@@ -24,8 +24,6 @@ export class Processing extends Component<any, any> {
   constructor(props) {
     super(props);
 
-
-    console.log(props)
     if (typeof props.data === "string" || !props.data) {
       this.state = {
         visible: false,
@@ -46,10 +44,6 @@ export class Processing extends Component<any, any> {
     }
 
     this.unsubscribe = [];
-  }
-
-  componentDidMount() {
-    this.setState({visible: true})
 
     this.unsubscribe.push(core.eventBus.on('showLoading', (data) => {
       if (typeof data === "string" || !data) {
@@ -102,7 +96,12 @@ export class Processing extends Component<any, any> {
       }, () => {  NavigationUtil.closeOverlay(this.props.componentId); })}));
   }
 
+  componentDidMount() {
+    this.setState({visible: true})
+  }
+
   componentWillUnmount() {
+    console.log("CLEARING THEM OUT")
     this.unsubscribe.forEach((callback) => {callback()});
     this.unsubscribe = [];
   }

@@ -49,8 +49,11 @@ export const AppUtil = {
 
       store.batchDispatch(actions);
       core.eventBus.emit("showLoading", lang("Getting_new_data___"));
-      CLOUD.__syncTriggerDatabaseEvents = false;
-      CLOUD.sync(store)
+      StoreManager.destroyActiveUser()
+        .then(() => {
+          CLOUD.__syncTriggerDatabaseEvents = false;
+          CLOUD.sync(store)
+        })
         .then(() => {
           core.eventBus.emit("showLoading", lang("Finalizing___"));
           return new Promise((resolve, reject) => {
@@ -61,20 +64,6 @@ export const AppUtil = {
             setTimeout(() => { core.eventBus.emit("showLoading", lang("App_will_close_in___secon",1)); }, 5000);
             setTimeout(() => { Bluenet.quitApp(); resolve(true); }, 6000)
           })
-        })
-        .catch((err) => {
-          core.eventBus.emit("showLoading", "Falling back to full clean...");
-          return StoreManager.destroyActiveUser()
-        })
-        .then((success) => {
-          if (!success) {
-            setTimeout(() => { core.eventBus.emit("showLoading", lang("App_will_close_in___secon",5)); }, 1000);
-            setTimeout(() => { core.eventBus.emit("showLoading", lang("App_will_close_in___secon",4)); }, 2000);
-            setTimeout(() => { core.eventBus.emit("showLoading", lang("App_will_close_in___secon",3)); }, 3000);
-            setTimeout(() => { core.eventBus.emit("showLoading", lang("App_will_close_in___secon",2)); }, 4000);
-            setTimeout(() => { core.eventBus.emit("showLoading", lang("App_will_close_in___secon",1)); }, 5000);
-            setTimeout(() => { Bluenet.quitApp(); }, 6000)
-          }
         })
         .catch((err) => {
           Alert.alert(lang("Data_reset_failed___"), lang("Something_went_wrong_in_t"),[{text: lang("OK")}])

@@ -87,8 +87,6 @@ export class StoneEntity {
   // }
 
 
-
-
   _validate(state = undefined) {
     if (!state) {
       state = this.store.getState();

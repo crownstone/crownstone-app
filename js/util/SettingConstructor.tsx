@@ -158,7 +158,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     }
   });
 
-
+  items.push({id: 'settingsSpacer', type: 'spacer'})
   items.push({
     id:'Log Out',
     label: lang("Log_Out"),

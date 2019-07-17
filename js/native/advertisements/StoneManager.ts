@@ -91,17 +91,6 @@ class StoneManagerClass {
         }
       });
 
-      // // if we are syncing, this means we might get new crownstones to download, in the mean time we dont want to factory reset them
-      // core.eventBus.on("CloudSyncStarting", () => { this._pauseFactoryResetCapability();   });
-      // // after syncing we enable factory reset capability
-      // core.eventBus.on("CloudSyncComplete", () => { this._restoreFactoryResetCapability(); });
-      //
-      // // during setup we do will ignore crownstones which we can understand but dont have in the database
-      // core.eventBus.on("setupStarted"  , (stoneHandle) => { this._pauseFactoryResetCapability();   });
-      //
-      // // we will delay the enabling of the automatic factory resetting to ensure setup mode has really been concluded.
-      // core.eventBus.on("setupCancelled", (stoneHandle) => { this._restoreFactoryResetCapability(); });
-      // core.eventBus.on("setupComplete" , (stoneHandle) => { this._restoreFactoryResetCapability(); });
 
       // listen to verified advertisements. Verified means consecutively successfully encrypted.
       core.nativeBus.on(core.nativeBus.topics.advertisement, this.handleAdvertisement.bind(this));
@@ -114,25 +103,6 @@ class StoneManagerClass {
       this._initialized = true;
     }
   }
-
-  // _pauseFactoryResetCapability() {
-  //   // make sure we do not factory reset unknown crownstones.
-  //   if (this.factoryResetUnknownStonesEnableTimeout !== null) {
-  //     this.factoryResetUnknownStonesEnableTimeout();
-  //     this.factoryResetUnknownStonesEnableTimeout = null;
-  //   }
-  //   this.factoryResetUnknownStonesEnabled = false;
-  // }
-  //
-  // _restoreFactoryResetCapability() {
-  //   if (this.factoryResetUnknownStonesEnableTimeout !== null) {
-  //     this.factoryResetUnknownStonesEnableTimeout();
-  //   }
-  //   this.factoryResetUnknownStonesEnableTimeout = Scheduler.scheduleCallback(() => {
-  //     this.factoryResetUnknownStonesEnableTimeout = null;
-  //     this.factoryResetUnknownStonesEnabled = true;
-  //   }, 5000, "Restore factory reset capabilities.")
-  // }
 
 
   _restoreConnectionTimeout() {

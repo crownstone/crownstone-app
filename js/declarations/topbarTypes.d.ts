@@ -13,7 +13,8 @@ interface topbarOptions {
     iconSize: {
       width: number,
       height:number,
-    }
+    },
+    onPress: any,
   }
 
   // right button presets

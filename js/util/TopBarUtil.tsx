@@ -60,11 +60,12 @@ export const TopBarUtil = {
           component: {
             name:'topbarLeftButton',
             passProps: {
+              onPress: props.leftIcon.onPress,
               item: <ScaledImage
                       source={props.leftIcon.icon}
                       sourceWidth={props.leftIcon.iconSize.width}
                       sourceHeight={props.leftIcon.iconSize.height}
-                      targetHeight={0.8*(topBarHeight - statusBarHeight)}
+                      targetHeight={0.7*(topBarHeight - statusBarHeight)}
                     />
               },
           },
@@ -73,15 +74,6 @@ export const TopBarUtil = {
     }
 
     let rightButtons = [];
-    // if (props.right) {
-    //   rightButtons.push({
-    //     id: props.right.id,
-    //     component: {
-    //       name: props.right.component,
-    //       passProps: props.right.props || {}
-    //     },
-    //   })
-    // }
 
     if (props.nav) {
       rightButtons.push(getButtonComponent(props.nav.id, props.nav.text));
@@ -124,7 +116,7 @@ export const TopBarUtil = {
       }
     }
 
-    console.log("Setting Topbar Options", results)
+    // console.log("Setting Topbar Options", results)
     return results;
   },
 }

@@ -188,7 +188,6 @@ export class SphereSyncer extends SyncingBase {
 
   syncUp(spheresInState, localSphereIdsSynced) {
     let localSphereIds = Object.keys(spheresInState);
-
     localSphereIds.forEach((sphereId) => {
       let sphere = spheresInState[sphereId];
       this.syncLocalSphereUp(
@@ -207,9 +206,9 @@ export class SphereSyncer extends SyncingBase {
         this.actions.push({ type: 'REMOVE_SPHERE', sphereId: localSphereId });
       }
       else {
-        this.transferPromises.push(
-          transferSpheres.createOnCloud(this.actions, { localId: localSphereId, localData: localSphere })
-        );
+        // this.transferPromises.push(
+        //   transferSpheres.createOnCloud(this.actions, { localId: localSphereId, localData: localSphere })
+        // );
       }
     }
   }

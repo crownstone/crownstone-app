@@ -359,7 +359,12 @@ function getTopBarProps(state, props, viewState, viewId) {
 
       NAVBAR_PARAMS_CACHE = {
         title: sphere.config.name,
-        leftIcon: finalizeLocalization.showItem ? {id: 'localization', icon: require('../../images/icons/localizationIcon.png'), iconSize: {width: 100, height:91}} : null,
+        leftIcon: finalizeLocalization.showItem ? {
+          id: 'localization',
+          icon: require('../../images/icons/localizationIcon.png'),
+          iconSize: {width: 100, height:91},
+          onPress: finalizeLocalization.action
+        } : null,
         edit: true,
       }
     }

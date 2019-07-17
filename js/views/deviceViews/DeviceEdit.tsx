@@ -187,9 +187,10 @@ export class DeviceEdit extends LiveComponent<any, any> {
           }
           else {
             Alert.alert(
-lang("_Permission_Required__Onl_header"),
-lang("_Permission_Required__Onl_body"),
-[{text: lang("_Permission_Required__Onl_left")}])
+              lang("_Permission_Required__Onl_header"),
+              lang("_Permission_Required__Onl_body"),
+              [{text: lang("_Permission_Required__Onl_left")}]
+            );
           }
         }
       });
@@ -447,9 +448,6 @@ lang("_Permission_Required__Onl_body"),
     let switchCraftChange = this._setSwitchcraftState(stone);
     if (dimChange)         { changePromises.push(dimChange); }
     if (switchCraftChange) { changePromises.push(switchCraftChange); }
-    if (changePromises.length > 0) {
-      core.eventBus.emit("showLoading", "Applying changes...");
-    }
     Promise.all(changePromises)
       .then(() => { core.eventBus.emit("hideLoading"); } )
       .catch((err) => { core.eventBus.emit("hideLoading"); });
@@ -498,16 +496,16 @@ lang("_Permission_Required__Onl_body"),
     if (stone.config.dimmingEnabled !== this.state.dimmingEnabled) {
       if (stone.config.locked) {
         Alert.alert(
-lang("_Crownstone_Locked__You_h_header"),
-lang("_Crownstone_Locked__You_h_body",this.state.dimmingEnabled),
-[{text:lang("_Crownstone_Locked__You_h_left")}]);
+          lang("_Crownstone_Locked__You_h_header"),
+          lang("_Crownstone_Locked__You_h_body",this.state.dimmingEnabled),
+          [{text:lang("_Crownstone_Locked__You_h_left")}]);
         return;
       }
       if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
         Alert.alert(
-lang("_Cant_see_this_Crownstone_header"),
-lang("_Cant_see_this_Crownstone_body",this.state.dimmingEnabled),
-[{text:lang("_Cant_see_this_Crownstone_left")}]);
+          lang("_Cant_see_this_Crownstone_header"),
+          lang("_Cant_see_this_Crownstone_body",this.state.dimmingEnabled),
+          [{text:lang("_Cant_see_this_Crownstone_left")}]);
         return;
       }
 
@@ -523,10 +521,13 @@ lang("_Cant_see_this_Crownstone_body",this.state.dimmingEnabled),
           .then(() => { dimmingChangedSuccessfully = true; })
           .catch((err) => {
             LOGe.info("DeviceEdit: Could not disable dimming on Crownstone", err);
+            setTimeout(() => { core.eventBus.emit("hideLoading"); }, 200);
             Alert.alert(
-lang("_Im_sorry_____I_couldnt_d_header"),
-lang("_Im_sorry_____I_couldnt_d_body"),
-[{text:lang("_Im_sorry_____I_couldnt_d_left")}])
+              lang("_Im_sorry_____I_couldnt_d_header"),
+              lang("_Im_sorry_____I_couldnt_d_body"),
+              [{text:lang("_Im_sorry_____I_couldnt_d_left")}]
+            );
+            throw err;
           }));
       }
       else {
@@ -534,11 +535,14 @@ lang("_Im_sorry_____I_couldnt_d_body"),
         promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: true })
           .then(() => { dimmingChangedSuccessfully = true; })
           .catch((err) => {
-            LOGe.info("DeviceEdit: Could not enable dimming on Crownstone", err);
+            LOGe.info("DeviceEdit: Could not enabXle dimming on Crownstone", err);
+            setTimeout(() => { core.eventBus.emit("hideLoading"); }, 200);
             Alert.alert(
-lang("_Im_sorry_____I_couldnt_e_header"),
-lang("_Im_sorry_____I_couldnt_e_body"),
-[{text:lang("_Im_sorry_____I_couldnt_e_left")}])
+              lang("_Im_sorry_____I_couldnt_e_header"),
+              lang("_Im_sorry_____I_couldnt_e_body"),
+              [{text:lang("_Im_sorry_____I_couldnt_e_left")}]
+            );
+            throw err;
           }));
       }
       BatchCommandHandler.executePriority();
@@ -563,9 +567,9 @@ lang("_Im_sorry_____I_couldnt_e_body"),
 
       if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
         Alert.alert(
-lang("_Cant_see_this_Crownstone__header"),
-lang("_Cant_see_this_Crownstone__body",this.state.dimmingEnabled),
-[{text:lang("_Cant_see_this_Crownstone__left")}]);
+          lang("_Cant_see_this_Crownstone__header"),
+          lang("_Cant_see_this_Crownstone__body",this.state.dimmingEnabled),
+          [{text:lang("_Cant_see_this_Crownstone__left")}]);
         return;
       }
 
@@ -583,9 +587,9 @@ lang("_Cant_see_this_Crownstone__body",this.state.dimmingEnabled),
         .catch((err) => {
           LOGe.info("DeviceEdit: Could not configure Switchcraft on Crownstone", this.state.switchCraft, err);
           Alert.alert(
-lang("_Im_sorry_____I_couldnt_c_header"),
-lang("_Im_sorry_____I_couldnt_c_body"),
-[{text:lang("_Im_sorry_____I_couldnt_c_left")}])
+            lang("_Im_sorry_____I_couldnt_c_header"),
+            lang("_Im_sorry_____I_couldnt_c_body"),
+            [{text:lang("_Im_sorry_____I_couldnt_c_left")}])
         });
       BatchCommandHandler.executePriority();
       return changePromise;
@@ -609,9 +613,9 @@ lang("_Im_sorry_____I_couldnt_c_body"),
         <TouchableOpacity style={{paddingTop:15, paddingBottom:30}} onPress={() => {
           if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
             return Alert.alert(
-lang("_Cant_see_this_stone___I__header"),
-lang("_Cant_see_this_stone___I__body"),
-[{text:lang("_Cant_see_this_stone___I__left")}]);
+              lang("_Cant_see_this_stone___I__header"),
+              lang("_Cant_see_this_stone___I__body"),
+              [{text:lang("_Cant_see_this_stone___I__left")}]);
           }
 
           this.setState({refreshingStoneVersions: true});
@@ -628,9 +632,9 @@ lang("_Cant_see_this_stone___I__body"),
               })
               .catch((err) => {
                 Alert.alert(
-lang("_Whoops___I_could_not_get_header"),
-lang("_Whoops___I_could_not_get_body"),
-[{text:lang("_Whoops___I_could_not_get_left")}]);
+                  lang("_Whoops___I_could_not_get_header"),
+                  lang("_Whoops___I_could_not_get_body"),
+                  [{text:lang("_Whoops___I_could_not_get_left")}]);
                 throw err;
               });
             }));
@@ -646,9 +650,9 @@ lang("_Whoops___I_could_not_get_body"),
               })
               .catch((err) => {
                 Alert.alert(
-lang("_Whoops___I_could_not_get__header"),
-lang("_Whoops___I_could_not_get__body"),
-[{text:lang("_Whoops___I_could_not_get__left")}]);
+                  lang("_Whoops___I_could_not_get__header"),
+                  lang("_Whoops___I_could_not_get__body"),
+                  [{text:lang("_Whoops___I_could_not_get__left")}]);
                 throw err;
               });
             }));

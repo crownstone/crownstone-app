@@ -210,7 +210,7 @@ export const NavState = new NavStateManager();
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
-  console.log("View has appeared", componentId, componentName)
+  // console.log("View has appeared", componentId, componentName)
   NavState.addView(componentId, componentName);
 });
 
@@ -261,7 +261,7 @@ export const NavigationUtil = {
   },
 
   launchModal: function(target, props = {}) {
-    console.log("Navigating from", NavState.activeView, "to", target, props)
+    // console.log("Navigating from", NavState.activeView, "to", target, props)
     NavState.modalActive();
     Navigation.showModal({
       stack:{
@@ -273,7 +273,7 @@ export const NavigationUtil = {
   },
 
   dismissModal: function() {
-    console.log("CALLING dismissModal")
+    // console.log("CALLING dismissModal")
     let backFrom = NavState.activeView;
     Navigation.dismissModal(backFrom)
       .then(() => { console.log("Going back from ", backFrom, " success!")})
@@ -326,7 +326,7 @@ export const NavigationUtil = {
   },
 
   back() {
-    console.log("CALLING BACK")
+    // console.log("CALLING BACK")
     let backFrom = NavState.activeView;
     NavState.pop();
     return Navigation.pop(backFrom)

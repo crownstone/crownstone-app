@@ -1,6 +1,7 @@
 import {LOG_LEVEL} from "./logging/LogLevels";
 
 import DeviceInfo from 'react-native-device-info';
+import { Platform } from "react-native";
 
 /******************** RELEASE FLAGS ********************/
 
@@ -166,6 +167,11 @@ import DeviceInfo from 'react-native-device-info';
 
   // Interval in which the phone tells the Crownstone what time it is!
   export const STONE_TIME_REFRESH_INTERVAL = 5 * 3600 * 1000; // 5 hours in ms
+
+  // Minimum interval between broadcast elements.
+  export let BROADCAST_THROTTLE_TIME;
+  if (Platform.OS === 'android') { BROADCAST_THROTTLE_TIME = 100; }
+  else                           { BROADCAST_THROTTLE_TIME = 25; }
 
 /******************** /TIMINGS ********************/
 

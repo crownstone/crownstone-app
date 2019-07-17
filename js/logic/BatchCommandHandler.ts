@@ -9,7 +9,7 @@ import { StoneUtil }             from "../util/StoneUtil";
 import { Permissions }           from "../backgroundProcesses/PermissionManager";
 import { CommandManager }        from "./bchComponents/CommandManager";
 import { StoneAvailabilityTracker }            from "../native/advertisements/StoneAvailabilityTracker";
-import { BroadcastCommandManager } from "./bchComponents/BroadcastCommandManager";
+import { BROADCAST_ERRORS, BroadcastCommandManager } from "./bchComponents/BroadcastCommandManager";
 import { xUtil } from "../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../Enums";
 import { core } from "../core";
@@ -67,15 +67,15 @@ class BatchCommandHandlerClass {
 
 
   _load(stone, stoneId, sphereId, command : commandInterface, options: batchCommandEntryOptions = {}, priority: boolean, attempts: number = 1, label = '') : Promise<bchReturnType>  {
-    let commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options };
+    let commandSummary : commandSummary = { stone, stoneId, sphereId, command, priority, attempts, options };
     let state = core.store.getState();
 
     if (BroadcastCommandManager.canBroadcast(commandSummary) || state.development.broadcasting_enabled) {
       return BroadcastCommandManager.broadcast(commandSummary)
         .catch((err) => {
-          if (err && err.fatal == false) {
+          if (err && err.fatal == false && err.message !== BROADCAST_ERRORS.BROADCAST_REMOVED_AS_DUPLICATE.message) {
             // this is a fallback to the handling in the classic batch command handler, this can happend if the user goes to the background for instance.
-            return this._commandHandler.load(stone, stoneId, sphereId, command, priority,  attempts, options );
+            return this._commandHandler.load(stone, stoneId, sphereId, command, priority, attempts, options);
           }
           else {
             throw err;
@@ -84,7 +84,7 @@ class BatchCommandHandlerClass {
     }
     else {
       // handle in classic batch command handler
-      return this._commandHandler.load(stone, stoneId, sphereId, command, priority,  attempts, options );
+      return this._commandHandler.load( stone, stoneId, sphereId, command, priority,  attempts, options );
     }
   }
 
