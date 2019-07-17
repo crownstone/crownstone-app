@@ -8,8 +8,8 @@ import SplashScreen        from 'react-native-splash-screen'
 import { Splash }          from "../views/startupViews/Splash";
 import { core } from "../core";
 import { NavigationUtil } from "../util/NavigationUtil";
-import { Navigation } from "react-native-navigation";
 import { Stacks } from "./Stacks";
+import { stylesUpdateConstants } from "../views/styles";
 
 
 export class Initializer extends Component<any, any> {
@@ -21,7 +21,10 @@ export class Initializer extends Component<any, any> {
     let startUp = () => {
       if (Platform.OS === "android") {
         SplashScreen.hide();
+        stylesUpdateConstants();
       }
+
+
 
       // This is a last chance fallback if a user is new but has for some reason never been marked as "not New"
       let store = StoreManager.getStore();
@@ -31,6 +34,7 @@ export class Initializer extends Component<any, any> {
         store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
         core.eventBus.emit("userLoggedInFinished");
       }
+
 
       if (BackgroundProcessHandler.userLoggedIn) {
         NavigationUtil.setRoot(Stacks.loggedIn());

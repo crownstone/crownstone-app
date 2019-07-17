@@ -28,11 +28,17 @@ export class TapToToggleCalibration extends Component<any, any> {
   constructor(props) {
     super(props);
 
+    let tutorial = true;
+    if (props && props.data && props.data.tutorial) {
+      tutorial = props.data.tutorial;
+    }
+
     this.state = {
       visible: false,
-      step: props && props.data && props.data.tutorial === false ? 1 : 0,
-      tutorial: props && props.data && props.data.tutorial === undefined ? true : props.data.tutorial,
-      canClose: false};
+      step: tutorial === false ? 1 : 0,
+      tutorial: tutorial,
+      canClose: false
+    };
 
     let state = core.store.getState();
     if (state.app.tapToToggleEnabled !== false) {

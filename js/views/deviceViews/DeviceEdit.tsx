@@ -447,6 +447,9 @@ lang("_Permission_Required__Onl_body"),
     let switchCraftChange = this._setSwitchcraftState(stone);
     if (dimChange)         { changePromises.push(dimChange); }
     if (switchCraftChange) { changePromises.push(switchCraftChange); }
+    if (changePromises.length > 0) {
+      core.eventBus.emit("showLoading", "Applying changes...");
+    }
     Promise.all(changePromises)
       .then(() => { core.eventBus.emit("hideLoading"); } )
       .catch((err) => { core.eventBus.emit("hideLoading"); });
