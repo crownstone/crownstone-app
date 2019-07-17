@@ -10,6 +10,10 @@ interface topbarOptions {
   leftIcon? : {
     id: string,
     icon: any,
+    iconSize: {
+      width: number,
+      height:number,
+    }
   }
 
   // right button presets

@@ -158,8 +158,6 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     }
   });
 
-  if (Platform.OS !== 'android') {
-    items.push({id: 'settingsSpacer', type: 'spacer'})
 
   items.push({
     id:'Log Out',
@@ -174,8 +172,8 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
           {text: lang("_Log_out__Are_you_sure__I_left"), style: 'cancel'},
           {text: lang("_Log_out__Are_you_sure__I_right"), onPress: () => { AppUtil.logOut(store); }}
         ])
-      }});
-  }
+      }
+  });
 
 
   if (Platform.OS === 'android') {
