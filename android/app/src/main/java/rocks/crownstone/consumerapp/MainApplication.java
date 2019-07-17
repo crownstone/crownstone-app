@@ -81,8 +81,8 @@ public class MainApplication extends NavigationApplication {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		long size = 50L * 1024L * 1024L; // 50 MB
-		ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
+//		long size = 50L * 1024L * 1024L; // 50 MB
+//		ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
 //		SoLoader.init(this, /* native exopackage */ false);
 	}
 }
