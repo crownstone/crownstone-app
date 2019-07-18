@@ -9,6 +9,9 @@ const BASE_TAB_NAME = "BASE_TAB";
 interface views {
   [key: string]: componentInfo[]
 }
+interface activeView {
+  [key: string]: string
+}
 
 interface componentInfo {
   id: string,
@@ -16,8 +19,7 @@ interface componentInfo {
 }
 
 class NavStateManager {
-
-  activeView = {};
+  activeView : activeView = {};
   overlayNames = {};
   overlayId = {};
   modals = [];
@@ -49,7 +51,6 @@ class NavStateManager {
     this.activeTab = componentName;
     if (this.views[componentName] === undefined) {
       this.views[componentName] = [];
-      this.addView(componentId, componentName);
     }
   }
 
@@ -57,7 +58,21 @@ class NavStateManager {
     return this.activeView[this.activeTab];
   }
 
+  isAlreadyOpen(componentId, name) {
+    for (let i = 0; i < this.views[this.activeTab].length; i++) {
+      // console.log("IS ALREADY OPEN", name,this.views[this.activeTab][i].name)
+      if (this.views[this.activeTab][i].id === componentId) {
+        // console.log("GOING BACK TO name" ,name)
+        this.backTo(name);
+        return true;
+      }
+    }
+    return false;
+  }
+
   addView(componentId, name) {
+    if (this.isAlreadyOpen(componentId, name)) { return; }
+
     // console.log("HERE", componentId, name)
     // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
 
@@ -88,7 +103,7 @@ class NavStateManager {
       this.views[this.activeTab].pop();
     }
     else {
-      // console.warn("Maybe something is wrong?")
+      console.warn("Maybe something is wrong?")
     }
   }
 
@@ -98,7 +113,7 @@ class NavStateManager {
         this.modals[this.modals.length - 1].pop();
       }
       else {
-        // console.warn("Maybe wanted to dismiss the modal?")
+        console.warn("Maybe wanted to dismiss the modal?")
       }
     }
     else {
@@ -106,7 +121,7 @@ class NavStateManager {
         this.views[this.activeTab].pop();
       }
       else {
-        // console.warn("Maybe something is wrong?")
+        console.warn("Maybe something is wrong?")
       }
     }
 
@@ -119,15 +134,15 @@ class NavStateManager {
         this.activeView = this.modals[this.modals.length - 1].id;
       }
       else {
-        // console.warn("Maybe wanted to dismiss the modal?")
+        console.warn("Maybe wanted to dismiss the modal?")
       }
     }
     else {
       if (this.views[this.activeTab].length > 0) {
-        this.activeView = this.views[this.activeTab][this.views[this.activeTab].length - 1].id;
+        this.activeView[this.activeTab] = this.views[this.activeTab][this.views[this.activeTab].length - 1].id;
       }
       else {
-        // console.warn("Maybe something is wrong?")
+        console.warn("Maybe something is wrong?")
       }
     }
   }
@@ -137,7 +152,7 @@ class NavStateManager {
      return this.views[this.activeTab][this.views[this.activeTab].length - 1].id;
     }
     else {
-      // console.warn("Maybe something is wrong?")
+      console.warn("Maybe something is wrong?")
     }
   }
 
@@ -175,6 +190,7 @@ class NavStateManager {
   setRoot() {
     this.baseTab      = null;
     this.activeTab    = null;
+    this.activeView   = {};
     this.modals       = [];
     this.views        = {};
     this.overlayId    = {};
@@ -214,13 +230,16 @@ class NavStateManager {
         }
       }
       else {
-        // console.warn("Maybe something is wrong?")
+        console.warn("Maybe something is wrong?")
       }
     }
 
     if (targetId !== null) {
       this._getId();
     }
+
+    // console.log(this.activeView, this.activeTab, targetId)
+    this.activeView[this.activeTab] = targetId;
 
     return targetId;
   }
@@ -270,8 +289,9 @@ let tabBarComponentNames = [];
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
+  // console.log("VIEW DID APPEAR", componentId, componentName)
   if (tabBarComponentNames.indexOf(componentName) !== -1) {
-    return NavState.switchTab(componentId, componentName)
+    NavState.switchTab(componentId, componentName)
   }
 
   NavState.addView(componentId, componentName);
@@ -279,7 +299,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidDisappearListener(({ componentId, componentName }) => {
-
+  // console.log("VIEW DID DISAPPEAR", componentId, componentName)
 });
 
 
