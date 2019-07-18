@@ -720,7 +720,7 @@ export default {
   },
   EditableItem:{
     __filename: "../js/views/components/EditableItem.tsx",
-    ___UNHANDLED_for_:                   function() { return arguments[0] + " - UNHANDLED for " + arguments[1] },
+    ___UNHANDLED_for_:                   function() { return arguments[0] + " - Editable item unknown type:" + arguments[1] },
   },
   ErrorOverlay:{
     __filename: "../js/views/overlays/ErrorOverlay.tsx",

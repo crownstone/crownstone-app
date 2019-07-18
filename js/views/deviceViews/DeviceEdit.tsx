@@ -667,11 +667,11 @@ export class DeviceEdit extends LiveComponent<any, any> {
               this.setState({refreshingStoneVersions: false});
             });
         }}>
-          <Text style={styles.version}>{ lang("address__",stone.config.macAddress,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("address__",stone.config.macAddress, 'unknown') }</Text>
           <Text style={styles.version}>{ lang("hardware_id__",stone.config.hardwareVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("bootloader__",stone.config.bootloaderVersion,unknownString) }</Text>
           <Text style={styles.version}>{ lang("firmware__",stone.config.firmwareVersion,unknownString) }</Text>
-          <Text style={styles.version}>{ lang("crownstone_id__",stone.config.crownstoneId,unknownString) }</Text>
+          <Text style={styles.version}>{ lang("crownstone_id__",stone.config.crownstoneId, 'unknown') }</Text>
         </TouchableOpacity>
       );
     }

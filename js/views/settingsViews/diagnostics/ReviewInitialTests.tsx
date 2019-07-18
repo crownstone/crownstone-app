@@ -44,7 +44,7 @@ export class ReviewInitialTests extends Component<any, any> {
     TestRunner.run()
       .then((result) => {
         this.setState({ibeacons: TestRunner.getIBeaconResult(result)});
-        setTimeout(() => { this.setState({verifiedAdvertisements: TestRunner.getVerifiedCrownstoneResult(result)}); }, 500);
+        setTimeout(() => { this.setState({ verifiedAdvertisements: TestRunner.getVerifiedCrownstoneResult(result)}); }, 500);
         setTimeout(() => { this.props.nextPhase(this.state.ibeacons, this.state.verifiedAdvertisements) }, 800);
       })
   }

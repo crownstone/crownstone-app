@@ -36,7 +36,6 @@ import { BroadcastStateManager } from "./BroadcastStateManager";
 import { WatchStateManager } from "./WatchStateManager";
 
 const PushNotification = require('react-native-push-notification');
-import DeviceInfo from 'react-native-device-info';
 import { core } from "../core";
 import { cleanLogs } from "../logging/LogUtil";
 import { migrate } from "./migration/StoreMigration";

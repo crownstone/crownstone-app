@@ -360,7 +360,7 @@ export const DataUtil = {
     let state = core.store.getState();
 
     // Catch a broken sphere.
-    let sphereIds = state.spheres;
+    let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++) {
       let sphere = state.spheres[sphereIds[i]];
       if (DataUtil.verifyDatabaseSphere(sphere) === false) {

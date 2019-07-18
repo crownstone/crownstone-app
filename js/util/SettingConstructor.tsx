@@ -22,46 +22,10 @@ const getIcon = function(name : string, size : number, iconColor: string, backgr
   return <IconButton name={name} buttonSize={40} size={size} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
 };
 
-
-const getAlternatingIcons = function(names : string[], sizes : number[], iconColors: string[], backgroundColors : string[]) {
-  if (Platform.OS === 'android') {
-    return (
-      <AlternatingContent
-        style={{width: 25, height:25, marginLeft:2}}
-        fadeDuration={500}
-        switchDuration={2000}
-        contentArray={[
-          getIcon(names[0], sizes[0], iconColors[0], backgroundColors[0]),
-          getIcon(names[1], sizes[1], iconColors[1], backgroundColors[1])
-        ]}
-      />
-    );
-  }
-  else {
-    return (
-      <AlternatingContent
-        style={{width: 30, height:30, backgroundColor: backgroundColors[0], borderRadius: 6}}
-        fadeDuration={500}
-        switchDuration={2000}
-        contentArray={[
-          getIcon(names[0], sizes[0], iconColors[0], backgroundColors[0]),
-          getIcon(names[1], sizes[1], iconColors[1], backgroundColors[1])
-        ]}
-      />
-    );
-  }
-};
-
-const insertExplanation = function(items: any[], label : string, below : boolean = false, alreadyPadded : boolean = false) {
-  if (Platform.OS === 'ios') {
-    items.push({type: 'explanation', label: label, below: below, alreadyPadded: alreadyPadded});
-  }
-};
-
 export const SettingConstructor = function(store, state, clickCallback = () => {}) {
   let items = [];
 
-  insertExplanation(items, lang("My_AccountLabel"), false);
+  items.push({type: 'explanation', label: lang("My_AccountLabel")});
   items.push({
     id: 'My Account',
     label: lang("My_Account"),
@@ -82,9 +46,9 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
       NavigationUtil.navigate( "SettingsPrivacy");
     }
   });
-  insertExplanation(items, lang("PrivacyLabel"), true);
+  items.push({type: 'explanation', label: lang("PrivacyLabel"), below: true});
 
-  insertExplanation(items,  lang("ConfigurationLabel"), false, true);
+  items.push({type: 'explanation', label: lang("ConfigurationLabel"), below: false, alreadyPadded: true});
   // if (Object.keys(state.spheres).length > 0) {
   //   items.push({
   //     id: 'Mesh Overview',
@@ -103,7 +67,6 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     id: 'App Settings',
     label: lang("App_Settings"),
     type: 'navigation',
-    style: {color: '#000'},
     mediumIcon: getIcon('ios-cog', 35, colors.white.hex, colors.green.hex),
     callback: () => {
       clickCallback();
@@ -135,7 +98,7 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
   //   callback: () => { clickCallback(); core.eventBus.emit("showWhatsNew"); }
   // });
 
-  insertExplanation(items,  lang("TROUBLESHOOTING"), false);
+  items.push({type: 'explanation', label: lang("TROUBLESHOOTING")});
   items.push({
     id:'Diagnostics',
     label: lang("Diagnostics"),
@@ -177,11 +140,11 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
 
 
   if (Platform.OS === 'android') {
-    items.push({id: 'settingsSpacer', type: 'spacer'})
     items.push({
       id: 'quit',
+      type:'button',
       label: lang("Force_Quit"),
-      icon:  getIcon("md-remove-circle", 32, colors.white.hex, colors.darkRed.hex),
+      mediumIcon:  getIcon("md-remove-circle", 28, colors.white.hex, colors.darkRed.hex),
       callback: () => {
         Alert.alert(
           lang("_Are_you_sure___Crownston_header"),
