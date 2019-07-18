@@ -138,6 +138,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
         applianceId && change.updateApplianceConfig && change.updateApplianceConfig.applianceIds[applianceId]
         ) {
           this._updateNavBar(this.state.swiperIndex, false);
+          this.forceUpdate();
         }
     });
   }
@@ -193,7 +194,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
     this.summaryIndex = summaryIndex;
 
     // check what we want to show the user:
-    let hasError        = stone.errors.hasError;
+    let hasError        = stone.errors.hasError && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
     let mustUpdate      = xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
     let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && xUtil.versions.canUpdate(stone, state) && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
     let hasBehaviour    = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;

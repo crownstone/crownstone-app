@@ -152,60 +152,60 @@ export class DeviceEntry extends Component<any, any> {
           (stone.state.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
 
-    if (stone.errors.hasError === true) {
-      return (
-        <View style={[{
-          width:60,
-          height:60,
-          borderRadius:30,
-          backgroundColor: colors.csOrange.hex,
-          borderWidth: 0,
-        }, styles.centered]}>
-          <AlternatingContent
-            style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}
-            fadeDuration={500}
-            switchDuration={2000}
-            contentArray={[
-              <Icon name={'ios-warning'} size={40} color={'#fff'} style={{backgroundColor:'transparent'}} />,
-              <Icon name={element.config.icon} size={35} color={'#fff'} />,
-            ]}
-          />
-      </View>
-      );
-    }
-    else if (((xUtil.versions.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) &&
-      StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false) {
-      return (
-        <View style={[{
-          width:60,
-          height:60,
-          borderRadius:30,
-          backgroundColor: colors.white.hex,
-          borderWidth: 2,
-          borderColor: color,
-          justifyContent:'center', alignItems:'center'
-        }, styles.centered]}>
-          <AlternatingContent
-            style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}
-            fadeDuration={500}
-            switchDuration={2000}
-            contentArray={[
-              <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
-              <Icon name={element.config.icon} size={35} color={color} />,
-            ]} />
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false) {
+      if (stone.errors.hasError === true) {
+        return (
+          <View style={[{
+            width:60,
+            height:60,
+            borderRadius:30,
+            backgroundColor: colors.csOrange.hex,
+            borderWidth: 0,
+          }, styles.centered]}>
+            <AlternatingContent
+              style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}
+              fadeDuration={500}
+              switchDuration={2000}
+              contentArray={[
+                <Icon name={'ios-warning'} size={40} color={'#fff'} style={{backgroundColor:'transparent'}} />,
+                <Icon name={element.config.icon} size={35} color={'#fff'} />,
+              ]}
+            />
         </View>
-      );
+        );
+      }
+      else if ((xUtil.versions.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) {
+        return (
+          <View style={[{
+            width:60,
+            height:60,
+            borderRadius:30,
+            backgroundColor: colors.white.hex,
+            borderWidth: 2,
+            borderColor: color,
+            justifyContent:'center', alignItems:'center'
+          }, styles.centered]}>
+            <AlternatingContent
+              style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}
+              fadeDuration={500}
+              switchDuration={2000}
+              contentArray={[
+                <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
+                <Icon name={element.config.icon} size={35} color={color} />,
+              ]} />
+          </View>
+        );
+      }
     }
     else {
-      if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-        customStyle = {borderWidth:1, borderColor: colors.darkGray2.hex}
-      }
-      return (
-        <AnimatedCircle size={60} color={color} style={customStyle}>
-          <Icon name={element.config.icon} size={35} color={'#ffffff'} />
-        </AnimatedCircle>
-      );
+      customStyle = {borderWidth:1, borderColor: colors.darkGray2.hex}
     }
+
+    return (
+      <AnimatedCircle size={60} color={color} style={customStyle}>
+        <Icon name={element.config.icon} size={35} color={'#ffffff'} />
+      </AnimatedCircle>
+    );
   }
 
 

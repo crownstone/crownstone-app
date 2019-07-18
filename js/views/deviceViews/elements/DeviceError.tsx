@@ -8,8 +8,8 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, Alert
+} from "react-native";
 
 
 import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../../styles";
@@ -18,6 +18,7 @@ import {ErrorContent} from "../../content/ErrorContent";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
+import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class DeviceError extends Component<any, any> {
@@ -27,7 +28,12 @@ export class DeviceError extends Component<any, any> {
       return (
         <TouchableOpacity
           onPress={() => {
-            StoneUtil.clearErrors(this.props.sphereId, this.props.stoneId, stone, core.store);
+            if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
+              Alert.alert("Stone unavailable.","You have to be in range of the Crownstone to reset the errors.",[{text:"OK"}]);
+            }
+            else {
+              StoneUtil.clearErrors(this.props.sphereId, this.props.stoneId, stone, core.store);
+            }
           }}
           style={[styles.centered, {
             width: 0.6 * screenWidth,

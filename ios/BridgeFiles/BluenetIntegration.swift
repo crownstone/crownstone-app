@@ -1304,9 +1304,9 @@ open class BluenetJS: RCTEventEmitter {
     LOGGER.info("BluenetBridge: Called viewsInitialized")
   }
   
-  @objc func setLocationState(_ sphereUID: NSNumber, locationId: NSNumber, profileIndex: NSNumber, referenceId: String) {
+  @objc func setLocationState(_ sphereUID: NSNumber, locationId: NSNumber, profileIndex: NSNumber, deviceToken: NSNumber, referenceId: String) {
     print("BluenetBridge: Called setLocationState \(sphereUID) \(locationId) \(profileIndex) referenceId:\(referenceId)" )
-    GLOBAL_BLUENET.bluenet.setLocationState(sphereUID: sphereUID.uint8Value, locationId: locationId.uint8Value, profileIndex: profileIndex.uint8Value, referenceId: referenceId)
+    GLOBAL_BLUENET.bluenet.setLocationState(sphereUID: sphereUID.uint8Value, locationId: locationId.uint8Value, profileIndex: profileIndex.uint8Value, deviceToken: deviceToken.uint8Value, referenceId: referenceId)
   }
   
   @objc func setDevicePreferences(_ rssiOffset: NSNumber, tapToToggle: NSNumber) {

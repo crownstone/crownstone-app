@@ -133,7 +133,7 @@ class NavStateManager {
   _getId() {
     if (this.modals.length > 0) {
       if (this.modals[this.modals.length - 1].length > 0) {
-        this.activeView = this.modals[this.modals.length - 1].id;
+        this.activeView[this.activeTab] = this.modals[this.modals.length - 1].id;
       }
       else {
         console.warn("Maybe wanted to dismiss the modal?")
@@ -239,16 +239,15 @@ class NavStateManager {
     if (targetId !== null) {
       this._getId();
     }
-
-    // console.log(this.activeView, this.activeTab, targetId)
-    this.activeView[this.activeTab] = targetId;
+    else {
+      this.activeView[this.activeTab] = targetId;
+    }
 
     return targetId;
   }
 
   isOverlayOpen() {
     return Object.keys(this.overlayId).length > 0;
-
   }
 
   isModalOpen() {
