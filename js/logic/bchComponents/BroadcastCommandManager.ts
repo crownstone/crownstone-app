@@ -105,7 +105,7 @@ class BroadcastCommandManagerClass {
     LOGi.broadcast("Switching via broadcast");
     return new Promise((resolve, reject) => {
       let result : bchReturnType = {data:null};
-      Scheduler.scheduleCallback(() => { resolve(result); }, BROADCAST_THROTTLE_TIME, "auto resolve broadcast promise" );
+      Scheduler.scheduleCallback(() => { resolve(result); }, 100, "auto resolve broadcast promise" );
 
       // ignore old states for a while
       core.eventBus.emit(Util.events.getIgnoreTopic(commandSummary.stoneId), {timeoutMs: 2000, conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: commandSummary.command.state}]});
@@ -124,7 +124,7 @@ class BroadcastCommandManagerClass {
   }
 
   shouldWaitForBroadcast() {
-    return new Date().valueOf() - this.timeLastBroadcast < BROADCAST_THROTTLE_TIME
+    return new Date().valueOf() - this.timeLastBroadcast < BROADCAST_THROTTLE_TIME;
   }
 
   handleThrottling(commandSummary : commandSummary) : Promise<bchReturnType> | false {
