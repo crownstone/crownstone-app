@@ -46,6 +46,7 @@ export const Stacks = {
   loggedIn: function() : StackData {
     return {
       bottomTabs: {
+        id: 'bottomTabs',
         children: [
           {
             stack: {

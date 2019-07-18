@@ -12,8 +12,6 @@ import {
 import { AppUtil }            from './AppUtil'
 import { colors }             from '../views/styles'
 import { IconButton }         from '../views/components/IconButton'
-import { AlternatingContent } from "../views/components/animated/AlternatingContent";
-import { core } from "../core";
 import { NavigationUtil } from "./NavigationUtil";
 import { LOGe } from "../logging/Log";
 
@@ -49,20 +47,6 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
   items.push({type: 'explanation', label: lang("PrivacyLabel"), below: true});
 
   items.push({type: 'explanation', label: lang("ConfigurationLabel"), below: false, alreadyPadded: true});
-  // if (Object.keys(state.spheres).length > 0) {
-  //   items.push({
-  //     id: 'Mesh Overview',
-  //     label: lang("Mesh_Overview"),
-  //     type: 'navigation',
-  //     style: {color: '#000'},
-  //     mediumIcon: getIcon('md-share', 35, colors.white.hex, colors.menuBackground.hex),
-  //     callback: () => {
-  //       clickCallback();
-  //       NavigationUtil.navigate( "SettingsMeshTopology");
-  //     }
-  //   });
-  // }
-
   items.push({
     id: 'App Settings',
     label: lang("App_Settings"),
@@ -73,30 +57,6 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
       NavigationUtil.navigate( "SettingsApp");
     }
   });
-
-  // if (state.app.tapToToggleEnabled !== false) {
-  //   let tapToToggleSettings = { tutorial: false };
-  //   if (!Util.data.getTapToToggleCalibration(state)) {
-  //     tapToToggleSettings.tutorial = true;
-  //   }
-  //   items.push({
-  //     id:'Calibrate Tap-to-Toggle',
-  //     label: lang("Calibrate_Tap_to_Toggle"),
-  //     type:'button',
-  //     style: {color:'#000'},
-  //     mediumIcon: getIcon('md-flask', 35, colors.white.hex, colors.menuBackground.hex),
-  //     callback: () => { clickCallback(); core.eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
-  //   });
-  // }
-
-  // items.push({
-  //   id: 'whats new',
-  //   label: lang("androidWhats_new_Whats_ne",Platform.OS),
-  //   type: 'button',
-  //   style: {color: '#000'},
-  //   mediumIcon: getIcon('md-bulb', 31, colors.white.hex, colors.green.hex),
-  //   callback: () => { clickCallback(); core.eventBus.emit("showWhatsNew"); }
-  // });
 
   items.push({type: 'explanation', label: lang("TROUBLESHOOTING")});
   items.push({
@@ -115,7 +75,6 @@ export const SettingConstructor = function(store, state, clickCallback = () => {
     type:'navigation',
     mediumIcon: getIcon('ios-help-circle', 30, colors.white.hex, colors.csBlueLight.hex),
     callback: () => {
-      // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
       clickCallback();
       NavigationUtil.navigate( "SettingsFAQ");
     }

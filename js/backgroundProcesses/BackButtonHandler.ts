@@ -20,6 +20,11 @@ class BackButtonHandlerClass {
         return true;
       }
 
+      if (!NavState.isOnBaseTab()) {
+        NavigationUtil.navigateToBaseTab()
+        return true;
+      }
+
       return false;
     })
   }

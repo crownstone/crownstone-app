@@ -4,25 +4,70 @@
 
 import { Navigation } from "react-native-navigation";
 
+const BASE_TAB_NAME = "BASE_TAB";
+
+interface views {
+  [key: string]: componentInfo[]
+}
+
+interface componentInfo {
+  id: string,
+  name: string,
+}
 
 class NavStateManager {
 
-  activeView = null;
-  overlayName = {};
+  activeView = {};
+  overlayNames = {};
   overlayId = {};
   modals = [];
-  views  = [];
+  views : views = {};
   overlayIncoming = false;
+
   overlayIncomingName = null;
+  activeTab = null;
+
+  baseTab = null;
+
+  setBaseTab() {
+    if (this.views[BASE_TAB_NAME] === undefined) {
+      this.views[BASE_TAB_NAME] = [];
+    }
+    this.activeTab = BASE_TAB_NAME;
+    this.baseTab = BASE_TAB_NAME;
+  }
+
+  isOnBaseTab() {
+    return this.baseTab === this.activeTab;
+  }
+
+  switchTab(componentId, componentName) {
+    if (this.activeTab === null) {
+      this.baseTab = componentName;
+    }
+
+    this.activeTab = componentName;
+    if (this.views[componentName] === undefined) {
+      this.views[componentName] = [];
+      this.addView(componentId, componentName);
+    }
+  }
+
+  getActiveView() {
+    return this.activeView[this.activeTab];
+  }
 
   addView(componentId, name) {
+    // console.log("HERE", componentId, name)
+    // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
+
     if (this.overlayIncoming === true) {
       if (this.overlayIncomingName === name) {
         this.overlayIncomingName = null;
       }
 
       // overlays will be closed by their OWN id, it is not tracked by the activeView.
-      this.overlayName[name] = {id:componentId, name: name};
+      this.overlayNames[name] = {id:componentId, name: name};
       this.overlayId[componentId] = {id:componentId, name: name};
       this.overlayIncoming = false;
       return;
@@ -31,17 +76,19 @@ class NavStateManager {
       this.modals[this.modals.length - 1].push({id:componentId, name: name});
     }
     else {
-      this.views.push({id:componentId, name: name});
+      this.views[this.activeTab].push({id:componentId, name: name});
     }
-    this.activeView = componentId;
+    this.activeView[this.activeTab] = componentId;
+
+    // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
   }
 
   popView() {
-    if (this.views.length > 0) {
-      this.views.pop();
+    if (this.views[this.activeTab].length > 0) {
+      this.views[this.activeTab].pop();
     }
     else {
-      console.warn("Maybe something is wrong?")
+      // console.warn("Maybe something is wrong?")
     }
   }
 
@@ -51,15 +98,15 @@ class NavStateManager {
         this.modals[this.modals.length - 1].pop();
       }
       else {
-        console.warn("Maybe wanted to dismiss the modal?")
+        // console.warn("Maybe wanted to dismiss the modal?")
       }
     }
     else {
-      if (this.views.length > 0) {
-        this.views.pop();
+      if (this.views[this.activeTab].length > 0) {
+        this.views[this.activeTab].pop();
       }
       else {
-        console.warn("Maybe something is wrong?")
+        // console.warn("Maybe something is wrong?")
       }
     }
 
@@ -72,25 +119,25 @@ class NavStateManager {
         this.activeView = this.modals[this.modals.length - 1].id;
       }
       else {
-        console.warn("Maybe wanted to dismiss the modal?")
+        // console.warn("Maybe wanted to dismiss the modal?")
       }
     }
     else {
-      if (this.views.length > 0) {
-        this.activeView = this.views[this.views.length - 1].id;
+      if (this.views[this.activeTab].length > 0) {
+        this.activeView = this.views[this.activeTab][this.views[this.activeTab].length - 1].id;
       }
       else {
-        console.warn("Maybe something is wrong?")
+        // console.warn("Maybe something is wrong?")
       }
     }
   }
 
   _getViewId() {
-    if (this.views.length > 0) {
-     return this.views[this.views.length - 1].id;
+    if (this.views[this.activeTab].length > 0) {
+     return this.views[this.activeTab][this.views[this.activeTab].length - 1].id;
     }
     else {
-      console.warn("Maybe something is wrong?")
+      // console.warn("Maybe something is wrong?")
     }
   }
 
@@ -112,12 +159,12 @@ class NavStateManager {
     if (this.overlayId[componentId] !== undefined) {
       let name = this.overlayId[componentId].name;
       delete this.overlayId[componentId];
-      delete this.overlayName[name];
+      delete this.overlayNames[name];
     }
   }
 
   isThisOverlayOpen(targetName) {
-    return this.overlayName[targetName] !== undefined || this.overlayIncomingName === targetName;
+    return this.overlayNames[targetName] !== undefined || this.overlayIncomingName === targetName;
   }
 
   allModalsDismissed() {
@@ -126,10 +173,12 @@ class NavStateManager {
   }
 
   setRoot() {
-    this.modals      = [];
-    this.views       = [];
-    this.overlayId   = {};
-    this.overlayName = {};
+    this.baseTab      = null;
+    this.activeTab    = null;
+    this.modals       = [];
+    this.views        = {};
+    this.overlayId    = {};
+    this.overlayNames = {};
   }
 
   backTo(name) : string {
@@ -151,21 +200,21 @@ class NavStateManager {
       }
     }
     else {
-      if (this.views.length > 0) {
-        for (let i = this.views.length -1; i >= 0; i--) {
-          if (this.views[i].name === name) {
-            targetId = this.views[i].id;
+      if (this.views[this.activeTab].length > 0) {
+        for (let i = this.views[this.activeTab].length -1; i >= 0; i--) {
+          if (this.views[this.activeTab][i].name === name) {
+            targetId = this.views[this.activeTab][i].id;
             spliceTarget = i + 1; // we want to keep the target, and remove the rest.
             break;
           }
         }
 
         if (spliceTarget !== null) {
-          this.views.splice(spliceTarget)
+          this.views[this.activeTab].splice(spliceTarget)
         }
       }
       else {
-        console.warn("Maybe something is wrong?")
+        // console.warn("Maybe something is wrong?")
       }
     }
 
@@ -195,7 +244,7 @@ class NavStateManager {
       }
     }
     else {
-      if (this.views.length > 1) {
+      if (this.views[this.activeTab].length > 1) {
         return true;
       }
       else {
@@ -205,12 +254,26 @@ class NavStateManager {
   }
 }
 
-
 export const NavState = new NavStateManager();
+
+let loadNamesFromStack = (stack) => {
+  if (stack && stack.bottomTabs && stack.bottomTabs.children) {
+    stack.bottomTabs.children.forEach((child) => {
+      if (child && child.stack && child.stack.children) {
+        tabBarComponentNames.push(child.stack.children[0].component.name);
+      }
+    })
+  }
+}
+
+let tabBarComponentNames = [];
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
-  // console.log("View has appeared", componentId, componentName)
+  if (tabBarComponentNames.indexOf(componentName) !== -1) {
+    return NavState.switchTab(componentId, componentName)
+  }
+
   NavState.addView(componentId, componentName);
 });
 
@@ -255,10 +318,18 @@ export const NavigationUtil = {
     Navigation.dismissOverlay(componentId);
   },
 
+
   setRoot(rootStack : StackData) {
     NavState.setRoot();
+
+    // check if we have a tabBar setup.
+    tabBarComponentNames = [];
+    loadNamesFromStack(rootStack);
+    if (tabBarComponentNames.length === 0) { NavState.setBaseTab(); }
+
     Navigation.setRoot({ root: rootStack });
   },
+
 
   launchModal: function(target, props = {}) {
     // console.log("Navigating from", NavState.activeView, "to", target, props)
@@ -272,19 +343,26 @@ export const NavigationUtil = {
     })
   },
 
+
   dismissModal: function() {
     // console.log("CALLING dismissModal")
-    let backFrom = NavState.activeView;
+    let backFrom = NavState.getActiveView();
     Navigation.dismissModal(backFrom)
-      .then(() => { console.log("Going back from ", backFrom, " success!")})
-      .catch((err) => {console.log("Going back from ", backFrom, " FAILED!", err)  })
+      .then(() => {
+        // console.log("Going back from ", backFrom, " success!")
+      })
+      .catch((err) => {
+        // console.log("Going back from ", backFrom, " FAILED!", err)
+      })
     NavState.modalDismissed();
   },
+
 
   dismissModalAndBack: function() {
     NavigationUtil.baseStackBack();
     NavigationUtil.dismissModal();
   },
+
 
   dismissAllModals: function() {
     // console.log("Closing all modals");
@@ -292,19 +370,23 @@ export const NavigationUtil = {
     NavState.allModalsDismissed();
   },
 
+
   dismissModalAndNavigate(target,props) {
-    NavigationUtil.navigateFromBaseStack(target, props);
+    NavigationUtil.navigateFromUnderlyingStack(target, props);
     NavigationUtil.dismissModal()
   },
 
+
   dismissAllModalsAndNavigate(target,props) {
-    NavigationUtil.navigateFromBaseStack(target, props);
+    NavigationUtil.navigateFromUnderlyingStack(target, props);
     NavigationUtil.dismissAllModals()
   },
 
+
   navigate: function(target, props = {}) {
-    // console.log("Navigating from", NavState.activeView, "to", target, props)
-    Navigation.push(NavState.activeView, {
+    let activeView = NavState.getActiveView();
+    // console.log("Navigating from",activeView, "to", target, props)
+    Navigation.push(activeView, {
       component: {
         id: target,
         name: target,
@@ -313,7 +395,8 @@ export const NavigationUtil = {
     });
   },
 
-  navigateFromBaseStack(target, props) {
+
+  navigateFromUnderlyingStack(target, props) {
     let goFrom = NavState._getViewId();
     // console.log("Navigating from", goFrom, "to", target)
     Navigation.push(goFrom, {
@@ -325,24 +408,44 @@ export const NavigationUtil = {
     });
   },
 
+
+  navigateToBaseTab() {
+    if (NavState.baseTab && NavState.baseTab !== BASE_TAB_NAME) {
+      Navigation.mergeOptions('bottomTabs', {
+        bottomTabs: {
+          currentTabIndex: 0
+        }
+      });
+    }
+  },
+
+
   back() {
     // console.log("CALLING BACK")
-    let backFrom = NavState.activeView;
+    let backFrom = NavState.getActiveView();
     NavState.pop();
     return Navigation.pop(backFrom)
-      .then(() => { console.log("Going back from ", backFrom, " success!")})
-      .catch((err) => {console.log("Going back from ", backFrom, " FAILED!", err)  })
+      .then(() => {
+        // console.log("Going back from ", backFrom, " success!")
+      })
+      .catch((err) => {
+        // console.log("Going back from ", backFrom, " FAILED!", err)
+      })
   },
+
 
   baseStackBack() {
     let backFrom = NavState._getViewId();
     // console.log("Going back baseStackBack", backFrom)
     NavState.popView();
     Navigation.pop(backFrom)
-      .then(() => { console.log("Going back baseStackBack ", backFrom, " success!")})
-      .catch((err) => {console.log("Going back baseStackBack ", backFrom, " FAILED!", err)  })
+      .then(() => {
+        // console.log("Going back baseStackBack ", backFrom, " success!")
+      })
+      .catch((err) => {
+        // console.log("Going back baseStackBack ", backFrom, " FAILED!", err)
+      })
   },
-
 
 
   backTo(target) {
