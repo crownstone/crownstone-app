@@ -17,6 +17,7 @@ export const BROADCAST_ERRORS = {
 
 interface broadcastQueueItem {
   type: string,
+  stoneId: string,
   command: commandSummary,
   resolver: any,
   rejecter: any,
@@ -86,8 +87,8 @@ class BroadcastCommandManagerClass {
   _setPendingCommandCheck() {
     if (this.clearPendingCommandCallback === null) {
       this.clearPendingCommandCallback = Scheduler.scheduleCallback(
-        () => { console.log("CHEcK IT"); this.clearPendingCommandCallback = null; this._checkPendingCommands(); },
-        100,
+        () => { this.clearPendingCommandCallback = null; this._checkPendingCommands(); },
+        BROADCAST_THROTTLE_TIME,
         "Loading Pending Command"
       );
     }
@@ -134,7 +135,7 @@ class BroadcastCommandManagerClass {
       this._setPendingCommandCheck();
 
       return new Promise((resolve, reject) => {
-        this.queue.push({type: commandSummary.command.commandName, command: commandSummary, resolver: resolve, rejecter: reject})
+        this.queue.push({type: commandSummary.command.commandName, stoneId: commandSummary.stoneId, command: commandSummary, resolver: resolve, rejecter: reject})
       });
     }
     return false;
@@ -143,7 +144,7 @@ class BroadcastCommandManagerClass {
   _checkforDuplicates(commandSummary : commandSummary) {
     for (let i = this.queue.length-1; i >= 0; i--) {
       // only most recent command of any type will be broadcast
-      if (this.queue[i].type === commandSummary.command.commandName) {
+      if (this.queue[i].type === commandSummary.command.commandName && commandSummary.stoneId === this.queue[i].stoneId) {
         LOGd.broadcast("Remove item from duplicate queue",i, this.queue[i].type)
         // fail the pending item
         this.queue[i].rejecter(BROADCAST_ERRORS.BROADCAST_REMOVED_AS_DUPLICATE);
