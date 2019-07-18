@@ -59,6 +59,8 @@ class NavStateManager {
   }
 
   isAlreadyOpen(componentId, name) {
+    if (!this.activeTab) { return false; }
+
     for (let i = 0; i < this.views[this.activeTab].length; i++) {
       // console.log("IS ALREADY OPEN", name,this.views[this.activeTab][i].name)
       if (this.views[this.activeTab][i].id === componentId) {
