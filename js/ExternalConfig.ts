@@ -178,7 +178,7 @@ import { Platform } from "react-native";
   // Minimum interval between broadcast elements.
   export let BROADCAST_THROTTLE_TIME;
   if (Platform.OS === 'android') { BROADCAST_THROTTLE_TIME = 100; }
-  else                           { BROADCAST_THROTTLE_TIME = 25; }
+  else                           { BROADCAST_THROTTLE_TIME = 100; }
 
 /******************** /TIMINGS ********************/
 

@@ -14,12 +14,12 @@ import {
   View,
 } from 'react-native';
 
-import {LOG, LOGe} from '../../logging/Log'
+import { LOG, LOGe }                                  from '../../logging/Log'
 import { BlePromiseManager }                          from '../../logic/BlePromiseManager'
 import { addDistanceToRssi, Util }                    from '../../util/Util'
 import { OverlayBox }                                 from '../components/overlays/OverlayBox'
 import { styles, colors , screenHeight, screenWidth } from '../styles'
-import { core } from "../../core";
+import { core }                                       from "../../core";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
