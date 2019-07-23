@@ -317,7 +317,7 @@ let tabBarComponentNames = [];
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
-  console.log("VIEW DID APPEAR", componentId, componentName)
+  // console.log("VIEW DID APPEAR", componentId, componentName)
   if (tabBarComponentNames.indexOf(componentName) !== -1) {
     NavState.switchTab(componentId, componentName)
   }
@@ -327,7 +327,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidDisappearListener(({ componentId, componentName }) => {
-  console.log("VIEW DID DISAPPEAR", componentId, componentName)
+  // console.log("VIEW DID DISAPPEAR", componentId, componentName)
 });
 
 
