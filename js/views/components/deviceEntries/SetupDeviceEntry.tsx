@@ -128,17 +128,19 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
 
   render() {
     return (
-      <View style={{flexDirection: 'column', height: this.baseHeight, flex: 1}}>
-        <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.props.callback(); }}>
+      <View style={{flexDirection: 'column', height: this.baseHeight, flex: 1, overflow:'hidden'}}>
+        <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1, overflow:'hidden'}}>
+          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center', overflow:'hidden'}} onPress={() => { this.props.callback(); }}>
             {this._getIcon()}
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.props.callback(); }}>
-            <View style={{flexDirection: 'column'}}>
-              <SlideFadeInView visible={!this.state.pendingCommand} height={20}><Text style={{fontSize: 17, fontWeight: '100'}}>{this.state.name}</Text></SlideFadeInView>
-              <SlideFadeInView visible={ this.state.pendingCommand} height={50}><Text style={{fontSize: 13, fontWeight: '100'}}>{ lang("Toggling____You_should_he") }</Text></SlideFadeInView>
-              <SlideFadeInView visible={!this.state.pendingCommand} height={30}>{this._getSubText()}</SlideFadeInView>
-            </View>
+          <TouchableOpacity style={{flex: 1, height: this.baseHeight, overflow:'hidden'}} onPress={() => { this.props.callback(); }}>
+            <SlideFadeInView visible={!this.state.pendingCommand} height={this.baseHeight} style={{justifyContent:'center'}}>
+              <Text style={{fontSize: 17, fontWeight: '100'}}>{this.state.name}</Text>
+              {this._getSubText()}
+            </SlideFadeInView>
+            <SlideFadeInView visible={ this.state.pendingCommand} height={this.baseHeight} style={{justifyContent:'center'}}>
+              <Text style={{fontSize: 13, fontWeight: '100'}}>{ lang("Toggling____You_should_he") }</Text>
+            </SlideFadeInView>
           </TouchableOpacity>
           { this._getControl() }
         </View>

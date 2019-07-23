@@ -124,8 +124,14 @@ class Logger {
       }
 
       if (RELEASE_MODE_USED === false) {
-        // @ts-ignore
-        console.log.apply(this, args);
+        if (this.level > LOG_LEVEL.info) {
+          // @ts-ignore
+          console.warn.apply(this, args);
+        }
+        else {
+          // @ts-ignore
+          console.log.apply(this, args);
+        }
       }
     }
   }
