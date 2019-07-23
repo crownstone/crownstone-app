@@ -299,7 +299,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			}
 			val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey, localizationKey)
 
-			val settings = SphereSettings(keySet, null, ibeaconUuid, 0)
+			val settings = SphereSettings(keySet, null, ibeaconUuid, 0, 0)
 			sphereSettings.put(sphereId, settings)
 		}
 		bluenet.setSphereSettings(sphereSettings)
@@ -325,13 +325,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun setLocationState(sphereUid: Int, locationUid: Int, profile: Int, sphereId: SphereId) {
+	fun setLocationState(sphereUid: Int, locationUid: Int, profile: Int, deviceToken: Int, sphereId: SphereId) {
 		// Current sphere short id, location short id, and profile.
 		// Cache these for each sphere, to be used for broadcasting.
 		Log.i(TAG, "setLocationState sphereUid=$sphereUid locationUid=$locationUid profile=$profile sphereId=$sphereId")
 		bluenet.setSphereShortId(sphereId, Conversion.toUint8(sphereUid))
 		bluenet.setLocation(sphereId, Conversion.toUint8(locationUid))
 		bluenet.setProfile(sphereId, Conversion.toUint8(profile))
+		bluenet.setDeviceToken(sphereId, Conversion.toUint8(deviceToken))
 	}
 
 
