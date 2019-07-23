@@ -39,6 +39,14 @@ class NavStateManager {
     this.baseTab = BASE_TAB_NAME;
   }
 
+  prepareTabs(tabNames) {
+    for (let i = 0; i < tabNames.length; i++) {
+      if (this.views[tabNames[i]] === undefined) { this.views[tabNames[i]] = []; }
+    }
+    this.activeTab = tabNames[0];
+    this.baseTab = tabNames[0];
+  }
+
   isOnBaseTab() {
     return this.baseTab === this.activeTab;
   }
@@ -58,7 +66,7 @@ class NavStateManager {
     return this.activeView[this.activeTab];
   }
 
-  isAlreadyOpen(componentId, name) {
+  handleIfAlreadyOpen(componentId, name) {
     if (!this.activeTab) { return false; }
 
     for (let i = 0; i < this.views[this.activeTab].length; i++) {
@@ -72,10 +80,29 @@ class NavStateManager {
     return false;
   }
 
+  isAlreadyOpen(name) {
+    for (let i = 0; i < this.views[this.activeTab].length; i++) {
+      if (this.views[this.activeTab][i].name === name) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   addView(componentId, name) {
-    if (this.isAlreadyOpen(componentId, name)) { return; }
+    if (this.handleIfAlreadyOpen(componentId, name)) { return; }
+
+    // if the root view has not loaded yet and another view comes in first,
+    // this is probably a race condition and we'll ignore the intervening view
+    if (this.baseTab !== BASE_TAB_NAME) {
+      if (name !== this.baseTab && this.isAlreadyOpen(this.baseTab) === false) {
+        // console.log("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name)
+        return;
+      }
+    }
 
     // console.log("HERE", componentId, name)
+    // console.log("active: ", this.activeTab)
     // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
 
     if (this.overlayIncoming === true) {
@@ -290,7 +317,7 @@ let tabBarComponentNames = [];
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
-  // console.log("VIEW DID APPEAR", componentId, componentName)
+  console.log("VIEW DID APPEAR", componentId, componentName)
   if (tabBarComponentNames.indexOf(componentName) !== -1) {
     NavState.switchTab(componentId, componentName)
   }
@@ -300,7 +327,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidDisappearListener(({ componentId, componentName }) => {
-  // console.log("VIEW DID DISAPPEAR", componentId, componentName)
+  console.log("VIEW DID DISAPPEAR", componentId, componentName)
 });
 
 
@@ -341,12 +368,21 @@ export const NavigationUtil = {
 
 
   setRoot(rootStack : StackData) {
+    // reset the NavState
     NavState.setRoot();
 
+    // console.log("----------------------_____SET ROOT")
     // check if we have a tabBar setup.
     tabBarComponentNames = [];
     loadNamesFromStack(rootStack);
-    if (tabBarComponentNames.length === 0) { NavState.setBaseTab(); }
+    if (tabBarComponentNames.length === 0) {
+      NavState.setBaseTab();
+    }
+    else {
+      NavState.prepareTabs(tabBarComponentNames);
+    }
+
+    // console.log("This is the tabBarComponentNames", tabBarComponentNames)
 
     Navigation.setRoot({ root: rootStack });
   },
@@ -432,6 +468,7 @@ export const NavigationUtil = {
 
   navigateToBaseTab() {
     if (NavState.baseTab && NavState.baseTab !== BASE_TAB_NAME) {
+      this.activeTab = BASE_TAB_NAME;
       Navigation.mergeOptions('bottomTabs', {
         bottomTabs: {
           currentTabIndex: 0

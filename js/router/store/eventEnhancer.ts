@@ -293,6 +293,8 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_INSTALLATIONS":
     case "FINISHED_SPECIAL_DEVICES":
     case "FINISHED_SPECIAL_MESSAGES":
+    case "UPDATE_ACTIVITY_RANGE_CLOUD_ID":
+    case "UPDATE_STONE_TIME_STATE":
     case "UPDATE_SYNC_ACTIVITY_TIME":
     case "UPDATE_ACTIVITY_RANGE":
       break;
@@ -326,11 +328,11 @@ function checkAction(action, affectedIds) {
     case "UPDATE_SPHERE_KEY":
     case "REMOVE_SPHERE_KEY":
       break;
-  case "ADD_STONE_RULE":
-  case "UDPATE_STONE_RULE":
-  case "MARK_STONE_RULE_FOR_DELETION":
-  case "REMOVE_STONE_RULE":
-    eventStatus['stoneChangeRules'] = affectedIds; break;
+    case "ADD_STONE_RULE":
+    case "UDPATE_STONE_RULE":
+    case "MARK_STONE_RULE_FOR_DELETION":
+    case "REMOVE_STONE_RULE":
+      eventStatus['stoneChangeRules'] = affectedIds; break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

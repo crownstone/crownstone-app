@@ -18,7 +18,7 @@ let defaultSettings = {
     icon: 'c2-pluginFilled',
     crownstoneId: undefined,
     type: STONE_TYPES.plug,
-    uid: undefined,
+    uid: undefined, // new field to generalize between sphere, location and stone uid.
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,
     handle: undefined,

@@ -69,6 +69,7 @@ Navigation.events().registerAppLaunchedListener(() => {
 
   Navigation.setDefaultOptions(defaultOptions);
 
+
   NavigationUtil.setRoot(Stacks.initial());
 
   // overwrite for Icon Debug view
