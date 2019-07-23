@@ -6,7 +6,6 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  
   Text,
   View
 } from 'react-native';
@@ -28,9 +27,11 @@ import { SwitchBar }         from './editComponents/SwitchBar'
 import { TextEditBar }       from './editComponents/TextEditBar'
 import { TimePicker }        from './editComponents/TimePicker'
 import { TextBlob }          from "./editComponents/TextBlob";
+import { NumericGetSet }     from "./editComponents/NumericGetSet";
+import { CollapsableBar }    from "./editComponents/Collapsable";
 
 import {styles, colors, NORMAL_ROW_SIZE, EXTRA_LARGE_ROW_SIZE} from '../styles'
-import {CollapsableBar} from "./editComponents/Collapsable";
+import { ButtonGetValue } from "./editComponents/ButtonGetValue";
 
 
 /**
@@ -38,28 +39,28 @@ import {CollapsableBar} from "./editComponents/Collapsable";
  * This module offers the following types:
 
  * button - Just a text which acts like a button (modeled after iOS Delete contact button)
-     --> {label: field label, callback: callback to store changes}
+ --> {label: field label, callback: callback to store changes}
 
  * checkbar - Just a text which acts like a button (modeled after iOS Delete contact button)
-     --> {label: field label, value: boolean, callback: (newValue) => {}}
+ --> {label: field label, value: boolean, callback: (newValue) => {}}
 
  * collapsable - Just a text which acts like a button (modeled after iOS Delete contact button)
-     --> {label: field label, content: string, contentHeight: number}
+ --> {label: field label, content: string, contentHeight: number}
 
  * explanation - Text above or below an editable item with padding.
-     --> {label: text, below: boolean, style: style object to overrule explanation style}
+ --> {label: text, below: boolean, style: style object to overrule explanation style}
 
  * lightExplanation - Text above or below an editable item with padding.
-     --> {label: text, below: boolean, style: style object to overrule explanation style}
+ --> {label: text, below: boolean, style: style object to overrule explanation style}
 
  * largeExplanation - Text above or below an editable item with padding.
-     --> {label: text, below: boolean, style: style object to overrule explanation style}
+ --> {label: text, below: boolean, style: style object to overrule explanation style}
 
  * icon - Trigger to change the icon
-     --> {label: field label, value: iconName, callback: (newValue) => {}}
+ --> {label: field label, value: iconName, callback: (newValue) => {}}
 
  * info - looks the same as a navigation bar except it does not have the forward icon nor can you click on it.
-    --> {
+ --> {
      largeIcon: RN object to be in front of the label,
      icon: RN object to be in front of the label,
      label: field label,
@@ -68,7 +69,7 @@ import {CollapsableBar} from "./editComponents/Collapsable";
      labelStyle: style object to overrule label style
    }
  * navigation - text with an > for navigation in a menu. The value and valueStyle is optional
-     --> {
+ --> {
      largeIcon: RN object to be in front of the label,
      icon: RN object to be in front of the label,
      label: field label,
@@ -79,22 +80,22 @@ import {CollapsableBar} from "./editComponents/Collapsable";
    }
 
  * picture - Trigger to remove a picture or add one
-     --> {label: field label, value: pictureURI, callback: (newValue) => {}}
+ --> {label: field label, value: pictureURI, callback: (newValue) => {}}
 
  * slider - slider control with optional label
-     --> {label: field label, value: boolean, callback: (newValue) => {}}
+ --> {label: field label, value: boolean, callback: (newValue) => {}}
 
  * spacer - Empty space to separate editable items.
-     --> {}
+ --> {}
 
  * optionalSwitch - native boolean switch with a cancel button
  --> {label: field label, value: boolean, callback: (newValue) => {}}
 
  * switch - native boolean switch
-     --> {label: field label, value: boolean, callback: (newValue) => {}}
+ --> {label: field label, value: boolean, callback: (newValue) => {}}
 
  * textEdit - TextEdit field
-     --> {label: field label, value: text, callback: (newValue) => {}}
+ --> {label: field label, value: text, callback: (newValue) => {}}
 
  */
 export class EditableItem extends Component<any, any> {
@@ -107,6 +108,8 @@ export class EditableItem extends Component<any, any> {
     switch (this.props.type) {
       case 'button':
         return <ButtonBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
+      case 'buttonGetValue':
+        return <ButtonGetValue barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'checkbar':
         return <CheckBar barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'collapsable':
@@ -147,6 +150,8 @@ export class EditableItem extends Component<any, any> {
         return <TextBlob barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       case 'timePicker':
         return <TimePicker barHeight={NORMAL_ROW_SIZE} {...this.props} />;
+      case 'numericGetSet':
+        return <NumericGetSet barHeight={NORMAL_ROW_SIZE} {...this.props} />;
       default:
         return (
           <View>
