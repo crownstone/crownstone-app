@@ -173,6 +173,20 @@ export class DeviceEdit extends LiveComponent<any, any> {
       }
     });
 
+    // icon picker
+    items.push({
+      label: lang("Icon"),
+      type: 'icon',
+      value: this.state.stoneIcon,
+      callback: () => {
+        NavigationUtil.navigate( "DeviceIconSelection",{
+          icon: this.state.stoneIcon,
+          callback: (newIcon) => {
+            this.setState({stoneIcon: newIcon})
+          }
+        })
+      }
+    });
 
     if (canSwitch) {
       items.push({
