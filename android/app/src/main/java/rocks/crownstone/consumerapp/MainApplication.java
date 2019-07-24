@@ -13,7 +13,6 @@ import com.corbt.keepawake.KCKeepAwakePackage;
 import fr.bamlab.rnimageresizer.ImageResizerPackage;
 import com.rnfs.RNFSPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.wix.RNCameraKit.RNCameraKitPackage;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -57,7 +56,7 @@ public class MainApplication extends NavigationApplication {
 		return Arrays.<ReactPackage>asList(
 				new BluenetBridgePacket(),
 				new MainReactPackage(),
-            new RNCameraPackage(),
+				new RNCameraPackage(),
 				new FastImageViewPackage(),
 				new AsyncStoragePackage(),
 				new ReactSliderPackage(),
@@ -66,7 +65,6 @@ public class MainApplication extends NavigationApplication {
 				new ImageResizerPackage(),
 				new RNFSPackage(),
 				new KCKeepAwakePackage(),
-				new RNCameraKitPackage(),
 				new SplashScreenReactPackage(),
 				new RNSentryPackage(),
 				new RNDeviceInfo(),

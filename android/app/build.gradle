@@ -128,7 +128,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
-        versionCode 49
+        versionCode 50
         versionName "3.0.0"
 //        ndk {
 //            abiFilters "armeabi-v7a", "x86"
@@ -219,7 +219,6 @@ dependencies {
     implementation project(':react-native-push-notification')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-keep-awake')
-    implementation project(":react-native-camera-kit")
     implementation project(':react-native-sentry')
     implementation project(':react-native-device-info')
     implementation project(':react-native-fast-image')
