@@ -6,11 +6,13 @@ import { Navigation } from "react-native-navigation";
 
 export const deviceModel = DeviceInfo.getModel();
 
-export let topBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
-export let tabBarMargin    = (deviceModel.indexOf('iPhone X') != -1 ? 34 : 0 ); // Status bar in iOS is 20 high
-export let tabBarHeight    = (deviceModel.indexOf('iPhone X') != -1 ? 49 + 34: 49);
-export let statusBarHeight = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 44 : 20); // Status bar in iOS is 20 high
-export let topBarHeight    = Platform.OS === 'android' ? 54  :  (deviceModel === 'iPhone X' ? 44 : 44 ) + statusBarHeight; // Status bar in iOS is 20 high
+export let isIPhoneX = deviceModel.indexOf('iPhone X') !== -1;
+
+export let topBarMargin    = Platform.OS === 'android' ? 0   :  (isIPhoneX ? 0 : 0 ); // Status bar in iOS is 20 high
+export let tabBarMargin    = isIPhoneX ? 34 : 0 ; // Status bar in iOS is 20 high
+export let tabBarHeight    = isIPhoneX ? 49 + 34: 49;
+export let statusBarHeight = Platform.OS === 'android' ? 0   :  (isIPhoneX ? 44 : 20); // Status bar in iOS is 20 high
+export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isIPhoneX ? 44 : 44 ) + statusBarHeight; // Status bar in iOS is 20 high
 
 export let screenWidth = Dimensions.get('window').width;
 

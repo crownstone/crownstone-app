@@ -153,7 +153,7 @@ export class Register extends LiveComponent<any, any> {
           return (
             <View style={{...styles.centered, flex:1}}>
               <PictureCircle
-                root={true}
+                isSquare={true}
                 value={state && state.picture || this.user.picture}
                 callback={(pictureUrl) => {
                   this.user.picture = pictureUrl;
@@ -210,7 +210,7 @@ export class Register extends LiveComponent<any, any> {
                   this.user.email = newValue;
                   setState(newState);}
                 }
-                onBlur={() => { this.focussingIndex = 1; this.forceUpdate(); }}
+                onBlur={() => { if (this._interview.isActiveCard("email")) { this.focussingIndex = 1; this.forceUpdate(); }}}
               />
               <InterviewTextInput
                 autofocus={false}

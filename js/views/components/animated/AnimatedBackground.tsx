@@ -73,7 +73,7 @@ export class AnimatedBackground extends Component<any, any> {
         { this.props.hideOrangeBar !== true ? <NotificationLine notificationsVisible={!this.props.hideNotification} /> : true }
         <View style={{flex:1, overflow:"hidden"}}>
           { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}
-          {this.props.children}
+          { this.props.children }
         </View>
         { hasNavBar ? <View style={{backgroundColor:colors.csBlueLightDesat.rgba(0.3), width:screenWidth, height:1}} /> : null}
       </View>

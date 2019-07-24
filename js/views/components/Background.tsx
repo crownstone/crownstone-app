@@ -11,7 +11,7 @@ import {
 } from "react-native";
 // import { SafeAreaView } from 'react-navigation';
 
-import { styles, screenHeight, topBarHeight, tabBarHeight, colors, screenWidth } from "../styles";
+import { styles, screenHeight, topBarHeight, tabBarHeight, colors, screenWidth, statusBarHeight } from "../styles";
 import {BackgroundImage} from "./BackgroundImage";
 import { NotificationLine } from "./NotificationLine";
 
@@ -20,9 +20,10 @@ export class Background extends Component<{
   hideOrangeBar?:    boolean,
   hideNotification?: boolean,
   hasNavBar?:        boolean,
+  dimStatusBar?:     boolean,
   fullScreen?:       boolean,
   hasTopBar?:        boolean,
-  image:             any,
+  image?:            any,
   topImage?:         any,
   shadedStatusBar?:  boolean,
   keyboardAvoid?:  boolean,
@@ -42,9 +43,10 @@ export class Background extends Component<{
 
     return (
       <KeyboardAvoidingView style={[styles.fullscreen, {height:height, overflow:"hidden", backgroundColor:"transparent"}]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
-        <BackgroundImage height={height} image={this.props.image} />
-        {this.props.topImage ? <View style={[styles.fullscreen, {height:height, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
+        { this.props.image    ? <BackgroundImage height={height} image={this.props.image} /> : undefined }
+        { this.props.topImage ? <View style={[styles.fullscreen, {height:height, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
         <View style={[styles.fullscreen, {height:height}]} >
+          { this.props.dimStatusBar && Platform.OS !== 'android' ? <View style={{width:screenWidth, height: statusBarHeight, backgroundColor: colors.black.rgba(0.3)}} /> : undefined }
           { this.props.hideOrangeBar !== true ? <NotificationLine notificationsVisible={!this.props.hideNotification} /> : true }
           <View style={{flex:1, overflow:'hidden'}}>
             { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}

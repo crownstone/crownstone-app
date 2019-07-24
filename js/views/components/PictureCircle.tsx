@@ -35,20 +35,14 @@ export class PictureCircle extends Component<any, any> {
 
   showOptions() {
     let buttons = [];
-    let pictureViewAddress = "PictureView";
-    let cameraRollViewAddress = "CameraRollView";
-    if (this.props.root) {
-      pictureViewAddress = "root" + pictureViewAddress;
-      cameraRollViewAddress = "root" + cameraRollViewAddress;
-    }
 
     if (Platform.OS === 'android') {
-      buttons.push({ text: lang("Take_Photo"), callback: () => {  NavigationUtil.navigate( pictureViewAddress,{selectCallback: this.props.callback});}});
-      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { NavigationUtil.navigate( cameraRollViewAddress,{selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Photo"),          callback: () => { NavigationUtil.launchModal( 'PictureView',   {selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
+      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { NavigationUtil.launchModal( 'CameraRollView',{selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
     }
     else {
-      buttons.push({ text: lang("Take_Picture"), callback: () => { NavigationUtil.navigate( pictureViewAddress,{selectCallback: this.props.callback, forceAspectRatio: this.props.forceAspectRatio});}});
-      buttons.push({ text: lang("Choose_Existing"), callback: () => { NavigationUtil.navigate( cameraRollViewAddress,{selectCallback: this.props.callback});}});
+      buttons.push({ text: lang("Take_Picture"),    callback: () => { NavigationUtil.launchModal( 'PictureView',   {selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
+      buttons.push({ text: lang("Choose_Existing"), callback: () => { NavigationUtil.launchModal( 'CameraRollView',{selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
     }
     core.eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
   }
@@ -76,15 +70,15 @@ export class PictureCircle extends Component<any, any> {
           }}>
             <Image style={{width:innerSize, height:innerSize, borderRadius:innerSize * 0.5, backgroundColor: 'transparent'}} source={{uri:imageURI}} />
             <View style={[{
-                position: 'absolute',
-                top: 0,
-                right: 2,
-                width:size/3,
-                height:size/3,
-                borderRadius:size/6,
-                backgroundColor: colors.blue.hex,
-                borderColor: colors.white.hex,
-                borderWidth: size/30
+              position: 'absolute',
+              top: 0,
+              right: 2,
+              width:size/3,
+              height:size/3,
+              borderRadius:size/6,
+              backgroundColor: colors.blue.hex,
+              borderColor: colors.white.hex,
+              borderWidth: size/30
               }, styles.centered]}>
                 <Icon name={'md-remove'} size={size/5} color={'#ffffff'} />
             </View>

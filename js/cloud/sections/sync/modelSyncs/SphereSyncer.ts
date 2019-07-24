@@ -234,6 +234,13 @@ export class SphereSyncer extends SyncingBase {
         cloudData: sphere_from_cloud
       })
     }
+    // this is a repair method to ensure that the new field is synced to the local store.
+    else if (sphereInState.config.uid === null || sphereInState.config.uid === undefined) {
+      transferSpheres.updateLocal(this.actions, {
+        localId:   localId,
+        cloudData: sphere_from_cloud
+      })
+    }
 
     if (!sphereInState.config.cloudId) {
       this.actions.push({type:'UPDATE_SPHERE_CLOUD_ID', sphereId: localId, data:{cloudId: sphere_from_cloud.id}})

@@ -20,7 +20,6 @@
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		201EEBBEB1084954847858C1 /* libReactNativeCameraKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7EF23E51E204C98B3653CE8 /* libReactNativeCameraKit.a */; };
 		2949A06B239243D580FBFB80 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DECEB9CC79AB448890DC6C27 /* libRNVectorIcons.a */; };
 		36AD254E07C646A6966A7709 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6050E602DB5545E987715E94 /* AntDesign.ttf */; };
 		3D9F3719ACF34F349748EC35 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C648D1E337B4439DA8CF7411 /* FontAwesome.ttf */; };
@@ -29,6 +28,7 @@
 		5D0DDA5E1C014AB38EC2AD63 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F76F3A8FD7B44DD79A442EF9 /* libRNFS.a */; };
 		5DD6B0E8203C49CA90170328 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DEB1FEE0EEBB4A408A7AD560 /* Feather.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		613D457D36284A328D2B9CA4 /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8AF19E20804D5189EE1623 /* libRNCamera.a */; };
 		74C8A3E14E304993AA871946 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F536239263194292A885D7A7 /* libRNSVG.a */; };
 		77A4BC75F6794BFC8EA372F7 /* libRNCSlider.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 486F3CCB35A9422A96DFA88E /* libRNCSlider.a */; };
 		77CEB38785D540689B14BC04 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 140C80BD57674780B1435B6A /* Zocial.ttf */; };
@@ -312,6 +312,13 @@
 			remoteGlobalIDString = A39873CE1EA65EE60051E01A;
 			remoteInfo = "RNVectorIcons-tvOS";
 		};
+		FA20A09C22E7538700EA6C40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9B794DCDCC9448DA80C3A509 /* RNCamera.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4107012F1ACB723B00C6AA39;
+			remoteInfo = RNCamera;
+		};
 		FA20B0731FB35DE700926366 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
@@ -536,13 +543,6 @@
 			remoteGlobalIDString = 3D7682761D8E76B80014119E;
 			remoteInfo = SplashScreen;
 		};
-		FAFC80401FB4603600BFF4D7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BE7F7941F0184BBFAA66528C /* ReactNativeCameraKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 2646934E1CFB2A6B00F3A740;
-			remoteInfo = ReactNativeCameraKit;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -595,6 +595,7 @@
 		247E433EB7204FECBD64A662 /* RCTImageResizer.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTImageResizer.xcodeproj; path = "../node_modules/react-native-image-resizer/ios/RCTImageResizer.xcodeproj"; sourceTree = "<group>"; };
 		2D6D9F02B4FC4B1AAA08CCFB /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		2DE3C66843AE4F58A13BDEDF /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
+		2E8AF19E20804D5189EE1623 /* libRNCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCamera.a; sourceTree = "<group>"; };
 		3168EF210533498EAC7B488C /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		3624663A3C2E47DF9D040AB4 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		399B9F79E411460EAE31B346 /* libRCTToast.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTToast.a; sourceTree = "<group>"; };
@@ -616,13 +617,13 @@
 		83EED6E7677649159ADF42F7 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		8CF916DF8FF748538BA28025 /* libKCKeepAwake.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libKCKeepAwake.a; sourceTree = "<group>"; };
 		969FFDEEBF7844A78DCE0CB0 /* RNUncontrolledDatePickerIOS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNUncontrolledDatePickerIOS.xcodeproj; path = "../node_modules/react-native-uncontrolled-date-picker-ios/RNUncontrolledDatePickerIOS.xcodeproj"; sourceTree = "<group>"; };
+		9B794DCDCC9448DA80C3A509 /* RNCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
 		A7EF23E51E204C98B3653CE8 /* libReactNativeCameraKit.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeCameraKit.a; sourceTree = "<group>"; };
 		A9AF8F045F7E466D9BDDA14D /* FastImage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		AB14A08CE83A4CF793448D6B /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		B64ABABC89564D0DA2B696F0 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		BB52802436124542B3AD3458 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		BD62BE562BBA4C0CB119E4C6 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
-		BE7F7941F0184BBFAA66528C /* ReactNativeCameraKit.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeCameraKit.xcodeproj; path = "../node_modules/react-native-camera-kit/ios/lib/ReactNativeCameraKit.xcodeproj"; sourceTree = "<group>"; };
 		C648D1E337B4439DA8CF7411 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		D3FBDC110CEC4744A6A26FF2 /* libRNSentry.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSentry.a; sourceTree = "<group>"; };
 		D42EDABA9EFB4156A87226CD /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
@@ -744,10 +745,10 @@
 				A7B17E76FE044B29BC30B798 /* libz.tbd in Frameworks */,
 				5536AAFCA2F647ABB306701F /* libRCTToast.a in Frameworks */,
 				4A2622C0CA5640CCB446C481 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
-				201EEBBEB1084954847858C1 /* libReactNativeCameraKit.a in Frameworks */,
 				77A4BC75F6794BFC8EA372F7 /* libRNCSlider.a in Frameworks */,
 				128F84CE4A2E4BF88CBC89A2 /* libRNCAsyncStorage.a in Frameworks */,
 				C7B481C578014B55BE888F3B /* libFastImage.a in Frameworks */,
+				613D457D36284A328D2B9CA4 /* libRNCamera.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -941,10 +942,10 @@
 				E197A1027E624661986DE5C3 /* RCTToast.xcodeproj */,
 				969FFDEEBF7844A78DCE0CB0 /* RNUncontrolledDatePickerIOS.xcodeproj */,
 				EC36535A5433491E89F826E6 /* SplashScreen.xcodeproj */,
-				BE7F7941F0184BBFAA66528C /* ReactNativeCameraKit.xcodeproj */,
 				590B19B119CF4B74B1FB2F7A /* RNCSlider.xcodeproj */,
 				1C37FB237BAD4AF8B0775660 /* RNCAsyncStorage.xcodeproj */,
 				A9AF8F045F7E466D9BDDA14D /* FastImage.xcodeproj */,
+				9B794DCDCC9448DA80C3A509 /* RNCamera.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1055,6 +1056,14 @@
 				FA570EB61EAE320F001C625D /* NativeBridge.m */,
 			);
 			path = BridgeObjCFiles;
+			sourceTree = "<group>";
+		};
+		FA20A09922E7538700EA6C40 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FA20A09D22E7538700EA6C40 /* libRNCamera.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		FA278A6B2296838100C690B2 /* Products */ = {
@@ -1291,16 +1300,9 @@
 				179B31AF6BD64E4390339E92 /* libRNScreens.a */,
 				DE0E25FA5341436990B9C779 /* libRNCAsyncStorage.a */,
 				61260398DBEF4402B146EF80 /* libFastImage.a */,
+				2E8AF19E20804D5189EE1623 /* libRNCamera.a */,
 			);
 			name = "Recovered References";
-			sourceTree = "<group>";
-		};
-		FAFC803D1FB4603600BFF4D7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				FAFC80411FB4603600BFF4D7 /* libReactNativeCameraKit.a */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1507,12 +1509,12 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
-					ProductGroup = FAFC803D1FB4603600BFF4D7 /* Products */;
-					ProjectRef = BE7F7941F0184BBFAA66528C /* ReactNativeCameraKit.xcodeproj */;
-				},
-				{
 					ProductGroup = FA278A6B2296838100C690B2 /* Products */;
 					ProjectRef = FA278A6A2296838100C690B2 /* ReactNativeNavigation.xcodeproj */;
+				},
+				{
+					ProductGroup = FA20A09922E7538700EA6C40 /* Products */;
+					ProjectRef = 9B794DCDCC9448DA80C3A509 /* RNCamera.xcodeproj */;
 				},
 				{
 					ProductGroup = FA2E582922942838002467C8 /* Products */;
@@ -1758,6 +1760,13 @@
 			remoteRef = FA12B7D122450C84003B017E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FA20A09D22E7538700EA6C40 /* libRNCamera.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNCamera.a;
+			remoteRef = FA20A09C22E7538700EA6C40 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FA20B0741FB35DE700926366 /* libfishhook.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1966,13 +1975,6 @@
 			fileType = archive.ar;
 			path = libSplashScreen.a;
 			remoteRef = FAB0B1B01FA75AAC005649C3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FAFC80411FB4603600BFF4D7 /* libReactNativeCameraKit.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libReactNativeCameraKit.a;
-			remoteRef = FAFC80401FB4603600BFF4D7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -2220,12 +2222,14 @@
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-fast-image/ios/FastImage/**",
+					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 				);
 				INFOPLIST_FILE = CrownstoneTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2284,12 +2288,14 @@
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-fast-image/ios/FastImage/**",
+					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 				);
 				INFOPLIST_FILE = CrownstoneTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2358,6 +2364,7 @@
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-fast-image/ios/FastImage/**",
+					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2413,6 +2420,7 @@
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-fast-image/ios/FastImage/**",
+					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2572,6 +2580,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -2623,6 +2632,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

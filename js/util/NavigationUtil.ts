@@ -95,7 +95,11 @@ class NavStateManager {
     // if the root view has not loaded yet and another view comes in first,
     // this is probably a race condition and we'll ignore the intervening view
     if (this.baseTab !== BASE_TAB_NAME) {
-      if (name !== this.baseTab && this.isAlreadyOpen(this.baseTab) === false) {
+      if (
+        name !== this.baseTab &&                   // if this view is not the actual base tab.
+        this.activeTab === this.baseTab &&         // this is only valid if we are actually on the base tab
+        this.isAlreadyOpen(this.baseTab) === false // if the base tab itself has not loaded yet
+      ) {
         // console.log("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name)
         return;
       }
