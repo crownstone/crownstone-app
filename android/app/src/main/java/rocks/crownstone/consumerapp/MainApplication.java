@@ -7,6 +7,7 @@ import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import org.reactnative.camera.RNCameraPackage;
 import io.sentry.RNSentryPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
