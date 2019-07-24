@@ -2036,6 +2036,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //			val importance = android.app.NotificationManager.IMPORTANCE_LOW
 			val channel = NotificationChannel(notificationChannelId, name, importance)
 //			channel.description = "description" // The recommended maximum length is 300 characters; the value may be truncated if it is too long.
+			channel.setShowBadge(false)
 
 			// Register the channel with the system; you can't change the importance or other notification behaviors after this
 			val notificationManager = reactContext.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
