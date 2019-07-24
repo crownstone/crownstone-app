@@ -96,10 +96,8 @@ class NavStateManager {
     // console.log("active: ", this.activeTab)
     // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
 
-    if (this.overlayIncoming === true) {
-      if (this.overlayIncomingName === name) {
-        this.overlayIncomingName = null;
-      }
+    if (this.overlayIncoming === true && this.overlayIncomingName === name) {
+      this.overlayIncomingName = null;
 
       // overlays will be closed by their OWN id, it is not tracked by the activeView.
       this.overlayNames[name] = {id:componentId, name: name};
@@ -211,6 +209,8 @@ class NavStateManager {
   }
 
   isThisOverlayOpen(targetName) {
+    // console.log("@isThisOverlayOpen Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingName", this.overlayIncomingName)
+
     return this.overlayNames[targetName] !== undefined || this.overlayIncomingName === targetName;
   }
 
@@ -343,6 +343,10 @@ export const NavigationUtil = {
    * @param props
    */
   showOverlay(target, props) {
+    // console.log("I WANT TO SHOW THIS OVERLAY", target)
+
+
+
     // console.log("is this overlay open?", target, NavState.isThisOverlayOpen(target))
 
     if (NavState.isThisOverlayOpen(target)) {
@@ -350,6 +354,8 @@ export const NavigationUtil = {
     }
 
     NavState.showOverlay(target);
+
+    // console.log("WILL SHOW NOW")
     Navigation.showOverlay({
       component: {
         id: target,
