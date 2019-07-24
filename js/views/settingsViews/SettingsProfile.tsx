@@ -208,6 +208,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
               <PictureCircle
+                isSquare={true}
                 value={this.state.picture}
                 callback={(pictureUrl) => {
                   let newFilename = user.userId + '.jpg';

@@ -168,7 +168,7 @@ class BroadcastStateManagerClass {
       userIndex = sphereUserIds.indexOf(state.user.userId);
     }
 
-    return userIndex % 254 + 1;
+    return (userIndex % 254) + 1;
 
   }
 
@@ -182,7 +182,7 @@ class BroadcastStateManagerClass {
     let deviceToken = this._getDeviceToken(state, sphere);
     LOGi.broadcast("Settings Sphere As Present:",sphere.config.name);
     this._sphereIdInLocationState = sphereId;
-    Bluenet.setLocationState(sphere.config.uid, 0, 0, deviceToken, sphereId);
+    Bluenet.setLocationState(sphere.config.uid || 0, 0, 0, deviceToken, sphereId);
   }
 
   _reloadAdvertisingState() {

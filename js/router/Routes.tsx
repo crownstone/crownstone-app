@@ -13,6 +13,7 @@ import {
 import { CancelButton } from "../views/components/topbar/CancelButton";
 import { OverlayManager } from "../backgroundProcesses/OverlayManager";
 import { NavigationUtil } from "../util/NavigationUtil";
+import { Bluenet } from "../native/libInterface/Bluenet";
 
 let viewsLoaded = false;
 
@@ -20,6 +21,7 @@ export const loadRoutes = function() {
   if (viewsLoaded) { return; }
   viewsLoaded = true;
 
+  Bluenet.viewsInitialized();
 
   // register all views
   Object.keys(Views).forEach((viewId) => {

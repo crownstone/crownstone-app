@@ -187,7 +187,6 @@ export class RoomEdit extends LiveComponent<any, any> {
       label: lang("Picture"),
       type:  'picture',
       value: this.state.picture,
-      forceAspectRatio: false,
       placeholderText: lang("Optional"),
       callback:(image) => {
         this.pictureTaken = true; this.setState({picture:image}); },

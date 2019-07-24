@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component, useState } from "react";
 import {
-  Platform,
+  Platform, Keyboard,
   ScrollView, Text, TextStyle,
   View
 } from "react-native";
@@ -81,6 +81,16 @@ export class Interview extends Component<{
     this.selectedOptions = [];
     this.responseHeaders = {};
   }
+
+
+  isActiveCard(cardId) {
+    if (this.transitioningToCardId !== null && this.transitioningToCardId !== cardId) {
+      return false
+    }
+
+    return this.state.cardIds[this.activeCardIndex] === cardId ;
+  }
+
 
   resetStackToCard(cardId) {
     if (!cardId) { return; }
@@ -219,6 +229,13 @@ export class Interview extends Component<{
         itemHeight={this.props.height || availableModalHeight}
         sliderWidth={screenWidth}
         itemWidth={screenWidth}
+        onBeforeSnapToItem={(indexToBe) => {
+          if (indexToBe < this.activeCardIndex) {
+            this.transitioningToCardId = this.state.cardIds[indexToBe];
+            this.checkStyleUpdates();
+            Keyboard.dismiss();
+          }
+        }}
         onSnapToItem={(index) => {
           this.transitioningToCardId = undefined;
           this.activeCardIndex = index;
