@@ -237,8 +237,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "viewsInitialized")
 		// All views have been initialized
 		// This means the missing bluetooth functions can now be shown.
-		sendLocationStatus()
-		sendBleStatus()
+		if (::bluenet.isInitialized) {
+			sendLocationStatus()
+			sendBleStatus()
+		}
+		else {
+			Log.w(TAG, "Bluenet is not initialized yet.")
+		}
 	}
 
 	@ReactMethod
