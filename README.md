@@ -153,6 +153,9 @@ If you get libfishhook.a is missing, go to RTCWebSocket and re-add the libfishho
 
 react-transform-hmr errors: run this to start the server --> react-native start  --reset-cache
 
+If you get "Argument list too long: recursive header expansion failed at <user_path_to_app>/node_modules/react-native-camera/ios/../../../ios/build/Index/DataStore/v5/records/R4.",
+remove the $(SRCROOT)/../../../ios from the Framework Search Path of the react-native-camera library xcode project.
+
 ## Copyrights
 
 The copyrights (2014-2017) belongs to the team of Crownstone B.V. and are provided under an noncontagious open-source license:

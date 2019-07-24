@@ -10,6 +10,7 @@ import { core } from "../core";
 import { NavigationUtil } from "../util/NavigationUtil";
 import { Stacks } from "./Stacks";
 import { stylesUpdateConstants } from "../views/styles";
+import { Bluenet } from "../native/libInterface/Bluenet";
 
 
 export class Initializer extends Component<any, any> {
@@ -18,13 +19,14 @@ export class Initializer extends Component<any, any> {
   constructor(props) {
     super(props);
 
+    // initialize the views to tell android lib we are starting the UI.
+    Bluenet.viewsInitialized();
+
     let startUp = () => {
       if (Platform.OS === "android") {
         SplashScreen.hide();
         stylesUpdateConstants();
       }
-
-
 
       // This is a last chance fallback if a user is new but has for some reason never been marked as "not New"
       let store = StoreManager.getStore();

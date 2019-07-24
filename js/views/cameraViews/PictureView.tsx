@@ -90,7 +90,7 @@ export class PictureView extends Component<any, any> {
     let buttonSize = Math.min(60,0.18 * screenWidth);
 
     // has aspect ratio
-    let isSquare = this.props.isSquare === true && false;
+    let isSquare = this.props.isSquare === true;
 
     let bottomStyle : ViewStyle = {
       alignItems: 'center',
@@ -123,7 +123,13 @@ export class PictureView extends Component<any, any> {
               />
               <View style={{width: screenWidth, height: 2, backgroundColor: colors.csOrange.hex }} />
               <View style={{flex:1}} />
-              <Image source={{uri:this.state.picture}} style={{width:screenWidth, height: screenWidth}} />
+              <Image
+                source={{uri:this.state.picture}}
+                style={{
+                  width: screenWidth,
+                  height: isSquare ? screenWidth : screenHeight,
+                }}
+              />
               <View style={{flex:1}} />
               <View style={bottomStyle}>
                 <TouchableOpacity

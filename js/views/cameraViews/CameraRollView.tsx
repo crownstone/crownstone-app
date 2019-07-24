@@ -54,7 +54,7 @@ export class CameraRollView extends LiveComponent<any, any> {
                  if (this.selected === false) {
                    this.selected = true;
                    this.props.selectCallback(x[0].uri);
-                   NavigationUtil.back();
+                   NavigationUtil.dismissModal();
                  }
                }
              }}

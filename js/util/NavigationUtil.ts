@@ -92,19 +92,6 @@ class NavStateManager {
   addView(componentId, name) {
     if (this.handleIfAlreadyOpen(componentId, name)) { return; }
 
-    // if the root view has not loaded yet and another view comes in first,
-    // this is probably a race condition and we'll ignore the intervening view
-    if (this.baseTab !== BASE_TAB_NAME) {
-      if (
-        name !== this.baseTab &&                   // if this view is not the actual base tab.
-        this.activeTab === this.baseTab &&         // this is only valid if we are actually on the base tab
-        this.isAlreadyOpen(this.baseTab) === false // if the base tab itself has not loaded yet
-      ) {
-        // console.log("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name)
-        return;
-      }
-    }
-
     // console.log("HERE", componentId, name)
     // console.log("active: ", this.activeTab)
     // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
@@ -124,6 +111,18 @@ class NavStateManager {
       this.modals[this.modals.length - 1].push({id:componentId, name: name});
     }
     else {
+      // if the root view has not loaded yet and another view comes in first,
+      // this is probably a race condition and we'll ignore the intervening view
+      if (this.baseTab !== BASE_TAB_NAME) {
+        if (
+          name !== this.baseTab &&                   // if this view is not the actual base tab.
+          this.activeTab === this.baseTab &&         // this is only valid if we are actually on the base tab
+          this.isAlreadyOpen(this.baseTab) === false // if the base tab itself has not loaded yet
+        ) {
+          // console.log("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name)
+          return;
+        }
+      }
       this.views[this.activeTab].push({id:componentId, name: name});
     }
     this.activeView[this.activeTab] = componentId;
