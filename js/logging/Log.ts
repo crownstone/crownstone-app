@@ -47,11 +47,11 @@ class Logger {
   }
 
   promiseManager(...any) {
-    this._log('------------', LOG_PROMISE_MANAGER, LogProcessor.log_promiseManager, arguments);
+    this._log('PROMISE MNGR', LOG_PROMISE_MANAGER, LogProcessor.log_promiseManager, arguments);
   }
 
   broadcast(...any) {
-    this._log('------------', LOG_BROADCAST,    LogProcessor.log_broadcast, arguments);
+    this._log('BROADCAST   ', LOG_BROADCAST,    LogProcessor.log_broadcast, arguments);
   }
 
   notifications(...any) {
