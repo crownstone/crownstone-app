@@ -376,12 +376,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@Synchronized
 	private fun sendBleStatus() {
-		Log.i(TAG, "sendBleStatus")
 		// "bleStatus" can be: "unauthorized", "poweredOff", "poweredOn", "unknown"
 		if (!bluenet.isBleEnabled()) {
+			Log.i(TAG, "sendBleStatus poweredOff")
 			sendEvent("bleStatus", "poweredOff")
 		}
 		else {
+			Log.i(TAG, "sendBleStatus poweredOn")
 			sendEvent("bleStatus", "poweredOn")
 		}
 	}
