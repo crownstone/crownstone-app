@@ -62,6 +62,10 @@ class NavStateManager {
     }
   }
 
+  tabIsLoaded(tabName) {
+    return this.views[tabName] !== undefined;
+  }
+
   getActiveView() {
     return this.activeView[this.activeTab];
   }
@@ -70,9 +74,8 @@ class NavStateManager {
     if (!this.activeTab) { return false; }
 
     for (let i = 0; i < this.views[this.activeTab].length; i++) {
-      // console.log("IS ALREADY OPEN", name,this.views[this.activeTab][i].name)
       if (this.views[this.activeTab][i].id === componentId) {
-        // console.log("GOING BACK TO name" ,name)
+        // console.log("GOING BACK in handleIfAlreadyOpen TO name" ,name)
         this.backTo(name);
         return true;
       }
@@ -126,6 +129,21 @@ class NavStateManager {
     this.activeView[this.activeTab] = componentId;
 
     // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
+  }
+
+  isTargetCurrentlyActive(targetName) {
+    if (this.views[this.activeTab][this.views[this.activeTab].length-1].name === targetName) {
+      return true;
+    }
+  }
+
+  getCurrentlyActiveViewData() {
+    // console.log(this.views, this.activeTab)
+
+    if (this.views[this.activeTab].length === 0) {
+      return null;
+    }
+    return this.views[this.activeTab][this.views[this.activeTab].length-1];
   }
 
   popView() {
@@ -449,6 +467,41 @@ export const NavigationUtil = {
   },
 
 
+  navigateSafely: function(livesOnTab, target, props) {
+    if (!NavState.tabIsLoaded(livesOnTab)) {
+      // if not, ignore.
+      return;
+    }
+
+    if (NavState.isModalOpen()) {
+      NavigationUtil.dismissAllModals();
+    }
+
+    if (NavState.activeTab !== livesOnTab) {
+      // go to the tab
+      NavigationUtil.navigateToTabName(livesOnTab);
+    }
+
+    let currentlyActiveView = NavState.getCurrentlyActiveViewData();
+    if (currentlyActiveView.name === target) {
+      // update view with new params
+      NavigationUtil.back();
+      NavigationUtil.navigate(target, props);
+    }
+    else {
+      if (NavState.isAlreadyOpen(target)) {
+        // go back to the view
+        NavigationUtil.backTo(target);
+        NavigationUtil.back();
+        NavigationUtil.navigate(target, props);
+      }
+      else {
+        // navigate to the view
+        NavigationUtil.navigate(target, props);
+      }
+    }
+  },
+
   navigate: function(target, props = {}) {
     let activeView = NavState.getActiveView();
     // console.log("Navigating from",activeView, "to", target, props)
@@ -476,11 +529,23 @@ export const NavigationUtil = {
 
 
   navigateToBaseTab() {
+    NavigationUtil.navigateToTab(0)
+  },
+
+  navigateToTabName(tabName) {
+    let tabIndex = tabBarComponentNames.indexOf(tabName);
+    if (tabIndex !== -1) {
+      NavigationUtil.navigateToTab(tabIndex)
+    }
+  },
+
+  navigateToTab(tabIndex) {
     if (NavState.baseTab && NavState.baseTab !== BASE_TAB_NAME) {
-      this.activeTab = BASE_TAB_NAME;
+      // console.log(tabBarComponentNames, tabIndex)
+      NavState.activeTab = tabBarComponentNames[tabIndex];
       Navigation.mergeOptions('bottomTabs', {
         bottomTabs: {
-          currentTabIndex: 0
+          currentTabIndex: tabIndex
         }
       });
     }

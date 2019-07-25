@@ -13,7 +13,7 @@ export const core : core = {
   },
   eventBus: eventBus,
   nativeBus: NativeBus,
-  store: {},
+  store: {getState: () => { return {}}},
   sessionMemory: {
     loginEmail: null,
     cameraSide: 'front',

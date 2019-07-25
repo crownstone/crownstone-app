@@ -83,7 +83,7 @@ export class ErrorOverlay extends Component<any, any> {
       <TouchableOpacity
         onPress={() => {
           let locationId = stone.config.locationId;
-          NavigationUtil.navigate( "RoomOverview",{
+          NavigationUtil.navigateSafely("SphereOverview", "RoomOverview",{
             sphereId: this.state.sphereId,
             locationId: locationId,
             errorCrownstone: this.state.stoneId
@@ -118,6 +118,7 @@ export class ErrorOverlay extends Component<any, any> {
       let sphere = state.spheres[this.state.sphereId];
       stone = sphere.stones[this.state.stoneId];
     }
+
 
 
     return (
