@@ -280,9 +280,12 @@ export const getRandomDeviceIcon = function() {
   return set[Math.floor(Math.random()*set.length)]
 }
 
-export class DeviceIconSelection extends LiveComponent<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
+export class DeviceIconSelection extends LiveComponent<{callback(icon: string) : void, icon: string, backgrounds: any, closeModal:boolean}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Pick_an_Icon"), closeModal: true });
+    if (props.closeModal) {
+      return TopBarUtil.getOptions({title:  lang("Pick_an_Icon"), closeModal: true });
+    }
+    return TopBarUtil.getOptions({title:  lang("Pick_an_Icon") });
   }
 
   constructor(props) {
@@ -299,6 +302,10 @@ export class DeviceIconSelection extends LiveComponent<{callback(icon: string) :
             selectedIcon={this.props.icon}
             callback={(newIcon) => {
               this.props.callback(newIcon);
+              if (this.props.closeModal) {
+                NavigationUtil.dismissModal();
+              }
+              return
               NavigationUtil.back();
             }}
           />

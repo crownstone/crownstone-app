@@ -59,8 +59,8 @@ let textContainerStyle : ViewStyle = {
 
 export class RoomTraining_roomSize extends LiveComponent<any, any> {
   static options(props) {
-    let ai = Util.data.getAiData(core.store.getState(), props.sphereId);
-    return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name), closeModal: true});
+    let ai = Util.data.getAiName(core.store.getState(), props.sphereId);
+    return TopBarUtil.getOptions({title:  lang("Teaching_",ai), closeModal: true});
   }
 
   _getButton(sampleSize, iconSize, text, roomSize) {
@@ -80,7 +80,6 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
 
   render() {
     let state = core.store.getState();
-    let ai = Util.data.getAiData(state, this.props.sphereId);
     let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
     return (
@@ -93,7 +92,7 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
             fontWeight:'600',
             color: colors.white.hex,
             textAlign:'center'
-          }}>{ lang("To_let__find_you_in___we_",ai.name,roomName,ai.him) }</Text>
+          }}>{ lang("To_let__find_you_in___we_",roomName) }</Text>
 
           <View style={{flex:2}} />
           <Text style={{

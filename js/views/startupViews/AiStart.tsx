@@ -46,42 +46,41 @@ export class AiStart extends Component<any, any> {
     }
 
     let possibleNames = [
-      {name:'Amy',     gender:'female'},
-      {name:'Anne',    gender:'female'},
-      {name:'Bob',     gender:'male'},
-      {name:'Clive',   gender:'male'},
-      {name:'Crowny',  gender:'female'},
-      {name:'Daisy',   gender:'female'},
-      {name:'Dobby',   gender:'male'},
-      {name:'Dotty',   gender:'female'},
-      {name:'Grey',    gender:'male'},
-      {name:'Glados',  gender:'female'},
-      {name:'Evy',     gender:'female'},
-      {name:'Eve',     gender:'female'},
-      {name:'HAL',     gender:'male'},
-      {name:'James',   gender:'male'},
-      {name:'Marvin',  gender:'male'},
-      {name:'Nikki',   gender:'female'},
-      {name:'Pulli',   gender:'female'},
-      {name:'Robby',   gender:'male'},
-      {name:'Sam',     gender:'female'},
-      {name:'Sam',     gender:'male'},
-      {name:'Sky',     gender:'female'},
-      {name:'Suzy',    gender:'female'},
-      {name:'Rosii',   gender:'female'},
-      {name:'Sonny',   gender:'male'},
-      {name:'Stanley', gender:'male'},
-      {name:'Tron',    gender:'male'},
-      {name:'Wally',   gender:'male'},
-      {name:'Watson',  gender:'male'},
+      'Amy',
+      'Anne',
+      'Bob',
+      'Clive',
+      'Crowny',
+      'Daisy',
+      'Dobby',
+      'Dotty',
+      'Grey',
+      'Glados',
+      'Evy',
+      'Eve',
+      'HAL',
+      'James',
+      'Marvin',
+      'Nikki',
+      'Pulli',
+      'Robby',
+      'Sam',
+      'Sam',
+      'Sky',
+      'Suzy',
+      'Rosii',
+      'Sonny',
+      'Stanley',
+      'Tron',
+      'Wally',
+      'Watson',
     ];
 
     let defaultIndex = Math.floor(Math.random() * possibleNames.length);
 
     let sphereId = props.sphereId || Object.keys(state.spheres)[0];
-    let name = state.spheres[sphereId].config.aiName || possibleNames[defaultIndex].name;
-    let sex = state.spheres[sphereId].config.aiSex || possibleNames[defaultIndex].gender;
-    this.state = {aiName: name, aiSex: sex};
+    let name = state.spheres[sphereId].config.aiName || possibleNames[defaultIndex];
+    this.state = {aiName: name};
   }
 
 
@@ -110,20 +109,7 @@ export class AiStart extends Component<any, any> {
               value={this.state.aiName}
               callback={(newValue) => {this.setState({aiName:newValue});}} />
           </View>
-          <View style={{flex:1}} />
-          <Text style={aiStyle.text}>{ lang("Whats_my_gender_") }</Text>
-          <View style={{flexDirection:'row', paddingBottom:10}}>
-            <View style={{flex:1}} />
-            <TouchableOpacity onPress={() => {this.setState({aiSex:'male'});}} style={{justifyContent:'center'}} >
-              <Icon name="c1-male" size={(this.state.aiSex === 'male' ? 0.21 : 0.18) * availableHeight} color={this.state.aiSex === 'male' ? colors.white.hex : colors.white.rgba(0.15)} />
-            </TouchableOpacity>
-            <View style={{flex:1}} />
-            <TouchableOpacity onPress={() => {this.setState({aiSex:'female'});}}  style={{justifyContent:'center'}} >
-              <Icon name="c1-female" size={(this.state.aiSex === 'female' ? 0.21 : 0.18) * availableHeight} color={this.state.aiSex === 'female' ? colors.white.hex : colors.white.rgba(0.15)} />
-            </TouchableOpacity>
-            <View style={{flex:1}} />
-          </View>
-          <View style={{flex:1}} />
+          <View style={{flex:3}} />
           <TouchableOpacity style={aiStyle.button} onPress={() => { this.handleAnswer(userFirstName); }}>
             <Text style={aiStyle.boldText}>{ lang("OK") }</Text>
           </TouchableOpacity>
@@ -150,26 +136,18 @@ export class AiStart extends Component<any, any> {
       let detail =  lang("Its_nice_to_finally_meet_");
       let button =  lang("Lets_get_started_");
       if (this.props.canGoBack === true) {
-        if (this.state.aiName === state.spheres[sphereId].config.aiName && this.state.aiSex === state.spheres[sphereId].config.aiSex) {
-          detail =  lang("I_think_my_name_and_gende");
+        if (this.state.aiName === state.spheres[sphereId].config.aiName) {
+          detail =  lang("I_think_my_name_describes");
           button =  lang("Youre_right_");
         }
-        else if (this.state.aiName !== state.spheres[sphereId].config.aiName && this.state.aiSex === state.spheres[sphereId].config.aiSex) {
+        else {
           detail =  lang("This_name_is_much_better_");
           button =  lang("It_suits_you_");
-        }
-        else if (this.state.aiName === state.spheres[sphereId].config.aiName && this.state.aiSex !== state.spheres[sphereId].config.aiSex) {
-          detail =  lang("Youre_right__I_feel_much_",this.state.aiSex);
-          button =  lang("I_thought_so_too_");
-        }
-        else {
-          detail =  lang("Im_a_like_whole_new_perso");
-          button =  lang("Nice_to_meet_you_too_");
         }
       }
       let defaultAction = () => {
         core.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
-        core.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {aiName: this.state.aiName, aiSex: this.state.aiSex}});
+        core.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {aiName: this.state.aiName}});
         if (this.props.canGoBack === true) {
           NavigationUtil.back();
         }

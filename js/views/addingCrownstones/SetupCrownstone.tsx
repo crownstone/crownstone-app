@@ -316,6 +316,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
             <TouchableOpacity onPress={() => {
               NavigationUtil.launchModal( "DeviceIconSelection",{
                 icon: state,
+                closeModal:true,
                 callback: (newIcon) => {
                   setState(newIcon);
                 }

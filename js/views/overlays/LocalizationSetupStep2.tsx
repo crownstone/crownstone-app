@@ -30,11 +30,6 @@ export class LocalizationSetupStep2 extends Component<any, any> {
   }
 
   render() {
-    let ai = {name:"AI"};
-    if (this.state.visible) {
-      ai = Util.data.getAiData(core.store.getState(), this.state.sphereId);
-    }
-
     return (
       <OverlayBox
         visible={this.state.visible}
@@ -42,7 +37,7 @@ export class LocalizationSetupStep2 extends Component<any, any> {
       >
         <Text style={{fontSize: 23, fontWeight: 'bold', color: colors.menuBackground.hex, padding:15}}>{ lang("The_Next_Step") }</Text>
         <Image source={require('../../images/localizationExplanation.png')} style={{width:0.6*screenWidth, height:0.6*screenWidth}}/>
-        <Text style={{fontSize: 13, color: colors.blue.hex, textAlign:'center'}}>{ lang("You_can_now_teach__when_y",ai.name,ai.name) }</Text>
+        <Text style={{fontSize: 13, color: colors.blue.hex, textAlign:'center'}}>{ lang("You_can_now_teach__when_y") }</Text>
         <View style={{flex:1}}/>
         <Text style={{fontSize:14, fontWeight:'bold', color: colors.blue.hex, textAlign:'center'}}>{ lang("Once_youre_ready__tap_one") }</Text>
         <View style={{flex:1}}/>

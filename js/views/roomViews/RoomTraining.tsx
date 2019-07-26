@@ -34,8 +34,8 @@ import { LiveComponent } from "../LiveComponent";
 
 export class RoomTraining extends LiveComponent<any, any> {
   static options(props) {
-    let ai = Util.data.getAiData(core.store.getState(), props.sphereId);
-    return TopBarUtil.getOptions({title:  lang("Teaching_",ai.name)});
+    let ai = Util.data.getAiName(core.store.getState(), props.sphereId);
+    return TopBarUtil.getOptions({title:  lang("Teaching_",ai)});
   }
 
   collectedData : any;
@@ -200,7 +200,7 @@ export class RoomTraining extends LiveComponent<any, any> {
 
   render() {
     let state  = core.store.getState();
-    let ai = Util.data.getAiData(state, this.props.sphereId);
+    let aiName = Util.data.getAiName(state, this.props.sphereId);
     let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
 
@@ -210,7 +210,6 @@ export class RoomTraining extends LiveComponent<any, any> {
     if (this.state.phase === 0) {
       content = (
         <RoomTraining_explanation
-          ai={ai}
           next={() => {
             this.setState({phase:1});
             TopBarUtil.updateOptions(this.props.componentId, {cancel: true});
@@ -225,7 +224,6 @@ export class RoomTraining extends LiveComponent<any, any> {
     else if (this.state.phase === 1) {
       content = (
         <RoomTraining_training
-          ai={ai}
           progress={this.state.progress}
           opacity={this.state.opacity}
           iconIndex={this.state.iconIndex}
@@ -233,7 +231,7 @@ export class RoomTraining extends LiveComponent<any, any> {
       );
     }
     else if (this.state.phase === 2) {
-      content = <RoomTraining_finished ai={ai} quit={ quitMethod } />
+      content = <RoomTraining_finished ai={aiName} quit={ quitMethod } />
     }
 
     return (

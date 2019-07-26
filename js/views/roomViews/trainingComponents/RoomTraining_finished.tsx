@@ -34,7 +34,7 @@ export class RoomTraining_finished extends Component<any, any> {
             color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,
-          }}>{ lang("Once_you_have_taught__all",this.props.ai.name,this.props.ai.he,this.props.ai.his) }</Text>
+          }}>{ lang("Once_you_have_taught__all") }</Text>
           <View style={{flex:1}} />
           <TouchableOpacity
             style={[

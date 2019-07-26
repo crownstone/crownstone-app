@@ -190,8 +190,7 @@ export class DeviceSchedule extends LiveComponent<any, any> {
   }
 
   _getHeader(state, iconSize, customLabel = null) {
-    let AI = Util.data.getAiData(state, this.props.sphereId);
-    let label =  lang("You_can_tell__to_switch_t",AI.name);
+    let label =  lang("You_can_tell__to_switch_t");
 
     if (customLabel) {
       label = customLabel;

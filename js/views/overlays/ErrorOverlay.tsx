@@ -110,11 +110,11 @@ export class ErrorOverlay extends Component<any, any> {
 
 
   render() {
-    let aiData = { name: 'AI' };
+    let aiName = 'AI';
     let stone = null;
     if (this.state.sphereId) {
       let state = core.store.getState();
-      aiData = Util.data.getAiData(state, this.state.sphereId);
+      aiName = Util.data.getAiName(state, this.state.sphereId);
       let sphere = state.spheres[this.state.sphereId];
       stone = sphere.stones[this.state.stoneId];
     }
@@ -136,7 +136,7 @@ export class ErrorOverlay extends Component<any, any> {
         <Text style={{fontSize: 12, fontWeight: '500',  color: colors.red.hex, padding:15, paddingBottom: 0, textAlign:'center'}}>
           {this._getText(stone)}
         </Text>
-        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.red.hex, padding:15, paddingTop:5, alignSelf:'flex-end', fontStyle:'italic'}}>{ lang("__Yours__",aiData.name) }</Text>
+        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.red.hex, padding:15, paddingTop:5, alignSelf:'flex-end', fontStyle:'italic'}}>{ lang("__Yours__",aiName) }</Text>
         <View style={{flex:1}} />
         {this._getButton(stone)}
         <View style={{flex:1}} />

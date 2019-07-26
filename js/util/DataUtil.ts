@@ -268,36 +268,16 @@ export const DataUtil = {
     return null;
   },
 
-  getAiData: function(state, sphereId) {
-    let sexes = {
-      his: { male:'his', female:'her' },
-      him: { male:'him', female:'her' },
-      he:  { male:'he',  female:'she' },
-    };
 
+  getAiName: function(state, sphereId) : string {
     if (sphereId) {
       if (!state.spheres[sphereId].config.aiSex) {
-        return {
-          name: state.spheres[sphereId].config.aiName || 'AI',
-          his: 'her',
-          him: 'her',
-          he:  'she',
-        }
+        return state.spheres[sphereId].config.aiName || 'AI';
       }
-      return {
-        name: state.spheres[sphereId].config.aiName,
-        his: sexes.his[state.spheres[sphereId].config.aiSex],
-        him: sexes.him[state.spheres[sphereId].config.aiSex],
-        he:  sexes.he[state.spheres[sphereId].config.aiSex],
-      }
+      return state.spheres[sphereId].config.aiName;
     }
     else {
-      return {
-        name: 'AI',
-        his: 'her',
-        him: 'her',
-        he:  'she',
-      }
+      return 'AI';
     }
   },
 
