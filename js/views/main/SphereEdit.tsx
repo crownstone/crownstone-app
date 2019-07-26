@@ -72,7 +72,7 @@ export class SphereEdit extends LiveComponent<any, any> {
                                  buttonStyle={{ backgroundColor: colors.green.hex }}/>,
           callback: () => {
             createNewSphere(state.user.firstName + "'s Sphere")
-              .then((sphereId) => {
+              .then((localSphereId) => {
                 setTimeout(() => {
                   NavigationUtil.navigate( "AiStart");
                 }, 100)

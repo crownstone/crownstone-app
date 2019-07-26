@@ -186,7 +186,7 @@ export function ThemedTextButtonWithIcon({label, icon, theme, callback, selected
   }
 }
 
-export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?}) {
+export function InterviewTextInput(props: {autofocus?, placeholder, value, callback, onBlur?, focussed?, keyboardType?, autoCapitalize?}) {
   const inputElement = useRef(null)
   if (props.focussed === true) {
     inputElement.current.focus()
@@ -194,6 +194,7 @@ export function InterviewTextInput(props: {autofocus?, placeholder, value, callb
   return (
     <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.menuTextSelected.hex, backgroundColor: colors.white.rgba(1)}}>
       <TextEditInput
+        autoCapitalize={props.autoCapitalize}
         ref={inputElement}
         focussed={props.focussed}
         autoFocus={props.autofocus === undefined ? true : props.autofocus}

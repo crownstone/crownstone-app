@@ -101,7 +101,6 @@ export class Processing extends Component<any, any> {
   }
 
   componentWillUnmount() {
-    console.log("CLEARING THEM OUT")
     this.unsubscribe.forEach((callback) => {callback()});
     this.unsubscribe = [];
   }

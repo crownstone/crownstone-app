@@ -172,7 +172,7 @@ export class PictureView extends Component<any, any> {
                     NavigationUtil.back();
                   }
                   else {
-                    NavigationUtil.navigate( 'CameraRollView',{selectCallback: this.props.callback, fromCameraView: true, isSquare: this.props.isSquare});
+                    NavigationUtil.navigate( 'CameraRollView',{selectCallback: this.props.selectCallback, fromCameraView: true, isSquare: this.props.isSquare});
                   }
                 }}
                 rightItem={

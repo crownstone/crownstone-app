@@ -64,9 +64,9 @@ export class AddSphereTutorial_intended extends Component<any, any> {
               // NavigationUtil.setRoot(Stacks.aiStart(Object.keys(state.spheres)[0]));
               // return
               createNewSphere(state.user.firstName+"'s Sphere")
-                .then((sphereId) => {
-                  core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: sphereId}});
-                  NavigationUtil.setRoot(Stacks.aiStart({sphereId}));
+                .then((localSphereId) => {
+                  core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: localSphereId}});
+                  NavigationUtil.setRoot(Stacks.aiStart({localSphereId}));
                 })
                 .catch((err) => {
                   Alert.alert(lang("Whoops"), lang("Something_went_wrong_with"), [{ text: lang("OK") }])

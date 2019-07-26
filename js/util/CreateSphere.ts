@@ -5,11 +5,11 @@ import {LOGe} from '../logging/Log'
 import { core } from "../core";
 import { xUtil } from "./StandAloneUtil";
 import { transferLocations } from "../cloud/transferData/transferLocations";
-import { MapProvider } from "../backgroundProcesses/MapProvider";
 
 export const createNewSphere = function(name) {
   core.eventBus.emit('showLoading', 'Creating Sphere...');
-  let newSphereId = null;
+  let newSphereLocalId = null;
+  let newSphere_cloud_id = null; // underscores so it is visually distinctive
   return BluenetPromiseWrapper.requestLocation()
     .catch((err) => {
       LOGe.info("Could not get Location when creating a sphere: ", err);
@@ -23,22 +23,24 @@ export const createNewSphere = function(name) {
       }
       return CLOUD.createNewSphere(name, latitude, longitude)
     })
-    .then((sphereId) => {
-      newSphereId = sphereId;
+    .then((sphereIdData) => {
+      console.log("THIS IS WHAT I GOT FROM createNewSphere",sphereIdData )
+      newSphereLocalId = sphereIdData.localId;
+      newSphere_cloud_id = sphereIdData.cloudId;
       // Create initial locations
-      return createNewLocation("Living room", "c1-tvSetup2", newSphereId);
+      return createNewLocation("Living room", "c1-tvSetup2", newSphereLocalId, newSphere_cloud_id);
     })
     .then(() => {
       // Create initial locations
-      return createNewLocation("Kitchen", "c1-foodWine", newSphereId);
+      return createNewLocation("Kitchen", "c1-foodWine", newSphereLocalId, newSphere_cloud_id);
     })
     .then(() => {
       // Create initial locations
-      return createNewLocation("Bedroom", "c1-bed", newSphereId);
+      return createNewLocation("Bedroom", "c1-bed", newSphereLocalId, newSphere_cloud_id);
     })
     .then(() => {
       core.eventBus.emit('hideLoading');
-      return newSphereId;
+      return newSphereLocalId;
     })
     .catch((err) => {
       if (err.status == 422) {
@@ -56,10 +58,10 @@ export const createNewSphere = function(name) {
 };
 
 
-export const createNewLocation = function(name, icon, sphereId) {
+export const createNewLocation = function(name, icon, localSphereId, cloudSphereId) {
   let localId = xUtil.getUUID();
   let actions = [];
-  actions.push({type:'ADD_LOCATION', sphereId: sphereId, locationId: localId, data:{name: name, icon: icon}});
+  actions.push({type:'ADD_LOCATION', sphereId: localSphereId, locationId: localId, data:{name: name, icon: icon}});
   return transferLocations.createOnCloud(actions, {
     localId: localId,
     localData: {
@@ -68,8 +70,8 @@ export const createNewLocation = function(name, icon, sphereId) {
         icon: icon,
       },
     },
-    localSphereId: sphereId,
-    cloudSphereId: MapProvider.local2cloudMap.spheres[sphereId]
+    localSphereId: localSphereId,
+    cloudSphereId: cloudSphereId
   })
     .then(() => {
       core.store.batchDispatch(actions);

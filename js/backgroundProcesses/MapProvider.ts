@@ -45,7 +45,6 @@ class MapProviderClass {
 
   init() {
     if (this._initialized === false) {
-
       core.eventBus.on("CloudSyncComplete", () => { this._updateCloudIdMap(); });
       core.eventBus.on("databaseChange", (data) => {
         let change = data.change;

@@ -197,6 +197,7 @@ export class Register extends LiveComponent<any, any> {
             <View style={{flex:1, width:screenWidth}}>
               <InterviewTextInput
                 autofocus={true}
+                autoCapitalize={'none'}
                 focussed={this.focussingIndex === 0 || undefined}
                 placeholder={ lang("Email_address")}
                 keyboardType={ lang("email_address")}

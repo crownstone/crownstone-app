@@ -51,7 +51,7 @@ class Logger {
   }
 
   broadcast(...any) {
-    this._log('BROADCAST   ', LOG_BROADCAST,    LogProcessor.log_broadcast, arguments);
+    this._log('BROADCAST --', LOG_BROADCAST,    LogProcessor.log_broadcast, arguments);
   }
 
   notifications(...any) {
@@ -99,7 +99,7 @@ class Logger {
   }
 
   native(...any) {
-    this._log('Native ---', LOG_NATIVE,  LogProcessor.log_native, arguments);
+    this._log('Native -----', LOG_NATIVE,  LogProcessor.log_native, arguments);
   }
 
   _log(type, globalCheckField, dbCheckField, allArguments) {

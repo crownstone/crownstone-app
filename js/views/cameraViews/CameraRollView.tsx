@@ -38,7 +38,7 @@ export class CameraRollView extends LiveComponent<any, any> {
                  NavigationUtil.back();
                }
                else {
-                 NavigationUtil.navigate( 'PictureView',{selectCallback: this.props.callback, fromCameraRollView: true, isSquare: this.props.isSquare});
+                 NavigationUtil.navigate( 'PictureView',{selectCallback: this.props.selectCallback, fromCameraRollView: true, isSquare: this.props.isSquare});
                }
              }}
              rightItem={

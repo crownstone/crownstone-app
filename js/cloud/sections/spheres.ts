@@ -20,7 +20,7 @@ export const spheres = {
    * @param longitude
    * @returns {Promise.<T>}
    */
-  createNewSphere(sphereName, latitude, longitude) {
+  createNewSphere(sphereName, latitude, longitude) : {cloudId: string, localId: string} {
     let state = core.store.getState();
     let creationActions = [];
 
@@ -75,7 +75,10 @@ export const spheres = {
 
           core.eventBus.emit('sphereCreated');
           core.store.batchDispatch(creationActions);
-          return localId;
+
+          console.log("HAS FINISHED< RETURNGING, locali",localId)
+
+          return {localId: localId, cloudId: sphereCloudId};
         }
         else {
           throw new Error("Key data is not an array.")

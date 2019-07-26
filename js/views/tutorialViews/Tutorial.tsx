@@ -29,10 +29,8 @@ export class Tutorial extends Component<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:  lang("Welcome_")});
   }
-
-  requestedPermission;
-
-  _carousel
+  requestedPermission = false;
+  _carousel;
   constructor(props) {
     super(props);
 
