@@ -24,7 +24,6 @@ export const createNewSphere = function(name) {
       return CLOUD.createNewSphere(name, latitude, longitude)
     })
     .then((sphereIdData) => {
-      console.log("THIS IS WHAT I GOT FROM createNewSphere",sphereIdData )
       newSphereLocalId = sphereIdData.localId;
       newSphere_cloud_id = sphereIdData.cloudId;
       // Create initial locations

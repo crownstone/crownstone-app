@@ -180,10 +180,10 @@ export class FingerprintSyncer extends SyncingBase {
           if (fingerprintsToUpdateFromCloud.length > 0) {
             return CLOUD.forDevice(deviceId).getFingerprints(fingerprintsToUpdateFromCloud)
               .then((updatedFingerprints) => {
-                this.reinitializeTracking = true;
                 for (let i = 0; i < updatedFingerprints; i++) {
                   let updatedFingerprint = updatedFingerprints[i];
                   let locationData = locationMap[updatedFingerprint.id];
+                  this.reinitializeTracking = true;
                   this.actions.push({
                     type:'UPDATE_LOCATION_FINGERPRINT',
                     sphereId: locationData.sphereId,

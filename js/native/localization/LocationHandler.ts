@@ -43,7 +43,7 @@ class LocationHandlerClass {
 
 
     core.eventBus.on("reloadTracking", () => {
-      this.initializeTracking();
+      this.reloadFingerprintTracking();
     })
   }
 
@@ -388,6 +388,11 @@ class LocationHandlerClass {
 
   initializeTracking() {
     this.trackSpheres();
+    this.reloadFingerprintTracking();
+  }
+
+
+  reloadFingerprintTracking() {
     this.loadFingerprints();
     Bluenet.startIndoorLocalization();
   }

@@ -23,7 +23,7 @@ class LanguageManager {
       // this will avoid 1000 "Back" references
       if (this.textSource[file] === undefined || this.textSource[file][key] === undefined) {
         if (!this.textSource['__UNIVERSAL'][key]) {
-          console.log("Could not find", key, " in file", file, " and universal");
+          console.warn("Could not find", key, " in file", file, " and universal");
           return "__MISSING_STRING__"
         }
 

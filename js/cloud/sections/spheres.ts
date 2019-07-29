@@ -76,8 +76,6 @@ export const spheres = {
           core.eventBus.emit('sphereCreated');
           core.store.batchDispatch(creationActions);
 
-          console.log("HAS FINISHED< RETURNGING, locali",localId)
-
           return {localId: localId, cloudId: sphereCloudId};
         }
         else {
