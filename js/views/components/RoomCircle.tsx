@@ -18,20 +18,18 @@ import { Icon } from './Icon';
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 
 
-import { Svg, Circle } from 'react-native-svg';
-import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {IconCircle} from "./IconCircle";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { Circle } from "./Circle";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
 };
 
 
-class RoomCircleClass extends LiveComponent<any, any> {
+class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: any, opacity: any, tapAndHoldProgress: any}> {
   initializedPosition: any;
-  energyLevels: any;
   usage: any;
   borderWidth: number;
   innerDiameter: number;
@@ -68,23 +66,21 @@ class RoomCircleClass extends LiveComponent<any, any> {
     this.state = {
       top: new Animated.Value(initialY),
       left: new Animated.Value(initialX),
-      colorFadeOpacity: new Animated.Value(0),
       scale: new Animated.Value(1),
       opacity: new Animated.Value(1),
-      setupProgress: 20,
-      progress: 0
+      tapAndHoldProgress: 0
     };
 
-    this.energyLevels = [
-      {min: 0, max: 50, color: colors.green.hex},
-      {min: 50, max: 200, color: colors.orange.hex},
-      {min: 200, max: 1000, color: colors.red.hex},
-      {min: 1000, max: 4000, color: colors.darkRed.hex},
-    ];
+    // this.energyLevels = [
+    //   {min: 0, max: 50, color: colors.green.hex},
+    //   {min: 50, max: 200, color: colors.orange.hex},
+    //   {min: 200, max: 1000, color: colors.red.hex},
+    //   {min: 1000, max: 4000, color: colors.darkRed.hex},
+    // ];
 
     this.usage = 0;
     // calculate the size of the circle based on the screen size
-    this.borderWidth = props.radius / 15;
+    this.borderWidth = props.radius / 16;
     this.innerDiameter = 2 * props.radius - 4.5 * this.borderWidth;
     this.outerDiameter = 2 * props.radius;
     this.iconSize = props.radius * 0.8;
@@ -153,31 +149,13 @@ class RoomCircleClass extends LiveComponent<any, any> {
   }
 
 
-  _getLevel(usage) {
-    for (let i = 0; i < this.energyLevels.length; i++) {
-      if (usage < this.energyLevels[i].max)
-        return i
-    }
-    return this.energyLevels.length - 1;
-  }
 
 
-
-  _getColor(usage, prev = false) {
+  _getColor() {
     if (this.props.viewingRemotely === true) {
       return colors.green.rgba(0.8);
     }
-
-    let level = this._getLevel(usage);
-    if (prev) {
-      if (level == 0) {
-        return colors.lightGray.hex;
-      }
-      else {
-        return this.energyLevels[level-1].color;
-      }
-    }
-    return this.energyLevels[level].color;
+    return colors.green.hex;
   }
 
   getIcon() {
@@ -187,102 +165,22 @@ class RoomCircleClass extends LiveComponent<any, any> {
   }
 
   getCircle() {
-    let newColor = this._getColor(this.usage);
+    let newColor = this._getColor();
     let innerOffset = 0.5*(this.outerDiameter - this.innerDiameter);
     return (
       <View>
-        <View style={{
-          borderRadius: this.outerDiameter,
-          width: this.outerDiameter,
-          height: this.outerDiameter,
-          backgroundColor: colors.white.hex,
-          padding:0,
-          margin:0
-        }}>
-          {this._getUsageCircle(this.usage, newColor)}
-          <AnimatedCircle
-            key={this.props.locationId + "_circle"}
-            size={this.innerDiameter}
-            color={newColor}
-            style={{
-              position: 'relative',
-              top:      innerOffset,
-              left:     innerOffset,
-              padding:  0,
-              margin:   0,
-            }}>
-            <View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
-            {this.getIcon()}
-            </View>
-            {this.props.viewingRemotely ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{ lang("_W",this.usage) }</Text>}
-          </AnimatedCircle>
-        </View>
+        <Circle size={this.outerDiameter} color={colors.white.hex}>
+          <Circle size={this.outerDiameter - (2/3)*innerOffset} color={colors.white.hex} borderColor={colors.lightGray.hex} borderWidth={ (1/3)*innerOffset }>
+            <Circle size={this.innerDiameter} color={newColor}>
+              <View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
+              {this.getIcon()}
+              </View>
+              {this.props.viewingRemotely ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{ lang("_W",this.usage) }</Text>}
+            </Circle>
+          </Circle>
+        </Circle>
       </View>
     );
-  }
-
-
-  _getUsageCircle(usage, newColor) {
-    let colorOfLowerLayer = this._getColor(usage, true);
-    let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
-
-    let levelProgress = this._getFactor(usage);
-    return (
-      <View style={{position:'absolute', top:0, left:0}}>
-        <Svg width={this.outerDiameter} height={this.outerDiameter}>
-          <Circle
-            r={this.props.radius - this.borderWidth}
-            stroke={colorOfLowerLayer}
-            strokeWidth={this.borderWidth}
-            x={this.props.radius}
-            y={this.props.radius}
-            strokeLinecap="round"
-            fill="white"
-          />
-          {usage ? <Circle
-            r={this.props.radius - this.borderWidth}
-            stroke={newColor}
-            strokeWidth={this.borderWidth}
-            strokeDasharray={[pathLength*levelProgress,pathLength]}
-            rotation="-89.9"
-            x={this.props.radius}
-            y={this.props.radius}
-            strokeLinecap="round"
-            fill="rgba(0,0,0,0)"
-          /> : undefined}
-        </Svg>
-      </View>
-    )
-  }
-
-  _getProgressCircle(percentage) {
-    if (percentage > 0) {
-      let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
-      return (
-        <View style={{ position: 'absolute', top: 0, left: 0 }}>
-          <Svg width={this.outerDiameter} height={this.outerDiameter}>
-            <Circle
-              r={this.props.radius - 10}
-              stroke={colors.white.blend(colors.purple, percentage).hex}
-              strokeWidth={10}
-              strokeDasharray={[pathLength * percentage, pathLength]}
-              rotation="-89.9"
-              x={this.props.radius}
-              y={this.props.radius}
-              strokeLinecap="round"
-              fill="rgba(0,0,0,0)"
-            />
-          </Svg>
-        </View>
-      );
-    }
-  }
-
-  _getFactor(usage) {
-    let level = this._getLevel(usage);
-    let minW = this.energyLevels[level].min;
-    let maxW = this.energyLevels[level].max;
-    return (usage-minW) / (maxW-minW);
   }
 
 
@@ -324,7 +222,6 @@ class RoomCircleClass extends LiveComponent<any, any> {
         <View>
           {this.getCircle()}
           {this.showAlert !== null ? this._getAlertIcon() : undefined}
-          {this._getProgressCircle(this.state.progress) }
         </View>
       </Animated.View>
     )
@@ -352,8 +249,8 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
   _onHoldProgress() {
     if (this.touching) {
-      let nextStep = Math.min(1, this.state.progress + 0.04);
-      this.setState({ progress: nextStep });
+      let nextStep = Math.min(1, this.state.tapAndHoldProgress + 0.04);
+      this.setState({ tapAndHoldProgress: nextStep });
       if (nextStep >= 0.95) {
         this.props.onHold();
         this._clearHold();
@@ -365,8 +262,8 @@ class RoomCircleClass extends LiveComponent<any, any> {
 
   _clearHold() {
     this.touching = false;
-    if (this.state.progress > 0) {
-      this.setState({ progress: 0 })
+    if (this.state.tapAndHoldProgress > 0) {
+      this.setState({ tapAndHoldProgress: 0 })
     }
     clearTimeout(this.touchTimeout);
     cancelAnimationFrame(this.touchAnimation);

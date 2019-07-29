@@ -1484,8 +1484,8 @@ export default {
   },
   RoomAdd:{
     __filename: "../js/views/roomViews/RoomAdd.tsx",
-    _Room_name_must_be_at_lea_header:    function() { return "Room name must be at least 1 character long." },
-    _Room_name_must_be_at_lea_body:      function() { return "Please change the name and try again." },
+    _Room_name_must_be_at_lea_header:    function() { return "No room name.." },
+    _Room_name_must_be_at_lea_body:      function() { return "Please pick a name!" },
     _Room_name_must_be_at_lea_left:      function() { return "OK" },
     _Room_already_exists___Pl_header:    function() { return "Room already exists." },
     _Room_already_exists___Pl_body:      function() { return "Please change the name and try again." },
