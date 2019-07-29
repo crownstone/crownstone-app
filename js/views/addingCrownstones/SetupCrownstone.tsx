@@ -292,7 +292,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
             label: lang("Next"),
             textAlign:'right',
             nextCard: 'icon',
-            response: "That's a good name!",
+            dynamicResponse: (value) => { if (value.textfieldState === '') { return 'Default name it is!';} else { return "That's a good name!"}},
             onSelect: (result) => {
               let name = result.textfieldState;
               if (name == "") {

@@ -356,7 +356,6 @@ function getTopBarProps(state, props, viewState, viewId) {
     }
     else {
       let finalizeLocalization = SphereUtil.finalizeLocalizationData(state);
-
       NAVBAR_PARAMS_CACHE = {
         title: sphere.config.name,
         leftIcon: finalizeLocalization.showItem ? {

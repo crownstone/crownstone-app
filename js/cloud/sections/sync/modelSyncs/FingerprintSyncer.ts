@@ -20,6 +20,7 @@ export class FingerprintSyncer extends SyncingBase {
   userId: string;
 
   globalSphereMap;
+  reinitializeTracking = false;
 
   constructor(actions : any[], transferPromises: any[], globalCloudIdMap: globalIdMap, globalSphereMap : globalSphereMap) {
     super(actions, transferPromises, globalCloudIdMap);
@@ -49,6 +50,9 @@ export class FingerprintSyncer extends SyncingBase {
       .then(() => {
         this.syncUp(state, deviceId, locationIdsWithNewFingerprints);
         return Promise.all(this.transferPromises)
+      })
+      .then(() => {
+        return this.reinitializeTracking;
       })
   }
 
@@ -176,6 +180,7 @@ export class FingerprintSyncer extends SyncingBase {
           if (fingerprintsToUpdateFromCloud.length > 0) {
             return CLOUD.forDevice(deviceId).getFingerprints(fingerprintsToUpdateFromCloud)
               .then((updatedFingerprints) => {
+                this.reinitializeTracking = true;
                 for (let i = 0; i < updatedFingerprints; i++) {
                   let updatedFingerprint = updatedFingerprints[i];
                   let locationData = locationMap[updatedFingerprint.id];
@@ -222,6 +227,7 @@ export class FingerprintSyncer extends SyncingBase {
         for (let i = 0; i < fingerprints.length; i++) {
           let fingerprint = fingerprints[i];
           let dataInfo = locationIdsRequiringFingerprints[fingerprint.locationId];
+          this.reinitializeTracking = true;
           this.actions.push({
             type:'UPDATE_LOCATION_FINGERPRINT',
             sphereId: dataInfo.sphereId,
@@ -262,6 +268,7 @@ export class FingerprintSyncer extends SyncingBase {
 
         // the items have been linked. We will store the fingerprints in the database.
         for (let i = 0; i < pendingActions.length; i++) {
+          this.reinitializeTracking = true;
           this.actions.push(pendingActions[i]);
         }
       })

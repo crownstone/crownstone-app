@@ -13,7 +13,7 @@ export class SphereUserSyncer extends SyncingSphereItemBase {
   userPicture: string;
 
   downloadPendingInvites() {
-    return CLOUD.forSphere(this.cloudSphereId).getPendingInvites();
+    return CLOUD.forSphere(this.cloudSphereId).getPendingSphereInvites();
   }
 
   download() {

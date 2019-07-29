@@ -11,10 +11,8 @@ import { Bluenet  }                 from '../libInterface/Bluenet';
 import { BehaviourUtil }            from '../../util/BehaviourUtil';
 import { KeepAliveHandler }         from '../../backgroundProcesses/KeepAliveHandler';
 import { Scheduler }                from '../../logic/Scheduler';
-import {LOG, LOGe} from '../../logging/Log';
-import { Util }                     from '../../util/Util';
+import { LOG, LOGe } from '../../logging/Log';
 import { KEEPALIVE_INTERVAL } from '../../ExternalConfig';
-import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil';
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
@@ -42,6 +40,11 @@ class LocationHandlerClass {
         LocationHandler.initializeTracking();
       }
     });
+
+
+    core.eventBus.on("reloadTracking", () => {
+      this.initializeTracking();
+    })
   }
 
   init() {
@@ -71,14 +74,14 @@ class LocationHandlerClass {
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the
     // right settings in the lib.
 
-    if (canUseIndoorLocalizationInSphere(state, enteringSphereId) === true) {
-      LOG.info('LocationHandler: Starting indoor localization for sphere', enteringSphereId);
-      Bluenet.startIndoorLocalization();
-    }
-    else {
-      LOG.info('LocationHandler: Stopping indoor localization for sphere', enteringSphereId, 'due to missing fingerprints or not enough Crownstones.');
-      Bluenet.stopIndoorLocalization();
-    }
+    // if (canUseIndoorLocalizationInSphere(state, enteringSphereId) === true) {
+    //   LOG.info('LocationHandler: Starting indoor localization for sphere', enteringSphereId);
+    //   Bluenet.startIndoorLocalization();
+    // }
+    // else {
+    //   LOG.info('LocationHandler: Stopping indoor localization for sphere', enteringSphereId, 'due to missing fingerprints or not enough Crownstones.');
+    //   Bluenet.stopIndoorLocalization();
+    // }
 
     // scan for crownstones on entering a sphere.
     BatterySavingUtil.startNormalUsage(enteringSphereId);
@@ -386,6 +389,7 @@ class LocationHandlerClass {
   initializeTracking() {
     this.trackSpheres();
     this.loadFingerprints();
+    Bluenet.startIndoorLocalization();
   }
 }
 

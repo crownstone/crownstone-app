@@ -22,6 +22,8 @@ import {IconCircle} from "./IconCircle";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Circle } from "./Circle";
+import Svg from "react-native-svg";
+import { Circle as SvgCircle} from "react-native-svg";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -184,6 +186,29 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   }
 
 
+  _getTabAndHoldProgressCircle(percentage) {
+    if (percentage > 0) {
+      let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
+      return (
+        <View style={{ position: 'absolute', top: 0, left: 0 }}>
+          <Svg width={this.outerDiameter} height={this.outerDiameter}>
+            <SvgCircle
+              r={this.props.radius - 10}
+              stroke={colors.white.blend(colors.menuTextSelected, percentage).hex}
+              strokeWidth={10*percentage}
+              strokeDasharray={[pathLength * percentage, pathLength]}
+              rotation="-89.9"
+              x={this.props.radius}
+              y={this.props.radius}
+              strokeLinecap="round"
+              fill="rgba(0,0,0,0)"
+            />
+          </Svg>
+        </View>
+      );
+    }
+  }
+
   _getAlertIcon() {
     let alertSize = this.outerDiameter*0.30;
     return (
@@ -222,6 +247,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
         <View>
           {this.getCircle()}
           {this.showAlert !== null ? this._getAlertIcon() : undefined}
+          {this._getTabAndHoldProgressCircle(this.state.tapAndHoldProgress) }
         </View>
       </Animated.View>
     )

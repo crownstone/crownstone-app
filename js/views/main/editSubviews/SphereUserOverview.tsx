@@ -70,7 +70,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
           }
           else {
             result.push({
-              label: users[userId].firstName + " " + users[userId].lastName,
+              label: ((users[userId].firstName + " ") || "") + (users[userId].lastName || ""),
               type: (userId === state.user.userId ||  spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
               icon: <ProfilePicture picture={users[userId].picture} borderless={false} />,
               callback: () => {

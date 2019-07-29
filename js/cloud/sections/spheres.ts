@@ -113,7 +113,7 @@ export const spheres = {
     }
   },
 
-  getPendingInvites: function(background = true) {
+  getPendingSphereInvites: function(background = true) {
     return CLOUD._setupRequest('GET', '/Spheres/{id}/pendingInvites', {background:background});
   },
 

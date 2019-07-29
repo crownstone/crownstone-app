@@ -150,7 +150,7 @@ interface interviewOption {
   nextCard?: string,
   dangerous?: boolean,
   response?: string,
-  dynamicResponse?: (value) => string | string,
+  dynamicResponse?: (value: {textfieldState: string, customElementState: any}) => string | string,
   textAlign?: string,
   onSelect?: (value: interviewReturnData) => boolean | void | string,
   editable?: boolean,

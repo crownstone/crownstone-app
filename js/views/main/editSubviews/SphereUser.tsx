@@ -56,7 +56,7 @@ export class SphereUser extends LiveComponent<any, any> {
     let items = [];
     // room Name:
     items.push({type:'spacer'});
-    items.push({label: lang("User"),  type: 'info', value: user.firstName + ' ' + user.lastName});
+    items.push({label: lang("User"),  type: 'info', value: (user.firstName || "") + ' ' + (user.lastName || "")});
     items.push({label: lang("Email"),  type: 'info', value: user.email});
     items.push({
       type:'dropdown',

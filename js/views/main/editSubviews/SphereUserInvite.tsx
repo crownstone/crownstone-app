@@ -139,7 +139,7 @@ export class SphereUserInvite extends LiveComponent<any, any> {
           userId: this.state.email.toLowerCase(),
           data: { email: this.state.email.toLowerCase(), invitationPending: true, accessLevel: this.state.permission.toLowerCase()}
         });
-        let defaultAction = () => { NavigationUtil.back(); };
+        let defaultAction = () => { NavigationUtil.dismissModal(); };
         Alert.alert(
           lang("_Invite_has_been_sent___A_header"),
           lang("_Invite_has_been_sent___A_body",this.state.email),

@@ -66,6 +66,7 @@ export const sync = {
       }
     });
 
+    let reloadOfTrackingRequired = false;
     let globalCloudIdMap = getGlobalIdMap();
     let globalSphereMap = {};
 
@@ -118,7 +119,8 @@ export const sync = {
         let fingerprintSyncer = new FingerprintSyncer(actions, [], globalCloudIdMap, globalSphereMap);
         return fingerprintSyncer.sync(state);
       })
-      .then(() => {
+      .then((reloadOfTrackingRequiredResult) => {
+        reloadOfTrackingRequired = reloadOfTrackingRequiredResult;
         LOG.info("Sync: DONE Fingerprint sync.");
         LOG.info("Sync: START Preferences sync.");
         let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
@@ -167,6 +169,9 @@ export const sync = {
         LOG.info("Sync: Requesting notification permissions during updating of the device.");
         NotificationHandler.request();
 
+        if (reloadOfTrackingRequired === true) {
+          core.eventBus.emit("reloadTracking")
+        }
 
         LOG.info("Sync after: START Executing cloud poll.");
         CloudPoller.poll(true);
