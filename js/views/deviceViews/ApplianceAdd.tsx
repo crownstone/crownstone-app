@@ -15,15 +15,14 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 
 import {tabBarHeight, screenWidth} from '../styles'
-import {getRandomC1Name} from "../../fonts/customIcons";
 import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
+import { getRandomDeviceIcon } from "./DeviceIconSelection";
 
 
 
@@ -36,7 +35,7 @@ export class ApplianceAdd extends LiveComponent<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {name:'', icon: getRandomC1Name(), selectedStones: {}};
+    this.state = {name:'', icon: getRandomDeviceIcon(), selectedStones: {}};
     this.refName = "listItems";
   }
 
@@ -53,7 +52,7 @@ export class ApplianceAdd extends LiveComponent<any, any> {
     items.push({label: lang("Icon"), type: 'icon', value: this.state.icon, callback: () => {
        NavigationUtil.navigate( "DeviceIconSelection",{
           icon: this.state.icon,
-          callback: (newIcon) => { this.setState({icon:newIcon}); }
+          callback: (newIcon) => { this.setState({icon: newIcon}); }
         }
       )}
     });

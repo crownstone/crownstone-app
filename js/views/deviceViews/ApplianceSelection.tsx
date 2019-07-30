@@ -82,7 +82,7 @@ export class ApplianceSelection extends LiveComponent<{
 lang("_Are_you_sure___We_will_b_header"),
 lang("_Are_you_sure___We_will_b_body",appliance.config.name),
 [{text:lang("_Are_you_sure___We_will_b_left"), style: 'cancel'}, {
-text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
+text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () => { this._removeAppliance(applianceId); }}])
         };
 
         items.push({__item:
@@ -136,20 +136,21 @@ text:lang("_Are_you_sure___We_will_b_right"), style: 'destructive', onPress: () 
     return items;
   }
 
-  _removeAppliance(store, state, applianceId) {
+  _removeAppliance(applianceId) {
     core.eventBus.emit('showLoading','Removing this appliance in the Cloud.');
     CLOUD.deleteAppliance(applianceId)
       .then(() => {
         core.eventBus.emit('hideLoading');
+        const state = core.store.getState();
         let stones = state.spheres[this.props.sphereId].stones;
         for (let stoneId in stones) {
           if (stones.hasOwnProperty(stoneId)) {
             if (stones[stoneId].config.applianceId == applianceId) {
-              store.dispatch({sphereId: this.props.sphereId, stoneId: stoneId, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}})
+              core.store.dispatch({sphereId: this.props.sphereId, stoneId: stoneId, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}})
             }
           }
         }
-        store.dispatch({sphereId: this.props.sphereId, applianceId: applianceId, type: 'REMOVE_APPLIANCE'});
+        core.store.dispatch({sphereId: this.props.sphereId, applianceId: applianceId, type: 'REMOVE_APPLIANCE'});
       })
       .catch((err) => {
         core.eventBus.emit('hideLoading');
