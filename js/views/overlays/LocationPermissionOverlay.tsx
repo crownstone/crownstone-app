@@ -6,10 +6,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Alert,
   Text,
   TouchableOpacity,
-  View,
-} from 'react-native';
+  View
+} from "react-native";
 
 import { Icon }         from '../components/Icon'
 import { OverlayBox }   from '../components/overlays/OverlayBox'
@@ -17,6 +18,7 @@ import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { HiddenFadeIn, HiddenFadeInView } from "../components/animated/FadeInView";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -26,7 +28,9 @@ export class LocationPermissionOverlay extends Component<any, any> {
 
     this.state = {
       visible: false,
-      notificationType: props.status
+      notificationType: props.status,
+      waitingOnPermission: false,
+      showRequestFailed: false
     };
     this.unsubscribe = [];
   }
@@ -36,10 +40,14 @@ export class LocationPermissionOverlay extends Component<any, any> {
     this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.locationStatus, (status) => {
       switch (status) {
         case "off":
+          if (this.state.waitingOnPermission) {
+            this.setState({showRequestFailed: true, notificationType: status})
+            return;
+          }
           this.setState({notificationType: status});
           break;
         case "on":
-          this.setState({visible: false, notificationType: status},
+          this.setState({visible: false, notificationType: status ,waitingOnPermission: false, showRequestFailed: false},
             () => {  NavigationUtil.closeOverlay(this.props.componentId); });
           break;
         case "unknown":
@@ -95,7 +103,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
       case "noPermission":
         return (
           <TouchableOpacity
-            onPress={() => { Bluenet.requestLocationPermission() }}
+            onPress={() => { this.setState({waitingOnPermission: true}); Bluenet.requestLocationPermission() }}
             style={[styles.centered, {
               width: 0.4 * screenWidth,
               height: 36,
@@ -130,7 +138,13 @@ export class LocationPermissionOverlay extends Component<any, any> {
           {this._getText()}
         </Text>
         <View style={{flex:1}} />
-        {this._getButton()}
+        {this.state.showRequestFailed ?
+          <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue.hex, padding: 5, textAlign: 'center' }}>{"" +
+            "Request failed... You'll have to manually enable location access for the Crownstone app in your phone's settings."}
+          </Text>
+          : this._getButton()
+        }
+        <View style={{flex:1}} />
       </OverlayBox>
     );
   }
