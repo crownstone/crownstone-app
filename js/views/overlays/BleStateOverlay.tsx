@@ -24,7 +24,8 @@ export class BleStateOverlay extends Component<any, any> {
 
     this.state = {
       visible: false,
-      notificationType: props.notificationType //"unauthorized", "poweredOff", "poweredOn", "unknown"
+      notificationType: props.notificationType, //"unauthorized", "poweredOff", "poweredOn", "unknown"
+      type: props.type // "SCANNER" or "BROADCASTER"
     };
     this.unsubscribe = [];
   }
@@ -34,16 +35,33 @@ export class BleStateOverlay extends Component<any, any> {
     this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.bleStatus, (status) => {
       switch (status) {
         case "poweredOff":
-          this.setState({visible: true, notificationType: status});
+          this.setState({visible: true, notificationType: status, type: "SCANNER"});
           break;
         case "poweredOn":
-          this.setState({visible: false, notificationType: status}, () => { NavigationUtil.closeOverlay(this.props.componentId); });
+          this.setState({visible: false, notificationType: status, type: "SCANNER"}, () => { NavigationUtil.closeOverlay(this.props.componentId); });
           break;
         case "unauthorized":
-          this.setState({visible: true, notificationType: status});
+          this.setState({visible: true, notificationType: status, type: "SCANNER"});
           break;
         default: // "unknown":
-          this.setState({notificationType: status});
+          this.setState({notificationType: status, type: "SCANNER"});
+          break;
+      }
+    }));
+
+    this.unsubscribe.push(core.nativeBus.on(core.nativeBus.topics.bleBroadcastStatus, (status) => {
+      switch (status) {
+        case "notDetermined":
+          this.setState({notificationType: status, type: "BROADCASTER"});
+          break;
+        case "restricted":
+          this.setState({visible: true, notificationType: status, type: "BROADCASTER"});
+          break;
+        case "denied":
+          this.setState({visible: true, notificationType: status, type: "BROADCASTER"});
+          break;
+        case "authorized":
+          this.setState({visible: false, notificationType: status, type: "BROADCASTER"}, () => { NavigationUtil.closeOverlay(this.props.componentId); });
           break;
       }
     }));
@@ -55,28 +73,55 @@ export class BleStateOverlay extends Component<any, any> {
   }
 
   _getTitle() {
-    switch (this.state.notificationType) {
-      case "poweredOff":
-        return "Bluetooth is turned off.";
-      case "poweredOn":
-        return "Bluetooth is turned on!";
-      case "unauthorized":
-        return "We can't use Bluetooth...";
-      default: // "unknown":
-        return "Starting Bluetooth...";
+    if (this.state.type === 'SCANNER') {
+      switch (this.state.notificationType) {
+        case "poweredOff":
+          return "Bluetooth is turned off.";
+        case "poweredOn":
+          return "Bluetooth is turned on!";
+        case "unauthorized":
+          return "We can't use Bluetooth...";
+        default: // "unknown":
+          return "Starting Bluetooth...";
+      }
+    }
+    else {
+      switch (this.state.notificationType) {
+        case "notDetermined":
+          return "I don't know yet.."
+        case "restricted":
+        case "denied":
+          return "I'm not allowed to talk to Crownstones..."
+        case "authorized":
+          return "All set!"
+      }
     }
   }
 
   _getText() {
-    switch (this.state.notificationType) {
-      case "poweredOff":
-        return "Crownstones use Bluetooth to talk to your phone so it needs to be turned on to use the app.";
-      case "poweredOn":
-        return "Bluetooth is turned on, resuming Crownstone services.";
-      case "unauthorized":
-        return "Crownstone is not authorized to use Bluetooth. This should be resolved soon.";
-      default: // "unknown":
-        return "We are turning on Bluetooth. This should not take long :).";
+    if (this.state.type === 'SCANNER') {
+      switch (this.state.notificationType) {
+        case "poweredOff":
+          return "Crownstones use Bluetooth to talk to your phone so it needs to be turned on to use the app.";
+        case "poweredOn":
+          return "Bluetooth is turned on, resuming Crownstone services.";
+        case "unauthorized":
+          return "Crownstone is not authorized to use Bluetooth. This should be resolved soon.";
+        default: // "unknown":
+          return "We are turning on Bluetooth. This should not take long :).";
+      }
+    }
+    else {
+      switch (this.state.notificationType) {
+        case "notDetermined":
+          return "Permission dialog will appear soon!";
+        case "restricted":
+          return "Due to parental restrictions, I can't talk to Crownstones. Please ensure permissions for Bluetooth are granted.";
+        case "denied":
+          return "Permission to broadcast commands to Crownstones has been denied. Please ensure permissions for Bluetooth are granted.";
+        case "authorized":
+          return "Everything is working great now!";
+      }
     }
   }
 

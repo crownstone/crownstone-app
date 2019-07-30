@@ -17,20 +17,41 @@ import { screenWidth, availableScreenHeight, deviceStyles } from "../../styles";
 import {Graph} from "../../components/graph/Graph";
 import {textStyle} from "./DeviceBehaviour";
 import { core } from "../../../core";
-import { xUtil } from "../../../util/StandAloneUtil";
+import { NativeBus } from "../../../native/libInterface/NativeBus";
 
 
 export class DevicePowerCurve extends LiveComponent<any, any> {
-  unsubscribeStoreEvents;
+  unsubscribeNativeBusEvent;
+
+  data : GraphData[] = [];
+  hash : number = 0;
+  uniqueElement = 0;
   // debugInterval;
 
 
   componentDidMount() {
-    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
-      let change = data.change;
-      if (
-        change.powerUsageUpdated && change.powerUsageUpdated.stoneIds[this.props.stoneId]
-      ) {
+    const store = core.store;
+    const state = store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    const stone = sphere.stones[this.props.stoneId];
+    this.data = [];
+
+    this.unsubscribeNativeBusEvent = core.nativeBus.on(NativeBus.topics.advertisement, (data: crownstoneAdvertisement) => {
+      if (data.handle === stone.config.handle && data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false) {
+        let now = new Date().valueOf();
+        // throttling
+        if (data.serviceData.uniqueElement === this.uniqueElement) {
+          return;
+        }
+
+        this.uniqueElement = data.serviceData.uniqueElement
+        this.data.push({x: now, y: Math.max(0,data.serviceData.powerUsageReal)})
+
+        if (this.data.length > 50) {
+          this.data.shift()
+        }
+
+        this.hash = Math.random();
         this.forceUpdate();
       }
     });
@@ -38,27 +59,16 @@ export class DevicePowerCurve extends LiveComponent<any, any> {
 
 
   componentWillUnmount() {
-    this.unsubscribeStoreEvents();
+    this.data = [];
+    this.unsubscribeNativeBusEvent();
   }
 
   render() {
-    const store = core.store;
-    const state = store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-    const stone = sphere.stones[this.props.stoneId];
-
-    let dateId = xUtil.getDateHourId(new Date().valueOf());
-
-    let dataStream = [];
-    if (stone.powerUsage[dateId]) {
-      dataStream = stone.powerUsage[dateId].data;
-    }
-
     return (
       <View style={{flex:1, flexDirection: 'column', alignItems:'center', paddingTop:30}}>
         <Text style={deviceStyles.header}>{ lang("Power_Usage") }</Text>
         <View style={{flex:0.75}} />
-        <Graph width={screenWidth} height={availableScreenHeight/2} data={dataStream} xField="timestamp" yField="power"/>
+        <Graph width={screenWidth} height={availableScreenHeight/2} data={this.data} dataHash={this.hash}/>
         <View style={{flex:5}}>
           <ScrollView style={{flex:1}}>
             <Text style={[textStyle.explanation, {fontWeight:'bold'}]}>{ lang("Sneak_preview_of_the_dyna") }</Text>

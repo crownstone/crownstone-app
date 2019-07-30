@@ -134,6 +134,10 @@ RCT_EXTERN_METHOD(setCrownstoneNames:(NSDictionary *)names)
 RCT_EXTERN_METHOD(setupPulse:(RCTResponseSenderBlock)callback)
 
 
+RCT_EXTERN_METHOD(initBroadcasting)
+RCT_EXTERN_METHOD(checkBroadcastAuthorization:(RCTResponseSenderBlock)callback)
+
+
 // events
 RCT_EXTERN_METHOD(subscribeToNearest)
 RCT_EXTERN_METHOD(unsubscribeNearest)

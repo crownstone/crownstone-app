@@ -97,6 +97,9 @@ const BluenetAPI = {
   unsubscribeNearest:       () => { console.log("BluenetBridgeCall:  unsubscribeNearest "); },
   subscribeToUnverified:    () => { console.log("BluenetBridgeCall:  subscribeToUnverified "); },
   unsubscribeUnverified:    () => { console.log("BluenetBridgeCall:  unsubscribeUnverified "); },
+
+  initBroadcasting:         () => { console.log("BluenetBridgeCall:  initBroadcasting "); },
+  checkBroadcastAuthorization: () => { console.log("BluenetBridgeCall:  checkBroadcastAuthorization "); },
 };
 
 if (DISABLE_NATIVE === true) {

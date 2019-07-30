@@ -39,6 +39,7 @@ class EventEmitter {
     allEventNames.append("unverifiedAdvertisementData")
     allEventNames.append("crownstoneAdvertisementReceived")
     allEventNames.append("bleStatus")
+    allEventNames.append("bleBroadcastStatus")
     allEventNames.append("locationStatus")
     allEventNames.append("dfuProgress")
     allEventNames.append("setupProgress")

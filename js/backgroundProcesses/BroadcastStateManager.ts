@@ -37,6 +37,7 @@ class BroadcastStateManagerClass {
         }
       });
 
+      //TODO: have this respond to location changed, not just sphere changes
       core.eventBus.on("enterSphere", (enteringSphereId) => {
         this._handleEnterSphere(enteringSphereId);
       });
@@ -45,7 +46,7 @@ class BroadcastStateManagerClass {
         this._handleExitSphere(exitSphereId);
       });
 
-      //TODO: have this respond to location changed, not just sphere changes
+      Bluenet.initBroadcasting();
 
       this._reloadAdvertisingState();
       this._handleActiveSphereUpdate();

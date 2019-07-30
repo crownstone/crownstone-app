@@ -75,8 +75,12 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenetOn("bleStatus", {data -> Void in
       if let castData = data as? String {
         self.sendEvent(withName: "bleStatus", body: castData)
-        
-        //self.bridge.eventDispatcher().sendAppEvent(withName: "bleStatus", body: castData)
+      }
+    })
+    
+    GLOBAL_BLUENET.bluenetOn("bleBroadcastStatus", {data -> Void in
+      if let castData = data as? String {
+        self.sendEvent(withName: "bleBroadcastStatus", body: castData)
       }
     })
     
@@ -952,6 +956,14 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func unsubscribeUnverified() {
     GLOBAL_BLUENET.bluenetClearUnverified()
+  }
+  
+  @objc func initBroadcasting() {
+    GLOBAL_BLUENET.bluenet.startPeripheral()
+  }
+  
+  @objc func checkBroadcastAuthorization(_ callback: @escaping RCTResponseSenderBlock) {
+    callback([["error" : false, "data": GLOBAL_BLUENET.bluenet.checkBroadcastAuthorization() ]])
   }
 }
 

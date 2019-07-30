@@ -11,7 +11,7 @@ if (DISABLE_NATIVE !== true) {
 }
 
 export class NativeBusClass {
-  topics: any;
+  topics: NativeBusTopics;
   refMap: any;
 
   _registeredEvents = {};
@@ -30,6 +30,7 @@ export class NativeBusClass {
       setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error) // Is 0 required? Or is rejecting the promise enough?
       dfuProgress:          "dfuProgress",                      // data type = {part: number, totalParts: number, progress: number, currentSpeedBytesPerSecond: number, avgSpeedBytesPerSecond: number}
       bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")
+      bleBroadcastStatus:   "bleBroadcastStatus",               // data type = string ( "notDetermined" | "restricted" | "denied" | "authorized")
       locationStatus:       "locationStatus",                   // data type = string ("unknown", "off", "foreground", "on", "noPermission")
 
       nearest:              "nearestCrownstone",                // data type = nearestStone // Any stone, validated or not, any operation mode.

@@ -455,8 +455,8 @@ export default {
   DevicePowerCurve:{
     __filename: "../js/views/deviceViews/elements/DevicePowerCurve.tsx",
     Power_Usage:                         function() { return "Power Usage" },
-    Sneak_preview_of_the_dyna:           function() { return "Sneak preview of the dynamic power usage overview for this Crownstone!" },
-    Stand_near_the_Crownstone:           function() { return "Stand near the Crownstone to see the measurements flowing in! It will only measure if the app is in the foreground. " + "Future versions of the app will allow you to freely scroll and zoom in and out. Scroll down on the text for more upcoming features! " + "\n\nIn the future, the power usage overview will be sorted by the Devices you use, as well as an extra view to summarize the entire usage in your Sphere, categorized by room, devices and much more!\n\n\n\n" },
+    Sneak_preview_of_the_dyna:           function() { return "Real time power usage of this Crownstone!" },
+    Stand_near_the_Crownstone:           function() { return "Stand near the Crownstone to see the measurements flowing in! It will only measure if the app is in the foreground and you have this screen in front of you. "},
   },
   DeviceSchedule:{
     __filename: "../js/views/deviceViews/elements/DeviceSchedule.tsx",

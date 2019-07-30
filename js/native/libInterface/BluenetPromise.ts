@@ -153,6 +153,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getTrackingState:               () => { return BluenetPromise('getTrackingState'); },         // return type: trackingState
   isDevelopmentEnvironment:       () => { return BluenetPromise('isDevelopmentEnvironment'); }, // return type: boolean
   setupPulse:                     () => { return BluenetPromise('setupPulse'); },               // return type: void
+  checkBroadcastAuthorization:    () => { return BluenetPromise('checkBroadcastAuthorization'); },   // return type: string
 
   broadcastSwitch:                (referenceId, stoneId, switchState) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState); },
 };

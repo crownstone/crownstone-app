@@ -26,7 +26,7 @@ import { xUtil } from "../../../util/StandAloneUtil";
 let RANGE = 40000; // ms
 let OVERSHOOT = 4000; // ms
 
-export class Graph extends LiveComponent<any, any> {
+export class Graph extends LiveComponent<{width: number, height: number, data: GraphData[], dataHash: any}, any> {
   data : any[] = [];
   options : any;
   interval : any;
@@ -93,7 +93,7 @@ export class Graph extends LiveComponent<any, any> {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.props.data !== nextProps.data) {
+    if (this.props.dataHash !== nextProps.dataHash) {
       let now = new Date().valueOf();
       this.range.start = new Date(now - RANGE);
       this.range.end   = new Date(now + OVERSHOOT);
@@ -124,12 +124,12 @@ export class Graph extends LiveComponent<any, any> {
     this.data = [];
     if (this.props.data) {
       for (let i = 0; i < this.props.data.length; i++) {
-        if (this.props.data[i][this.props.xField] > new Date().valueOf() - 1.25 * RANGE) {
+        if (this.props.data[i].x > new Date().valueOf() - 1.25 * RANGE) {
           this.data.push({
-            x:  this.props.data[i][this.props.xField],
-            tx: this.props.data[i][this.props.xField],
-            y:  this.props.data[i][this.props.yField],
-            oy: this.props.data[i][this.props.yField]
+            x:  this.props.data[i].x,
+            tx: this.props.data[i].x,
+            y:  this.props.data[i].y,
+            oy: this.props.data[i].y
           });
         }
       }

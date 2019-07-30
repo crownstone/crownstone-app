@@ -15,7 +15,15 @@ class OverlayManagerClass {
         switch (status) {
           case "poweredOff":
           case "unauthorized":
-            NavigationUtil.showOverlay('BleStateOverlay', { notificationType: status });
+            NavigationUtil.showOverlay('BleStateOverlay', { notificationType: status, type: "SCANNER" });
+            break;
+        }
+      });
+      core.nativeBus.on(core.nativeBus.topics.bleBroadcastStatus, (status) => {
+        switch (status) {
+          case "restricted":
+          case "denied":
+            NavigationUtil.showOverlay('BleStateOverlay', { notificationType: status, type: "BROADCASTER" });
             break;
         }
       });

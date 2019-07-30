@@ -58,6 +58,7 @@ interface BluenetPromiseWrapperProtocol {
   getTrackingState()                            : Promise< trackingState >,
   isDevelopmentEnvironment()                    : Promise< boolean >,
   setupPulse()                                  : Promise< void >,
+  checkBroadcastAuthorization()                 : Promise< string >,
 
   broadcastSwitch(referenceId, stoneId, switchState):Promise< void >,
 }

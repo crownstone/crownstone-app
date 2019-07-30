@@ -94,6 +94,7 @@ interface NativeBusTopics {
   setupProgress:                   string,
   dfuProgress:                     string,
   bleStatus:                       string,
+  bleBroadcastStatus:              string,
   locationStatus:                  string,
 
   nearest:                         string,
@@ -195,3 +196,8 @@ interface onScreenNotificationPayload {
 }
 
 type StackData = { component: any } | { stack: any } | { bottomTabs: any }
+
+interface GraphData {
+  x: number,
+  y: number,
+}
