@@ -18,11 +18,27 @@ interface componentInfo {
   name: string,
 }
 
+
+/**
+ * This class mimics the state of the navigation.
+ *
+ *
+ * Overlays live on top of everything
+ *
+ * Modals can be layered and always live on top of views.
+ *  their data model is an array of component arrays. Every modal can have it's own navigation stack.
+ *
+ * Views can be sorted with tabs. We have to maintain a number of stacks, one for each tab. If there are no tabs used, we
+ *   fall back to the BASE_TAB_NAME
+ *
+ *
+ */
 class NavStateManager {
+  activeModal : string = null;
   activeView : activeView = {};
   overlayNames = {};
   overlayId = {};
-  modals = [];
+  modals : componentInfo[][] = [];
   views : views = {};
   overlayIncoming = false;
 
@@ -31,7 +47,13 @@ class NavStateManager {
 
   baseTab = null;
 
+
+  /**
+   * Load the default initial tabname into the views so we have something to navigate from
+   */
   setBaseTab() {
+    this.views = {};
+
     if (this.views[BASE_TAB_NAME] === undefined) {
       this.views[BASE_TAB_NAME] = [];
     }
@@ -39,7 +61,14 @@ class NavStateManager {
     this.baseTab = BASE_TAB_NAME;
   }
 
-  prepareTabs(tabNames) {
+
+  /**
+   * A stack has loaded, prepare the view objects.
+   * @param tabNames
+   */
+  prepareTabs(tabNames : string[]) {
+    this.views = {};
+
     for (let i = 0; i < tabNames.length; i++) {
       if (this.views[tabNames[i]] === undefined) { this.views[tabNames[i]] = []; }
     }
@@ -47,9 +76,13 @@ class NavStateManager {
     this.baseTab = tabNames[0];
   }
 
+  /**
+   * The pointer is on the base tab
+   */
   isOnBaseTab() {
     return this.baseTab === this.activeTab;
   }
+
 
   switchTab(componentId, componentName) {
     if (this.activeTab === null) {
@@ -66,26 +99,65 @@ class NavStateManager {
     return this.views[tabName] !== undefined;
   }
 
-  getActiveView() {
+
+  /**
+   * This returns the id of the active view. We call it component since it can also be a modal.
+   */
+  getActiveComponent() {
+    if (this.activeModal !== null) {
+      return this.activeModal;
+    }
+
     return this.activeView[this.activeTab];
   }
 
+
+  /**
+   * We get an appear of a view, check if it is already open, if so, reset the pointer and stack to that.
+   * @param componentId
+   * @param name
+   */
   handleIfAlreadyOpen(componentId, name) {
+    // check if this component is already open as a modal
+    if (this.isModalIdAlreadyOpen(componentId)) {
+      this.backTo(name);
+      return true;
+    }
+
     if (!this.activeTab) { return false; }
 
+
+    // check if this component is already open as a view.
+    if (this.isViewIdAlreadyOpen(componentId)) {
+      this.backTo(name);
+      return true;
+    }
+    return false;
+  }
+
+  isModalIdAlreadyOpen(componentId) {
+    for (let i = 0; i < this.modals.length; i++) {
+      for (let j = 0; j < this.modals[i].length; j++) {
+        if (this.modals[i][j].id === componentId) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  isViewNameAlreadyOpen(name) {
     for (let i = 0; i < this.views[this.activeTab].length; i++) {
-      if (this.views[this.activeTab][i].id === componentId) {
-        // console.log("GOING BACK in handleIfAlreadyOpen TO name" ,name)
-        this.backTo(name);
+      if (this.views[this.activeTab][i].name === name) {
         return true;
       }
     }
     return false;
   }
 
-  isAlreadyOpen(name) {
+  isViewIdAlreadyOpen(componentId) {
     for (let i = 0; i < this.views[this.activeTab].length; i++) {
-      if (this.views[this.activeTab][i].name === name) {
+      if (this.views[this.activeTab][i].id === componentId) {
         return true;
       }
     }
@@ -95,55 +167,58 @@ class NavStateManager {
   addView(componentId, name) {
     if (this.handleIfAlreadyOpen(componentId, name)) { return; }
 
-    // console.log("HERE", componentId, name)
-    // console.log("active: ", this.activeTab)
-    // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
+    // console.log("HERE", componentId, name);
+    // console.log("active: ", this.activeTab);
+    // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames);
 
     if (this.overlayIncoming === true && this.overlayIncomingName === name) {
       this.overlayIncomingName = null;
 
       // overlays will be closed by their OWN id, it is not tracked by the activeView.
+      // we use this layer to catch incoming overlay views so that they do not contaminate the underlaying modal and view stacks.
       this.overlayNames[name] = {id:componentId, name: name};
       this.overlayId[componentId] = {id:componentId, name: name};
       this.overlayIncoming = false;
       return;
     }
     else if (this.modals.length > 0) {
-      this.modals[this.modals.length - 1].push({id:componentId, name: name});
+      lastItem(this.modals).push({id:componentId, name: name});
+      this.activeModal = componentId;
     }
     else {
+      // No modals, just in case, set it back to null.
+      this.activeModal = null;
+
       // if the root view has not loaded yet and another view comes in first,
       // this is probably a race condition and we'll ignore the intervening view
       if (this.baseTab !== BASE_TAB_NAME) {
         if (
           name !== this.baseTab &&                   // if this view is not the actual base tab.
           this.activeTab === this.baseTab &&         // this is only valid if we are actually on the base tab
-          this.isAlreadyOpen(this.baseTab) === false // if the base tab itself has not loaded yet
+          this.isViewNameAlreadyOpen(this.baseTab) === false // if the base tab itself has not loaded yet
         ) {
-          // console.log("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name)
+          // console.log("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name);
           return;
         }
       }
       this.views[this.activeTab].push({id:componentId, name: name});
+      this.activeView[this.activeTab] = componentId;
     }
-    this.activeView[this.activeTab] = componentId;
 
     // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
   }
 
-  isTargetCurrentlyActive(targetName) {
-    if (this.views[this.activeTab][this.views[this.activeTab].length-1].name === targetName) {
+  isTargetViewNameCurrentlyActive(targetName) {
+    if (lastItem(this.views[this.activeTab]).name === targetName) {
       return true;
     }
   }
 
   getCurrentlyActiveViewData() {
-    // console.log(this.views, this.activeTab)
-
     if (this.views[this.activeTab].length === 0) {
       return null;
     }
-    return this.views[this.activeTab][this.views[this.activeTab].length-1];
+    return lastItem(this.views[this.activeTab]);
   }
 
   popView() {
@@ -157,8 +232,8 @@ class NavStateManager {
 
   pop() {
     if (this.modals.length > 0) {
-      if (this.modals[this.modals.length - 1].length > 0) {
-        this.modals[this.modals.length - 1].pop();
+      if (lastItem(this.modals).length > 0) {
+        lastItem(this.modals).pop();
       }
       else {
         console.warn("Maybe wanted to dismiss the modal?")
@@ -178,16 +253,18 @@ class NavStateManager {
 
   _getId() {
     if (this.modals.length > 0) {
-      if (this.modals[this.modals.length - 1].length > 0) {
-        this.activeView[this.activeTab] = this.modals[this.modals.length - 1].id;
+      if (lastItem(this.modals).length > 0) {
+        this.activeModal = lastItem(lastItem(this.modals)).id;
       }
       else {
         console.warn("Maybe wanted to dismiss the modal?")
       }
     }
     else {
+      this.activeModal = null;
+
       if (this.views[this.activeTab].length > 0) {
-        this.activeView[this.activeTab] = this.views[this.activeTab][this.views[this.activeTab].length - 1].id;
+        this.activeView[this.activeTab] = lastItem(this.views[this.activeTab]).id;
       }
       else {
         console.warn("Maybe something is wrong?")
@@ -195,9 +272,14 @@ class NavStateManager {
     }
   }
 
+  _getModalId() : string {
+    // console.log(JSON.stringify(this.modals), this.activeModal);
+    return this.activeModal;
+  }
+
   _getViewId() {
     if (this.views[this.activeTab].length > 0) {
-     return this.views[this.activeTab][this.views[this.activeTab].length - 1].id;
+     return lastItem(this.views[this.activeTab]).id;
     }
     else {
       console.warn("Maybe something is wrong?")
@@ -227,7 +309,7 @@ class NavStateManager {
   }
 
   isThisOverlayOpen(targetName) {
-    // console.log("@isThisOverlayOpen Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingName", this.overlayIncomingName)
+    // console.log("@isThisOverlayOpen Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingName", this.overlayIncomingName);
 
     return this.overlayNames[targetName] !== undefined || this.overlayIncomingName === targetName;
   }
@@ -251,7 +333,7 @@ class NavStateManager {
     let targetId = null;
     let spliceTarget = null;
     if (this.modals.length > 0) {
-      let toplevelModal = this.modals[this.modals.length -1];
+      let toplevelModal = lastItem(this.modals);
 
       for (let i = toplevelModal.length -1; i >= 0; i--) {
         if (toplevelModal[i].name === name) {
@@ -261,8 +343,10 @@ class NavStateManager {
         }
       }
 
+      this.activeModal = targetId;
+
       if (spliceTarget !== null) {
-        this.modals[this.modals.length - 1].splice(spliceTarget)
+        lastItem(this.modals).splice(spliceTarget);
       }
     }
     else {
@@ -275,6 +359,8 @@ class NavStateManager {
           }
         }
 
+        this.activeView[this.activeTab] = targetId;
+
         if (spliceTarget !== null) {
           this.views[this.activeTab].splice(spliceTarget)
         }
@@ -284,12 +370,12 @@ class NavStateManager {
       }
     }
 
-    if (targetId !== null) {
+    if (targetId === null) {
       this._getId();
     }
-    else {
-      this.activeView[this.activeTab] = targetId;
-    }
+
+    // console.log("IN BACK TO active: ", this.activeTab);
+    // console.log("IN BACK TO Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames);
 
     return targetId;
   }
@@ -304,7 +390,7 @@ class NavStateManager {
 
   canGoBack() {
     if (this.modals.length > 0) {
-      if (this.modals[this.modals.length - 1].length > 1) {
+      if (lastItem(this.modals).length > 1) {
         return true;
       }
       else {
@@ -332,13 +418,13 @@ let loadNamesFromStack = (stack) => {
       }
     })
   }
-}
+};
 
 let tabBarComponentNames = [];
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
-  // console.log("VIEW DID APPEAR", componentId, componentName)
+  // console.log("VIEW DID APPEAR", componentId, componentName);
   if (tabBarComponentNames.indexOf(componentName) !== -1) {
     NavState.switchTab(componentId, componentName)
   }
@@ -361,11 +447,9 @@ export const NavigationUtil = {
    * @param props
    */
   showOverlay(target, props) {
-    // console.log("I WANT TO SHOW THIS OVERLAY", target)
+    // console.log("I WANT TO SHOW THIS OVERLAY", target);
 
-
-
-    // console.log("is this overlay open?", target, NavState.isThisOverlayOpen(target))
+    // console.log("is this overlay open?", target, NavState.isThisOverlayOpen(target));
 
     if (NavState.isThisOverlayOpen(target)) {
       return;
@@ -373,7 +457,7 @@ export const NavigationUtil = {
 
     NavState.showOverlay(target);
 
-    // console.log("WILL SHOW NOW")
+    // console.log("WILL SHOW NOW");
     Navigation.showOverlay({
       component: {
         id: target,
@@ -398,7 +482,7 @@ export const NavigationUtil = {
     // reset the NavState
     NavState.setRoot();
 
-    // console.log("----------------------_____SET ROOT")
+    // console.log("----------------------_____SET ROOT");
     // check if we have a tabBar setup.
     tabBarComponentNames = [];
     loadNamesFromStack(rootStack);
@@ -409,14 +493,14 @@ export const NavigationUtil = {
       NavState.prepareTabs(tabBarComponentNames);
     }
 
-    // console.log("This is the tabBarComponentNames", tabBarComponentNames)
+    // console.log("This is the tabBarComponentNames", tabBarComponentNames);
 
     Navigation.setRoot({ root: rootStack });
   },
 
 
   launchModal: function(target, props = {}) {
-    // console.log("Navigating from", NavState.activeView, "to", target, props)
+    // console.log("Navigating from", NavState.activeView, "to", target, props);
     NavState.modalActive();
     Navigation.showModal({
       stack:{
@@ -429,15 +513,15 @@ export const NavigationUtil = {
 
 
   dismissModal: function() {
-    // console.log("CALLING dismissModal")
-    let backFrom = NavState.getActiveView();
+    // console.log("CALLING dismissModal");
+    let backFrom = NavState.getActiveComponent();
     Navigation.dismissModal(backFrom)
       .then(() => {
-        // console.log("Going back from ", backFrom, " success!")
+        // console.log("DISMISS Going back from ", backFrom, " success!")
       })
       .catch((err) => {
-        // console.log("Going back from ", backFrom, " FAILED!", err)
-      })
+        // console.log("DISMISS Going back from ", backFrom, " FAILED!", err)
+      });
     NavState.modalDismissed();
   },
 
@@ -450,7 +534,7 @@ export const NavigationUtil = {
 
   dismissAllModals: function() {
     // console.log("Closing all modals");
-    Navigation.dismissAllModals()
+    Navigation.dismissAllModals();
     NavState.allModalsDismissed();
   },
 
@@ -460,6 +544,11 @@ export const NavigationUtil = {
     NavigationUtil.dismissModal()
   },
 
+  dismissModalAndNavigateFromModal(target,props) {
+    NavigationUtil.dismissModal()
+    NavigationUtil.navigateFromUnderlyingModal(target, props);
+  },
+
 
   dismissAllModalsAndNavigate(target,props) {
     NavigationUtil.navigateFromUnderlyingStack(target, props);
@@ -467,7 +556,13 @@ export const NavigationUtil = {
   },
 
 
-  navigateSafely: function(livesOnTab, target, props) {
+  /**
+   * This method is meant to call a view from a modal or an overlay. It will handle not knowing which tab you're on gracefully.
+   * @param livesOnTab
+   * @param target
+   * @param props
+   */
+  navigateSafely: function(livesOnTab : string, target : string, props : any) {
     if (!NavState.tabIsLoaded(livesOnTab)) {
       // if not, ignore.
       return;
@@ -489,7 +584,7 @@ export const NavigationUtil = {
       NavigationUtil.navigate(target, props);
     }
     else {
-      if (NavState.isAlreadyOpen(target)) {
+      if (NavState.isViewNameAlreadyOpen(target)) {
         // go back to the view
         NavigationUtil.backTo(target);
         NavigationUtil.back();
@@ -502,9 +597,9 @@ export const NavigationUtil = {
     }
   },
 
-  navigate: function(target, props = {}) {
-    let activeView = NavState.getActiveView();
-    // console.log("Navigating from",activeView, "to", target, props)
+  navigate: function(target : string, props = {}) {
+    let activeView = NavState.getActiveComponent();
+    // console.log("Navigating from",activeView, "to", target, props);
     Navigation.push(activeView, {
       component: {
         id: target,
@@ -515,9 +610,22 @@ export const NavigationUtil = {
   },
 
 
+  navigateFromUnderlyingModal(target, props) {
+    // console.log("UNDERLYING MODAL");
+    let goFrom = NavState._getModalId();
+    // console.log("navigateFromUnderlyingModal from", goFrom, "to", target)
+    Navigation.push(goFrom, {
+      component: {
+        id: target,
+        name: target,
+        passProps: props,
+      },
+    });
+  },
+
   navigateFromUnderlyingStack(target, props) {
     let goFrom = NavState._getViewId();
-    // console.log("Navigating from", goFrom, "to", target)
+    // console.log("Navigating from", goFrom, "to", target);
     Navigation.push(goFrom, {
       component: {
         id: target,
@@ -541,7 +649,7 @@ export const NavigationUtil = {
 
   navigateToTab(tabIndex) {
     if (NavState.baseTab && NavState.baseTab !== BASE_TAB_NAME) {
-      // console.log(tabBarComponentNames, tabIndex)
+      // console.log(tabBarComponentNames, tabIndex);
       NavState.activeTab = tabBarComponentNames[tabIndex];
       Navigation.mergeOptions('bottomTabs', {
         bottomTabs: {
@@ -553,8 +661,8 @@ export const NavigationUtil = {
 
 
   back() {
-    // console.log("CALLING BACK")
-    let backFrom = NavState.getActiveView();
+    // console.log("CALLING BACK");
+    let backFrom = NavState.getActiveComponent();
     NavState.pop();
     return Navigation.pop(backFrom)
       .then(() => {
@@ -568,7 +676,7 @@ export const NavigationUtil = {
 
   baseStackBack() {
     let backFrom = NavState._getViewId();
-    // console.log("Going back baseStackBack", backFrom)
+    // console.log("Going back baseStackBack", backFrom);
     NavState.popView();
     Navigation.pop(backFrom)
       .then(() => {
@@ -590,3 +698,16 @@ export const NavigationUtil = {
     }
   },
 };
+
+
+/**
+ * quickly get the last item in an array. This should clean up the code a bit since:
+ * this.modals[this.modal.length - 1][this.modals[this.modal.length - 1].length -1] is very ugly and unclear
+ * lastItem(lastItem(this.modals)) is much compacter.
+ *
+ * It is also typed to catch most errors.
+ * @param arr
+ */
+function lastItem<T>(arr : T[]) : T {
+  return arr[arr.length - 1];
+}

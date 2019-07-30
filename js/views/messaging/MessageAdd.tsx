@@ -150,25 +150,28 @@ lang("_No_recipients____I_cant__body"),
     });
 
     userData.push({id: 'specificUsersLabel', type:'lightExplanation', below: false, label: lang("SPECIFIC_USERS")});
+
+    userIds.sort((a,b) => { return sphereUserData[b].firstName > sphereUserData[a].firstName ? -1 : 1 });
+
     userIds.forEach((userId) => {
-      if (sphereUserData[userId].invitationPending === false && state.user.userId !== userId) {
+      // if (sphereUserData[userId].invitationPending === false && state.user.userId !== userId) {
         userData.push({
           id: userId,
-          text: sphereUserData[userId].firstName + " " + sphereUserData[userId].lastName,
+          text: sphereUserData[userId].firstName + " " + (sphereUserData[userId].lastName || ""),
           picture: sphereUserData[userId].picture,
           person: true,
           selected: this.state.recipients[userId] === true
         })
-      }
+      // }
     });
 
-    userData.push({
-      id: state.user.userId,
-      text: state.user.firstName + " " + state.user.lastName,
-      picture: state.user.picture,
-      person: true,
-      selected: this.state.recipients[state.user.userId] === true
-    });
+    // userData.push({
+    //   id: state.user.userId,
+    //   text: state.user.firstName + " " + (state.user.lastName || ""),
+    //   picture: state.user.picture,
+    //   person: true,
+    //   selected: this.state.recipients[state.user.userId] === true
+    // });
 
     return userData;
   }

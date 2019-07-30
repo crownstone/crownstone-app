@@ -47,10 +47,10 @@ export class ToonAdd extends LiveComponent<any, any> {
     };
 
     this.unsubscribeNativeEvent = core.nativeBus.on(core.nativeBus.topics.callbackUrlInvoked, (url) => {
+      this.unsubscribeNativeEvent();
       this.setState({processing: true});
       this.process(url);
     });
-
   }
 
 
@@ -129,12 +129,10 @@ export class ToonAdd extends LiveComponent<any, any> {
           this.setState({success:true, processing:false}, () => {
             setTimeout(() => {
               if (agreementIds.length > 1) {
-                NavigationUtil.dismissModal()
-                NavigationUtil.navigate("ToonOverview",{sphereId: this.props.sphereId})
+                NavigationUtil.dismissModalAndNavigateFromModal("ToonOverview",{sphereId: this.props.sphereId})
               }
               else {
-                NavigationUtil.dismissModal()
-                NavigationUtil.navigate("ToonSettings",{sphereId: this.props.sphereId, toonId: agreementIds[0].agreementId})
+                NavigationUtil.dismissModalAndNavigateFromModal("ToonSettings",{sphereId: this.props.sphereId, toonId: agreementIds[0].agreementId})
               }
             }, 1500);
           })

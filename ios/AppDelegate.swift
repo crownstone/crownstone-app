@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
         #if DEBUG
             print("DEBUG")
             let jsBundleUrl =  RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
@@ -84,7 +83,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // required to hook web urls
-    private func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) {
-        GLOBAL_BLUENET.parseUserActivity(userActivity: userActivity)
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        return GLOBAL_BLUENET.parseUserActivity(userActivity: userActivity)
     }
 }

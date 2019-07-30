@@ -103,7 +103,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
     });
 
     items.push({
-      label: lang("Share_acitvity_logs"),
+      label: lang("Share_activity_logs"),
       value: user.uploadActivityLogs,
       type: 'switch',
       icon: <IconButton name="md-calendar" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,

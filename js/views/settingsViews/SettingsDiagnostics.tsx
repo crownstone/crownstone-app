@@ -23,11 +23,11 @@ import {NotInSphere} from "./diagnostics/NotInSphere";
 import {NoStones} from "./diagnostics/NoStones";
 import {TestResult} from "./diagnostics/DiagnosticUtil";
 import {InSphere} from "./diagnostics/InSphere";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { DiagnosticStates, diagnosticStyles } from "./diagnostics/DiagnosticStyles";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { DataUtil } from "../../util/DataUtil";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
 export class SettingsDiagnostics extends Component<any, any> {
   static options(props) {
@@ -41,13 +41,13 @@ export class SettingsDiagnostics extends Component<any, any> {
     this.state = {
       testPhase: DiagnosticStates.INTRODUCTION,
       databaseHealth: null,
-      isMonitoring: null,
-      inSphere: null,
+      isMonitoring:   null,
+      inSphere:       null,
 
-      ibeacons: null,
+      ibeacons:       null,
       verifiedAdvertisements: null,
 
-      opacity: new Animated.Value(1),
+      opacity:    new Animated.Value(1),
       leftOffset: new Animated.Value(0),
     };
   }
@@ -70,6 +70,10 @@ export class SettingsDiagnostics extends Component<any, any> {
     healthySpheres = DataUtil.verifyDatabase(true);
     Object.keys(sphereIds).forEach((sphereId) => {
       let sphere = sphereIds[sphereId];
+
+      if (Permissions.inSphere(sphereId).canSetupCrownstone) {
+        this.canSetupStones = true;
+      }
       stoneCount += Object.keys(sphere.stones).length;
     });
 

@@ -33,7 +33,6 @@ import {StoneDeleted} from "../static/StoneDeleted";
 import { STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { xUtil } from "../../util/StandAloneUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../util/TopBarUtil";
 
@@ -107,10 +106,10 @@ export class DeviceEdit extends LiveComponent<any, any> {
     });
   }
 
+
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
   }
-
 
 
   constructStoneOptions(stone, state) {
@@ -457,7 +456,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     }
 
     // collect promises to handle changes in switchcraft and dim state
-    let changePromises = [];
+    let changePromises    = [];
     let dimChange         = this._setDimState(stone);
     let switchCraftChange = this._setSwitchcraftState(stone);
     if (dimChange)         { changePromises.push(dimChange); }

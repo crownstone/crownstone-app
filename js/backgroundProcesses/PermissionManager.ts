@@ -60,7 +60,7 @@ export class PermissionManagerClass {
     });
   }
 
-  inSphere(sphereId) : PermissionBase {
+  inSphere(sphereId : string) : PermissionBase {
     if (this.permissionClasses[sphereId]) {
       return this.permissionClasses[sphereId];
     }

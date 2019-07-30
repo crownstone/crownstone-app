@@ -67,7 +67,7 @@ export class SettingsApp extends LiveComponent<any, any> {
     const store = core.store;
     let state = store.getState();
     let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
-    if (!tapToToggleCalibration) {
+    if (!tapToToggleCalibration && state.app.tapToToggleEnabled) {
       core.eventBus.emit("CalibrateTapToToggle");
     }
   }

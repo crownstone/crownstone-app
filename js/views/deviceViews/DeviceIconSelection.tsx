@@ -304,8 +304,8 @@ export class DeviceIconSelection extends LiveComponent<{callback(icon: string) :
               this.props.callback(newIcon);
               if (this.props.closeModal) {
                 NavigationUtil.dismissModal();
+                return;
               }
-              return
               NavigationUtil.back();
             }}
           />

@@ -32,7 +32,7 @@ import { core } from "../../../core";
 export class DeviceActivityLog extends Component<any, any> {
   unsubscribeStoreEvents;
 
-  logProcessor;
+  logProcessor : ActivityLogProcessor;
   logs = [];
 
   constructor(props) {
@@ -86,10 +86,10 @@ export class DeviceActivityLog extends Component<any, any> {
       );
     }
 
-    items.push(<View key={"longWhiteLine"} style={{position:'absolute', top: 186, left: 52, width:2, backgroundColor:colors.white.rgba(0.5), height: itemHeight*logs.length + 30}} />);
-    items.push(<View key={"longWhiteLine_topCap"} style={{position:'absolute', top: 180, left: 50, width:6, backgroundColor:colors.white.rgba(0.5), height: 6, borderRadius:3}} />);
+    items.push(<View key={"longWhiteLine"}                       style={{position:'absolute', top: 186,                               left: 52, width:2, backgroundColor:colors.white.rgba(0.5), height: itemHeight*logs.length + 30}} />);
+    items.push(<View key={"longWhiteLine_topCap"}                style={{position:'absolute', top: 180,                               left: 50, width:6, backgroundColor:colors.white.rgba(0.5), height: 6, borderRadius:3}} />);
     items.push(<View key={"longWhiteLine_bottomCap_trailingDot"} style={{position:'absolute', top: 216 + itemHeight*logs.length + 20, left: 51, width:4, backgroundColor:colors.white.rgba(0.3), height: 4, borderRadius:2}} />);
-    items.push(<View key={"longWhiteLine_bottomCap"} style={{position:'absolute', top: 216 + itemHeight*logs.length, left: 50, width:6, backgroundColor:colors.white.rgba(0.5), height: 6, borderRadius:3}} />);
+    items.push(<View key={"longWhiteLine_bottomCap"}             style={{position:'absolute', top: 216 + itemHeight*logs.length,      left: 50, width:6, backgroundColor:colors.white.rgba(0.5), height: 6, borderRadius:3}} />);
     items.push(<View key={"itemSpacer"} style={{height:40}} />);
 
     if (logs.length === 0) {
@@ -102,19 +102,20 @@ export class DeviceActivityLog extends Component<any, any> {
       }
     }
 
+    let showedStatus = false;
     for (let i = 0; i < logs.length && i < this.state.showMax; i++) {
       let log = logs[i];
       if (log.type === 'statusUpdate') {
-        items.push(<ActivityLogStatusIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state}
-                                               stone={stone} sphereId={this.props.sphereId} height={itemHeight}/>);
+        if (showedStatus === false) {
+          items.push(<ActivityLogStatusIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight}/>);
+        }
+        showedStatus = true;
       }
       else if (log.type === 'dayIndicator') {
-        items.push(<ActivityLogDayIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state}
-                                            stone={stone} sphereId={this.props.sphereId} height={itemHeight}/>);
+        items.push(<ActivityLogDayIndicator key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight}/>);
       }
       else {
-        items.push(<ActivityLogItem key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone}
-                                    sphereId={this.props.sphereId} height={itemHeight} showFullLogs={showFullLogs}/>);
+        items.push(<ActivityLogItem key={log.timestamp + "_Zindex:" + i} data={log} state={state} stone={stone} sphereId={this.props.sphereId} height={itemHeight} showFullLogs={showFullLogs}/>);
       }
     }
 
@@ -156,7 +157,7 @@ export class DeviceActivityLog extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     let showFullLogs = state.user.developer && state.development.show_full_activity_log;
-    // console.log("sphereId={'" + this.props.sphereId + "'} stoneId={'" + this.props.stoneId + "'}")
+
     return (
       <View style={{flex:1}}>
         <ScrollView

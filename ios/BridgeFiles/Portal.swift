@@ -107,12 +107,14 @@ class Portal : NSObject {
     // self.bluenetLocalization.applicationWillEnterForeground()
   }
   
-  open func parseUserActivity(userActivity: NSUserActivity) {
+  open func parseUserActivity(userActivity: NSUserActivity) -> Bool {
     if (userActivity.activityType == NSUserActivityTypeBrowsingWeb) {
       if let url = userActivity.webpageURL {
         AppEventBus.emit("callbackUrlInvoked", url.absoluteString)
+        return true
       }
     }
+    return false
   }
   
   deinit {

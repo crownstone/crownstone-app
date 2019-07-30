@@ -97,15 +97,15 @@ export class ActivityLogProcessor {
 
       if (endTime + range.delayInCommand*1000 > now) {
         logs.push({
-          timestamp: now,
-          generatedFrom: keepAliveType,
-          type:      'statusUpdate',
-          startTime: range.startTime,
-          count:     range.count,
-          userId:    range.userId,
-          isSelf:    range.userId === userId,
+          timestamp:       now,
+          generatedFrom:   keepAliveType,
+          type:            'statusUpdate',
+          startTime:       range.startTime,
+          count:           range.count,
+          userId:          range.userId,
+          isSelf:          range.userId === userId,
           switchedToState: range.switchedToState,
-          isRange:   true,
+          isRange:         true,
         })
       }
       else {
