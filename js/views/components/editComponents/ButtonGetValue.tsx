@@ -36,7 +36,7 @@ export class ButtonGetValue extends Component<any, any> {
         >
           {this.props.label}
         </Text>
-        <TouchableOpacity onPress={() => { this.props.getCallback() }}>
+        <TouchableOpacity onPress={() => { this.props.getter() }}>
           <Text
             style={[{fontSize: 16, maxWidth: 0.65*screenWidth}, this.props.labelStyle, this.props.style]}
             numberOfLines={1}
