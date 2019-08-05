@@ -171,7 +171,7 @@ class NavStateManager {
 
     LOGi.nav("HERE", componentId, name);
     LOGi.nav("active: ", this.activeTab);
-    LOGi.nav("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames);
+    LOGi.nav("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncoming", this.overlayIncoming, "overlayIncomingName", this.overlayIncomingName);
 
     if (this.overlayIncoming === true && this.overlayIncomingName === name) {
       this.overlayIncomingName = null;
@@ -309,7 +309,9 @@ class NavStateManager {
   }
 
   closeOverlay(componentId) {
+    LOGi.nav("will close this overlay: componentId=", componentId, "overlayId=", this.overlayId);
     if (this.overlayId[componentId] !== undefined) {
+      LOGi.nav("actually closing names=", this.overlayNames);
       let name = this.overlayId[componentId].name;
       delete this.overlayId[componentId];
       delete this.overlayNames[name];
@@ -332,6 +334,20 @@ class NavStateManager {
     this.activeView   = {};
     this.modals       = [];
     this.views        = {};
+  }
+
+  resetState() {
+    LOGi.nav("RESETTING STATE")
+    this.activeModal = null;
+    this.activeView  = {};
+    this.overlayNames = {};
+    this.overlayId = {};
+    this.modals = [];
+    this.views = {};
+    this.overlayIncoming = false;
+    this.overlayIncomingName = null;
+    this.activeTab = null;
+    this.baseTab = null;
   }
 
   backTo(name) : string {
@@ -464,7 +480,7 @@ export const NavigationUtil = {
 
     NavState.showOverlay(target);
 
-    LOGi.nav("WILL SHOW NOW");
+    LOGi.nav("WILL SHOW NOW", target);
     Navigation.showOverlay({
       component: {
         id: target,
@@ -486,12 +502,16 @@ export const NavigationUtil = {
   },
 
 
+  init() {
+    NavState.resetState();
+  },
+
   setRoot(rootStack : StackData) {
     addSentryLog("rootStack", "stack")
     // reset the NavState
     NavState.setRoot();
 
-    LOGi.nav("----------------------_____SET ROOT");
+    LOGi.nav("----------------------_____SET ROOT", rootStack);
     // check if we have a tabBar setup.
     tabBarComponentNames = [];
     loadNamesFromStack(rootStack);
