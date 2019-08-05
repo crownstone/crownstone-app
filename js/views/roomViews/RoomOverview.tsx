@@ -108,7 +108,6 @@ export class RoomOverview extends LiveComponent<any, any> {
           change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
           return this.forceUpdate()
       }
-      console.log("HERE", change)
       if (
         (change.changeAppliances)      ||
         (change.updateApplianceConfig) ||

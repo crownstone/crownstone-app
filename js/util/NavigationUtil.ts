@@ -326,8 +326,6 @@ class NavStateManager {
     this.activeView   = {};
     this.modals       = [];
     this.views        = {};
-    this.overlayId    = {};
-    this.overlayNames = {};
   }
 
   backTo(name) : string {

@@ -134,18 +134,18 @@ export class ActivityLogProcessor {
           }
         }
 
-        console.log("GENERATED EXIT:", new Date(expirationTime), range, {
-          timestamp: expirationTime,
-          generatedFrom: keepAliveType,
-          type:   'generatedExit',
-          userId: range.userId,
-          count:  range.count,
-          endTime: endTime,
-          isSelf: range.userId === userId,
-          switchedToState:  range.switchedToState,
-          otherUserPresent: otherUserPresent,
-          isRange: true,
-        });
+        // console.log("GENERATED EXIT:", new Date(expirationTime), range, {
+        //   timestamp: expirationTime,
+        //   generatedFrom: keepAliveType,
+        //   type:   'generatedExit',
+        //   userId: range.userId,
+        //   count:  range.count,
+        //   endTime: endTime,
+        //   isSelf: range.userId === userId,
+        //   switchedToState:  range.switchedToState,
+        //   otherUserPresent: otherUserPresent,
+        //   isRange: true,
+        // });
 
         logs.push({
           timestamp: expirationTime,
