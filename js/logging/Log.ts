@@ -9,7 +9,7 @@ import {
   LOG_SCHEDULER,
   RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
   LOG_TIME_DIFFS,
-  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH, LOG_TO_FILE, LOG_DFU, LOG_BROADCAST, LOG_PROMISE_MANAGER
+  LOG_TIMESTAMPS, LOG_NOTIFICATIONS, LOG_BCH, LOG_TO_FILE, LOG_DFU, LOG_BROADCAST, LOG_PROMISE_MANAGER, LOG_NAVIGATION
 } from "../ExternalConfig";
 import { LogProcessor } from "./LogProcessor";
 import { logToFile } from "./LogUtil";
@@ -100,6 +100,10 @@ class Logger {
 
   native(...any) {
     this._log('Native -----', LOG_NATIVE,  LogProcessor.log_native, arguments);
+  }
+
+  nav(...any) {
+    this._log('NAV --------', LOG_NAVIGATION,  LogProcessor.log_nav, arguments);
   }
 
   _log(type, globalCheckField, dbCheckField, allArguments) {

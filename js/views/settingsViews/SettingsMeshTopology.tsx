@@ -150,22 +150,22 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     BatchCommandHandler.executePriority()
   }
 
-  _debugPrints(sphereId, connections, edgeId, stones) {
-    let element1 = Util.data.getElement(core.store, sphereId, connections[edgeId].from, stones[connections[edgeId].from]);
-    let element2 = Util.data.getElement(core.store, sphereId, connections[edgeId].to,   stones[connections[edgeId].to]);
-
-    let stoneName0 = stones[connections[edgeId].from].config.name;
-    let stoneName1 = stones[connections[edgeId].to].config.name;
-
-    let names = [stoneName0, stoneName1].sort();
-
-    let n0 = stoneName0.split(":");
-    let n1 = stoneName1.split(":");
-
-    if (n0[1] !== n1[1]) {
-      console.log("meshDebug: '"+names[0], '-', names[1], ';', connections[edgeId].rssi+"',")
-    }
-  }
+  // _debugPrints(sphereId, connections, edgeId, stones) {
+  //   let element1 = Util.data.getElement(core.store, sphereId, connections[edgeId].from, stones[connections[edgeId].from]);
+  //   let element2 = Util.data.getElement(core.store, sphereId, connections[edgeId].to,   stones[connections[edgeId].to]);
+  //
+  //   let stoneName0 = stones[connections[edgeId].from].config.name;
+  //   let stoneName1 = stones[connections[edgeId].to].config.name;
+  //
+  //   let names = [stoneName0, stoneName1].sort();
+  //
+  //   let n0 = stoneName0.split(":");
+  //   let n1 = stoneName1.split(":");
+  //
+  //   if (n0[1] !== n1[1]) {
+  //     console.log("meshDebug: '"+names[0], '-', names[1], ';', connections[edgeId].rssi+"',")
+  //   }
+  // }
 
   render() {
     const store = core.store;
@@ -241,7 +241,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
       edges.push(connections[edgeId]);
 
       // used for comparative measurements.
-      this._debugPrints(sphereId, connections, edgeId, stones);
+      // this._debugPrints(sphereId, connections, edgeId, stones);
     });
     let height = availableScreenHeight - 1; // 1 is for the bottom light line above the navbar
     let offset = 2;

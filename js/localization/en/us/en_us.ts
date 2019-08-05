@@ -671,8 +671,6 @@ export default {
     Great_:                              function() { return "Great!" },
     Ill_try_again_later_:                function() { return "I'll try again later!" },
   },
-  DfuHelper:{
-  },
   DfuIntroduction:{
     __filename: "../js/views/overlays/DfuOverlay.tsx",
     __:                                  function() { return arguments[0] + " %" },
@@ -680,6 +678,10 @@ export default {
     Lets_do_it_:                         function() { return "Let's do it!" },
     Start_the_update_:                   function() { return "Start the update!" },
     Ill_try_again_later_:                function() { return "I'll try again later!" },
+  },
+  DfuUtil:{
+    Could_not_download_releas:             function() { return "Could not download release notes..." },
+    Release_notes_not_availab:             function() { return "Release notes not available." },
   },
   DfuScanning:{
     __filename: "../../js/views/dfu/DfuScanning.tsx",
@@ -1960,6 +1962,7 @@ export default {
     General:                             function() { return "General" },
     PromiseManager:                      function() { return "PromiseManager" },
     Native:                              function() { return "Native" },
+    Navigation:                          function() { return "Navigation" },
     Mesh:                                function() { return "Mesh" },
     Notifications:                       function() { return "Notifications" },
     Scheduler:                           function() { return "Scheduler" },

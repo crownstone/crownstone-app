@@ -64,6 +64,9 @@ class OverlayManagerClass {
       core.eventBus.on('showCustomOverlay',    (data) => { NavigationUtil.showOverlay('SimpleOverlay', {data: data}); })
       core.eventBus.on('CalibrateTapToToggle', (data) => { NavigationUtil.showOverlay('TapToToggleCalibration',{data: data}); })
     }
+
+    this._initialized = true;
+
   }
 }
 

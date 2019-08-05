@@ -10,7 +10,7 @@ const RNFS = require('react-native-fs');
 const sha1 = require('sha-1');
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DfuHelper", key)(a,b,c,d,e);
+  return Languages.get("DfuUtil", key)(a,b,c,d,e);
 }
 
 
