@@ -83,7 +83,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
     this.usage = 0;
     // calculate the size of the circle based on the screen size
     this.borderWidth = props.radius / 16;
-    this.innerDiameter = 2 * props.radius - 4.5 * this.borderWidth;
+    this.innerDiameter = 2 * props.radius - 3 * this.borderWidth;
     this.outerDiameter = 2 * props.radius;
     this.iconSize = props.radius * 0.8;
     this.textSize = props.radius * 0.25;
@@ -155,9 +155,9 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
 
   _getColor() {
     if (this.props.viewingRemotely === true) {
-      return colors.green.rgba(0.8);
+      return colors.green.rgba(0.5);
     }
-    return colors.green.hex;
+    return colors.green.rgba(0.75);
   }
 
   getIcon() {
@@ -167,7 +167,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   }
 
   getCircle() {
-    let newColor = this._getColor();
+    let newColor = colors.green.rgba(0.75);;
     let innerOffset = 0.5*(this.outerDiameter - this.innerDiameter);
     return (
       <View>

@@ -226,8 +226,6 @@ export class DeviceEntry extends Component<any, any> {
     let state = core.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    console.log("X", stone)
-
     let element = stone.config.applianceId ? state.spheres[this.props.sphereId].appliances[stone.config.applianceId] : stone;
     let useControl = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
     let backgroundColor = this.state.backgroundColor.interpolate({

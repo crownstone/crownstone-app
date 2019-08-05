@@ -617,6 +617,11 @@ export const NavigationUtil = {
 
   navigate: function(target : string, props = {}) {
     let activeView = NavState.getActiveComponent();
+    if (activeView === target) {
+      LOGi.nav("Ignoring duplicate navigate")
+      return;
+    }
+
     addSentryLog("navigate", target)
     LOGi.nav("Navigating from",activeView, "to", target, props);
     Navigation.push(activeView, {
