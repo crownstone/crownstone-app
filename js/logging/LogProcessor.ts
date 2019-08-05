@@ -20,6 +20,7 @@ class LogProcessorClass {
   log_events:         number = LOG_LEVEL.NONE;
   log_store:          number = LOG_LEVEL.NONE;
   log_cloud:          number = LOG_LEVEL.NONE;
+  log_nav:            number = LOG_LEVEL.NONE;
 
 
   init() {
@@ -57,6 +58,7 @@ class LogProcessorClass {
       this.log_events         = loggingEnabled && devState.log_events         || LOG_LEVEL.NONE;
       this.log_store          = loggingEnabled && devState.log_store          || LOG_LEVEL.NONE;
       this.log_cloud          = loggingEnabled && devState.log_cloud          || LOG_LEVEL.NONE;
+      this.log_nav            = loggingEnabled && devState.log_nav          || LOG_LEVEL.NONE;
     }
   }
 }

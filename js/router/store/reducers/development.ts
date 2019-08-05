@@ -16,6 +16,7 @@ let defaultState = {
   log_events:         LOG_LEVEL.error,
   log_store:          LOG_LEVEL.error,
   log_cloud:          LOG_LEVEL.error,
+  log_nav:            LOG_LEVEL.error,
   show_rssi_values_in_mesh:   false,
   show_full_activity_log:     false,
   show_only_own_activity_log: false,
@@ -55,6 +56,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_events =         update(action.data.log_events,         newState.log_events);
         newState.log_store =          update(action.data.log_store,          newState.log_store);
         newState.log_cloud =          update(action.data.log_cloud,          newState.log_cloud);
+        newState.log_nav =            update(action.data.log_nav,            newState.log_nav);
         newState.preview =            update(action.data.preview,            newState.preview);
         newState.broadcasting_enabled =       update(action.data.broadcasting_enabled,       newState.broadcasting_enabled);
         newState.nativeExtendedLogging =      update(action.data.nativeExtendedLogging,      newState.nativeExtendedLogging);

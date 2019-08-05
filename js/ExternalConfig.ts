@@ -95,6 +95,8 @@ import { Platform } from "react-native";
   export let LOG_ADVERTISEMENTS  = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
   export let LOG_DFU             = LOG_LEVEL.ERROR;    // enabling LOG.dfu commands to be shown.
   export let LOG_BROADCAST       = LOG_LEVEL.ERROR;    // enabling LOG.broadcast commands to be shown.
+  export let LOG_NAVIGATION      = LOG_LEVEL.ERROR;    // enabling LOG.nav commands to be shown.
+
 
   /**
    * Specific logging settings used for debugging mostly. These will override developer settings only if true.

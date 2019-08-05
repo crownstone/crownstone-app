@@ -4,6 +4,7 @@
 
 import { Navigation } from "react-native-navigation";
 import { Sentry } from "react-native-sentry";
+import { LOGi, LOGw } from "../logging/Log";
 
 const BASE_TAB_NAME = "BASE_TAB";
 
@@ -168,9 +169,9 @@ class NavStateManager {
   addView(componentId, name) {
     if (this.handleIfAlreadyOpen(componentId, name)) { return; }
 
-    // console.log("HERE", componentId, name);
-    // console.log("active: ", this.activeTab);
-    // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames);
+    LOGi.nav("HERE", componentId, name);
+    LOGi.nav("active: ", this.activeTab);
+    LOGi.nav("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames);
 
     if (this.overlayIncoming === true && this.overlayIncomingName === name) {
       this.overlayIncomingName = null;
@@ -198,7 +199,7 @@ class NavStateManager {
           this.activeTab === this.baseTab &&         // this is only valid if we are actually on the base tab
           this.isViewNameAlreadyOpen(this.baseTab) === false // if the base tab itself has not loaded yet
         ) {
-          // console.log("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name);
+          LOGi.nav("IGNORE PROBABLE RACE CONDITION.", this.baseTab, componentId, name);
           return;
         }
       }
@@ -206,7 +207,7 @@ class NavStateManager {
       this.activeView[this.activeTab] = componentId;
     }
 
-    // console.log("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
+    LOGi.nav("Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames)
   }
 
   isTargetViewNameCurrentlyActive(targetName) {
@@ -227,6 +228,7 @@ class NavStateManager {
       this.views[this.activeTab].pop();
     }
     else {
+      LOGw.nav("Maybe something is wrong?")
       console.warn("Maybe something is wrong?")
     }
   }
@@ -237,6 +239,7 @@ class NavStateManager {
         lastItem(this.modals).pop();
       }
       else {
+        LOGw.nav("Maybe wanted to dismiss the modal?")
         console.warn("Maybe wanted to dismiss the modal?")
       }
     }
@@ -245,6 +248,7 @@ class NavStateManager {
         this.views[this.activeTab].pop();
       }
       else {
+        LOGw.nav("Maybe something is wrong?")
         console.warn("Maybe something is wrong?")
       }
     }
@@ -258,6 +262,7 @@ class NavStateManager {
         this.activeModal = lastItem(lastItem(this.modals)).id;
       }
       else {
+        LOGw.nav("Maybe wanted to dismiss the modal?")
         console.warn("Maybe wanted to dismiss the modal?")
       }
     }
@@ -268,13 +273,14 @@ class NavStateManager {
         this.activeView[this.activeTab] = lastItem(this.views[this.activeTab]).id;
       }
       else {
+        LOGw.nav("Maybe something is wrong?")
         console.warn("Maybe something is wrong?")
       }
     }
   }
 
   _getModalId() : string {
-    // console.log(JSON.stringify(this.modals), this.activeModal);
+    LOGi.nav(JSON.stringify(this.modals), this.activeModal);
     return this.activeModal;
   }
 
@@ -283,6 +289,7 @@ class NavStateManager {
      return lastItem(this.views[this.activeTab]).id;
     }
     else {
+      LOGw.nav("Maybe something is wrong?")
       console.warn("Maybe something is wrong?")
     }
   }
@@ -310,8 +317,7 @@ class NavStateManager {
   }
 
   isThisOverlayOpen(targetName) {
-    // console.log("@isThisOverlayOpen Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingName", this.overlayIncomingName);
-
+    LOGi.nav("@isThisOverlayOpen Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames, "overlayIncomingName", this.overlayIncomingName);
     return this.overlayNames[targetName] !== undefined || this.overlayIncomingName === targetName;
   }
 
@@ -365,6 +371,7 @@ class NavStateManager {
         }
       }
       else {
+        LOGw.nav("Maybe something is wrong?")
         console.warn("Maybe something is wrong?")
       }
     }
@@ -373,8 +380,8 @@ class NavStateManager {
       this._getId();
     }
 
-    // console.log("IN BACK TO active: ", this.activeTab);
-    // console.log("IN BACK TO Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames);
+    LOGi.nav("IN BACK TO active: ", this.activeTab);
+    LOGi.nav("IN BACK TO Views:", this.views, "Modals:", this.modals, "overlays:", this.overlayNames);
 
     return targetId;
   }
@@ -423,7 +430,7 @@ let tabBarComponentNames = [];
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
-  // console.log("VIEW DID APPEAR", componentId, componentName);
+  LOGi.nav("VIEW DID APPEAR", componentId, componentName);
   if (tabBarComponentNames.indexOf(componentName) !== -1) {
     NavState.switchTab(componentId, componentName)
   }
@@ -433,7 +440,7 @@ Navigation.events().registerComponentDidAppearListener(({ componentId, component
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidDisappearListener(({ componentId, componentName }) => {
-  // console.log("VIEW DID DISAPPEAR", componentId, componentName)
+  LOGi.nav("VIEW DID DISAPPEAR", componentId, componentName)
 });
 
 
@@ -447,9 +454,9 @@ export const NavigationUtil = {
    */
   showOverlay(target, props) {
     addSentryLog("showOverlay", target)
-    // console.log("I WANT TO SHOW THIS OVERLAY", target);
+    LOGi.nav("I WANT TO SHOW THIS OVERLAY", target);
 
-    // console.log("is this overlay open?", target, NavState.isThisOverlayOpen(target));
+    LOGi.nav("is this overlay open?", target, NavState.isThisOverlayOpen(target));
 
     if (NavState.isThisOverlayOpen(target)) {
       return;
@@ -457,7 +464,7 @@ export const NavigationUtil = {
 
     NavState.showOverlay(target);
 
-    // console.log("WILL SHOW NOW");
+    LOGi.nav("WILL SHOW NOW");
     Navigation.showOverlay({
       component: {
         id: target,
@@ -484,7 +491,7 @@ export const NavigationUtil = {
     // reset the NavState
     NavState.setRoot();
 
-    // console.log("----------------------_____SET ROOT");
+    LOGi.nav("----------------------_____SET ROOT");
     // check if we have a tabBar setup.
     tabBarComponentNames = [];
     loadNamesFromStack(rootStack);
@@ -495,7 +502,7 @@ export const NavigationUtil = {
       NavState.prepareTabs(tabBarComponentNames);
     }
 
-    // console.log("This is the tabBarComponentNames", tabBarComponentNames);
+    LOGi.nav("This is the tabBarComponentNames", tabBarComponentNames);
 
     Navigation.setRoot({ root: rootStack });
   },
@@ -503,7 +510,7 @@ export const NavigationUtil = {
 
   launchModal: function(target, props = {}) {
     addSentryLog("launchModal", target)
-    // console.log("Navigating from", NavState.activeView, "to", target, props);
+    LOGi.nav("Navigating from", NavState.activeView, "to", target, props);
     NavState.modalActive();
     Navigation.showModal({
       stack:{
@@ -516,15 +523,15 @@ export const NavigationUtil = {
 
 
   dismissModal: function() {
-    // console.log("CALLING dismissModal");
+    LOGi.nav("CALLING dismissModal");
     let backFrom = NavState.getActiveComponent();
     addSentryLog("dismissModal", backFrom);
     Navigation.dismissModal(backFrom)
       .then(() => {
-        // console.log("DISMISS Going back from ", backFrom, " success!")
+        LOGi.nav("DISMISS Going back from ", backFrom, " success!")
       })
       .catch((err) => {
-        // console.log("DISMISS Going back from ", backFrom, " FAILED!", err)
+        LOGi.nav("DISMISS Going back from ", backFrom, " FAILED!", err)
       });
     NavState.modalDismissed();
   },
@@ -539,7 +546,7 @@ export const NavigationUtil = {
 
   dismissAllModals: function() {
     addSentryLog("dismissAllModals", "null")
-    // console.log("Closing all modals");
+    LOGi.nav("Closing all modals");
     Navigation.dismissAllModals();
     NavState.allModalsDismissed();
   },
@@ -611,7 +618,7 @@ export const NavigationUtil = {
   navigate: function(target : string, props = {}) {
     let activeView = NavState.getActiveComponent();
     addSentryLog("navigate", target)
-    // console.log("Navigating from",activeView, "to", target, props);
+    LOGi.nav("Navigating from",activeView, "to", target, props);
     Navigation.push(activeView, {
       component: {
         id: target,
@@ -623,10 +630,10 @@ export const NavigationUtil = {
 
 
   navigateFromUnderlyingModal(target, props) {
-    // console.log("UNDERLYING MODAL");
+    LOGi.nav("UNDERLYING MODAL");
     let goFrom = NavState._getModalId();
     addSentryLog("navigateFromUnderlyingModal", target)
-    // console.log("navigateFromUnderlyingModal from", goFrom, "to", target)
+    LOGi.nav("navigateFromUnderlyingModal from", goFrom, "to", target)
     Navigation.push(goFrom, {
       component: {
         id: target,
@@ -639,7 +646,7 @@ export const NavigationUtil = {
   navigateFromUnderlyingStack(target, props) {
     let goFrom = NavState._getViewId();
     addSentryLog("navigateFromUnderlyingStack", target)
-    // console.log("Navigating from", goFrom, "to", target);
+    LOGi.nav("Navigating from", goFrom, "to", target);
     Navigation.push(goFrom, {
       component: {
         id: target,
@@ -668,7 +675,7 @@ export const NavigationUtil = {
     addSentryLog("back", tabIndex)
 
     if (NavState.baseTab && NavState.baseTab !== BASE_TAB_NAME) {
-      // console.log(tabBarComponentNames, tabIndex);
+      LOGi.nav(tabBarComponentNames, tabIndex);
       NavState.activeTab = tabBarComponentNames[tabIndex];
       Navigation.mergeOptions('bottomTabs', {
         bottomTabs: {
@@ -680,17 +687,17 @@ export const NavigationUtil = {
 
 
   back() {
-    // console.log("CALLING BACK");
+    LOGi.nav("CALLING BACK");
     let backFrom = NavState.getActiveComponent();
     NavState.pop();
 
     addSentryLog("back", backFrom)
     return Navigation.pop(backFrom)
       .then(() => {
-        // console.log("Going back from ", backFrom, " success!")
+        LOGi.nav("Going back from ", backFrom, " success!")
       })
       .catch((err) => {
-        // console.log("Going back from ", backFrom, " FAILED!", err)
+        LOGi.nav("Going back from ", backFrom, " FAILED!", err)
       })
   },
 
@@ -698,14 +705,14 @@ export const NavigationUtil = {
   baseStackBack() {
     let backFrom = NavState._getViewId();
     addSentryLog("baseStackBack", backFrom)
-    // console.log("Going back baseStackBack", backFrom);
+    LOGi.nav("Going back baseStackBack", backFrom);
     NavState.popView();
     Navigation.pop(backFrom)
       .then(() => {
-        // console.log("Going back baseStackBack ", backFrom, " success!")
+        LOGi.nav("Going back baseStackBack ", backFrom, " success!")
       })
       .catch((err) => {
-        // console.log("Going back baseStackBack ", backFrom, " FAILED!", err)
+        LOGi.nav("Going back baseStackBack ", backFrom, " FAILED!", err)
       })
   },
 
