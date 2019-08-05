@@ -12,7 +12,7 @@ import {
 } from "../views/components/topbar/TopbarButton";
 import { CancelButton } from "../views/components/topbar/CancelButton";
 import { OverlayManager } from "../backgroundProcesses/OverlayManager";
-import { NavigationUtil } from "../util/NavigationUtil";
+import { NavigationUtil, NavState } from "../util/NavigationUtil";
 
 let viewsLoaded = false;
 
@@ -20,10 +20,12 @@ export const loadRoutes = function() {
   if (viewsLoaded) { return; }
   viewsLoaded = true;
 
+
+
   // register all views
   Object.keys(Views).forEach((viewId) => {
     Navigation.registerComponent(viewId,    () => Views[viewId]);
-  })
+  });
 
   // register all custom components used by the navigator:
   Navigation.registerComponent("topbarCancelButton",       () => CancelButton);
@@ -68,6 +70,7 @@ Navigation.events().registerAppLaunchedListener(() => {
 
   Navigation.setDefaultOptions(defaultOptions);
 
+  NavigationUtil.init();
 
   NavigationUtil.setRoot(Stacks.initial());
 

@@ -212,6 +212,23 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
+	fun initBroadcasting() {
+		Log.i(TAG, "initBroadcasting")
+		// Should ask for permissions in order to broadcast.
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun checkBroadcastAuthorization(callback: Callback) {
+		Log.i(TAG, "checkBroadcastAuthorization")
+		// Should send bleBroadcastStatus event.
+		// bleBroadcastStatus and checkBroadcastAuthorization values: "notDetermined" | "restricted" | "denied" | "authorized"
+		sendEvent("bleBroadcastStatus", "authorized")
+		resolveCallback(callback, "authorized")
+	}
+
+	@ReactMethod
+	@Synchronized
 	fun isReady(callback: Callback) {
 		Log.i(TAG, "isReady $callback")
 		// Check if bluenet lib is ready (scanner and bluetooth).
@@ -219,7 +236,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Only called at start of app.
 		// Can be called multiple times, and should all be invoked once ready.
 		bluenet.isReadyPromise()
-				.success { resolveCallback(callback) }
+				.success {
+					Log.i(TAG, "resolve isReady $callback")
+					resolveCallback(callback)
+				}
 	}
 
 	@ReactMethod
@@ -228,7 +248,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "isPeripheralReady")
 		// Resolve when ready to advertise.
 		resolveCallback(callback)
-		// TODO
 	}
 
 	@ReactMethod
