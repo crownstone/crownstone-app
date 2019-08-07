@@ -6,6 +6,7 @@ import { LoadingTopBarButton } from "../views/components/topbar/LoadingTopBarBut
 import { ScaledImage } from "../views/components/ScaledImage";
 import * as React from "react";
 import { statusBarHeight, topBarHeight } from "../views/styles";
+import { LOGd } from "../logging/Log";
 
 export const TopBarUtil = {
 
@@ -54,7 +55,6 @@ export const TopBarUtil = {
         })
       }
       else {
-        console.log(props.leftIcon)
         leftButtons.push({
           id: props.leftIcon.id,
           component: {
