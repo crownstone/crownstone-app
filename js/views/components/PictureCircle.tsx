@@ -51,7 +51,7 @@ export class PictureCircle extends Component<any, any> {
     let size = this.props.size || 60;
     if (this.props.value !== undefined && this.props.value !== null) {
       let imageURI = xUtil.preparePictureURI(this.props.value);
-      let borderWidth = size / 30;
+      let borderWidth = this.props.borderWidth || size / 30;
       let innerSize = size - 2*borderWidth;
       return (
         <TouchableOpacity
@@ -78,7 +78,7 @@ export class PictureCircle extends Component<any, any> {
               borderRadius:size/6,
               backgroundColor: colors.blue.hex,
               borderColor: colors.white.hex,
-              borderWidth: size/30
+              borderWidth: borderWidth
               }, styles.centered]}>
                 <Icon name={'md-remove'} size={size/5} color={'#ffffff'} />
             </View>
@@ -90,7 +90,7 @@ export class PictureCircle extends Component<any, any> {
         <View style={{flexDirection:'row',alignItems:'center', justifyContent:'center'}}>
           <TouchableOpacity onPress={() => {this.triggerOptions()}} style={{height:size}}>
             <View>
-              <IconCircle icon={'ios-camera-outline'} size={size} color='#ccc' showAdd={true} />
+              <IconCircle icon={'ios-camera-outline'} size={size} color='#ccc' showAdd={true} borderWidth={2} />
             </View>
           </TouchableOpacity>
           { this.props.placeholderText ?

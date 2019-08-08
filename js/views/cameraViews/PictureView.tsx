@@ -9,7 +9,7 @@ import { Image, TouchableOpacity, StyleSheet, Text, View, Platform, ViewStyle } 
 
 import { RNCamera } from 'react-native-camera';
 
-import { colors, screenWidth, screenHeight, availableModalHeight, styles, tabBarMargin } from "../styles";
+import { colors, screenWidth, screenHeight, availableModalHeight, styles, tabBarMargin, topBarHeight } from "../styles";
 
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
@@ -37,38 +37,6 @@ export class PictureView extends Component<any, any> {
   }
 
 
-
-  // componentDidMount() {
-  //   // should be front
-  //   if (this.props.initialView !== 'back' && core.sessionMemory.cameraSide !== 'front') {
-  //     setTimeout(() => {
-  //       this.cameraView.camera.changeCamera();
-  //       core.sessionMemory.cameraSide = 'front';
-  //     }, 150);
-  //   }
-  //   // should be back
-  //   else if (this.props.initialView === 'back' && core.sessionMemory.cameraSide !== 'back') {
-  //     setTimeout(() => {
-  //       this.cameraView.camera.changeCamera();
-  //       core.sessionMemory.cameraSide = 'back';
-  //     }, 150);
-  //   }
-  // }
-  //
-  // onBottomButtonPressed(event) {
-  //   console.log("HEX IT", event)
-  //   if (event.type === 'left') {
-  //     NavigationUtil.back();
-  //   }
-  //   else if (event.type === 'right') {
-  //     this.props.selectCallback(event.captureImages[0].uri);
-  //     NavigationUtil.back();
-  //   }
-  //   else {
-  //
-  //   }
-  // }
-
   cleanup(changeState = false) {
     if (this.state.picture && this.cleaningUp === false) {
       this.cleaningUp = true;
@@ -91,18 +59,22 @@ export class PictureView extends Component<any, any> {
 
     // has aspect ratio
     let isSquare = this.props.isSquare === true;
+    let bottomPadding = 15;
+    let bottomHeight = buttonSize + 2*bottomPadding + tabBarMargin;
 
     let bottomStyle : ViewStyle = {
       alignItems: 'center',
       justifyContent: 'center',
-      padding: 15,
+      padding: bottomPadding,
       paddingHorizontal: 20,
       flexDirection:'row',
-      height: buttonSize + 30 + tabBarMargin,
+      height: bottomHeight,
       width: screenWidth,
       paddingBottom: tabBarMargin,
       backgroundColor: colors.black.hex,
     };
+
+    let maxSquarePictureHeight = screenHeight - topBarHeight - bottomHeight;
 
     if (!isSquare) {
       bottomStyle['position'] = 'absolute';
@@ -127,7 +99,7 @@ export class PictureView extends Component<any, any> {
                 source={{uri:this.state.picture}}
                 style={{
                   width: screenWidth,
-                  height: isSquare ? screenWidth : screenHeight,
+                  height: isSquare ? Math.min(screenWidth, maxSquarePictureHeight) : screenHeight,
                 }}
               />
               <View style={{flex:1}} />

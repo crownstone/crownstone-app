@@ -33,6 +33,8 @@ let defaultSettings = {
     bootloaderVersion: null,
     hardwareVersion: null,
 
+    onlyOnWhenDark: false,
+
     dfuResetRequired: false,
     locationId: null,
     macAddress: undefined,
@@ -179,6 +181,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.dfuResetRequired  = update(action.data.dfuResetRequired,  newState.dfuResetRequired);
         newState.handle            = update(action.data.handle,            newState.handle);
         newState.hidden            = update(action.data.hidden,            newState.hidden);
+        newState.onlyOnWhenDark    = update(action.data.onlyOnWhenDark,    newState.onlyOnWhenDark);
         newState.icon              = update(action.data.icon,              newState.icon);
         newState.iBeaconMajor      = update(action.data.iBeaconMajor,      newState.iBeaconMajor);
         newState.iBeaconMinor      = update(action.data.iBeaconMinor,      newState.iBeaconMinor);

@@ -95,25 +95,14 @@ export class SettingsProfile extends LiveComponent<any, any> {
     items.push({
       label: lang("Last_Name"), 
       type: 'textEdit',
-      value: this.state.lastName,
-      validation:{minLength:1, numbers:{allowed:false}},
-      validationCallback: (result) => {this.validationState.lastName = result;},
+      value: this.state.lastName ,
       callback: (newText) => {
         this.setState({lastName: newText});
       },
       endCallback: (newText) => {
-        if (this.validationState.lastName === 'valid') {
-          store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
-          // update your settings in every sphere that you belong to.
-          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{lastName: newText}}); });
-
-        }
-        else {
-          Alert.alert(
-            lang("_Last_name_must_be_at_lea_header"),
-            lang("_Last_name_must_be_at_lea_body"),
-            [{text: lang("_Last_name_must_be_at_lea_left")}]);
-        }
+        store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
+        // update your settings in every sphere that you belong to.
+        sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{lastName: newText}}); });
       }
     });
 
@@ -204,7 +193,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.menu} >
-                <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always">
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
               <PictureCircle

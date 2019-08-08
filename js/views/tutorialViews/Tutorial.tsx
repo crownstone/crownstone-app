@@ -57,14 +57,16 @@ export class Tutorial extends Component<any, any> {
       <Background hasNavBar={false} image={core.background.detailsDark}>
         <View style={{height: availableModalHeight, width:screenWidth}}>
           <Carousel
-            useScrollView={true}
+            // useScrollView={true}
             ref={(c) => { this._carousel = c; }}
             data={components}
             removeClippedSubviews={false /* THIS IS REQUIRED IF WE HAVE THIS ELEMENT ON A MODAL OR THE FIRST SLIDE WONT RENDER */}
             renderItem={this._renderItem}
             sliderWidth={screenWidth}
             itemWidth={screenWidth}
-            onSnapToItem={(index) => this.setState({ activeSlide: index }) }
+            onSnapToItem={(index) => {
+              this.setState({ activeSlide: index })
+            }}
           />
           <HiddenFadeInView visible={this.state.activeSlide !== components.length - 1} style={{position:'absolute', bottom:0, width:screenWidth}}>
             <Pagination

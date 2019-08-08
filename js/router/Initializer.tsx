@@ -37,7 +37,6 @@ export class Initializer extends Component<any, any> {
         core.eventBus.emit("userLoggedInFinished");
       }
 
-
       if (BackgroundProcessHandler.userLoggedIn) {
         NavigationUtil.setRoot(Stacks.loggedIn());
       }

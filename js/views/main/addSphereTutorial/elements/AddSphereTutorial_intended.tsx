@@ -61,11 +61,10 @@ export class AddSphereTutorial_intended extends Component<any, any> {
           <TouchableOpacity
             onPress={() => {
               let state = core.store.getState();
-              // NavigationUtil.setRoot(Stacks.aiStart(Object.keys(state.spheres)[0]));
-              // return
               createNewSphere(state.user.firstName+"'s Sphere")
                 .then((localSphereId) => {
                   core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: localSphereId}});
+                  NavigationUtil.dismissAllModals();
                   NavigationUtil.setRoot(Stacks.aiStart({localSphereId}));
                 })
                 .catch((err) => {

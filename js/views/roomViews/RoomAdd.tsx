@@ -157,7 +157,6 @@ export class RoomAdd extends LiveComponent<any, any> {
                   borderColor={colors.csOrange.hex}
                   backgroundColor={colors.csBlueDark.hex}
                   showEdit={true}
-                  borderWidth={0.01*screenHeight}
                 />
               </TouchableOpacity>
               <View style={{flex:1}} />
@@ -191,7 +190,7 @@ export class RoomAdd extends LiveComponent<any, any> {
 
         options: [
           {label: lang("Create_room_"), textAlign:'right', onSelect: (result) => {
-            let icon = result.customElementState.icon;
+            let icon = result.customElementState.icon || this.newRoomData.icon;
             this.newRoomData.icon = icon;
             this.createRoom()
           }}

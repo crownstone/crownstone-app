@@ -28,6 +28,7 @@ import { styles, colors} from '../styles'
 export class IconCircle extends Component<{icon, size?, iconSize?, color?, borderColor?, borderWidth?, backgroundColor?, showAdd?, showEdit?, style?}, any> {
   _getEditIcon(size) {
     if (this.props.showEdit === true) {
+      let borderWidth = this.props.borderWidth || size / 30;
       return (
         <View style={[{
           marginTop:-size,
@@ -37,7 +38,7 @@ export class IconCircle extends Component<{icon, size?, iconSize?, color?, borde
           borderRadius:size/6,
           backgroundColor: colors.green.hex,
           borderColor: '#ffffff',
-          borderWidth: this.props.borderWidth || 2
+          borderWidth: borderWidth
         }, styles.centered]}>
           <Icon name={'md-create'} size={size/5} color={'#ffffff'} />
         </View>
@@ -47,6 +48,7 @@ export class IconCircle extends Component<{icon, size?, iconSize?, color?, borde
 
   _getAddIcon(size) {
     if (this.props.showAdd === true) {
+      let borderWidth = this.props.borderWidth || size / 30;
       return (
         <View style={[{
           marginTop:-size,
@@ -56,13 +58,15 @@ export class IconCircle extends Component<{icon, size?, iconSize?, color?, borde
           borderRadius:size/6,
           backgroundColor: colors.green.hex,
           borderColor: '#ffffff',
-          borderWidth: this.props.borderWidth || 2
+          borderWidth: borderWidth
         }, styles.centered]}>
           <Icon name={'md-add'} size={size/5} color={'#ffffff'} />
         </View>
       );
     }
   }
+
+
   _getMainIcon(size) {
     return (
       <View style={[{
@@ -78,7 +82,7 @@ export class IconCircle extends Component<{icon, size?, iconSize?, color?, borde
 
   render() {
     let size = this.props.size || 60;
-    let borderWidth = this.props.borderWidth || 2;
+    let borderWidth = this.props.borderWidth || size / 30;
     let borderColor = this.props.borderColor || this.props.color || colors.menuBackground.hex;
     if (borderWidth > 0) {
       let innerSize = size - 2* borderWidth;
