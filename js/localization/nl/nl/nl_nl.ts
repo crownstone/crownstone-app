@@ -3003,6 +3003,7 @@ export default {
     Garage:                              function() { return "Garage" },
     Play_Room:                           function() { return "Play Room" },
     Music_Room:                          function() { return "Music Room" },
+    Furniture:                           function() { return "Furniture" },
     Nature___Outside:                    function() { return "Nature / Outside" },
     Miscellaneous:                       function() { return "Miscellaneous" },
     Pick_an_Icon:                        function() { return "Pick an Icon" },
