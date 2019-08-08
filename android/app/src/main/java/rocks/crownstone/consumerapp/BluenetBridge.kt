@@ -193,17 +193,20 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 		initPromise
 				.success {
-					val activity = reactContext.currentActivity
-					if (activity != null) {
-						bluenet.makeScannerReady(activity)
-								.success {
-
-								}
-								.fail {
-									// Should never fail..
-									Log.e(TAG, "makeScannerReady failed: ${it.message}")
-								}
-					}
+//					val activity = reactContext.currentActivity
+//					if (activity != null) {
+//						bluenet.makeScannerReady(activity)
+//								.success {
+//
+//								}
+//								.fail {
+//									// Should never fail..
+//									Log.e(TAG, "makeScannerReady failed: ${it.message}")
+//								}
+//					}
+//					else {
+//						bluenet.tryMakeScannerReady(activity)
+//					}
 				}
 				.fail {
 					Log.e(TAG, "initPromise failed: ${it.message}")
@@ -256,6 +259,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "viewsInitialized")
 		// All views have been initialized
 		// This means the missing bluetooth functions can now be shown.
+
+		// Try to make the scanner ready.
+		initPromise.success {
+			val activity = reactContext.currentActivity
+			bluenet.tryMakeScannerReady(activity)
+		}
+
 		if (::bluenet.isInitialized) {
 			sendLocationStatus()
 			sendBleStatus()
