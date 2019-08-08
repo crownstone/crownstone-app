@@ -19,9 +19,9 @@ import { IconCircle }  from './IconCircle'
 import {LOGe} from '../../logging/Log'
 import { Icon } from './Icon';
 import { styles, colors} from '../styles'
-import { preparePictureURI } from '../../util/Util'
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { xUtil } from "../../util/StandAloneUtil";
 
 export class PictureCircle extends Component<any, any> {
   triggerOptions() {
@@ -50,7 +50,7 @@ export class PictureCircle extends Component<any, any> {
   render() {
     let size = this.props.size || 60;
     if (this.props.value !== undefined && this.props.value !== null) {
-      let imageURI = preparePictureURI(this.props.value);
+      let imageURI = xUtil.preparePictureURI(this.props.value);
       let borderWidth = size / 30;
       let innerSize = size - 2*borderWidth;
       return (

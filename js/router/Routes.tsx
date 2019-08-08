@@ -12,7 +12,9 @@ import {
 } from "../views/components/topbar/TopbarButton";
 import { CancelButton } from "../views/components/topbar/CancelButton";
 import { OverlayManager } from "../backgroundProcesses/OverlayManager";
-import { NavigationUtil, NavState } from "../util/NavigationUtil";
+import { NavigationUtil } from "../util/NavigationUtil";
+import { IconDebug } from "../views/development/IconDebug";
+import { IconDevSelector } from "../views/development/IconDevSelector";
 
 let viewsLoaded = false;
 
@@ -75,12 +77,6 @@ Navigation.events().registerAppLaunchedListener(() => {
   NavigationUtil.setRoot(Stacks.initial());
 
   // overwrite for Icon Debug view
-  // Navigation.setRoot({
-  //   root: {
-  //     component: {
-  //       name: 'IconDebug'
-  //     }
-  //   }
-  // });
-  // Navigation.registerComponent("IconDebug",        () => IconDebug);
+  // Navigation.registerComponent("IconDevSelector",        () => IconDevSelector);
+  // NavigationUtil.setRoot({ component: { name: 'IconDevSelector' }});
 });

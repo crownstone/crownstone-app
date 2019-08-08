@@ -30,13 +30,13 @@ import { RoomExplanation }        from '../components/RoomExplanation';
 import { Permissions }            from "../../backgroundProcesses/PermissionManager";
 import { SphereDeleted }          from "../static/SphereDeleted";
 import { RoomDeleted }            from "../static/RoomDeleted";
-import { preparePictureURI }      from "../../util/Util";
 import { LiveComponent }          from "../LiveComponent";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { xUtil } from "../../util/StandAloneUtil";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -234,14 +234,14 @@ export class RoomOverview extends LiveComponent<any, any> {
     let users  = getPresentUsersInLocation(       state, this.props.sphereId, this.props.locationId);
     let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
-
+    console.log(stones)
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     this.viewingRemotely = sphere.state.present === false && seeStoneInDfuMode !== true;
 
     let backgroundImage = core.background.light;
 
     if (location.config.picture) {
-      backgroundImage = { uri: preparePictureURI(location.config.picture) };
+      backgroundImage = { uri: xUtil.preparePictureURI(location.config.picture) };
     }
 
     let amountOfStonesInRoom = Object.keys(stones).length;

@@ -1,6 +1,6 @@
-import { BATCH } from './storeManager'
 import {LOGw} from '../../logging/Log'
 import { core } from "../../core";
+import { BATCH } from "./reducers/BatchReducer";
 
 
 /**
@@ -36,7 +36,7 @@ export function EventEnhancer({ getState }) {
         if (action.__noEvents !== true) {
           let {data, ids} = checkAction(action, affectedIds);
           affectedIds = ids;
-          eventData = {...eventData, ...data};
+          eventData = {...eventData, ...data}; 
         }
       })
     }

@@ -38,6 +38,7 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { createNewSphere } from "../../util/CreateSphere";
 import { Stacks } from "../../router/Stacks";
+import { base_core } from "../../base_core";
 
 
 export class Login extends Component<any, any> {
@@ -49,7 +50,7 @@ export class Login extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {email: core.sessionMemory.loginEmail || '', password:'', passwordSecureDisplay: true};
+    this.state = {email: base_core.sessionMemory.loginEmail || '', password:'', passwordSecureDisplay: true};
     this.progress = 0;
   }
 
@@ -77,7 +78,7 @@ export class Login extends Component<any, any> {
     core.eventBus.emit('showLoading', 'Requesting new verification email...');
     CLOUD.requestVerificationEmail({email:this.state.email.toLowerCase()})
       .then(() => {
-        core.sessionMemory.loginEmail = this.state.email.toLowerCase();
+        base_core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
         Alert.alert(
 lang("_An_email_was_sent_to_____header",this.state.email.toLowerCase()),
@@ -97,7 +98,7 @@ lang("_Cannot_Send_Email_argume_body",reply.data),
     core.eventBus.emit('showLoading', 'Requesting password reset email...');
     CLOUD.requestPasswordResetEmail({email:this.state.email.toLowerCase()})
       .then(() => {
-        core.sessionMemory.loginEmail = this.state.email.toLowerCase();
+        base_core.sessionMemory.loginEmail = this.state.email.toLowerCase();
         core.eventBus.emit('hideLoading');
         Alert.alert(
 lang("_An_email_was_sent_to______header",this.state.email.toLowerCase()),

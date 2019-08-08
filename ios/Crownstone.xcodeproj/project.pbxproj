@@ -62,6 +62,9 @@
 		FA12B7D422450C84003B017E /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA12B79322450C84003B017E /* JavaScriptCore.framework */; };
 		FA12B84A22451C0B003B017E /* Ionicons3.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA12B84922451C0B003B017E /* Ionicons3.ttf */; };
 		FA278AAE229684FD00C690B2 /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA278A9A2296838100C690B2 /* libReactNativeNavigation.a */; };
+		FA3645EE22FAE03B0062591B /* flaticon_custom_selection_1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645EB22FAE03B0062591B /* flaticon_custom_selection_1.ttf */; };
+		FA3645EF22FAE03B0062591B /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645EC22FAE03B0062591B /* flaticon_household.ttf */; };
+		FA3645F022FAE03B0062591B /* flaticon_essentials.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645ED22FAE03B0062591B /* flaticon_essentials.ttf */; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
 		FA4722B921DE7463008795C5 /* SwitchableStone.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722B521DE7462008795C5 /* SwitchableStone.swift */; };
 		FA4722BE21DE7473008795C5 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BB21DE7473008795C5 /* Events.swift */; };
@@ -648,6 +651,9 @@
 		FA12B79322450C84003B017E /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FA12B84922451C0B003B017E /* Ionicons3.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons3.ttf; path = ../js/fonts/Ionicons3.ttf; sourceTree = "<group>"; };
 		FA278A6A2296838100C690B2 /* ReactNativeNavigation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeNavigation.xcodeproj; path = "../node_modules/react-native-navigation/lib/ios/ReactNativeNavigation.xcodeproj"; sourceTree = "<group>"; };
+		FA3645EB22FAE03B0062591B /* flaticon_custom_selection_1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_custom_selection_1.ttf; path = ../js/fonts/flaticon_custom_selection_1.ttf; sourceTree = "<group>"; };
+		FA3645EC22FAE03B0062591B /* flaticon_household.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_household.ttf; path = ../js/fonts/flaticon_household.ttf; sourceTree = "<group>"; };
+		FA3645ED22FAE03B0062591B /* flaticon_essentials.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_essentials.ttf; path = ../js/fonts/flaticon_essentials.ttf; sourceTree = "<group>"; };
 		FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = imageAssets.xcassets; sourceTree = "<group>"; };
 		FA4722B521DE7462008795C5 /* SwitchableStone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableStone.swift; sourceTree = "<group>"; };
 		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
@@ -962,6 +968,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				FA3645EB22FAE03B0062591B /* flaticon_custom_selection_1.ttf */,
+				FA3645ED22FAE03B0062591B /* flaticon_essentials.ttf */,
+				FA3645EC22FAE03B0062591B /* flaticon_household.ttf */,
 				FA12B84922451C0B003B017E /* Ionicons3.ttf */,
 				FA570ECB1EAE3D73001C625D /* Crownstone.ttf */,
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
@@ -1991,12 +2000,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA3645F022FAE03B0062591B /* flaticon_essentials.ttf in Resources */,
 				FA6FBC6B20A98EBD00EEEF18 /* Crownstone2.ttf in Resources */,
 				FA570ECE1EAE3D73001C625D /* Crownstone.ttf in Resources */,
 				FA570ECF1EAE3D73001C625D /* CustomIcons.ttf in Resources */,
 				FA570ED01EAE3D73001C625D /* Lato-Bold.ttf in Resources */,
 				AFB24E413C094648A83F3994 /* Entypo.ttf in Resources */,
 				8C11F33F58854209B1C1DEBF /* EvilIcons.ttf in Resources */,
+				FA3645EF22FAE03B0062591B /* flaticon_household.ttf in Resources */,
 				3D9F3719ACF34F349748EC35 /* FontAwesome.ttf in Resources */,
 				B9AC552EA8074410BE162F05 /* Foundation.ttf in Resources */,
 				FA12B84A22451C0B003B017E /* Ionicons3.ttf in Resources */,
@@ -2007,6 +2018,7 @@
 				77CEB38785D540689B14BC04 /* Zocial.ttf in Resources */,
 				FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */,
 				5DD6B0E8203C49CA90170328 /* Feather.ttf in Resources */,
+				FA3645EE22FAE03B0062591B /* flaticon_custom_selection_1.ttf in Resources */,
 				36AD254E07C646A6966A7709 /* AntDesign.ttf in Resources */,
 				B848CB6B21E44048AF3EABB6 /* FontAwesome5_Brands.ttf in Resources */,
 				02B76B6C4BE74C6AA10E411F /* FontAwesome5_Regular.ttf in Resources */,

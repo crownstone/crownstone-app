@@ -9,27 +9,7 @@ import { PersistenceEnhancer }          from "./persistenceEnhancer";
 import {Persistor} from "./Persistor";
 import { core } from "../../core";
 import AsyncStorage from "@react-native-community/async-storage";
-
-// from https://github.com/tshelburne/redux-batched-actions
-// included due to conflict with newer RN version
-export const BATCH = 'BATCHING_REDUCER.BATCH';
-
-// modified for application
-function batchActions(context, actions) {
-  return context.dispatch({ type: BATCH, payload: actions });
-}
-
-function enableBatching(reducer) {
-  return function batchingReducer(state, action) {
-    switch (action.type) {
-      case BATCH:
-        return action.payload.reduce(batchingReducer, state); // uses Array.reduce.
-      default:
-        return reducer(state, action);
-    }
-  };
-}
-// ---------------
+import { batchActions, enableBatching } from "./reducers/BatchReducer";
 
 const LOGGED_IN_USER_ID_STORAGE_KEY = 'CrownstoneLoggedInUser';
 

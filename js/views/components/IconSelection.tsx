@@ -16,6 +16,7 @@ import { SlideInView } from './animated/SlideInView'
 import { NavigationBar } from './editComponents/NavigationBar'
 import { Separator } from './Separator'
 import { CustomIcon } from '../../fonts/customIcons'
+import { Icon } from "./Icon";
 
 let borderColor = 'rgba(0,0,0,0.1)';
 let ROW_HEIGHT = 70;
@@ -144,7 +145,7 @@ export class IconSelection extends Component<any, any> {
           style={   [styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ] }
           onPress={ () => {this.props.callback(icons[iconIndex])} }
         >
-          <CustomIcon name={icons[iconIndex]} size={ICON_SIZE} color={this.props.iconColor || colors.white.hex} />
+          <Icon name={icons[iconIndex]} size={ICON_SIZE} color={this.props.iconColor || colors.white.hex} />
         </TouchableOpacity>
       );
     }

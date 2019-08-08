@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
-import { core } from "../core";
+import { xUtil } from "./StandAloneUtil";
+import { base_core } from "../base_core";
 const RNFS = require('react-native-fs');
 
 export const FileUtil = {
@@ -19,7 +20,7 @@ export const FileUtil = {
 
   safeMoveFile: function(from,to) {
     // we update the session memory to make sure all pictures are reloaded.
-    core.sessionMemory.cacheBusterUniqueElement = Math.random();
+    base_core.sessionMemory.cacheBusterUniqueElement = Math.random();
 
     return FileUtil.safeDeleteFile(to)
       .then(() => {
@@ -47,6 +48,32 @@ export const FileUtil = {
           reject(err);
         })
     })
+  },
+
+  copyCameraRollPictureToTempLocation: function(fileData) {
+    let tmpFileName = FileUtil.getPath(xUtil.getShortUUID() + ".jpg");
+
+    if (Platform.OS === 'ios') {
+      let assetUri = 'assets-library://asset/asset.JPG?id=' + fileData.uri.substr(5)
+      return RNFS.copyAssetsFileIOS(assetUri, tmpFileName, fileData.width, fileData.height)
+        .then((newPath) => {
+          return newPath;
+        })
+        .catch((err) => {
+          // console.log("got erry", err);
+        })
+    }
+    else {
+      console.log(fileData);
+      return RNFS.copyFile(fileData.uri, tmpFileName)
+        .then(() => {
+          // console.log("TEMP FILENAME", tmpFileName)
+          return tmpFileName;
+        })
+        .catch((err) => {
+          // console.log("ERROR DURING COPY", err)
+        })
+    }
   }
 
 };

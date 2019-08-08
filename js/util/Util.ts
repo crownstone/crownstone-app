@@ -6,8 +6,10 @@ import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
 import { FileUtil } from "./FileUtil";
-import { core } from "../core";
 import { Scheduler } from "../logic/Scheduler";
+import { Permissions } from "../backgroundProcesses/PermissionManager";
+import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
+import { xUtil } from "./StandAloneUtil";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -43,6 +45,9 @@ export const processImage = function(pictureURI, targetFilename, scaleFactor = 0
         return FileUtil.safeMoveFile(uri, targetPath);
       })
       .then(() => {
+        return FileUtil.safeDeleteFile(pictureURI);
+      })
+      .then(() => {
         resolve(targetPath);
       })
       .catch((err) => {
@@ -52,35 +57,6 @@ export const processImage = function(pictureURI, targetFilename, scaleFactor = 0
 };
 
 
-export const preparePictureURI = function(picture, cacheBuster = true) {
-  if (typeof picture === 'object') {
-    if (picture.uri) {
-      return picture.uri;
-    }
-    else if (picture.path) {
-      picture = picture.path;
-    }
-  }
-
-  let pictureUri = picture;
-
-  // check if the image is an location on the disk or if it is from the assets.
-  if (
-    picture.substr(0, 4) !== 'file' &&
-    picture.substr(0, 2) !== 'ph' &&
-    picture.substr(0, 6) !== 'assets' &&
-    picture.substr(0, 4) !== 'http' &&
-    picture.substr(0, 7) !== 'content'
-     ) {
-    pictureUri = 'file://' + picture;
-  }
-
-  if (cacheBuster) {
-    pictureUri += '?r=' + core.sessionMemory.cacheBusterUniqueElement
-  }
-
-  return pictureUri;
-};
 
 
 export const addDistanceToRssi = function(rssi, distanceInMeters) {
@@ -106,5 +82,18 @@ export const Util = {
   mesh: MeshUtil,
   data: DataUtil,
   events: EventUtil,
+
+  canUpdate: function(stone, state) {
+    // only admins are allowed to update
+    if (Permissions.activeSphere().seeUpdateCrownstone) {
+      if (ALWAYS_DFU_UPDATE_FIRMWARE || ALWAYS_DFU_UPDATE_BOOTLOADER) {
+        return true;
+      }
+
+      let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
+      return xUtil.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);
+    }
+    return false;
+  }
 };
 

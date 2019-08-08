@@ -23,7 +23,7 @@ export class SlideInView extends Component<any, any> {
     if (this.visible !== nextProps.visible) {
       if (nextProps.visible === true) {
         Animated.timing(this.state.viewHeight, {
-          toValue: (nextProps.height || (nextProps.style && nextProps.style.height)),
+          toValue: (nextProps.height || (nextProps.style && nextProps.style.height)) || 0,
           delay: this.props.delay || 0,
           duration:this.props.duration || 200
         }).start();

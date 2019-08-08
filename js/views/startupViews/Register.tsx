@@ -28,6 +28,7 @@ import { PictureCircle } from "../components/PictureCircle";
 import { InterviewTextInput } from "../components/InterviewComponents";
 import { FileUtil } from "../../util/FileUtil";
 import { Icon } from "../components/Icon";
+import { base_core } from "../../base_core";
 
 
 export class Register extends LiveComponent<any, any> {
@@ -155,7 +156,7 @@ export class Register extends LiveComponent<any, any> {
               <PictureCircle
                 isSquare={true}
                 value={state && state.picture || this.user.picture}
-                callback={(pictureUrl) => {
+                callback={(pictureUrl, source) => {
                   this.user.picture = pictureUrl;
 
                   let newState = {};
@@ -324,7 +325,7 @@ export class Register extends LiveComponent<any, any> {
       })
       .then(() => {
         core.eventBus.emit("hideLoading");
-        core.sessionMemory.loginEmail = this.user.email.toLowerCase();
+        base_core.sessionMemory.loginEmail = this.user.email.toLowerCase();
         this._interview.setLockedCard("finished");
       })
       .catch((reply) => {

@@ -12,15 +12,15 @@ import {
 } from "react-native";
 
 import { colors} from '../styles'
-import { preparePictureURI } from '../../util/Util'
 import { Icon } from './Icon';
+import { xUtil } from "../../util/StandAloneUtil";
 
 export class ProfilePicture extends Component<any, any> {
   render() {
     let size = this.props.size || 40;
     let innerSize = this.props.innerSize || size;
     if (this.props.picture !== undefined && this.props.picture !== null) {
-      let pictureURI = preparePictureURI(this.props.picture);
+      let pictureURI = xUtil.preparePictureURI(this.props.picture);
       let borderWidth = this.props.borderWidth || 0.07*size;
       let innerBorderSize = size - 2 * borderWidth;
       return (

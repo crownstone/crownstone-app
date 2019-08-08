@@ -6,6 +6,7 @@ import {CustomIcon, CustomIcon2, CustomIcon3} from '../../fonts/customIcons'
 
 import { iconCorrections } from '../../fonts/iconCorrections'
 import { Ionicons3 } from "../../fonts/ionicons3";
+import { FlatIconCustom1, FlatIconEssentials, FlatIconHousehold } from "../../fonts/customIcons_flaticon";
 
 export class Icon extends Component<any, any> {
   render() {
@@ -17,7 +18,9 @@ export class Icon extends Component<any, any> {
     }
 
 
-    let prefix = this.props.name.substr(0,3);
+    let prefix3 = this.props.name.substr(0,3);
+    let prefix4 = this.props.name.substr(0,4);
+    let prefix5 = this.props.name.substr(0,5);
 
 
 
@@ -28,28 +31,28 @@ export class Icon extends Component<any, any> {
       }
       return <Ionicons3 {...this.props} name="ios-document" style={[{backgroundColor:'transparent'}, this.props.style]} />
     }
-    if (prefix == 'c1-') {
+    if (prefix3 == 'c1-') {
       let correction = iconCorrections.c1[this.props.name];
       if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
         offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
       }
       return <CustomIcon {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
     }
-    else if (prefix == 'c2-') {
+    else if (prefix3 == 'c2-') {
       let correction = iconCorrections.c2[this.props.name];
       if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
         offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
       }
       return <CustomIcon2 {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
     }
-    else if (prefix == 'c3-') {
+    else if (prefix3 == 'c3-') {
       let correction = iconCorrections.c3[this.props.name];
       if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
         offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
       }
       return <CustomIcon3 {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
     }
-    else if (prefix == 'ei-') {
+    else if (prefix3 == 'ei-') {
       let correction = iconCorrections.evilIcons[this.props.name];
       if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
         offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
@@ -57,6 +60,30 @@ export class Icon extends Component<any, any> {
 
       let correctedName = this.props.name.substr(3);
       return <EvilIcons {...this.props} name={correctedName} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
+    }
+    else if (prefix5 == 'fiCS1') {
+      let correction = iconCorrections.fiCS1[this.props.name];
+      if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
+        offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
+      }
+
+      return <FlatIconCustom1 {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
+    }
+    else if (prefix4 == 'fiHS') {
+      let correction = iconCorrections.fiHS[this.props.name];
+      if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
+        offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
+      }
+
+      return <FlatIconHousehold {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
+    }
+    else if (prefix3 == 'fiE') {
+      let correction = iconCorrections.fiE[this.props.name];
+      if (correction && correction.change === true && this.props.ignoreCorrection !== true) {
+        offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
+      }
+
+      return <FlatIconEssentials {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
     }
     else {
       let correction = iconCorrections.ionicons[this.props.name];

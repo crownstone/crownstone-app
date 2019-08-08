@@ -135,6 +135,10 @@ interface core {
   store: any,
   eventBus: any,
   nativeBus: NativeBus,
+}
+
+interface base_core {
+  store: any,
   sessionMemory: {
     loginEmail: string,
     cameraSide: string,

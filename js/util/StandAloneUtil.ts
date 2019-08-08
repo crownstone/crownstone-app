@@ -1,7 +1,6 @@
-import { Permissions } from "../backgroundProcesses/PermissionManager";
-import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
 import { Dimensions } from 'react-native'
 import { screenHeight } from "../views/styles";
+import { base_core } from "../base_core";
 const screenWidth = Dimensions.get('window').width;
 
 export const xUtil = {
@@ -244,19 +243,6 @@ export const xUtil = {
       // if version is NOT semver, is higher will be false so is lower is true.
       return !xUtil.versions.isHigherOrEqual(version, compareWithVersion);
     },
-
-    canUpdate: function(stone, state) {
-      // only admins are allowed to update
-      if (Permissions.activeSphere().seeUpdateCrownstone) {
-        if (ALWAYS_DFU_UPDATE_FIRMWARE || ALWAYS_DFU_UPDATE_BOOTLOADER) {
-          return true;
-        }
-
-        let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
-        return xUtil.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);
-      }
-      return false;
-    }
   },
 
 
@@ -397,6 +383,38 @@ export const xUtil = {
     allKeys.sort();
     return JSON.stringify( obj, allKeys, 2 );
   },
+
+
+
+  preparePictureURI: function(picture, cacheBuster = true) {
+    if (typeof picture === 'object') {
+      if (picture.uri) {
+        return picture.uri;
+      }
+      else if (picture.path) {
+        picture = picture.path;
+      }
+    }
+
+    let pictureUri = picture;
+
+    // check if the image is an location on the disk or if it is from the assets.
+    if (
+      picture.substr(0, 4) !== 'file' &&
+      picture.substr(0, 2) !== 'ph' &&
+      picture.substr(0, 6) !== 'assets' &&
+      picture.substr(0, 4) !== 'http' &&
+      picture.substr(0, 7) !== 'content'
+    ) {
+      pictureUri = 'file://' + picture;
+    }
+
+    if (cacheBuster) {
+      pictureUri += '?r=' + base_core.sessionMemory.cacheBusterUniqueElement
+    }
+
+    return pictureUri;
+  }
 };
 
 

@@ -13,6 +13,7 @@ import { Background } from "../components/Background";
 import { Platform, View } from "react-native";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { Icon } from "../components/Icon";
+import { FileUtil } from "../../util/FileUtil";
 
 
 export class CameraRollView extends LiveComponent<any, any> {
@@ -53,8 +54,11 @@ export class CameraRollView extends LiveComponent<any, any> {
                if (x && Array.isArray(x) && x.length > 0 && x[0] && x[0].uri) {
                  if (this.selected === false) {
                    this.selected = true;
-                   this.props.selectCallback(x[0].uri);
-                   NavigationUtil.dismissModal();
+                   FileUtil.copyCameraRollPictureToTempLocation(x[0])
+                     .then((uri) => {
+                       this.props.selectCallback(uri);
+                       NavigationUtil.dismissModal();
+                     })
                  }
                }
              }}

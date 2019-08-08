@@ -1,7 +1,7 @@
 import {request, download, downloadFile} from '../cloudCore'
 import { DEBUG, NETWORK_REQUEST_TIMEOUT, SILENCE_CLOUD } from "../../ExternalConfig";
-import { preparePictureURI } from '../../util/Util'
 import {LOG, LOGe, LOGi} from '../../logging/Log'
+import { xUtil } from "../../util/StandAloneUtil";
 
 const RNFS = require('react-native-fs');
 
@@ -68,14 +68,14 @@ export const cloudApiBase = {
   },
   _uploadImage: function(options) {
     let formData = new FormData();
-    let path = preparePictureURI(options.path, false);
+    let path = xUtil.preparePictureURI(options.path, false);
     let filename = path.split('/');
     filename = filename[filename.length-1];
     // cast to any because the typescript typings are incorrect for FormData
     (formData as any).append('picture', {uri: path, name: filename, type: 'image/jpg'});
     options.data = formData;
 
-    return RNFS.exists(preparePictureURI(options.path, false))
+    return RNFS.exists(xUtil.preparePictureURI(options.path, false))
       .then((fileExists) => {
         if (fileExists === false) {
           throw "File does not exist."

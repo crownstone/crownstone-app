@@ -1,5 +1,6 @@
 import {LOGd, LOGe} from '../../logging/Log'
-import { BATCH, StoreManager } from "./storeManager";
+import { StoreManager } from "./storeManager";
+import { BATCH } from "./reducers/BatchReducer";
 
 
 const TransientTypes = {

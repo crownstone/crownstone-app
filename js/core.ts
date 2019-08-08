@@ -14,10 +14,4 @@ export const core : core = {
   eventBus: eventBus,
   nativeBus: NativeBus,
   store: {getState: () => { return {}}},
-  sessionMemory: {
-    loginEmail: null,
-    cameraSide: 'front',
-    cacheBusterUniqueElement: Math.random(),
-    developmentEnvironment: false,
-  },
 };

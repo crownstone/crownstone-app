@@ -15,7 +15,7 @@ import { LogProcessor } from "./LogProcessor";
 import { logToFile } from "./LogUtil";
 import { LOG_LEVEL } from "./LogLevels";
 import DeviceInfo from 'react-native-device-info';
-import { core } from "../core";
+import { base_core } from "../base_core";
 
 let lastLogTime = 0;
 
@@ -129,7 +129,7 @@ class Logger {
         logToFile.apply(this, args);
       }
 
-      if (RELEASE_MODE_USED === false || core.sessionMemory.developmentEnvironment) {
+      if (RELEASE_MODE_USED === false || base_core.sessionMemory.developmentEnvironment) {
         if (this.level > LOG_LEVEL.info) {
           // @ts-ignore
           // console.warn.apply(this, args);

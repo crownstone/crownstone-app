@@ -174,7 +174,7 @@ export class DeviceEntry extends Component<any, any> {
         </View>
         );
       }
-      else if ((xUtil.versions.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) {
+      else if ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) {
         return (
           <View style={[{
             width:60,

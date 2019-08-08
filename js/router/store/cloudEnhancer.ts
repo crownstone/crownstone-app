@@ -1,6 +1,5 @@
 import { CLOUD }         from '../../cloud/cloudAPI'
 import { Util }          from '../../util/Util'
-import { BATCH }         from './storeManager'
 import {LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
 import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
 import {transferSchedules} from "../../cloud/transferData/transferSchedules";
@@ -14,6 +13,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
+import { BATCH } from "./reducers/BatchReducer";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {

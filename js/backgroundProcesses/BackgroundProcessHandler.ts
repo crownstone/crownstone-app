@@ -44,6 +44,7 @@ import { UpdateCenter } from "./UpdateCenter";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { StoneDataSyncer } from "./StoneDataSyncer";
 import { BackButtonHandler } from "./BackButtonHandler";
+import { base_core } from "../base_core";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -67,7 +68,7 @@ class BackgroundProcessHandlerClass {
       Bluenet.rerouteEvents();
 
       BluenetPromiseWrapper.isDevelopmentEnvironment().then((result) => {
-        core.sessionMemory.developmentEnvironment = result;
+        base_core.sessionMemory.developmentEnvironment = result;
       });
 
       // if there is a badge number, remove it on opening the app.
@@ -347,6 +348,7 @@ class BackgroundProcessHandlerClass {
 
   _verifyStore() {
     core.store = StoreManager.getStore();
+    base_core.store = StoreManager.getStore();
     let state = core.store.getState();
 
     // if we have an accessToken, we proceed with logging in automatically

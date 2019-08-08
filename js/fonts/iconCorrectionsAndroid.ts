@@ -345,6 +345,15 @@ const ioniconCorrectionsAndroid = {
 const evilIconsCorrectionsAndroid = {
 
 };
+const fiCS1IconsCorrectionsAndroid = {
+
+};
+const fiHSIconsCorrectionsAndroid = {
+
+};
+const fiEIconsCorrectionsAndroid = {
+
+};
 
 
 
@@ -355,4 +364,7 @@ export const iconCorrectionsAndroid = {
   c3: c3CorrectionsAndroid,
   ionicons: ioniconCorrectionsAndroid,
   evilIcons: evilIconsCorrectionsAndroid,
+  fiCS1: fiCS1IconsCorrectionsAndroid,
+  fiHS:  fiHSIconsCorrectionsAndroid,
+  fiE:   fiEIconsCorrectionsAndroid,
 };

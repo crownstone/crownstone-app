@@ -7,7 +7,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import { xUtil } from "../../util/StandAloneUtil";
 import { STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
-import { Permissions } from "../../backgroundProcesses/PermissionManager";
+import { base_core } from "../../base_core";
 
 
 
@@ -115,7 +115,7 @@ class SetupStateHandlerClass {
 
           this._stonesInSetupStateAdvertisements[handle] = setupAdvertisement;
           this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
-          if (this._stonesInSetupStateTypes[handle] === undefined && core.sessionMemory.developmentEnvironment === false) {
+          if (this._stonesInSetupStateTypes[handle] === undefined && base_core.sessionMemory.developmentEnvironment === false) {
             delete this._stonesInSetupStateTypes[handle];
           }
           else {

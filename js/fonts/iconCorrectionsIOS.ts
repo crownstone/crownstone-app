@@ -435,11 +435,29 @@ const evilIconCorrectionsIOS = {
 
 };
 
+const evilIconsCorrectionsIOS = {
+
+};
+const fiCS1IconsCorrectionsIOS = {
+
+};
+const fiHSIconsCorrectionsIOS = {
+
+};
+const fiEIconsCorrectionsIOS = {
+
+};
+
+
+
 
 export const iconCorrectionsIOS = {
   c1: c1CorrectionsIOS,
   c2: c2CorrectionsIOS,
   c3: c3CorrectionsIOS,
   ionicons: ioniconCorrectionsIOS,
-  evilIcons: evilIconCorrectionsIOS,
+  evilIcons: evilIconsCorrectionsIOS,
+  fiCS1: fiCS1IconsCorrectionsIOS,
+  fiHS:  fiHSIconsCorrectionsIOS,
+  fiE:   fiEIconsCorrectionsIOS,
 };

@@ -1,6 +1,6 @@
 import { LOG_LEVEL }        from "../../logging/LogLevels";
-import {LOGd, LOGi, LOGw} from "../../logging/Log";
-import { DISABLE_TIMEOUT, FALLBACKS_ENABLED } from "../../ExternalConfig";
+import { LOGd, LOGe, LOGi, LOGw } from "../../logging/Log";
+import {  FALLBACKS_ENABLED } from "../../ExternalConfig";
 import { Util }             from "../../util/Util";
 import { Scheduler }        from "../../logic/Scheduler";
 import { LocationHandler }  from "../localization/LocationHandler";
@@ -602,6 +602,7 @@ export class StoneEntity {
                 dimmerOffFailure:  advertisement.serviceData.errors.dimmerOffFailure,
               }
             });
+            LOGe.info("CROWNSTONE ERROR stoneId", this.stoneId, 'sphereId:', this.sphereId, "errors:", advertisement.serviceData.errors)
             if (Permissions.inSphere(this.sphereId).canClearErrors) {
               core.eventBus.emit('updateErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
             }

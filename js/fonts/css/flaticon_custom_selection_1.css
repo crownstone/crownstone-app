@@ -1,0 +1,232 @@
+	/*
+  	Flaticon icon font: Flaticon
+  	Creation date: 07/08/2019 10:09
+  	*/
+
+@font-face {
+  font-family: "Flaticon";
+  src: url("./Flaticon.eot");
+  src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./Flaticon.woff2") format("woff2"),
+       url("./Flaticon.woff") format("woff"),
+       url("./Flaticon.ttf") format("truetype"),
+       url("./Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+  font-family: Flaticon;
+        font-size: 20px;
+font-style: normal;
+margin-left: 20px;
+}
+
+.flaticon-vase:before { content: "\f100"; }
+.flaticon-lightbulb:before { content: "\f101"; }
+.flaticon-flashlight:before { content: "\f102"; }
+.flaticon-idea:before { content: "\f103"; }
+.flaticon-light-bulb:before { content: "\f104"; }
+.flaticon-desk:before { content: "\f105"; }
+.flaticon-furniture-and-household:before { content: "\f106"; }
+.flaticon-desk-lamp:before { content: "\f107"; }
+.flaticon-night-stand:before { content: "\f108"; }
+.flaticon-lamp:before { content: "\f109"; }
+.flaticon-table-lamp:before { content: "\f10a"; }
+.flaticon-lamp-1:before { content: "\f10b"; }
+.flaticon-desk-1:before { content: "\f10c"; }
+.flaticon-illuminated:before { content: "\f10d"; }
+.flaticon-lamp-2:before { content: "\f10e"; }
+.flaticon-lamp-3:before { content: "\f10f"; }
+.flaticon-floor:before { content: "\f110"; }
+.flaticon-light:before { content: "\f111"; }
+.flaticon-floor-1:before { content: "\f112"; }
+.flaticon-lamp-4:before { content: "\f113"; }
+.flaticon-light-1:before { content: "\f114"; }
+.flaticon-floor-2:before { content: "\f115"; }
+.flaticon-lamp-5:before { content: "\f116"; }
+.flaticon-lamp-6:before { content: "\f117"; }
+.flaticon-floor-3:before { content: "\f118"; }
+.flaticon-lamp-7:before { content: "\f119"; }
+.flaticon-lamp-8:before { content: "\f11a"; }
+.flaticon-furniture-and-household-1:before { content: "\f11b"; }
+.flaticon-lamp-9:before { content: "\f11c"; }
+.flaticon-furniture-and-household-2:before { content: "\f11d"; }
+.flaticon-lamp-10:before { content: "\f11e"; }
+.flaticon-desk-lamp-1:before { content: "\f11f"; }
+.flaticon-furniture-and-household-3:before { content: "\f120"; }
+.flaticon-light-2:before { content: "\f121"; }
+.flaticon-light-3:before { content: "\f122"; }
+.flaticon-lamp-11:before { content: "\f123"; }
+.flaticon-furniture-and-household-4:before { content: "\f124"; }
+.flaticon-lamps:before { content: "\f125"; }
+.flaticon-furniture-and-household-5:before { content: "\f126"; }
+.flaticon-light-4:before { content: "\f127"; }
+.flaticon-furniture-and-household-6:before { content: "\f128"; }
+.flaticon-lamp-12:before { content: "\f129"; }
+.flaticon-street-lamp:before { content: "\f12a"; }
+.flaticon-street-lamp-1:before { content: "\f12b"; }
+.flaticon-lamp-13:before { content: "\f12c"; }
+.flaticon-furniture-and-household-7:before { content: "\f12d"; }
+.flaticon-desk-lamp-2:before { content: "\f12e"; }
+.flaticon-lamp-14:before { content: "\f12f"; }
+.flaticon-street-lamp-2:before { content: "\f130"; }
+.flaticon-light-5:before { content: "\f131"; }
+.flaticon-streetlight:before { content: "\f132"; }
+.flaticon-street-lamp-3:before { content: "\f133"; }
+.flaticon-lamp-15:before { content: "\f134"; }
+.flaticon-spotlight:before { content: "\f135"; }
+.flaticon-spotlight-1:before { content: "\f136"; }
+.flaticon-chandelier:before { content: "\f137"; }
+.flaticon-lamp-16:before { content: "\f138"; }
+.flaticon-lamp-17:before { content: "\f139"; }
+.flaticon-lamp-18:before { content: "\f13a"; }
+.flaticon-dining-table:before { content: "\f13b"; }
+.flaticon-bar:before { content: "\f13c"; }
+.flaticon-spotlight-2:before { content: "\f13d"; }
+.flaticon-indoor:before { content: "\f13e"; }
+.flaticon-lamp-19:before { content: "\f13f"; }
+.flaticon-flame:before { content: "\f140"; }
+.flaticon-lamp-20:before { content: "\f141"; }
+.flaticon-light-6:before { content: "\f142"; }
+.flaticon-chandeliers:before { content: "\f143"; }
+.flaticon-invention:before { content: "\f144"; }
+.flaticon-stage:before { content: "\f145"; }
+.flaticon-chandelier-1:before { content: "\f146"; }
+.flaticon-lamp-21:before { content: "\f147"; }
+.flaticon-lamp-22:before { content: "\f148"; }
+.flaticon-lamp-23:before { content: "\f149"; }
+.flaticon-lamp-24:before { content: "\f14a"; }
+.flaticon-furniture-and-household-8:before { content: "\f14b"; }
+.flaticon-lamppost:before { content: "\f14c"; }
+.flaticon-furniture-and-household-9:before { content: "\f14d"; }
+.flaticon-furniture-and-household-10:before { content: "\f14e"; }
+.flaticon-system:before { content: "\f14f"; }
+.flaticon-streaming:before { content: "\f150"; }
+.flaticon-family-tree:before { content: "\f151"; }
+.flaticon-smartwatch:before { content: "\f152"; }
+.flaticon-message:before { content: "\f153"; }
+.flaticon-chat:before { content: "\f154"; }
+.flaticon-glass:before { content: "\f155"; }
+.flaticon-email:before { content: "\f156"; }
+.flaticon-employee:before { content: "\f157"; }
+.flaticon-baby-changing:before { content: "\f158"; }
+.flaticon-customer-service:before { content: "\f159"; }
+.flaticon-chat-1:before { content: "\f15a"; }
+.flaticon-location:before { content: "\f15b"; }
+.flaticon-contacts:before { content: "\f15c"; }
+.flaticon-customer-service-1:before { content: "\f15d"; }
+.flaticon-chat-2:before { content: "\f15e"; }
+.flaticon-email-1:before { content: "\f15f"; }
+.flaticon-customer:before { content: "\f160"; }
+.flaticon-chat-3:before { content: "\f161"; }
+.flaticon-customer-1:before { content: "\f162"; }
+.flaticon-chat-4:before { content: "\f163"; }
+.flaticon-chat-5:before { content: "\f164"; }
+.flaticon-chat-6:before { content: "\f165"; }
+.flaticon-chat-7:before { content: "\f166"; }
+.flaticon-pie-chart:before { content: "\f167"; }
+.flaticon-analytics:before { content: "\f168"; }
+.flaticon-antivirus:before { content: "\f169"; }
+.flaticon-analytics-1:before { content: "\f16a"; }
+.flaticon-analytics-2:before { content: "\f16b"; }
+.flaticon-printer:before { content: "\f16c"; }
+.flaticon-analytics-3:before { content: "\f16d"; }
+.flaticon-analytics-4:before { content: "\f16e"; }
+.flaticon-house:before { content: "\f16f"; }
+.flaticon-shield:before { content: "\f170"; }
+.flaticon-flash:before { content: "\f171"; }
+.flaticon-search:before { content: "\f172"; }
+.flaticon-placeholder:before { content: "\f173"; }
+.flaticon-knight:before { content: "\f174"; }
+.flaticon-queen:before { content: "\f175"; }
+.flaticon-rook:before { content: "\f176"; }
+.flaticon-servers:before { content: "\f177"; }
+.flaticon-symbols:before { content: "\f178"; }
+.flaticon-game-console:before { content: "\f179"; }
+.flaticon-gamer:before { content: "\f17a"; }
+.flaticon-game-console-1:before { content: "\f17b"; }
+.flaticon-game-controller:before { content: "\f17c"; }
+.flaticon-game-controller-1:before { content: "\f17d"; }
+.flaticon-bag:before { content: "\f17e"; }
+.flaticon-saw:before { content: "\f17f"; }
+.flaticon-drill:before { content: "\f180"; }
+.flaticon-electric-device:before { content: "\f181"; }
+.flaticon-television:before { content: "\f182"; }
+.flaticon-imac:before { content: "\f183"; }
+.flaticon-monitor:before { content: "\f184"; }
+.flaticon-plugin:before { content: "\f185"; }
+.flaticon-socket:before { content: "\f186"; }
+.flaticon-socket-1:before { content: "\f187"; }
+.flaticon-socket-2:before { content: "\f188"; }
+.flaticon-socket-3:before { content: "\f189"; }
+.flaticon-socket-4:before { content: "\f18a"; }
+.flaticon-plugin-1:before { content: "\f18b"; }
+.flaticon-game-console-2:before { content: "\f18c"; }
+.flaticon-socket-5:before { content: "\f18d"; }
+.flaticon-socket-6:before { content: "\f18e"; }
+.flaticon-plug:before { content: "\f18f"; }
+.flaticon-plugin-2:before { content: "\f190"; }
+.flaticon-coffee-cup:before { content: "\f191"; }
+.flaticon-coffee-machine:before { content: "\f192"; }
+.flaticon-tea-cup:before { content: "\f193"; }
+.flaticon-printer-1:before { content: "\f194"; }
+.flaticon-forest:before { content: "\f195"; }
+.flaticon-tree:before { content: "\f196"; }
+.flaticon-sun:before { content: "\f197"; }
+.flaticon-botanical:before { content: "\f198"; }
+.flaticon-blueprint:before { content: "\f199"; }
+.flaticon-chair:before { content: "\f19a"; }
+.flaticon-desk-chair:before { content: "\f19b"; }
+.flaticon-desk-chair-1:before { content: "\f19c"; }
+.flaticon-desk-2:before { content: "\f19d"; }
+.flaticon-desk-3:before { content: "\f19e"; }
+.flaticon-desk-4:before { content: "\f19f"; }
+.flaticon-couch:before { content: "\f1a0"; }
+.flaticon-bed:before { content: "\f1a1"; }
+.flaticon-stairs:before { content: "\f1a2"; }
+.flaticon-stairs-1:before { content: "\f1a3"; }
+.flaticon-living-room:before { content: "\f1a4"; }
+.flaticon-bunk:before { content: "\f1a5"; }
+.flaticon-door:before { content: "\f1a6"; }
+.flaticon-door-1:before { content: "\f1a7"; }
+.flaticon-bathroom:before { content: "\f1a8"; }
+.flaticon-chimney:before { content: "\f1a9"; }
+.flaticon-hostel:before { content: "\f1aa"; }
+.flaticon-flower:before { content: "\f1ab"; }
+.flaticon-bathroom-1:before { content: "\f1ac"; }
+.flaticon-bookcase:before { content: "\f1ad"; }
+.flaticon-sofa:before { content: "\f1ae"; }
+.flaticon-furniture-and-household-11:before { content: "\f1af"; }
+.flaticon-dinner:before { content: "\f1b0"; }
+.flaticon-living-room-1:before { content: "\f1b1"; }
+.flaticon-desk-5:before { content: "\f1b2"; }
+.flaticon-dungeon:before { content: "\f1b3"; }
+.flaticon-toilet:before { content: "\f1b4"; }
+.flaticon-bathroom-2:before { content: "\f1b5"; }
+.flaticon-furniture-and-household-12:before { content: "\f1b6"; }
+.flaticon-shower:before { content: "\f1b7"; }
+.flaticon-bathtub:before { content: "\f1b8"; }
+.flaticon-faucet:before { content: "\f1b9"; }
+.flaticon-headphones:before { content: "\f1ba"; }
+.flaticon-headphones-1:before { content: "\f1bb"; }
+.flaticon-speakers:before { content: "\f1bc"; }
+.flaticon-workstation:before { content: "\f1bd"; }
+.flaticon-turntable:before { content: "\f1be"; }
+.flaticon-music:before { content: "\f1bf"; }
+.flaticon-turntable-1:before { content: "\f1c0"; }
+.flaticon-violin:before { content: "\f1c1"; }
+.flaticon-electric-guitar:before { content: "\f1c2"; }
+.flaticon-drum:before { content: "\f1c3"; }
+.flaticon-box:before { content: "\f1c4"; }
+.flaticon-furniture-and-household-13:before { content: "\f1c5"; }
+.flaticon-furniture-and-household-14:before { content: "\f1c6"; }
+.flaticon-furniture-and-household-15:before { content: "\f1c7"; }

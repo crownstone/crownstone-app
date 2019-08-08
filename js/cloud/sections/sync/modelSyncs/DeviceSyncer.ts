@@ -16,7 +16,7 @@ import {SyncingBase} from "./SyncingBase";
 import {CLOUD} from "../../../cloudAPI";
 import {LOG} from "../../../../logging/Log";
 import {APP_NAME} from "../../../../ExternalConfig";
-import { core } from "../../../../core";
+import { base_core } from "../../../../base_core";
 
 
 interface matchingSpecs {
@@ -252,14 +252,14 @@ export class DeviceSyncer extends SyncingBase {
           });
 
           // check if we have to update this installation in the cloud.
-          if (installation.developmentApp !== core.sessionMemory.developmentEnvironment) {
-            return CLOUD.updateInstallation(installationId, {developmentApp: core.sessionMemory.developmentEnvironment}).catch(() => {})
+          if (installation.developmentApp !== base_core.sessionMemory.developmentEnvironment) {
+            return CLOUD.updateInstallation(installationId, {developmentApp: base_core.sessionMemory.developmentEnvironment}).catch(() => {})
           }
         }))
     }
     else if (deviceId && state && state.devices && state.devices[deviceId] && state.devices[deviceId].installationId === null) {
       this.transferPromises.push(
-        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, developmentApp: core.sessionMemory.developmentEnvironment })
+        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, developmentApp: base_core.sessionMemory.developmentEnvironment })
           .then((installation) => {
             this.actions.push({
               type: 'ADD_INSTALLATION',
