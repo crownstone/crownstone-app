@@ -31,6 +31,7 @@ let categories = [
   {key: 'furniture',         label: lang("Furniture")},
   {key: 'bathroom',          label: lang("Bathroom")},
   {key: 'bedRoom',           label: lang("Bedroom")},
+  {key: 'sockets',           label: lang("Sockets")},
   {key: 'tools',             label: lang("Tools")},
   {key: 'kitchen',           label: lang("Kitchen")},
   {key: 'outside',           label: lang("Outside")},

@@ -442,6 +442,7 @@ export default {
     Music:                               function() { return "Music" },
     Furniture:                           function() { return "Furniture" },
     Bathroom:                            function() { return "Bathroom" },
+    Sockets:                             function() { return "Sockets" },
     Office:                              function() { return "Office" },
     Bedroom:                             function() { return "Bedroom" },
     Tools:                               function() { return "Tools" },
