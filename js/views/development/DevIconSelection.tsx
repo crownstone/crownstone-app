@@ -20,30 +20,31 @@ export class DevIconSelection extends Component<any, any> {
   icons: any = {};
   duplicates: any = {};
 
-  hidden = {};
-  selected = {};
+  allocationMap = {};
 
   constructor(props) {
     super(props);
 
+    let sel = Object.keys(props.icons)[0];
     let stateContent:any = {};
-    props.categories.forEach((category) => {
-      stateContent[category.key] = false;
+    Object.keys(props.icons).forEach((category) => {
+      stateContent[category] = false;
+
+      this.allocationMap[category] = [];
+      props.icons[category].forEach((icon) => {
+        this.allocationMap[category].push(icon);
+      })
     });
 
-    if (stateContent.__new !== undefined) {
-      stateContent.__new = true;
-    }
+    this.state = {...stateContent, activeCategory: sel};
 
-    this.state = stateContent;
 
-    this.hidden = {};
 
   }
 
   _getIcons() {
     let items = [];
-    this.props.categories.forEach((category) => {
+    Object.keys(this.props.icons).forEach((category) => {
       items.push(this._getCategory(category))
     });
 
@@ -51,29 +52,22 @@ export class DevIconSelection extends Component<any, any> {
   }
 
   _getCategory(category) {
-    let icons = [];
-    if      (category.key === '__new')    { icons = this.props.icons[category.key]; }
-    else if (category.key === 'selected') { icons = Object.keys(this.selected);     }
-    else if (category.key === 'hidden')   { icons = Object.keys(this.hidden);       }
+    let limit = 2000;
+    if  (category === 'limited')  { limit = 20; }
 
-    let limit = 20;
-    if      (category.key === '__new')    { limit = 20;   }
-    else if (category.key === 'selected') { limit = 2000; }
-    else if (category.key === 'hidden')   { limit = 2000; }
-
-
+    let icons = this.allocationMap[category]
     let heightWhenVisible =  Math.ceil(Math.min(icons.length,limit) / AMOUNT_OF_ITEMS_IN_ROW) * (ROW_HEIGHT + 1);
 
     return (
-      <View key={category.key}>
-        <NavigationBar label={category.label} arrowDown={this.state[category.key]} callback={() => {
+      <View key={category}>
+        <NavigationBar label={category + "  (" + icons.length + ")"} arrowDown={this.state[category]} callback={() => {
           let newState = {};
-          newState[category.key] = !this.state[category.key];
+          newState[category] = !this.state[category];
           this.setState(newState);
         }} />
         <Separator fullLength={true} />
-        <SlideInView visible={this.state[category.key]} height={heightWhenVisible} duration={300}>
-          {this._getIconRows(icons, this.state[category.key], limit, category.key)}
+        <SlideInView visible={this.state[category]} height={heightWhenVisible} duration={300}>
+          {this._getIconRows(icons, this.state[category], limit, category)}
         </SlideInView>
       </View>
     )
@@ -86,25 +80,23 @@ export class DevIconSelection extends Component<any, any> {
       let items = [];
       let rowItems = [];
       for (let i = 0; i < icons.length && counter < limit; i++) {
-        if (category !== '__new' || (this.hidden[icons[i]] !== true && this.selected[icons[i]] !== true)) {
-          counter++;
-          rowCount = rowCount + 1;
-          rowItems.push(this._getIcon( icons, i));
-          if (rowCount < AMOUNT_OF_ITEMS_IN_ROW) {
-            rowItems.push(this._getBorder(icons,  i))
-          }
-          if (rowCount === AMOUNT_OF_ITEMS_IN_ROW) {
-            items.push(
-              <View key={category + i}>
-                <View style={{flexDirection:'row'}}>
-                  {rowItems}
-                </View>
-               <View style={{height:1, backgroundColor: borderColor}} />
-             </View>
-            );
-            rowItems = [];
-            rowCount = 0;
-          }
+        counter++;
+        rowCount = rowCount + 1;
+        rowItems.push(this._getIcon( icons, i, category));
+        if (rowCount < AMOUNT_OF_ITEMS_IN_ROW) {
+          rowItems.push(this._getBorder(icons,  i))
+        }
+        if (rowCount === AMOUNT_OF_ITEMS_IN_ROW) {
+          items.push(
+            <View key={category + i}>
+              <View style={{flexDirection:'row'}}>
+                {rowItems}
+              </View>
+             <View style={{height:1, backgroundColor: borderColor}} />
+           </View>
+          );
+          rowItems = [];
+          rowCount = 0;
         }
       }
 
@@ -131,7 +123,7 @@ export class DevIconSelection extends Component<any, any> {
     }
   }
 
-  _getIcon(icons, iconIndex) {
+  _getIcon(icons, iconIndex, inCategory) {
     if (iconIndex < icons.length) {
       let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : this.props.iconBackgroundColor || "transparent";
       if (this.props.debug === true && this.duplicates[icons[iconIndex]]) {
@@ -143,11 +135,21 @@ export class DevIconSelection extends Component<any, any> {
           key={   icons[iconIndex] }
           style={ [styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ] }
         >
-          <TouchableOpacity onPress={() => { this.hidden[icons[iconIndex]] = true; this.forceUpdate() }}>
+          <TouchableOpacity onPress={() => {
+            let icon = icons[iconIndex];
+            let ind = this.allocationMap[inCategory].indexOf(icons[iconIndex])
+            this.allocationMap[inCategory].splice(ind,1);
+            this.allocationMap[this.state.activeCategory].push(icon)
+
+            this.forceUpdate() }}>
             <Icon name={icons[iconIndex]} size={ICON_SIZE} color={this.props.iconColor || colors.white.hex} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { this.selected[icons[iconIndex]] = true; this.forceUpdate() }}><Text>add</Text></TouchableOpacity>
-          <Text style={{fontSize:8}}>{icons[iconIndex]}</Text>
+          <TouchableOpacity onPress={() => {
+            this.allocationMap[inCategory].splice(iconIndex,1);
+            this.allocationMap['hidden'].push(icons[iconIndex])
+
+            this.forceUpdate() }}><Text>HIDE</Text></TouchableOpacity>
+          {/*<Text style={{fontSize:8}}>{icons[iconIndex]}</Text>*/}
         </View>
       );
     }
@@ -159,22 +161,56 @@ export class DevIconSelection extends Component<any, any> {
   }
 
 
+  _getCategoriesForSelection() {
+    let categories = Object.keys(this.props.icons);
+
+    let items = [];
+    let rowItems = [];
+    let rowIndex = 0;
+    categories.forEach((cat) => {
+      rowItems.push(
+        <TouchableOpacity
+          key={'selCat' + cat}
+          style={{padding:4, margin:4, backgroundColor: this.state.activeCategory === cat ? colors.green.hex : colors.menuTextSelected.hex}}
+          onPress={() => { this.setState({activeCategory: cat}) }}>
+          <Text>{cat}</Text>
+        </TouchableOpacity>
+      );
+      if (rowItems.length === 3) {
+        rowIndex++;
+        items.push(<View key={"myRowIs" + rowIndex} style={{flexDirection:'row'}}>{rowItems}</View>);
+        rowItems = [];
+      }
+    });
+
+    if (rowItems.length > 0) {
+      rowIndex++;
+      items.push(<View key={"myRowIs" + rowIndex} style={{flexDirection:'row'}}>{rowItems}</View>);
+    }
+
+    return <View>{items}</View>
+  }
+
+
   render() {
     return (
       <View style={{flexDirection:'column', backgroundColor:"rgba(255,255,255,0.5)"}}>
+        {this._getCategoriesForSelection() }
+
         <View style={{height:1, backgroundColor: borderColor}} />
         {this._getIcons()}
-        <TouchableOpacity onPress={() => {
-          let icons = [];
-          let names = Object.keys(this.props.icons['__new'])
-          names.forEach((name) => {
-            if (this.hidden[name] !== true && this.selected[name] !== true) {
-              icons.push(name)
-            }
+        <TouchableOpacity style={{padding:10, margin:10}} onPress={() => {
+          let categories = Object.keys(this.props.icons);
+          categories.forEach((cat) => { console.log(cat, ":" ,this.allocationMap[cat]) });
+        }}><Text>PRINT</Text></TouchableOpacity>
+
+        <TouchableOpacity style={{padding:10, margin:10}} onPress={() => {
+          this.allocationMap['hidden'].forEach((icon) => {
+            this.allocationMap['limited'].push(icon)
           })
-
-
-          console.log('this.selected',this.selected,'this.hidden',this.hidden, 'remaining', icons); }}><Text>PRINT</Text></TouchableOpacity>
+          this.allocationMap['hidden'] = [];
+          this.forceUpdate()
+        }}><Text>UNHIDE ALL</Text></TouchableOpacity>
       </View>
     );
   }

@@ -180,8 +180,8 @@ export class DfuExecutor {
 
     LOGi.dfu("Executor: Dfu process started.",      this.stoneId);
     LOGi.dfu("Executor: Stone hw version:",         this.hardwareVersion);
-    LOGi.dfu("Executor: Stone allowed Bootloader:", this.userConfig.bootloaderVersionsAvailable[this.hardwareVersion]);
-    LOGi.dfu("Executor: Stone allowed Firmware:",   this.userConfig.firmwareVersionsAvailable[this.hardwareVersion]);
+    LOGi.dfu("Executor: Stone allowed Bootloader:", this.userConfig.bootloaderVersionsAvailable[this.hardwareVersion.substr(0,11)]);
+    LOGi.dfu("Executor: Stone allowed Firmware:",   this.userConfig.firmwareVersionsAvailable[this.hardwareVersion.substr(0,11)]);
 
     DfuStateHandler._dfuInProgress = true;
 
@@ -197,14 +197,14 @@ export class DfuExecutor {
 
     // download information on the latest firmware and bootloader available to us.
     cloudPromises.push(
-      DfuUtil.getBootloaderInformation(this.userConfig.bootloaderVersionsAvailable[this.hardwareVersion], this.hardwareVersion)
+      DfuUtil.getBootloaderInformation(this.userConfig.bootloaderVersionsAvailable[this.hardwareVersion.substr(0,11)], this.hardwareVersion)
         .then((bootloader) => {
           LOGi.dfu("Executor: Cloud bootloader Data received.", bootloader);
           newestBootloader = bootloader;
         })
     );
     cloudPromises.push(
-      DfuUtil.getFirmwareInformation(this.userConfig.firmwareVersionsAvailable[this.hardwareVersion], this.hardwareVersion)
+      DfuUtil.getFirmwareInformation(this.userConfig.firmwareVersionsAvailable[this.hardwareVersion.substr(0,11)], this.hardwareVersion)
         .then((firmware) => {
           LOGi.dfu("Executor: Cloud firmware Data received.", firmware);
           newestFirmware = firmware;
@@ -427,6 +427,9 @@ export class DfuExecutor {
           return this._checkBootloaderOperations(bootloaderCandidate);
         })
     }
+    else {
+      return Promise.resolve();
+    }
   }
 
   /**
@@ -451,6 +454,9 @@ export class DfuExecutor {
         .then(() => {
           return this._checkFirmwareOperations(firmwareCandidate);
         })
+    }
+    else {
+      return Promise.resolve();
     }
   }
 

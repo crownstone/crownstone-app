@@ -9,6 +9,7 @@ import DeviceInfo from "react-native-device-info";
 function moveKeysInDatabase() {
   let state = core.store.getState();
   let actions = [];
+
   Object.keys(state.spheres).forEach((sphereId) => {
     let inserted = false;
     let insertKey = (key, type) => {
@@ -37,34 +38,14 @@ function moveKeysInDatabase() {
       actions.push({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {adminKey:null, memberKey: null, guestKey: null}});
     }
   });
+
   core.store.batchDispatch(actions);
 }
-
-function putDefaultRoomsInEmptySpheres() {
-  let state = core.store.getState();
-  let locationMap = {};
-  let actions = [];
-  Object.keys(state.spheres).forEach((sphereId) => {
-    if (Object.keys(state.spheres[sphereId].locations).length === 0) {
-      let localId = xUtil.getUUID();
-      locationMap[sphereId] = localId;
-      if (Permissions.inSphere(sphereId).addRoom) {
-        actions.push({
-          type:'ADD_LOCATION',
-          sphereId: sphereId,
-          locationId: localId,
-          data: {name: "Living room", icon: "c1-tvSetup2"}
-        });
-      }
-    }
-  });
-  core.store.batchDispatch(actions);
-}
-
 
 function setApplianceIconsInStone() {
   let state = core.store.getState();
   let actions = [];
+
   DataUtil.callOnAllStones(state, (sphereId, stoneId, stone) => {
     if (Permissions.inSphere(sphereId).editCrownstone) {
       // check if we have an appliance
@@ -98,14 +79,24 @@ function setApplianceIconsInStone() {
   core.store.batchDispatch(actions);
 }
 
+function clearHardwareVersions() {
+  core.store.dispatch({
+    type: "SET_NEW_FIRMWARE_VERSIONS",
+    data: {
+      bootloaderVersionsAvailable: {},
+      firmwareVersionsAvailable: {},
+    }
+  });
+}
+
 
 export const upTo3_0 = function() {
   let state = core.store.getState();
   let appVersion = DeviceInfo.getReadableVersion();
   if (xUtil.versions.isLower(state.app.migratedDataToVersion, appVersion) || !state.app.migratedDataToVersion) {
     moveKeysInDatabase();
-    putDefaultRoomsInEmptySpheres();
     setApplianceIconsInStone();
+    clearHardwareVersions();
     core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {migratedDataToVersion: appVersion}});
   }
 }

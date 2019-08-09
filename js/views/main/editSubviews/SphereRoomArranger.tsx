@@ -38,7 +38,7 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
   }
 
   _baseRadius;
-  unsubscribeSetupEvents = [];
+  unsubscribeEvents = [];
   unsubscribeStoreEvents;
   viewId = null;
   refName : string;
@@ -59,12 +59,8 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    // to ensure
-    let reloadSolverOnDemand = () => {
-      this.forceUpdate();
-    };
-
-    this.unsubscribeSetupEvents = [];
+    this.unsubscribeEvents = [];
+    this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
     this.unsubscribeStoreEvents = core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
 
@@ -76,13 +72,13 @@ export class SphereRoomArranger extends LiveComponent<any, any> {
         change.changeStones ||      // in case a stone that was floating was removed (and it was the last one floating) or added (and its floating)
         change.stoneLocationUpdated // in case a stone was moved from floating to room and it was the last one floating.)
       ) {
-        reloadSolverOnDemand();
+        this.forceUpdate();
       }
     });
   }
 
   componentWillUnmount() {
-    this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
+    this.unsubscribeEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
   }
 

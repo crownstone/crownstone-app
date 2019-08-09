@@ -41,9 +41,6 @@ export class IconSelection extends Component<any, any> {
     }
 
     if (props.debug) {
-      AMOUNT_OF_ITEMS_IN_ROW = 3;
-      ROW_HEIGHT = 250;
-      ICON_SIZE = screenWidth / (AMOUNT_OF_ITEMS_IN_ROW + 1);
       let iconKeys = Object.keys(props.icons);
       let newOnes = {};
       iconKeys.forEach((key) => {
