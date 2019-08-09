@@ -234,7 +234,6 @@ export class RoomOverview extends LiveComponent<any, any> {
     let users  = getPresentUsersInLocation(       state, this.props.sphereId, this.props.locationId);
     let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
-    console.log(stones)
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     this.viewingRemotely = sphere.state.present === false && seeStoneInDfuMode !== true;
 

@@ -18,10 +18,10 @@ import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
 import { availableScreenHeight, colors } from "./../styles";
 import { MeshElement } from "../components/MeshElement";
-import {ForceDirectedView} from "../components/interactiveView/ForceDirectedView";
-import {Icon} from "../components/Icon";
-import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
-import {MeshUtil} from "../../util/MeshUtil";
+import { ForceDirectedView } from "../components/interactiveView/ForceDirectedView";
+import { Icon } from "../components/Icon";
+import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
+import { MeshUtil } from "../../util/MeshUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
@@ -39,7 +39,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
   }
 
   _baseRadius = 50;
-  unsubscribeStoreEvents : any;
+  unsubscribeEvents : any;
   nodeData = {};
 
   refreshCount = 0;
@@ -59,16 +59,18 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeEvents = []
+    this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
+    this.unsubscribeEvents.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if ( change.meshIdUpdated || change.meshIndicatorUpdated || change.changeStones || change.changeLocations || change.stoneLocationUpdated ) {
         this.forceUpdate();
       }
-    });
+    }));
   }
 
   componentWillUnmount() {
-    this.unsubscribeStoreEvents();
+    this.unsubscribeEvents.forEach((unsub) => { unsub() });
   }
 
   renderNode(id, nodePosition) {

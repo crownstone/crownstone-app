@@ -20,7 +20,7 @@ export class SphereLevel extends LiveComponent<any, any> {
   _baseRadius;
   _currentSphere;
   _showingFloatingRoom;
-  unsubscribeSetupEvents = [];
+  unsubscribeEvents = [];
   unsubscribeStoreEvents;
   viewId: string;
 
@@ -40,7 +40,9 @@ export class SphereLevel extends LiveComponent<any, any> {
       this.forceUpdate();
     };
 
-    this.unsubscribeSetupEvents = [];
+    this.unsubscribeEvents = [];
+
+    this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
 
     this.unsubscribeStoreEvents = core.eventBus.on('databaseChange', (data) => {
       let change = data.change;
@@ -62,7 +64,7 @@ export class SphereLevel extends LiveComponent<any, any> {
   }
 
   componentWillUnmount() {
-    this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
+    this.unsubscribeEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
   }
 

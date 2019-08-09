@@ -25,7 +25,7 @@ import { styles, colors} from '../styles'
  *   showEdit        : Bool     // show an edit icon in the corner
  * }
  */
-export class IconCircle extends Component<{icon, size?, iconSize?, color?, borderColor?, borderWidth?, backgroundColor?, showAdd?, showEdit?, style?}, any> {
+export class IconCircle extends Component<{icon, size?, iconSize?, color?, borderColor?, outerBorderWidth?, borderWidth?, backgroundColor?, showAdd?, showEdit?, style?}, any> {
   _getEditIcon(size) {
     if (this.props.showEdit === true) {
       let borderWidth = this.props.borderWidth || size / 30;
@@ -82,10 +82,10 @@ export class IconCircle extends Component<{icon, size?, iconSize?, color?, borde
 
   render() {
     let size = this.props.size || 60;
-    let borderWidth = this.props.borderWidth || size / 30;
+    let borderWidth = this.props.outerBorderWidth || this.props.borderWidth || size / 30;
     let borderColor = this.props.borderColor || this.props.color || colors.menuBackground.hex;
     if (borderWidth > 0) {
-      let innerSize = size - 2* borderWidth;
+      let innerSize = size - 2 * borderWidth;
       return (
         <View style={[this.props.style, {width:size, height:size}]}>
           <View style={[{

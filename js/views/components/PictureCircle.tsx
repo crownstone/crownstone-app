@@ -90,7 +90,7 @@ export class PictureCircle extends Component<any, any> {
         <View style={{flexDirection:'row',alignItems:'center', justifyContent:'center'}}>
           <TouchableOpacity onPress={() => {this.triggerOptions()}} style={{height:size}}>
             <View>
-              <IconCircle icon={'ios-camera-outline'} size={size} color='#ccc' showAdd={true} borderWidth={2} />
+              <IconCircle icon={'ios-camera-outline'} size={size} color='#ccc' showAdd={true} outerBorderWidth={2} />
             </View>
           </TouchableOpacity>
           { this.props.placeholderText ?
@@ -152,9 +152,9 @@ lang("_Sorry_arguments___OKnull_body",reason),
               (resolve,reject) => { 
                 let reason =  lang("Can_t_read_a_stored_pictu");
                 Alert.alert(
-lang("_Sorry_arguments___OKnull_header"),
-lang("_Sorry_arguments___OKnull_body",reason),
-[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
+                  lang("_Sorry_arguments___OKnull_header"),
+                  lang("_Sorry_arguments___OKnull_body",reason),
+                  [{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) } }
                 );
               }
@@ -170,9 +170,9 @@ lang("_Sorry_arguments___OKnull_body",reason),
               (resolve,reject) => { 
                 let reason =  lang("Can_t_store_a_captured_pi");
                 Alert.alert(
-lang("_Sorry_arguments___OKnull_header"),
-lang("_Sorry_arguments___OKnull_body",reason),
-[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
+                  lang("_Sorry_arguments___OKnull_header"),
+                  lang("_Sorry_arguments___OKnull_body",reason),
+                  [{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
                   { onDismiss: () => { reject(reason) } }
                 );
               }

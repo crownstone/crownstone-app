@@ -66,10 +66,10 @@ export const DfuUtil = {
       .catch((err) => {
         LOGe.info("DFU UTIL: Could not download release notes...", err);
         let errorMessage = RELEASE_NOTES_ERROR;
-        if (userConfig.firmwareVersionsAvailable[hardwareVersion] === undefined) {
+        if (userConfig.firmwareVersionsAvailable[hardwareVersion.substr(0,11)] === undefined) {
           errorMessage += "\nNo firmware available form hardwareVersion: " + hardwareVersion + "\n"
         }
-        if (userConfig.bootloaderVersionsAvailable[hardwareVersion] === undefined) {
+        if (userConfig.bootloaderVersionsAvailable[hardwareVersion.substr(0,11)] === undefined) {
           errorMessage += "\nNo bootloader available form hardwareVersion: " + hardwareVersion + "\n"
         }
 
@@ -86,7 +86,7 @@ export const DfuUtil = {
     let versionsAvailable = {};
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
-      let availableFW = state.user.firmwareVersionsAvailable[stone.config.hardwareVersion];
+      let availableFW = state.user.firmwareVersionsAvailable[stone.config.hardwareVersion.substr(0,11)];
       if (!availableFW) { return; }
 
       if (xUtil.versions.isLower(stone.config.firmwareVersion, availableFW) || ALWAYS_DFU_UPDATE_BOOTLOADER || ALWAYS_DFU_UPDATE_FIRMWARE) {

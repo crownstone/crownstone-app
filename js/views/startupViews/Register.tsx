@@ -38,12 +38,14 @@ export class Register extends LiveComponent<any, any> {
 
   removePictureQueue = [];
   focussingIndex = null;
+  leavingView = false;
 
   constructor(props) {
     super(props);
 
     CLOUD.setAccess(undefined);
 
+    this.leavingView = false;
     this.user = {
       firstName: null,
       lastName: null,
@@ -54,6 +56,7 @@ export class Register extends LiveComponent<any, any> {
   }
 
   componentWillUnmount(): void {
+    this.leavingView = true;
     this.cancelEdit();
   }
 
@@ -212,7 +215,13 @@ export class Register extends LiveComponent<any, any> {
                   this.user.email = newValue;
                   setState(newState);}
                 }
-                onBlur={() => { if (this._interview.isActiveCard("email")) { this.focussingIndex = 1; this.forceUpdate(); }}}
+                onBlur={() => {
+                  if (this.leavingView === false) {
+                    if (this._interview.isActiveCard("email")) {
+                      this.focussingIndex = 1; this.forceUpdate();
+                    }
+                  }
+                }}
               />
               <InterviewTextInput
                 autofocus={false}

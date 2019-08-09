@@ -19,7 +19,6 @@ import {
   overviewStyles} from "../styles";
 import { DfuStateHandler }          from "../../native/firmware/DfuStateHandler";
 import { Permissions}               from "../../backgroundProcesses/PermissionManager";
-import { FinalizeLocalizationIcon } from "../components/FinalizeLocalizationIcon";
 import { SphereChangeButton }       from "./buttons/SphereChangeButton";
 import { AddItemButton }            from "./buttons/AddItemButton";
 import { SphereUtil }               from "../../util/SphereUtil";
@@ -50,6 +49,7 @@ export class SphereOverview extends LiveComponent<any, any> {
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
+  unsubscribeEvents : any;
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
   viewId;
@@ -75,7 +75,10 @@ export class SphereOverview extends LiveComponent<any, any> {
   componentDidMount() {
     // watch for setup stones
     this.unsubscribeSetupEvents = [];
+    this.unsubscribeEvents = [];
     this.unsubscribeSetupEvents.push(core.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
+
+    this.unsubscribeEvents.push(core.eventBus.on("onScreenNotificationsUpdated", () => { this.forceUpdate(); }));
 
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
@@ -120,6 +123,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
   componentWillUnmount() {
     this.unsubscribeSetupEvents.forEach((unsubscribe) => {unsubscribe();});
+    this.unsubscribeEvents.forEach((unsubscribe) => {unsubscribe();});
     this.unsubscribeStoreEvents();
     NAVBAR_PARAMS_CACHE = null;
   }
