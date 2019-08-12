@@ -12,6 +12,7 @@ import {
 import { colors, styles } from "../../styles";
 import { core } from "../../../core";
 import { Svg, Circle } from 'react-native-svg';
+import { SetupStateHandler } from "../../../native/setup/SetupStateHandler";
 
 export class SetupCircle extends Component<any, any> {
   borderWidth;
@@ -24,7 +25,7 @@ export class SetupCircle extends Component<any, any> {
     super(props);
 
     this.state = {
-      setupProgress: 5,
+      setupProgress: SetupStateHandler.getSetupProgress(),
     };
 
     // calculate the size of the circle based on the screen size
@@ -43,7 +44,7 @@ export class SetupCircle extends Component<any, any> {
       this.setState({setupProgress: data.progress});
     }));
     this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete", (handle) => {
-      this.setState({setupProgress: 20});
+      this.setState({setupProgress: 1});
     }));
   }
 
@@ -54,7 +55,7 @@ export class SetupCircle extends Component<any, any> {
 
   render() {
     let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
-    let levelProgress = this.state.setupProgress / 20;
+    let levelProgress = this.state.setupProgress;
     return (
       <View style={{...styles.centered, flex:1}}>
           <View style={{position:'absolute', top:0, left:0}}>

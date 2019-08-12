@@ -25,6 +25,8 @@ class SetupStateHandlerClass {
 
   _lastAutoSetupTimestamp = 0;
 
+  _setupProgress = 0;
+
   constructor() {
     this._uuid = xUtil.getUUID();
 
@@ -47,10 +49,16 @@ class SetupStateHandlerClass {
     if (this._initialized === false) {
       this._initialized = true;
       // these events are emitted from the setupUtil
-      core.eventBus.on("setupStarted",   (handle) => {});
+      core.eventBus.on("setupStarted",   (handle) => { this._setupProgress = 0; });
+      core.eventBus.on("setupCancelled", (handle) => { this._setupProgress = 0; });
+      core.eventBus.on("setupInProgress", (data) => {
+        this._setupProgress = data.progress;
+      });
+
 
       // when the setup is finished, we clean up the handle from the list of stones in setup mode
       core.eventBus.on("setupComplete",  (handle) => {
+        this._setupProgress = 0;
         this._ignoreStoneAfterSetup[handle] = true;
 
         // we ignore the stone that just completed setup for 5 seconds after completion to avoid duplicates in the view.
@@ -248,6 +256,10 @@ class SetupStateHandlerClass {
   
   getStoneInSetupProcess() {
     return {...this._currentSetupState}; 
+  }
+
+  getSetupProgress() {
+    return this._setupProgress;
   }
 
 }

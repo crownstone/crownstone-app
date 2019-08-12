@@ -58,12 +58,10 @@ export class AnimatedIconBanner extends Component<
   }
 
   start() {
-    console.log("STARTING ANIMATION")
     this._cycleIcons();
   }
 
   stop() {
-    console.log("STOPPING ANIMATION")
     clearTimeout(this.iconTimeout);
   }
 
