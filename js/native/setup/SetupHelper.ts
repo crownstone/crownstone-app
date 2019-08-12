@@ -62,11 +62,11 @@ export class SetupHelper {
     core.eventBus.emit("setupStarted", this.handle);
     let setupPromise = () => {
       return new Promise((resolve, reject) => {
-        core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
+        core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 1/20 });
         BluenetPromiseWrapper.connect(this.handle, sphereId)
           .then(() => {
             LOG.info("setup progress: connected");
-            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 2/20 });
             return BluenetPromiseWrapper.getMACAddress();
           })
           .then((macAddress) => {
@@ -84,30 +84,30 @@ export class SetupHelper {
             LOG.info("setup progress: have hardware version: ", hardwareVersion);
           })
           .then(() => {
-            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 3/20 });
             return this.registerInCloud(sphereId);
           })
           .then((cloudResponse : any) => {
             LOG.info("setup progress: registered in cloud");
             this.cloudResponse = cloudResponse;
             this.stoneIdInCloud = cloudResponse.id;
-            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 4/20 });
             return this.getMeshDeviceKeyFromCloud(sphereId, cloudResponse.id);
           })
           .then((meshDeviceKey) => {
             LOG.info("setup progress: DeviceKeyReceveived in cloud");
-            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 5 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 5/20 });
             return this.setupCrownstone(sphereId, meshDeviceKey);
           })
           .then(() => {
             LOG.info("setup progress: setupCrownstone done");
-            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 });
+            core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 19/20 });
 
             // fast setup will require much less time in 'stand-by' after the setup has completed.
             let fastSetupEnabled = xUtil.versions.isHigherOrEqual(this.firmwareVersion, '2.1.0');
 
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-            Scheduler.scheduleCallback(() => { core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 20, 'setup19');
+            Scheduler.scheduleCallback(() => { core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 19/20 }); }, 20, 'setup19');
             Scheduler.scheduleCallback(() => {
               let actions = [];
 
@@ -307,7 +307,7 @@ export class SetupHelper {
     };
 
     let unsubscribe = core.nativeBus.on(core.nativeBus.topics.setupProgress, (progress) => {
-      core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 5 + progress });
+      core.eventBus.emit("setupInProgress", { handle: this.handle, progress: (5 + progress)/20 });
     });
 
     return new Promise((resolve, reject) => {
