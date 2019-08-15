@@ -63,6 +63,8 @@ export class PictureView extends Component<any, any> {
     let bottomHeight = buttonSize + 2*bottomPadding + tabBarMargin;
 
     let bottomStyle : ViewStyle = {
+      position:'absolute',
+      bottom:0,
       alignItems: 'center',
       justifyContent: 'center',
       padding: bottomPadding,
@@ -75,11 +77,6 @@ export class PictureView extends Component<any, any> {
     };
 
     let maxSquarePictureHeight = screenHeight - topBarHeight - bottomHeight;
-
-    if (!isSquare) {
-      bottomStyle['position'] = 'absolute';
-      bottomStyle['bottom'] = 0;
-    }
 
     if (this.state.picture) {
       return (
@@ -162,7 +159,7 @@ export class PictureView extends Component<any, any> {
                 captureAudio={false}
                 style={{
                   width: screenWidth,
-                  height: isSquare ? screenWidth : screenHeight,
+                  height: isSquare ? Math.min(screenWidth, maxSquarePictureHeight) : screenHeight,
                   justifyContent: 'flex-end',
                   alignItems: 'center',
                 }}

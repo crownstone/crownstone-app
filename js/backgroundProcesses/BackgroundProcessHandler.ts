@@ -71,6 +71,9 @@ class BackgroundProcessHandlerClass {
         base_core.sessionMemory.developmentEnvironment = result;
       });
 
+      // hook into the back button handler for android.
+      BackButtonHandler.init();
+
       // if there is a badge number, remove it on opening the app.
       this._clearBadge();
 
@@ -410,7 +413,6 @@ class BackgroundProcessHandlerClass {
 
   startSingletons() {
     ActivityLogManager.init();
-    BackButtonHandler.init();
     BatchUploader.init();
     BleLogger.init();
     CloudEventHandler.init();
