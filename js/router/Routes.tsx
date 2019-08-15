@@ -1,4 +1,4 @@
-import { Navigation } from "react-native-navigation";
+import { Navigation, Options } from "react-native-navigation";
 import { Views } from "./Views";
 import SplashScreen from "react-native-splash-screen";
 import { Platform } from "react-native";
@@ -44,7 +44,7 @@ Navigation.events().registerAppLaunchedListener(() => {
     SplashScreen.hide();
   }
 
-  let defaultOptions = {
+  let defaultOptions : Options = {
     topBar: {
       background: { color: colors.csBlueDarker.hex },
       title: {
@@ -61,7 +61,10 @@ Navigation.events().registerAppLaunchedListener(() => {
       fontSize: 11,
       iconColor: colors.white.hex,
       selectedIconColor: colors.menuTextSelected.hex,
-    }
+    },
+    layout: {
+      orientation: ['portrait'],
+    },
   };
 
   if (Platform.OS === 'android') {
