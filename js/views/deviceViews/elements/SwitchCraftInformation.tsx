@@ -30,7 +30,7 @@ export class SwitchCraftInformation extends Component<any, any> {
   render() {
     return (
       <Background hasNavBar={false} image={core.background.menu}>
-                <ScrollView >
+        <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:40}} />
             <ScaledImage source={require('../../../images/switchCraft/switchCraftText.png')} sourceWidth={1000} sourceHeight={161} targetWidth={0.75*screenWidth} />

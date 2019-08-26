@@ -253,7 +253,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
             label: lang("Enable_Switchcraft"),
             type: 'switch',
             hasHelp: true, onHelp: () => {
-             NavigationUtil.navigate( "SwitchCraftInformation()")
+             NavigationUtil.navigate( "SwitchCraftInformation")
             },
             icon: <IconButton name="md-power" size={22} button={true} color="#fff"
                               buttonStyle={{backgroundColor: colors.purple.hex}}/>,
