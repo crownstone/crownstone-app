@@ -405,7 +405,6 @@ export class StoneEntity {
     if (!advertisement.serviceData.errorMode) {
       this.handleState(stone, advertisement);
     }
-
   }
 
 

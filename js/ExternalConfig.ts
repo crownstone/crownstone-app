@@ -7,7 +7,7 @@ import { Platform } from "react-native";
 
 
   // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
-  const RELEASE_MODE = false;
+  const RELEASE_MODE = true;
 
   // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
   const IGNORE_LOCAL_CONFIG = false;
