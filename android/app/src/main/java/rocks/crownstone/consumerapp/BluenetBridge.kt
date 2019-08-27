@@ -115,6 +115,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			appForeGround = true
 			if (::bluenet.isInitialized) {
 				bluenet.filterForCrownstones(true)
+				sendLocationStatus()
+				sendBleStatus()
 			}
 		}
 
