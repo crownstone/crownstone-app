@@ -178,6 +178,13 @@ class BroadcastCommandManagerClass {
     if ((Platform.OS === 'ios' && AppState.currentState === 'active') || Platform.OS === 'android') {
       // allow broadcast attempt for whitelisted commands
       if (this.commandsToBroadcast[commandSummary.command.commandName] === true) {
+        if (commandSummary.command.commandName === "multiSwitch") {
+          // Do not broadcast multiswitches with timeouts!
+          if (commandSummary.command.timeout > 0) {
+            return false;
+          }
+        }
+
         return true
       }
     }
