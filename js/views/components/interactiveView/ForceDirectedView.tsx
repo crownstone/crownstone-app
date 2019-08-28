@@ -195,7 +195,14 @@ export class ForceDirectedView extends Component<{
   }
 
   componentWillUpdate(nextProps, nextState) {
-    // go to a new sphere
+    // update the offset if it was changed
+    if(nextProps.heightOffset !== this.viewHeightOffset) {
+      this.viewHeightOffset = nextProps.heightOffset || 0;
+    }
+    if(nextProps.height !== this.frameHeight) {
+      this.frameHeight = nextProps.height || availableScreenHeight;
+    }
+
     if (nextProps.drawToken !== this._drawToken) {
       this._drawToken = nextProps.drawToken;
       this._panOffset.x = 0;
