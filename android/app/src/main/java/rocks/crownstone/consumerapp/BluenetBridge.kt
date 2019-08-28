@@ -1264,9 +1264,18 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun getBootloaderVersion(callback: Callback) {
 		Log.i(TAG, "getBootloaderVersion")
+		// When bootloader version is not available (because not in dfu mode), return empty string.
 		bluenet.deviceInfo.getBootloaderVersion()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail {
+					when (it) {
+						is Errors.NotInMode -> {
+							Log.i(TAG, "Not in DFU mode: resolve with empty string")
+							resolveCallback(callback, "")
+						}
+						else -> rejectCallback(callback, it.message)
+					}
+				}
 	}
 
 
