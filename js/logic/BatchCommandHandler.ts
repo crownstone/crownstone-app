@@ -94,7 +94,7 @@ class BatchCommandHandlerClass {
    * @returns {Array}
    * @private
    */
-  _getTopicsFromTargets(directTargets) {
+  _getTopicsFromTargets(directTargets : targetData) : incomingAdvertisementTopics[] {
     // get sphereIds of the spheres we need to do things in.
     let topicsToScan = [];
 
@@ -102,7 +102,7 @@ class BatchCommandHandlerClass {
     let stoneIds = Object.keys(directTargets);
     stoneIds.forEach((stoneId) => {
       LOGd.bch("BatchCommandHandler: directCommands for sphere:", directTargets[stoneId], " stone:", stoneId, this.activePromiseId);
-      topicsToScan.push({ sphereId: directTargets[stoneId], topic: Util.events.getCrownstoneTopic(directTargets[stoneId], stoneId) });
+      topicsToScan.push({ sphereId: directTargets[stoneId], stoneId: stoneId, topic: Util.events.getCrownstoneTopic(directTargets[stoneId], stoneId) });
     });
     return topicsToScan;
   }
@@ -626,7 +626,6 @@ class BatchCommandHandlerClass {
   }
 
   executePriority(options? : batchCommandEntryOptions) {
-    core.eventBus.emit('PriorityCommandSubmitted');
     this._execute(true, options);
   }
 
@@ -721,8 +720,8 @@ class BatchCommandHandlerClass {
       // cleanup timeout
       objectsToScan.forEach((topic) => {
         // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
-        unsubscribeListeners.push( core.eventBus.on(topic.topic, (data) => {
-          LOGd.bch("BatchCommandHandler: Got an event:", data.id, data.rssi, data.handle);
+        unsubscribeListeners.push( core.eventBus.on(topic.topic, (data : crownstoneTopicData) => {
+          LOGd.bch("BatchCommandHandler: Got an event:", data.stoneId, data.rssi, data.handle);
           if (rssiThreshold === null || data.rssi > rssiThreshold) {
             // remove the listeners
             cleanup();

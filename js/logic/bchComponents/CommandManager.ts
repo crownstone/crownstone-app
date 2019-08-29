@@ -251,7 +251,7 @@ export class CommandManager {
     return {};
   }
 
-  extractConnectionTargets(state) {
+  extractConnectionTargets(state) : { directTargets: targetData, relayOnlyTargets: targetData } {
     // This will determine if there are high priority commands to filter for, and if so return only those. If not, returns all.
     let commandsToHandle = this._getCommandsToHandle(state);
 

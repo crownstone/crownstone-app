@@ -17,12 +17,12 @@ export class DirectCommand {
    * @param props  --> array of properties
    * @returns {*}
    */
-  perform(action, props = []) {
+  perform(action : () => Promise<any>, props = []) {
     LOG.bch("DirectCommand: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this.performCommand(action,props, false);
   }
 
-  performPriority(action, props = []) {
+  performPriority(action : () => Promise<any>, props = []) {
     LOG.bch("DirectCommand: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this.performCommand(action, props, true)
   }

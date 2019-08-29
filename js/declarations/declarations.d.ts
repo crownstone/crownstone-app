@@ -205,3 +205,6 @@ interface GraphData {
   x: number,
   y: number,
 }
+
+type sphereId = string
+type stoneId  = string
