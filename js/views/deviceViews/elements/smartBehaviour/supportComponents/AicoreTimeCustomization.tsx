@@ -287,7 +287,7 @@ function TypeSelector(props) {
         index={i++}
         label={ lang("At_sunrise___")}
         image={require("../../../../../images/icons/sunrise.png")}
-        callback={() => { console.log(props); props.timeObj.setSunrise(); props.callback("SUNRISE") }}
+        callback={() => { props.timeObj.setSunrise(); props.callback("SUNRISE") }}
       />
       <TimeButtonWithImage
         basic={true}
