@@ -115,6 +115,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			appForeGround = true
 			if (::bluenet.isInitialized) {
 				bluenet.filterForCrownstones(true)
+				sendLocationStatus()
+				sendBleStatus()
 			}
 		}
 
@@ -1262,9 +1264,18 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun getBootloaderVersion(callback: Callback) {
 		Log.i(TAG, "getBootloaderVersion")
+		// When bootloader version is not available (because not in dfu mode), return empty string.
 		bluenet.deviceInfo.getBootloaderVersion()
 				.success { resolveCallback(callback, it) }
-				.fail { rejectCallback(callback, it.message) }
+				.fail {
+					when (it) {
+						is Errors.NotInMode -> {
+							Log.i(TAG, "Not in DFU mode: resolve with empty string")
+							resolveCallback(callback, "")
+						}
+						else -> rejectCallback(callback, it.message)
+					}
+				}
 	}
 
 
@@ -1979,6 +1990,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 
 	private fun rejectCallback(callback: Callback, error: String?) {
+		Log.i(TAG, "reject $callback $error")
 		val retVal = Arguments.createMap()
 		retVal.putString("data", error)
 		retVal.putBoolean("error", true)
@@ -1986,12 +1998,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun resolveCallback(callback: Callback) {
+		Log.d(TAG, "resolve $callback")
 		val retVal = Arguments.createMap()
 		retVal.putBoolean("error", false)
 		callback.invoke(retVal)
 	}
 
 	private fun resolveCallback(callback: Callback, data: String) {
+		Log.d(TAG, "resolve $callback $data")
 		val retVal = Arguments.createMap()
 		retVal.putString("data", data)
 		retVal.putBoolean("error", false)
@@ -1999,6 +2013,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun resolveCallback(callback: Callback, data: Boolean) {
+		Log.d(TAG, "resolve $callback $data")
 		val retVal = Arguments.createMap()
 		retVal.putBoolean("data", data)
 		retVal.putBoolean("error", false)
@@ -2006,6 +2021,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun resolveCallback(callback: Callback, data: Int) {
+		Log.d(TAG, "resolve $callback $data")
 		val retVal = Arguments.createMap()
 		retVal.putInt("data", data)
 		retVal.putBoolean("error", false)
@@ -2013,6 +2029,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun resolveCallback(callback: Callback, data: Double) {
+		Log.d(TAG, "resolve $callback $data")
 		val retVal = Arguments.createMap()
 		retVal.putDouble("data", data)
 		retVal.putBoolean("error", false)
@@ -2020,6 +2037,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun resolveCallback(callback: Callback, data: WritableMap) {
+		Log.d(TAG, "resolve $callback $data")
 		val retVal = Arguments.createMap()
 		retVal.putMap("data", data)
 		retVal.putBoolean("error", false)
@@ -2027,6 +2045,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun resolveCallback(callback: Callback, data: WritableArray) {
+		Log.d(TAG, "resolve $callback $data")
 		val retVal = Arguments.createMap()
 		retVal.putArray("data", data)
 		retVal.putBoolean("error", false)
