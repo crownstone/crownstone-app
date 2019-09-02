@@ -14,7 +14,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SettingsBleTroubleshooting extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("BLE_Troubleshooting")});
+    return TopBarUtil.getOptions({title: lang("BLE_Troubleshooting"), closeModal:true});
   }
 
   render() {

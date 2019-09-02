@@ -64,7 +64,6 @@ export const FileUtil = {
         })
     }
     else {
-      console.log(fileData);
       return RNFS.copyFile(fileData.uri, tmpFileName)
         .then(() => {
           // console.log("TEMP FILENAME", tmpFileName)

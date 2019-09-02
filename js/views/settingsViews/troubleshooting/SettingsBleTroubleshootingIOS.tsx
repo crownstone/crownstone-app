@@ -26,8 +26,8 @@ export class SettingsBleTroubleshootingIOS extends Component<any, any> {
 
     let imageWidth = 0.7*screenWidth;
     return (
-      <Background image={core.background.menu}>
-                <ScrollView >
+      <Background image={core.background.menu} hasNavBar={false}>
+        <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
             <Text style={styles.title}>{ lang("Troubleshooting") }</Text>
