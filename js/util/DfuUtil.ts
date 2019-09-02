@@ -86,6 +86,8 @@ export const DfuUtil = {
     let versionsAvailable = {};
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
+      if (!stone.config.hardwareVersion) { return; }
+
       let availableFW = state.user.firmwareVersionsAvailable[stone.config.hardwareVersion.substr(0,11)];
       if (!availableFW) { return; }
 

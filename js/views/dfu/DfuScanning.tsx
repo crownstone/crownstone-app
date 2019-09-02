@@ -81,6 +81,7 @@ export class DfuScanning extends LiveComponent<any, any> {
       this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => { this._parseIBeacon(data); }));
       this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (data) => { this._parseAdvertisement(data); }));
       this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (data) => { this._parseAdvertisement(data); }));
+      this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (data) => { this._parseAdvertisement(data); }));
       Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds : 1});
       Scheduler.loadCallback(triggerId, () => { this.forceUpdate(); })
     }

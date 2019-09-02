@@ -149,3 +149,22 @@ interface batchCommandEntryOptions {
   keepConnectionOpenTimeout?: number, // ms
   onlyAllowDirectCommand?: boolean,
 }
+
+interface incomingAdvertisementTopics {
+  sphereId: string,
+  stoneId: string,
+  topic: string,
+}
+
+interface crownstoneTopicData {
+  handle: string,
+  stone: any,
+  stoneId: stoneId,
+  sphereId: sphereId,
+  rssi: number,
+  meshNetworkId?: string
+}
+
+interface targetData {
+  [propName: stoneId]: sphereId
+}

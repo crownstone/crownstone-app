@@ -10,6 +10,7 @@ import { DfuStateHandler } from "./DfuStateHandler";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../../ExternalConfig";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import { BluenetPromiseWrapper } from "../libInterface/BluenetPromise";
+import { firmware } from "../../cloud/sections/firmware";
 
 
 export const DfuExecutionInformation = {
@@ -54,6 +55,7 @@ export class DfuExecutor {
   userConfig;
   stone;
   stoneId;
+  handle;
   sphereId;
   sessionUUID;
 
@@ -73,11 +75,12 @@ export class DfuExecutor {
     this.updateCallback = updateCallback;
     this.stoneId = stoneId;
     this.sphereId = sphereId;
-    
+
     this.sessionUUID = xUtil.getUUID();
 
     let state = core.store.getState();
     this.stone = StoneUtil.getStoneObject(this.sphereId, this.stoneId);
+    this.handle = this.stone.config.handle;
     this.hardwareVersion = this.stone.config.hardwareVersion;
     this.userConfig = state.user;
 
@@ -315,6 +318,9 @@ export class DfuExecutor {
           }
         })
     }
+    else if (crownstoneMode.setupMode === true) {
+      return this._getVersionsInSetupMode();
+    }
     else {
       return this._getVersionsInAppMode();
     }
@@ -322,12 +328,25 @@ export class DfuExecutor {
 
   _getVersionsInAppMode() {
     let blePromises = [];
-    // get FW/BL from Crownstone. If BL is not available in application mode, default to 1.4.0
-    // the new FWs and BLs will be v3 and higher.
+    // get FW/BL from Crownstone.
     blePromises.push(this._getBootloaderVersionFromStone());
     blePromises.push(this._getFirmwareVersionFromStone());
 
     return Promise.all(blePromises).then(() => {})
+  }
+
+
+  _getVersionsInSetupMode() {
+    // get FW/BL from Crownstone.
+    let proxy = BleUtil.getProxy(this.handle, this.sphereId);
+    return proxy.performPriority(BluenetPromiseWrapper.getBootloaderVersion)
+      .then((bootloaderVersion) => {
+        this.__storeBootloaderVersion(bootloaderVersion);
+        return proxy.performPriority(BluenetPromiseWrapper.getFirmwareVersion)
+      })
+      .then((firmwareVersion) => {
+        this.__storeFirmwareVersion(firmwareVersion);
+      })
   }
 
 
@@ -344,8 +363,7 @@ export class DfuExecutor {
       .then(() => {
         let stone = StoneUtil.getStoneObject(this.sphereId, this.stoneId)
         if (!stone) { throw "NO_STONE" }
-        console.log("Getting proxy", stone.config.handle, this.sphereId)
-        let proxy = BleUtil.getProxy(stone.config.handle, this.sphereId);
+        let proxy = BleUtil.getProxy(this.handle, this.sphereId);
         return proxy.performPriority(BluenetPromiseWrapper.getBootloaderVersion)
       })
       .then((bootloaderVersion) => {
@@ -371,41 +389,52 @@ export class DfuExecutor {
   _getBootloaderVersionFromStone() {
     return StoneUtil.checkBootloaderVersion(this.sphereId, this.stoneId)
       .then((bootloaderVersion) => {
-        if (!(bootloaderVersion && bootloaderVersion.data)) {
-          this.currentBootloaderVersion = null;
-          return;
-        }
-        else {
-          this.currentBootloaderVersion = bootloaderVersion.data;
-        }
-
-        LOGi.dfu("Executor: Stone bootloader version received.", this.currentBootloaderVersion);
-        core.store.dispatch({
-          type: "UPDATE_STONE_CONFIG",
-          stoneId: this.stoneId,
-          sphereId: this.sphereId,
-          data: {
-            bootloaderVersion: bootloaderVersion.data,
-          }
-        });
+        this.__storeBootloaderVersion(bootloaderVersion);
       })
   };
+
+
+  __storeBootloaderVersion(bootloaderVersion) {
+    if (!(bootloaderVersion && bootloaderVersion.data)) {
+      this.currentBootloaderVersion = null;
+      return;
+    }
+    else {
+      this.currentBootloaderVersion = bootloaderVersion.data;
+    }
+
+    LOGi.dfu("Executor: Stone bootloader version received.", this.currentBootloaderVersion);
+    core.store.dispatch({
+      type: "UPDATE_STONE_CONFIG",
+      stoneId: this.stoneId,
+      sphereId: this.sphereId,
+      data: {
+        bootloaderVersion: bootloaderVersion.data,
+      }
+    });
+  }
+
 
   _getFirmwareVersionFromStone() {
     return StoneUtil.checkFirmwareVersion(this.sphereId, this.stoneId)
       .then((firmwareVersion) => {
-        this.currentFirmwareVersion = firmwareVersion.data;
-        LOGi.dfu("Executor: Stone firmware version received.", this.currentFirmwareVersion);
-        core.store.dispatch({
-          type: "UPDATE_STONE_CONFIG",
-          stoneId: this.stoneId,
-          sphereId: this.sphereId,
-          data: {
-            firmwareVersion: firmwareVersion.data,
-          }
-        });
+        this.__storeFirmwareVersion(firmwareVersion);
       })
   };
+
+
+  __storeFirmwareVersion(firmwareVersion) {
+    this.currentFirmwareVersion = firmwareVersion.data;
+    LOGi.dfu("Executor: Stone firmware version received.", this.currentFirmwareVersion);
+    core.store.dispatch({
+      type: "UPDATE_STONE_CONFIG",
+      stoneId: this.stoneId,
+      sphereId: this.sphereId,
+      data: {
+        firmwareVersion: firmwareVersion.data,
+      }
+    });
+  }
 
   /**
    * This checks how many bootloader operations we need to perform.
