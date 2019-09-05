@@ -77,7 +77,6 @@ import { ToonOverview }                   from "../views/thirdParty/toon/ToonOve
 import { DeviceSmartBehaviour }           from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour";
 import { DeviceSmartBehaviour_TypeSelector } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeSelector";
 import { DeviceSmartBehaviour_Editor }       from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor";
-import { DeviceSmartBehaviour_TypeStart }    from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart";
 import { AddCrownstone }                  from "../views/addingCrownstones/AddCrownstone";
 import { ScanningForSetupCrownstones }    from "../views/addingCrownstones/ScanningForSetupCrownstones";
 import { SetupCrownstone }                from "../views/addingCrownstones/SetupCrownstone";
@@ -100,7 +99,7 @@ import { SimpleOverlay }                  from "../views/overlays/SimpleOverlay"
 import { TapToToggleCalibration }         from "../views/overlays/TapToToggleCalibration";
 import { OptionPopup }                    from "../views/overlays/OptionPopup";
 import { DeviceOverviewProto }            from "../views/deviceViews/DeviceOverviewProto";
-import { DeviceSmartBehaviour_wrapup }    from "../views/deviceViews/elements/smartBehaviour/supportComponents/DeviceSmartBehaviour_wrapup";
+import { DeviceSmartBehaviour_wrapup }    from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_wrapup";
 
 
 export const Views = {
@@ -131,7 +130,6 @@ export const Views = {
   DeviceSmartBehaviour:              DeviceSmartBehaviour,
   DeviceSmartBehaviour_Editor:       DeviceSmartBehaviour_Editor,
   DeviceSmartBehaviour_TypeSelector: DeviceSmartBehaviour_TypeSelector,
-  DeviceSmartBehaviour_TypeStart:    DeviceSmartBehaviour_TypeStart,
   DeviceSmartBehaviour_wrapup:       DeviceSmartBehaviour_wrapup,
   IconDebug:                         IconDebug,
   Login:                             Login,

@@ -52,6 +52,7 @@ export const Stacks = {
             stack: {
               children: [
                 { component: {name: "SphereOverview"} },
+                // { component: {name: "DeviceSmartBehaviour_TypeSelector", passProps: {sphereId: "61db334c-5aad-3cb1-d21e-8cec6c702cba", stoneId: "ebf9216b-9723-aa10-162f-8b6b836d1545"}} },
               ],
               options: {
                 bottomTab: {

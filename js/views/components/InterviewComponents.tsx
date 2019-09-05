@@ -74,11 +74,19 @@ let dangerStyle : ViewStyle = {
 };
 
 let textStyle : TextStyle = {
+  paddingRight: 25,
   fontSize: xUtil.narrowScreen() ? 15 : 16,
   fontWeight: "bold",
   color: colors.csBlue.hex
 };
 
+
+let subTextStyle : TextStyle = {
+  fontSize: xUtil.narrowScreen() ? 12 : 13,
+  fontWeight: "300",
+  fontStyle:'italic',
+  color: colors.csBlue.hex
+};
 
 export function TimeButtonWithImage(props) {
   return (
@@ -91,6 +99,43 @@ export function TimeButtonWithImage(props) {
     </FadeIn>
   );
 }
+
+
+export function LargeTextButtonWithLargeImage(props) {
+  let height = 0.23*screenWidth;
+  return (
+    <FadeIn index={props.index || 0}>
+      <TouchableOpacity style={[buttonStyle, {
+        backgroundColor: colors.white.hex,
+        borderBottomLeftRadius:  0,
+        borderBottomRightRadius: 20,
+        borderTopLeftRadius:     15,
+        borderTopRightRadius:    0,
+        borderColor: colors.green.hex,
+        borderBottomWidth: 3,
+        borderRightWidth: 3,
+      }, props.selected ? selectedAsymetricalStyle : {}]} onPress={() => { props.callback(); }}>
+        { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
+        <View style={{width: 0.22*screenWidth, height: height, justifyContent:'center', alignItems:'center'}}>
+          <ScaledImage
+            source={props.image.source}
+            sourceWidth={props.image.sourceWidth || 600}
+            sourceHeight={props.image.sourceHeight || 450}
+            targetWidth={props.image.width || 0.25*screenWidth}
+            targetHeight={props.image.height || 0.25*screenWidth}
+            tintColor={props.image.tintColor}
+          />
+        </View>
+        <View style={{marginLeft:10, width: screenWidth*0.8-80}}>
+          <Text style={[textStyle,{color: props.textColor, paddingBottom: 5}]}>{props.label}</Text>
+          <Text style={[subTextStyle,{color: props.textColor}]}>{props.subLabel}</Text>
+        </View>
+        <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
+      </TouchableOpacity>
+    </FadeIn>
+  );
+}
+
 
 export function TextButtonWithLargeImage(props) {
   return (
@@ -107,7 +152,13 @@ export function TextButtonWithLargeImage(props) {
       }, props.selected ? selectedAsymetricalStyle : {}]} onPress={() => { props.callback(); }}>
         { props.textAlign === "right" ? <View style={{flex:1}} /> : undefined }
         <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
-        <ScaledImage source={props.image} sourceWidth={600} sourceHeight={450} targetWidth={0.28*screenWidth}/>
+        <ScaledImage
+          source={props.image.source}
+          sourceWidth={props.image.sourceWidth || 600}
+          sourceHeight={props.image.sourceHeight || 450}
+          targetWidth={props.image.width || 0.28*screenWidth}
+          tintColor={props.image.tintColor}
+        />
         <Text style={[textStyle,{color: props.textColor}]}>{props.label}</Text>
       </TouchableOpacity>
     </FadeIn>

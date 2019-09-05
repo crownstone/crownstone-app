@@ -78,7 +78,7 @@ export class WeekDayList extends Component<any, any> {
       <View style={{
         height: size*1.5,
         width: screenWidth,
-        backgroundColor: this.props.darkTheme === true ? "transparent" : colors.white.hex,
+        backgroundColor: "transparent",
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'center'

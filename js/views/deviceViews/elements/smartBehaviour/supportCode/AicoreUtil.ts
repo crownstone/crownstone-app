@@ -13,7 +13,7 @@ export const AicoreUtil = {
 
   extractActionString(rule : behaviour | twilight) {
     if (rule.action.type === "DIM_WHEN_TURNED_ON") {
-      return "dim to " + Math.round(rule.action.data * 100) + "%";
+      return "I'll dim to " + Math.round(rule.action.data * 100) + "% instead";
     }
     if (rule.action.data < 1) {
       return "dimmed at " + Math.round(rule.action.data * 100) + "%";
@@ -78,7 +78,7 @@ export const AicoreUtil = {
   },
 
 
-  extractTimeString(rule : behaviour | twilight) {
+  extractTimeString(rule : behaviour | twilight, forceBetween = false) {
     let timeStr = "";
 
     let time = rule.time;
@@ -94,7 +94,7 @@ export const AicoreUtil = {
         // "while its dark outside"
         timeStr = "while it's dark outside";
       }
-      else if (tr.from.type === AICORE_TIME_DETAIL_TYPES.CLOCK && tr.to.type === AICORE_TIME_DETAIL_TYPES.CLOCK) {
+      else if (tr.from.type === AICORE_TIME_DETAIL_TYPES.CLOCK && tr.to.type === AICORE_TIME_DETAIL_TYPES.CLOCK || forceBetween) {
         // this makes "between X and Y"
         let fromStr = AicoreUtil.getTimeStr(tr.from);
         let toStr   = AicoreUtil.getTimeStr(tr.to);

@@ -14,9 +14,10 @@ import { availableModalHeight, colors, screenHeight, screenWidth, styles } from 
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { FadeIn } from "../components/animated/FadeInView";
 import {
-  InterviewTextInput,
+  InterviewTextInput, LargeTextButtonWithLargeImage,
   TextButtonLight, TextButtonWithLargeImage, ThemedTextButtonWithIcon
 } from "../components/InterviewComponents";
+import { ScaledImage } from "./ScaledImage";
 
 let headerStyle : TextStyle = {
   paddingLeft: 15,
@@ -290,38 +291,40 @@ function InterviewCard(props : {
   };
 
   let overrideTextColor = props.card.textColor ? {color: props.card.textColor} : {};
-
+  let card = props.card;
   return (
     <ScrollView style={{height: props.height || availableModalHeight}}>
       <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
-        { header      ? <Text style={[headerStyle, overrideTextColor]}>{header}</Text>           : undefined }
-        { subHeader   ? <Text style={[subHeaderStyle, overrideTextColor]}>{subHeader}</Text>     : undefined }
+        { header      ? <Text adjustsFontSizeToFit={true} minimumFontScale={0.1} numberOfLines={card.headerMaxNumLines || undefined} style={[headerStyle,      overrideTextColor]}>{header}</Text>      : undefined }
+        { subHeader   ? <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   : undefined }
         { explanation ? <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> : undefined }
         {
-          props.card.hasTextInputField ?
-            <InterviewTextInput placeholder={props.card.placeholder} value={textInput} callback={(text) => { setTextInput(text); }} /> :
+          card.hasTextInputField ?
+            <InterviewTextInput placeholder={card.placeholder} value={textInput} callback={(text) => { setTextInput(text); }} /> :
             undefined
         }
-        { props.card.editableItem ?
-            <View style={{...styles.centered, flex:1, width: screenWidth}}>{props.card.editableItem(editableInputState, setEditableInputState)}</View> :
+        { card.editableItem ?
+            <View style={{...styles.centered, flex:1, width: screenWidth}}>{card.editableItem(editableInputState, setEditableInputState)}</View> :
             undefined}
         {
-          props.card.image ?
-            <FadeIn>{props.card.image}</FadeIn> :
+          card.image ?
+            <View style={{...styles.centered, flex:1, width: screenWidth}}>
+              <ScaledImage source={card.image.source} sourceWidth={card.image.sourceWidth} sourceHeight={card.image.sourceHeight} targetWidth={card.image.width} targetHeight={card.image.height} tintColor={card.image.tintColor}/>
+            </View> :
             undefined
         }
         {
-          props.card.component ?
+          card.component ?
             <View style={{ flex: 1 }}/> :
             undefined
         }
         {
-          props.card.component ?
-            props.card.component :
+          card.component ?
+            card.component :
             undefined
         }
         {
-          props.card.component ?
+          card.component ?
             <View style={{flex:1}} /> :
             undefined
         }
@@ -330,9 +333,10 @@ function InterviewCard(props : {
             <View style={{flex:1}} /> :
             undefined
         }
+        { card.optionsExplanation ? <Text style={[explanationStyle, overrideTextColor]}>{card.optionsExplanation}</Text> : undefined }
         <InterviewOptions options={options} nextCard={props.nextCard || null} selectedOption={props.selectedOption} value={result} />
         {
-          props.card.optionsCenter ?
+          card.optionsCenter ?
             <View style={{flex:1}} /> :
             undefined
         }
@@ -362,7 +366,20 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
       }
     };
 
-    if (option.image) {
+    if (option.image && option.subLabel) {
+      options.push(
+        <LargeTextButtonWithLargeImage
+          key={"option_" + index}
+          selected={props.selectedOption === index}
+          image={option.image}
+          label={option.label}
+          subLabel={option.subLabel}
+          textAlign={option.textAlign}
+          callback={cb}
+        />
+      );
+    }
+    else if (option.image) {
       options.push(
         <TextButtonWithLargeImage
           key={"option_" + index}

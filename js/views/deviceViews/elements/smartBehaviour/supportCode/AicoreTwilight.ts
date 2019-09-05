@@ -35,9 +35,9 @@ export class AicoreTwilight {
 
 
   _getChunks() {
-    let intentionStr = "If I'm turned on, I'll";
+    let intentionStr = "If I'm turned on";
+    let timeStr   = AicoreUtil.extractTimeString(this.rule, true) + ',';
     let actionStr = AicoreUtil.extractActionString(this.rule);
-    let timeStr   = AicoreUtil.extractTimeString(this.rule);
 
 
     return {
@@ -53,8 +53,8 @@ export class AicoreTwilight {
 
     let sentence = "";
     sentence += chunks.intention.label;
+    sentence += chunks.time.label   ? " " + chunks.time.label   : ",";
     sentence += chunks.action.label ? " " + chunks.action.label : "";
-    sentence += chunks.time.label   ? " " + chunks.time.label   : "";
     sentence += ".";
 
     return sentence;
@@ -74,8 +74,8 @@ export class AicoreTwilight {
     };
 
     addToResult(chunks.intention);
+    if (chunks.time.label)            { addToResult(" "); addToResult(chunks.time,          SELECTABLE_TYPE.TIME);     } else {  addToResult(chunks.time,   SELECTABLE_TYPE.TIME,   true);    }
     if (chunks.action.label)          { addToResult(" "); addToResult(chunks.action,        SELECTABLE_TYPE.ACTION);   } else {  addToResult(chunks.action, SELECTABLE_TYPE.ACTION, true);    }
-    if (chunks.time.label)            { addToResult(" "); addToResult(chunks.time,          SELECTABLE_TYPE.TIME);     } else {  addToResult(chunks.time, SELECTABLE_TYPE.TIME, true);      }
     addToResult(".");
     return result;
   }

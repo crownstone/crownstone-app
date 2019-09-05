@@ -114,7 +114,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
   getRuleSentenceElements() {
     this.amountOfLines = 0;
 
-    let normal      : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.white.hex, fontSize:20, fontWeight:'bold', height:30  };
+    let normal      : TextStyle = {textAlign:"center", lineHeight: 30, color: colors.csBlueDark.hex, fontSize:20, fontWeight:'bold', height:30  };
     let selectable  : TextStyle = {...normal, textDecorationLine:'underline' };
     let segmentStyle : ViewStyle = {...(styles.centered as ViewStyle), flexDirection:'row', width: screenWidth};
 
@@ -154,7 +154,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
           if (chunk.clickable) {
             segments.push(
               <TouchableOpacity key={"selectable_element_" + i} onPress={() => { this.toggleDetails(chunk.type); }}>
-                <Text style={[selectable, {color: this.state.detail === chunk.type ? colors.green.hex : colors.white.hex}]}>{wordsOnLine.join(" ")}</Text>
+                <Text style={[selectable, {color: this.state.detail === chunk.type ? colors.menuTextSelected.hex : colors.csBlueDark.hex}]}>{wordsOnLine.join(" ")}</Text>
               </TouchableOpacity>
             );
           }

@@ -99,8 +99,8 @@ export class SelectFromList extends Component<any, any> {
 
   render() {
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark}>
-                <ScrollView style={{flex:1}}>
+      <Background hasNavBar={false} image={core.background.lightBlur}>
+        <ScrollView style={{flex:1}}>
           <SeparatedItemList
             items={ this.props.items }
             separatorIndent={ false }

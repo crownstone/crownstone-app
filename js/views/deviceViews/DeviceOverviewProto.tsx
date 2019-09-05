@@ -119,7 +119,7 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
 
     // let content = this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, hasActivityLog, deviceType, stone.config);
     return (
-      <Background image={core.background.detailsDark}>
+      <Background image={core.background.lightBlur}>
         <DeviceSummary {...this.props} />
       </Background>
     )

@@ -8,7 +8,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Image} from 'react-native';
 
-export class ScaledImage extends Component<{source: any, targetWidth?: number, targetHeight?: number, sourceWidth: number, sourceHeight:number, style?:any}, any> {
+export class ScaledImage extends Component<{source: any, targetWidth?: number, targetHeight?: number, sourceWidth: number, sourceHeight:number, style?:any, tintColor?:string}, any> {
   render() {
     let factor = this.props.sourceWidth/this.props.sourceHeight;
     let width = this.props.sourceWidth;
@@ -27,7 +27,7 @@ export class ScaledImage extends Component<{source: any, targetWidth?: number, t
     }
 
     return (
-      <Image source={this.props.source} resizeMode={'contain'} style={[{width: width, height: height}, this.props.style]} />
+      <Image source={this.props.source} resizeMode={'contain'} style={[{width: width, height: height, tintColor: this.props.tintColor}, this.props.style]}/>
     );
   }
 }

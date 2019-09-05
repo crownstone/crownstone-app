@@ -4,12 +4,12 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SettingsBleTroubleshooting", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import { Platform } from 'react-native';
-import {SettingsBleTroubleshootingAndroid} from "./troubleshooting/SettingsBleTroubleshootingAndroid";
-import {SettingsBleTroubleshootingIOS} from "./troubleshooting/SettingsBleTroubleshootingIOS";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { LiveComponent } from "../LiveComponent";
+import { SettingsBleTroubleshootingAndroid } from "./troubleshooting/SettingsBleTroubleshootingAndroid";
+import { SettingsBleTroubleshootingIOS }     from "./troubleshooting/SettingsBleTroubleshootingIOS";
+import { TopBarUtil }                        from "../../util/TopBarUtil";
+import { LiveComponent }                     from "../LiveComponent";
 
 
 

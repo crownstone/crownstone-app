@@ -301,7 +301,7 @@ export const styles = StyleSheet.create({
   legendText: {fontSize:12, textAlign:'center', paddingTop:10}
 });
 
-let textColor = colors.white;
+let textColor = colors.csBlueDark;
 export const deviceStyles = StyleSheet.create({
   header: {
     color: textColor.hex,
@@ -326,7 +326,7 @@ export const deviceStyles = StyleSheet.create({
     fontSize: 13,
   },
   specification: {
-    color:colors.white.hex,
+    color: textColor.hex,
     width:screenWidth,
     textAlign:'center',
     fontSize:15,

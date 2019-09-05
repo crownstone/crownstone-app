@@ -130,6 +130,8 @@ interface core {
     mainRemoteNotConnected : any,
     mainDark               : any,
     light                  : any,
+    lightBlur              : any,
+    lightBlurBW            : any,
     detailsDark            : any,
   },
   store: any,
@@ -150,8 +152,9 @@ interface base_core {
 
 interface interviewOption {
   label: string,
+  subLabel?: string,
   icon?: any,
-  image?: any,
+  image?: imageData,
   nextCard?: string,
   dangerous?: boolean,
   response?: string,
@@ -162,6 +165,14 @@ interface interviewOption {
   theme?: "default" | "create"
 }
 
+interface imageData {
+  source:        any, // image require(...)
+  sourceWidth?:  number,
+  sourceHeight?: number,
+  width?:        number,
+  height?:       number,
+  tintColor?:    string,
+}
 
 interface interviewReturnData {
   customElementState: any,
@@ -170,11 +181,13 @@ interface interviewReturnData {
 
 interface interviewCard {
   header?: string,
+  headerMaxNumLines?: number,
   subHeader?: string,
   explanation?: string,
+  optionsExplanation?: string,
   textColor?: string,
+  image?: imageData,
   component?: any,
-  image?: any,
   editableItem?: (state, setState) => any,
   backgroundImage?: any
   hasTextInputField?: boolean

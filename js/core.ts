@@ -9,9 +9,11 @@ export const core : core = {
     mainDarkLogo           : require('./images/backgrounds/backgroundWLogo.png'),
     mainDark               : require('./images/backgrounds/background.png'),
     light                  : require('./images/backgrounds/lightBackground2.png'),
+    lightBlur              : require('./images/backgrounds/lightBackground2_blur.png'),
+    lightBlurBW            : require('./images/backgrounds/lightBackground2_blur_bw.png'),
     detailsDark            : require('./images/backgrounds/darkBackground4.png'),
   },
   eventBus: eventBus,
   nativeBus: NativeBus,
-  store: {getState: () => { return {}}},
+  store: { getState: () => { return {}; } },
 };

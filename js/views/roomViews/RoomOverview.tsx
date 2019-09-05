@@ -37,6 +37,7 @@ import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvail
 import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { xUtil } from "../../util/StandAloneUtil";
+import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -112,6 +113,7 @@ export class RoomOverview extends LiveComponent<any, any> {
         (change.changeAppliances)      ||
         (change.updateApplianceConfig) ||
         (change.updateStoneConfig)     ||
+        (change.updateActiveSphere)    ||
         (change.changeFingerprint)     ||
         (change.userPositionUpdate     && change.userPositionUpdate.locationIds[this.props.locationId])   ||
         (change.updateLocationConfig   && change.updateLocationConfig.locationIds[this.props.locationId]) ||
@@ -237,7 +239,10 @@ export class RoomOverview extends LiveComponent<any, any> {
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     this.viewingRemotely = sphere.state.present === false && seeStoneInDfuMode !== true;
 
-    let backgroundImage = core.background.light;
+    let backgroundImage = core.background.lightBlur;
+    if (this.viewingRemotely) {
+      backgroundImage = core.background.lightBlurBW;
+    }
 
     if (location.config.picture) {
       backgroundImage = { uri: xUtil.preparePictureURI(location.config.picture) };
@@ -266,7 +271,7 @@ export class RoomOverview extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={backgroundImage}>
+      <AnimatedBackground image={backgroundImage}>
         <RoomBanner
           presentUsers={users}
           noCrownstones={amountOfStonesInRoom === 0}
@@ -284,7 +289,7 @@ export class RoomOverview extends LiveComponent<any, any> {
           locationId={  this.props.locationId }
         />
         {content}
-      </Background>
+      </AnimatedBackground>
     );
   }
 

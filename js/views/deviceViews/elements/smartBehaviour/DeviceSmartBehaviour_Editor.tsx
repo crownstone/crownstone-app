@@ -34,7 +34,7 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
     }
 
     return (
-      <Background image={core.background.detailsDark} hasNavBar={false}>
+      <Background image={core.background.lightBlur} hasNavBar={false}>
       <View style={{height:availableModalHeight,width:screenWidth}}>
         <ScrollView style={{width: screenWidth}}>
           <View style={{flex:1, width: screenWidth, minHeight:availableModalHeight, alignItems:'center'}}>

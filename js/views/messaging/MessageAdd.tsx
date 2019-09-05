@@ -122,13 +122,13 @@ lang("_No_recipients____I_cant__body"),
     let locationIds = Object.keys(sphere.locations);
     let locationData = [];
 
-    locationData.push({id: 'roomExplanation', type:'lightExplanation', label: lang("IN_A_ROOM")});
+    locationData.push({id: 'roomExplanation', type:'explanation', label: lang("IN_A_ROOM")});
     locationIds.forEach((locationId) => {
       let location = sphere.locations[locationId];
       locationData.push({id: locationId, text: location.config.name, icon: location.config.icon, singular: true, selected: this.state.triggerLocationId === locationId});
     });
 
-    locationData.push({id: 'sphereExplanation', type:'lightExplanation', label: lang("ANYWHERE_IN_THE_SPHERE")});
+    locationData.push({id: 'sphereExplanation', type:'explanation', label: lang("ANYWHERE_IN_THE_SPHERE")});
     locationData.push({id: ANYWHERE_IN_SPHERE, text: sphere.config.name, icon: 'c1-sphere', singular: true, selected: this.state.triggerLocationId === ANYWHERE_IN_SPHERE});
 
     return locationData;
@@ -139,7 +139,7 @@ lang("_No_recipients____I_cant__body"),
     let userIds = Object.keys(sphereUserData);
     let userData = [];
 
-    userData.push({id: 'everyoneLabel', type:'lightExplanation', label: lang("EVERYONE_IN_YOUR_SPHERE")});
+    userData.push({id: 'everyoneLabel', type:'explanation', label: lang("EVERYONE_IN_YOUR_SPHERE")});
     userData.push({
       id: EVERYONE_IN_SPHERE,
       text: lang("Everyone_in_the_Sphere"),
@@ -149,7 +149,7 @@ lang("_No_recipients____I_cant__body"),
       selected: this.state.recipients[EVERYONE_IN_SPHERE] === true
     });
 
-    userData.push({id: 'specificUsersLabel', type:'lightExplanation', below: false, label: lang("SPECIFIC_USERS")});
+    userData.push({id: 'specificUsersLabel', type:'explanation', below: false, label: lang("SPECIFIC_USERS")});
 
     userIds.sort((a,b) => { return sphereUserData[b].firstName > sphereUserData[a].firstName ? -1 : 1 });
 
@@ -181,7 +181,7 @@ lang("_No_recipients____I_cant__body"),
     let sphere = state.spheres[this.props.sphereId];
     let items = [];
 
-    items.push({type:'lightExplanation', below: false, label: lang("MESSAGE")});
+    items.push({type:'explanation', below: false, label: lang("MESSAGE")});
     items.push({
       type: 'textBlob',
       placeholder:  lang("Your_message___"),
@@ -192,10 +192,10 @@ lang("_No_recipients____I_cant__body"),
         this.setState({messageContent: newText});
       },
     });
-    items.push({type:'lightExplanation', below: true, align: 'right', style:{ paddingTop: 2, paddingRight: 5 }, label: lang("__________",this.state.messageContent.length)});
+    items.push({type:'explanation', below: true, align: 'right', style:{ paddingTop: 2, paddingRight: 5 }, label: lang("__________",this.state.messageContent.length)});
 
     let userData = this._getUserData(state, sphere);
-    items.push({type:'lightExplanation', below: false, label: lang("RECIPIENTS"), alreadyPadded: true});
+    items.push({type:'explanation', below: false, label: lang("RECIPIENTS"), alreadyPadded: true});
     if (this.state.recipients[EVERYONE_IN_SPHERE] === true) {
       items.push({
         label: userData[1].text,
@@ -256,7 +256,7 @@ lang("_No_recipients____I_cant__body"),
     }
 
     let locationItems = this._getLocationItems(sphere);
-    items.push({type:'lightExplanation', below: false, label: lang("LEAVE_MESSAGE_IN")});
+    items.push({type:'explanation', below: false, label: lang("LEAVE_MESSAGE_IN")});
 
 
     // show locations
@@ -299,7 +299,7 @@ lang("_No_recipients____I_cant__body"),
       });
     }
 
-    items.push({ type: 'lightExplanation', label: lang("WHEN_SHOULD_IT_BE_DELIVER")});
+    items.push({ type: 'explanation', label: lang("WHEN_SHOULD_IT_BE_DELIVER")});
     items.push({
       type: 'dropdown',
       label: lang("Deliver_message_on"),
@@ -313,7 +313,7 @@ lang("_No_recipients____I_cant__body"),
         this.setState({triggerEvent: newValue})
       }
     });
-    items.push({ type: 'lightExplanation', label: lang("When_entering_is_selected"), below:true });
+    items.push({ type: 'explanation', label: lang("When_entering_is_selected"), below:true });
 
     items.push({ type: 'spacer' });
 
@@ -322,7 +322,7 @@ lang("_No_recipients____I_cant__body"),
 
   render() {
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark} >
+      <Background hasNavBar={false} image={core.background.lightBlur} >
                 <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>

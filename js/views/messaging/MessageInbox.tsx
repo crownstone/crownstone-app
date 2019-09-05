@@ -149,7 +149,7 @@ export class MessageInbox extends LiveComponent<any, any> {
 
     let messageIds = Object.keys(sphere.messages);
     if (messageIds.length > 0) {
-      items.push({label: lang("MESSAGES"), type: 'lightExplanation',  below:false});
+      items.push({label: lang("MESSAGES"), type: 'explanation',  below:false});
 
       let messages = [];
 
@@ -192,7 +192,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     let state = core.store.getState();
     let activeSphere = state.app.activeSphere;
     let messageExplanationStyle : TextStyle = {
-      color: colors.green.hex,
+      color: colors.csBlueDarker.hex,
       textAlign: 'center',
       paddingLeft: 30,
       backgroundColor:"transparent",
@@ -259,7 +259,7 @@ export class MessageInbox extends LiveComponent<any, any> {
         }
 
         return (
-          <Background image={core.background.detailsDark}>
+          <Background image={core.background.lightBlur}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             { scrollView }
           </Background>
@@ -267,7 +267,7 @@ export class MessageInbox extends LiveComponent<any, any> {
       }
       else {
         return (
-          <Background image={core.background.detailsDark}>
+          <Background image={core.background.lightBlur}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>{ lang("Add_some_Crownstones_to_u") }</Text>
@@ -278,7 +278,7 @@ export class MessageInbox extends LiveComponent<any, any> {
     }
     else {
       return (
-        <Background image={core.background.detailsDark}>
+        <Background image={core.background.lightBlur}>
           <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>{ lang("Add_a_Sphere_to_use_messa") }</Text>
@@ -292,13 +292,13 @@ export class MessageInbox extends LiveComponent<any, any> {
 
 export const textStyle = StyleSheet.create({
   title: {
-    color:colors.white.hex,
+    color:colors.csBlueDarker.hex,
     fontSize:30,
     paddingBottom:10,
     fontWeight:'bold'
   },
   explanation: {
-    color:colors.white.hex,
+    color:colors.csBlueDarker.hex,
     width:screenWidth,
     textAlign:'center',
     fontSize:13,
@@ -308,7 +308,7 @@ export const textStyle = StyleSheet.create({
     fontWeight:'400'
   },
   case: {
-    color:colors.white.hex,
+    color:colors.csBlueDarker.hex,
     width:screenWidth,
     textAlign:'center',
     fontSize:13,
@@ -316,14 +316,14 @@ export const textStyle = StyleSheet.create({
     fontWeight:'400',
   },
   value: {
-    color:colors.white.hex,
+    color:colors.csBlueDarker.hex,
     textAlign:'center',
     fontSize:15,
     fontWeight:'600'
   },
   specification: {
     backgroundColor:"transparent",
-    color:colors.white.hex,
+    color:colors.csBlueDarker.hex,
     width:screenWidth,
     textAlign:'center',
     fontSize:15,

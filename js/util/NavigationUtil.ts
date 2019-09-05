@@ -487,7 +487,8 @@ export const NavigationUtil = {
         passProps: props,
         options: {
           overlay: {
-            interceptTouchOutside: true
+            interceptTouchOutside: true,
+            handleKeyboardEvents: true,
           }
         }
       },

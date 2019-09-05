@@ -552,6 +552,10 @@ export default {
   },
   DeviceSmartBehaviour:{
     __filename: "../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour.tsx",
+    My_Behaviour:                        function() { return "My Behaviour" },
+    Add_more___:                         function() { return "Add more..." },
+    Copy_from___:                        function() { return "Copy from..." },
+    Copy_to___:                          function() { return "Copy to..." },
   },
   DeviceSmartBehaviour_CreateNewBehaviour:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/prototyping/DeviceSmartBehaviour_CreateNewBehaviour.tsx",
@@ -577,10 +581,6 @@ export default {
   },
   DeviceSmartBehaviour_RuleOverview:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_RuleOverview.tsx",
-    My_Behaviour:                        function() { return "My Behaviour" },
-    Add_more___:                         function() { return "Add more..." },
-    Copy_from___:                        function() { return "Copy from..." },
-    Copy_to___:                          function() { return "Copy to..." },
   },
   DeviceSmartBehaviour_TypeExamples:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/prototyping/DeviceSmartBehaviour_TypeExamples.tsx",

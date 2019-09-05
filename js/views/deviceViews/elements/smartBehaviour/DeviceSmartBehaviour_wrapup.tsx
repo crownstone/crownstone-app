@@ -1,10 +1,10 @@
 
-import { Languages } from "../../../../../Languages"
+import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour_wrapup", key)(a,b,c,d,e);
 }
-import { LiveComponent }          from "../../../../LiveComponent";
+import { LiveComponent }          from "../../../LiveComponent";
 import * as React from 'react';
 import {
   Animated,
@@ -17,15 +17,15 @@ import {
   colors,
   deviceStyles,
   screenWidth,
-} from "../../../../styles";
-import { core } from "../../../../../core";
-import { Background } from "../../../../components/Background";
-import { NavigationUtil } from "../../../../../util/NavigationUtil";
-import { WeekDayList } from "../../../../components/WeekDayList";
-import { TopBarUtil } from "../../../../../util/TopBarUtil";
-import { xUtil } from "../../../../../util/StandAloneUtil";
-import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
-import { AicoreTwilight } from "../supportCode/AicoreTwilight";
+} from "../../../styles";
+import { core } from "../../../../core";
+import { Background } from "../../../components/Background";
+import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { WeekDayList } from "../../../components/WeekDayList";
+import { TopBarUtil } from "../../../../util/TopBarUtil";
+import { xUtil } from "../../../../util/StandAloneUtil";
+import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
+import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 
 
 export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string, stoneId: string, rule: string, twilightRule: boolean, ruleId?: string}, any> {
@@ -106,7 +106,7 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
     }
 
     return (
-      <Background image={core.background.detailsDark} hasNavBar={false}>
+      <Background image={core.background.lightBlur} hasNavBar={false}>
         <ScrollView style={{width: screenWidth}}>
           <View style={{flex:1, width: screenWidth, minHeight:availableModalHeight, alignItems:'center'}}>
             <View style={{height: 30}} />
@@ -118,7 +118,7 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
             <WeekDayList
               data={this.state.activeDays}
               tight={true}
-              darkTheme={true}
+              darkTheme={false}
               onChange={(fullData, day) => { this.setState({activeDays: fullData}); }}
             />
 
@@ -137,9 +137,9 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
 
                 if (!atleastOneDay) {
                   Alert.alert(
-lang("_Never___Please_pick_at_l_header"),
-lang("_Never___Please_pick_at_l_body"),
-[{text:lang("_Never___Please_pick_at_l_left")}])
+                    lang("_Never___Please_pick_at_l_header"),
+                    lang("_Never___Please_pick_at_l_body"),
+                    [{text:lang("_Never___Please_pick_at_l_left")}])
                   return;
                 }
 

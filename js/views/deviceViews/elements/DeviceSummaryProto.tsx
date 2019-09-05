@@ -12,10 +12,10 @@ import {
   Image,
   StyleSheet,
   Text,
-  View, ViewStyle
+  View, ViewStyle, TextStyle
 } from "react-native";
 
-import { colors, screenWidth, screenHeight } from '../../styles'
+import { colors, screenWidth, screenHeight, availableScreenHeight, styles } from "../../styles";
 import { Util }                from "../../../util/Util";
 import { Icon }                from "../../components/Icon";
 import { StoneUtil }           from "../../../util/StoneUtil";
@@ -102,112 +102,173 @@ export class DeviceSummary extends LiveComponent<any, any> {
   }
 
 
+  // _getButton(stone) {
+  //   let currentState = stone.state.state;
+  //   let label =  lang("Turn_On");
+  //   let stateColor = colors.csBlueDark;
+  //   let stateColorInner = colors.csBlueDark.rgba(0.1);
+  //   if (currentState > 0) {
+  //     label =  lang("Turn_Off");
+  //     stateColor = colors.green;
+  //     stateColorInner = colors.green.rgba(0.2)
+  //   }
+  //   let size = 0.25*screenHeight;
+  //   let innerSize = size - 15;
+  //   let borderWidth = 7;
+  //
+  //   if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) && false) {
+  //     return (
+  //       <View style={{width:0.85*screenWidth, height:size*1.05, alignItems:'center'}}>
+  //         <View style={{flex:2}} />
+  //         <Text style={deviceStyles.text}>{ lang("Searching___") }</Text>
+  //         <View style={{flex:1}} />
+  //         <Text style={deviceStyles.subText}>{ lang("Once_I_hear_from_this_Cro") }</Text>
+  //         <View style={{flex:1}} />
+  //         <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
+  //         <View style={{flex:2}} />
+  //       </View>
+  //     );
+  //   }
+  //
+  //   if (stone.config.locked) {
+  //     return (
+  //       <LockedStateUI
+  //         size={0.3*screenHeight}
+  //         state={currentState}
+  //         stone={stone}
+  //         sphereId={this.props.sphereId}
+  //         stoneId={this.props.stoneId}
+  //         unlockCrownstone={ () => {
+  //           let promise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'lockSwitch', value: false });
+  //           BatchCommandHandler.executePriority();
+  //           return promise;
+  //         }}
+  //         unlockDataCallback={() => { core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
+  //       />
+  //     );
+  //   }
+  //
+  //   if (stone.config.dimmingEnabled === true) {
+  //     return <DimmerButton size={0.3*screenHeight} state={currentState} stone={stone} sphereId={this.props.sphereId} stoneId={this.props.stoneId} callback={(newState) => {
+  //       let data = {state: newState};
+  //       if (newState === 0) {
+  //         data['currentUsage'] = 0;
+  //       }
+  //       core.store.dispatch({
+  //         type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
+  //         sphereId: this.props.sphereId,
+  //         stoneId: this.props.stoneId,
+  //         data: data
+  //       })
+  //     }} />;
+  //   }
+  //
+  //   if (this.state.pendingCommand === true) {
+  //     return (
+  //       <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
+  //         <AnimatedCircle size={size} color={colors.white.hex}>
+  //           <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={stateColor}>
+  //             <ActivityIndicator animating={true} size='large' color={colors.menuBackground.hex} />
+  //           </AnimatedCircle>
+  //         </AnimatedCircle>
+  //       </AnimatedCircle>
+  //     );
+  //   }
+  //   else {
+  //     return (
+  //       <TouchableOpacity onPress={() => {
+  //         let newState = (currentState === 1 ? 0 : 1);
+  //         this.setState({pendingCommand:true});
+  //
+  //         StoneUtil.switchBHC(
+  //           this.props.sphereId,
+  //           this.props.stoneId,
+  //           stone,
+  //           newState,
+  //           core.store,
+  //           {},
+  //           () => { this.setState({pendingCommand:false}); this.storedSwitchState = newState; },
+  //           INTENTS.manual,
+  //           1,
+  //           'from _getButton in DeviceSummary'
+  //         );
+  //       }}>
+  //         <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
+  //           <AnimatedCircle size={size} color={colors.white.hex}>
+  //             <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={stateColor.hex} style={{overflow:'hidden'}}>
+  //               <View style={{position:'absolute', top:-borderWidth, left:-borderWidth, width: innerSize, height:innerSize, backgroundColor:colors.white.hex}}>
+  //                 <View style={{position:'absolute', top:0, left:0, width: innerSize, height:innerSize, borderRadius:0.5*(innerSize), borderWidth:24, borderColor: stateColorInner}}/>
+  //                 <View style={{position:'absolute', top:-5, left:0.35*innerSize, width: innerSize*0.3, height:0.5*innerSize, backgroundColor:colors.white.hex}}/>
+  //                 <View style={{position:'absolute', top:-5, left:0.5*innerSize - 15, width: 2, height:0.4*innerSize, borderRadius:0.5*(innerSize), borderWidth:15, borderColor: stateColorInner}}/>
+  //               </View>
+  //               <Text style={{color: colors.csBlueDark.hex, fontSize:23, fontWeight:'600'}}>{label}</Text>
+  //             </AnimatedCircle>
+  //           </AnimatedCircle>
+  //         </AnimatedCircle>
+  //       </TouchableOpacity>
+  //     );
+  //   }
+  // }
+
+  _switch(stone, state) {
+    this.setState({pendingCommand:true});
+    StoneUtil.switchBHC(
+      this.props.sphereId,
+      this.props.stoneId,
+      stone,
+      state,
+      core.store,
+      {},
+      () => { this.setState({pendingCommand:false}); this.storedSwitchState = state; },
+      INTENTS.manual,
+      1,
+      'from _getButton in DeviceSummary'
+    );
+  }
+
   _getButton(stone) {
+    let border = 4;
+    let height = 50;
+    let width = screenWidth-50;
+    let innerHeight = height-2*border;
+    let innerWidth = width*0.5-1.4*border;
+    let innerStyle : ViewStyle = {height: innerHeight, width: innerWidth, borderRadius: 3, justifyContent:'center', padding: 10};
+    let textStyle : TextStyle = {color: colors.white.hex, fontSize: 18, fontWeight:'bold'};
+
     let currentState = stone.state.state;
-    let label =  lang("Turn_On");
-    let stateColor = colors.csBlueDark;
-    let stateColorInner = colors.csBlueDark.rgba(0.1);
-    if (currentState > 0) {
-      label =  lang("Turn_Off");
-      stateColor = colors.green;
-      stateColorInner = colors.green.rgba(0.2)
-    }
-    let size = 0.25*screenHeight;
-    let innerSize = size - 15;
-    let borderWidth = 7;
-
-    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-      return (
-        <View style={{width:0.85*screenWidth, height:size*1.05, alignItems:'center'}}>
-          <View style={{flex:2}} />
-          <Text style={deviceStyles.text}>{ lang("Searching___") }</Text>
-          <View style={{flex:1}} />
-          <Text style={deviceStyles.subText}>{ lang("Once_I_hear_from_this_Cro") }</Text>
-          <View style={{flex:1}} />
-          <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
-          <View style={{flex:2}} />
+    return (
+      <View>
+        <View style={{ flexDirection:'row',height:height, width:width, backgroundColor: colors.white.rgba(1), borderRadius: 25, alignItems:'center', justifyContent:'center'}}>
+          <TouchableOpacity style={{
+            ...innerStyle,
+            borderBottomLeftRadius: 25,  borderTopLeftRadius: 25, alignItems:'flex-end',
+            backgroundColor: currentState == 0 ? colors.green.hex : colors.csBlueDark.hex
+          }} onPress={() => { this._switch(stone,0); }}>
+            <Text style={textStyle}>OFF</Text>
+          </TouchableOpacity>
+          <View style={{width:border}} />
+          <TouchableOpacity style={{...innerStyle,
+            borderBottomRightRadius: 25, borderTopRightRadius: 25,
+            backgroundColor: currentState > 0 ? colors.green.hex : colors.csBlueDark.hex
+          }} onPress={() => { this._switch(stone,1); }}>
+            <Text style={textStyle}>ON</Text>
+          </TouchableOpacity>
         </View>
-      );
-    }
+      </View>
+    );
 
-    if (stone.config.locked) {
-      return (
-        <LockedStateUI
-          size={0.3*screenHeight}
-          state={currentState}
-          stone={stone}
-          sphereId={this.props.sphereId}
-          stoneId={this.props.stoneId}
-          unlockCrownstone={ () => {
-            let promise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'lockSwitch', value: false });
-            BatchCommandHandler.executePriority();
-            return promise;
-          }}
-          unlockDataCallback={() => { core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
-        />
-      );
-    }
-
-    if (stone.config.dimmingEnabled === true) {
-      return <DimmerButton size={0.3*screenHeight} state={currentState} stone={stone} sphereId={this.props.sphereId} stoneId={this.props.stoneId} callback={(newState) => {
-        let data = {state: newState};
-        if (newState === 0) {
-          data['currentUsage'] = 0;
-        }
-        core.store.dispatch({
-          type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
-          sphereId: this.props.sphereId,
-          stoneId: this.props.stoneId,
-          data: data
-        })
-      }} />;
-    }
-
-    if (this.state.pendingCommand === true) {
-      return (
-        <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
-          <AnimatedCircle size={size} color={colors.white.hex}>
-            <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={stateColor}>
-              <ActivityIndicator animating={true} size='large' color={colors.menuBackground.hex} />
-            </AnimatedCircle>
-          </AnimatedCircle>
-        </AnimatedCircle>
-      );
-    }
-    else {
-      return (
-        <TouchableOpacity onPress={() => {
-          let newState = (currentState === 1 ? 0 : 1);
-          this.setState({pendingCommand:true});
-
-          StoneUtil.switchBHC(
-            this.props.sphereId,
-            this.props.stoneId,
-            stone,
-            newState,
-            core.store,
-            {},
-            () => { this.setState({pendingCommand:false}); this.storedSwitchState = newState; },
-            INTENTS.manual,
-            1,
-            'from _getButton in DeviceSummary'
-          );
-        }}>
-          <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
-            <AnimatedCircle size={size} color={colors.white.hex}>
-              <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={stateColor.hex} style={{overflow:'hidden'}}>
-                <View style={{position:'absolute', top:-borderWidth, left:-borderWidth, width: innerSize, height:innerSize, backgroundColor:colors.white.hex}}>
-                  <View style={{position:'absolute', top:0, left:0, width: innerSize, height:innerSize, borderRadius:0.5*(innerSize), borderWidth:24, borderColor: stateColorInner}}/>
-                  <View style={{position:'absolute', top:-5, left:0.35*innerSize, width: innerSize*0.3, height:0.5*innerSize, backgroundColor:colors.white.hex}}/>
-                  <View style={{position:'absolute', top:-5, left:0.5*innerSize - 15, width: 2, height:0.4*innerSize, borderRadius:0.5*(innerSize), borderWidth:15, borderColor: stateColorInner}}/>
-                </View>
-                <Text style={{color: colors.csBlueDark.hex, fontSize:23, fontWeight:'600'}}>{label}</Text>
-              </AnimatedCircle>
-            </AnimatedCircle>
-          </AnimatedCircle>
-        </TouchableOpacity>
-      );
-    }
+    // return (
+    //   <View>
+    //     <View style={{height:50, width:screenWidth-50, backgroundColor: colors.white.rgba(1), borderRadius: 25}}></View>
+    //     <View style={{position:'absolute', left:screenWidth-160, top: -10, height:70, width:70, borderRadius:35, backgroundColor: colors.csBlueDark.rgba(1), ...styles.centered}}>
+    //       <View style={{width:65, height:65, backgroundColor: colors.white.hex, borderRadius: 33, ...styles.centered}}>
+    //         <View style={{width:60, height:60, backgroundColor: colors.csBlueDark.blend(colors.green,0.7).hex, borderRadius: 30, ...styles.centered}}>
+    //           <Text style={{color: colors.white.hex, fontSize: 18, fontWeight:'bold'}}>70%</Text>
+    //         </View>
+    //       </View>
+    //     </View>
+    //   </View>
+    // );
   }
 
   _getLockIcon(stone) {
@@ -220,12 +281,12 @@ export class DeviceSummary extends LiveComponent<any, any> {
       alignItems: 'center',
       justifyContent: "center"
     };
-    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false && stone.config.locked === false) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false && stone.config.locked === false || true) {
       return (
         <TouchableOpacity
           onPress={() => {core.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
           style={wrapperStyle}>
-          <Icon name={"md-unlock"} color={colors.white.rgba(0.5)} size={30}/>
+          <Icon name={"md-unlock"} color={colors.csBlueDarker.rgba(0.5)} size={30}/>
         </TouchableOpacity>
       );
     }
@@ -234,17 +295,24 @@ export class DeviceSummary extends LiveComponent<any, any> {
     }
   }
 
-  _getBackgroundIconOverlay(stone) {
-    let iconColor = colors.white.rgba(0.15);
-    let size = screenWidth*1.3;
+
+  getTypeIcon(stone) {
+    let iconColor = colors.white.rgba(1);
+    let size = 0.25*availableScreenHeight;
+    let borderWidth = size*0.04;
+    let outerSize = size+1.5*borderWidth;
+    let currentState = stone.state.state;
     return (
-      <View style={{position:'absolute', top:-0.1*size,left:-0.3*size, width: size, height:size}}>
-        <View style={{width: size, height:size, borderRadius:0.5*size, borderWidth:size*0.04, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
-          <Icon size={size*0.7} name={stone.config.icon} color={iconColor} />
+      <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
+        <View style={{width: outerSize, height:outerSize, borderRadius:0.5*outerSize, borderWidth: borderWidth, borderColor: colors.csBlueDark.rgba(0.8), backgroundColor: currentState > 0 ? colors.green.hex : colors.csBlueDark.hex, alignItems:'center', justifyContent:'center'}}>
+          <View style={{width: size, height:size, borderRadius:0.5*size, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
+            <Icon size={size*0.7} name={stone.config.icon} color={iconColor} />
+          </View>
         </View>
       </View>
     )
   }
+
 
   _getMenuIcons() {
     return (
@@ -252,7 +320,7 @@ export class DeviceSummary extends LiveComponent<any, any> {
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.rgba(1.0)} callback={() => {}} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.33).hex}  callback={() => { NavigationUtil.launchModal( "DeviceSmartBehaviour", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
+        <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.33).hex}  callback={() => { NavigationUtil.launchModal( "DeviceSmartBehaviour_TypeSelector", {stoneId: this.props.stoneId, sphereId: this.props.sphereId })}} />
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Power usage"} image={require("../../../images/icons/graph.png")} backgroundColor={colors.green.blend(colors.csBlueDark,0.7).hex}  callback={() => {}} />
         <View style={{flex:1}} />
@@ -268,14 +336,24 @@ export class DeviceSummary extends LiveComponent<any, any> {
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
+    const location = Util.data.getLocationFromStone(sphere, stone);
     let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
 
     return (
       <View style={{flex:1, paddingBottom: 35, paddingTop:8}}>
-        { this._getBackgroundIconOverlay(stone) }
+        {/*{ this._getBackgroundIconOverlay(stone) }*/}
         { this._getMenuIcons() }
-        <View style={{flex:1.5}} />
-        { StoneInformation({stoneId: this.props.stoneId, sphereId: this.props.sphereId, canSelectRoom: Permissions.inSphere(this.props.sphereId).moveCrownstone}) }
+        <View style={{flex:1}} />
+        { this.getTypeIcon(stone) }
+        <View style={{flex:1}} />
+        <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
+          <Text adjustsFontSizeToFit={true} style={{color: colors.csBlueDark.hex, fontSize:28, fontWeight:'bold', textAlign:'center'}}>{stone.config.name}<Text style={{fontStyle:"italic",  fontWeight:'400'}} >{" in " + location.config.name}</Text></Text>
+        </View>
+        <View style={{flex:0.5}} />
+        <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
+          <Text style={{color: colors.csBlueDark.hex, fontSize:20, fontStyle:"italic"}}>{"using: " + lang("_W",stone.state.currentUsage) }</Text>
+        </View>
+        { showDimmingText ? <View style={{flex:1}} /> : undefined }
         { showDimmingText ? <Text style={deviceStyles.explanation}>{xUtil.spreadString(lang("The_dimmer_is_starting_up"))}</Text> : undefined }
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
@@ -296,8 +374,8 @@ export function StoneInformation(props : {stoneId: string, sphereId: string, can
 
   let locationPart = (
     <View style={{width:0.57*screenWidth}}>
-      <Text style={{color: colors.white.hex, fontSize:20, fontStyle:"italic"}}>{lang("Location_")}</Text>
-      <Text style={{color: colors.white.hex, fontSize:28, fontWeight:'bold'}}>{location.config.name}</Text>
+      <Text style={{color: colors.csBlueDarker.hex, fontSize:20, fontStyle:"italic"}}>{lang("Location_")}</Text>
+      <Text style={{color: colors.csBlueDarker.hex, fontSize:28, fontWeight:'bold'}}>{location.config.name}</Text>
     </View>
   );
 
@@ -306,8 +384,8 @@ export function StoneInformation(props : {stoneId: string, sphereId: string, can
       <TouchableOpacity style={{width:0.57*screenWidth}} onPress={() => {
         OverlayUtil.callRoomSelectionOverlayForStonePlacement(props.sphereId, props.stoneId)
       }}>
-        <Text style={{color: colors.white.hex, fontSize:20, fontStyle:"italic"}}>{lang("Location_")}</Text>
-        <Text style={{color: colors.white.hex, fontSize:28, fontWeight:'bold'}}>{location.config.name}</Text>
+        <Text style={{color: colors.csBlueDarker.hex, fontSize:20, fontStyle:"italic"}}>{lang("Location_")}</Text>
+        <Text style={{color: colors.csBlueDarker.hex, fontSize:28, fontWeight:'bold'}}>{location.config.name}</Text>
       </TouchableOpacity>
     );
   }
@@ -317,8 +395,8 @@ export function StoneInformation(props : {stoneId: string, sphereId: string, can
       {locationPart}
       <View style={{flex:1}} />
       <View>
-        <Text style={{textAlign:'right', color: colors.white.hex, fontSize:20, fontStyle:"italic"}}>{lang("Energy_Usage_")}</Text>
-        <Text style={{textAlign:'right', color: colors.white.hex, fontSize:28, fontWeight:'bold'}}>{ lang("_W",stone.state.currentUsage) }</Text>
+        <Text style={{textAlign:'right', color: colors.csBlueDarker.hex, fontSize:20, fontStyle:"italic"}}>{lang("Energy_Usage_")}</Text>
+        <Text style={{textAlign:'right', color: colors.csBlueDarker.hex, fontSize:28, fontWeight:'bold'}}>{ lang("_W",stone.state.currentUsage) }</Text>
       </View>
     </View>
   )
@@ -331,7 +409,7 @@ export function DeviceMenuIcon(props) {
 
   return (
     <TouchableOpacity onPress={() => { if (props.callback) { props.callback() }}} style={{alignItems:'center', justifyContent:'center'}}>
-      <Text style={{fontSize: 12, color:colors.white.hex, textAlign:'center', padding:2}}>{props.label}</Text>
+      <Text style={{fontSize: 12, color:colors.csBlueDarker.rgba(1), textAlign:'center', padding:2}}>{props.label}</Text>
       <View style={{width:size, height:size, borderRadius:0.5*size, borderWidth: borderWidth, borderColor: colors.csBlueDark.rgba(0.8)}}>
         <View style={{
           width:innerSize,
@@ -358,7 +436,7 @@ export function DeviceMenuIcon(props) {
 
 
 
-let textColor = colors.white;
+let textColor = colors.csBlueDarker;
 let deviceStyles = StyleSheet.create({
   text: {
     color: textColor.hex,

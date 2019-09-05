@@ -281,10 +281,10 @@ export class SphereOverview extends LiveComponent<any, any> {
       let viewingRemotely = true;
       if (sphereIsPresent || DfuStateHandler.areDfuStonesAvailable() || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
-        background = core.background.main;
+        background = core.background.lightBlur;
       }
       else {
-        background = core.background.mainRemoteNotConnected;
+        background = core.background.lightBlurBW;
       }
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {

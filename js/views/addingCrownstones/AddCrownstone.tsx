@@ -49,10 +49,10 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader:"What sort of Crownstone would you like to add?",
         optionsCenter: true,
         options: [
-          {label: lang("Plug"),          image: require('../../images/addCrownstone/plugs.png'),      nextCard: 'installingPlug',              response: "A Plug it is!"},
-          {label: lang("Built_in_One"),  image: require('../../images/addCrownstone/builtin-v2.png'), nextCard: 'installingBuiltinOne_step1',  response: "Let's add a Built-in One!"},
-          {label: lang("Built_in_Zero"), image: require('../../images/addCrownstone/builtin-v1.png'), nextCard: 'installingBuiltinZero_step1', response: "Let's add a Built-in Zero!"},
-          {label: lang("I_dont_have_nCrownstones_y"), image: require('../../images/addCrownstone/buy.png'), nextCard: 'buy',             response: "Let's buy Crownstones!"},
+          {label: lang("Plug"),                       image: {source: require('../../images/addCrownstone/plugs.png')},      nextCard: 'installingPlug',              response: "A Plug it is!"},
+          {label: lang("Built_in_One"),               image: {source: require('../../images/addCrownstone/builtin-v2.png')}, nextCard: 'installingBuiltinOne_step1',  response: "Let's add a Built-in One!"},
+          {label: lang("Built_in_Zero"),              image: {source: require('../../images/addCrownstone/builtin-v1.png')}, nextCard: 'installingBuiltinZero_step1', response: "Let's add a Built-in Zero!"},
+          {label: lang("I_dont_have_nCrownstones_y"), image: {source: require('../../images/addCrownstone/buy.png')},        nextCard: 'buy',                         response: "Let's buy Crownstones!"},
         ]
       },
       buy: {
@@ -94,8 +94,8 @@ export class AddCrownstone extends LiveComponent<any, any> {
         subHeader: "Do you wish to use this Crownstone behind a power socket or with a ceiling light?",
         backgroundImage: require('../../images/backgrounds/installationBackground.png'),
         options: [
-          {label: lang("Behind_a_socket_"),      image: require('../../images/addCrownstone/socket.png'),        nextCard: "installingBuiltin_instructions_socket"},
-          {label: lang("With_a_ceiling_light_"), image: require('../../images/addCrownstone/ceilingLights.png'), nextCard: "installingBuiltin_instructions_light"},
+          {label: lang("Behind_a_socket_"),      image: {source: require('../../images/addCrownstone/socket.png')},        nextCard: "installingBuiltin_instructions_socket"},
+          {label: lang("With_a_ceiling_light_"), image: {source: require('../../images/addCrownstone/ceilingLights.png')}, nextCard: "installingBuiltin_instructions_light"},
         ]
       },
       installingBuiltin_instructions_socket: {
