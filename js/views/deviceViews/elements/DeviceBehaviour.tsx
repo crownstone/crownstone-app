@@ -289,6 +289,8 @@ class BehaviourResponse extends Component<any, any> {
   }
 } 
 
+
+
 export const textStyle = StyleSheet.create({
   title: {
     color:colors.white.hex,

@@ -45,7 +45,7 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
     }
 
     return (
-      <Background image={core.background.detailsDark} hasNavBar={false}>
+      <Background image={core.background.lightBlur} hasNavBar={false}>
         <ScrollView>
           <View style={{ width: screenWidth, alignItems:'center' }}>
             <View style={{height: 30}} />
@@ -59,7 +59,7 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
               buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}
             />
             <View style={{height: 0.2*iconSize}} />
-            <Text style={textStyle.specification}>{ lang("You_can_add_Rooms__People") }</Text>
+            <Text style={deviceStyles.specification}>{ lang("You_can_add_Rooms__People") }</Text>
             <View style={{height: 0.2*iconSize}} />
             <View  style={{flexDirection:'row', alignItems:'center'}}>
               <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
@@ -97,15 +97,15 @@ function AddItem(props) {
         color={colors.white.hex}
         addColor={props.highlight ? colors.green.hex : colors.menuBackground.hex}
         addIcon={true}
-        buttonSize={usedIconSize}
+        buttonSize={usedIconSize + 6}
         buttonStyle={{
           backgroundColor: props.highlight ? colors.menuTextSelected.hex : colors.green.hex,
           borderRadius: 0.2*usedIconSize,
-          borderColor: colors.white.hex,
-          borderWidth: props.highlight ? 5 : 0,
+          borderColor: colors.white.rgba(0.8),
+          borderWidth: 4
         }}
       />
-      <Text style={{paddingTop:10, color: colors.white.hex, fontWeight:'bold'}}>{props.label}</Text>
+      <Text style={{paddingTop:10, color: colors.csBlueDark.hex, fontWeight:'bold'}}>{props.label}</Text>
     </TouchableOpacity>
   );
 }
