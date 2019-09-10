@@ -12,7 +12,7 @@ export let topBarMargin    = Platform.OS === 'android' ? 0   :  (isIPhoneX ? 0 :
 export let tabBarMargin    = isIPhoneX ? 34 : 0 ; // Status bar in iOS is 20 high
 export let tabBarHeight    = isIPhoneX ? 49 + 34: 49;
 export let statusBarHeight = Platform.OS === 'android' ? 0   :  (isIPhoneX ? 44 : 20); // Status bar in iOS is 20 high
-export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isIPhoneX ? 44 : 44 ) + statusBarHeight; // Status bar in iOS is 20 high
+export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isIPhoneX ? 44 : 44) + statusBarHeight; // Status bar in iOS is 20 high
 
 export let screenWidth = Dimensions.get('window').width;
 
@@ -21,7 +21,7 @@ export let screenHeight = Platform.OS === 'android' ?
   Dimensions.get('window').height;
 
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
-export let availableModalHeight = screenHeight - topBarHeight - 0.5 * tabBarMargin;
+export let availableModalHeight  = screenHeight - topBarHeight - 0.5 * tabBarMargin;
 
 export const stylesUpdateConstants = () =>  {
   Navigation.constants()
@@ -77,10 +77,10 @@ export let colors : colorInterface = {
   blue:                 {hex:'#0075c9'},
   blue2:                {hex:'#2698e9'},
   green:                {hex:'#a0eb58'},
+  green2:               {hex:'#4cd864'},
   lightGreen2:          {hex:'#bae97b'},
   lightGreen:           {hex:'#caff91'},
   darkGreen:            {hex:'#1f4c43'},
-  green2:               {hex:'#4cd864'},
   orange:               {hex:'#ff953a'},
   red:                  {hex:'#ff3c00'},
   darkRed:              {hex:'#cc0900'},
@@ -307,7 +307,7 @@ export const deviceStyles = StyleSheet.create({
     color: textColor.hex,
     fontSize: 25,
     fontWeight:'800',
-    textAlign:'center'
+    textAlign:'center',
   },
   subHeader: {
     paddingTop:10,

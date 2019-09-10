@@ -51,6 +51,7 @@ Navigation.events().registerAppLaunchedListener(() => {
         color: colors.white.hex,
         fontFamily: Platform.OS === 'ios' ? ".SFUIDisplay-Bold" : undefined,
       },
+
     },
     bottomTabs: {
       backgroundColor: colors.csBlueDarker.hex,

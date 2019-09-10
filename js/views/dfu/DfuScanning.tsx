@@ -214,7 +214,7 @@ export class DfuScanning extends LiveComponent<any, any> {
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
-      <Background hasNavBar={false} image={core.background.light} hideNotification={true}>
+      <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
         <KeepAwake />
         <ViewStateWatcher componentId={this.props.componentId} onFocus={() => { this.startScanning(); }} onBlur={ () => { this.stopScanning(); }} />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>

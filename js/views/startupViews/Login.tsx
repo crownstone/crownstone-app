@@ -39,6 +39,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { createNewSphere } from "../../util/CreateSphere";
 import { Stacks } from "../../router/Stacks";
 import { base_core } from "../../base_core";
+import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 
 
 export class Login extends Component<any, any> {
@@ -226,7 +227,7 @@ lang("_Incorrect_Email_or_Passw_body"),
       factor = 0.15
     }
     return (
-      <Background fullScreen={true} image={core.background.mainDark} shadedStatusBar={true} hideOrangeBar={true} keyboardAvoid={true}>
+      <Background fullScreen={true} image={core.background.mainDark} dimStatusBar={true} hideNotifications={true} hideOrangeLine={true} keyboardAvoid={true}>
         <TopbarImitation leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : lang("Back")} leftAction={() => { NavigationUtil.back(); }} style={{backgroundColor:'transparent', paddingTop:0}} />
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:screenHeight - topBarHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', height: screenHeight - topBarHeight, width: screenWidth}}>

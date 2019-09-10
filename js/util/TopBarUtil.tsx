@@ -133,7 +133,7 @@ function getLeftButton(id, label) {
   else {
     return {
       id: id,
-      text: label
+      text: label,
     }
   }
 }

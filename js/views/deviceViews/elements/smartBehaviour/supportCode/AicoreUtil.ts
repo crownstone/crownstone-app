@@ -58,17 +58,17 @@ export const AicoreUtil = {
           break;
         case AICORE_LOCATIONS_TYPES.LOCATION:
           if (pd.locationIds.length > 0) {
-            locationPrefix = "is in the ";
+            locationPrefix = "is in the";
             // we will now construct a roomA_name, roomB_name or roomC_name line.
-            locationStr = AicoreUtil.getLocationName(pd.locationIds[0]).toLowerCase();
+            locationStr = AicoreUtil.getLocationName(pd.locationIds[0]);
             if (pd.locationIds.length > 1) {
               for (let i = 1; i < pd.locationIds.length - 1; i++) {
                 let locationCloudId = pd.locationIds[i];
-                let locationName = AicoreUtil.getLocationName(locationCloudId).toLowerCase();
+                let locationName = AicoreUtil.getLocationName(locationCloudId);
                 locationStr += ", " + locationName;
               }
 
-              locationStr += " or " + AicoreUtil.getLocationName(pd.locationIds[pd.locationIds.length - 1]).toLowerCase();
+              locationStr += " or " + AicoreUtil.getLocationName(pd.locationIds[pd.locationIds.length - 1]);
             }
           }
       }

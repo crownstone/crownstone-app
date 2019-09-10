@@ -155,7 +155,7 @@ export class DfuBatch extends Component<any, any> {
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
-      <Background hasNavBar={false} image={core.background.light} hideNotification={true}>
+      <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
         <KeepAwake />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <BatchDFUCrownstonesBanner componentId={this.props.componentId} height={110} />

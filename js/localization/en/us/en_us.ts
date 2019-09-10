@@ -553,7 +553,7 @@ export default {
   DeviceSmartBehaviour:{
     __filename: "../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour.tsx",
     My_Behaviour:                        function() { return "My Behaviour" },
-    Add_more___:                         function() { return "Add more..." },
+    Add_more___:                         function() { return "Add new behaviour..." },
     Copy_from___:                        function() { return "Copy from..." },
     Copy_to___:                          function() { return "Copy to..." },
   },
@@ -602,11 +602,11 @@ export default {
   DeviceSmartBehaviour_TypeStart:{
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart.tsx",
   },
-  DeviceSmartBehaviour_wrapup:{
-    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/DeviceSmartBehaviour_wrapup.tsx",
+  DeviceSmartBehaviour_Wrapup:{
+    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/DeviceSmartBehaviour_Wrapup.tsx",
     After_this_behaviour__I_w:           function() { return "After this behaviour, I won't turn off as long as someone is home. This is done by automatically adding another rule that will keep me on for you. This will last until sunrise, give it a try!" },
     I_wont_turn_off_as_long_a:           function() { return "I won't turn off as long as someone is in the room. This is done by automatically another rule that will keep me on for you. This will last until sunrise, give it a try!" },
-    Tap_the_days_below_to_let:           function() { return "Tap the days below to let me know when I should act on this behaviour!\n\n" + "If a behaviour is started on an active day, it will not just stop at midnight but logically finish up." },
+    Tap_the_days_below_to_let:           function() { return "Let me know when I should act on this behaviour! I'll do it on every green day, tap the day to change it!\n\n" + "If a behaviour is started on an active day, it will not just stop at midnight but logically finish up." },
     Thats_it_:                           function() { return "That's it!" },
     _Never___Please_pick_at_l_header:    function() { return "Never?" },
     _Never___Please_pick_at_l_body:      function() { return "Please pick at least 1 day for this behaviour!" },
@@ -1655,7 +1655,7 @@ export default {
     Shall_I_do_this_at_a_certa:          function() { return "Shall I do this at a certain time?" },
     Can_I_turn_off_afterwards_:          function() { return "Can I turn off afterwards?" },
     Yes__just_turn_off_afterwa:          function() { return "Yes, just turn off afterwards." },
-    Dimmed____:                          function() { return "Dimmed 60%" },
+    Dimmed____:                          function() { return "Dimmed " + arguments[0] + "%" },
   },
   ScanningForSetupCrownstones:{
     __filename: "../../js/views/addingCrownstones/ScanningForSetupCrownstones.tsx",

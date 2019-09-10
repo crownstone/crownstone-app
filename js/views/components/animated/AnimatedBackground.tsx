@@ -15,7 +15,20 @@ import {BackgroundImage} from "../BackgroundImage";
 import { NotificationLine } from "../NotificationLine";
 
 
-export class AnimatedBackground extends Component<any, any> {
+export class AnimatedBackground extends Component<{
+  hideNotifications?:        boolean,
+  hideOrangeLine?:           boolean,
+  orangeLineAboveStatusBar?: boolean,
+  hasNavBar?:                boolean,
+
+  duration?:          number,
+  dimStatusBar?:      boolean,
+  fullScreen?:        boolean,
+  hasTopBar?:         boolean,
+  image?:             any,
+  topImage?:          any,
+  keyboardAvoid?:     boolean,
+}, any> {
   staticImage : any;
   animatedImage : any;
   value  : number = 0;
@@ -69,10 +82,10 @@ export class AnimatedBackground extends Component<any, any> {
         <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>
           <BackgroundImage height={height} image={this.animatedImage} />
         </Animated.View>
-        { this.props.dimStatusBar && Platform.OS !== 'android' ? <View style={{width:screenWidth, height: statusBarHeight, backgroundColor: colors.black.rgba(0.3)}} /> : undefined }
-        { this.props.hideOrangeBar !== true ? <NotificationLine notificationsVisible={!this.props.hideNotification} /> : true }
+        { this.props.orangeLineAboveStatusBar && Platform.OS !== 'android' ? <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} /> : undefined }
+        { this.props.dimStatusBar             && Platform.OS !== 'android' ? <View style={styles.shadedStatusBar} /> : undefined }
+        <NotificationLine notificationsVisible={!this.props.hideNotifications} hideOrangeLine={this.props.hideOrangeLine} />
         <View style={{flex:1, overflow:"hidden"}}>
-          { this.props.shadedStatusBar === true ? <View style={[styles.shadedStatusBar, this.props.statusBarStyle]} /> : undefined}
           { this.props.children }
         </View>
         { hasNavBar ? <View style={{backgroundColor:colors.csBlueLightDesat.rgba(0.3), width:screenWidth, height:1}} /> : null}

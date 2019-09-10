@@ -362,7 +362,7 @@ export class Register extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeBar={true} dimStatusBar={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeLine={true} hideNotifications={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : "Back"}

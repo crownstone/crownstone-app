@@ -8,7 +8,7 @@ import { OnScreenNotifications } from "../../notifications/OnScreenNotifications
 import { core } from "../../core";
 
 
-export class NotificationLine extends LiveComponent<{notificationsVisible?: boolean}, any> {
+export class NotificationLine extends LiveComponent<{notificationsVisible?: boolean, hideOrangeLine?: boolean}, any> {
 
   unsubscribe = [];
   hasNotifications = false;
@@ -74,12 +74,16 @@ export class NotificationLine extends LiveComponent<{notificationsVisible?: bool
 
   render() {
     let notifications = this._getNotifications();
+
+    let showOrangeLine = !this.props.notificationsVisible || this.hasNotifications == false;
+    if (this.props.hideOrangeLine === true) {
+      showOrangeLine = false;
+    }
+
     return (
       <View>
         {notifications}
-        <SlideFadeInView visible={!this.props.notificationsVisible || this.hasNotifications == false } height={2}>
-          <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} />
-        </SlideFadeInView>
+        { showOrangeLine ? <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} /> : undefined }
       </View>
     );
 

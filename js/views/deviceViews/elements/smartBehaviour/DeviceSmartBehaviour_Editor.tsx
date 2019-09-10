@@ -7,24 +7,26 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react'; import { Component } from 'react';
 import {
   ScrollView,
-  Text,
-  View,
+  Text, TouchableOpacity,
+  View
 } from "react-native";
 
 import {
-  availableModalHeight,
-  deviceStyles,
-  screenWidth
+  availableModalHeight, availableScreenHeight, colors,
+  deviceStyles, screenHeight,
+  screenWidth, statusBarHeight
 } from "../../../styles";
 import { Background } from "../../../components/Background";
 import { core } from "../../../../core";
-import { TopBarUtil } from "../../../../util/TopBarUtil";
 import { RuleEditor } from "./supportComponents/RuleEditor";
+import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { Icon } from "../../../components/Icon";
+import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string, ruleId: any, label:string}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Rule_Editor")});
+    return TopBarUtil.getOptions({title: props.typeLabel || "Edit Behaviour"});
   }
 
   render() {
@@ -33,14 +35,15 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
       header = "Customize my Behaviour!";
     }
 
+    console.log('this props', this.props)
+    let height = availableModalHeight;
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
-      <View style={{height:availableModalHeight,width:screenWidth}}>
+        <View style={{height:height,width:screenWidth}}>
         <ScrollView style={{width: screenWidth}}>
-          <View style={{flex:1, width: screenWidth, minHeight:availableModalHeight, alignItems:'center'}}>
-            <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ header }</Text>
-            <View style={{height: 0.02*availableModalHeight}} />
+          <View style={{flex:1, width: screenWidth, minHeight:height, alignItems:'center', paddingTop:30}}>
+            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
+            <View style={{height: 0.02*height}} />
             <Text style={deviceStyles.specification}>{ lang("Tap_the_underlined_parts_t") }</Text>
             <RuleEditor {...this.props} />
           </View>

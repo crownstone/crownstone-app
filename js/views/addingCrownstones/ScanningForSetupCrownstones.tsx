@@ -191,7 +191,7 @@ export class ScanningForSetupCrownstones extends LiveComponent<any, any> {
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
     return (
-      <Background hasNavBar={false} image={core.background.light} hideNotification={true}>
+      <Background hasNavBar={false} image={core.background.light} hideNotifications={true} >
         <KeepAwake />
         <ViewStateWatcher
           componentId={this.props.componentId}

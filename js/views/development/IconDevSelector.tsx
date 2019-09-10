@@ -17,6 +17,7 @@ import {
   glyphMap_flaticon_essentials,
   glyphMap_flaticon_household
 } from "../../fonts/customIcons_flaticon";
+import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 
 /*
 Lights
@@ -152,7 +153,7 @@ export class IconDevSelector extends LiveComponent<{callback(icon: string) : voi
 
 
     return (
-      <Background fullScreen={true} image={core.background.detailsDark} hideOrangeBar={true}>
+      <Background fullScreen={true} image={core.background.detailsDark} hideNotifications={true} hideOrangeLine={true} >
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <DevIconSelection

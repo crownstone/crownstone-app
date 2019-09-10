@@ -12,7 +12,13 @@ import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } fr
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 import { Util } from "../../../../util/Util";
 import { LiveComponent } from "../../../LiveComponent";
-import { availableModalHeight, colors, deviceStyles, screenHeight, screenWidth } from "../../../styles";
+import {
+  availableModalHeight,
+  colors,
+  deviceStyles,
+  screenHeight,
+  screenWidth
+} from "../../../styles";
 import { SlideFadeInView, SlideSideFadeInView } from "../../../components/animated/SlideFadeInView";
 import { WeekDayList } from "../../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
@@ -21,6 +27,7 @@ import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { Icon } from "../../../components/Icon";
+import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
 
 let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -29,7 +36,9 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     getTopBarProps(core.store, core.store.getState(), props, {});
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
-
+  // static options = {
+  //   topBar: { visible: false, height: 0 }
+  // };
 
   navigationButtonPressed({ buttonId }) {
     let updateTopBar = () => {
@@ -71,7 +80,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     let iconSize = 0.15*screenHeight;
 
     let state = core.store.getState();
-    console.log(state, this.props)
     let sphere = state.spheres[this.props.sphereId];
     if (!sphere) return <View />;
     let stone = sphere.stones[this.props.stoneId];
@@ -98,7 +106,8 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
         if (partiallyActive) {
           partiallyActiveRuleIdMap[ruleId] = true;
         }
-        ruleComponents.push(<SmartBehaviourRule
+        ruleComponents.push(
+        <SmartBehaviourRule
           key={"description" + ruleId}
           rule={rule}
           sphereId={this.props.sphereId}
@@ -113,9 +122,8 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
         <ScrollView>
-          <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center' }}>
-            <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ lang("My_Behaviour") }</Text>
+          <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
+            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
             <View style={{height: 0.2*iconSize}} />
 
             <SlideFadeInView visible={!this.state.editMode} height={1.5*(screenWidth/9) + 0.1*iconSize + 90}>
@@ -130,7 +138,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                   Sun: this.state.activeDay === "Sun",
                 }}
                 tight={true}
-                darkTheme={true}
+                darkTheme={false}
                 onChange={(fullData, day) => {
                   if (this.state.activeDay !== day) {
                     this.setState({activeDay:day})
@@ -147,7 +155,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
                 label={ lang("Add_more___")}
-                callback={() => { NavigationUtil.navigate('DeviceSmartBehaviour_TypeSelector', this.props); }}
+                callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', this.props); }}
               />
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
@@ -174,59 +182,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       </Background>
     )
   }
-}
-
-
-
-function SmartBehaviourRule(props) {
-  let ai;
-  if      (props.rule.type === "BEHAVIOUR") { ai = new AicoreBehaviour(props.rule.data); }
-  else if (props.rule.type === "TWILIGHT")  { ai = new AicoreTwilight(props.rule.data);  }
-  return (
-    <View style={{padding:15, flexDirection: 'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
-      <SlideSideFadeInView width={50} visible={props.editMode}>
-        <TouchableOpacity onPress={() => {
-          Alert.alert(
-            "Are you sure?",
-            "I'll delete this rule from the Crownstone as soon as I can. Once that is done it will be removed from the list, until then, it will be crossed through.",
-            [{text:"OK", onPress:() => {
-                core.store.dispatch({
-                  type: "MARK_STONE_RULE_FOR_DELETION",
-                  sphereId: props.sphereId,
-                  stoneId: props.stoneId,
-                  ruleId: props.ruleId,
-                });
-              }}, {text:"Nope"}])
-
-        }} style={{width:50}}>
-          <Icon name={'ios-trash'} color={colors.white.rgba(0.6)} size={30} />
-        </TouchableOpacity>
-      </SlideSideFadeInView>
-      { props.rule.syncedToCrownstone === false ? <ActivityIndicator size={"small"} color={colors.white.hex} /> : undefined }
-      <View style={{flex:1}}>
-        <Text style={{
-          color: props.rule.syncedToCrownstone === false  || props.faded ? colors.white.rgba(0.4) : colors.white.hex,
-          fontSize:16,
-          textAlign:'center',
-          textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
-        }}>{ai.getSentence()}</Text>
-      </View>
-      <SlideSideFadeInView width={50} visible={props.editMode}>
-        <TouchableOpacity onPress={() => {
-          NavigationUtil.navigate(
-            "DeviceSmartBehaviour_Editor",
-            {
-              data: ai,
-              sphereId: props.sphereId,
-              stoneId: props.stoneId,
-              ruleId: props.ruleId
-            });
-        }} style={{width:50, alignItems:'flex-end'}}>
-          <Icon name={'md-create'} color={colors.white.hex} size={30} />
-        </TouchableOpacity>
-      </SlideSideFadeInView>
-    </View>
-  );
 }
 
 

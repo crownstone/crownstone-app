@@ -278,13 +278,11 @@ export class SphereOverview extends LiveComponent<any, any> {
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
+      background = core.background.lightBlur;
+
       let viewingRemotely = true;
       if (sphereIsPresent || DfuStateHandler.areDfuStonesAvailable() || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
-        background = core.background.lightBlur;
-      }
-      else {
-        background = core.background.lightBlurBW;
       }
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
@@ -311,7 +309,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       }
 
       return (
-        <AnimatedBackground image={background} hideNotification={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
+        <AnimatedBackground image={background} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
           { this._getAddButtonDescription(activeSphereId, noStones) }
           { this._getContent(state, amountOfSpheres, activeSphereId) }
           { this._getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) }

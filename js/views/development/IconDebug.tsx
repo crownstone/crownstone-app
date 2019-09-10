@@ -14,6 +14,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
+import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 
 
 
@@ -173,7 +174,7 @@ export class IconDebug extends LiveComponent<{callback(icon: string) : void, ico
     icons['ionicons-md']  = ioniconsMdList;
 
     return (
-      <Background fullScreen={true} image={core.background.detailsDark} hideOrangeBar={true}>
+      <Background fullScreen={true} image={core.background.detailsDark} hideNotifications={true} hideOrangeLine={true} >
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <DebugIconSelection

@@ -16,7 +16,6 @@ import { TopbarImitation } from "../components/TopbarImitation";
 import { Background } from "../components/Background";
 import { Icon } from "../components/Icon";
 import { FileUtil } from "../../util/FileUtil";
-import { isQualifiedTypeIdentifier } from "@babel/types";
 
 export class PictureView extends Component<any, any> {
   static options = {
@@ -81,7 +80,7 @@ export class PictureView extends Component<any, any> {
     if (this.state.picture) {
       return (
         <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
-          <Background fullScreen={true} hideOrangeBar={true} dimStatusBar={true}>
+          <Background fullScreen={true} hideNotifications={true} hideOrangeLine={true}  dimStatusBar={true}>
             <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
               <TopbarImitation
                 leftStyle={{color: colors.white.hex}}
@@ -127,7 +126,7 @@ export class PictureView extends Component<any, any> {
     else {
       return (
         <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
-          <Background fullScreen={true} hideOrangeBar={true} dimStatusBar={true}>
+          <Background fullScreen={true} hideNotifications={true} dimStatusBar={true}>
             <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
               <TopbarImitation
                 leftStyle={{color: colors.white.hex}}

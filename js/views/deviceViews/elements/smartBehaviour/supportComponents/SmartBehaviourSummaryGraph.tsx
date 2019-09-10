@@ -136,20 +136,30 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     let endX   = width * endMinutes   / (24*60);
 
     return (
-      <View
-        key={this.keyCount++}
+      <View key={this.keyCount++}
         style={{
-          position:        'absolute',
-          top:             0.5*(this.itemHeight-this.lineHeight),
-          left:            this.iconWidth + this.padding + startX,
-          width:           endX - startX,
-          height:          this.lineHeight,
-          borderRadius:    0.5*this.lineHeight,
-          backgroundColor: this.props.dataColor.hex,
-          overflow:        'hidden',
-          opacity:         isOption? 0.5 : 1.0
-        }}>
-        { isOption ? <Image source={require("../../../../../images/patterns/csBlueStripe.png")} style={{width:endX - startX, height:this.lineHeight}} resizeMode={"repeat"} /> : null}
+        position:        'absolute',
+        top:             0.5*(this.itemHeight-this.lineHeight) - 2,
+        left:            this.iconWidth + this.padding + startX,
+        width:           endX - startX,
+        height:          this.lineHeight + 4,
+        borderRadius:    0.5*this.lineHeight + 2,
+        backgroundColor:     colors.white.hex,
+        overflow:        'hidden',
+        alignItems:'center',
+        justifyContent:'center',
+      }}>
+        <View key={this.keyCount++}
+          style={{
+            width:           endX - startX - 4,
+            height:          this.lineHeight,
+            borderRadius:    0.5*this.lineHeight,
+            backgroundColor: this.props.dataColor.hex,
+            overflow:        'hidden',
+            opacity:         isOption? 0.5 : 1.0
+          }}>
+          { isOption ? <Image source={require("../../../../../images/patterns/csBlueStripe.png")} style={{width:endX - startX, height:this.lineHeight}} resizeMode={"repeat"} /> : null}
+        </View>
       </View>
     )
   }
@@ -198,13 +208,13 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     return (
       <View style={{flexDirection:'row', height: this.itemHeight, alignItems:'center',}}>
         <View style={{alignItems:'center', justifyContent:'center', width: this.iconWidth, height:this.itemHeight}}>
-          <Icon name={this.props.icon} size={this.props.iconSize} color={"#fff"} />
+          <Icon name={this.props.icon} size={this.props.iconSize} color={colors.csBlueDark.hex} />
         </View>
         <View style={{
           position: 'absolute', top: 0.5*(this.itemHeight-this.lineHeight), left: this.iconWidth + this.padding,
           width: this.width, height: this.lineHeight,
           borderRadius: 0.5*this.lineHeight,
-          backgroundColor:colors.white.rgba(0.2)
+          backgroundColor:colors.csBlue.rgba(0.1)
         }} />
         {this.getElements()}
         <Animated.View style={{
@@ -278,7 +288,7 @@ class TimeSelector extends Component<any, any> {
     return (
       <View style={{position:'absolute', top:0, left: 25, width:width, height:90}}>
         <View style={{position:'absolute', top:0, left: width*(getMinutes(time)/(24*60)) - 20, width:40, height:12, alignItems:'center', justifyContent: 'center'}}>
-          <Text style={{fontSize:9, color:colors.white.hex}}>{time}</Text>
+          <Text style={{fontSize:10, color:colors.csBlueDark.hex}}>{time}</Text>
         </View>
         <Animated.View style={{position:'absolute', top:0, left: width*(getMinutes(time)/(24*60)) - 20,
           width: this.state.explanationWidth, height:15,
@@ -288,8 +298,8 @@ class TimeSelector extends Component<any, any> {
           alignItems:'center', justifyContent: 'center'}}>
           <Text style={explanationStyle(this.width)}>{ lang("Now") }</Text>
         </Animated.View>
-        <Animated.View style={{position:'absolute', top:16, left: width*(getMinutes(time)/(24*60)) - 2, width:5, height:54, opacity: this.state.timeOpacity, borderRadius:2, backgroundColor: colors.white.rgba(0.4)}} />
-        <Animated.View style={{position:'absolute', top:15, left: width*(getMinutes(time)/(24*60)),     width:1, height:56, opacity: this.state.timeOpacity, backgroundColor: colors.white.rgba(1)}} />
+        <Animated.View style={{position:'absolute', top:14, left: width*(getMinutes(time)/(24*60)) - 2, width:5, height:58, opacity: this.state.timeOpacity, borderRadius:2, backgroundColor: colors.csBlue.rgba(0.1)}} />
+        <Animated.View style={{position:'absolute', top:15, left: width*(getMinutes(time)/(24*60)),     width:1, height:56, opacity: this.state.timeOpacity, backgroundColor: colors.white.hex}} />
       </View>
     )
   }
@@ -365,17 +375,17 @@ class DayNightIndicator extends Component<any, any> {
 
     return (
       <View style={{position:'absolute', top:0, left: 24, width:width, height:90}}>
-        <View style={{position:'absolute', top:31, left: dawnLeft - 1, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:31, left: duskLeft,     width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:49, left: dawnLeft - 1, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:49, left: duskLeft,     width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:67, left: dawnLeft - 1, width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
-        <View style={{position:'absolute', top:67, left: duskLeft,     width:1, height:4, backgroundColor: colors.white.rgba(0.5)}} />
+        <View style={{position:'absolute', top:31, left: dawnLeft - 1, width:1, height:4, backgroundColor: colors.csBlue.rgba(0.5)}} />
+        <View style={{position:'absolute', top:31, left: duskLeft,     width:1, height:4, backgroundColor: colors.csBlue.rgba(0.5)}} />
+        <View style={{position:'absolute', top:49, left: dawnLeft - 1, width:1, height:4, backgroundColor: colors.csBlue.rgba(0.5)}} />
+        <View style={{position:'absolute', top:49, left: duskLeft,     width:1, height:4, backgroundColor: colors.csBlue.rgba(0.5)}} />
+        <View style={{position:'absolute', top:67, left: dawnLeft - 1, width:1, height:4, backgroundColor: colors.csBlue.rgba(0.5)}} />
+        <View style={{position:'absolute', top:67, left: duskLeft,     width:1, height:4, backgroundColor: colors.csBlue.rgba(0.5)}} />
         <View style={{position:'absolute', top:72, left: dawnLeft - 14, width:30, height:20, alignItems:'center', justifyContent: 'center'}}>
-          <Icon name={"c1-sunrise"} size={20} color={"#fff"} />
+          <Icon name={"c1-sunrise"} size={20} color={colors.csBlueDark.hex} />
         </View>
         <View style={{position:'absolute', top:72, left: duskLeft - 15, width:30, height:20, alignItems:'center', justifyContent: 'center'}}>
-          <Icon name={"ios-cloudy-night"} size={18} color={"#fff"} />
+          <Icon name={"ios-cloudy-night"} size={18} color={colors.csBlueDark.hex} />
         </View>
         <Animated.View style={{
           position:'absolute', top:73, left: dawnLeft - 32,

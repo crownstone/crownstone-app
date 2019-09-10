@@ -2,7 +2,7 @@
 import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceSmartBehaviour_wrapup", key)(a,b,c,d,e);
+  return Languages.get("DeviceSmartBehaviour_Wrapup", key)(a,b,c,d,e);
 }
 import { LiveComponent }          from "../../../LiveComponent";
 import * as React from 'react';
@@ -20,24 +20,27 @@ import {
 } from "../../../styles";
 import { core } from "../../../../core";
 import { Background } from "../../../components/Background";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
-import { WeekDayList } from "../../../components/WeekDayList";
+import { NavigationUtil, NavState } from "../../../../util/NavigationUtil";
+import { WeekDayList, WeekDayListLarge } from "../../../components/WeekDayList";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
+import { Icon } from "../../../components/Icon";
+import { BehaviourSubmitButton } from "./supportComponents/BehaviourSubmitButton";
 
 
-export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string, stoneId: string, rule: string, twilightRule: boolean, ruleId?: string}, any> {
-  static options(props) {
-    return TopBarUtil.getOptions({title: lang("When_")});
-  }
+export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string, stoneId: string, rule: string, twilightRule: boolean, ruleId?: string}, any> {
+  static options = {
+    topBar: { visible: false, height: 0 }
+  };
 
   rule : AicoreBehaviour | AicoreTwilight;
 
   constructor(props) {
     super(props);
 
+    console.log("HERE", this.props)
     let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
     if (!sphere) return;
@@ -72,7 +75,7 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
       stoneId: this.props.stoneId,
       ruleId: ruleId,
       data: {
-        type: "BEHAVIOUR",
+        type: this.props.twilightRule ? "TWILIGHT" : "BEHAVIOUR",
         data: this.props.rule,
         activeDays: this.state.activeDays,
         syncedToCrownstone: false
@@ -99,23 +102,63 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
     }
   }
 
+  submit() {
+    let days = Object.keys(this.state.activeDays);
+    let atleastOneDay = false;
+    for (let i = 0; i < days.length; i++) {
+      if (this.state.activeDays[days[i]] === true) {
+        atleastOneDay = true;
+        break;
+      }
+    }
+
+    if (!atleastOneDay) {
+      Alert.alert(
+        lang("_Never___Please_pick_at_l_header"),
+        lang("_Never___Please_pick_at_l_body"),
+        [{text:lang("_Never___Please_pick_at_l_left")}])
+      return;
+    }
+
+    this._storeRule();
+
+    if (NavigationUtil.isModalOpen("DeviceSmartBehaviour")) {
+      // close the wrap up modal to shwo the overview beneath it.
+      NavigationUtil.dismissModal();
+    }
+    else {
+      NavigationUtil.navigate("DeviceSmartBehaviour", {
+        stoneId: this.props.stoneId,
+        sphereId: this.props.sphereId
+      });
+      NavigationUtil.setForcedModalStackRoot("DeviceSmartBehaviour");
+    }
+  }
+
   render() {
     let header = "Every day?"
     if (this.props.ruleId) {
       header = "When do I do this?"
     }
 
+
+
     return (
-      <Background image={core.background.lightBlur} hasNavBar={false}>
+      <Background image={core.background.lightBlur} hideNotifications={true} fullScreen={true} dimStatusBar={true} hideOrangeLine={true} orangeLineAboveStatusBar={true}>
         <ScrollView style={{width: screenWidth}}>
           <View style={{flex:1, width: screenWidth, minHeight:availableModalHeight, alignItems:'center'}}>
-            <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ header }</Text>
+            <View style={{flexDirection: 'row', alignItems:'center'}}>
+              <TouchableOpacity style={{width:0.15*screenWidth, height:93, justifyContent:'center'}} onPress={() => { NavigationUtil.back(); }}>
+                <Icon name={'ios-arrow-back'} size={33} color={colors.csBlueDark.hex} style={{marginLeft:15}} />
+              </TouchableOpacity>
+              <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
+              <View style={{width:0.15*screenWidth, height: 93}} />
+            </View>
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{ lang("Tap_the_days_below_to_let") }</Text>
 
             <View style={{flex:1}} />
-            <WeekDayList
+            <WeekDayListLarge
               data={this.state.activeDays}
               tight={true}
               darkTheme={false}
@@ -125,33 +168,7 @@ export class DeviceSmartBehaviour_wrapup extends LiveComponent<{sphereId: string
             <View style={{flex:1}} />
             <View style={{flexDirection:'row'}}>
               <View style={{flex:1}} />
-              <TouchableOpacity onPress={() => {
-                let days = Object.keys(this.state.activeDays);
-                let atleastOneDay = false;
-                for (let i = 0; i < days.length; i++) {
-                  if (this.state.activeDays[days[i]] === true) {
-                    atleastOneDay = true;
-                    break;
-                  }
-                }
-
-                if (!atleastOneDay) {
-                  Alert.alert(
-                    lang("_Never___Please_pick_at_l_header"),
-                    lang("_Never___Please_pick_at_l_body"),
-                    [{text:lang("_Never___Please_pick_at_l_left")}])
-                  return;
-                }
-
-                this._storeRule();
-
-                NavigationUtil.backTo("DeviceSmartBehaviour")
-              }} style={{
-                width:0.5*screenWidth, height:60, borderRadius:20,
-                backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
-              }}>
-                <Text style={{fontSize:16, fontWeight:'bold'}}>{ lang("Thats_it_") }</Text>
-              </TouchableOpacity>
+              <BehaviourSubmitButton callback={() => { this.submit() }} label={lang("Thats_it_")} />
               <View style={{flex:1}} />
             </View>
             <View style={{height: 30}} />

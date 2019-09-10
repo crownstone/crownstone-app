@@ -4,6 +4,7 @@ import {
   Text,
   View} from "react-native";
 import { colors, deviceStyles, screenWidth} from "../../../../styles";
+import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 
 
 
@@ -54,14 +55,7 @@ export class BehaviourOptionList extends Component<{
         { this.props.explanation ? <Text style={[deviceStyles.explanation, {padding: 10, color: colors.csBlueDark.rgba(0.7)}]}>{this.props.explanation}</Text> : undefined }
 
         <View style={{flex:1, minHeight:15}} />
-        <TouchableOpacity
-          onPress={this.props.closeCallback}
-          style={{
-            width:0.5*screenWidth, height:50, borderRadius:15,
-            backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
-          }}>
-          <Text style={{fontSize:15, fontWeight:'bold'}}>{this.props.closeLabel}</Text>
-        </TouchableOpacity>
+        <BehaviourSubmitButton callback={this.props.closeCallback} label={this.props.closeLabel} />
         <View style={{flex:1, minHeight:15}} />
       </View>
     );

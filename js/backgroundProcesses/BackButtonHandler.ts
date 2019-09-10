@@ -23,7 +23,7 @@ class BackButtonHandlerClass {
       }
 
 
-      let isModalOpen = NavState.isModalOpen();
+      let isModalOpen = NavState.areModalsOpen();
       LOGd.nav("BackButtonHandlerClass: check if a modal is open", isModalOpen);
       if (isModalOpen) {
         NavigationUtil.dismissModal();

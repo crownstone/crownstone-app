@@ -55,7 +55,7 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
     case 'MARK_STONE_RULE_FOR_DELETION':
       if (action.data) {
         let newState = {...state};
-        newState.deleted = update(action.data.deleted, newState.deleted);
+        newState.deleted = true;
         return newState;
       }
       return state;

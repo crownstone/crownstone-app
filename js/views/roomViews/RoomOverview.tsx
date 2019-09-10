@@ -6,16 +6,14 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Alert,
-  ScrollView,
+  Alert, Image,
+  ScrollView, Text, TextStyle, TouchableOpacity,
   View
-} from 'react-native';
+} from "react-native";
 
-import { Background }           from '../components/Background'
 import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
 import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
-import { RoomBanner }           from '../components/RoomBanner'
 
 import {
   getPresentUsersInLocation,
@@ -23,7 +21,16 @@ import {
   getStonesAndAppliancesInLocation,
   canUseIndoorLocalizationInSphere,
   enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
-import { styles, colors, screenHeight, tabBarHeight, topBarHeight, } from '../styles'
+import {
+  styles,
+  colors,
+  screenHeight,
+  tabBarHeight,
+  topBarHeight,
+  screenWidth,
+  deviceStyles,
+  statusBarHeight, availableModalHeight, availableScreenHeight
+} from "../styles";
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
 import { RoomExplanation }        from '../components/RoomExplanation';
@@ -38,6 +45,9 @@ import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
+import { Icon } from "../components/Icon";
+import { DeviceMenuIcon } from "../deviceViews/elements/DeviceMenuIcon";
+import { Background } from "../components/Background";
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -220,6 +230,21 @@ export class RoomOverview extends LiveComponent<any, any> {
   }
 
 
+  getFlavourImage(location) {
+    if (location.config.picture) {
+      return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: 120}} resizeMode={"cover"} />
+    }
+    else {
+      return (
+        <View style={{width:screenWidth, height: 120, overflow:'hidden', alignItems:'flex-end', justifyContent:'center', paddingRight:15}}>
+          <Image source={require("../../images/backgrounds/RoomBannerBackground.png")} style={{width: screenWidth, height: 120, position:"absolute", top:0, left:0}} resizeMode={"cover"} />
+          <Icon size={0.5*screenWidth} color={colors.white.rgba(0.3)} name={location.config.icon} style={{position:"absolute", top:-0.1*screenWidth, left:0.05*screenWidth}} />
+          <Icon size={90} color={colors.white.rgba(0.6)} name={location.config.icon} />
+        </View>
+      )
+    }
+  }
+
   render() {
     const store = core.store;
     const state = store.getState();
@@ -239,25 +264,30 @@ export class RoomOverview extends LiveComponent<any, any> {
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     this.viewingRemotely = sphere.state.present === false && seeStoneInDfuMode !== true;
 
-    let backgroundImage = core.background.lightBlur;
-    if (this.viewingRemotely) {
-      backgroundImage = core.background.lightBlurBW;
-    }
+    let backgroundImage = null;
 
     if (location.config.picture) {
       backgroundImage = { uri: xUtil.preparePictureURI(location.config.picture) };
     }
 
-    let amountOfStonesInRoom = Object.keys(stones).length;
-    let content = undefined;
-    if (amountOfStonesInRoom > 0) {
-      let {stoneArray, ids} = this._getStoneList(stones);
-      this._setNearestStoneInRoom(ids);
-      this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
-      let viewHeight = screenHeight-tabBarHeight-topBarHeight-100;
+    let {stoneArray, ids} = this._getStoneList(stones);
+    this._setNearestStoneInRoom(ids);
+    this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
+    let viewHeight = screenHeight-tabBarHeight-topBarHeight-100;
 
-      content = (
-        <ScrollView style={{position:'relative', top:-1}}>
+    return (
+      <Background image={core.background.lightBlur}>
+        { backgroundImage ? <Image source={backgroundImage} style={{width: screenWidth, height: screenHeight, position:'absolute', top:0, left:0, opacity:0.1}} resizeMode={"cover"} /> : undefined }
+        { this.getFlavourImage(location) }
+        <View style={{height:2, width:screenWidth, backgroundColor: colors.menuTextSelected.hex}} />
+        <ScrollView>
+          <View style={{minHeight:availableScreenHeight, width:screenWidth}}>
+          <RoomExplanation
+            state={state}
+            explanation={ this.props.explanation }
+            sphereId={    this.props.sphereId }
+            locationId={  this.props.locationId }
+          />
           <View style={{height: Math.max(stoneArray.length*81 + 0.5*viewHeight, viewHeight)} /* make sure we fill the screen */}>
             <SeparatedItemList
               items={stoneArray}
@@ -266,30 +296,9 @@ export class RoomOverview extends LiveComponent<any, any> {
               renderer={this._renderer.bind(this)}
             />
           </View>
+        </View>
         </ScrollView>
-      );
-    }
-
-    return (
-      <AnimatedBackground image={backgroundImage}>
-        <RoomBanner
-          presentUsers={users}
-          noCrownstones={amountOfStonesInRoom === 0}
-          canDoLocalization={canDoLocalization}
-          amountOfStonesInRoom={amountOfStonesInRoom}
-          hideRight={this.props.hideRight}
-          usage={usage}
-          viewingRemotely={this.viewingRemotely}
-          overlayText={this.props.overlayText}
-        />
-        <RoomExplanation
-          state={state}
-          explanation={ this.props.explanation }
-          sphereId={    this.props.sphereId }
-          locationId={  this.props.locationId }
-        />
-        {content}
-      </AnimatedBackground>
+      </Background>
     );
   }
 

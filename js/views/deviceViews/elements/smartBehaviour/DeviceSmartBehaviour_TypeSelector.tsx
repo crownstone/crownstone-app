@@ -22,6 +22,7 @@ import { AnimatedBackground } from "../../../components/animated/AnimatedBackgro
 import { TopbarImitation } from "../../../components/TopbarImitation";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
+import { Background } from "../../../components/Background";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options = {
@@ -46,7 +47,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
     };
   }
 
-  getOptions(examples : AicoreBehaviour[] | AicoreTwilight[], twilight=false) : interviewOption[] {
+  getOptions(examples : AicoreBehaviour[] | AicoreTwilight[], typeLabel, twilight=false) : interviewOption[] {
     let options = [];
 
     examples.forEach((ex) => {
@@ -54,7 +55,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         label: ex.getSentence(),
         onSelect: () => {
           NavigationUtil.navigate( "DeviceSmartBehaviour_Editor", {
-            twilightRule: twilight, data: ex, sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: null})
+            twilightRule: twilight, data: ex, sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: null, typeLabel: typeLabel})
         }
       })
     })
@@ -101,7 +102,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         subHeader: "Pick an example and change it to your liking!",
         image: { source: require('../../../../images/icons/presence.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex  },
         optionsBottom: true,
-        options: this.getOptions(presenceExamples)
+        options: this.getOptions(presenceExamples, "Presence Aware")
       },
       smartTimer: {
         header: "Smart Timer",
@@ -111,7 +112,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         subHeader: "Pick an example and change it to your liking!",
         image: { source: require('../../../../images/icons/smartTimer.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex },
         optionsBottom: true,
-        options: this.getOptions(smartTimerExamples)
+        options: this.getOptions(smartTimerExamples, "Smart Timer")
       },
       twilight: {
         header: "Twilight Mode",
@@ -121,7 +122,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         backgroundImage: require('../../../../images/backgrounds/twilight.png'),
         image: { source: require('../../../../images/icons/twilight.png'), sourceWidth: 292, sourceHeight: 399, height: 0.25*screenHeight, tintColor: colors.white.hex },
         optionsBottom: true,
-        options: this.getOptions(twilightExamples, true)
+        options: this.getOptions(twilightExamples, "Twilight Mode", true)
       },
     }
   }
@@ -178,7 +179,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideOrangeBar={true} dimStatusBar={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} dimStatusBar={true} hideOrangeLine={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : "Back"}

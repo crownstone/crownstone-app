@@ -149,6 +149,7 @@ class StoneAvailabilityTrackerClass {
   }
 
   isDisabled(stoneId) {
+    // TODO REMOVE HACK
     return true
     if (this.log[stoneId]) {
       if (new Date().valueOf() - this.log[stoneId].t < DISABLE_TIMEOUT) {

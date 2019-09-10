@@ -26,7 +26,7 @@ export class CameraRollView extends LiveComponent<any, any> {
   render() {
    return (
      <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
-       <Background fullScreen={true} hideOrangeBar={true} dimStatusBar={true}>
+       <Background fullScreen={true} hideNotifications={true} hideOrangeLine={true}  dimStatusBar={true}>
          <View style={{flex:1, width: screenWidth, height: screenHeight, backgroundColor:colors.black.hex}}>
            <TopbarImitation
              leftStyle={{color: colors.white.hex}}

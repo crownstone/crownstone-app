@@ -48,6 +48,8 @@ class NavStateManager {
 
   baseTab = null;
 
+  // ugly hack to ensure that android back buttons sometimes dismiss modals instead of going back in the history
+  forcedRootModalStackViews = {};
 
   /**
    * Load the default initial tabname into the views so we have something to navigate from
@@ -254,10 +256,10 @@ class NavStateManager {
       }
     }
 
-    this._getId();
+    this._setActiveIds();
   }
 
-  _getId() {
+  _setActiveIds() {
     if (this.modals.length > 0) {
       if (lastItem(this.modals).length > 0) {
         this.activeModal = lastItem(lastItem(this.modals)).id;
@@ -269,6 +271,7 @@ class NavStateManager {
     }
     else {
       this.activeModal = null;
+      this.forcedRootModalStackViews = {};
 
       if (this.views[this.activeTab].length > 0) {
         this.activeView[this.activeTab] = lastItem(this.views[this.activeTab]).id;
@@ -295,13 +298,17 @@ class NavStateManager {
     }
   }
 
+  setForcedModalStackRoot(viewName) {
+    this.forcedRootModalStackViews[viewName] = true;
+  }
+
   modalActive() {
     this.modals.push([]);
   }
 
   modalDismissed() {
     this.modals.pop();
-    this._getId();
+    this._setActiveIds();
   }
 
   showOverlay(targetName) {
@@ -325,7 +332,7 @@ class NavStateManager {
 
   allModalsDismissed() {
     this.modals = [];
-    this._getId();
+    this._setActiveIds();
   }
 
   setRoot() {
@@ -392,7 +399,7 @@ class NavStateManager {
     }
 
     if (targetId === null) {
-      this._getId();
+      this._setActiveIds();
     }
 
     LOGi.nav("IN BACK TO active: ", this.activeTab);
@@ -405,13 +412,35 @@ class NavStateManager {
     return Object.keys(this.overlayId).length > 0;
   }
 
-  isModalOpen() {
+  areModalsOpen() {
     return this.modals.length > 0;
+  }
+
+  /**
+   * This will return true if a base modal is open with this name.
+   * Base modals are the views at the beginning of the modal stack.
+   * @param modalName
+   */
+  isModalViewNameOpen(modalName) {
+    if (this.modals.length > 0) {
+      for (let i = 0; i < this.modals.length; i++) {
+        if (this.modals[i].length > 0) {
+          if (this.modals[i][0].name === modalName) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   canGoBack() {
     if (this.modals.length > 0) {
-      if (lastItem(this.modals).length > 1) {
+      let lastModalStack = lastItem(this.modals);
+      if (lastModalStack.length > 1) {
+        if (this.forcedRootModalStackViews[lastItem(lastModalStack).name]) {
+          return false;
+        }
         return true;
       }
       else {
@@ -542,6 +571,14 @@ export const NavigationUtil = {
   },
 
 
+  isModalOpen(viewName) {
+    return NavState.isModalViewNameOpen(viewName);
+  },
+
+  setForcedModalStackRoot(viewName) {
+    NavState.setForcedModalStackRoot(viewName)
+  },
+
   dismissModal: function() {
     LOGi.nav("CALLING dismissModal");
     let backFrom = NavState.getActiveComponent();
@@ -606,7 +643,7 @@ export const NavigationUtil = {
       return;
     }
 
-    if (NavState.isModalOpen()) {
+    if (NavState.areModalsOpen()) {
       NavigationUtil.dismissAllModals();
     }
 

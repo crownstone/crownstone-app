@@ -1148,7 +1148,7 @@ export default {
     },
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeStart.tsx",
   },
-  DeviceSmartBehaviour_wrapup:{
+  DeviceSmartBehaviour_Wrapup:{
     __stringSameAsBaseLanguage: {
       After_this_behaviour__I_w:          false,
       I_wont_turn_off_as_long_a:          false,
@@ -1159,7 +1159,7 @@ export default {
       _Never___Please_pick_at_l_left:     false,
       When_:                              false,
     },
-    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/DeviceSmartBehaviour_wrapup.tsx",
+    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/DeviceSmartBehaviour_Wrapup.tsx",
     After_this_behaviour__I_w:           function() { return "After this behaviour, I won't turn off as long as someone is home. This is done by automatically adding another rule that will keep me on for you. This will last until sunrise, give it a try!" },
     I_wont_turn_off_as_long_a:           function() { return "I won't turn off as long as someone is in the room. This is done by automatically another rule that will keep me on for you. This will last until sunrise, give it a try!" },
     Tap_the_days_below_to_let:           function() { return "Tap the days below to let me know when I should act on this behaviour!\n\n" + "If a behaviour is started on an active day, it will not just stop at midnight but logically finish up." },

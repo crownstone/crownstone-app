@@ -19,6 +19,7 @@ import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {INTENTS} from "../../native/libInterface/Constants";
 import { core } from "../../core";
+import { xUtil } from "../../util/StandAloneUtil";
 
 export class DimmerButton extends Component<any, any> {
   _panResponder;
@@ -58,7 +59,7 @@ export class DimmerButton extends Component<any, any> {
     this.yCenter = 0.55*props.size;
 
     this.refName = (Math.random() * 1e9).toString(36);
-    this.state = {state: this._transformSwitchStateToUI(props.state) || 0, pendingCommand: false, pendingId: ''};
+    this.state = {state: xUtil.transformStoneSwitchStateToUISwitchState(props.state) || 0, pendingCommand: false, pendingId: ''};
 
     this.init();
   }
@@ -144,7 +145,7 @@ export class DimmerButton extends Component<any, any> {
   }
 
   componentWillReceiveProps(nextProps) {
-    let stateFromProps = this._transformSwitchStateToUI(nextProps.state) || 0;
+    let stateFromProps = xUtil.transformStoneSwitchStateToUISwitchState(nextProps.state) || 0;
     if (stateFromProps !== this.state.state && this.state.pendingCommand === false) {
       this.setState({state: stateFromProps})
     }
@@ -153,44 +154,11 @@ export class DimmerButton extends Component<any, any> {
   componentWillUnmount() {
     cancelAnimationFrame(this._animationFrame);
   }
-  /**
-   * SwitchState is 0..1 and it is linear. We transform this to a different switch state on the Crownstone since the Crownstone dim curve is not linear.
-   * @param switchState
-   * @returns {number}
-   * @private
-   */
-  _transformSwitchStateToStone(switchState) {
-    if (switchState >= 0.05 && switchState < 0.1) { switchState = 0.1; }
-    if (switchState <  0.05)                      { switchState = 0.0; }
-
-    // linearize:
-    let linearState = (Math.acos(-2*switchState+1) / Math.PI);
-
-    // only PWM, not Relay
-    linearState *= 0.99;
-
-    linearState = Math.round(linearState*100)/100;
-
-    return linearState;
-  }
-
-  /**
-   * SwitchState is 0..1 and it is linear. We transform this to a different switch state on the Crownstone since the Crownstone dim curve is not linear.
-   * @param switchState
-   * @returns {number}
-   * @private
-   */
-  _transformSwitchStateToUI(switchState) {
-    let UIState = ((Math.cos(switchState*Math.PI / 0.99) - 1) / -2);
-    UIState = Math.round(UIState*100)/100;
-
-    return UIState;
-  }
 
 
   _updateStone(state, keepConnectionOpenTimeout = 6000) {
     this.requestedStateChange = true;
-    let stateToSwitch = this._transformSwitchStateToStone(state);
+    let stateToSwitch = xUtil.transformUISwitchStateToStoneSwitchState(state);
     let switchId = (Math.random()*1e9).toString(26);
     BatchCommandHandler.loadPriority(
       this.props.stone,

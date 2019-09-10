@@ -23,10 +23,14 @@ import { xUtil } from "../../../../../util/StandAloneUtil";
 import { BehaviourSuggestion } from "./BehaviourSuggestion";
 import { NavigationUtil } from "../../../../../util/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
+import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 
 
 
-export class RuleEditor extends LiveComponent<{data: behaviour | twilight, sphereId: string, stoneId: string, ruleId?: string, twilightRule: boolean}, any> {
+export class RuleEditor extends LiveComponent<
+  {data: behaviour | twilight, sphereId: string, stoneId: string, ruleId?: string, twilightRule: boolean},
+  {detail: any, containerHeight: Animated.Value,  detailHeight: Animated.Value,  detailOpacity: Animated.Value,  mainBottomHeight: Animated.Value, mainBottomOpacity: Animated.Value, selectedDetailField: string, showCustomTimeData:boolean, userHidPresence: boolean, userHidTime: boolean}
+  > {
   references = [];
   amountOfLines = 0;
   rule : AicoreBehaviour | AicoreTwilight;
@@ -219,7 +223,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
     if (this.state.detail === null) {
       // selecting a behaviour type while none was selected before.
       let animation = [];
-      this.setState({detail: selectedBehaviourType, selectedDetailField: false});
+      this.setState({detail: selectedBehaviourType, selectedDetailField: null});
       this.state.detailHeight.setValue(behaviourHeight);
       animation.push(Animated.timing(this.state.detailOpacity,     {toValue: 1, delay: 100, duration: 100}));
       animation.push(Animated.timing(this.state.mainBottomOpacity, {toValue: 0, delay: 0, duration: 100}));
@@ -239,7 +243,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
       animation.push(Animated.timing(this.state.mainBottomOpacity,{toValue:1, delay:100, duration: 100}));
       animation.push(Animated.timing(this.state.containerHeight,  {toValue: baseHeight, delay:0, duration: 200}));
       animation.push(Animated.timing(this.state.detailHeight,     {toValue: baseHeight, delay:0, duration: 200}));
-      Animated.parallel(animation).start(() => { this.setState({detail: selectedBehaviourType, selectedDetailField: false}); })
+      Animated.parallel(animation).start(() => { this.setState({detail: selectedBehaviourType, selectedDetailField: null}); })
     }
     else {
       // changing between selected behaviour types, fade out, and fadein
@@ -248,7 +252,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
       animation.push(Animated.timing(this.state.containerHeight,  {toValue: behaviourHeight, delay:0, duration: 200}));
       animation.push(Animated.timing(this.state.detailOpacity,    {toValue:0, delay:0, duration: 150}));
       Animated.parallel(animation).start(() => {
-        this.setState({detail: selectedBehaviourType, selectedDetailField: false}, () => {
+        this.setState({detail: selectedBehaviourType, selectedDetailField: null}, () => {
           let animation = [];
           animation.push(Animated.timing(this.state.detailOpacity,{toValue:1, delay:0, duration: 150}));
           Animated.parallel(animation).start()
@@ -314,7 +318,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
     )
   }
 
-  _showDimAmountPopup() {
+  _showDimAmountPopup(exampleBehaviour, selectionDescription : string = null) {
     let dimmerOptions = [];
     dimmerOptions.push({ label: lang("x_percent",90), id: 0.9});
     dimmerOptions.push({ label: lang("x_percent",80), id: 0.8});
@@ -330,11 +334,11 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
       title: lang("Dim_how_much_"),
       getItems: () => { return dimmerOptions; },
       callback: (value) => {
-        this.exampleBehaviours.action.dimming.setDimAmount(value);
+        exampleBehaviour.setDimAmount(value);
         this.rule.setDimAmount(value);
-        this.forceUpdate();
+        this.setState({selectedDetailField: selectionDescription})
       },
-      selection: this.rule.willDim() ? this.rule.getDimAmount() : this.exampleBehaviours.action.dimming.getDimAmount(),
+      selection: this.rule.willDim() ? this.rule.getDimAmount() : exampleBehaviour.getDimAmount(),
       image: require("../../../../../images/overlayCircles/dimmingCircleGreen.png")
     })
   }
@@ -388,10 +392,10 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
 
         // Yes, this is ugly. I also don't want to mark a field as "default" in the behaviour, nor allow null as a behaviour value.
         if (exampleOriginField === "custom") {
-          this.setState({showCustomTimeData: true, selectedDetailField: SELECTABLE_TYPE.TIME + "5"})
+          this.setState({showCustomTimeData: true, selectedDetailField: SELECTABLE_TYPE.TIME + "4"})
         }
         else {
-          this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "4"})
+          this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
         }
       },
       time: useData ? this.exampleBehaviours.time[exampleOriginField].getTime() : null,
@@ -399,6 +403,30 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
     })
   }
 
+  _evaluateSelection( selectedDescription ) {
+    // we check the selection by state because the 3rd option can be valid together with
+    // some of the others. This is sloppy for the UI.
+    if (this.state.selectedDetailField === selectedDescription) {
+      return true;
+    }
+    else if (this.state.selectedDetailField) {
+      return false;
+    }
+    return false;
+  }
+
+  _evaluateActionSelection( selectedDescription, ruleToMatch ) {
+    return this._evaluateSelection(selectedDescription) || this.rule.doesActionMatch(ruleToMatch);
+  }
+  _evaluateTimeSelection( selectedDescription, ruleToMatch ) {
+    return this._evaluateSelection(selectedDescription) || this.rule.doesTimeMatch(ruleToMatch);
+  }
+  _evaluatePresenceLocationSelection( selectedDescription, ruleToMatch ) {
+    return this._evaluateSelection(selectedDescription) || this.rule.doesPresenceLocationMatch(ruleToMatch);
+  }
+  _evaluateOptionSelection( selectedDescription, ruleToMatch ) {
+    return this._evaluateSelection(selectedDescription) || this.rule.doesOptionMatch(ruleToMatch);
+  }
 
   _getDetails() {
     let details = null;
@@ -413,42 +441,20 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
               closeLabel={ lang("Sounds_about_right_")}
               elements={[
                 {
-                  label: lang("Dimmed____"),
+                  label: lang("Dimmed____", 80),
                   isSelected: () => {
-                    // we check the selection by state because the 3rd option can be valid together with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.ACTION + "1") {
-                      return true;
-                    }
-                    return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming8); },
+                    return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "1", this.exampleBehaviours.action.dimming8);
+                  },
                   onSelect: () => {
                     this.rule.setDimAmount(0.8);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.ACTION + "1"})
                   }
                 },
                 {
-                  label: lang("Dimmed____"),
+                  label: lang("Dimmed____", 60),
                   isSelected: () => {
-                    // we check the selection by state because the 3rd option can be valid together with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.ACTION + "2") {
-                      return true;
-                    }
-                    return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming6); },
-                  onSelect: () => {
-                    this.rule.setDimAmount(0.6);
-                    this.setState({selectedDetailField: SELECTABLE_TYPE.ACTION + "2"})
-                  }
-                },
-                {
-                  label: lang("Dimmed____"),
-                  isSelected: () => {
-                    // we check the selection by state because the 3rd option can be valid together with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.ACTION + "2") {
-                      return true;
-                    }
-                    return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming6); },
+                    return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "4", this.exampleBehaviours.action.dimming6);
+                  },
                   onSelect: () => {
                     this.rule.setDimAmount(0.6);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.ACTION + "2"})
@@ -458,11 +464,9 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                   label: lang("Dimmed__",Math.round(this.exampleBehaviours.action.dimming4.getDimAmount() * 100)),
                   subLabel: "(tap to change)",
                   isSelected: () => {
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.ACTION + "3") {
-                      return true;
-                    }
-                    return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming4); },
-                  onSelect: () => { this._showDimAmountPopup(); }
+                    return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "3", this.exampleBehaviours.action.dimming4);
+                  },
+                  onSelect: () => { this._showDimAmountPopup(this.exampleBehaviours.action.dimming4, SELECTABLE_TYPE.ACTION + "3"); }
                 },
               ]}
             />
@@ -478,12 +482,8 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                 {
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.rule)) + ".",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "1") {
-                      return true;
-                    }
-                    return this.rule.doesTimeMatch(this.exampleBehaviours.time.dark); },
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "1", this.exampleBehaviours.time.dark);
+                  },
                   onSelect: () => {
                     this.rule.setTimeWhenDark();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "1"})
@@ -492,12 +492,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                 {
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.sunUp.rule)) + ".",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "2") {
-                      return true;
-                    }
-                    return this.rule.doesTimeMatch(this.exampleBehaviours.time.sunUp);
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "2", this.exampleBehaviours.time.sunUp);
                   },
                   onSelect: () => {
                     this.rule.setTimeWhenSunUp();
@@ -508,12 +503,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.rule)) + ".",
                   subLabel: "(tap to customize)",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "4") {
-                      return true;
-                    }
-                    return this.rule.doesTimeMatch(this.exampleBehaviours.time.specific);
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.specific);
                   },
                   onSelect: () => {
                     this._showTimeSelectionPopup('specific')
@@ -523,12 +513,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                   label: lang("Other___"),
                   subLabel: "(tap to create)",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "5") {
-                      return true;
-                    }
-                    return this.rule.doesTimeMatch(this.exampleBehaviours.time.custom);
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "4", this.exampleBehaviours.time.custom);
                   },
                   onSelect: () => {
                     this._showTimeSelectionPopup('custom', this.state.showCustomTimeData)
@@ -559,7 +544,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                   label: lang("Dimmed__", Math.round(this.rule.willDim() ? this.rule.getDimAmount() : 0.5 * 100)),
                   subLabel: "(tap to change)",
                   isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming)},
-                  onSelect: () => { this._showDimAmountPopup(); }
+                  onSelect: () => { this._showDimAmountPopup(this.exampleBehaviours.action.dimming); }
                 },
               ]}
             />
@@ -601,22 +586,14 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                 {
                   label: lang("Anywhere_in_the_house_"),
                   isSelected: () => {
-                    // we check the selection by state because the second and custom option can both be valid. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.LOCATION + "1") {
-                      return true;
-                    }
-                    return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.sphere);
+                    return this._evaluatePresenceLocationSelection(SELECTABLE_TYPE.LOCATION + "1", this.exampleBehaviours.location.sphere);
                   },
                   onSelect: () => { this.rule.setPresenceInSphere(); this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "1"}) }
                 },
                 {
                   label: lang("In_the_room_"),
                   isSelected: () => {
-                    // we check the selection by state because the second and custom option can both be valid. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.LOCATION + "2") {
-                      return true;
-                    }
-                    return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.inRoom);
+                    return this._evaluatePresenceLocationSelection(SELECTABLE_TYPE.LOCATION + "2", this.exampleBehaviours.location.inRoom);
                   },
                   onSelect: () => {
                     this.rule.setPresenceSomebodyInStoneLocation([this.stone.config.locationId]);
@@ -627,11 +604,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                   label: lang("Select_room_s____"),
                   subLabel: "(tap to select)",
                   isSelected: () => {
-                    // we check the selection by state because the second and custom option can both be valid. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.LOCATION + "3") {
-                      return true;
-                    }
-                    return this.rule.doesPresenceLocationMatch(this.exampleBehaviours.location.custom);
+                    return this._evaluatePresenceLocationSelection(SELECTABLE_TYPE.LOCATION + "3", this.exampleBehaviours.location.custom);
                   },
                   onSelect: () => { this._showLocationSelectionPopup(); },
                 },
@@ -649,12 +622,8 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                 {
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.rule)) + ".",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "1") {
-                      return true;
-                    }
-                    return this.rule.doesTimeMatch(this.exampleBehaviours.time.dark); },
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "1", this.exampleBehaviours.time.dark);
+                  },
                   onSelect: () => {
                     this.rule.setTimeWhenDark();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "1"})
@@ -663,12 +632,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                 {
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.sunUp.rule)) + ".",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "2") {
-                      return true;
-                    }
-                    return this.rule.doesTimeMatch(this.exampleBehaviours.time.sunUp);
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "2", this.exampleBehaviours.time.sunUp);
                   },
                   onSelect: () => {
                     this.rule.setTimeWhenSunUp();
@@ -678,12 +642,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                 {
                   label: lang("Always_"),
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "3") {
-                      return true;
-                    }
-                    return this.rule.doesTimeMatch(this.exampleBehaviours.time.allDay);
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.allDay);
                   },
                   onSelect: () => {
                     this.rule.setTimeAllday();
@@ -694,12 +653,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.rule)) + ".",
                   subLabel: "(tap to customize)",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "4") {
-                      return true;
-                    }
-                    return this.rule.doesTimeMatch(this.exampleBehaviours.time.specific);
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "4", this.exampleBehaviours.time.specific);
                   },
                   onSelect: () => {
                     this._showTimeSelectionPopup('specific')
@@ -709,12 +663,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                   label: lang("Other___"),
                   subLabel: "(tap to create)",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.TIME + "5") {
-                      return true;
-                    }
-                    return this.rule.doesTimeMatch(this.exampleBehaviours.time.custom);
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "5", this.exampleBehaviours.time.custom);
                   },
                   onSelect: () => {
                     this._showTimeSelectionPopup('custom', this.state.showCustomTimeData)
@@ -734,12 +683,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                 {
                   label: xUtil.capitalize(AicoreUtil.extractOptionStrings(this.exampleBehaviours.option.inRoom.rule).optionStr) + ".",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.OPTION + "1") {
-                      return true;
-                    }
-                    return this.rule.doesOptionMatch(this.exampleBehaviours.option.inRoom);
+                    return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "1", this.exampleBehaviours.option.inRoom);
                   },
                   onSelect: () => {
                     this.rule.setOptionStayOnWhilePeopleInLocation();
@@ -749,12 +693,8 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                 {
                   label: xUtil.capitalize(AicoreUtil.extractOptionStrings(this.exampleBehaviours.option.inSphere.rule).optionStr) + ".",
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.OPTION + "2") {
-                      return true;
-                    }
-                    return this.rule.doesOptionMatch(this.exampleBehaviours.option.inSphere); },
+                    return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "2", this.exampleBehaviours.option.inSphere);
+                  },
                   onSelect: () => {
                     this.rule.setOptionStayOnWhilePeopleInSphere();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "2"})
@@ -763,12 +703,7 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
                 {
                   label: lang("Yes__just_turn_off_afterwa"),
                   isSelected: () => {
-                    // we check the selection by state because the 4th and 5th option can both be valid with
-                    // some of the others. This is sloppy for the UI.
-                    if (this.state.selectedDetailField === SELECTABLE_TYPE.OPTION + "3") {
-                      return true;
-                    }
-                    return this.rule.doesOptionMatch(this.exampleBehaviours.option.noOption) || this.rule.hasNoOptions();
+                    return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "3", this.exampleBehaviours.option.noOption) || this.rule.hasNoOptions();
                   },
                   onSelect: () => {
                     this.rule.setNoOptions();
@@ -792,20 +727,15 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
         <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
           <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
             { this._getSuggestions() }
-            <TouchableOpacity onPress={() => {
-              NavigationUtil.navigate("DeviceSmartBehaviour_wrapup", {
+            <BehaviourSubmitButton callback={() => {
+              NavigationUtil.navigate("DeviceSmartBehaviour_Wrapup", {
                 sphereId: this.props.sphereId,
                 stoneId: this.props.stoneId,
                 ruleId: this.props.ruleId,
                 rule: this.rule.stringify(),
                 twilightRule: this.props.twilightRule,
-              })
-            }} style={{
-              width:0.5*screenWidth, height:60, borderRadius:20,
-              backgroundColor: colors.green.hex, alignItems:'center', justifyContent: 'center'
-            }}>
-              <Text style={{fontSize:16, fontWeight:'bold'}}>{ lang("Use_Behaviour_") }</Text>
-            </TouchableOpacity>
+              })}}
+             label={lang("Use_Behaviour_")} />
           </Animated.View>
         </Animated.View>
       </Animated.View>
@@ -824,3 +754,4 @@ export class RuleEditor extends LiveComponent<{data: behaviour | twilight, spher
     );
   }
 }
+
