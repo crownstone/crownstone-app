@@ -8,7 +8,15 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Image} from 'react-native';
 
-export class ScaledImage extends Component<{source: any, targetWidth?: number, targetHeight?: number, sourceWidth: number, sourceHeight:number, style?:any, tintColor?:string}, any> {
+export class ScaledImage extends Component<{
+  source: any,
+  targetWidth?: number,
+  targetHeight?: number,
+  sourceWidth: number,
+  sourceHeight:number,
+  style?:any,
+  tintColor?:string
+}, any> {
   render() {
     let factor = this.props.sourceWidth/this.props.sourceHeight;
     let width = this.props.sourceWidth;

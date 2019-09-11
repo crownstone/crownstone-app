@@ -4,14 +4,41 @@ import { LOGd } from "../logging/Log";
 
 
 class BackButtonHandlerClass {
+
+  overrides = {}
+
+  /**
+   * Override the back button action from a modal or view. Does not work for overlays
+   * @param viewName
+   * @param callback
+   */
+  override(viewName : string, callback: () => void) {
+    this.overrides[viewName] = callback;
+  }
+
+  clearOverride(viewName : string) {
+    delete this.override[viewName];
+  }
+
+
+  /**
+   * This binds the listener to the back button press. If return true, we intercept the call.
+   */
   init() {
     BackHandler.addEventListener('hardwareBackPress', () => {
       // check if overlay
       let isOverlayOpen = NavState.isOverlayOpen();
 
       LOGd.nav("BackButtonHandlerClass: check if overlay is open", isOverlayOpen);
+      // Do not allow back button to change overlays.
       if (isOverlayOpen) {
-        return false;
+        return true;
+      }
+
+      let activeViewData = NavState.getCurrentlyActiveComponentData();
+      if (activeViewData && this.overrides[activeViewData.name] !== undefined) {
+        this.overrides[activeViewData.name]();
+        return true;
       }
 
 

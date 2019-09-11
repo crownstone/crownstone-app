@@ -340,6 +340,11 @@ export const deviceStyles = StyleSheet.create({
     fontSize: 13,
     textAlign:'center'
   },
+  explanationText: {
+    color: textColor.rgba(0.5),
+    fontSize: 13,
+    textAlign:'center'
+  },
   errorText: {
     color: textColor.hex,
     fontSize: 16,

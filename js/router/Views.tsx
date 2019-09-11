@@ -5,7 +5,6 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("Views", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-// import { withMappedNavigationProps } from 'react-navigation-props-mapper'
 
 import { AddSphereTutorial }              from "../views/main/addSphereTutorial/AddSphereTutorial";
 import { AlexaOverview }                  from "../views/thirdParty/alexa/AlexaOverview";
@@ -77,29 +76,30 @@ import { ToonOverview }                   from "../views/thirdParty/toon/ToonOve
 import { DeviceSmartBehaviour }           from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour";
 import { DeviceSmartBehaviour_TypeSelector } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeSelector";
 import { DeviceSmartBehaviour_Editor }       from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor";
-import { DeviceSmartBehaviour_Wrapup }    from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Wrapup";
-import { AddCrownstone }                  from "../views/addingCrownstones/AddCrownstone";
-import { ScanningForSetupCrownstones }    from "../views/addingCrownstones/ScanningForSetupCrownstones";
-import { SetupCrownstone }                from "../views/addingCrownstones/SetupCrownstone";
-import { DfuIntroduction }                from "../views/dfu/DfuIntroduction";
-import { DfuScanning }                    from "../views/dfu/DfuScanning";
-import { DfuBatch }                       from "../views/dfu/DfuBatch";
-import { DfuFinished }                    from "../views/dfu/DfuFinished";
-import { Initializer }                    from "./Initializer";
-import { Processing }                     from "../views/overlays/Processing";
-import { AicoreTimeCustomizationOverlay } from "../views/overlays/AicoreTimeCustomizationOverlay";
-import { BleStateOverlay }                from "../views/overlays/BleStateOverlay";
-import { ErrorOverlay }                   from "../views/overlays/ErrorOverlay";
-import { LibMessages }                    from "../views/overlays/LibMessages";
-import { ListOverlay }                    from "../views/overlays/ListOverlay";
-import { LocalizationSetupStep1 }         from "../views/overlays/LocalizationSetupStep1";
-import { LocalizationSetupStep2 }         from "../views/overlays/LocalizationSetupStep2";
-import { LocationPermissionOverlay }      from "../views/overlays/LocationPermissionOverlay";
-import { LockOverlay }                    from "../views/overlays/LockOverlay";
-import { SimpleOverlay }                  from "../views/overlays/SimpleOverlay";
-import { TapToToggleCalibration }         from "../views/overlays/TapToToggleCalibration";
-import { OptionPopup }                    from "../views/overlays/OptionPopup";
-import { DeviceOverviewProto }            from "../views/deviceViews/DeviceOverviewProto";
+import { DeviceSmartBehaviour_Wrapup }       from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Wrapup";
+import { AddCrownstone }                     from "../views/addingCrownstones/AddCrownstone";
+import { ScanningForSetupCrownstones }       from "../views/addingCrownstones/ScanningForSetupCrownstones";
+import { SetupCrownstone }                   from "../views/addingCrownstones/SetupCrownstone";
+import { DfuIntroduction }                   from "../views/dfu/DfuIntroduction";
+import { DfuScanning }                       from "../views/dfu/DfuScanning";
+import { DfuBatch }                          from "../views/dfu/DfuBatch";
+import { DfuFinished }                       from "../views/dfu/DfuFinished";
+import { Initializer }                       from "./Initializer";
+import { Processing }                        from "../views/overlays/Processing";
+import { AicoreTimeCustomizationOverlay }    from "../views/overlays/AicoreTimeCustomizationOverlay";
+import { BleStateOverlay }                   from "../views/overlays/BleStateOverlay";
+import { ErrorOverlay }                      from "../views/overlays/ErrorOverlay";
+import { LibMessages }                       from "../views/overlays/LibMessages";
+import { ListOverlay }                       from "../views/overlays/ListOverlay";
+import { LocalizationSetupStep1 }            from "../views/overlays/LocalizationSetupStep1";
+import { LocalizationSetupStep2 }            from "../views/overlays/LocalizationSetupStep2";
+import { LocationPermissionOverlay }         from "../views/overlays/LocationPermissionOverlay";
+import { LockOverlay }                       from "../views/overlays/LockOverlay";
+import { SimpleOverlay }                     from "../views/overlays/SimpleOverlay";
+import { TapToToggleCalibration }            from "../views/overlays/TapToToggleCalibration";
+import { OptionPopup }                       from "../views/overlays/OptionPopup";
+import { DeviceOverviewProto }               from "../views/deviceViews/DeviceOverviewProto";
+import { DeviceAbilities }                   from "../views/deviceViews/elements/DeviceAbilities";
 
 
 export const Views = {
@@ -125,6 +125,7 @@ export const Views = {
   DeviceEdit:                        DeviceEdit,
   DeviceIconSelection:               DeviceIconSelection,
   DeviceOverview:                    DeviceOverview,
+  DeviceAbilities:                   DeviceAbilities,
   DeviceOverviewProto:               DeviceOverviewProto,
   DeviceScheduleEdit:                DeviceScheduleEdit,
   DeviceSmartBehaviour:              DeviceSmartBehaviour,

@@ -219,6 +219,16 @@ class NavStateManager {
     }
   }
 
+  getCurrentlyActiveComponentData() {
+    if (this.modals.length > 0) {
+      return lastItem(lastItem(this.modals));
+    }
+
+    if (this.views[this.activeTab].length === 0) {
+      return null;
+    }
+    return lastItem(this.views[this.activeTab]);
+  }
   getCurrentlyActiveViewData() {
     if (this.views[this.activeTab].length === 0) {
       return null;

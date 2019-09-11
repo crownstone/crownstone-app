@@ -35,7 +35,6 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
       header = "Customize my Behaviour!";
     }
 
-    console.log('this props', this.props)
     let height = availableModalHeight;
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>

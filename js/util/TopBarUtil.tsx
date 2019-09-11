@@ -32,6 +32,9 @@ export const TopBarUtil = {
     //   })
     // }
 
+    if (props.leftText !== undefined) {
+      leftButtons.push(getLeftButton(props.leftText.id, props.leftText.text));
+    }
     if (props.disableBack === true && Platform.OS === 'ios') {
       leftButtons.push({id: 'disableBack', component: { name: 'topbarEmptyButton' }});
     }

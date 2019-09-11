@@ -16,24 +16,20 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { StoneUtil } from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
 import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../styles";
-import { Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Alert, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Icon } from "../components/Icon";
 import { DeviceMenuIcon } from "./elements/DeviceMenuIcon";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { Util } from "../../util/Util";
 import { xUtil } from "../../util/StandAloneUtil";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
 
 export class DeviceOverviewProto extends LiveComponent<any, any> {
-  // static options = {
-  //   topBar: { visible: false, height: 0 }
-  // };
-
   static options(props) {
-    let state = core.store.getState();
-    const stone = state.spheres[props.sphereId].stones[props.stoneId];
-    return TopBarUtil.getOptions({title:  stone.config.name});
+    getTopBarProps(core.store, core.store.getState(), props);
+    return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
 
@@ -62,6 +58,12 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
         stoneId: this.props.stoneId,
         data: { firmwareVersionSeenInOverview: stone.config.firmwareVersion }
       });
+    }
+  }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'deviceEdit')    {
+      NavigationUtil.launchModal( "DeviceEdit",{sphereId: this.props.sphereId, stoneId: this.props.stoneId});
     }
   }
 
@@ -265,7 +267,12 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
     return (
       <View style={{width:screenWidth, alignItems:'center', flexDirection:'row'}}>
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {}} />
+        <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {
+          NavigationUtil.launchModal("DeviceAbilities", {
+            stoneId: this.props.stoneId,
+            sphereId: this.props.sphereId
+          })
+        }} />
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.5).hex}  callback={() => {
           if (Object.keys(stone.rules).length === 0) {
@@ -291,7 +298,6 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
 
 
   render() {
-    // core.store.dispatch({type:"REMOVE_ALL_RULES_OF_STONE", stoneId: this.props.stoneId, sphereId: this.props.sphereId})
     const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) {
@@ -302,23 +308,10 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
       return <StoneDeleted/>
     }
 
-    const location = Util.data.getLocationFromStone(sphere, stone);
     let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
 
     return (
       <Background image={core.background.lightBlur}>
-        {/*<View style={{flexDirection: 'row', alignItems:'center', backgroundColor: colors.csBlueDarker.hex}}>*/}
-        {/*  <TouchableOpacity style={{width:0.15*screenWidth, height:90, justifyContent:'center'}} onPress={() => { NavigationUtil.back(); }}>*/}
-        {/*    <Icon name={'ios-arrow-back'} size={33} color={colors.white.hex} style={{marginLeft:15}} />*/}
-        {/*  </TouchableOpacity>*/}
-        {/*  <View style={{alignItems:'center', height: 60, marginTop:10}}>*/}
-        {/*    <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ stone.config.name }</Text>*/}
-        {/*    <Text style={[deviceStyles.text, {fontStyle:"italic",  fontWeight:'400', marginTop:5}]} >{" in " + location.config.name}</Text>*/}
-        {/*  </View>*/}
-        {/*  <TouchableOpacity style={{width:0.15*screenWidth, height:90, justifyContent:'center', alignItems:'flex-end'}} onPress={() => { NavigationUtil.launchModal( "DeviceEdit", {stoneId: this.props.stoneId, sphereId: this.props.sphereId });}}>*/}
-        {/*    <Icon name={'ios-settings'} size={33} color={colors.white.hex} style={{marginRight:15}} />*/}
-        {/*  </TouchableOpacity>*/}
-        {/*</View>*/}
         <View style={{flex:0.5}} />
         { this._getMenuIcons(stone)}
         <View style={{flex:2}} />
@@ -334,4 +327,29 @@ export class DeviceOverviewProto extends LiveComponent<any, any> {
     )
   }
 }
+
+function getTopBarProps(store, state, props) {
+  const stone = state.spheres[props.sphereId].stones[props.stoneId];
+
+  let spherePermissions = Permissions.inSphere(props.sphereId);
+
+  let rightLabel = null;
+  let rightId  = null;
+  if (spherePermissions.editCrownstone) {
+    rightLabel =  lang("Edit");
+    rightId = 'deviceEdit';
+  }
+
+  NAVBAR_PARAMS_CACHE = {
+    title: stone.config.name,
+    nav: {
+      id: rightId,
+      text: rightLabel,
+    }
+  }
+
+  return NAVBAR_PARAMS_CACHE;
+}
+
+let NAVBAR_PARAMS_CACHE : topbarOptions = null;
 

@@ -24,29 +24,29 @@ import { WeekDayList } from "../../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
 import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
-import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
-import { AicoreTwilight } from "./supportCode/AicoreTwilight";
-import { Icon } from "../../../components/Icon";
 import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
+import { BackButtonHandler } from "../../../../backgroundProcesses/BackButtonHandler";
 
 let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+let className = "DeviceSmartBehaviour";
 
 export class DeviceSmartBehaviour extends LiveComponent<any, any> {
   static options(props) {
     getTopBarProps(core.store, core.store.getState(), props, {});
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
-  // static options = {
-  //   topBar: { visible: false, height: 0 }
-  // };
 
   navigationButtonPressed({ buttonId }) {
     let updateTopBar = () => {
       getTopBarProps(core.store, core.store.getState(), this.props, this.state);
       TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
     }
-    if (buttonId === 'edit') { this.setState({ editMode: true  }, updateTopBar); }
-    if (buttonId === 'save') { this.setState({ editMode: false }, updateTopBar); }
+    if (buttonId === 'edit') {
+      this.setState({ editMode: true  }, updateTopBar);
+      BackButtonHandler.override(className, () => { this.setState({ editMode: true  }, updateTopBar);})
+    }
+    if (buttonId === 'closeEdit') { this.setState({ editMode: false  }, updateTopBar); }
   }
 
   unsubscribeStoreEvents;
@@ -74,6 +74,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
   componentWillUnmount(): void {
     this.unsubscribeStoreEvents();
+    BackButtonHandler.clearOverride(className);
   }
 
   render() {
@@ -188,19 +189,17 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
 function getTopBarProps(store, state, props, viewState) {
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
-  const element = Util.data.getElement(store, props.sphereId, props.stoneId, stone);
   let rulesCreated = Object.keys(stone.rules).length > 0;
 
   if (viewState.editMode === true) {
     NAVBAR_PARAMS_CACHE = {
-      title: element.config.name,
-      save: true,
-      closeModal: true,
+      title: stone.config.name,
+      leftText: {id:'closeEdit', text:'Back'},
     };
   }
   else {
     NAVBAR_PARAMS_CACHE = {
-      title: element.config.name,
+      title: stone.config.name,
       edit: rulesCreated === true ? true : undefined,
       closeModal: true,
     };

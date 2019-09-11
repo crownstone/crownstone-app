@@ -3,6 +3,7 @@ interface topbarOptions {
   title?: string,
 
   // left button presets
+  leftText?: {id: string, text:string},
   disableBack? : boolean,
   cancelModal? : boolean,
   closeModal? : boolean,
