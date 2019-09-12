@@ -10,7 +10,6 @@ import { Util }                  from "../util/Util";
 import { DataUtil, prepareStoreForUser } from "../util/DataUtil";
 
 import { StoreManager }          from "../router/store/storeManager";
-import { KeepAliveHandler }      from "./KeepAliveHandler";
 import { FirmwareWatcher }       from "./FirmwareWatcher";
 import { Scheduler }             from "../logic/Scheduler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
@@ -29,7 +28,6 @@ import { BleLogger }             from "../native/advertisements/BleLogger";
 import { StoneManager }          from "../native/advertisements/StoneManager";
 import { MeshUtil }              from "../util/MeshUtil";
 import { Sentry }                from "react-native-sentry";
-import { ActivityLogManager }    from "./ActivityLogManager";
 import { ToonIntegration }       from "./thirdParty/ToonIntegration";
 import { EncryptionManager }     from "../native/libInterface/Encryption";
 import { BroadcastStateManager } from "./BroadcastStateManager";
@@ -412,8 +410,7 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
-    ActivityLogManager.init();
-    BatchUploader.init();
+    // BatchUploader.init();
     BleLogger.init();
     CloudEventHandler.init();
     DfuStateHandler.init();
@@ -421,7 +418,6 @@ class BackgroundProcessHandlerClass {
     FirmwareWatcher.init();
     LogProcessor.init();
     LocationHandler.init();
-    KeepAliveHandler.init();
     MapProvider.init();
     MessageCenter.init();
     NotificationHandler.init();

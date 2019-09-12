@@ -140,41 +140,6 @@ export const DataUtil = {
   },
 
 
-  /**
-   * If the stone has an appliance, return that appliance, otherwise return the stone. This gets you the item that
-   * contains the active behaviour
-   * @param store
-   * @param sphereId
-   * @param stoneId
-   * @param sphereId
-   * @param stoneId
-   * @param sphereId
-   * @param stoneId
-   * @param stone
-   * @returns {*}
-   */
-  getElement: function(store, sphereId, stoneId, stone) {
-    let state = store.getState();
-    let sphere = state.spheres[sphereId];
-    if (!sphere) { return stone; }
-
-    if (stone.config.applianceId && sphere.appliances[stone.config.applianceId]) {
-      return sphere.appliances[stone.config.applianceId];
-    }
-    else if (stone.config.applianceId) {
-      LOGe.info("DataUtil: Stone has an appliance ID but the appliance itself is not found.", stone.config.applianceId);
-
-      // self repair..
-      if (stoneId) {
-        store.dispatch({type: "UPDATE_STONE_CONFIG", sphereId: sphereId, stoneId: stoneId, data: { applianceId: null }})
-      }
-
-      return stone;
-    }
-    else {
-      return stone;
-    }
-  },
 
   getLocationFromStone: function(sphere, stone) {
     if (stone.config.locationId && sphere.locations[stone.config.locationId]) {
@@ -454,41 +419,6 @@ export const getCurrentPowerUsageInLocation = function(state, sphereId, location
 };
 
 
-export const getStonesAndAppliancesInSphere = function(state, sphereId) {
-  let stones = DataUtil.getStonesInLocation(state, sphereId);
-  let appliances = state.spheres[sphereId].appliances;
-
-  let items = {};
-  let stoneIds = Object.keys(stones);
-  stoneIds.forEach((stoneId) => {
-    let stone = stones[stoneId];
-    if (stone.config.applianceId)
-      items[stoneId] = {stone: stone, device: appliances[stone.config.applianceId]};
-    else
-      items[stoneId] = {stone: stone, device: stone}
-  });
-  return items;
-};
-
-
-export const getStonesAndAppliancesInLocation = function(state, sphereId, locationId) : object {
-  let stones = DataUtil.getStonesInLocation(state, sphereId, locationId);
-  let stoneIds = Object.keys(stones);
-  let appliances = state.spheres[sphereId].appliances;
-
-  let items = {};
-
-  for (let i = 0; i < stoneIds.length; i++) {
-    let stoneId = stoneIds[i];
-    let stone = stones[stoneId];
-    if (stone.config.applianceId)
-      items[stoneId] = {stone: stone, device: appliances[stone.config.applianceId]};
-    else
-      items[stoneId] = {stone: stone, device: stone}
-  }
-  return items;
-};
-
 
 export const getLocationNamesInSphere = function(state, sphereId) {
   let roomNames = {};
@@ -516,8 +446,6 @@ export const getLocationNamesInSphere = function(state, sphereId) {
       name: stone name in config
       sphereId: sphere id that contains stone
       stoneConfig: config of stone
-      applianceName: name of appliance
-      applianceId: applianceId in redux
       locationName: name of location
       locationId: locationId in redux
     }
@@ -539,8 +467,6 @@ export const getMapOfCrownstonesInAllSpheresByStoneId = function(state) {
       name: stone name in config
       sphereId: sphere id that contains stone
       stoneConfig: config of stone
-      applianceName: name of appliance
-      applianceId: applianceId in redux
       locationName: name of location
       locationId: locationId in redux
     }
@@ -562,8 +488,6 @@ export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
       name: stone name in config
       sphereId: sphere id that contains stone
       stoneConfig: config of stone
-      applianceName: name of appliance
-      applianceId: applianceId in redux
       locationName: name of location
       locationId: locationId in redux
     }
@@ -585,8 +509,6 @@ export const getMapOfCrownstonesBySphereByHandle = function(state) {
       name: stone name in config
       sphereId: sphere id that contains stone
       stoneConfig: config of stone
-      applianceName: name of appliance
-      applianceId: applianceId in redux
       locationName: name of location
       locationId: locationId in redux
     }
@@ -609,8 +531,6 @@ export const getMapOfCrownstonesInAllSpheresByCID = function(state) {
       name: stone name in config
       sphereId: sphere id that contains stone
       stoneConfig: config of stone
-      applianceName: name of appliance
-      applianceId: applianceId in redux
       locationName: name of location
       locationId: locationId in redux
     }
@@ -622,7 +542,6 @@ export const getMapOfCrownstonesInAllSpheresByIBeacon = function(state) {
     let sphereId = sphereIds[i];
     let stoneIds = Object.keys(state.spheres[sphereId].stones);
     let locations = state.spheres[sphereId].locations;
-    let appliances = state.spheres[sphereId].appliances;
     let iBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
 
     for (let j = 0; j < stoneIds.length; j++) {
@@ -636,8 +555,6 @@ export const getMapOfCrownstonesInAllSpheresByIBeacon = function(state) {
         name: stoneConfig.name,
         sphereId: sphereId,
         stoneConfig: stoneConfig,
-        applianceName: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? appliances[stoneConfig.applianceId].config.name : null,
-        applianceId: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? stoneConfig.applianceId : null,
         locationName: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? locations[stoneConfig.locationId].config.name : null,
         locationId: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? stoneConfig.locationId : null
       };
@@ -657,7 +574,6 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
     let sphereId = sphereIds[i];
     let stoneIds = Object.keys(state.spheres[sphereId].stones);
     let locations = state.spheres[sphereId].locations;
-    let appliances = state.spheres[sphereId].appliances;
 
     if (sphereMap) {
       map[sphereId] = {};
@@ -674,8 +590,6 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
         name: stoneConfig.name,
         sphereId: sphereId,
         stoneConfig: stoneConfig,
-        applianceName: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? appliances[stoneConfig.applianceId].config.name : null,
-        applianceId: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? stoneConfig.applianceId : null,
         locationName: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? locations[stoneConfig.locationId].config.name : null,
         locationId: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? stoneConfig.locationId : null
       };

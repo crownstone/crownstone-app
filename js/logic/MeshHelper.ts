@@ -94,22 +94,6 @@ export class MeshHelper {
       // update the used channels.
       LOG.mesh('MeshHelper: Dispatching ', 'multiSwitchPackets ', multiSwitchPackets);
       return BluenetPromiseWrapper.multiSwitch(multiSwitchPackets)
-        .then(() => {
-          // log all the multiswitches
-          for (let i = 0; i < multiSwitchInstructions.length; i++) {
-            let command = multiSwitchInstructions[i];
-            core.eventBus.emit("NEW_ACTIVITY_LOG", {
-              command:     "multiswitch",
-              commandUuid: command.commandUuid,
-              connectedTo: this.connectedStoneId,
-              target:      command.stoneId,
-              timeout:     command.timeout,
-              intent:      command.intent,
-              state:       command.state,
-              sphereId:    this.sphereId
-            });
-          }
-        })
     }
     return null;
   }
@@ -148,20 +132,6 @@ export class MeshHelper {
       // update the used channels.
       LOG.mesh('MeshHelper: Dispatching ', 'keepAliveState w timeout:',maxTimeout, 'packs:', stoneKeepAlivePackets);
       return BluenetPromiseWrapper.meshKeepAliveState(maxTimeout, stoneKeepAlivePackets)
-        .then(() => {
-          keepAliveInstructions.forEach((command) => {
-            core.eventBus.emit("NEW_ACTIVITY_LOG", {
-              command:     "keepAliveState",
-              commandUuid: command.commandUuid,
-              connectedTo: this.connectedStoneId,
-              target:      command.stoneId,
-              timeout:     command.timeout,
-              changeState: command.changeState,
-              state:       command.state,
-              sphereId:    this.sphereId
-            });
-          })
-        })
     }
 
     return null;
@@ -186,17 +156,6 @@ export class MeshHelper {
       });
 
       return BluenetPromiseWrapper.meshKeepAlive()
-        .then(() => {
-          this.meshInstruction.keepAlive.forEach((command) => {
-            core.eventBus.emit("NEW_ACTIVITY_LOG", {
-              command:     "keepAlive",
-              commandUuid: command.commandUuid,
-              connectedTo: this.connectedStoneId,
-              target:      command.stoneId,
-              sphereId:    this.sphereId
-            });
-          })
-        })
     }
     return null
   }

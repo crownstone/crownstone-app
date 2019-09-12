@@ -18,9 +18,9 @@ import { SeparatedItemList }    from '../components/SeparatedItemList'
 import {
   getPresentUsersInLocation,
   getCurrentPowerUsageInLocation,
-  getStonesAndAppliancesInLocation,
   canUseIndoorLocalizationInSphere,
-  enoughCrownstonesInLocationsForIndoorLocalization} from "../../util/DataUtil";
+  enoughCrownstonesInLocationsForIndoorLocalization, DataUtil
+} from "../../util/DataUtil";
 import {
   styles,
   colors,
@@ -44,9 +44,7 @@ import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvail
 import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { xUtil } from "../../util/StandAloneUtil";
-import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { Icon } from "../components/Icon";
-import { DeviceMenuIcon } from "../deviceViews/elements/DeviceMenuIcon";
 import { Background } from "../components/Background";
 
 
@@ -120,8 +118,6 @@ export class RoomOverview extends LiveComponent<any, any> {
           return this.forceUpdate()
       }
       if (
-        (change.changeAppliances)      ||
-        (change.updateApplianceConfig) ||
         (change.updateStoneConfig)     ||
         (change.updateActiveSphere)    ||
         (change.changeFingerprint)     ||
@@ -206,18 +202,18 @@ export class RoomOverview extends LiveComponent<any, any> {
     let tempStoneDataArray = [];
     stoneIds.forEach((stoneId) => {
       // do not show the same device twice
-      let handle = stones[stoneId].stone.config.handle;
+      let handle = stones[stoneId].config.handle;
       if (shownHandles[handle] === undefined) {
         tempStoneDataArray.push({stone: stones[stoneId], id: stoneId});
       }
     });
 
     // sort the order of things by crownstone Id
-    tempStoneDataArray.sort((a,b) => { return a.stone.stone.config.crownstoneId - b.stone.stone.config.crownstoneId });
+    tempStoneDataArray.sort((a,b) => { return a.stone.config.crownstoneId - b.stone.config.crownstoneId });
 
     tempStoneDataArray.forEach((stoneData) => {
       ids.push(stoneData.id);
-      stoneArray.push(stoneData.stone);
+      stoneArray.push(stoneData);
     });
 
     return { stoneArray, ids };
@@ -259,7 +255,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 
     let usage  = getCurrentPowerUsageInLocation(  state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(       state, this.props.sphereId, this.props.locationId);
-    let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
+    let stones = DataUtil.getStonesInLocation(state, this.props.sphereId, this.props.locationId);
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     this.viewingRemotely = sphere.state.present === false && seeStoneInDfuMode !== true;

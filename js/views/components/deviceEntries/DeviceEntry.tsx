@@ -135,16 +135,10 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _basePressed() {
-    let state = core.store.getState();
-    if (state.user.developer && state.development.preview) {
-      NavigationUtil.navigate( "DeviceOverviewProto",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
-    }
-    else {
-      NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
-    }
+    NavigationUtil.navigate( "DeviceOverview",{sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
   }
 
-  _getIcon(element, stone, state) {
+  _getIcon(stone, state) {
     let customStyle = undefined;
     let color = (
       StoneAvailabilityTracker.isDisabled(this.props.stoneId) === true ?
@@ -168,7 +162,7 @@ export class DeviceEntry extends Component<any, any> {
               switchDuration={2000}
               contentArray={[
                 <Icon name={'ios-warning'} size={40} color={'#fff'} style={{backgroundColor:'transparent'}} />,
-                <Icon name={element.config.icon} size={35} color={'#fff'} />,
+                <Icon name={stone.config.icon} size={35} color={'#fff'} />,
               ]}
             />
         </View>
@@ -191,7 +185,7 @@ export class DeviceEntry extends Component<any, any> {
               switchDuration={2000}
               contentArray={[
                 <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
-                <Icon name={element.config.icon} size={35} color={color} />,
+                <Icon name={stone.config.icon} size={35} color={color} />,
               ]} />
           </View>
         );
@@ -203,7 +197,7 @@ export class DeviceEntry extends Component<any, any> {
 
     return (
       <AnimatedCircle size={60} color={color} style={customStyle}>
-        <Icon name={element.config.icon} size={35} color={'#ffffff'} />
+        <Icon name={stone.config.icon} size={35} color={'#ffffff'} />
       </AnimatedCircle>
     );
   }
@@ -226,7 +220,6 @@ export class DeviceEntry extends Component<any, any> {
     let state = core.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    let element = stone.config.applianceId ? state.spheres[this.props.sphereId].appliances[stone.config.applianceId] : stone;
     let useControl = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
     let backgroundColor = this.state.backgroundColor.interpolate({
       inputRange: [0,10],
@@ -242,11 +235,11 @@ export class DeviceEntry extends Component<any, any> {
       <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
           <WrapperElement style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
-            {this._getIcon(element, stone, state)}
+            {this._getIcon(stone, state)}
           </WrapperElement>
           <WrapperElement style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
             <View style={{flexDirection: 'column'}}>
-              <Text style={{fontSize: 17, fontWeight: '100'}}>{element.config.name}</Text>
+              <Text style={{fontSize: 17, fontWeight: '100'}}>{stone.config.name}</Text>
               <DeviceEntrySubText
                 statusTextOverride={this.props.statusText}
                 statusText={this.state.statusText}

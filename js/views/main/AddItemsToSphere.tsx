@@ -4,7 +4,7 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AddItemsToSphere", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   ScrollView,
   TouchableOpacity,
@@ -15,7 +15,6 @@ import {
 
 import { screenWidth, colors, deviceStyles } from "../styles";
 import {Background} from "../components/Background";
-import {textStyle} from "../deviceViews/elements/DeviceBehaviour";
 import {IconButton} from "../components/IconButton";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
@@ -28,7 +27,7 @@ let iconSize = 100;
 
 export class AddItemsToSphere extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("Add_to_Sphere"), closeModal:true});
+    return TopBarUtil.getOptions({title: lang("Add_to_your_Sphere"), closeModal:true});
   }
 
 
@@ -49,8 +48,6 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
         <ScrollView>
           <View style={{ width: screenWidth, alignItems:'center' }}>
             <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>{ lang("Add_to_your_Sphere") }</Text>
-            <View style={{height: 0.2*iconSize}} />
             <IconButton
               name="c1-sphere"
               size={0.75*iconSize}

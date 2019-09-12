@@ -22,7 +22,6 @@ import { AnimatedBackground } from "../../../components/animated/AnimatedBackgro
 import { TopbarImitation } from "../../../components/TopbarImitation";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
-import { Background } from "../../../components/Background";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options = {

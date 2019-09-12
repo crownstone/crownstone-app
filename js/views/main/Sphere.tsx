@@ -19,7 +19,7 @@ import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Icon} from "../components/Icon";
 import { core } from "../../core";
-import { getStonesAndAppliancesInLocation } from "../../util/DataUtil";
+import { DataUtil } from "../../util/DataUtil";
 
 
 export class Sphere extends Component<any, any> {
@@ -37,7 +37,7 @@ export class Sphere extends Component<any, any> {
 
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
-    let floatingStones = Object.keys(getStonesAndAppliancesInLocation(state, this.props.sphereId, null)).length;
+    let floatingStones = Object.keys(DataUtil.getStonesInLocation(state, this.props.sphereId, null)).length;
     let availableStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length - floatingStones : 0);
 
     // on screen buttons are 0.11*screenWidth high.

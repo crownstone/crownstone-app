@@ -1,12 +1,3 @@
-export let BEHAVIOUR_TYPES = {
-  NEAR:       'onNear',
-  AWAY:       'onAway',
-  HOME_ENTER: 'onHomeEnter',
-  HOME_EXIT:  'onHomeExit',
-  ROOM_ENTER: 'onRoomEnter',
-  ROOM_EXIT:  'onRoomExit',
-};
-
 export let STONE_TYPES = {
   plug:          "PLUG",
   builtin:       "BUILTIN",

@@ -153,9 +153,6 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
   }
 
   // _debugPrints(sphereId, connections, edgeId, stones) {
-  //   let element1 = Util.data.getElement(core.store, sphereId, connections[edgeId].from, stones[connections[edgeId].from]);
-  //   let element2 = Util.data.getElement(core.store, sphereId, connections[edgeId].to,   stones[connections[edgeId].to]);
-  //
   //   let stoneName0 = stones[connections[edgeId].from].config.name;
   //   let stoneName1 = stones[connections[edgeId].to].config.name;
   //
@@ -206,9 +203,8 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
         locationIcon = location.config.icon;
         locationTitle = location.config.name;
       }
-      let element = Util.data.getElement(core.store, sphereId, stoneId, stone);
 
-      this.nodeData[stoneId] = {locationIcon: locationIcon, deviceIcon: element.config.icon, locationTitle:locationTitle, element: element, stone:stone};
+      this.nodeData[stoneId] = {locationIcon: locationIcon, deviceIcon: stone.config.icon, locationTitle:locationTitle, stone:stone};
 
       //  if a stone is not in a mesh, do not show any stored connections
       if (!stone.config.meshNetworkId) { return; }

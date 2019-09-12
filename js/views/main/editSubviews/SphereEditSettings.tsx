@@ -16,7 +16,6 @@ import {colors, } from "../../styles";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {CLOUD} from "../../../cloud/cloudAPI";
 import {Bluenet} from "../../../native/libInterface/Bluenet";
-import {getStonesAndAppliancesInSphere} from "../../../util/DataUtil";
 import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
@@ -229,7 +228,7 @@ lang("_Are_you_sure_you_want_to__body"),
 [{text:lang("_Are_you_sure_you_want_to__left")},
         {
 text:lang("_Are_you_sure_you_want_to__right"), onPress:() => {
-          let stones = getStonesAndAppliancesInSphere(state, this.props.sphereId);
+          let stones = state.spheres[this.props.sphereId].stones;
           let stoneIds = Object.keys(stones);
           if (stoneIds.length > 0) {
             Alert.alert(

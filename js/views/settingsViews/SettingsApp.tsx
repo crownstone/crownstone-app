@@ -17,7 +17,6 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import {colors, } from '../styles'
 import {Util} from "../../util/Util";
-import {KeepAliveHandler} from "../../backgroundProcesses/KeepAliveHandler";
 import {LocationHandler} from "../../native/localization/LocationHandler";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
@@ -50,26 +49,7 @@ export class SettingsApp extends LiveComponent<any, any> {
   }
 
   componentWillUnmount() {
-    let currentKeepAliveState = this._getKeepAliveState();
-    if (currentKeepAliveState !== this.initialKeepAliveState) {
-      if (currentKeepAliveState === true) {
-        KeepAliveHandler.fireTrigger();
-      }
-      else {
-        let state = core.store.getState();
-        KeepAliveHandler.clearCurrentKeepAlives();
-        LocationHandler._removeUserFromAllRooms(state, state.user.userId);
-      }
-    }
-
     this.unsubscribe();
-
-    const store = core.store;
-    let state = store.getState();
-    let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
-    if (!tapToToggleCalibration && state.app.tapToToggleEnabled) {
-      core.eventBus.emit("CalibrateTapToToggle");
-    }
   }
 
   
@@ -118,31 +98,6 @@ export class SettingsApp extends LiveComponent<any, any> {
       items.push({label: lang("If_indoor_localization_is"), type: 'explanation', below: true});
     }
 
-
-
-
-
-    items.push({label: lang("BATTERY_USAGE"), type: 'explanation', alreadyPadded: true, below: false});
-    items.push({
-      label: lang("Use_Heartbeat"),
-      value: state.app.keepAlivesEnabled && state.app.indoorLocalizationEnabled,
-      disabled: !state.app.indoorLocalizationEnabled,
-      type: 'switch',
-      icon: <IconButton name="ios-heart" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
-      callback:(newValue) => {
-        store.dispatch({
-          type: 'UPDATE_APP_SETTINGS',
-          data: {keepAlivesEnabled: newValue}
-        });
-      }});
-    if (state.app.indoorLocalizationEnabled) {
-      items.push({label: lang("The_heartbeat_is_part_of_"),
-        type: 'explanation', below: true});
-    }
-    else {
-      items.push({label: lang("The_heartbeat_is_part_of_t"),
-        type: 'explanation', below: true});
-    }
 
     items.push({
       label: lang("Use_Indoor_localization"),

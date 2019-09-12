@@ -6,7 +6,6 @@ import { FileUtil } from "../../util/FileUtil";
 import { TokenStore } from "./cloudApiBase";
 import { user } from "./user";
 import { stones } from "./stones";
-import { appliances } from "./appliances";
 import { locations } from "./locations";
 import { core } from "../../core";
 import { CLOUD } from "../cloudAPI";
@@ -206,7 +205,6 @@ export const spheres = {
     let sphereId = TokenStore.sphereId;
 
     let promises      = [];
-    let applianceData = [];
     let stoneData     = [];
     let locationData  = [];
 
@@ -217,13 +215,6 @@ export const spheres = {
         }).catch((err) => {})
     );
 
-    // for every sphere we get the appliances
-    promises.push(
-      appliances.getAppliancesInSphere()
-        .then((appliances : any) => {
-          applianceData = appliances;
-        }).catch((err) => {})
-    );
 
     // for every sphere, we get the locations
     promises.push(
@@ -236,9 +227,6 @@ export const spheres = {
     return Promise.all(promises)
       .then(() => {
         let deletePromises = [];
-        applianceData.forEach((appliance) => {
-          deletePromises.push(CLOUD.forSphere(sphereId).deleteAppliance(appliance.id));
-        });
 
         stoneData.forEach((stone) => {
           deletePromises.push(CLOUD.forSphere(sphereId).deleteStone(stone.id));

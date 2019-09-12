@@ -21,14 +21,6 @@ type stringMap = { [proptype: string] : string } | {}
 
 type PromiseCallback = (any) => Promise<any>
 
-interface ActivityContainer {
-  [key: string]: {
-    logData : transferNewToCloudStoneData[],
-    newRangeData : transferNewToCloudStoneData[],
-    updatedRangeData : transferNewToCloudStoneData[],
-  }
-}
-
 interface color {
   hex:string,
   rgb?:{r:number,g:number,b:number},

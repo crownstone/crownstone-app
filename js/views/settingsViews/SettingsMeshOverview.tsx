@@ -103,7 +103,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
         }
         networks[key].push({
           location: locationId === null ? null : state.spheres[sphereId].locations[locationId],
-          element: Util.data.getElement(core.store, sphereId, null, stone) // we get away with using no stone id since it is only used for self repair. Without ID, the self repair won't do anything.
+          stone: stone
         });
       });
     });
@@ -222,8 +222,8 @@ export class Network extends Component<any, any> {
       items.push(
         <View key={'items'+i} style={{width: width, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', position:'relative', left:-5}}>
           <IconCircle icon={dataPoint.location ? dataPoint.location.config.icon : 'c2-pluginFilled'} size={this.nodeHeight} backgroundColor={colors.green.hex} color={colors.csBlue.hex} borderColor={colors.csBlue.hex} style={{position:'relative', top:0, left:10}} />
-          <IconCircle icon={dataPoint.element.config.icon}  size={40} backgroundColor={colors.csBlue.hex} color="#fff" borderColor={colors.csBlue.hex} />
-          <Text style={{paddingLeft:10, color:colors.white.hex, backgroundColor:'transparent'}}>{dataPoint.element.config.name}</Text>
+          <IconCircle icon={dataPoint.stone.config.icon}  size={40} backgroundColor={colors.csBlue.hex} color="#fff" borderColor={colors.csBlue.hex} />
+          <Text style={{paddingLeft:10, color:colors.white.hex, backgroundColor:'transparent'}}>{dataPoint.stone.config.name}</Text>
         </View>
       );
       if (this.props.connected !== false) {

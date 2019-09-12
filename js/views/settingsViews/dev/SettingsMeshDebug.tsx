@@ -45,7 +45,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
     this.unsubscribe();
   }
 
-  _pushCrownstoneItem(items, sphereId, element, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
+  _pushCrownstoneItem(items, sphereId, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
     if (stone && stone.state.state > 0 && StoneAvailabilityTracker.isDisabled(stoneId) === false) {
       backgroundColor = colors.green.hex
@@ -55,12 +55,12 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
     }
     items.push({
       mediumIcon: <IconCircle
-        icon={element ? element.config.icon : 'ios-analytics'}
+        icon={stone ? stone.config.icon : 'ios-analytics'}
         size={52}
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: lang("Any",element,element.config.name),
+      label: lang("Any",stone,stone.config.name),
       subtext: subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',
@@ -158,9 +158,8 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
         locationTitle = location.config.name;
         locationColor = colors.iosBlue.hex;
       }
-      let element = Util.data.getElement(store, sphereId, stoneId, stone);
       if (StoneAvailabilityTracker.isDisabled(stoneId) === false) {
-        this._pushCrownstoneItem(items, sphereId, element, stone, stoneId, locationTitle, locationColor);
+        this._pushCrownstoneItem(items, sphereId, stone, stoneId, locationTitle, locationColor);
       }
     });
 

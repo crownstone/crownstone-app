@@ -1,15 +1,11 @@
 import { combineReducers }      from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
-import { updateToggleState, toggleState, toggleStateAway } from './shared'
-import powerUsageReducer        from './stoneSubReducers/powerUsage'
-import scheduleReducer          from './stoneSubReducers/schedule'
 import ruleReducer              from './stoneSubReducers/rules'
 import meshReducer              from './stoneSubReducers/mesh'
-import activityLogsReducer      from './stoneSubReducers/activityLog'
-import activityRangesReducer    from './stoneSubReducers/activityRange'
 import reachabilityReducer      from './stoneSubReducers/reachability'
 import lastUpdatedReducer       from './stoneSubReducers/lastUpdated'
 import stoneKeyReducer          from './stoneSubReducers/stoneKeys'
+import abilityReducer           from './stoneSubReducers/abilities'
 import { STONE_TYPES } from "../../../Enums";
 
 let defaultSettings = {
@@ -24,25 +20,21 @@ let defaultSettings = {
     handle: undefined,
 
     cloudId: null,
-    dimmingEnabled: false,
-    dimmingAvailable: false,
-    switchCraft: false,
 
     firmwareVersion: null,
     firmwareVersionSeenInOverview: null,
     bootloaderVersion: null,
     hardwareVersion: null,
 
-    onlyOnWhenDark: false,
-
     dfuResetRequired: false,
     locationId: null,
+
     macAddress: undefined,
     meshNetworkId: null,
-    tapToToggle: true,
+
     hidden: false,
     locked: false,
-    applianceId: null,
+
     updatedAt: 1,
   },
   lastUpdated: {
@@ -53,33 +45,29 @@ let defaultSettings = {
     state: 0.0,
     previousState: 0.0,
     currentUsage: 0,
+    dimmingAvailable: false,
     powerFactor: null,
     updatedAt: 1
   },
   reachability: {
     lastSeen: null,
   },
-  schedules: { // this schedule will be overruled by the appliance if applianceId is not undefined.
-    updatedAt: 1
-  },
   rules: {
     // id: behaviourWrapper
   },
   abilities: {
-    dimmingEnabled: false,
-    dimmingStatePreference: false,
-    switchCraftEnabled: false,
-    switchCraftPulseSwitch: false,
-    switchCraftDoubleTapDimming: false,
-
-  },
-  behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-    onHomeEnter: { /* toggleState */ },
-    onHomeExit:  { /* toggleState */ },
-    onRoomEnter: { /* toggleState */ },
-    onRoomExit:  { /* toggleState */ },
-    onNear:      { /* toggleState */ },
-    onAway:      { /* toggleState */ },
+    dimming: {
+      enabled: false,
+      synced: true,
+    },
+    switchcraft: {
+      enabled: false,
+      synced: true,
+    },
+    tapToToggle: {
+      enabled: false,
+      synced: true,
+    },
   },
   errors: {
     overCurrent: false,
@@ -90,16 +78,7 @@ let defaultSettings = {
     dimmerOffFailure: false,
     hasError: false,
   },
-  powerUsage: {
-    //day as string: 2017-05-01 : { cloud: {...}, data: [] }
-  },
   mesh: {
-
-  },
-  activityLogs: {
-
-  },
-  activityRanges: {
 
   },
   keys: {
@@ -114,18 +93,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       if (action.data) {
         let newState = {...state};
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
-        return newState;
-      }
-      return state;
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
-      if (action.data) {
-        let newState = {...state};
-        newState.updatedAt       = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -169,19 +136,15 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
     case 'UPDATE_STONE_CONFIG_TRANSIENT':
       if (action.data) {
         let newState = {...state};
-        newState.applianceId       = update(action.data.applianceId,       newState.applianceId);
         newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);
         newState.uid               = update(action.data.uid,               newState.uid);
         newState.cloudId           = update(action.data.cloudId,           newState.cloudId);
-        newState.dimmingEnabled    = update(action.data.dimmingEnabled,    newState.dimmingEnabled);
-        newState.dimmingAvailable  = update(action.data.dimmingAvailable,  newState.dimmingAvailable);
         newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
         newState.bootloaderVersion = update(action.data.bootloaderVersion, newState.bootloaderVersion);
         newState.hardwareVersion   = update(action.data.hardwareVersion,   newState.hardwareVersion);
         newState.dfuResetRequired  = update(action.data.dfuResetRequired,  newState.dfuResetRequired);
         newState.handle            = update(action.data.handle,            newState.handle);
         newState.hidden            = update(action.data.hidden,            newState.hidden);
-        newState.onlyOnWhenDark    = update(action.data.onlyOnWhenDark,    newState.onlyOnWhenDark);
         newState.icon              = update(action.data.icon,              newState.icon);
         newState.iBeaconMajor      = update(action.data.iBeaconMajor,      newState.iBeaconMajor);
         newState.iBeaconMinor      = update(action.data.iBeaconMinor,      newState.iBeaconMinor);
@@ -190,8 +153,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.macAddress        = update(action.data.macAddress,        newState.macAddress);
         newState.meshNetworkId     = update(action.data.meshNetworkId,     newState.meshNetworkId);
         newState.name              = update(action.data.name,              newState.name);
-        newState.tapToToggle       = update(action.data.tapToToggle,       newState.tapToToggle);
-        newState.switchCraft       = update(action.data.switchCraft,       newState.switchCraft);
         newState.type              = update(action.data.type,              newState.type);
         newState.updatedAt         = getTime(action.data.updatedAt);
         return newState;
@@ -259,67 +220,6 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
 };
 
 
-let behaviourReducerOnHomeEnter = (state = toggleState, action : any = {}) => {
-  switch (action.type) {
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
-      return updateToggleState(state,action);
-    case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, toggleState);
-    default:
-      return state;
-  }
-};
-let behaviourReducerOnHomeExit = (state = toggleStateAway, action : any = {}) => {
-  switch (action.type) {
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
-      return updateToggleState(state,action);
-    case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, toggleStateAway);
-    default:
-      return state;
-  }
-};
-let behaviourReducerOnRoomEnter = (state = toggleState, action : any = {}) => {
-  switch (action.type) {
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
-      return updateToggleState(state,action);
-    case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, toggleState);
-    default:
-      return state;
-  }
-};
-let behaviourReducerOnRoomExit = (state = toggleStateAway, action : any = {}) => {
-  switch (action.type) {
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
-      return updateToggleState(state,action);
-    case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, toggleStateAway);
-    default:
-      return state;
-  }
-};
-let behaviourReducerOnNear = (state = toggleState, action : any = {}) => {
-  switch (action.type) {
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
-      return updateToggleState(state,action);
-    case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, toggleState);
-    default:
-      return state;
-  }
-};
-let behaviourReducerOnAway = (state = toggleStateAway, action : any = {}) => {
-  switch (action.type) {
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
-      return updateToggleState(state,action);
-    case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, toggleStateAway);
-    default:
-      return state;
-  }
-};
-
 
 let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
   switch (action.type) {
@@ -380,30 +280,16 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
 };
 
 
-let stoneBehavioursReducer = combineReducers({
-  onHomeEnter: behaviourReducerOnHomeEnter,
-  onHomeExit:  behaviourReducerOnHomeExit,
-  onRoomEnter: behaviourReducerOnRoomEnter,
-  onRoomExit:  behaviourReducerOnRoomExit,
-  onNear:      behaviourReducerOnNear,
-  onAway:      behaviourReducerOnAway,
-});
-
-
 let combinedStoneReducer = combineReducers({
-  config:     stoneConfigReducer,
-  state:      stoneStateReducer,
-  behaviour:  stoneBehavioursReducer,
-  rules:      ruleReducer,
-  schedules:  scheduleReducer,
-  errors:     stoneErrorsReducer,
-  powerUsage: powerUsageReducer,
-  mesh:       meshReducer,
-  lastUpdated:    lastUpdatedReducer,
-  activityLogs:   activityLogsReducer,
-  activityRanges: activityRangesReducer,
-  reachability:   reachabilityReducer,
-  keys:       stoneKeyReducer,
+  config:       stoneConfigReducer,
+  state:        stoneStateReducer,
+  abilities:    abilityReducer,
+  rules:        ruleReducer,
+  errors:       stoneErrorsReducer,
+  mesh:         meshReducer,
+  lastUpdated:  lastUpdatedReducer,
+  reachability: reachabilityReducer,
+  keys:         stoneKeyReducer,
 });
 
 // stonesReducer

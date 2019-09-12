@@ -28,11 +28,7 @@ export class PermissionBase {
   editCrownstone          = false; // a
   changeBehaviour         = false; // a or m
   removeCrownstone        = false; // a
-  canChangeAppliance      = false; // a or m
-  editAppliance           = false; // a
-  removeAppliance         = false; // a
   canClearErrors          = false; // a
-  seeActivityLogs         = false; // a or m
 
   editSphere              = false; // a
   manageUsers             = false; // a or m
@@ -41,22 +37,14 @@ export class PermissionBase {
   inviteMemberToSphere    = false; // a or m
   inviteGuestToSphere     = false; // a or m
 
-  canClearAllSchedules    = false; // a
-  canAddSchedule          = false; // a or m
-  canEditSchedule         = false; // a or m
-  canSeeSchedules         = false; // a or m
-  canDeleteSchedule       = false; // a or m
-
   canCreateStones         = false; // a
   canCreateLocations      = false; // a or m
-  canCreateAppliances     = false; // a or m
   canCreateData           = false; // a or m
   canCreateSpheres        = false; // a or m
 
   canUploadDiagnostics    = false; // a or m
   canUploadStones         = false; // a or m
   canUploadLocations      = false; // a or m
-  canUploadAppliances     = false; // a or m
   canUploadData           = false; // a or m
   canUploadSpheres        = false; // a or m
 }
@@ -152,15 +140,12 @@ export class PermissionClass extends PermissionBase {
 
         this.editCrownstone          = true; // admin
         this.removeCrownstone        = true; // admin
-        this.editAppliance           = true; // admin
-        this.removeAppliance         = true; // admin
         this.canClearErrors          = true; // admin
 
         this.editSphere              = true; // admin
         this.deleteSphere            = true; // admin
         this.inviteAdminToSphere     = true; // admin
 
-        this.canClearAllSchedules    = true; // admin
         this.canLockCrownstone       = true; // admin
         this.canUnlockCrownstone     = true; // admin
         this.canEnableDimming        = true; // admin
@@ -171,30 +156,20 @@ export class PermissionClass extends PermissionBase {
         this.setStoneTime            = true; // admin and member
         this.manageUsers             = true; // admin and member
         this.moveCrownstone          = true; // admin and member
-        this.seeActivityLogs         = true; // admin and member
 
         this.inviteMemberToSphere    = true; // admin and member
         this.inviteGuestToSphere     = true; // admin and member
 
         this.canUploadStones         = true; // admin and member
         this.canUploadLocations      = true; // admin and member
-        this.canUploadAppliances     = true; // admin and member
         this.canUploadData           = true; // admin and member
         this.canUploadSpheres        = true; // admin and member
         this.canUploadDiagnostics    = true; // admin and member
 
         this.canCreateStones         = true; // admin and member
         this.canCreateLocations      = true; // admin and member
-        this.canCreateAppliances     = true; // admin and member
         this.canCreateData           = true; // admin and member
         this.canCreateSpheres        = true; // admin and member
-
-        this.canAddSchedule          = true; // admin and member
-        this.canEditSchedule         = true; // admin and member
-        this.canSeeSchedules         = true; // admin and member
-        this.canDeleteSchedule       = true; // admin and member
-
-        this.canChangeAppliance      = true; // admin and member
 
         // spheres
         this.canEditSphere           = true; // admin and member

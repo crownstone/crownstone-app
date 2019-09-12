@@ -268,9 +268,7 @@ export class ProblemWithLocalization extends Component<any, any> {
     }
     else {
       let stone = stones[this.state.userInputProblemCrownstoneId];
-      let element = Util.data.getElement(core.store, sphereId, this.state.userInputProblemCrownstoneId, stone);
       let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId) && stone.config.locationId !== null;
-      let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null && element.behaviour.onAway.active === true && element.behaviour.onNear.active === true;
 
       if (canDoIndoorLocalization) {
         return (
@@ -281,26 +279,26 @@ export class ProblemWithLocalization extends Component<any, any> {
           />
         );
       }
-      else if (nearFarDisabled) {
-        if (stone.config.nearThreshold === null) {
-          return (
-            <DiagSingleButtonGoBack
-              visible={this.state.visible}
-              header={ lang("You_will_need_to_train_th")}
-              explanation={ lang("Tap_on_the_room__tap_on_t")}
-            />
-          );
-        }
-        else {
-          return (
-            <DiagSingleButtonGoBack
-              visible={this.state.visible}
-              header={ lang("Near_further_away_behavio")}
-              explanation={lang("Tap_on_the_room__tap_on_t2")}
-            />
-          );
-        }
-      }
+      // else if (nearFarDisabled) {
+      //   if (stone.config.nearThreshold === null) {
+      //     return (
+      //       <DiagSingleButtonGoBack
+      //         visible={this.state.visible}
+      //         header={ lang("You_will_need_to_train_th")}
+      //         explanation={ lang("Tap_on_the_room__tap_on_t")}
+      //       />
+      //     );
+      //   }
+      //   else {
+      //     return (
+      //       <DiagSingleButtonGoBack
+      //         visible={this.state.visible}
+      //         header={ lang("Near_further_away_behavio")}
+      //         explanation={lang("Tap_on_the_room__tap_on_t2")}
+      //       />
+      //     );
+      //   }
+      // }
       else {
         return (
           <DiagSingleButtonGoBack
@@ -409,33 +407,6 @@ export class ProblemWithLocalization extends Component<any, any> {
     }
   }
 
-  _handleThingsTurnOff() {
-    // check how many users in sphere
-    let state = core.store.getState();
-    let presentSphereId = Util.data.getPresentSphereId(state);
-
-    let sphere = state.spheres[presentSphereId];
-    let multipleUsers = Object.keys(sphere.users).length > 1;
-    if (multipleUsers) {
-      return (
-        <DiagSingleButtonGoBack
-          visible={this.state.visible}
-          header={lang("We_have_recently_added_an2")}
-          explanation={ lang("You_can_find_the_Activity")}
-        />
-      );
-    }
-    else {
-      return (
-        <DiagSingleButtonGoBack
-          visible={this.state.visible}
-          header={ lang("We_have_recently_added_an")}
-          explanation={ lang("You_can_find_it_in_the_st")}
-        />
-      );
-    }
-    // activity log.
-  }
 
   _handleMultiUser() {
     return (
@@ -479,7 +450,6 @@ export class ProblemWithLocalization extends Component<any, any> {
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'room_level_inaccurate'}); }); },
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'near_far'  }); }); },
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'tap_to_toggle'}); }); },
-            () => { this._changeContent(() => { this.setState({userInputProblemType: 'things_turn_off'}); }); },
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'multi_user'}); }); },
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'when_dark' }); }); },
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'other'     }); }); },
@@ -498,9 +468,6 @@ export class ProblemWithLocalization extends Component<any, any> {
     }
     else if (this.state.userInputProblemType === 'tap_to_toggle') {
       return this._handleTapToToggle();
-    }
-    else if (this.state.userInputProblemType === 'things_turn_off') {
-      return this._handleThingsTurnOff();
     }
     else if (this.state.userInputProblemType === 'multi_user') {
       return this._handleMultiUser();

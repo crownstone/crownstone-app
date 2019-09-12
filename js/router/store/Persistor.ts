@@ -5,6 +5,7 @@ import {LOG_LEVEL} from "../../logging/LogLevels";
 import {PersistorUtil} from "./PersistorUtil";
 
 const LEGACY_BASE_STORAGE_KEY = 'CrownstoneStore_';
+const MIGRATION_PROGRESS_STORAGE_KEY = 'CrownstoneMigrationProgress';
 export const HISTORY_PREFIX = '_@$:';
 export const HISTORY_CYCLE_SIZE = 10;
 
@@ -65,6 +66,114 @@ export class Persistor {
         let userKeys = PersistorUtil.extractUserKeys(allKeys, this.userId);
         return AsyncStorage.multiRemove(userKeys)
       })
+  }
+
+
+  /**
+   * The PathObject can use _id_ as wildcard
+   *  { spheres : { _id_: stones : { _id_ : activityLogs}}}
+   *
+   *  This method will write a file with validationKeys. These can be checked beforehand to see if we have to actually do anything.
+   *
+   * @param pathObject
+   */
+  destroyDataFields(pathObjects : any[], verificationKey) {
+    let progressData : string = null;
+    return AsyncStorage.getItem(MIGRATION_PROGRESS_STORAGE_KEY)
+      .then((data) : any => {
+        progressData = data;
+        return this._destroyDataFields(pathObjects);
+        if (!data) {
+          return this._destroyDataFields(pathObjects);
+        }
+        else {
+          let dataArr = data.split(";");
+          if (dataArr.indexOf(verificationKey) === -1) {
+            return this._destroyDataFields(pathObjects);
+          }
+        }
+        return false;
+      })
+      .then((haveToPersist) => {
+        if (haveToPersist === false) {
+          return;
+        }
+
+        let newValue = progressData + ";" + verificationKey;
+        if (!progressData) {
+          newValue = verificationKey;
+        }
+        return AsyncStorage.setItem(MIGRATION_PROGRESS_STORAGE_KEY, newValue)
+      })
+      .catch((err) => {
+        console.warn("destroyDataFields ERROR: ", err)
+      })
+  }
+
+  // this method actually does the work
+  _destroyDataFields(pathObjects : any[]) {
+    return AsyncStorage.getAllKeys()
+      .then((allKeys) => {
+        let keysToDestroy = {}; // this is map to ensure that we do not delete a key twice
+        for (let i = 0; i < pathObjects.length; i++) {
+          this._selectMatchingKeys(pathObjects[i], allKeys, keysToDestroy);
+        }
+        return AsyncStorage.multiRemove(Object.keys(keysToDestroy))
+      })
+  }
+
+  _getPathStructureFromPathObject(pathObject) {
+    let structure = [];
+    let parser = function(obj, arr) {
+      if (typeof obj === 'object') {
+        let key = Object.keys(obj)[0]
+        arr.push(key);
+        if (typeof obj[key] === 'object') {
+          parser(obj[key],arr);
+        }
+        else {
+          arr.push(obj[key])
+        }
+      }
+    }
+
+    if (typeof pathObject === 'object') {
+      parser(pathObject, structure);
+    }
+    else {
+      return [pathObject]
+    }
+
+    return structure;
+  }
+
+  _selectMatchingKeys(pathObject: any, allKeys : string[], keysToDestroy: any) {
+    let pathStructure = this._getPathStructureFromPathObject(pathObject);
+
+    console.log(pathObject, pathStructure)
+    for ( let i = 0; i < allKeys.length; i++ ) {
+      let key = allKeys[i]
+      if (keysToDestroy[key]) { continue; }
+
+      let keyArr = key.split(".");
+      for (let j = 0; j < pathStructure.length && j < keyArr.length -1; j++) {
+        if (pathStructure[j] === "_id_") {
+          continue;
+        }
+
+        if (keyArr[j+1] !== pathStructure[j]) {
+          if (keyArr[j+1].split("_@$")[0] !== pathStructure[j]) {
+            break;
+          }
+        }
+
+        if (j === pathStructure.length - 1) {
+          keysToDestroy[key] = true;
+        }
+      }
+
+
+    }
   }
 
   endSession() : Promise<void> {
@@ -135,6 +244,7 @@ export class Persistor {
         }
       })
       .then((initialState) => {
+        console.log("INITIALSTATE", initialState)
         if (abortHydration === false) {
           LOGd.store("Persistor: Initial state obtained for hydration:", initialState);
           this.store.dispatch({type:"HYDRATE", state: initialState, __logLevel: LOG_LEVEL.verbose });
@@ -217,6 +327,7 @@ export class Persistor {
     LOGd.store("Persistor: Hydration v2 Step1, gettings all keys.");
     return AsyncStorage.getAllKeys()
       .then((allKeys) => {
+        console.log("Persistor: all keys found:", allKeys);
         LOGd.store("Persistor: all keys found:", allKeys);
 
         // get the keys for this user from the list of all keys.
@@ -413,10 +524,6 @@ export class Persistor {
         let locationIds = Object.keys(state.spheres[sphereId].locations);
         locationIds.forEach((locationId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId: locationId});});
       }
-      if (state.spheres[sphereId].appliances) {
-        let applianceIds = Object.keys(state.spheres[sphereId].appliances);
-        applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
-      }
       if (state.spheres[sphereId].users) {
         let userIds = Object.keys(state.spheres[sphereId].users);
         userIds.forEach((userId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId: userId});});
@@ -482,14 +589,11 @@ export class Persistor {
             ID: {
               config: DIRECT,
               state: DIRECT,
-              behaviour: DIRECT,
-              schedules: PER ID,
               errors: DIRECT,
               powerUsage: PER ID
             },
           }
           messages:   DIRECT,
-          appliances: {ID}  <-- per ID
         }
       }
       events: DIRECT,
@@ -512,10 +616,8 @@ export class Persistor {
       'spheres'                  : true,
       'spheres.{id}'             : true,
       'spheres.{id}.locations'   : true,
-      'spheres.{id}.appliances'  : true,
       'spheres.{id}.stones'      : true,
       'spheres.{id}.stones.{id}' : true,
-      'spheres.{id}.stones.{id}.powerUsage': true,
     };
 
     let keyValueWrites = [] as string[][];

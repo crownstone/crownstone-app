@@ -14,8 +14,6 @@ import {
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
 
-import {
-  getStonesAndAppliancesInLocation} from "../../util/DataUtil";
 import { screenHeight, tabBarHeight, topBarHeight, } from '../styles'
 import { RoomExplanation }        from '../components/RoomExplanation';
 import { SphereDeleted }          from "../static/SphereDeleted";
@@ -25,6 +23,7 @@ import { Background } from "../components/Background";
 import { DeviceEntryBasic } from "../components/deviceEntries/DeviceEntryBasic";
 import { RoomList } from "../components/RoomList";
 import { OverlayUtil } from "../overlays/OverlayUtil";
+import { DataUtil } from "../../util/DataUtil";
 
 
 export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
@@ -50,7 +49,6 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
       let change = data.change;
 
       if (
-        (change.updateApplianceConfig) ||
         (change.updateStoneConfig) ||
         (change.changeFingerprint) ||
         (change.stoneUsageUpdated && change.stoneUsageUpdated.sphereIds[this.props.sphereId]) ||
@@ -125,7 +123,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
       return <SphereDeleted/>
     }
 
-    let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, null);
+    let stones = DataUtil.getStonesInLocation(state, this.props.sphereId, null);
 
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
     let amountOfStonesInRoom = Object.keys(stones).length;

@@ -1,7 +1,6 @@
 import { CLOUD }                    from '../../cloudAPI'
 import {LOG, LOGe, LOGw} from '../../../logging/Log'
 import { AppUtil }                  from "../../../util/AppUtil";
-import { cleanupPowerUsage, syncPowerUsage }   from "./syncPowerUsage";
 import { syncEvents }               from "./syncEvents";
 import { NotificationHandler }      from "../../../backgroundProcesses/NotificationHandler";
 import { UserSyncer }               from "./modelSyncs/UserSyncer";
@@ -14,7 +13,6 @@ import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 import { Sentry }                   from "react-native-sentry";
 import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
-import { cleanupActivity }          from "./cleanActivityLogs";
 import { core } from "../../../core";
 import { CloudPoller } from "../../../logic/CloudPoller";
 
@@ -125,21 +123,6 @@ export const sync = {
         LOG.info("Sync: START Preferences sync.");
         let preferenceSyncer = new PreferenceSyncer(actions, [], globalCloudIdMap);
         return preferenceSyncer.sync(state);
-      })
-      .then(() => {
-        LOG.info("Sync: DONE Preferences sync.");
-        LOG.info("Sync: START syncPowerUsage.");
-        return syncPowerUsage(state, actions);
-      })
-      .then(() => {
-        LOG.info("Sync: DONE syncPowerUsage.");
-        LOG.info("Sync: START cleanupPowerUsage.");
-        return cleanupPowerUsage(state, actions);
-      })
-      .then(() => {
-        LOG.info("Sync: DONE cleanupPowerUsage.");
-        LOG.info("Sync: START cleanupActivityLog.");
-        return cleanupActivity(state, actions);
       })
       // FINISHED SYNCING
       .then(() => {

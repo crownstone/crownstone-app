@@ -84,10 +84,8 @@ export class SettingsFactoryResetStep2 extends Component<any, any> {
 
   _getDescription(stoneInfo) {
     let description = stoneInfo.name;
-    if (stoneInfo.applianceName)
-      description +=  " with " + stoneInfo.applianceName;
     if (stoneInfo.locationName)
-      description +=  " in " + stoneInfo.applianceName;
+      description +=  " in " + stoneInfo.locationName;
     return description;
   }
 

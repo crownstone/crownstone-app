@@ -6,8 +6,8 @@ import installationReducer from './reducers/installation'
 import appReducer          from './reducers/app'
 import developmentReducer  from './reducers/development'
 // import preferencesReducer  from "./reducers/preferences";
-
 // crownstoneReducer
+
 export default (state : any = {}, action : any = {}) => {
   // clearing should only happen once we logged out through the store manager. The state of the old user
   // will be persisted.

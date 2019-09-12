@@ -18,8 +18,6 @@ let defaultState = {
   log_cloud:          LOG_LEVEL.error,
   log_nav:            LOG_LEVEL.error,
   show_rssi_values_in_mesh:   false,
-  show_full_activity_log:     false,
-  show_only_own_activity_log: false,
   nativeExtendedLogging:      false,
 
   preview: false,
@@ -61,8 +59,6 @@ export default (state = defaultState, action : any = {}) => {
         newState.broadcasting_enabled =       update(action.data.broadcasting_enabled,       newState.broadcasting_enabled);
         newState.nativeExtendedLogging =      update(action.data.nativeExtendedLogging,      newState.nativeExtendedLogging);
         newState.show_rssi_values_in_mesh =   update(action.data.show_rssi_values_in_mesh,   newState.show_rssi_values_in_mesh);
-        newState.show_full_activity_log =     update(action.data.show_full_activity_log,     newState.show_full_activity_log);
-        newState.show_only_own_activity_log = update(action.data.show_only_own_activity_log, newState.show_only_own_activity_log);
         return newState;
       }
       return state;

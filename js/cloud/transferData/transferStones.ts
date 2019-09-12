@@ -26,9 +26,7 @@ let fieldMap : fieldMap = [
   {local: 'json',               cloud: 'json', localToCloudOnly: true},
 
   // this is custom inserted.
-  {local: 'applianceId',        cloud: 'localApplianceId', cloudToLocalOnly: true},
   {local: 'locationId',         cloud: 'localLocationId',  cloudToLocalOnly: true},
-  {local: 'cloudApplianceId',   cloud: 'applianceId',      localToCloudOnly: true},
   {local: 'cloudLocationId',    cloud: 'locationId',       localToCloudOnly: true},
 
   // used for local config
@@ -48,10 +46,6 @@ export const transferStones = {
     let payload = {};
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
-
-    if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud && data.localData.behaviour) {
-      payload['json'] = JSON.stringify(data.localData.behaviour);
-    }
 
     return CLOUD.forSphere(data.cloudSphereId).createStone(payload)
       .then((result) => {

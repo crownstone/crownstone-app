@@ -168,12 +168,6 @@ import { Platform } from "react-native";
   // The time between batch uploads to the cloud.
   export const CLOUD_BATCH_UPDATE_INTERVAL = 10; // s
 
-  // The amount of time to store the history of the power usage of stones.
-  export const HISTORY_PERSISTENCE = 24*3600*1000; // ms
-
-  // The amount of time to store the history of the activity logs of stones.
-  export const ACTIVITY_LOG_HISTORY_PERSISTENCE = 1.5*24*3600*1000; // ms
-
   // Interval in which the phone tells the Crownstone what time it is!
   export const STONE_TIME_REFRESH_INTERVAL = 5 * 3600 * 1000; // 5 hours in ms
 

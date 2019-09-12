@@ -126,7 +126,6 @@ export class SyncingSphereItemBase extends SyncingBase {
 
 export function getGlobalIdMap() : globalIdMap {
   return {
-    appliances:  {},
     devices:     {},
     locations:   {},
     messages:    {},

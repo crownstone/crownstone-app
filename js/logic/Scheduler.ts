@@ -462,9 +462,6 @@ class SchedulerClass {
         // TODO: currently only for state, generalization is required.
         this._addActionIfDispatch(actionsToDispatch, action, sphere.stones[action.stoneId].state);
       }
-      else if (action.applianceId !== undefined && sphere.appliances[action.applianceId]) {
-        actionsToDispatch.push(action);
-      }
       else if (action.locationId !== undefined && sphere.locations[action.locationId]) {
         actionsToDispatch.push(action);
       }

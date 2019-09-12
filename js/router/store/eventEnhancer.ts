@@ -12,7 +12,6 @@ import { BATCH } from "./reducers/BatchReducer";
  *      locationIds:{},
  *      sphereIds:{xxx: true},
  *      stoneIds:{},
- *      applianceIds:{xxx: true}
  *    }
  * The concept is that you can clearly check the sort of change and if it affects you.
  *
@@ -30,7 +29,7 @@ export function EventEnhancer({ getState }) {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
     let eventData = {};
-    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}, messageIds:{} , scheduleIds:{}, activityLogIds: {}, toonIds:{}};
+    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, messageIds:{} , scheduleIds:{}, toonIds:{}};
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         if (action.__noEvents !== true) {
@@ -62,10 +61,7 @@ function checkAction(action, affectedIds) {
   if (action.locationId)     { affectedIds.locationIds[action.locationId]       = true; }
   if (action.sphereId)       { affectedIds.sphereIds[action.sphereId]           = true; }
   if (action.stoneId)        { affectedIds.stoneIds[action.stoneId]             = true; }
-  if (action.applianceId)    { affectedIds.applianceIds[action.applianceId]     = true; }
   if (action.messageId)      { affectedIds.messageIds[action.messageId]         = true; }
-  if (action.scheduleId)     { affectedIds.scheduleIds[action.scheduleId]       = true; }
-  if (action.activityLogId)  { affectedIds.activityLogIds[action.activityLogId] = true; }
   if (action.toonId)         { affectedIds.toonIds[action.toonId]               = true; }
 
   switch (action.type) {
@@ -74,30 +70,9 @@ function checkAction(action, affectedIds) {
       eventStatus['updateActiveSphere'] = affectedIds; break;
     case 'UPDATE_APP_STATE':
       eventStatus['updateAppState'] = affectedIds; break;
-    case 'ADD_APPLIANCE':
-      eventStatus['addAppliance'] = affectedIds;
-      eventStatus['changeAppliances'] = affectedIds;
-    case 'UPDATE_APPLIANCE_CONFIG':
-      eventStatus['updateApplianceConfig'] = affectedIds; break;
     case 'ADD_LINKED_DEVICES':
     case 'UPDATE_LINKED_DEVICES':
     case 'REMOVE_LINKED_DEVICES':
-      break;
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear':
-    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
-      eventStatus['updateApplianceBehaviour'] = affectedIds; break;
-    case 'ADD_APPLIANCE_SCHEDULE':
-    case 'UPDATE_APPLIANCE_SCHEDULE':
-    case 'REMOVE_APPLIANCE_SCHEDULE':
-      break;
-    case 'REMOVE_APPLIANCE':
-      eventStatus['removeAppliance'] = affectedIds;
-      eventStatus['changeAppliances'] = affectedIds;
-      eventStatus['updateApplianceConfig'] = affectedIds;
       break;
     case 'USER_ENTER_LOCATION':
     case 'USER_EXIT_LOCATION':
@@ -171,18 +146,6 @@ function checkAction(action, affectedIds) {
       eventStatus['stoneUsageUpdated'] = affectedIds; break;
     case 'UPDATE_STONE_REMOTE_TIME':
       eventStatus['stoneTimeUpdated'] = affectedIds; break;
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
-      eventStatus['updateStoneBehaviour'] = affectedIds; break;
-    case 'ADD_STONE_SCHEDULE':
-    case 'REMOVE_STONE_SCHEDULE':
-      eventStatus['changeStoneSchedule'] = affectedIds;
-    case 'UPDATE_STONE_SCHEDULE':
-      eventStatus['updateStoneSchedule'] = affectedIds; break;
     case 'REMOVE_STONE':
       eventStatus['removeStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
@@ -248,55 +211,40 @@ function checkAction(action, affectedIds) {
     case 'REMOVE_MESH_LINK':
     case 'SET_MESH_INDICATOR':
       eventStatus['meshIndicatorUpdated'] = affectedIds; break;
-    case "CLOUD_EVENT_REMOVE_APPLIANCES":
     case "CLOUD_EVENT_REMOVE_LOCATIONS":
     case "CLOUD_EVENT_REMOVE_STONES":
     case "CLOUD_EVENT_REMOVE_USER":
-    case "CLOUD_EVENT_REMOVE_SCHEDULES":
     case "CLOUD_EVENT_REMOVE_INSTALLATIONS":
     case "CLOUD_EVENT_REMOVE_DEVICES":
     case "CLOUD_EVENT_REMOVE_MESSAGES":
     case "CLOUD_EVENT_SPECIAL_USER":
-    case "CLOUD_EVENT_SPECIAL_APPLIANCES":
     case "CLOUD_EVENT_SPECIAL_LOCATIONS":
     case "CLOUD_EVENT_SPECIAL_STONES":
-    case "CLOUD_EVENT_SPECIAL_SCHEDULES":
     case "CLOUD_EVENT_SPECIAL_INSTALLATIONS":
     case "CLOUD_EVENT_SPECIAL_DEVICES":
     case "CLOUD_EVENT_SPECIAL_MESSAGES":
-    case "FINISHED_CREATE_APPLIANCES":
     case "FINISHED_CREATE_LOCATIONS":
     case "FINISHED_CREATE_STONES":
-    case "FINISHED_CREATE_SCHEDULES":
     case "FINISHED_CREATE_INSTALLATIONS":
     case "FINISHED_CREATE_DEVICES":
     case "FINISHED_CREATE_MESSAGES":
-    case "FINISHED_UPDATE_APPLIANCES":
     case "FINISHED_UPDATE_LOCATIONS":
     case "FINISHED_UPDATE_STONES":
-    case "FINISHED_UPDATE_SCHEDULES":
     case "FINISHED_UPDATE_INSTALLATIONS":
     case "FINISHED_UPDATE_DEVICES":
     case "FINISHED_UPDATE_MESSAGES":
-    case "FINISHED_REMOVE_APPLIANCES":
     case "FINISHED_REMOVE_LOCATIONS":
     case "FINISHED_REMOVE_STONES":
-    case "FINISHED_REMOVE_SCHEDULES":
     case "FINISHED_REMOVE_INSTALLATIONS":
     case "FINISHED_REMOVE_DEVICES":
     case "FINISHED_REMOVE_MESSAGES":
     case "FINISHED_SPECIAL_USER":
-    case "FINISHED_SPECIAL_APPLIANCES":
     case "FINISHED_SPECIAL_LOCATIONS":
     case "FINISHED_SPECIAL_STONES":
-    case "FINISHED_SPECIAL_SCHEDULES":
     case "FINISHED_SPECIAL_INSTALLATIONS":
     case "FINISHED_SPECIAL_DEVICES":
     case "FINISHED_SPECIAL_MESSAGES":
-    case "UPDATE_ACTIVITY_RANGE_CLOUD_ID":
     case "UPDATE_STONE_TIME_STATE":
-    case "UPDATE_SYNC_ACTIVITY_TIME":
-    case "UPDATE_ACTIVITY_RANGE":
       break;
     case "ADD_TOON":
     case "TOON_UPDATE_SETTINGS":
@@ -304,13 +252,10 @@ function checkAction(action, affectedIds) {
     case "REMOVE_TOON":
     case "REMOVE_ALL_TOONS":
       eventStatus['updatedToon'] = affectedIds; break;
-    case "UPDATE_SCHEDULE_CLOUD_ID":
     case "UPDATE_MESSAGE_CLOUD_ID":
-    case "UPDATE_APPLIANCE_CLOUD_ID":
     case "UPDATE_LOCATION_CLOUD_ID":
     case "UPDATE_STONE_CLOUD_ID":
     case "UPDATE_SPHERE_CLOUD_ID":
-    case "UPDATE_ACTIVITY_LOG_CLOUD_ID":
       eventStatus['updatedCloudIds'] = affectedIds; break;
     case "UPDATE_STONE_REACHABILITY":
     case "UPDATE_STONE_PREVIOUS_SWITCH_STATE":
@@ -319,11 +264,6 @@ function checkAction(action, affectedIds) {
       eventStatus['stoneUsageUpdatedTransient'] = affectedIds; break;
     case "USER_UPDATE_PICTURE":
       break;
-    case "ADD_ACTIVITY_LOG":
-    case "ADD_ACTIVITY_RANGE":
-    case "REMOVE_ACTIVITY_RANGE":
-    case "REMOVE_ACTIVITY_LOG":
-      eventStatus['stoneChangeLogs'] = affectedIds; break;
     case "ADD_SPHERE_KEY":
     case "UPDATE_SPHERE_KEY":
     case "REMOVE_SPHERE_KEY":

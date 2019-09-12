@@ -10,14 +10,10 @@ import { AddSphereTutorial }              from "../views/main/addSphereTutorial/
 import { AlexaOverview }                  from "../views/thirdParty/alexa/AlexaOverview";
 
 import { AiStart }                        from '../views/startupViews/AiStart'
-import { ApplianceSelection }             from '../views/deviceViews/ApplianceSelection'
-import { ApplianceAdd }                   from '../views/deviceViews/ApplianceAdd'
 import { AddItemsToSphere }               from '../views/main/AddItemsToSphere'
 import { CameraRollView }                 from '../views/cameraViews/CameraRollView'
 import { DeviceOverview }                 from '../views/deviceViews/DeviceOverview'
 import { DeviceEdit }                     from '../views/deviceViews/DeviceEdit'
-import { DeviceBehaviourEdit }            from '../views/deviceViews/DeviceBehaviourEdit'
-import { DeviceScheduleEdit }             from '../views/deviceViews/DeviceScheduleEdit'
 import { DeviceIconSelection }            from '../views/deviceViews/DeviceIconSelection'
 import { LoginSplash }                    from '../views/startupViews/LoginSplash'
 import { Login }                          from '../views/startupViews/Login'
@@ -98,7 +94,6 @@ import { LockOverlay }                       from "../views/overlays/LockOverlay
 import { SimpleOverlay }                     from "../views/overlays/SimpleOverlay";
 import { TapToToggleCalibration }            from "../views/overlays/TapToToggleCalibration";
 import { OptionPopup }                       from "../views/overlays/OptionPopup";
-import { DeviceOverviewProto }               from "../views/deviceViews/DeviceOverviewProto";
 import { DeviceAbilities }                   from "../views/deviceViews/elements/DeviceAbilities";
 
 
@@ -118,16 +113,11 @@ export const Views = {
   AddSphereTutorial:                 AddSphereTutorial,
   AiStart:                           AiStart,
   AlexaOverview:                     AlexaOverview,
-  ApplianceAdd:                      ApplianceAdd,
-  ApplianceSelection:                ApplianceSelection,
   CameraRollView:                    CameraRollView,
-  DeviceBehaviourEdit:               DeviceBehaviourEdit,
   DeviceEdit:                        DeviceEdit,
   DeviceIconSelection:               DeviceIconSelection,
-  DeviceOverview:                    DeviceOverview,
   DeviceAbilities:                   DeviceAbilities,
-  DeviceOverviewProto:               DeviceOverviewProto,
-  DeviceScheduleEdit:                DeviceScheduleEdit,
+  DeviceOverview:                    DeviceOverview,
   DeviceSmartBehaviour:              DeviceSmartBehaviour,
   DeviceSmartBehaviour_Editor:       DeviceSmartBehaviour_Editor,
   DeviceSmartBehaviour_TypeSelector: DeviceSmartBehaviour_TypeSelector,

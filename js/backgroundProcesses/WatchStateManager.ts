@@ -11,7 +11,7 @@ class WatchStateManagerClass {
         // listen to events that might change the name of the stones, or added and removed stones.
         core.eventBus.on("databaseChange", (data) => {
           let change = data.change;
-          if (change.changeStones || change.updateStoneCoreConfig || change.changeAppliances || change.updateApplianceConfig) {
+          if (change.changeStones || change.updateStoneCoreConfig) {
             this._updateNames();
           }
         });
@@ -32,13 +32,6 @@ class WatchStateManagerClass {
       Object.keys(sphere.stones).forEach((stoneId) => {
         let stone = sphere.stones[stoneId];
         let name = stone.config.name;
-        if (stone.config.applianceId) {
-          let appliance = sphere.appliances[stone.config.applianceId];
-          if (appliance) {
-            name = appliance.config.name;
-          }
-        }
-
         nameObject[sphereId][stone.config.crownstoneId] = name;
       });
     });

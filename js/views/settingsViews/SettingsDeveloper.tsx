@@ -203,26 +203,6 @@ lang("_No_device_Id___There_was_body"),
         NavigationUtil.navigate( "SettingsLocalizationDebug");
       }});
 
-    items.push({label: lang("ACTIVITY_LOGS"), type: 'explanation'});
-    items.push({
-      label: lang("Show_Full_Activity_Log"),
-      value: dev.show_full_activity_log,
-      type: 'switch',
-      icon: <IconButton name="md-calendar" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
-      callback:(newValue) => {
-        store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_full_activity_log: newValue }});
-      }});
-    if (dev.show_full_activity_log) {
-      items.push({
-        label: lang("Show_only_own_activity"),
-        value: dev.show_only_own_activity_log,
-        type: 'switch',
-        icon: <IconButton name="c1-people" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkerPurple.hex}} />,
-        callback:(newValue) => {
-          store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_only_own_activity_log: newValue }});
-        }});
-    }
-
 
     let broadcastLevels = [];
     for (let i = -16; i <= 14; i = i+2) {

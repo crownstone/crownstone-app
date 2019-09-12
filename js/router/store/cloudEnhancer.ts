@@ -1,18 +1,14 @@
 import { CLOUD }         from '../../cloud/cloudAPI'
 import { Util }          from '../../util/Util'
-import {LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
-import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
-import {transferSchedules} from "../../cloud/transferData/transferSchedules";
-import {transferUser} from "../../cloud/transferData/transferUser";
-import {transferStones} from "../../cloud/transferData/transferStones";
-import {transferAppliances} from "../../cloud/transferData/transferAppliances";
-import {transferSpheres} from "../../cloud/transferData/transferSpheres";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {LOG_LEVEL} from "../../logging/LogLevels";
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {transferLocations} from "../../cloud/transferData/transferLocations";
+import { LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
+import { transferUser} from "../../cloud/transferData/transferUser";
+import { transferStones} from "../../cloud/transferData/transferStones";
+import { transferSpheres} from "../../cloud/transferData/transferSpheres";
+import { Permissions} from "../../backgroundProcesses/PermissionManager";
+import { LOG_LEVEL} from "../../logging/LogLevels";
+import { MapProvider} from "../../backgroundProcesses/MapProvider";
+import { transferLocations} from "../../cloud/transferData/transferLocations";
 import { core } from "../../core";
-import { xUtil } from "../../util/StandAloneUtil";
 import { BATCH } from "./reducers/BatchReducer";
 
 export function CloudEnhancer({ getState }) {
@@ -80,31 +76,11 @@ function handleAction(action, returnValue, newState, oldState) {
     case 'USER_UPDATE':
       handleUserInCloud(action, newState);
       break;
-    // case 'UPDATE_APPLIANCE_CONFIG':
-    //   // handleApplianceInCloud(action, newState);
-    //   break;
-    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter':
-    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit':
-    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter':
-    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
-    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear':
-    // case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
-    //   // handleApplianceBehaviourInCloud(action, newState);
-    //   break;
-
 
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
     // case 'UPDATE_MESH_NETWORK_ID':
       handleStoneInCloud(action, newState);
-      break;
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
-    case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
-      handleStoneBehaviourInCloud(action, newState);
       break;
     case 'UPDATE_STONE_LOCATION':
       handleStoneLocationUpdateInCloud(action, newState, oldState);
@@ -137,13 +113,6 @@ function handleAction(action, returnValue, newState, oldState) {
     case "UPDATE_STONE_SWITCH_STATE":
       handleStoneState(action, newState, oldState, true);
       break;
-
-    case "ADD_STONE_SCHEDULE":
-      handleStoneScheduleAdd(action, newState); break;
-    case "UPDATE_STONE_SCHEDULE":
-      handleStoneScheduleUpdate(action, newState); break;
-    case "REMOVE_STONE_SCHEDULE":
-      handleStoneScheduleRemoval(action, newState, oldState); break;
 
     case "REMOVE_MESSAGE":
       handleMessageRemove(action, newState, oldState); break;
@@ -206,8 +175,6 @@ function _handleStone(action, state) {
   let stone  = sphere.stones[action.stoneId];
 
   let localDataForCloud = {...stone};
-  if (stone.config.applianceId) { localDataForCloud.config['cloudApplianceId'] = MapProvider.local2cloudMap.appliances[stone.config.applianceId] || stone.config.applianceId; }
-  else                          { localDataForCloud.config['cloudApplianceId'] = null; }
 
   if (stone.config.locationId)  { localDataForCloud.config['cloudLocationId']  = MapProvider.local2cloudMap.locations[stone.config.locationId]   || stone.config.locationId;  }
   else                          { localDataForCloud.config['cloudLocationId'] = null; }
@@ -237,33 +204,6 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
   CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
 }
 
-function handleApplianceInCloud(action, state) {
-  let sphere   = state.spheres[action.sphereId];
-  let appliance = sphere.appliances[action.applianceId];
-
-  transferAppliances.updateOnCloud({
-    localId:       action.stoneId,
-    localData:     appliance,
-    localSphereId: action.sphereId,
-    cloudSphereId: sphere.config.cloudId     || action.sphereId, // we used to have the same ids locally and in the cloud.
-    cloudId:       appliance.config.cloudId  || action.applianceId,
-  }).catch(() => {});
-}
-
-function handleApplianceBehaviourInCloud(action, state) {
-  let sphere    = state.spheres[action.sphereId];
-  let appliance = sphere.appliances[action.applianceId];
-
-  if (Permissions.inSphere(action.sphereId).setBehaviourInCloud) {
-    transferAppliances.updateOnCloud({
-      localId:       action.stoneId,
-      localData:     appliance,
-      localSphereId: action.sphereId,
-      cloudSphereId: sphere.config.cloudId       || action.sphereId, // we used to have the same ids locally and in the cloud.
-      cloudId:       appliance.config.cloudId    || action.applianceId,
-    }).catch(() => {});
-  }
-}
 
 function handleLocationInCloud(action, state) {
   if (action.data.picture) {
@@ -362,22 +302,6 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 
     CLOUD.forStone(stoneId).updateStoneSwitchState(stone.state.state).catch(() => {});
   }
-
-  if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
-    let stone = state.spheres[sphereId].stones[stoneId];
-    let data  = { power: stone.state.currentUsage, powerFactor: stone.state.powerFactor, timestamp: action.updatedAt };
-
-    let dateId = xUtil.getDateHourId(action.updatedAt);
-
-    // get the index the new item will have. This is used to mark them as synced. If there is no previous item, it is 0.
-    let oldStone = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] || null;
-    let indexOfNewItem = oldStone && oldStone.powerUsage[dateId] && oldStone.powerUsage[dateId].data.length || 0;
-
-    if (stone.config.applianceId) {
-      data['applianceId'] = MapProvider.local2cloudMap.appliances[stone.config.applianceId] || stone.config.applianceId;
-    }
-    BatchUploader.addPowerData(dateId, sphereId, stoneId, indexOfNewItem, data);
-  }
 }
 
 function handleDeviceInCloud(action, state) {
@@ -465,63 +389,3 @@ function handleMessageRemove(action, state, oldState) {
   }
 }
 
-
-function handleStoneScheduleAdd(action, state) {
-  let sphere = state.spheres[action.sphereId];
-  let stone = sphere.stones[action.stoneId];
-  let newSchedule = stone.schedules[action.scheduleId];
-
-  let actions = [];
-
-  let payload = {
-    localId: action.scheduleId,
-    localStoneId: action.stoneId,
-    localSphereId: action.sphereId,
-    localData: newSchedule,
-    cloudSphereId: sphere.config.cloudId || action.sphereId,
-    cloudStoneId: stone.config.cloudId || action.stoneId,
-  };
-
-  transferSchedules.createOnCloud(actions, payload)
-    .then(() => {
-      core.eventBus.emit("submitCloudEvent", actions);
-    }).catch((err) => {});
-
-}
-
-
-function handleStoneScheduleUpdate(action, state) {
-  let sphere = state.spheres[action.sphereId];
-  let stone = sphere.stones[action.stoneId];
-  let newSchedule = stone.schedules[action.scheduleId];
-
-  if (!newSchedule.cloudId) {
-    return handleStoneScheduleAdd(action, state);
-  }
-
-  let payload = {
-    localId: action.scheduleId,
-    localData: newSchedule,
-    cloudSphereId: sphere.config.cloudId || action.sphereId,
-    cloudStoneId: stone.config.cloudId || action.stoneId,
-    cloudId: newSchedule.cloudId,
-  };
-
-  transferSchedules.updateOnCloud(payload).catch(() => {});
-
-}
-
-function handleStoneScheduleRemoval(action, state, oldState) {
-  let oldSchedule = oldState.spheres[action.sphereId].stones[action.stoneId].schedules[action.scheduleId];
-
-  let payload = {
-    type: 'CLOUD_EVENT_REMOVE_SCHEDULES',
-    sphereId: action.sphereId,
-    stoneId: action.stoneId,
-    id: action.scheduleId,
-    localId: action.scheduleId,
-    cloudId: oldSchedule && oldSchedule.cloudId || null, // if old does not exist, this is a create event which does not have a cloudId
-  };
-
-  core.eventBus.emit("submitCloudEvent", payload);
-}

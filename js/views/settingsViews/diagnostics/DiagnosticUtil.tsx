@@ -385,10 +385,8 @@ export class TestResult extends Component<any, any> {
 }
 
 
-
 export function nameFromSummary(summary) {
   let name = summary.name;
-  if (summary.applianceName) { name =  summary.applianceName;         }
   if (summary.locationName ) { name +=  lang("_in_",summary.locationName); }
   return name;
 }

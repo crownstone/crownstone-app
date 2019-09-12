@@ -5,7 +5,6 @@ import { Util }             from "../../util/Util";
 import { Scheduler }        from "../../logic/Scheduler";
 import { LocationHandler }  from "../localization/LocationHandler";
 import { StoneMeshTracker } from "./StoneMeshTracker";
-import { StoneBehaviour }   from "./StoneBehaviour";
 import { StoneStoreManager } from "./StoneStoreManager";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
@@ -37,7 +36,6 @@ export class StoneEntity {
   store;
   storeManager : StoneStoreManager;
   meshTracker : StoneMeshTracker;
-  behaviour : StoneBehaviour;
 
   lastKnownTimestamp = 0;
   lastKnownUniqueElement;
@@ -58,7 +56,6 @@ export class StoneEntity {
     this.sphereId = sphereId;
     this.stoneId = stoneId;
 
-    this.behaviour   = new StoneBehaviour(  store, sphereId, stoneId);
     this.meshTracker = new StoneMeshTracker(store, sphereId, stoneId);
 
     this.subscribe();
@@ -145,7 +142,6 @@ export class StoneEntity {
   destroy() {
     this.storeManager.clearActions(this.stoneId);
     this.subscriptions.forEach((unsubscribe) => { unsubscribe(); });
-    this.behaviour.destroy();
     this.meshTracker.destroy();
   }
 
@@ -171,8 +167,6 @@ export class StoneEntity {
     else {
       LOGd.advertisements("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
     }
-
-    this._handleBehaviour(state, stone, ibeaconPackage.rssi);
 
     // fallback to ensure we never miss an enter event caused by a bug in ios 10
     if (FALLBACKS_ENABLED) {
@@ -351,11 +345,6 @@ export class StoneEntity {
 
     // update the state entity
     this._handleAdvertisementContent(stone, advertisement);
-  }
-
-  _handleBehaviour(state, stone, rssi) {
-    // update the behaviour controller.
-    this.behaviour.update(state, stone, rssi);
   }
 
 
@@ -652,7 +641,6 @@ export class StoneEntity {
         state: switchState,
         currentUsage: measuredUsage,
         powerFactor: powerFactor,
-        applianceId: stone.config.applianceId,
       },
       updatedAt: currentTime,
       __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.

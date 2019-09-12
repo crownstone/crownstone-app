@@ -14,8 +14,7 @@ import {
 
 
 import { screenWidth, availableScreenHeight, deviceStyles } from "../../styles";
-import {Graph} from "../../components/graph/Graph";
-import {textStyle} from "./DeviceBehaviour";
+import { Graph } from "../../components/graph/Graph";
 import { core } from "../../../core";
 import { NativeBus } from "../../../native/libInterface/NativeBus";
 
@@ -71,8 +70,8 @@ export class DevicePowerCurve extends LiveComponent<any, any> {
         <Graph width={screenWidth} height={availableScreenHeight/2} data={this.data} dataHash={this.hash}/>
         <View style={{flex:5}}>
           <ScrollView style={{flex:1}}>
-            <Text style={[textStyle.explanation, {fontWeight:'bold'}]}>{ lang("Sneak_preview_of_the_dyna") }</Text>
-            <Text style={textStyle.explanation}>{ lang("Stand_near_the_Crownstone") }</Text>
+            <Text style={[deviceStyles.explanation, {fontWeight:'bold'}]}>{ lang("Sneak_preview_of_the_dyna") }</Text>
+            <Text style={deviceStyles.explanation}>{ lang("Stand_near_the_Crownstone") }</Text>
           </ScrollView>
         </View>
       </View>

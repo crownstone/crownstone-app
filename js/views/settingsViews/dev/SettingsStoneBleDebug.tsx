@@ -113,12 +113,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
 
     let largeLabel = 'Examining Sphere';
     if (stone) {
-      let element = Util.data.getElement(core.store, this.props.sphereId, this.props.stoneId, stone);
-
       largeLabel = "Examining \"" + stone.config.name + "\"\nMAC address: \"" + stone.config.macAddress;
-      if (stone.config.applianceId) {
-        largeLabel += "\nConnected device: " + element.config.name
-      }
     }
 
     items.push({label: largeLabel, type: 'largeExplanation'});

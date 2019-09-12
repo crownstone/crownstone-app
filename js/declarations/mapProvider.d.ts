@@ -5,8 +5,6 @@ interface StoneMap {
   name: string,
   sphereId: string,
   stoneConfig: any,
-  applianceName?: string,
-  applianceId?: string,
   locationName?: string,
   locationId?: string
 }

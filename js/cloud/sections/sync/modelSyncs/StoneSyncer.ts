@@ -6,11 +6,8 @@ import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {transferStones} from "../../../transferData/transferStones";
 import {CLOUD} from "../../../cloudAPI";
 import {SyncingSphereItemBase} from "./SyncingBase";
-import {ScheduleSyncer} from "./ScheduleSyncer";
 import {LOGe, LOGw} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
-import {ActivityLogSyncer} from "./ActivityLogSyncer";
-import {ActivityRangeSyncer} from "./ActivityRangeSyncer";
 import { xUtil } from "../../../../util/StandAloneUtil";
 
 export class StoneSyncer extends SyncingSphereItemBase {
@@ -77,7 +74,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
         localId = xUtil.getUUID();
 
         let cloudDataForLocal = {...stone_from_cloud};
-        cloudDataForLocal['localApplianceId'] = this._getLocalApplianceId(stone_from_cloud.applianceId);
         cloudDataForLocal['localLocationId']  = this._getLocalLocationId(locationLinkId);
         transferStones.createLocal(this.actions, {
           localSphereId: this.localSphereId,
@@ -85,7 +81,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
           cloudId: stone_from_cloud.id,
           cloudData: cloudDataForLocal
         });
-        this._copyBehaviourFromCloud(localId, stone_from_cloud );
       }
 
       cloudIdMap[stone_from_cloud.id] = localId;
@@ -103,19 +98,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
 
   syncChildren(localId, store, stone_from_cloud) {
-    let scheduleSyncing      = new ScheduleSyncer(     this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
-    let activityLogSyncing   = new ActivityLogSyncer(  this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
-    let activityRangeSyncing = new ActivityRangeSyncer(this.actions, [], this.localSphereId, this.cloudSphereId, localId, stone_from_cloud.id, this.globalCloudIdMap);
 
-    this.transferPromises.push(
-      scheduleSyncing.sync(store, stone_from_cloud.schedules)
-        .then(() => {
-          return activityLogSyncing.sync(store)
-        })
-        .then(() => {
-          return activityRangeSyncing.sync(store)
-        })
-    );
   }
 
 
@@ -169,7 +152,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
         if (!Permissions.inSphere(this.localSphereId).canCreateStones) { return }
 
         let localDataForCloud = {...localStone};
-        localDataForCloud.config['cloudApplianceId'] = this._getCloudApplianceId(localStone.applianceId);
         localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId( localStone.locationId);
         this.transferPromises.push(
           transferStones.createOnCloud(
@@ -184,19 +166,9 @@ export class StoneSyncer extends SyncingSphereItemBase {
   }
 
 
-  _getLocalApplianceId(cloudId) {
-    if (!cloudId) { return null; }
-    return this.globalCloudIdMap.appliances[cloudId] || null;
-  }
-
   _getLocalLocationId(cloudId) {
     if (!cloudId) { return null; }
     return this.globalCloudIdMap.locations[cloudId] || null;
-  }
-
-  _getCloudApplianceId(localId) {
-    if (!localId) { return; }
-    return this.globalLocalIdMap.appliances[localId];
   }
 
   _getCloudLocationId(localId) {
@@ -208,12 +180,10 @@ export class StoneSyncer extends SyncingSphereItemBase {
     // somehow sometimes ibeacon major and minor go missing. If this happens, redownload from cloud
     let corruptData = !stoneInState.config.iBeaconMajor || !stoneInState.config.iBeaconMinor;
 
-    let localApplianceId = this._getLocalApplianceId(stone_from_cloud.applianceId);
     let localLocationId  = this._getLocalLocationId(locationLinkId);
 
     let syncLocal = () => {
       let cloudDataForLocal = {...stone_from_cloud};
-      cloudDataForLocal['localApplianceId'] = localApplianceId;
       cloudDataForLocal['localLocationId']  = localLocationId;
       transferStones.updateLocal(this.actions, {
         localSphereId: this.localSphereId,
@@ -227,7 +197,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
       if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return }
 
       let localDataForCloud = {...stoneInState};
-      localDataForCloud.config['cloudApplianceId'] = this._getCloudApplianceId(stoneInState.applianceId);
       localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
       this.transferPromises.push(
         transferStones.updateOnCloud({
@@ -247,10 +216,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
       LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing uid.");
       syncLocal();
     }
-    else if (stoneInState.config.applianceId && localApplianceId === null) { // self repair
-      LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing applianceId.");
-      syncLocal();
-    }
     else if (stoneInState.config.locationId && localLocationId === null) {   // self repair
       LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing locationId.");
       syncLocal();
@@ -262,27 +227,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
     if (!stoneInState.config.cloudId) {
       this.actions.push({type:'UPDATE_STONE_CLOUD_ID', sphereId: this.localSphereId, stoneId: localId, data:{cloudId: stone_from_cloud.id}})
-    }
-  };
-
-
-  _copyBehaviourFromCloud(localId, stone_from_cloud) {
-    // we only download the behaviour the first time we add the stone.
-    if (stone_from_cloud.json !== undefined) {
-      let behaviour = JSON.parse(stone_from_cloud.json);
-
-      if (behaviour.onHomeEnter)
-        this.actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter', sphereId: this.localSphereId, stoneId: localId, data: behaviour.onHomeEnter });
-      if (behaviour.onHomeExit)
-        this.actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit',  sphereId: this.localSphereId, stoneId: localId, data: behaviour.onHomeExit });
-      if (behaviour.onRoomEnter)
-        this.actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter', sphereId: this.localSphereId, stoneId: localId, data: behaviour.onRoomEnter });
-      if (behaviour.onRoomExit)
-        this.actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit',  sphereId: this.localSphereId, stoneId: localId, data: behaviour.onRoomExit });
-      if (behaviour.onNear)
-        this.actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onNear', sphereId: this.localSphereId, stoneId: localId, data: behaviour.onNear });
-      if (behaviour.onAway)
-        this.actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onAway', sphereId: this.localSphereId, stoneId: localId, data: behaviour.onAway });
     }
   };
 

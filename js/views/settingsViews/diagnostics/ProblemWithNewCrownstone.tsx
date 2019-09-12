@@ -191,9 +191,6 @@ export class ProblemWithNewCrownstone extends Component<any, any> {
     }
     else if (this.state.nearestVerified === true) {
       let name = "'" + this.state.nearestStoneObject.name + "'";
-      if (this.state.nearestStoneObject.applianceName) {
-        name +=  lang("_with_device_") + this.state.nearestStoneObject.applianceName + "'";
-      }
       if (this.state.nearestStoneObject.locationName) {
         name +=  lang("_in_",this.state.nearestStoneObject.locationName);
       }

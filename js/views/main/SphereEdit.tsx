@@ -132,16 +132,16 @@ export class SphereEdit extends LiveComponent<any, any> {
       }
     });
 
-    if (spherePermissions.editSphere) {
-      items.push({
-        label: lang("Behaviour"),
-        type: 'navigation',
-        largeIcon: <IconButton name='c1-brain' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft: 3, marginRight: 7}}/>,
-        callback: () => {
-          NavigationUtil.navigate( "SphereBehaviour", {sphereId: this.props.sphereId});
-        }
-      });
-    }
+    // if (spherePermissions.editSphere) {
+    //   items.push({
+    //     label: lang("Behaviour"),
+    //     type: 'navigation',
+    //     largeIcon: <IconButton name='c1-brain' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft: 3, marginRight: 7}}/>,
+    //     callback: () => {
+    //       NavigationUtil.navigate( "SphereBehaviour", {sphereId: this.props.sphereId});
+    //     }
+    //   });
+    // }
 
     items.push({
       label: lang("Integrations"),

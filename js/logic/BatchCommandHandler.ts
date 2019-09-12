@@ -177,34 +177,13 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.getTime();
                 break;
               case 'keepAlive':
-                actionPromise = BluenetPromiseWrapper.keepAlive().then(() => {
-                  core.eventBus.emit("NEW_ACTIVITY_LOG", {
-                    command: "keepAlive",
-                    commandUuid: action.commandUuid,
-                    connectedTo: connectedStoneInfo.stoneId,
-                    target:      connectedStoneInfo.stoneId,
-                    sphereId:    connectedStoneInfo.sphereId
-                  });
-                });
+                actionPromise = BluenetPromiseWrapper.keepAlive()
                 break;
               case 'commandFactoryReset':
                 actionPromise = BluenetPromiseWrapper.commandFactoryReset();
                 break;
               case 'keepAliveState':
                 actionPromise = BluenetPromiseWrapper.keepAliveState(command.changeState, command.state, command.timeout)
-                  .then(() => {
-                    let com = command as any;
-                    core.eventBus.emit("NEW_ACTIVITY_LOG", {
-                      command:     "keepAliveState",
-                      commandUuid: action.commandUuid,
-                      connectedTo: connectedStoneInfo.stoneId,
-                      target:      connectedStoneInfo.stoneId,
-                      timeout:     com.timeout,
-                      changeState: com.changeState,
-                      state:       com.state,
-                      sphereId:    connectedStoneInfo.sphereId
-                    });
-                  });
                 break;
               case 'getSchedules':
                 actionPromise = BluenetPromiseWrapper.getSchedules();
@@ -244,18 +223,7 @@ class BatchCommandHandlerClass {
                 break;
               case 'multiSwitch':
                 let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, timeout: command.timeout, intent: command.intent, state: command.state};
-                actionPromise = BluenetPromiseWrapper.multiSwitch([stoneSwitchPacket]).then(() => {
-                  core.eventBus.emit("NEW_ACTIVITY_LOG", {
-                    command:     "multiswitch",
-                    commandUuid: action.commandUuid,
-                    connectedTo: connectedStoneInfo.stoneId,
-                    target:      connectedStoneInfo.stoneId,
-                    timeout:     stoneSwitchPacket.timeout,
-                    intent:      stoneSwitchPacket.intent,
-                    state:       stoneSwitchPacket.state,
-                    sphereId:    connectedStoneInfo.sphereId
-                  });
-                });
+                actionPromise = BluenetPromiseWrapper.multiSwitch([stoneSwitchPacket])
                 break;
               case 'toggle':
                 actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 1.0);

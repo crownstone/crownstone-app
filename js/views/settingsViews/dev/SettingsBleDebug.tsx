@@ -88,12 +88,11 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
         locationTitle = location.config.name;
         locationColor = colors.iosBlue.hex;
       }
-      let element = Util.data.getElement(store, sphereId, stoneId, stone);
 
-      this._pushCrownstoneItem(items, sphereId, element, stone, stoneId, locationTitle, locationColor);
+      this._pushCrownstoneItem(items, sphereId, stone, stoneId, locationTitle, locationColor);
     });
 
-    this._pushCrownstoneItem(items, sphereId, null, null, null, null, colors.csOrange.hex);
+    this._pushCrownstoneItem(items, sphereId, null, null, null, colors.csOrange.hex);
 
 
     return items;
@@ -102,7 +101,7 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} >
-                <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

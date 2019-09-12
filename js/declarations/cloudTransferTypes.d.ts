@@ -71,7 +71,6 @@ interface keyMap {
 interface globalIdMap {
   users: keyMap,
   locations: keyMap,
-  appliances: keyMap,
   stones: keyMap,
   messages: keyMap,
   spheres: keyMap,
@@ -85,7 +84,6 @@ interface globalSphereMap {
   [key: string]: {
     users: keyMap,
     locations: keyMap,
-    appliances: keyMap,
     stones: keyMap,
     messages: keyMap,
     spheres: keyMap,

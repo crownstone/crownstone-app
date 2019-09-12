@@ -44,7 +44,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
     this.unsubscribe();
   }
 
-  _pushCrownstoneItem(items, sphereId, element, stone, stoneId) {
+  _pushCrownstoneItem(items, sphereId, stone, stoneId) {
     items.push({
       __item: <DeviceEntry
         stoneId={stoneId}
@@ -86,16 +86,11 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
 
         items.push({label: label, type:'explanation', below:false});
         let elementIds = {};
-        stoneIdsInRoom.forEach((stoneId) => {
-          let stone = stones[stoneId];
-          elementIds[stoneId] = Util.data.getElement(store, this.props.sphereId, stoneId, stone);
-        });
-        stoneIdsInRoom.sort((a,b) => { return elementIds[a].config.name > elementIds[b].config.name ? 1 : -1 });
+        stoneIdsInRoom.sort((a,b) => { return stoneIdsInRoom[a].config.name > stoneIdsInRoom[b].config.name ? 1 : -1 });
 
         stoneIdsInRoom.forEach((stoneId) => {
           let stone = stones[stoneId];
-          let element = elementIds[stoneId];
-          this._pushCrownstoneItem(items, this.props.sphereId, element, stone, stoneId);
+          this._pushCrownstoneItem(items, this.props.sphereId, stone, stoneId);
         })
       }
     };

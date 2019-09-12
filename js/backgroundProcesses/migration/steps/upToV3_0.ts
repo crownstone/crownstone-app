@@ -42,42 +42,6 @@ function moveKeysInDatabase() {
   core.store.batchDispatch(actions);
 }
 
-function setApplianceIconsInStone() {
-  let state = core.store.getState();
-  let actions = [];
-
-  DataUtil.callOnAllStones(state, (sphereId, stoneId, stone) => {
-    if (Permissions.inSphere(sphereId).editCrownstone) {
-      // check if we have an appliance
-      let name = stone.config.name;
-      let icon = stone.config.icon;
-      // if icon is not a default!!
-      if (icon !== 'c2-pluginFilled' && icon !== 'c2-crownstone') {
-        return;
-      }
-      if (stone.config.applianceId) {
-        let appliance = state.spheres[sphereId].appliances[stone.config.applianceId];
-        if (appliance) {
-          let applianceName = appliance.config.name;
-          let applianceIcon = appliance.config.icon;
-          if (name !== applianceName || icon !== applianceIcon) {
-            actions.push({
-              type: "UPDATE_STONE_CONFIG",
-              sphereId: sphereId,
-              stoneId: stoneId,
-              data: {
-                name: appliance.config.name || name,
-                icon: appliance.config.icon || icon,
-                applianceId: null,
-              }
-            });
-          }
-        }
-      }
-    }
-  });
-  core.store.batchDispatch(actions);
-}
 
 function clearHardwareVersions() {
   core.store.dispatch({
@@ -95,7 +59,6 @@ export const upTo3_0 = function() {
   let appVersion = DeviceInfo.getReadableVersion();
   if (xUtil.versions.isLower(state.app.migratedDataToVersion, appVersion) || !state.app.migratedDataToVersion) {
     moveKeysInDatabase();
-    setApplianceIconsInStone();
     clearHardwareVersions();
     core.store.dispatch({type: "UPDATE_APP_SETTINGS", data: {migratedDataToVersion: appVersion}});
   }

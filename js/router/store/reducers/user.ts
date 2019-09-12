@@ -18,13 +18,9 @@ let defaultSettings = {
   seenTapToToggleDisabledDuringSetup: false,
   appIdentifier: null,
   developer: false,
-  uploadDiagnostics: true,
   uploadLocation: true,
   uploadSwitchState: true,
-  uploadPowerUsage: false,
-  uploadHighFrequencyPowerUsage: false,
   uploadDeviceDetails: true,
-  uploadActivityLogs: true,
   updatedAt: 1,
 };
 
@@ -97,11 +93,7 @@ export default (state = defaultSettings, action : any = {}) => {
         newState.pictureId              = update(action.data.pictureId,  newState.pictureId);
         newState.uploadLocation         = update(action.data.uploadLocation,      newState.uploadLocation);
         newState.uploadSwitchState      = update(action.data.uploadSwitchState,   newState.uploadSwitchState);
-        newState.uploadPowerUsage       = update(action.data.uploadPowerUsage,    newState.uploadPowerUsage);
-        newState.uploadDiagnostics      = update(action.data.uploadDiagnostics,    newState.uploadDiagnostics);
-        newState.uploadHighFrequencyPowerUsage = update(action.data.uploadHighFrequencyPowerUsage,    newState.uploadHighFrequencyPowerUsage);
         newState.uploadDeviceDetails    = update(action.data.uploadDeviceDetails, newState.uploadDeviceDetails);
-        newState.uploadActivityLogs     = update(action.data.uploadActivityLogs, newState.uploadActivityLogs);
 
         if (action.type === 'USER_UPDATE') {
           newState.updatedAt = getTime(action.data.updatedAt);

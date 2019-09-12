@@ -8,15 +8,11 @@ import { Alert }                    from 'react-native';
 
 import { BluenetPromiseWrapper }    from '../libInterface/BluenetPromise';
 import { Bluenet  }                 from '../libInterface/Bluenet';
-import { BehaviourUtil }            from '../../util/BehaviourUtil';
-import { KeepAliveHandler }         from '../../backgroundProcesses/KeepAliveHandler';
-import { Scheduler }                from '../../logic/Scheduler';
 import { LOG, LOGe } from '../../logging/Log';
 import { KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
-import { BEHAVIOUR_TYPES } from "../../Enums";
 import { core } from "../../core";
 
 class LocationHandlerClass {
@@ -132,17 +128,10 @@ class LocationHandlerClass {
     // set the presence
     core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true}});
 
-    // start the keep alive run. This gives the app some time for syncing and pointing out which stones are NOT disabled.
-    Scheduler.scheduleCallback(() => {
-      KeepAliveHandler.fireTrigger();
-    }, 1000, 'sphere enter keepAlive trigger');
-
 
 
     if (sphereHasTimedOut) {
       // trigger crownstones on enter sphere
-      LOG.info('LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE', sphere.config.name);
-      BehaviourUtil.enactBehaviourInSphere(core.store, enteringSphereId, BEHAVIOUR_TYPES.HOME_ENTER);
     }
     else {
       LOG.info('LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ', timeSinceLastCrownstoneWasSeen, ' WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ', KEEPALIVE_INTERVAL*1000*1.5, ' ms');
@@ -201,10 +190,8 @@ class LocationHandlerClass {
       }
 
       core.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
-
       // used for clearing the timeouts for this room and toggling stones in this room
       LOG.info('RoomTracker: Enter room: ', locationId, ' in sphere: ', sphereId);
-      this._triggerRoomEvent(core.store, sphereId, locationId, BEHAVIOUR_TYPES.ROOM_ENTER);
     }
   }
 
@@ -215,10 +202,8 @@ class LocationHandlerClass {
     let state = core.store.getState();
     if (sphereId && locationId) {
       core.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
-
       // used for clearing the timeouts for this room
       LOG.info('RoomTracker: Exit room: ', locationId, ' in sphere: ', sphereId);
-      this._triggerRoomEvent(core.store, sphereId, locationId, BEHAVIOUR_TYPES.ROOM_EXIT);
     }
   }
 
@@ -259,20 +244,6 @@ class LocationHandlerClass {
     }
 
     return presentAtProvidedLocationId;
-  }
-
-  /**
-   * Clean up and cancel pending actions for this room, fire the enter/exit event
-   * @param store
-   * @param sphereId
-   * @param locationId
-   * @param behaviourType
-   * @param bleController
-   * @private
-   */
-  _triggerRoomEvent( store, sphereId, locationId, behaviourType, bleController? ) {
-    // fire BEHAVIOUR_TYPES.ROOM_ENTER on crownstones in room
-    BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, bleController);
   }
 
 

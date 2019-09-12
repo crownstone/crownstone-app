@@ -54,16 +54,8 @@ export class DeviceEdit extends LiveComponent<any, any> {
     if (!sphere) { return; }
     const stone = sphere.stones[this.props.stoneId];
     if (!stone) { return; }
-    let appliance = null;
-    if (stone.config.applianceId) {
-      appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
-    }
 
     this.state = {
-      applianceName: appliance && appliance.config.name || '',
-      applianceIcon: appliance && appliance.config.icon || '',
-      applianceId: stone.config.applianceId,
-
       stoneName: stone.config.name,
       stoneIcon: stone.config.icon,
       stoneType: stone.config.type,
@@ -96,8 +88,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
       }
 
       if (
-        change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
-        change.updateApplianceConfig
+        change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId]
         ) {
         if (this.deleting === false) {
           this.forceUpdate();
@@ -115,52 +106,8 @@ export class DeviceEdit extends LiveComponent<any, any> {
   constructStoneOptions(stone, state) {
     let items = [];
     let canSwitch = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
-    let hasAppliance = canSwitch && this.state.applianceId;
 
-    if (this.state.applianceId && hasAppliance) {
-      items.push({label: lang("PLUGGED_IN_DEVICE_TYPE"), type: 'explanation',  below:false});
-      items.push({
-        label: lang("Device_Type"),
-        type: 'textEdit',
-        placeholder:lang("Pick_a_name"),
-        value: this.state.applianceName,
-        callback: (newText) => {
-          this.setState({applianceName: newText});
-        }
-      });
-
-      // icon picker
-      items.push({
-        label: lang("Icon"),
-        type: 'icon',
-        value: this.state.applianceIcon,
-        callback: () => {
-         NavigationUtil.navigate( "DeviceIconSelection",{
-            icon: this.state.applianceIcon,
-            callback: (newIcon) => {
-              this.setState({applianceIcon: newIcon})
-            }
-          })
-        }
-      });
-
-      // unplug device
-      items.push({
-        label: lang("Decouple_Device_Type"),
-        type: 'button',
-        icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-        style: {color: colors.blue.hex},
-        callback: () => {
-          this.setState({showStone:true, applianceId: null});
-        }
-      });
-      items.push({label: lang("This_Crownstone_is_curren"), type: 'explanation',  below:true, style:{paddingBottom:0}});
-
-      items.push({label: lang("CURRENT_CROWNSTONE_USING_"), type: 'explanation', below: false});
-    }
-    else {
-      items.push({label: lang("CROWNSTONE"), type: 'explanation', below: false});
-    }
+    items.push({label: lang("CROWNSTONE"), type: 'explanation', below: false});
 
     items.push({
       label: lang("Name"),
@@ -274,26 +221,6 @@ export class DeviceEdit extends LiveComponent<any, any> {
     }
 
 
-    if (hasAppliance) {
-      items.push({label: lang("SELECT_WHICH_DEVICE_TYPE_"), type: 'explanation', below: false, style:{paddingTop:0}});
-      items.push({
-        label: lang("Select___"), type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
-         NavigationUtil.navigate( "ApplianceSelection",{
-            sphereId: this.props.sphereId,
-            stoneId: this.props.stoneId,
-            applianceId: this.state.applianceId,
-            callback: (applianceId) => {
-              this.setState({showStone:false, applianceId: applianceId});
-            }
-          });
-        }
-      });
-      items.push({
-        label: lang("A_Device_Type_has_it_s_ow"),
-        type: 'explanation',
-        below: true
-      });
-    }
 
     if (Permissions.inSphere(this.props.sphereId).removeCrownstone) {
       items.push({
@@ -450,10 +377,6 @@ export class DeviceEdit extends LiveComponent<any, any> {
     const store = core.store;
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-    let appliance = null;
-    if (stone.config.applianceId) {
-      appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
-    }
 
     // collect promises to handle changes in switchcraft and dim state
     let changePromises    = [];
@@ -469,8 +392,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     if (
       stone.config.name           !== this.state.stoneName      ||
       stone.config.icon           !== this.state.stoneIcon      ||
-      stone.config.tapToToggle    !== this.state.tapToToggle    ||
-      stone.config.applianceId    !== this.state.applianceId
+      stone.config.tapToToggle    !== this.state.tapToToggle
     ) {
       actions.push({
         type:'UPDATE_STONE_CONFIG',
@@ -480,21 +402,6 @@ export class DeviceEdit extends LiveComponent<any, any> {
           name: this.state.stoneName,
           icon: this.state.stoneIcon,
           tapToToggle: this.state.tapToToggle,
-          applianceId: this.state.applianceId,
-        }});
-    }
-
-    if (appliance && this.state.applianceId && (
-        appliance.config.name  !== this.state.applianceName ||
-        appliance.config.icon  !== this.state.applianceIcon
-      )) {
-      actions.push({
-        type:'UPDATE_APPLIANCE_CONFIG',
-        sphereId: this.props.sphereId,
-        applianceId: this.state.applianceId,
-        data: {
-          name: this.state.applianceName,
-          icon: this.state.applianceIcon,
         }});
     }
 

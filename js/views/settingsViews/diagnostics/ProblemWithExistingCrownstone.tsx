@@ -899,7 +899,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             lang("The_app_says_Searching___"),
             lang("I_cant_get_it_to_switch_"),
             lang("It_is_not_in_the_mesh_"),
-            lang("It_switches_unexpectedly_"),
             lang("It_only_switches_when_Im_"),
             lang("Its_behaviour_is_weird_"),
             lang("Other___")
@@ -908,7 +907,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'searching'      }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'never_switches' }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(true); this.setState({ crownstoneProblemType: 'not_in_mesh' }); }); },
-            () => { this._changeContent(() => { this.setState({ existingTestsFinished: true, crownstoneProblemType: 'unexpected_switches'   }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'only_switches_when_near' }); }); },
             () => { this._changeContent(() => { this.setState({ existingTestsFinished: true, crownstoneProblemType: 'behaviour_is_weird' }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'other' }); }); },
@@ -931,29 +929,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     }
     else if (this.state.crownstoneProblemType === 'only_switches_when_near') {
       return this._handleOnlySwitchesWhenNear();
-    }
-    else if (this.state.crownstoneProblemType === 'unexpected_switches') {
-      if (this.state.problemStoneSummary.stoneConfig.switchCraftEnabled) {
-        let explanation =  lang("To_find_the_Activity_Log_");
-        explanation += this._getSwitchCraftExplanation(state);
-        return (
-          <DiagSingleButtonGoBack
-            visible={this.state.visible}
-            header={ lang("You_can_look_at_the_Activ")}
-            explanation={explanation}
-          />
-        );
-      }
-      else {
-        return (
-          <DiagSingleButtonGoBack
-            visible={this.state.visible}
-            header={ lang("We_have_recently_added_an")}
-            explanation={ lang("You_can_find_it_in_the_st")}
-          />
-        );
-      }
-
     }
     else if (this.state.crownstoneProblemType === 'behaviour_is_weird' && this.state.weirdType === null) {
       // check for switchCraft

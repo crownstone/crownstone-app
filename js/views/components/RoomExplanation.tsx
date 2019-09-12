@@ -13,8 +13,7 @@ import {
 } from "react-native";
 
 import {
-  DataUtil, enoughCrownstonesInLocationsForIndoorLocalization,
-  getStonesAndAppliancesInLocation
+  DataUtil, enoughCrownstonesInLocationsForIndoorLocalization, getAmountOfStonesInLocation
 } from "../../util/DataUtil";
 import { colors } from '../styles'
 import { core } from "../../core";
@@ -37,7 +36,7 @@ export class RoomExplanation extends Component<any, any> {
     let boldExplanation = false;
 
     // check if we have special cases
-    let amountOfStonesInRoom = Object.keys(getStonesAndAppliancesInLocation(state, sphereId, locationId)).length;
+    let amountOfStonesInRoom = getAmountOfStonesInLocation(state, sphereId, locationId);
 
     // if the button callback is not undefined at draw time, we draw a button, not a view
     let buttonCallback = undefined;

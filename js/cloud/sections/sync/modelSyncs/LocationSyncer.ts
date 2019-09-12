@@ -157,7 +157,6 @@ export class LocationSyncer extends SyncingSphereItemBase {
     if (!hasSyncedDown) {
       if (localLocation.config.cloudId) {
         this.actions.push({ type: 'REMOVE_LOCATION', sphereId: this.localSphereId, locationId: localLocationId });
-        // We also need to make sure all items currently using this appliance will propagate the removal of this item.
         this.propagateRemoval(store, localLocationId);
       }
       else {

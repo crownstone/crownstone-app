@@ -27,7 +27,6 @@ import {ZoomInstructionOverlay}     from "./ZoomInstructionOverlay";
 import {Util} from "../../util/Util";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { getStonesAndAppliancesInLocation } from "../../util/DataUtil";
 import { PlaceFloatingCrownstonesInRoom } from "../roomViews/PlaceFloatingCrownstonesInRoom";
 import { xUtil } from "../../util/StandAloneUtil";
 import { AutoArrangeButton } from "./buttons/AutoArrangeButton";
@@ -36,6 +35,7 @@ import { CLOUD } from "../../cloud/cloudAPI";
 import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDescription";
 import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { DataUtil } from "../../util/DataUtil";
 
 
 const ZOOM_LEVELS = {
@@ -101,18 +101,15 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
       if (
-        change.changeMessageState   ||
         change.changeAppSettings    ||
         change.changeSphereState    ||
         change.changeSphereConfig   ||
         change.stoneLocationUpdated ||
         change.updateSphereUser     ||
-        change.updateStoneConfig    ||
         change.updateActiveSphere   ||
         change.updateLocationConfig ||
         change.changeFingerprint    ||
         change.changeSpheres        ||
-        change.changeStones         ||
         change.changeLocations
       ) {
         this.forceUpdate();
@@ -295,7 +292,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         }
 
         // retrofit: place all stones in a room.
-        let floatingStones = getStonesAndAppliancesInLocation(state, activeSphereId, null);
+        let floatingStones = DataUtil.getStonesInLocation(state, activeSphereId, null);
         if (
           Object.keys(floatingStones).length > 0 &&
           Permissions.inSphere(activeSphereId).moveCrownstone

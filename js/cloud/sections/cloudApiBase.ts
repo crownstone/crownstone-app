@@ -29,7 +29,6 @@ type requestType = 'query' | 'body';
 
 class TokenStoreClass {
   accessToken;
-  applianceId;
   deviceId;
   eventId;
   installationId;
@@ -195,10 +194,6 @@ function _getId(url, obj) : string {
   let devicesLocation = url.indexOf('Devices');
   if (devicesLocation !== -1 && devicesLocation < 3)
     return obj.deviceId;
-
-  let appliancesLocation = url.indexOf('Appliances');
-  if (appliancesLocation !== -1 && appliancesLocation < 3)
-    return obj.applianceId;
 
   let eventsLocation = url.indexOf('Events');
   if (eventsLocation !== -1 && eventsLocation < 3)
