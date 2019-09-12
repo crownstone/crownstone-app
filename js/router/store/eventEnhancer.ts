@@ -273,6 +273,10 @@ function checkAction(action, affectedIds) {
     case "MARK_STONE_RULE_FOR_DELETION":
     case "REMOVE_STONE_RULE":
       eventStatus['stoneChangeRules'] = affectedIds; break;
+    case "UPDATE_DIMMER":
+    case "UPDATE_SWITCHCRAFT":
+    case "UPDATE_TAP_TO_TOGGLE":
+      eventStatus['stoneChangeAbilities'] = affectedIds; break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

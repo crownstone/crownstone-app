@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
+import { getTime, update } from "../reducerUtil";
 
 let defaultAbilityFormat = {
   enabled: false,
   synced: true,
+  updatedAt: 0
 };
 
 let dimmingReducer = (state = defaultAbilityFormat, action) => {
@@ -10,6 +12,9 @@ let dimmingReducer = (state = defaultAbilityFormat, action) => {
     case 'UPDATE_DIMMER':
       if (action.data) {
         let newState = {...state};
+        newState.enabled   = update(action.data.enabled, newState.enabled);
+        newState.synced    = update(action.data.synced,  newState.synced);
+        newState.updatedAt = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -23,6 +28,9 @@ let switchcraftReducer = (state = defaultAbilityFormat, action) => {
     case 'UPDATE_SWITCHCRAFT':
       if (action.data) {
         let newState = {...state};
+        newState.enabled   = update(action.data.enabled, newState.enabled);
+        newState.synced    = update(action.data.synced,  newState.synced);
+        newState.updatedAt = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -36,6 +44,9 @@ let tapToToggleReducer = (state = defaultAbilityFormat, action) => {
     case 'UPDATE_TAP_TO_TOGGLE':
       if (action.data) {
         let newState = {...state};
+        newState.enabled   = update(action.data.enabled, newState.enabled);
+        newState.synced    = update(action.data.synced,  newState.synced);
+        newState.updatedAt = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

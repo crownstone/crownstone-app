@@ -23,6 +23,7 @@ import { DeviceMenuIcon } from "./elements/DeviceMenuIcon";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
+import { DimmerSlider } from "../components/DimmerSlider";
 
 
 export class DeviceOverview extends LiveComponent<any, any> {
@@ -30,7 +31,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
     getTopBarProps(core.store, core.store.getState(), props);
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
-
 
   storedSwitchState = 0;
   unsubscribeStoreEvents;
@@ -180,18 +180,9 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
     let currentState = stone.state.state;
 
-    if (stone.config.dimmable) {
+    if (stone.abilities.dimming.enabled) {
       return (
-        <View>
-          <View style={{height:50, width:screenWidth-50, backgroundColor: colors.white.rgba(1), borderRadius: 25}}></View>
-          <View style={{position:'absolute', left:screenWidth-160, top: -10, height:70, width:70, borderRadius:35, backgroundColor: colors.csBlueDark.rgba(1), ...styles.centered}}>
-            <View style={{width:65, height:65, backgroundColor: colors.white.hex, borderRadius: 33, ...styles.centered}}>
-              <View style={{width:60, height:60, backgroundColor: colors.csBlueDark.blend(colors.green,0.7).hex, borderRadius: 30, ...styles.centered}}>
-                <Text style={{color: colors.white.hex, fontSize: 18, fontWeight:'bold'}}>70%</Text>
-              </View>
-            </View>
-          </View>
-        </View>
+        <DimmerSlider stone={stone} />
       );
     }
     else {
@@ -329,23 +320,19 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 function getTopBarProps(store, state, props) {
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
-
   let spherePermissions = Permissions.inSphere(props.sphereId);
-
-  let rightLabel = null;
-  let rightId  = null;
-  if (spherePermissions.editCrownstone) {
-    rightLabel =  lang("Edit");
-    rightId = 'deviceEdit';
-  }
 
   NAVBAR_PARAMS_CACHE = {
     title: stone.config.name,
-    nav: {
-      id: rightId,
-      text: rightLabel,
+  }
+
+  if (spherePermissions.editCrownstone) {
+    NAVBAR_PARAMS_CACHE["nav"] = {
+      id: 'deviceEdit',
+      text:  lang("Edit"),
     }
   }
+
 
   return NAVBAR_PARAMS_CACHE;
 }
