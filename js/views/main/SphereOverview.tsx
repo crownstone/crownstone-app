@@ -36,6 +36,8 @@ import { AddCrownstoneButtonDescription } from "./buttons/AddCrownstoneButtonDes
 import { Navigation } from "react-native-navigation";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { DataUtil } from "../../util/DataUtil";
+import { RoomAddCore } from "../roomViews/RoomAddCore";
+import { Background } from "../components/Background";
 
 
 const ZOOM_LEVELS = {
@@ -288,7 +290,11 @@ export class SphereOverview extends LiveComponent<any, any> {
       else {
         // handle the case where there are no rooms added:
         if (noRooms && Permissions.inSphere(activeSphereId).addRoom) {
-          return <RoomAdd sphereId={activeSphereId} returnToRoute={ lang("Main")} height={availableScreenHeight} />
+          return (
+            <Background image={core.background.lightBlur}>
+              <RoomAddCore sphereId={activeSphereId} returnToRoute={ lang("Main")} height={availableScreenHeight} />
+            </Background>
+          )
         }
 
         // retrofit: place all stones in a room.

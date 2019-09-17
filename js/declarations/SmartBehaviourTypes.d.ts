@@ -197,7 +197,7 @@ let softFuseEvent = {
   type: "POWER_THRESHOLD_HIGHER",
   action: {
     type:"TURN_OFF",
-    fadeDuration: 900
+    fadeDuration: 0
   },
   effect: {
     type: "DISABLE_ALL_RULES"

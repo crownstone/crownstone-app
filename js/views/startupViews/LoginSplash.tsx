@@ -44,11 +44,11 @@ export class LoginSplash extends Component<any, any> {
           <View style={loginStyles.loginButtonContainer}>
             <View style={{flexDirection:'row'}}>
               <View style={{flex:1}} />
-              <TouchableOpacity onPress={() => { NavigationUtil.navigate( 'Register'); }} >
+              <TouchableOpacity onPress={() => { NavigationUtil.navigate( 'Register'); }} testID={"registerButton"}>
                 <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ lang("Register") }</Text></View>
               </TouchableOpacity>
               <View style={{flex:1}} />
-              <TouchableOpacity onPress={() => { NavigationUtil.navigate( 'Login'); }} >
+              <TouchableOpacity onPress={() => { NavigationUtil.navigate( 'Login'); }} testID={"loginButton"}>
                 <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>{ lang("Log_In") }</Text></View>
               </TouchableOpacity>
               <View style={{flex:1}} />

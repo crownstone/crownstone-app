@@ -21,13 +21,13 @@ export class AddCrownstoneButtonDescription extends Component<any, any> {
     if (xUtil.narrowScreen()) { fontSize = 17; }
 
 
-    let outerRadius = 0.15*screenWidth;
+    let outerRadius = 0.15*screenWidth + 12;
     return (
       <HiddenFadeInView
         visible={this.props.visible}
         style={{
         position:'absolute',
-        bottom: 6,
+        bottom: 0,
         right: 0,
         width: screenWidth,
         height: outerRadius,
@@ -35,7 +35,7 @@ export class AddCrownstoneButtonDescription extends Component<any, any> {
         alignItems:'center',
         padding:6,
         justifyContent:'center',
-        backgroundColor: colors.white.rgba(0.7),
+        backgroundColor: colors.white.rgba(0.5),
       }}>
         <View style={{flex:1}} />
         <Text style={{fontSize: fontSize, fontWeight:'bold', color: colors.green.hex}}>{ lang("Add_Crownstones_now_") }</Text>

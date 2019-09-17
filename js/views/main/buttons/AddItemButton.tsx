@@ -32,7 +32,7 @@ export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean
       paddingTop:10,
       flexDirection:'row',
       alignItems:'center',
-      justifyContent:'center'
+      justifyContent:'center',
     };
     let viewStyle : ViewStyle = {
       width: outerRadius,

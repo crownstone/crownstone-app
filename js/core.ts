@@ -8,7 +8,7 @@ export const core : core = {
     mainRemoteNotConnected : require('./images/backgrounds/mainBackgroundLightNotConnected.png'),
     mainDarkLogo           : require('./images/backgrounds/backgroundWLogo.png'),
     mainDark               : require('./images/backgrounds/background.png'),
-    light                  : require('./images/backgrounds/lightBackground2.png'),
+    light                  : require('./images/backgrounds/lightBackground2_blur.png'),
     lightBlur              : require('./images/backgrounds/lightBackground2_blur.png'),
     lightBlurBW            : require('./images/backgrounds/lightBackground2_blur_bw.png'),
     detailsDark            : require('./images/backgrounds/darkBackground4.png'),

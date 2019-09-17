@@ -218,16 +218,14 @@ text:lang("_Are_you_sure_you_want_to_right"), onPress:() => {
     core.store.batchDispatch(actions);
 
     NavigationUtil.dismissAllModals()
-    NavigationUtil.setRoot(Stacks.loggedIn());
   }
 
   _deleteSphere(state) {
     Alert.alert(
-lang("_Are_you_sure_you_want_to__header"),
-lang("_Are_you_sure_you_want_to__body"),
-[{text:lang("_Are_you_sure_you_want_to__left")},
-        {
-text:lang("_Are_you_sure_you_want_to__right"), onPress:() => {
+      lang("_Are_you_sure_you_want_to__header"),
+      lang("_Are_you_sure_you_want_to__body"),
+      [{text:lang("_Are_you_sure_you_want_to__left")},
+               {text:lang("_Are_you_sure_you_want_to__right"), onPress:() => {
           let stones = state.spheres[this.props.sphereId].stones;
           let stoneIds = Object.keys(stones);
           if (stoneIds.length > 0) {
@@ -246,9 +244,9 @@ text:lang("_Are_you_sure_you_want_to__right"), onPress:() => {
               .catch((err) => {
                 core.eventBus.emit('hideLoading');
                 Alert.alert(
-lang("_Could_not_delete_Sphere__header"),
-lang("_Could_not_delete_Sphere__body"),
-[{text:lang("_Could_not_delete_Sphere__left")}]);
+                  lang("_Could_not_delete_Sphere__header"),
+                  lang("_Could_not_delete_Sphere__body"),
+                  [{text:lang("_Could_not_delete_Sphere__left")}]);
               })
           }
         }}
@@ -259,7 +257,7 @@ lang("_Could_not_delete_Sphere__body"),
   render() {
     return (
       <Background image={core.background.menu} hasNavBar={false} >
-                <ScrollView>
+        <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
       </Background>
