@@ -112,7 +112,7 @@ export function HiddenFadeIn(props) {
   }
 
   return (
-    <HiddenFadeInView visible={visible} delay={props.index * 65 || 0}>
+    <HiddenFadeInView visible={visible} delay={props.index * 65 || 0} style={props.style}>
       {props.children}
     </HiddenFadeInView>
   );

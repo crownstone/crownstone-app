@@ -1,4 +1,4 @@
-import { colors, screenWidth } from "../../../../styles";
+import { colors, screenWidth } from "../../../styles";
 import { Text, TouchableOpacity } from "react-native";
 import * as React from "react";
 

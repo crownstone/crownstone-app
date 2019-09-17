@@ -3,7 +3,7 @@ import {
   TouchableOpacity,
   Text,
   View} from "react-native";
-import { colors, deviceStyles, screenWidth} from "../../../../styles";
+import { colors, deviceStyles, screenWidth} from "../../../styles";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 
 

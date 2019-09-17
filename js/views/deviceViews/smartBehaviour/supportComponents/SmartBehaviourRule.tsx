@@ -1,11 +1,11 @@
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
-import { colors, screenWidth } from "../../../../styles";
-import { SlideSideFadeInView } from "../../../../components/animated/SlideFadeInView";
-import { core } from "../../../../../core";
-import { Icon } from "../../../../components/Icon";
-import { NavigationUtil } from "../../../../../util/NavigationUtil";
+import { colors, screenWidth } from "../../../styles";
+import { SlideSideFadeInView } from "../../../components/animated/SlideFadeInView";
+import { core } from "../../../../core";
+import { Icon } from "../../../components/Icon";
+import { NavigationUtil } from "../../../../util/NavigationUtil";
 import * as React from "react";
 
 export function SmartBehaviourRule(props) {

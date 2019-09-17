@@ -3,9 +3,9 @@ import {
   AICORE_PRESENCE_TYPES,
   AICORE_TIME_DETAIL_TYPES,
   AICORE_TIME_TYPES
-} from "../../../../../Enums";
-import { MapProvider } from "../../../../../backgroundProcesses/MapProvider";
-import { core } from "../../../../../core";
+} from "../../../../Enums";
+import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
+import { core } from "../../../../core";
 import { AicoreTimeData } from "./AicoreTimeData";
 const SunCalc = require('suncalc');
 

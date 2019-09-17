@@ -1,10 +1,10 @@
 
-import { Languages } from "../../../../../Languages"
+import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RuleEditor", key)(a,b,c,d,e);
 }
-import { LiveComponent }          from "../../../../LiveComponent";
+import { LiveComponent }          from "../../../LiveComponent";
 import * as React from 'react';
 import {
   Animated,
@@ -12,16 +12,16 @@ import {
   Text,
   View, TextStyle, ViewStyle
 } from "react-native";
-import { availableScreenHeight, colors, screenWidth, styles } from "../../../../styles";
-import { SELECTABLE_TYPE } from "../../../../../Enums";
-import { RoomList } from "../../../../components/RoomList";
-import { core } from "../../../../../core";
+import { availableScreenHeight, colors, screenWidth, styles } from "../../../styles";
+import { SELECTABLE_TYPE } from "../../../../Enums";
+import { RoomList } from "../../../components/RoomList";
+import { core } from "../../../../core";
 import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
-import { xUtil } from "../../../../../util/StandAloneUtil";
+import { xUtil } from "../../../../util/StandAloneUtil";
 import { BehaviourSuggestion } from "./BehaviourSuggestion";
-import { NavigationUtil } from "../../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 
@@ -339,7 +339,7 @@ export class RuleEditor extends LiveComponent<
         this.setState({selectedDetailField: selectionDescription})
       },
       selection: this.rule.willDim() ? this.rule.getDimAmount() : exampleBehaviour.getDimAmount(),
-      image: require("../../../../../images/overlayCircles/dimmingCircleGreen.png")
+      image: require("../../../../images/overlayCircles/dimmingCircleGreen.png")
     })
   }
 
@@ -373,7 +373,7 @@ export class RuleEditor extends LiveComponent<
       themeColor: colors.lightGreen2.hex,
       allowMultipleSelections: true,
       selection: this.rule.getLocationIds(),
-      image: require("../../../../../images/overlayCircles/roomsCircle.png")
+      image: require("../../../../images/overlayCircles/roomsCircle.png")
     })
   }
 
@@ -399,7 +399,7 @@ export class RuleEditor extends LiveComponent<
         }
       },
       time: useData ? this.exampleBehaviours.time[exampleOriginField].getTime() : null,
-      image: require("../../../../../images/overlayCircles/time.png")
+      image: require("../../../../images/overlayCircles/time.png")
     })
   }
 

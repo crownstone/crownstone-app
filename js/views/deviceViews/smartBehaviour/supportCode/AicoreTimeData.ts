@@ -1,5 +1,5 @@
 import { AicoreUtil } from "./AicoreUtil";
-import { xUtil } from "../../../../../util/StandAloneUtil";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 
 export class AicoreTimeData {

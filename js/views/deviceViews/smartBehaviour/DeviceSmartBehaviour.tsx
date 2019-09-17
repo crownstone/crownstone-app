@@ -1,31 +1,31 @@
 
-import { Languages } from "../../../../Languages"
+import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
 import { DeviceSmartBehaviour_TypeSelector } from "./DeviceSmartBehaviour_TypeSelector";
-import { core } from "../../../../core";
-import { Background } from "../../../components/Background";
+import { core } from "../../../core";
+import { Background } from "../../components/Background";
 import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { TopBarUtil } from "../../../../util/TopBarUtil";
-import { Util } from "../../../../util/Util";
-import { LiveComponent } from "../../../LiveComponent";
+import { TopBarUtil } from "../../../util/TopBarUtil";
+import { Util } from "../../../util/Util";
+import { LiveComponent } from "../../LiveComponent";
 import {
   availableModalHeight,
   colors,
   deviceStyles,
   screenHeight,
   screenWidth
-} from "../../../styles";
-import { SlideFadeInView, SlideSideFadeInView } from "../../../components/animated/SlideFadeInView";
-import { WeekDayList } from "../../../components/WeekDayList";
+} from "../../styles";
+import { SlideFadeInView, SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
+import { WeekDayList } from "../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
 import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
-import { BackButtonHandler } from "../../../../backgroundProcesses/BackButtonHandler";
+import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
 
 let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 

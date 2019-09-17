@@ -150,7 +150,6 @@ export class Persistor {
   _selectMatchingKeys(pathObject: any, allKeys : string[], keysToDestroy: any) {
     let pathStructure = this._getPathStructureFromPathObject(pathObject);
 
-    console.log(pathObject, pathStructure)
     for ( let i = 0; i < allKeys.length; i++ ) {
       let key = allKeys[i]
       if (keysToDestroy[key]) { continue; }
@@ -244,7 +243,6 @@ export class Persistor {
         }
       })
       .then((initialState) => {
-        console.log("INITIALSTATE", initialState)
         if (abortHydration === false) {
           LOGd.store("Persistor: Initial state obtained for hydration:", initialState);
           this.store.dispatch({type:"HYDRATE", state: initialState, __logLevel: LOG_LEVEL.verbose });
@@ -327,7 +325,6 @@ export class Persistor {
     LOGd.store("Persistor: Hydration v2 Step1, gettings all keys.");
     return AsyncStorage.getAllKeys()
       .then((allKeys) => {
-        console.log("Persistor: all keys found:", allKeys);
         LOGd.store("Persistor: all keys found:", allKeys);
 
         // get the keys for this user from the list of all keys.

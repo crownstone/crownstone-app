@@ -1,5 +1,5 @@
 
-import { Languages } from "../../../../../Languages"
+import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("SmartBehaviourSummaryGraph", key)(a,b,c,d,e);
@@ -12,14 +12,14 @@ import {
   TouchableWithoutFeedback,
   View
 } from "react-native";
-import { Icon } from "../../../../components/Icon";
-import { colors, screenWidth } from "../../../../styles";
-import { xUtil } from "../../../../../util/StandAloneUtil";
-import { core } from "../../../../../core";
+import { Icon } from "../../../components/Icon";
+import { colors, screenWidth } from "../../../styles";
+import { xUtil } from "../../../../util/StandAloneUtil";
+import { core } from "../../../../core";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
-import { AlternatingContent } from "../../../../components/animated/AlternatingContent";
+import { AlternatingContent } from "../../../components/animated/AlternatingContent";
 const SunCalc = require('suncalc');
 
 export class SmartBehaviourSummaryGraph extends Component<any, any> {
@@ -158,7 +158,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
             overflow:        'hidden',
             opacity:         isOption? 0.5 : 1.0
           }}>
-          { isOption ? <Image source={require("../../../../../images/patterns/csBlueStripe.png")} style={{width:endX - startX, height:this.lineHeight}} resizeMode={"repeat"} /> : null}
+          { isOption ? <Image source={require("../../../../images/patterns/csBlueStripe.png")} style={{width:endX - startX, height:this.lineHeight}} resizeMode={"repeat"} /> : null}
         </View>
       </View>
     )

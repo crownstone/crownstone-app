@@ -19,11 +19,13 @@ import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from
 import { Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Icon } from "../components/Icon";
-import { DeviceMenuIcon } from "./elements/DeviceMenuIcon";
+import { DeviceMenuIcon } from "./__toImplement/DeviceMenuIcon";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { DimmerSlider } from "../components/DimmerSlider";
+import { AnimatedIconCircle } from "../components/animated/AnimatedIconCircle";
+import { AnimatedCircle } from "../components/animated/AnimatedCircle";
 
 
 export class DeviceOverview extends LiveComponent<any, any> {
@@ -49,6 +51,10 @@ export class DeviceOverview extends LiveComponent<any, any> {
     }
 
     this.storedSwitchState = stone.state.state;
+
+    this.state = {
+      switchIsOn: this.storedSwitchState > 0
+    }
 
     if (stone.config.firmwareVersionSeenInOverview === null) {
       core.store.dispatch({
@@ -154,7 +160,13 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
   _switch(stone, state) {
-    this.setState({pendingCommand:true});
+    if (state === 0 && this.state.switchIsOn) {
+      this.setState({switchIsOn: false});
+    }
+    else if (state > 0 && !this.state.switchIsOn) {
+      this.setState({switchIsOn: true});
+    }
+
     StoneUtil.switchBHC(
       this.props.sphereId,
       this.props.stoneId,
@@ -162,7 +174,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
       state,
       core.store,
       {},
-      () => { this.setState({pendingCommand:false}); this.storedSwitchState = state; },
+      () => { this.storedSwitchState = state; },
       INTENTS.manual,
       1,
       'from _getButton in DeviceSummary'
@@ -180,30 +192,41 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
     let currentState = stone.state.state;
 
-    if (stone.abilities.dimming.enabled) {
+    if (stone.abilities.dimming.enabled || stone.abilites.dimming.targetState) {
+      let showDimmingText = stone.state.dimmingAvailable === false && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
+
       return (
-        <DimmerSlider stone={stone} />
+        <DimmerSlider
+          initialState={stone.state.state}
+          dimmingSynced={stone.abilities.dimming.synced}
+          showDimmingText={showDimmingText}
+          callback={(percentage) => {
+            if (stone.abilities.dimming.synced) {
+              this._switch(stone, xUtil.transformUISwitchStateToStoneSwitchState(percentage));
+            }
+            else {
+              this._switch(stone, percentage);
+            }
+          }}/>
       );
     }
     else {
       return (
-        <View>
-          <View style={{ flexDirection:'row',height:height, width:width, backgroundColor: colors.white.rgba(1), borderRadius: 25, alignItems:'center', justifyContent:'center'}}>
-            <TouchableOpacity style={{
-              ...innerStyle,
-              borderBottomLeftRadius: 25,  borderTopLeftRadius: 25, alignItems:'flex-end',
-              backgroundColor: currentState == 0 ? colors.green.hex : colors.csBlueDark.hex
-            }} onPress={() => { this._switch(stone,0); }}>
-              <Text style={textStyle}>OFF</Text>
-            </TouchableOpacity>
-            <View style={{width:border}} />
-            <TouchableOpacity style={{...innerStyle,
-              borderBottomRightRadius: 25, borderTopRightRadius: 25,
-              backgroundColor: currentState > 0 ? colors.green.hex : colors.csBlueDark.hex
-            }} onPress={() => { this._switch(stone,1); }}>
-              <Text style={textStyle}>ON</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={{ flexDirection:'row',height:height, width:width, backgroundColor: colors.white.rgba(1), borderRadius: 25, alignItems:'center', justifyContent:'center'}}>
+          <TouchableOpacity style={{
+            ...innerStyle,
+            borderBottomLeftRadius: 25,  borderTopLeftRadius: 25, alignItems:'flex-end',
+            backgroundColor: currentState == 0 ? colors.green.hex : colors.csBlueDark.hex
+          }} onPress={() => { this._switch(stone,0); }}>
+            <Text style={textStyle}>OFF</Text>
+          </TouchableOpacity>
+          <View style={{width:border}} />
+          <TouchableOpacity style={{...innerStyle,
+            borderBottomRightRadius: 25, borderTopRightRadius: 25,
+            backgroundColor: currentState > 0 ? colors.green.hex : colors.csBlueDark.hex
+          }} onPress={() => { this._switch(stone,1); }}>
+            <Text style={textStyle}>ON</Text>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -239,15 +262,14 @@ export class DeviceOverview extends LiveComponent<any, any> {
     let size = 0.24*availableScreenHeight;
     let borderWidth = size*0.04;
     let outerSize = size+1.5*borderWidth;
-    let currentState = stone.state.state;
-    let stateColor = currentState > 0 ? colors.green.hex : colors.csBlueDark.hex;
+    let stateColor = this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex;
     return (
       <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
-        <View style={{width: outerSize, height:outerSize, borderRadius:0.5*outerSize, borderWidth: borderWidth, borderColor: stateColor, backgroundColor: stateColor, alignItems:'center', justifyContent:'center'}}>
-          <View style={{width: size, height:size, borderRadius:0.5*size, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
+        <AnimatedCircle size={outerSize} color={stateColor} style={{alignItems:'center', justifyContent:'center'}}>
+          <AnimatedCircle size={size} color={stateColor} style={{borderRadius:0.5*size, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
             <Icon size={size*0.63} name={stone.config.icon} color={iconColor} />
-          </View>
-        </View>
+          </AnimatedCircle>
+        </AnimatedCircle>
       </View>
     )
   }
@@ -255,7 +277,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
   _getMenuIcons(stone) {
     return (
-      <View style={{width:screenWidth, alignItems:'center', flexDirection:'row'}}>
+      <View style={{width:screenWidth, alignItems:'center', flexDirection:'row', marginTop:15, marginBottom: stone.abilities.dimming.enabled ? 80 : 0}}>
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {
           NavigationUtil.launchModal("DeviceAbilities", {
@@ -298,24 +320,20 @@ export class DeviceOverview extends LiveComponent<any, any> {
       return <StoneDeleted/>
     }
 
-    let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
-
     return (
       <Background image={core.background.lightBlur}>
-        <View style={{flex:0.5}} />
         { this._getMenuIcons(stone)}
         <View style={{flex:2}} />
         { this.getTypeIcon(stone) }
         <View style={{flex:2}} />
-        { showDimmingText ? <View style={{flex:1}} /> : undefined }
-        { showDimmingText ? <Text style={deviceStyles.explanation}>{xUtil.spreadString("The dimmer is starting up...")}</Text> : undefined }
-        { showDimmingText ? <View style={{flex:1}} /> : undefined }
         <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
         <View style={{height: 40}} />
         { this._getLockIcon(stone) }
       </Background>
     )
   }
+
+
 }
 
 function getTopBarProps(store, state, props) {
@@ -336,6 +354,10 @@ function getTopBarProps(store, state, props) {
 
   return NAVBAR_PARAMS_CACHE;
 }
+
+
+
+
 
 let NAVBAR_PARAMS_CACHE : topbarOptions = null;
 

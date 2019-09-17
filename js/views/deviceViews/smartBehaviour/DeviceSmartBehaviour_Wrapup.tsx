@@ -1,10 +1,10 @@
 
-import { Languages } from "../../../../Languages"
+import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour_Wrapup", key)(a,b,c,d,e);
 }
-import { LiveComponent }          from "../../../LiveComponent";
+import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import {
   Animated,
@@ -17,16 +17,16 @@ import {
   colors,
   deviceStyles,
   screenWidth,
-} from "../../../styles";
-import { core } from "../../../../core";
-import { Background } from "../../../components/Background";
-import { NavigationUtil, NavState } from "../../../../util/NavigationUtil";
-import { WeekDayList, WeekDayListLarge } from "../../../components/WeekDayList";
-import { TopBarUtil } from "../../../../util/TopBarUtil";
-import { xUtil } from "../../../../util/StandAloneUtil";
+} from "../../styles";
+import { core } from "../../../core";
+import { Background } from "../../components/Background";
+import { NavigationUtil, NavState } from "../../../util/NavigationUtil";
+import { WeekDayList, WeekDayListLarge } from "../../components/WeekDayList";
+import { TopBarUtil } from "../../../util/TopBarUtil";
+import { xUtil } from "../../../util/StandAloneUtil";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
-import { Icon } from "../../../components/Icon";
+import { Icon } from "../../components/Icon";
 import { BehaviourSubmitButton } from "./supportComponents/BehaviourSubmitButton";
 
 

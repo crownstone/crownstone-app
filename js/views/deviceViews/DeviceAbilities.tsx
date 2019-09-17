@@ -1,6 +1,6 @@
-import { LiveComponent }          from "../../LiveComponent";
+import { LiveComponent }          from "../LiveComponent";
 
-import { Languages } from "../../../Languages"
+import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSummary", key)(a,b,c,d,e);
@@ -16,14 +16,14 @@ import {
   screenWidth,
   availableModalHeight,
   deviceStyles
-} from "../../styles";
-import { core } from "../../../core";
-import { Background } from "../../components/Background";
-import { TopBarUtil } from "../../../util/TopBarUtil";
-import { AnimatedScaledImage } from "../../components/animated/AnimatedScaledImage";
-import { Icon } from "../../components/Icon";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { STONE_TYPES } from "../../../Enums";
+} from "../styles";
+import { core } from "../../core";
+import { Background } from "../components/Background";
+import { TopBarUtil } from "../../util/TopBarUtil";
+import { AnimatedScaledImage } from "../components/animated/AnimatedScaledImage";
+import { Icon } from "../components/Icon";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { STONE_TYPES } from "../../Enums";
 
 export class DeviceAbilities extends LiveComponent<any, any> {
   static options(props) {
@@ -123,11 +123,11 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
 function getActiveState(stone, type) {
   switch (type) {
     case 'dimming':
-      return stone.abilities.dimming.enabled;
+      return stone.abilities.dimming.targetState;
     case 'switchcraft':
-      return stone.abilities.switchcraft.enabled;
+      return stone.abilities.switchcraft.targetState;
     case 'tapToToggle':
-      return stone.abilities.tapToToggle.enabled;
+      return stone.abilities.tapToToggle.targetState;
   }
 }
 
@@ -147,26 +147,26 @@ function getData(props, active) {
     case 'dimming':
       if (active) {
         return {
-          image: require('../../../images/overlayCircles/dimmingCircleGreen.png'),
+          image: require('../../images/overlayCircles/dimmingCircleGreen.png'),
           label: 'Dimming',
           infoCallback: () => {  Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {}) },
-          settingsCallback: () => { },
+          settingsCallback: () => { NavigationUtil.navigate("DimmerSettings"); },
           activateCallback: () => { },
           explanation: "Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so it at your own risk."
         }
       }
       return {
-        image: require('../../../images/overlayCircles/dimmingCircleGreen_bw.png'),
+        image: require('../../images/overlayCircles/dimmingCircleGreen_bw.png'),
         label: 'Dimming',
         infoCallback: () => { Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {}) },
-        settingsCallback: () => { },
-        activateCallback: () => { core.store.dispatch({type:"UPDATE_DIMMER", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabled: true, synced:false }}); },
+        settingsCallback: () => {  },
+        activateCallback: () => { core.store.dispatch({type:"UPDATE_DIMMER", sphereId: props.sphereId, stoneId: props.stoneId, data: { targetState: true, synced:false }}); },
         explanation: "Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so it at your own risk."
       }
     case 'switchcraft':
       if (active) {
         return {
-          image: require('../../../images/overlayCircles/switchcraft.png'),
+          image: require('../../images/overlayCircles/switchcraft.png'),
           label: 'Switchcraft',
           infoCallback: () => { NavigationUtil.navigate("SwitchCraftInformation"); },
           settingsCallback: () => { },
@@ -175,17 +175,17 @@ function getData(props, active) {
         }
       }
       return {
-        image: require('../../../images/overlayCircles/switchcraft_bw.png'),
+        image: require('../../images/overlayCircles/switchcraft_bw.png'),
         label: 'Switchcraft',
         infoCallback: () => { NavigationUtil.navigate("SwitchCraftInformation"); },
         settingsCallback: () => { },
-        activateCallback: () => { core.store.dispatch({type:"UPDATE_SWITCHCRAFT", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabled: true, synced:false }}); },
+        activateCallback: () => { core.store.dispatch({type:"UPDATE_SWITCHCRAFT", sphereId: props.sphereId, stoneId: props.stoneId, data: { targetState: true, synced:false }}); },
         explanation: "Use modified wall switches to switch both the Crownstone and the light. Tap the questionmark for more information."
       }
     case 'tapToToggle':
       if (active) {
         return {
-          image: require('../../../images/overlayCircles/tapToToggle.png'),
+          image: require('../../images/overlayCircles/tapToToggle.png'),
           label: 'Tap to toggle',
           infoCallback: () => { NavigationUtil.navigate("TapToToggleInformation"); },
           settingsCallback: () => { },
@@ -194,11 +194,11 @@ function getData(props, active) {
         }
       }
       return {
-        image: require('../../../images/overlayCircles/tapToToggle_bw.png'),
+        image: require('../../images/overlayCircles/tapToToggle_bw.png'),
         label: 'Tap to toggle',
         infoCallback: () => { NavigationUtil.navigate("TapToToggleInformation");},
         settingsCallback: () => { },
-        activateCallback: () => { core.store.dispatch({type:"UPDATE_TAP_TO_TOGGLE", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabled: true, synced:false }}); },
+        activateCallback: () => { core.store.dispatch({type:"UPDATE_TAP_TO_TOGGLE", sphereId: props.sphereId, stoneId: props.stoneId, data: { targetState: true, synced:false }}); },
         explanation: "You can tap your phone against this Crownstone toggle it on or off. To adjust the distance sensitivity of your phone to all Crownstones, take a look at the Settings -> App Settings." +
           " You can customize the sensitivity of this particular Crownstone by tapping on the cogwheel."
       }

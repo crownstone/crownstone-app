@@ -5,6 +5,7 @@
   "scripts": {
     "start": "tsc --watch",
     "build": "tsc",
+    "react": "react-native start --reset-cache",
     "test": "jest --useStderr --clearMocks",
     "cleanTest": "jest --useStderr --no-cache --clearMocks"
   },

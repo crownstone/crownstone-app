@@ -64,15 +64,15 @@ import { SettingsBleTroubleshooting }     from '../views/settingsViews/SettingsB
 
 import { Tutorial }                       from "../views/tutorialViews/Tutorial";
 import { IconDebug }                      from "../views/development/IconDebug";
-import { SwitchCraftInformation }         from "../views/deviceViews/elements/SwitchCraftInformation";
+import { SwitchCraftInformation }         from "../views/deviceViews/abilities/SwitchCraftInformation";
 
 import { ToonAdd }                        from "../views/thirdParty/toon/ToonAdd";
 import { ToonSettings }                   from "../views/thirdParty/toon/ToonSettings";
 import { ToonOverview }                   from "../views/thirdParty/toon/ToonOverview";
-import { DeviceSmartBehaviour }           from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour";
-import { DeviceSmartBehaviour_TypeSelector } from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_TypeSelector";
-import { DeviceSmartBehaviour_Editor }       from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Editor";
-import { DeviceSmartBehaviour_Wrapup }       from "../views/deviceViews/elements/smartBehaviour/DeviceSmartBehaviour_Wrapup";
+import { DeviceSmartBehaviour }           from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour";
+import { DeviceSmartBehaviour_TypeSelector } from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_TypeSelector";
+import { DeviceSmartBehaviour_Editor }       from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_Editor";
+import { DeviceSmartBehaviour_Wrapup }       from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_Wrapup";
 import { AddCrownstone }                     from "../views/addingCrownstones/AddCrownstone";
 import { ScanningForSetupCrownstones }       from "../views/addingCrownstones/ScanningForSetupCrownstones";
 import { SetupCrownstone }                   from "../views/addingCrownstones/SetupCrownstone";
@@ -94,7 +94,8 @@ import { LockOverlay }                       from "../views/overlays/LockOverlay
 import { SimpleOverlay }                     from "../views/overlays/SimpleOverlay";
 import { TapToToggleCalibration }            from "../views/overlays/TapToToggleCalibration";
 import { OptionPopup }                       from "../views/overlays/OptionPopup";
-import { DeviceAbilities }                   from "../views/deviceViews/elements/DeviceAbilities";
+import { DeviceAbilities }                   from "../views/deviceViews/DeviceAbilities";
+import { DimmerSettings } from "../views/deviceViews/abilities/DimmerSettings";
 
 
 export const Views = {
@@ -122,6 +123,7 @@ export const Views = {
   DeviceSmartBehaviour_Editor:       DeviceSmartBehaviour_Editor,
   DeviceSmartBehaviour_TypeSelector: DeviceSmartBehaviour_TypeSelector,
   DeviceSmartBehaviour_Wrapup:       DeviceSmartBehaviour_Wrapup,
+  DimmerSettings:                    DimmerSettings,
   IconDebug:                         IconDebug,
   Login:                             Login,
   LoginSplash:                       LoginSplash,

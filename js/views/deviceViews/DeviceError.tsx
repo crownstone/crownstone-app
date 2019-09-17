@@ -1,5 +1,5 @@
 
-import { Languages } from "../../../Languages"
+import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceError", key)(a,b,c,d,e);
@@ -12,13 +12,13 @@ import {
 } from "react-native";
 
 
-import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../../styles";
-import {IconButton} from "../../components/IconButton";
-import {ErrorContent} from "../../content/ErrorContent";
-import {StoneUtil} from "../../../util/StoneUtil";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import { core } from "../../../core";
-import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../styles";
+import {IconButton} from "../components/IconButton";
+import {ErrorContent} from "../content/ErrorContent";
+import {StoneUtil} from "../../util/StoneUtil";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { core } from "../../core";
+import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 
 
 export class DeviceError extends Component<any, any> {

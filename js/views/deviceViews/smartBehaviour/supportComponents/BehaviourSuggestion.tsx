@@ -1,5 +1,5 @@
 
-import { Languages } from "../../../../../Languages"
+import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("BehaviourSuggestion", key)(a,b,c,d,e);
@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
   Text, View, ViewStyle
 } from "react-native";
-import { colors, screenWidth, styles } from "../../../../styles";
-import { Icon } from "../../../../components/Icon";
+import { colors, screenWidth, styles } from "../../../styles";
+import { Icon } from "../../../components/Icon";
 
 
 export function BehaviourSuggestion(props) {

@@ -1,8 +1,8 @@
 import {
   SELECTABLE_TYPE
-} from "../../../../../Enums";
+} from "../../../../Enums";
 import { AicoreUtil } from "./AicoreUtil";
-import { xUtil } from "../../../../../util/StandAloneUtil";
+import { xUtil } from "../../../../util/StandAloneUtil";
 import { AicoreTimeData } from "./AicoreTimeData";
 
 const DEFAULT_DELAY_MINUTES = 5;

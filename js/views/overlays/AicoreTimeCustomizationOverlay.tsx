@@ -10,7 +10,7 @@ import { OverlayBox }           from '../components/overlays/OverlayBox'
 import { colors, screenWidth, screenHeight } from "../styles";
 import { core } from "../../core";
 import { ScaledImage } from "../components/ScaledImage";
-import { AicoreTimeCustomization } from "../deviceViews/elements/smartBehaviour/supportComponents/AicoreTimeCustomization";
+import { AicoreTimeCustomization } from "../deviceViews/smartBehaviour/supportComponents/AicoreTimeCustomization";
 import { xUtil } from "../../util/StandAloneUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
 

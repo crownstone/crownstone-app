@@ -1,5 +1,5 @@
 
-import { Languages } from "../../../../../Languages"
+import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("AicoreTimeCustomization", key)(a,b,c,d,e);
@@ -10,14 +10,14 @@ import {
   Text,
   View, TextStyle
 } from "react-native";
-import { colors, screenWidth} from "../../../../styles";
+import { colors, screenWidth} from "../../../styles";
 import Slider from '@react-native-community/slider';
 
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
-import { FadeIn } from "../../../../components/animated/FadeInView";
-import { xUtil } from "../../../../../util/StandAloneUtil";
+import { FadeIn } from "../../../components/animated/FadeInView";
+import { xUtil } from "../../../../util/StandAloneUtil";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
-import { TextButtonDark, TimeButtonWithImage } from "../../../../components/InterviewComponents";
+import { TextButtonDark, TimeButtonWithImage } from "../../../components/InterviewComponents";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { AicoreTimeData } from "../supportCode/AicoreTimeData";
 
@@ -83,7 +83,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
           <TimeButtonWithImage
             basic={true}
             label={ lang("Looks_good_")}
-            image={require("../../../../../images/icons/timeIcon.png")}
+            image={require("../../../../images/icons/timeIcon.png")}
             callback={() => {
               if (AicoreUtil.isSameTime(this.fromTime, this.toTime)) {
                 Alert.alert(
@@ -198,7 +198,7 @@ function TimePart(props : {
                 key={"resultButton" + index}
                 index={index}
                 label={ lang("Tap_to_select_time_")}
-                image={require("../../../../../images/icons/clock.png")}
+                image={require("../../../../images/icons/clock.png")}
                 callback={() => {
                   timeReference.getDate((date) => {
                     let hours = date.getHours();
@@ -244,7 +244,7 @@ function TimeSummary(props : any) {
           basic={true}
           index={props.index}
           label={props.label}
-          image={require("../../../../../images/icons/sunrise.png")}
+          image={require("../../../../images/icons/sunrise.png")}
           callback={props.callback}
         />
       );
@@ -255,7 +255,7 @@ function TimeSummary(props : any) {
           basic={true}
           index={props.index}
           label={props.label}
-          image={require("../../../../../images/icons/sunset.png")}
+          image={require("../../../../images/icons/sunset.png")}
           callback={props.callback}
         />
       );
@@ -266,7 +266,7 @@ function TimeSummary(props : any) {
           basic={true}
           index={props.index}
           label={props.label}
-          image={require("../../../../../images/icons/clock.png")}
+          image={require("../../../../images/icons/clock.png")}
           callback={props.callback}
         />
       );
@@ -286,21 +286,21 @@ function TypeSelector(props) {
         basic={true}
         index={i++}
         label={ lang("At_sunrise___")}
-        image={require("../../../../../images/icons/sunrise.png")}
+        image={require("../../../../images/icons/sunrise.png")}
         callback={() => { props.timeObj.setSunrise(); props.callback("SUNRISE") }}
       />
       <TimeButtonWithImage
         basic={true}
         index={i++}
         label={ lang("At_sunset___")}
-        image={require("../../../../../images/icons/sunset.png")}
+        image={require("../../../../images/icons/sunset.png")}
         callback={() => { props.timeObj.setSunset(); props.callback("SUNSET") }}
       />
       <TimeButtonWithImage
         basic={true}
         index={i++}
         label={ lang("At_a_specific_time___")}
-        image={require("../../../../../images/icons/clock.png")}
+        image={require("../../../../images/icons/clock.png")}
         callback={() => { props.timeObj.setClock(); props.callback("CLOCK") }}
       />
     </View>

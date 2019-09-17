@@ -1,5 +1,5 @@
 
-import { Languages } from "../../../../Languages"
+import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour_Editor", key)(a,b,c,d,e);
@@ -15,13 +15,13 @@ import {
   availableModalHeight, availableScreenHeight, colors,
   deviceStyles, screenHeight,
   screenWidth, statusBarHeight
-} from "../../../styles";
-import { Background } from "../../../components/Background";
-import { core } from "../../../../core";
+} from "../../styles";
+import { Background } from "../../components/Background";
+import { core } from "../../../core";
 import { RuleEditor } from "./supportComponents/RuleEditor";
-import { NavigationUtil } from "../../../../util/NavigationUtil";
-import { Icon } from "../../../components/Icon";
-import { TopBarUtil } from "../../../../util/TopBarUtil";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { Icon } from "../../components/Icon";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string, ruleId: any, label:string}, any> {
