@@ -10,6 +10,7 @@ export const core : core = {
     mainDark               : require('./images/backgrounds/background.png'),
     light                  : require('./images/backgrounds/lightBackground2_blur.png'),
     lightBlur              : require('./images/backgrounds/lightBackground2_blur.png'),
+    lightBlurLighter       : require('./images/backgrounds/lightBackground2_blur_lighter.png'),
     lightBlurBW            : require('./images/backgrounds/lightBackground2_blur_bw.png'),
     detailsDark            : require('./images/backgrounds/darkBackground4.png'),
   },

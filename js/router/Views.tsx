@@ -64,7 +64,6 @@ import { SettingsBleTroubleshooting }     from '../views/settingsViews/SettingsB
 
 import { Tutorial }                       from "../views/tutorialViews/Tutorial";
 import { IconDebug }                      from "../views/development/IconDebug";
-import { SwitchCraftInformation }         from "../views/deviceViews/abilities/SwitchCraftInformation";
 
 import { ToonAdd }                        from "../views/thirdParty/toon/ToonAdd";
 import { ToonSettings }                   from "../views/thirdParty/toon/ToonSettings";
@@ -95,7 +94,9 @@ import { SimpleOverlay }                     from "../views/overlays/SimpleOverl
 import { TapToToggleCalibration }            from "../views/overlays/TapToToggleCalibration";
 import { OptionPopup }                       from "../views/overlays/OptionPopup";
 import { DeviceAbilities }                   from "../views/deviceViews/DeviceAbilities";
-import { DimmerSettings } from "../views/deviceViews/abilities/DimmerSettings";
+import { Ability_DimmerSettings } from "../views/deviceViews/abilities/settings/Ability_DimmerSettings";
+import { Ability_SwitchCraftInformation } from "../views/deviceViews/abilities/information/Ability_SwitchCraftInformation";
+import { Ability_TapToToggleSettings } from "../views/deviceViews/abilities/settings/Ability_TapToToggleSettings";
 
 
 export const Views = {
@@ -123,7 +124,9 @@ export const Views = {
   DeviceSmartBehaviour_Editor:       DeviceSmartBehaviour_Editor,
   DeviceSmartBehaviour_TypeSelector: DeviceSmartBehaviour_TypeSelector,
   DeviceSmartBehaviour_Wrapup:       DeviceSmartBehaviour_Wrapup,
-  DimmerSettings:                    DimmerSettings,
+  Ability_SwitchCraftInformation:    Ability_SwitchCraftInformation,
+  Ability_DimmerSettings:            Ability_DimmerSettings,
+  Ability_TapToToggleSettings:       Ability_TapToToggleSettings,
   IconDebug:                         IconDebug,
   Login:                             Login,
   LoginSplash:                       LoginSplash,
@@ -170,7 +173,6 @@ export const Views = {
   SphereUser:                        SphereUser,
   SphereUserInvite:                  SphereUserInvite,
   SphereUserOverview:                SphereUserOverview,
-  SwitchCraftInformation:            SwitchCraftInformation,
   ToonAdd:                           ToonAdd,
   ToonOverview:                      ToonOverview,
   ToonSettings:                      ToonSettings,

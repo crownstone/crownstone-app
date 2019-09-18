@@ -1,9 +1,3 @@
-
-import { Languages } from "../../Languages"
-
-function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DimmerButton", key)(a,b,c,d,e);
-}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,

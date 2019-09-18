@@ -36,8 +36,8 @@ export class AnimatedBackground extends Component<{
   constructor(props) {
     super(props);
 
-    this.staticImage = props.image;
-    this.animatedImage = props.image;
+    this.staticImage = this.props.image;
+    this.animatedImage = this.props.image;
     this.state = {fade: new Animated.Value(0)};
   }
 

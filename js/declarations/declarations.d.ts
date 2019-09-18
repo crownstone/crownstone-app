@@ -123,6 +123,7 @@ interface core {
     mainDark               : any,
     light                  : any,
     lightBlur              : any,
+    lightBlurLighter       : any,
     lightBlurBW            : any,
     detailsDark            : any,
   },

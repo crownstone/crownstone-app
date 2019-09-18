@@ -20,15 +20,17 @@ export class AnimatedScaledImage extends Component<{
   constructor(props) {
     super(props);
 
-    this.staticImage = props.image;
-    this.animatedSource = props.animatedSource;
+    this.staticImage = this.props.source;
+    this.animatedSource = this.props.source;
     this.state = {fade: new Animated.Value(0)};
   }
 
   componentWillReceiveProps(nextProps) {
     let change = false;
+
+    console.log("component will receive props", this.value, this.props, nextProps);
     if (this.value === 0) {
-      if (nextProps.image !== this.staticImage) {
+      if (nextProps.source !== this.staticImage) {
         change = true;
         this.animatedSource = nextProps.source;
       }
@@ -68,10 +70,10 @@ export class AnimatedScaledImage extends Component<{
     return (
       <View style={{width: width, height:height}}>
         <View style={{width: width, height:height, position:'absolute', top:0, left:0}}>
-          <Image source={this.props.source} resizeMode={'contain'} style={[{width: width, height: height, tintColor: this.props.tintColor}, this.props.style]}/>
+          <Image source={this.staticImage} resizeMode={'contain'} style={[{width: width, height: height, tintColor: this.props.tintColor}, this.props.style]}/>
         </View>
         <Animated.View style={{width: width, height:height, position:'absolute', top:0, left:0, opacity:this.state.fade}}>
-          <Image source={this.props.source} resizeMode={'contain'} style={[{width: width, height: height, tintColor: this.props.tintColor}, this.props.style]}/>
+          <Image source={this.animatedSource} resizeMode={'contain'} style={[{width: width, height: height, tintColor: this.props.tintColor}, this.props.style]}/>
         </Animated.View>
       </View>
     );
