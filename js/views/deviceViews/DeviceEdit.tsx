@@ -35,11 +35,12 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { OverlayUtil } from "../overlays/OverlayUtil";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("Edit_Device"), cancelModal: true, save: true});
+    return TopBarUtil.getOptions({title:  lang("Edit_Crownstone"), cancelModal: true, save: true});
   }
 
   deleting : boolean = false;
@@ -58,13 +59,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     this.state = {
       stoneName: stone.config.name,
       stoneIcon: stone.config.icon,
-      stoneType: stone.config.type,
-
-      dimmingEnabled: stone.config.dimmingEnabled,
-      switchCraft: stone.config.switchCraft,
-      tapToToggle: stone.config.tapToToggle,
-
-      showStone: false,
+      locationId: stone.config.locationId,
 
       refreshingStoneVersions: false
     };
@@ -105,7 +100,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
   constructStoneOptions(stone, state) {
     let items = [];
-    let canSwitch = stone.config.type === STONE_TYPES.plug || stone.config.type === STONE_TYPES.builtin || stone.config.type === STONE_TYPES.builtinOne;
+    let locations = state.spheres[this.props.sphereId].locations;
 
     items.push({label: lang("CROWNSTONE"), type: 'explanation', below: false});
 
@@ -134,98 +129,32 @@ export class DeviceEdit extends LiveComponent<any, any> {
       }
     });
 
-    if (canSwitch) {
-      items.push({
-        label: lang("Allow_Dimming"),
-        type: 'switch',
-        icon: <IconButton name="ios-sunny" size={22} button={true} color="#fff"
-                          buttonStyle={{backgroundColor: colors.lightCsOrange.hex}}/>,
-        value: this.state.dimmingEnabled === true,
-        callback: (newValue) => {
-          if (Permissions.inSphere(this.props.sphereId).canEnableDimming) {
-            this.setState({dimmingEnabled: newValue});
-          }
-          else {
-            Alert.alert(
-              lang("_Permission_Required__Onl_header"),
-              lang("_Permission_Required__Onl_body"),
-              [{text: lang("_Permission_Required__Onl_left")}]
-            );
-          }
-        }
-      });
 
-      items.push({
-        label: lang("View_Dimming_Compatibilit"), type: 'navigation', callback: () => {
-          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {})
-        }
-      });
-      items.push({
-        label: lang("Dimming_can_be_enabled_pe"),
-        type: 'explanation',
-        below: true
-      });
-
-
-      if (state.app.tapToToggleEnabled) {
-        items.push({
-          label: lang("Tap_to_toggle"),
-          icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff"
-                            buttonStyle={{backgroundColor: colors.green2.hex}}/>,
-          type: 'switch',
-          value: this.state.tapToToggle === true,
-          callback: (newValue) => {
-            this.setState({tapToToggle: newValue});
-          }
-        });
-
-        items.push({label: lang("Tap_to_toggle_can_be_enab"), type: 'explanation', below: true});
-      }
-      else {
-        items.push({
-          label: lang("Tap_to_toggle_is_disabled"),
-          type: 'disabledInfo',
-          icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff"
-                            buttonStyle={{backgroundColor: colors.green2.hex}}/>,
-        });
-        items.push({
-          label: lang("To_use_tap_to_toggle__you"),
-          type: 'explanation',
-          below: true,
-        });
-      }
-
-      if (this.state.stoneType === STONE_TYPES.builtinOne) {
-          items.push({
-            label: lang("Enable_Switchcraft"),
-            type: 'switch',
-            hasHelp: true, onHelp: () => {
-             NavigationUtil.navigate( "SwitchcraftInformation")
-            },
-            icon: <IconButton name="md-power" size={22} button={true} color="#fff"
-                              buttonStyle={{backgroundColor: colors.purple.hex}}/>,
-            value: this.state.switchCraft === true,
-            callback: (newValue) => {
-              this.setState({switchCraft: newValue});
-            }
-          });
-          items.push({
-            label: lang("Use_modified_wall_switche"),
-            type: 'explanation',
-            below: true
-          });
-      }
+    let location = locations[this.state.locationId];
+    let locationLabel = "Not in a room";
+    if (location !== undefined) {
+      locationLabel = location.config.name;
     }
-    else {
-      items.push({type: 'spacer'});
-    }
+    locationLabel += " (tap to change)"
 
-
+    items.push({label: "CROWNSTONE IS IN ROOM", type: 'explanation', below: false});
+    items.push({
+      label: locationLabel,
+      mediumIcon:  <IconButton name="md-cube" size={25} buttonSize={38} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
+      type:  'button',
+      style: {color: colors.menuTextSelected.hex},
+      callback: () => {
+        OverlayUtil.callRoomSelectionOverlay(this.props.sphereId, (roomId) => {
+          this.setState({locationId: roomId})
+        })
+      }
+    });
 
     if (Permissions.inSphere(this.props.sphereId).removeCrownstone) {
+      items.push({label: "DANGER", type: 'explanation', below: false});
       items.push({
         label: lang("Remove_from_Sphere"),
-        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
+        mediumIcon: <IconButton name="ios-trash" size={26} buttonSize={38} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
           core.eventBus.emit('hideLoading');
@@ -380,10 +309,6 @@ export class DeviceEdit extends LiveComponent<any, any> {
 
     // collect promises to handle changes in switchcraft and dim state
     let changePromises    = [];
-    let dimChange         = this._setDimState(stone);
-    let switchCraftChange = this._setSwitchcraftState(stone);
-    if (dimChange)         { changePromises.push(dimChange); }
-    if (switchCraftChange) { changePromises.push(switchCraftChange); }
     Promise.all(changePromises)
       .then(() => { core.eventBus.emit("hideLoading"); } )
       .catch((err) => { core.eventBus.emit("hideLoading"); });
@@ -392,7 +317,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     if (
       stone.config.name           !== this.state.stoneName      ||
       stone.config.icon           !== this.state.stoneIcon      ||
-      stone.config.tapToToggle    !== this.state.tapToToggle
+      stone.config.locationId     !== this.state.locationId
     ) {
       actions.push({
         type:'UPDATE_STONE_CONFIG',
@@ -401,7 +326,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
         data: {
           name: this.state.stoneName,
           icon: this.state.stoneIcon,
-          tapToToggle: this.state.tapToToggle,
+          locationId: this.state.locationId,
         }});
     }
 
@@ -410,110 +335,6 @@ export class DeviceEdit extends LiveComponent<any, any> {
     }
 
     NavigationUtil.dismissModal();
-  }
-
-  _setDimState(stone) {
-    if (stone.config.dimmingEnabled !== this.state.dimmingEnabled) {
-      if (stone.config.locked) {
-        Alert.alert(
-          lang("_Crownstone_Locked__You_h_header"),
-          lang("_Crownstone_Locked__You_h_body",this.state.dimmingEnabled),
-          [{text:lang("_Crownstone_Locked__You_h_left")}]);
-        return;
-      }
-      if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-        Alert.alert(
-          lang("_Cant_see_this_Crownstone_header"),
-          lang("_Cant_see_this_Crownstone_body",this.state.dimmingEnabled),
-          [{text:lang("_Cant_see_this_Crownstone_left")}]);
-        return;
-      }
-
-      let promises = [];
-      let dimmingChangedSuccessfully = false;
-      if (this.state.dimmingEnabled === false) {
-        core.eventBus.emit("showLoading", "Disabling dimming on this Crownstone...");
-        // turn the relay on if dimming is being disabled and the stone is dimming
-        if (stone.state.state > 0) {
-          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'multiSwitch', state: 1, intent: INTENTS.manual, timeout: 0}));
-        }
-        promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: false })
-          .then(() => { dimmingChangedSuccessfully = true; })
-          .catch((err) => {
-            LOGe.info("DeviceEdit: Could not disable dimming on Crownstone", err);
-            setTimeout(() => { core.eventBus.emit("hideLoading"); }, 200);
-            Alert.alert(
-              lang("_Im_sorry_____I_couldnt_d_header"),
-              lang("_Im_sorry_____I_couldnt_d_body"),
-              [{text:lang("_Im_sorry_____I_couldnt_d_left")}]
-            );
-            throw err;
-          }));
-      }
-      else {
-        core.eventBus.emit("showLoading", "Enabling dimming on this Crownstone...");
-        promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: true })
-          .then(() => { dimmingChangedSuccessfully = true; })
-          .catch((err) => {
-            LOGe.info("DeviceEdit: Could not enabXle dimming on Crownstone", err);
-            setTimeout(() => { core.eventBus.emit("hideLoading"); }, 200);
-            Alert.alert(
-              lang("_Im_sorry_____I_couldnt_e_header"),
-              lang("_Im_sorry_____I_couldnt_e_body"),
-              [{text:lang("_Im_sorry_____I_couldnt_e_left")}]
-            );
-            throw err;
-          }));
-      }
-      BatchCommandHandler.executePriority();
-      return Promise.all(promises).then(() => {
-        if (dimmingChangedSuccessfully) {
-          core.store.dispatch({
-            type: 'UPDATE_STONE_CONFIG',
-            sphereId: this.props.sphereId,
-            stoneId: this.props.stoneId,
-            data: {
-              dimmingEnabled: this.state.dimmingEnabled,
-            }
-          });
-        }
-      });
-    }
-  }
-
-  _setSwitchcraftState(stone) {
-    if (stone.config.switchCraft !== this.state.switchCraft) {
-      core.eventBus.emit("showLoading", "Configuring Switchcraft on this Crownstone...");
-
-      if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-        Alert.alert(
-          lang("_Cant_see_this_Crownstone__header"),
-          lang("_Cant_see_this_Crownstone__body",this.state.dimmingEnabled),
-          [{text:lang("_Cant_see_this_Crownstone__left")}]);
-        return;
-      }
-
-      let changePromise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'setSwitchCraft', value: this.state.switchCraft })
-        .then(() => {
-          core.store.dispatch({
-            type: 'UPDATE_STONE_CONFIG',
-            sphereId: this.props.sphereId,
-            stoneId: this.props.stoneId,
-            data: {
-              dimmingEnabled: this.state.dimmingEnabled,
-            }
-          });
-        })
-        .catch((err) => {
-          LOGe.info("DeviceEdit: Could not configure Switchcraft on Crownstone", this.state.switchCraft, err);
-          Alert.alert(
-            lang("_Im_sorry_____I_couldnt_c_header"),
-            lang("_Im_sorry_____I_couldnt_c_body"),
-            [{text:lang("_Im_sorry_____I_couldnt_c_left")}])
-        });
-      BatchCommandHandler.executePriority();
-      return changePromise;
-    }
   }
 
 

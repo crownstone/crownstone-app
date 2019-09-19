@@ -24,7 +24,6 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { DimmerSlider } from "../components/DimmerSlider";
-import { AnimatedIconCircle } from "../components/animated/AnimatedIconCircle";
 import { AnimatedCircle } from "../components/animated/AnimatedCircle";
 
 
@@ -84,8 +83,9 @@ export class DeviceOverview extends LiveComponent<any, any> {
       let state = core.store.getState();
       if (
         (state.spheres[this.props.sphereId] === undefined) ||
-        (change.removeSphere && change.removeSphere.sphereIds[this.props.sphereId]) ||
-        (change.removeStone && change.removeStone.stoneIds[this.props.stoneId])
+        (change.removeSphere         && change.removeSphere.sphereIds[this.props.sphereId]) ||
+        (change.removeStone          && change.removeStone.stoneIds[this.props.stoneId])    ||
+        (change.stoneChangeAbilities && change.stoneChangeAbilities.stoneIds[this.props.stoneId])
       ) {
         return this.forceUpdate();
       }
@@ -191,8 +191,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
     let textStyle : TextStyle = {color: colors.white.hex, fontSize: 18, fontWeight:'bold'};
 
     let currentState = stone.state.state;
-
-    if (stone.abilities.dimming.enabled || stone.abilites.dimming.targetState) {
+    if (stone.abilities.dimming.enabledTarget) {
       let showDimmingText = stone.state.dimmingAvailable === false && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
 
       return (
@@ -277,7 +276,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
   _getMenuIcons(stone) {
     return (
-      <View style={{width:screenWidth, alignItems:'center', flexDirection:'row', marginTop:15, marginBottom: stone.abilities.dimming.enabled ? 80 : 0}}>
+      <View style={{width:screenWidth, alignItems:'center', flexDirection:'row', marginTop:15, marginBottom: stone.abilities.dimming.enabledTarget ? 80 : 0}}>
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {
           NavigationUtil.launchModal("DeviceAbilities", {
@@ -350,7 +349,6 @@ function getTopBarProps(store, state, props) {
       text:  lang("Edit"),
     }
   }
-
 
   return NAVBAR_PARAMS_CACHE;
 }

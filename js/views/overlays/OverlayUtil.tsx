@@ -37,7 +37,6 @@ export const OverlayUtil = {
       },
       callback: (locationId) => {
         callback(locationId)
-
       },
       allowMultipleSelections: false,
       themeColor: colors.lightGreen2.hex,

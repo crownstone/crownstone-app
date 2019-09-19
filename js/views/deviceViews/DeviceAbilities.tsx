@@ -53,7 +53,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
   }
 
   componentWillUnmount() {
-
+    this.unsubscribeStoreEvents();
   }
 
   render() {
