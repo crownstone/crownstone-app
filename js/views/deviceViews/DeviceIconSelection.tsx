@@ -304,7 +304,11 @@ let listOfIcons = {
     "c1-speakers1",
     "c1-speakers3",
     "c1-speaker2",
-    "c1-speaker"
+    "c1-speaker",
+    'c2-crownstone',
+    'c2-plugin',
+    'c2-pluginFilled',
+    'c2-pluginFront',
   ],
   music: [
     "fiCS1-headphones",

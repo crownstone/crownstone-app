@@ -123,7 +123,6 @@ export class SetupHelper {
                 data: {
                   cloudId:         this.stoneIdInCloud,
                   type:            this.type,
-                  tapToToggle:     isPlug,
                   uid:             this.cloudResponse.uid,
                   crownstoneId:    this.cloudResponse.uid,
                   firmwareVersion: this.firmwareVersion,
@@ -132,8 +131,6 @@ export class SetupHelper {
                   macAddress:      this.macAddress,
                   iBeaconMajor:    this.cloudResponse.major,
                   iBeaconMinor:    this.cloudResponse.minor,
-                  disabled:        false,
-                  rssi:            -60
                 }
               };
 
@@ -149,6 +146,16 @@ export class SetupHelper {
               }
 
               actions.push(finalizeSetupStoneAction);
+              actions.push({
+                type:"UPDATE_TAP_TO_TOGGLE",
+                sphereId: sphereId,
+                stoneId: localId,
+                data: {
+                  enabled: isPlug,
+                  enabledTarget: isPlug,
+                  synced: true
+                }
+              });
               actions.push({
                 type: 'UPDATE_STONE_SWITCH_STATE',
                 sphereId: sphereId,

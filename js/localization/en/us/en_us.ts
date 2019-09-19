@@ -2064,8 +2064,8 @@ export default {
     __filename: "../js/views/components/editComponents/SwitchBar.tsx",
     EXPERIMENTAL:                        function() { return arguments[0] || "EXPERIMENTAL" },
   },
-  SwitchCraftInformation:{
-    __filename: "../js/views/deviceViews/elements/SwitchCraftInformation.tsx",
+  SwitchcraftInformation:{
+    __filename: "../js/views/deviceViews/elements/SwitchcraftInformation.tsx",
     Switchcraft_is_a_new__exp:           function() { return "Switchcraft is a feature of the Crownstone Built-in One that allows you to switch your lights with both Crownstone and an existing wall switch." + "\n\nIt is designed for Crownstone Built-in Ones that are mounted in a ceiling light fixture." + "\n\nUsually, if you have a Crownstone in your ceiling light and the wall switch is off, there is no power to the Crownstone so it cannot switch the light." + "\n\nLet's take a look a the situation before Crownstone:" },
     The_symbols_shown_have_th:           function() { return "The symbols shown have the following meaning:" },
     Lamp:                                function() { return "Lamp" },

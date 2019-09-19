@@ -95,8 +95,10 @@ import { TapToToggleCalibration }            from "../views/overlays/TapToToggle
 import { OptionPopup }                       from "../views/overlays/OptionPopup";
 import { DeviceAbilities }                   from "../views/deviceViews/DeviceAbilities";
 import { Ability_DimmerSettings } from "../views/deviceViews/abilities/settings/Ability_DimmerSettings";
-import { Ability_SwitchCraftInformation } from "../views/deviceViews/abilities/information/Ability_SwitchCraftInformation";
+import { Ability_SwitchcraftInformation } from "../views/deviceViews/abilities/information/Ability_SwitchcraftInformation";
 import { Ability_TapToToggleSettings } from "../views/deviceViews/abilities/settings/Ability_TapToToggleSettings";
+import { Ability_SwitchcraftSettings } from "../views/deviceViews/abilities/settings/Ability_SwitchcraftSettings";
+import { Ability_TapToToggleInformation } from "../views/deviceViews/abilities/information/Ability_TapToToggleInformation";
 
 
 export const Views = {
@@ -124,8 +126,10 @@ export const Views = {
   DeviceSmartBehaviour_Editor:       DeviceSmartBehaviour_Editor,
   DeviceSmartBehaviour_TypeSelector: DeviceSmartBehaviour_TypeSelector,
   DeviceSmartBehaviour_Wrapup:       DeviceSmartBehaviour_Wrapup,
-  Ability_SwitchCraftInformation:    Ability_SwitchCraftInformation,
+  Ability_SwitchcraftInformation:    Ability_SwitchcraftInformation,
   Ability_DimmerSettings:            Ability_DimmerSettings,
+  Ability_SwitchcraftSettings:       Ability_SwitchcraftSettings,
+  Ability_TapToToggleInformation:    Ability_TapToToggleInformation,
   Ability_TapToToggleSettings:       Ability_TapToToggleSettings,
   IconDebug:                         IconDebug,
   Login:                             Login,

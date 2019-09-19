@@ -24,7 +24,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 
 export class SettingsApp extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: lang("App_Settings")});
+    return TopBarUtil.getOptions({title: lang("App_Settings"), closeModal: props.modal});
   }
 
   unsubscribe : any;
@@ -133,8 +133,8 @@ export class SettingsApp extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} >
-                <ScrollView keyboardShouldPersistTaps="always">
+      <Background image={core.background.menu} hasNavBar={!this.props.modal}>
+        <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

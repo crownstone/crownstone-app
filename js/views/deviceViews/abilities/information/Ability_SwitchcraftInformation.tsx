@@ -2,7 +2,7 @@
 import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SwitchCraftInformation", key)(a,b,c,d,e);
+  return Languages.get("SwitchcraftInformation", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
@@ -21,7 +21,7 @@ import { core } from "../../../../core";
 import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 
-export class Ability_SwitchCraftInformation extends Component<any, any> {
+export class Ability_SwitchcraftInformation extends Component<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Switchcraft")});
   }
