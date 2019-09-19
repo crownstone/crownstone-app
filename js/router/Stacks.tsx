@@ -47,7 +47,7 @@ export const Stacks = {
     // return {
     //   stack: {
     //     children: [
-    //       { component: {name: "Ability_TapToToggleSettings", passProps: {sphereId: "61db334c-5aad-3cb1-d21e-8cec6c702cba", stoneId: "ebf9216b-9723-aa10-162f-8b6b836d1545"}} },
+    //       { component: {name: "DevicePowerUsage", passProps: {sphereId: "61db334c-5aad-3cb1-d21e-8cec6c702cba", stoneId: "ebf9216b-9723-aa10-162f-8b6b836d1545"}} },
     //     ],
     //   },
     // }

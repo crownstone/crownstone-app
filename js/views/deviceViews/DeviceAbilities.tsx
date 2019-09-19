@@ -30,7 +30,7 @@ import { FadeInView } from "../components/animated/FadeInView";
 export class DeviceAbilities extends LiveComponent<any, any> {
   static options(props) {
     const stone = core.store.getState().spheres[props.sphereId].stones[props.stoneId];
-    return TopBarUtil.getOptions({ title: stone.config.name,closeModal: true,});
+    return TopBarUtil.getOptions({ title: stone.config.name, closeModal: true});
   }
 
   unsubscribeStoreEvents;
@@ -83,7 +83,8 @@ export class DeviceAbilities extends LiveComponent<any, any> {
 
 
 function Ability(props : { type: string, stone: any, stoneId: string, sphereId: string }) {
-  let height  = 100;
+  let padding = 8;
+  let height  = 90+2*padding;
   let margins = 30;
 
   let fullyDisabled = getDisabledState(props.stone, props.type);
@@ -94,9 +95,9 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
 
   return (
     <View style={{width:screenWidth, marginBottom: margins}}>
-      <View style={{flexDirection:'row', width: screenWidth-margins, height:height, marginLeft:margins, borderRadius:0.5*height, borderBottomRightRadius: 0, borderTopRightRadius: 0, backgroundColor: colors.white.hex, marginBottom:5, padding:5, paddingRight:10}}>
-        <AnimatedScaledImage source={data.image} sourceWidth={600} sourceHeight={600} targetHeight={height-10} />
-        <View style={{height: height-10, justifyContent:'center', alignItems:'flex-start', marginLeft:10}}>
+      <View style={{flexDirection:'row', width: screenWidth-margins, height:height, marginLeft:margins, borderRadius:0.5*height, borderBottomRightRadius: 0, borderTopRightRadius: 0, backgroundColor: colors.white.hex, marginBottom:5, padding:padding, paddingRight:10}}>
+        <AnimatedScaledImage source={data.image} sourceWidth={600} sourceHeight={600} targetHeight={height-2*padding} />
+        <View style={{height: height-2*padding, justifyContent:'center', alignItems:'flex-start', marginLeft:10}}>
           <View style={{flexDirection:'row'}}>
             <Text style={deviceStyles.text}>{data.label}</Text>
             <FadeInView visible={active && !synced}><ActivityIndicator color={colors.csBlueDark.hex} size={'small'} style={{marginLeft:10}}/></FadeInView>

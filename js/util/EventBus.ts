@@ -25,8 +25,9 @@ export class EventBusClass {
       return;
     }
 
-    if (this._topics[topic] === undefined)
+    if (this._topics[topic] === undefined) {
       this._topics[topic] = [];
+    }
 
     // generate unique id
     let id = xUtil.getUUID();

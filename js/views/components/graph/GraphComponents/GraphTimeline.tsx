@@ -92,7 +92,7 @@ export class GraphTimeline extends LiveComponent<any, any> {
     let labelMinor;
     let count = 0;
     const MAX = 1000;
-    let color = colors.white.hex;
+    let color = this.props.color || colors.white.hex;
 
     step.start();
     while (step.hasNext() && count < MAX) {

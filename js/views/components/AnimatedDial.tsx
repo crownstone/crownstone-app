@@ -73,7 +73,7 @@ export class AnimatedDial extends Component<{width: number, height: number, inde
         <Circle
           key={"StaticBlock_" + i}
           r={radius}
-          stroke={colors.white.rgba(0.3)}
+          stroke={colors.csBlue.rgba(0.3)}
           strokeWidth={this.centerBlockWidth}
           strokeDasharray={[this.blockSize*pathLength, pathLength]}
           rotation={-90 + i*((360/(1-this.spacing))*this.step)}
@@ -102,7 +102,7 @@ export class AnimatedDial extends Component<{width: number, height: number, inde
           radius={radius}
           instant={this.state.instant}
           animationSpeed={this.state.instant ? 100 : 300}
-          color={colors.white}
+          color={colors.csBlue}
           subColor={colors.green}
           blockSize={this.blockSize}
           centerBlockWidth={this.centerBlockWidth}

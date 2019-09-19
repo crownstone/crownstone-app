@@ -1,6 +1,6 @@
 import { View, TouchableOpacity, Text, Image } from "react-native";
-import { Icon } from "../../components/Icon";
-import { colors, screenWidth } from "../../styles";
+import { Icon } from "../components/Icon";
+import { colors, screenWidth } from "../styles";
 import React from "react";
 
 export function DeviceMenuIcon(props) {

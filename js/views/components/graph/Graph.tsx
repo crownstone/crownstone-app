@@ -259,13 +259,16 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
         <GraphDataAxis
           options={this.options}
           datastepLines={this.dataStepLines}
+          color={colors.csBlue.hex}
         />
         <GraphAxis
           options={this.options}
+          color={colors.csBlue.hex}
         />
         <GraphTimeline
           range={this.range}
           options={this.options}
+          color={colors.csBlue.hex}
         />
       </View>
     );

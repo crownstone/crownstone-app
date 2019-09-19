@@ -99,6 +99,7 @@ import { Ability_SwitchcraftInformation } from "../views/deviceViews/abilities/i
 import { Ability_TapToToggleSettings } from "../views/deviceViews/abilities/settings/Ability_TapToToggleSettings";
 import { Ability_SwitchcraftSettings } from "../views/deviceViews/abilities/settings/Ability_SwitchcraftSettings";
 import { Ability_TapToToggleInformation } from "../views/deviceViews/abilities/information/Ability_TapToToggleInformation";
+import { DevicePowerUsage } from "../views/deviceViews/DevicePowerUsage";
 
 
 export const Views = {
@@ -122,6 +123,7 @@ export const Views = {
   DeviceIconSelection:               DeviceIconSelection,
   DeviceAbilities:                   DeviceAbilities,
   DeviceOverview:                    DeviceOverview,
+  DevicePowerUsage:                  DevicePowerUsage,
   DeviceSmartBehaviour:              DeviceSmartBehaviour,
   DeviceSmartBehaviour_Editor:       DeviceSmartBehaviour_Editor,
   DeviceSmartBehaviour_TypeSelector: DeviceSmartBehaviour_TypeSelector,

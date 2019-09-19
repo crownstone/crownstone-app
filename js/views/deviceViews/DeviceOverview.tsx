@@ -15,16 +15,17 @@ import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { StoneUtil } from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
-import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../styles";
-import { Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { availableScreenHeight, colors, deviceStyles, screenHeight, screenWidth, styles } from "../styles";
+import { ActivityIndicator, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { Icon } from "../components/Icon";
-import { DeviceMenuIcon } from "./__toImplement/DeviceMenuIcon";
+import { DeviceMenuIcon } from "./DeviceMenuIcon";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { DimmerSlider } from "../components/DimmerSlider";
 import { AnimatedCircle } from "../components/animated/AnimatedCircle";
+import { LockedStateUI } from "../components/LockedStateUI";
 
 
 export class DeviceOverview extends LiveComponent<any, any> {
@@ -190,7 +191,43 @@ export class DeviceOverview extends LiveComponent<any, any> {
     let innerStyle : ViewStyle = {height: innerHeight, width: innerWidth, borderRadius: 3, justifyContent:'center', padding: 10};
     let textStyle : TextStyle = {color: colors.white.hex, fontSize: 18, fontWeight:'bold'};
 
+    let size = 0.22*availableScreenHeight;
+
     let currentState = stone.state.state;
+
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
+      return (
+        <View style={{width:0.75*screenWidth, height:size*1.05, alignItems:'center'}}>
+          <View style={{flex:2}} />
+          <Text style={deviceStyles.text}>{ lang("Searching___") }</Text>
+          <View style={{flex:1}} />
+          <Text style={[deviceStyles.subText, {textAlign:'center'}]}>{ lang("Once_I_hear_from_this_Cro") }</Text>
+          <View style={{flex:1}} />
+          <ActivityIndicator animating={true} size='small' color={colors.csBlue.hex} />
+          <View style={{flex:2}} />
+        </View>
+      );
+    }
+
+    if (stone.config.locked) {
+      return (
+        <LockedStateUI
+          size={0.3*screenHeight}
+          state={currentState}
+          stone={stone}
+          sphereId={this.props.sphereId}
+          stoneId={this.props.stoneId}
+          unlockCrownstone={ () => {
+            let promise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'lockSwitch', value: false });
+            BatchCommandHandler.executePriority();
+            return promise;
+          }}
+          unlockDataCallback={() => { core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
+        />
+      );
+    }
+
+
     if (stone.abilities.dimming.enabledTarget) {
       let showDimmingText = stone.state.dimmingAvailable === false && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
 
@@ -246,7 +283,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
         <TouchableOpacity
           onPress={() => {core.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
           style={wrapperStyle}>
-          <Icon name={"md-unlock"} color={colors.csBlueDarker.rgba(0.5)} size={30}/>
+          <Icon name={"md-unlock"} color={colors.csBlueDarker.rgba(0.5)} size={30} />
         </TouchableOpacity>
       );
     }
@@ -300,7 +337,12 @@ export class DeviceOverview extends LiveComponent<any, any> {
           }
         }} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Power usage"} image={require("../../images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex}  callback={() => {}} />
+        <DeviceMenuIcon label={"Power usage"} image={require("../../images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex}  callback={() => {
+          NavigationUtil.launchModal("DevicePowerUsage", {
+            stoneId: this.props.stoneId,
+            sphereId: this.props.sphereId
+          })
+        }} />
         <View style={{flex:1}} />
       </View>
     )
@@ -327,7 +369,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
         <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
         <View style={{height: 40}} />
-        { this._getLockIcon(stone) }
+        { stone.config.locked === false ? this._getLockIcon(stone) : undefined }
       </Background>
     )
   }

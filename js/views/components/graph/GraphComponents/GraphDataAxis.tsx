@@ -35,9 +35,9 @@ export class GraphDataAxis extends Component<any, any> {
         continue;
       }
 
-      elements.push(<Text key={'datalabel' + line.val} x={options.padding - 8} y={lineY + 5} fontSize={11} fill={colors.white.hex} textAnchor="end" >{line.val}</Text>);
-      elements.push(<Line key={'dataline' + line.val} x1={options.padding} y1={lineY} x2={options.width} y2={lineY} stroke={colors.white.hex}  strokeOpacity={0.1}/>);
-      elements.push(<Line key={'dataline' + line.val + "_sub"} x1={options.padding} y1={lineY} x2={options.width - options.padding} y2={lineY} stroke={colors.white.hex}  strokeOpacity={0.2} />);
+      elements.push(<Text key={'datalabel' + line.val} x={options.padding - 8} y={lineY + 5} fontSize={11} fill={this.props.color || colors.white.hex} textAnchor="end" >{line.val}</Text>);
+      elements.push(<Line key={'dataline' + line.val} x1={options.padding} y1={lineY} x2={options.width} y2={lineY} stroke={this.props.color || colors.white.hex}  strokeOpacity={0.1}/>);
+      elements.push(<Line key={'dataline' + line.val + "_sub"} x1={options.padding} y1={lineY} x2={options.width - options.padding} y2={lineY} stroke={this.props.color || colors.white.hex}  strokeOpacity={0.2} />);
     }
 
     return (

@@ -35,7 +35,7 @@ export class GraphAxis extends Component<any, any> {
     let minYfx = minY - padding;
     let maxYfx = maxY + padding;
 
-    let baseColor = colors.white.hex;
+    let baseColor = this.props.color || colors.white.hex;
     let accentColor = colors.csOrange.hex;
 
     elements.push(<Line key="bottomGridBarBackOrange"      x1={minXfx+2} y1={maxY+2  } x2={maxXfx-2}      y2={maxY+2}   stroke={accentColor}  strokeOpacity={0.55} />);
@@ -49,7 +49,7 @@ export class GraphAxis extends Component<any, any> {
     elements.push(<Line key="sideGridBarOrange"            x1={minX-2  } y1={minY    } x2={minX-2}        y2={maxY}     stroke={accentColor}  strokeOpacity={1   } />);
     elements.push(<Line key="sideGridBar"                  x1={minX    } y1={minY    } x2={minX}          y2={maxY}     stroke={baseColor}    strokeOpacity={1   } />);
 
-    elements.push(<Text key={'UNIT'} x={options.padding} y={11} originX={0} fontSize={11} fontWeight="bold" fill={colors.white.hex} textAnchor="end" >{ lang("_W_") }</Text>);
+    elements.push(<Text key={'UNIT'} x={options.padding} y={11} originX={0} fontSize={11} fontWeight="bold" fill={baseColor} textAnchor="end" >{ lang("_W_") }</Text>);
 
     return (
       <View style={{position:'absolute', top:0, left:0}}>

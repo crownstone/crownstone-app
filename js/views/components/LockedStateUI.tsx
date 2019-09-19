@@ -120,7 +120,7 @@ export class LockedStateUI extends Component<any, any> {
 
   _getContent() {
     let viewStyle : ViewStyle = {width: this.props.size, height: this.props.size, position:'absolute', top:0, left:0, alignItems:'center', justifyContent:'center'};
-    let textStyle : TextStyle = {fontSize:12, textAlign:'center', color: colors.white.hex, paddingTop:5, fontWeight: 'bold'};
+    let textStyle : TextStyle = {fontSize:12, textAlign:'center', color: colors.csBlue.hex, paddingTop:5, fontWeight: 'bold'};
     if (!Permissions.inSphere(this.props.sphereId).canUnlockCrownstone) {
       return (
         <View style={viewStyle}>
@@ -137,7 +137,7 @@ export class LockedStateUI extends Component<any, any> {
     if (this.state.unlockingInProgress) {
       return (
         <View style={viewStyle}>
-          <ActivityIndicator animating={true} size='large' color={colors.white.hex} />
+          <ActivityIndicator animating={true} size='large' color={colors.csBlue.hex} />
           <Text style={textStyle}>{ lang("Unlocking___") }</Text>
         </View>
       )
@@ -148,7 +148,7 @@ export class LockedStateUI extends Component<any, any> {
           <Icon
             name="md-unlock"
             size={this.props.size*0.3}
-            color="#fff"
+            color={colors.csBlue.hex}
           />
           <Text style={textStyle}>{ lang("Done") }</Text>
         </View>
@@ -172,7 +172,7 @@ export class LockedStateUI extends Component<any, any> {
           <Icon
             name="md-lock"
             size={this.props.size*0.3}
-            color={colors.white.hex}
+            color={colors.csBlue.rgba(0.75)}
           />
           <Text style={textStyle}>{ lang("Press_and_hold_nto_unlock") }</Text>
         </View>
