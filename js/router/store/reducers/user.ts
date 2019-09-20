@@ -112,6 +112,11 @@ export default (state = defaultSettings, action : any = {}) => {
         return newState;
       }
       return state;
+    case 'USER_REPAIR_PICTURE':
+      let newState = {...state};
+      newState.picture   = null;
+      newState.pictureId = null;
+      return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings);
     default:

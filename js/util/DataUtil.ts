@@ -5,6 +5,7 @@ import { KEY_TYPES, STONE_TYPES } from "../Enums";
 
 import DeviceInfo from 'react-native-device-info';
 import { core } from "../core";
+import { FileUtil } from "./FileUtil";
 
 
 export const DataUtil = {
@@ -319,6 +320,47 @@ export const DataUtil = {
       }
     }
     return true;
+  },
+
+  verifyPicturesInDatabase(state) {
+    let spheres = state.spheres;
+    let pictures = [];
+    if (state.user.picture) {
+      pictures.push({picturePath: state.user.picture, actionToClean: {type:"USER_REPAIR_PICTURE"}});
+    }
+    Object.keys(spheres).forEach((sphereId) => {
+      let locations = spheres[sphereId].locations;
+      let sphereUsers = spheres[sphereId].users;
+
+      Object.keys(locations).forEach((locationId) => {
+        if (locations[locationId].config.picture) {
+          pictures.push({picturePath: locations[locationId].config.picture, actionToClean: {type:"LOCATION_REPAIR_PICTURE", sphereId: sphereId, locationId: locationId}})
+        }
+      });
+      Object.keys(sphereUsers).forEach((userId) => {
+        if (sphereUsers[userId].picture) {
+          pictures.push({picturePath: sphereUsers[userId].picture, actionToClean: {type:"SPHERE_USER_REPAIR_PICTURE", sphereId: sphereId, userId: userId}})
+        }
+      });
+    })
+
+
+    FileUtil.index()
+      .then((items) => {
+        let itemsMap = {};
+        items.forEach((item) => { itemsMap['file://' + item.path] = true; })
+        let actions = [];
+        pictures.forEach((pictureData) => {
+          if (itemsMap[pictureData.picturePath] !== true) {
+            actions.push(pictureData.actionToClean);
+          }
+        })
+
+        if (actions.length > 0) {
+          core.store.batchDispatch(actions);
+        }
+      })
+
   },
 
   verifyDatabaseSphere(sphere) {

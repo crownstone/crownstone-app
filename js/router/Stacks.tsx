@@ -47,7 +47,7 @@ export const Stacks = {
     // return {
     //   stack: {
     //     children: [
-    //       { component: {name: "DevicePowerUsage", passProps: {sphereId: "61db334c-5aad-3cb1-d21e-8cec6c702cba", stoneId: "ebf9216b-9723-aa10-162f-8b6b836d1545"}} },
+    //       { component: {name: "DeviceSmartBehaviour_CopyFrom", passProps: {sphereId: "cfbf5d94-f29b-1a49-92b6-b889571ca1e", stoneId: "6d36b63f-8cfd-9c1f-fcd5-950f2445ac95"}} },
     //     ],
     //   },
     // }
@@ -59,7 +59,7 @@ export const Stacks = {
             stack: {
               children: [
                 { component: {name: "SphereOverview"} },
-                // { component: {name: "DeviceOverview", passProps: {sphereId: "61db334c-5aad-3cb1-d21e-8cec6c702cba", stoneId: "ebf9216b-9723-aa10-162f-8b6b836d1545"}} },
+                // { component: {name: "DeviceOverview", passProps: {sphereId: "cfbf5d94-f29b-1a49-92b6-b889571ca1e", stoneId: "6d36b63f-8cfd-9c1f-fcd5-950f2445ac95"}} },
               ],
               options: {
                 bottomTab: {

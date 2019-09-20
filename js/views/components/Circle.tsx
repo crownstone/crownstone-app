@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated} from 'react-native';
+  View
+} from "react-native";
 
 import {styles} from '../styles'
 
@@ -9,7 +10,7 @@ export class Circle extends Component<{color: string, borderWidth?: number, bord
   render() {
     let size = this.props.size;
     return (
-      <Animated.View style={[{
+      <View style={[{
         width:size,
         height:size,
         borderRadius:0.5*size,
@@ -18,7 +19,7 @@ export class Circle extends Component<{color: string, borderWidth?: number, bord
         borderColor: this.props.borderColor
       }, styles.centered, this.props.style]}>
     {this.props.children}
-    </Animated.View>
+    </View>
   )
   }
 }

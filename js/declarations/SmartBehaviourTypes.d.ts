@@ -75,7 +75,7 @@ interface behaviourWrapper {
   type: "BEHAVIOUR" | "TWILIGHT"
   data: behaviour | twilight,
   activeDays: dayOfWeek,
-  version: number,
+  idOnCrownstone: number,
   syncedToCrownstone: boolean,
   updatedAt: number
 }
@@ -161,7 +161,7 @@ let wakeupLightEvent = {
     data: 1
   },
   effect: {
-    type: "NO_EFFECT" // 60 minutes after the light is 100% on, we resume the behaviour.
+    type: " " // 60 minutes after the light is 100% on, we resume the behaviour.
     delayBeforeEffect: 60,
   },
   conditions: [{

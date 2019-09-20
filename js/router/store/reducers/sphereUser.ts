@@ -37,6 +37,11 @@ let sphereUserReducer = (state = defaultSettings, action : any = {}) => {
         return newState;
       }
       return state;
+    case 'SPHERE_USER_REPAIR_PICTURE':
+      newState = {...state};
+      newState.picture    = null;
+      newState.pictureId  = null;
+      return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings);
     default:

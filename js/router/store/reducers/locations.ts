@@ -115,6 +115,11 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
         return newState;
       }
       return state;
+    case 'LOCATION_REPAIR_PICTURE':
+      newState = {...state};
+      newState.picture    = null;
+      newState.pictureId  = null;
+      return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.config);
     default:

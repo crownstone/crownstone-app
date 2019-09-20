@@ -397,6 +397,8 @@ class BackgroundProcessHandlerClass {
         return;
       }
 
+      DataUtil.verifyPicturesInDatabase(state);
+
       core.eventBus.emit("userLoggedIn");
       core.eventBus.emit("storePrepared");
       if (state.user.isNew === false) {

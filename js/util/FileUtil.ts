@@ -5,6 +5,10 @@ const RNFS = require('react-native-fs');
 
 export const FileUtil = {
 
+  index: function() {
+    return RNFS.readDir(FileUtil.getPath())
+  },
+
   getPath: function(filename? : string) {
     let targetPath = Platform.OS === 'android' ? RNFS.ExternalDirectoryPath : RNFS.DocumentDirectoryPath;
 
@@ -73,6 +77,10 @@ export const FileUtil = {
           // console.log("ERROR DURING COPY", err)
         })
     }
+  },
+
+  fileExists: function(path) {
+    return RNFS.exists(path)
   }
 
 };

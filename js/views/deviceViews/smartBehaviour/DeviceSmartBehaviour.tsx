@@ -26,6 +26,7 @@ import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
+import { FileUtil } from "../../../util/FileUtil";
 
 let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -81,6 +82,8 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     let iconSize = 0.15*screenHeight;
 
     let state = core.store.getState();
+
+    console.log(state)
     let sphere = state.spheres[this.props.sphereId];
     if (!sphere) return <View />;
     let stone = sphere.stones[this.props.stoneId];
@@ -162,7 +165,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
                 label={ lang("Copy_from___")}
-                callback={() => { NavigationUtil.navigate('DeviceSmartBehaviour_TypeSelector', this.props); }}
+                callback={() => { NavigationUtil.navigate('DeviceSmartBehaviour_CopyFrom', {...this.props, callback:() => {}}); }}
                 icon={'md-log-in'}
                 iconSize={14}
                 iconColor={colors.menuTextSelected.rgba(0.75)}
@@ -189,7 +192,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
 function getTopBarProps(store, state, props, viewState) {
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
-  let rulesCreated = Object.keys(stone.rules).length > 0;
 
   if (viewState.editMode === true) {
     NAVBAR_PARAMS_CACHE = {
@@ -200,7 +202,7 @@ function getTopBarProps(store, state, props, viewState) {
   else {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
-      edit: rulesCreated === true ? true : undefined,
+      edit: true,
       closeModal: true,
     };
   }

@@ -227,18 +227,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 
 
   getFlavourImage(location) {
-    if (location.config.picture) {
-      return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: 120}} resizeMode={"cover"} />
-    }
-    else {
-      return (
-        <View style={{width:screenWidth, height: 120, overflow:'hidden', alignItems:'flex-end', justifyContent:'center', paddingRight:15}}>
-          <Image source={require("../../images/backgrounds/RoomBannerBackground.png")} style={{width: screenWidth, height: 120, position:"absolute", top:0, left:0}} resizeMode={"cover"} />
-          <Icon size={0.5*screenWidth} color={colors.white.rgba(0.3)} name={location.config.icon} style={{position:"absolute", top:-0.1*screenWidth, left:0.05*screenWidth}} />
-          <Icon size={90} color={colors.white.rgba(0.6)} name={location.config.icon} />
-        </View>
-      )
-    }
+
   }
 
   render() {
@@ -274,7 +263,7 @@ export class RoomOverview extends LiveComponent<any, any> {
     return (
       <Background image={core.background.lightBlur}>
         { backgroundImage ? <Image source={backgroundImage} style={{width: screenWidth, height: screenHeight, position:'absolute', top:0, left:0, opacity:0.1}} resizeMode={"cover"} /> : undefined }
-        { this.getFlavourImage(location) }
+        <LocationFlavourImage location={location} />
         <View style={{height:2, width:screenWidth, backgroundColor: colors.menuTextSelected.hex}} />
         <ScrollView>
           <View style={{minHeight:availableScreenHeight, width:screenWidth}}>
@@ -319,6 +308,24 @@ export class RoomOverview extends LiveComponent<any, any> {
         this.nearestStoneIdInSphere = stoneIds[i];
       }
     }
+  }
+}
+
+export function LocationFlavourImage(props : {location: any, height?: number}) {
+  let location = props.location
+  let usedHeight = props.height || 120;
+  console.log("LOC FLAVOUR IMAGE", location)
+  if (location.config.picture) {
+    return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
+  }
+  else {
+    return (
+      <View style={{width:screenWidth, height: usedHeight, overflow:'hidden', alignItems:'flex-end', justifyContent:'center', paddingRight:15}}>
+        <Image source={require("../../images/backgrounds/RoomBannerBackground.png")} style={{width: screenWidth, height: usedHeight, position:"absolute", top:0, left:0}} resizeMode={"cover"} />
+        <Icon size={0.5*screenWidth} color={colors.white.rgba(0.3)} name={location.config.icon} style={{position:"absolute", top:-0.1*screenWidth, left:0.05*screenWidth}} />
+        <Icon size={usedHeight*0.75} color={colors.white.rgba(0.6)} name={location.config.icon} />
+      </View>
+    )
   }
 }
 
