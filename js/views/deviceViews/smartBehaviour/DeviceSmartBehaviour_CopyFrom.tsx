@@ -89,7 +89,7 @@ function LocationStoneList({locationId, location, stones, callback}) {
       <StoneList stones={stoneObjects} callback={callback} selection={{}}/>
       <View style={{height:50}} />
     </View>
-  )
+  );
 }
 
 
@@ -128,13 +128,15 @@ function LocationRow({location}) {
   let height = 80;
   let textBackgroundColor = "transparent";
   if (location.config.picture) {
-    textBackgroundColor = colors.white.hex
+    textBackgroundColor = colors.white.rgba(0.6);
   }
   return (
     <View style={{width: screenWidth, borderColor: colors.black.rgba(0.5), borderBottomWidth: 1, borderTopWidth: 1}}>
       <View style={{opacity: 0.8}}><LocationFlavourImage location={location} height={height}/></View>
       <View style={{position:'absolute', top:0, left:0, width: screenWidth, height: height, justifyContent:'center'}}>
-        <Text style={{fontSize: 20, fontWeight: 'bold', fontStyle:'italic', padding:15,  backgroundColor: textBackgroundColor, width: 30 + (location.config.name.length || 0) * 15}}>{location.config.name}</Text>
+        <View style={{backgroundColor: textBackgroundColor, width: 30 + (location.config.name.length || 0) * 14}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', fontStyle:'italic', padding:15}}>{location.config.name}</Text>
+        </View>
       </View>
     </View>
   )
