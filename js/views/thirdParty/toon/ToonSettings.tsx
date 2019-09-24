@@ -178,7 +178,7 @@ export class ToonSettings extends LiveComponent<any, any> {
               <View style={{flex:1}} />
               <ScaledImage source={require('../../../images/thirdParty/logo/Works-with-Toon.png')} targetWidth={0.6*screenWidth} sourceWidth={535} sourceHeight={140} />
               <View style={{flex:1}} />
-              <Text style={[textStyle, {fontWeight: '600', fontSize: 16}]}>{ lang("Crownstone_and_Toon_are_c") }</Text>
+              <Text style={[textStyle, {fontWeight: 'bold', fontSize: 16}]}>{ lang("Crownstone_and_Toon_are_c") }</Text>
               <View style={{flex:1}} />
               <Text style={textStyle}>{ lang("Sometimes__Toon_is_set_to") }</Text>
               <View style={{flex:0.5}} />
@@ -265,7 +265,7 @@ class ToonSchedule extends Component<any, any> {
     return (
       <View style={{width: screenWidth, height:44}}>
         <View style={{paddingBottom:3, paddingTop:5, height:24, paddingLeft:0.5*this.padding}}>
-          <Text style={{fontSize:12, fontWeight:'400', color: colors.black.rgba(0.8)}}>{labels[day]}</Text>
+          <Text style={{fontSize:12, fontWeight:'bold', color: colors.black.rgba(0.8)}}>{labels[day]}</Text>
         </View>
         <View style={{flexDirection:"row", width: this.availableWidth, height:30, paddingLeft: this.padding}}>
           { entries }

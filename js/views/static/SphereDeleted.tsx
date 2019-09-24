@@ -23,7 +23,7 @@ export class SphereDeleted extends Component<any, any> {
       <Background image={require('../../images/backgrounds/mainBackgroundLightNotConnected.png')}>
         <View style={{ width: screenWidth, alignItems:'center' }}>
           <View style={{height: 30}} />
-          <Text style={{fontSize: 25, fontWeight:'800', textAlign:'center'}}>{ lang("Sphere_Deleted_") }</Text>
+          <Text style={{fontSize: 25, fontWeight:'bold', textAlign:'center'}}>{ lang("Sphere_Deleted_") }</Text>
           <View style={{flex:1}} />
         </View>
       </Background>

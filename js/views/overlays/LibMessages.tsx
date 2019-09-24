@@ -45,7 +45,7 @@ export class LibMessages extends Component<any, any> {
         />
         <View style={{flex:1}} />
         <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue.hex, padding:15}}>{this.props.header}</Text>
-        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.blue.hex, padding:15, textAlign:'center'}}>
+        <Text style={{fontSize: 12, color: colors.blue.hex, padding:15, textAlign:'center'}}>
           {this.props.body}
         </Text>
         <View style={{flex:1}} />

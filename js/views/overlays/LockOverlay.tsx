@@ -166,7 +166,7 @@ export class LockOverlay extends Component<any, any> {
         />
         <View style={{flex:1}} />
         <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.black.hex, padding:5, textAlign:'center'}}>{ lang("Locking_a_Crownstone") }</Text>
-        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.csBlueDark.hex, padding:15, textAlign:'center'}}>{this._getText()}</Text>
+        <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.csBlueDark.hex, padding:15, textAlign:'center'}}>{this._getText()}</Text>
         <View style={{flex:1}} />
         { this._getButtons() }
         <View style={{flex:1}} />

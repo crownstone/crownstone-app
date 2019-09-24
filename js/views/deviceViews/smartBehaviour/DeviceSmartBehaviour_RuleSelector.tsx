@@ -5,7 +5,6 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
-import { DeviceSmartBehaviour_TypeSelector } from "./DeviceSmartBehaviour_TypeSelector";
 import { core } from "../../../core";
 import { Background } from "../../components/Background";
 import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -26,7 +25,7 @@ import { Circle } from "../../components/Circle";
 let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 
-export class DeviceSmartBehaviour_CopyFrom extends LiveComponent<any, any> {
+export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title:"Copy from whom?", closeModal:true});
   }
@@ -127,14 +126,14 @@ function LocationRow({location}) {
   let height = 80;
   let textBackgroundColor = "transparent";
   if (location.config.picture) {
-    textBackgroundColor = colors.white.rgba(0.8);
+    textBackgroundColor = colors.white.rgba(0.6);
   }
   return (
     <View style={{width: screenWidth, borderColor: colors.black.rgba(0.5), borderBottomWidth: 1, borderTopWidth: 1}}>
       <View style={{opacity: 0.8}}><LocationFlavourImage location={location} height={height}/></View>
       <View style={{position:'absolute', top:0, left:0, width: screenWidth, height: height, justifyContent:'center'}}>
         <View style={{backgroundColor: textBackgroundColor, width: 30 + (location.config.name.length || 0) * 14}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', fontStyle:'italic', padding:10}}>{location.config.name}</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', fontStyle:'italic', padding:15}}>{location.config.name}</Text>
         </View>
       </View>
     </View>

@@ -305,7 +305,6 @@ export const textStyle = StyleSheet.create({
     padding:5,
     paddingLeft:25,
     paddingRight:25,
-    fontWeight:'400'
   },
   case: {
     color:colors.csBlueDarker.hex,
@@ -313,13 +312,12 @@ export const textStyle = StyleSheet.create({
     textAlign:'center',
     fontSize:13,
     padding:5,
-    fontWeight:'400',
   },
   value: {
     color:colors.csBlueDarker.hex,
     textAlign:'center',
     fontSize:15,
-    fontWeight:'600'
+    fontWeight:'bold'
   },
   specification: {
     backgroundColor:"transparent",
@@ -328,6 +326,6 @@ export const textStyle = StyleSheet.create({
     textAlign:'center',
     fontSize:15,
     padding:15,
-    fontWeight:'600'
+    fontWeight:'bold'
   },
 });

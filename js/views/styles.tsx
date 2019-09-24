@@ -307,20 +307,19 @@ export const deviceStyles = StyleSheet.create({
   header: {
     color: textColor.hex,
     fontSize: 25,
-    fontWeight:'800',
+    fontWeight:'bold',
     textAlign:'center',
   },
   subHeader: {
     paddingTop:10,
     color: textColor.hex,
     fontSize: 22,
-    fontWeight:'800'
+    fontWeight:'bold'
   },
   text: {
     color: textColor.hex,
     fontSize: 16,
     textAlign:'center',
-    fontWeight:'500'
   },
   subText: {
     color: textColor.rgba(0.5),
@@ -332,7 +331,6 @@ export const deviceStyles = StyleSheet.create({
     textAlign:'center',
     fontSize:15,
     padding:15,
-    fontWeight:'600'
   },
   explanation: {
     width: screenWidth,
@@ -350,7 +348,6 @@ export const deviceStyles = StyleSheet.create({
     color: textColor.hex,
     fontSize: 16,
     textAlign:'center',
-    fontWeight:'600'
   },
 });
 

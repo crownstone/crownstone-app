@@ -134,7 +134,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
         <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue.hex, padding:5, textAlign:'center'}}>
           {this._getTitle()}
         </Text>
-        <Text style={{fontSize: 11, fontWeight: '400',  color: colors.blue.hex, padding:5, textAlign:'center'}}>
+        <Text style={{fontSize: 11, fontWeight: 'bold',  color: colors.blue.hex, padding:5, textAlign:'center'}}>
           {this._getText()}
         </Text>
         <View style={{flex:1}} />

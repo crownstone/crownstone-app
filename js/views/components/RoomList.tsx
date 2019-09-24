@@ -37,8 +37,8 @@ export class RoomList extends Component<any, any> {
         </View>
         <View style={{flex:1}}>
           <View style={{flexDirection:'column'}}>
-            <Text style={{fontSize:fontSize, fontWeight:'500'}}>{this.props.name}</Text>
-            { this.props.hideSubtitle !== true ? <Text style={{fontSize:fontSize-2, fontWeight:'100', paddingTop:3}}>{ lang("Number_of_Crownstones__",this.props.stoneCount) }</Text> : undefined }
+            <Text style={{fontSize:fontSize}}>{this.props.name}</Text>
+            { this.props.hideSubtitle !== true ? <Text style={{fontSize:fontSize-2, paddingTop:3}}>{ lang("Number_of_Crownstones__",this.props.stoneCount) }</Text> : undefined }
           </View>
         </View>
         {this.props.showNavigationIcon ? <Icon name="ios-arrow-forward" size={18} color={'#888'} /> : undefined}

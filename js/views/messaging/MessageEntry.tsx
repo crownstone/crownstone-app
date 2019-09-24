@@ -136,13 +136,13 @@ export class MessageEntry extends Component<{
 
   _getSubText() {
     if (this.props.message.config.sendFailed) {
-      return <Text numberOfLines={1} style={{fontWeight:'700',  fontSize:12, color: colors.red.hex}}>{ lang("Failed_to_send__tap_to_re") }</Text>
+      return <Text numberOfLines={1} style={{fontWeight:'bold',  fontSize:12, color: colors.red.hex}}>{ lang("Failed_to_send__tap_to_re") }</Text>
     }
     else if (this.props.message.config.sendFailed === false && this.props.message.config.sent === false) {
       return (
         <View style={{flexDirection:"row", alignItems:'center'}}>
           <ActivityIndicator size="small" />
-          <Text numberOfLines={1} style={{fontWeight:'500', paddingLeft:10, fontSize:12, color: colors.black.rgba(0.5)}}>{ lang("Sending_message___") }</Text>
+          <Text numberOfLines={1} style={{fontWeight:'bold', paddingLeft:10, fontSize:12, color: colors.black.rgba(0.5)}}>{ lang("Sending_message___") }</Text>
         </View>
       )
     }
@@ -156,7 +156,7 @@ export class MessageEntry extends Component<{
       else {
         locationName = this.props.sphere.locations[locationId].config.name;
       }
-      return <Text numberOfLines={1} style={{fontWeight:'300',  fontSize:11, color: colors.black.rgba(0.25)}}>{locationName}</Text>
+      return <Text numberOfLines={1} style={{fontSize:11, color: colors.black.rgba(0.25)}}>{locationName}</Text>
     }
   }
 
@@ -191,7 +191,7 @@ export class MessageEntry extends Component<{
         <View style={{flexDirection:'column', width: screenWidth - 2*iconSize - 50}}>
           <View style={{ flex:1 }} />
           <Text numberOfLines={1} style={{fontWeight:'bold', fontSize:14, color: colors.black.rgba(0.5)}}>{label}</Text>
-          <Text style={{fontWeight:'300', paddingTop: 0.4*padding, paddingBottom: 0.4*padding, fontSize:13, color: colors.black.rgba(0.75)}}>{this.props.message.config.content}</Text>
+          <Text style={{paddingTop: 0.4*padding, paddingBottom: 0.4*padding, fontSize:13, color: colors.black.rgba(0.75)}}>{this.props.message.config.content}</Text>
           { this._getSubText() }
           <View style={{ flex:1 }} />
         </View>

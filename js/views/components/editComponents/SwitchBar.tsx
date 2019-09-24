@@ -82,7 +82,7 @@ export class SwitchBar extends Component<any, any> {
         <View style={{flex:1}} />
         {
           this.props.hasHelp ? <TouchableOpacity onPress={() => {this.props.onHelp(); }} style={{borderColor: helpColor, borderWidth: 1, width:30, height:30, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
-                                <Text style={{color: helpColor, fontSize: 20, fontWeight:'300'}}>?</Text>
+                                <Text style={{color: helpColor, fontSize: 20}}>?</Text>
                                </TouchableOpacity>
                              : undefined
         }
@@ -114,7 +114,7 @@ export class SwitchBar extends Component<any, any> {
         <View style={{height: navBarHeight , width: screenWidth, backgroundColor: colors.menuBackground.hex}}>
           <Animated.View style={{position:'absolute', top:0, left:0, overflow:'hidden', height: navBarHeight, width: screenWidth, opacity: this.state.opacity}}>
             <Animated.View style={{position:'absolute', top: Platform.OS === 'android' ? -24 : -17, left: this.state.leftPos}}>
-              <Text style={{color:colors.white.rgba(0.1), fontSize:70, fontWeight:'900', fontStyle:'italic', width: 540}}>{ lang("EXPERIMENTAL",this.props.experimentalLabel) }</Text>
+              <Text style={{color:colors.white.rgba(0.1), fontSize:70, fontWeight:'bold', fontStyle:'italic', width: 540}}>{ lang("EXPERIMENTAL",this.props.experimentalLabel) }</Text>
             </Animated.View>
           </Animated.View>
           { this._getButton(navBarHeight, fontColor) }

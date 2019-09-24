@@ -135,11 +135,11 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, overflow:'hidden'}} onPress={() => { this.props.callback(); }}>
             <SlideFadeInView visible={!this.state.pendingCommand} height={this.baseHeight} style={{justifyContent:'center'}}>
-              <Text style={{fontSize: 17, fontWeight: '100'}}>{this.state.name}</Text>
+              <Text style={{fontSize: 17}}>{this.state.name}</Text>
               {this._getSubText()}
             </SlideFadeInView>
             <SlideFadeInView visible={ this.state.pendingCommand} height={this.baseHeight} style={{justifyContent:'center'}}>
-              <Text style={{fontSize: 13, fontWeight: '100'}}>{ lang("Toggling____You_should_he") }</Text>
+              <Text style={{fontSize: 13}}>{ lang("Toggling____You_should_he") }</Text>
             </SlideFadeInView>
           </TouchableOpacity>
           { this._getControl() }

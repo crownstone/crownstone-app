@@ -304,9 +304,9 @@ export class DimmerButton extends Component<any, any> {
               {
                 this.state.pendingCommand === true ?
                   <ActivityIndicator animating={true} size='small' color={stateColor} /> :
-                  <Text style={{color: stateColor, fontSize: 0.2 * innerSize, fontWeight: '600'}}>{label}</Text>
+                  <Text style={{color: stateColor, fontSize: 0.2 * innerSize, fontWeight: 'bold'}}>{label}</Text>
               }
-              { dimmingPending ? undefined : <Text style={{color: stateColor, fontSize:0.15*innerSize, fontWeight:'500'}}>{ lang("____",Math.round(100*state)) }</Text> }
+              { dimmingPending ? undefined : <Text style={{color: stateColor, fontSize:0.15*innerSize, fontWeight:'bold'}}>{ lang("____",Math.round(100*state)) }</Text> }
               { dimmingPending ? <View style={{flex: 1}} /> : <View style={{flex:0.75}} /> }
             </AnimatedCircle>
           </AnimatedCircle>

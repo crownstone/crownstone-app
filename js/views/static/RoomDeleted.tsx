@@ -24,7 +24,7 @@ export class RoomDeleted extends Component<any, any> {
       <Background image={require('../../images/backgrounds/lightBackground2.png')}>
         <View style={{ flex:1, width: screenWidth, alignItems:'center' }}>
           <View style={{height: 30}} />
-          <Text style={{fontSize: 25, fontWeight:'800', textAlign:'center'}}>{ lang("Room_Deleted_") }</Text>
+          <Text style={{fontSize: 25, fontWeight:'bold', textAlign:'center'}}>{ lang("Room_Deleted_") }</Text>
           <View style={{flex:1}} />
           <TextButtonLight
             selected={false}

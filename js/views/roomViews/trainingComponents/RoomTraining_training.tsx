@@ -27,7 +27,7 @@ export class RoomTraining_training extends Component<any, any> {
             <Text style={{
               backgroundColor:'transparent',
               fontSize:20,
-              fontWeight:'600',
+              fontWeight:'bold',
               color: colors.white.hex,
               textAlign:'center'
             }}>{ lang("Walk_around_the_room_so__") }</Text>
@@ -53,7 +53,7 @@ export class RoomTraining_training extends Component<any, any> {
                     <Icon name={icons[this.props.iconIndex]} size={0.3*screenWidth} color="#fff" style={{backgroundColor:'transparent'}} />
                   </Animated.View>
                   <View style={{backgroundColor:'transparent', marginTop: -0.5*screenWidth, width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth,  alignItems:'center', justifyContent:'center'}}>
-                    <Text style={{backgroundColor:'transparent', fontSize:22, fontWeight:'200'}}>{this.props.progress > 0 ? Math.round(100*this.props.progress) + "%" : this.props.text}</Text>
+                    <Text style={{backgroundColor:'transparent', fontSize:22}}>{this.props.progress > 0 ? Math.round(100*this.props.progress) + "%" : this.props.text}</Text>
                   </View>
                 </View>
               </View>

@@ -89,7 +89,7 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
           <Text style={{
             backgroundColor:'transparent',
             fontSize:20,
-            fontWeight:'600',
+            fontWeight:'bold',
             color: colors.white.hex,
             textAlign:'center'
           }}>{ lang("To_let__find_you_in___we_",roomName) }</Text>
@@ -98,7 +98,7 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
-            fontWeight:'600',
+            fontWeight:'bold',
             color: colors.white.hex,
             textAlign:'center',
           }}>{ lang("How_large_is_this_room_") }</Text>
@@ -107,7 +107,6 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
-            fontWeight:'300',
             color: colors.white.hex,
             textAlign:'center',
           }}>{ lang("Large_rooms_take_a_bit_mo") }</Text>

@@ -127,11 +127,10 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.detailsDark}>
-                <ScrollView>
+        <ScrollView>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
-            fontWeight:'500',
             color: colors.white.hex,
             textAlign:'center',
             padding:20,
@@ -139,7 +138,6 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
           <Text style={{
             backgroundColor:'transparent',
             fontSize:14,
-            fontWeight:'300',
             color: colors.white.hex,
             textAlign:'center',
             padding:20,
@@ -150,7 +148,6 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
             <Text style={{
               backgroundColor:'transparent',
               fontSize:16,
-              fontWeight:'500',
               color: colors.white.hex,
               textAlign:'center',
               paddingTop:0,
@@ -276,7 +273,7 @@ export class Network extends Component<any, any> {
         opacity: this.state.opacity
       }}>
         {this.getConnector()}
-        <Text style={{backgroundColor:'transparent', color:colors.white.hex, fontWeight:'500', paddingBottom:10}}>{this.props.label}</Text>
+        <Text style={{backgroundColor:'transparent', color:colors.white.hex, fontWeight:'bold', paddingBottom:10}}>{this.props.label}</Text>
         <View style={{paddingBottom: 5}}>
           { this.getStones() }
         </View>

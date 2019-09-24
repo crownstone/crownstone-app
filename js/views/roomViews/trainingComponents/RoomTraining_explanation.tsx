@@ -23,14 +23,13 @@ export class RoomTraining_explanation extends Component<any, any> {
           <Text style={{
             backgroundColor:'transparent',
             fontSize:20,
-            fontWeight:'600',
+            fontWeight:'bold',
             color: colors.white.hex,
             textAlign:'center'
           }}>{ lang("OK__so_its_a__room__Lets_",this.props.roomSize,this.props.roomName) }</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
-            fontWeight:'300',
             color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,
@@ -38,7 +37,6 @@ export class RoomTraining_explanation extends Component<any, any> {
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
-            fontWeight:'300',
             color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,

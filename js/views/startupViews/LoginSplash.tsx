@@ -27,7 +27,6 @@ let versionStyle : TextStyle = {
   right:3,
   backgroundColor:"transparent",
   color: colors.white.rgba(0.4),
-  fontWeight:'300',
   fontSize: 10,
 };
 

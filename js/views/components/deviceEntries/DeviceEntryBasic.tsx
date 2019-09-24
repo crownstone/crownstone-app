@@ -46,7 +46,7 @@ export class DeviceEntryBasic extends Component<any, any> {
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.props.callback(); }}>
             <View style={{flexDirection: 'column'}}>
-              <Text style={{fontSize: 17, fontWeight: '100'}}>{stone.config.name}</Text>
+              <Text style={{fontSize: 17}}>{stone.config.name}</Text>
             </View>
           </TouchableOpacity>
         </View>

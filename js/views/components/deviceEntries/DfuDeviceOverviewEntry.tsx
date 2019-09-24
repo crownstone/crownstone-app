@@ -50,15 +50,15 @@ export class DfuDeviceOverviewEntry extends Component<any, any> {
           </View>
           <View style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}>
             <View style={{flexDirection: 'column'}}>
-              <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : '100'}}>{stone.config.name}</Text>
+              <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : 'normal'}}>{stone.config.name}</Text>
               { this.props.visible && !this.props.closeEnough ?
-                <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("In_range_but_not_close_eno") }</Text> :
+                <Text style={{fontSize: 14}}>{ lang("In_range_but_not_close_eno") }</Text> :
                 undefined }
               { !this.props.visible && !this.props.closeEnough ?
-                <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("Searching___") }</Text> :
+                <Text style={{fontSize: 14}}>{ lang("Searching___") }</Text> :
                 undefined }
               { !this.props.visible && !this.props.closeEnough && locationName ?
-                <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Located_in__",locationName) }</Text> :
+                <Text style={{fontSize: 12}}>{ lang("Located_in__",locationName) }</Text> :
                 undefined }
               { this.props.closeEnough ?
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>{ lang("Close_enough_for_update_") }</Text> :

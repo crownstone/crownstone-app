@@ -133,10 +133,10 @@ export class ErrorOverlay extends Component<any, any> {
         />
         <View style={{flex:1}} />
         <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, padding:15, textAlign:'center'}}>{ lang("Crownstone_Hardware_Error") }</Text>
-        <Text style={{fontSize: 12, fontWeight: '500',  color: colors.red.hex, padding:15, paddingBottom: 0, textAlign:'center'}}>
+        <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.red.hex, padding:15, paddingBottom: 0, textAlign:'center'}}>
           {this._getText(stone)}
         </Text>
-        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.red.hex, padding:15, paddingTop:5, alignSelf:'flex-end', fontStyle:'italic'}}>{ lang("__Yours__",aiName) }</Text>
+        <Text style={{fontSize: 12, fontWeight: 'bold',  color: colors.red.hex, padding:15, paddingTop:5, alignSelf:'flex-end', fontStyle:'italic'}}>{ lang("__Yours__",aiName) }</Text>
         <View style={{flex:1}} />
         {this._getButton(stone)}
         <View style={{flex:1}} />

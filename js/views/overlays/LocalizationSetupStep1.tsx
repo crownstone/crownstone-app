@@ -308,7 +308,7 @@ export class LocalizationSetupStep1 extends Component<any, any> {
 
         <Animated.View style={{position:'absolute',top: 0.24*this.h, opacity: this.state.textOpacity, width:this.w, height: this.h - 0.24*this.h, justifyContent:'center', alignItems:'center', padding:10}}>
           <View style={{flex:1}} />
-          <Text style={{fontSize: 0.1*this.w, color: contentColor, fontWeight:'800', paddingBottom:0.04*this.h, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Congratulations_") }</Text>
+          <Text style={{fontSize: 0.1*this.w, color: contentColor, fontWeight:'bold', paddingBottom:0.04*this.h, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Congratulations_") }</Text>
           <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("You_have_added___Crownsto") }</Text>
           <View style={{flex:1}} />
           <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("Weve_added_this_button_to") }</Text>
@@ -320,7 +320,7 @@ export class LocalizationSetupStep1 extends Component<any, any> {
               <TouchableOpacity
                 onPress={() => {this.setState({visible: false}, () => {  NavigationUtil.closeOverlay(this.props.componentId); });}}
                 style={{borderWidth:2, borderRadius:0.04*this.h, borderColor: contentColor, width:0.3*this.w, height:0.08*this.h, justifyContent:'center', alignItems:'center'}}>
-                <Text style={{fontSize: 20, fontWeight:'800', color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("OK_") }</Text>
+                <Text style={{fontSize: 20, fontWeight:'bold', color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{ lang("OK_") }</Text>
               </TouchableOpacity>
               <View style={{flex:1}} />
         </Animated.View>

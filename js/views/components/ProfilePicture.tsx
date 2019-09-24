@@ -75,7 +75,6 @@ export class ProfilePicture extends Component<any, any> {
 let nameStyle : TextStyle = {
   color:'#fff',
   fontSize:10,
-  fontWeight:'200',
   flex:1,
   backgroundColor:'transparent',
   alignItems:'center',
