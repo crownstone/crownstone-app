@@ -22,7 +22,7 @@ export function BehaviourSuggestion(props) {
         width:0.85*screenWidth,
         height:65,
         borderRadius:20,
-        backgroundColor: colors.menuTextSelected.rgba(0.3),
+        backgroundColor: props.backgroundColor || colors.menuTextSelected.rgba(0.3),
         borderColor: colors.white.rgba(0.8),
         borderWidth: 2,
         alignItems:'center',
@@ -41,7 +41,7 @@ export function BehaviourSuggestion(props) {
         height:size,
         borderRadius:size*0.5,
         backgroundColor: props.iconColor || colors.green.hex,
-        borderColor: colors.white.rgba(0.8),
+        borderColor: colors.white.hex,
         borderWidth: 2
       }, styles.centered]}>
         { props.iconObject || <Icon name={props.icon || 'md-add'} size={props.iconSize || size*0.75} color={colors.white.hex} /> }

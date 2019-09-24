@@ -28,6 +28,7 @@ import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { Icon } from "../../components/Icon";
 import { BehaviourSubmitButton } from "./supportComponents/BehaviourSubmitButton";
+import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
 
 
 export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string, stoneId: string, rule: string, twilightRule: boolean, ruleId?: string}, any> {
@@ -40,7 +41,6 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
   constructor(props) {
     super(props);
 
-    console.log("HERE", this.props)
     let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
     if (!sphere) return;
@@ -75,7 +75,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
       stoneId: this.props.stoneId,
       ruleId: ruleId,
       data: {
-        type: this.props.twilightRule ? "TWILIGHT" : "BEHAVIOUR",
+        type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
         data: this.props.rule,
         activeDays: this.state.activeDays,
         syncedToCrownstone: false

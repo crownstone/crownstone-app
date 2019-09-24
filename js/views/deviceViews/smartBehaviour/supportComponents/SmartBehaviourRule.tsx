@@ -1,6 +1,6 @@
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
-import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Text, TextStyle, TouchableOpacity, View } from "react-native";
 import { colors, screenWidth } from "../../../styles";
 import { SlideSideFadeInView } from "../../../components/animated/SlideFadeInView";
 import { core } from "../../../../core";
@@ -12,9 +12,23 @@ export function SmartBehaviourRule(props) {
   let ai;
   if      (props.rule.type === "BEHAVIOUR") { ai = new AicoreBehaviour(props.rule.data); }
   else if (props.rule.type === "TWILIGHT")  { ai = new AicoreTwilight(props.rule.data);  }
+
+  let labelStyle : TextStyle = {
+    color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
+    fontSize:16,
+    textAlign:'center',
+    textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
+  };
+  if (props.selected) {;
+    labelStyle['color'] = colors.csBlueDark.hex;
+    labelStyle['fontWeight'] = 'bold';
+  }
+
   return (
     <View style={{padding:15, flexDirection: 'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
-      <SlideSideFadeInView width={50} visible={props.editMode}>
+      { /* Delete Icon */ }
+      <SlideSideFadeInView width={50} visible={props.editMode && props.ruleSelection && !props.selected}></SlideSideFadeInView>
+      <SlideSideFadeInView width={50} visible={props.editMode && !props.ruleSelection}>
         <TouchableOpacity onPress={() => {
           if (props.rule.syncedToCrownstone === false) {
             Alert.alert(
@@ -46,19 +60,23 @@ export function SmartBehaviourRule(props) {
           <Icon name={'ios-trash'} color={colors.red.rgba(0.6)} size={30} />
         </TouchableOpacity>
       </SlideSideFadeInView>
-      { props.rule.syncedToCrownstone === false && !props.editMode ? <ActivityIndicator size={"small"} color={colors.csBlue.hex} /> : undefined }
-      <View style={{flex:1}}>
-        <Text style={{
-          color: props.rule.syncedToCrownstone === false  || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
-          fontSize:16,
-          textAlign:'center',
-          textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
-        }}>{ai.getSentence()}</Text>
+      { /* /Delete Icon */ }
 
-        { props.rule.syncedToCrownstone === false && props.editMode ?
+
+      { props.rule.syncedToCrownstone === false && !props.editMode ? <ActivityIndicator size={"small"} color={colors.csBlue.hex} /> : undefined }
+
+
+      { /* Rule text */ }
+      <View style={{flex:1}}>
+        <Text style={labelStyle}>{ai.getSentence()}</Text>
+        { props.rule.syncedToCrownstone === false && props.editMode && !props.ruleSelection ?
           <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center',}}>{"( Not on Crownstone yet... )"}</Text> : undefined }
       </View>
-      <SlideSideFadeInView width={50} visible={props.editMode}>
+      { /* /Rule text */ }
+
+
+      { /* Edit icon */ }
+      <SlideSideFadeInView width={50} visible={props.editMode && !props.ruleSelection}>
         <TouchableOpacity onPress={() => {
           NavigationUtil.navigate(
             "DeviceSmartBehaviour_Editor",
@@ -72,6 +90,17 @@ export function SmartBehaviourRule(props) {
           <Icon name={'md-create'} color={colors.menuTextSelected.hex} size={26} />
         </TouchableOpacity>
       </SlideSideFadeInView>
+      { /* /Edit icon */ }
+
+
+      { /* Selection checkmark */ }
+      <SlideSideFadeInView width={50} visible={props.editMode && props.ruleSelection && !props.selected}></SlideSideFadeInView>
+      <SlideSideFadeInView width={50} visible={props.editMode && props.ruleSelection && props.selected}>
+        <View style={{width:50, alignItems:'flex-end'}}>
+          <Icon name={'ios-checkmark-circle'} color={colors.green.hex} size={26} />
+        </View>
+      </SlideSideFadeInView>
+      { /* /Selection checkmark */ }
     </View>
   );
 }

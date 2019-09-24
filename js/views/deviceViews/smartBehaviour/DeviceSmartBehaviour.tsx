@@ -10,7 +10,6 @@ import { core } from "../../../core";
 import { Background } from "../../components/Background";
 import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { TopBarUtil } from "../../../util/TopBarUtil";
-import { Util } from "../../../util/Util";
 import { LiveComponent } from "../../LiveComponent";
 import {
   availableModalHeight,
@@ -19,14 +18,16 @@ import {
   screenHeight,
   screenWidth
 } from "../../styles";
-import { SlideFadeInView, SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
+import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { WeekDayList } from "../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
 import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
-import { FileUtil } from "../../../util/FileUtil";
+import Toast from 'react-native-same-toast';
+import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
+import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 
 let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -45,18 +46,19 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     }
     if (buttonId === 'edit') {
       this.setState({ editMode: true  }, updateTopBar);
-      BackButtonHandler.override(className, () => { this.setState({ editMode: true  }, updateTopBar);})
+      BackButtonHandler.override(className, () => { this.setState({ editMode: false  }, updateTopBar); })
     }
-    if (buttonId === 'closeEdit') { this.setState({ editMode: false  }, updateTopBar); }
+    if (buttonId === 'closeEdit') {
+      BackButtonHandler.clearOverride(className);
+      this.setState({ editMode: false  }, updateTopBar); }
   }
 
   unsubscribeStoreEvents;
 
   constructor(props) {
     super(props);
-
     let weekday = new Date().getDay();
-    this.state = { editMode: false, activeDay: dayArray[weekday] }
+    this.state = { editMode: true, activeDay: dayArray[weekday] }
   }
 
   componentDidMount(): void {
@@ -78,12 +80,20 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     BackButtonHandler.clearOverride(className);
   }
 
+  copySelectedRulesToStones(stoneIds) {
+    console.log("copySelectedRulesToStones", stoneIds)
+  }
+
+  copyRulesToThisStone(stoneId, ruleIds) {
+    // this will check if dimming needs to be enabled.
+    console.log("copyRulesToThisStone", stoneId, ruleIds)
+  }
+
   render() {
     let iconSize = 0.15*screenHeight;
 
     let state = core.store.getState();
 
-    console.log(state)
     let sphere = state.spheres[this.props.sphereId];
     if (!sphere) return <View />;
     let stone = sphere.stones[this.props.stoneId];
@@ -110,8 +120,8 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
         if (partiallyActive) {
           partiallyActiveRuleIdMap[ruleId] = true;
         }
-        ruleComponents.push(
-        <SmartBehaviourRule
+
+        let ruleComponent = <SmartBehaviourRule
           key={"description" + ruleId}
           rule={rule}
           sphereId={this.props.sphereId}
@@ -119,17 +129,20 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
           ruleId={ruleId}
           editMode={this.state.editMode}
           faded={partiallyActive}
-        />);
+        />;
+
+        ruleComponents.push(ruleComponent);
       }
     });
+
+    let headerText = lang("My_Behaviour", stone.config.name);
 
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
+            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ headerText }</Text>
             <View style={{height: 0.2*iconSize}} />
-
             <SlideFadeInView visible={!this.state.editMode} height={1.5*(screenWidth/9) + 0.1*iconSize + 90}>
               <WeekDayList
                 data={{
@@ -165,7 +178,26 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
                 label={ lang("Copy_from___")}
-                callback={() => { NavigationUtil.navigate('DeviceSmartBehaviour_CopyFrom', {...this.props, callback:() => {}}); }}
+                callback={() => {
+                  if (ruleIds.length > 0) {
+                    Alert.alert(
+                      "Copying will override existing Behaviour",
+                      "If you copy behaviour from another Crownstone, it's behaviour will replace the current behaviour. Do you want to continue?",
+                      [{text:"Nevermind"}, {text:"Yes", onPress: () => {
+                          NavigationUtil.navigate("DeviceSmartBehaviour_CopyStoneSelection",{
+                            ...this.props,
+                            copyType: "FROM",
+                            originId: this.props.stoneId,
+                            originIsDimmable: stone.abilities.dimming.enabledTarget,
+                            callback:(stoneId) => {
+                              NavigationUtil.navigate("DeviceSmartBehaviour_RuleSelector", { sphereId: this.props.sphereId, stoneId: stoneId, callback: (stoneId, selectedRuleIds) => {
+                                  this.copyRulesToThisStone(stoneId, selectedRuleIds);
+                                  NavigationUtil.backTo("DeviceSmartBahaviour");
+                                }});
+                            }});
+                        }}])
+                  }
+                }}
                 icon={'md-log-in'}
                 iconSize={14}
                 iconColor={colors.menuTextSelected.rgba(0.75)}
@@ -174,13 +206,42 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
                 label={ lang("Copy_to___")}
-                callback={() => { NavigationUtil.navigate('DeviceSmartBehaviour_TypeSelector', this.props); }}
+                callback={() => {
+                  console.log("IM HERE", ruleIds)
+                  let requireDimming = false;
+                  ruleIds.forEach((ruleId) => {
+                    console.log("ruleId", ruleId)
+                    if (rules[ruleId].type === BEHAVIOUR_TYPES.twilight) {
+                      requireDimming = true;
+                      console.log("IS TIWLIGHT!")
+                    }
+                    else {
+                      let rule = new AicoreBehaviour(rules[ruleId].data);
+                      if (rule.willDim()) {
+                        console.log("IS willDim!")
+                        requireDimming = true;
+                      }
+                    }
+                  });
+
+                  NavigationUtil.navigate('DeviceSmartBehaviour_CopyStoneSelection', {
+                    ...this.props,
+                    copyType: "TO",
+                    originId: this.props.stoneId,
+                    originIsDimmable: stone.abilities.dimming.enabledTarget,
+                    rulesRequireDimming: requireDimming,
+                    callback:(stoneIds) => {
+                      this.copySelectedRulesToStones(stoneIds);
+                      NavigationUtil.backTo(className);
+                      Toast.showWithGravity('    Behaviour copied!    ', Toast.SHORT, Toast.CENTER);
+                    }});
+                }}
                 icon={'md-log-out'}
                 iconSize={14}
                 iconColor={colors.purple.blend(colors.menuTextSelected, 0.5).rgba(0.75)}
               />
             </SlideFadeInView>
-            <View style={{flex:3}} />
+            <View style={{height:30}} />
           </View>
         </ScrollView>
       </Background>

@@ -73,7 +73,7 @@ interface twilight {
 
 interface behaviourWrapper {
   type: "BEHAVIOUR" | "TWILIGHT"
-  data: behaviour | twilight,
+  data: behaviour | twilight, // stringified
   activeDays: dayOfWeek,
   idOnCrownstone: number,
   syncedToCrownstone: boolean,

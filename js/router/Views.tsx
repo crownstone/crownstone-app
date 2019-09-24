@@ -100,7 +100,7 @@ import { Ability_TapToToggleSettings } from "../views/deviceViews/abilities/sett
 import { Ability_SwitchcraftSettings } from "../views/deviceViews/abilities/settings/Ability_SwitchcraftSettings";
 import { Ability_TapToToggleInformation } from "../views/deviceViews/abilities/information/Ability_TapToToggleInformation";
 import { DevicePowerUsage } from "../views/deviceViews/DevicePowerUsage";
-import { DeviceSmartBehaviour_CopyFrom } from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_CopyFrom";
+import { DeviceSmartBehaviour_CopyStoneSelection } from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_CopyStoneSelection";
 import { DeviceSmartBehaviour_RuleSelector } from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_RuleSelector";
 
 
@@ -127,7 +127,7 @@ export const Views = {
   DeviceOverview:                    DeviceOverview,
   DevicePowerUsage:                  DevicePowerUsage,
   DeviceSmartBehaviour:              DeviceSmartBehaviour,
-  DeviceSmartBehaviour_CopyFrom:     DeviceSmartBehaviour_CopyFrom,
+  DeviceSmartBehaviour_CopyStoneSelection: DeviceSmartBehaviour_CopyStoneSelection,
   DeviceSmartBehaviour_RuleSelector: DeviceSmartBehaviour_RuleSelector,
   DeviceSmartBehaviour_Editor:       DeviceSmartBehaviour_Editor,
   DeviceSmartBehaviour_TypeSelector: DeviceSmartBehaviour_TypeSelector,

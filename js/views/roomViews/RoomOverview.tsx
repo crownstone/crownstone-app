@@ -226,10 +226,6 @@ export class RoomOverview extends LiveComponent<any, any> {
   }
 
 
-  getFlavourImage(location) {
-
-  }
-
   render() {
     const store = core.store;
     const state = store.getState();
@@ -314,7 +310,6 @@ export class RoomOverview extends LiveComponent<any, any> {
 export function LocationFlavourImage(props : {location: any, height?: number}) {
   let location = props.location
   let usedHeight = props.height || 120;
-  console.log("LOC FLAVOUR IMAGE", location)
   if (location.config.picture) {
     return <Image source={{ uri: xUtil.preparePictureURI(location.config.picture) }} style={{width: screenWidth, height: usedHeight}} resizeMode={"cover"} />
   }

@@ -1,12 +1,12 @@
 import { combineReducers }      from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
-import ruleReducer              from './stoneSubReducers/rules'
-import meshReducer              from './stoneSubReducers/mesh'
-import reachabilityReducer      from './stoneSubReducers/reachability'
-import lastUpdatedReducer       from './stoneSubReducers/lastUpdated'
-import stoneKeyReducer          from './stoneSubReducers/stoneKeys'
-import abilityReducer           from './stoneSubReducers/abilities'
-import { STONE_TYPES } from "../../../Enums";
+import ruleReducer         from './stoneSubReducers/rules'
+import meshReducer         from './stoneSubReducers/mesh'
+import reachabilityReducer from './stoneSubReducers/reachability'
+import lastUpdatedReducer  from './stoneSubReducers/lastUpdated'
+import stoneKeyReducer     from './stoneSubReducers/stoneKeys'
+import abilityReducer      from './stoneSubReducers/abilities'
+import { STONE_TYPES }     from "../../../Enums";
 
 let defaultSettings = {
   config: {
@@ -56,18 +56,9 @@ let defaultSettings = {
     // id: behaviourWrapper
   },
   abilities: {
-    dimming: {
-      enabled: false,
-      synced: true,
-    },
-    switchcraft: {
-      enabled: false,
-      synced: true,
-    },
-    tapToToggle: {
-      enabled: false,
-      synced: true,
-    },
+    dimming: {},
+    switchcraft: {},
+    tapToToggle: {},
   },
   errors: {
     overCurrent: false,

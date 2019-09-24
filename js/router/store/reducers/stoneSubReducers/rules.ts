@@ -1,8 +1,13 @@
 import { update, getTime, refreshDefaults } from '../reducerUtil'
 
+export const BEHAVIOUR_TYPES = {
+  twilight: "TWILIGHT",
+  behaviour:"BEHAVIOUR",
+}
+
 let defaultSettings = {
   type: null,
-  data: null,
+  data: null, // this is string
   cloudId: null,
   activeDays: {
     Mon: true,
