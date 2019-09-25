@@ -121,17 +121,8 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
 
     this._storeRule();
 
-    if (NavigationUtil.isModalOpen("DeviceSmartBehaviour")) {
-      // close the wrap up modal to shwo the overview beneath it.
-      NavigationUtil.dismissModal();
-    }
-    else {
-      NavigationUtil.navigate("DeviceSmartBehaviour", {
-        stoneId: this.props.stoneId,
-        sphereId: this.props.sphereId
-      });
-      NavigationUtil.setForcedModalStackRoot("DeviceSmartBehaviour");
-    }
+    // close the wrap up modal to shwo the overview beneath it.
+    NavigationUtil.dismissModal();
   }
 
   render() {

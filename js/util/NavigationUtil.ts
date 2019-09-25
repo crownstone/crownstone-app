@@ -40,6 +40,9 @@ class NavStateManager {
   activeView : activeView = {};
   overlayNames = {};
   overlayId = {};
+
+  expectedNewModals = [];
+
   modals : componentInfo[][] = [];
   views : views = {};
 
@@ -186,6 +189,12 @@ class NavStateManager {
       this.overlayId[componentId] = {id:componentId, name: name};
       return;
     }
+    else if (this.expectedNewModals.indexOf(name) !== -1) {
+      this.modals.push([])
+      lastItem(this.modals).push({id:componentId, name: name});
+      this.activeModal = componentId;
+      this.expectedNewModals.splice(this.expectedNewModals.indexOf(name),1)
+    }
     else if (this.modals.length > 0) {
       lastItem(this.modals).push({id:componentId, name: name});
       this.activeModal = componentId;
@@ -312,9 +321,13 @@ class NavStateManager {
     this.forcedRootModalStackViews[viewName] = true;
   }
 
-  modalActive() {
-    this.modals.push([]);
+  expectModal(targetName) {
+    this.expectedNewModals.push(targetName);
   }
+
+  // modalActive() {
+  //   this.modals.push([]);
+  // }
 
   modalDismissed() {
     this.modals.pop();
@@ -570,7 +583,8 @@ export const NavigationUtil = {
   launchModal: function(target, props = {}) {
     addSentryLog("launchModal", target);
     LOGi.nav("Navigating from", NavState.activeView, "to", target, props);
-    NavState.modalActive();
+    NavState.expectModal(target);
+    // NavState.modalActive();
     Navigation.showModal({
       stack:{
         children: [

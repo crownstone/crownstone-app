@@ -38,12 +38,11 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
   }
 
   unsubscribeStoreEvents;
-  removeSuccessTimeout;
 
   constructor(props) {
     super(props);
     let weekday = new Date().getDay();
-    this.state = { editMode: false, activeDay: dayArray[weekday], showCopySuccess: false }
+    this.state = { editMode: false, activeDay: dayArray[weekday] };
   }
 
 
@@ -78,7 +77,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
   componentWillUnmount(): void {
     this.unsubscribeStoreEvents();
-    clearTimeout(this.removeSuccessTimeout);
     BackButtonHandler.clearOverride(className);
   }
 
@@ -109,6 +107,8 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     let rules = stone.rules;
 
     let ruleIds = Object.keys(rules);
+
+    let rulesPresent = ruleIds.length > 0;
 
     let ruleComponents = [];
     let activeRules = {};
@@ -149,21 +149,11 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.lightBlurLighter} hasNavBar={false}>
-        <SlideFadeInView visible={this.state.showCopySuccess} height={50}>
-          <View style={{width:screenWidth, backgroundColor: colors.green.rgba(0.8), height:50, alignItems:'center'}}>
-            <View style={{flex:1}}/>
-            <Text numberOfLines={1} adjustsFontSizeToFit={true} style={{fontSize:16, fontWeight:'bold', color: colors.white.hex}}>
-              Behaviour copied!
-            </Text>
-            <View style={{flex:1}}/>
-            <View style={{width:screenWidth, backgroundColor: colors.black.rgba(0.1),height:2}} />
-          </View>
-        </SlideFadeInView>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ headerText }</Text>
             <View style={{height: 0.2*iconSize}} />
-            <SlideFadeInView visible={!this.state.editMode} height={1.5*(screenWidth/9) + 0.1*iconSize + 90}>
+            <SlideFadeInView visible={!this.state.editMode && rulesPresent} height={1.5*(screenWidth/9) + 0.1*iconSize + 90}>
               <WeekDayList
                 data={{
                   Mon: this.state.activeDay === "Mon",
@@ -189,13 +179,13 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             <View style={{flex:1}} />
             {ruleComponents}
             <View style={{flex:2}} />
-            <SlideFadeInView visible={this.state.editMode} height={80}>
+            <SlideFadeInView visible={this.state.editMode || !rulesPresent} height={80}>
               <BehaviourSuggestion
                 label={ lang("Add_more___")}
                 callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', this.props); }}
               />
             </SlideFadeInView>
-            <SlideFadeInView visible={this.state.editMode} height={80}>
+            <SlideFadeInView visible={this.state.editMode || !rulesPresent} height={80}>
               <BehaviourSuggestion
                 label={ lang("Copy_from___")}
                 callback={() => {
@@ -246,11 +236,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                     callback:(stoneIds) => {
                       this.copySelectedRulesToStones(stoneIds);
                       Alert.alert("Success!", "Behaviour has been copied!", [{text:"Great!", onPress:() => { NavigationUtil.back();}}], {onDismiss: () => { NavigationUtil.back();}})
-
-                      // this.setState({showCopySuccess: true});
-                      // this.removeSuccessTimeout = setTimeout(() => {
-                      //   this.setState({showCopySuccess: false});
-                      // },3000)
                     }});
                 }}
                 icon={'md-log-out'}
@@ -258,6 +243,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 iconColor={colors.purple.blend(colors.menuTextSelected, 0.5).rgba(0.75)}
               />
             </SlideFadeInView>
+            { !rulesPresent && <View style={{flex:4}} /> }
             <View style={{height:30}} />
           </View>
         </ScrollView>

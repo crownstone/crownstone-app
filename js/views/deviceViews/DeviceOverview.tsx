@@ -323,14 +323,12 @@ export class DeviceOverview extends LiveComponent<any, any> {
         }} />
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.5).hex}  callback={() => {
+          NavigationUtil.launchModal("DeviceSmartBehaviour", {
+            stoneId: this.props.stoneId,
+            sphereId: this.props.sphereId
+          })
           if (Object.keys(stone.rules).length === 0) {
             NavigationUtil.launchModal("DeviceSmartBehaviour_TypeSelector", {
-              stoneId: this.props.stoneId,
-              sphereId: this.props.sphereId
-            })
-          }
-          else {
-            NavigationUtil.launchModal("DeviceSmartBehaviour", {
               stoneId: this.props.stoneId,
               sphereId: this.props.sphereId
             })

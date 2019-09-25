@@ -110,16 +110,8 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
                   StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
                     .then((success) => {
                       if (success) {
-                        if (NavigationUtil.isModalOpen("DeviceSmartBehaviour")) {
-                          // close the selection modal to shwo the overview beneath it.
-                          NavigationUtil.dismissModal();
-                        } else {
-                          NavigationUtil.navigate("DeviceSmartBehaviour", {
-                            stoneId: this.props.stoneId,
-                            sphereId: this.props.sphereId
-                          });
-                          NavigationUtil.setForcedModalStackRoot("DeviceSmartBehaviour");
-                        }
+                        // close the selection modal to shwo the overview beneath it.
+                        NavigationUtil.dismissModal();
                       }
                     })
                 }});

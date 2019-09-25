@@ -7,7 +7,7 @@ export const BEHAVIOUR_TYPES = {
 
 let defaultSettings = {
   type: null,
-  data: null, // this is string
+  data: null, // this is the stringified rule
   activeDays: {
     Mon: true,
     Tue: true,
