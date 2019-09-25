@@ -271,11 +271,12 @@ function checkAction(action, affectedIds) {
     case "ADD_STONE_RULE":
     case "UDPATE_STONE_RULE":
     case "MARK_STONE_RULE_FOR_DELETION":
+    case "MARK_STONE_RULE_AS_SYNCED":
     case "REMOVE_STONE_RULE":
       eventStatus['stoneChangeRules'] = affectedIds; break;
-    case "UPDATE_DIMMER":
-    case "UPDATE_SWITCHCRAFT":
-    case "UPDATE_TAP_TO_TOGGLE":
+    case "UPDATE_ABILITY_DIMMER":
+    case "UPDATE_ABILITY_SWITCHCRAFT":
+    case "UPDATE_ABILITY_TAP_TO_TOGGLE":
       eventStatus['stoneChangeAbilities'] = affectedIds; break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);

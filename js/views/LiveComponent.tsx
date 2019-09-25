@@ -43,7 +43,8 @@ export class LiveComponent<a, b> extends Component<a, b> {
     }
   }
 
-  navigationButtonPressed(data) {}
+  navigationButtonPressed(data) {
+  }
 
   forceUpdate() {
     if (AppState.currentState !== 'active') {

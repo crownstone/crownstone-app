@@ -22,6 +22,7 @@ import { AnimatedBackground } from "../../components/animated/AnimatedBackground
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
+import { StoneUtil } from "../../../util/StoneUtil";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options = {
@@ -63,6 +64,10 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   }
 
   getCards() : interviewCards {
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    let stone = sphere.stones[this.props.stoneId];
+
     let presenceExamples   = this._getPresenceExamples();
     let twilightExamples   = this._getTwilightModeExamples();
     let smartTimerExamples = this._getSmartTimerExamples();
@@ -90,6 +95,35 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
             subLabel: '"' + twilightExamples[0].getSentence() + '"',
             image: { source: require('../../../images/icons/twilight.png'), sourceWidth: 529, sourceHeight: 398, width: 0.18*screenWidth },
             nextCard: 'twilight'
+          },
+          {
+            label: "Copy from other Crownstone",
+            subLabel: 'Set it once, then copy to all similar Crownstones!',
+            image: { source: require('../../../images/icons/copy.png'), sourceWidth: 529, sourceHeight: 398, width: 0.18*screenWidth },
+            onSelect: () => {
+              NavigationUtil.navigate("DeviceSmartBehaviour_CopyStoneSelection",{
+                ...this.props,
+                copyType: "FROM",
+                originId: this.props.stoneId,
+                originIsDimmable: stone.abilities.dimming.enabledTarget,
+                callback:(fromStoneId, selectedRuleIds) => {
+                  StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
+                    .then((success) => {
+                      if (success) {
+                        if (NavigationUtil.isModalOpen("DeviceSmartBehaviour")) {
+                          // close the selection modal to shwo the overview beneath it.
+                          NavigationUtil.dismissModal();
+                        } else {
+                          NavigationUtil.navigate("DeviceSmartBehaviour", {
+                            stoneId: this.props.stoneId,
+                            sphereId: this.props.sphereId
+                          });
+                          NavigationUtil.setForcedModalStackRoot("DeviceSmartBehaviour");
+                        }
+                      }
+                    })
+                }});
+            }
           },
         ]
       },
@@ -129,10 +163,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
 
   _getLocationIds(amount) {
     let state = core.store.getState();
-    let sphereIds = Object.keys(state.spheres);
-    let activeSphere = sphereIds[0];
-
-    let sphere = state.spheres[activeSphere];
+    let sphere = state.spheres[this.props.sphereId];
     let locationIds = Object.keys(sphere.locations);
     let usedLocationIds = [];
     for (let i = 0; i < locationIds.length && i < amount; i++) {
@@ -159,7 +190,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   _getTwilightModeExamples() {
     let examples : AicoreTwilight[] = [];
     examples.push(new AicoreTwilight().setDimAmount(0.5).setTimeWhenDark());
-    examples.push(new AicoreTwilight().setDimAmount(0.35).setTimeFrom(23,30).setTimeToSunrise());
+    examples.push(new AicoreTwilight().setDimAmount(0.3).setTimeFrom(23,30).setTimeToSunrise());
     return examples;
   }
   _getChildSafetyExamples() {
@@ -170,7 +201,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
 
 
   render() {
-    let backgroundImage = core.background.lightBlur;
+    let backgroundImage = core.background.lightBlurLighter;
     let textColor = colors.csBlueDark.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;

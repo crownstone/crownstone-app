@@ -14,6 +14,10 @@ import {
 import { core } from "../core";
 import { BleUtil } from "./BleUtil";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
+import { BEHAVIOUR_TYPES } from "../router/store/reducers/stoneSubReducers/rules";
+import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
+import { act } from "react-test-renderer";
+import { xUtil } from "./StandAloneUtil";
 
 export const StoneUtil = {
   switchBHC: function (
@@ -165,6 +169,113 @@ export const StoneUtil = {
       });
 
     BatchCommandHandler.executePriority()
-  }
+  },
 
+
+  /**
+   * This method does NOT warn against overwriting existing rules.
+   * @param sphereId
+   * @param fromStoneId
+   * @param toStoneId
+   * @param ruleIds
+   */
+  copyRulesBetweenStones: function(sphereId, fromStoneId, toStoneId, ruleIds? : string[]) : Promise<boolean> {
+    // this will check if the ruleIds require dimming, and alert the user if he should enable dimming too
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere)      { return Promise.resolve(false); }
+    let targetStone = sphere.stones[toStoneId];
+    if (!targetStone) { return Promise.resolve(false); }
+    let sourceStone = sphere.stones[fromStoneId];
+    if (!sourceStone) { return Promise.resolve(false); }
+
+    if (!ruleIds || Array.isArray(ruleIds) && ruleIds.length === 0) {
+      ruleIds = Object.keys(sourceStone.rules);
+    }
+
+    if (ruleIds.length === 0) {
+      return Promise.resolve(false);
+    }
+
+    let rulesRequireDimming = StoneUtil.doRulesRequireDimming(sphereId, fromStoneId, ruleIds);
+
+    let stoneCanDim = targetStone.abilities.dimming.enabledTarget;
+
+    let copyRules = () => {
+      let actionProps = {sphereId, stoneId: toStoneId};
+      let newRules = sourceStone.rules;
+      let oldRules = targetStone.rules;
+      let actions = [];
+
+      // clear the old rules.
+      Object.keys(oldRules).forEach((ruleId) => {
+        if (oldRules[ruleId].idOnCrownstone === null) {
+          actions.push({type: 'REMOVE_STONE_RULE', ...actionProps, ruleId: ruleId})
+        }
+        else {
+          actions.push({type: 'MARK_STONE_RULE_FOR_DELETION', ...actionProps, ruleId: ruleId})
+        }
+      })
+
+      // add the new rules
+      ruleIds.forEach((ruleId) => {
+        let newId = xUtil.getUUID(); // new unique id for the copied rule
+        let rule = {...newRules[ruleId]}; // duplicate the source rule
+        delete rule.cloudId;              // remove cloud id so it will be synced as a unique rule
+        delete rule.updatedAt;            // remove timestamp since this is essentially a new rule.
+        rule.idOnCrownstone     = null;   // new rules do not already have a ruleId on the Crownstone.
+        actions.push({type: "ADD_STONE_RULE", ...actionProps, ruleId: newId, data: rule})
+      })
+
+      return actions;
+    }
+
+    if (rulesRequireDimming && !stoneCanDim) {
+      return new Promise((resolve, reject) => {
+        Alert.alert(
+          "These behaviours require that dimming is enabled on the Crownstone",
+          "Would you like to enable dimming now?",
+          [
+            {text:'Nevermind', onPress: () => { resolve(false)}},
+            {text:"Yes",       onPress:() => {
+              let actions = copyRules();
+              actions.push({type:'UPDATE_DIMMER', sphereId: sphereId, stoneId: toStoneId, data: {enabledState: true, synced: false}});
+              core.store.batchDispatch(actions);
+              resolve(true);
+            }}],
+          {onDismiss: () => { resolve(false); }}
+        );
+      })
+    }
+    else {
+      let actions = copyRules();
+      core.store.batchDispatch(actions);
+      return Promise.resolve(true);
+    }
+
+    return Promise.resolve(false);
+  },
+
+
+  doRulesRequireDimming(sphereId, stoneId, ruleIds) {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere)      { return false; }
+    let stone = sphere.stones[stoneId];
+    if (!stone) { false; }
+    let rules = stone.rules;
+
+    for (let i = 0; i < ruleIds.length; i++) {
+      if (rules[ruleIds[i]].type === BEHAVIOUR_TYPES.twilight) {
+        return true;
+      }
+      else {
+        let rule = new AicoreBehaviour(rules[ruleIds[i]].data);
+        if (rule.willDim()) {
+          return true;
+        }
+      }
+    }
+
+  }
 };

@@ -8,7 +8,6 @@ export const BEHAVIOUR_TYPES = {
 let defaultSettings = {
   type: null,
   data: null, // this is string
-  cloudId: null,
   activeDays: {
     Mon: true,
     Tue: true,
@@ -18,7 +17,8 @@ let defaultSettings = {
     Sat: true,
     Sun: true
   },
-  version: 1,
+  idOnCrownstone: null,
+  cloudId: null,
   deleted: false,
   syncedToCrownstone: false,
   updatedAt: 1
@@ -39,11 +39,9 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
         let newState = {...state};
         newState.activeDays = {...state.activeDays};
 
-        newState.type               = update(action.data.type,        newState.type);
-        newState.data               = update(action.data.data,        newState.data);
-        newState.cloudId            = update(action.data.cloudId,     newState.cloudId);
-        newState.version            = update(action.data.version,     newState.version);
-        newState.syncedToCrownstone = update(action.data.syncedToCrownstone,  newState.syncedToCrownstone);
+        newState.type               = update(action.data.type,                newState.type);
+        newState.data               = update(action.data.data,                newState.data);
+        newState.cloudId            = update(action.data.cloudId,             newState.cloudId);
 
         newState.activeDays.Mon     = update(action.data.activeDays && action.data.activeDays.Mon, newState.activeDays.Mon);
         newState.activeDays.Tue     = update(action.data.activeDays && action.data.activeDays.Tue, newState.activeDays.Tue);
@@ -54,17 +52,19 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
         newState.activeDays.Sun     = update(action.data.activeDays && action.data.activeDays.Sun, newState.activeDays.Sun);
 
         newState.updatedAt          = getTime(action.data.updatedAt);
+        newState.syncedToCrownstone = false;
         return newState;
       }
       return state;
     case 'MARK_STONE_RULE_FOR_DELETION':
-      if (action.data) {
-        let newState = {...state};
-        newState.deleted = true;
-        return newState;
-      }
-      return state;
-
+      let newState = {...state};
+      newState.deleted = true;
+      newState.syncedToCrownstone = false;
+      return newState;
+    case "MARK_STONE_RULE_AS_SYNCED":
+      newState = {...state};
+      newState.syncedToCrownstone = true;
+      return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings);
     default:

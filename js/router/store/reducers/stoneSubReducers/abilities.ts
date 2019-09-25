@@ -18,7 +18,7 @@ let tapToToggleAbilityFormat = {
 
 let dimmingReducer = (state = defaultAbilityFormat, action) => {
   switch (action.type) {
-    case 'UPDATE_DIMMER':
+    case 'UPDATE_ABILITY_DIMMER':
       if (action.data) {
         let newState = {...state};
         newState.enabled       = update(action.data.enabled,     newState.enabled);
@@ -35,7 +35,7 @@ let dimmingReducer = (state = defaultAbilityFormat, action) => {
 
 let switchcraftReducer = (state = defaultAbilityFormat, action) => {
   switch (action.type) {
-    case 'UPDATE_SWITCHCRAFT':
+    case 'UPDATE_ABILITY_SWITCHCRAFT':
       if (action.data) {
         let newState = {...state};
         newState.enabled       = update(action.data.enabled,     newState.enabled);
@@ -52,7 +52,7 @@ let switchcraftReducer = (state = defaultAbilityFormat, action) => {
 
 let tapToToggleReducer = (state = tapToToggleAbilityFormat, action) => {
   switch (action.type) {
-    case 'UPDATE_TAP_TO_TOGGLE':
+    case 'UPDATE_ABILITY_TAP_TO_TOGGLE':
       if (action.data) {
         let newState = {...state};
         newState.enabled          = update(action.data.enabled,           newState.enabled);

@@ -78,7 +78,6 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
         type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
         data: this.props.rule,
         activeDays: this.state.activeDays,
-        syncedToCrownstone: false
       }
     });
 

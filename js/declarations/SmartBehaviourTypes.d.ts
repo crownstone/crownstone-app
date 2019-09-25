@@ -75,8 +75,12 @@ interface behaviourWrapper {
   type: "BEHAVIOUR" | "TWILIGHT"
   data: behaviour | twilight, // stringified
   activeDays: dayOfWeek,
+
+  // from here on it is data required for syncing and UI state.
   idOnCrownstone: number,
   syncedToCrownstone: boolean,
+  deleted: boolean,
+  cloudId: string,
   updatedAt: number
 }
 

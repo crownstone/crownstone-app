@@ -4,7 +4,7 @@ import { Languages } from "../../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceSmartBehaviour", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import { DeviceSmartBehaviour_TypeSelector } from "./DeviceSmartBehaviour_TypeSelector";
 import { core } from "../../../core";
 import { Background } from "../../components/Background";
@@ -25,9 +25,7 @@ import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
-import Toast from 'react-native-same-toast';
-import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
-import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
+import { StoneUtil } from "../../../util/StoneUtil";
 
 let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -38,6 +36,16 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     getTopBarProps(core.store, core.store.getState(), props, {});
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
+
+  unsubscribeStoreEvents;
+  removeSuccessTimeout;
+
+  constructor(props) {
+    super(props);
+    let weekday = new Date().getDay();
+    this.state = { editMode: false, activeDay: dayArray[weekday], showCopySuccess: false }
+  }
+
 
   navigationButtonPressed({ buttonId }) {
     let updateTopBar = () => {
@@ -53,13 +61,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       this.setState({ editMode: false  }, updateTopBar); }
   }
 
-  unsubscribeStoreEvents;
-
-  constructor(props) {
-    super(props);
-    let weekday = new Date().getDay();
-    this.state = { editMode: true, activeDay: dayArray[weekday] }
-  }
 
   componentDidMount(): void {
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
@@ -77,16 +78,23 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
   componentWillUnmount(): void {
     this.unsubscribeStoreEvents();
+    clearTimeout(this.removeSuccessTimeout);
     BackButtonHandler.clearOverride(className);
   }
 
   copySelectedRulesToStones(stoneIds) {
-    console.log("copySelectedRulesToStones", stoneIds)
-  }
+    let state = core.store.getState();
 
-  copyRulesToThisStone(stoneId, ruleIds) {
-    // this will check if dimming needs to be enabled.
-    console.log("copyRulesToThisStone", stoneId, ruleIds)
+    let sphere = state.spheres[this.props.sphereId];
+    if (!sphere) return;
+    let stone = sphere.stones[this.props.stoneId];
+    if (!stone) return;
+    let rules = stone.rules;
+    let ruleIds = Object.keys(rules);
+
+    stoneIds.forEach((toStoneId) => {
+      StoneUtil.copyRulesBetweenStones(this.props.sphereId, this.props.stoneId, toStoneId, ruleIds);
+    })
   }
 
   render() {
@@ -121,15 +129,17 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
           partiallyActiveRuleIdMap[ruleId] = true;
         }
 
-        let ruleComponent = <SmartBehaviourRule
-          key={"description" + ruleId}
-          rule={rule}
-          sphereId={this.props.sphereId}
-          stoneId={this.props.stoneId}
-          ruleId={ruleId}
-          editMode={this.state.editMode}
-          faded={partiallyActive}
-        />;
+        let ruleComponent = (
+          <SmartBehaviourRule
+            key={"description" + ruleId}
+            rule={rule}
+            sphereId={this.props.sphereId}
+            stoneId={this.props.stoneId}
+            ruleId={ruleId}
+            editMode={this.state.editMode}
+            faded={partiallyActive}
+          />
+        );
 
         ruleComponents.push(ruleComponent);
       }
@@ -138,7 +148,17 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     let headerText = lang("My_Behaviour", stone.config.name);
 
     return (
-      <Background image={core.background.lightBlur} hasNavBar={false}>
+      <Background image={core.background.lightBlurLighter} hasNavBar={false}>
+        <SlideFadeInView visible={this.state.showCopySuccess} height={50}>
+          <View style={{width:screenWidth, backgroundColor: colors.green.rgba(0.8), height:50, alignItems:'center'}}>
+            <View style={{flex:1}}/>
+            <Text numberOfLines={1} adjustsFontSizeToFit={true} style={{fontSize:16, fontWeight:'bold', color: colors.white.hex}}>
+              Behaviour copied!
+            </Text>
+            <View style={{flex:1}}/>
+            <View style={{width:screenWidth, backgroundColor: colors.black.rgba(0.1),height:2}} />
+          </View>
+        </SlideFadeInView>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ headerText }</Text>
@@ -168,7 +188,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
             <View style={{flex:1}} />
             {ruleComponents}
-            <View style={{flex:1}} />
+            <View style={{flex:2}} />
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
                 label={ lang("Add_more___")}
@@ -179,23 +199,31 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
               <BehaviourSuggestion
                 label={ lang("Copy_from___")}
                 callback={() => {
+                  let copyFrom = () => {
+                    NavigationUtil.navigate("DeviceSmartBehaviour_CopyStoneSelection", {
+                      sphereId: this.props.sphereId,
+                      stoneId: this.props.stoneId,
+                      copyType: "FROM",
+                      originId: this.props.stoneId,
+                      callback: (fromStoneId, selectedRuleIds) => {
+                        StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
+                          .then((success) => {
+                            if (success) {
+                              NavigationUtil.back()
+                            }
+                          })
+                      }
+                    });
+                  }
+
                   if (ruleIds.length > 0) {
                     Alert.alert(
                       "Copying will override existing Behaviour",
                       "If you copy behaviour from another Crownstone, it's behaviour will replace the current behaviour. Do you want to continue?",
-                      [{text:"Nevermind"}, {text:"Yes", onPress: () => {
-                          NavigationUtil.navigate("DeviceSmartBehaviour_CopyStoneSelection",{
-                            ...this.props,
-                            copyType: "FROM",
-                            originId: this.props.stoneId,
-                            originIsDimmable: stone.abilities.dimming.enabledTarget,
-                            callback:(stoneId) => {
-                              NavigationUtil.navigate("DeviceSmartBehaviour_RuleSelector", { sphereId: this.props.sphereId, stoneId: stoneId, callback: (stoneId, selectedRuleIds) => {
-                                  this.copyRulesToThisStone(stoneId, selectedRuleIds);
-                                  NavigationUtil.backTo("DeviceSmartBahaviour");
-                                }});
-                            }});
-                        }}])
+                      [{text:"Nevermind"}, {text:"Yes", onPress: copyFrom}])
+                  }
+                  else{
+                    copyFrom()
                   }
                 }}
                 icon={'md-log-in'}
@@ -207,33 +235,22 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
               <BehaviourSuggestion
                 label={ lang("Copy_to___")}
                 callback={() => {
-                  console.log("IM HERE", ruleIds)
-                  let requireDimming = false;
-                  ruleIds.forEach((ruleId) => {
-                    console.log("ruleId", ruleId)
-                    if (rules[ruleId].type === BEHAVIOUR_TYPES.twilight) {
-                      requireDimming = true;
-                      console.log("IS TIWLIGHT!")
-                    }
-                    else {
-                      let rule = new AicoreBehaviour(rules[ruleId].data);
-                      if (rule.willDim()) {
-                        console.log("IS willDim!")
-                        requireDimming = true;
-                      }
-                    }
-                  });
+                  let requireDimming = StoneUtil.doRulesRequireDimming(this.props.sphereId, this.props.stoneId, ruleIds);
 
                   NavigationUtil.navigate('DeviceSmartBehaviour_CopyStoneSelection', {
-                    ...this.props,
+                    sphereId: this.props.sphereId,
+                    stoneId: this.props.stoneId,
                     copyType: "TO",
                     originId: this.props.stoneId,
-                    originIsDimmable: stone.abilities.dimming.enabledTarget,
                     rulesRequireDimming: requireDimming,
                     callback:(stoneIds) => {
                       this.copySelectedRulesToStones(stoneIds);
-                      NavigationUtil.backTo(className);
-                      Toast.showWithGravity('    Behaviour copied!    ', Toast.SHORT, Toast.CENTER);
+                      Alert.alert("Success!", "Behaviour has been copied!", [{text:"Great!", onPress:() => { NavigationUtil.back();}}], {onDismiss: () => { NavigationUtil.back();}})
+
+                      // this.setState({showCopySuccess: true});
+                      // this.removeSuccessTimeout = setTimeout(() => {
+                      //   this.setState({showCopySuccess: false});
+                      // },3000)
                     }});
                 }}
                 icon={'md-log-out'}

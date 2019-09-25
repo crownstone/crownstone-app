@@ -26,7 +26,7 @@ export class Ability_DimmerSettings extends Component<any, any> {
   }
 
   disable() {
-    core.store.dispatch({type:"UPDATE_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { enabledTarget: false, synced:false }});
+    core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { enabledTarget: false, synced:false }});
     NavigationUtil.back();
   }
 

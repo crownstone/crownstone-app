@@ -59,7 +59,7 @@ export const Stacks = {
             stack: {
               children: [
                 { component: {name: "SphereOverview"} },
-                // { component: {name: "DeviceOverview", passProps: {sphereId: "cfbf5d94-f29b-1a49-92b6-b889571ca1e", stoneId: "6d36b63f-8cfd-9c1f-fcd5-950f2445ac95"}} },
+                // { component: {name: "DeviceOverview", passProps: {sphereId: "c1e653ba-6755-5402-71d7-d9b0172f502a", stoneId: "c06fab96-ab03-9e01-7f94-c8cc6104d3b"}} },
               ],
               options: {
                 bottomTab: {

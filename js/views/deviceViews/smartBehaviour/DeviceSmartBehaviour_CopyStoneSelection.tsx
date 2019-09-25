@@ -7,7 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import { core } from "../../../core";
 import { Background } from "../../components/Background";
-import { ScrollView, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Alert, ScrollView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import {
@@ -19,10 +19,8 @@ import {
 import { LocationFlavourImage } from "../../roomViews/RoomOverview";
 import { Icon } from "../../components/Icon";
 import { Circle } from "../../components/Circle";
-import { NavigationUtil } from "../../../util/NavigationUtil";
-import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
-import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
+import { useState } from "react";
 
 
 
@@ -52,7 +50,7 @@ import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
  *  UPDATE: We copy ALL the rules from 1 Crownstone to another.
  *
  */
-export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copyType: string, callback(data: any): void, sphereId: string, originId: string, originIsDimmable:boolean, rulesRequireDimming: true}, any> {
+export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copyType: string, callback(data: any): void, sphereId: string, originId: string, rulesRequireDimming: true}, any> {
   static options(props) {
     let options : topbarOptions = {title: props.copyType === "FROM" ? "Copy from whom?" : "Copy to whom?"};
     if (props.copyType === "TO") {
@@ -64,7 +62,12 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
 
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'select') {
-      this.props.callback(Object.keys(this.state.selectionMap));
+      if (Object.keys(this.state.selectionMap).length === 0) {
+        Alert.alert("No Crownstone selected!","Select at least one Crownstone to copy behaviour to. You can tap on them to select!", [{text:"OK"}]);
+      }
+      else {
+        this.props.callback(Object.keys(this.state.selectionMap));
+      }
     }
   }
 
@@ -89,9 +92,25 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
           newMap[stoneId] = true;
         }
 
-        this.setState({selectionMap: newMap })
+        this.setState({ selectionMap: newMap })
       }
     }
+  }
+
+  componentDidMount() {
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (
+        change.stoneChangeRules || change.stoneChangeAbilities
+      ) {
+        this.forceUpdate();
+      }
+    });
+  }
+
+  componentWillUnmount(): void {
+    this.unsubscribeStoreEvents();
   }
 
   _getLocationStoneList() {
@@ -107,25 +126,24 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
 
     let components = [];
 
-    console.log(this.props)
-    if (this.props.copyType === "TO") {
-      locationIds.forEach((locationId) => {
-        let stoneDataArray = stoneIds
-          .filter((stoneId) => { return stones[stoneId].config.locationId === locationId;  })
-          .map((stoneId) => { return { id: stoneId, stone: stones[stoneId], selected: this.state.selectionMap[stoneId] }; })
+    locationIds.forEach((locationId) => {
+      let stoneDataArray = stoneIds
+        .filter((stoneId) => { return stones[stoneId].config.locationId === locationId;  })
+        .map((stoneId) => { return { id: stoneId, stone: stones[stoneId], selected: this.state.selectionMap[stoneId] }; })
 
-        components.push(<LocationStoneList key={locationId} location={locations[locationId]} stoneDataArray={stoneDataArray} callback={this.callback} dimmingRequired={this.props.rulesRequireDimming} originId={this.props.originId} />)
-      })
-    }
-    else {
-      locationIds.forEach((locationId) => {
-        let stoneDataArray = stoneIds
-          .filter((stoneId) => { return stones[stoneId].config.locationId === locationId;  })
-          .map((stoneId) => { return { id: stoneId, stone: stones[stoneId], selected: this.state.selectionMap[stoneId] }; })
-
-        components.push(<LocationStoneList key={locationId} location={locations[locationId]} stoneDataArray={stoneDataArray} callback={this.callback} rulesRequired={true} originId={this.props.originId} />)
-      })
-    }
+      components.push(
+        <LocationStoneList
+          key={locationId}
+          sphereId={this.props.sphereId}
+          location={locations[locationId]}
+          stoneDataArray={stoneDataArray}
+          callback={this.callback}
+          rulesRequired={this.props.copyType === "FROM"} // if we want to copy behaviour from a Crownstone it must have behaviour
+          dimmingRequired={this.props.copyType === "TO" ? this.props.rulesRequireDimming : false} // if we are copying to, it is important to know if dimming is required.
+          originId={this.props.originId}
+        />
+        )
+    })
 
     return (
       <React.Fragment>
@@ -144,7 +162,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
     }
 
     return (
-      <Background image={core.background.lightBlur} hasNavBar={false}>
+      <Background image={core.background.lightBlurLighter} hasNavBar={false}>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.85*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
@@ -157,27 +175,28 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
   }
 }
 
-function LocationStoneList({location, stoneDataArray, callback, originId, dimmingRequired = false, rulesRequired = false }) {
-
+function LocationStoneList({location, sphereId, stoneDataArray, callback, originId, dimmingRequired = false, rulesRequired = false }) {
   if (stoneDataArray.length === 0) {
     return <View></View>
   }
   return (
     <React.Fragment>
       <LocationRow location={location} />
-      <StoneList stoneDataArray={stoneDataArray} callback={callback} dimmingRequired={dimmingRequired} rulesRequired={rulesRequired} originId={originId} />
+      <StoneList stoneDataArray={stoneDataArray} sphereId={sphereId} callback={callback} dimmingRequired={dimmingRequired} rulesRequired={rulesRequired} originId={originId} />
       <View style={{height:50}} />
     </React.Fragment>
   );
 }
 
 
-function StoneList({stoneDataArray, callback, dimmingRequired, rulesRequired, originId}) {
+function StoneList({stoneDataArray, sphereId, dimmingRequired, rulesRequired, originId, callback}) {
   let stoneComponents = [];
   stoneDataArray.forEach((stoneData) => {
     stoneComponents.push(
       <StoneRow
         key={stoneData.id}
+        sphereId={sphereId}
+        stoneId={stoneData.id}
         isOrigin={stoneData.id === originId}
         stone={stoneData.stone}
         callback={() => { callback(stoneData.id); }}
@@ -195,7 +214,9 @@ function StoneList({stoneDataArray, callback, dimmingRequired, rulesRequired, or
   )
 }
 
-function StoneRow({isOrigin, stone, selected, callback, dimmingRequired, rulesRequired}) {
+function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmingRequired, rulesRequired}) {
+  let [allowOverwrite, setAllowOverwrite] = useState(false);
+
   let height = 80;
   let padding = 10;
 
@@ -211,25 +232,59 @@ function StoneRow({isOrigin, stone, selected, callback, dimmingRequired, rulesRe
     borderBottomWidth: 1
   };
 
+  let stoneHasRules = Object.keys(stone.rules).length > 0;
   let clickable = true;
   let overrideButton = null;
-  let circleBackgroundColor = colors.green.hex;
+  let circleBackgroundColor = selected ? colors.green.hex : colors.green.rgba(0.5);
   let subText = null;
+  let subTextStyleOverride : TextStyle = {};
+
   if (rulesRequired) {
-    if (Object.keys(stone.rules).length === 0) {
+    if (!stoneHasRules) {
       clickable = false;
       circleBackgroundColor = colors.gray.hex;
       subText = "No behaviours to copy...";
     }
+    else {
+      subText = "Behaviours available to copy!";
+      if (!selected) {
+        subText += " (Tap to select)"
+      }
+    }
+  }
+  else {
+    if (stoneHasRules) {
+      if (allowOverwrite === false) {
+        clickable = false;
+        circleBackgroundColor = colors.csOrange.rgba(0.5);
+        subText = "Existing behaviour will be overwritten.";
+        overrideButton = (
+          <TouchableOpacity style={{backgroundColor: colors.csOrange.hex, borderRadius: 15, padding:10}} onPress={() => { setAllowOverwrite(true) }}>
+            <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{"Allow"}</Text>
+          </TouchableOpacity>
+        );
+      }
+      else {
+        subText = "Existing behaviour will be overwritten.";
+        if (!selected) {
+          subText += " (Tap to select)"
+        }
+        else {
+          subTextStyleOverride = {fontWeight:'bold', color: colors.black.rgba(0.8)};
+        }
+      }
+    }
   }
 
-  if (dimmingRequired && !isOrigin) {
+  if (dimmingRequired && !isOrigin && !overrideButton) {
     if (stone.abilities.dimming.enabledTarget !== true) {
       clickable = false;
       subText = "Dimming is required to copy this behaviour.";
+      circleBackgroundColor = colors.csOrange.blend(colors.green, 0.75).rgba(0.5);
+      subTextStyleOverride = {};
       overrideButton = (
-        <TouchableOpacity style={{
-          backgroundColor: colors.menuTextSelected.hex, borderRadius: 15, padding:10
+        <TouchableOpacity style={{backgroundColor: colors.menuTextSelected.hex, borderRadius: 15, padding:10}} onPress={() => {
+          core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: sphereId, stoneId: stoneId})
         }}>
           <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{"Enable\nDimming"}</Text>
         </TouchableOpacity>
@@ -241,9 +296,9 @@ function StoneRow({isOrigin, stone, selected, callback, dimmingRequired, rulesRe
     clickable = false;
     subText = "This is me!";
     circleBackgroundColor = colors.menuTextSelected.hex;
+    overrideButton = null;
+    subTextStyleOverride = {};
   }
-
-
 
 
   let content = (
@@ -253,7 +308,7 @@ function StoneRow({isOrigin, stone, selected, callback, dimmingRequired, rulesRe
       </Circle>
       <View style={{justifyContent:'center', height: height-2*padding, flex:1, paddingLeft:15}}>
         <Text style={{fontSize: 15}}>{stone.config.name}</Text>
-        { subText ? <Text style={{fontSize: 12, color: colors.black.rgba(0.3)}}>{subText}</Text> : undefined }
+        { subText ? <Text style={{fontSize: 12, color: colors.black.rgba(0.3), ...subTextStyleOverride}}>{subText}</Text> : undefined }
       </View>
       { overrideButton }
     </React.Fragment>

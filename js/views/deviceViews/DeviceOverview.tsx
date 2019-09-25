@@ -351,6 +351,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
   render() {
+    console.log(this.props)
     const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) {

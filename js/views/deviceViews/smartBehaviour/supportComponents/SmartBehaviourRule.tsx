@@ -62,9 +62,11 @@ export function SmartBehaviourRule(props) {
       </SlideSideFadeInView>
       { /* /Delete Icon */ }
 
-
-      { props.rule.syncedToCrownstone === false && !props.editMode ? <ActivityIndicator size={"small"} color={colors.csBlue.hex} /> : undefined }
-
+      { /* ActivityIndicator for sync required */ }
+      <SlideSideFadeInView width={50} visible={props.rule.syncedToCrownstone === false && !props.editMode}>
+        <ActivityIndicator size={"small"} color={colors.csBlue.hex} style={{marginRight:15}} />
+      </SlideSideFadeInView>
+      { /* /ActivityIndicator for sync required */ }
 
       { /* Rule text */ }
       <View style={{flex:1}}>
@@ -101,6 +103,10 @@ export function SmartBehaviourRule(props) {
         </View>
       </SlideSideFadeInView>
       { /* /Selection checkmark */ }
+
+      { /* ActivityIndicator for sync required counterWeight */ }
+      <SlideSideFadeInView width={50} visible={props.rule.syncedToCrownstone === false && !props.editMode} />
+      { /* /ActivityIndicator for sync required */ }
     </View>
   );
 }
