@@ -16,7 +16,7 @@ import {
   colors,
   deviceStyles,
   screenHeight,
-  screenWidth
+  screenWidth, styles
 } from "../../styles";
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { WeekDayList } from "../../components/WeekDayList";
@@ -26,6 +26,8 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
 import { StoneUtil } from "../../../util/StoneUtil";
+import { ScaledImage } from "../../components/ScaledImage";
+import { DataUtil } from "../../../util/DataUtil";
 
 let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -108,14 +110,17 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
     let ruleIds = Object.keys(rules);
 
-    let rulesPresent = ruleIds.length > 0;
-
     let ruleComponents = [];
     let activeRules = {};
     let partiallyActiveRuleIdMap = {};
 
     let previousDay = (dayArray.indexOf(this.state.activeDay) + 6) % 7;
 
+    let hasRules = ruleIds.length;
+
+    if (!hasRules) {
+      return <NoRulesYet sphereId={this.props.sphereId} stoneId={this.props.stoneId} />;
+    }
 
     ruleIds.forEach((ruleId) => {
       let active = rules[ruleId].activeDays[this.state.activeDay];
@@ -145,24 +150,23 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       }
     });
 
-    let headerText = lang("My_Behaviour", stone.config.name);
 
     return (
       <Background image={core.background.lightBlurLighter} hasNavBar={false}>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ headerText }</Text>
+            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
             <View style={{height: 0.2*iconSize}} />
-            <SlideFadeInView visible={!this.state.editMode && rulesPresent} height={1.5*(screenWidth/9) + 0.1*iconSize + 90}>
+            <SlideFadeInView visible={!this.state.editMode} height={1.5*(screenWidth/9) + 0.1*iconSize + 90}>
               <WeekDayList
                 data={{
-                  Mon: this.state.activeDay === "Mon",
-                  Tue: this.state.activeDay === "Tue",
-                  Wed: this.state.activeDay === "Wed",
-                  Thu: this.state.activeDay === "Thu",
-                  Fri: this.state.activeDay === "Fri",
-                  Sat: this.state.activeDay === "Sat",
-                  Sun: this.state.activeDay === "Sun",
+                  Mon: this.state.activeDay === dayArray[1],
+                  Tue: this.state.activeDay === dayArray[2],
+                  Wed: this.state.activeDay === dayArray[3],
+                  Thu: this.state.activeDay === dayArray[4],
+                  Fri: this.state.activeDay === dayArray[5],
+                  Sat: this.state.activeDay === dayArray[6],
+                  Sun: this.state.activeDay === dayArray[0],
                 }}
                 tight={true}
                 darkTheme={false}
@@ -179,14 +183,17 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             <View style={{flex:1}} />
             {ruleComponents}
             <View style={{flex:2}} />
-            <SlideFadeInView visible={this.state.editMode || !rulesPresent} height={80}>
+
+            <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
+                backgroundColor={colors.menuTextSelected.rgba(0.6)}
                 label={ lang("Add_more___")}
                 callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', this.props); }}
               />
             </SlideFadeInView>
-            <SlideFadeInView visible={this.state.editMode || !rulesPresent} height={80}>
+            <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
+                backgroundColor={colors.menuTextSelected.rgba(0.6)}
                 label={ lang("Copy_from___")}
                 callback={() => {
                   let copyFrom = () => {
@@ -196,12 +203,18 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                       copyType: "FROM",
                       originId: this.props.stoneId,
                       callback: (fromStoneId, selectedRuleIds) => {
-                        StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
-                          .then((success) => {
-                            if (success) {
-                              NavigationUtil.back()
-                            }
-                          })
+                        let stoneName = DataUtil.getStoneName(this.props.sphereId, fromStoneId);
+                        Alert.alert(
+                          "Shall I copy the behaviour from " + stoneName + "?",
+                          undefined,
+                          [{text:"Cancel"}, {text:"OK", onPress:() => {
+                              StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
+                                .then((success) => {
+                                  if (success) {
+                                    BehaviourCopySuccessPopup();
+                                  }
+                                })
+                        }}])
                       }
                     });
                   }
@@ -223,6 +236,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
+                backgroundColor={colors.menuTextSelected.rgba(0.6)}
                 label={ lang("Copy_to___")}
                 callback={() => {
                   let requireDimming = StoneUtil.doRulesRequireDimming(this.props.sphereId, this.props.stoneId, ruleIds);
@@ -235,7 +249,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                     rulesRequireDimming: requireDimming,
                     callback:(stoneIds) => {
                       this.copySelectedRulesToStones(stoneIds);
-                      Alert.alert("Success!", "Behaviour has been copied!", [{text:"Great!", onPress:() => { NavigationUtil.back();}}], {onDismiss: () => { NavigationUtil.back();}})
+                      BehaviourCopySuccessPopup();
                     }});
                 }}
                 icon={'md-log-out'}
@@ -243,7 +257,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 iconColor={colors.purple.blend(colors.menuTextSelected, 0.5).rgba(0.75)}
               />
             </SlideFadeInView>
-            { !rulesPresent && <View style={{flex:4}} /> }
             <View style={{height:30}} />
           </View>
         </ScrollView>
@@ -252,10 +265,53 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
   }
 }
 
+function NoRulesYet(props) {
+
+  return (
+    <Background image={core.background.lightBlurLighter} hasNavBar={false}>
+      <ScrollView>
+        <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
+          <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "What is Behaviour?" }</Text>
+          <View style={{height: 40}} />
+          <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent: 'space-evenly'}}>
+            <ScaledImage source={require('../../../images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
+            <ScaledImage source={require('../../../images/overlayCircles/roomsCircle.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
+            <ScaledImage source={require('../../../images/overlayCircles/time.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
+          </View>
+          <View style={{height: 40}} />
+          <Text style={styles.boldExplanation}>{ "My behaviour is a combination of presence awareness, a schedule and responding to your actions." }</Text>
+          <Text style={styles.explanation}>{ "I can take multiple people in your household into account, and I could turn a light on at 50% when you use your wall switches after dark." }</Text>
+          <Text style={styles.explanation}>{ "Tap the Add button below to get started!" }</Text>
+          <View style={{flex:1}} />
+          <BehaviourSuggestion
+            backgroundColor={colors.menuTextSelected.rgba(0.6)}
+            label={ "Add my first behaviour! "}
+            callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', {sphereId: props.sphereId, stoneId: props.stoneId}); }}
+          />
+          <View style={{height:30}} />
+        </View>
+      </ScrollView>
+    </Background>
+  )
+}
+
+
+
+export const BehaviourCopySuccessPopup = function() {
+  Alert.alert("Success!", "Behaviour has been copied!", [{text:"Great!", onPress:() => { NavigationUtil.back();}}], {onDismiss: () => { NavigationUtil.back();}})
+}
 
 
 function getTopBarProps(store, state, props, viewState) {
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
+  if (Object.keys(stone.rules).length === 0) {
+    NAVBAR_PARAMS_CACHE = {
+      title: stone.config.name,
+      closeModal: true,
+    };
+    return NAVBAR_PARAMS_CACHE;
+  }
+
 
   if (viewState.editMode === true) {
     NAVBAR_PARAMS_CACHE = {

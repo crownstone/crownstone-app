@@ -6,7 +6,8 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-   Platform
+  Alert,
+  Platform
 } from "react-native";
 
 import {
@@ -23,6 +24,7 @@ import { TopbarImitation } from "../../components/TopbarImitation";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { StoneUtil } from "../../../util/StoneUtil";
+import { DataUtil } from "../../../util/DataUtil";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options = {
@@ -77,6 +79,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         header:"What sort of behaviour shall I learn?",
         subHeader:"Pick a type to start with:",
         optionsBottom: true,
+        textColor: colors.white.hex,
         options: [
           {
             label: "Presence aware",
@@ -107,14 +110,27 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
                 originId: this.props.stoneId,
                 originIsDimmable: stone.abilities.dimming.enabledTarget,
                 callback:(fromStoneId, selectedRuleIds) => {
-                  StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
-                    .then((success) => {
-                      if (success) {
-                        // close the selection modal to shwo the overview beneath it.
-                        NavigationUtil.dismissModal();
-                      }
-                    })
-                }});
+                  let stoneName = DataUtil.getStoneName(this.props.sphereId, fromStoneId);
+                  Alert.alert(
+                    "Shall I copy the behaviour from " + stoneName + "?",
+                    undefined,
+                    [{text:"Cancel"}, {text:"OK", onPress:() => {
+                      StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
+                        .then((success) => {
+                          if (success) {
+                            let seeResults = () => {
+                              NavigationUtil.dismissModal();
+                            }
+                            Alert.alert(
+                              "Success!",
+                              "Behaviour has been copied!",
+                              [{text:"Great!", onPress:() => { seeResults() }}], {onDismiss: () => { seeResults() }})
+                          }
+                        })
+                    }}])
+                },
+              })
+
             }
           },
         ]
@@ -193,8 +209,8 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
 
 
   render() {
-    let backgroundImage = core.background.lightBlurLighter;
-    let textColor = colors.csBlueDark.hex;
+    let backgroundImage = require('../../../images/backgrounds/behaviourMix.png');
+    let textColor = colors.white.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
       textColor = this._interview.getTextColorFromCard() || textColor;

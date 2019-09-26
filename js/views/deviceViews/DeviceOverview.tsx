@@ -327,12 +327,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId
           })
-          if (Object.keys(stone.rules).length === 0) {
-            NavigationUtil.launchModal("DeviceSmartBehaviour_TypeSelector", {
-              stoneId: this.props.stoneId,
-              sphereId: this.props.sphereId
-            })
-          }
         }} />
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Power usage"} image={require("../../images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex}  callback={() => {

@@ -204,6 +204,16 @@ export const DataUtil = {
     }
   },
 
+
+  getStoneName: function(sphereId, stoneId) {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) { return ""; }
+    let stone = sphere.stones[stoneId];
+    if (!stone) { return ""; }
+    return stone.config.name;
+  },
+
   getStoneFromHandle: function(state, sphereId, handle) {
     let stoneId = DataUtil.getStoneIdFromHandle(state, sphereId, handle);
     return state.spheres[sphereId].stones[stoneId];

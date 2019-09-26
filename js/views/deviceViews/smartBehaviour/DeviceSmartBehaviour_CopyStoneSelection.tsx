@@ -20,7 +20,8 @@ import { LocationFlavourImage } from "../../roomViews/RoomOverview";
 import { Icon } from "../../components/Icon";
 import { Circle } from "../../components/Circle";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
-import { useState } from "react";
+import { Component, useState } from "react";
+import { Navigation } from "react-native-navigation";
 
 
 
@@ -247,8 +248,9 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
     }
     else {
       subText = "Behaviours available to copy!";
+      circleBackgroundColor = colors.green.hex;
       if (!selected) {
-        subText += " (Tap to select)"
+        subText += "\n(Tap to select)"
       }
     }
   }

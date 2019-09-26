@@ -607,16 +607,15 @@ export const NavigationUtil = {
     LOGi.nav("CALLING dismissModal");
     let backFrom = NavState.getActiveComponent();
     addSentryLog("dismissModal", backFrom);
-    Navigation.dismissModal(backFrom)
+    NavState.modalDismissed();
+    return Navigation.dismissModal(backFrom)
       .then(() => {
         LOGi.nav("DISMISS Going back from ", backFrom, " success!")
       })
       .catch((err) => {
         LOGi.nav("DISMISS Going back from ", backFrom, " FAILED!", err)
       });
-    NavState.modalDismissed();
   },
-
 
   dismissModalAndBack: function() {
     addSentryLog("dismissModalAndBack", "null");

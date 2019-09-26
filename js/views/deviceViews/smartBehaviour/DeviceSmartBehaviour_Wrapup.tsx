@@ -7,10 +7,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import {
-  Animated,
   TouchableOpacity,
   Text,
-  View, TextStyle, ViewStyle, ScrollView, Alert
+  View, ScrollView, Alert
 } from "react-native";
 import {
   availableModalHeight,
@@ -22,7 +21,6 @@ import { core } from "../../../core";
 import { Background } from "../../components/Background";
 import { NavigationUtil, NavState } from "../../../util/NavigationUtil";
 import { WeekDayList, WeekDayListLarge } from "../../components/WeekDayList";
-import { TopBarUtil } from "../../../util/TopBarUtil";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
@@ -121,7 +119,6 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
 
     this._storeRule();
 
-    // close the wrap up modal to shwo the overview beneath it.
     NavigationUtil.dismissModal();
   }
 
@@ -130,8 +127,6 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
     if (this.props.ruleId) {
       header = "When do I do this?"
     }
-
-
 
     return (
       <Background image={core.background.lightBlur} hideNotifications={true} fullScreen={true} dimStatusBar={true} hideOrangeLine={true} orangeLineAboveStatusBar={true}>

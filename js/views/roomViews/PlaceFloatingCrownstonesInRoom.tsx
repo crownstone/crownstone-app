@@ -94,7 +94,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
     let tempStoneDataArray = [];
     stoneIds.forEach((stoneId) => {
       // do not show the same device twice
-      let handle = stones[stoneId].stone.config.handle;
+      let handle = stones[stoneId].config.handle;
       if (shownHandles[handle] === undefined) {
         tempStoneDataArray.push({ stone: stones[stoneId], id: stoneId });
       }
@@ -102,7 +102,7 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
 
     // sort the order of things by crownstone Id
     tempStoneDataArray.sort((a, b) => {
-      return a.stone.stone.config.crownstoneId - b.stone.stone.config.crownstoneId
+      return a.stone.config.crownstoneId - b.stone.config.crownstoneId
     });
 
     tempStoneDataArray.forEach((stoneData) => {
