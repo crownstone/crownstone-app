@@ -200,12 +200,6 @@ class BatchCommandHandlerClass {
               case 'addSchedule':
                 actionPromise = BluenetPromiseWrapper.addSchedule(command.scheduleConfig);
                 break;
-              case 'setSwitchCraft':
-                actionPromise = BluenetPromiseWrapper.setSwitchCraft(command.value);
-                break;
-              case 'allowDimming':
-                actionPromise = BluenetPromiseWrapper.allowDimming(command.value);
-                break;
               case 'sendNoOp':
                 actionPromise = BluenetPromiseWrapper.sendNoOp();
                 break;
@@ -227,6 +221,16 @@ class BatchCommandHandlerClass {
                 break;
               case 'toggle':
                 actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 1.0);
+                break;
+
+              case 'setTapToToggle':
+                // TODO: make this.
+                break;
+              case 'setSwitchCraft':
+                actionPromise = BluenetPromiseWrapper.setSwitchCraft(command.value);
+                break;
+              case 'allowDimming':
+                actionPromise = BluenetPromiseWrapper.allowDimming(command.value);
                 break;
               default:
                 LOGe.bch("BatchCommandHandler: Error: COULD NOT PERFORM ACTION", commandsInSphere, action);

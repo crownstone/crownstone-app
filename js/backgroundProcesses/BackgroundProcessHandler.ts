@@ -426,6 +426,7 @@ class BackgroundProcessHandlerClass {
     Permissions.init();
     Scheduler.init();
     StoneAvailabilityTracker.init();
+    StoneDataSyncer.init();
     StoneManager.init();
     StoneDataSyncer.init();
     SetupStateHandler.init();

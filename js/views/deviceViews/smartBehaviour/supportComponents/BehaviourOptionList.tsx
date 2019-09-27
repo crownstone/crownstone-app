@@ -13,6 +13,7 @@ export class BehaviourOptionList extends Component<{
     closeCallback: () => void,
     explanation?: string,
     header: string,
+    selectedDetailField: string,
     elements: behaviourListElement[]
   },any> {
 
@@ -20,6 +21,8 @@ export class BehaviourOptionList extends Component<{
   _getElements() {
     let elements = [];
     this.props.elements.forEach((el,i) => {
+      console.log("RENDER ME ELEMENTO", el.label, el.isSelected())
+      let backgroundColor = el.isSelected() ? colors.green.hex : colors.white.rgba(0.8);
       elements.push(
         <TouchableOpacity
           key={"behaviourElement_"+ i}
@@ -27,7 +30,7 @@ export class BehaviourOptionList extends Component<{
             flexDirection:'row',
             width: screenWidth, height:50,
             borderTopWidth:1, borderColor: colors.menuBackground.rgba(0.7),
-            backgroundColor: el.isSelected() ? colors.green.hex : colors.white.rgba(0.8),
+            backgroundColor: backgroundColor,
             alignItems:'center',
           }}
           onPress={() => { el.onSelect() }}
@@ -43,6 +46,7 @@ export class BehaviourOptionList extends Component<{
   }
 
   render() {
+    console.log("RENDER", this.props.header)
     return (
       <View style={{width:screenWidth, flex:1, alignItems:'center'}}>
         <View style={{flex:1}} />

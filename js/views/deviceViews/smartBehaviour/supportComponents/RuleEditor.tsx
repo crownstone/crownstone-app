@@ -29,7 +29,7 @@ import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 
 export class RuleEditor extends LiveComponent<
   {data: behaviour | twilight, sphereId: string, stoneId: string, ruleId?: string, twilightRule: boolean},
-  {detail: any, containerHeight: Animated.Value,  detailHeight: Animated.Value,  detailOpacity: Animated.Value,  mainBottomHeight: Animated.Value, mainBottomOpacity: Animated.Value, selectedDetailField: string, showCustomTimeData:boolean, userHidPresence: boolean, userHidTime: boolean}
+  {detail: any, containerHeight: Animated.Value,  detailHeight: Animated.Value,  detailOpacity: Animated.Value,  mainBottomHeight: Animated.Value, mainBottomOpacity: Animated.Value, selectedDetailField: string, showCustomTimeData:boolean}
   > {
   references = [];
   amountOfLines = 0;
@@ -58,8 +58,6 @@ export class RuleEditor extends LiveComponent<
       mainBottomOpacity: new Animated.Value(1),
       selectedDetailField: null,
       showCustomTimeData: false,
-      userHidPresence: false,
-      userHidTime: false
     };
 
     if (this.props.twilightRule) {
@@ -262,8 +260,9 @@ export class RuleEditor extends LiveComponent<
   }
 
   _shouldShowSuggestions() {
-    let showPresenceSuggestion = this.rule.isUsingPresence() === false && this.state.userHidPresence === true;
-    let showTimeSuggestion = this.rule.isAlwaysActive() === true && this.state.userHidTime === true;
+    let showPresenceSuggestion = this.rule.isUsingPresence() === false;
+
+    let showTimeSuggestion = this.rule.isAlwaysActive() === true;
     let showOptionSuggestion = this.props.twilightRule === false &&
       (
         (this.rule.isUsingClockEndTime() && this.rule.getHour() >= 20)
@@ -384,19 +383,13 @@ export class RuleEditor extends LiveComponent<
    * @param useData
    * @private
    */
-  _showTimeSelectionPopup(exampleOriginField, useData = true) {
+  _showTimeSelectionPopup(exampleOriginField, onSelect, useData = true) {
     core.eventBus.emit('showAicoreTimeCustomizationOverlay', {
       callback: (newTime : aicoreTime) => {
         this.exampleBehaviours.time[exampleOriginField].setTime(newTime);
         this.rule.setTime(newTime);
 
-        // Yes, this is ugly. I also don't want to mark a field as "default" in the behaviour, nor allow null as a behaviour value.
-        if (exampleOriginField === "custom") {
-          this.setState({showCustomTimeData: true, selectedDetailField: SELECTABLE_TYPE.TIME + "4"})
-        }
-        else {
-          this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
-        }
+        onSelect();
       },
       time: useData ? this.exampleBehaviours.time[exampleOriginField].getTime() : null,
       image: require("../../../../images/overlayCircles/time.png")
@@ -419,6 +412,7 @@ export class RuleEditor extends LiveComponent<
     return this._evaluateSelection(selectedDescription) || this.rule.doesActionMatch(ruleToMatch);
   }
   _evaluateTimeSelection( selectedDescription, ruleToMatch ) {
+    console.log("SELEc", selectedDescription, this._evaluateSelection(selectedDescription) || this.rule.doesTimeMatch(ruleToMatch), this._evaluateSelection(selectedDescription), this.rule.doesTimeMatch(ruleToMatch))
     return this._evaluateSelection(selectedDescription) || this.rule.doesTimeMatch(ruleToMatch);
   }
   _evaluatePresenceLocationSelection( selectedDescription, ruleToMatch ) {
@@ -439,6 +433,7 @@ export class RuleEditor extends LiveComponent<
               explanation={ lang("My_behaviour_defines_when")}
               closeCallback={() => { this.toggleDetails(null); }}
               closeLabel={ lang("Sounds_about_right_")}
+              selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
                   label: lang("Dimmed____", 80),
@@ -478,6 +473,7 @@ export class RuleEditor extends LiveComponent<
               header={ lang("When_should_I_do_this_")}
               closeCallback={() => { this.toggleDetails(null); }}
               closeLabel={ lang("Will_do_")}
+              selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.rule)) + ".",
@@ -506,7 +502,10 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.specific);
                   },
                   onSelect: () => {
-                    this._showTimeSelectionPopup('specific')
+                    this._showTimeSelectionPopup('specific',
+                      () => {
+                        this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
+                      })
                   }
                 },
                 {
@@ -516,7 +515,9 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "4", this.exampleBehaviours.time.custom);
                   },
                   onSelect: () => {
-                    this._showTimeSelectionPopup('custom', this.state.showCustomTimeData)
+                    this._showTimeSelectionPopup('custom', () => {
+                      this.setState({showCustomTimeData: true, selectedDetailField: SELECTABLE_TYPE.TIME + "4"})
+                    }, this.state.showCustomTimeData)
                   }
                 },
               ]}
@@ -534,6 +535,7 @@ export class RuleEditor extends LiveComponent<
               explanation={ lang("My_behaviour_defines_when")}
               closeCallback={() => { this.toggleDetails(null); }}
               closeLabel={ lang("Sounds_about_right_")}
+              selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
                   label: lang("On"),
@@ -556,6 +558,7 @@ export class RuleEditor extends LiveComponent<
               header={ lang("Who_shall_I_look_for_")}
               closeCallback={() => { this.toggleDetails(null); }}
               closeLabel={"That's it!"}
+              selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
                   label: xUtil.capitalize(AicoreUtil.extractPresenceStrings(this.exampleBehaviours.presence.somebody.rule).presenceStr),
@@ -570,7 +573,7 @@ export class RuleEditor extends LiveComponent<
                 {
                   label: lang("Ignore_presence"),
                   isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
-                  onSelect: () => { this.rule.setPresenceIgnore(); this.setState({userHidPresence: true}) }
+                  onSelect: () => { this.rule.setPresenceIgnore();  }
                 },
               ]}
             />
@@ -582,6 +585,7 @@ export class RuleEditor extends LiveComponent<
               header={ lang("Where_should_I_look_")}
               closeCallback={() => { this.toggleDetails(null); }}
               closeLabel={ lang("Got_it_")}
+              selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
                   label: lang("Anywhere_in_the_house_"),
@@ -618,6 +622,7 @@ export class RuleEditor extends LiveComponent<
               header={ lang("When_should_I_do_this_")}
               closeCallback={() => { this.toggleDetails(null); }}
               closeLabel={ lang("Will_do_")}
+              selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.dark.rule)) + ".",
@@ -642,11 +647,12 @@ export class RuleEditor extends LiveComponent<
                 {
                   label: lang("Always_"),
                   isSelected: () => {
+                    console.log("EVALLING")
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.allDay);
                   },
                   onSelect: () => {
                     this.rule.setTimeAllday();
-                    this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3", userHidTime: true})
+                    this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
                   }
                 },
                 {
@@ -656,7 +662,9 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "4", this.exampleBehaviours.time.specific);
                   },
                   onSelect: () => {
-                    this._showTimeSelectionPopup('specific')
+                    this._showTimeSelectionPopup('specific', () => {
+                      this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "4"})
+                    })
                   }
                 },
                 {
@@ -666,7 +674,9 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "5", this.exampleBehaviours.time.custom);
                   },
                   onSelect: () => {
-                    this._showTimeSelectionPopup('custom', this.state.showCustomTimeData)
+                    this._showTimeSelectionPopup('custom', () => {
+                      this.setState({showCustomTimeData: true, selectedDetailField: SELECTABLE_TYPE.TIME + "5"})
+                    }, this.state.showCustomTimeData)
                   }
                 },
               ]}
@@ -679,6 +689,7 @@ export class RuleEditor extends LiveComponent<
               header={ lang("Can_I_turn_off_afterwards_")}
               closeCallback={() => { this.toggleDetails(null); }}
               closeLabel={ lang("Will_do_")}
+              selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
                   label: xUtil.capitalize(AicoreUtil.extractOptionStrings(this.exampleBehaviours.option.inRoom.rule).optionStr) + ".",

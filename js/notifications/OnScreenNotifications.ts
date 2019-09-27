@@ -8,12 +8,11 @@ class OnScreenNotificationsClass {
   getNotifications(sphereId) {
     let ids = Object.keys(this.notifications);
     let result = {};
-    // TODO REMOVE HACK
-    // ids.forEach((id) => {
-    //   if (!this.notifications[id].sphereId || this.notifications[id].sphereId === sphereId) {
-    //     result[id] = this.notifications[id];
-    //   }
-    // })
+    ids.forEach((id) => {
+      if (!this.notifications[id].sphereId || this.notifications[id].sphereId === sphereId) {
+        result[id] = this.notifications[id];
+      }
+    })
     return result;
   }
 

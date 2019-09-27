@@ -82,6 +82,14 @@ export const DataUtil = {
     return null;
   },
 
+  getStone(sphereId, stoneId) {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) return null
+    let stone = sphere.stones[stoneId];
+    return stone || null;
+  },
+
   getPresentSphereId: function(state) {
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++ ) {

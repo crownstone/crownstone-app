@@ -14,6 +14,8 @@ class StoneAvailabilityTrackerClass {
   sphereLog = {}
   initialized = false;
 
+  triggers = {};
+
   init() {
     if (this.initialized === false) {
       this.initialized = true;
@@ -111,6 +113,8 @@ class StoneAvailabilityTrackerClass {
         core.eventBus.emit("rssiChange", {stoneId: data.stoneId, sphereId: data.sphereId, rssi:data.rssi}); // Major change in RSSI
       }
     }
+
+    this.handleTriggers(data.sphereId, data.stoneId, data.rssi);
   }
 
   getNearestStoneId(reduxIdMap : map, inTheLastNSeconds : number = 2, rssiThreshold = -100) {
@@ -149,8 +153,6 @@ class StoneAvailabilityTrackerClass {
   }
 
   isDisabled(stoneId) {
-    // TODO REMOVE HACK
-    return true
     if (this.log[stoneId]) {
       if (new Date().valueOf() - this.log[stoneId].t < DISABLE_TIMEOUT) {
         return false;
@@ -190,6 +192,53 @@ class StoneAvailabilityTrackerClass {
       }
     }
   }
+
+
+
+  setTrigger(sphereId, stoneId, ownerId, action: () => void, rssi=-100) {
+    if (!this.triggers[sphereId])                   { this.triggers[sphereId] = {}; }
+    if (!this.triggers[sphereId][stoneId])          { this.triggers[sphereId][stoneId] = {}; }
+    if (!this.triggers[sphereId][stoneId][ownerId]) { this.triggers[sphereId][stoneId][ownerId] = []; }
+
+    this.triggers[sphereId][stoneId][ownerId].push({rssiRequirement: rssi, action: action});
+  }
+
+
+  clearMySetTriggers(sphereId, stoneId, ownerId) {
+    if (!this.triggers[sphereId])                   { return; }
+    if (!this.triggers[sphereId][stoneId])          { return; }
+    if (!this.triggers[sphereId][stoneId][ownerId]) { return; }
+
+    delete this.triggers[sphereId][stoneId][ownerId];
+  }
+
+
+  handleTriggers(sphereId, stoneId, rssi) {
+    if (!this.triggers[sphereId])          { return; }
+    if (!this.triggers[sphereId][stoneId]) { return; }
+
+    let ownerIds = Object.keys(this.triggers[sphereId][stoneId]);
+
+
+    let todos = [];
+    for (let i = 0; i < ownerIds.length; i++) {
+      let ownerActions = this.triggers[sphereId][stoneId][ownerIds[i]];
+      // inverse walk so we can delete the elements that we match
+      for (let j = ownerActions.length; j >= 0; j--) {
+        if (ownerActions[j].rssiRequirement >= rssi) {
+          todos.push(ownerActions[j]);
+          ownerActions.splice(j,1);
+        }
+      }
+    }
+
+    // we now have a collection of todos that we will execute.
+    // the newest are at the bottom now, so we will execute it reversed
+    for (let i = todos.length; i >= 0; i--) {
+      todos[i].action();
+    }
+  }
+
 }
 
 export const StoneAvailabilityTracker = new StoneAvailabilityTrackerClass();

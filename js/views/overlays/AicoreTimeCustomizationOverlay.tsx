@@ -62,7 +62,7 @@ export class AicoreTimeCustomizationOverlay extends Component<any, any> {
         canClose={true}
         scrollable={true}
         closeCallback={() => { this.close(); }}
-        backgroundColor={colors.white.rgba(0.2)}
+        backgroundColor={colors.white.rgba(0.6)}
         getDesignElement={(innerSize) => { return (
           <ScaledImage source={require('../../images/overlayCircles/time.png')} sourceWidth={600} sourceHeight={600} targetHeight={innerSize}/>
         );}}

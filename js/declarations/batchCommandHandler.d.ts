@@ -103,6 +103,7 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'lockSwitch',     value: boolean } |
   { commandName : 'setSwitchCraft', value: boolean } |
   { commandName : 'allowDimming',   value: boolean } |
+  { commandName : 'setTapToToggle', value: boolean, rssiOffset: number } |
   { commandName : 'setMeshChannel', channel: number } |
   { commandName : 'setupPulse'}
 
