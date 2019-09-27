@@ -75,7 +75,7 @@ export default {
     One_Sphere_per_House:                () => { return "One Sphere per House" },
     Using_only_one_sphere_per:           () => { return "Using only one sphere per individual building (like house, office or holiday home), you can add up to 20 spheres!\n\n" + "If you want to create a new sphere, tap the button below.\n\nIf you do not need a new sphere after all, press back in the top left corner!" },
     I_understand_:                       () => { return "I understand!" },
-    I_dont_need_a_sphere:                function() { return "Nevermind." },
+    I_dont_need_a_sphere:                function() { return "Never mind." },
     OK:                                  function() { return "OK" },
     Something_went_wrong_with:           function() { return "Something went wrong with the creation of your Sphere." },
     Whoops:                              function() { return "Whoops!" },

@@ -7,8 +7,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import { core } from "../../../core";
 import { Background } from "../../components/Background";
-import { Alert, ScrollView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
-import { TopBarUtil } from "../../../util/TopBarUtil";
+import { Alert, Platform, ScrollView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { LiveComponent } from "../../LiveComponent";
 import {
   availableModalHeight,
@@ -21,7 +20,9 @@ import { Icon } from "../../components/Icon";
 import { Circle } from "../../components/Circle";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 import { Component, useState } from "react";
-import { Navigation } from "react-native-navigation";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TopbarImitation } from "../../components/TopbarImitation";
+import { NotificationLine } from "../../components/NotificationLine";
 
 
 
@@ -52,25 +53,10 @@ import { Navigation } from "react-native-navigation";
  *
  */
 export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copyType: string, callback(data: any): void, sphereId: string, originId: string, rulesRequireDimming: true}, any> {
-  static options(props) {
-    let options : topbarOptions = {title: props.copyType === "FROM" ? "Copy from whom?" : "Copy to whom?"};
-    if (props.copyType === "TO") {
-      options.nav = {id: 'select', text:'Select'};
-    }
+  static options = {
+    topBar: { visible: false, height: 0 }
+  };
 
-    return TopBarUtil.getOptions(options);
-  }
-
-  navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'select') {
-      if (Object.keys(this.state.selectionMap).length === 0) {
-        Alert.alert("No Crownstone selected!","Select at least one Crownstone to copy behaviour to. You can tap on them to select!", [{text:"OK"}]);
-      }
-      else {
-        this.props.callback(Object.keys(this.state.selectionMap));
-      }
-    }
-  }
 
   unsubscribeStoreEvents;
   callback;
@@ -163,7 +149,22 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
     }
 
     return (
-      <Background image={core.background.lightBlurLighter} hasNavBar={false}>
+      <Background image={core.background.lightBlurLighter} fullScreen={true} hideNotifications={true} hideOrangeLine={true}>
+        <TopbarImitation
+          title={this.props.copyType === "FROM" ? "Copy from whom?" : "Copy to whom?"}
+          leftAction={() => { NavigationUtil.back() }}
+          leftLabel={"Back"}
+          rightAction={() => {
+            if (Object.keys(this.state.selectionMap).length === 0) {
+              Alert.alert("No Crownstone selected!","Select at least one Crownstone to copy behaviour to. You can tap on them to select!", [{text:"OK"}]);
+            }
+            else {
+              this.props.callback(Object.keys(this.state.selectionMap));
+            }
+          }}
+          right={this.props.copyType === "FROM" ? null : "Select"}
+        />
+        <NotificationLine />
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.85*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
@@ -286,7 +287,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
       subTextStyleOverride = {};
       overrideButton = (
         <TouchableOpacity style={{backgroundColor: colors.menuTextSelected.hex, borderRadius: 15, padding:10}} onPress={() => {
-          core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: sphereId, stoneId: stoneId})
+          core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: sphereId, stoneId: stoneId, data: {enabledTarget: true}})
         }}>
           <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{"Enable\nDimming"}</Text>
         </TouchableOpacity>

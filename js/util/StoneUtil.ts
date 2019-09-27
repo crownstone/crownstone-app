@@ -236,7 +236,7 @@ export const StoneUtil = {
           "These behaviours require that dimming is enabled on the Crownstone",
           "Would you like to enable dimming now?",
           [
-            {text:'Nevermind', onPress: () => { resolve(false)}},
+            {text:'Neve rmind', onPress: () => { resolve(false)}},
             {text:"Yes",       onPress:() => {
               let actions = copyRules();
               actions.push({type:'UPDATE_DIMMER', sphereId: sphereId, stoneId: toStoneId, data: {enabledState: true, synced: false}});

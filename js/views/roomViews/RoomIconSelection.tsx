@@ -394,10 +394,8 @@ export class RoomIconSelection extends Component<{navigation:any, callback(icon:
   render() {
     return (
       <Background hasNavBar={false} image={core.background.light}>
-        <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <IconSelection
-            debug={true}
             categories={categories}
             icons={listOfIcons}
             iconColor={colors.csBlue.hex}

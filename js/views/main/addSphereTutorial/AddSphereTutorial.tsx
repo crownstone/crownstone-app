@@ -6,8 +6,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  StyleSheet,
   View
-} from 'react-native';
+} from "react-native";
 import { Background } from "../../components/Background";
 import { availableModalHeight, colors, screenWidth} from "../../styles";
 import { AddSphereTutorial_introduction } from "./elements/AddSphereTutorial_introduction";
@@ -40,7 +41,7 @@ export class AddSphereTutorial extends LiveComponent<any, any> {
   render() {
     let components = this._getContent();
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark}>
+      <Background hasNavBar={false} image={core.background.light}>
         <View style={{height: availableModalHeight, width:screenWidth}}>
         <Carousel
           useScrollView={true}
@@ -85,3 +86,28 @@ export class AddSphereTutorial extends LiveComponent<any, any> {
     return content;
   }
 }
+
+let textColor = colors.csBlueDark;
+export const tutorialStyle = StyleSheet.create({
+  header: {
+    color: textColor.hex,
+    fontSize: 25,
+    fontWeight:'800'
+  },
+  text: {
+    color: textColor.hex,
+    fontSize: 16,
+    textAlign:'center',
+    fontWeight:'500'
+  },
+  subText: {
+    color: textColor.rgba(0.5),
+    fontSize: 13,
+  },
+  explanation: {
+    width: screenWidth,
+    color: textColor.rgba(0.5),
+    fontSize: 13,
+    textAlign:'center'
+  }
+});

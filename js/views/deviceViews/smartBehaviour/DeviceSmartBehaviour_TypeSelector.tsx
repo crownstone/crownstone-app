@@ -97,7 +97,15 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
             label: "Twilight mode",
             subLabel: '"' + twilightExamples[0].getSentence() + '"',
             image: { source: require('../../../images/icons/twilight.png'), sourceWidth: 529, sourceHeight: 398, width: 0.18*screenWidth },
-            nextCard: 'twilight'
+            onSelect: () => {
+              let state = core.store.getState();
+              let sphere = state.spheres[this.props.sphereId];
+              let stone = sphere.stones[this.props.stoneId]
+              if (stone.abilities.dimming.enabledTarget === true) {
+                return 'twilight';
+              }
+              return "dimmingRequired";
+            },
           },
           {
             label: "Copy from other Crownstone",
@@ -154,6 +162,30 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         image: { source: require('../../../images/icons/smartTimer.png'), sourceWidth: 292, sourceHeight: 399, height: 0.2*screenHeight, tintColor: colors.white.hex },
         optionsBottom: true,
         options: this.getOptions(smartTimerExamples, "Smart Timer")
+      },
+      dimmingRequired: {
+        header: "Dimming required",
+        headerMaxNumLines: 1,
+        textColor: colors.white.hex,
+        subHeader: "Twilight requires me to be able to dim. Would you like to enable the dimming ability on this Crownstone?",
+        backgroundImage: require('../../../images/backgrounds/twilight.png'),
+        optionsBottom: true,
+        options: [
+          {
+            label: "Yes, enable dimming!",
+            onSelect: () => {
+              core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {enabledTarget: true}});
+              return "twilight";
+            }
+          },
+          {
+            label: "Not right now..",
+            onSelect: () => {
+              setTimeout(() => {this._interview.back()},100)
+              return false;
+            }
+          },
+        ]
       },
       twilight: {
         header: "Twilight Mode",

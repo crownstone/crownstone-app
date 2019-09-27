@@ -82,7 +82,7 @@ export class NotificationLine extends LiveComponent<{notificationsVisible?: bool
 
     return (
       <View>
-        {notifications}
+        { notifications }
         { showOrangeLine ? <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} /> : undefined }
       </View>
     );

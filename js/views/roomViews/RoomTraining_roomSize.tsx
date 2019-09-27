@@ -27,7 +27,7 @@ import { LiveComponent } from "../LiveComponent";
 let buttonTextStyle : TextStyle = {
   backgroundColor:'transparent',
   fontSize:15,
-  fontWeight:'500',
+  fontWeight:'bold',
   color: colors.white.hex,
   textAlign:'left',
 };
@@ -39,8 +39,9 @@ let squareMeterStyle : TextStyle = {
 };
 
 let buttonStyle : ViewStyle = {
-  backgroundColor: colors.white.rgba(0.3),
-  borderRadius:2,
+  backgroundColor: colors.menuTextSelected.rgba(0.6),
+  borderRadius: 30,
+  width: 0.95*screenWidth,
   height: 0.15*screenHeight,
   flexDirection:'row',
   alignItems:'center'
@@ -79,18 +80,26 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
   }
 
   render() {
+    let roomName = 'this room';
+
     let state = core.store.getState();
-    let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
+    let sphere = state.spheres[this.props.sphereId];
+    if (sphere) {
+      let location = sphere.locations[this.props.locationId];
+      if (location) {
+        roomName = location.config.name || roomName;
+      }
+    }
 
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark}>
-                <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
+      <Background hasNavBar={false} image={core.background.light}>
+        <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <View style={{flex:1}} />
           <Text style={{
             backgroundColor:'transparent',
             fontSize:20,
             fontWeight:'bold',
-            color: colors.white.hex,
+            color: colors.csBlueDark.hex,
             textAlign:'center'
           }}>{ lang("To_let__find_you_in___we_",roomName) }</Text>
 
@@ -99,7 +108,7 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
             backgroundColor:'transparent',
             fontSize:16,
             fontWeight:'bold',
-            color: colors.white.hex,
+            color: colors.csBlueDark.hex,
             textAlign:'center',
           }}>{ lang("How_large_is_this_room_") }</Text>
 
@@ -107,7 +116,7 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
-            color: colors.white.hex,
+            color: colors.csBlueDark.hex,
             textAlign:'center',
           }}>{ lang("Large_rooms_take_a_bit_mo") }</Text>
 

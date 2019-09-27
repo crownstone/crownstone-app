@@ -201,7 +201,14 @@ export class RoomTraining extends LiveComponent<any, any> {
   render() {
     let state  = core.store.getState();
     let aiName = Util.data.getAiName(state, this.props.sphereId);
-    let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
+    let roomName = 'this room';
+    let sphere = state.spheres[this.props.sphereId];
+    if (sphere) {
+      let location = sphere.locations[this.props.locationId];
+      if (location) {
+        roomName = location.config.name || roomName;
+      }
+    }
 
 
     let quitMethod = () => { NavigationUtil.dismissModal(); };
@@ -235,7 +242,7 @@ export class RoomTraining extends LiveComponent<any, any> {
     }
 
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark}>
+      <Background hasNavBar={false} image={core.background.light}>
         <KeepAwake />
         {content}
       </Background>

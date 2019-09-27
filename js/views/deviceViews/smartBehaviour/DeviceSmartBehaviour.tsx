@@ -223,7 +223,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                     Alert.alert(
                       "Copying will override existing Behaviour",
                       "If you copy behaviour from another Crownstone, it's behaviour will replace the current behaviour. Do you want to continue?",
-                      [{text:"Nevermind"}, {text:"Yes", onPress: copyFrom}])
+                      [{text:"Never mind"}, {text:"Yes", onPress: copyFrom}])
                   }
                   else{
                     copyFrom()

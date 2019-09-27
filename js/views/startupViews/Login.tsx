@@ -22,7 +22,7 @@ const RNFS    = require('react-native-fs');
 import DeviceInfo from 'react-native-device-info';
 
 import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
-import { emailChecker, getImageFileFromUser} from '../../util/Util'
+import { emailChecker, getImageFileFromUser, Util } from "../../util/Util";
 import { CLOUD }              from '../../cloud/cloudAPI'
 import { TextEditInput }      from '../components/editComponents/TextEditInput'
 import { Background }         from '../components/Background'
@@ -466,7 +466,24 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
           core.eventBus.emit('hideProgress');
 
           if (state.user.isNew !== false) {
-            NavigationUtil.setRoot(Stacks.tutorial());
+            let sphereIds = Object.keys(state.spheres);
+            let goToSphereOverview = () => {
+              NavigationUtil.setRoot(Stacks.loggedIn());
+            };
+
+            // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment
+            if (sphereIds.length === 1) {
+              if (Util.data.getUserLevelInSphere(state, sphereIds[0]) === 'admin' && !state.spheres[sphereIds[0]].config.aiSex) {
+                NavigationUtil.setRoot(Stacks.aiStart({sphereId: sphereIds[0]}));
+              }
+              else {
+                goToSphereOverview();
+              }
+              return;
+            }
+            else {
+              goToSphereOverview();
+            }
           }
           else {
             core.eventBus.emit("userLoggedInFinished");

@@ -14,8 +14,8 @@ import {
 
 
 import { screenHeight, screenWidth, topBarHeight } from "../../../styles";
-import { tutorialStyle } from "../../../tutorialViews/TutorialStyle";
 import { ScaledImage } from "../../../components/ScaledImage";
+import { tutorialStyle } from "../AddSphereTutorial";
 
 
 export class AddSphereTutorial_multiple extends Component<any, any> {

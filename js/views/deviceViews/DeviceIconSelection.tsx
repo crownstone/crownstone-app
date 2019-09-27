@@ -524,7 +524,7 @@ export class DeviceIconSelection extends LiveComponent<{callback(icon: string) :
 
   render() {
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark}>
+      <Background hasNavBar={false} image={core.background.light}>
         <ScrollView>
           <IconSelection
             categories={categories}

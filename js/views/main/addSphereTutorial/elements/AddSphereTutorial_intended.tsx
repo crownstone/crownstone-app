@@ -16,12 +16,12 @@ import {
 
 
 import { colors, screenHeight, screenWidth, styles, topBarHeight } from "../../../styles";
-import { tutorialStyle } from "../../../tutorialViews/TutorialStyle";
 import { ScaledImage } from "../../../components/ScaledImage";
 import { createNewSphere } from "../../../../util/CreateSphere";
 import { core } from "../../../../core";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { Stacks } from "../../../../router/Stacks";
+import { tutorialStyle } from "../AddSphereTutorial";
 
 
 export class AddSphereTutorial_intended extends Component<any, any> {
@@ -42,9 +42,9 @@ export class AddSphereTutorial_intended extends Component<any, any> {
           <View style={{width: screenWidth, height: 0.07*screenHeight}} />
           <View style={{flexDirection:'row'}}>
             <View style={{flex:0.5}} />
-            <ScaledImage source={require("../../../../images/tutorial/Sphere_with_house.png")} sourceHeight={481} sourceWidth={480} targetWidth={screenWidth*0.35} />
+            <ScaledImage source={require("../../../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetWidth={screenWidth*0.35} />
             <View style={{flex:1}} />
-            <ScaledImage source={require("../../../../images/tutorial/Sphere_with_house.png")} sourceHeight={481} sourceWidth={480} targetWidth={screenWidth*0.35} />
+            <ScaledImage source={require("../../../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetWidth={screenWidth*0.35} />
             <View style={{flex:0.5}} />
           </View>
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />

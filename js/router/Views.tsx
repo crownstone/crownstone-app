@@ -62,7 +62,6 @@ import { SettingsRedownloadFromCloud }    from '../views/settingsViews/SettingsR
 import { SettingsStoneBleDebug }          from '../views/settingsViews/dev/SettingsStoneBleDebug'
 import { SettingsBleTroubleshooting }     from '../views/settingsViews/SettingsBleTroubleshooting'
 
-import { Tutorial }                       from "../views/tutorialViews/Tutorial";
 import { IconDebug }                      from "../views/development/IconDebug";
 
 import { ToonAdd }                        from "../views/thirdParty/toon/ToonAdd";
@@ -186,7 +185,6 @@ export const Views = {
   ToonAdd:                           ToonAdd,
   ToonOverview:                      ToonOverview,
   ToonSettings:                      ToonSettings,
-  Tutorial:                          Tutorial,
 
 
   // Overlays:

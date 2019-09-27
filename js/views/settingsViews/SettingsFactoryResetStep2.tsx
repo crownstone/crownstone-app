@@ -261,11 +261,11 @@ lang("_Error_during_Factory_Res_body"),
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark}>
+      <Background hasNavBar={false} image={core.background.light}>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
-          <Text style={[setupStyle.text, {color:colors.white.hex}]}>{ lang("Hold_your_phone_next_to_t") }</Text>
+          <Text style={[setupStyle.text]}>{ lang("Hold_your_phone_next_to_t") }</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={[setupStyle.information, {color:colors.white.hex}]}>{this.state.text}</Text>
+          <Text style={[setupStyle.information]}>{this.state.text}</Text>
           <View style={{flex:1}} />
           <View style={{width: screenWidth, height:imageSize*screenHeight}}>
             <Animated.View style={{opacity:this.state.fade1, position:'absolute', left:leftPos, top: 0}}>
@@ -277,7 +277,7 @@ lang("_Error_during_Factory_Res_body"),
           </View>
           <View style={{flex:1}} />
           <View style={{marginBottom: 20}}>
-            <ActivityIndicator animating={true} color={colors.white.hex} size="large"/>
+            <ActivityIndicator animating={true} color={colors.csBlueDark.hex} size="large"/>
           </View>
         </View>
       </Background>

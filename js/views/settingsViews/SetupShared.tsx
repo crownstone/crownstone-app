@@ -17,6 +17,8 @@ else if (screenWidth > 300)
 else
   fontSize = 35;
 
+
+let textColor = colors.csBlueDark.hex;
 export const setupStyle = StyleSheet.create({
   imageDistance: {
     height:50
@@ -26,7 +28,7 @@ export const setupStyle = StyleSheet.create({
   },
   smallText: {
     backgroundColor:'transparent',
-    color:'#fff',
+    color: textColor,
     fontSize: 13,
     textAlign:'center',
     fontWeight:'400',
@@ -34,29 +36,29 @@ export const setupStyle = StyleSheet.create({
   h0:{
     padding: 20,
     backgroundColor:'transparent',
-    color:'#fff',
+    color: textColor,
     fontSize:fontSize,
     fontWeight:'400',
   },
   h1:{
     padding: 20,
     backgroundColor:'transparent',
-    color:'#fff',
+    color: textColor,
     fontSize:fontSize*0.85,
     fontWeight:'400',
   },
   h2:{
     padding: 20,
     backgroundColor:'transparent',
-    color:'#fff',
+    color: textColor,
     fontSize:fontSize*0.75,
     fontWeight:'400',
   },
   h3:{
     padding: 20,
     backgroundColor:'transparent',
-    color:'#fff',
-    fontSize: fontSize*0.5,
+    color: textColor,
+    fontSize: fontSize*0.5, 
     fontWeight:'400',
   },
   roomBar: {
@@ -74,7 +76,7 @@ export const setupStyle = StyleSheet.create({
   },
   text: {
     backgroundColor:'transparent',
-    color:'#fff',
+    color: textColor,
     fontSize: fontSize*0.45,
     fontWeight:'400',
     paddingLeft: 20,
@@ -82,7 +84,7 @@ export const setupStyle = StyleSheet.create({
   },
   information: {
     backgroundColor:'transparent',
-    color:'#fff',
+    color: textColor,
     fontSize: fontSize*0.4,
     fontWeight:'300',
     paddingLeft: 20,
@@ -102,7 +104,7 @@ export const setupStyle = StyleSheet.create({
     width: 130,
     borderRadius:65,
     borderWidth:2,
-    borderColor:'white',
+    borderColor: textColor,
     alignItems:'center',
     justifyContent:'center',
     margin: (screenWidth - 2*130) / 6,
@@ -115,13 +117,13 @@ export const setupStyle = StyleSheet.create({
     width: 100,
     borderRadius:50,
     borderWidth:2,
-    borderColor:'white',
+    borderColor: textColor,
     alignItems:'center',
     justifyContent:'center',
     margin: 0,
   },
   buttonText: {
-    color:'white',
+    color: textColor,
     fontSize:20,
     fontWeight:'500',
     textAlign:'center',
@@ -133,7 +135,7 @@ export const setupStyle = StyleSheet.create({
     marginTop:screenHeight*0.4,
   },
   textBoxView: {
-    backgroundColor:'#fff',
+    backgroundColor: textColor,
     width:screenWidth,
     height:40,
     borderRadius:3,
@@ -157,8 +159,8 @@ export class NextButton extends Component<any, any> {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingRight:20, flexDirection:'row', height:30}}>
-        <Text style={[setupStyle.buttonText, {color:this.props.dark ? colors.menuBackground.hex : '#fff'}]}>{ lang("Next") }</Text>
-        <Icon name="ios-arrow-forward" size={30} color={this.props.dark ? colors.menuBackground.hex : '#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
+        <Text style={[setupStyle.buttonText]}>{ lang("Next") }</Text>
+        <Icon name="ios-arrow-forward" size={30} color={colors.csBlueDark.hex} style={{position:'relative', top:-2, paddingLeft:8}} />
       </View>
     </TouchableOpacity>
   }
@@ -168,7 +170,7 @@ export class StartButton extends Component<any, any> {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingRight:20, flexDirection:'row', height:30}}>
         <Text style={[setupStyle.buttonText]}>{ lang("Start_setup") }</Text>
-        <Icon name="ios-arrow-forward" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
+        <Icon name="ios-arrow-forward" size={30} color={colors.csBlueDark.hex} style={{position:'relative', top:-2, paddingLeft:8}} />
       </View>
     </TouchableOpacity>
   }
@@ -178,8 +180,8 @@ export class SkipButton extends Component<any, any> {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
-        <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
-        <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>{ lang("Skip") }</Text>
+        <Icon name="ios-remove-circle-outline" size={30} color={colors.csBlueDark.hex} style={{position:'relative', top:-2, paddingRight:8}} />
+        <Text style={[setupStyle.buttonText]}>{ lang("Skip") }</Text>
       </View>
     </TouchableOpacity>
   }
@@ -189,8 +191,8 @@ export class CancelButton extends Component<any, any> {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
-        <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
-        <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>{ lang("Cancel") }</Text>
+        <Icon name="ios-remove-circle-outline" size={30} color={colors.csBlueDark.hex} style={{position:'relative', top:-2, paddingRight:8}} />
+        <Text style={[setupStyle.buttonText]}>{ lang("Cancel") }</Text>
       </View>
     </TouchableOpacity>
   }

@@ -1617,7 +1617,7 @@ export default {
     _Error_during_Factory_Res_body:      function() { return "Please repeat the process to try again." },
     _Error_during_Factory_Res_left:      function() { return "OK" },
     Hold_your_phone_next_to_t:           function() { return "Hold your phone next to the Crownstone." },
-    Resettings:                          function() { return "Resettings" },
+    Resettings:                          function() { return "Resetting..." },
   },
   SettingsLocalizationDebug:{
     __filename: "../js/views/settingsViews/dev/SettingsLocalizationDebug.tsx",

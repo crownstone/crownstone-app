@@ -26,6 +26,8 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { Stacks } from "../../router/Stacks";
+import { BehaviourSubmitButton } from "../deviceViews/smartBehaviour/supportComponents/BehaviourSubmitButton";
+import { ScaledImage } from "../components/ScaledImage";
 
 
 
@@ -91,18 +93,17 @@ export class AiStart extends Component<any, any> {
     let availableHeight = screenHeight - topBarHeight - 3*16 - 30 - 50 - 50;
 
     return (
-      <Background hasNavBar={false} image={core.background.detailsDark}>
-        <View style={[styles.centered, {flex:1}]}>
-          <View style={{flex:1}} />
-          <Icon name="c1-house" size={0.26*availableHeight} color={colors.white.hex} />
+      <Background hasNavBar={false} keyboardAvoid={true} image={core.background.light}>
+        <View style={[styles.centered, {flex:1, paddingTop:30, paddingBottom:30}]}>
+          <ScaledImage source={require("../../images/tutorial/Sphere_with_house.png")} sourceHeight={490} sourceWidth={490} targetHeight={0.4*availableHeight} />
           <View style={{flex:1}} />
           <Text style={aiStyle.largeText}>{ lang("Welcome__",userFirstName) }</Text>
           <Text style={aiStyle.boldText}>{ lang("Im_your_house_") }</Text>
           <View style={{flex:1}} />
           <Text style={aiStyle.text}>{ lang("What_would_you_like_to_ca") }</Text>
-          <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
+          <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth, height:50, borderRadius:5}]}>
             <TextEditInput
-              style={{width: 0.8*screenWidth, padding:10}}
+              style={{width: 0.8*screenWidth, paddingHorizontal:20}}
               placeholder={lang("Name_your_house_")}
               autocorrect={false}
               placeholderTextColor='#888'
@@ -110,10 +111,7 @@ export class AiStart extends Component<any, any> {
               callback={(newValue) => {this.setState({aiName:newValue});}} />
           </View>
           <View style={{flex:3}} />
-          <TouchableOpacity style={aiStyle.button} onPress={() => { this.handleAnswer(userFirstName); }}>
-            <Text style={aiStyle.boldText}>{ lang("OK") }</Text>
-          </TouchableOpacity>
-          <View style={{flex:1}} />
+          <BehaviourSubmitButton label={lang("OK")} callback={() => { this.handleAnswer(userFirstName); }} />
         </View>
       </Background>
     );
@@ -166,15 +164,15 @@ export class AiStart extends Component<any, any> {
 
 let aiStyle = StyleSheet.create({
   text: {
-    fontSize:16, backgroundColor:'transparent', color:colors.white.hex, padding:10
+    fontSize:16, backgroundColor:'transparent', color:colors.csBlueDark.hex, padding:10
   },
   boldText: {
-    fontSize:19, fontWeight:'bold', backgroundColor:'transparent', color:colors.white.hex, padding:10
+    fontSize:19, fontWeight:'bold', backgroundColor:'transparent', color:colors.csBlueDark.hex, padding:10
   },
   largeText: {
-    fontSize:30, fontWeight:'bold', backgroundColor:'transparent', color:colors.white.hex
+    fontSize:30, fontWeight:'bold', backgroundColor:'transparent', color:colors.csBlueDark.hex
   },
   button: {
-    borderWidth: 2, width:90, height:50, borderRadius:25, borderColor: colors.white.rgba(0.75), alignItems:'center', justifyContent:'center'
+    borderWidth: 2, width:90, height:50, borderRadius:25, borderColor: colors.csBlueDark.rgba(0.75), alignItems:'center', justifyContent:'center'
   }
 });

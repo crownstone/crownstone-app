@@ -83,7 +83,7 @@ class TopBarAndroid extends Component<any, any> {
         right = this.props.right();
       }
       return (
-        <TouchableOpacity onPress={() => {this.props.rightAction();}}  style={topBarStyle.topBarRightTouch}>
+        <TouchableOpacity onPress={() => {this.props.rightAction();}}  style={[topBarStyle.topBarRightTouch, {paddingRight:10}]}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
             <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{right}</Text>
           </View>
@@ -166,7 +166,7 @@ class TopBarIOS extends Component<any, any> {
         right = this.props.right();
       }
       return (
-        <TouchableOpacity onPress={() => {this.props.rightAction();}}  style={topBarStyle.topBarRightTouch}>
+        <TouchableOpacity onPress={() => {this.props.rightAction();}}  style={[topBarStyle.topBarRightTouch,{paddingRight:10}]}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
             <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{right}</Text>
           </View>

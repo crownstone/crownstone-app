@@ -28,7 +28,7 @@ export class RoomTraining_training extends Component<any, any> {
               backgroundColor:'transparent',
               fontSize:20,
               fontWeight:'bold',
-              color: colors.white.hex,
+              color: colors.csBlueDark.hex,
               textAlign:'center'
             }}>{ lang("Walk_around_the_room_so__") }</Text>
           </View>

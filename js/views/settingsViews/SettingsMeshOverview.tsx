@@ -126,19 +126,19 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
     networkKeys = Object.keys(networks);
 
     return (
-      <Background image={core.background.detailsDark}>
+      <Background image={core.background.light}>
         <ScrollView>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
-            color: colors.white.hex,
+            color: colors.csBlueDark.hex,
             textAlign:'center',
             padding:20,
           }}>{ lang("Here_you_can_see_which_Cr") }</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:14,
-            color: colors.white.hex,
+            color: colors.csBlueDark.hex,
             textAlign:'center',
             padding:20,
             paddingTop:0,
@@ -148,7 +148,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
             <Text style={{
               backgroundColor:'transparent',
               fontSize:16,
-              color: colors.white.hex,
+              color: colors.csBlueDark.hex,
               textAlign:'center',
               paddingTop:0,
               paddingBottom:5,
@@ -163,7 +163,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
 
 
 export class Network extends Component<any, any> {
-  padding : number = 10;
+  padding : number = 20;
   connectedDistance : number = 50;
   unconnectedDistance : number = 20;
   nodeHeight : number = 50;
@@ -192,7 +192,7 @@ export class Network extends Component<any, any> {
     if (props.connected !== false) {
       interNodeDistance = this.connectedDistance;
     }
-    return dataPointsCount * this.nodeHeight + (dataPointsCount-1) * interNodeDistance + 50 + 10;
+    return dataPointsCount * this.nodeHeight + (dataPointsCount-1) * interNodeDistance + 50 + 2*this.padding;
   }
 
   componentWillUpdate( nextProps, nextState ) {
@@ -218,9 +218,9 @@ export class Network extends Component<any, any> {
     this.props.data.forEach((dataPoint, i) => {
       items.push(
         <View key={'items'+i} style={{width: width, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', position:'relative', left:-5}}>
-          <IconCircle icon={dataPoint.location ? dataPoint.location.config.icon : 'c2-pluginFilled'} size={this.nodeHeight} backgroundColor={colors.green.hex} color={colors.csBlue.hex} borderColor={colors.csBlue.hex} style={{position:'relative', top:0, left:10}} />
+          <IconCircle icon={dataPoint.location ? dataPoint.location.config.icon : 'c2-pluginFilled'} size={this.nodeHeight} backgroundColor={colors.green.hex} color={colors.white.hex} borderColor={colors.csBlue.hex} style={{position:'relative', top:0, left:10}} />
           <IconCircle icon={dataPoint.stone.config.icon}  size={40} backgroundColor={colors.csBlue.hex} color="#fff" borderColor={colors.csBlue.hex} />
-          <Text style={{paddingLeft:10, color:colors.white.hex, backgroundColor:'transparent'}}>{dataPoint.stone.config.name}</Text>
+          <Text style={{paddingLeft:10, color:colors.csBlueDark.hex, backgroundColor:'transparent'}}>{dataPoint.stone.config.name}</Text>
         </View>
       );
       if (this.props.connected !== false) {
@@ -249,8 +249,8 @@ export class Network extends Component<any, any> {
         <Animated.View style={{position:'absolute', top: 60, left: offset, width: 100, height: this.state.connectionLineHeight}}>
           <Animated.View style={{position:'absolute', backgroundColor: colors.csBlue.rgba(0.05), top: 0, left: 25 - 0.5*w2, width: w2, height: this.state.connectionLineHeight }} />
           <Animated.View style={{position:'absolute', backgroundColor: colors.csBlue.rgba(0.05), top: 0, left: 60 - 0.5*w1, width: w1, height: this.state.connectionLineHeight }} />
-          <Animated.View style={{position:'absolute', backgroundColor: colors.white.hex,         top: 0, left: 25 - 0.5*w3, width: w3, height: this.state.connectionLineHeight }} />
-          <Animated.View style={{position:'absolute', backgroundColor: colors.white.hex,         top: 0, left: 60 - 0.5*w2, width: w2, height: this.state.connectionLineHeight }} />
+          <Animated.View style={{position:'absolute', backgroundColor: colors.csBlueDark.hex,         top: 0, left: 25 - 0.5*w3, width: w3, height: this.state.connectionLineHeight }} />
+          <Animated.View style={{position:'absolute', backgroundColor: colors.csBlueDark.hex,         top: 0, left: 60 - 0.5*w2, width: w2, height: this.state.connectionLineHeight }} />
         </Animated.View>
       );
     }
@@ -265,15 +265,15 @@ export class Network extends Component<any, any> {
         padding: this.padding,
         flexDirection:'column',
         alignItems:'center',
-        borderColor:  colors.white.hex,
+        borderColor:  colors.menuTextSelected.rgba(0.3),
         borderWidth:  3,
-        borderRadius: 8,
-        backgroundColor: colors.white.rgba(0.25),
+        borderRadius: 12,
+        backgroundColor: colors.white.rgba(0.6),
         height: this.state.height,
         opacity: this.state.opacity
       }}>
         {this.getConnector()}
-        <Text style={{backgroundColor:'transparent', color:colors.white.hex, fontWeight:'bold', paddingBottom:10}}>{this.props.label}</Text>
+        <Text style={{backgroundColor:'transparent', color:colors.csBlueDark.hex, fontWeight:'bold', paddingBottom:10}}>{this.props.label}</Text>
         <View style={{paddingBottom: 5}}>
           { this.getStones() }
         </View>
