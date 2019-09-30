@@ -961,6 +961,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-1.0.4.tgz#3ef928c87c686d673ae829e492c7aad4d061d666"
   integrity sha512-L02BSwDTHGc5BPrtllMTOKSKg9QyJbz001pIkD2FGmUFA9Nfvs0cne36N4nnrR5jQhSzwnmnQpzXkQ/yzQxwMg==
 
+"@rnhooks/device-orientation@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@rnhooks/device-orientation/-/device-orientation-0.0.1.tgz#18b153c0b20d5929989e75ad3ef6cadd6568d5d6"
+  integrity sha512-70MgeOqSpm3/NvhFXOhAv4K2Q17/nK3cLS5H3XpjPatsbYGmVSY6HafJvm0FqFc2BQsshyiYtILycWrJUpbm0Q==
+
 "@sentry/cli@1.40.0":
   version "1.40.0"
   resolved "https://registry.yarnpkg.com/@sentry/cli/-/cli-1.40.0.tgz#ab6565034d63bb6dfa840954f16efb058578fbcb"

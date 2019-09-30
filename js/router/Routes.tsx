@@ -50,7 +50,6 @@ Navigation.events().registerAppLaunchedListener(() => {
       title: {
         color: colors.white.hex,
       },
-
     },
     bottomTabs: {
       backgroundColor: colors.csBlueDarker.hex,

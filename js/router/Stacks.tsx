@@ -44,13 +44,13 @@ export const Stacks = {
   },
 
   loggedIn: function() : StackData {
-    return {
-      stack: {
-        children: [
-          { component: {name: "DeviceSmartBehaviour", passProps: {stoneId: "fa135188-6f74-767c-63eb-38315ee6475d", sphereId: "c1e653ba-6755-5402-71d7-d9b0172f502a"}} },
-        ],
-      },
-    }
+    // return {
+    //   stack: {
+    //     children: [
+    //       { component: {name: "PictureView", passProps: {stoneId: "fa135188-6f74-767c-63eb-38315ee6475d", sphereId: "c1e653ba-6755-5402-71d7-d9b0172f502a"}} },
+    //     ],
+    //   },
+    // }
     return {
       bottomTabs: {
         id: 'bottomTabs',
