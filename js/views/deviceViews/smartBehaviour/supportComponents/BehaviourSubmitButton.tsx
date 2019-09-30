@@ -3,15 +3,15 @@ import { Text, TouchableOpacity } from "react-native";
 import * as React from "react";
 
 
-export function BehaviourSubmitButton(props : { callback:any, label: string }) {
+export function BehaviourSubmitButton(props : { callback:any, label: string, color?: string }) {
   return (
     <TouchableOpacity
       onPress={props.callback}
       style={{
-        width:0.6*screenWidth,
+        width: 0.6*screenWidth,
         height:60,
         borderRadius:20,
-        backgroundColor: colors.green.hex,
+        backgroundColor: props.color || colors.green.hex,
         alignItems:'center',
         justifyContent: 'center',
         borderColor: colors.white.rgba(0.9),

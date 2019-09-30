@@ -19,7 +19,7 @@ import { Separator } from "../components/Separator";
 import { NavigationUtil } from "../../util/NavigationUtil";
 
 export class ListOverlay extends LiveComponent<any, any> {
-  customContent : Component;
+  customContent : () => Component;
   callback : any;
   selection : string[];
   getItems : () => any[];
@@ -32,9 +32,10 @@ export class ListOverlay extends LiveComponent<any, any> {
       image:                   props.data.image,
       maxSelections:           props.data.maxSelections,
       saveLabel:               null,
-      showSaveButton:             false,
-      separator:props.data.separator === undefined ? true : props.data.separator,
+      showSaveButton:          false,
+      separator: props.data.separator === undefined ? true : props.data.separator,
       title: props.data.title,
+      showCustomContent: true,
       visible: false,
     };
 
@@ -62,7 +63,7 @@ export class ListOverlay extends LiveComponent<any, any> {
     let items = this.getItems();
     let elements = [];
     if (this.state.separator) {
-      elements.push(<Separator key={"listOverlay_Separator_first"}/>)
+      elements.push(<Separator opacity={0.35} key={"listOverlay_Separator_first"}/>)
     }
     items.forEach((item, i) => {
       let isSelected = this.selection.indexOf(item.id) !== -1;
@@ -93,7 +94,7 @@ export class ListOverlay extends LiveComponent<any, any> {
       );
 
       if (this.state.separator) {
-        elements.push(<Separator key={"listOverlay_seperator_" + i}/>)
+        elements.push(<Separator opacity={0.35} key={"listOverlay_seperator_" + i}/>)
       }
     });
 
@@ -142,6 +143,11 @@ export class ListOverlay extends LiveComponent<any, any> {
     let width = 0.85*screenWidth;
     let height = Math.min(width*idealAspectRatio, 0.9 * screenHeight);
 
+    let customContent = null;
+    if (this.state.showCustomContent) {
+      customContent = this.customContent
+    }
+
     return (
       <OverlayBox
         visible={this.state.visible}
@@ -154,10 +160,10 @@ export class ListOverlay extends LiveComponent<any, any> {
         getDesignElement={(innerSize) => { return (
           <ScaledImage source={this.state.image} sourceWidth={600} sourceHeight={600} targetHeight={innerSize}/>
         );}}
-        title={this.state.title}
+        title={ customContent ? null : this.state.title }
         footerComponent={this._getSaveButton()}
       >
-        { this.customContent ? this.customContent : this.getElements() }
+        { customContent ? customContent({hideOverlayCallback:() => { this.close(); }, hideCustomContentCallback:() => { this.setState({showCustomContent: false}); }}) : this.getElements() }
         <View style={{height:50}} />
       </OverlayBox>
     );

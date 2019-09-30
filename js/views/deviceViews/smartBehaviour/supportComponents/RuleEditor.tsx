@@ -12,7 +12,7 @@ import {
   Text,
   View, TextStyle, ViewStyle
 } from "react-native";
-import { availableScreenHeight, colors, screenWidth, styles } from "../../../styles";
+import { availableScreenHeight, colors, deviceStyles, overviewStyles, screenWidth, styles } from "../../../styles";
 import { SELECTABLE_TYPE } from "../../../../Enums";
 import { RoomList } from "../../../components/RoomList";
 import { core } from "../../../../core";
@@ -110,6 +110,8 @@ export class RuleEditor extends LiveComponent<
         }
       }
     }
+
+    this._showDimAmountPopup(this.exampleBehaviours.action.dimming);
   }
 
 
@@ -318,20 +320,44 @@ export class RuleEditor extends LiveComponent<
   }
 
   _showDimAmountPopup(exampleBehaviour, selectionDescription : string = null) {
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    let stone = sphere.stones[this.props.stoneId];
+
+
     let dimmerOptions = [];
+    dimmerOptions.push({ label: lang("x_percent",95), id: 0.95});
     dimmerOptions.push({ label: lang("x_percent",90), id: 0.9});
+    dimmerOptions.push({ label: lang("x_percent",85), id: 0.85});
     dimmerOptions.push({ label: lang("x_percent",80), id: 0.8});
+    dimmerOptions.push({ label: lang("x_percent",75), id: 0.75});
     dimmerOptions.push({ label: lang("x_percent",70), id: 0.7});
+    dimmerOptions.push({ label: lang("x_percent",65), id: 0.65});
     dimmerOptions.push({ label: lang("x_percent",60), id: 0.6});
+    dimmerOptions.push({ label: lang("x_percent",55), id: 0.55});
     dimmerOptions.push({ label: lang("x_percent",50), id: 0.5});
+    dimmerOptions.push({ label: lang("x_percent",45), id: 0.45});
     dimmerOptions.push({ label: lang("x_percent",40), id: 0.4});
+    dimmerOptions.push({ label: lang("x_percent",35), id: 0.35});
     dimmerOptions.push({ label: lang("x_percent",30), id: 0.3});
+    dimmerOptions.push({ label: lang("x_percent",25), id: 0.25});
     dimmerOptions.push({ label: lang("x_percent",20), id: 0.2});
+    dimmerOptions.push({ label: lang("x_percent",15), id: 0.15});
     dimmerOptions.push({ label: lang("x_percent",10), id: 0.1});
 
     core.eventBus.emit('showListOverlay', {
       title: lang("Dim_how_much_"),
       getItems: () => { return dimmerOptions; },
+      customContent:
+        stone.abilities.dimming.enabledTarget ? null :
+        (props) => {
+          return (
+            <DimmerPermissionOverlay hideOverlayCallback={props.hideOverlayCallback} callback={() => {
+              core.store.dispatch({type:'UPDATE_DIMMER', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {enabledState: true}})
+              props.hideCustomContentCallback();
+            }} />
+          );
+      },
       callback: (value) => {
         exampleBehaviour.setDimAmount(value);
         this.rule.setDimAmount(value);
@@ -412,7 +438,6 @@ export class RuleEditor extends LiveComponent<
     return this._evaluateSelection(selectedDescription) || this.rule.doesActionMatch(ruleToMatch);
   }
   _evaluateTimeSelection( selectedDescription, ruleToMatch ) {
-    console.log("SELEc", selectedDescription, this._evaluateSelection(selectedDescription) || this.rule.doesTimeMatch(ruleToMatch), this._evaluateSelection(selectedDescription), this.rule.doesTimeMatch(ruleToMatch))
     return this._evaluateSelection(selectedDescription) || this.rule.doesTimeMatch(ruleToMatch);
   }
   _evaluatePresenceLocationSelection( selectedDescription, ruleToMatch ) {
@@ -766,3 +791,19 @@ export class RuleEditor extends LiveComponent<
   }
 }
 
+
+
+function DimmerPermissionOverlay(props) {
+  return (
+    <View style={{flex: 1, alignItems:'center', justifyContent:"center", paddingHorizontal:10}}>
+      <View style={{flex:0.2}} />
+      <Text style={deviceStyles.subHeader}>Dimming ability required.</Text>
+      <View style={{flex:1}} />
+      <Text style={deviceStyles.text}>You need to enable dimming for this Crownstone in order to use it in a behaviour. Do you want to enable this now?</Text>
+      <View style={{flex:1}} />
+      <BehaviourSubmitButton callback={() => { props.callback() }} label={"Enable dimming!"} />
+      <View style={{flex:0.25}} />
+      <BehaviourSubmitButton callback={() => { props.hideOverlayCallback() }} label={"Not right now..."} color={colors.csOrange.hex} />
+    </View>
+  )
+}
