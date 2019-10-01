@@ -111,7 +111,6 @@ export class RuleEditor extends LiveComponent<
       }
     }
 
-    this._showDimAmountPopup(this.exampleBehaviours.action.dimming);
   }
 
 
@@ -326,24 +325,9 @@ export class RuleEditor extends LiveComponent<
 
 
     let dimmerOptions = [];
-    dimmerOptions.push({ label: lang("x_percent",95), id: 0.95});
-    dimmerOptions.push({ label: lang("x_percent",90), id: 0.9});
-    dimmerOptions.push({ label: lang("x_percent",85), id: 0.85});
-    dimmerOptions.push({ label: lang("x_percent",80), id: 0.8});
-    dimmerOptions.push({ label: lang("x_percent",75), id: 0.75});
-    dimmerOptions.push({ label: lang("x_percent",70), id: 0.7});
-    dimmerOptions.push({ label: lang("x_percent",65), id: 0.65});
-    dimmerOptions.push({ label: lang("x_percent",60), id: 0.6});
-    dimmerOptions.push({ label: lang("x_percent",55), id: 0.55});
-    dimmerOptions.push({ label: lang("x_percent",50), id: 0.5});
-    dimmerOptions.push({ label: lang("x_percent",45), id: 0.45});
-    dimmerOptions.push({ label: lang("x_percent",40), id: 0.4});
-    dimmerOptions.push({ label: lang("x_percent",35), id: 0.35});
-    dimmerOptions.push({ label: lang("x_percent",30), id: 0.3});
-    dimmerOptions.push({ label: lang("x_percent",25), id: 0.25});
-    dimmerOptions.push({ label: lang("x_percent",20), id: 0.2});
-    dimmerOptions.push({ label: lang("x_percent",15), id: 0.15});
-    dimmerOptions.push({ label: lang("x_percent",10), id: 0.1});
+    for (let i = 0.9; i >= 0.1; i = i - 0.1) {
+      dimmerOptions.push({ label: lang("x_percent",Math.round(i*100)), id: i});
+    }
 
     core.eventBus.emit('showListOverlay', {
       title: lang("Dim_how_much_"),

@@ -66,10 +66,6 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   }
 
   getCards() : interviewCards {
-    let state = core.store.getState();
-    let sphere = state.spheres[this.props.sphereId];
-    let stone = sphere.stones[this.props.stoneId];
-
     let presenceExamples   = this._getPresenceExamples();
     let twilightExamples   = this._getTwilightModeExamples();
     let smartTimerExamples = this._getSmartTimerExamples();
@@ -106,42 +102,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
               }
               return "dimmingRequired";
             },
-          },
-          {
-            label: "Copy from other Crownstone",
-            subLabel: 'Set it once, then copy to all similar Crownstones!',
-            image: { source: require('../../../images/icons/copy.png'), sourceWidth: 529, sourceHeight: 398, width: 0.18*screenWidth },
-            onSelect: () => {
-              NavigationUtil.navigate("DeviceSmartBehaviour_CopyStoneSelection",{
-                ...this.props,
-                copyType: "FROM",
-                originId: this.props.stoneId,
-                originIsDimmable: stone.abilities.dimming.enabledTarget,
-                callback:(fromStoneId, selectedRuleIds) => {
-                  let stoneName = DataUtil.getStoneName(this.props.sphereId, fromStoneId);
-                  Alert.alert(
-                    "Shall I copy the behaviour from " + stoneName + "?",
-                    undefined,
-                    [{text:"Cancel"}, {text:"OK", onPress:() => {
-                      StoneUtil.copyRulesBetweenStones(this.props.sphereId, fromStoneId, this.props.stoneId, selectedRuleIds)
-                        .then((success) => {
-                          if (success) {
-                            let seeResults = () => {
-                              NavigationUtil.dismissModal();
-                            }
-                            Alert.alert(
-                              "Success!",
-                              "Behaviour has been copied!",
-                              [{text:"Great!", onPress:() => { seeResults() }}], {onDismiss: () => { seeResults() }})
-                          }
-                        })
-                    }}])
-                },
-              })
-
-            }
-          },
-        ]
+          }],
       },
       presence: {
         header: "Presence Aware Behaviour",

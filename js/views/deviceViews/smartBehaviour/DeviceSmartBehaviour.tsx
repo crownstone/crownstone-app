@@ -99,9 +99,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
   render() {
     let iconSize = 0.15*screenHeight;
-
     let state = core.store.getState();
-
     let sphere = state.spheres[this.props.sphereId];
     if (!sphere) return <View />;
     let stone = sphere.stones[this.props.stoneId];
@@ -118,7 +116,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
     let hasRules = ruleIds.length;
 
-    if (!hasRules) {
+    if (!hasRules && !this.state.editMode) {
       return <NoRulesYet sphereId={this.props.sphereId} stoneId={this.props.stoneId} />;
     }
 
@@ -186,14 +184,14 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
-                backgroundColor={colors.menuTextSelected.rgba(0.6)}
+                backgroundColor={colors.menuTextSelected.rgba(0.5)}
                 label={ lang("Add_more___")}
                 callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', this.props); }}
               />
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
-                backgroundColor={colors.menuTextSelected.rgba(0.6)}
+                backgroundColor={colors.menuTextSelected.rgba(0.5)}
                 label={ lang("Copy_from___")}
                 callback={() => {
                   let copyFrom = () => {
@@ -236,7 +234,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
-                backgroundColor={colors.menuTextSelected.rgba(0.6)}
+                backgroundColor={colors.menuTextSelected.rgba(0.5)}
                 label={ lang("Copy_to___")}
                 callback={() => {
                   let requireDimming = StoneUtil.doRulesRequireDimming(this.props.sphereId, this.props.stoneId, ruleIds);
@@ -266,6 +264,11 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 }
 
 function NoRulesYet(props) {
+  let state = core.store.getState();
+  let sphere = state.spheres[props.sphereId];
+  if (!sphere) return <View />;
+  let stone = sphere.stones[props.stoneId];
+  if (!stone) return <View />;
 
   return (
     <Background image={core.background.lightBlurLighter} hasNavBar={false}>
@@ -280,13 +283,48 @@ function NoRulesYet(props) {
           </View>
           <View style={{height: 40}} />
           <Text style={styles.boldExplanation}>{ "My behaviour is a combination of presence awareness, a schedule and responding to your actions." }</Text>
-          <Text style={styles.explanation}>{ "I can take multiple people in your household into account, and I could turn a light on at 50% when you use your wall switches after dark." }</Text>
-          <Text style={styles.explanation}>{ "Tap the Add button below to get started!" }</Text>
-          <View style={{flex:1}} />
+          <Text style={styles.explanation}>{ "I can take multiple people in your household into account, or I could turn a light on at 50% when you use your wall switches after dark." }</Text>
+          <Text style={styles.explanation}>{ "Tap the Add button below to get started or copy the behaviour from another Crownstone!" }</Text>
+          <View style={{flex:1, minHeight: 40}} />
+          <BehaviourSuggestion
+            backgroundColor={colors.green.rgba(0.9)}
+            label={ "Add my first behaviour!"}
+            callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', {sphereId: props.sphereId, stoneId: props.stoneId}); }}
+          />
           <BehaviourSuggestion
             backgroundColor={colors.menuTextSelected.rgba(0.6)}
-            label={ "Add my first behaviour! "}
-            callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', {sphereId: props.sphereId, stoneId: props.stoneId}); }}
+            label={ "Copy from another Crownstone!"}
+            icon={'md-log-in'}
+            iconSize={14}
+            iconColor={colors.menuTextSelected.rgba(0.75)}
+            callback={() => {
+              NavigationUtil.launchModal("DeviceSmartBehaviour_CopyStoneSelection",{
+                ...props,
+                copyType: "FROM",
+                originId: props.stoneId,
+                originIsDimmable: stone.abilities.dimming.enabledTarget,
+                callback:(fromStoneId, selectedRuleIds) => {
+                  let stoneName = DataUtil.getStoneName(props.sphereId, fromStoneId);
+                  Alert.alert(
+                    "Shall I copy the behaviour from " + stoneName + "?",
+                    undefined,
+                    [{text:"Cancel"}, {text:"OK", onPress:() => {
+                        StoneUtil.copyRulesBetweenStones(props.sphereId, fromStoneId, props.stoneId, selectedRuleIds)
+                          .then((success) => {
+                            if (success) {
+                              let seeResults = () => {
+                                NavigationUtil.dismissModal();
+                              }
+                              Alert.alert(
+                                "Success!",
+                                "Behaviour has been copied!",
+                                [{text:"Great!", onPress:() => { seeResults() }}], {onDismiss: () => { seeResults() }})
+                            }
+                          })
+                      }}])
+                },
+              })
+            }}
           />
           <View style={{height:30}} />
         </View>
@@ -304,7 +342,7 @@ export const BehaviourCopySuccessPopup = function() {
 
 function getTopBarProps(store, state, props, viewState) {
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
-  if (Object.keys(stone.rules).length === 0) {
+  if (Object.keys(stone.rules).length === 0 && viewState.editMode !== true) {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
       closeModal: true,

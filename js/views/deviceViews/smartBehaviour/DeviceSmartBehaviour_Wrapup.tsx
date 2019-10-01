@@ -27,12 +27,14 @@ import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { Icon } from "../../components/Icon";
 import { BehaviourSubmitButton } from "./supportComponents/BehaviourSubmitButton";
 import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
+import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
 export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string, stoneId: string, rule: string, twilightRule: boolean, ruleId?: string}, any> {
-  static options = {
-    topBar: { visible: false, height: 0 }
-  };
+  static options(props) {
+    return TopBarUtil.getOptions({title: "When to do this?"});
+  }
+
 
   rule : AicoreBehaviour | AicoreTwilight;
 
@@ -129,16 +131,10 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
     }
 
     return (
-      <Background image={core.background.lightBlur} hideNotifications={true} fullScreen={true} dimStatusBar={true} hideOrangeLine={true} orangeLineAboveStatusBar={true}>
+      <Background image={core.background.lightBlur} hasNavBar={false}>
         <ScrollView style={{width: screenWidth}}>
-          <View style={{flex:1, width: screenWidth, minHeight:availableModalHeight, alignItems:'center'}}>
-            <View style={{flexDirection: 'row', alignItems:'center'}}>
-              <TouchableOpacity style={{width:0.15*screenWidth, height:93, justifyContent:'center'}} onPress={() => { NavigationUtil.back(); }}>
-                <Icon name={'ios-arrow-back'} size={33} color={colors.csBlueDark.hex} style={{marginLeft:15}} />
-              </TouchableOpacity>
-              <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
-              <View style={{width:0.15*screenWidth, height: 93}} />
-            </View>
+          <View style={{flex:1, width: screenWidth, minHeight:availableModalHeight, alignItems:'center', paddingTop:30}}>
+            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{ lang("Tap_the_days_below_to_let") }</Text>
 
