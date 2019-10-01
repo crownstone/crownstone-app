@@ -24,6 +24,7 @@ import { BehaviourSuggestion } from "./BehaviourSuggestion";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
+import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
 
 
 
@@ -34,7 +35,6 @@ export class RuleEditor extends LiveComponent<
   references = [];
   amountOfLines = 0;
   rule : AicoreBehaviour | AicoreTwilight;
-  stone: any;
   selectedChunk : selectableAicoreBehaviourChunk;
 
   exampleBehaviours : any;
@@ -46,8 +46,6 @@ export class RuleEditor extends LiveComponent<
     let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
-    this.stone = stone;
-
 
     this.state = {
       detail:            null,
@@ -59,6 +57,7 @@ export class RuleEditor extends LiveComponent<
       selectedDetailField: null,
       showCustomTimeData: false,
     };
+
 
     if (this.props.twilightRule) {
       // @ts-ignore
@@ -260,7 +259,32 @@ export class RuleEditor extends LiveComponent<
     }
   }
 
+  _checkForConflictingRules() {
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    let stone = sphere.stones[this.props.stoneId];
+    let ruleIds = Object.keys(stone.rules);
+
+
+
+    // check if there are empty days....?
+
+
+
+    for (let i = 0; i < ruleIds.length; i++) {
+      let ruleId = ruleIds[i];
+      let rule = stone.rules[ruleId];
+      if (ruleId !== this.props.ruleId) {
+        if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
+        if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
+
+
+      }
+    }
+  }
+
   _shouldShowSuggestions() {
+    let shouldShowTimeConflict = true;
     let showPresenceSuggestion = this.rule.isUsingPresence() === false;
 
     let showTimeSuggestion = this.rule.isAlwaysActive() === true;
@@ -272,18 +296,31 @@ export class RuleEditor extends LiveComponent<
       this.rule.hasNoOptions();
 
     return {
-      showPresenceSuggestion,
-      showTimeSuggestion,
-      showOptionSuggestion,
+      showPresenceSuggestion: showPresenceSuggestion && !shouldShowTimeConflict,
+      showTimeSuggestion:     showTimeSuggestion     && !shouldShowTimeConflict,
+      showOptionSuggestion:   showOptionSuggestion   && !shouldShowTimeConflict,
+      shouldShowTimeConflict: shouldShowTimeConflict,
       showAnySuggestions: showPresenceSuggestion || showTimeSuggestion || showOptionSuggestion,
       amountOfSuggestions: (showPresenceSuggestion ? 1 : 0)  + (showTimeSuggestion ? 1 : 0) + (showOptionSuggestion ? 1 : 0)
     };
   }
 
   _getSuggestions() {
-    let {showPresenceSuggestion, showTimeSuggestion, showOptionSuggestion } = this._shouldShowSuggestions();
+    let {showPresenceSuggestion, showTimeSuggestion, showOptionSuggestion, shouldShowTimeConflict } = this._shouldShowSuggestions();
     let suggestionArray = [];
     let paddingIndex = 0;
+    if (shouldShowTimeConflict) {
+      suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
+      suggestionArray.push(
+        <BehaviourSuggestion
+          backgroundColor={colors.menuTextSelected.rgba(0.6)}
+          iconColor={colors.red.hex}
+          icon={'md-remove-circle'}
+          key={"timeConflictSuggestion"}
+          label={ "There aleady is an active " + (this.props.twilightRule ? "twilight behaviour" : "behaviour") + " " + this.rule.getTimeString() + "..." }
+          callback={() => { this.toggleDetails(SELECTABLE_TYPE.TIME); }}
+      />);
+    }
     if (showPresenceSuggestion) {
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
       suggestionArray.push(<BehaviourSuggestion key={"presenceSuggestion"}
@@ -308,8 +345,6 @@ export class RuleEditor extends LiveComponent<
       />);
     }
     suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex} />);
-
-
 
     return (
       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
@@ -609,7 +644,10 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluatePresenceLocationSelection(SELECTABLE_TYPE.LOCATION + "2", this.exampleBehaviours.location.inRoom);
                   },
                   onSelect: () => {
-                    this.rule.setPresenceSomebodyInStoneLocation([this.stone.config.locationId]);
+                    let state = core.store.getState();
+                    let sphere = state.spheres[this.props.sphereId];
+                    let stone = sphere.stones[this.props.stoneId];
+                    this.rule.setPresenceSomebodyInStoneLocation([stone.config.locationId]);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "2"})
                   }
                 },
@@ -740,14 +778,14 @@ export class RuleEditor extends LiveComponent<
 
   getDetails() {
     let details = this._getDetails();
-
+    let showSuggestions = this._shouldShowSuggestions();
     return (
       <Animated.View style={{height: this.state.containerHeight}}>
         <Animated.View style={{opacity: this.state.detailOpacity, height: this.state.detailHeight, position:'absolute', top:0}}>{details}</Animated.View>
         <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
           <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
             { this._getSuggestions() }
-            <BehaviourSubmitButton callback={() => {
+            { showSuggestions.shouldShowTimeConflict || <BehaviourSubmitButton callback={() => {
               NavigationUtil.navigate("DeviceSmartBehaviour_Wrapup", {
                 sphereId: this.props.sphereId,
                 stoneId: this.props.stoneId,
@@ -755,7 +793,7 @@ export class RuleEditor extends LiveComponent<
                 rule: this.rule.stringify(),
                 twilightRule: this.props.twilightRule,
               })}}
-             label={lang("Use_Behaviour_")} />
+             label={lang("Use_Behaviour_")} />}
           </Animated.View>
         </Animated.View>
       </Animated.View>

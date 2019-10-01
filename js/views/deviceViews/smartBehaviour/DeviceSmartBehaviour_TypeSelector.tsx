@@ -10,12 +10,7 @@ import {
   Platform
 } from "react-native";
 
-import {
-  availableScreenHeight,
-  colors,
-  deviceStyles, screenHeight,
-  screenWidth
-} from "../../styles";
+import { colors, screenHeight, screenWidth } from "../../styles";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { Interview } from "../../components/Interview";
@@ -23,8 +18,6 @@ import { AnimatedBackground } from "../../components/animated/AnimatedBackground
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
-import { StoneUtil } from "../../../util/StoneUtil";
-import { DataUtil } from "../../../util/DataUtil";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options = {
@@ -192,11 +185,6 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
     let examples : AicoreTwilight[] = [];
     examples.push(new AicoreTwilight().setDimAmount(0.5).setTimeWhenDark());
     examples.push(new AicoreTwilight().setDimAmount(0.3).setTimeFrom(23,30).setTimeToSunrise());
-    return examples;
-  }
-  _getChildSafetyExamples() {
-    let examples : behaviour[] = [];
-
     return examples;
   }
 
