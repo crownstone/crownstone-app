@@ -65,7 +65,7 @@ export class InterviewDark extends Component<any, any> {
           {label: lang("When_its_dark_outside_"),      nextCard: 'presenceAfterTime', updateState: () => { this.interviewData.time = "DARK"     }},
           {label: lang("Between_certain_times_"),                                      updateState: () => { this.interviewData.time = "CUSTOM"   },
             callback:() => { this._showTimePopup("presenceAfterTime")}},
-          {label: lang("Always_"),                      nextCard: 'locked',            updateState: () => { this.interviewData.always = true     }},
+          {label: lang("All_day"),                      nextCard: 'locked',            updateState: () => { this.interviewData.always = true     }},
         ]
       },
       timeAfterPresence: {

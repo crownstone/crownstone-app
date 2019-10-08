@@ -1,4 +1,5 @@
 import { Languages } from "../Languages";
+import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 
 export const Stacks = {
 
@@ -47,7 +48,7 @@ export const Stacks = {
     return {
       stack: {
         children: [
-          { component: {name: "DeviceSmartBehaviour", passProps: {stoneId: "fa135188-6f74-767c-63eb-38315ee6475d", sphereId: "c1e653ba-6755-5402-71d7-d9b0172f502a"}} },
+          { component: {name: "DeviceSmartBehaviour_Wrapup", passProps: {stoneId: "fa135188-6f74-767c-63eb-38315ee6475d", sphereId: "c1e653ba-6755-5402-71d7-d9b0172f502a", rule: new AicoreBehaviour().setPresenceInSphere().setTimeWhenDark().stringify()}} },
         ],
       },
     }

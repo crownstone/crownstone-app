@@ -40,7 +40,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     let actionStr = AicoreUtil.extractActionString(this.rule);
     let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.rule);
     let { locationPrefix, locationStr } = AicoreUtil.extractLocationStrings(this.rule);
-    let timeStr   = AicoreUtil.extractTimeString(this.rule);
+    let timeStr = AicoreUtil.extractTimeString(this.rule);
     let { optionPrefix, optionStr } = AicoreUtil.extractOptionStrings(this.rule);
 
 

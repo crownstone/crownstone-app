@@ -47,7 +47,8 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
     let stone = sphere.stones[this.props.stoneId];
     if (!stone) return;
 
-    let activeDays = { Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: true, Sun: true };
+    let activeDays      = { Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: true, Sun: true };
+    let conflictingDays = { Mon: null, Tue: null, Wed: null, Thu: null, Fri: null, Sat: null, Sun: null };
     if (this.props.ruleId) {
       let rule = stone.rules[this.props.ruleId];
       if (rule) {
@@ -55,7 +56,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
       }
     }
 
-    this.state = { activeDays: activeDays };
+    this.state = { activeDays: activeDays, conflictingDays: conflictingDays };
 
     if (this.props.twilightRule) {
       // @ts-ignore
@@ -123,6 +124,83 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
 
     NavigationUtil.dismissModal();
   }
+
+
+  _getConflictingDays() {
+      let state = core.store.getState();
+      let sphere = state.spheres[this.props.sphereId];
+      let stone = sphere.stones[this.props.stoneId];
+      let ruleIds = Object.keys(stone.rules);
+
+      let behaviourDays = {
+        Mon: false,
+        Tue: false,
+        Wed: false,
+        Thu: false,
+        Fri: false,
+        Sat: false,
+        Sun: false,
+      };
+
+      let dayIndices = [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+      ];
+
+      // for (let i = 0; i < ruleIds.length; i++) {
+      //   let ruleId = ruleIds[i];
+      //   let rule = stone.rules[ruleId];
+      //   if (ruleId !== this.props.ruleId) {
+      //     if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
+      //     if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
+      //
+      //     for (let j = 0; j < 7; j++) {
+      //       behaviourDays[dayIndices[j]] = behaviourDays[dayIndices[j]] || rule.activeDays[dayIndices[j]];
+      //     }
+      //   }
+      // }
+      //
+      // let availableDays = 0;
+      // for (let i = 0; i < 7; i++) {
+      //   availableDays += behaviourDays[dayIndices[i]] ? 1 : 0;
+      //   behaviourDays[dayIndices[i]] = false;
+      // }
+
+      let constructor = this.props.twilightRule ? AicoreTwilight : AicoreBehaviour;
+      let isOverlapping = false;
+      for (let i = 0; i < ruleIds.length; i++) {
+        let ruleId = ruleIds[i];
+        let rule = stone.rules[ruleId];
+        if (ruleId !== this.props.ruleId) {
+          if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
+          if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
+
+          let ruleInstance = new constructor(rule.data);
+          if (this.rule.isOverlappingWith(ruleInstance.rule, this.props.sphereId)) {
+            isOverlapping = true;
+            for (let j = 0; j < 7; j++) {
+              behaviourDays[dayIndices[j]] = behaviourDays[dayIndices[j]] || rule.activeDays[dayIndices[j]];
+            }
+          }
+        }
+      }
+
+      let overlappingDays = 0;
+      for (let i = 0; i < 7; i++) {
+
+
+
+        overlappingDays += behaviourDays[dayIndices[i]] ? 1 : 0;
+      }
+
+      return overlappingDays;
+  }
+
 
   render() {
     let header = "Every day?"

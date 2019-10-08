@@ -25,7 +25,6 @@ import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
-import { Navigation } from "react-native-navigation";
 
 
 
@@ -751,7 +750,7 @@ export class RuleEditor extends LiveComponent<
                   }
                 },
                 {
-                  label: lang("Always_"),
+                  label: lang("All_day"),
                   isSelected: () => {
                     console.log("EVALLING")
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.allDay);

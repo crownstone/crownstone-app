@@ -130,8 +130,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       let bIsYesterday = !rules[b].activeDays[this.state.activeDay] && rules[b].activeDays[dayArray[previousDay]];
       if (bIsYesterday) { return 1; }
 
-      console.log(a,b,rules[a], rules[b])
-
       if (AicoreUtil.aStartsBeforeB(rules[a], rules[b], this.props.sphereId)) {
         return -1;
       }
