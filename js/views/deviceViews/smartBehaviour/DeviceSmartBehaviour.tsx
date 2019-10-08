@@ -23,11 +23,15 @@ import { WeekDayList } from "../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
 import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
+import { DeleteOverlayContent, EditOverlayContent, SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
 import { StoneUtil } from "../../../util/StoneUtil";
 import { ScaledImage } from "../../components/ScaledImage";
 import { DataUtil } from "../../../util/DataUtil";
+import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
+import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
+import { AicoreTwilight } from "./supportCode/AicoreTwilight";
+import { AicoreUtil } from "./supportCode/AicoreUtil";
 
 let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -64,12 +68,12 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
 
   componentDidMount(): void {
+    // core.store.dispatch({type:"REMOVE_ALL_RULES_OF_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId})
+
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (
-        change.stoneChangeRules
-      ) {
+      if (change.stoneChangeRules) {
         getTopBarProps(core.store, core.store.getState(), this.props, this.state);
         TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
         this.forceUpdate();
@@ -110,7 +114,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
     let ruleComponents = [];
     let activeRules = {};
-    let partiallyActiveRuleIdMap = {};
+    let activityMap = {};
 
     let previousDay = (dayArray.indexOf(this.state.activeDay) + 6) % 7;
 
@@ -120,17 +124,33 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       return <NoRulesYet sphereId={this.props.sphereId} stoneId={this.props.stoneId} />;
     }
 
+    ruleIds.sort((a,b) => {
+      let aIsYesterday = !rules[a].activeDays[this.state.activeDay] && rules[a].activeDays[dayArray[previousDay]];
+      if (aIsYesterday) { return -1; }
+      let bIsYesterday = !rules[b].activeDays[this.state.activeDay] && rules[b].activeDays[dayArray[previousDay]];
+      if (bIsYesterday) { return 1; }
+
+      console.log(a,b,rules[a], rules[b])
+
+      if (AicoreUtil.aStartsBeforeB(rules[a], rules[b], this.props.sphereId)) {
+        return -1;
+      }
+      return 1;
+
+
+    })
+
     ruleIds.forEach((ruleId) => {
       let active = rules[ruleId].activeDays[this.state.activeDay];
       let partiallyActive = !active && rules[ruleId].activeDays[dayArray[previousDay]];
 
-
-      if (active || partiallyActive) {
+      if (active || (partiallyActive && !this.state.editMode)) {
         let rule = rules[ruleId];
         activeRules[ruleId] = rules[ruleId];
-        if (partiallyActive) {
-          partiallyActiveRuleIdMap[ruleId] = true;
-        }
+        activityMap[ruleId] = {
+          yesterday: rules[ruleId].activeDays[dayArray[previousDay]],
+          today:     rules[ruleId].activeDays[this.state.activeDay],
+        };
 
         let ruleComponent = (
           <SmartBehaviourRule
@@ -138,6 +158,8 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             rule={rule}
             sphereId={this.props.sphereId}
             stoneId={this.props.stoneId}
+            activeDay={this.state.activeDay}
+            startedYesterday={!rules[ruleId].activeDays[this.state.activeDay] && rules[ruleId].activeDays[dayArray[previousDay]]}
             ruleId={ruleId}
             editMode={this.state.editMode}
             faded={partiallyActive}
@@ -155,7 +177,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
             <View style={{height: 0.2*iconSize}} />
-            <SlideFadeInView visible={!this.state.editMode} height={1.5*(screenWidth/9) + 0.1*iconSize + 90}>
+            <SlideFadeInView visible={true} height={1.5*(screenWidth/9)}>
               <WeekDayList
                 data={{
                   Mon: this.state.activeDay === dayArray[1],
@@ -174,8 +196,10 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                   }
                 }}
               />
+            </SlideFadeInView>
+            <SlideFadeInView visible={!this.state.editMode} height={0.1*iconSize + 90}>
               <View style={{height: 0.1*iconSize}} />
-              <SmartBehaviourSummaryGraph rules={activeRules} partiallyActiveRuleIdMap={partiallyActiveRuleIdMap} sphereId={this.props.sphereId} />
+              <SmartBehaviourSummaryGraph rules={activeRules} activityMap={activityMap} sphereId={this.props.sphereId} />
             </SlideFadeInView>
 
             <View style={{flex:1}} />

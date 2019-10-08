@@ -24,14 +24,14 @@ import { Icon } from "../../components/Icon";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 
 
-export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string, ruleId: any, label:string}, any> {
+export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string, ruleId: any, label:string, onlyForDay?: string, isModal?:boolean}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: props.typeLabel || "Edit Behaviour"});
+    return TopBarUtil.getOptions({title: props.typeLabel || "Edit Behaviour", closeModal: props.isModal});
   }
 
   render() {
     let header = lang("Create_my_Behaviour")
-    if (this.props.ruleId) {
+    if (this.props.ruleId || this.props.onlyForDay !== undefined) {
       header = "Customize my Behaviour!";
     }
 

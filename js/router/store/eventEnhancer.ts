@@ -245,6 +245,8 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_DEVICES":
     case "FINISHED_SPECIAL_MESSAGES":
     case "UPDATE_STONE_TIME_STATE":
+    case "LOCATION_REPAIR_PICTURE":
+    case "SPHERE_USER_REPAIR_PICTURE":
       break;
     case "ADD_TOON":
     case "TOON_UPDATE_SETTINGS":
@@ -269,7 +271,7 @@ function checkAction(action, affectedIds) {
     case "REMOVE_SPHERE_KEY":
       break;
     case "ADD_STONE_RULE":
-    case "UDPATE_STONE_RULE":
+    case "UPDATE_STONE_RULE":
     case "MARK_STONE_RULE_FOR_DELETION":
     case "MARK_STONE_RULE_AS_SYNCED":
     case "REMOVE_STONE_RULE":

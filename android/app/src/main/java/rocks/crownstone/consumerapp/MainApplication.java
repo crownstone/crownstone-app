@@ -57,6 +57,7 @@ public class MainApplication extends NavigationApplication {
 		return Arrays.<ReactPackage>asList(
 				new BluenetBridgePacket(),
 				new MainReactPackage(),
+            new BlurViewPackage(),
 				new RNCameraPackage(),
 				new FastImageViewPackage(),
 				new AsyncStoragePackage(),

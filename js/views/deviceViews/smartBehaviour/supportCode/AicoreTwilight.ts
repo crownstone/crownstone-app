@@ -3,10 +3,8 @@ import {
 } from "../../../../Enums";
 import { AicoreUtil } from "./AicoreUtil";
 import { xUtil } from "../../../../util/StandAloneUtil";
-import { AicoreTimeData } from "./AicoreTimeData";
 import { AicoreBehaviourCore } from "./AicoreBehaviourCore";
 
-const DEFAULT_DELAY_MINUTES = 5;
 const EMPTY_RULE : twilight = {
   action:   { type: "DIM_WHEN_TURNED_ON", data: 0.6 },
   time:     { type:"RANGE", from: { type: "SUNSET", offsetMinutes:0}, to:{ type: "SUNRISE", offsetMinutes:0} },
@@ -40,7 +38,6 @@ export class AicoreTwilight extends AicoreBehaviourCore {
     let intentionStr = "If I'm turned on";
     let timeStr   = AicoreUtil.extractTimeString(this.rule, true) + ',';
     let actionStr = AicoreUtil.extractActionString(this.rule);
-
 
     return {
       intention:      { label: intentionStr,   data: null },

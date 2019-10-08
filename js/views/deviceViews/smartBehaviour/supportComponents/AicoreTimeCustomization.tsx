@@ -37,7 +37,6 @@ let headerStyle : TextStyle = {
 
 
 export class AicoreTimeCustomization extends Component<any,any> {
-
   fromTime: AicoreTimeData = null;
   toTime: AicoreTimeData = null;
 
@@ -46,10 +45,11 @@ export class AicoreTimeCustomization extends Component<any,any> {
 
     this.fromTime = new AicoreTimeData();
     let fromFinished = this.fromTime.insertAicoreTimeFrom(this.props.timeData);
+
     this.toTime = new AicoreTimeData();
     let toFinished = this.toTime.insertAicoreTimeTo(this.props.timeData);
 
-    this.state = { fromFinished: fromFinished, toFinished: toFinished };
+    this.state = { fromFinished: fromFinished, toFinished: toFinished, instantEdit: fromFinished && toFinished };
   }
 
   render() {
@@ -60,18 +60,20 @@ export class AicoreTimeCustomization extends Component<any,any> {
           initialLabel={ lang("When_should_I_start_")}
           finalLabel={"I'll start at:"}
           visible={true}
+          instantEdit={this.state.instantEdit}
           timeObj={this.fromTime}
           initiallyFinished={this.state.fromFinished}
           setFinished={(value) => {
             this.setState({fromFinished:value});
           }}
         />
-        {this.state.fromFinished ? <View style={{ height: 20 }}/> : undefined}
+        {this.state.fromFinished ? <View style={{ height: 20 }} /> : undefined}
         <TimePart
           width={this.props.width}
           initialLabel={ lang("When_am_I_finished_")}
           finalLabel={ lang("This_behaviour_ends_at_")}
           visible={this.state.fromFinished}
+          instantEdit={this.state.instantEdit}
           timeObj={this.toTime}
           initiallyFinished={this.state.toFinished}
           setFinished={(value) => {
@@ -99,7 +101,7 @@ export class AicoreTimeCustomization extends Component<any,any> {
               }
             }}/>
           : undefined}
-        <View style={{ height: 5 }}/>
+        <View style={{ height: 5 }} />
       </View>
     )
   }
@@ -116,9 +118,11 @@ function TimePart(props : {
   setFinished(value: boolean): void,
   timeObj: AicoreTimeData,
   visible: boolean,
+  instantEdit: boolean,
   width: number,
 }) {
   const [type, setType] = useState(props.timeObj.getType());
+  const [ignoreInstantEdit, setIgnorInstantEdit] = useState(false);
   const [offsetMinutes, setOffsetMinutes] = useState(props.timeObj.getOffsetMinutes());
   const [finished, setFinished] = useState(props.initiallyFinished);
   const [time, setTime] = useState(props.timeObj.getTime());
@@ -132,7 +136,6 @@ function TimePart(props : {
   let index = 0;
 
   elements.push(<Text key={"header"} style={headerStyle}>{type === null ? props.initialLabel : props.finalLabel}</Text>);
-
   if (finished === false) {
     if (type === null) {
       elements.push(<TypeSelector timeObj={props.timeObj} key={"typeSelect"} callback={(value) => {setType(value);}} />)
@@ -177,6 +180,16 @@ function TimePart(props : {
                   }}/>
                 </View>
               </FadeIn>
+              { props.instantEdit && !ignoreInstantEdit ?
+                <FadeIn index={index++}>
+                  <View style={{ marginLeft: 25 }}>
+                  <TextButtonDark label={"I want something else!"} basic={true} callback={() => {
+                    setType(null);
+                    setIgnorInstantEdit(true);
+                  }}/>
+                  </View>
+                </FadeIn>
+                : undefined }
             </View>
           );
           break;
@@ -210,6 +223,16 @@ function TimePart(props : {
                   });
                 }}
               />
+              { props.instantEdit && !ignoreInstantEdit ?
+                <FadeIn index={index++}>
+                  <View style={{ marginLeft: 25 }}>
+                    <TextButtonDark label={"I want something else!"} basic={true} callback={() => {
+                      setType(null);
+                      setIgnorInstantEdit(true);
+                    }}/>
+                  </View>
+                </FadeIn>
+                : undefined }
             </View>
           );
           break;
@@ -223,7 +246,11 @@ function TimePart(props : {
         label={timeStr}
         index={index++}
         type={type}
-        callback={() => { setType(null); setFinished(false); props.setFinished(false); }}
+        callback={() => {
+          if (!props.instantEdit) {
+            setType(null);
+          }
+          setFinished(false); props.setFinished(false); }}
       />
     );
   }

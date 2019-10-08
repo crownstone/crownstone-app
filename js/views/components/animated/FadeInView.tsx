@@ -10,6 +10,8 @@ import {
   View
 } from 'react-native';
 import { useState } from "react";
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { screenHeight, screenWidth } from "../../styles";
 
 export class FadeInView extends Component<any, any> {
   visible : boolean;
@@ -116,4 +118,78 @@ export function HiddenFadeIn(props) {
       {props.children}
     </HiddenFadeInView>
   );
+}
+
+
+export class HiddenFadeInBlur extends Component<any, any> {
+  visible : boolean;
+  maxOpacity : number;
+  pendingTimeout : any;
+
+  constructor(props) {
+    super(props);
+
+    this.state = {show: props.visible || false, viewOpacity: new Animated.Value(props.visible ? 1 : 0)};
+    this.visible = props.visible || false;
+    this.maxOpacity = props.maxOpacity || 1;
+    this.pendingTimeout = null;
+  }
+
+  componentWillUpdate(nextProps) {
+    let defaultDuration = 200;
+    if ((nextProps.visible !== undefined && this.visible !== nextProps.visible) || (nextProps.maxOpacity !== undefined && this.maxOpacity !== nextProps.maxOpacity)) {
+      this.state.viewOpacity.stopAnimation()
+      if (nextProps.visible === true) {
+        this.setState({show: true});
+        this.pendingTimeout = setTimeout(() => {
+          this.pendingTimeout = null;
+          Animated.timing(this.state.viewOpacity, {
+            toValue:  nextProps.maxOpacity || this.maxOpacity,
+            delay:    this.props.delay     || 0,
+            duration: this.props.duration  || defaultDuration
+          }).start();
+        }, 0);
+      }
+      else {
+        Animated.timing(this.state.viewOpacity, {
+          toValue:  0,
+          delay:    this.props.hideDelay ? (this.props.delay || 0) : 0,
+          duration: this.props.duration || defaultDuration
+        }).start();
+        this.pendingTimeout = setTimeout(() => {
+          this.pendingTimeout = null;
+          this.setState({show: false});
+        }, this.props.duration || defaultDuration);
+      }
+    }
+
+    // set new values as the current state.
+    if (nextProps.maxOpacity !== undefined) { this.maxOpacity = nextProps.maxOpacity; }
+    if (nextProps.visible    !== undefined) { this.visible = nextProps.visible;       }
+  }
+
+  componentWillUnmount() {
+    if (this.pendingTimeout !== null) {
+      clearTimeout(this.pendingTimeout);
+    }
+  }
+
+  render() {
+    // this will be the processing view after initialization.
+    if (this.state.show === true) {
+      return (
+        <Animated.View style={{width:screenWidth, height:screenHeight, position:'absolute', top:0, left:0, overflow:'hidden', opacity:this.state.viewOpacity}}>
+          <BlurView
+            style={{position:'absolute', top:0, left:0, right:0, bottom:0}}
+            blurType="light"
+            blurAmount={6}
+          />
+          <View style={this.props.style}>
+            {this.props.children}
+          </View>
+        </Animated.View>
+      );
+    }
+    return <View />;
+  }
 }

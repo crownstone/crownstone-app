@@ -1,15 +1,7 @@
-import {
-  SELECTABLE_TYPE
-} from "../../../../Enums";
 import { AicoreUtil } from "./AicoreUtil";
 import { AicoreTimeData } from "./AicoreTimeData";
 
 const DEFAULT_DELAY_MINUTES = 5;
-const EMPTY_RULE : behaviour = {
-  action:   { type: "BE_ON", data: 1 },
-  time:     { type: "ALL_DAY" },
-  presence: { type: "IGNORE" },
-};
 
 export class AicoreBehaviourCore {
   originalRule : behaviour | twilight;
@@ -184,6 +176,40 @@ export class AicoreBehaviourCore {
     return null;
   }
 
+  isOverlappingWith(otherRule : behaviour | twilight, sphereId) {
+    let otherTime = otherRule.time;
+    let myTime = this.rule.time;
+
+    if (otherTime.type === "ALL_DAY") { return true; }
+    if (myTime.type    === "ALL_DAY") { return true; }
+
+    let otherStartBeforeMyEnd   =  AicoreUtil.isTimeBeforeOtherTime(myTime.from, otherTime.to  , sphereId);
+    let otherEndBeforeMyStart   =  AicoreUtil.isTimeBeforeOtherTime(myTime.to,   otherTime.from, sphereId);
+
+    if (otherEndBeforeMyStart)  { return false; }
+    if (!otherStartBeforeMyEnd) { return false; }
+
+    // if the other end before my start is false, check if the end is a sunrise, and allow 2 hours leniance.
+    if (!otherEndBeforeMyStart) {
+      if (otherTime.to.type === "SUNRISE") {
+        return  AicoreUtil.getMinuteDifference(myTime, otherTime, sphereId) > -120;
+      }
+    }
+
+    // if the other end before my start is false, check if the end is a sunrise, and allow 2 hours leniance.
+    if (otherStartBeforeMyEnd) {
+      if (otherTime.to.type === "SUNSET") {
+        return AicoreUtil.getMinuteDifference(myTime, otherTime, sphereId) < 120;
+      }
+    }
+
+    return true;
+
+  }
+
+
+
+
   /**
    * SphereId is used to get the lat lon of the sphere for the time of day times
    * @param sphereId
@@ -204,6 +230,9 @@ export class AicoreBehaviourCore {
     }
     return null;
   }
+
+
+
 
   isAlwaysActive() : boolean {
     return this.rule.time.type === "ALL_DAY";

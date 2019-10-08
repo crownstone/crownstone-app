@@ -42,19 +42,19 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
       if (rule.type === "BEHAVIOUR") {
         ai = new AicoreBehaviour(rule.data);
         if (ai.isUsingPresence()) {
-          presenceArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), endsWithOption: !ai.hasNoOptions(), partial: this.props.partiallyActiveRuleIdMap[ruleId] || false})
+          presenceArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), endsWithOption: !ai.hasNoOptions(), activityData: this.props.activityMap[ruleId]})
         }
         else {
-          onArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), partial: this.props.partiallyActiveRuleIdMap[ruleId] || false})
+          onArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[ruleId]})
         }
 
         if (!ai.hasNoOptions()) {
-          presenceArray.push({start: ai.getToTimeString(this.props.sphereId), end: AicoreUtil.getTimeStrInTimeFormat({ type: "SUNRISE", offsetMinutes: 0}, this.props.sphereId), option:true, partial: this.props.partiallyActiveRuleIdMap[ruleId] || false})
+          presenceArray.push({start: ai.getToTimeString(this.props.sphereId), end: AicoreUtil.getTimeStrInTimeFormat({ type: "SUNRISE", offsetMinutes: 0}, this.props.sphereId), option:true, activityData: this.props.activityMap[ruleId]})
         }
       }
       else if (rule.type === "TWILIGHT") {
         ai = new AicoreTwilight(rule.data);
-        twilightArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), partial: this.props.partiallyActiveRuleIdMap[ruleId] || false})
+        twilightArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[ruleId]})
       }
     });
 
@@ -100,7 +100,6 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
       explanationOpacity: new Animated.Value(0),
       explanationWidth:   new Animated.Value(0),
     }
-
   }
 
   componentDidMount(): void {
@@ -129,7 +128,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     }
   }
 
-  getSubItem(startMinutes, endMinutes, isOption) {
+  getSubItem(startMinutes, endMinutes, isOption, isFaded = false) {
     let width = this.width;
 
     let startX = width * startMinutes / (24*60);
@@ -156,7 +155,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
             borderRadius:    0.5*this.lineHeight,
             backgroundColor: this.props.dataColor.hex,
             overflow:        'hidden',
-            opacity:         isOption? 0.5 : 1.0
+            opacity:         isOption || isFaded? 0.5 : 1.0
           }}>
           { isOption ? <Image source={require("../../../../images/patterns/csBlueStripe.png")} style={{width:endX - startX, height:this.lineHeight}} resizeMode={"repeat"} /> : null}
         </View>
@@ -168,29 +167,30 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     let startMinutes = getMinutes(itemData.start);
     let endMinutes = getMinutes(itemData.end);
 
+    let result = [];
+
     if (endMinutes < startMinutes) {
-
-      if (itemData.partial) {
-        return [
-          this.getSubItem(getMinutes("00:00"), endMinutes, itemData.option),
-        ]
+      // this rule is split over day boundary.
+      if (itemData.activityData.yesterday) {
+        result.push(this.getSubItem(getMinutes("00:00"), endMinutes, itemData.option, !itemData.activityData.today));
       }
-      else {
-        // we need 2 parts
-        return [
-          this.getSubItem(startMinutes, getMinutes("24:00"), itemData.option),
-          this.getSubItem(getMinutes("00:00"), endMinutes, itemData.option),
-        ]
+
+      if (itemData.activityData.today) {
+        result.push(this.getSubItem(startMinutes, getMinutes("24:00"), itemData.option));
       }
     }
-    if (!itemData.partial) {
-      if (endMinutes == startMinutes) {
-        return [this.getSubItem(getMinutes("00:00"), getMinutes("24:00"), itemData.option)]
-      } else {
-        return [this.getSubItem(startMinutes, endMinutes, itemData.option)]
+    else if (endMinutes == startMinutes) {
+      if (itemData.activityData.today) {
+        result.push([this.getSubItem(getMinutes("00:00"), getMinutes("24:00"), itemData.option)]);
+      }
+    }
+    else {
+      if (itemData.activityData.today) {
+        result.push([this.getSubItem(startMinutes, endMinutes, itemData.option)]);
       }
     }
 
+    return result;
   }
 
   getElements() {

@@ -9,13 +9,13 @@ let defaultSettings = {
   type: null,
   data: null, // this is the stringified rule
   activeDays: {
-    Mon: true,
-    Tue: true,
-    Wed: true,
-    Thu: true,
-    Fri: true,
-    Sat: true,
-    Sun: true
+    Mon: false,
+    Tue: false,
+    Wed: false,
+    Thu: false,
+    Fri: false,
+    Sat: false,
+    Sun: false
   },
   idOnCrownstone: null,
   cloudId: null,

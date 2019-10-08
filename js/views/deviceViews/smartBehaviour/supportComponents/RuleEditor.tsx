@@ -25,11 +25,12 @@ import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
+import { Navigation } from "react-native-navigation";
 
 
 
 export class RuleEditor extends LiveComponent<
-  {data: behaviour | twilight, sphereId: string, stoneId: string, ruleId?: string, twilightRule: boolean},
+  {data: behaviour | twilight, sphereId: string, stoneId: string, ruleId?: string, twilightRule: boolean, onlyForDay?: string},
   {detail: any, containerHeight: Animated.Value,  detailHeight: Animated.Value,  detailOpacity: Animated.Value,  mainBottomHeight: Animated.Value, mainBottomOpacity: Animated.Value, selectedDetailField: string, showCustomTimeData:boolean}
   > {
   references = [];
@@ -55,13 +56,13 @@ export class RuleEditor extends LiveComponent<
       mainBottomHeight:  new Animated.Value(this.baseHeight),
       mainBottomOpacity: new Animated.Value(1),
       selectedDetailField: null,
-      showCustomTimeData: false,
+      showCustomTimeData: this.props.ruleId ? true : false,
     };
 
 
     if (this.props.twilightRule) {
       // @ts-ignore
-      this.rule = new AicoreTwilight(this.props.data);
+      this.rule =   new AicoreTwilight(this.props.data);
 
       this.exampleBehaviours = {
         action: {
@@ -70,41 +71,41 @@ export class RuleEditor extends LiveComponent<
           dimming4: new AicoreTwilight().setActionState(0.4),
         },
         time: {
-          dark: new AicoreTwilight().setTimeWhenDark(),
-          sunUp: new AicoreTwilight().setTimeWhenSunUp(),
+          dark:     new AicoreTwilight().setTimeWhenDark(),
+          sunUp:    new AicoreTwilight().setTimeWhenSunUp(),
           specific: new AicoreTwilight().setTimeFrom(9,30).setTimeTo(15,0),
-          custom: new AicoreTwilight().setTimeFromSunset(-30).setTimeTo(23,0),
+          custom:   this.props.ruleId ? this.rule : new AicoreTwilight().setTimeFromSunset(-30).setTimeTo(23,0),
         },
       }
     }
     else {
       // @ts-ignore
-      this.rule = new AicoreBehaviour(this.props.data);
+      this.rule =   new AicoreBehaviour(this.props.data);
       this.exampleBehaviours = {
         action: {
-          on: new AicoreBehaviour(),
-          dimming: new AicoreBehaviour().setActionState(0.5),
+          on:       new AicoreBehaviour(),
+          dimming:  new AicoreBehaviour().setActionState(0.5),
         },
         presence: {
           somebody: new AicoreBehaviour().setPresenceSomebody(),
-          nobody: new AicoreBehaviour().setPresenceNobody(),
-          ignore: new AicoreBehaviour().ignorePresence(),
+          nobody:   new AicoreBehaviour().setPresenceNobody(),
+          ignore:   new AicoreBehaviour().ignorePresence(),
         },
         location: {
-          sphere: new AicoreBehaviour().setPresenceSomebodyInSphere(),
-          inRoom: new AicoreBehaviour().setPresenceSomebodyInStoneLocation([stone.config.locationId]),
-          custom: new AicoreBehaviour().setPresenceSomebodyInLocations([]),
+          sphere:   new AicoreBehaviour().setPresenceSomebodyInSphere(),
+          inRoom:   new AicoreBehaviour().setPresenceSomebodyInStoneLocation([stone.config.locationId]),
+          custom:   new AicoreBehaviour().setPresenceSomebodyInLocations([]),
         },
         time: {
-          dark: new AicoreBehaviour().setTimeWhenDark(),
-          sunUp: new AicoreBehaviour().setTimeWhenSunUp(),
-          allDay: new AicoreBehaviour().setTimeAllday(),
+          dark:     new AicoreBehaviour().setTimeWhenDark(),
+          sunUp:    new AicoreBehaviour().setTimeWhenSunUp(),
+          allDay:   new AicoreBehaviour().setTimeAllday(),
           specific: new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
-          custom: new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
+          custom:   this.props.ruleId ? this.rule : new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
         },
         option: {
           inSphere: new AicoreBehaviour().setOptionStayOnWhilePeopleInSphere(),
-          inRoom: new AicoreBehaviour().setOptionStayOnWhilePeopleInLocation(),
+          inRoom:   new AicoreBehaviour().setOptionStayOnWhilePeopleInLocation(),
           noOption: new AicoreBehaviour().setNoOptions(),
         }
       }
@@ -259,32 +260,90 @@ export class RuleEditor extends LiveComponent<
     }
   }
 
-  _checkForConflictingRules() {
-    let state = core.store.getState();
-    let sphere = state.spheres[this.props.sphereId];
-    let stone = sphere.stones[this.props.stoneId];
-    let ruleIds = Object.keys(stone.rules);
 
-
-
-    // check if there are empty days....?
-
-
-
-    for (let i = 0; i < ruleIds.length; i++) {
-      let ruleId = ruleIds[i];
-      let rule = stone.rules[ruleId];
-      if (ruleId !== this.props.ruleId) {
-        if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
-        if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
-
-
-      }
-    }
-  }
+  /**
+   * We still have to decide what to do here....
+   * @private
+   */
+  // _checkForConflictingRules() {
+  //   let state = core.store.getState();
+  //   let sphere = state.spheres[this.props.sphereId];
+  //   let stone = sphere.stones[this.props.stoneId];
+  //   let ruleIds = Object.keys(stone.rules);
+  //
+  //   let behaviourDays = {
+  //     Mon: false,
+  //     Tue: false,
+  //     Wed: false,
+  //     Thu: false,
+  //     Fri: false,
+  //     Sat: false,
+  //     Sun: false,
+  //   };
+  //
+  //   let dayIndices = [
+  //     "Mon",
+  //     "Tue",
+  //     "Wed",
+  //     "Thu",
+  //     "Fri",
+  //     "Sat",
+  //     "Sun"
+  //   ];
+  //
+  //   for (let i = 0; i < ruleIds.length; i++) {
+  //     let ruleId = ruleIds[i];
+  //     let rule = stone.rules[ruleId];
+  //     if (ruleId !== this.props.ruleId) {
+  //       if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
+  //       if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
+  //
+  //       for (let j = 0; j < 7; j++) {
+  //         behaviourDays[dayIndices[j]] = behaviourDays[dayIndices[j]] || rule.activeDays[dayIndices[j]];
+  //       }
+  //     }
+  //   }
+  //
+  //   let availableDays = 0;
+  //   for (let i = 0; i < 7; i++) {
+  //     availableDays += behaviourDays[dayIndices[i]] ? 1 : 0;
+  //     behaviourDays[dayIndices[i]] = false;
+  //   }
+  //
+  //   // if it could be that this rule is for the weekend, ignore the conflict for now.
+  //   if (availableDays >= 2) {
+  //     return false;
+  //   }
+  //
+  //   let constructor = this.props.twilightRule ? AicoreTwilight : AicoreBehaviour;
+  //   let isOverlapping = false;
+  //   for (let i = 0; i < ruleIds.length; i++) {
+  //     let ruleId = ruleIds[i];
+  //     let rule = stone.rules[ruleId];
+  //     if (ruleId !== this.props.ruleId) {
+  //       if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
+  //       if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
+  //
+  //       let ruleInstance = new constructor(rule.data);
+  //       if (this.rule.isOverlappingWith(ruleInstance.rule, this.props.sphereId)) {
+  //         isOverlapping = true;
+  //         for (let j = 0; j < 7; j++) {
+  //           behaviourDays[dayIndices[j]] = behaviourDays[dayIndices[j]] || rule.activeDays[dayIndices[j]];
+  //         }
+  //       }
+  //     }
+  //   }
+  //
+  //   let overlappingDays = 0;
+  //   for (let i = 0; i < 7; i++) {
+  //     overlappingDays += behaviourDays[dayIndices[i]] ? 1 : 0;
+  //   }
+  //
+  //   return overlappingDays;
+  // }
 
   _shouldShowSuggestions() {
-    let shouldShowTimeConflict = true;
+    let shouldShowTimeConflict = false;
     let showPresenceSuggestion = this.rule.isUsingPresence() === false;
 
     let showTimeSuggestion = this.rule.isAlwaysActive() === true;
@@ -785,7 +844,52 @@ export class RuleEditor extends LiveComponent<
         <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
           <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
             { this._getSuggestions() }
-            { showSuggestions.shouldShowTimeConflict || <BehaviourSubmitButton callback={() => {
+            { showSuggestions.shouldShowTimeConflict ||
+
+            <BehaviourSubmitButton callback={() => {
+              if (this.props.onlyForDay) {
+                let ruleId = xUtil.getUUID();
+                let actions = [];
+                let activeDays = {};
+
+                let state = core.store.getState();
+                let sphere = state.spheres[this.props.sphereId];
+                let stone = sphere.stones[this.props.stoneId];
+                let rule = stone.rules[this.props.ruleId];
+
+
+                let existingActiveDays = {...rule.activeDays};
+                existingActiveDays[this.props.onlyForDay] = false;
+                activeDays[this.props.onlyForDay] = true;
+
+                // create a new rule just for this day
+                actions.push({
+                  type: "ADD_STONE_RULE",
+                  sphereId: this.props.sphereId,
+                  stoneId: this.props.stoneId,
+                  ruleId: ruleId,
+                  data: {
+                    type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
+                    data: this.rule.stringify(),
+                    activeDays: activeDays,
+                }});
+
+                // disable the existing rule for this day.
+                actions.push({
+                  type: "UPDATE_STONE_RULE",
+                  sphereId: this.props.sphereId,
+                  stoneId: this.props.stoneId,
+                  ruleId: this.props.ruleId,
+                  data: {
+                    activeDays: existingActiveDays,
+                }});
+
+
+                core.store.batchDispatch(actions);
+                NavigationUtil.dismissModal();
+                return;
+              }
+
               NavigationUtil.navigate("DeviceSmartBehaviour_Wrapup", {
                 sphereId: this.props.sphereId,
                 stoneId: this.props.stoneId,
@@ -793,7 +897,9 @@ export class RuleEditor extends LiveComponent<
                 rule: this.rule.stringify(),
                 twilightRule: this.props.twilightRule,
               })}}
-             label={lang("Use_Behaviour_")} />}
+             label={lang("Use_Behaviour_")} />
+
+            }
           </Animated.View>
         </Animated.View>
       </Animated.View>

@@ -3,10 +3,8 @@ import {
 } from "../../../../Enums";
 import { AicoreUtil } from "./AicoreUtil";
 import { xUtil } from "../../../../util/StandAloneUtil";
-import { AicoreTimeData } from "./AicoreTimeData";
 import { AicoreBehaviourCore } from "./AicoreBehaviourCore";
 
-const DEFAULT_DELAY_MINUTES = 5;
 const EMPTY_RULE : behaviour = {
   action:   { type: "BE_ON", data: 1 },
   time:     { type: "ALL_DAY" },

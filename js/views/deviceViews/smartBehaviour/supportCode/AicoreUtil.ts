@@ -7,6 +7,9 @@ import {
 import { MapProvider } from "../../../../backgroundProcesses/MapProvider";
 import { core } from "../../../../core";
 import { AicoreTimeData } from "./AicoreTimeData";
+import { AicoreBehaviour } from "./AicoreBehaviour";
+import { AicoreTwilight } from "./AicoreTwilight";
+import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
 const SunCalc = require('suncalc');
 
 export const AicoreUtil = {
@@ -223,10 +226,15 @@ export const AicoreUtil = {
   },
 
   getTimeStrInTimeFormat(timeObj : aicoreTimeData, sphereId) {
+    let timeData = AicoreUtil.getClockTime(timeObj, sphereId);
+    return AicoreUtil.getClockTimeStr(timeData.hours, timeData .minutes);
+  },
+
+  getClockTime(timeObj, sphereId){
     if (timeObj.type === "CLOCK") {
       // TYPE IS CLOCK
       let obj = (timeObj as aicoreTimeDataClock).data;
-      return AicoreUtil.getClockTimeStr(obj.hours, obj.minutes);
+      return {hours:obj.hours, minutes: obj.minutes}
     }
     else {
       let state = core.store.getState();
@@ -255,8 +263,54 @@ export const AicoreUtil = {
         baseTime += 60*1000*obj.offsetMinutes;
       }
 
-      return AicoreUtil.getClockTimeStr(new Date(baseTime).getHours(), new Date(baseTime).getMinutes());
+      return {hours: new Date(baseTime).getHours(), minutes: new Date(baseTime).getMinutes()}
     }
+  },
+
+  isTimeBeforeOtherTime(time, otherTime, sphereId) {
+    return AicoreUtil.getMinuteDifference(time, otherTime, sphereId) > 0;
+  },
+
+  getMinuteDifference(time, otherTime, sphereId) {
+    let otherTimeData = AicoreUtil.getClockTime(otherTime, sphereId);
+    let timeData      = AicoreUtil.getClockTime(time, sphereId);
+
+    let timeValue  = timeData.hours*60 + timeData.minutes;
+    let otherValue = otherTimeData.hours*60 + otherTimeData.minutes;
+
+    return timeValue - otherValue;
+  },
+
+
+  /**
+   * A and B are full rules from the database;
+   * @param a
+   * @param b
+   */
+  aStartsBeforeB(a, b, sphereId) : boolean {
+    let aR = null;
+    let bR = null;
+    if (a.type === BEHAVIOUR_TYPES.twilight) {
+      aR = new AicoreTwilight(a.data);
+    }
+    else {
+      aR = new AicoreBehaviour(a.data);
+    }
+    if (b.type === BEHAVIOUR_TYPES.twilight) {
+      bR = new AicoreTwilight(b.data);
+    }
+    else {
+      bR = new AicoreBehaviour(b.data);
+    }
+
+
+    if (bR.rule.time.type === "ALL_DAY" && aR.rule.time.type === "ALL_DAY") { return false; }
+    if (aR.rule.time.type === "ALL_DAY" && bR.rule.time.type !== "ALL_DAY") { return true; }
+    if (aR.rule.time.type !== "ALL_DAY" && bR.rule.time.type === "ALL_DAY") { return false; }
+
+    console.log(aR.time, bR.time,aR,bR)
+
+    return AicoreUtil.isTimeBeforeOtherTime(aR.rule.time.from, bR.rule.time.from, sphereId)
   }
 
 };

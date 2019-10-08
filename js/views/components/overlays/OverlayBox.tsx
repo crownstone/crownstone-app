@@ -11,7 +11,7 @@ import {
   View, ScrollView
 } from "react-native";
 
-import { HiddenFadeInView }   from '../animated/FadeInView'
+import { HiddenFadeInBlur, HiddenFadeInView } from "../animated/FadeInView";
 import { Icon }         from '../Icon'
 import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../../styles'
 
@@ -151,7 +151,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
     );
 
     return (
-      <HiddenFadeInView
+      <HiddenFadeInBlur
         style={[
           styles.fullscreen,
           {
@@ -190,7 +190,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
         { this._getExtraContent(width, height, designElementSize, padding, topPositionOfDesignElements) }
         { this._getFooterComponent(width, height, padding, closeIconSize, topPositionOfDesignElements) }
         { this._getCloseIcon(width, height, closeIconSize) }
-      </HiddenFadeInView>
+      </HiddenFadeInBlur>
     );
   }
 }

@@ -94,7 +94,7 @@ export function TimeButtonWithImage(props) {
       <TouchableOpacity style={props.basic ? buttonBasicStyle : buttonStyle} onPress={() => { props.callback(); }}>
         <ScaledImage source={props.image} sourceWidth={100} sourceHeight={100} targetHeight={40}/>
         <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
-        <Text style={textStyle} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</Text>
+        <Text style={[textStyle, {width:0.85*screenWidth - 135, paddingRight:0}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</Text>
       </TouchableOpacity>
     </FadeIn>
   );
