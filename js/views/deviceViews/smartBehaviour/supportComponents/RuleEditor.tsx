@@ -857,6 +857,19 @@ export class RuleEditor extends LiveComponent<
                 let rule = stone.rules[this.props.ruleId];
 
 
+                // we want to catch the case where the rule was not changed, even though the used pressed edit.
+                let existingRuleData = JSON.parse(rule.data);
+                if (xUtil.deepCompare(existingRuleData, this.rule.rule) === true) {
+                  NavigationUtil.dismissModal();
+                  return;
+                }
+
+                // if there IS a change, we want to allow the user to apply this change to multiple days in the wrap up
+                // TODO;
+
+
+
+
                 let existingActiveDays = {...rule.activeDays};
                 existingActiveDays[this.props.onlyForDay] = false;
                 activeDays[this.props.onlyForDay] = true;

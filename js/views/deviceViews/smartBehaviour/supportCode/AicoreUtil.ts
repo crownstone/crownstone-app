@@ -10,9 +10,9 @@ import { AicoreTimeData } from "./AicoreTimeData";
 import { AicoreBehaviour } from "./AicoreBehaviour";
 import { AicoreTwilight } from "./AicoreTwilight";
 import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
+import { DAY_INDICES_MONDAY_START } from "../../../../Constants";
 const SunCalc = require('suncalc');
 
-let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export const AicoreUtil = {
 
@@ -314,6 +314,168 @@ export const AicoreUtil = {
     return AicoreUtil.isTimeBeforeOtherTime(aR.rule.time.from, bR.rule.time.from, sphereId)
   },
 
+  //
+  // /**
+  //  * A and B are full rules from the database;
+  //  * This will return the induced overlap if you enable A on the forDay, given that rule B already exists.
+  //  * @param a
+  //  * @param b
+  //  * @param forDay ("Mon", "Tue" etc.
+  //  */
+  // getOverlapData(a, b, forDay, sphereId) {
+  //   let aR = null;
+  //   let bR = null;
+  //
+  //   let result = {
+  //     overlapMins:           0,
+  //     aPercentageOverlapped: 0,
+  //     bPercentageOverlapped: 0,
+  //     aUsesPresence:         aR.isUsingPresence(),
+  //     bUsesPresence:         bR.isUsingPresence()
+  //   }
+  //
+  //   // only comparible data types can be compared.
+  //   if (a.type !== b.type) {
+  //     return result;
+  //   }
+  //
+  //   if (a.type === BEHAVIOUR_TYPES.twilight) { aR = new AicoreTwilight(a.data);  }
+  //   else                                     { aR = new AicoreBehaviour(a.data); }
+  //   if (b.type === BEHAVIOUR_TYPES.twilight) { bR = new AicoreTwilight(b.data);  }
+  //   else                                     { bR = new AicoreBehaviour(b.data); }
+  //
+  //
+  //
+  //   let aTime = aR.rule.time;
+  //   let bTime = bR.rule.time;
+  //
+  //   let today       = dayArray.indexOf(forDay);
+  //   let previousDay = (today + 6) % 7;
+  //
+  //   let midNight = 24*60;
+  //   let dayMinutesStart = 4*60;
+  //   let dayLength = 24*60;
+  //
+  //   let bYesterday = b.activeDays[dayArray[previousDay]];
+  //   let bToday     = b.activeDays[forDay];
+  //
+  //   if (aTime.type === "ALL_DAY" && bTime.type === "ALL_DAY" && bToday) {
+  //     result.overlapMins = dayLength;
+  //     result.aPercentageOverlapped = 1;
+  //     result.bPercentageOverlapped = 1;
+  //     return result;
+  //   }
+  //   else if (aTime.type === "ALL_DAY" && bTime.type === "ALL_DAY") { // this implies that they are not active on the same day
+  //     // no overlap
+  //     return result;
+  //   }
+  //   else if (aTime.type === "ALL_DAY" && bTime.type !== "ALL_DAY") {
+  //     // the day lasts from 04:00 until 04:00 the next day.
+  //
+  //     // if we enable A, this means that the new timeslots are:
+  //     // 04:00 - 23:59:00 today and 00:00 - 04:00 tomorrow.
+  //
+  //     let bMinutesStart = AicoreUtil.getMinuteValue(bTime.from, sphereId);
+  //     let bMinutesEnd   = AicoreUtil.getMinuteValue(bTime.to,   sphereId);
+  //     let bCrossDay     = bMinutesStart >= bMinutesEnd;
+  //     let bLength = bCrossDay ? midNight - bMinutesStart + bMinutesEnd : bMinutesEnd - bMinutesStart;
+  //
+  //     if (bCrossDay) {
+  //       if (bYesterday) {
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [0, bMinutesEnd]);
+  //       }
+  //       if (bToday) {
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [bMinutesStart, midNight]);
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([0,       dayMinutesStart],  [0,          bMinutesEnd]);
+  //       }
+  //     }
+  //     else if (bToday) {
+  //       result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [bMinutesStart, bMinutesEnd]);
+  //     }
+  //
+  //     result.aPercentageOverlapped = result.overlapMins / dayLength;
+  //     result.bPercentageOverlapped = result.overlapMins / bLength;
+  //     return result;
+  //   }
+  //   else if (aTime.type !== "ALL_DAY" && bTime.type === "ALL_DAY") {
+  //     // if we enable A, this means that the new timeslots are:
+  //     // IF we are crossDay:
+  //     // aMinutesStart - 23:59:59 today and 00:00 - aMinutesEnd tomorrow.
+  //     // IF not:
+  //     // aMinutesStart - aMinutesEnd
+  //
+  //     let aMinutesStart = AicoreUtil.getMinuteValue(aTime.from, sphereId);
+  //     let aMinutesEnd   = AicoreUtil.getMinuteValue(aTime.to,   sphereId);
+  //     let aCrossDay = aMinutesStart >= aMinutesEnd;
+  //     let aLength = aCrossDay ? midNight - aMinutesStart + aMinutesEnd : aMinutesEnd - aMinutesStart;
+  //
+  //     if (aCrossDay) {
+  //       if (bYesterday) {
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([0, dayMinutesStart], [aMinutesStart, midNight]);
+  //       }
+  //       if (bToday) {
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [aMinutesStart, midNight]);
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([0, dayMinutesStart], [0, aMinutesEnd]);
+  //       }
+  //     }
+  //     else if (bToday) {
+  //       result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [aMinutesStart, aMinutesEnd]);
+  //     }
+  //
+  //     result.aPercentageOverlapped = result.overlapMins / aLength;
+  //     result.bPercentageOverlapped = result.overlapMins / dayLength;
+  //     return result;
+  //   }
+  //
+  //   // handle individual clock times.
+  //   // if we enable A, this means that the new timeslots are:
+  //   // IF we are crossDay:
+  //   // aMinutesStart - 23:59:00 today and 00:00 - aMinutesEnd tomorrow.
+  //   // IF not:
+  //   // aMinutesStart - aMinutesEnd
+  //
+  //   let aMinutesStart = AicoreUtil.getMinuteValue(aTime.from, sphereId);
+  //   let aMinutesEnd   = AicoreUtil.getMinuteValue(aTime.to,   sphereId);
+  //   let aCrossDay = aMinutesStart > aMinutesEnd;
+  //   let aLength = aCrossDay ? midNight - aMinutesStart + aMinutesEnd : aMinutesEnd - aMinutesStart;
+  //
+  //   let bMinutesStart = AicoreUtil.getMinuteValue(bTime.from, sphereId);
+  //   let bMinutesEnd   = AicoreUtil.getMinuteValue(bTime.to,   sphereId);
+  //   let bCrossDay     = bMinutesStart > bMinutesEnd;
+  //   let bLength = bCrossDay ? midNight - bMinutesStart + bMinutesEnd : bMinutesEnd - bMinutesStart;
+  //
+  //   if (aCrossDay) {
+  //     if (bCrossDay) {
+  //       if (bYesterday) {
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([0, bMinutesEnd], [aMinutesStart, midNight]);
+  //       }
+  //       if (bToday) {
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([bMinutesStart, midNight], [aMinutesStart,midNight]);
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([0, bMinutesEnd],          [0, aMinutesEnd]);
+  //       }
+  //     }
+  //     else if (bToday) {
+  //       result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([bMinutesStart, bMinutesEnd], [aMinutesStart, midNight]);
+  //     }
+  //   }
+  //   else {
+  //     if (bCrossDay) {
+  //       if (bYesterday) {
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([0, bMinutesEnd], [aMinutesStart, aMinutesEnd]);
+  //       }
+  //       if (bToday) {
+  //         result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([bMinutesStart, midNight], [aMinutesStart,aMinutesEnd]);
+  //       }
+  //     }
+  //     else if (bToday) {
+  //       result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([bMinutesStart, bMinutesEnd], [aMinutesStart, aMinutesEnd]);
+  //     }
+  //   }
+  //
+  //   result.aPercentageOverlapped = result.overlapMins / aLength;
+  //   result.bPercentageOverlapped = result.overlapMins / bLength;
+  //   return result;
+  // },
 
   /**
    * A and B are full rules from the database;
@@ -330,8 +492,6 @@ export const AicoreUtil = {
       overlapMins:           0,
       aPercentageOverlapped: 0,
       bPercentageOverlapped: 0,
-      aUsesPresence:         aR.isUsingPresence(),
-      bUsesPresence:         bR.isUsingPresence()
     }
 
     // only comparible data types can be compared.
@@ -344,20 +504,29 @@ export const AicoreUtil = {
     if (b.type === BEHAVIOUR_TYPES.twilight) { bR = new AicoreTwilight(b.data);  }
     else                                     { bR = new AicoreBehaviour(b.data); }
 
-
-
     let aTime = aR.rule.time;
     let bTime = bR.rule.time;
 
-    let today       = dayArray.indexOf(forDay);
+    let today       = DAY_INDICES_MONDAY_START.indexOf(forDay);
     let previousDay = (today + 6) % 7;
 
     let midNight = 24*60;
     let dayMinutesStart = 4*60;
     let dayLength = 24*60;
 
-    let bYesterday = b.activeDays[dayArray[previousDay]];
+    let bYesterday = b.activeDays[DAY_INDICES_MONDAY_START[previousDay]];
     let bToday     = b.activeDays[forDay];
+
+    let aMinutesStart = 0;
+    let aMinutesEnd   = 0;
+    let aCrossDay     = false;
+    let aLength       = 0;
+
+    let bMinutesStart = 0;
+    let bMinutesEnd   = 0;
+    let bCrossDay     = false;
+    let bLength       = 0;
+
 
     if (aTime.type === "ALL_DAY" && bTime.type === "ALL_DAY" && bToday) {
       result.overlapMins = dayLength;
@@ -369,106 +538,57 @@ export const AicoreUtil = {
       // no overlap
       return result;
     }
-    else if (aTime.type === "ALL_DAY" && bTime.type !== "ALL_DAY") {
-      // the day lasts from 04:00 until 04:00 the next day.
-
-      // if we enable A, this means that the new timeslots are:
-      // 04:00 - 23:59:00 today and 00:00 - 04:00 tomorrow.
-
-      let bMinutesStart = AicoreUtil.getMinuteValue(bTime.from, sphereId);
-      let bMinutesEnd   = AicoreUtil.getMinuteValue(bTime.to,   sphereId);
-      let bCrossDay     = bMinutesStart >= bMinutesEnd;
-      let bLength = bCrossDay ? midNight - bMinutesStart + bMinutesEnd : bMinutesEnd - bMinutesStart;
-
-      if (bCrossDay) {
-        if (bYesterday) {
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [0, bMinutesEnd]);
-        }
-        if (bToday) {
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [bMinutesStart, midNight]);
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([0,       dayMinutesStart],  [0,          bMinutesEnd]);
-        }
-      }
-      else if (bToday) {
-        result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [bMinutesStart, bMinutesEnd]);
-      }
-
-      result.aPercentageOverlapped = result.overlapMins / dayLength;
-      result.bPercentageOverlapped = result.overlapMins / bLength;
-      return result;
+    if (aTime.type === "ALL_DAY") {
+      aMinutesStart = dayMinutesStart;
+      aMinutesEnd   = dayMinutesStart;
+      aCrossDay = aMinutesStart >= aMinutesEnd;
+      aLength = aCrossDay ? midNight - aMinutesStart + aMinutesEnd : aMinutesEnd - aMinutesStart;
     }
-    else if (aTime.type !== "ALL_DAY" && bTime.type === "ALL_DAY") {
-      // if we enable A, this means that the new timeslots are:
-      // IF we are crossDay:
-      // aMinutesStart - 23:59:59 today and 00:00 - aMinutesEnd tomorrow.
-      // IF not:
-      // aMinutesStart - aMinutesEnd
-
-      let aMinutesStart = AicoreUtil.getMinuteValue(aTime.from, sphereId);
-      let aMinutesEnd   = AicoreUtil.getMinuteValue(aTime.to,   sphereId);
-      let aCrossDay = aMinutesStart >= aMinutesEnd;
-      let aLength = aCrossDay ? midNight - aMinutesStart + aMinutesEnd : aMinutesEnd - aMinutesStart;
-
-      if (aCrossDay) {
-        if (bYesterday) {
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([0, dayMinutesStart], [aMinutesStart, midNight]);
-        }
-        if (bToday) {
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [aMinutesStart, midNight]);
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([0, dayMinutesStart], [0, aMinutesEnd]);
-        }
-      }
-      else if (bToday) {
-        result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([dayMinutesStart, midNight], [aMinutesStart, aMinutesEnd]);
-      }
-
-      result.aPercentageOverlapped = result.overlapMins / aLength;
-      result.bPercentageOverlapped = result.overlapMins / dayLength;
-      return result;
+    else {
+      aMinutesStart = AicoreUtil.getMinuteValue(aTime.from, sphereId);
+      aMinutesEnd   = AicoreUtil.getMinuteValue(aTime.to,   sphereId);
+      aCrossDay = aMinutesStart > aMinutesEnd;
+      aLength = aCrossDay ? midNight - aMinutesStart + aMinutesEnd : aMinutesEnd - aMinutesStart;
     }
 
-    // handle individual clock times.
-    // if we enable A, this means that the new timeslots are:
-    // IF we are crossDay:
-    // aMinutesStart - 23:59:00 today and 00:00 - aMinutesEnd tomorrow.
-    // IF not:
-    // aMinutesStart - aMinutesEnd
-
-    let aMinutesStart = AicoreUtil.getMinuteValue(aTime.from, sphereId);
-    let aMinutesEnd   = AicoreUtil.getMinuteValue(aTime.to,   sphereId);
-    let aCrossDay = aMinutesStart > aMinutesEnd;
-    let aLength = aCrossDay ? midNight - aMinutesStart + aMinutesEnd : aMinutesEnd - aMinutesStart;
-
-    let bMinutesStart = AicoreUtil.getMinuteValue(bTime.from, sphereId);
-    let bMinutesEnd   = AicoreUtil.getMinuteValue(bTime.to,   sphereId);
-    let bCrossDay     = bMinutesStart > bMinutesEnd;
-    let bLength = bCrossDay ? midNight - bMinutesStart + bMinutesEnd : bMinutesEnd - bMinutesStart;
+    if (bTime.type === "ALL_DAY") {
+      bMinutesStart = dayMinutesStart;
+      bMinutesEnd   = dayMinutesStart;
+      bCrossDay = bMinutesStart >= bMinutesEnd;
+      bLength = bCrossDay ? midNight - bMinutesStart + bMinutesEnd : bMinutesEnd - bMinutesStart;
+    }
+    else {
+      bMinutesStart = AicoreUtil.getMinuteValue(bTime.from, sphereId);
+      bMinutesEnd   = AicoreUtil.getMinuteValue(bTime.to,   sphereId);
+      bCrossDay = bMinutesStart > bMinutesEnd;
+      bLength = bCrossDay ? midNight - bMinutesStart + bMinutesEnd : bMinutesEnd - bMinutesStart;
+    }
 
     if (aCrossDay) {
       if (bCrossDay) {
         if (bYesterday) {
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([0, bMinutesEnd], [aMinutesStart, midNight]);
+          result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([0, bMinutesEnd], [aMinutesStart, midNight]);
         }
         if (bToday) {
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([bMinutesStart, midNight], [aMinutesStart,midNight]);
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([0, bMinutesEnd],          [0, aMinutesEnd]);
+          result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([bMinutesStart, midNight], [aMinutesStart,midNight]);
+          result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([0, bMinutesEnd],          [0, aMinutesEnd]);
         }
       }
       else if (bToday) {
-        result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([bMinutesStart, bMinutesEnd], [aMinutesStart, midNight]);
+        result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([bMinutesStart, bMinutesEnd], [aMinutesStart, midNight]);
       }
     }
     else {
       if (bCrossDay) {
         if (bYesterday) {
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([0, bMinutesEnd], [aMinutesStart, aMinutesEnd]);
+          result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([0, bMinutesEnd], [aMinutesStart, aMinutesEnd]);
         }
         if (bToday) {
-          result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([bMinutesStart, midNight], [aMinutesStart,aMinutesEnd]);
+          result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([bMinutesStart, midNight], [aMinutesStart,aMinutesEnd]);
         }
       }
       else if (bToday) {
-        result.overlapMins += AicoreUtil.getOverlapBetweenTimeSlots([bMinutesStart, bMinutesEnd], [aMinutesStart, aMinutesEnd]);
+        result.overlapMins += AicoreUtil._getOverlapBetweenTimeSlots([bMinutesStart, bMinutesEnd], [aMinutesStart, aMinutesEnd]);
       }
     }
 
@@ -477,7 +597,7 @@ export const AicoreUtil = {
     return result;
   },
 
-  getOverlapBetweenTimeSlots(firstTimeSlot : number[], secondTimeSlot: number[]) : number {
+  _getOverlapBetweenTimeSlots(firstTimeSlot : number[], secondTimeSlot: number[]) : number {
     let minutesOverlap = 0;
 
     let slotStart = firstTimeSlot[0] < firstTimeSlot[1] ? firstTimeSlot[0] : firstTimeSlot[1];
@@ -507,6 +627,20 @@ export const AicoreUtil = {
 
     return minutesOverlap;
   },
+
+  getBehaviourSummary(ruleData) {
+    let rule : AicoreTwilight | AicoreBehaviour = null;
+    if (ruleData.type === BEHAVIOUR_TYPES.twilight) { rule = new AicoreTwilight(ruleData.data);  }
+    else                                            { rule = new AicoreBehaviour(ruleData.data); }
+
+    return {
+      usingSingleRoomPresence: rule.isUsingSingleRoomPresence(),
+      usingMultiRoomPresence:  rule.isUsingMultiRoomPresence(),
+      usingSpherePresence:     rule.isUsingSpherePresence(),
+      type:                    ruleData.type,
+      label:                   rule.getSentence(),
+    }
+  }
 
 
 };

@@ -327,7 +327,7 @@ export default {
     __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/DeviceSmartBehaviour_Wrapup.tsx",
     After_this_behaviour__I_w:           function() { return "After this behaviour, I won't turn off as long as someone is home. This is done by automatically adding another rule that will keep me on for you. This will last until sunrise, give it a try!" },
     I_wont_turn_off_as_long_a:           function() { return "I won't turn off as long as someone is in the room. This is done by automatically another rule that will keep me on for you. This will last until sunrise, give it a try!" },
-    Tap_the_days_below_to_let:           function() { return "Let me know when I should act on this behaviour! I'll do it on every green day, tap the day to change it!\n\n" + "If a behaviour is started on an active day, it will not just stop at midnight but logically finish up." },
+    Tap_the_days_below_to_let:           function() { return "Let me know when I should act on this behaviour! I'll do it on every green day.\n\n You can tap the day to change it!\n\n" + "If a behaviour is started on an active day, it will not just stop at midnight but logically finish up." },
     Thats_it_:                           function() { return "That's it!" },
     _Never___Please_pick_at_l_header:    function() { return "Never?" },
     _Never___Please_pick_at_l_body:      function() { return "Please pick at least 1 day for this behaviour!" },

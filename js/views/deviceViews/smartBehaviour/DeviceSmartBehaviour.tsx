@@ -28,12 +28,9 @@ import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandle
 import { StoneUtil } from "../../../util/StoneUtil";
 import { ScaledImage } from "../../components/ScaledImage";
 import { DataUtil } from "../../../util/DataUtil";
-import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
-import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
-import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
+import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
 
-let dayArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 let className = "DeviceSmartBehaviour";
 
@@ -48,7 +45,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
     let weekday = new Date().getDay();
-    this.state = { editMode: false, activeDay: dayArray[weekday] };
+    this.state = { editMode: false, activeDay: DAY_INDICES_SUNDAY_START[weekday] };
   }
 
 
@@ -116,7 +113,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     let activeRules = {};
     let activityMap = {};
 
-    let previousDay = (dayArray.indexOf(this.state.activeDay) + 6) % 7;
+    let previousDay = (DAY_INDICES_SUNDAY_START.indexOf(this.state.activeDay) + 6) % 7;
 
     let hasRules = ruleIds.length;
 
@@ -125,9 +122,9 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     }
 
     ruleIds.sort((a,b) => {
-      let aIsYesterday = !rules[a].activeDays[this.state.activeDay] && rules[a].activeDays[dayArray[previousDay]];
+      let aIsYesterday = !rules[a].activeDays[this.state.activeDay] && rules[a].activeDays[DAY_INDICES_SUNDAY_START[previousDay]];
       if (aIsYesterday) { return -1; }
-      let bIsYesterday = !rules[b].activeDays[this.state.activeDay] && rules[b].activeDays[dayArray[previousDay]];
+      let bIsYesterday = !rules[b].activeDays[this.state.activeDay] && rules[b].activeDays[DAY_INDICES_SUNDAY_START[previousDay]];
       if (bIsYesterday) { return 1; }
 
       if (AicoreUtil.aStartsBeforeB(rules[a], rules[b], this.props.sphereId)) {
@@ -140,13 +137,13 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
     ruleIds.forEach((ruleId) => {
       let active = rules[ruleId].activeDays[this.state.activeDay];
-      let partiallyActive = !active && rules[ruleId].activeDays[dayArray[previousDay]];
+      let partiallyActive = !active && rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]];
 
       if (active || (partiallyActive && !this.state.editMode)) {
         let rule = rules[ruleId];
         activeRules[ruleId] = rules[ruleId];
         activityMap[ruleId] = {
-          yesterday: rules[ruleId].activeDays[dayArray[previousDay]],
+          yesterday: rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]],
           today:     rules[ruleId].activeDays[this.state.activeDay],
         };
 
@@ -157,7 +154,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             sphereId={this.props.sphereId}
             stoneId={this.props.stoneId}
             activeDay={this.state.activeDay}
-            startedYesterday={!rules[ruleId].activeDays[this.state.activeDay] && rules[ruleId].activeDays[dayArray[previousDay]]}
+            startedYesterday={!rules[ruleId].activeDays[this.state.activeDay] && rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]]}
             ruleId={ruleId}
             editMode={this.state.editMode}
             faded={partiallyActive}
@@ -178,13 +175,13 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             <SlideFadeInView visible={true} height={1.5*(screenWidth/9)}>
               <WeekDayList
                 data={{
-                  Mon: this.state.activeDay === dayArray[1],
-                  Tue: this.state.activeDay === dayArray[2],
-                  Wed: this.state.activeDay === dayArray[3],
-                  Thu: this.state.activeDay === dayArray[4],
-                  Fri: this.state.activeDay === dayArray[5],
-                  Sat: this.state.activeDay === dayArray[6],
-                  Sun: this.state.activeDay === dayArray[0],
+                  Mon: this.state.activeDay === DAY_INDICES_SUNDAY_START[1],
+                  Tue: this.state.activeDay === DAY_INDICES_SUNDAY_START[2],
+                  Wed: this.state.activeDay === DAY_INDICES_SUNDAY_START[3],
+                  Thu: this.state.activeDay === DAY_INDICES_SUNDAY_START[4],
+                  Fri: this.state.activeDay === DAY_INDICES_SUNDAY_START[5],
+                  Sat: this.state.activeDay === DAY_INDICES_SUNDAY_START[6],
+                  Sun: this.state.activeDay === DAY_INDICES_SUNDAY_START[0],
                 }}
                 tight={true}
                 darkTheme={false}

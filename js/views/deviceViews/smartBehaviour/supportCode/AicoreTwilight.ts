@@ -117,6 +117,15 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   isUsingPresence() : boolean {
     return false;
   }
+  isUsingSingleRoomPresence() : boolean {
+    return false;
+  }
+  isUsingMultiRoomPresence() : boolean {
+    return false;
+  }
+  isUsingSpherePresence() : boolean {
+    return false;
+  }
   hasNoOptions(): boolean {
     return true;
   }

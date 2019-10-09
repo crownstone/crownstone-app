@@ -65,3 +65,8 @@ export const KEY_TYPES = {
   MESH_DEVICE_KEY:      "MESH_DEVICE_KEY",
 };
 
+export const BEHAVIOUR_TYPES = {
+  twilight: "TWILIGHT",
+  behaviour:"BEHAVIOUR",
+}
+

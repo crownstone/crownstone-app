@@ -247,6 +247,28 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
   isUsingPresence() : boolean {
     return this.rule.presence.type !== "IGNORE";
   }
+  isUsingSingleRoomPresence() : boolean {
+    if (this.rule.presence.type !== "IGNORE") {
+      if (this.rule.presence.data.type === "LOCATION") {
+        return this.rule.presence.data.locationIds.length === 1;
+      }
+    }
+    return false;
+  }
+  isUsingMultiRoomPresence() : boolean {
+    if (this.rule.presence.type !== "IGNORE") {
+      if (this.rule.presence.data.type === "LOCATION") {
+        return this.rule.presence.data.locationIds.length > 1;
+      }
+    }
+    return false;
+  }
+  isUsingSpherePresence() : boolean {
+    if (this.rule.presence.type !== "IGNORE") {
+      return this.rule.presence.data.type === "SPHERE";
+    }
+    return false;
+  }
   hasNoOptions(): boolean {
     return this.rule.options === undefined;
   }

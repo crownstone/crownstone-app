@@ -42,14 +42,10 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
       if (rule.type === "BEHAVIOUR") {
         ai = new AicoreBehaviour(rule.data);
         if (ai.isUsingPresence()) {
-          presenceArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), endsWithOption: !ai.hasNoOptions(), activityData: this.props.activityMap[ruleId]})
+          presenceArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[ruleId]})
         }
         else {
           onArray.push({start: ai.getFromTimeString(this.props.sphereId), end: ai.getToTimeString(this.props.sphereId), activityData: this.props.activityMap[ruleId]})
-        }
-
-        if (!ai.hasNoOptions()) {
-          presenceArray.push({start: ai.getToTimeString(this.props.sphereId), end: AicoreUtil.getTimeStrInTimeFormat({ type: "SUNRISE", offsetMinutes: 0}, this.props.sphereId), option:true, activityData: this.props.activityMap[ruleId]})
         }
       }
       else if (rule.type === "TWILIGHT") {
@@ -128,7 +124,7 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     }
   }
 
-  getSubItem(startMinutes, endMinutes, isOption, isFaded = false) {
+  getSubItem(startMinutes, endMinutes, isFaded = false) {
     let width = this.width;
 
     let startX = width * startMinutes / (24*60);
@@ -155,9 +151,8 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
             borderRadius:    0.5*this.lineHeight,
             backgroundColor: this.props.dataColor.hex,
             overflow:        'hidden',
-            opacity:         isOption || isFaded? 0.5 : 1.0
+            opacity:         isFaded ? 0.5 : 1.0
           }}>
-          { isOption ? <Image source={require("../../../../images/patterns/csBlueStripe.png")} style={{width:endX - startX, height:this.lineHeight}} resizeMode={"repeat"} /> : null}
         </View>
       </View>
     )
@@ -172,21 +167,21 @@ class SmartBehaviourSummaryGraphElement extends Component<any, any> {
     if (endMinutes < startMinutes) {
       // this rule is split over day boundary.
       if (itemData.activityData.yesterday) {
-        result.push(this.getSubItem(getMinutes("00:00"), endMinutes, itemData.option, !itemData.activityData.today));
+        result.push(this.getSubItem(getMinutes("00:00"), endMinutes, !itemData.activityData.today));
       }
 
       if (itemData.activityData.today) {
-        result.push(this.getSubItem(startMinutes, getMinutes("24:00"), itemData.option));
+        result.push(this.getSubItem(startMinutes, getMinutes("24:00")));
       }
     }
     else if (endMinutes == startMinutes) {
       if (itemData.activityData.today) {
-        result.push([this.getSubItem(getMinutes("00:00"), getMinutes("24:00"), itemData.option)]);
+        result.push([this.getSubItem(getMinutes("00:00"), getMinutes("24:00"))]);
       }
     }
     else {
       if (itemData.activityData.today) {
-        result.push([this.getSubItem(startMinutes, endMinutes, itemData.option)]);
+        result.push([this.getSubItem(startMinutes, endMinutes)]);
       }
     }
 

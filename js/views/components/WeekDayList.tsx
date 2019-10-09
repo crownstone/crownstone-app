@@ -7,27 +7,19 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, ViewStyle
+} from "react-native";
 
 import {colors, screenWidth} from '../styles'
+import {
+  DAY_INDICES_MONDAY_START,
+  WEEK_DAY_INDICES,
+  WEEKEND_DAY_INDICES, DAY_SHORT_LABEL_MAP
+} from "../../Constants";
 
-export let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; // these are keys
-export let WEEK_DAYS = ['Mon','Tue','Wed','Thu','Fri']; // these are keys
-export let WEEKEND_DAYS = ['Sat','Sun']; // these are keys
-export let DAYS_FULL = [
-  lang('DAY_Monday'),
-  lang('DAY_Tuesday'),
-  lang('DAY_Wednesday'),
-  lang('DAY_Thursday'),
-  lang('DAY_Friday'),
-  lang('DAY_Saturday'),
-  lang('DAY_Sunday'),
-];
 
 export class WeekDayList extends Component<any, any> {
   _getDays(size) {
-    let localizedDays = [lang("DAY_Mon"), lang("DAY_Tue"), lang("DAY_Wed"), lang("DAY_Thu"), lang("DAY_Fri"), lang("DAY_Sat"), lang("DAY_Sun")];
     let items = [];
     let pressure = 1;
     if (this.props.tight) {
@@ -36,36 +28,23 @@ export class WeekDayList extends Component<any, any> {
 
 
     items.push(<View key={'selectableDayFlexStart'} style={{flex:pressure}} />);
-    for (let i = 0; i < DAYS.length; i++) {
+    for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
+      let day = DAY_INDICES_MONDAY_START[i];
       items.push(
-        <TouchableOpacity
-          key={'selectableDay'+i}
-          onPress={() => {
+        <SmallWeekdayElement
+          key={"dayElement"+day}
+          callback={() => {
             let newData = {...this.props.data};
-            newData[DAYS[i]] = !newData[DAYS[i]];
-            this.props.onChange(newData, DAYS[i]);
+            newData[day] = !newData[day];
+            this.props.onChange(newData, day);
           }}
-          style={{
-            width: size,
-            height: size,
-            borderRadius: 0.5*size,
-            borderColor: colors.white.rgba(0.7),
-            borderWidth: 2,
-            backgroundColor: this.props.data[DAYS[i]] ? colors.green.hex : ( this.props.darkTheme === true ? colors.white.rgba(0.3) : colors.csBlueDark.rgba(0.2)),
-            alignItems:'center',
-            justifyContent:'center'
-          }}
-        >
-          <Text style={{
-            fontSize:12,
-            fontWeight: 'bold',
-            color: this.props.data[DAYS[i]] ? colors.white.hex : ( this.props.darkTheme === true ? colors.white.hex : colors.csBlueDark.rgba(0.6)),
-            backgroundColor:"transparent"
-          }}>{localizedDays[i]}</Text>
-        </TouchableOpacity>
-      );
+          selected={this.props.data[day]}
+          label={DAY_SHORT_LABEL_MAP[day]}
+          conflict={false}
+        />
+      )
 
-      if (i < DAYS.length -1) {
+      if (i < DAY_INDICES_MONDAY_START.length -1) {
         items.push(<View key={'selectableDayFlex'+i} style={{flex:1}} />);
       }
     }
@@ -93,43 +72,25 @@ export class WeekDayList extends Component<any, any> {
 
 
 export class WeekDayListLarge extends Component<any, any> {
-  _getDayIterator(size, days, localizedDays, keyLabel) {
+  _getDayIterator(days, keyLabel) {
     let items = [];
-    let pressure = 1;
-    if (this.props.tight) {
-      pressure = 3;
-    }
-
 
     items.push(<View key={'selectableDayFlexStart' + keyLabel} style={{flex:1}} />);
     for (let i = 0; i < days.length; i++) {
+
+      console.log("this.props.conflictDays && this.props.conflictDays[days[i]].conflict && !this.props.conflictDays[days[i]].resolved",this.props.conflictDays,this.props.conflictDays[days[i]].conflict, !this.props.conflictDays[days[i]].resolved, days[i])
       items.push(
-        <TouchableOpacity
-          key={'selectableDay'+i + keyLabel}
-          onPress={() => {
+        <LargeWeekdayElement
+          key={"dayElement"+days[i]}
+          callback={() => {
             let newData = {...this.props.data};
             newData[days[i]] = !newData[days[i]];
             this.props.onChange(newData, days[i]);
           }}
-          style={{
-            width: size,
-            height: size,
-            borderRadius: 0.5*size,
-            borderColor: colors.white.rgba(0.8),
-            borderWidth: size*0.06,
-            backgroundColor: this.props.data[days[i]] ? colors.green.hex : ( this.props.darkTheme === true ? colors.white.rgba(0.3) : colors.csBlueDark.rgba(0.2)),
-            alignItems:'center',
-            margin: (screenWidth - size*6)/12,
-            justifyContent:'center'
-          }}
-        >
-          <Text style={{
-            fontSize: size*0.25,
-            fontWeight: 'bold',
-            color: this.props.data[days[i]] ? colors.white.hex : ( this.props.darkTheme === true ? colors.white.hex : colors.csBlueDark.rgba(0.6)),
-            backgroundColor:"transparent"
-          }}>{localizedDays[i]}</Text>
-        </TouchableOpacity>
+          selected={this.props.data[days[i]]}
+          label={DAY_SHORT_LABEL_MAP[days[i]]}
+          conflict={this.props.conflictDays && this.props.conflictDays[days[i]].conflict && !this.props.conflictDays[days[i]].resolved}
+        />
       );
 
     }
@@ -138,18 +99,15 @@ export class WeekDayListLarge extends Component<any, any> {
     return items;
   }
 
-  _getWeekDays(size) {
-    let localizedDays = [lang("DAY_Mon"), lang("DAY_Tue"), lang("DAY_Wed"), lang("DAY_Thu"), lang("DAY_Fri")];
-    return this._getDayIterator(size, WEEK_DAYS, localizedDays, 'weekDays');
+  _getWeekDays() {
+    return this._getDayIterator(WEEK_DAY_INDICES, 'weekDays');
   }
 
-  _getWeekendDays(size) {
-    let localizedDays = [lang("DAY_Sat"), lang("DAY_Sun")];
-    return this._getDayIterator(size, WEEKEND_DAYS, localizedDays, 'weekendDays');
+  _getWeekendDays() {
+    return this._getDayIterator(WEEKEND_DAY_INDICES, 'weekendDays');
   }
 
   render() {
-    let size = screenWidth/7;
     return (
       <View style={{
         width: screenWidth,
@@ -164,7 +122,7 @@ export class WeekDayListLarge extends Component<any, any> {
         alignItems:'center',
         justifyContent:'center'
       }}>
-        { this._getWeekDays(size) }
+        { this._getWeekDays() }
       </View>
         <View style={{
           width: screenWidth,
@@ -173,9 +131,62 @@ export class WeekDayListLarge extends Component<any, any> {
           alignItems:'center',
           justifyContent:'center'
         }}>
-          { this._getWeekendDays(size) }
+          { this._getWeekendDays() }
         </View>
       </View>
     );
   }
+}
+
+export function SmallWeekdayElement(props: {callback, selected, label, conflict}) {
+  return (
+    <WeekdayElement
+      size={screenWidth/9}
+      callback={props.callback}
+      selected={props.selected}
+      label={props.label}
+      margin={0}
+    />
+  );
+}
+export function LargeWeekdayElement(props: {callback, margin?, selected, label, conflict}) {
+  let size = screenWidth/7;
+  return (
+    <WeekdayElement
+      size={size}
+      callback={props.callback}
+      selected={props.selected}
+      label={props.label}
+      margin={props.margin || size/12}
+    />
+  );
+}
+
+export function WeekdayElement(props: {size, margin, callback, selected, label}) {
+  let itemStyle : ViewStyle = {
+    width: props.size,
+    height: props.size,
+    borderRadius: 0.5*props.size,
+    borderColor: colors.white.rgba(0.9),
+    borderWidth: props.size*0.06,
+    backgroundColor: props.selected ? colors.green.hex : colors.csBlueDark.rgba(0.1),
+    margin: props.margin,
+    alignItems:'center',
+    justifyContent:'center'
+  }
+
+
+  return (
+    <TouchableOpacity
+      onPress={props.callback}
+      style={itemStyle}
+    >
+      <Text style={{
+        fontSize:12,
+        fontWeight: 'bold',
+        color: props.selected ? colors.white.hex : colors.csBlueDark.rgba(0.6),
+        backgroundColor:"transparent"
+      }}>{props.label}</Text>
+    </TouchableOpacity>
+  );
 }

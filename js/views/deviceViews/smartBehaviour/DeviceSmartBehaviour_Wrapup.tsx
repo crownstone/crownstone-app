@@ -20,7 +20,7 @@ import {
 import { core } from "../../../core";
 import { Background } from "../../components/Background";
 import { NavigationUtil, NavState } from "../../../util/NavigationUtil";
-import { WeekDayList, WeekDayListLarge } from "../../components/WeekDayList";
+import { LargeWeekdayElement, WeekDayList, WeekDayListLarge } from "../../components/WeekDayList";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
@@ -28,13 +28,15 @@ import { Icon } from "../../components/Icon";
 import { BehaviourSubmitButton } from "./supportComponents/BehaviourSubmitButton";
 import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { AicoreUtil } from "./supportCode/AicoreUtil";
+import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP, DAY_SHORT_LABEL_MAP } from "../../../Constants";
+import { SlideFadeInView, SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 
 
 export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string, stoneId: string, rule: string, twilightRule: boolean, ruleId?: string}, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: "When to do this?"});
   }
-
 
   rule : AicoreBehaviour | AicoreTwilight;
 
@@ -47,17 +49,6 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
     let stone = sphere.stones[this.props.stoneId];
     if (!stone) return;
 
-    let activeDays      = { Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: true, Sun: true };
-    let conflictingDays = { Mon: null, Tue: null, Wed: null, Thu: null, Fri: null, Sat: null, Sun: null };
-    if (this.props.ruleId) {
-      let rule = stone.rules[this.props.ruleId];
-      if (rule) {
-        activeDays = rule.activeDays;
-      }
-    }
-
-    this.state = { activeDays: activeDays, conflictingDays: conflictingDays };
-
     if (this.props.twilightRule) {
       // @ts-ignore
       this.rule = new AicoreTwilight(this.props.rule);
@@ -66,6 +57,16 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
       // @ts-ignore
       this.rule = new AicoreBehaviour(this.props.rule);
     }
+
+    let { activeDays, conflictDays } = this._getConflictingDays();
+    if (this.props.ruleId) {
+      let rule = stone.rules[this.props.ruleId];
+      if (rule) {
+        activeDays = rule.activeDays;
+      }
+    }
+
+    this.state = { activeDays: activeDays, conflictDays: conflictDays, conflictResolving:false };
   }
 
   _storeRule() {
@@ -103,6 +104,9 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
   }
 
   submit() {
+
+    // TODO: handle overlaps
+
     let days = Object.keys(this.state.activeDays);
     let atleastOneDay = false;
     for (let i = 0; i < days.length; i++) {
@@ -127,84 +131,84 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
 
 
   _getConflictingDays() {
-      let state = core.store.getState();
-      let sphere = state.spheres[this.props.sphereId];
-      let stone = sphere.stones[this.props.stoneId];
-      let ruleIds = Object.keys(stone.rules);
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    let stone = sphere.stones[this.props.stoneId];
+    let ruleIds = Object.keys(stone.rules);
 
-      let behaviourDays = {
-        Mon: false,
-        Tue: false,
-        Wed: false,
-        Thu: false,
-        Fri: false,
-        Sat: false,
-        Sun: false,
-      };
+    let activeDays   = { Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: true, Sun: true };
+    let conflictDays = {
+      Mon: {rules: [], conflict:false },
+      Tue: {rules: [], conflict:false },
+      Wed: {rules: [], conflict:false },
+      Thu: {rules: [], conflict:false },
+      Fri: {rules: [], conflict:false },
+      Sat: {rules: [], conflict:false },
+      Sun: {rules: [], conflict:false }
+    };
 
-      let dayIndices = [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ];
-
-      // for (let i = 0; i < ruleIds.length; i++) {
-      //   let ruleId = ruleIds[i];
-      //   let rule = stone.rules[ruleId];
-      //   if (ruleId !== this.props.ruleId) {
-      //     if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
-      //     if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
-      //
-      //     for (let j = 0; j < 7; j++) {
-      //       behaviourDays[dayIndices[j]] = behaviourDays[dayIndices[j]] || rule.activeDays[dayIndices[j]];
-      //     }
-      //   }
-      // }
-      //
-      // let availableDays = 0;
-      // for (let i = 0; i < 7; i++) {
-      //   availableDays += behaviourDays[dayIndices[i]] ? 1 : 0;
-      //   behaviourDays[dayIndices[i]] = false;
-      // }
-
-      let constructor = this.props.twilightRule ? AicoreTwilight : AicoreBehaviour;
-      let isOverlapping = false;
-      for (let i = 0; i < ruleIds.length; i++) {
-        let ruleId = ruleIds[i];
+    let newRule = {type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour, data: this.rule}
+    let newSummary = AicoreUtil.getBehaviourSummary(newRule);
+    for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
+      let day = DAY_INDICES_MONDAY_START[i];
+      for (let j = 0; j < ruleIds.length; j++) {
+        let ruleId = ruleIds[j];
         let rule = stone.rules[ruleId];
         if (ruleId !== this.props.ruleId) {
-          if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
-          if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
+          if (newRule.type !== rule.type) { continue; }
 
-          let ruleInstance = new constructor(rule.data);
-          if (this.rule.isOverlappingWith(ruleInstance.rule, this.props.sphereId)) {
-            isOverlapping = true;
-            for (let j = 0; j < 7; j++) {
-              behaviourDays[dayIndices[j]] = behaviourDays[dayIndices[j]] || rule.activeDays[dayIndices[j]];
+          let data = AicoreUtil.getOverlapData(newRule, rule, day, this.props.sphereId);
+          if (data.overlapMins === 0) { continue; }
+          if (data.aPercentageOverlapped < 0.4 && data.bPercentageOverlapped < 0.4) { continue; } // no hassle
+
+          let existingSummary = AicoreUtil.getBehaviourSummary(rule);
+
+          let isConflicting = false;
+          isConflicting = isConflicting || newSummary.usingSingleRoomPresence && existingSummary.usingSingleRoomPresence;
+          isConflicting = isConflicting || newSummary.usingMultiRoomPresence  && existingSummary.usingMultiRoomPresence;
+          isConflicting = isConflicting || newSummary.usingSpherePresence     && existingSummary.usingSpherePresence;
+
+          if (isConflicting) {
+            // just not make this directly selected
+            if (data.aPercentageOverlapped <= 0.3 && data.bPercentageOverlapped <= 0.3) {
+              // fine.... ignore it.
+              continue;
+            }
+            if ((data.aPercentageOverlapped <= 0.5 && data.bPercentageOverlapped <= 0.5) && (data.aPercentageOverlapped > 0.3 || data.bPercentageOverlapped > 0.3)) {
+              activeDays[day] = false; continue;
+            }
+
+            // A is in B and B is significantly overlapped
+            if (data.aPercentageOverlapped > 0.5 && data.bPercentageOverlapped > 0.5) {
+              // replace
+              conflictDays[day].conflict = true;
+              conflictDays[day].rules.push({ruleId: ruleId, label: existingSummary.label});
+              activeDays[day] = false; continue;
             }
           }
         }
       }
+    }
 
-      let overlappingDays = 0;
-      for (let i = 0; i < 7; i++) {
-
-
-
-        overlappingDays += behaviourDays[dayIndices[i]] ? 1 : 0;
-      }
-
-      return overlappingDays;
+    return {activeDays, conflictDays};
   }
 
 
   render() {
     let header = "Every day?"
-    if (this.props.ruleId) {
+    let amountOfUnresolvedConflictingDays = 0;
+    let amountOfConflictingDays = 0;
+    for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
+      let day = DAY_INDICES_MONDAY_START[i];
+      if (this.state.conflictDays[day].conflict) {
+        amountOfConflictingDays += 1;
+        if (!this.state.conflictDays[day].resolved) {
+          amountOfUnresolvedConflictingDays += 1;
+        }
+      }
+    }
+
+    if (this.props.ruleId || amountOfConflictingDays > 0) {
       header = "When do I do this?"
     }
 
@@ -217,17 +221,40 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{sphereId: string
             <Text style={deviceStyles.specification}>{ lang("Tap_the_days_below_to_let") }</Text>
 
             <View style={{flex:1}} />
-            <WeekDayListLarge
-              data={this.state.activeDays}
-              tight={true}
-              darkTheme={false}
-              onChange={(fullData, day) => { this.setState({activeDays: fullData}); }}
-            />
+
+            <View style={{width:screenWidth, flexDirection:'row'}}>
+              <SlideSideFadeInView visible={this.state.conflictResolving === false} width={screenWidth}>
+                <WeekDayListLarge
+                  data={this.state.activeDays}
+                  conflictDays={this.state.conflictDays}
+                  tight={true}
+                  onChange={(fullData, day) => {
+                    if (fullData[day] === true) {
+                      if (this.state.conflictDays[day].conflict) {
+                        let ruleList = this.state.conflictDays[day].rules[0].label;
+                        for (let j = 1; j < this.state.conflictDays[day].rules.length; j++) {
+                          ruleList += "\n" + this.state.conflictDays[day].rules[j].label;
+                        }
+                        Alert.alert("This will replace the following behaviours on " + DAY_LABEL_MAP[day] + ":", ruleList, [{ text: "Cancel" }, {
+                          text: "OK", onPress: () => {
+                            this.setState({ activeDays: fullData })
+                          }
+                        }]);
+                        return;
+                      }
+                    }
+                    this.setState({ activeDays: fullData });
+                  }}
+                />
+              </SlideSideFadeInView>
+            </View>
 
             <View style={{flex:1}} />
             <View style={{flexDirection:'row'}}>
               <View style={{flex:1}} />
+              <View>
               <BehaviourSubmitButton callback={() => { this.submit() }} label={lang("Thats_it_")} />
+              </View>
               <View style={{flex:1}} />
             </View>
             <View style={{height: 30}} />

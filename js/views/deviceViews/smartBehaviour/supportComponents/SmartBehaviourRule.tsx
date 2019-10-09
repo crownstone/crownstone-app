@@ -8,8 +8,8 @@ import { Icon } from "../../../components/Icon";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import * as React from "react";
 import { ScaledImage } from "../../../components/ScaledImage";
+import { DAY_INDICES_MONDAY_START } from "../../../../Constants";
 
-let dayIndices = [ "Mon",  "Tue",  "Wed",  "Thu",  "Fri",  "Sat",  "Sun" ];
 
 export function SmartBehaviourRule(props: {
   rule: any,
@@ -60,7 +60,7 @@ export function SmartBehaviourRule(props: {
                       // check if we are even active on multiple days
                       let usedDays = 0;
                       for (let i = 0; i < 7; i++) {
-                        usedDays += props.rule.activeDays[dayIndices[i]] ? 1 : 0;
+                        usedDays += props.rule.activeDays[DAY_INDICES_MONDAY_START[i]] ? 1 : 0;
                       }
 
                       if (usedDays > 1) {
@@ -133,7 +133,7 @@ export function SmartBehaviourRule(props: {
                   core.eventBus.emit("hideCustomOverlay");
                   let usedDays = 0;
                   for (let i = 0; i < 7; i++) {
-                    usedDays += props.rule.activeDays[dayIndices[i]] ? 1 : 0;
+                    usedDays += props.rule.activeDays[DAY_INDICES_MONDAY_START[i]] ? 1 : 0;
                   }
 
                   if (usedDays === 1) {
