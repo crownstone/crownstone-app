@@ -173,11 +173,6 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     return this;
   }
 
-  setPresenceSomebodyInStoneLocation(locationIds: string[]) : AicoreBehaviour {
-    this.rule.presence = { type:"SOMEBODY", data: {type:"IN_STONE_LOCATION", locationIds: locationIds}, delay: this._getSphereDelay()};
-    return this;
-  }
-
   setPresenceSomebodyInLocations(locationIds: string[]) : AicoreBehaviour {
     this.rule.presence = { type:"SOMEBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getSphereDelay()};
     return this;

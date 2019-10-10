@@ -239,7 +239,7 @@ export const StoneUtil = {
             {text:'Neve rmind', onPress: () => { resolve(false)}},
             {text:"Yes",       onPress:() => {
               let actions = copyRules();
-              actions.push({type:'UPDATE_DIMMER', sphereId: sphereId, stoneId: toStoneId, data: {enabledState: true}});
+              actions.push({type:'UPDATE_DIMMER', sphereId: sphereId, stoneId: toStoneId, data: {enabledTarget: true}});
               core.store.batchDispatch(actions);
               resolve(true);
             }}],

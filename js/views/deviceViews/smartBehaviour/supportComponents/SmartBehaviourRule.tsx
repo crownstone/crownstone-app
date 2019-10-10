@@ -127,52 +127,16 @@ export function SmartBehaviourRule(props: {
       { /* Edit icon */ }
       <SlideSideFadeInView width={50} visible={showEditIcons}>
         <TouchableOpacity onPress={() => {
-          core.eventBus.emit("showCustomOverlay", { content:
-              <EditOverlayContent
-                editOneCallback={() => {
-                  core.eventBus.emit("hideCustomOverlay");
-                  let usedDays = 0;
-                  for (let i = 0; i < 7; i++) {
-                    usedDays += props.rule.activeDays[DAY_INDICES_MONDAY_START[i]] ? 1 : 0;
-                  }
-
-                  if (usedDays === 1) {
-                    NavigationUtil.launchModal(
-                      "DeviceSmartBehaviour_Editor",
-                      {
-                        data: ai,
-                        sphereId: props.sphereId,
-                        stoneId: props.stoneId,
-                        ruleId: props.ruleId,
-                        isModal: true,
-                      });
-                  }
-                  else {
-                    NavigationUtil.launchModal(
-                      "DeviceSmartBehaviour_Editor",
-                      {
-                        data: ai,
-                        sphereId: props.sphereId,
-                        stoneId: props.stoneId,
-                        onlyForDay: props.activeDay,
-                        ruleId: props.ruleId,
-                        isModal: true,
-                      });
-                  }
-                }}
-                editAllCallback={() => {
-                  core.eventBus.emit("hideCustomOverlay");
-                  NavigationUtil.launchModal(
-                    "DeviceSmartBehaviour_Editor",
-                    {
-                      data: ai,
-                      sphereId: props.sphereId,
-                      stoneId: props.stoneId,
-                      ruleId: props.ruleId,
-                      isModal: true,
-                    });
-                }}
-              />})
+          NavigationUtil.launchModal(
+            "DeviceSmartBehaviour_Editor",
+            {
+              data: ai,
+              sphereId: props.sphereId,
+              stoneId: props.stoneId,
+              ruleId: props.ruleId,
+              selectedDay: props.activeDay,
+              isModal: true,
+            });
         }} style={{width:50, alignItems:'flex-end'}}>
           <Icon name={'md-create'} color={colors.menuTextSelected.hex} size={26} />
         </TouchableOpacity>

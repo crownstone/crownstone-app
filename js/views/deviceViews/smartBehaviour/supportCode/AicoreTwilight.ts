@@ -89,7 +89,6 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   setPresenceSpecificUserInSphere(userProfileId: number) : AicoreTwilight { return this; }
   setPresenceInSphere() : AicoreTwilight { return this; }
   setPresenceInLocations(locationIds: string[]) { return this; }
-  setPresenceSomebodyInStoneLocation(locationIds: string[]) : AicoreTwilight { return this; }
   setPresenceSomebodyInLocations(locationIds: string[]) : AicoreTwilight { return this; }
   setPresenceNobodyInLocations(locationIds: string[]) : AicoreTwilight { return this; }
   setPresenceSpecificUserInLocations(locationIds: string[], userProfileId: number) : AicoreTwilight { return this; }

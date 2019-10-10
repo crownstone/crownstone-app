@@ -24,12 +24,10 @@ import { BehaviourSuggestion } from "./BehaviourSuggestion";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
-import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
-
 
 
 export class RuleEditor extends LiveComponent<
-  {data: behaviour | twilight, sphereId: string, stoneId: string, ruleId?: string, twilightRule: boolean, onlyForDay?: string},
+  {data: behaviour | twilight, sphereId: string, stoneId: string, ruleId?: string, selectedDay?: string, twilightRule: boolean},
   {detail: any, containerHeight: Animated.Value,  detailHeight: Animated.Value,  detailOpacity: Animated.Value,  mainBottomHeight: Animated.Value, mainBottomOpacity: Animated.Value, selectedDetailField: string, showCustomTimeData:boolean}
   > {
   references = [];
@@ -92,7 +90,7 @@ export class RuleEditor extends LiveComponent<
         },
         location: {
           sphere:   new AicoreBehaviour().setPresenceSomebodyInSphere(),
-          inRoom:   new AicoreBehaviour().setPresenceSomebodyInStoneLocation([stone.config.locationId]),
+          inRoom:   new AicoreBehaviour().setPresenceSomebodyInLocations([stone.config.locationId]),
           custom:   new AicoreBehaviour().setPresenceSomebodyInLocations([]),
         },
         time: {
@@ -260,87 +258,6 @@ export class RuleEditor extends LiveComponent<
   }
 
 
-  /**
-   * We still have to decide what to do here....
-   * @private
-   */
-  // _checkForConflictingRules() {
-  //   let state = core.store.getState();
-  //   let sphere = state.spheres[this.props.sphereId];
-  //   let stone = sphere.stones[this.props.stoneId];
-  //   let ruleIds = Object.keys(stone.rules);
-  //
-  //   let behaviourDays = {
-  //     Mon: false,
-  //     Tue: false,
-  //     Wed: false,
-  //     Thu: false,
-  //     Fri: false,
-  //     Sat: false,
-  //     Sun: false,
-  //   };
-  //
-  //   let dayIndices = [
-  //     "Mon",
-  //     "Tue",
-  //     "Wed",
-  //     "Thu",
-  //     "Fri",
-  //     "Sat",
-  //     "Sun"
-  //   ];
-  //
-  //   for (let i = 0; i < ruleIds.length; i++) {
-  //     let ruleId = ruleIds[i];
-  //     let rule = stone.rules[ruleId];
-  //     if (ruleId !== this.props.ruleId) {
-  //       if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
-  //       if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
-  //
-  //       for (let j = 0; j < 7; j++) {
-  //         behaviourDays[dayIndices[j]] = behaviourDays[dayIndices[j]] || rule.activeDays[dayIndices[j]];
-  //       }
-  //     }
-  //   }
-  //
-  //   let availableDays = 0;
-  //   for (let i = 0; i < 7; i++) {
-  //     availableDays += behaviourDays[dayIndices[i]] ? 1 : 0;
-  //     behaviourDays[dayIndices[i]] = false;
-  //   }
-  //
-  //   // if it could be that this rule is for the weekend, ignore the conflict for now.
-  //   if (availableDays >= 2) {
-  //     return false;
-  //   }
-  //
-  //   let constructor = this.props.twilightRule ? AicoreTwilight : AicoreBehaviour;
-  //   let isOverlapping = false;
-  //   for (let i = 0; i < ruleIds.length; i++) {
-  //     let ruleId = ruleIds[i];
-  //     let rule = stone.rules[ruleId];
-  //     if (ruleId !== this.props.ruleId) {
-  //       if (this.props.twilightRule  && rule.type !== BEHAVIOUR_TYPES.twilight) { continue; }
-  //       if (!this.props.twilightRule && rule.type === BEHAVIOUR_TYPES.twilight) { continue; }
-  //
-  //       let ruleInstance = new constructor(rule.data);
-  //       if (this.rule.isOverlappingWith(ruleInstance.rule, this.props.sphereId)) {
-  //         isOverlapping = true;
-  //         for (let j = 0; j < 7; j++) {
-  //           behaviourDays[dayIndices[j]] = behaviourDays[dayIndices[j]] || rule.activeDays[dayIndices[j]];
-  //         }
-  //       }
-  //     }
-  //   }
-  //
-  //   let overlappingDays = 0;
-  //   for (let i = 0; i < 7; i++) {
-  //     overlappingDays += behaviourDays[dayIndices[i]] ? 1 : 0;
-  //   }
-  //
-  //   return overlappingDays;
-  // }
-
   _shouldShowSuggestions() {
     let shouldShowTimeConflict = false;
     let showPresenceSuggestion = this.rule.isUsingPresence() === false;
@@ -406,7 +323,7 @@ export class RuleEditor extends LiveComponent<
 
     return (
       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-        {suggestionArray}
+        { suggestionArray }
       </View>
     )
   }
@@ -416,10 +333,9 @@ export class RuleEditor extends LiveComponent<
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
 
-
     let dimmerOptions = [];
     for (let i = 0.9; i >= 0.1; i = i - 0.1) {
-      dimmerOptions.push({ label: lang("x_percent",Math.round(i*100)), id: i});
+      dimmerOptions.push({ label: lang("x_percent", Math.round(i*100)), id: i });
     }
 
     core.eventBus.emit('showListOverlay', {
@@ -430,7 +346,7 @@ export class RuleEditor extends LiveComponent<
         (props) => {
           return (
             <DimmerPermissionOverlay hideOverlayCallback={props.hideOverlayCallback} callback={() => {
-              core.store.dispatch({type:'UPDATE_DIMMER', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {enabledState: true}})
+              core.store.dispatch({type:'UPDATE_DIMMER', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {enabledTarget: true}})
               props.hideCustomContentCallback();
             }} />
           );
@@ -472,7 +388,7 @@ export class RuleEditor extends LiveComponent<
         }
         this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "3"})
       },
-      themeColor: colors.lightGreen2.hex,
+      themeColor: colors.green.rgba(0.8),
       allowMultipleSelections: true,
       selection: this.rule.getLocationIds(),
       image: require("../../../../images/overlayCircles/roomsCircle.png")
@@ -645,7 +561,7 @@ export class RuleEditor extends LiveComponent<
                   onSelect: () => {this.rule.setActionState(1); this.forceUpdate(); }
                 },
                 {
-                  label: lang("Dimmed__", Math.round(this.rule.willDim() ? this.rule.getDimAmount() : 0.5 * 100)),
+                  label: lang("Dimmed__", Math.round(this.rule.willDim() ? this.rule.getDimAmount() * 100 : 0.5 * 100)),
                   subLabel: "(tap to change)",
                   isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming)},
                   onSelect: () => { this._showDimAmountPopup(this.exampleBehaviours.action.dimming); }
@@ -705,7 +621,7 @@ export class RuleEditor extends LiveComponent<
                     let state = core.store.getState();
                     let sphere = state.spheres[this.props.sphereId];
                     let stone = sphere.stones[this.props.stoneId];
-                    this.rule.setPresenceSomebodyInStoneLocation([stone.config.locationId]);
+                    this.rule.setPresenceInLocations([stone.config.locationId]);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "2"})
                   }
                 },
@@ -752,7 +668,6 @@ export class RuleEditor extends LiveComponent<
                 {
                   label: lang("All_day"),
                   isSelected: () => {
-                    console.log("EVALLING")
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.allDay);
                   },
                   onSelect: () => {
@@ -846,67 +761,12 @@ export class RuleEditor extends LiveComponent<
             { showSuggestions.shouldShowTimeConflict ||
 
             <BehaviourSubmitButton callback={() => {
-              if (this.props.onlyForDay) {
-                let ruleId = xUtil.getUUID();
-                let actions = [];
-                let activeDays = {};
-
-                let state = core.store.getState();
-                let sphere = state.spheres[this.props.sphereId];
-                let stone = sphere.stones[this.props.stoneId];
-                let rule = stone.rules[this.props.ruleId];
-
-
-                // we want to catch the case where the rule was not changed, even though the used pressed edit.
-                let existingRuleData = JSON.parse(rule.data);
-                if (xUtil.deepCompare(existingRuleData, this.rule.rule) === true) {
-                  NavigationUtil.dismissModal();
-                  return;
-                }
-
-                // if there IS a change, we want to allow the user to apply this change to multiple days in the wrap up
-                // TODO;
-
-
-
-
-                let existingActiveDays = {...rule.activeDays};
-                existingActiveDays[this.props.onlyForDay] = false;
-                activeDays[this.props.onlyForDay] = true;
-
-                // create a new rule just for this day
-                actions.push({
-                  type: "ADD_STONE_RULE",
-                  sphereId: this.props.sphereId,
-                  stoneId: this.props.stoneId,
-                  ruleId: ruleId,
-                  data: {
-                    type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
-                    data: this.rule.stringify(),
-                    activeDays: activeDays,
-                }});
-
-                // disable the existing rule for this day.
-                actions.push({
-                  type: "UPDATE_STONE_RULE",
-                  sphereId: this.props.sphereId,
-                  stoneId: this.props.stoneId,
-                  ruleId: this.props.ruleId,
-                  data: {
-                    activeDays: existingActiveDays,
-                }});
-
-
-                core.store.batchDispatch(actions);
-                NavigationUtil.dismissModal();
-                return;
-              }
-
               NavigationUtil.navigate("DeviceSmartBehaviour_Wrapup", {
                 sphereId: this.props.sphereId,
                 stoneId: this.props.stoneId,
                 ruleId: this.props.ruleId,
                 rule: this.rule.stringify(),
+                selectedDay: this.props.selectedDay,
                 twilightRule: this.props.twilightRule,
               })}}
              label={lang("Use_Behaviour_")} />

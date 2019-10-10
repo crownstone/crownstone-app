@@ -20,9 +20,20 @@ export class BehaviourOptionList extends Component<{
 
   _getElements() {
     let elements = [];
+    let selectedElementFound = false;
+
     this.props.elements.forEach((el,i) => {
-      console.log("RENDER ME ELEMENTO", el.label, el.isSelected())
-      let backgroundColor = el.isSelected() ? colors.green.hex : colors.white.rgba(0.8);
+      let selected = el.isSelected();
+
+      // we ensure that there is only one selection active at any given time.
+      if (selected && !selectedElementFound) {
+        selectedElementFound = true;
+      }
+      else {
+        selected = false;
+      }
+
+      let backgroundColor = selected ? colors.green.hex : colors.white.rgba(0.8);
       elements.push(
         <TouchableOpacity
           key={"behaviourElement_"+ i}
@@ -46,7 +57,6 @@ export class BehaviourOptionList extends Component<{
   }
 
   render() {
-    console.log("RENDER", this.props.header)
     return (
       <View style={{width:screenWidth, flex:1, alignItems:'center'}}>
         <View style={{flex:1}} />

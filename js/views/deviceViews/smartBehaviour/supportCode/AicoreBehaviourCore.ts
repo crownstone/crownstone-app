@@ -1,5 +1,6 @@
 import { AicoreUtil } from "./AicoreUtil";
 import { AicoreTimeData } from "./AicoreTimeData";
+import { xUtil } from "../../../../util/StandAloneUtil";
 
 const DEFAULT_DELAY_MINUTES = 5;
 
@@ -263,15 +264,14 @@ export class AicoreBehaviourCore {
     return null;
   }
 
-
-
-
   isAlwaysActive() : boolean {
     return this.rule.time.type === "ALL_DAY";
   }
+
   isUsingClockEndTime(): boolean {
     return this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK";
   }
+
   isUsingSunsetAsEndTime(): boolean {
     return this.rule.time.type === "RANGE" && this.rule.time.to.type === "SUNSET";
   }
@@ -282,5 +282,13 @@ export class AicoreBehaviourCore {
 
   stringify() : string {
     return JSON.stringify(this.rule);
+  }
+
+
+  isTheSameAs(otherRule: AicoreBehaviourCore | string) : boolean {
+    if (typeof otherRule === 'string') {
+      return xUtil.deepCompare(this.rule, JSON.parse(otherRule));
+    }
+    return xUtil.deepCompare(this.rule, otherRule.rule);
   }
 }
