@@ -5,6 +5,7 @@ import {
   LOG_CLOUD,
   LOG_BLE,
   LOG_MESH,
+  LOG_BEHAVIOUR,
   LOG_STORE,
   LOG_SCHEDULER,
   RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
@@ -84,6 +85,10 @@ class Logger {
 
   dfu(...any) {
     this._log('DFU --------', LOG_DFU,     LogProcessor.log_dfu, arguments);
+  }
+
+  behaviour(...any) {
+    this._log('Behaviour --', LOG_BEHAVIOUR ,LogProcessor.log_behaviour, arguments);
   }
 
   scheduler(...any) {

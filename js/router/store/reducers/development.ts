@@ -8,6 +8,7 @@ let defaultState = {
   log_native:         LOG_LEVEL.error,
   log_mesh:           LOG_LEVEL.error,
   log_broadcast:      LOG_LEVEL.error,
+  log_behaviour:      LOG_LEVEL.error,
   log_notifications:  LOG_LEVEL.error,
   log_scheduler:      LOG_LEVEL.error,
   log_ble:            LOG_LEVEL.error,
@@ -45,6 +46,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_promiseManager = update(action.data.log_promiseManager, newState.log_promiseManager);
         newState.log_mesh =           update(action.data.log_mesh,           newState.log_mesh);
         newState.log_broadcast =      update(action.data.log_broadcast,      newState.log_broadcast);
+        newState.log_behaviour =      update(action.data.log_behaviour,      newState.log_behaviour);
         newState.log_native =         update(action.data.log_native,         newState.log_native);
         newState.log_scheduler =      update(action.data.log_scheduler,      newState.log_scheduler);
         newState.log_notifications =  update(action.data.log_notifications,  newState.log_notifications);

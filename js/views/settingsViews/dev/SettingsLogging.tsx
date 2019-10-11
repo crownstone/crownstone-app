@@ -58,6 +58,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
       log_promiseManager: { label: lang("PromiseManager"),  explanation: ''},
       log_native:         { label: lang("Native"),          explanation: ''},
       log_nav:            { label: lang("Navigation"),      explanation: ''},
+      log_behaviour:      { label: lang("Behaviour"),       explanation: ''},
       log_mesh:           { label: lang("Mesh"),            explanation: ''},
       log_broadcast:      { label: lang("Broadcast"),       explanation: ''},
       log_notifications:  { label: lang("Notifications"),   explanation: ''},
