@@ -52,56 +52,40 @@ export function SmartBehaviourRule(props: {
       { /* Delete Icon */ }
       <SlideSideFadeInView width={50} visible={showEditIcons}>
         <TouchableOpacity onPress={() => {
-          core.eventBus.emit("showCustomOverlay", { content:
-              <DeleteOverlayContent
-                deleteOneCallback={() => {
-                  let select = (method) => {
-                    return () => {
-                      // check if we are even active on multiple days
-                      let usedDays = 0;
-                      for (let i = 0; i < 7; i++) {
-                        usedDays += props.rule.activeDays[DAY_INDICES_MONDAY_START[i]] ? 1 : 0;
-                      }
+          let activeDayCount = 0;
+          for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
+            if (props.rule.activeDays[DAY_INDICES_MONDAY_START[i]]) {
+              activeDayCount++;
+            }
+          }
 
-                      if (usedDays > 1) {
-                        let newActiveDays = {};
-                        newActiveDays[props.activeDay] = false;
-                        core.store.dispatch({
-                          type: "UPDATE_STONE_RULE",
-                          sphereId: props.sphereId,
-                          stoneId: props.stoneId,
-                          ruleId: props.ruleId,
-                          data: { activeDays: newActiveDays }
-                        });
-                      }
-                      else {
-                        core.store.dispatch({
-                          type: method,
-                          sphereId: props.sphereId,
-                          stoneId: props.stoneId,
-                          ruleId: props.ruleId,
-                        });
-                      }
-                    }
-                  }
-
-                  handleDelete(
-                    props.rule.syncedToCrownstone,
-                    select("MARK_STONE_RULE_FOR_DELETION"),
-                    select("REMOVE_STONE_RULE"),
-                  );
-                }}
-                deleteAllCallback={() => {
-                  let select = (method) => {
-                    return () => { core.store.dispatch({ type: method, sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId }); }
-                  }
-                  handleDelete(
-                    props.rule.syncedToCrownstone,
-                    select("MARK_STONE_RULE_FOR_DELETION"),
-                    select("REMOVE_STONE_RULE")
-                  );
-                }}
-              />})
+          if (activeDayCount === 0) {
+            Alert.alert(
+              "Are you sure?",
+              "Since this behaviour is only active on this day, removing it will remove it completely.",
+              [{text:"Cancel"}, {text:"I'm sure", onPress: () =>{
+                if (props.rule.idOnCrownstone) {
+                  core.store.dispatch({type:"MARK_STONE_RULE_FOR_DELETION", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
+                }
+                else {
+                  core.store.dispatch({type:"REMOVE_STONE_RULE", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
+                }
+              }}])
+          }
+          else {
+            NavigationUtil.launchModal(
+              "DeviceSmartBehaviour_Wrapup",
+              {
+                data: ai,
+                sphereId: props.sphereId,
+                stoneId: props.stoneId,
+                ruleId: props.ruleId,
+                rule: props.rule.data,
+                selectedDay: props.activeDay,
+                deleteRule: true,
+                isModal: true,
+              });
+          }
         }} style={{width:50}}>
           <Icon name={'ios-trash'} color={colors.red.rgba(0.6)} size={30} />
         </TouchableOpacity>
@@ -160,95 +144,3 @@ export function SmartBehaviourRule(props: {
   );
 }
 
-
-function handleDelete(syncedToCrownstone, executeSynced, executeUnSynced) {
-  if (syncedToCrownstone) {
-    Alert.alert(
-      "Are you sure?",
-      "I'll delete this rule from the Crownstone as soon as I can. Once that is done it will be removed from the list, until then, it will be crossed through.",
-      [
-        {text:"Nope"},
-        {text:"OK", onPress:() => {
-          executeSynced();
-          core.eventBus.emit("hideCustomOverlay");
-        }}])
-  }
-  else {
-    Alert.alert(
-      "Are you sure?",
-      "I'll remove this rule before it has been set on the Crownstone.",
-      [
-        {text:"Nope"},
-        {text:"OK", onPress:() => {
-          executeUnSynced();
-          core.eventBus.emit("hideCustomOverlay");
-        }}
-      ]);
-  }
-}
-
-export function DeleteOverlayContent(props : { deleteOneCallback: any, deleteAllCallback: any }) {
-  return (
-    <OverlayContent
-      header={"Delete only for this day?"}
-      callbackSingle={props.deleteOneCallback}
-      imageSourceSingle={require("../../../../images/icons/deleteOne.png")}
-      labelSingle={"Delete this behaviour for this day."}
-      callbackAll={props.deleteAllCallback}
-      imageSourceAll={require("../../../../images/icons/deleteAll.png")}
-      labelAll={"Delete this behaviour for all days."}
-    />
-  );
-}
-
-
-export function EditOverlayContent(props) {
-  return (
-    <OverlayContent
-      header={"Edit only for this day?"}
-      callbackSingle={props.editOneCallback}
-      imageSourceSingle={require("../../../../images/icons/editOne.png")}
-      labelSingle={"Edit this behaviour for this day."}
-      callbackAll={props.editAllCallback}
-      imageSourceAll={require("../../../../images/icons/editAll.png")}
-      labelAll={"Edit this behaviour for all days."}
-    />
-  );
-}
-
-function OverlayContent(props) {
-  let buttonStyle : ViewStyle = {
-    width: 0.75*screenWidth,
-    borderRadius: 20,
-    padding:20,
-    backgroundColor:colors.menuTextSelected.rgba(0.1),
-    margin: 10,
-    alignItems:'center',
-    justifyContent:'center'
-  }
-
-  let textStyle : TextStyle = {
-    paddingHorizontal: 5,
-    fontWeight: 'bold',
-    fontSize: 16
-  };
-
-  return (
-    <View style={{flex:1}}>
-      <View style={{height:30}} />
-      <Text numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5} style={deviceStyles.header}>{props.header}</Text>
-      <View style={{flex:1}} />
-      <TouchableOpacity onPress={() => {props.callbackSingle();}} style={buttonStyle}>
-        <ScaledImage source={props.imageSourceSingle} sourceWidth={852} sourceHeight={379} targetWidth={0.7*screenWidth} targetHeight={100}/>
-        <View style={{height:30}} />
-        <Text numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5} style={textStyle}>{props.labelSingle}</Text>
-      </TouchableOpacity>
-      <View style={{flex:1}} />
-      <TouchableOpacity onPress={() => { props.callbackAll(); }} style={buttonStyle}>
-        <ScaledImage source={props.imageSourceAll} sourceWidth={852} sourceHeight={379} targetWidth={0.7*screenWidth} targetHeight={100}/>
-        <View style={{height:30}} />
-        <Text numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5} style={textStyle}>{props.labelAll}</Text>
-      </TouchableOpacity>
-    </View>
-  )
-}

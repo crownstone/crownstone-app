@@ -23,7 +23,7 @@ import { WeekDayList } from "../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
 import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { DeleteOverlayContent, EditOverlayContent, SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
+import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
 import { StoneUtil } from "../../../util/StoneUtil";
 import { ScaledImage } from "../../components/ScaledImage";
