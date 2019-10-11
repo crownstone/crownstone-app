@@ -12,7 +12,7 @@ import { colors } from "../styles";
 
 export const OverlayUtil = {
 
-  callRoomSelectionOverlay: function(sphereId, callback) {
+  callRoomSelectionOverlay: function(sphereId, callback, currentLocationId?) {
     core.eventBus.emit('showListOverlay', {
       title: lang("Select_Room"),
       getItems: () => {

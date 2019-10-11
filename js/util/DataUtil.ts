@@ -90,6 +90,8 @@ export const DataUtil = {
     return stone || null;
   },
 
+
+
   getPresentSphereId: function(state) {
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++ ) {

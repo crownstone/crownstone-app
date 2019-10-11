@@ -26,6 +26,10 @@ import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { DimmerSlider } from "../components/DimmerSlider";
 import { AnimatedCircle } from "../components/animated/AnimatedCircle";
 import { LockedStateUI } from "../components/LockedStateUI";
+import { STONE_TYPES } from "../../Enums";
+import { DataUtil } from "../../util/DataUtil";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import { OverlayUtil } from "../overlays/OverlayUtil";
 
 
 export class DeviceOverview extends LiveComponent<any, any> {
@@ -36,6 +40,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
   storedSwitchState = 0;
   unsubscribeStoreEvents;
+  stoneCanSwitch = true;
 
   constructor(props) {
     super(props);
@@ -54,6 +59,10 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
     this.state = {
       switchIsOn: this.storedSwitchState > 0
+    }
+
+    if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB || true) {
+      this.stoneCanSwitch = false;
     }
 
     if (stone.config.firmwareVersionSeenInOverview === null) {
@@ -293,7 +302,30 @@ export class DeviceOverview extends LiveComponent<any, any> {
   }
 
 
-  getTypeIcon(stone) {
+  _getSpecificInformation(stone) {
+    let label = ""
+    switch (stone.config.type) {
+      case STONE_TYPES.guidestone:
+        label = "Guidestone"; break;
+      case STONE_TYPES.crownstoneUSB:
+        label = "Crownstone USB"; break;
+      default:
+        label = stone.config.type;
+    }
+    let map = MapProvider.stoneSummaryMap[this.props.stoneId];
+    return (
+      <View style={{width:screenWidth, padding:30, ...styles.centered}}>
+        <Text style={deviceStyles.subHeader}>{ "I'm a " + label + "!"}</Text>
+        { map  &&
+        <View style={{padding:30}}>
+          <Text style={deviceStyles.text}>{ "Currently, I'm in the " + map.locationName + "." }</Text>
+        </View>
+        }
+      </View>
+    )
+  }
+
+  _getStoneIcon(stone) {
     let iconColor = colors.white.rgba(1);
     let size = 0.24*availableScreenHeight;
     let borderWidth = size*0.04;
@@ -343,7 +375,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
   render() {
-    console.log(this.props)
     const state = core.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) {
@@ -356,13 +387,25 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.lightBlur}>
-        { this._getMenuIcons(stone)}
+        { this.stoneCanSwitch && this._getMenuIcons(stone)}
         <View style={{flex:2}} />
-        { this.getTypeIcon(stone) }
-        <View style={{flex:2}} />
-        <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
-        <View style={{height: 40}} />
-        { stone.config.locked === false ? this._getLockIcon(stone) : undefined }
+
+        {/* If the stone can't switch its a Guidestone or a Crownstone USB. */}
+        { !this.stoneCanSwitch && <View style={{padding:30}}><Text style={deviceStyles.header}>Hi there!</Text></View> }
+
+
+        { this._getStoneIcon(stone) }
+
+        {/* If the stone can't switch its a Guidestone or a Crownstone USB. The specific information is it telling you which device it is and where it lives. */}
+        { !this.stoneCanSwitch && this._getSpecificInformation(stone) }
+
+        <View style={{ flex: 2 }} />
+
+        {/* If the stone can't switch its a Guidestone or a Crownstone USB. It will not have a button. */}
+        { this.stoneCanSwitch && <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View> }
+
+        <View style={{ height: 40}} />
+        { stone.config.locked === false && this.stoneCanSwitch ? this._getLockIcon(stone) : undefined }
       </Background>
     )
   }

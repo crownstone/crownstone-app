@@ -48,17 +48,10 @@ export const Stacks = {
     // return {
     //   stack: {
     //     children: [
-    //       { component: {name: "DeviceSmartBehaviour_Wrapup", passProps: { sphereId: "70498f0b-efa0-c11b-1dec-1f34d1c9e64f", stoneId: "a1421d1e-937d-6fe-1f2-e5f72122311c", rule: new AicoreBehaviour().setPresenceInSphere().setTimeWhenDark().stringify()}} },
+    //       { component: {name: "DeviceSmartBehaviour", passProps: { sphereId: "70498f0b-efa0-c11b-1dec-1f34d1c9e64f", stoneId: "a1421d1e-937d-6fe-1f2-e5f72122311c"}} },
     //     ],
     //   },
     // }
-    return {
-      stack: {
-        children: [
-          { component: {name: "DeviceSmartBehaviour", passProps: { sphereId: "70498f0b-efa0-c11b-1dec-1f34d1c9e64f", stoneId: "a1421d1e-937d-6fe-1f2-e5f72122311c"}} },
-        ],
-      },
-    }
     return {
       bottomTabs: {
         id: 'bottomTabs',
@@ -66,8 +59,8 @@ export const Stacks = {
           {
             stack: {
               children: [
-                // { component: {name: "SphereOverview"} },
-                { component: {name: "DeviceOverview", passProps: {sphereId: "70498f0b-efa0-c11b-1dec-1f34d1c9e64f", stoneId: "a1421d1e-937d-6fe-1f2-e5f72122311c"}} },
+                { component: {name: "SphereOverview"} },
+                // { component: {name: "DeviceOverview", passProps: {sphereId: "70498f0b-efa0-c11b-1dec-1f34d1c9e64f", stoneId: "a1421d1e-937d-6fe-1f2-e5f72122311c"}} },
               ],
               options: {
                 bottomTab: {

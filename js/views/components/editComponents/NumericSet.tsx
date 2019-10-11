@@ -16,7 +16,7 @@ import { Icon } from "../Icon";
 import { core } from "../../../core";
 
 
-export class NumericGetSet extends Component<any, any> {
+export class NumericSet extends Component<any, any> {
   render() {
     let barHeight = this.props.barHeight;
     if (this.props.largeIcon)
@@ -32,7 +32,6 @@ export class NumericGetSet extends Component<any, any> {
       showValue = numericValue < 1 ? numericValue.toFixed(this.props.digits || 4) : String(numericValue)
     }
 
-
     return (
       <View style={[styles.listView, {height: barHeight, backgroundColor: this.props.buttonBackground || '#ffffff', width: screenWidth}]}>
         <Text
@@ -44,19 +43,14 @@ export class NumericGetSet extends Component<any, any> {
         >
           {this.props.label}
         </Text>
-        <TouchableOpacity onPress={() => { this.props.getCallback() }}>
-          <Text
-            style={[{fontSize: 16, maxWidth: 0.5*screenWidth}, this.props.labelStyle, this.props.style]}
-            numberOfLines={1}
-            adjustsFontSizeToFit={true}
-            minimumFontScale={0.1}
-          >
-            { showValue }
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{alignItems: 'center', justifyContent:'flex-start', width: 0.15 * screenWidth}} onPress={() => { this.props.getCallback() }}>
-          <Icon size={32} name={"md-arrow-down"} color={colors.menuTextSelected.hex} />
-        </TouchableOpacity>
+        <Text
+          style={[{fontSize: 16, maxWidth: 0.5*screenWidth}, this.props.labelStyle, this.props.style]}
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.1}
+        >
+          { showValue }
+        </Text>
         <TouchableOpacity style={{alignItems: 'center', justifyContent:'flex-end', width: 0.15 * screenWidth}} onPress={() => {
           core.eventBus.emit("showNumericOverlay",{
             value: String(showValue),
