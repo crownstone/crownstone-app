@@ -57,7 +57,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
             result.push({
               label: users[userId].email,
               type: (userId === state.user.userId || spherePermissions.manageUsers === false) ? 'info' :  lang("navigation"),
-              icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
+              icon: <IconButton name='ios-mail' size={27} radius={17}  color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
                 NavigationUtil.navigate( "SphereInvitedUser",{
                   title: users[userId].email,

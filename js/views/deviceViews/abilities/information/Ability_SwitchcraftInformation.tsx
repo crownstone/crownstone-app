@@ -35,7 +35,7 @@ export class Ability_SwitchcraftInformation extends Component<any, any> {
             <View style={{height:40}} />
             <ScaledImage source={require('../../../../images/switchCraft/switchCraftText.png')} sourceWidth={1000} sourceHeight={161} targetWidth={0.75*screenWidth} />
             <View style={{height:40}} />
-            <IconButton name="md-power" buttonSize={80} size={60} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
+            <IconButton name="md-power" buttonSize={80} size={60}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
             <View style={{height:10}} />
             <Text style={styles.explanation}>{ lang("Switchcraft_is_a_new__exp") }</Text>
             <ScaledImage source={require('../../../../images/switchCraft/switchCraft_normal_before.png')} sourceWidth={752} sourceHeight={563} targetWidth={0.75*screenWidth} />

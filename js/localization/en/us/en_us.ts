@@ -1392,7 +1392,7 @@ export default {
     Tap_to_toggle_allows_you_:           function() { return "Tap to toggle allows you to hold your phone against a Crownstone to toggle it automatically!" },
     If_indoor_localization_is:           function() { return "If indoor localization is disabled, tap to toggle does only work when the app is on the screen." },
     Use_Indoor_localization:             function() { return "Use Indoor localization" },
-    Indoor_localization_allow:           function() { return "Indoor localization allows the Crownstones to react to: " + "\n  - Enter/Exit Sphere" + "\n  - Enter/Exit Room" + "\n  - Your distance to the Crownstone (Near and Away) " + "\n  - Tap to Toggle" + "\n\nTo do this, the app has to run in the background. If you are in the Sphere, this can use more power than an average app." + "\n\nIf you do not wish to make use of any of the behaviours listed above, you can disable Indoor Localization and use the app as a remote control.\n\n" },
+    Indoor_localization_allow:           function() { return "Indoor localization allows you to use the Crownstone behaviour and tap to toggle.\n\nIf you don't want to use these features, you can disable Indoor Localization and use the app as a remote control.\n\n" },
     App_Settings:                        function() { return "App Settings" },
   },
   SettingsBleDebug:{

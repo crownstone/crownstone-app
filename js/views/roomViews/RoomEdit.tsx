@@ -204,7 +204,7 @@ export class RoomEdit extends LiveComponent<any, any> {
         items.push({label: lang("INDOOR_LOCALIZATION"), type: 'explanation',  below:false});
         // if a fingerprint is already present:
         if (room.config.fingerprintRaw) {
-          items.push({label: lang("Retrain_Room"), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
+          items.push({label: lang("Retrain_Room"), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
             Alert.alert(
               lang("_Retrain_Room__Only_do_th_header"),
               lang("_Retrain_Room__Only_do_th_body"),
@@ -216,7 +216,7 @@ export class RoomEdit extends LiveComponent<any, any> {
           items.push({label: lang("If_the_indoor_localizatio",ai), type: 'explanation',  below:true});
         }
         else {
-          items.push({label: lang("Teach__to_find_you_",ai), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
+          items.push({label: lang("Teach__to_find_you_",ai), type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19}  color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
             NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId});
           }});
           items.push({label: lang("Teach__to_identify_when_y",ai), type: 'explanation',  below:true});
@@ -241,7 +241,7 @@ export class RoomEdit extends LiveComponent<any, any> {
       items.push({
         label: lang("Remove_Room"),
         type: 'button',
-        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
+        icon: <IconButton name="ios-trash" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
         callback: () => {
           Alert.alert(
             lang("_Are_you_sure___Removing__header"),

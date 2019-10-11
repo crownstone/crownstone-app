@@ -140,7 +140,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     items.push({label: "CROWNSTONE IS IN ROOM", type: 'explanation', below: false});
     items.push({
       label: locationLabel,
-      mediumIcon:  <IconButton name="md-cube" size={25} buttonSize={38} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
+      mediumIcon:  <IconButton name="md-cube" size={25} buttonSize={38}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
       type:  'button',
       style: {color: colors.menuTextSelected.hex},
       callback: () => {
@@ -154,7 +154,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
       items.push({label: "DANGER", type: 'explanation', below: false});
       items.push({
         label: lang("Remove_from_Sphere"),
-        mediumIcon: <IconButton name="ios-trash" size={26} buttonSize={38} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
+        mediumIcon: <IconButton name="ios-trash" size={26} buttonSize={38}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
           core.eventBus.emit('hideLoading');

@@ -17,9 +17,9 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import {colors, } from '../styles'
 import {Util} from "../../util/Util";
-import {LocationHandler} from "../../native/localization/LocationHandler";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { SliderBar } from "../components/editComponents/SliderBar";
 
 
 export class SettingsApp extends LiveComponent<any, any> {
@@ -52,6 +52,23 @@ export class SettingsApp extends LiveComponent<any, any> {
     this.unsubscribe();
   }
 
+  _getExplanation(rssiOffset) {
+    if (!rssiOffset || rssiOffset === 0) {
+      return "Tap to toggle when the phone is close a Crownstone."
+    }
+    else if (rssiOffset > 0 && rssiOffset <= 5) {
+      return "Tap to toggle when the phone is very close a Crownstone."
+    }
+    else if (rssiOffset > 5) {
+      return "Tap to toggle when the phone is close a Crownstone. NOTE: It might not be possible to get close enough!"
+    }
+    else if (rssiOffset < 0 && rssiOffset >= -5) {
+      return "Tap to toggle when the phone is near a Crownstone."
+    }
+    else if (rssiOffset < -5) {
+      return "Tap to toggle when the phone is near a Crownstone. NOTE: the Crownstone will keep toggling when you're in range. This might be undesired."
+    }
+  }
   
   _getItems() {
     const store = core.store;
@@ -63,32 +80,32 @@ export class SettingsApp extends LiveComponent<any, any> {
       label: lang("Use_Tap_To_Toggle"),
       value: state.app.tapToToggleEnabled,
       type: 'switch',
-      icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
+      mediumIcon: <IconButton name="md-color-wand" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
       callback:(newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',
           data: {tapToToggleEnabled: newValue}
         });
-        if (newValue === true) {
-          // if we turn it on, we have to setup the training if the user has not already trained this.
-          let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
-          if (!tapToToggleCalibration) {
-            this.triggerTapToToggleCalibration = true;
-          }
-        }
-        else {
-          this.triggerTapToToggleCalibration = false;
-        }
     }});
+
 
     if (state.app.tapToToggleEnabled) {
       items.push({
-        label: lang("Calibrate_Tap_to_Toggle"),
-        type:'button',
-        style: {color:'#000'},
-        icon: <IconButton name="md-flask" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuBackground.hex}} />,
-        callback: () => { core.eventBus.emit("CalibrateTapToToggle", {tutorial: this.triggerTapToToggleCalibration}); }
-      });
+        __item: (
+          <SliderBar
+            label={"Only this Crownstone"}
+            sliderHidden={true}
+            mediumIcon={<IconButton name="ios-options" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}} />}
+            callback={(value) => {
+              core.store.dispatch({type:"UPDATE_APP_SETTINGS", data: { tapToToggleSensitivityOffset: value }});
+              this.setState({rssiOffsetTarget: value})
+            }}
+            min={-10}
+            max={10}
+            value={state.app.tapToToggleSensitivityOffset}
+            explanation={this._getExplanation(state.app.tapToToggleSensitivityOffset)}
+          />
+        )});
     }
 
     if (state.app.indoorLocalizationEnabled) {
@@ -103,8 +120,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       label: lang("Use_Indoor_localization"),
       value: state.app.indoorLocalizationEnabled,
       type: 'switch',
-      icon: <IconButton name="c1-locationPin1" size={18} button={true} color="#fff"
-                        buttonStyle={{backgroundColor: colors.blue.hex}}/>,
+      mediumIcon: <IconButton name="c1-locationPin1" buttonSize={38} size={22} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: (newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',

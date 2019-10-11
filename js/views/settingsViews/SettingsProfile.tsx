@@ -132,7 +132,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
       items.push({
         label: lang("Enable_Developer_Mode"),
         value: false,
-        icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
+        icon: <IconButton name={"md-code-working"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
         type: 'switch',
         callback:(newValue) => {
         setTimeout(() => {
@@ -148,7 +148,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     else {
       items.push({
         label: lang("Developer_Menu"),
-        icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
+        icon: <IconButton name={"md-code-working"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
         type: 'navigation',
         callback:() => { NavigationUtil.navigate( "SettingsDeveloper"); }
       });

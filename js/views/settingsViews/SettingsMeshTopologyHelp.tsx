@@ -35,7 +35,7 @@ export class SettingsMeshTopologyHelp extends Component<any, any> {
             <View style={{height:10}} />
             <Text style={styles.title}>{ lang("Mesh_Topology") }</Text>
             <View style={{height:20}} />
-            <IconButton name="md-share" buttonSize={80} size={60} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
+            <IconButton name="md-share" buttonSize={80} size={60}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
             <View style={{height:10}} />
             <Text style={styles.explanation}>{ lang("Crownstones_can_talk_to_e") }</Text>
             <View style={{ width:screenWidth, height:120, alignItems:'center', justifyContent:'center'}}>

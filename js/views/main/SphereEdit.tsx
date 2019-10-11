@@ -68,7 +68,7 @@ export class SphereEdit extends LiveComponent<any, any> {
         items.push({
           label: lang("Create_Sphere"),
           type: 'navigation',
-          largeIcon: <IconButton name='c1-sphere' buttonSize={55} size={40} radius={radius} button={true} color="#fff"
+          largeIcon: <IconButton name='c1-sphere' buttonSize={55} size={40} radius={radius}  color="#fff"
                                  buttonStyle={{ backgroundColor: colors.green.hex }}/>,
           callback: () => {
             createNewSphere(state.user.firstName + "'s Sphere")
@@ -106,7 +106,7 @@ export class SphereEdit extends LiveComponent<any, any> {
     items.push({
       label: lang("Rooms"),
       type: 'navigation',
-      largeIcon: <IconButton name='md-cube' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+      largeIcon: <IconButton name='md-cube' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereRoomOverview", {sphereId: this.props.sphereId});
       }
@@ -116,7 +116,7 @@ export class SphereEdit extends LiveComponent<any, any> {
     items.push({
       label: lang("Crownstones"),
       type: 'navigation',
-      largeIcon: <IconButton name='c2-pluginFilled' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
+      largeIcon: <IconButton name='c2-pluginFilled' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereCrownstoneOverview", {sphereId: this.props.sphereId});
       }
@@ -126,7 +126,7 @@ export class SphereEdit extends LiveComponent<any, any> {
       label: lang("Users"),
       type: 'navigation',
       fieldId: 'sphereEdit_users',
-      largeIcon: <IconButton name='c1-people' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+      largeIcon: <IconButton name='c1-people' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereUserOverview", {sphereId: this.props.sphereId});
       }
@@ -136,7 +136,7 @@ export class SphereEdit extends LiveComponent<any, any> {
     //   items.push({
     //     label: lang("Behaviour"),
     //     type: 'navigation',
-    //     largeIcon: <IconButton name='c1-brain' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft: 3, marginRight: 7}}/>,
+    //     largeIcon: <IconButton name='c1-brain' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft: 3, marginRight: 7}}/>,
     //     callback: () => {
     //       NavigationUtil.navigate( "SphereBehaviour", {sphereId: this.props.sphereId});
     //     }
@@ -146,7 +146,7 @@ export class SphereEdit extends LiveComponent<any, any> {
     items.push({
       label: lang("Integrations"),
       type: 'navigation',
-      largeIcon: <IconButton name='ios-link' buttonSize={55} size={40} radius={radius} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlueDark.hex}}/>,
+      largeIcon: <IconButton name='ios-link' buttonSize={55} size={40} radius={radius}  color="#fff" buttonStyle={{backgroundColor: colors.csBlueDark.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "SphereIntegrations", {sphereId: this.props.sphereId});
       }

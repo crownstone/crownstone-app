@@ -121,7 +121,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     items.push({
       label: ai,
       type: spherePermissions.editSphere ? 'navigation' : 'info',
-      icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+      icon: <IconButton name='c1-brain' size={21} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
       callback: () => {
         NavigationUtil.navigate( "AiStart", {sphereId: this.props.sphereId, canGoBack: true});
       }
@@ -133,7 +133,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     items.push({
       label: lang("Manage_Sphere_Users"),
       type: 'navigation',
-      icon: <IconButton name='c1-people' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+      icon: <IconButton name='c1-people' size={21} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
       callback: () => {
         core.eventBus.emit("highlight_nav_field", "sphereEdit_users");
         NavigationUtil.back().then(() => {
@@ -148,7 +148,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     items.push({label: lang("DANGER"),  type:'explanation', below: false});
     items.push({
       label: lang("Leave_Sphere"),
-      icon: <IconButton name="md-exit" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,
+      icon: <IconButton name="md-exit" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />,
       style: {color:colors.menuRed.hex},
       type: 'button',
       callback: () => {
@@ -158,7 +158,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     if (spherePermissions.deleteSphere) {
       items.push({
         label: lang("Delete_Sphere"),
-        icon: <IconButton name="md-exit" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkRed.hex}}/>,
+        icon: <IconButton name="md-exit" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.darkRed.hex}}/>,
         style: {color: colors.darkRed.hex},
         type: 'button',
         callback: () => {

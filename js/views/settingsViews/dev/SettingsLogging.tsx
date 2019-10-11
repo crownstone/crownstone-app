@@ -120,7 +120,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
       label: lang("Native_Extended_Logging"),
       value: state.development.nativeExtendedLogging,
       type: 'switch',
-      icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+      icon: <IconButton name="ios-create" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
       callback: (newValue) => {
         store.dispatch({
           type: 'DEFINE_LOGGING_DETAILS',
@@ -147,7 +147,7 @@ export class SettingsLogging extends LiveComponent<any, any> {
     items.push({
       label: lang("Disable_Logging"),
       type: 'button',
-      icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
+      icon: <IconButton name="md-close-circle" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:(newValue) => {
         store.dispatch({
           type: 'SET_LOGGING',

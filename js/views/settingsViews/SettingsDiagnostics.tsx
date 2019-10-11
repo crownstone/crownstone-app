@@ -108,7 +108,7 @@ export class SettingsDiagnostics extends Component<any, any> {
     return (
       <Animated.View style={{flex:1, alignItems:'center', justifyContent:'center', position:'relative', left: this.state.leftOffset, opacity: this.state.opacity}}>
         <View style={{flex:1}} />
-        <IconButton name="md-analytics" buttonSize={0.27*screenWidth} size={0.21*screenWidth} radius={0.05*screenWidth} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
+        <IconButton name="md-analytics" buttonSize={0.27*screenWidth} size={0.21*screenWidth} radius={0.05*screenWidth}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
         <View style={{flex:0.5}} />
         <Text style={diagnosticStyles.headerStyle}>{ lang("Since_everything_communic") }</Text>
         <View style={{flex:0.5}} />

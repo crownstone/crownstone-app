@@ -91,7 +91,7 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
           size={iconSize*0.8}
           buttonSize={iconSize}
           radius={iconSize*0.5}
-          button={true}
+
           color={ colors.blinkColor1.rgba(1)}
           buttonStyle={{ backgroundColor: colors.white.hex, borderWidth: 2, borderColor: colors.blinkColor1.hex }}
         />

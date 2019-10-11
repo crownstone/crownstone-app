@@ -200,7 +200,7 @@ lang("_No_recipients____I_cant__body"),
       items.push({
         label: userData[1].text,
         type: 'navigation',
-        icon:  <IconButton name={userData[1].icon} size={24} buttonSize={34} radius={17} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/>,
+        icon:  <IconButton name={userData[1].icon} size={24} buttonSize={34} radius={17}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/>,
         callback: () => {
          NavigationUtil.navigate( "SelectFromList",{items: userData, title: lang("Recipients"), callback: (selection) => {
             this.setState({recipients: selection});
@@ -213,7 +213,7 @@ lang("_No_recipients____I_cant__body"),
         wrapperStyle: { backgroundColor: colors.white.rgba(0.6) },
         style: {paddingLeft: 12},
         icon: <View style={{paddingLeft: 12}}>
-          <IconButton name='ios-body' size={22} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex, marginLeft:3, marginRight:7}}/>
+          <IconButton name='ios-body' size={22} buttonSize={30} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex, marginLeft:3, marginRight:7}}/>
         </View>,
         value: this.state.everyoneInSphereIncludingOwner,
         callback: (newValue) => {
@@ -225,7 +225,7 @@ lang("_No_recipients____I_cant__body"),
       items.push({
         label: lang("Add_recipient"),
         type: 'navigation',
-        icon: <IconButton name='ios-body' size={23} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/>,
+        icon: <IconButton name='ios-body' size={23} buttonSize={30} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/>,
         callback: () => {
          NavigationUtil.navigate( "SelectFromList",{items: userData, title: lang("Recipients"), callback: (selection) => {
             this.setState({recipients: selection});
@@ -237,7 +237,7 @@ lang("_No_recipients____I_cant__body"),
         if (this.state.recipients[user.id] === true) {
           if (user.type === undefined) {
             let icon = user.icon ?
-              <IconButton name={user.icon} size={22} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/> :
+              <IconButton name={user.icon} size={22} buttonSize={30} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/> :
               <ProfilePicture picture={user.picture} size={32} />;
             items.push({
               label: user.text,
@@ -285,7 +285,7 @@ lang("_No_recipients____I_cant__body"),
         label: location.text,
         type: 'navigation',
         icon:  location.icon ?
-          <IconButton name={location.icon} size={18} buttonSize={34} radius={17} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/> :
+          <IconButton name={location.icon} size={18} buttonSize={34} radius={17}  color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/> :
           <ProfilePicture picture={location.picture} size={30} />,
         callback: selectLocation
       });
@@ -294,7 +294,7 @@ lang("_No_recipients____I_cant__body"),
       items.push({
         label: lang("Select"),
         type: 'navigation',
-        icon: <IconButton name='md-pin' size={21} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7}}/>,
+        icon: <IconButton name='md-pin' size={21} buttonSize={30} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7}}/>,
         callback: selectLocation
       });
     }

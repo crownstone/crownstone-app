@@ -377,8 +377,8 @@ export class TestResult extends Component<any, any> {
         <Text style={testResult}>{ lang("____",this.props.label,this.props.state,null) }</Text>
         <View style={{flex:1}} />
         { this.props.state === null  || this.props.state === undefined  ? <ActivityIndicator animating={true} size="small" /> : undefined }
-        { this.props.state === true  ? <IconButton name="md-analytics" buttonSize={25} size={17} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />: undefined }
-        { this.props.state === false ? <IconButton name="md-analytics" buttonSize={25} size={17} button={true} color="#fff" buttonStyle={{backgroundColor:colors.gray.hex}}  />: undefined }
+        { this.props.state === true  ? <IconButton name="md-analytics" buttonSize={25} size={17}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />: undefined }
+        { this.props.state === false ? <IconButton name="md-analytics" buttonSize={25} size={17}  color="#fff" buttonStyle={{backgroundColor:colors.gray.hex}}  />: undefined }
       </FadeInView>
     )
   }

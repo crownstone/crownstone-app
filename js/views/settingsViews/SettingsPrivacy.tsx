@@ -64,7 +64,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
       label: lang("Share_location"),
       value: user.uploadLocation,
       type: 'switch',
-      icon: <IconButton name="ios-pin" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
+      icon: <IconButton name="ios-pin" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadLocation: newValue} });
     }});
@@ -79,7 +79,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
       label: lang("Share_switch_state"),
       value: user.uploadSwitchState,
       type: 'switch',
-      icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+      icon: <IconButton name="md-power" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadSwitchState: newValue} });
     }});
@@ -93,7 +93,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
       label: lang("Share_phone_type_details"),
       value: user.uploadDeviceDetails,
       type: 'switch',
-      icon: <IconButton name="ios-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      icon: <IconButton name="ios-phone-portrait" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
       callback:(newValue) => {
         if (newValue === false) {
           let deviceId = Util.data.getCurrentDeviceId(state);

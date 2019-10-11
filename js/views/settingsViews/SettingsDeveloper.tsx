@@ -63,7 +63,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         label: lang("Enable_Logging"),
         value: dev.logging_enabled,
         type: 'switch',
-        icon: <IconButton name="ios-create" size={22} button={true} color="#fff"
+        icon: <IconButton name="ios-create" size={22}  color="#fff"
                           buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         callback: (newValue) => {
           if (newValue === false) {
@@ -82,7 +82,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       items.push({
         label: lang("Logging_Configuration"),
         type: 'navigation',
-        icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
+        icon: <IconButton name="ios-create" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.green2.hex}}/>,
         callback: () => {
           NavigationUtil.navigate( "SettingsLogging");
         }
@@ -91,7 +91,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         label: lang("Clear_Logs_"),
         type: 'button',
         style: {color: colors.menuBackground.hex},
-        icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
+        icon: <IconButton name="ios-cut" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
         callback: () => {
           Alert.alert(
 lang("_Clear_all_Logs___Press_O_header"),
@@ -110,7 +110,7 @@ text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}
       label: lang("Sync_Now_"),
       type: 'button',
       style: {color: colors.black.hex},
-      icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+      icon: <IconButton name="md-cloud-download" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback: () => {
         if (CLOUD.__currentlySyncing === false) {
           core.eventBus.emit("showLoading", lang("Syncing___"));
@@ -132,7 +132,7 @@ lang("_Sync_already_in_progress_body"),
       label: lang("Test_Notifications"),
       type: 'button',
       style: {color: colors.black.hex},
-      icon: <IconButton name="ios-jet" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
+      icon: <IconButton name="ios-jet" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
       callback:() => {
         core.eventBus.emit("showLoading", lang("Requesting_Notifications_"));
 
@@ -191,14 +191,14 @@ lang("_No_device_Id___There_was_body"),
     items.push({
       label: lang("BLE_Debug"),
       type: 'navigation',
-      icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightBlue2.hex}} />,
+      icon: <IconButton name="ios-build" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.lightBlue2.hex}} />,
       callback:() => {
         NavigationUtil.navigate( "SettingsBleDebug");
       }});
     items.push({
       label: lang("Localization_Debug"),
       type: 'navigation',
-      icon: <IconButton name="md-locate" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
+      icon: <IconButton name="md-locate" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback:() => {
         NavigationUtil.navigate( "SettingsLocalizationDebug");
       }});
@@ -214,7 +214,7 @@ lang("_No_device_Id___There_was_body"),
       label: lang("Broadcasting"),
       value: dev.broadcasting_enabled,
       type: 'switch',
-      icon: <IconButton name="md-wifi" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
+      icon: <IconButton name="md-wifi" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { broadcasting_enabled: newValue }});
       }});
@@ -227,7 +227,7 @@ lang("_No_device_Id___There_was_body"),
         dropdownHeight: 130,
         valueRight: true,
         buttons: true,
-        icon: <IconButton name="ios-wifi" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+        icon: <IconButton name="ios-wifi" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
         valueStyle: { color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15 },
         value: device.rssiOffset,
         items: broadcastLevels,
@@ -245,7 +245,7 @@ lang("_No_device_Id___There_was_body"),
     items.push({
       label: lang("Change_Channels"),
       type: 'navigation',
-      icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
+      icon: <IconButton name="md-share" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
       callback:() => {
         NavigationUtil.navigate( "SettingsMeshDebug");
       }});
@@ -253,7 +253,7 @@ lang("_No_device_Id___There_was_body"),
       label: lang("Show_RSSI_in_Topology"),
       value: dev.show_rssi_values_in_mesh,
       type: 'switch',
-      icon: <IconButton name="ios-calculator" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightGreen.hex}} />,
+      icon: <IconButton name="ios-calculator" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.lightGreen.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { show_rssi_values_in_mesh: newValue }});
       }});
@@ -261,7 +261,7 @@ lang("_No_device_Id___There_was_body"),
       label: lang("Reset_networks"),
       type:  'button',
       style: {color: colors.black.hex},
-      icon:  <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+      icon:  <IconButton name="ios-nuclear" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback:() => {
         Alert.alert(
 lang("_Are_you_sure___This_will_header"),
@@ -284,7 +284,7 @@ lang("_Reset_Done__Rediscovery__body"),
     items.push({
       label: lang("Mesh_Topology"),
       type: 'navigation',
-      icon: <IconButton name="md-share" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlueDark.hex}} />,
+      icon: <IconButton name="md-share" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlueDark.hex}} />,
       callback:() => {
         NavigationUtil.navigate( "SettingsMeshTopology");
       }});
@@ -299,7 +299,7 @@ lang("_Reset_Done__Rediscovery__body"),
       label: lang("Join_Alpha_Program"),
       value: user.betaAccess,
       experimental: user.betaAccess,
-      icon: <IconButton name={"ios-flask"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+      icon: <IconButton name={"ios-flask"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
       type: 'switch',
       callback:(newValue) => {
         let storeIt = () => {
@@ -323,7 +323,7 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
     items.push({
       label: lang("FeaturePreview"),
       value: dev.preview,
-      icon: <IconButton name={"ios-fastforward"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelectedDark.hex}}/>,
+      icon: <IconButton name={"ios-fastforward"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelectedDark.hex}}/>,
       type: 'switch',
       callback:(newValue) => {
         let storeIt = () => {
@@ -350,7 +350,7 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
     items.push({
       label: lang("Disable_Developer_Mode"),
       type: 'button',
-      icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
+      icon: <IconButton name="md-close-circle" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:() => {
         store.dispatch({
           type: 'SET_LOGGING',

@@ -3,10 +3,11 @@ import { update, getTime, refreshDefaults } from './reducerUtil'
 let defaultState = {
   activeSphere: null,
   notificationToken: null,
+
   tapToToggleEnabled: false,
-  keepAlivesEnabled: true,
+  tapToToggleSensitivityOffset: 0,
   indoorLocalizationEnabled: true,
-  shownWhatsNewVersion: '0',
+
   hasSeenDeviceSettings: false,
   hasZoomedOutForSphereOverview: false,
 
@@ -53,12 +54,10 @@ export default (state = defaultState, action : any = {}) => {
     case 'UPDATE_APP_SETTINGS':
       if (action.data) {
         newState = {...state};
-        newState.keepAlivesEnabled         = update(action.data.keepAlivesEnabled,          newState.keepAlivesEnabled);
-        newState.indoorLocalizationEnabled = update(action.data.indoorLocalizationEnabled,  newState.indoorLocalizationEnabled);
-        newState.tapToToggleEnabled        = update(action.data.tapToToggleEnabled,         newState.tapToToggleEnabled);
-        newState.shownWhatsNewVersion      = update(action.data.shownWhatsNewVersion,       newState.shownWhatsNewVersion);
-
-        newState.migratedDataToVersion     = update(action.data.migratedDataToVersion,      newState.migratedDataToVersion);
+        newState.indoorLocalizationEnabled    = update(action.data.indoorLocalizationEnabled,    newState.indoorLocalizationEnabled);
+        newState.tapToToggleEnabled           = update(action.data.tapToToggleEnabled,           newState.tapToToggleEnabled);
+        newState.tapToToggleSensitivityOffset = update(action.data.tapToToggleSensitivityOffset, newState.tapToToggleSensitivityOffset);
+        newState.migratedDataToVersion        = update(action.data.migratedDataToVersion,        newState.migratedDataToVersion);
 
         newState.hasSeenDeviceSettings         = update(action.data.hasSeenDeviceSettings,          newState.hasSeenDeviceSettings);
         newState.hasZoomedOutForSphereOverview = update(action.data.hasZoomedOutForSphereOverview,  newState.hasZoomedOutForSphereOverview);

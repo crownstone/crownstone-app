@@ -100,7 +100,7 @@ export class MessageEntry extends Component<{
             size={iconSize*0.8}
             buttonSize={iconSize}
             radius={iconSize*0.5}
-            button={true}
+
             color="#fff"
             buttonStyle={{
               backgroundColor: colors.green.hex,

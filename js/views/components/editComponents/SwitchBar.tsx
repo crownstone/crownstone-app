@@ -14,7 +14,7 @@ import {
   View
 } from 'react-native';
 
-import {styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE} from '../../styles'
+import { styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_SIZE } from "../../styles";
 
 export class SwitchBar extends Component<any, any> {
   animationAllowed;
@@ -67,7 +67,11 @@ export class SwitchBar extends Component<any, any> {
   }
 
   _getButton(navBarHeight, fontColor) {
+
+
     let style = [styles.listView, {height: navBarHeight}, this.props.wrapperStyle];
+
+
     let helpColor = colors.black.rgba(0.5);
     if (this.props.experimental) {
       style =  [styles.listView,{position:'absolute', top:0, left:0, overflow:'hidden', height: navBarHeight, width: screenWidth, backgroundColor:"transparent"}];
@@ -76,6 +80,8 @@ export class SwitchBar extends Component<any, any> {
 
     return (
       <View style={style}>
+        {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
+        {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
         {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
         {this.props.iconIndent === true ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]} /> : undefined }
         <Animated.Text style={[styles.listTextLarge, this.props.style, {color: fontColor}]}>{this.props.label}</Animated.Text>
@@ -98,11 +104,9 @@ export class SwitchBar extends Component<any, any> {
 
   render() {
     let navBarHeight = this.props.barHeight || NORMAL_ROW_SIZE;
-    if (this.props.largeIcon)
-      navBarHeight = LARGE_ROW_SIZE;
-    else if (this.props.icon)
-      navBarHeight = NORMAL_ROW_SIZE;
-
+    if (this.props.largeIcon || this.props.size === "large")        { navBarHeight = LARGE_ROW_SIZE; }
+    else if (this.props.mediumIcon || this.props.size === "medium") { navBarHeight = MID_ROW_SIZE; }
+    else if (this.props.icon)                                       { navBarHeight = NORMAL_ROW_SIZE; }
 
     if (this.props.experimental) {
       let fontColor = this.state.opacity.interpolate({

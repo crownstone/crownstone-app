@@ -12,7 +12,6 @@ export class IconButton extends Component<
     size:             number,
     color:            string,
     buttonSize?:      number,
-    button?:          boolean,
     addIcon?:         boolean,
     radius?:          number,
     plusSize?:        number,

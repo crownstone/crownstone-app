@@ -59,7 +59,7 @@ export class ToonSettings extends LiveComponent<any, any> {
       label: lang("Use_this_phone"),
       value: toon.enabled,
       type: 'switch',
-      icon: <IconButton name="md-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
+      icon: <IconButton name="md-phone-portrait" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
       callback: (newValue) => {
         core.store.dispatch({
           type: 'TOON_UPDATE_SETTINGS',
