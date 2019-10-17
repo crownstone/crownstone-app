@@ -7,6 +7,8 @@ let defaultAbilityFormat = {
   syncedToCrownstone: true,
   updatedAt: 0
 };
+
+
 let tapToToggleAbilityFormat = {
   enabled: false,
   enabledTarget: false,
@@ -15,6 +17,7 @@ let tapToToggleAbilityFormat = {
   syncedToCrownstone: true,
   updatedAt: 0
 };
+
 
 let dimmingReducer = (state = defaultAbilityFormat, action) => {
   switch (action.type) {
@@ -37,6 +40,7 @@ let dimmingReducer = (state = defaultAbilityFormat, action) => {
   }
 };
 
+
 let switchcraftReducer = (state = defaultAbilityFormat, action) => {
   switch (action.type) {
     case 'UPDATE_ABILITY_SWITCHCRAFT':
@@ -57,6 +61,7 @@ let switchcraftReducer = (state = defaultAbilityFormat, action) => {
       return state;
   }
 };
+
 
 let tapToToggleReducer = (state = tapToToggleAbilityFormat, action) => {
   switch (action.type) {
@@ -80,7 +85,6 @@ let tapToToggleReducer = (state = tapToToggleAbilityFormat, action) => {
       return state;
   }
 };
-
 
 
 export default combineReducers({

@@ -41,7 +41,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.rule);
     let { locationPrefix, locationStr } = AicoreUtil.extractLocationStrings(this.rule);
     let timeStr = AicoreUtil.extractTimeString(this.rule);
-    let { optionPrefix, optionStr } = AicoreUtil.extractOptionStrings(this.rule);
+    let { endConditionPrefix, endConditionStr } = AicoreUtil.extractEndConditionStrings(this.rule);
 
 
     return {
@@ -52,8 +52,8 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
       locationPrefix: { label: locationPrefix, data: null },
       location:       { label: locationStr,    data: this.rule.presence },
       time:           { label: timeStr,        data: this.rule.time },
-      optionPrefix:   { label: optionPrefix,   data: null },
-      option:         { label: optionStr,      data: this.rule.options }
+      optionPrefix:   { label: endConditionPrefix,   data: null },
+      option:         { label: endConditionStr,      data: this.rule.endCondition }
     }
   }
 
@@ -186,16 +186,16 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     return this;
   }
 
-  setNoOptions() : AicoreBehaviour {
-    delete this.rule.options;
+  setNoEndCondition() : AicoreBehaviour {
+    delete this.rule.endCondition;
     return this;
   }
-  setOptionStayOnWhilePeopleInSphere() : AicoreBehaviour {
-    this.rule.options = {type:"SPHERE_PRESENCE_AFTER"};
+  setEndConditiontayOnWhilePeopleInSphere() : AicoreBehaviour {
+    this.rule.endCondition = {type:"PRESENCE_AFTER", time: 3600, presence: {type: "SOMEBODY", data: { type: "SPHERE"}}};
     return this;
   }
-  setOptionStayOnWhilePeopleInLocation() : AicoreBehaviour {
-    this.rule.options = {type:"LOCATION_PRESENCE_AFTER"};
+  setEndConditiontayOnWhilePeopleInLocation(locationId) : AicoreBehaviour {
+    this.rule.endCondition = {type:"PRESENCE_AFTER", time: 3600, presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}}};
     return this;
   }
 
@@ -222,11 +222,11 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     return match;
   }
   doesOptionMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
-    return this.rule.options &&
-      this.rule.options.type &&
-      otherAicoreBehaviour.rule.options &&
-      otherAicoreBehaviour.rule.options.type &&
-      this.rule.options.type === otherAicoreBehaviour.rule.options.type;
+    return this.rule.endCondition &&
+      this.rule.endCondition.type &&
+      otherAicoreBehaviour.rule.endCondition &&
+      otherAicoreBehaviour.rule.endCondition.type &&
+      this.rule.endCondition.type === otherAicoreBehaviour.rule.endCondition.type;
   }
 
 
@@ -264,7 +264,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     }
     return false;
   }
-  hasNoOptions(): boolean {
-    return this.rule.options === undefined;
+  hasNoEndCondition(): boolean {
+    return this.rule.endCondition === undefined;
   }
 }

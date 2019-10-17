@@ -92,14 +92,14 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   setPresenceSomebodyInLocations(locationIds: string[]) : AicoreTwilight { return this; }
   setPresenceNobodyInLocations(locationIds: string[]) : AicoreTwilight { return this; }
   setPresenceSpecificUserInLocations(locationIds: string[], userProfileId: number) : AicoreTwilight { return this; }
-  setNoOptions() : AicoreTwilight { return this; }
-  setOptionStayOnWhilePeopleInSphere() : AicoreTwilight { return this; }
-  setOptionStayOnWhilePeopleInLocation() : AicoreTwilight { return this; }
-
+  setNoEndCondition() : AicoreTwilight { return this;  }
+  setEndConditiontayOnWhilePeopleInSphere() : AicoreTwilight { return this;  }
+  setEndConditiontayOnWhilePeopleInLocation(locationId) : AicoreTwilight { return this;  }
 
   doesActionMatch(otherAicoreTwilight: AicoreTwilight) : boolean {
     return xUtil.deepCompare(this.rule.action, otherAicoreTwilight.rule.action);
   }
+
   doesPresenceTypeMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
   doesPresenceLocationMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
   doesPresenceMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }

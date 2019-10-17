@@ -1,19 +1,18 @@
 /**
- * Sync the stones from the cloud to the database.
+ *
+ * Sync the messages from the cloud to the database.
+ *
  */
 
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
-import {transferStones} from "../../../transferData/transferStones";
 import {CLOUD} from "../../../cloudAPI";
 import {SyncingSphereItemBase} from "./SyncingBase";
-import {LOGe, LOGw} from "../../../../logging/Log";
-import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import { xUtil } from "../../../../util/StandAloneUtil";
-import { StoneAbilitySyncer } from "./StoneAbilitySyncer";
-import { StoneBehaviourSyncer } from "./StoneBehaviourSyncer";
+import { transferStones } from "../../../transferData/transferStones";
+import { Permissions } from "../../../../backgroundProcesses/PermissionManager";
+import { LOGw } from "../../../../logging/Log";
 
-export class StoneSyncer extends SyncingSphereItemBase {
-
+export class StoneBehaviourSyncer extends SyncingSphereItemBase {
   download() {
     return CLOUD.forSphere(this.cloudSphereId).getStonesInSphere()
   }
@@ -87,7 +86,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
       cloudIdMap[stone_from_cloud.id] = localId;
 
-      this.syncChildren(localId, stonesInState[localId], stone_from_cloud);
+      this.syncChildren(localId, store, stone_from_cloud);
 
       return Promise.all(this.transferPromises);
     })
@@ -99,11 +98,8 @@ export class StoneSyncer extends SyncingSphereItemBase {
   }
 
 
-  syncChildren(localId, localStone, stone_from_cloud) {
-    let abilitySyncer = new StoneAbilitySyncer(this.actions, [], localId, this.localSphereId, this.globalCloudIdMap, this.globalSphereMap[localId]);
-    let behaviourSyncer = new StoneBehaviourSyncer(this.actions, [], localId, this.localSphereId, this.globalCloudIdMap, this.globalSphereMap[localId]);
+  syncChildren(localId, store, stone_from_cloud) {
 
-    abilitySyncer.sync(localStone.abilties, stone_from_cloud.abilities)
   }
 
 
@@ -211,7 +207,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
           cloudSphereId: this.cloudSphereId,
           cloudId: stone_from_cloud.id,
         })
-        .catch(() => {})
+          .catch(() => {})
       );
     }
     else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud) || corruptData) {

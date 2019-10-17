@@ -55,7 +55,6 @@ class MapProviderClass {
           change.changeSpheres       ||
           change.changeSphereUsers   ||
           change.changeStones        ||
-          change.changeStoneSchedule ||
           change.changeStoneHandle   ||
           change.changeDeviceData    ||
           change.updatedToon         ||
@@ -119,7 +118,11 @@ class MapProviderClass {
       getFromConfig(sphere.locations,        this.cloud2localMap.locations,  this.local2cloudMap.locations);
       getFromConfig(sphere.stones,           this.cloud2localMap.stones,     this.local2cloudMap.stones);
       getFromItem(sphere.thirdParty.toons,   this.cloud2localMap.toons,      this.local2cloudMap.toons);
-      getFromId(sphere.users,         this.cloud2localMap.users,      this.local2cloudMap.users);
+      getFromId(sphere.users,                this.cloud2localMap.users,      this.local2cloudMap.users);
+
+      Object.keys(sphere.stones).forEach((stoneId) => {
+        getFromItem(sphere.stones[stoneId].rules,   this.cloud2localMap.behaviour,      this.local2cloudMap.behaviour);
+      })
     });
   }
 }

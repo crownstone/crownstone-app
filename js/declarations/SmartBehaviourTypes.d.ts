@@ -1,11 +1,11 @@
 type aicorePresenceType   = "SOMEBODY" | "NOBODY"  | "IGNORE"  | "SPECIFIC_USERS"
 type sunTimes             = "SUNSET"   | "SUNRISE"
 
+type aicorePresenceSomebody = { type: "SOMEBODY", data: aicorePresenceSphereData | aicorePresenceLocationData }
 type aicorePresenceGeneric  = { type: "SOMEBODY" | "NOBODY", data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number }
 type aicorePresenceSpecific = { type: "SPECIFIC_USERS",      data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number, profileIds:number[] }
 type aicorePresenceNone     = { type: "IGNORE" }
 type aicorePresence         = aicorePresenceGeneric | aicorePresenceSpecific | aicorePresenceNone
-
 
 type aicorePresenceSphereData   = { type: "SPHERE" }
 type aicorePresenceLocationData = { type: "LOCATION", locationIds: string[] }
@@ -18,9 +18,11 @@ type aicoreTimeDataSun   = { type: sunTimes, offsetMinutes: number}
 type aicoreTimeDataClock = { type: "CLOCK", data: timeHoursMinutes }
 type aicoreTimeData      = aicoreTimeDataSun | aicoreTimeDataClock
 
-interface aicoreBehaviourOptions {
-  type: "SPHERE_PRESENCE_AFTER" | "LOCATION_PRESENCE_AFTER"
-}
+type aicoreEndCondition = {
+  type: "PRESENCE_AFTER",
+  time: aicoreTimeData | number, // how long or until when is this rule extended by a presence rule
+  presence: aicorePresenceSomebody,
+} | { type: "NONE"}
 
 type timeHoursMinutes = {
   minutes: number,
@@ -57,7 +59,7 @@ interface behaviour {
   },
   time: aicoreTime,
   presence: aicorePresence,
-  options?: aicoreBehaviourOptions
+  endCondition?: aicoreEndCondition
 }
 
 // TYPE: TWILIGHT

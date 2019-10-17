@@ -263,7 +263,7 @@ export class RuleEditor extends LiveComponent<
     let showPresenceSuggestion = this.rule.isUsingPresence() === false;
 
     let showTimeSuggestion = this.rule.isAlwaysActive() === true;
-    let showOptionSuggestion = this.props.twilightRule === false &&
+    let showEndConditionSuggestion = this.props.twilightRule === false &&
       (
         (this.rule.isUsingClockEndTime() && this.rule.getHour() >= 20)
         || this.rule.isUsingSunsetAsEndTime()
@@ -271,17 +271,17 @@ export class RuleEditor extends LiveComponent<
       this.rule.hasNoOptions();
 
     return {
-      showPresenceSuggestion: showPresenceSuggestion && !shouldShowTimeConflict,
-      showTimeSuggestion:     showTimeSuggestion     && !shouldShowTimeConflict,
-      showOptionSuggestion:   showOptionSuggestion   && !shouldShowTimeConflict,
-      shouldShowTimeConflict: shouldShowTimeConflict,
-      showAnySuggestions: showPresenceSuggestion || showTimeSuggestion || showOptionSuggestion,
-      amountOfSuggestions: (showPresenceSuggestion ? 1 : 0)  + (showTimeSuggestion ? 1 : 0) + (showOptionSuggestion ? 1 : 0)
+      showPresenceSuggestion:     showPresenceSuggestion && !shouldShowTimeConflict,
+      showTimeSuggestion:         showTimeSuggestion     && !shouldShowTimeConflict,
+      showEndConditionSuggestion: showEndConditionSuggestion   && !shouldShowTimeConflict,
+      shouldShowTimeConflict:     shouldShowTimeConflict,
+      showAnySuggestions:         showPresenceSuggestion || showTimeSuggestion || showEndConditionSuggestion,
+      amountOfSuggestions:        (showPresenceSuggestion ? 1 : 0)  + (showTimeSuggestion ? 1 : 0) + (showEndConditionSuggestion ? 1 : 0)
     };
   }
 
   _getSuggestions() {
-    let {showPresenceSuggestion, showTimeSuggestion, showOptionSuggestion, shouldShowTimeConflict } = this._shouldShowSuggestions();
+    let {showPresenceSuggestion, showTimeSuggestion, showEndConditionSuggestion, shouldShowTimeConflict } = this._shouldShowSuggestions();
     let suggestionArray = [];
     let paddingIndex = 0;
     if (shouldShowTimeConflict) {
@@ -310,7 +310,7 @@ export class RuleEditor extends LiveComponent<
         callback={() => { this.toggleDetails(SELECTABLE_TYPE.TIME); }}
       />);
     }
-    if (showOptionSuggestion) {
+    if (showEndConditionSuggestion) {
       let timeStr = AicoreUtil.getClockTimeStr(this.rule.getHour(), this.rule.getMinutes());
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
       suggestionArray.push(<BehaviourSuggestion
@@ -712,7 +712,7 @@ export class RuleEditor extends LiveComponent<
               selectedDetailField={this.state.selectedDetailField}
               elements={[
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractOptionStrings(this.exampleBehaviours.option.inRoom.rule).optionStr) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractEndConditionStrings(this.exampleBehaviours.option.inRoom.rule).endConditionStr) + ".",
                   isSelected: () => {
                     return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "1", this.exampleBehaviours.option.inRoom);
                   },
@@ -722,7 +722,7 @@ export class RuleEditor extends LiveComponent<
                   }
                 },
                 {
-                  label: xUtil.capitalize(AicoreUtil.extractOptionStrings(this.exampleBehaviours.option.inSphere.rule).optionStr) + ".",
+                  label: xUtil.capitalize(AicoreUtil.extractEndConditionStrings(this.exampleBehaviours.option.inSphere.rule).endConditionStr) + ".",
                   isSelected: () => {
                     return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "2", this.exampleBehaviours.option.inSphere);
                   },
@@ -737,7 +737,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "3", this.exampleBehaviours.option.noOption) || this.rule.hasNoOptions();
                   },
                   onSelect: () => {
-                    this.rule.setNoOptions();
+                    this.rule.setNoEndCondition();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "3"})
                   }
                 },

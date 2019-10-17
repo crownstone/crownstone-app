@@ -129,23 +129,23 @@ export const AicoreUtil = {
   },
 
 
-  extractOptionStrings(rule : behaviour) {
-    let optionPrefix = "";
-    let optionStr = "";
+  extractEndConditionStrings(rule : behaviour) {
+    let endConditionPrefix = "";
+    let endConditionStr= "";
 
-    if (rule.options && rule.options.type) {
-      switch (rule.options.type) {
-        case "SPHERE_PRESENCE_AFTER":
-          optionPrefix += "Afterwards, I'll";
-          optionStr += "stay on if someone is still at home";
+    if (rule.endCondition && rule.endCondition.type && rule.endCondition.type !== "NONE") {
+      switch (rule.endCondition.presence.data.type) {
+        case "SPHERE":
+          endConditionPrefix += "Afterwards, I'll";
+          endConditionStr += "stay on if someone is still at home";
           break;
-        case "LOCATION_PRESENCE_AFTER":
-          optionPrefix += "Afterwards, I'll";
-          optionStr += "stay on if someone is still in the room";
+        case "LOCATION":
+          endConditionPrefix += "Afterwards, I'll";
+          endConditionStr += "stay on if someone is still in the room";
           break;
       }
     }
-    return {optionPrefix, optionStr};
+    return {endConditionPrefix, endConditionStr};
   },
 
 
