@@ -190,11 +190,11 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     delete this.rule.endCondition;
     return this;
   }
-  setEndConditiontayOnWhilePeopleInSphere() : AicoreBehaviour {
+  setEndConditionWhilePeopleInSphere() : AicoreBehaviour {
     this.rule.endCondition = {type:"PRESENCE_AFTER", time: 3600, presence: {type: "SOMEBODY", data: { type: "SPHERE"}}};
     return this;
   }
-  setEndConditiontayOnWhilePeopleInLocation(locationId) : AicoreBehaviour {
+  setEndConditionWhilePeopleInLocation(locationId: string) : AicoreBehaviour {
     this.rule.endCondition = {type:"PRESENCE_AFTER", time: 3600, presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}}};
     return this;
   }
@@ -221,12 +221,17 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     let match = xUtil.deepCompare(this.rule.time, otherAicoreBehaviour.rule.time);
     return match;
   }
-  doesOptionMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
+  doesEndConditionMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
+    if (!this.rule.endCondition && !otherAicoreBehaviour.rule.endCondition) { return true; }
+    if (!this.rule.endCondition &&  otherAicoreBehaviour.rule.endCondition) { return false; }
+    if ( this.rule.endCondition && !otherAicoreBehaviour.rule.endCondition) { return false; }
+    if (this.rule.endCondition.type !== otherAicoreBehaviour.rule.endCondition.type) { return false; }
+
     return this.rule.endCondition &&
-      this.rule.endCondition.type &&
+      this.rule.endCondition.type !== "NONE" &&
       otherAicoreBehaviour.rule.endCondition &&
-      otherAicoreBehaviour.rule.endCondition.type &&
-      this.rule.endCondition.type === otherAicoreBehaviour.rule.endCondition.type;
+      otherAicoreBehaviour.rule.endCondition.type !== "NONE" &&
+      xUtil.deepCompare(this.rule.endCondition, otherAicoreBehaviour.rule.endCondition);
   }
 
 
@@ -265,6 +270,6 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     return false;
   }
   hasNoEndCondition(): boolean {
-    return this.rule.endCondition === undefined;
+    return this.rule.endCondition === undefined || this.rule.endCondition.type === "NONE";
   }
 }

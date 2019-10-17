@@ -18,6 +18,7 @@ import { AnimatedBackground } from "../../components/animated/AnimatedBackground
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
+import { DataUtil } from "../../../util/DataUtil";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options = {
@@ -171,14 +172,16 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
     let examples : AicoreBehaviour[] = [];
     examples.push(new AicoreBehaviour().setPresenceInSphere().setTimeWhenDark());
     examples.push(new AicoreBehaviour().setPresenceInLocations(this._getLocationIds(2)).setTimeAllday());
-    examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setOptionStayOnWhilePeopleInSphere());
+    examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setEndConditionWhilePeopleInSphere());
     return examples;
   }
   _getSmartTimerExamples() {
+    let locationId = DataUtil.getLocationIdFromStone(this.props.sphereId, this.props.stoneId);
+
     let examples : AicoreBehaviour[] = [];
-    examples.push(new AicoreBehaviour().ignorePresence().setTimeFromSunset(0).setTimeTo(22,0).setOptionStayOnWhilePeopleInSphere());
+    examples.push(new AicoreBehaviour().ignorePresence().setTimeFromSunset(0).setTimeTo(22,0).setEndConditionWhilePeopleInSphere());
     examples.push(new AicoreBehaviour().setPresenceInSphere().setTimeFromSunset(30).setTimeTo(23,0));
-    examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setOptionStayOnWhilePeopleInLocation());
+    examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setEndConditionWhilePeopleInLocation(locationId));
     return examples;
   }
   _getTwilightModeExamples() {

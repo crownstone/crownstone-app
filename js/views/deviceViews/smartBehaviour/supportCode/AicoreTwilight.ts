@@ -93,8 +93,8 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   setPresenceNobodyInLocations(locationIds: string[]) : AicoreTwilight { return this; }
   setPresenceSpecificUserInLocations(locationIds: string[], userProfileId: number) : AicoreTwilight { return this; }
   setNoEndCondition() : AicoreTwilight { return this;  }
-  setEndConditiontayOnWhilePeopleInSphere() : AicoreTwilight { return this;  }
-  setEndConditiontayOnWhilePeopleInLocation(locationId) : AicoreTwilight { return this;  }
+  setEndConditionWhilePeopleInSphere() : AicoreTwilight { return this;  }
+  setEndConditionWhilePeopleInLocation(locationId) : AicoreTwilight { return this;  }
 
   doesActionMatch(otherAicoreTwilight: AicoreTwilight) : boolean {
     return xUtil.deepCompare(this.rule.action, otherAicoreTwilight.rule.action);
@@ -103,7 +103,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   doesPresenceTypeMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
   doesPresenceLocationMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
   doesPresenceMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
-  doesOptionMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
+  doesEndConditionMatch(otherAicoreTwilight: AicoreTwilight) : boolean { return false; }
   doesTimeMatch(otherAicoreTwilight: AicoreTwilight) : boolean {
     let match = xUtil.deepCompare(this.rule.time, otherAicoreTwilight.rule.time);
     return match;
@@ -125,7 +125,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   isUsingSpherePresence() : boolean {
     return false;
   }
-  hasNoOptions(): boolean {
+  hasNoEndCondition(): boolean {
     return true;
   }
 }

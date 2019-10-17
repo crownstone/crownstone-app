@@ -160,6 +160,10 @@ export const DataUtil = {
       return null;
     }
   },
+  getLocationIdFromStone: function(sphereId, stoneId) {
+    let stone = DataUtil.getStone(sphereId, stoneId);
+    return stone.config.locationId;
+  },
 
   getUserLocations(state, userId) {
     let presentSphereMap = {};

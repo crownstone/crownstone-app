@@ -257,7 +257,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   }
 
   getOptionContext() {
-    if (!this.rule.hasNoOptions()) {
+    if (!this.rule.hasNoEndCondition()) {
       // @ts-ignore
       if (this.rule.rule.options.type === "SPHERE_PRESENCE_AFTER") {
         return (

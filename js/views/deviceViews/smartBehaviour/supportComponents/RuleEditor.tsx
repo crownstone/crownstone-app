@@ -12,7 +12,7 @@ import {
   Text,
   View, TextStyle, ViewStyle
 } from "react-native";
-import { availableScreenHeight, colors, deviceStyles, overviewStyles, screenWidth, styles } from "../../../styles";
+import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../../../styles";
 import { SELECTABLE_TYPE } from "../../../../Enums";
 import { RoomList } from "../../../components/RoomList";
 import { core } from "../../../../core";
@@ -24,6 +24,7 @@ import { BehaviourSuggestion } from "./BehaviourSuggestion";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
+import { DataUtil } from "../../../../util/DataUtil";
 
 
 export class RuleEditor extends LiveComponent<
@@ -101,9 +102,9 @@ export class RuleEditor extends LiveComponent<
           custom:   this.props.ruleId ? this.rule : new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
         },
         option: {
-          inSphere: new AicoreBehaviour().setOptionStayOnWhilePeopleInSphere(),
-          inRoom:   new AicoreBehaviour().setOptionStayOnWhilePeopleInLocation(),
-          noOption: new AicoreBehaviour().setNoOptions(),
+          inSphere: new AicoreBehaviour().setPresenceSomebodyInSphere(),
+          inRoom:   new AicoreBehaviour().setEndConditionWhilePeopleInLocation(stone.config.locationId),
+          noOption: new AicoreBehaviour().setNoEndCondition(),
         }
       }
     }
@@ -268,7 +269,7 @@ export class RuleEditor extends LiveComponent<
         (this.rule.isUsingClockEndTime() && this.rule.getHour() >= 20)
         || this.rule.isUsingSunsetAsEndTime()
       ) &&
-      this.rule.hasNoOptions();
+      this.rule.hasNoEndCondition();
 
     return {
       showPresenceSuggestion:     showPresenceSuggestion && !shouldShowTimeConflict,
@@ -437,7 +438,7 @@ export class RuleEditor extends LiveComponent<
     return this._evaluateSelection(selectedDescription) || this.rule.doesPresenceLocationMatch(ruleToMatch);
   }
   _evaluateOptionSelection( selectedDescription, ruleToMatch ) {
-    return this._evaluateSelection(selectedDescription) || this.rule.doesOptionMatch(ruleToMatch);
+    return this._evaluateSelection(selectedDescription) || this.rule.doesEndConditionMatch(ruleToMatch);
   }
 
   _getDetails() {
@@ -717,7 +718,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "1", this.exampleBehaviours.option.inRoom);
                   },
                   onSelect: () => {
-                    this.rule.setOptionStayOnWhilePeopleInLocation();
+                    this.rule.setEndConditionWhilePeopleInLocation(DataUtil.getLocationIdFromStone(this.props.sphereId, this.props.stoneId));
                     this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "1"})
                   }
                 },
@@ -727,14 +728,14 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "2", this.exampleBehaviours.option.inSphere);
                   },
                   onSelect: () => {
-                    this.rule.setOptionStayOnWhilePeopleInSphere();
+                    this.rule.setEndConditionWhilePeopleInSphere();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "2"})
                   }
                 },
                 {
                   label: lang("Yes__just_turn_off_afterwa"),
                   isSelected: () => {
-                    return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "3", this.exampleBehaviours.option.noOption) || this.rule.hasNoOptions();
+                    return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "3", this.exampleBehaviours.option.noOption) || this.rule.hasNoEndCondition();
                   },
                   onSelect: () => {
                     this.rule.setNoEndCondition();
