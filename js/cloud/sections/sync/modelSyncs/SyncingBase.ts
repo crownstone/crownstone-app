@@ -123,10 +123,27 @@ export class SyncingSphereItemBase extends SyncingBase {
   }
 }
 
+export class SyncingStoneItemBase extends SyncingSphereItemBase {
+  localStoneId   : string;
+
+  constructor(
+    actions : any[],
+    transferPromises: any[],
+    localSphereId: string,
+    localStoneId: string,
+    cloudSphereId: string,
+    globalCloudIdMap: globalIdMap,
+    globalSphereMap: globalIdMap
+  ) {
+    super(actions, transferPromises, localSphereId, cloudSphereId, globalCloudIdMap, globalSphereMap);
+    this.localStoneId = localStoneId;
+  }
+}
+
 
 export function getGlobalIdMap() : globalIdMap {
   return {
-    behaviour:   {},
+    behaviours:  {},
     devices:     {},
     locations:   {},
     messages:    {},

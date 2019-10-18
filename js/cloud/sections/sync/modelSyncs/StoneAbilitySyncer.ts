@@ -4,8 +4,8 @@
  *
  */
 
-import {SyncingSphereItemBase} from "./SyncingBase";
-import { shouldUpdateInCloud } from "../shared/syncUtil";
+import { SyncingSphereItemBase, SyncingStoneItemBase } from "./SyncingBase";
+import { shouldUpdateInCloud, shouldUpdateLocally } from "../shared/syncUtil";
 
 
 const ABILITY_TYPE = {
@@ -20,7 +20,7 @@ const ABILITY_PROPERTY_TYPE = {
   tapToToggle:  { rssiOffset: 'rssiOffset' },
 };
 
-export class StoneAbilitySyncer extends SyncingSphereItemBase {
+export class StoneAbilitySyncer extends SyncingStoneItemBase {
 
   sync(localAbilities, abilities_in_cloud) {
     let localAbilityTypes = Object.keys(localAbilities);
@@ -37,18 +37,24 @@ export class StoneAbilitySyncer extends SyncingSphereItemBase {
 
       // this ability is present both locally and in the cloud!
       if (localAbilityTypes[cloudAbility.type]) {
-        // if (shouldUpdateInCloud(localAbilities[cloudAbility.type]))
+        if (shouldUpdateInCloud(localAbilities[cloudAbility.type], cloudAbility)) {
+          // update in cloud
+        }
+        else if (shouldUpdateLocally(localAbilities[cloudAbility.type], cloudAbility)) {
+          // update locally
+        }
       }
       else {
         // create locally.
       }
-
     }
 
 
-    // otherwise make them
-
-    // if all are present, check times
+    for (let i = 0; i < localAbilityTypes.length; i++) {
+      if (abilitiesPresentInCloud[localAbilityTypes[i]] === false) {
+        // make in cloud
+      }
+    }
   }
 
 }

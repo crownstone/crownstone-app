@@ -6,123 +6,89 @@
 
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {CLOUD} from "../../../cloudAPI";
-import {SyncingSphereItemBase} from "./SyncingBase";
+import { SyncingSphereItemBase, SyncingStoneItemBase } from "./SyncingBase";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { transferStones } from "../../../transferData/transferStones";
 import { Permissions } from "../../../../backgroundProcesses/PermissionManager";
 import { LOGw } from "../../../../logging/Log";
+import { transferBehaviours } from "../../../transferData/transferBehaviours";
 
-export class StoneBehaviourSyncer extends SyncingSphereItemBase {
-  download() {
-    return CLOUD.forSphere(this.cloudSphereId).getStonesInSphere()
-  }
-
-  _getLocalData(store) {
-    let state = store.getState();
-    if (state && state.spheres[this.localSphereId]) {
-      return state.spheres[this.localSphereId].stones;
-    }
-    return {};
-  }
-
-  sync(store) {
-    let stonesInState;
-    let stonesInCloud;
-    return this.download()
-      .then((result) => {
-        stonesInCloud = result;
-        this._constructLocalIdMap();
-
-        stonesInState = this._getLocalData(store);
-        return this.syncDown(store, stonesInState, stonesInCloud);
+export class StoneBehaviourSyncer extends SyncingStoneItemBase {
+  sync(behavioursInState, cloud_behaviours) {
+    return this.syncDown(behavioursInState, cloud_behaviours)
+      .then(() => {
+        return this.syncUp();
       })
-      .then((localStoneIdsSynced) => {
-
-        this.syncUp(stonesInState, localStoneIdsSynced);
-
-        // this.uploadDiagnostics(store, stonesInState, stonesInCloud);
-
-        return Promise.all(this.transferPromises)
+      .then(() => {
+        return Promise.all(this.transferPromises);
       })
-      .then(() => { return this.actions });
   }
 
-  syncDown(store, stonesInState, stonesInCloud) : object {
-    let localStoneIdsSynced = {};
-    let cloudIdMap = this._getCloudIdMap(stonesInState);
+  syncDown(behavioursInState, cloud_behaviours) {
+    let localBehaviourIdsSynced = {};
+    let cloudIdMap = this._getCloudIdMap(behavioursInState);
 
     // go through all stones in the cloud.
-    return xUtil.promiseBatchPerformer(stonesInCloud, (stone_from_cloud) => { // underscores so its visually different from stoneInState
+    return xUtil.promiseBatchPerformer(behavioursInState, (cloud_behaviour) => { // underscores so its visually different from stoneInState
       this.transferPromises = [];
 
-      let localId = cloudIdMap[stone_from_cloud.id];
-
-      // determine the linked location id
-      let locationLinkId = stone_from_cloud.locationId || null;
+      let localId = cloudIdMap[cloud_behaviour.id];
 
       // if we do not have a stone with exactly this cloudId, verify that we do not have the same stone on our device already.
       if (localId === undefined) {
-        localId = this._searchForLocalMatch(stonesInState, stone_from_cloud);
+        localId = this._searchForLocalMatch(behavioursInState, cloud_behaviour);
       }
 
       if (localId) {
-        localStoneIdsSynced[localId] = true;
-        this.syncLocalStoneDown(localId, stonesInState[localId], stone_from_cloud, locationLinkId);
+        localBehaviourIdsSynced[localId] = true;
+        this.syncLocalBehaviourDown(localId, behavioursInState[localId], cloud_behaviour);
       }
       else {
         // the stone does not exist locally but it does exist in the cloud.
         // we create it locally.
         localId = xUtil.getUUID();
 
-        let cloudDataForLocal = {...stone_from_cloud};
-        cloudDataForLocal['localLocationId']  = this._getLocalLocationId(locationLinkId);
-        transferStones.createLocal(this.actions, {
+        let cloudDataForLocal = {...cloud_behaviour};
+        transferBehaviours.createLocal(this.actions, {
           localSphereId: this.localSphereId,
+          localStoneId: this.localStoneId,
           localId: localId,
-          cloudId: stone_from_cloud.id,
           cloudData: cloudDataForLocal
         });
       }
 
-      cloudIdMap[stone_from_cloud.id] = localId;
-
-      this.syncChildren(localId, store, stone_from_cloud);
+      cloudIdMap[cloud_behaviour.id] = localId;
 
       return Promise.all(this.transferPromises);
     })
       .then(() => {
-        this.globalSphereMap.stones = {...this.globalSphereMap.stones, ...cloudIdMap};
-        this.globalCloudIdMap.stones = {...this.globalCloudIdMap.stones, ...cloudIdMap};
-        return localStoneIdsSynced;
+        this.globalSphereMap.behaviours = {...this.globalSphereMap.behaviours, ...cloudIdMap};
+        this.globalCloudIdMap.behaviours = {...this.globalCloudIdMap.behaviours, ...cloudIdMap};
+        return localBehaviourIdsSynced;
       })
   }
-
-
-  syncChildren(localId, store, stone_from_cloud) {
-
-  }
-
-
-  syncUp(stonesInState, localStoneIdsSynced) {
-    let localStoneIds = Object.keys(stonesInState);
-
-    localStoneIds.forEach((stoneId) => {
-      let stone = stonesInState[stoneId];
-      this.syncLocalStoneUp(
-        stone,
-        stoneId,
-        localStoneIdsSynced[stoneId] === true
-      )
-    });
-  }
-
-
-
-  _getCloudIdMap(stonesInState) {
+  //
+  //
+  // syncUp(stonesInState, localStoneIdsSynced) {
+  //   let localStoneIds = Object.keys(stonesInState);
+  //
+  //   localStoneIds.forEach((stoneId) => {
+  //     let stone = stonesInState[stoneId];
+  //     this.syncLocalStoneUp(
+  //       stone,
+  //       stoneId,
+  //       localStoneIdsSynced[stoneId] === true
+  //     )
+  //   });
+  // }
+  //
+  //
+  //
+  _getCloudIdMap(behavioursInState) {
     let cloudIdMap = {};
-    let stoneIds = Object.keys(stonesInState);
+    let stoneIds = Object.keys(behavioursInState);
     stoneIds.forEach((stoneId) => {
-      let stone = stonesInState[stoneId];
+      let stone = behavioursInState[stoneId];
       if (stone.config.cloudId) {
         cloudIdMap[stone.config.cloudId] = stoneId;
       }
@@ -131,104 +97,101 @@ export class StoneBehaviourSyncer extends SyncingSphereItemBase {
     return cloudIdMap;
   }
 
-  _searchForLocalMatch(stonesInState, stone_in_cloud) {
-    let stoneIds = Object.keys(stonesInState);
-    for (let i = 0; i < stoneIds.length; i++) {
-      let stone = stonesInState[stoneIds[i]];
-      if (stone.config.macAddress === stone_in_cloud.address) {
-        return stoneIds[i];
-      }
-    }
+  _searchForLocalMatch(behavioursInState, behaviour_in_cloud) {
+
+    //
+    // let stoneIds = Object.keys(stonesInState);
+    // for (let i = 0; i < stoneIds.length; i++) {
+    //   let stone = stonesInState[stoneIds[i]];
+    //   if (stone.config.macAddress === stone_in_cloud.address) {
+    //     return stoneIds[i];
+    //   }
+    // }
 
     return null;
   }
-
-  syncLocalStoneUp(localStone, localStoneId, hasSyncedDown = false) {
-    // if the object does not have a cloudId, it does not exist in the cloud but we have it locally.
-    if (!hasSyncedDown) {
-      if (localStone.config.cloudId) {
-        this.actions.push({ type: 'REMOVE_STONE', sphereId: this.localSphereId, stoneId: localStoneId });
-      }
-      else {
-        if (!Permissions.inSphere(this.localSphereId).canCreateStones) { return }
-
-        let localDataForCloud = {...localStone};
-        localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId( localStone.locationId);
-        this.transferPromises.push(
-          transferStones.createOnCloud(
-            this.actions, {
-              localId: localStoneId,
-              localData: localDataForCloud,
-              localSphereId: this.localSphereId,
-              cloudSphereId: this.cloudSphereId
-            }));
-      }
-    }
-  }
-
-
-  _getLocalLocationId(cloudId) {
-    if (!cloudId) { return null; }
-    return this.globalCloudIdMap.locations[cloudId] || null;
-  }
-
-  _getCloudLocationId(localId) {
-    if (!localId) { return; }
-    return this.globalLocalIdMap.locations[localId];
-  }
-
-  syncLocalStoneDown(localId, stoneInState, stone_from_cloud, locationLinkId) {
-    // somehow sometimes ibeacon major and minor go missing. If this happens, redownload from cloud
-    let corruptData = !stoneInState.config.iBeaconMajor || !stoneInState.config.iBeaconMinor;
-
-    let localLocationId  = this._getLocalLocationId(locationLinkId);
-
-    let syncLocal = () => {
-      let cloudDataForLocal = {...stone_from_cloud};
-      cloudDataForLocal['localLocationId']  = localLocationId;
-      transferStones.updateLocal(this.actions, {
-        localSphereId: this.localSphereId,
-        localId: localId,
-        cloudId: stone_from_cloud.id,
-        cloudData: cloudDataForLocal
-      })
-    };
-
-    if (shouldUpdateInCloud(stoneInState.config, stone_from_cloud) && !corruptData) {
-      if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return }
-
-      let localDataForCloud = {...stoneInState};
-      localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
-      this.transferPromises.push(
-        transferStones.updateOnCloud({
-          localId: localId,
-          localData: localDataForCloud,
-          localSphereId: this.localSphereId,
-          cloudSphereId: this.cloudSphereId,
-          cloudId: stone_from_cloud.id,
-        })
-          .catch(() => {})
-      );
-    }
-    else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud) || corruptData) {
-      syncLocal()
-    }
-    else if (!stoneInState.config.uid) { // self repair
-      LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing uid.");
-      syncLocal();
-    }
-    else if (stoneInState.config.locationId && localLocationId === null) {   // self repair
-      LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing locationId.");
-      syncLocal();
-    }
-    else if (localLocationId && stoneInState.config.locationId === null) {   // self repair
-      LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing locationId.");
-      syncLocal();
-    }
-
-    if (!stoneInState.config.cloudId) {
-      this.actions.push({type:'UPDATE_STONE_CLOUD_ID', sphereId: this.localSphereId, stoneId: localId, data:{cloudId: stone_from_cloud.id}})
-    }
+  //
+  // syncLocalStoneUp(localStone, localStoneId, hasSyncedDown = false) {
+  //   // if the object does not have a cloudId, it does not exist in the cloud but we have it locally.
+  //   if (!hasSyncedDown) {
+  //     if (localStone.config.cloudId) {
+  //       this.actions.push({ type: 'REMOVE_STONE', sphereId: this.localSphereId, stoneId: localStoneId });
+  //     }
+  //     else {
+  //       if (!Permissions.inSphere(this.localSphereId).canCreateStones) { return }
+  //
+  //       let localDataForCloud = {...localStone};
+  //       localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId( localStone.locationId);
+  //       this.transferPromises.push(
+  //         transferStones.createOnCloud(
+  //           this.actions, {
+  //             localId: localStoneId,
+  //             localData: localDataForCloud,
+  //             localSphereId: this.localSphereId,
+  //             cloudSphereId: this.cloudSphereId
+  //           }));
+  //     }
+  //   }
+  // }
+  //
+  //
+  // _getLocalLocationId(cloudId) {
+  //   if (!cloudId) { return null; }
+  //   return this.globalCloudIdMap.locations[cloudId] || null;
+  // }
+  //
+  // _getCloudLocationId(localId) {
+  //   if (!localId) { return; }
+  //   return this.globalLocalIdMap.locations[localId];
+  // }
+  //
+  syncLocalBehaviourDown(localId, behaviourInState, behaviour_in_cloud) {
+    // // somehow sometimes ibeacon major and minor go missing. If this happens, redownload from cloud
+    // let syncLocal = () => {
+    //   let cloudDataForLocal = {...stone_from_cloud};
+    //   transferStones.updateLocal(this.actions, {
+    //     localSphereId: this.localSphereId,
+    //     localId: localId,
+    //     cloudId: stone_from_cloud.id,
+    //     cloudData: cloudDataForLocal
+    //   })
+    // };
+    //
+    // if (shouldUpdateInCloud(stoneInState.config, stone_from_cloud) && !corruptData) {
+    //   if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return }
+    //
+    //   let localDataForCloud = {...stoneInState};
+    //   localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
+    //   this.transferPromises.push(
+    //     transferStones.updateOnCloud({
+    //       localId: localId,
+    //       localData: localDataForCloud,
+    //       localSphereId: this.localSphereId,
+    //       cloudSphereId: this.cloudSphereId,
+    //       cloudId: stone_from_cloud.id,
+    //     })
+    //       .catch(() => {})
+    //   );
+    // }
+    // else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud) || corruptData) {
+    //   syncLocal()
+    // }
+    // else if (!stoneInState.config.uid) { // self repair
+    //   LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing uid.");
+    //   syncLocal();
+    // }
+    // else if (stoneInState.config.locationId && localLocationId === null) {   // self repair
+    //   LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing locationId.");
+    //   syncLocal();
+    // }
+    // else if (localLocationId && stoneInState.config.locationId === null) {   // self repair
+    //   LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing locationId.");
+    //   syncLocal();
+    // }
+    //
+    // if (!stoneInState.config.cloudId) {
+    //   this.actions.push({type:'UPDATE_STONE_CLOUD_ID', sphereId: this.localSphereId, stoneId: localId, data:{cloudId: stone_from_cloud.id}})
+    // }
   };
 
 }

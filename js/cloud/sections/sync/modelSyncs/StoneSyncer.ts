@@ -104,6 +104,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
     let behaviourSyncer = new StoneBehaviourSyncer(this.actions, [], localId, this.localSphereId, this.globalCloudIdMap, this.globalSphereMap[localId]);
 
     abilitySyncer.sync(localStone.abilties, stone_from_cloud.abilities)
+    behaviourSyncer.sync(localStone.rules, stone_from_cloud.behaviours)
   }
 
 

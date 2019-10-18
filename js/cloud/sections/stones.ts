@@ -155,7 +155,7 @@ export const stones = {
     return cloudApiBase._setupRequest(
       'GET',
       '/Spheres/{id}/ownedStones',
-      {background: background, data: {filter:{"include":["locations", "abilities"]}}}
+      {background: background, data: {filter:{"include":["locations", "abilities", "behaviours"]}}}
     );
   },
 
