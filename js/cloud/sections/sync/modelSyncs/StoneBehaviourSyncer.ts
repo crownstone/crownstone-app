@@ -4,13 +4,8 @@
  *
  */
 
-import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
-import {CLOUD} from "../../../cloudAPI";
-import { SyncingSphereItemBase, SyncingStoneItemBase } from "./SyncingBase";
+import { SyncingStoneItemBase } from "./SyncingBase";
 import { xUtil } from "../../../../util/StandAloneUtil";
-import { transferStones } from "../../../transferData/transferStones";
-import { Permissions } from "../../../../backgroundProcesses/PermissionManager";
-import { LOGw } from "../../../../logging/Log";
 import { transferBehaviours } from "../../../transferData/transferBehaviours";
 
 export class StoneBehaviourSyncer extends SyncingStoneItemBase {

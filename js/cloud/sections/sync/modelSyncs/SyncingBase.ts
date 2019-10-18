@@ -125,18 +125,21 @@ export class SyncingSphereItemBase extends SyncingBase {
 
 export class SyncingStoneItemBase extends SyncingSphereItemBase {
   localStoneId   : string;
+  cloudStoneId   : string;
 
   constructor(
     actions : any[],
     transferPromises: any[],
-    localSphereId: string,
     localStoneId: string,
+    cloudStoneId: string,
+    localSphereId: string,
     cloudSphereId: string,
     globalCloudIdMap: globalIdMap,
     globalSphereMap: globalIdMap
   ) {
     super(actions, transferPromises, localSphereId, cloudSphereId, globalCloudIdMap, globalSphereMap);
     this.localStoneId = localStoneId;
+    this.cloudStoneId = cloudStoneId;
   }
 }
 

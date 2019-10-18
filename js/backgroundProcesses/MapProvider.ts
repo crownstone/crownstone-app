@@ -121,7 +121,7 @@ class MapProviderClass {
       getFromId(sphere.users,                this.cloud2localMap.users,      this.local2cloudMap.users);
 
       Object.keys(sphere.stones).forEach((stoneId) => {
-        getFromItem(sphere.stones[stoneId].rules,   this.cloud2localMap.behaviour,      this.local2cloudMap.behaviour);
+        getFromItem(sphere.stones[stoneId].rules,   this.cloud2localMap.behaviours,      this.local2cloudMap.behaviours);
       })
     });
   }
