@@ -143,6 +143,11 @@ Xcode menu -> Product -> Edit Scheme...
 Environment Variables -> Add -> Name: "OS_ACTIVITY_MODE", Value:"disable"
 ```
 
+If you get errors with xcode 11:
+```
+Unknown argument type 'attribute' in method -[RCTAppState getCurrentAppState:error:]. Extend RCTConvert to support this type.
+```
+That means you need to update the React Native version to 59.9
 
 If you get a compilation issues in xcode 10,
 "config.h not found"

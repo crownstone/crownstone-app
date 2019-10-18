@@ -39,6 +39,8 @@
 			</dict>
 		</dict>
 	</dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+	<string>We require Bluetooth to talk to the Crownstones.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We require to use bluetooth to communicate with the Crownstone.</string>
 	<key>NSCameraUsageDescription</key>
