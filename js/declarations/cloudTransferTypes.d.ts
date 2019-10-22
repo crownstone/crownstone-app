@@ -33,10 +33,12 @@ type transferToLocalStoneData = {
   cloudData: any,
 }
 
+
 type transferToLocalPreferenceData = {
   localId: string,
   cloudData: any,
 }
+
 
 type transferNewToCloudStoneData = {
   localId: string,
@@ -45,13 +47,15 @@ type transferNewToCloudStoneData = {
   localStoneId: string,
   cloudStoneId: string,
 }
+
+
 type transferToCloudStoneData = {
   localId: string,
   localData: any,
-  localStoneId: string,
   cloudStoneId: string,
   cloudId: string
 }
+
 
 type transferNewToCloudPreferenceData = {
   localId: string,
@@ -70,6 +74,7 @@ type fieldMap = {
   cloudFields? : string[],
 }[]
 
+
 interface keyMap {
   [key: string]: string
 }
@@ -87,6 +92,7 @@ interface globalIdMap {
   toons: keyMap,
   preferences: keyMap,
 }
+
 
 interface globalSphereMap {
   [key: string]: {
