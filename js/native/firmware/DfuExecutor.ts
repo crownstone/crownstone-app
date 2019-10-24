@@ -114,7 +114,7 @@ export class DfuExecutor {
   _setProgress(phase, step, progress, info) {
     LOGd.dfu("Executor: progressUpdate", phase, step, progress, info);
     this.updateCallback({
-      totalSteps: 2 + this.amountOfBootloaders + this.amountOfFirmwares, // the +2 is the preparation and the setup
+      totalSteps: 1 + this.amountOfBootloaders + this.amountOfFirmwares, // the +1 is the preparation and the setup, but we only start counting after setup.
       amountOfBootloaders: this.amountOfBootloaders,
       amountOfFirmwares:   this.amountOfFirmwares,
       phase: phase,
@@ -452,9 +452,6 @@ export class DfuExecutor {
         .then((previousBootloader) => {
           return this._checkBootloaderOperations(previousBootloader)
         })
-        .then(() => {
-          return this._checkBootloaderOperations(bootloaderCandidate);
-        })
     }
     else {
       return Promise.resolve();
@@ -479,9 +476,6 @@ export class DfuExecutor {
       return DfuUtil.getFirmwareInformation(firmwareCandidate.dependsOnFirmwareVersion, this.hardwareVersion)
         .then((previousFirmware) => {
           return this._checkFirmwareOperations(previousFirmware)
-        })
-        .then(() => {
-          return this._checkFirmwareOperations(firmwareCandidate);
         })
     }
     else {

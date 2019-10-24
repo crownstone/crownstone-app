@@ -33,7 +33,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
       updateFailed: false,
       progress1Width: new Animated.Value(0),
       progress2Width: new Animated.Value(0),
-      progress3Width: new Animated.Value(0),
+      successIndicatorWidth: new Animated.Value(0),
       isUpdating: false,
       currentStep: null,
       totalSteps: null,
@@ -53,10 +53,10 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
       info: stateData.info,
     })
 
-    let totalProgress = (stateData.currentStep + stateData.progress) / stateData.totalSteps;
+    let totalProgress = (stateData.currentStep + stateData.progress - 1) / stateData.totalSteps;
     let animations = [];
     this.state.progress1Width.stopAnimation()
-    this.state.progress3Width.setValue(0);
+    this.state.successIndicatorWidth.setValue(0);
     animations.push(Animated.timing(this.state.progress1Width, {toValue: totalProgress * screenWidth, duration: 100}));
     if (stateData.progress === 0) {
       this.state.progress2Width.setValue(0);
@@ -101,7 +101,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
         let animations = [];
         animations.push(Animated.timing(this.state.progress1Width, {toValue: 0, duration: 400}));
         animations.push(Animated.timing(this.state.progress2Width, {toValue: 0, duration: 400}));
-        animations.push(Animated.timing(this.state.progress3Width, {toValue: screenWidth, duration: 400}));
+        animations.push(Animated.timing(this.state.successIndicatorWidth, {toValue: screenWidth, duration: 400}));
         Animated.parallel(animations).start();
       })
       .catch((err) => {
@@ -110,7 +110,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
         let animations = [];
         animations.push(Animated.timing(this.state.progress1Width, {toValue: 0, duration: 100}));
         animations.push(Animated.timing(this.state.progress2Width, {toValue: 0, duration: 100}));
-        animations.push(Animated.timing(this.state.progress3Width, {toValue: 0, duration: 100}));
+        animations.push(Animated.timing(this.state.successIndicatorWidth, {toValue: 0, duration: 100}));
         Animated.parallel(animations).start();
 
         let cloudIssue = false;
@@ -156,7 +156,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
           case "FIRMWARE":    progressLabel = "Updating Firmware..."; break;
           case "SETUP":       progressLabel = "Finalizing..."; break;
         }
-         return <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Step______",this.state.currentStep || 1,this.state.totalSteps,progressLabel) }</Text>
+         return <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Step______",this.state.currentStep || 1,this.state.totalSteps, progressLabel) }</Text>
       }
     }
   }
@@ -171,7 +171,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
       <View style={[{height: this.baseHeight, width: screenWidth, overflow:'hidden', backgroundColor: colors.white.rgba(0.5)}]}>
         <Animated.View style={{position:'absolute', top:0, left:0, height: this.baseHeight,   width: this.state.progress1Width, backgroundColor: colors.iosBlue.rgba(0.25)}} />
         <Animated.View style={{position:'absolute', top:this.baseHeight-5, left:0, height: 5, width: this.state.progress2Width, backgroundColor: colors.iosBlueDark.rgba(0.8)}} />
-        <Animated.View style={{position:'absolute', top:0, left:0, height: this.baseHeight,   width: this.state.progress3Width, backgroundColor: colors.green.rgba(0.5)}} />
+        <Animated.View style={{position:'absolute', top:0, left:0, height: this.baseHeight,   width: this.state.successIndicatorWidth, backgroundColor: colors.green.rgba(0.5)}} />
         <View style={{ height: this.baseHeight, width: screenWidth, alignItems: 'center', paddingLeft:15, paddingRight:15,}}>
           <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
             <View style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}>

@@ -114,6 +114,7 @@ export class DfuFinished extends LiveComponent<any, any> {
 
   render() {
     let amountOfStonesToUpdate = DfuUtil.getUpdatableStones(this.props.sphereId).amountOfStones;
+
     let getCardsCallback = () => { return this.getFailedCard() };
     if (amountOfStonesToUpdate === 0) {
       getCardsCallback = () => { return this.getSuccessCard() };
