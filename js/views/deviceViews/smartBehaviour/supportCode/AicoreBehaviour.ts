@@ -150,10 +150,6 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     this.rule.presence = { type:"NOBODY", data: {type:"SPHERE"}, delay: this._getSphereDelay()};
     return this;
   }
-  setPresenceSpecificUserInSphere(userProfileId: number) : AicoreBehaviour {
-    this.rule.presence = { type:"SPECIFIC_USERS", data: {type:"SPHERE"}, delay: this._getSphereDelay(), profileIds:[userProfileId]};
-    return this;
-  }
   setPresenceInSphere() : AicoreBehaviour {
     if (this.rule.presence.type === "IGNORE") {
       this.setPresenceSomebodyInSphere()
@@ -181,21 +177,17 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     this.rule.presence = { type:"NOBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getSphereDelay()};
     return this;
   }
-  setPresenceSpecificUserInLocations(locationIds: string[], userProfileId: number) : AicoreBehaviour {
-    this.rule.presence = { type:"SPECIFIC_USERS", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getSphereDelay(), profileIds:[userProfileId]};
-    return this;
-  }
 
   setNoEndCondition() : AicoreBehaviour {
     delete this.rule.endCondition;
     return this;
   }
   setEndConditionWhilePeopleInSphere() : AicoreBehaviour {
-    this.rule.endCondition = {type:"PRESENCE_AFTER", time: 3600, presence: {type: "SOMEBODY", data: { type: "SPHERE"}}};
+    this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "SPHERE"}}};
     return this;
   }
   setEndConditionWhilePeopleInLocation(locationId: string) : AicoreBehaviour {
-    this.rule.endCondition = {type:"PRESENCE_AFTER", time: 3600, presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}}};
+    this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}}};
     return this;
   }
 
@@ -228,9 +220,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     if (this.rule.endCondition.type !== otherAicoreBehaviour.rule.endCondition.type) { return false; }
 
     return this.rule.endCondition &&
-      this.rule.endCondition.type !== "NONE" &&
       otherAicoreBehaviour.rule.endCondition &&
-      otherAicoreBehaviour.rule.endCondition.type !== "NONE" &&
       xUtil.deepCompare(this.rule.endCondition, otherAicoreBehaviour.rule.endCondition);
   }
 
@@ -270,6 +260,6 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     return false;
   }
   hasNoEndCondition(): boolean {
-    return this.rule.endCondition === undefined || this.rule.endCondition.type === "NONE";
+    return !this.rule.endCondition;
   }
 }

@@ -5,23 +5,13 @@ export const transferUtil = {
         return; // we do not allow this field to be synced back up to the cloud. Usually used for IDs.
       }
 
-      if (field.permissionNeeded && payload.permissionGranted === false) {
-        return; // no permission to sync this data up.
-      }
-
       if (field.cloud === null) {
         return; // this field will not be synced up.
       }
 
       // if the data exists locally, upload to cloud.
       if (localData[field.local] !== undefined) {
-        if (field.localFields) {
-          payload[field.cloud] = {};
-          for (let i = 0; i < field.localFields.length; i++) {
-            payload[field.cloud][field.cloudFields[i]] = localData[field.local][field.localFields[i]]
-          }
-        }
-        else {
+        if (localData[field.local] !== null && field.onlyIfValue || !field.onlyIfValue) {
           payload[field.cloud] = localData[field.local]
         }
       }

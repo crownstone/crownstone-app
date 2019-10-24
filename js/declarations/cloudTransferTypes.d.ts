@@ -69,9 +69,7 @@ type fieldMap = {
   cloud: string,
   cloudToLocalOnly? : boolean,
   localToCloudOnly? : boolean,
-  permissionNeeded? : boolean,
-  localFields?: string[],
-  cloudFields? : string[],
+  onlyIfValue?: boolean
 }[]
 
 

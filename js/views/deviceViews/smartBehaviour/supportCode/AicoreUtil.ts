@@ -133,7 +133,7 @@ export const AicoreUtil = {
     let endConditionPrefix = "";
     let endConditionStr= "";
 
-    if (rule.endCondition && rule.endCondition.type && rule.endCondition.type !== "NONE") {
+    if (rule.endCondition && rule.endCondition.type) {
       switch (rule.endCondition.presence.data.type) {
         case "SPHERE":
           endConditionPrefix += "Afterwards, I'll";

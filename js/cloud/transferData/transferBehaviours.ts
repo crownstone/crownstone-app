@@ -7,6 +7,7 @@ let fieldMap : fieldMap = [
   {local: 'type',               cloud:'type'},
   {local: 'data',               cloud:'data'},
   {local: 'deleted',            cloud:'deleted' },
+  {local: 'idOnCrownstone',     cloud:'idOnCrownstone', onlyIfValue:true },
   {local: 'syncedToCrownstone', cloud:'syncedToCrownstone' },
   {local: 'updatedAt',          cloud:'updatedAt'},
 

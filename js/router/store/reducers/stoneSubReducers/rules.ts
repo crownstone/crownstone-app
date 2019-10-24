@@ -19,6 +19,7 @@ let defaultSettings = {
   },
   idOnCrownstone: null,
   cloudId: null,
+  profileIndex: 0,
   deleted: false,
   syncedToCrownstone: false,
   updatedAt: 1
@@ -39,9 +40,10 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
         let newState = {...state};
         newState.activeDays = {...state.activeDays};
 
-        newState.type               = update(action.data.type,    newState.type);
-        newState.data               = update(action.data.data,    newState.data);
-        newState.cloudId            = update(action.data.cloudId, newState.cloudId);
+        newState.type               = update(action.data.type,         newState.type);
+        newState.data               = update(action.data.data,         newState.data);
+        newState.profileIndex       = update(action.data.profileIndex, newState.profileIndex);
+        newState.cloudId            = update(action.data.cloudId,      newState.cloudId);
 
         newState.activeDays.Mon     = update(action.data.activeDays && action.data.activeDays.Mon, newState.activeDays.Mon);
         newState.activeDays.Tue     = update(action.data.activeDays && action.data.activeDays.Tue, newState.activeDays.Tue);
