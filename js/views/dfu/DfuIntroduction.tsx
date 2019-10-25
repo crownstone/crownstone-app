@@ -17,6 +17,7 @@ import { LiveComponent } from "../LiveComponent";
 import { core } from "../../core";
 import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
+import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 
 export class DfuIntroduction extends LiveComponent<any, any> {
   static options = {
@@ -37,7 +38,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     let sphereId = this.props.sphereId;
     let sphere = state.spheres[sphereId];
     if (sphere) {
-      if (sphere.state.present === true) {
+      if (sphere.state.present === true || DfuStateHandler.sphereHasDfuCrownstone(sphereId)) {
         this.setState({inSphere: true});
       }
     }

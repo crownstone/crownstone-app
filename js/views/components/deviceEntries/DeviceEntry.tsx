@@ -246,7 +246,7 @@ export class DeviceEntry extends Component<any, any> {
           </WrapperElement>
           <WrapperElement style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
             <View style={{flexDirection: 'column'}}>
-              <Text style={{fontSize: 17, fontWeight: '100'}}>{element.config.name}</Text>
+              <Text style={{fontSize: 17}}>{element.config.name}</Text>
               <DeviceEntrySubText
                 statusTextOverride={this.props.statusText}
                 statusText={this.state.statusText}

@@ -16,7 +16,7 @@ import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from "../../styles";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
 import { core } from "../../../core";
-import { DfuExecutor } from "../../../native/firmware/DfuExecutor";
+import { DfuExecutor, DfuPhases } from "../../../native/firmware/DfuExecutor";
 
 
 export class DfuDeviceUpdaterEntry extends Component<any, any> {
@@ -144,20 +144,60 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
     );
   }
 
+
   _getDetailText() {
     if (this.state.isUpdating) {
-      if (this.state.phase === "PREPERATION" || !this.state.phase) {
-        return <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Preparing___") }</Text>
+      let progressLabel = null;
+      switch (this.state.phase) {
+        case DfuPhases.PREPARATION:                 progressLabel = "Preparing...";                        break;
+        case DfuPhases.GET_INFORMATION_FROM_CLOUD:  progressLabel = "Getting update information...";       break;
+        case DfuPhases.SEACHING_FOR_CROWNSTONE:     progressLabel = "Looking for Crownstone...";           break;
+        case DfuPhases.GETTING_VERSION_INFORMATION: progressLabel = "Checking versions...";                break;
+        case DfuPhases.GETTING_FIRMWARE_VERSION:    progressLabel = "Checking Firmware version...";        break;
+        case DfuPhases.GETTING_BOOTLOADER_VERSION:  progressLabel = "Checking Bootloader version...";      break;
+        case DfuPhases.PREPARING_BOOTLOADER_STEPS:  progressLabel = "Checking Bootloader steps...";        break;
+        case DfuPhases.PUT_IN_DFU_MODE:             progressLabel = "Preparing Crownstone for update...";  break;
+        case DfuPhases.PREPARING_FIRMWARE_STEPS:    progressLabel = "Checking Firmware steps...";          break;
+        case DfuPhases.BOOTLOADER:                  progressLabel = "Updating Bootloader..."; break;
+        case DfuPhases.FIRMWARE:                    progressLabel = "Updating Firmware...";   break;
+        case DfuPhases.SETUP:                       progressLabel = "Finalizing...";          break;
       }
-      else {
-        let progressLabel = null;
-        switch (this.state.phase) {
-          case "BOOTLOADER":  progressLabel = "Updating Bootloader..."; break;
-          case "FIRMWARE":    progressLabel = "Updating Firmware..."; break;
-          case "SETUP":       progressLabel = "Finalizing..."; break;
-        }
-         return <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Step______",this.state.currentStep || 1,this.state.totalSteps, progressLabel) }</Text>
+
+      switch (this.state.phase) {
+        case DfuPhases.PREPARATION:
+        case DfuPhases.GET_INFORMATION_FROM_CLOUD:
+        case DfuPhases.SEACHING_FOR_CROWNSTONE:
+        case DfuPhases.GETTING_VERSION_INFORMATION:
+        case DfuPhases.GETTING_FIRMWARE_VERSION:
+        case DfuPhases.GETTING_BOOTLOADER_VERSION:
+        case DfuPhases.PUT_IN_DFU_MODE:
+        case DfuPhases.PREPARING_BOOTLOADER_STEPS:
+        case DfuPhases.PREPARING_FIRMWARE_STEPS:
+          return <Text style={{fontSize: 12, fontWeight: '100'}}>{ progressLabel }</Text>
+        case DfuPhases.BOOTLOADER:
+        case DfuPhases.FIRMWARE:
+        case DfuPhases.SETUP:
+          return <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Step______",this.state.currentStep || 1,this.state.totalSteps, progressLabel) }</Text>
       }
+    }
+  }
+
+  _getUpdateStateText() {
+    switch (this.state.phase) {
+      case DfuPhases.PREPARATION:
+      case DfuPhases.GET_INFORMATION_FROM_CLOUD:
+      case DfuPhases.SEACHING_FOR_CROWNSTONE:
+      case DfuPhases.GETTING_VERSION_INFORMATION:
+      case DfuPhases.GETTING_FIRMWARE_VERSION:
+      case DfuPhases.GETTING_BOOTLOADER_VERSION:
+      case DfuPhases.PUT_IN_DFU_MODE:
+      case DfuPhases.PREPARING_BOOTLOADER_STEPS:
+      case DfuPhases.PREPARING_FIRMWARE_STEPS:
+        return lang("Preparing_for_update")
+      case DfuPhases.BOOTLOADER:
+      case DfuPhases.FIRMWARE:
+      case DfuPhases.SETUP:
+        return lang("Update_in_progress___")
     }
   }
 
@@ -180,7 +220,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
             <View style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}>
               <View style={{flexDirection: 'column'}}>
                 <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : '100'}}>{stone.config.name}</Text>
-                { this.state.isUpdating ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("Update_in_progress___") }</Text> : undefined }
+                { this.state.isUpdating ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ this._getUpdateStateText() }</Text> : undefined }
                 { shouldStillUpdate ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("Waiting_for_update___") }</Text>: undefined }
                 { this._getDetailText() }
                 { this.state.updateSuccessful ? <Text style={{fontSize: 14, fontWeight: 'bold'}}>{ lang("Update_finished_") }</Text> : undefined }

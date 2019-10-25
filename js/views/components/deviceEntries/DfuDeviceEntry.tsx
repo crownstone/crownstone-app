@@ -88,7 +88,7 @@ export class DfuDeviceEntry extends Component<any, any> {
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.performDFU(); }}>
             <View style={{flexDirection: 'column'}}>
-              <Text style={{fontSize: 17, fontWeight: '100'}}>{this.props.name}</Text>
+              <Text style={{fontSize: 17}}>{this.props.name}</Text>
               {this._getSubText()}
             </View>
           </TouchableOpacity>
@@ -103,9 +103,9 @@ export class DfuDeviceEntry extends Component<any, any> {
     }
     else {
       Alert.alert(
-lang("_You_dont_have_permission_header"),
-lang("_You_dont_have_permission_body"),
-[{text: lang("_You_dont_have_permission_left")}])
+      lang("_You_dont_have_permission_header"),
+      lang("_You_dont_have_permission_body"),
+      [{text: lang("_You_dont_have_permission_left")}])
     }
   }
 

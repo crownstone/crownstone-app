@@ -49,7 +49,6 @@ Navigation.events().registerAppLaunchedListener(() => {
       background: { color: colors.csBlueDarker.hex },
       title: {
         color: colors.white.hex,
-        fontFamily: Platform.OS === 'ios' ? ".SFUIDisplay-Bold" : undefined,
       },
     },
     bottomTabs: {

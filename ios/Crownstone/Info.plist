@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.1</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -39,7 +39,7 @@
 			</dict>
 		</dict>
 	</dict>
-    <key>NSBluetoothAlwaysUsageDescription</key>
+	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>We require Bluetooth to talk to the Crownstones.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We require to use bluetooth to communicate with the Crownstone.</string>

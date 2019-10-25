@@ -102,6 +102,7 @@ export const StoneUtil = {
     BatchCommandHandler.executePriority();
     return promise;
   },
+
   checkBootloaderVersion: function(sphereId, stoneId, stone?) : Promise<bchReturnType>  {
     if (!stone) { stone = StoneUtil.getStoneObject(sphereId, stoneId) }
     if (!stone) { Promise.reject("NO_STONE") }

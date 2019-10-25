@@ -31,7 +31,8 @@ import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
 
 export class SetupCrownstone extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  lang("New_Crownstone")});
+    let title = props.restoration ? lang("Restoring_Crownstone") : lang("New_Crownstone")
+    return TopBarUtil.getOptions({title: title});
   }
 
   _interview: any;
@@ -72,7 +73,8 @@ export class SetupCrownstone extends LiveComponent<any, any> {
 
 
   _disableBackButton() {
-    TopBarUtil.updateOptions(this.props.componentId, {title:  lang("New_Crownstone"), disableBack: true})
+    let title = this.props.restoration ? lang("Restoring_Crownstone") : lang("New_Crownstone")
+    TopBarUtil.updateOptions(this.props.componentId, {title: title, disableBack: true})
   }
 
 
@@ -108,6 +110,10 @@ export class SetupCrownstone extends LiveComponent<any, any> {
             this.newCrownstoneState.location.id =   location ? stone.config.locationId : null;
             this.newCrownstoneState.location.name = location ? location.config.name    : null;
             this.newCrownstoneState.location.icon = location ? location.config.icon    : null;
+
+            if (this.props.restoration) {
+              return wrapUp();
+            }
 
             // this check is here because the user MIGHT go back somehow, destroying the view
             if (this._interview) {
@@ -184,6 +190,10 @@ export class SetupCrownstone extends LiveComponent<any, any> {
     });
 
     // navigate the interview to the finished state.
+    if (this.props.restoration) {
+      return NavigationUtil.dismissModal()
+    }
+
     if (this.abort) {
       this._interview.setLockedCard("successWhileAborting")
     }
@@ -280,6 +290,109 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         }
       },
     ];
+
+    let restorationCard = {
+      header: "Restoring Crownstone...",
+      subHeader: "This should only take a minute!",
+      backgroundImage: require('../../images/backgrounds/fadedLightBackground.png'),
+      component: (
+        <View style={{...styles.centered, flex:1}}>
+          <View style={{width:0.6*screenWidth, height:0.6*screenWidth}}>
+            <SetupCircle radius={0.3*screenWidth} />
+          </View>
+        </View>
+      ),
+      options: [
+        {
+          label: lang("Aborting___Abort",this.abort,true),
+          onSelect: (result) => { this.abort = true; this.forceUpdate(); },
+          dangerous: true,
+        }
+      ]
+    }
+
+    let problemCards = {
+      problemCloud: {
+        header:"Something went wrong..",
+        subHeader: "Please verify that you are connected to the internet and try again.",
+        textColor: colors.white.hex,
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="ios-cloudy-night" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
+            </View>
+          </View>
+        ),
+        optionsBottom: true,
+        options: failedOptions
+      },
+      problemBle: {
+        header:"Something went wrong..",
+        subHeader: "Please restart the Bluetooth on your phone and make sure you're really close to this Crownstone!",
+        textColor: colors.white.hex,
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="ios-bluetooth" size={0.25*screenHeight} color={colors.white.rgba(0.8)} />
+            </View>
+          </View>
+        ),
+        optionsBottom: true,
+        options: failedOptions
+      },
+      problem: {
+        header:"Something went wrong..",
+        subHeader: "Please try again later!",
+        textColor: colors.white.hex,
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="ios-alert" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
+            </View>
+          </View>
+        ),
+        optionsBottom: true,
+        options: [
+          {
+            label: lang("Ill_try_again_later___"),
+            onSelect: (result) => { NavigationUtil.dismissModal(); }
+          },
+        ]
+      },
+      aborted: {
+        header:"Aborted.",
+        subHeader: "The Crownstone was not added to your Sphere.",
+        textColor: colors.white.hex,
+        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
+        component: (
+          <View style={{...styles.centered, flex:1}}>
+            <View>
+              <Icon name="ios-alert" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
+            </View>
+          </View>
+        ),
+        optionsBottom: true,
+        options: [
+          {
+            label: lang("Ill_try_again_later___"),
+            onSelect: (result) => { NavigationUtil.dismissModal(); }
+          },
+        ]
+      }
+    }
+
+    if (this.props.restoration) {
+      this._startSetup()
+      return {
+        start: restorationCard,
+        ...problemCards
+      }
+    }
+
+
 
     return {
       start: {
@@ -403,76 +516,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         optionsBottom: true,
         options: successOptions
       },
-      problemCloud: {
-        header:"Something went wrong..",
-        subHeader: "Please verify that you are connected to the internet and try again.",
-        textColor: colors.white.hex,
-        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
-        component: (
-          <View style={{...styles.centered, flex:1}}>
-            <View>
-              <Icon name="ios-cloudy-night" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
-            </View>
-          </View>
-        ),
-        optionsBottom: true,
-        options: failedOptions
-      },
-      problemBle: {
-        header:"Something went wrong..",
-        subHeader: "Please restart the Bluetooth on your phone and make sure you're really close to this Crownstone!",
-        textColor: colors.white.hex,
-        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
-        component: (
-          <View style={{...styles.centered, flex:1}}>
-            <View>
-              <Icon name="ios-bluetooth" size={0.25*screenHeight} color={colors.white.rgba(0.8)} />
-            </View>
-          </View>
-        ),
-        optionsBottom: true,
-        options: failedOptions
-      },
-      problem: {
-        header:"Something went wrong..",
-        subHeader: "Please try again later!",
-        textColor: colors.white.hex,
-        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
-        component: (
-          <View style={{...styles.centered, flex:1}}>
-            <View>
-              <Icon name="ios-alert" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
-            </View>
-          </View>
-        ),
-        optionsBottom: true,
-        options: [
-          {
-            label: lang("Ill_try_again_later___"),
-            onSelect: (result) => { NavigationUtil.dismissModal(); }
-          },
-        ]
-      },
-      aborted: {
-        header:"Aborted.",
-        subHeader: "The Crownstone was not added to your Sphere.",
-        textColor: colors.white.hex,
-        backgroundImage: require('../../images/backgrounds/somethingWrongBlue.png'),
-        component: (
-          <View style={{...styles.centered, flex:1}}>
-            <View>
-              <Icon name="ios-alert" size={0.3*screenHeight} color={colors.white.rgba(0.8)} />
-            </View>
-          </View>
-        ),
-        optionsBottom: true,
-        options: [
-          {
-            label: lang("Ill_try_again_later___"),
-            onSelect: (result) => { NavigationUtil.dismissModal(); }
-          },
-        ]
-      }
+      ...problemCards
     }
   }
 
