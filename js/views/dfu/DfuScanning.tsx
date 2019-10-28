@@ -4,13 +4,12 @@ import { Languages } from "../../Languages"
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DfuScanning", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   ActivityIndicator, Alert,
   ScrollView, Text, TouchableOpacity,
   View
 } from "react-native";
-import { Pagination } from 'react-native-snap-carousel';
 import { colors, screenWidth, styles} from "../styles";
 import { core } from "../../core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
@@ -25,7 +24,6 @@ import { DfuDeviceOverviewEntry } from "../components/deviceEntries/DfuDeviceOve
 import { ScanningForDFUCrownstonesBanner } from "../components/animated/ScanningForDFUCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
-import { LOGe } from "../../logging/Log";
 import { LiveComponent } from "../LiveComponent";
 
 const triggerId = "ScanningForDfu";
@@ -42,6 +40,7 @@ export class DfuScanning extends LiveComponent<any, any> {
   stoneUpdateData;
   visibleStones;
   scanningIsActive = false;
+  unsubscribeStoreEvents;
 
   constructor(props) {
     super(props);
@@ -68,10 +67,24 @@ export class DfuScanning extends LiveComponent<any, any> {
 
   componentDidMount() {
     this.startScanning();
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (
+        (change.updateStoneConfig && change.updateStoneConfig.sphereIds[this.props.sphereId]) ||
+        (change.changeStones      && change.changeStones.sphereIds[this.props.sphereId])
+      ) {
+        this.stoneUpdateData = DfuUtil.getUpdatableStones(this.props.sphereId);
+        this.forceUpdate();
+        return;
+      }
+    });
+
   }
 
   componentWillUnmount() {
     this.stopScanning();
+    this.unsubscribeStoreEvents();
   }
 
   startScanning() {

@@ -223,6 +223,7 @@ export class DfuExecutor {
     );
 
     return Promise.all(cloudPromises)
+      .catch((err) => { this._handleError(err, DfuPhases.PREPARATION, DfuExecutionInformation.DOWNLOAD_FAILED); })
       .then(() => {
         if (this.stopDFU) {
           throw DFU_CANCELLED;
