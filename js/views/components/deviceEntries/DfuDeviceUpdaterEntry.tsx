@@ -16,7 +16,7 @@ import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from "../../styles";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
 import { core } from "../../../core";
-import { DfuExecutor } from "../../../native/firmware/DfuExecutor";
+import { DfuExecutor, DfuPhases } from "../../../native/firmware/DfuExecutor";
 
 
 export class DfuDeviceUpdaterEntry extends Component<any, any> {
@@ -33,7 +33,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
       updateFailed: false,
       progress1Width: new Animated.Value(0),
       progress2Width: new Animated.Value(0),
-      progress3Width: new Animated.Value(0),
+      successIndicatorWidth: new Animated.Value(0),
       isUpdating: false,
       currentStep: null,
       totalSteps: null,
@@ -53,10 +53,10 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
       info: stateData.info,
     })
 
-    let totalProgress = (stateData.currentStep + stateData.progress) / stateData.totalSteps;
+    let totalProgress = (stateData.currentStep + stateData.progress - 1) / stateData.totalSteps;
     let animations = [];
     this.state.progress1Width.stopAnimation()
-    this.state.progress3Width.setValue(0);
+    this.state.successIndicatorWidth.setValue(0);
     animations.push(Animated.timing(this.state.progress1Width, {toValue: totalProgress * screenWidth, duration: 100}));
     if (stateData.progress === 0) {
       this.state.progress2Width.setValue(0);
@@ -101,7 +101,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
         let animations = [];
         animations.push(Animated.timing(this.state.progress1Width, {toValue: 0, duration: 400}));
         animations.push(Animated.timing(this.state.progress2Width, {toValue: 0, duration: 400}));
-        animations.push(Animated.timing(this.state.progress3Width, {toValue: screenWidth, duration: 400}));
+        animations.push(Animated.timing(this.state.successIndicatorWidth, {toValue: screenWidth, duration: 400}));
         Animated.parallel(animations).start();
       })
       .catch((err) => {
@@ -110,7 +110,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
         let animations = [];
         animations.push(Animated.timing(this.state.progress1Width, {toValue: 0, duration: 100}));
         animations.push(Animated.timing(this.state.progress2Width, {toValue: 0, duration: 100}));
-        animations.push(Animated.timing(this.state.progress3Width, {toValue: 0, duration: 100}));
+        animations.push(Animated.timing(this.state.successIndicatorWidth, {toValue: 0, duration: 100}));
         Animated.parallel(animations).start();
 
         let cloudIssue = false;
@@ -144,20 +144,60 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
     );
   }
 
+
   _getDetailText() {
     if (this.state.isUpdating) {
-      if (this.state.phase === "PREPERATION" || !this.state.phase) {
-        return <Text style={{fontSize: 12}}>{ lang("Preparing___") }</Text>
+      let progressLabel = null;
+      switch (this.state.phase) {
+        case DfuPhases.PREPARATION:                 progressLabel = "Preparing...";                        break;
+        case DfuPhases.GET_INFORMATION_FROM_CLOUD:  progressLabel = "Getting update information...";       break;
+        case DfuPhases.SEACHING_FOR_CROWNSTONE:     progressLabel = "Looking for Crownstone...";           break;
+        case DfuPhases.GETTING_VERSION_INFORMATION: progressLabel = "Checking versions...";                break;
+        case DfuPhases.GETTING_FIRMWARE_VERSION:    progressLabel = "Checking Firmware version...";        break;
+        case DfuPhases.GETTING_BOOTLOADER_VERSION:  progressLabel = "Checking Bootloader version...";      break;
+        case DfuPhases.PREPARING_BOOTLOADER_STEPS:  progressLabel = "Checking Bootloader steps...";        break;
+        case DfuPhases.PUT_IN_DFU_MODE:             progressLabel = "Preparing Crownstone for update...";  break;
+        case DfuPhases.PREPARING_FIRMWARE_STEPS:    progressLabel = "Checking Firmware steps...";          break;
+        case DfuPhases.BOOTLOADER:                  progressLabel = "Updating Bootloader..."; break;
+        case DfuPhases.FIRMWARE:                    progressLabel = "Updating Firmware...";   break;
+        case DfuPhases.SETUP:                       progressLabel = "Finalizing...";          break;
       }
-      else {
-        let progressLabel = null;
-        switch (this.state.phase) {
-          case "BOOTLOADER":  progressLabel = "Updating Bootloader..."; break;
-          case "FIRMWARE":    progressLabel = "Updating Firmware..."; break;
-          case "SETUP":       progressLabel = "Finalizing..."; break;
-        }
-         return <Text style={{fontSize: 12}}>{ lang("Step______",this.state.currentStep || 1,this.state.totalSteps,progressLabel) }</Text>
+
+      switch (this.state.phase) {
+        case DfuPhases.PREPARATION:
+        case DfuPhases.GET_INFORMATION_FROM_CLOUD:
+        case DfuPhases.SEACHING_FOR_CROWNSTONE:
+        case DfuPhases.GETTING_VERSION_INFORMATION:
+        case DfuPhases.GETTING_FIRMWARE_VERSION:
+        case DfuPhases.GETTING_BOOTLOADER_VERSION:
+        case DfuPhases.PUT_IN_DFU_MODE:
+        case DfuPhases.PREPARING_BOOTLOADER_STEPS:
+        case DfuPhases.PREPARING_FIRMWARE_STEPS:
+          return <Text style={{fontSize: 12, fontWeight: '100'}}>{ progressLabel }</Text>
+        case DfuPhases.BOOTLOADER:
+        case DfuPhases.FIRMWARE:
+        case DfuPhases.SETUP:
+          return <Text style={{fontSize: 12, fontWeight: '100'}}>{ lang("Step______",this.state.currentStep || 1,this.state.totalSteps, progressLabel) }</Text>
       }
+    }
+  }
+
+  _getUpdateStateText() {
+    switch (this.state.phase) {
+      case DfuPhases.PREPARATION:
+      case DfuPhases.GET_INFORMATION_FROM_CLOUD:
+      case DfuPhases.SEACHING_FOR_CROWNSTONE:
+      case DfuPhases.GETTING_VERSION_INFORMATION:
+      case DfuPhases.GETTING_FIRMWARE_VERSION:
+      case DfuPhases.GETTING_BOOTLOADER_VERSION:
+      case DfuPhases.PUT_IN_DFU_MODE:
+      case DfuPhases.PREPARING_BOOTLOADER_STEPS:
+      case DfuPhases.PREPARING_FIRMWARE_STEPS:
+        return lang("Preparing_for_update")
+      case DfuPhases.BOOTLOADER:
+      case DfuPhases.FIRMWARE:
+      case DfuPhases.SETUP:
+        return lang("Update_in_progress___")
     }
   }
 
@@ -171,7 +211,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
       <View style={[{height: this.baseHeight, width: screenWidth, overflow:'hidden', backgroundColor: colors.white.rgba(0.5)}]}>
         <Animated.View style={{position:'absolute', top:0, left:0, height: this.baseHeight,   width: this.state.progress1Width, backgroundColor: colors.iosBlue.rgba(0.25)}} />
         <Animated.View style={{position:'absolute', top:this.baseHeight-5, left:0, height: 5, width: this.state.progress2Width, backgroundColor: colors.iosBlueDark.rgba(0.8)}} />
-        <Animated.View style={{position:'absolute', top:0, left:0, height: this.baseHeight,   width: this.state.progress3Width, backgroundColor: colors.green.rgba(0.5)}} />
+        <Animated.View style={{position:'absolute', top:0, left:0, height: this.baseHeight,   width: this.state.successIndicatorWidth, backgroundColor: colors.green.rgba(0.5)}} />
         <View style={{ height: this.baseHeight, width: screenWidth, alignItems: 'center', paddingLeft:15, paddingRight:15,}}>
           <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
             <View style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}>
@@ -179,9 +219,9 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
             </View>
             <View style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}>
               <View style={{flexDirection: 'column'}}>
-                <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : 'normal'}}>{stone.config.name}</Text>
-                { this.state.isUpdating ? <Text style={{fontSize: 14}}>{ lang("Update_in_progress___") }</Text> : undefined }
-                { shouldStillUpdate ? <Text style={{fontSize: 14}}>{ lang("Waiting_for_update___") }</Text>: undefined }
+                <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : '100'}}>{stone.config.name}</Text>
+                { this.state.isUpdating ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ this._getUpdateStateText() }</Text> : undefined }
+                { shouldStillUpdate ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("Waiting_for_update___") }</Text>: undefined }
                 { this._getDetailText() }
                 { this.state.updateSuccessful ? <Text style={{fontSize: 14, fontWeight: 'bold'}}>{ lang("Update_finished_") }</Text> : undefined }
                 { this.state.updateFailed ?     <Text style={{fontSize: 14, fontWeight: 'bold'}}>{ lang("Update_failed__Ill_retry_i") }</Text> : undefined }

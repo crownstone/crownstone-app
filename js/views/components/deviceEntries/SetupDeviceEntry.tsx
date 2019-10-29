@@ -22,7 +22,7 @@ import { IconButton } from "../IconButton";
 import { SlideFadeInView } from "../animated/SlideFadeInView";
 
 
-export class SetupDeviceEntry extends Component<{handle, sphereId, item, callback: any}, any> {
+export class SetupDeviceEntry extends Component<{handle, sphereId, callback: any, item?, restore?}, any> {
   baseHeight : any;
   setupEvents : any;
   rssiTimeout : any = null;
@@ -34,7 +34,7 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
 
     this.state = {
       name: props.item.name,
-      subtext:  lang("Tap_here_to_add_it_to_thi"),
+      subtext: props.restore ? lang("I_need_to_be_setup_up_again") : lang("Tap_here_to_add_it_to_thi"),
       showRssi: false,
       rssi: null,
       pendingCommand: false,
@@ -43,7 +43,8 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
     this.setupEvents = [];
   }
 
-  componentDidMount() {this.setupEvents.push(core.eventBus.on(Util.events.getSetupTopic(this.props.handle), (data) => {
+  componentDidMount() {
+    this.setupEvents.push(core.eventBus.on(Util.events.getSetupTopic(this.props.handle), (data) => {
     if (data.rssi < 0) {
       if (this.state.rssi === null) {
         this.setState({rssi: data.rssi, showRssi: true});
@@ -79,6 +80,8 @@ export class SetupDeviceEntry extends Component<{handle, sphereId, item, callbac
 
 
   _getControl() {
+    if (this.props.restore) { return; }
+
     let content;
     let action = null;
     if (this.state.pendingCommand === true) {

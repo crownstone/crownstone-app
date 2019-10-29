@@ -27,6 +27,8 @@ class SetupStateHandlerClass {
 
   _setupProgress = 0;
 
+  _spoofedCrownstonePossibility = {};
+
   constructor() {
     this._uuid = xUtil.getUUID();
 
@@ -84,27 +86,24 @@ class SetupStateHandlerClass {
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
 
+        // If we detect a normal validated advertisement from a Crownstone that we ALSO see as a setup Crownstone, we assume it is spoofed.
+        // It then has to not be validated for at least 30 seconds before we give it a chance as a setup Crownstone.
+        if (this._spoofedCrownstonePossibility[handle] !== undefined) {
+          if (new Date().valueOf() - this._spoofedCrownstonePossibility[handle] < 30000) {
+            return;
+          }
+          else {
+            delete this._spoofedCrownstonePossibility[handle];
+          }
+        }
+
+
+
         let stoneData = MapProvider.stoneHandleMap[handle];
         if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {
           LOGd.info("SetupStateHandler: Fallback for DFU stones is called. Stopping setup event propagation.");
           return;
         }
-
-        // This could provide the keys on a silver platter. TODO: make secure.
-        // let now = new Date().valueOf();
-        // if (stoneData && now - this._lastAutoSetupTimestamp > 10000) {
-        //   if (Permissions.inSphere(stoneData.sphereId).canSetupCrownstone) {
-        //     this._lastAutoSetupTimestamp = now;
-        //     return this._setupStone(
-        //       handle,
-        //       stoneData.sphereId,
-        //       stoneData.stoneConfig.name,
-        //       stoneData.stoneConfig.type,
-        //       stoneData.stoneConfig.icon,
-        //       true
-        //     );
-        //   }
-        // }
 
         // emit advertisements for other views
         core.eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
@@ -138,6 +137,23 @@ class SetupStateHandlerClass {
         // (re)start setup timeout
         this._setSetupTimeout(handle);
       });
+
+      core.nativeBus.on(core.nativeBus.topics.advertisement, (advertisement : crownstoneAdvertisement) => {
+        let handle = advertisement.handle;
+        if (this._stonesInSetupStateAdvertisements[handle] !== undefined) {
+          // this is not currently in setup.
+          if (this._currentSetupState.handle !== handle) {
+            this._cleanup(handle);
+            this._spoofedCrownstonePossibility[handle] = new Date().valueOf();
+          }
+        }
+
+        if (this._spoofedCrownstonePossibility[handle]) {
+          this._spoofedCrownstonePossibility[handle] = new Date().valueOf();
+        }
+      })
+
+
     }
   }
 
@@ -194,7 +210,7 @@ class SetupStateHandlerClass {
         this._stonesInSetupStateTypes[handle].name,
         this._stonesInSetupStateTypes[handle].type,
         this._stonesInSetupStateTypes[handle].icon
-      );
+      )
     }
     else {
       return new Promise((resolve, reject) => {

@@ -46,6 +46,9 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Icon } from "../components/Icon";
 import { Background } from "../components/Background";
+import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
+import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
+
 
 
 export class RoomOverview extends LiveComponent<any, any> {
@@ -106,6 +109,7 @@ export class RoomOverview extends LiveComponent<any, any> {
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(core.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete",  (handle) => {
       this.forceUpdate();
     }));
@@ -162,6 +166,30 @@ export class RoomOverview extends LiveComponent<any, any> {
       </View>
       )
     }
+    else if (item.setupMode === true) {
+      return (
+        <View key={stoneId + '_setup_entry'}>
+          <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
+            <SetupDeviceEntry
+              key={stoneId + '_setup_element'}
+              sphereId={this.props.sphereId}
+              handle={item.handle}
+              item={item}
+              restore={true}
+              callback={() => {
+                NavigationUtil.launchModal(
+                  "SetupCrownstone",
+                  {
+                    sphereId: this.props.sphereId,
+                    setupStone: item,
+                    restoration: true
+                });
+              }}
+            />
+          </View>
+        </View>
+      )
+    }
     else {
       return (
         <View key={stoneId + '_entry'}>
@@ -179,11 +207,12 @@ export class RoomOverview extends LiveComponent<any, any> {
     }
   }
 
-  _getStoneList(stones) {
+  _getStoneList(stoneData) {
     let stoneArray = [];
     let ids = [];
-    let stoneIds = Object.keys(stones);
+    let stoneIds = Object.keys(stoneData);
     let shownHandles = {};
+    let tempStoneDataArray = [];
 
     if (DfuStateHandler.areDfuStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
       let dfuStones = DfuStateHandler.getDfuStones();
@@ -198,13 +227,36 @@ export class RoomOverview extends LiveComponent<any, any> {
         }
       });
     }
+    else if (SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
+      let setupStones = SetupStateHandler.getSetupStones();
+      let setupIds = Object.keys(setupStones);
+      // check if there are any setup stones that match the stones already in the database.
+      stoneIds.forEach((stoneId) => {
+        let stoneObj = stoneData[stoneId];
+        let handle = stoneObj.config.handle;
+        // only try showing the setup stone if it is not already a DFU stone
+        if (shownHandles[handle] === undefined) {
+          setupIds.forEach((setupId) => {
+            if (setupStones[setupId].handle === handle) {
+              shownHandles[handle] = true;
+              ids.push(stoneId);
+              stoneArray.push({
+                setupMode: true,
+                handle: handle,
+                name: stoneObj.config.name,
+                icon: stoneObj.config.icon
+              });
+            }
+          });
+        }
+      })
+    }
 
-    let tempStoneDataArray = [];
     stoneIds.forEach((stoneId) => {
       // do not show the same device twice
-      let handle = stones[stoneId].config.handle;
+      let handle = stoneData[stoneId].config.handle;
       if (shownHandles[handle] === undefined) {
-        tempStoneDataArray.push({stone: stones[stoneId], id: stoneId});
+        tempStoneDataArray.push({stone: stoneData[stoneId], id: stoneId});
       }
     });
 

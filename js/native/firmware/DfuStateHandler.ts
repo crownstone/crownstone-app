@@ -55,7 +55,7 @@ class DfuStateHandlerClass {
             emitDiscovery = true;
           }
 
-          this._stonesInDfuMode[handle] = {advertisement: data, data: MapProvider.stoneHandleMap[handle]};
+          this._stonesInDfuMode[handle] = {advertisement: data, data: MapProvider.stoneHandleMap[handle], sphereId: MapProvider.stoneHandleMap[handle].sphereId};
           LOG.info("DfuStateHandler: Found new DFU Crownstone.");
           core.eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
         }
@@ -138,6 +138,16 @@ class DfuStateHandlerClass {
 
   isDfuInProgress() {
     return this._dfuInProgress;
+  }
+
+  sphereHasDfuCrownstone(sphereId) {
+    let result = false;
+    Object.keys(this._stonesInDfuMode).forEach((handle) => {
+      if (this._stonesInDfuMode[handle].sphereId === sphereId) {
+        result = true;
+      }
+    })
+    return result;
   }
 
 }
