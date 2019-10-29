@@ -31,13 +31,15 @@ export class SetupHelper {
   meshDeviceKey   : any;
   stoneIdInCloud  : any;
   stoneWasAlreadyInCloud : boolean = false;
+  storeCrownstone : boolean = true;
 
-  constructor(handle, name, type, icon) {
+  constructor(handle, name, type, icon, storeCrownstone = true) {
     // shorthand to the handle
     this.handle = handle;
     this.name = name;
     this.type = type;
     this.icon = icon;
+    this.storeCrownstone = storeCrownstone;
   }
 
 
@@ -163,7 +165,9 @@ export class SetupHelper {
                 data: { state: canSwitch ? 1 : 0, currentUsage: 0 },
               });
 
-              core.store.batchDispatch(actions);
+              if (this.storeCrownstone === true) {
+                core.store.batchDispatch(actions);
+              }
 
               // Restore trigger state
               core.eventBus.emit("useTriggers");
@@ -213,6 +217,10 @@ export class SetupHelper {
   }
 
   getMeshDeviceKeyFromCloud(sphereId, stoneId) {
+    if (this.storeCrownstone === false ){
+      return Promise.resolve("aStoneKeyForMesh")
+    }
+
     return CLOUD.getKeys(sphereId, stoneId, false)
       .then((keyData) => {
         if (keyData.length !== 1) { throw {code: networkError, message: "Invalid key data count"}; }
@@ -234,6 +242,10 @@ export class SetupHelper {
 
 
   registerInCloud(sphereId) {
+    if (this.storeCrownstone === false ){
+      return Promise.resolve({id:xUtil.getUUID(), uid:Math.floor(Math.random()*255), major: Math.floor(Math.random()*60000), minor: Math.floor(Math.random()*60000)});
+    }
+
     return new Promise((resolve, reject) => {
       const processFailure = (err?) => {
         if (err.message && err.message === 'Network request failed') {

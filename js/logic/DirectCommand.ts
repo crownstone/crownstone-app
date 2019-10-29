@@ -17,18 +17,18 @@ export class DirectCommand {
    * @param props  --> array of properties
    * @returns {*}
    */
-  perform(action : () => Promise<any>, props = []) {
+  perform(action : (...any) => Promise<any>, props = [], options = {}) {
     LOG.bch("DirectCommand: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
-    return this.performCommand(action,props, false);
+    return this.performCommand(action,props, false, options);
   }
 
-  performPriority(action : () => Promise<any>, props = []) {
+  performPriority(action : (...any) => Promise<any>, props = [], options = {}) {
     LOG.bch("DirectCommand: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
-    return this.performCommand(action, props, true)
+    return this.performCommand(action, props, true, options)
   }
 
 
-  performCommand(action, props = [], priorityCommand) {
+  performCommand(action, props = [], priorityCommand, options : batchCommandEntryOptions = {}) {
     let actionPromise = () => {
       if (this.handle) {
         let resultData = undefined;
@@ -45,8 +45,10 @@ export class DirectCommand {
           })
           .then((data) => {
             resultData = {data:data};
-            LOG.bch("DirectCommand: completed", action, 'disconnecting', data);
-            return BluenetPromiseWrapper.phoneDisconnect();
+            if (!options || options && options.keepConnectionOpen !== true) {
+              LOG.bch("DirectCommand: completed", action, 'disconnecting', data);
+              return BluenetPromiseWrapper.phoneDisconnect();
+            }
           })
           .catch((err) => {
             LOGe.bch("DirectCommand: BLE Single command Error:", err);

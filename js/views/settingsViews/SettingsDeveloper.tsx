@@ -25,6 +25,8 @@ import {Scheduler} from "../../logic/Scheduler";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { Stacks } from "../../router/Stacks";
+import { LocationHandler } from "../../native/localization/LocationHandler";
 
 
 export class SettingsDeveloper extends LiveComponent<any, any> {
@@ -344,6 +346,20 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
           storeIt();
         }
       }});
+
+
+
+
+    items.push({label: "GO TO DEV APP", type: 'explanation'});
+    items.push({
+      label: "Go to dev app",
+      type: 'button',
+      icon: <IconButton name="md-close-circle" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
+      callback:() => {
+        LocationHandler.destroy();
+        NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());
+      }});
+    items.push({label: "This can brick your Crownstones. Beware! Your locationhandler will be killed.", type: 'explanation'});
 
 
     items.push({label: lang("RESET_DEVELOPER_STATE"), type: 'explanation'});

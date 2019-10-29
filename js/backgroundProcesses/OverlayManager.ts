@@ -62,7 +62,7 @@ class OverlayManagerClass {
       core.eventBus.on('showLoading',          (data) => { NavigationUtil.showOverlay('Processing',    {data: data}); })
       core.eventBus.on('showProgress',         (data) => { NavigationUtil.showOverlay('Processing',    {data: data}); })
       core.eventBus.on('showCustomOverlay',    (data) => { NavigationUtil.showOverlay('SimpleOverlay', {data: data}); })
-      core.eventBus.on('CalibrateTapToToggle', (data) => { NavigationUtil.showOverlay('TapToToggleCalibration',{data: data}); })
+      core.eventBus.on('showNumericOverlay',   (data) => { NavigationUtil.showOverlay('NumericOverlay',{data: data}); })
     }
 
     this._initialized = true;

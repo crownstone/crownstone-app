@@ -90,7 +90,6 @@ import { LocalizationSetupStep2 }            from "../views/overlays/Localizatio
 import { LocationPermissionOverlay }         from "../views/overlays/LocationPermissionOverlay";
 import { LockOverlay }                       from "../views/overlays/LockOverlay";
 import { SimpleOverlay }                     from "../views/overlays/SimpleOverlay";
-import { TapToToggleCalibration }            from "../views/overlays/TapToToggleCalibration";
 import { OptionPopup }                       from "../views/overlays/OptionPopup";
 import { DeviceAbilities }                   from "../views/deviceViews/DeviceAbilities";
 import { Ability_DimmerSettings } from "../views/deviceViews/abilities/settings/Ability_DimmerSettings";
@@ -101,6 +100,14 @@ import { Ability_TapToToggleInformation } from "../views/deviceViews/abilities/i
 import { DevicePowerUsage } from "../views/deviceViews/DevicePowerUsage";
 import { DeviceSmartBehaviour_CopyStoneSelection } from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_CopyStoneSelection";
 import { DeviceSmartBehaviour_RuleSelector } from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_RuleSelector";
+import { NumericOverlay } from "../views/overlays/NumericOverlay";
+import { DEV_UserData } from "../views/dev/user/DEV_UserDataSpheres";
+import { DEV_PresenceMocking } from "../views/dev/PresenceMocking/DEV_PresenceMocking";
+import { DEV_FirmwareTest } from "../views/dev/firmwareTesting/DEV_FirmwareTest";
+import { DEV_AdvancedConfig } from "../views/dev/firmwareTesting/DEV_AdvancedConfig";
+import { DEV_DFU } from "../views/dev/firmwareTesting/DEV_DFU";
+import { DEV_StoneSelector } from "../views/dev/stoneSelecting/DEV_StoneSelector";
+import { DEV_RawAdvertisements } from "../views/dev/firmwareTesting/DEV_RawAdvertisements";
 
 
 export const Views = {
@@ -201,5 +208,23 @@ export const Views = {
   OptionPopup:                      OptionPopup,
   Processing:                       Processing,
   SimpleOverlay:                    SimpleOverlay,
-  TapToToggleCalibration:           TapToToggleCalibration,
+
+
+
+
+
+
+
+  // DEV
+  DEV_FirmwareTest:              DEV_FirmwareTest,
+  DEV_AdvancedConfig:            DEV_AdvancedConfig,
+  DEV_DFU:                       DEV_DFU,
+
+  DEV_StoneSelector:             DEV_StoneSelector,
+  DEV_RawAdvertisements:         DEV_RawAdvertisements,
+  DEV_PresenceMocking:           DEV_PresenceMocking,
+  DEV_UserData:                  DEV_UserData,
+
+  // Overlays:
+  NumericOverlay:            NumericOverlay,
 };

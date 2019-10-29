@@ -5,6 +5,7 @@ import spheresReducer      from './reducers/spheres'
 import installationReducer from './reducers/installation'
 import appReducer          from './reducers/app'
 import developmentReducer  from './reducers/development'
+import devAppReducer       from './reducers/devApp'
 // import preferencesReducer  from "./reducers/preferences";
 // crownstoneReducer
 
@@ -27,5 +28,6 @@ export default (state : any = {}, action : any = {}) => {
     // preferences: preferencesReducer(state.preferences, action),
     spheres:     spheresReducer(state.spheres, action),
     user:        userReducer(state.user, action),
+    devApp:      devAppReducer(state.devApp, action),
   }
 };

@@ -19,6 +19,8 @@ class LocationHandlerClass {
   _initialized : boolean;
   _readyForLocalization = false;
 
+  _unsubscribeLocationEvents = []
+
   constructor() {
     this._initialized = false;
 
@@ -49,11 +51,15 @@ class LocationHandlerClass {
       this._initialized = true;
 
       // core.nativeBus.on(core.nativeBus.topics.currentRoom, (data) => {LOGd.info('CURRENT ROOM', data)});
-      core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); });
-      core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });
-      core.nativeBus.on(core.nativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
-      core.nativeBus.on(core.nativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
+      this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); }));
+      this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); }));
+      this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); })); // data = {region: sphereId, location: locationId}
+      this._unsubscribeLocationEvents.push(core.nativeBus.on(core.nativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); })); // data = {region: sphereId, location: locationId}
     }
+  }
+
+  destroy() {
+    this._unsubscribeLocationEvents.forEach((unsub) => { unsub(); });
   }
 
 

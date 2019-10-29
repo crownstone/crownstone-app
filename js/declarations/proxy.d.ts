@@ -61,6 +61,39 @@ interface BluenetPromiseWrapperProtocol {
   checkBroadcastAuthorization()                 : Promise< string >,
 
   broadcastSwitch(referenceId, stoneId, switchState):Promise< void >,
+
+
+
+
+
+
+
+
+  // dev
+  switchRelay(state: number)                    : Promise< void >,
+  switchDimmer(state: number)                   : Promise< void >,
+  getResetCounter()                             : Promise< number >,
+  getSwitchcraftThreshold()                     : Promise< number >,
+  setSwitchcraftThreshold(value: number)        : Promise< void >,
+  getMaxChipTemp()                              : Promise< number >,
+  setMaxChipTemp(value: number)                 : Promise< void >,
+  getDimmerCurrentThreshold()                   : Promise< number >,
+  setDimmerCurrentThreshold(value: number)      : Promise< void >,
+  getDimmerTempUpThreshold()                    : Promise< number >,
+  setDimmerTempUpThreshold(value: number)       : Promise< void >,
+  getDimmerTempDownThreshold()                  : Promise< number >,
+  setDimmerTempDownThreshold(value: number)     : Promise< void >,
+  getVoltageZero()                              : Promise< number >,
+  setVoltageZero(value: number)                 : Promise< void >,
+  getCurrentZero()                              : Promise< number >,
+  setCurrentZero(value: number)                 : Promise< void >,
+  getPowerZero()                                : Promise< number >,
+  setPowerZero(value: number)                   : Promise< void >,
+  getVoltageMultiplier()                        : Promise< number >,
+  setVoltageMultiplier(value: number)           : Promise< void >,
+  getCurrentMultiplier()                        : Promise< number >,
+  setCurrentMultiplier(value: number)           : Promise< void >,
+  setUartState(value: number)                   : Promise< number >,
 }
 
 

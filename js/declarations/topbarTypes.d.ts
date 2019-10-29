@@ -8,6 +8,7 @@ interface topbarOptions {
   cancelModal? : boolean,
   closeModal? : boolean,
   cancel? : boolean,
+  leftNav?: topbarNavComponent,
   leftIcon? : {
     id: string,
     icon: any,
