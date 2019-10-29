@@ -19,7 +19,6 @@ let RELEASE_NOTES_NA    = lang("Release_notes_not_availab");
 
 export const DfuUtil = {
   getFirmwareInformation: function(version, hardwareVersion) {
-    return Promise.reject("X")
     return CLOUD.getFirmwareDetails(version, hardwareVersion, false)
       .then((result) => {
         if (result === null) {
