@@ -129,7 +129,7 @@ export const DataUtil = {
       let stoneIds = Object.keys(stones);
       stoneIds.forEach((stoneId) => {
         if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
-          filteredStones[stoneId] = (stones[stoneId]);
+          filteredStones[stoneId] = stones[stoneId];
         }
       })
     }

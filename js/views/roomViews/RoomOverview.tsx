@@ -263,9 +263,9 @@ export class RoomOverview extends LiveComponent<any, any> {
     // sort the order of things by crownstone Id
     tempStoneDataArray.sort((a,b) => { return a.stone.config.crownstoneId - b.stone.config.crownstoneId });
 
-    tempStoneDataArray.forEach((stoneData) => {
-      ids.push(stoneData.id);
-      stoneArray.push(stoneData);
+    tempStoneDataArray.forEach((tmpStoneData) => {
+      ids.push(tmpStoneData.id);
+      stoneArray.push(tmpStoneData);
     });
 
     return { stoneArray, ids };
@@ -288,15 +288,7 @@ export class RoomOverview extends LiveComponent<any, any> {
       return <RoomDeleted/>
     }
 
-    let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
-
-    let usage  = getCurrentPowerUsageInLocation(  state, this.props.sphereId, this.props.locationId);
-    let users  = getPresentUsersInLocation(       state, this.props.sphereId, this.props.locationId);
     let stones = DataUtil.getStonesInLocation(state, this.props.sphereId, this.props.locationId);
-    let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
-    // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
-    this.viewingRemotely = sphere.state.present === false && seeStoneInDfuMode !== true;
-
     let backgroundImage = null;
 
     if (location.config.picture) {
