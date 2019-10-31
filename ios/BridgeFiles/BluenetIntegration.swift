@@ -856,7 +856,7 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   @objc func meshSetTime(_ time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh.batchCommand(crownstoneIds: [], commandPacket: ControlPacketsGenerator.getSetTimePacket(time.uint32Value)))
+    wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh.setTime(time.uint32Value))
   }
   
   
@@ -865,7 +865,7 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   @objc func sendMeshNoOp(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("sendMeshNoOp", callback, GLOBAL_BLUENET.bluenet.mesh.batchCommand(crownstoneIds: [], commandPacket: ControlPacketsGenerator.getNoOpPacket()))
+     wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh.sendNoOp())
   }
   
   
@@ -966,8 +966,61 @@ open class BluenetJS: RCTEventEmitter {
     callback([["error" : false, "data": GLOBAL_BLUENET.bluenet.checkBroadcastAuthorization() ]])
   }
   
+  @objc func saveBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+    do {
+      let behaviour = try BehaviourDictionaryParser(data, dayStartTimeSecondsSinceMidnight: 4*3600)
+      wrapForBluenet("saveBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.saveBehaviour(behaviour: behaviour))
+    }
+    catch let error {
+      if let bluenetErr = error as? BluenetError {
+        callback([["error" : true, "data": getBluenetErrorString(bluenetErr) ]])
+      }
+      else {
+        callback([["error" : true, "data": "UNKNOWN ERROR" ]])
+      }
+    }
+  }
   
+  @objc func updateBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+    do {
+      let behaviour = try BehaviourDictionaryParser(data, dayStartTimeSecondsSinceMidnight: 4*3600)
+      if let index = behaviour.indexOnCrownstone {
+        wrapForBluenet("updateBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.replaceBehaviour(index: index, behaviour: behaviour))
+      }
+      else {
+        callback([["error" : true, "data": "NO INDEX PROVIDED"]])
+      }
+    }
+    catch let error {
+      if let bluenetErr = error as? BluenetError {
+        callback([["error" : true, "data": getBluenetErrorString(bluenetErr) ]])
+      }
+      else {
+        callback([["error" : true, "data": "UNKNOWN ERROR" ]])
+      }
+    }
+  }
   
+  @objc func getBehaviour(_  index: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called getBehaviour")
+    GLOBAL_BLUENET.bluenet.behaviour.getBehaviour(index: index.uint8Value)
+      .done { value -> Void in
+        let dictionaryData : NSDictionary = value.getDictionary(dayStartTimeSecondsSinceMidnight: 4*3600)
+        callback([["error" : false, "data": dictionaryData]])
+      }
+      .catch{err in
+         if let bleErr = err as? BluenetError {
+           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+         }
+         else {
+           callback([["error" : true, "data": "UNKNOWN ERROR IN getBehaviour \(err)"]])
+         }
+     }
+  }
+  
+  @objc func removeBehaviour(_ index: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("removeBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.removeBehaviour(index: index.uint8Value))
+  }
   
   
   

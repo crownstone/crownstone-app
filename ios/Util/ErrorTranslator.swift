@@ -159,5 +159,77 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
     return "BROADCAST_ABORTED"
   case .BLE_RESET:
     return "BLE_RESET"
+    
+
+    case .BEHAVIOUR_INDEX_OUT_OF_RANGE:
+      return "BEHAVIOUR_INDEX_OUT_OF_RANGE"
+    case .BEHAVIOUR_INVALID:
+      return "BEHAVIOUR_INVALID"
+    case .BEHAVIOUR_INVALID_RESPONSE:
+      return "BEHAVIOUR_INVALID_RESPONSE"
+    case .BEHAVIOUR_NOT_FOUND_AT_INDEX:
+      return "BEHAVIOUR_NOT_FOUND_AT_INDEX"
+    case .PROFILE_INDEX_MISSING:
+      return "PROFILE_INDEX_MISSING"
+    case .TYPE_MISSING:
+      return "TYPE_MISSING"
+    case .DATA_MISSING:
+      return "DATA_MISSING"
+    case .ACTIVE_DAYS_MISSING:
+      return "ACTIVE_DAYS_MISSING"
+    case .ACTIVE_DAYS_INVALID:
+      return "ACTIVE_DAYS_INVALID"
+    case .NO_ACTIVE_DAYS:
+      return "NO_ACTIVE_DAYS"
+    case .BEHAVIOUR_ACTION_MISSING:
+      return "BEHAVIOUR_ACTION_MISSING"
+    case .BEHAVIOUR_TIME_MISSING:
+      return "BEHAVIOUR_TIME_MISSING"
+    case .BEHAVIOUR_INTENSITY_MISSING:
+      return "BEHAVIOUR_INTENSITY_MISSING"
+    case .TWILIGHT_CANT_HAVE_PRESENCE:
+      return "TWILIGHT_CANT_HAVE_PRESENCE"
+    case .TWILIGHT_CANT_HAVE_END_CONDITION:
+      return "TWILIGHT_CANT_HAVE_END_CONDITION"
+    case .NO_TIME_TYPE:
+      return "NO_TIME_TYPE"
+    case .INVALID_TIME_TYPE:
+      return "INVALID_TIME_TYPE"
+    case .MISSING_TO_TIME:
+      return "MISSING_TO_TIME"
+    case .MISSING_FROM_TIME:
+      return "MISSING_FROM_TIME"
+    case .MISSING_TO_TIME_TYPE:
+      return "MISSING_TO_TIME_TYPE"
+    case .MISSING_FROM_TIME_DATA:
+      return "MISSING_FROM_TIME_DATA"
+    case .MISSING_TO_TIME_DATA:
+      return "MISSING_TO_TIME_DATA"
+    case .MISSING_FROM_TIME_TYPE:
+      return "MISSING_FROM_TIME_TYPE"
+    case .INVALID_TIME_FROM_TYPE:
+      return "INVALID_TIME_FROM_TYPE"
+    case .INVALID_TIME_TO_TYPE:
+      return "INVALID_TIME_TO_TYPE"
+    case .INVALID_FROM_DATA:
+      return "INVALID_FROM_DATA"
+    case .INVALID_TO_DATA:
+      return "INVALID_TO_DATA"
+    case .INVALID_PRESENCE_TYPE:
+      return "INVALID_PRESENCE_TYPE"
+    case .NO_PRESENCE_TYPE:
+      return "NO_PRESENCE_TYPE"
+    case .NO_PRESENCE_DATA:
+      return "NO_PRESENCE_DATA"
+    case .NO_PRESENCE_DELAY:
+      return "NO_PRESENCE_DELAY"
+    case .NO_PRESENCE_LOCATION_IDS:
+      return "NO_PRESENCE_LOCATION_IDS"
+    case .NO_END_CONDITION_TYPE:
+      return "NO_END_CONDITION_TYPE"
+    case .NO_END_CONDITION_PRESENCE:
+      return "NO_END_CONDITION_PRESENCE"
+    case .NO_END_CONDITION_DURATION:
+      return "NO_END_CONDITION_DURATION"
 }
 }

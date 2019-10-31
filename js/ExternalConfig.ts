@@ -10,7 +10,7 @@ import { Platform } from "react-native";
   const RELEASE_MODE = false;
 
   // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
-  const IGNORE_LOCAL_CONFIG = false;
+  const IGNORE_LOCAL_CONFIG = true;
 
   export const FALLBACKS_ENABLED = true;
 

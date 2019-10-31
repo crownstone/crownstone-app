@@ -144,5 +144,68 @@ RCT_EXTERN_METHOD(unsubscribeNearest)
 RCT_EXTERN_METHOD(subscribeToUnverified)
 RCT_EXTERN_METHOD(unsubscribeUnverified)
 
+// Behaviour
+RCT_EXTERN_METHOD(saveBehaviour:  (NSDictionary *)data       callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(updateBehaviour:(NSDictionary *)data       callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(removeBehaviour:(nonnull NSNumber *)index  callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getBehaviour:   (nonnull NSNumber *)index  callback:(RCTResponseSenderBlock)callback)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// dev
+
+RCT_EXTERN_METHOD(switchRelay: (nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(switchDimmer:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getResetCounter:(RCTResponseSenderBlock)callback)
+
+// Bart Config Methods
+RCT_EXTERN_METHOD(getSwitchcraftThreshold: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getMaxChipTemp: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getDimmerCurrentThreshold: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getDimmerTempUpThreshold: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getDimmerTempDownThreshold: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getVoltageZero: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getCurrentZero: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getPowerZero: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getVoltageMultiplier: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getCurrentMultiplier: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setSwitchcraftThreshold: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setMaxChipTemp: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setDimmerCurrentThreshold: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setDimmerTempUpThreshold: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setDimmerTempDownThreshold: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setVoltageZero: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setCurrentZero: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setPowerZero: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setVoltageMultiplier: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setCurrentMultiplier: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setUartState: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
+
+
+
+
+
+
+
+
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end

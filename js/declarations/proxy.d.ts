@@ -62,11 +62,10 @@ interface BluenetPromiseWrapperProtocol {
 
   broadcastSwitch(referenceId, stoneId, switchState):Promise< void >,
 
-
-
-
-
-
+  saveBehaviour(behaviour: behaviourTransfer)   : Promise<behaviourReply>,
+  updateBehaviour(behaviour: behaviourTransfer) : Promise<number>,
+  removeBehaviour(index: number)                : Promise<number>,
+  getBehaviour(index: number)                   : Promise<behaviourTransfer>,
 
 
   // dev

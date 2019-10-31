@@ -158,20 +158,10 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   broadcastSwitch:                (referenceId, stoneId, switchState) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState); },
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  saveBehaviour:                  (behaviour: behaviourTransfer) => { return BluenetPromise('saveBehaviour',behaviour) },
+  updateBehaviour:                (behaviour: behaviourTransfer) => { return BluenetPromise('updateBehaviour',behaviour) },
+  removeBehaviour:                (index: number)                => { return BluenetPromise('removeBehaviour',index) },
+  getBehaviour:                   (index: number)                => { return BluenetPromise('getBehaviour',index) },
 
 
 

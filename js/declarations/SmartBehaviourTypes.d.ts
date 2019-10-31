@@ -70,6 +70,11 @@ interface twilight {
   time: aicoreTime,
 }
 
+interface behaviourReply {
+  index: number,
+  masterHash: number,
+}
+
 
 interface behaviourWrapper {
   type: "BEHAVIOUR" | "TWILIGHT"
@@ -82,6 +87,15 @@ interface behaviourWrapper {
   deleted: boolean,
   cloudId: string,
   updatedAt: number
+}
+
+
+interface behaviourTransfer {
+  type: "BEHAVIOUR" | "TWILIGHT"
+  data: behaviour | twilight, // stringified
+  activeDays: dayOfWeek,
+  // from here on it is data required for syncing and UI state.
+  idOnCrownstone: number,
 }
 
 // TYPE: EVENT

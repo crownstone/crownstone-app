@@ -88,6 +88,10 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'getFirmwareVersion' } |
   { commandName : 'getHardwareVersion' } |
   { commandName : 'keepAliveBatchCommand' } |
+  { commandName : 'saveBehaviour', behaviour: behaviourTransfer } |
+  { commandName : 'updateBehaviour', behaviour: behaviourTransfer } |
+  { commandName : 'removeBehaviour', index: number } |
+  { commandName : 'getBehaviour', index: number } |
   { commandName : 'commandFactoryReset' } |
   { commandName : 'sendNoOp' } |
   { commandName : 'sendMeshNoOp' } |
