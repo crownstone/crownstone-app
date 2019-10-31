@@ -33,13 +33,17 @@ export class SetupHelper {
   stoneWasAlreadyInCloud : boolean = false;
   storeCrownstone : boolean = true;
 
-  constructor(handle, name, type, icon, storeCrownstone = true) {
+  _setupOverrideData : any = null
+
+  constructor(handle, name, type, icon, storeCrownstone = true, setupDataOverride = null) {
     // shorthand to the handle
     this.handle = handle;
     this.name = name;
     this.type = type;
     this.icon = icon;
     this.storeCrownstone = storeCrownstone;
+
+    this._setupOverrideData = setupDataOverride;
   }
 
 
@@ -99,6 +103,9 @@ export class SetupHelper {
           .then((meshDeviceKey) => {
             LOG.info("setup progress: DeviceKeyReceveived in cloud");
             core.eventBus.emit("setupInProgress", { handle: this.handle, progress: 5/20 });
+            if (this._setupOverrideData !== null) {
+              return this.setupCrownstoneWithOverrideData();
+            }
             return this.setupCrownstone(sphereId, meshDeviceKey);
           })
           .then(() => {
@@ -325,6 +332,32 @@ export class SetupHelper {
       ibeaconMinor:       this.cloudResponse.minor,
     };
 
+    return this._setupCrownstone(data, sphereId);
+  }
+
+  setupCrownstoneWithOverrideData() {
+    return this._setupCrownstone(this._setupOverrideData, this._setupOverrideData.sphereId)
+  }
+
+
+  _setupCrownstone(setupData, sphereId) {
+    let data = {
+      crownstoneId:       setupData.crownstoneId,
+      sphereId:           setupData.sphereId,
+      adminKey:           setupData.adminKey,
+      memberKey:          setupData.memberKey,
+      basicKey:           setupData.basicKey,
+      localizationKey:    setupData.localizationKey,
+      serviceDataKey:     setupData.serviceDataKey,
+      meshNetworkKey:     setupData.meshNetworkKey,
+      meshApplicationKey: setupData.meshApplicationKey,
+      meshDeviceKey:      setupData.meshDeviceKey,
+      meshAccessAddress:  setupData.meshAccessAddress,
+      ibeaconUUID:        setupData.ibeaconUUID,
+      ibeaconMajor:       setupData.ibeaconMajor,
+      ibeaconMinor:       setupData.ibeaconMinor,
+    };
+
     let unsubscribe = core.nativeBus.on(core.nativeBus.topics.setupProgress, (progress) => {
       core.eventBus.emit("setupInProgress", { handle: this.handle, progress: (5 + progress)/20 });
     });
@@ -344,6 +377,9 @@ export class SetupHelper {
         })
     });
   }
+
+
+
 
   _restoreSchedules(sphereId, localStoneId) {
     let state  = core.store.getState();

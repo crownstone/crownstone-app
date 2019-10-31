@@ -8,9 +8,9 @@ function lang(key,a?,b?,c?,d?,e?) {
 import * as React from 'react';
 import {
   Alert,
-  ScrollView,
+  ScrollView, TouchableWithoutFeedback,
   View
-} from 'react-native';
+} from "react-native";
 
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
@@ -36,6 +36,9 @@ export class SettingsProfile extends LiveComponent<any, any> {
   renderState : any;
   validationState : any;
 
+  count = 0;
+  lastCountTime = 0;
+
   constructor(props) {
     super(props);
     this.renderState = {};
@@ -45,8 +48,27 @@ export class SettingsProfile extends LiveComponent<any, any> {
     const state = store.getState();
     let user = state.user;
 
-    let initialState = {picture: user.picture, firstName: user.firstName, lastName: user.lastName};
-    this.state = initialState;
+    this.state = {
+      picture: user.picture,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      showDevMenu: state.user.developer || false
+    };
+  }
+
+  _countSecret() {
+    let now = new Date().valueOf();
+    if (now - this.lastCountTime > 1000) {
+      this.count = 1
+    }
+    else {
+      this.count++;
+      if (this.count >= 8 && this.state.showDevMenu === false) {
+        this.setState({showDevMenu: true})
+      }
+    }
+
+    this.lastCountTime = now;
   }
 
   componentDidMount() {
@@ -128,31 +150,37 @@ export class SettingsProfile extends LiveComponent<any, any> {
 
     items.push({type:'spacer'});
 
-    if (user.developer !== true) {
-      items.push({
-        label: lang("Enable_Developer_Mode"),
-        value: false,
-        icon: <IconButton name={"md-code-working"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
-        type: 'switch',
-        callback:(newValue) => {
-        setTimeout(() => {
-          NotificationHandler._verifyState();
-          store.dispatch({
-            type: 'SET_DEVELOPER_MODE',
-            data: {developer: newValue}
-          });
-        }, 300)
-      }});
-      items.push({label: lang("This_will_enable_certain_"), type: 'explanation', below: true});
-    }
-    else {
-      items.push({
-        label: lang("Developer_Menu"),
-        icon: <IconButton name={"md-code-working"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
-        type: 'navigation',
-        callback:() => { NavigationUtil.navigate( "SettingsDeveloper"); }
-      });
-      items.push({type: 'spacer'});
+    if (this.state.showDevMenu) {
+      if (user.developer !== true) {
+        items.push({
+          label: lang("Enable_Developer_Mode"),
+          value: false,
+          icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex}
+                            buttonStyle={{ backgroundColor: colors.csOrange.hex }}/>,
+          type: 'switch',
+          callback: (newValue) => {
+            setTimeout(() => {
+              NotificationHandler._verifyState();
+              store.dispatch({
+                type: 'SET_DEVELOPER_MODE',
+                data: { developer: newValue }
+              });
+            }, 300)
+          }
+        });
+        items.push({ label: lang("This_will_enable_certain_"), type: 'explanation', below: true });
+      } else {
+        items.push({
+          label: lang("Developer_Menu"),
+          icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex}
+                            buttonStyle={{ backgroundColor: colors.menuRed.hex }}/>,
+          type: 'navigation',
+          callback: () => {
+            NavigationUtil.navigate("SettingsDeveloper");
+          }
+        });
+        items.push({ type: 'spacer' });
+      }
     }
 
     return items;
@@ -228,6 +256,9 @@ export class SettingsProfile extends LiveComponent<any, any> {
           </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>
+        <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
+          <View style={{position:'absolute', bottom:0, left:0, width:screenWidth, height:50, backgroundColor: 'transparent'}} />
+        </TouchableWithoutFeedback>
       </Background>
     );
   }

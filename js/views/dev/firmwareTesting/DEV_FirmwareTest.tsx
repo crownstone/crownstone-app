@@ -18,7 +18,7 @@ import { SlideInView } from "../../components/animated/SlideInView";
 import React from "react";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import { Icon } from "../../components/Icon";
-import { TESTING_SPHERE_NAME } from "../../../backgroundProcesses/dev/InitialState";
+import { DevAppState } from "../../../backgroundProcesses/dev/DevAppState";
 
 const BLE_STATE_READY = "ready";
 const BLE_STATE_BUSY = "busy";
@@ -133,14 +133,26 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
     let state = core.store.getState();
     let useCloud = false;
-    if (state.devApp.storeCrownstonesInCloud && state.spheres[state.devApp.sphereUsedForSetup].config.name !== TESTING_SPHERE_NAME) {
+    if (state.devApp.storeCrownstonesInCloud && state.devApp.sphereUsedForSetup !== DevAppState.sphereId) {
       useCloud = true;
+    }
+
+    let setupData = null;
+    if (state.devApp.sphereUsedForSetup === DevAppState.sphereId) {
+      setupData = DevAppState.getSetupData()
     }
 
     clearTimeout(this.bleStateResetTimeout);
     this.setState({setupActive: true, setupProgress:0, bleState: BLE_STATE_BUSY})
 
-    let helper = new SetupHelper(this.props.handle, "Dev Crownstone", this.props.item.serviceData.deviceType, "c2-crownstone", useCloud);
+    let helper = new SetupHelper(
+      this.props.handle,
+      "Dev Crownstone",
+      this.props.item.serviceData.deviceType,
+      "c2-crownstone",
+      useCloud,
+      setupData
+    );
     let unsubscribeSetupEvents = [];
     unsubscribeSetupEvents.push(core.eventBus.on("setupCancelled", (handle) => {
       this.setState({setupActive: false, setupProgress: 0});
@@ -176,6 +188,12 @@ export class DEV_FirmwareTest extends LiveComponent<{
     const store = core.store;
     let state = store.getState();
 
+    let sphereName = DevAppState.name
+    if (state.spheres[state.devApp.sphereUsedForSetup] !== undefined) {
+      sphereName = state.spheres[state.devApp.sphereUsedForSetup].config.name
+    }
+
+
     let items = [];
 
     items.push({label:"OPERATIONS", type: 'explanation', below: false, color: explanationColor});
@@ -197,7 +215,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
           this._setupCrownstone();
         }
       });
-      items.push({label:"Using sphere: \"" + state.spheres[state.devApp.sphereUsedForSetup].config.name + "\" for setup.", type: 'explanation', below: true, color: explanationColor});
+      items.push({label:"Using sphere: \"" + sphereName + "\" for setup.", type: 'explanation', below: true, color: explanationColor});
     }
     else if (FocusManager.crownstoneMode === "verified") {
       items.push({
@@ -495,7 +513,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         let sphere = state.spheres[FocusManager.crownstoneState.referenceId];
         if (sphere) {
           items.push({
-            label: "In Sphere " + sphere.config.name,
+            label: "In Sphere " + sphereName,
             type: 'explanation',
             below: false,
             color: explanationColor

@@ -2,7 +2,7 @@ import { update, refreshDefaults } from './reducerUtil'
 
 let defaultState = {
   storeCrownstonesInCloud: false,
-  sphereUsedForSetup: null,
+  sphereUsedForSetup: "DEV_APP_SPHERE_ID",
   fastPhone: false,
 };
 

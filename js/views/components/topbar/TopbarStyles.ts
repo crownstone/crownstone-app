@@ -8,7 +8,7 @@ let barHeight = topBarHeight - statusBarHeight;
 
 export const topBarStyle = StyleSheet.create({
   topBar: {
-    backgroundColor: colors.menuBackground.hex,
+    backgroundColor: colors.csBlueDarker.hex,
     flexDirection: 'row',
     paddingTop: statusBarHeight
   },
@@ -39,6 +39,7 @@ export const topBarStyle = StyleSheet.create({
   },
   titleText: {
     fontSize: 18,
+    fontWeight:'bold',
     color: 'white'
   },
   text:{

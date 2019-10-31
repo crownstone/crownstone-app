@@ -7,15 +7,16 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  Alert,
-  ScrollView} from 'react-native';
+  Alert, Platform,
+  ScrollView, Text, TouchableWithoutFeedback, View
+} from "react-native";
 
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { colors } from '../styles'
+import { colors, screenWidth } from "../styles";
 import {Util} from "../../util/Util";
 import {clearLogs} from "../../logging/LogUtil";
 
@@ -24,17 +25,32 @@ import {CLOUD_ADDRESS} from "../../ExternalConfig";
 import {Scheduler} from "../../logic/Scheduler";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopBarUtil } from "../../util/TopBarUtil";
 import { Stacks } from "../../router/Stacks";
 import { LocationHandler } from "../../native/localization/LocationHandler";
+import { DevAppState } from "../../backgroundProcesses/dev/DevAppState";
+import { ScaledImage } from "../components/ScaledImage";
+import { TopbarImitation } from "../components/TopbarImitation";
+import { topBarStyle } from "../components/topbar/TopbarStyles";
+import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 
 
 export class SettingsDeveloper extends LiveComponent<any, any> {
-  static options(props) {
-    return TopBarUtil.getOptions({title: lang("Developer")});
-  }
+  static options = {
+    topBar: { visible: false, height: 0 }
+  };
 
   unsubscribe : any = [];
+  count = 0;
+  lastCountTime = 0;
+
+  constructor(props) {
+    super(props);
+
+    let state = core.store.getState();
+
+
+    this.state = { devAppVisible: state.development.devAppVisible }
+  }
 
   componentDidMount() {
     this.unsubscribe.push(core.eventBus.on("databaseChange", (data) => {
@@ -49,7 +65,46 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     this.unsubscribe.forEach((unsub) => { unsub() });
   }
 
-  
+  _countSecret() {
+    let now = new Date().valueOf();
+    if (now - this.lastCountTime > 1000) {
+      this.count = 1
+    }
+    else {
+      this.count++;
+      if (this.count >= 4 && this.state.devAppVisible === false) {
+        this.setState({devAppVisible: true})
+        core.store.dispatch({type:'CHANGE_DEV_SETTINGS', data: { devAppVisible: true}});
+      }
+    }
+
+    this.lastCountTime = now;
+  }
+
+
+  _getDevAppItems() {
+    let items = [];
+
+    items.push({ label: "GO TO DEV APP", type: 'explanation' });
+    items.push({
+      label: "Go to dev app",
+      type: 'button',
+      style: { color: colors.black.hex, fontWeight: 'bold' },
+      icon: <ScaledImage source={require('../../images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
+      callback: () => {
+        LocationHandler.destroy();
+        DevAppState.init();
+        NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());
+      }
+    });
+    items.push({
+      label: "This can brick your Crownstones. Beware! Your locationhandler will be killed. Restart the app to go back to app mode.",
+      type: 'explanation',
+      below: true
+    });
+    return items;
+  }
+
   _getItems() {
     const store = core.store;
     let state = store.getState();
@@ -58,6 +113,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
     let items = [];
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
+
 
     items.push({label: lang("LOGGING"), type: 'explanation', below: false});
     if (!dev.logging_enabled) {
@@ -243,6 +299,8 @@ lang("_No_device_Id___There_was_body"),
     }
 
 
+
+
     items.push({label: lang("MESH"), type: 'explanation', below: false});
     items.push({
       label: lang("Change_Channels"),
@@ -350,17 +408,6 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
 
 
 
-    items.push({label: "GO TO DEV APP", type: 'explanation'});
-    items.push({
-      label: "Go to dev app",
-      type: 'button',
-      icon: <IconButton name="md-close-circle" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
-      callback:() => {
-        LocationHandler.destroy();
-        NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());
-      }});
-    items.push({label: "This can brick your Crownstones. Beware! Your locationhandler will be killed.", type: 'explanation'});
-
 
     items.push({label: lang("RESET_DEVELOPER_STATE"), type: 'explanation'});
     items.push({
@@ -368,15 +415,12 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:() => {
-        store.dispatch({
-          type: 'SET_LOGGING',
-          data: {logging: false}
-        });
-        store.dispatch({
-          type: 'SET_DEVELOPER_MODE',
-          data: {developer: false}
-        });
+        let actions = [];
+        actions.push({ type: 'SET_LOGGING', data: {logging: false}});
+        actions.push({ type: 'SET_DEVELOPER_MODE', data: {developer: false}});
+        actions.push({ type:'CHANGE_DEV_SETTINGS', data: { devAppVisible: false}});
 
+        store.batchDispatch(actions);
         clearAllLogs();
         Bluenet.enableLoggingToFile(false);
 
@@ -393,11 +437,30 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
 
   render() {
     return (
-      <Background image={core.background.menu} >
+      <Background image={core.background.menu} hasTopBar={false} hideNotifications={true} hideOrangeLine={true} >
+        <TopbarImitation
+          left={Platform.OS === 'android' ? null : "Back"}
+          title={"test"}
+          titleObject={
+
+            <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
+              <View style={{flex:1, width: screenWidth-160, alignItems:'center', justifyContent:'center'}}>
+                <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText]}>{"Developer Menu"}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+
+          }
+          leftAction={() => { NavigationUtil.back(); }}
+        />
+        <View style={{height: 2, width:screenWidth, backgroundColor: colors.csOrange.hex}} />
         <ScrollView keyboardShouldPersistTaps="always">
+          <SlideFadeInView visible={this.state.devAppVisible} height={160}>
+            <ListEditableItems items={this._getDevAppItems()} separatorIndent={true} />
+          </SlideFadeInView>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>
     );
   }
 }
+

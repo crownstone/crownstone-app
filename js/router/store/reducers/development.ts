@@ -21,6 +21,8 @@ let defaultState = {
   show_rssi_values_in_mesh:   false,
   nativeExtendedLogging:      false,
 
+  devAppVisible: false,
+
   preview: false,
 
   broadcasting_enabled: false,
@@ -61,6 +63,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.broadcasting_enabled =       update(action.data.broadcasting_enabled,       newState.broadcasting_enabled);
         newState.nativeExtendedLogging =      update(action.data.nativeExtendedLogging,      newState.nativeExtendedLogging);
         newState.show_rssi_values_in_mesh =   update(action.data.show_rssi_values_in_mesh,   newState.show_rssi_values_in_mesh);
+        newState.devAppVisible =              update(action.data.devAppVisible,   newState.devAppVisible);
         return newState;
       }
       return state;

@@ -10,6 +10,8 @@ class EncryptionManagerClass {
   _uuid : string;
   _readyForLocalization = false;
 
+  _extraKeysets : keySet[] = [];
+
   init() {
     if (this._initialized === false) {
       this._initialized = true;
@@ -26,6 +28,16 @@ class EncryptionManagerClass {
 
       this.setKeySets();
     }
+  }
+
+  loadAdditionalKeyset(keySet : keySet) {
+    this._extraKeysets.push(keySet);
+    this.setKeySets();
+  }
+
+  clearAdditionalKeysets() {
+    this._extraKeysets = [];
+    this.setKeySets();
   }
 
   setKeySets() {
@@ -55,6 +67,8 @@ class EncryptionManagerClass {
         iBeaconUuid:     sphere.config.iBeaconUUID
       });
     }
+
+    this._extraKeysets.forEach((extraSet) => { keysets.push(extraSet); });
 
     if (keysets.length == 0) {
       Bluenet.clearKeySets()

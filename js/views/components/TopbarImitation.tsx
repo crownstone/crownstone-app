@@ -99,7 +99,9 @@ class TopBarAndroid extends Component<any, any> {
       <View>
         <View style={[topBarStyle.topBar,this.props.style]}>
           <View style={[{height: barHeight}]}>{this._getLeftContent()}</View>
-          <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}><Text style={[topBarStyle.topBarCenter, topBarStyle.titleText, this.props.titleStyle]}>{this.props.title}</Text></View>
+          <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}>
+            { this.props.titleObject || <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText, this.props.titleStyle]}>{this.props.title}</Text> }
+          </View>
           <View style={[{height: barHeight}]}>{this._getRightContent()}</View>
         </View>
       </View>
@@ -130,7 +132,7 @@ class TopBarIOS extends Component<any, any> {
             style={[topBarStyle.topBarLeftTouch, {paddingLeft:10}, this.props.leftButtonStyle]}>
             <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
               <Icon name="ios-arrow-back" size={33} color={color} style={{paddingRight:6, marginTop:2}} />
-              <Text style={[topBarStyle.topBarLeft,topBarStyle.leftText, this.props.leftStyle]}>{this.props.left}</Text>
+              <Text style={[topBarStyle.topBarLeft,topBarStyle.leftText, {color: colors.menuTextSelected.hex}, this.props.leftStyle]}>{this.props.left}</Text>
             </View>
           </TouchableOpacity>
         );
@@ -181,7 +183,9 @@ class TopBarIOS extends Component<any, any> {
       <View>
         <View style={[topBarStyle.topBar,this.props.style]}>
           <View style={[{height: barHeight}]}>{this._getLeftContent()}</View>
-          <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}><Text style={[topBarStyle.topBarCenter, topBarStyle.titleText, this.props.titleStyle]}>{this.props.title}</Text></View>
+          <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}>
+            { this.props.titleObject || <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText, this.props.titleStyle]}>{this.props.title}</Text> }
+          </View>
           <View style={[{height: barHeight}]}>{this._getRightContent()}</View>
         </View>
       </View>

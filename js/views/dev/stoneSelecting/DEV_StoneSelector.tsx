@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   View,
   Text,
-  Slider,
   Platform,
   TextInput
 } from "react-native";
@@ -26,6 +25,7 @@ import { StoneSelectorDataContainer } from "./DEV_StoneSelectorData";
 import { CrownstoneEntry, FilterButton, filterState } from "./DEV_SelectionComponents";
 import { DEV_SelectionFilter } from "./DEV_SelectionFilter";
 import { DEV_BatchOps } from "./DEV_BatchOps";
+import Slider from "@react-native-community/slider";
 
 let smallText : TextStyle = { fontSize:12, paddingLeft:10, paddingRight:10};
 
@@ -335,7 +335,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
         }}>
         <Text style={{...smallText}}>Filter:</Text>
         <TextInput
-          autoFocus={true}
+          autoFocus={this.state.showHandleFilter}
           value={this.state.handleFilter}
           placeholder={"Handle (MAC) address filter"}
           style={{flex:1, fontSize:16}}

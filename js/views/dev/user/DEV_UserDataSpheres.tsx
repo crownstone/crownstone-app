@@ -10,14 +10,19 @@ import { CLOUD } from "../../../cloud/cloudAPI";
 import { SwitchBar } from "../../components/editComponents/SwitchBar";
 import { IconCircle } from "../../components/IconCircle";
 import { base_core } from "../../../base_core";
+import { TopBarUtil } from "../../../util/TopBarUtil";
+import { LiveComponent } from "../../LiveComponent";
 
 
 
-export class DEV_UserData extends Component<any, any> {
+export class DEV_UserData extends LiveComponent<any, any> {
+  static options(props) {
+    return TopBarUtil.getOptions({title:"User Settings"});
+  }
+
   constructor(props) {
     super(props);
   }
-
 
   getSpheres() {
     let result = [];
@@ -73,6 +78,7 @@ export class DEV_UserData extends Component<any, any> {
             <View style={{flex: 1, width:screenWidth, minHeight:30}} />
 
             <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.4)}} />
+            <View style={{width:screenWidth}}>
             <ButtonBar
               barHeight={NORMAL_ROW_SIZE}
               style={{color: colors.black.hex}}
@@ -99,6 +105,7 @@ export class DEV_UserData extends Component<any, any> {
                   );
                 }
               }} />
+            </View>
             <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.4)}} />
             <SwitchBar
               label={"Store setup Crownstones in Cloud"}

@@ -61,7 +61,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
       switchIsOn: this.storedSwitchState > 0
     }
 
-    if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB || true) {
+    if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB) {
       this.stoneCanSwitch = false;
     }
 
