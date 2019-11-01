@@ -2,6 +2,7 @@ import { core } from "../core";
 import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { DataUtil } from "../util/DataUtil";
+import { xUtil } from "../util/StandAloneUtil";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -60,7 +61,7 @@ class StoneDataSyncerClass {
           for (let k = 0; k < ruleIds.length; k++) {
             let rule = stone.rules[ruleIds[k]];
             if (!rule.syncedToCrownstone) {
-              this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], rule)
+              this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule)
             }
           }
         }
@@ -131,8 +132,58 @@ class StoneDataSyncerClass {
   }
 
 
-  _syncRule(sphereId, stoneId, ruleId, rule) {
-    // TODO
+  _syncRule(sphereId, stoneId, ruleId, stone, rule : behaviourWrapper) : Promise<string> {
+    if (rule.deleted) {
+      if (rule.idOnCrownstone !== null) {
+        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "removeBehaviour", index: rule.idOnCrownstone})
+          .then((returnData) : string => {
+            let masterHash = returnData.data;
+            core.store.dispatch({type: "REMOVE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
+            return masterHash
+          })
+          .catch((err) => {
+            console.log(err);
+            return null;
+          })
+        BatchCommandHandler.executePriority()
+      }
+      else {
+        core.store.dispatch({type: "REMOVE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
+        return Promise.resolve(null)
+      }
+    }
+    else {
+      let behaviour = xUtil.deepCopy(rule);
+      if (typeof behaviour.data === 'string') {
+        behaviour.data = JSON.parse(behaviour.data);
+      }
+      if (rule.idOnCrownstone !== null) {
+        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "updateBehaviour", behaviour: behaviour})
+          .then((returnData) => {
+            core.store.dispatch({type: "UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true}});
+            let masterHash = returnData.data;
+            return masterHash;
+          })
+          .catch((err) => {
+            console.log(err);
+            return null;
+          })
+      }
+      else {
+        BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "saveBehaviour", behaviour: behaviour})
+          .then((returnData) => {
+            let index = returnData.data.index;
+            let masterHash = returnData.data.masterHash;
+            core.store.dispatch({type: "UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true, idOnCrownstone: index}});
+            return masterHash;
+          })
+          .catch((err) => {
+            console.log(err);
+            return null;
+          })
+      }
+      BatchCommandHandler.executePriority()
+    }
   }
 
 

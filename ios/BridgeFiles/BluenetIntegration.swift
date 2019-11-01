@@ -856,7 +856,7 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   @objc func meshSetTime(_ time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh.setTime(time.uint32Value))
+    wrapForBluenet("meshSetTime", callback, GLOBAL_BLUENET.bluenet.mesh.setTime(time: time.uint32Value))
   }
   
   
@@ -969,7 +969,19 @@ open class BluenetJS: RCTEventEmitter {
   @objc func saveBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
     do {
       let behaviour = try BehaviourDictionaryParser(data, dayStartTimeSecondsSinceMidnight: 4*3600)
-      wrapForBluenet("saveBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.saveBehaviour(behaviour: behaviour))
+      GLOBAL_BLUENET.bluenet.behaviour.saveBehaviour(behaviour: behaviour)
+       .done { value -> Void in
+         let dictionaryData : NSDictionary = ["index": value.index, "masterHash": value.masterHash]
+         callback([["error" : false, "data": dictionaryData]])
+       }
+       .catch{err in
+          if let bleErr = err as? BluenetError {
+            callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+          }
+          else {
+            callback([["error" : true, "data": "UNKNOWN ERROR IN saveBehaviour \(err)"]])
+          }
+      }
     }
     catch let error {
       if let bluenetErr = error as? BluenetError {
@@ -979,6 +991,7 @@ open class BluenetJS: RCTEventEmitter {
         callback([["error" : true, "data": "UNKNOWN ERROR" ]])
       }
     }
+
   }
   
   @objc func updateBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {

@@ -172,7 +172,6 @@ RCT_EXTERN_METHOD(getBehaviour:   (nonnull NSNumber *)index  callback:(RCTRespon
 
 
 // dev
-
 RCT_EXTERN_METHOD(switchRelay: (nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(switchDimmer:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getResetCounter:(RCTResponseSenderBlock)callback)

@@ -134,7 +134,35 @@ export class DEV_UserData extends LiveComponent<any, any> {
 
 
 
-function SphereEntry(props) {
+export function SphereEntry(props) {
+  let backgroundColor = colors.white.rgba(0.5);
+  let state = core.store.getState();
+  if (state.devApp.sphereUsedForSetup === props.sphereId) {
+    backgroundColor = colors.menuTextSelected.rgba(0.7)
+  }
+  let height = 70;
+
+  return (
+    <TouchableOpacity style={{
+      backgroundColor: backgroundColor,
+      flexDirection: 'row',
+      width: screenWidth,
+      height: height,
+      padding:10,
+      borderBottomColor: colors.black.rgba(0.2),
+      borderBottomWidth: 1,
+      justifyContent:'center',
+      alignItems:'center',
+    }} onPress={() => { props.callback(); }}>
+      <IconCircle icon={'c1-sphere'} backgroundColor={colors.csBlueDark.hex} color={colors.white.hex} iconSize={32} size={50}  />
+      <View style={{width:50}} />
+      <Text style={{fontSize:16}}>{props.sphere.config.name}</Text>
+      <View style={{flex:5}} />
+    </TouchableOpacity>
+  );
+}
+
+export function RoomEntry(props) {
   let backgroundColor = colors.white.rgba(0.5);
   let state = core.store.getState();
   if (state.devApp.sphereUsedForSetup === props.sphereId) {

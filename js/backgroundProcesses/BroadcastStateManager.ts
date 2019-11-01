@@ -11,6 +11,7 @@ class BroadcastStateManagerClass {
   _advertising : boolean = false;
   _sphereIdInLocationState : string = null;
 
+  _listeners = [];
 
   init() {
     // set event listener on:
@@ -21,7 +22,7 @@ class BroadcastStateManagerClass {
     // We need to start advertising when the peripheral is ready.
     if (this._initialized === false) {
       // console.log("INITIALIZING BroadcastStateManagerClass");
-      core.eventBus.on("databaseChange", (data) => {
+      this._listeners.push(core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
         if (change.changeAppSettings || change.changeDeviceData) {
           this._reloadDevicePreferences();
@@ -35,16 +36,16 @@ class BroadcastStateManagerClass {
         if (change.updateActiveSphere) {
           this._handleActiveSphereUpdate();
         }
-      });
+      }));
 
       //TODO: have this respond to location changed, not just sphere changes
-      core.eventBus.on("enterSphere", (enteringSphereId) => {
+      this._listeners.push(core.eventBus.on("enterSphere", (enteringSphereId) => {
         this._handleEnterSphere(enteringSphereId);
-      });
+      }));
 
-      core.eventBus.on("exitSphere", (exitSphereId) => {
+      this._listeners.push(core.eventBus.on("exitSphere", (exitSphereId) => {
         this._handleExitSphere(exitSphereId);
-      });
+      }));
 
       Bluenet.initBroadcasting();
 
@@ -53,6 +54,10 @@ class BroadcastStateManagerClass {
       this._reloadDevicePreferences();
       this._initialized = true;
     }
+  }
+
+  destroy() {
+    this._listeners.forEach((unsub) => { unsub() })
   }
 
 
@@ -170,10 +175,9 @@ class BroadcastStateManagerClass {
     }
 
     return (userIndex % 254) + 1;
-
   }
 
-  _updateLocationState(sphereId) {
+  _updateLocationState(sphereId, locationId = null) {
     if (this._advertising === false) {
       this._startAdvertising();
     }
@@ -181,9 +185,12 @@ class BroadcastStateManagerClass {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     let deviceToken = this._getDeviceToken(state, sphere);
+    let location = sphere.locations[locationId];
+    let locationUid = location ? location.config.uid : 0;
+
     LOGi.broadcast("Settings Sphere As Present:",sphere.config.name);
     this._sphereIdInLocationState = sphereId;
-    Bluenet.setLocationState(sphere.config.uid || 0, 0, 0, deviceToken, sphereId);
+    Bluenet.setLocationState(sphere.config.uid || 0, locationUid, 0, deviceToken, sphereId);
   }
 
   _reloadAdvertisingState() {

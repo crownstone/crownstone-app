@@ -5,7 +5,7 @@ export const BEHAVIOUR_TYPES = {
   behaviour:"BEHAVIOUR",
 }
 
-let defaultSettings = {
+let defaultSettings : behaviourWrapper = {
   type: null,
   data: null, // this is the stringified rule
   activeDays: {

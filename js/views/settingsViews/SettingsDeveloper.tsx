@@ -32,6 +32,7 @@ import { ScaledImage } from "../components/ScaledImage";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { topBarStyle } from "../components/topbar/TopbarStyles";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
+import { BroadcastStateManager } from "../../backgroundProcesses/BroadcastStateManager";
 
 
 export class SettingsDeveloper extends LiveComponent<any, any> {
@@ -92,6 +93,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       style: { color: colors.black.hex, fontWeight: 'bold' },
       icon: <ScaledImage source={require('../../images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
       callback: () => {
+        BroadcastStateManager.destroy();
         LocationHandler.destroy();
         DevAppState.init();
         NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());

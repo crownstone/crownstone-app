@@ -246,6 +246,10 @@ export const xUtil = {
   },
 
 
+  deepCopy(object) {
+    return xUtil.deepExtend({}, object);
+  },
+
   deepExtend: function (a, b, protoExtend = false, allowDeletion = false) {
     for (let prop in b) {
       if (b.hasOwnProperty(prop) || protoExtend === true) {
