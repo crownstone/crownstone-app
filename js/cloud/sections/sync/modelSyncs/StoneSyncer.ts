@@ -87,10 +87,11 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
       cloudIdMap[stone_from_cloud.id] = localId;
 
-      this.syncChildren(localId, stonesInState[localId], stone_from_cloud);
-
-      return Promise.all(this.transferPromises);
+      return this.syncChildren(localId, stonesInState[localId], stone_from_cloud);
     })
+      .then(() => {
+        return Promise.all(this.transferPromises);
+      })
       .then(() => {
         this.globalSphereMap.stones = {...this.globalSphereMap.stones, ...cloudIdMap};
         this.globalCloudIdMap.stones = {...this.globalCloudIdMap.stones, ...cloudIdMap};
@@ -108,7 +109,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
       this.localSphereId,
       this.cloudSphereId,
       this.globalCloudIdMap,
-      this.globalSphereMap[localId]
+      this.globalSphereMap
     );
     let behaviourSyncer = new StoneBehaviourSyncer(
       this.actions,
@@ -118,12 +119,12 @@ export class StoneSyncer extends SyncingSphereItemBase {
       this.localSphereId,
       this.cloudSphereId,
       this.globalCloudIdMap,
-      this.globalSphereMap[localId]
+      this.globalSphereMap
     );
 
-    abilitySyncer.sync(localStone.abilties, stone_from_cloud.abilities)
+    return abilitySyncer.sync(localStone && localStone.abilties || {}, stone_from_cloud.abilities)
       .then(() => {
-        behaviourSyncer.sync(localStone.rules, stone_from_cloud.behaviours)
+        return behaviourSyncer.sync(localStone && localStone.rules || {}, stone_from_cloud.behaviours)
       })
   }
 

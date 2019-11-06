@@ -344,7 +344,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
         let rule = stone.rules[ruleId];
         if (ruleId !== this.props.ruleId) {
           if (newRule.type !== rule.type) { continue; }
-          if (this.rule.isTheSameAs(stone.rules[ruleIds[i]])) { continue; }
+          if (this.rule.isTheSameAs(stone.rules[ruleId].data)) { continue; }
 
           let data = AicoreUtil.getOverlapData(newRule, rule, day, this.props.sphereId);
           if (data.overlapMins === 0) { continue; }

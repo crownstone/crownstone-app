@@ -3,6 +3,7 @@ import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabi
 import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { DataUtil } from "../util/DataUtil";
 import { xUtil } from "../util/StandAloneUtil";
+import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";

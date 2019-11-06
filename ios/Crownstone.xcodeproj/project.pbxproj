@@ -59,7 +59,6 @@
 		FA0DD9BE21DF642400824ABF /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B421DE863300824ABF /* PromiseKit.framework */; };
 		FA0DD9C021DF642400824ABF /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9B321DE863300824ABF /* SwiftyJSON.framework */; };
 		FA0DD9CD21DFCCED00824ABF /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0DD9CC21DFCCED00824ABF /* DataStore.swift */; };
-		FA0DD9D321DFE16C00824ABF /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D221DFE16C00824ABF /* BluenetLib.framework */; };
 		FA12B7D422450C84003B017E /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA12B79322450C84003B017E /* JavaScriptCore.framework */; };
 		FA12B84A22451C0B003B017E /* Ionicons3.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA12B84922451C0B003B017E /* Ionicons3.ttf */; };
 		FA278AAE229684FD00C690B2 /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA278A9A2296838100C690B2 /* libReactNativeNavigation.a */; };
@@ -663,7 +662,6 @@
 		FA0DD9B421DE863300824ABF /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/watchOS/PromiseKit.framework; sourceTree = "<group>"; };
 		FA0DD9B521DE863300824ABF /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/watchOS/CryptoSwift.framework; sourceTree = "<group>"; };
 		FA0DD9CC21DFCCED00824ABF /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
-		FA0DD9D221DFE16C00824ABF /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetWatch.framework; path = Carthage/Build/watchOS/BluenetWatch.framework; sourceTree = "<group>"; };
 		FA12B79322450C84003B017E /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FA12B84922451C0B003B017E /* Ionicons3.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons3.ttf; path = ../js/fonts/Ionicons3.ttf; sourceTree = "<group>"; };
@@ -754,7 +752,6 @@
 				FA570EA91EAE30F9001C625D /* BluenetBasicLocalization.framework in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				FA570EAF1EAE30F9001C625D /* SwiftyJSON.framework in Frameworks */,
-				FA0DD9D321DFE16C00824ABF /* BluenetLib.framework in Frameworks */,
 				FA570EAD1EAE30F9001C625D /* iOSDFULibrary.framework in Frameworks */,
 				FA570EAE1EAE30F9001C625D /* PromiseKit.framework in Frameworks */,
 				C1770742DC1E48B386AA917E /* libRNDeviceInfo.a in Frameworks */,
@@ -995,7 +992,6 @@
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
 				FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
-				FA0DD9D221DFE16C00824ABF /* BluenetLib.framework */,
 				FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,

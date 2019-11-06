@@ -39,7 +39,6 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { createNewSphere } from "../../util/CreateSphere";
 import { Stacks } from "../../router/Stacks";
 import { base_core } from "../../base_core";
-import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 
 
 export class Login extends Component<any, any> {

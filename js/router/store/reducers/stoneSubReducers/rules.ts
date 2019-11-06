@@ -19,7 +19,7 @@ let defaultSettings : behaviourWrapper = {
   },
   idOnCrownstone: null,
   cloudId: null,
-  profileIndex: 0,
+  profileIndex: null,
   deleted: false,
   syncedToCrownstone: false,
   updatedAt: 1

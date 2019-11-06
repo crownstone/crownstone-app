@@ -462,9 +462,13 @@ export class StoneEntity {
    * @param {crownstoneAdvertisement} advertisement
    */
   handleTransientConfig(stone, advertisement : crownstoneAdvertisement) {
+
+    console.log("TODO: implement the dimming state getting from advetisements")
+    return;
+
     let changeData : any = {};
     let changed = false;
-    if (stone.config.dimmingAvailable !== advertisement.serviceData.dimmingAvailable) {
+    if (stone.abilities.dimming.enabled !== advertisement.serviceData.dimmingAvailable) {
       changed = true;
       changeData.dimmingAvailable = advertisement.serviceData.dimmingAvailable;
     }

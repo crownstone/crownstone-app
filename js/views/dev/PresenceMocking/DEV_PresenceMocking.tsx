@@ -59,7 +59,7 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
     let locations = sphere.locations;
     let locationIds = [];
     Object.keys(locations).forEach((locationId) => {
-      locationIds.push({name: locations[locationId].config.name, id: locationId})
+      locationIds.push({name: locations[locationId].config.name, id: locationId});
     })
 
     locationIds.sort((a,b) => { return a.name < b.name ? -1 : 1 })
