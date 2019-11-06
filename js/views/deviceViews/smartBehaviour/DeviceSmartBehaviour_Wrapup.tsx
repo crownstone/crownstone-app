@@ -125,27 +125,9 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
     let selectedDays = {...this.state.activeDays};
 
-    let appliedDays = selectedDays;
-    if (this.props.deleteRule) {
-      for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
-        appliedDays[DAY_INDICES_MONDAY_START[i]] = !appliedDays[DAY_INDICES_MONDAY_START[i]];
-      }
-    }
-
     let actions = [];
 
     // define two util functions that take care of sorting out days. We will use them later on.
-    let removeActiveDaysFromRule = (rule, ruleId) => {
-      // disable the selected days for the previous rule
-      let newActiveDaysForRule = {...rule.activeDays};
-      Object.keys(appliedDays).forEach((day) => {
-        if (appliedDays[day]) {
-          newActiveDaysForRule[day] = false;
-        }
-      })
-
-      updateRuleWithNewActiveDays(newActiveDaysForRule, rule, ruleId);
-    }
     let updateRuleWithNewActiveDays = (activeDays, rule, ruleId) => {
       // check if there are any days left for the original rule
       let activeDayCount = 0;
@@ -156,7 +138,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       }
 
       if (activeDayCount > 0) {
-        actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: ruleId, data: {activeDays: activeDays}});
+        actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: ruleId, data: {activeDays: activeDays, syncedToCrownstone: false}});
       }
       else {
         if (rule.idOnCrownstone) {
@@ -178,6 +160,31 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       }
     }
 
+    let removeActiveDaysFromRule = (rule, ruleId) => {
+      // disable the selected days for the previous rule
+
+      let newActiveDaysForRule = {...rule.activeDays};
+      Object.keys(appliedDays).forEach((day) => {
+        if (appliedDays[day]) {
+          newActiveDaysForRule[day] = false;
+        }
+      })
+
+
+      updateRuleWithNewActiveDays(newActiveDaysForRule, rule, ruleId);
+    }
+
+    // FIRST WE HANDLE DELETE RULE COMMANDS:
+
+    let appliedDays = selectedDays;
+    if (this.props.deleteRule) {
+      removeActiveDaysFromRule(rules[this.props.ruleId], this.props.ruleId)
+      core.store.batchDispatch(actions);
+      return;
+    }
+
+
+    // NOW WE HANDLE THE EDITED AND NEW ONES:
 
     // if we have an existing rule, we have to update it.
     if (this.props.ruleId) {
@@ -194,7 +201,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
                   newActiveDaysForMergeRule[day] = true;
                 }
               })
-              actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: mergedId, data: {activeDays: newActiveDaysForMergeRule}});
+              actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: mergedId, data: {activeDays: newActiveDaysForMergeRule, syncedToCrownstone: false}});
               break;
             }
           }
@@ -212,6 +219,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
               type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
               data: this.rule.stringify(),
               activeDays: appliedDays,
+              syncedToCrownstone: false
             }
           });
         }

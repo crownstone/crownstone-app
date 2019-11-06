@@ -104,6 +104,7 @@
 		FA86C6EB21CCF05C00811933 /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E221CCF05500811933 /* InterfaceController.swift */; };
 		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
+		FA8C6E2D23731FEB00A801A5 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA8C6DEF23731FEB00A801A5 /* BluenetLib.framework */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FABB8A0121E0E4FA007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
@@ -716,6 +717,7 @@
 		FA86C6F121CCF07000811933 /* SliderRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderRowController.swift; sourceTree = "<group>"; };
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
+		FA8C6DEF23731FEB00A801A5 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -767,6 +769,7 @@
 				4A2622C0CA5640CCB446C481 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
 				77A4BC75F6794BFC8EA372F7 /* libRNCSlider.a in Frameworks */,
 				128F84CE4A2E4BF88CBC89A2 /* libRNCAsyncStorage.a in Frameworks */,
+				FA8C6E2D23731FEB00A801A5 /* BluenetLib.framework in Frameworks */,
 				C7B481C578014B55BE888F3B /* libFastImage.a in Frameworks */,
 				613D457D36284A328D2B9CA4 /* libRNCamera.a in Frameworks */,
 				37664E36FD144AB3839B7564 /* libRNBlur.a in Frameworks */,
@@ -992,6 +995,7 @@
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
 				FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
+				FA8C6DEF23731FEB00A801A5 /* BluenetLib.framework */,
 				FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,

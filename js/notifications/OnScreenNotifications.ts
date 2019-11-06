@@ -53,6 +53,11 @@ class OnScreenNotificationsClass {
     }
   }
 
+  removeAllNotifications() {
+    this.notifications = {};
+    core.eventBus.emit('onScreenNotificationsUpdated');
+  }
+
 
 
 

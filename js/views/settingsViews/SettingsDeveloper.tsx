@@ -33,6 +33,7 @@ import { TopbarImitation } from "../components/TopbarImitation";
 import { topBarStyle } from "../components/topbar/TopbarStyles";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { BroadcastStateManager } from "../../backgroundProcesses/BroadcastStateManager";
+import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 
 export class SettingsDeveloper extends LiveComponent<any, any> {
@@ -93,6 +94,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
       style: { color: colors.black.hex, fontWeight: 'bold' },
       icon: <ScaledImage source={require('../../images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
       callback: () => {
+        OnScreenNotifications.removeAllNotifications();
         BroadcastStateManager.destroy();
         LocationHandler.destroy();
         DevAppState.init();

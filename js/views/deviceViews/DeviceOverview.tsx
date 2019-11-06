@@ -83,6 +83,8 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
   componentDidMount() {
     let state = core.store.getState();
+    // core.store.dispatch({type:"REMOVE_ALL_RULES_OF_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId})
+
     if (state.app.hasSeenDeviceSettings === false) {
       core.store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { hasSeenDeviceSettings: true } })
     }

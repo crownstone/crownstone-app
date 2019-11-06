@@ -4,6 +4,9 @@ import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { DataUtil } from "../util/DataUtil";
 import { xUtil } from "../util/StandAloneUtil";
 import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
+import { AicoreBehaviourCore } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviourCore";
+import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
+import { BEHAVIOUR_TYPES } from "../Enums";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -156,8 +159,16 @@ class StoneDataSyncerClass {
     else {
       let behaviour = xUtil.deepCopy(rule);
       if (typeof behaviour.data === 'string') {
-        behaviour.data = JSON.parse(behaviour.data);
+        if (behaviour.type === BEHAVIOUR_TYPES.behaviour) {
+          behaviour.data = exchangeLocationIdsForUIDs(sphereId, stoneId, behaviour.data);
+        }
+        else {
+          // twilight
+          behaviour.data = JSON.parse(behaviour.data);
+        }
       }
+
+      console.log("DOING IT", rule)
       if (rule.idOnCrownstone !== null) {
         return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "updateBehaviour", behaviour: behaviour})
           .then((returnData) => {
@@ -186,9 +197,30 @@ class StoneDataSyncerClass {
       BatchCommandHandler.executePriority()
     }
   }
+}
 
+function exchangeLocationIdsForUIDs(sphereId, stoneId, behaviourString : behaviour | AicoreBehaviour | string) {
+  let state = core.store.getState();
+  let sphere = state.spheres[sphereId];
+  if (!sphere) { return null; }
+  let stone = sphere.stones[stoneId];
+  if (!stone) { return null; }
 
+  let locations = sphere.locations;
 
+  let behaviour = new AicoreBehaviour(behaviourString);
+
+  let locationIds = behaviour.getLocationIds();
+  let locationUids = [];
+  for (let i = 0; i < locationIds.length; i++) {
+    if (locations[locationIds[i]] !== undefined) {
+      locationUids.push(locations[locationIds[i]].config.uid)
+    }
+  }
+
+  behaviour.setPresenceInLocations(locationUids);
+
+  return behaviour.rule;
 }
 
 export const StoneDataSyncer = new StoneDataSyncerClass();
