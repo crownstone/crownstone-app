@@ -129,7 +129,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
         missingDimensionStrategy 'react-native-camera', 'general'
-        versionCode 51
+        versionCode 52
         versionName "3.0.2"
 //        ndk {
 //            abiFilters "armeabi-v7a", "x86"
