@@ -84,31 +84,6 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
   }
 
 
-  _getDevAppItems() {
-    let items = [];
-
-    items.push({ label: "GO TO DEV APP", type: 'explanation' });
-    items.push({
-      label: "Go to dev app",
-      type: 'button',
-      style: { color: colors.black.hex, fontWeight: 'bold' },
-      icon: <ScaledImage source={require('../../images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
-      callback: () => {
-        OnScreenNotifications.removeAllNotifications();
-        BroadcastStateManager.destroy();
-        LocationHandler.destroy();
-        DevAppState.init();
-        NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());
-      }
-    });
-    items.push({
-      label: "This can brick your Crownstones. Beware! Your locationhandler will be killed. Restart the app to go back to app mode.",
-      type: 'explanation',
-      below: true
-    });
-    return items;
-  }
-
   _getItems() {
     const store = core.store;
     let state = store.getState();
@@ -265,46 +240,6 @@ lang("_No_device_Id___There_was_body"),
         NavigationUtil.navigate( "SettingsLocalizationDebug");
       }});
 
-
-    let broadcastLevels = [];
-    for (let i = -16; i <= 14; i = i+2) {
-      broadcastLevels.push({value: i, label: lang("_dB",i)});
-    }
-
-    items.push({ label: lang("BROADCASTING"), type: 'explanation', below: false });
-    items.push({
-      label: lang("Broadcasting"),
-      value: dev.broadcasting_enabled,
-      type: 'switch',
-      icon: <IconButton name="md-wifi" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlueLight.hex}} />,
-      callback:(newValue) => {
-        store.dispatch({ type: 'CHANGE_DEV_SETTINGS', data: { broadcasting_enabled: newValue }});
-      }});
-    let deviceId = Util.data.getCurrentDeviceId(state);
-    if (deviceId) {
-      let device = state.devices[deviceId];
-      items.push({
-        type: 'dropdown',
-        label: lang("RSSI_Offset"),
-        dropdownHeight: 130,
-        valueRight: true,
-        buttons: true,
-        icon: <IconButton name="ios-wifi" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
-        valueStyle: { color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15 },
-        value: device.rssiOffset,
-        items: broadcastLevels,
-        callback: (newValue) => {
-          core.store.dispatch({ type: "SET_RSSI_OFFSET", deviceId: deviceId, data: {rssiOffset: newValue}})
-        }
-      })
-    }
-    else {
-      items.push({ label: lang("No_Device_Available"), type: 'explanation', below: false });
-    }
-
-
-
-
     items.push({label: lang("MESH"), type: 'explanation', below: false});
     items.push({
       label: lang("Change_Channels"),
@@ -459,7 +394,7 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
         <View style={{height: 2, width:screenWidth, backgroundColor: colors.csOrange.hex}} />
         <ScrollView keyboardShouldPersistTaps="always">
           <SlideFadeInView visible={this.state.devAppVisible} height={160}>
-            <ListEditableItems items={this._getDevAppItems()} separatorIndent={true} />
+            <ListEditableItems items={getDevAppItems()} separatorIndent={true} />
           </SlideFadeInView>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
@@ -468,3 +403,28 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
   }
 }
 
+
+export function getDevAppItems() {
+    let items = [];
+
+    items.push({ label: "GO TO DEV APP", type: 'explanation' });
+    items.push({
+      label: "Go to dev app",
+      type: 'button',
+      style: { color: colors.black.hex, fontWeight: 'bold' },
+      icon: <ScaledImage source={require('../../images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
+      callback: () => {
+        OnScreenNotifications.removeAllNotifications();
+        BroadcastStateManager.destroy();
+        LocationHandler.destroy();
+        DevAppState.init();
+        NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());
+      }
+    });
+    items.push({
+      label: "This can brick your Crownstones. Beware! Your locationhandler will be killed. Restart the app to go back to app mode.",
+      type: 'explanation',
+      below: true
+    });
+    return items;
+}

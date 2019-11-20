@@ -219,7 +219,7 @@ export class DfuDeviceUpdaterEntry extends Component<any, any> {
             </View>
             <View style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}}>
               <View style={{flexDirection: 'column'}}>
-                <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : '100'}}>{stone.config.name}</Text>
+                <Text style={{fontSize: 17, fontWeight: this.props.closeEnough ? 'bold' : '300'}}>{stone.config.name}</Text>
                 { this.state.isUpdating ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ this._getUpdateStateText() }</Text> : undefined }
                 { shouldStillUpdate ? <Text style={{fontSize: 14, fontWeight: '100'}}>{ lang("Waiting_for_update___") }</Text>: undefined }
                 { this._getDetailText() }

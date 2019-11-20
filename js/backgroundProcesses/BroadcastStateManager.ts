@@ -38,13 +38,16 @@ class BroadcastStateManagerClass {
         }
       }));
 
-      //TODO: have this respond to location changed, not just sphere changes
       this._listeners.push(core.eventBus.on("enterSphere", (enteringSphereId) => {
-        this._handleEnterSphere(enteringSphereId);
+        this._handleEnter(enteringSphereId);
       }));
 
       this._listeners.push(core.eventBus.on("exitSphere", (exitSphereId) => {
         this._handleExitSphere(exitSphereId);
+      }));
+
+      this._listeners.push(core.nativeBus.on(core.nativeBus.topics.enterRoom, (data) => {// data = {region: sphereId, location: locationId}
+        this._handleEnter(data.region, data.location);
       }));
 
       Bluenet.initBroadcasting();
@@ -58,6 +61,7 @@ class BroadcastStateManagerClass {
 
   destroy() {
     this._listeners.forEach((unsub) => { unsub() })
+    this._stopAdvertising();
   }
 
 
@@ -96,7 +100,7 @@ class BroadcastStateManagerClass {
 
 
 
-  _handleEnterSphere(sphereId) {
+  _handleEnter(sphereId, locationId = null) {
     let state = core.store.getState();
 
     let amountOfSpheres = Object.keys(state.spheres).length;
@@ -109,19 +113,19 @@ class BroadcastStateManagerClass {
     // this means we received an enter sphere event from the OS
     if (amountOfSpheres === 1) {
       // we only have one sphere, apply the state!
-      return this._updateLocationState(sphereId);
+      return this._updateLocationState(sphereId, locationId);
     }
 
     // now handling the case where amountOfSpheres > 1
 
     // the active sphere has priority as long as it is present.
-    if (activeSphereData.sphere.state.present) {
+    if (activeSphereData.sphere.state.present && !locationId) {
       // if the sphere that is active is also present, we set the locationState to that one.
       this._updateLocationState(activeSphereData.sphereId);
     }
     else {
       // if the sphere we are focusing on is not present, we set the locationState for the newly entered sphere
-      this._updateLocationState(sphereId);
+      this._updateLocationState(sphereId, locationId);
     }
   }
 
@@ -227,6 +231,7 @@ class BroadcastStateManagerClass {
     if (device) {
       rssiOffset = device.rssiOffset || 0;
     }
+
     Bluenet.setDevicePreferences(rssiOffset, tapToToggleEnabled);
   }
 

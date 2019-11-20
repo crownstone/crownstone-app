@@ -196,10 +196,12 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
           newState.previousState = newState.state;
         }
 
-        newState.state         = update(action.data.state,  newState.state);
-        newState.currentUsage  = update(action.data.currentUsage, newState.currentUsage);
-        newState.powerFactor   = update(action.data.powerFactor,  newState.powerFactor);
-        newState.updatedAt     = getTime(action.data.updatedAt);
+        newState.state             = update(action.data.state,            newState.state);
+        newState.dimmingAvailable  = update(action.data.dimmingAvailable, newState.dimmingAvailable);
+        newState.currentUsage      = update(action.data.currentUsage,     newState.currentUsage);
+        newState.powerFactor       = update(action.data.powerFactor,      newState.powerFactor);
+        newState.timeSet           = update(action.data.timeSet,          newState.timeSet);
+        newState.updatedAt         = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

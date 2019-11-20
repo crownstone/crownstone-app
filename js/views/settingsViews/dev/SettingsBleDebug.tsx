@@ -40,8 +40,9 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
     this.unsubscribe();
   }
 
-  _pushCrownstoneItem(items, sphereId, element, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
+  _pushCrownstoneItem(items, sphereId, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
+    console.log("IMA", stone)
     if (stone && stone.state.state > 0 && StoneAvailabilityTracker.isDisabled(stoneId) === false) {
       backgroundColor = colors.green.hex
     }
@@ -53,12 +54,12 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
 
       items.push({
       mediumIcon: <IconCircle
-        icon={element ? element.config.icon : 'ios-analytics'}
+        icon={stone && stone.config.icon || 'ios-analytics'}
         size={52}
         backgroundColor={backgroundColor}
         color={colors.white.hex}
         style={{position:'relative', top:2}} />,
-      label: lang("Any", element, element && element.config.name),
+      label: lang("Any", stone, stone && stone.config.name),
       subtext: rssiData + subtext,
       subtextStyle: {color:locationColor},
       type: 'navigation',

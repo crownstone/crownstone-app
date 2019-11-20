@@ -34,9 +34,9 @@ class SwitchRowController: NSObject {
             
             print("Starting Toggle")
             
-            stone.pendingAction = true
-            //bluenetManager.switchStoneBroadcast(stone.referenceId, stoneId: stone.crownstoneId, newSwitchState)
-            bluenetManager.switchStone(stone.handle, newSwitchState)
+//            stone.pendingAction = true
+            bluenetManager.switchStoneBroadcast(stone.referenceId, stoneId: stone.crownstoneId, newSwitchState)
+//            bluenetManager.switchStone(stone.handle, newSwitchState)
         }
     }
     

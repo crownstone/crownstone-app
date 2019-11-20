@@ -30,11 +30,12 @@ import { STONE_TYPES } from "../../Enums";
 import { DataUtil } from "../../util/DataUtil";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import { OverlayUtil } from "../overlays/OverlayUtil";
+import { Navigation } from "react-native-navigation";
 
 
 export class DeviceOverview extends LiveComponent<any, any> {
   static options(props) {
-    getTopBarProps(core.store, core.store.getState(), props);
+    getTopBarProps(props);
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
@@ -111,14 +112,22 @@ export class DeviceOverview extends LiveComponent<any, any> {
           change.changeAppSettings ||
           change.stoneLocationUpdated && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
           change.changeStoneState     && change.changeStoneState.stoneIds[this.props.stoneId]     ||
-          change.powerUsageUpdated    && change.powerUsageUpdated.stoneIds[this.props.stoneId]    ||
           change.stoneChangeRules     && change.stoneChangeRules.stoneIds[this.props.stoneId]     ||
           change.updateStoneConfig    && change.updateStoneConfig.stoneIds[this.props.stoneId]
         )
       ) {
+        if (change.updateStoneConfig    && change.updateStoneConfig.stoneIds[this.props.stoneId]) {
+          this._updateNavBar();
+        }
+
         this.forceUpdate();
       }
     });
+  }
+
+  _updateNavBar() {
+    getTopBarProps(this.props);
+    Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
   componentWillUnmount() {
@@ -241,14 +250,13 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
     if (stone.abilities.dimming.enabledTarget) {
       let showDimmingText = stone.state.dimmingAvailable === false && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
-
       return (
         <DimmerSlider
           initialState={stone.state.state}
-          dimmingSynced={stone.abilities.dimming.synced}
+          dimmingSynced={stone.abilities.dimming.syncedToCrownstone}
           showDimmingText={showDimmingText}
           callback={(percentage) => {
-            if (stone.abilities.dimming.synced) {
+            if (stone.abilities.dimming.syncedToCrownstone) {
               this._switch(stone, xUtil.transformUISwitchStateToStoneSwitchState(percentage));
             }
             else {
@@ -263,14 +271,14 @@ export class DeviceOverview extends LiveComponent<any, any> {
           <TouchableOpacity style={{
             ...innerStyle,
             borderBottomLeftRadius: 25,  borderTopLeftRadius: 25, alignItems:'flex-end',
-            backgroundColor: currentState == 0 ? colors.green.hex : colors.csBlueDark.hex
+            backgroundColor: !this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex
           }} onPress={() => { this._switch(stone,0); }}>
             <Text style={textStyle}>OFF</Text>
           </TouchableOpacity>
           <View style={{width:border}} />
           <TouchableOpacity style={{...innerStyle,
             borderBottomRightRadius: 25, borderTopRightRadius: 25,
-            backgroundColor: currentState > 0 ? colors.green.hex : colors.csBlueDark.hex
+            backgroundColor: this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex
           }} onPress={() => { this._switch(stone,1); }}>
             <Text style={textStyle}>ON</Text>
           </TouchableOpacity>
@@ -415,7 +423,8 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 }
 
-function getTopBarProps(store, state, props) {
+function getTopBarProps(props) {
+  const state = core.store.getState();
   const stone = state.spheres[props.sphereId].stones[props.stoneId];
   let spherePermissions = Permissions.inSphere(props.sphereId);
 

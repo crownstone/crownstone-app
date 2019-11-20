@@ -186,7 +186,6 @@ function checkAction(action, affectedIds) {
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":
-    case 'SET_TAP_TO_TOGGLE_CALIBRATION':
     case 'SET_BETA_ACCESS':
     case 'RESET_SPHERE_STATE':
     case 'SET_APP_IDENTIFIER':
@@ -273,9 +272,12 @@ function checkAction(action, affectedIds) {
     case "ADD_STONE_RULE":
     case "UPDATE_STONE_RULE":
     case "MARK_STONE_RULE_FOR_DELETION":
+    case "REFRESH_RULES":
+    case "REFRESH_BEHAVIOURS":
     case "MARK_STONE_RULE_AS_SYNCED":
     case "REMOVE_STONE_RULE":
       eventStatus['stoneChangeRules'] = affectedIds; break;
+    case "REFRESH_ABILITIES":
     case "UPDATE_ABILITY_DIMMER":
     case "UPDATE_ABILITY_SWITCHCRAFT":
     case "UPDATE_ABILITY_TAP_TO_TOGGLE":

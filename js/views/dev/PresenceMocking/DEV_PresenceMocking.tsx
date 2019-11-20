@@ -3,10 +3,10 @@ import { Background } from "../../components/Background";
 import { core } from "../../../core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
-import { RoomEntry, SphereEntry } from "../user/DEV_UserDataSpheres";
-import { availableScreenHeight, screenWidth } from "../../styles";
+import { BackButton, RoomEntry, SphereEntry } from "../user/DEV_UserDataSpheres";
+import { availableScreenHeight, colors, screenWidth } from "../../styles";
 
 export class DEV_PresenceMocking extends LiveComponent<any, any> {
   static options(props) {
@@ -72,6 +72,7 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
           key={locationId}
           location={locations[locationId]}
           locationId={locationId}
+          selected={this.state.locationId == locationId}
           callback={() => {
             this.setState({locationId: locationId})
             BroadcastStateManager._updateLocationState(this.state.sphereId, locationId);
@@ -81,17 +82,21 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
       );
     })
 
+    result.push(<View key={'locSpacer'} style={{height:40, width:screenWidth}} />);
+    result.push(<BackButton key={'backButton'} callback={() => { this.setState({sphereId: null, locationId: null});}} />);
+
     return result;
   }
 
   render() {
     return (
-      <Background image={core.background.light}>
+      <Background image={core.background.light} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />
             <Text style={{fontSize:30, fontWeight:"bold"}}>{this.state.sphereId ? "Mock which room?" : "Select Sphere to mock."}</Text>
             <View style={{height:20, width:screenWidth}} />
+            <View style={{height:1, width:screenWidth, backgroundColor: colors.black.rgba(0.2)}} />
             { this.state.sphereId === null ? this.getSpheres() : this.getRooms() }
           </View>
         </ScrollView>

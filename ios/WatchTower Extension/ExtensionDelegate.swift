@@ -32,7 +32,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
       
         
         let handleDict = dataStore.store.dictionary(forKey: "handles")
-        print("I GOT THIS \(handleDict)")
+        //print("I GOT THIS \(handleDict)")
         if let theDict = handleDict {
             for (handle, _) in theDict {
                 let refId = dataStore.store.string(forKey: handle)

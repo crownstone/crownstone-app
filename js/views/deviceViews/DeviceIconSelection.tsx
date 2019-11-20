@@ -14,6 +14,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
+import { colors } from "../styles";
 
 
 let categories = [
@@ -529,6 +530,8 @@ export class DeviceIconSelection extends LiveComponent<{callback(icon: string) :
           <IconSelection
             categories={categories}
             icons={listOfIcons}
+            iconColor={colors.csBlue.hex}
+            iconBackgroundColor={colors.white.rgba(0.3)}
             selectedIcon={this.props.icon}
             callback={(newIcon) => {
               this.props.callback(newIcon);

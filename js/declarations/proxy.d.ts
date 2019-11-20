@@ -10,8 +10,6 @@ interface BluenetPromiseWrapperProtocol {
   finalizeFingerprint(sphereId: string, locationId: string): Promise< void >,
   isReady()                                     : Promise< void >,
   isPeripheralReady()                           : Promise< void >,
-  keepAlive()                                   : Promise< void >,
-  keepAliveState(changeState : boolean, state : number, timeout: number): Promise< void >,
   phoneDisconnect()                             : Promise< void >,
   toggleSwitchState(stateForOn)                 : Promise< number >,
   setupCrownstone(dataObject: setupData)        : Promise< void >,
@@ -21,9 +19,7 @@ interface BluenetPromiseWrapperProtocol {
   setKeySets(keySets)                           : Promise< void >,
 
   // Mesh
-  meshKeepAlive()                                                 : Promise< void >,
-  meshKeepAliveState(timeout: number, stoneKeepAlivePackets: any) : Promise< void >,
-  multiSwitch(arrayOfStoneSwitchPackets: any[])                   : Promise< void >,
+  multiSwitch(arrayOfStoneSwitchPackets: any[]) : Promise< void >,
 
   // DFU
   putInDFU()                                    : Promise< void >,
@@ -38,12 +34,6 @@ interface BluenetPromiseWrapperProtocol {
   setTime(time : number)                        : Promise< void >,
   meshSetTime(time : number)                    : Promise< void >,
   getTime()                                     : Promise< number >, // timestamp in seconds since epoch
-
-  addSchedule(data : bridgeScheduleEntry)       : Promise< void >,
-  setSchedule(data : bridgeScheduleEntry)       : Promise< void >,
-  clearSchedule(scheduleEntryIndex : number)    : Promise< void >,
-  getAvailableScheduleEntryIndex()              : Promise< number >,
-  getSchedules()                                : Promise< [bridgeScheduleEntry] >,
 
   getSwitchState()                              : Promise< number >,
   setSwitchState(state: number)                 : Promise< void >,
@@ -67,6 +57,8 @@ interface BluenetPromiseWrapperProtocol {
   removeBehaviour(index: number)                : Promise<number>,
   getBehaviour(index: number)                   : Promise<behaviourTransfer>,
 
+  setTapToToggle(enabled: boolean)              : Promise<void>,
+  setTapToToggleThresholdOffset(rssiThresholdOffset: number): Promise<void>,
 
   // dev
   switchRelay(state: number)                    : Promise< void >,
@@ -120,6 +112,8 @@ interface crownstoneServiceData {
   switchLocked              : boolean,
   timeSet                   : boolean,
   switchCraftEnabled        : boolean,
+  tapToToggleEnabled        : boolean,
+  behaviourOverridden       : boolean,
 
   deviceType                : deviceType,
   rssiOfExternalCrownstone  : number, // Set to 0 when not external service data.
@@ -230,3 +224,4 @@ interface setupData {
   ibeaconMajor:       number,
   ibeaconMinor:       number,
 }
+

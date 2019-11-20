@@ -91,6 +91,8 @@ RCT_EXTERN_METHOD(resetBle)
 RCT_EXTERN_METHOD(allowDimming:(nonnull NSNumber *)allow callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(lockSwitch:(nonnull NSNumber *)lock callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setSwitchCraft:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setTapToToggle:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setTapToToggleThresholdOffset:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 
 // MESH
 RCT_EXTERN_METHOD(meshSetTime:(nonnull NSNumber *)time callback:(RCTResponseSenderBlock)callback)

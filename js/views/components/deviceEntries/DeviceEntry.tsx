@@ -249,8 +249,6 @@ export class DeviceEntry extends Component<any, any> {
                 currentUsage={stone.state.currentUsage}
                 nearestInSphere={this.props.nearestInSphere}
                 nearestInRoom={this.props.nearestInRoom}
-                tap2toggleThreshold={Util.data.getTapToToggleCalibration(state)}
-                tap2toggleEnabled={state.app.tapToToggleEnabled}
               />
               { this._getExplanationText(state) }
               <SlideFadeInView height={15} visible={this.state.showViaMesh}>

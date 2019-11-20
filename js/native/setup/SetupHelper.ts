@@ -13,6 +13,7 @@ import { KEY_TYPES, STONE_TYPES } from "../../Enums";
 import { core } from "../../core";
 import { xUtil } from "../../util/StandAloneUtil";
 import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
+import { DataUtil } from "../../util/DataUtil";
 
 
 const networkError = 'network_error';
@@ -122,7 +123,6 @@ export class SetupHelper {
 
               // if we know this crownstone, its localId is in the mapProvider which we can look for with the cloudId
               let localId = MapProvider.cloud2localMap.stones[this.stoneIdInCloud] || this.stoneIdInCloud;
-              let isPlug = this.type === STONE_TYPES.plug;
               let canSwitch = this.type === STONE_TYPES.plug || this.type === STONE_TYPES.builtin || this.type === STONE_TYPES.builtinOne;
               let familiarCrownstone = false;
               let finalizeSetupStoneAction = {
@@ -143,28 +143,30 @@ export class SetupHelper {
                 }
               };
 
+
               if (MapProvider.cloud2localMap.stones[this.stoneIdInCloud]) {
                 familiarCrownstone = true;
                 finalizeSetupStoneAction.type = "UPDATE_STONE_CONFIG";
-                this._restoreSchedules(sphereId, MapProvider.cloud2localMap.stones[localId]);
+                actions.push(finalizeSetupStoneAction);
+
+                let stone = DataUtil.getStone(sphereId, localId);
+                if (stone) {
+                  let rules = stone.rules;
+                  let ruleIds = Object.keys(rules);
+                  actions.push({type:"REFRESH_ABILITIES", sphereId: sphereId, stoneId: localId});
+                  for (let i = 0; i < ruleIds.length; i++) {
+                    actions.push({type:"REFRESH_BEHAVIOURS", sphereId: sphereId, stoneId: localId, ruleId: ruleIds[i]});
+                  }
+                }
               }
               else {
                 // if we do not know the stone, we provide the new name and icon
                 finalizeSetupStoneAction.data["name"] = this.name + ' ' + this.cloudResponse.uid;
                 finalizeSetupStoneAction.data["icon"] = this.icon;
+                actions.push(finalizeSetupStoneAction);
               }
 
-              actions.push(finalizeSetupStoneAction);
-              actions.push({
-                type:"UPDATE_TAP_TO_TOGGLE",
-                sphereId: sphereId,
-                stoneId: localId,
-                data: {
-                  enabled: isPlug,
-                  enabledTarget: isPlug,
-                  synced: true
-                }
-              });
+
               actions.push({
                 type: 'UPDATE_STONE_SWITCH_STATE',
                 sphereId: sphereId,
@@ -376,48 +378,5 @@ export class SetupHelper {
           reject(err);
         })
     });
-  }
-
-
-
-
-  _restoreSchedules(sphereId, localStoneId) {
-    let state  = core.store.getState();
-    let sphere = state.spheres[sphereId];
-    if (!sphere) { return; }
-
-    let stone  = sphere.stones[localStoneId];
-    if (!stone) { return; }
-
-    let schedules = stone.schedules;
-    if (!schedules) { return; }
-
-    let scheduleIds = Object.keys(schedules);
-    let loadedSchedule = false;
-
-    scheduleIds.forEach((scheduleId) => {
-      let schedule = schedules[scheduleId];
-      if (schedule.active) {
-        loadedSchedule = true;
-        // copy the schedule so we can change the time from crownstone time to timestamp
-        let scheduleCopy = {...schedule};
-        scheduleCopy.time = StoneUtil.crownstoneTimeToTimestamp(scheduleCopy.time);
-        let scheduleConfig = ScheduleUtil.getBridgeFormat(scheduleCopy);
-
-        BatchCommandHandler.loadPriority(
-          stone,
-          localStoneId,
-          sphereId,
-          { commandName : 'setSchedule', scheduleConfig: scheduleConfig },
-          {},
-          10
-        ).catch((err) => { LOGe.info("SetupHelper: could not restore schedules.", err)})
-        }
-    });
-
-    if (loadedSchedule) {
-      BatchCommandHandler.load(stone, localStoneId, sphereId, { commandName: 'setTime', time: StoneUtil.nowToCrownstoneTime()}, {}, 10).catch(() => {});
-      BatchCommandHandler.executePriority();
-    }
   }
 }

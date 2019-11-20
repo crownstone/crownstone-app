@@ -104,10 +104,20 @@ class StoneDataSyncerClass {
         case "tapToToggle":
           this._syncGenericAbility(
             sphereId, stoneId, "tapToToggle",
-            (ability) => { return {commandName:'setTapToToggle', value: ability.enabledTarget, rssiOffset: ability.rssiOffsetTarget}},
+            (ability) => { return {commandName:'setTapToToggle', value: ability.enabledTarget}},
             (ability) => {
               let actions = [];
-              actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget, rssiOffset: ability.rssiOffset}});
+              actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget}});
+              actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
+              core.store.batchDispatch(actions);
+            }
+          );
+          this._syncGenericAbility(
+            sphereId, stoneId, "tapToToggle",
+            (ability) => { return {commandName:'setTapToToggleThresholdOffset', rssiOffset: ability.rssiOffset}},
+            (ability) => {
+              let actions = [];
+              actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data: { rssiOffset: ability.rssiOffset}});
               actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
               core.store.batchDispatch(actions);
             }
@@ -126,7 +136,7 @@ class StoneDataSyncerClass {
       if (ability.syncedToCrownstone) { return; }
 
       BatchCommandHandler.load(stone, stoneId, sphereId, actionGetter(ability), {}, 2)
-        .then(() => { callback(ability); })
+        .then(() => { console.log("did the thing", abilityField); callback(ability); })
         .catch(() => {
           /** if the syncing fails, we set another watcher **/
           this.update();

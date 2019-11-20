@@ -30,10 +30,6 @@ export class DeviceEntrySubText extends Component<any, any> {
 
     if (disabled === false && currentUsage !== undefined && measuresPower) {
       // show it in orange if it's in tap to toggle range
-      let color = colors.iosBlue.hex;
-      if (this.props.tap2toggleThreshold && rssi >= this.props.tap2toggleThreshold && this.props.tap2toggleEnabled) {
-        color = colors.orange.hex;
-      }
 
       if (this.props.statusText) {
         return (
@@ -47,7 +43,7 @@ export class DeviceEntrySubText extends Component<any, any> {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{ lang("_W",currentUsage) }</Text>
-            <Text style={{fontSize: 12, color: color}}>{ lang("__Nearest_") }</Text>
+            <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ lang("__Nearest_") }</Text>
           </View>
         )
       }
@@ -55,7 +51,7 @@ export class DeviceEntrySubText extends Component<any, any> {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{ lang("_W",currentUsage) }</Text>
-            <Text style={{fontSize: 12, color: color}}>{ lang("__Nearest_in_room_") }</Text>
+            <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ lang("__Nearest_in_room_") }</Text>
           </View>
         )
       }
@@ -63,7 +59,7 @@ export class DeviceEntrySubText extends Component<any, any> {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{ lang("_W",currentUsage) }</Text>
-            <Text style={{fontSize: 12, color: color}}>{ lang("__Very_near_") }</Text>
+            <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ lang("__Very_near_") }</Text>
           </View>
         )
       }

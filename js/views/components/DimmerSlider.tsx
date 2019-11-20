@@ -133,8 +133,10 @@ export class DimmerSlider extends Component<{initialState: number, dimmingSynced
       <View style={{width:screenWidth, height: SLIDER_BUBBLE_SIZE + INDICATOR_SIZE + INDICATOR_SPACING}}>
         { this._getIndicator() }
         <View {...this._panResponder.panHandlers} style={{width:screenWidth, height: SLIDER_BUBBLE_SIZE, alignItems:'center', justifyContent:'center'}}>
-        <View style={{height:50, width: SLIDER_WIDTH, backgroundColor: colors.white.rgba(0.8), borderRadius: 25, alignItems:'center', justifyContent:'center'}}>
-          { this._getDimmerStatus() }
+        <View style={{height:50 + 6, width: SLIDER_WIDTH + 6, backgroundColor: 'transparent', borderColor:colors.white.rgba(0.5), borderWidth:1, borderRadius: 28, alignItems:'center', justifyContent:'center'}}>
+          <View style={{height:50, width: SLIDER_WIDTH, backgroundColor: colors.white.rgba(0.8), borderRadius: 25, alignItems:'center', justifyContent:'center'}}>
+            { this._getDimmerStatus() }
+          </View>
         </View>
         <SliderBubble x={this.x} />
         </View>

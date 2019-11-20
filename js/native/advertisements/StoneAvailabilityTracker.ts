@@ -9,12 +9,20 @@ let RSSI_TIMEOUT = 5000;
 
 const TRIGGER_ID = "StoneAvailabilityTracker"
 
+interface triggerFormat {
+  [key: string]: {
+    [key: string] : {
+      [key: string] : { rssiRequirement: number, action: () => void }[]
+    }
+  }
+}
+
 class StoneAvailabilityTrackerClass {
   log = {};
   sphereLog = {}
   initialized = false;
 
-  triggers = {};
+  triggers : triggerFormat = {};
 
   init() {
     if (this.initialized === false) {
@@ -219,13 +227,12 @@ class StoneAvailabilityTrackerClass {
 
     let ownerIds = Object.keys(this.triggers[sphereId][stoneId]);
 
-
     let todos = [];
     for (let i = 0; i < ownerIds.length; i++) {
       let ownerActions = this.triggers[sphereId][stoneId][ownerIds[i]];
       // inverse walk so we can delete the elements that we match
-      for (let j = ownerActions.length; j >= 0; j--) {
-        if (ownerActions[j].rssiRequirement >= rssi) {
+      for (let j = ownerActions.length - 1; j >= 0; j--) {
+        if (ownerActions[j].rssiRequirement <= rssi) {
           todos.push(ownerActions[j]);
           ownerActions.splice(j,1);
         }
@@ -234,7 +241,7 @@ class StoneAvailabilityTrackerClass {
 
     // we now have a collection of todos that we will execute.
     // the newest are at the bottom now, so we will execute it reversed
-    for (let i = todos.length; i >= 0; i--) {
+    for (let i = todos.length - 1; i >= 0; i--) {
       todos[i].action();
     }
   }

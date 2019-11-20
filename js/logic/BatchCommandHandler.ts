@@ -176,29 +176,8 @@ class BatchCommandHandlerClass {
               case 'getTime':
                 actionPromise = BluenetPromiseWrapper.getTime();
                 break;
-              case 'keepAlive':
-                actionPromise = BluenetPromiseWrapper.keepAlive()
-                break;
               case 'commandFactoryReset':
                 actionPromise = BluenetPromiseWrapper.commandFactoryReset();
-                break;
-              case 'keepAliveState':
-                actionPromise = BluenetPromiseWrapper.keepAliveState(command.changeState, command.state, command.timeout)
-                break;
-              case 'getSchedules':
-                actionPromise = BluenetPromiseWrapper.getSchedules();
-                break;
-              case 'clearSchedule':
-                actionPromise = BluenetPromiseWrapper.clearSchedule(command.scheduleEntryIndex);
-                break;
-              case 'getAvailableScheduleEntryIndex':
-                actionPromise = BluenetPromiseWrapper.getAvailableScheduleEntryIndex();
-                break;
-              case 'setSchedule':
-                actionPromise = BluenetPromiseWrapper.setSchedule(command.scheduleConfig);
-                break;
-              case 'addSchedule':
-                actionPromise = BluenetPromiseWrapper.addSchedule(command.scheduleConfig);
                 break;
               case 'sendNoOp':
                 actionPromise = BluenetPromiseWrapper.sendNoOp();
@@ -222,9 +201,11 @@ class BatchCommandHandlerClass {
               case 'toggle':
                 actionPromise = BluenetPromiseWrapper.toggleSwitchState(command.stateForOn || 1.0);
                 break;
-
               case 'setTapToToggle':
-                // TODO: make this.
+                actionPromise = BluenetPromiseWrapper.setTapToToggle(command.value);
+                break;
+              case 'setTapToToggleThresholdOffset':
+                actionPromise = BluenetPromiseWrapper.setTapToToggleThresholdOffset(command.rssiOffset);
                 break;
               case 'setSwitchCraft':
                 actionPromise = BluenetPromiseWrapper.setSwitchCraft(command.value);

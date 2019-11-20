@@ -10,7 +10,6 @@ let defaultSettings = {
   deviceType: null,
   model: null,
   locale: null,
-  tapToToggleCalibration: null,
   installationId: null,
 
   rssiOffset: 0,
@@ -23,13 +22,6 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
-        return newState;
-      }
-      return state;
-    case 'SET_TAP_TO_TOGGLE_CALIBRATION':
-      if (action.data) {
-        let newState = {...state};
-        newState.tapToToggleCalibration = update(action.data.tapToToggleCalibration, newState.tapToToggleCalibration);
         return newState;
       }
       return state;
@@ -55,7 +47,6 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
         newState.deviceType             = update(action.data.deviceType,             newState.deviceType);
         newState.locale                 = update(action.data.locale,                 newState.locale);
         newState.installationId         = update(action.data.installationId,         newState.installationId);
-        newState.tapToToggleCalibration = update(action.data.tapToToggleCalibration, newState.tapToToggleCalibration);
         newState.rssiOffset             = update(action.data.rssiOffset, newState.rssiOffset);
         newState.updatedAt              = getTime(action.data.updatedAt);
         return newState;
