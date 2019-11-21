@@ -1,6 +1,7 @@
 package rocks.crownstone.consumerapp;
 
 
+import com.cmcewen.blurview.BlurViewPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
@@ -57,7 +58,7 @@ public class MainApplication extends NavigationApplication {
 		return Arrays.<ReactPackage>asList(
 				new BluenetBridgePacket(),
 				new MainReactPackage(),
-            new BlurViewPackage(),
+            	new BlurViewPackage(),
 				new RNCameraPackage(),
 				new FastImageViewPackage(),
 				new AsyncStoragePackage(),
