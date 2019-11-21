@@ -104,7 +104,6 @@ const BluenetAPI = {
   isPeripheralReady:           () => { console.log("BluenetBridgeCall: isPeripheralReady"); },
   setSwitchState:              () => { console.log("BluenetBridgeCall: setSwitchState"); },
   isDevelopmentEnvironment:    () => { console.log("BluenetBridgeCall: isDevelopmentEnvironment"); },
-  getErrors:                   () => { console.log("BluenetBridgeCall: getErrors"); },
   clearErrors:                 () => { console.log("BluenetBridgeCall: clearErrors"); },
   forceClearActiveRegion:      () => { console.log("BluenetBridgeCall: forceClearActiveRegion"); },
   broadcastSwitch:             () => { console.log("BluenetBridgeCall: broadcastSwitch"); },
@@ -136,9 +135,10 @@ const BluenetAPI = {
   setVoltageMultiplier:        () => { console.log("BluenetBridgeCall: setVoltageMultiplier"); },
   setCurrentMultiplier:        () => { console.log("BluenetBridgeCall: setCurrentMultiplier"); },
   setUartState:                () => { console.log("BluenetBridgeCall: setUartState"); },
-  addListener:                 () => { console.log("BluenetBridgeCall: addListener"); },
-  removeListeners:             () => { console.log("BluenetBridgeCall: removeListeners"); },
-  getConstants:                () => { console.log("BluenetBridgeCall: getConstants"); },
+
+  setTapToToggle:                () => { console.log("BluenetBridgeCall: setTapToToggle"); },
+  setTapToToggleThresholdOffset: () => { console.log("BluenetBridgeCall: setTapToToggleThresholdOffset"); },
+
 };
 
 if (DISABLE_NATIVE === true) {

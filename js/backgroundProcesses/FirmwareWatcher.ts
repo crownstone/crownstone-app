@@ -32,10 +32,11 @@ class FirmwareWatcherClass {
     }
 
     Util.data.callOnStonesInSphere(state, sphereId, (stoneId, stone) => {
-      LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: fw", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion);
+      let execute = !stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck  || !stone.config.hardwareVersion || stone.config.hardwareVersion === '0'
+
+      LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: fw", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion, "Will execute:", execute);
       // random chance to check the firmware again.
-      if (!stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck  ||
-          !stone.config.hardwareVersion || stone.config.hardwareVersion === '0') {
+      if (execute) {
         BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},100, 'from checkFirmware in Firmware Watcher')
           .then((firmwareVersion : {data: string}) => {
             core.store.dispatch({

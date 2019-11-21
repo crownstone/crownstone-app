@@ -154,8 +154,6 @@ export class UserLayer extends LiveComponent<any, any> {
           totalOtherUsersInRoom -= 1;
         }
 
-        console.log('PresentUsers',presentUsers, locationId)
-
         presentUsers.forEach((user) => {
           let isAppUser = user.id === state.user.userId;
           if (!isAppUser) {
