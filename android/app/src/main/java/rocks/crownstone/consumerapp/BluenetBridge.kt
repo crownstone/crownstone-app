@@ -1697,8 +1697,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun setTaptoToggle(value: Boolean, callback: Callback) {
-		Log.i(TAG, "setTaptoToggle")
+	fun setTapToToggle(value: Boolean, callback: Callback) {
+		Log.i(TAG, "setTapToToggle")
 		bluenet.config.setTapToToggleEnabled(value)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
