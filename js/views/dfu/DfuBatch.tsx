@@ -6,6 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Platform,
   ScrollView, Text, Vibration,
   View
 } from "react-native";
@@ -93,6 +94,9 @@ export class DfuBatch extends Component<any, any> {
   _doRetries(cloudIssue = false) {
     let indexToRetry = null;
     let maxRetries = 2;
+    if (Platform.OS === 'android') {
+      maxRetries = 4;
+    }
     let amountOfCrownstones = this.props.stoneIdsToUpdate.length
     for (let i = 0; i < this.props.stoneIdsToUpdate.length; i++) {
       let index = (i + this.state.updatingCrownstoneIndex+1) % amountOfCrownstones;
