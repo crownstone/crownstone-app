@@ -2203,6 +2203,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putBoolean("switchLocked", serviceData.flagSwitchLocked)
 		serviceDataMap.putBoolean("timeSet", serviceData.flagTimeSet)
 		serviceDataMap.putBoolean("switchCraftEnabled", serviceData.flagSwitchCraft)
+		serviceDataMap.putBoolean("tapToToggleEnabled", serviceData.flagTapToToggleEnabled)
+		serviceDataMap.putBoolean("behaviourOverridden", serviceData.flagBehaviourOverridden)
+
 
 		val deviceTypeString = when (serviceData.deviceType) {
 			DeviceType.CROWNSTONE_PLUG -> "plug"
