@@ -1692,8 +1692,59 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 
 //##################################################################################################
+//region           Config
+//##################################################################################################
+
+	@ReactMethod
+	@Synchronized
+	fun setTaptoToggle(value: Boolean, callback: Callback) {
+		Log.i(TAG, "setTaptoToggle")
+		bluenet.config.setTapToToggleEnabled(value)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun setTapToToggleThresholdOffset(value: Int, callback: Callback) {
+		Log.i(TAG, "setTapToToggleThresholdOffset")
+		bluenet.config.setTapToToggleRssiThresholdOffset(value.toByte())
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+//endregion
+
+//##################################################################################################
 //region           Dev
 //##################################################################################################
+
+	@ReactMethod
+	@Synchronized
+	fun switchRelay(value: Boolean, callback: Callback) {
+		Log.i(TAG, "switchRelay")
+		bluenet.control.setRelay(value)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun switchDimmer(value: Double, callback: Callback) {
+		Log.i(TAG, "switchDimmer")
+		bluenet.control.setDimmer(convertSwitchVal(value))
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun setUartState(value: Int, callback: Callback) {
+		Log.i(TAG, "setUartState")
+		bluenet.config.setUartEnabled(UartMode.fromNum(Conversion.toUint8(value)))
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
 
 	@ReactMethod
 	@Synchronized
@@ -1880,15 +1931,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun setCurrentMultiplier(value: Int, callback: Callback) {
 		Log.i(TAG, "setCurrentMultiplier")
 		bluenet.config.setCurrentMultiplier(value.toFloat())
-				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
-	}
-
-	@ReactMethod
-	@Synchronized
-	fun setUartState(value: Int, callback: Callback) {
-		Log.i(TAG, "setUartState")
-		bluenet.config.setUartEnabled(UartMode.fromNum(Conversion.toUint8(value)))
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
