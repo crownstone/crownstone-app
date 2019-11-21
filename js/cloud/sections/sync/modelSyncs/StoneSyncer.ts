@@ -142,8 +142,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
     });
   }
 
-
-
   _getCloudIdMap(stonesInState) {
     let cloudIdMap = {};
     let stoneIds = Object.keys(stonesInState);
@@ -205,7 +203,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
   syncLocalStoneDown(localId, stoneInState, stone_from_cloud, locationLinkId) {
     // somehow sometimes ibeacon major and minor go missing. If this happens, redownload from cloud
-    let corruptData = !stoneInState.config.iBeaconMajor || !stoneInState.config.iBeaconMinor;
+    let corruptData = !stoneInState.config.iBeaconMajor || !stoneInState.config.iBeaconMinor || !stoneInState.config.address;
 
     let localLocationId  = this._getLocalLocationId(locationLinkId);
 

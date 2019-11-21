@@ -63,7 +63,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
   render() {
     let state = core.store.getState();
     return (
-      <Background image={core.background.light} keyboardAvoid={true}>
+      <Background image={core.background.light} keyboardAvoid={true} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />
@@ -164,8 +164,7 @@ export function SphereEntry(props) {
 
 export function RoomEntry(props) {
   let backgroundColor = colors.white.rgba(0.5);
-  let state = core.store.getState();
-  if (state.devApp.sphereUsedForSetup === props.sphereId) {
+  if (props.selected) {
     backgroundColor = colors.menuTextSelected.rgba(0.7)
   }
   let height = 70;
@@ -182,9 +181,35 @@ export function RoomEntry(props) {
       justifyContent:'center',
       alignItems:'center',
     }} onPress={() => { props.callback(); }}>
-      <IconCircle icon={'c1-sphere'} backgroundColor={colors.csBlueDark.hex} color={colors.white.hex} iconSize={32} size={50}  />
+      <IconCircle icon={props.location.config.icon} backgroundColor={colors.csBlueDark.hex} color={colors.white.hex} iconSize={28} size={50}  />
       <View style={{width:50}} />
-      <Text style={{fontSize:16}}>{props.sphere.config.name}</Text>
+      <Text style={{fontSize:16}}>{props.location.config.name}</Text>
+      <View style={{flex:5}} />
+    </TouchableOpacity>
+  );
+}
+
+
+export function BackButton(props) {
+  let backgroundColor = colors.white.rgba(0.5);
+  let height = 70;
+
+  return (
+    <TouchableOpacity style={{
+      backgroundColor: backgroundColor,
+      flexDirection: 'row',
+      width: screenWidth,
+      height: height,
+      padding:10,
+      borderColor: colors.black.rgba(0.2),
+      borderBottomWidth: 1,
+      borderTopWidth: 1,
+      justifyContent:'center',
+      alignItems:'center',
+    }} onPress={() => { props.callback(); }}>
+      <IconCircle icon={'md-arrow-round-back'} backgroundColor={colors.green.hex} color={colors.white.hex} iconSize={32} size={50}  />
+      <View style={{width:50}} />
+      <Text style={{fontSize:16}}>{"Back to Spheres"}</Text>
       <View style={{flex:5}} />
     </TouchableOpacity>
   );

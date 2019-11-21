@@ -11,7 +11,8 @@ import WatchConnectivity
 
 
 class WatchStateManager {
-  
+  var shouldSync = true
+  var shouldSyncCounter = 0
   var state = [String: Any]()
   
   func loadState(_ key: String,_ value : Any) {
@@ -20,12 +21,25 @@ class WatchStateManager {
   }
   
   func syncState() {
+    if self.shouldSync == false {
+      self.shouldSyncCounter += 1
+      if self.shouldSyncCounter > 20 {
+        self.shouldSyncCounter = 0
+        self.shouldSync = true
+      }
+      else {
+        return
+      }
+    }
+    
     do {
-        print("Sending state to the Watch")
-        try WCSession.default.updateApplicationContext(self.state)
+      print("Sending state to the Watch")
+      try WCSession.default.updateApplicationContext(self.state)
     }
     catch {
-        print("Error while sending to the watch:",error)
+      self.shouldSync = false
+      self.shouldSyncCounter = 0
+      print("Error while sending to the watch:",error)
     }
   }
   

@@ -2,6 +2,7 @@
 export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertisement {
 
   let serviceData : crownstoneServiceData = {
+    behaviourOverridden: false, tapToToggleEnabled: false,
     stateOfExternalCrownstone : false,
     hasError                  : false,
     setupMode                 : false,
@@ -34,7 +35,7 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
       dimmerOffFailure  : false,
       bitMask           : 0,
     },
-    uniqueElement             : Math.random(),
+    uniqueElement             : Math.random()
   };
 
   return {

@@ -93,7 +93,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
                 min={-10}
                 max={10}
                 value={rssiOffsetTarget}
-                explanation={this._getExplanation(rssiOffsetTarget)}
+                explanation={this._getExplanation(this.state.rssiOffsetTarget)}
               />
               <Separator  />
               <NavigationBar

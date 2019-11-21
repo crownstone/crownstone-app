@@ -35,6 +35,10 @@ let dimmingReducer = (state = defaultAbilityFormat, action) => {
       let newState = {...state};
       newState.syncedToCrownstone = true;
       return newState;
+    case "REFRESH_ABILITIES":
+      newState = {...state};
+      newState.syncedToCrownstone = false;
+      return newState;
     default:
       return state;
   }
@@ -56,6 +60,10 @@ let switchcraftReducer = (state = defaultAbilityFormat, action) => {
     case "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED":
       let newState = {...state};
       newState.syncedToCrownstone = true;
+      return newState;
+    case "REFRESH_ABILITIES":
+      newState = {...state};
+      newState.syncedToCrownstone = false;
       return newState;
     default:
       return state;
@@ -80,6 +88,10 @@ let tapToToggleReducer = (state = tapToToggleAbilityFormat, action) => {
     case "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED":
       let newState = {...state};
       newState.syncedToCrownstone = true;
+      return newState;
+    case "REFRESH_ABILITIES":
+      newState = {...state};
+      newState.syncedToCrownstone = false;
       return newState;
     default:
       return state;

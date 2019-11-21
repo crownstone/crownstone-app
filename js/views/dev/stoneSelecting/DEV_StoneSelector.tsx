@@ -394,7 +394,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
     this.lastRedraw = new Date().valueOf();
 
     return (
-      <Background image={core.background.light}>
+      <Background image={core.background.light} hideNotifications={true}>
         <DEV_BatchOps close={() => { this.setState({batchOpsOnScreen: false}); this.startScanning() }} visible={this.state.batchOpsOnScreen} selectedStones={this.trackingItems}></DEV_BatchOps>
         <DEV_SelectionFilter submit={() => { this.setState({filterSelectorOnScreen: false}); this.startScanning() }} visible={this.state.filterSelectorOnScreen} update={() => { this.forceUpdate(); }}></DEV_SelectionFilter>
         <View style={{flexDirection:'row', width:screenWidth, height:60, backgroundColor: colors.white.rgba(0.7), ...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>

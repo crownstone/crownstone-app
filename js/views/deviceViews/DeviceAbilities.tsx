@@ -100,9 +100,9 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
         <View style={{height: height-2*padding, justifyContent:'center', alignItems:'flex-start', marginLeft:10}}>
           <View style={{flexDirection:'row'}}>
             <Text style={deviceStyles.text}>{data.label}</Text>
-            <FadeInView visible={active && !synced}><ActivityIndicator color={colors.csBlueDark.hex} size={'small'} style={{marginLeft:10}}/></FadeInView>
+            <FadeInView visible={!synced}><ActivityIndicator color={colors.csBlueDark.hex} size={'small'} style={{marginLeft:10}}/></FadeInView>
           </View>
-          <SlideFadeInView visible={active && !synced} height={40} style={{alignItems:'center'}}>
+          <SlideFadeInView visible={!synced} height={40} style={{alignItems:'center'}}>
             <Text style={[deviceStyles.explanationText, {marginTop:3, textAlign:'left'}]}>{"Waiting to notify the\nCrownstone..."}</Text>
           </SlideFadeInView>
           { active && synced  ? <Text style={[deviceStyles.explanationText, {marginTop:3}]}>{"Enabled"}</Text> : undefined}
@@ -150,13 +150,11 @@ function getActiveState(stone, type) {
 function getSyncedState(stone, type) {
   switch (type) {
     case 'dimming':
-      return stone.abilities.dimming.synced;
+      return stone.abilities.dimming.syncedToCrownstone;
     case 'switchcraft':
-      return stone.abilities.switchcraft.synced;
+      return stone.abilities.switchcraft.syncedToCrownstone;
     case 'tapToToggle':
-      let state = core.store.getState();
-      let tapToToggleEnabledGlobally = state.app.tapToToggleEnabled;
-      return tapToToggleEnabledGlobally && stone.abilities.tapToToggle.synced;
+      return stone.abilities.tapToToggle.syncedToCrownstone;
   }
 }
 

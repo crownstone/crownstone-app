@@ -137,7 +137,6 @@ class Logger {
       if (RELEASE_MODE_USED === false || base_core.sessionMemory.developmentEnvironment) {
         if (this.level > LOG_LEVEL.info) {
           // @ts-ignore
-          // console.warn.apply(this, args);
           console.log.apply(this, args);
         }
         else {

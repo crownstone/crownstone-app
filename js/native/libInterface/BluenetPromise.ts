@@ -6,6 +6,7 @@ import { Sentry }         from "react-native-sentry";
 import { core } from "../../core";
 
 export const BluenetPromise : any = function(functionName, param, param2, param3, param4, param5) {
+  console.log("X", functionName)
   return new Promise((resolve, reject) => {
 	  let id = (Math.random() * 1e8).toString(36);
     if (DISABLE_NATIVE === true) {
@@ -101,8 +102,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
       .then( () => { core.eventBus.emit("disconnect"); })
       .catch(() => { core.eventBus.emit("disconnect"); })
   },
-  keepAliveState:                 (changeState, state, timeout) => { return BluenetPromise('keepAliveState', changeState, state, timeout); }, //* Bool (or Number 0 or 1), Number  (0 .. 1), Number (seconds)
-  keepAlive:                      ()           => { return BluenetPromise('keepAlive');                   },
   getMACAddress:                  ()           => { return BluenetPromise('getMACAddress');               },
   setupCrownstone:                (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
   setKeySets:                     (dataObject) => { return BluenetPromise('setKeySets',      dataObject); },
@@ -111,8 +110,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   finalizeFingerprint:            (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
   commandFactoryReset:            ()           => { return BluenetPromise('commandFactoryReset');         },
 
-  meshKeepAlive:                  ()                               => { return BluenetPromise('meshKeepAlive'); },
-  meshKeepAliveState:             (timeout, stoneKeepAlivePackets) => { return BluenetPromise('meshKeepAliveState',        timeout, stoneKeepAlivePackets); }, // stoneKeepAlivePackets = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
   multiSwitch:                    (arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch',               arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
 
   getFirmwareVersion:             () => { return BluenetPromise('getFirmwareVersion'); },
@@ -134,12 +131,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   meshSetTime:                    (time) => { return BluenetPromise('meshSetTime',time); },
   getTime:                        ()     => { return BluenetPromise('getTime'); },
 
-  addSchedule:                    (data: bridgeScheduleEntry)  => { return BluenetPromise('addSchedule', data); }, // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
-  setSchedule:                    (data: bridgeScheduleEntry)  => { return BluenetPromise('setSchedule', data); },
-  clearSchedule:                  (scheduleEntryIndex: number) => { return BluenetPromise('clearSchedule', scheduleEntryIndex); },
-  getAvailableScheduleEntryIndex: () => { return BluenetPromise('getAvailableScheduleEntryIndex'); },             // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
-  getSchedules:                   () => { return BluenetPromise('getSchedules'); },                               // must return array of bridgeScheduleEntry
-
   setSwitchState:                 (state) => { return BluenetPromise('setSwitchState', state); },
   getSwitchState:                 () => { return BluenetPromise('getSwitchState'); },
   lockSwitch:                     (lock: boolean)   => { return BluenetPromise('lockSwitch',     lock);  },
@@ -157,13 +148,13 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   broadcastSwitch:                (referenceId, stoneId, switchState) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState); },
 
-
   saveBehaviour:                  (behaviour: behaviourTransfer) => { return BluenetPromise('saveBehaviour',behaviour) },
   updateBehaviour:                (behaviour: behaviourTransfer) => { return BluenetPromise('updateBehaviour',behaviour) },
   removeBehaviour:                (index: number)                => { return BluenetPromise('removeBehaviour',index) },
   getBehaviour:                   (index: number)                => { return BluenetPromise('getBehaviour',index) },
 
-
+  setTapToToggle:                 (enabled: boolean)             => { return BluenetPromise('setTapToToggle' ,enabled); },
+  setTapToToggleThresholdOffset:  (rssiThresholdOffset: number)  => { return BluenetPromise('setTapToToggleThresholdOffset', rssiThresholdOffset); },
 
   // dev
   getResetCounter:                () => { return BluenetPromise('getResetCounter'); },          // return type: uint16

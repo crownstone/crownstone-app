@@ -28,7 +28,6 @@ export class AnimatedScaledImage extends Component<{
   componentWillReceiveProps(nextProps) {
     let change = false;
 
-    console.log("component will receive props", this.value, this.props, nextProps);
     if (this.value === 0) {
       if (nextProps.source !== this.staticImage) {
         change = true;

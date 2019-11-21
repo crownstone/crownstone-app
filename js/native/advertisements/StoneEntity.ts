@@ -387,7 +387,7 @@ export class StoneEntity {
 
     this.handleConfig(stone, advertisement);
 
-    this.handleTransientConfig(stone, advertisement);
+    this.handleAbilities(stone, advertisement);
 
     this.handleErrors(stone, advertisement);
 
@@ -452,93 +452,63 @@ export class StoneEntity {
     }
   }
 
-
-  /**
-   * This will take any configuration from the Crownstone that we don't currently have up to date in the app and update it
-   * These are only transient values that are not worth it to send them to the cloud
-   * This goes for:
-   *  DimmingAvailable
-   * @param stone
-   * @param {crownstoneAdvertisement} advertisement
-   */
-  handleTransientConfig(stone, advertisement : crownstoneAdvertisement) {
-
-    console.log("TODO: implement the dimming state getting from advetisements")
-    return;
-
-    let changeData : any = {};
-    let changed = false;
-    if (stone.abilities.dimming.enabled !== advertisement.serviceData.dimmingAvailable) {
-      changed = true;
-      changeData.dimmingAvailable = advertisement.serviceData.dimmingAvailable;
-    }
-
-    if (changed) {
-      this.storeManager.loadAction(this.stoneId, UPDATE_CONFIG_FROM_ADVERTISEMENT, {
-        type: 'UPDATE_STONE_CONFIG_TRANSIENT',
-        sphereId: this.sphereId,
-        stoneId: this.stoneId,
-        data: changeData,
-        updatedAt: new Date().valueOf(),
-      });
-    }
-
-  }
   /**
    * This will take any configuration from the Crownstone that we don't currently have up to date in the app and update it
    * This goes for:
    *  Locked
-   *  DimmingAvailable
-   *  DimmingAllowed
    * @param stone
    * @param {crownstoneAdvertisement} advertisement
    */
   handleConfig(stone, advertisement : crownstoneAdvertisement) {
-    let changeData : any = {};
-    let changed = false;
-    let transient = false; // transient does not store data in the cloud and optionally persists it. It is used for momentary changes to the DB
-
-    if (stone.config.dimmingAvailable !== advertisement.serviceData.dimmingAvailable) {
-      changed = true;
-      transient = true;
-      changeData.dimmingAvailable = advertisement.serviceData.dimmingAvailable;
-    }
     if (stone.config.locked !== advertisement.serviceData.switchLocked) {
-      changed = true;
-      transient = false;
-      changeData.locked = advertisement.serviceData.switchLocked;
-    }
-    if (stone.config.dimmingEnabled !== advertisement.serviceData.dimmingAllowed) {
-      changed = true;
-      transient = false;
-      changeData.dimmingEnabled = advertisement.serviceData.dimmingAllowed;
-    }
-    if (stone.config.switchCraft !== advertisement.serviceData.switchCraftEnabled) {
-      changed = true;
-      transient = false;
-      changeData.switchCraft = advertisement.serviceData.switchCraftEnabled;
-    }
-
-    if (stone.state.timeSet !== advertisement.serviceData.timeSet) {
-      this.store.dispatch({
-        type: 'UPDATE_STONE_TIME_STATE',
-        sphereId: this.sphereId,
-        stoneId: this.stoneId,
-        data: {
-          timeSet: advertisement.serviceData.timeSet
-        }
-      })
-    }
-
-
-    if (changed) {
       this.storeManager.loadAction(this.stoneId, UPDATE_CONFIG_FROM_ADVERTISEMENT, {
-        type: transient ? 'UPDATE_STONE_CONFIG_TRANSIENT' : 'UPDATE_STONE_CONFIG',
+        type: 'UPDATE_STONE_CONFIG',
         sphereId: this.sphereId,
         stoneId: this.stoneId,
-        data: changeData,
+        data: { locked: advertisement.serviceData.switchLocked},
         updatedAt: new Date().valueOf(),
       });
+    }
+  }
+
+  /**
+   * This will take any abilities from the Crownstone that we don't currently have up to date in the app and update it
+   * This goes for:
+   *  dimming
+   *  switchcraft
+   *  tapToToggle
+   * @param stone
+   * @param {crownstoneAdvertisement} advertisement
+   */
+  handleAbilities(stone, advertisement : crownstoneAdvertisement) {
+    let actions = [];
+
+    if (stone.abilities.dimming.enabled !== advertisement.serviceData.dimmingAllowed && stone.abilities.dimming.syncedToCrownstone) {
+      actions.push({ type: "UPDATE_ABILITY_DIMMER", sphereId : this.sphereId, stoneId: this.stoneId, data: {
+        enabled:       advertisement.serviceData.dimmingAllowed,
+        enabledTarget: advertisement.serviceData.dimmingAllowed,
+      }});
+      actions.push({ type: "MARK_ABILITY_DIMMER_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId});
+    }
+
+    if (stone.abilities.switchcraft.enabled !== advertisement.serviceData.switchCraftEnabled && stone.abilities.switchcraft.syncedToCrownstone) {
+      actions.push({ type: "UPDATE_ABILITY_SWITCHCRAFT", sphereId : this.sphereId, stoneId: this.stoneId, data: {
+          enabled:       advertisement.serviceData.switchCraftEnabled,
+          enabledTarget: advertisement.serviceData.switchCraftEnabled,
+        }});
+      actions.push({ type: "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId});
+    }
+
+    if (stone.abilities.tapToToggle.enabled !== advertisement.serviceData.tapToToggleEnabled && stone.abilities.tapToToggle.syncedToCrownstone) {
+      actions.push({ type: "UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId : this.sphereId, stoneId: this.stoneId, data: {
+          enabled:       advertisement.serviceData.tapToToggleEnabled,
+          enabledTarget: advertisement.serviceData.tapToToggleEnabled,
+        }});
+      actions.push({ type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: this.sphereId, stoneId: this.stoneId});
+    }
+
+    if (actions.length > 0) {
+      core.store.batchDispatch(actions);
     }
   }
 
@@ -632,23 +602,39 @@ export class StoneEntity {
       measuredUsage = 0;
     }
 
-    // do not feed duplicates
-    if (stone.state.state === switchState && stone.state.currentUsage === measuredUsage) {
-      return;
+    let changeData : any = {};
+    let changed = false;
+    if (stone.state.state !== switchState) {
+      changed = true;
+      changeData.state = switchState;
     }
 
-    this.storeManager.loadAction(this.stoneId, UPDATE_STATE_FROM_ADVERTISEMENT, {
-      type: 'UPDATE_STONE_STATE',
-      sphereId: this.sphereId,
-      stoneId: this.stoneId,
-      data: {
-        state: switchState,
-        currentUsage: measuredUsage,
-        powerFactor: powerFactor,
-      },
-      updatedAt: currentTime,
-      __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-    });
+    if (stone.state.currentUsage === measuredUsage) {
+      changed = true;
+      changeData.currentUsage = measuredUsage;
+      changeData.powerFactor = powerFactor;
+    }
+
+    if (stone.state.dimmingAvailable !== advertisement.serviceData.dimmingAvailable) {
+      changed = true;
+      changeData.dimmingAvailable = advertisement.serviceData.dimmingAvailable;
+    }
+
+    if (stone.state.timeSet !== advertisement.serviceData.timeSet) {
+      changed = true;
+      changeData.timeSet = advertisement.serviceData.timeSet;
+    }
+
+    if (changed) {
+      this.storeManager.loadAction(this.stoneId, UPDATE_STATE_FROM_ADVERTISEMENT, {
+        type: 'UPDATE_STONE_STATE',
+        sphereId: this.sphereId,
+        stoneId: this.stoneId,
+        data: changeData,
+        updatedAt: currentTime,
+        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+      });
+    }
 
   }
 

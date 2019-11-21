@@ -5,7 +5,6 @@ let defaultState = {
   notificationToken: null,
 
   tapToToggleEnabled: false,
-  tapToToggleSensitivityOffset: 0,
   indoorLocalizationEnabled: true,
 
   hasSeenDeviceSettings: false,
@@ -56,7 +55,6 @@ export default (state = defaultState, action : any = {}) => {
         newState = {...state};
         newState.indoorLocalizationEnabled    = update(action.data.indoorLocalizationEnabled,    newState.indoorLocalizationEnabled);
         newState.tapToToggleEnabled           = update(action.data.tapToToggleEnabled,           newState.tapToToggleEnabled);
-        newState.tapToToggleSensitivityOffset = update(action.data.tapToToggleSensitivityOffset, newState.tapToToggleSensitivityOffset);
         newState.migratedDataToVersion        = update(action.data.migratedDataToVersion,        newState.migratedDataToVersion);
 
         newState.hasSeenDeviceSettings         = update(action.data.hasSeenDeviceSettings,          newState.hasSeenDeviceSettings);

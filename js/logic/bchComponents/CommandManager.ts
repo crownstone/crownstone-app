@@ -58,14 +58,6 @@ export class CommandManager {
     for (let i = 0; i < uuids.length; i++) {
       let todo = this.commands[uuids[i]];
       if (todo.sphereId === sphereId && todo.stoneId === stoneId && todo.command.commandName === command.commandName) {
-        if (command.commandName === 'setSchedule' || command.commandName === 'addSchedule') {
-          if (JSON.stringify(command.scheduleConfig) === JSON.stringify(todo.command['scheduleConfig'])) {
-            clean(todo);
-          }
-          break;
-        }
-
-
         if (todo.promise.pending === false) {
           clean(todo);
         }
@@ -79,8 +71,6 @@ export class CommandManager {
 
   isMeshEnabledCommand(command : commandInterface) {
     switch (command.commandName) {
-      case 'keepAlive':
-      case 'keepAliveState':
       case 'multiSwitch':
         return true;
       default:
@@ -137,12 +127,6 @@ export class CommandManager {
 
     let payload = _getPayloadFromCommand(todo, stoneConfig);
     switch (command.commandName) {
-      case 'keepAlive':
-        meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAlive.push(payload);
-        break;
-      case 'keepAliveState':
-        meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAliveState.push(payload);
-        break;
       case 'multiSwitch':
         meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
         break;
@@ -392,34 +376,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   let payload;
   let command = batchCommand.command;
 
-  if (command.commandName === 'keepAlive') {
-    payload = {
-      stoneId: batchCommand.stoneId,
-      commandUuid: batchCommand.commandUuid,
-      attempts: batchCommand.attempts,
-      timestamp: batchCommand.timestamp,
-      options: batchCommand.options,
-      cleanup: batchCommand.cleanup,
-      promise: batchCommand.promise
-    };
-  }
-  else if (command.commandName === 'keepAliveState') {
-    payload = {
-      stoneId: batchCommand.stoneId,
-      commandUuid: batchCommand.commandUuid,
-      attempts: batchCommand.attempts,
-      timestamp: batchCommand.timestamp,
-      options: batchCommand.options,
-      handle: stoneConfig.handle,
-      crownstoneId: stoneConfig.crownstoneId,
-      changeState: command.changeState,
-      state: command.state,
-      timeout: command.timeout,
-      cleanup: batchCommand.cleanup,
-      promise: batchCommand.promise
-    };
-  }
-  else if (command.commandName === 'multiSwitch') {
+  if (command.commandName === 'multiSwitch') {
     payload = {
       stoneId: batchCommand.stoneId,
       commandUuid: batchCommand.commandUuid,

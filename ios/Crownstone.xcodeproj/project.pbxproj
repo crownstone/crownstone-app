@@ -718,7 +718,7 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FA8C6DEF23731FEB00A801A5 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
-		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; };
+		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

@@ -101,7 +101,6 @@ function handleAction(action, returnValue, newState, oldState) {
     case 'USER_ENTER_LOCATION':
       handleUserLocationEnter(action, newState);
       break;
-    case 'SET_TAP_TO_TOGGLE_CALIBRATION':
     case 'UPDATE_DEVICE_CONFIG':
       handleDeviceInCloud(action, newState);
       break;
@@ -158,11 +157,7 @@ function handleUserInCloud(action, state) {
   transferUser.updateOnCloud({localData: state.user, cloudId: state.user.userId})
 }
 
-function handleStoneBehaviourInCloud(action, state) {
-  if (Permissions.inSphere(action.sphereId).setBehaviourInCloud) {
-    _handleStone(action, state);
-  }
-}
+
 
 function handleStoneInCloud(action, state) {
   _handleStone(action, state);

@@ -31,6 +31,10 @@ export class SettingsApp extends LiveComponent<any, any> {
   initialKeepAliveState = false;
   triggerTapToToggleCalibration = false;
 
+  constructor(props) {
+    super(props);
+
+  }
 
   _getKeepAliveState() {
     let state = core.store.getState();
@@ -60,16 +64,34 @@ export class SettingsApp extends LiveComponent<any, any> {
       return "Tap to toggle when the phone is very close a Crownstone."
     }
     else if (rssiOffset > 5) {
-      return "Tap to toggle when the phone is close a Crownstone. NOTE: It might not be possible to get close enough!"
+      return "Tap to toggle when the phone is close a Crownstone.\nNOTE: It might not be possible to get close enough!"
     }
     else if (rssiOffset < 0 && rssiOffset >= -5) {
       return "Tap to toggle when the phone is near a Crownstone."
     }
     else if (rssiOffset < -5) {
-      return "Tap to toggle when the phone is near a Crownstone. NOTE: the Crownstone will keep toggling when you're in range. This might be undesired."
+      return "Tap to toggle when the phone is near a Crownstone.\nNOTE: the Crownstone will keep toggling when you're in range. This might be undesired."
     }
   }
-  
+
+  _getExplanationHeight(rssiOffset) {
+    if (!rssiOffset || rssiOffset === 0) {
+      return 40;
+    }
+    else if (rssiOffset > 0 && rssiOffset <= 5) {
+      return 40;
+    }
+    else if (rssiOffset > 5) {
+      return 40;
+    }
+    else if (rssiOffset < 0 && rssiOffset >= -5) {
+      return 40;
+    }
+    else if (rssiOffset < -5) {
+      return 60;
+    }
+  }
+
   _getItems() {
     const store = core.store;
     let state = store.getState();
@@ -84,26 +106,30 @@ export class SettingsApp extends LiveComponent<any, any> {
       callback:(newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',
-          data: {tapToToggleEnabled: newValue}
+          data: { tapToToggleEnabled: newValue }
         });
     }});
 
 
     if (state.app.tapToToggleEnabled) {
+      let deviceId = Util.data.getCurrentDeviceId(state);
+      let device = state.devices[deviceId];
       items.push({
         __item: (
           <SliderBar
-            label={"Only this Crownstone"}
+            label={"Sensitivity"}
             sliderHidden={true}
             mediumIcon={<IconButton name="ios-options" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}} />}
             callback={(value) => {
-              core.store.dispatch({type:"UPDATE_APP_SETTINGS", data: { tapToToggleSensitivityOffset: value }});
-              this.setState({rssiOffsetTarget: value})
+              let deviceId = Util.data.getCurrentDeviceId(state);
+              core.store.dispatch({ type: "SET_RSSI_OFFSET", deviceId: deviceId, data: {rssiOffset: -value}})
+              this.forceUpdate();
             }}
-            min={-10}
-            max={10}
-            value={state.app.tapToToggleSensitivityOffset}
-            explanation={this._getExplanation(state.app.tapToToggleSensitivityOffset)}
+            min={-16}
+            max={16}
+            value={-device.rssiOffset}
+            explanation={this._getExplanation(-device.rssiOffset)}
+            explanationHeight={this._getExplanationHeight(-device.rssiOffset)}
           />
         )});
     }

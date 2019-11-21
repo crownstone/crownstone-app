@@ -19,6 +19,7 @@ import React from "react";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import { Icon } from "../../components/Icon";
 import { DevAppState } from "../../../backgroundProcesses/dev/DevAppState";
+import { BlePromiseManager } from "../../../logic/BlePromiseManager";
 
 const BLE_STATE_READY = "ready";
 const BLE_STATE_BUSY = "busy";
@@ -105,7 +106,6 @@ export class DEV_FirmwareTest extends LiveComponent<{
         }
         return action.apply(this, props);
       };
-      // @ts-ignore
       promise = BlePromiseManager.registerPriority(actionPromise, { from: 'performing self contained action' })
     }
 

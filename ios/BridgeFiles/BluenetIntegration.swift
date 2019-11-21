@@ -259,15 +259,6 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("getSwitchState", callback, GLOBAL_BLUENET.bluenet.state.getSwitchState())
   }
   
-  @objc func keepAliveState(_ changeState: NSNumber, state: NSNumber, timeout: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    let changeStateBool = changeState.intValue > 0
-    wrapForBluenet("keepAliveState", callback, GLOBAL_BLUENET.bluenet.control.keepAliveState(changeState: changeStateBool, state: state.floatValue, timeout: timeout.uint16Value))
-  }
-  
-  @objc func keepAlive(_ callback: @escaping RCTResponseSenderBlock) {
-    wrapForBluenet("keepAlive", callback, GLOBAL_BLUENET.bluenet.control.keepAliveRepeat())
-  }
-  
   @objc func startAdvertising() {
     LOGGER.info("BluenetBridge: Called startAdvertising")
     GLOBAL_BLUENET.bluenet.startAdvertising()
@@ -564,14 +555,6 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
   
-  @objc func meshKeepAlive(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-     wrapForBluenet("meshKeepAliveState", callback, GLOBAL_BLUENET.bluenet.mesh.keepAliveRepeat())
-  }
-  
-  @objc func meshKeepAliveState(_ timeout: NSNumber, stoneKeepAlivePackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("meshKeepAliveState", callback, GLOBAL_BLUENET.bluenet.mesh.keepAliveState(timeout: timeout.uint16Value, stones: stoneKeepAlivePackets as! [[String : NSNumber]]))
-  }  
-  
   @objc func multiSwitch(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
     wrapForBluenet("multiSwitch", callback, GLOBAL_BLUENET.bluenet.mesh.multiSwitch(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
   }
@@ -635,211 +618,7 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenetLocalization.setBackgroundScanning(newBackgroundState: backgroundScanning)
   }
 
-  @objc func addSchedule(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
-    LOGGER.info("BluenetBridge: Called addSchedule")
-    let nextTime               = data["nextTime"]           as? NSNumber
-    let switchState            = data["switchState"]        as? NSNumber
-    let fadeDuration           = data["fadeDuration"]       as? NSNumber
-    let intervalInMinutes      = data["intervalInMinutes"]  as? NSNumber
-    let ignoreLocationTriggers = data["ignoreLocationTriggers"] as? NSNumber
-    let active                 = data["active"]             as? NSNumber
-    let repeatMode             = data["repeatMode"]         as? String
-    let activeMonday           = data["activeMonday"]       as? NSNumber
-    let activeTuesday          = data["activeTuesday"]      as? NSNumber
-    let activeWednesday        = data["activeWednesday"]    as? NSNumber
-    let activeThursday         = data["activeThursday"]     as? NSNumber
-    let activeFriday           = data["activeFriday"]       as? NSNumber
-    let activeSaturday         = data["activeSaturday"]     as? NSNumber
-    let activeSunday           = data["activeSunday"]       as? NSNumber
-    
-    
-    if (
-        nextTime               == nil ||
-        switchState            == nil ||
-        fadeDuration           == nil ||
-        intervalInMinutes      == nil ||
-        ignoreLocationTriggers == nil ||
-        active                 == nil ||
-        repeatMode             == nil ||
-        activeMonday           == nil ||
-        activeTuesday          == nil ||
-        activeWednesday        == nil ||
-        activeThursday         == nil ||
-        activeFriday           == nil ||
-        activeSaturday         == nil ||
-        activeSunday           == nil
-      ) {
-      var failureString = "Not all required fields have been defined. Require additional fields: { "
-      failureString += nextTime == nil ?               "nextTime: number (timestamp since epoch in seconds), " : ""
-      failureString += switchState == nil ?            "switchState: number (switch, float, [ 0 .. 1 ] ), " : ""
-      failureString += fadeDuration == nil ?           "fadeDuration: number (UInt16)" : ""
-      failureString += intervalInMinutes == nil ?      "intervalInMinutes: number (UInt16)" : ""
-      failureString += ignoreLocationTriggers == nil ? "ignoreLocationTriggers: Boolean" : ""
-      failureString += active == nil ?                 "active: Boolean, " : ""
-      failureString += repeatMode == nil ?             "repeatMode: string ('24h' / 'minute' / 'none'), " : ""
-      failureString += activeMonday == nil ?           "activeMonday: Boolean, " : ""
-      failureString += activeTuesday == nil ?          "activeTuesday: Boolean, " : ""
-      failureString += activeWednesday == nil ?        "activeWednesday: Boolean, " : ""
-      failureString += activeThursday == nil ?         "activeThursday: Boolean, " : ""
-      failureString += activeFriday == nil ?           "activeFriday: Boolean, " : ""
-      failureString += activeSaturday == nil ?         "activeSaturday: Boolean, " : ""
-      failureString += activeSunday == nil ?           "activeSunday: Boolean" : ""
-      failureString += " }"
-      callback([["error" : true, "data": failureString]])
-      return
-    }
-    
-    if (active!.boolValue == false) {
-      callback([["error" : true, "data": "If you want to deactivate the schedule, use the clearSchedule command"]])
-      return
-    }
-    GLOBAL_BLUENET.bluenet.state.getAvailableScheduleEntryIndex()
-      .done{scheduleEntryIndex -> Void in
-        let config = ScheduleConfigurator(
-          scheduleEntryIndex: scheduleEntryIndex,
-          startTime: nextTime!.doubleValue,
-          switchState: switchState!.floatValue
-        )
-        config.fadeDuration = fadeDuration!.uint16Value
-        config.intervalInMinutes = intervalInMinutes!.uint16Value
-        config.override.location = ignoreLocationTriggers!.boolValue
-        config.repeatDay.Monday = activeMonday!.boolValue
-        config.repeatDay.Tuesday = activeTuesday!.boolValue
-        config.repeatDay.Wednesday = activeWednesday!.boolValue
-        config.repeatDay.Thursday = activeThursday!.boolValue
-        config.repeatDay.Friday = activeFriday!.boolValue
-        config.repeatDay.Saturday = activeSaturday!.boolValue
-        config.repeatDay.Sunday = activeSunday!.boolValue
-        
-        
-        wrapForBluenet("addSchedule", callback, GLOBAL_BLUENET.bluenet.control.setSchedule(scheduleConfig: config))
-      }
-      .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN setSchedule"]])
-        }
-    }
-  }
   
-  @objc func setSchedule(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
-    LOGGER.info("BluenetBridge: Called setSchedule")
-    let scheduleEntryIndex     = data["scheduleEntryIndex"] as? NSNumber
-    let nextTime               = data["nextTime"]           as? NSNumber
-    let switchState            = data["switchState"]        as? NSNumber
-    let fadeDuration           = data["fadeDuration"]       as? NSNumber
-    let intervalInMinutes      = data["intervalInMinutes"]  as? NSNumber
-    let ignoreLocationTriggers = data["ignoreLocationTriggers"] as? NSNumber
-    let active                 = data["active"]             as? NSNumber
-    let repeatMode             = data["repeatMode"]         as? String
-    let activeMonday           = data["activeMonday"]       as? NSNumber
-    let activeTuesday          = data["activeTuesday"]      as? NSNumber
-    let activeWednesday        = data["activeWednesday"]    as? NSNumber
-    let activeThursday         = data["activeThursday"]     as? NSNumber
-    let activeFriday           = data["activeFriday"]       as? NSNumber
-    let activeSaturday         = data["activeSaturday"]     as? NSNumber
-    let activeSunday           = data["activeSunday"]       as? NSNumber
-    
-    
-    if (
-        scheduleEntryIndex     == nil ||
-        nextTime               == nil ||
-        switchState            == nil ||
-        fadeDuration           == nil ||
-        intervalInMinutes      == nil ||
-        ignoreLocationTriggers == nil ||
-        active                 == nil ||
-        repeatMode             == nil ||
-        activeMonday           == nil ||
-        activeTuesday          == nil ||
-        activeWednesday        == nil ||
-        activeThursday         == nil ||
-        activeFriday           == nil ||
-        activeSaturday         == nil ||
-        activeSunday           == nil
-      ) {
-      var failureString = "Not all required fields have been defined. Require additional fields: { "
-      failureString += scheduleEntryIndex == nil ?     "scheduleEntryIndex: number (index of timer, [0 .. 9]), " : ""
-      failureString += nextTime == nil ?               "nextTime: number (timestamp since epoch in seconds), " : ""
-      failureString += switchState == nil ?            "switchState: number (switch, float, [ 0 .. 1 ] ), " : ""
-      failureString += fadeDuration == nil ?           "fadeDuration: number (UInt16)" : ""
-      failureString += intervalInMinutes == nil ?      "intervalInMinutes: number (UInt16)" : ""
-      failureString += ignoreLocationTriggers == nil ? "ignoreLocationTriggers: Boolean" : ""
-      failureString += active == nil ?                 "active: Boolean, " : ""
-      failureString += repeatMode == nil ?             "repeatMode: string ('24h' / 'minute' / 'none'), " : ""
-      failureString += activeMonday == nil ?           "activeMonday: Boolean, " : ""
-      failureString += activeTuesday == nil ?          "activeTuesday: Boolean, " : ""
-      failureString += activeWednesday == nil ?        "activeWednesday: Boolean, " : ""
-      failureString += activeThursday == nil ?         "activeThursday: Boolean, " : ""
-      failureString += activeFriday == nil ?           "activeFriday: Boolean, " : ""
-      failureString += activeSaturday == nil ?         "activeSaturday: Boolean, " : ""
-      failureString += activeSunday == nil ?           "activeSunday: Boolean" : ""
-      failureString += " }"
-      callback([["error" : true, "data": failureString]])
-      return
-    }
-    
-    if (active!.boolValue == false) {
-      callback([["error" : true, "data": "If you want to deactivate the schedule, use the clearSchedule command"]])
-      return
-    }
-    
-
-    let config = ScheduleConfigurator(
-      scheduleEntryIndex: scheduleEntryIndex!.uint8Value,
-      startTime: nextTime!.doubleValue,
-      switchState: switchState!.floatValue
-    )
-    
-    config.fadeDuration = fadeDuration!.uint16Value
-    config.intervalInMinutes = intervalInMinutes!.uint16Value
-    config.override.location = ignoreLocationTriggers!.boolValue
-    config.repeatDay.Monday = activeMonday!.boolValue
-    config.repeatDay.Tuesday = activeTuesday!.boolValue
-    config.repeatDay.Wednesday = activeWednesday!.boolValue
-    config.repeatDay.Thursday = activeThursday!.boolValue
-    config.repeatDay.Friday = activeFriday!.boolValue
-    config.repeatDay.Saturday = activeSaturday!.boolValue
-    config.repeatDay.Sunday = activeSunday!.boolValue
-
-    
-    wrapForBluenet("setSchedule", callback, GLOBAL_BLUENET.bluenet.control.setSchedule(scheduleConfig: config))
-  }
-  
-  @objc func clearSchedule(_ scheduleEntryIndex: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("clearSchedule", callback, GLOBAL_BLUENET.bluenet.control.clearSchedule(scheduleEntryIndex: scheduleEntryIndex.uint8Value))
-  }
-  
-  
-  @objc func getAvailableScheduleEntryIndex(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("getAvailableScheduleEntryIndex", callback, GLOBAL_BLUENET.bluenet.state.getAvailableScheduleEntryIndex())
-  }
-  
-  @objc func getSchedules(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    LOGGER.info("BluenetBridge: Called getSchedules")
-    GLOBAL_BLUENET.bluenet.state.getAllSchedules()
-      .done{data -> Void in
-        var returnData = [NSDictionary]()
-        for schedule in data {
-          if (schedule.isActive()) {
-            returnData.append(schedule.getScheduleDataFormat())
-          }
-        }
-        callback([["error" : false, "data": returnData]])
-      }
-      .catch{err in
-        if let bleErr = err as? BluenetError {
-          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN getAvailableSchedulerIndex"]])
-        }
-    }
-    
-  }
-
   @objc func allowDimming(_ allow: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let allowBool = allow.boolValue
     wrapForBluenet("allowDimming", callback, GLOBAL_BLUENET.bluenet.control.allowDimming(allow: allowBool))
@@ -852,7 +631,16 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func setSwitchCraft(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     let stateBool = state.boolValue
-    wrapForBluenet("setSwitchCraft", callback, GLOBAL_BLUENET.bluenet.control.setSwitchCraft(enabled: stateBool))
+    wrapForBluenet("setSwitchCraft", callback, GLOBAL_BLUENET.bluenet.config.setSwitchcraft( enabled: stateBool))
+  }
+  
+  @objc func setTapToToggle(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let stateBool = state.boolValue
+    wrapForBluenet("setTapToToggle", callback, GLOBAL_BLUENET.bluenet.config.setTapToToggle(enabled: stateBool))
+  }
+  
+  @objc func setTapToToggleThresholdOffset(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("setTapToToggleThresholdOffset", callback, GLOBAL_BLUENET.bluenet.config.setTapToToggleThresholdOffset(threshold: state.int8Value))
   }
   
   @objc func meshSetTime(_ time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
@@ -903,8 +691,8 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenet.setDevicePreferences(
       rssiOffset: rssiOffset.int8Value,
       tapToToggle: tapToToggle.boolValue,
-      useBackgroundBroadcasts: false,
-      useBaseBroadcasts: false
+      useBackgroundBroadcasts: true,
+      useBaseBroadcasts: true
     );
   }
   

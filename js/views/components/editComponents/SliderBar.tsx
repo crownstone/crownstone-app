@@ -15,7 +15,7 @@ import { FadeInView } from "../animated/FadeInView";
 import { Icon } from "../Icon";
 
 
-const EXPLANATION_HEIGHT = 30;
+const EXPLANATION_HEIGHT = 40;
 const SLIDER_HEIGHT = 60;
 
 export function SliderBar(props) {
@@ -54,7 +54,7 @@ export function SliderBar(props) {
         { props.sliderHidden !== undefined ?
           (sliderHidden ? <Icon name="ios-arrow-forward" size={18} color={'#888'} /> : <Icon name="ios-arrow-down" size={18} color={'#888'} />) : undefined }
       </View>
-      <SlideFadeInView visible={sliderHidden === false} height={SLIDER_HEIGHT + EXPLANATION_HEIGHT}>
+      <SlideFadeInView visible={sliderHidden === false} height={SLIDER_HEIGHT + (props.explanation ? props.explanationHeight || EXPLANATION_HEIGHT : 0)}>
         <View style={{
           flex: 1,
           marginLeft: 10 + 0.25*(iconWidth + iconPadding),
@@ -74,9 +74,20 @@ export function SliderBar(props) {
             onValueChange={props.callback}
           />
         </View>
-        <View style={{width:screenWidth, height:EXPLANATION_HEIGHT, justifyContent:'flex-end'}}>
-          <Text style={[{width:screenWidth-30, textAlign:'center', color: colors.black.rgba(0.3), fontSize: 12}, props.explanationStyle, props.style]}>{props.explanation}</Text>
+        { props.explanation &&
+        <View style={{
+          width: screenWidth,
+          height: props.explanationHeight || EXPLANATION_HEIGHT,
+          justifyContent: 'flex-end'
+        }}>
+          <Text style={[{
+            width: screenWidth - 30,
+            textAlign: 'center',
+            color: colors.black.rgba(0.3),
+            fontSize: 12
+          }, props.explanationStyle, props.style]}>{props.explanation}</Text>
         </View>
+        }
       </SlideFadeInView>
     </View>
   );

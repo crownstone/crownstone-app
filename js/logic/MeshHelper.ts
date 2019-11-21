@@ -26,8 +26,6 @@ export class MeshHelper {
     let actionPromise = null;
 
     if (actionPromise === null) { actionPromise = this._handleMultiSwitchCommands(onlyUsedAsMeshRelay); }
-    if (actionPromise === null) { actionPromise = this._handleKeepAliveStateCommands(onlyUsedAsMeshRelay); }
-    if (actionPromise === null) { actionPromise = this._handleKeepAliveCommands(onlyUsedAsMeshRelay); }
     if (actionPromise === null) { actionPromise = this._handleOtherCommands(onlyUsedAsMeshRelay); }
 
     if (actionPromise === null) {
@@ -97,69 +95,6 @@ export class MeshHelper {
     }
     return null;
   }
-
-  _handleKeepAliveStateCommands(onlyUsedAsMeshRelay = false) {
-    if (this.meshInstruction.keepAliveState.length > 0) {
-      let keepAliveInstructions : keepAliveStatePayload[] = this.meshInstruction.keepAliveState;
-      // get data from set
-      let stoneKeepAlivePackets = [];
-      let maxTimeout = 0;
-
-      if (!onlyUsedAsMeshRelay) {
-        if (this._verifyDirectTarget(keepAliveInstructions) === false) {
-          return null;
-        }
-      }
-
-      keepAliveInstructions.forEach((instruction : keepAliveStatePayload) => {
-        if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.changeState !== undefined) {
-          // get the longest timeout and use that
-          maxTimeout = Math.max(maxTimeout, instruction.timeout);
-          stoneKeepAlivePackets.push({crownstoneId: instruction.crownstoneId, action: instruction.changeState, state: instruction.state});
-          instruction.promise.pending = true;
-          MeshHelper._mergeOptions(instruction.options, this.activeOptions);
-          this._containedInstructions.push(instruction);
-        }
-        else {
-          LOGe.mesh("MeshHelper: Invalid keepAlive instruction, required crownstoneId, timeout, state, changeState. Got:", instruction);
-        }
-      });
-
-
-      if (stoneKeepAlivePackets.length === 0) {
-        return null;
-      }
-      // update the used channels.
-      LOG.mesh('MeshHelper: Dispatching ', 'keepAliveState w timeout:',maxTimeout, 'packs:', stoneKeepAlivePackets);
-      return BluenetPromiseWrapper.meshKeepAliveState(maxTimeout, stoneKeepAlivePackets)
-    }
-
-    return null;
-  }
-
-  _handleKeepAliveCommands(onlyUsedAsMeshRelay = false) {
-    if (this.meshInstruction.keepAlive.length > 0) {
-      LOG.mesh('MeshHelper: Dispatching meshKeepAlive');
-
-      if (!onlyUsedAsMeshRelay) {
-        if (this._verifyDirectTarget(this.meshInstruction.keepAlive) === false) {
-          return null;
-        }
-      }
-
-      // add the promise of this part of the payload to the list that we will need to resolve or reject when the mesh message is delivered.
-      // these promises are loaded into the handler when load called.
-      this.meshInstruction.keepAlive.forEach((instruction : keepAlivePayload) => {
-        instruction.promise.pending = true;
-        MeshHelper._mergeOptions(instruction.options, this.activeOptions);
-        this._containedInstructions.push( instruction );
-      });
-
-      return BluenetPromiseWrapper.meshKeepAlive()
-    }
-    return null
-  }
-
 
   _handleOtherCommands(onlyUsedAsMeshRelay = false) {
     LOGw.mesh("Other commands are not implemented in the mesh yet.");
