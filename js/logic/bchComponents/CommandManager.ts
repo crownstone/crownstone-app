@@ -51,7 +51,7 @@ export class CommandManager {
 
     let clean = (todo) => {
       LOGd.bch("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
-      todo.promise.reject("Removed because of duplicate");
+      todo.promise.reject({code: BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE, message:"Removed because of duplicate"});
       todo.cleanup();
     };
 

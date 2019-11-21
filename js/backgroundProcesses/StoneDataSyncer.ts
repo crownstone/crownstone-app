@@ -6,7 +6,7 @@ import { xUtil } from "../util/StandAloneUtil";
 import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
 import { AicoreBehaviourCore } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviourCore";
 import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
-import { BEHAVIOUR_TYPES } from "../Enums";
+import { BCH_ERROR_CODES, BEHAVIOUR_TYPES } from "../Enums";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -20,9 +20,6 @@ class StoneDataSyncerClass {
   init() {
     if (this.initialized === false) {
       this.initialized = true;
-      core.nativeBus.on(core.nativeBus.topics.enterRoom,() => {
-        this.update();
-      });
 
       core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
@@ -31,6 +28,7 @@ class StoneDataSyncerClass {
           change.stoneChangeRules  ||
           change.stoneChangeAbilities
         ) {
+          console.log("UPDATE FROM CHANGE", change)
           this.update();
         }
       });
@@ -102,32 +100,56 @@ class StoneDataSyncerClass {
           );
           break;
         case "tapToToggle":
-          this._syncGenericAbility(
-            sphereId, stoneId, "tapToToggle",
-            (ability) => { return {commandName:'setTapToToggle', value: ability.enabledTarget}},
-            (ability) => {
-              let actions = [];
-              actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget}});
-              actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
-              core.store.batchDispatch(actions);
-            }
-          );
-          this._syncGenericAbility(
-            sphereId, stoneId, "tapToToggle",
-            (ability) => { return {commandName:'setTapToToggleThresholdOffset', rssiOffset: ability.rssiOffset}},
-            (ability) => {
-              let actions = [];
-              actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data: { rssiOffset: ability.rssiOffset}});
-              actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
-              core.store.batchDispatch(actions);
-            }
-          );
+          this._syncTapToToggle(sphereId, stoneId);
           break;
       }
     }
   }
 
+  _syncTapToToggle(sphereId : string, stoneId : string) {
+    console.log("_syncTapToToggle", sphereId , stoneId )
+    StoneAvailabilityTracker.setTrigger(sphereId, stoneId, ABILITY_SYNCER_OWNER_ID, () => {
+      // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
+      let stone = DataUtil.getStone(sphereId, stoneId);
+      if (!stone) { return };
+      let ability = stone.abilities.tapToToggle;
+      if (ability.syncedToCrownstone) { return; }
+
+      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'setTapToToggle', value: ability.enabledTarget}, {}, 2)
+        .then(() => {
+          let actions = [];
+          actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data:{ enabled: ability.enabledTarget}});
+          actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
+          core.store.batchDispatch(actions);
+        })
+        .catch((err) => {
+          if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+            console.log("FAILED SET TAP TO TOGGLE", err)
+            /** if the syncing fails, we set another watcher **/
+            this.update();
+          }
+        });
+
+      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'setTapToToggleThresholdOffset', rssiOffset: ability.rssiOffset}, {}, 2)
+        .then(() => {
+          let actions = [];
+          actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data: { rssiOffset: ability.rssiOffset}});
+          actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
+          core.store.batchDispatch(actions);
+        })
+        .catch((err) => {
+          if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+            console.log("FAILED SET TAP TO TOGGLE OFFSET", err)
+            /** if the syncing fails, we set another watcher **/
+            this.update();
+          }
+        });
+      BatchCommandHandler.executePriority();
+    })
+  }
+
   _syncGenericAbility(sphereId : string, stoneId : string, abilityField : string, actionGetter: (ability) => commandInterface, callback : (ability) => void) {
+    console.log("_syncGenericAbility", sphereId , stoneId, abilityField )
     StoneAvailabilityTracker.setTrigger(sphereId, stoneId, ABILITY_SYNCER_OWNER_ID, () => {
       // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
       let stone = DataUtil.getStone(sphereId, stoneId);
@@ -137,9 +159,11 @@ class StoneDataSyncerClass {
 
       BatchCommandHandler.load(stone, stoneId, sphereId, actionGetter(ability), {}, 2)
         .then(() => { console.log("did the thing", abilityField); callback(ability); })
-        .catch(() => {
-          /** if the syncing fails, we set another watcher **/
-          this.update();
+        .catch((err) => {
+          if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+            /** if the syncing fails, we set another watcher **/
+            this.update();
+          }
         });
       BatchCommandHandler.executePriority();
     })
