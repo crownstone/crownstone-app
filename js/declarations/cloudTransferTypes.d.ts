@@ -46,6 +46,7 @@ type transferNewToCloudStoneData = {
   localSphereId: string,
   localStoneId: string,
   cloudStoneId: string,
+  cloudSphereId: string,
 }
 
 
@@ -53,6 +54,7 @@ type transferToCloudStoneData = {
   localId: string,
   localData: any,
   cloudStoneId: string,
+  cloudSphereId: string,
   cloudId: string
 }
 

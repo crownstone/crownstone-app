@@ -6,7 +6,7 @@ export const stonesBehaviours = {
   createBehaviour: function(data, background = true) {
     return cloudApiBase._setupRequest(
       'POST',
-      '/Stones/{id}/behaviour/',
+      '/Stones/{id}/behaviours/',
       {data: data, background: background},
       'body'
     );
@@ -15,7 +15,7 @@ export const stonesBehaviours = {
     let cloudBehaviourId = MapProvider.local2cloudMap.behaviours[localBehaviourId] || localBehaviourId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(
       'PUT',
-      '/Stones/{id}/behaviour/' + cloudBehaviourId,
+      '/Stones/{id}/behaviours/' + cloudBehaviourId,
       {data:data, background: background},
       'body'
     );
@@ -24,14 +24,14 @@ export const stonesBehaviours = {
     let cloudBehaviourId = MapProvider.local2cloudMap.behaviours[localBehaviourId] || localBehaviourId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(
       'DELETE',
-      '/Stones/{id}/behaviour/' + cloudBehaviourId,
+      '/Stones/{id}/behaviours/' + cloudBehaviourId,
       {background: background},
     );
   },
   getBehaviours: function(background = true) {
     return cloudApiBase._setupRequest(
       'GET',
-      '/Stones/{id}/behaviour/',
+      '/Stones/{id}/behaviours/',
       {background: background},
     );
   },

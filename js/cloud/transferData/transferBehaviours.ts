@@ -21,14 +21,14 @@ export const transferBehaviours = {
   createOnCloud: function( actions, data : transferNewToCloudStoneData ) {
     let payload = {};
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
-
-    return CLOUD.forStone(data.cloudStoneId).createStone(payload)
+    payload['sphereId'] = data.cloudSphereId;
+    return CLOUD.forStone(data.cloudStoneId).createBehaviour(payload)
       .then((result) => {
         // update cloudId in local database.
         actions.push({type: 'UPDATE_RULE_CLOUD_ID', sphereId: data.localSphereId, stoneId: data.localStoneId, ruleId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
-        LOGe.cloud("Transfer-Behaviour: Could not create stone in cloud", err);
+        LOGe.cloud("Transfer-Behaviour: Could not create Behaviour in cloud", err);
         throw err;
       });
   },
@@ -40,10 +40,11 @@ export const transferBehaviours = {
 
     let payload = {};
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+    payload['sphereId'] = data.cloudSphereId;
 
-    return CLOUD.forStone(data.cloudStoneId).updateStone(data.cloudId, payload)
+    return CLOUD.forStone(data.cloudStoneId).updateBehaviour(data.cloudId, payload)
       .catch((err) => {
-        LOGe.cloud("Transfer-Stone: Could not update stone in cloud", err);
+        LOGe.cloud("Transfer-Stone: Could not update Behaviour in cloud", err);
         throw err;
       });
   },

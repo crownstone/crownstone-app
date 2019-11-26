@@ -85,11 +85,10 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
         }
 
         items.push({label: label, type:'explanation', below:false});
-        let elementIds = {};
-        stoneIdsInRoom.sort((a,b) => { return stoneIdsInRoom[a].config.name > stoneIdsInRoom[b].config.name ? 1 : -1 });
+        stoneIdsInRoom.sort((a,b) => { return stonesInRoom[a].config.name > stonesInRoom[b].config.name ? 1 : -1 });
 
         stoneIdsInRoom.forEach((stoneId) => {
-          let stone = stones[stoneId];
+          let stone = stonesInRoom[stoneId];
           this._pushCrownstoneItem(items, this.props.sphereId, stone, stoneId);
         })
       }

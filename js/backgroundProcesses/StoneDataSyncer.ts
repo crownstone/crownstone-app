@@ -149,7 +149,6 @@ class StoneDataSyncerClass {
   }
 
   _syncGenericAbility(sphereId : string, stoneId : string, abilityField : string, actionGetter: (ability) => commandInterface, callback : (ability) => void) {
-    console.log("_syncGenericAbility", sphereId , stoneId, abilityField )
     StoneAvailabilityTracker.setTrigger(sphereId, stoneId, ABILITY_SYNCER_OWNER_ID, () => {
       // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
       let stone = DataUtil.getStone(sphereId, stoneId);
@@ -158,7 +157,7 @@ class StoneDataSyncerClass {
       if (ability.syncedToCrownstone) { return; }
 
       BatchCommandHandler.load(stone, stoneId, sphereId, actionGetter(ability), {}, 2)
-        .then(() => { console.log("did the thing", abilityField); callback(ability); })
+        .then(() => { callback(ability); })
         .catch((err) => {
           if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
             /** if the syncing fails, we set another watcher **/
@@ -202,7 +201,6 @@ class StoneDataSyncerClass {
         }
       }
 
-      console.log("DOING IT", rule)
       if (rule.idOnCrownstone !== null) {
         return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "updateBehaviour", behaviour: behaviour})
           .then((returnData) => {

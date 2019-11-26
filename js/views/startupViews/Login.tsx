@@ -414,9 +414,9 @@ lang("_Incorrect_Email_or_Passw_body"),
         LOGe.info("Login: Failed to login.", err);
         let defaultAction = () => {core.eventBus.emit('hideProgress')};
         Alert.alert(
-lang("_Whoops___An_error_has_oc_header"),
-lang("_Whoops___An_error_has_oc_body"),
-[{text:lang("_Whoops___An_error_has_oc_left"), onPress: defaultAction}], { onDismiss: defaultAction});
+          lang("_Whoops___An_error_has_oc_header"),
+          lang("_Whoops___An_error_has_oc_body"),
+          [{text:lang("_Whoops___An_error_has_oc_left"), onPress: defaultAction}], { onDismiss: defaultAction});
 
 
         if (DEBUG_MODE_ENABLED) {
@@ -492,7 +492,7 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
       })
       .catch((err) => {
         LOGe.info("Login: ERROR during login.", err);
-        core.eventBus.emit('hideProgress');
+        // core.eventBus.emit('hideProgress');
       });
   }
 }

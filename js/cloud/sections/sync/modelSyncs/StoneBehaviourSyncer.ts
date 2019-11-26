@@ -109,6 +109,7 @@ export class StoneBehaviourSyncer extends SyncingStoneItemBase {
               localSphereId: this.localSphereId,
               localStoneId: this.localStoneId,
               cloudStoneId: this.cloudStoneId,
+              cloudSphereId: this.cloudSphereId,
             }));
       }
     }
@@ -124,6 +125,7 @@ export class StoneBehaviourSyncer extends SyncingStoneItemBase {
           localData: localDataForCloud,
           cloudStoneId: this.cloudStoneId,
           cloudId: behaviour_in_cloud.id,
+          cloudSphereId: this.cloudSphereId,
         })
           .catch(() => {})
       );

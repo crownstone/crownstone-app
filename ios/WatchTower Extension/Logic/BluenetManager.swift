@@ -32,6 +32,7 @@ class BluenetManager {
     var pendingStones = [String:Any]()
     
     init() {
+        // TODO: We need the Sphere UID for the watch.
         self.bluenet = Bluenet()
         self.listOfCrownstones = SortedCrownstoneCollection()
         self.unsubscribeArray = [voidCallback]()
