@@ -86,7 +86,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	}
 
-	// TODO: call this?
 	fun destroy() {
 		stopKovenant() // Stop thread(s)
 		bluenet.destroy()
@@ -106,20 +105,22 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	private val lifecycleEventListener = object : LifecycleEventListener {
 		override fun onHostResume() {
-			Log.i(TAG, "onHostResume")
-			appForeGround = true
-			if (::bluenet.isInitialized) {
-				bluenet.filterForCrownstones(true)
-				sendLocationStatus()
-				sendBleStatus()
+			if (!::handler.isInitialized) {
+				return
+			}
+			// Make sure function runs on same thread.
+			handler.post {
+				onBridgeHostResume()
 			}
 		}
 
 		override fun onHostPause() {
-			Log.i(TAG, "onHostPause")
-			appForeGround = false
-			if (::bluenet.isInitialized) {
-				bluenet.filterForCrownstones(false)
+			if (!::handler.isInitialized) {
+				return
+			}
+			// Make sure function runs on same thread.
+			handler.post {
+				onBridgeHostPause()
 			}
 		}
 
@@ -128,6 +129,25 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 	}
 
+	@Synchronized
+	private fun onBridgeHostResume() {
+		Log.i(TAG, "onHostResume")
+		appForeGround = true
+		if (::bluenet.isInitialized) {
+			bluenet.filterForCrownstones(true)
+			sendLocationStatus()
+			sendBleStatus()
+		}
+	}
+
+	@Synchronized
+	private fun onBridgeHostPause() {
+		Log.i(TAG, "onHostPause")
+		appForeGround = false
+		if (::bluenet.isInitialized) {
+			bluenet.filterForCrownstones(false)
+		}
+	}
 
 
 
@@ -151,12 +171,15 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 		startKovenant() // Start thread(s)
 
-		handler = Handler()
+//		handler = Handler()
 
 		// Current thread
 //		Looper.prepare()
 //		Looper.loop()
-		bluenet = Bluenet(Looper.myLooper())
+		val looper = Looper.myLooper()
+		bluenet = Bluenet(looper)
+		handler = Handler(looper)
+
 //		// Main thread
 //		bluenet = Bluenet(Looper.getMainLooper())
 //		// Create thread for the bluenet library
