@@ -193,20 +193,20 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		initPromise.success {
 			// TODO: this might be called again when app opens.
 			Log.i(TAG, "initPromise success")
-			bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
-			bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
-			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON,     { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
-			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF,    { data: Any -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
-			bluenet.subscribe(BluenetEvent.BLE_TURNED_ON,   { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
-			bluenet.subscribe(BluenetEvent.BLE_TURNED_OFF,  { data: Any -> onBleStatus(BluenetEvent.BLE_TURNED_OFF) })
-			bluenet.subscribe(BluenetEvent.SCAN_RESULT, ::onScan)
-			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, ::onRegionEnter)
-			bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, ::onRegionExit)
-			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, ::onIbeaconScan)
-//			bluenet.subscribe(BluenetEvent.NEAREST_STONE, ::onNearestStone)
-//			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
-			bluenet.subscribe(BluenetEvent.DFU_PROGRESS, ::onDfuProgress)
-			bluenet.subscribe(BluenetEvent.SCAN_FAILURE, ::onScanFailure)
+			bluenet.subscribe(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION, { data: Any? -> onLocationStatus(BluenetEvent.NO_LOCATION_SERVICE_PERMISSION) })
+			bluenet.subscribe(BluenetEvent.LOCATION_PERMISSION_GRANTED,    { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_PERMISSION_GRANTED) })
+			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_ON,     { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_ON) })
+			bluenet.subscribe(BluenetEvent.LOCATION_SERVICE_TURNED_OFF,    { data: Any? -> onLocationStatus(BluenetEvent.LOCATION_SERVICE_TURNED_OFF) })
+			bluenet.subscribe(BluenetEvent.BLE_TURNED_ON,   { data: Any? -> onBleStatus(BluenetEvent.BLE_TURNED_ON) })
+			bluenet.subscribe(BluenetEvent.BLE_TURNED_OFF,  { data: Any? -> onBleStatus(BluenetEvent.BLE_TURNED_OFF) })
+			bluenet.subscribe(BluenetEvent.SCAN_RESULT, { data: Any? -> onScan(data as ScannedDevice) })
+			bluenet.subscribe(BluenetEvent.IBEACON_ENTER_REGION, { data: Any? -> onRegionEnter(data as IbeaconRegionEventData) })
+			bluenet.subscribe(BluenetEvent.IBEACON_EXIT_REGION, { data: Any? -> onRegionExit(data as IbeaconRegionEventData) })
+			bluenet.subscribe(BluenetEvent.IBEACON_SCAN, { data: Any? -> onIbeaconScan(data as ScannedIbeaconList) })
+//			bluenet.subscribe(BluenetEvent.NEAREST_STONE, { data: Any? -> onNearestStone() })
+//			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, { data: Any? -> onNearestSetup() })
+			bluenet.subscribe(BluenetEvent.DFU_PROGRESS, { data: Any? -> onDfuProgress(data as DfuProgress) })
+			bluenet.subscribe(BluenetEvent.SCAN_FAILURE,  { data: Any? -> onScanFailure() })
 			val logLevel =     if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.VERBOSE else Log.Level.ERROR
 			val logLevelFile = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.DEBUG else Log.Level.INFO
 			bluenet.setLogLevel(logLevel)
@@ -376,7 +376,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Cache these, to be used for broadcasting.
 		Log.i(TAG, "setDevicePreferences rssiOffset=$rssiOffset tapToToggleEnabled=$tapToToggleEnabled")
 		bluenet.setTapToToggle(null, tapToToggleEnabled, rssiOffset)
-		bluenet.backgroundBroadcaster.update() // 2019-11-21 TODO: use event from bluenet
 	}
 
 	@ReactMethod
@@ -390,7 +389,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.setProfile(sphereId, Conversion.toUint8(profile))
 		bluenet.setDeviceToken(sphereId, Conversion.toUint8(deviceToken))
 		bluenet.setCurrentSphere(sphereId)
-		bluenet.backgroundBroadcaster.update() // 2019-11-21 TODO: use event from bluenet
 	}
 
 
@@ -1078,7 +1076,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val meshKeySet = MeshKeySet(meshDevKey, meshAppKey, meshNetKey)
 		val ibeaconData = IbeaconData(iBeaconUuid, iBeaconMajor, iBeaconMinor, 0)
 
-		val subId = bluenet.subscribe(BluenetEvent.SETUP_PROGRESS, ::onSetupProgress)
+		val subId = bluenet.subscribe(BluenetEvent.SETUP_PROGRESS, { data: Any? -> onSetupProgress(data as Double) })
 
 		// Maybe refresh services, because there is a good chance that this crownstone was just factory reset / recovered.
 		// Not sure if this is helpful, as it would've gone wrong already on connect (when session nonce is read in normal mode)
@@ -1092,8 +1090,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	fun onSetupProgress(data: Any) {
-		val progressDouble = data as Double
+	fun onSetupProgress(progressDouble: Double) {
 		val progressApp: Int = round(progressDouble * 13).toInt()
 		sendEvent("setupProgress", progressApp)
 	}
@@ -2017,7 +2014,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	private fun onScanFailure(data: Any) {
+	private fun onScanFailure() {
 		Log.i(TAG, "onScanFailure")
 		val mapAlert = Arguments.createMap()
 		mapAlert.putString("header", "Bluetooth problem")
@@ -2027,8 +2024,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	private fun onRegionEnter(data: Any) {
-		val eventData = data as IbeaconRegionEventData
+	private fun onRegionEnter(eventData: IbeaconRegionEventData) {
 		val uuid = eventData.changedRegion
 		for (region in eventData.list) {
 			if (region.key == uuid) {
@@ -2041,8 +2037,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	private fun onRegionExit(data: Any) {
-		val eventData = data as IbeaconRegionEventData
+	private fun onRegionExit(eventData: IbeaconRegionEventData) {
 		val uuid = eventData.changedRegion
 		for (region in eventData.list) {
 			if (region.key == uuid) {
@@ -2055,8 +2050,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	private fun onIbeaconScan(data: Any) {
-		val scanList = data as ScannedIbeaconList
+	private fun onIbeaconScan(scanList: ScannedIbeaconList) {
 		if (scanList.isEmpty()) {
 			return
 		}
@@ -2080,7 +2074,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	private fun onNearestStone(data: Any) {
+	private fun onNearestStone(data: Any?) {
 		// Any stone, validated or not, any operation mode.
 		val nearest = data as NearestDeviceListEntry
 		val nearestMap = exportNearest(nearest)
@@ -2089,7 +2083,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	private fun onNearestSetup(data: Any) {
+	private fun onNearestSetup(data: Any?) {
 		val nearest = data as NearestDeviceListEntry
 		val nearestMap = exportNearest(nearest)
 		sendEvent("nearestSetupCrownstone", nearestMap)
@@ -2107,8 +2101,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	private fun onDfuProgress(data: Any) {
-		val progress = data as DfuProgress
+	private fun onDfuProgress(progress: DfuProgress) {
 		val map = Arguments.createMap()
 		map.putInt("progress", progress.percentage)
 		map.putDouble("currentSpeedBytesPerSecond", progress.currentSpeed.toDouble())
@@ -2119,9 +2112,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	private fun onScan(data: Any) {
-		val device = data as ScannedDevice
-
+	private fun onScan(device: ScannedDevice) {
 		if (device.isStone()) {
 			if (sendUnverifiedAdvertisements) {
 				sendEvent("crownstoneAdvertisementReceived", device.address) // Any advertisement, verified and unverified from crownstones.
