@@ -137,11 +137,13 @@ function checkAction(action, affectedIds) {
       eventStatus['updateStoneConfig'] = affectedIds; break;
     case 'UPDATE_STONE_LOCATION':
       eventStatus['stoneLocationUpdated'] = affectedIds; break;
+    case 'UPDATE_STONE_SWITCH_STATE':
+      eventStatus['updateStoneSwitchState'] = affectedIds;
     case 'CLEAR_STONE_USAGE':
     case 'UPDATE_STONE_STATE':
-    case 'UPDATE_STONE_SWITCH_STATE':
     case 'REMOVE_ALL_POWER_USAGE':
     case 'REMOVE_POWER_USAGE_DATE':
+      eventStatus['updateStoneState'] = affectedIds;
       eventStatus['powerUsageUpdated'] = affectedIds;
       eventStatus['stoneUsageUpdated'] = affectedIds; break;
     case 'UPDATE_STONE_REMOTE_TIME':

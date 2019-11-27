@@ -3,10 +3,9 @@ import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabi
 import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { DataUtil } from "../util/DataUtil";
 import { xUtil } from "../util/StandAloneUtil";
-import { AicoreUtil } from "../views/deviceViews/smartBehaviour/supportCode/AicoreUtil";
-import { AicoreBehaviourCore } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviourCore";
 import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 import { BCH_ERROR_CODES, BEHAVIOUR_TYPES } from "../Enums";
+import { Permissions } from "./PermissionManager";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -28,7 +27,6 @@ class StoneDataSyncerClass {
           change.stoneChangeRules  ||
           change.stoneChangeAbilities
         ) {
-          console.log("UPDATE FROM CHANGE", change)
           this.update();
         }
       });
@@ -54,16 +52,20 @@ class StoneDataSyncerClass {
           StoneAvailabilityTracker.clearMySetTriggers(sphereIds[i], stoneIds[j], RULE_SYNCER_OWNER_ID)
 
           // handle abilities
-          this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.dimming,     'dimming');
-          this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.switchcraft, 'switchcraft');
-          this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.tapToToggle, 'tapToToggle');
+          if (Permissions.inSphere(sphereIds[i]).canChangeAbilities) {
+            this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.dimming, 'dimming');
+            this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.switchcraft, 'switchcraft');
+            this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.tapToToggle, 'tapToToggle');
+          }
 
           // handle rules
-          let ruleIds = Object.keys(stone.rules);
-          for (let k = 0; k < ruleIds.length; k++) {
-            let rule = stone.rules[ruleIds[k]];
-            if (!rule.syncedToCrownstone) {
-              this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule)
+          if (Permissions.inSphere(sphereIds[i]).canChangeBehaviours) {
+            let ruleIds = Object.keys(stone.rules);
+            for (let k = 0; k < ruleIds.length; k++) {
+              let rule = stone.rules[ruleIds[k]];
+              if (!rule.syncedToCrownstone) {
+                this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule)
+              }
             }
           }
         }
@@ -209,7 +211,7 @@ class StoneDataSyncerClass {
             return masterHash;
           })
           .catch((err) => {
-            console.log(err);
+            console.log("Error during rule update", err);
             return null;
           })
       }
@@ -222,7 +224,7 @@ class StoneDataSyncerClass {
             return masterHash;
           })
           .catch((err) => {
-            console.log(err);
+            console.log("Error during rule create", err);
             return null;
           })
       }

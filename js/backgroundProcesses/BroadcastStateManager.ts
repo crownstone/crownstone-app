@@ -119,7 +119,10 @@ class BroadcastStateManagerClass {
     // now handling the case where amountOfSpheres > 1
 
     // the active sphere has priority as long as it is present.
-    if (activeSphereData.sphere.state.present && !locationId) {
+    if (activeSphereData.sphere.state.present) {
+      if (activeSphereData.sphereId === sphereId && locationId) {
+        this._updateLocationState(activeSphereData.sphereId, locationId);
+      }
       // if the sphere that is active is also present, we set the locationState to that one.
       this._updateLocationState(activeSphereData.sphereId);
     }

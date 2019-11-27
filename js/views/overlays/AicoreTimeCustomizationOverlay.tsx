@@ -50,7 +50,7 @@ export class AicoreTimeCustomizationOverlay extends Component<any, any> {
   }
 
   render() {
-    let idealAspectRatio = 1.75;
+    let idealAspectRatio = 1.85;
     let width = 0.85*screenWidth;
     let height = Math.min(width*idealAspectRatio, 0.9 * screenHeight);
 

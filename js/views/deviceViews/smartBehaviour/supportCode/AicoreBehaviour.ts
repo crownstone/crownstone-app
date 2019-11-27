@@ -170,11 +170,11 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
   }
 
   setPresenceSomebodyInLocations(locationIds: string[]) : AicoreBehaviour {
-    this.rule.presence = { type:"SOMEBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getSphereDelay()};
+    this.rule.presence = { type:"SOMEBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getLocationDelay()};
     return this;
   }
   setPresenceNobodyInLocations(locationIds: string[]) : AicoreBehaviour {
-    this.rule.presence = { type:"NOBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getSphereDelay()};
+    this.rule.presence = { type:"NOBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getLocationDelay()};
     return this;
   }
 
@@ -183,11 +183,11 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     return this;
   }
   setEndConditionWhilePeopleInSphere() : AicoreBehaviour {
-    this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "SPHERE"}}};
+    this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "SPHERE"}, delay: this._getSphereDelay()}};
     return this;
   }
   setEndConditionWhilePeopleInLocation(locationId: string) : AicoreBehaviour {
-    this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}}};
+    this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}, delay: this._getLocationDelay()}};
     return this;
   }
 

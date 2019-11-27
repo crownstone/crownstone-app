@@ -43,6 +43,7 @@ import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabi
 import { StoneDataSyncer } from "./StoneDataSyncer";
 import { BackButtonHandler } from "./BackButtonHandler";
 import { base_core } from "../base_core";
+import { PowerUsageCacher } from "./PowerUsageCacher";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -123,6 +124,7 @@ class BackgroundProcessHandlerClass {
 
         // init behaviour based on if we are in the foreground or the background.
         this._applyAppStateOnScanning(AppState.currentState);
+        this._applyAppStateOnCaching(AppState.currentState);
 
         BroadcastStateManager.init();
 
@@ -268,8 +270,20 @@ class BackgroundProcessHandlerClass {
       });
 
       this._applyAppStateOnScanning(appState);
+      this._applyAppStateOnCaching(appState);
     });
   }
+
+
+  _applyAppStateOnCaching(appState) {
+    if (appState === "active" && this.userLoggedIn) {
+      PowerUsageCacher.start();
+    }
+    else if (appState === 'background') {
+      PowerUsageCacher.stop();
+    }
+  }
+
 
   _applyAppStateOnScanning(appState) {
     // in the foreground: start scanning!
@@ -424,6 +438,7 @@ class BackgroundProcessHandlerClass {
     MessageCenter.init();
     NotificationHandler.init();
     Permissions.init();
+    PowerUsageCacher.init();
     Scheduler.init();
     StoneAvailabilityTracker.init();
     StoneDataSyncer.init();

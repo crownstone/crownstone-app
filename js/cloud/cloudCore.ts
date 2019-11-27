@@ -174,23 +174,29 @@ export function downloadFile(url, targetPath, callbacks) {
       .then((status) => {
         if (status.statusCode !== 200) {
           // remove the temp file if the download failed
-          FileUtil.safeDeleteFile(tempPath)
+          return FileUtil.safeDeleteFile(tempPath)
             .then(() => {
               LOGi.cloud('CloudCore:DownloadFile:',downloadSessionId,' Download was not status 200:', status);
               callbacks.success();
               resolve(null);
             })
-            .catch((err) => { LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not delete file", tempPath, ' err:', err); });
+            .catch((err) => {
+              LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not delete file", tempPath, ' err:', err);
+              throw err;
+            });
         }
         else {
-          FileUtil.safeMoveFile(tempPath, targetPath)
+          return FileUtil.safeMoveFile(tempPath, targetPath)
             .then((toPath) => {
               // if we have renamed the file, we resolve the promise so we can store the changed filename.
               LOGi.cloud('CloudCore:DownloadFile:',downloadSessionId,' Downloaded file successfully:', targetPath);
               callbacks.success();
               resolve(toPath);
             })
-            .catch((err) => {  LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not move file", tempPath, ' to ', targetPath, 'err:', err); });
+            .catch((err) => {
+              LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not move file", tempPath, ' to ', targetPath, 'err:', err);
+              throw err;
+            });
         }
       })
       .catch((err) => {

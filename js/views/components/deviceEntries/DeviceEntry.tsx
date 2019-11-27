@@ -29,6 +29,7 @@ import { STONE_TYPES } from "../../../Enums";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
+import { DataUtil } from "../../../util/DataUtil";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -61,6 +62,14 @@ export class DeviceEntry extends Component<any, any> {
         setTimeout(() => {
           Animated.timing(this.state.backgroundColor, { toValue: 0, duration: 2500 }).start();
         }, 5000);
+      }
+    }));
+
+    this.unsubscribe.push(core.eventBus.on('databaseChange', (data) => {
+      let change = data.change;
+      if (change.updateStoneState && change.updateStoneState.stoneIds[this.props.stoneId]) {
+        this.forceUpdate();
+        return
       }
     }));
   }

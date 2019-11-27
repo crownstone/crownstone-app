@@ -587,7 +587,6 @@ export class StoneEntity {
     let serviceData = advertisement.serviceData;
     let measuredUsage = Math.floor(serviceData.powerUsageReal);
     let powerFactor = serviceData.powerFactor;
-
     let currentTime = new Date().valueOf();
 
     let switchState = Math.min(1,serviceData.switchState / 100);
@@ -609,7 +608,7 @@ export class StoneEntity {
       changeData.state = switchState;
     }
 
-    if (stone.state.currentUsage === measuredUsage) {
+    if (stone.state.currentUsage !== measuredUsage) {
       changed = true;
       changeData.currentUsage = measuredUsage;
       changeData.powerFactor = powerFactor;

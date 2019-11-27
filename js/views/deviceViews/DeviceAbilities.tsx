@@ -26,6 +26,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { STONE_TYPES } from "../../Enums";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { FadeInView } from "../components/animated/FadeInView";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
 export class DeviceAbilities extends LiveComponent<any, any> {
   static options(props) {
@@ -62,6 +63,8 @@ export class DeviceAbilities extends LiveComponent<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
 
+    let permissionGranted = Permissions.inSphere(this.props.sphereId).canChangeAbilities
+
     let hasSwitchcraft = stone.config.type === STONE_TYPES.builtinOne;
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
@@ -69,11 +72,11 @@ export class DeviceAbilities extends LiveComponent<any, any> {
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "My Abilities" }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-            <Text style={deviceStyles.specification}>{ "These are the things I can do for you!\nYou can enable or disable my abilities\nto suit your needs."}</Text>
+            <Text style={deviceStyles.specification}>{"These are the things I can do for you!\n" + (permissionGranted ? "You can enable or disable my abilities\nto suit your needs." : "The sphere admin can enable or disable\nmy abilities to suit your needs.") }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-            <Ability type={"dimming"}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} />
-            { hasSwitchcraft && <Ability type={"switchcraft"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} /> }
-            <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} />
+                                <Ability type={"dimming"}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
+            { hasSwitchcraft && <Ability type={"switchcraft"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
+                                <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
           </View>
         </ScrollView>
       </Background>
@@ -82,7 +85,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
 }
 
 
-function Ability(props : { type: string, stone: any, stoneId: string, sphereId: string }) {
+function Ability(props : { type: string, stone: any, stoneId: string, sphereId: string, permissionGranted: boolean }) {
   let padding = 8;
   let height  = 90+2*padding;
   let margins = 30;
@@ -92,6 +95,7 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
   let synced = getSyncedState(props.stone, props.type);
   let data = getData(props, props.stone, active);
   let helpColor = colors.black.rgba(0.5);
+
 
   return (
     <View style={{width:screenWidth, marginBottom: margins}}>
@@ -111,12 +115,14 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
           <TouchableOpacity onPress={() => { data.infoCallback(); }} style={{borderColor: helpColor, borderWidth: 1, width:30, height:30, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
             <Text style={{color: helpColor, fontSize: 20, fontWeight:'300'}}>?</Text>
           </TouchableOpacity>
-          { active ?
-            <TouchableOpacity onPress={() => { data.settingsCallback(); }} style={{paddingLeft:10}}>
-              <Icon name={'ios-settings'} color={colors.csBlueDark.rgba(0.8)} size={35} />
-            </TouchableOpacity> :
-            <Switch value={false} disabled={fullyDisabled} style={{marginLeft:10}} onValueChange={() => { data.activateCallback(); }} />
+          {active && props.permissionGranted && (
+            <TouchableOpacity onPress={() => {
+              data.settingsCallback();
+            }} style={{ paddingLeft: 10 }}>
+              <Icon name={'ios-settings'} color={colors.csBlueDark.rgba(0.8)} size={35}/>
+            </TouchableOpacity>)
           }
+          { !active && props.permissionGranted && <Switch value={false} disabled={fullyDisabled} style={{marginLeft:10}} onValueChange={() => { data.activateCallback(); }} /> }
         </View>
       </View>
       <Explanation margin={margins+0.25*height} label={data.explanation} />

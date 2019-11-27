@@ -40,6 +40,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
   }
 
   storedSwitchState = 0;
+  storedSwitchStateWhenOn = null;
   unsubscribeStoreEvents;
   stoneCanSwitch = true;
 
@@ -59,7 +60,8 @@ export class DeviceOverview extends LiveComponent<any, any> {
     this.storedSwitchState = stone.state.state;
 
     this.state = {
-      switchIsOn: this.storedSwitchState > 0
+      switchIsOn: this.storedSwitchState > 0,
+      visibleState: stone.state.state
     }
 
     if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB) {
@@ -92,7 +94,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-
       let state = core.store.getState();
       if (
         (state.spheres[this.props.sphereId] === undefined) ||
@@ -110,17 +111,20 @@ export class DeviceOverview extends LiveComponent<any, any> {
         !change.removeStone &&
         (
           change.changeAppSettings ||
-          change.stoneLocationUpdated && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
-          change.changeStoneState     && change.changeStoneState.stoneIds[this.props.stoneId]     ||
-          change.stoneChangeRules     && change.stoneChangeRules.stoneIds[this.props.stoneId]     ||
-          change.updateStoneConfig    && change.updateStoneConfig.stoneIds[this.props.stoneId]
+          change.stoneLocationUpdated     && change.stoneLocationUpdated.stoneIds[this.props.stoneId]    ||
+          change.changeStoneAvailability  && change.changeStoneAvailability.stoneIds[this.props.stoneId] ||
+          change.stoneChangeRules         && change.stoneChangeRules.stoneIds[this.props.stoneId]        ||
+          change.updateStoneConfig        && change.updateStoneConfig.stoneIds[this.props.stoneId]
         )
       ) {
-        if (change.updateStoneConfig    && change.updateStoneConfig.stoneIds[this.props.stoneId]) {
+        if (change.updateStoneConfig  && change.updateStoneConfig.stoneIds[this.props.stoneId]) {
           this._updateNavBar();
         }
-
         this.forceUpdate();
+        return
+      }
+      if (change.updateStoneSwitchState && change.updateStoneSwitchState.stoneIds[this.props.stoneId]) {
+        this.setState({switchIsOn: stone.state.state > 0})
       }
     });
   }
@@ -181,11 +185,13 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
   _switch(stone, state) {
+    let stateWhenOn = this.storedSwitchStateWhenOn;
+
     if (state === 0 && this.state.switchIsOn) {
-      this.setState({switchIsOn: false});
+      stateWhenOn = stone.state.state < 0.2 ? 1 : stone.state.state;
     }
     else if (state > 0 && !this.state.switchIsOn) {
-      this.setState({switchIsOn: true});
+      stateWhenOn = state < 0.2 ? 1 : state;
     }
 
     StoneUtil.switchBHC(
@@ -195,7 +201,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
       state,
       core.store,
       {},
-      () => { this.storedSwitchState = state; },
+      () => { this.storedSwitchState = state; this.storedSwitchStateWhenOn = stateWhenOn; },
       INTENTS.manual,
       1,
       'from _getButton in DeviceSummary'
@@ -252,7 +258,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
       let showDimmingText = stone.state.dimmingAvailable === false && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
       return (
         <DimmerSlider
-          initialState={stone.state.state}
+          state={stone.state.state}
           dimmingSynced={stone.abilities.dimming.syncedToCrownstone}
           showDimmingText={showDimmingText}
           callback={(percentage) => {
@@ -267,7 +273,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
     }
     else {
       return (
-        <View style={{ flexDirection:'row',height:height, width:width, backgroundColor: colors.white.rgba(1), borderRadius: 25, alignItems:'center', justifyContent:'center'}}>
+        <View style={{ flexDirection:'row', height:height, width:width, backgroundColor: colors.white.rgba(1), borderRadius: 25, alignItems:'center', justifyContent:'center'}}>
           <TouchableOpacity style={{
             ...innerStyle,
             borderBottomLeftRadius: 25,  borderTopLeftRadius: 25, alignItems:'flex-end',
@@ -340,8 +346,9 @@ export class DeviceOverview extends LiveComponent<any, any> {
     let size = 0.24*availableScreenHeight;
     let borderWidth = size*0.04;
     let outerSize = size+1.5*borderWidth;
-    let stateColor = this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex;
-    return (
+    let stateColor = stone.state.state > 0 ? colors.green.hex : colors.csBlueDark.hex;
+
+    let content = (
       <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
         <AnimatedCircle size={outerSize} color={stateColor} style={{alignItems:'center', justifyContent:'center'}}>
           <AnimatedCircle size={size} color={stateColor} style={{borderRadius:0.5*size, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
@@ -349,7 +356,29 @@ export class DeviceOverview extends LiveComponent<any, any> {
           </AnimatedCircle>
         </AnimatedCircle>
       </View>
-    )
+    );
+
+    if (this.stoneCanSwitch) {
+      return (
+        <TouchableOpacity onPress={() => {
+          if (this.state.switchIsOn) {
+            // switch off
+            this._switch(stone, 0);
+          }
+          else {
+            // switch on
+            if (this.storedSwitchStateWhenOn > 0.2) {
+              this._switch(stone, this.storedSwitchStateWhenOn);
+            }
+            else {
+              this._switch(stone, 1);
+            }
+          }
+        }}>{content}</TouchableOpacity>
+      )
+    }
+
+    return content;
   }
 
 
@@ -415,7 +444,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
         { this.stoneCanSwitch && <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View> }
 
         <View style={{ height: 40}} />
-        { stone.config.locked === false && this.stoneCanSwitch ? this._getLockIcon(stone) : undefined }
+        { stone.config.locked === false && this.stoneCanSwitch && Permissions.inSphere(this.props.sphereId).canLockCrownstone ? this._getLockIcon(stone) : undefined }
       </Background>
     )
   }

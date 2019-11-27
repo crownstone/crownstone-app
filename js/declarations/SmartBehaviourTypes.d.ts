@@ -1,7 +1,7 @@
 type aicorePresenceType   = "SOMEBODY" | "NOBODY"  | "IGNORE"  | "SPECIFIC_USERS"
 type sunTimes             = "SUNSET"   | "SUNRISE"
 
-type aicorePresenceSomebody = { type: "SOMEBODY", data: aicorePresenceSphereData | aicorePresenceLocationData }
+type aicorePresenceSomebody = { type: "SOMEBODY", data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number }
 type aicorePresenceGeneric  = { type: "SOMEBODY" | "NOBODY", data: aicorePresenceSphereData | aicorePresenceLocationData, delay: number } // delay in seconds
 type aicorePresenceNone     = { type: "IGNORE" }
 type aicorePresence         = aicorePresenceGeneric | aicorePresenceNone
@@ -97,6 +97,7 @@ interface behaviourTransfer {
   activeDays: dayOfWeek,
   // from here on it is data required for syncing and UI state.
   idOnCrownstone: number,
+  profileIndex: number,
 }
 
 // TYPE: EVENT

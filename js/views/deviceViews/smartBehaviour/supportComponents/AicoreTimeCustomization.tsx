@@ -8,19 +8,18 @@ import React, { useState,Component } from 'react';
 import {
   Alert,
   Text,
-  View, TextStyle
+  View, TextStyle, Platform, TouchableOpacity
 } from "react-native";
 import { colors, screenWidth} from "../../../styles";
 import Slider from '@react-native-community/slider';
 
-import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
 import { FadeIn } from "../../../components/animated/FadeInView";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { TextButtonDark, TimeButtonWithImage } from "../../../components/InterviewComponents";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { AicoreTimeData } from "../supportCode/AicoreTimeData";
-
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 let timeReference = null;
 
@@ -32,9 +31,6 @@ let headerStyle : TextStyle = {
   fontWeight: "bold",
   color: colors.csBlue.hex
 };
-
-
-
 
 export class AicoreTimeCustomization extends Component<any,any> {
   fromTime: AicoreTimeData = null;
@@ -121,11 +117,13 @@ function TimePart(props : {
   instantEdit: boolean,
   width: number,
 }) {
+  const [show, setShow] = useState(false);
   const [type, setType] = useState(props.timeObj.getType());
   const [ignoreInstantEdit, setIgnorInstantEdit] = useState(false);
   const [offsetMinutes, setOffsetMinutes] = useState(props.timeObj.getOffsetMinutes());
   const [finished, setFinished] = useState(props.initiallyFinished);
   const [time, setTime] = useState(props.timeObj.getTime());
+  const [clockTime, setClockTime] = useState(new Date(new Date(new Date().setHours(time.hours)).setMinutes(time.minutes)));
 
   if (props.visible === false) {
     return <View />;
@@ -194,48 +192,93 @@ function TimePart(props : {
           );
           break;
         case "CLOCK":
-          elements.push(
-            <View key={"clockUI"}>
-              <FadeIn index={index++}>
-                <UncontrolledDatePickerIOS
-                  ref={(x) => {
-                    timeReference = x;
-                  }}
-                  date={new Date(new Date(new Date().setHours(time.hours)).setMinutes(time.minutes))}
-                  mode="time"
-                  style={{ height: 210 }}
-                />
-              </FadeIn>
-              <TimeButtonWithImage
-                basic={true}
-                key={"resultButton" + index}
-                index={index}
-                label={ lang("Tap_to_select_time_")}
-                image={require("../../../../images/icons/clock.png")}
-                callback={() => {
-                  timeReference.getDate((date) => {
-                    let hours = date.getHours();
-                    let minutes = date.getMinutes();
-                    setTime({hours:hours, minutes:minutes});
-                    props.timeObj.setTime(hours, minutes);
-                    setFinished(true);
-                    props.setFinished(true);
-                  });
-                }}
-              />
-              { props.instantEdit && !ignoreInstantEdit ?
+          let sharedButton = (
+            <TimeButtonWithImage
+              basic={true}
+              key={"resultButton" + index}
+              index={index}
+              label={ Platform.OS === "android" ? "That's a good time!" : lang("Tap_to_select_time_")}
+              image={require("../../../../images/icons/clock.png")}
+              callback={() => {
+                setFinished(true);
+                props.setFinished(true);
+              }}
+            />
+          );
+          let sharedOther = (
+            props.instantEdit && !ignoreInstantEdit ?
+            <FadeIn index={index++}>
+              <View style={{ marginLeft: 25 }}>
+                <TextButtonDark label={"I want something else!"} basic={true} callback={() => {
+                  setType(null);
+                  setIgnorInstantEdit(true);
+                }}/>
+              </View>
+            </FadeIn>
+            : undefined
+          );
+          if (Platform.OS === 'android') {
+            elements.push(
+              <View key={"clockUI"}>
                 <FadeIn index={index++}>
-                  <View style={{ marginLeft: 25 }}>
-                    <TextButtonDark label={"I want something else!"} basic={true} callback={() => {
-                      setType(null);
-                      setIgnorInstantEdit(true);
-                    }}/>
-                  </View>
+                  { !show && <TouchableOpacity style={{
+                    height:100,
+                    backgroundColor: colors.white.rgba(0.75),
+                    padding:15,
+                    alignItems:'flex-start'
+                  }} onPress={() => {
+                    setShow(true);
+                  }}>
+                    <Text style={{fontSize:13, fontWeight: '200', color:colors.black.rgba(0.6)}}>TAP TIME TO CHANGE</Text>
+                    <Text style={{fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6)}}>
+                      { time.hours + ":" + (time.minutes < 10 ? '0' + time.minutes : time.minutes) }
+                    </Text>
+                  </TouchableOpacity>
+                  }
+                  {show && <DateTimePicker
+                    value={clockTime}
+                    mode={'time'}
+                    is24Hour={true}
+                    display="default"
+                    onChange={(event, date) => {
+                      setClockTime(date);
+                      let hours = date.getHours();
+                      let minutes = date.getMinutes();
+                      setTime({hours:hours, minutes:minutes});
+                      props.timeObj.setTime(hours, minutes);
+                    }}
+                    style={{ height: 210 }}
+                  />}
                 </FadeIn>
-                : undefined }
+                {sharedButton}
+                {sharedOther}
+              </View>);
+          }
+          else {
+            elements.push(
+              <View key={"clockUI"}>
+                <FadeIn index={index++}>
+                  <DateTimePicker
+                    value={clockTime}
+                    mode={'time'}
+                    is24Hour={true}
+                    display="default"
+                    onChange={(event, date) => {
+                      setClockTime(date);
+                      let hours = date.getHours();
+                      let minutes = date.getMinutes();
+                      setTime({hours:hours, minutes:minutes});
+                      props.timeObj.setTime(hours, minutes);
+                    }}
+                    style={{ height: 210 }}
+                  />
+                </FadeIn>
+                {sharedButton}
+                {sharedOther}
             </View>
           );
           break;
+        }
       }
     }
   }

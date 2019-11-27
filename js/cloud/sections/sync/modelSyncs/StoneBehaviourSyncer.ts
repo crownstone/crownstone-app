@@ -93,6 +93,16 @@ export class StoneBehaviourSyncer extends SyncingStoneItemBase {
   }
 
 
+  _searchForLocalMatch(behavioursInState, cloud_behaviour) {
+    console.log("TODO: implement _searchForLocalMatch for behaviour ")
+    let behaviourIds = Object.keys(behavioursInState);
+    for (let i = 0; i < behaviourIds.length; i++) {
+      let behaviour = behavioursInState[behaviourIds[i]];
+    }
+
+    return null;
+  }
+
   syncLocalBehaviourUp(localBehaviour, localBehaviourId, hasSyncedDown = false) {
     // if the object does not have a cloudId, it does not exist in the cloud but we have it locally.
     if (!hasSyncedDown) {

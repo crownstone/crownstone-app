@@ -21,6 +21,7 @@ import { Background } from "../components/Background";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { SphereDeleted } from "../static/SphereDeleted";
 import { StoneDeleted } from "../static/StoneDeleted";
+import { PowerUsageCacher } from "../../backgroundProcesses/PowerUsageCacher";
 
 
 export class DevicePowerUsage extends LiveComponent<any, any> {
@@ -42,9 +43,14 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
-    this.data = [];
+    this.data          = PowerUsageCacher.getData(this.props.sphereId, stone.config.handle);
+    this.uniqueElement = PowerUsageCacher.getUniqueElement(this.props.sphereId, stone.config.handle);
 
+    this.hash = Math.random();
+    this.forceUpdate();
     // this.__loadInitialDebugData()
+
+
 
     const processData = (data) => {
       let now = new Date().valueOf();

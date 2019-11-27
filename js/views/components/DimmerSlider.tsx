@@ -21,46 +21,56 @@ const CORRECTION = LOWER_BOUND/RANGE;
 export const INDICATOR_SIZE = 60;
 export const INDICATOR_SPACING = 20;
 
-export class DimmerSlider extends Component<{initialState: number, dimmingSynced: boolean, showDimmingText: boolean, callback: any}, any> {
+export class DimmerSlider extends Component<{state: number, dimmingSynced: boolean, showDimmingText: boolean, callback: any}, any> {
 
   _panResponder;
   x = null;
   indicatorTimeout = null;
+  manualSwitchTimeout = null;
+  manualSwitchTimeoutActive = false;
+  percentage = null;
+  transformedPercentage = null;
 
   constructor(props) {
     super(props)
 
-    this.x = new Animated.Value(xUtil.transformStoneSwitchStateToUISwitchState(props.initialState)*RANGE + LOWER_BOUND);
+    this.x = new Animated.Value(xUtil.transformStoneSwitchStateToUISwitchState(this.props.state)*RANGE + LOWER_BOUND);
+    this.percentage = xUtil.transformStoneSwitchStateToUISwitchState(this.props.state);
+    this.transformedPercentage = this.props.state;
     this.state = {
       showIndicator: false
     };
-    this.init()
+    this.init();
+  }
+
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.manualSwitchTimeoutActive === false) {
+      this._checkIfSynced()
+    }
+  }
+
+  _checkIfSynced() {
+    if (this.props.dimmingSynced) {
+      if (this.props.state !== this.transformedPercentage) {
+        this._updatePercentage(xUtil.transformStoneSwitchStateToUISwitchState(this.props.state), false, this.props.state);
+      }
+    }
+    else {
+      if (this.props.state !== this.percentage) {
+        this._updatePercentage(this.props.state, false);
+      }
+    }
   }
 
 
   init() {
     const updateState = (gestureState) => {
       let newState = Math.max(LOWER_BOUND, Math.min(UPPER_BOUND, gestureState.x0 + gestureState.dx));
-      let percentage = newState / RANGE - CORRECTION;
-      if (this.props.dimmingSynced === false) {
-        if (percentage < 0.5) {
-          newState = LOWER_BOUND;
-        }
-        else {
-          newState = UPPER_BOUND
-        }
-      }
-      else {
-        if (percentage >= 0.05 && percentage < 0.1) {
-          newState = (0.1 + CORRECTION)*RANGE;
-        }
-        else if (percentage < 0.05) {
-          newState = LOWER_BOUND;
-        }
-      }
+      let percentage = (newState-LOWER_BOUND) / RANGE;
 
-      this.x.setValue(newState);
-      this.props.callback(newState / RANGE - CORRECTION);
+      this._updatePercentage(percentage, true);
+      this.props.callback(percentage);
     }
 
     // configure the pan responder
@@ -87,8 +97,44 @@ export class DimmerSlider extends Component<{initialState: number, dimmingSynced
     });
   }
 
+  _updatePercentage(percentage, isManualAction, transformedPercentage = null) {
+    this.percentage = percentage;
+    this.transformedPercentage = transformedPercentage === null ? xUtil.transformUISwitchStateToStoneSwitchState(percentage) : transformedPercentage;
+
+    let newState = percentage * RANGE + LOWER_BOUND;
+
+    if (this.props.dimmingSynced === false) {
+      if (percentage < 0.5) {
+        newState = LOWER_BOUND;
+      }
+      else {
+        newState = UPPER_BOUND
+      }
+    }
+    else {
+      if (percentage >= 0.05 && percentage < 0.1) {
+        newState = (0.1 + CORRECTION)*RANGE;
+      }
+      else if (percentage < 0.05) {
+        newState = LOWER_BOUND;
+      }
+    }
+
+    this.x.setValue(newState);
+
+    if (isManualAction) {
+      this.manualSwitchTimeoutActive = true;
+      clearTimeout(this.manualSwitchTimeout);
+      this.manualSwitchTimeout = setTimeout(() => {
+        this.manualSwitchTimeoutActive = false
+        this._checkIfSynced();
+      }, 1500);
+    }
+  }
+
   componentWillUnmount(): void {
     clearTimeout(this.indicatorTimeout);
+    clearTimeout(this.manualSwitchTimeout);
   }
 
   _getDimmerStatus() {

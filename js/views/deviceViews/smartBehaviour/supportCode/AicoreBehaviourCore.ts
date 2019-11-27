@@ -2,7 +2,7 @@ import { AicoreUtil } from "./AicoreUtil";
 import { AicoreTimeData } from "./AicoreTimeData";
 import { xUtil } from "../../../../util/StandAloneUtil";
 
-const DEFAULT_DELAY_MINUTES = 5;
+const DEFAULT_DELAY_SECONDS = 5*60;
 
 export class AicoreBehaviourCore {
   originalRule : behaviour | twilight;
@@ -136,12 +136,11 @@ export class AicoreBehaviourCore {
 
 
 
-  _getSphereDelay() {
-    // todo: implement customization.
-    return DEFAULT_DELAY_MINUTES;
+  _getSphereDelay() : number {
+    return DEFAULT_DELAY_SECONDS;
   }
-  _getLocationDelay() {
-    return this._getSphereDelay;
+  _getLocationDelay() : number {
+    return this._getSphereDelay();
   }
 
   willDim() : boolean {

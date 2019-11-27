@@ -47,6 +47,10 @@ export class PermissionBase {
   canUploadLocations      = false; // a or m
   canUploadData           = false; // a or m
   canUploadSpheres        = false; // a or m
+
+
+  canChangeAbilities      = false // a
+  canChangeBehaviours     = false // a or m
 }
 
 const EmptyPermissions = new PermissionBase();
@@ -149,6 +153,7 @@ export class PermissionClass extends PermissionBase {
         this.canLockCrownstone       = true; // admin
         this.canUnlockCrownstone     = true; // admin
         this.canEnableDimming        = true; // admin
+        this.canChangeAbilities      = true // a
       case 'member':
         this.doLocalizationTutorial  = true; // admin and member
         this.changeBehaviour         = true; // admin and member
@@ -173,6 +178,9 @@ export class PermissionClass extends PermissionBase {
 
         // spheres
         this.canEditSphere           = true; // admin and member
+
+        this.canChangeBehaviours     = true // a or m
+
       case 'guest':
         // nothing will be added.
     }

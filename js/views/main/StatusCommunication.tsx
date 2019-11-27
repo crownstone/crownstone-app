@@ -44,7 +44,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
       let change = data.change;
 
       if (
-        (change.changeStoneState && change.changeStoneState.sphereIds[this.props.sphereId])
+        (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])
          ) {
         const store = core.store;
         const state = store.getState();

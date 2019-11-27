@@ -10,6 +10,7 @@ let fieldMap : fieldMap = [
   {local: 'idOnCrownstone',     cloud:'idOnCrownstone', onlyIfValue:true },
   {local: 'syncedToCrownstone', cloud:'syncedToCrownstone' },
   {local: 'updatedAt',          cloud:'updatedAt'},
+  {local: 'activeDays',         cloud:'activeDays'},
 
   // used for local config
   {local: 'cloudId',            cloud:  'id',  cloudToLocalOnly: true  },

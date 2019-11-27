@@ -108,9 +108,9 @@ export class RoomOverview extends LiveComponent<any, any> {
 
 
   componentDidMount() {
-    this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(core.eventBus.on("dfuStoneChange",   (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(core.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete",  (handle) => {
+    this.unsubscribeSetupEvents.push(core.eventBus.on("setupComplete",    (handle) => {
       this.forceUpdate();
     }));
 
@@ -122,16 +122,16 @@ export class RoomOverview extends LiveComponent<any, any> {
           return this.forceUpdate()
       }
       if (
-        (change.updateStoneConfig)     ||
-        (change.updateActiveSphere)    ||
-        (change.changeFingerprint)     ||
-        (change.userPositionUpdate     && change.userPositionUpdate.locationIds[this.props.locationId])   ||
-        (change.updateLocationConfig   && change.updateLocationConfig.locationIds[this.props.locationId]) ||
-        (change.changeSphereUsers      && change.changeSphereUsers.sphereIds[this.props.sphereId])        ||
-        (change.changeStoneState       && change.changeStoneState.sphereIds[this.props.sphereId])         ||
-        (change.stoneUsageUpdated      && change.stoneUsageUpdated.sphereIds[this.props.sphereId])        ||
-        (change.changeSphereState      && change.changeSphereState.sphereIds[this.props.sphereId])        ||
-        (change.stoneLocationUpdated   && change.stoneLocationUpdated.sphereIds[this.props.sphereId])     ||
+        (change.updateStoneConfig)      ||
+        (change.updateActiveSphere)     ||
+        (change.changeFingerprint)      ||
+        (change.userPositionUpdate      && change.userPositionUpdate.locationIds[this.props.locationId])   ||
+        (change.updateLocationConfig    && change.updateLocationConfig.locationIds[this.props.locationId]) ||
+        (change.changeSphereUsers       && change.changeSphereUsers.sphereIds[this.props.sphereId])        ||
+        (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])  ||
+        (change.stoneUsageUpdated       && change.stoneUsageUpdated.sphereIds[this.props.sphereId])        ||
+        (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])        ||
+        (change.stoneLocationUpdated    && change.stoneLocationUpdated.sphereIds[this.props.sphereId])     ||
         (change.changeStones)
       ) {
         this.forceUpdate();

@@ -307,7 +307,7 @@ export const DataUtil = {
   },
 
 
-  getUserLevelInSphere: function(state, sphereId) {
+  getUserLevelInSphere: function(state, sphereId) : string {
     if (!(state && state.user && state.user.userId)) {
       return null;
     }

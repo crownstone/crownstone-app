@@ -35,7 +35,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
   componentDidMount() {
     this.unsubscribe = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if (change.changeSpheres || change.updateActiveSphere || change.changeStoneState) {
+      if (change.changeSpheres || change.updateActiveSphere || change.changeStoneAvailability) {
         this.forceUpdate();
       }
     });

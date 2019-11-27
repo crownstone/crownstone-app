@@ -70,7 +70,7 @@ class StoneAvailabilityTrackerClass {
 
     // cast if there is something to cast
     if (Object.keys(stoneIds).length > 0) {
-      core.eventBus.emit("databaseChange", {change: {changeStoneState: {stoneIds, sphereIds}}}); // discover a new crownstone!
+      core.eventBus.emit("databaseChange", {change: {changeStoneAvailability: {stoneIds, sphereIds}}}); // discover a new crownstone!
     }
 
     let disabledSphereIds = Object.keys(disabledSpheres);
@@ -93,7 +93,7 @@ class StoneAvailabilityTrackerClass {
       let sphereIds = {};
       stoneIds[data.stoneId] = true;
       sphereIds[data.sphereId] = true;
-      core.eventBus.emit("databaseChange", {change: {changeStoneState: {stoneIds, sphereIds}}}); // discover a new crownstone!
+      core.eventBus.emit("databaseChange", {change: {changeStoneAvailability: {stoneIds, sphereIds}}}); // discover a new crownstone!
       core.eventBus.emit("rssiChange", {stoneId: data.stoneId, sphereId: data.sphereId, rssi:data.rssi}); // Major change in RSSI
     }
 
