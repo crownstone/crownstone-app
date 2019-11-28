@@ -45,11 +45,11 @@ class StoneDataSyncerClass {
       if (sphere.state.present) {
         let stoneIds = Object.keys(sphere.stones);
         for (let j = 0; j < stoneIds.length; j++) {
-          let stone = sphere.stones[stoneIds[j]];;
+          let stone = sphere.stones[stoneIds[j]];
 
           // clear the triggers since this method can be fired repeatedly
-          StoneAvailabilityTracker.clearMySetTriggers(sphereIds[i], stoneIds[j], ABILITY_SYNCER_OWNER_ID)
-          StoneAvailabilityTracker.clearMySetTriggers(sphereIds[i], stoneIds[j], RULE_SYNCER_OWNER_ID)
+          StoneAvailabilityTracker.clearMySetTriggers(sphereIds[i], stoneIds[j], ABILITY_SYNCER_OWNER_ID);
+          StoneAvailabilityTracker.clearMySetTriggers(sphereIds[i], stoneIds[j], RULE_SYNCER_OWNER_ID);
 
           // handle abilities
           if (Permissions.inSphere(sphereIds[i]).canChangeAbilities) {
@@ -58,16 +58,16 @@ class StoneDataSyncerClass {
             this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.tapToToggle, 'tapToToggle');
           }
 
-          // handle rules
-          if (Permissions.inSphere(sphereIds[i]).canChangeBehaviours) {
-            let ruleIds = Object.keys(stone.rules);
-            for (let k = 0; k < ruleIds.length; k++) {
-              let rule = stone.rules[ruleIds[k]];
-              if (!rule.syncedToCrownstone) {
-                this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule)
-              }
-            }
-          }
+          // // handle rules
+          // if (Permissions.inSphere(sphereIds[i]).canChangeBehaviours) {
+          //   let ruleIds = Object.keys(stone.rules);
+          //   for (let k = 0; k < ruleIds.length; k++) {
+          //     let rule = stone.rules[ruleIds[k]];
+          //     if (!rule.syncedToCrownstone) {
+          //       this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule)
+          //     }
+          //   }
+          // }
         }
       }
     }
