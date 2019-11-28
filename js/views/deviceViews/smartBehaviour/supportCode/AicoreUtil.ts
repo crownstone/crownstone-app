@@ -132,7 +132,6 @@ export const AicoreUtil = {
   extractEndConditionStrings(rule : behaviour) {
     let endConditionPrefix = "";
     let endConditionStr= "";
-
     if (rule.endCondition && rule.endCondition.type) {
       switch (rule.endCondition.presence.data.type) {
         case "SPHERE":

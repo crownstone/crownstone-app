@@ -1066,10 +1066,10 @@
     xcode "^2.0.0"
     xmldoc "^0.4.0"
 
-"@react-native-community/datetimepicker@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-2.1.0.tgz#4e3413462cbbe5c48fab6cebd422835031cdf7b9"
-  integrity sha512-InktUrx0/4JTy1YsgswljgID7oB3L8wkFobRhnLGWPExSsNHeecGW2/nBP31ZaOPHcjVWhpOQMZt0zDpKfGE/Q==
+"@react-native-community/datetimepicker@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-1.0.0.tgz#6e8550702bdb840b8dfb55d2e2d3638cabc815e3"
+  integrity sha512-DcD7kn0JIUNR3DKT9Sn4btuJmHffLuXm4/WeYj66y+bGc75eBLOtuuZ7/jQUoWpXFEy9UcnP0EMIoWSBP6ngpg==
   dependencies:
     invariant "^2.2.4"
 

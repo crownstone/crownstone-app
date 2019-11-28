@@ -102,7 +102,7 @@ export class RuleEditor extends LiveComponent<
           custom:   this.props.ruleId ? this.rule : new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
         },
         option: {
-          inSphere: new AicoreBehaviour().setPresenceSomebodyInSphere(),
+          inSphere: new AicoreBehaviour().setEndConditionWhilePeopleInSphere(),
           inRoom:   new AicoreBehaviour().setEndConditionWhilePeopleInLocation(stone.config.locationId),
           noOption: new AicoreBehaviour().setNoEndCondition(),
         }
