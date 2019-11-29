@@ -32,6 +32,8 @@ import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
 import rocks.crownstone.bluenet.encryption.KeySet
 import rocks.crownstone.bluenet.encryption.MeshKeySet
+import rocks.crownstone.bluenet.packets.PacketInterface
+import rocks.crownstone.bluenet.packets.behaviour.*
 import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeout
 import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeoutItem
 import rocks.crownstone.bluenet.packets.keepAlive.MultiKeepAlivePacket
@@ -48,6 +50,7 @@ import rocks.crownstone.bluenet.util.Log
 import rocks.crownstone.bluenet.util.SubscriptionId
 import rocks.crownstone.localization.*
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.round
 
 class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJavaModule(reactContext) {
@@ -1680,33 +1683,387 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun saveBehaviour(behaviour: ReadableMap, callback: Callback) {
 		Log.i(TAG, "saveBehaviour")
-		// TODO
-		resolveCallback(callback)
+		rejectCallback(callback, "Not implemented")
+		return
+//		// TODO
+//		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
+//		if (indexedBehaviourPacket == null) {
+//			rejectCallback(callback, Errors.ValueWrong().message)
+//			return
+//		}
+//		bluenet.control.addBehaviour(indexedBehaviourPacket.behaviour)
+//				.success {
+//					resolveCallback()
+//				}
+//				.fail {
+//
+//				}
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun updateBehaviour(behaviour: ReadableMap, callback: Callback) {
 		Log.i(TAG, "updateBehaviour")
+		rejectCallback(callback, "Not implemented")
+		return
 		// TODO
-		resolveCallback(callback)
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun removeBehaviour(index: Int, callback: Callback) {
 		Log.i(TAG, "removeBehaviour")
+		rejectCallback(callback, "Not implemented")
+		return
 		// TODO
-		resolveCallback(callback)
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun getBehaviour(index: Int, callback: Callback) {
 		Log.i(TAG, "getBehaviour")
+		rejectCallback(callback, "Not implemented")
+		return
 		// TODO
-		resolveCallback(callback)
 	}
+
+	/**
+	 * Value that determines when the day starts, defined as offset from midnight in seconds.
+	 */
+	private val behaviourDayStartOffset = 4*3600
+
+	/**
+	 * Parse a behaviour map
+	 *
+	 * @param behaviour      The map.
+	 * @param dayStartOffset Offset in seconds, at which the day is considered to start.
+	 */
+	private fun parseBehaviourTransfer(behaviour: ReadableMap, dayStartOffset: Int32 = behaviourDayStartOffset): IndexedBehaviourPacket? {
+		try {
+			val type = behaviour.getString("type") ?: return null
+
+			val daysOfWeekMap = behaviour.getMap("activeDays") ?: return null
+			val daysOfWeek = parseDaysOfWeek(daysOfWeekMap) ?: return null
+			val behaviourIndex: BehaviourIndex =
+					if (behaviour.hasKey("idOnCrownstone")) {
+						Conversion.toUint8(behaviour.getInt("idOnCrownstone"))
+					}
+					else {
+						255
+					}
+			val profileId = Conversion.toUint8(behaviour.getInt("profileIndex"))
+
+			val behaviourData = behaviour.getMap("data") ?: return null
+			val switchValDouble = behaviourData.getMap("action")?.getDouble("data") ?: return null
+			val switchVal = convertSwitchVal(switchValDouble)
+			if (!behaviour.hasKey("profileIndex")) { return null }
+
+			val timeMap = behaviourData.getMap("time") ?: return null
+			val time = parseBehaviourTime(timeMap, dayStartOffset) ?: return null
+			val from = time[0]
+			val until = time[1]
+
+			val behaviourPacket = when (type) {
+				"BEHAVIOUR" -> {
+					parseBehaviour(behaviourData, switchVal, profileId, daysOfWeek, from, until)
+				}
+				"TWILIGHT" -> {
+					TwilightBehaviourPacket(switchVal, profileId, daysOfWeek, from, until)
+				}
+				else -> {
+					Log.w(TAG, "Invalid behaviour: $behaviour")
+					null
+				}
+			}
+			if (behaviourPacket == null) { return null }
+			return IndexedBehaviourPacket(behaviourIndex, behaviourPacket)
+
+		} catch (e: Exception) {
+			Log.w(TAG, "Invalid behaviour: $behaviour")
+			Log.w(TAG, "Exception: ${e.message}")
+			return null
+		}
+	}
+
+	private fun parseBehaviour(behaviourData: ReadableMap,
+							   switchVal: Uint8,
+							   profileId: Uint8,
+							   daysOfWeek: DaysOfWeekPacket,
+							   from: TimeOfDayPacket,
+							   until: TimeOfDayPacket
+	): BehaviourPacket? {
+		val presenceMap = behaviourData.getMap("presence") ?: return null
+		val presence = parseBehaviourPresence(presenceMap) ?: return null
+		val endConditionMap = behaviourData.getMap("endCondition")
+		val switchBehaviourPacket = SwitchBehaviourPacket(switchVal, profileId, daysOfWeek, from, until, presence)
+		if (endConditionMap == null) {
+			return switchBehaviourPacket
+		}
+		else {
+			if (!endConditionMap.hasKey("presenceBehaviourDurationInSeconds")) { return null }
+			val endDuration = endConditionMap.getInt("presenceBehaviourDurationInSeconds")
+			val endPresenceMap = endConditionMap.getMap("presence") ?: return null
+			val endPresence = parseBehaviourPresence(endPresenceMap) ?: return null
+			return SmartTimerBehaviourPacket(switchBehaviourPacket, endPresence, endDuration)
+		}
+	}
+
+	private fun genBehaviour(indexedBehaviour: IndexedBehaviourPacket, dayStartOffset: Int32 = behaviourDayStartOffset): WritableMap? {
+		val behaviour = indexedBehaviour.behaviour
+		val map = Arguments.createMap()
+		val dataMap = Arguments.createMap()
+		val actionMap = genBehaviourAction(behaviour.switchVal) ?: return null
+		dataMap.putMap("action", actionMap)
+		map.putInt("profileIndex", behaviour.profileId.toInt())
+		val daysOfWeekMap = genDaysOfWeek(behaviour.daysOfWeek) ?: return null
+		map.putMap("activeDays", daysOfWeekMap)
+		val timeMap = genBehaviourTime(behaviour.from, behaviour.until, dayStartOffset) ?: return null
+		dataMap.putMap("time", timeMap)
+
+		map.putInt("idOnCrownstone", indexedBehaviour.index.toInt())
+
+		when (indexedBehaviour.behaviour.type) {
+			BehaviourType.UNKNOWN -> return null
+			BehaviourType.SWITCH -> {
+				val switchBehaviour = behaviour as SwitchBehaviourPacket
+				val presenceMap = genBehaviourPresence(switchBehaviour.presence) ?: return null
+				dataMap.putMap("presence", presenceMap)
+			}
+			BehaviourType.TWILIGHT -> {
+
+			}
+			BehaviourType.SMART_TIMER -> {
+				val smartTimer = behaviour as SmartTimerBehaviourPacket
+				val presenceMap = genBehaviourPresence(smartTimer.presence) ?: return null
+				dataMap.putMap("presence", presenceMap)
+				val endConditionMap = Arguments.createMap()
+				val endConditionPresenceMap = genBehaviourPresence(smartTimer.endConditionPresence) ?: return null
+				endConditionMap.putString("type", "PRESENCE_AFTER")
+				endConditionMap.putMap("presence", endConditionPresenceMap)
+				endConditionMap.putInt("presenceBehaviourDurationInSeconds", smartTimer.endConditionTimeOffset)
+				dataMap.putMap("endCondition", endConditionMap)
+			}
+		}
+		map.putMap("data", dataMap)
+		return map
+	}
+
+	private fun genBehaviourAction(switchVal: Uint8): WritableMap? {
+		val map = Arguments.createMap()
+		map.putString("type", "BE_ON")
+		map.putDouble("data", convertSwitchVal(switchVal))
+		return map
+	}
+
+	private fun parseDaysOfWeek(daysOfWeek: ReadableMap): DaysOfWeekPacket? {
+		if (!daysOfWeek.hasKey("Sun")) { return null }
+		if (!daysOfWeek.hasKey("Mon")) { return null }
+		if (!daysOfWeek.hasKey("Tue")) { return null }
+		if (!daysOfWeek.hasKey("Wed")) { return null }
+		if (!daysOfWeek.hasKey("Thu")) { return null }
+		if (!daysOfWeek.hasKey("Fri")) { return null }
+		if (!daysOfWeek.hasKey("Sat")) { return null }
+		return DaysOfWeekPacket(
+				daysOfWeek.getBoolean("Sun"),
+				daysOfWeek.getBoolean("Mon"),
+				daysOfWeek.getBoolean("Tue"),
+				daysOfWeek.getBoolean("Wed"),
+				daysOfWeek.getBoolean("Thu"),
+				daysOfWeek.getBoolean("Fri"),
+				daysOfWeek.getBoolean("Sat")
+		)
+	}
+
+	private fun genDaysOfWeek(daysOfWeek: DaysOfWeekPacket): WritableMap {
+		val map = Arguments.createMap()
+		map.putBoolean("Sun", daysOfWeek.sun)
+		map.putBoolean("Mon", daysOfWeek.mon)
+		map.putBoolean("Tue", daysOfWeek.tue)
+		map.putBoolean("Wed", daysOfWeek.wed)
+		map.putBoolean("Thu", daysOfWeek.thu)
+		map.putBoolean("Fri", daysOfWeek.fri)
+		map.putBoolean("Sat", daysOfWeek.sat)
+		return map
+	}
+
+	// Returns 2 TimeOfDay packets: [from, until]
+	private fun parseBehaviourTime(time: ReadableMap, dayStartOffset: Int32): List<TimeOfDayPacket>? {
+		val type = time.getString("type") ?: return null
+		if (type == "ALL_DAY") {
+			return listOf(TimeOfDayPacket(BaseTimeType.MIDNIGHT, dayStartOffset), TimeOfDayPacket(BaseTimeType.MIDNIGHT, dayStartOffset))
+		}
+		if (type != "RANGE") {
+			Log.w(TAG, "Invalid time: $time")
+			return null
+		}
+		val fromMap = time.getMap("from") ?: return null
+		val toMap = time.getMap("to") ?: return null
+		val from = parseBehaviourTimeData(fromMap) ?: return null
+		val to = parseBehaviourTimeData(toMap) ?: return null
+		return listOf(from, to)
+	}
+
+	private fun genBehaviourTime(from: TimeOfDayPacket, until: TimeOfDayPacket, dayStartOffset: Int32): WritableMap? {
+		val map = Arguments.createMap()
+		if (from.baseTimeType == BaseTimeType.MIDNIGHT &&
+				until.baseTimeType == BaseTimeType.MIDNIGHT &&
+				from.timeOffset == dayStartOffset &&
+				until.timeOffset == dayStartOffset) {
+			map.putString("type", "ALL_DAY")
+			return map
+		}
+		map.putString("type", "RANGE")
+		val fromMap = genBehaviourTimeData(from) ?: return null
+		val untilMap = genBehaviourTimeData(until) ?: return null
+		map.putMap("from", fromMap)
+		map.putMap("to", untilMap)
+		return map
+	}
+
+	private fun parseBehaviourTimeData(time: ReadableMap): TimeOfDayPacket? {
+		val type = time.getString("type") ?: return null
+		when (type) {
+			"SUNRISE" -> {
+				if (!time.hasKey("offsetMinutes")) { return null }
+				val offsetSeconds = time.getInt("offsetMinutes") * 60
+				return TimeOfDayPacket(BaseTimeType.SUNRISE, offsetSeconds)
+			}
+			"SUNSET" -> {
+				if (!time.hasKey("offsetMinutes")) { return null }
+				val offsetSeconds = time.getInt("offsetMinutes") * 60
+				return TimeOfDayPacket(BaseTimeType.SUNDOWN, offsetSeconds)
+			}
+			"CLOCK" -> {
+				val hours = time.getMap("data")?.getInt("hours") ?: return null
+				val minutes = time.getMap("data")?.getInt("minutes") ?: return null
+				val offsetSeconds = hours * 3600 + minutes * 60
+				return TimeOfDayPacket(BaseTimeType.MIDNIGHT, offsetSeconds)
+			}
+			else -> return null
+		}
+	}
+
+	private fun genBehaviourTimeData(time: TimeOfDayPacket): WritableMap? {
+		val map = Arguments.createMap()
+		when (time.baseTimeType) {
+			BaseTimeType.UNKNOWN -> return null
+			BaseTimeType.SUNRISE -> {
+				map.putString("type", "SUNRISE")
+				map.putInt("offsetMinutes", time.timeOffset * 60)
+				return map
+			}
+			BaseTimeType.SUNDOWN -> {
+				map.putString("type", "SUNSET")
+				map.putInt("offsetMinutes", time.timeOffset * 60)
+				return map
+			}
+			BaseTimeType.MIDNIGHT -> {
+				map.putString("type", "CLOCK")
+				val dataMap = Arguments.createMap()
+				val hours = time.timeOffset / 3600
+				val minutes = (time.timeOffset % 3600) / 60
+				dataMap.putInt("hours", hours)
+				dataMap.putInt("minutes", minutes)
+				map.putMap("data", dataMap)
+				return map
+			}
+		}
+	}
+
+	private fun parseBehaviourPresence(presence: ReadableMap): PresencePacket? {
+		val type = presence.getString("type") ?: return null
+		when (type) {
+			"IGNORE" -> return PresencePacket(PresenceType.ALWAYS_TRUE, ArrayList(), 0)
+			"SOMEBODY" -> {}
+			"NOBODY" -> {}
+			else -> return null
+		}
+		val presenceDataMap = presence.getMap("data") ?: return null
+		val locationType = presenceDataMap.getString("type") ?: return null
+		val locadionIds = ArrayList<Uint8>()
+		when (locationType) {
+			"SPHERE" -> {}
+			"LOCATION" -> {
+				val locationsArr = presenceDataMap.getArray("locationIds") ?: return null
+				for (i in 0 until locationsArr.size()) {
+					locadionIds.add(Conversion.toUint8(locationsArr.getInt(i)))
+				}
+			}
+			else -> return null
+		}
+		if (!presenceDataMap.hasKey("delay")) { return null }
+		val timeoutSeconds = Conversion.toUint32(presenceDataMap.getInt("delay"))
+		val presenceType = when (type) {
+			"SOMEBODY" -> {
+				when (locationType) {
+					"SPHERE" -> PresenceType.ANYONE_IN_SPHERE
+					"LOCATION" -> PresenceType.ANYONE_IN_ROOM
+					else -> PresenceType.UNKNOWN
+				}
+			}
+			"NOBODY" -> {
+				when (locationType) {
+					"SPHERE" -> PresenceType.NO_ONE_IN_SPHERE
+					"LOCATION" -> PresenceType.NO_ONE_IN_ROOM
+					else -> PresenceType.UNKNOWN
+				}
+			}
+			else -> PresenceType.UNKNOWN
+		}
+		return PresencePacket(presenceType, locadionIds, timeoutSeconds)
+	}
+
+	private fun genBehaviourPresence(presence: PresencePacket): WritableMap? {
+		val map = Arguments.createMap()
+		val dataMap = Arguments.createMap()
+		when (presence.type) {
+			PresenceType.UNKNOWN -> return null
+			PresenceType.ALWAYS_TRUE -> map.putString("type", "IGNORE")
+			PresenceType.NO_ONE_IN_SPHERE,
+			PresenceType.NO_ONE_IN_ROOM -> map.putString("type", "NOBODY")
+			PresenceType.ANYONE_IN_SPHERE,
+			PresenceType.ANYONE_IN_ROOM -> map.putString("type", "SOMEBODY")
+		}
+		when (presence.type) {
+			PresenceType.UNKNOWN,
+			PresenceType.ALWAYS_TRUE -> {}
+			PresenceType.NO_ONE_IN_SPHERE,
+			PresenceType.ANYONE_IN_SPHERE -> {
+				dataMap.putString("type", "SPHERE")
+				map.putMap("data", dataMap)
+			}
+			PresenceType.NO_ONE_IN_ROOM,
+			PresenceType.ANYONE_IN_ROOM -> {
+				dataMap.putString("type", "LOCATION")
+				val locationArr = Arguments.createArray()
+				for (location in presence.rooms) {
+					locationArr.pushInt(location.toInt())
+				}
+				dataMap.putArray("locationIds", locationArr)
+				map.putMap("data", dataMap)
+			}
+		}
+		when (presence.type) {
+			PresenceType.UNKNOWN,
+			PresenceType.ALWAYS_TRUE -> {}
+			PresenceType.NO_ONE_IN_SPHERE,
+			PresenceType.NO_ONE_IN_ROOM,
+			PresenceType.ANYONE_IN_SPHERE,
+			PresenceType.ANYONE_IN_ROOM -> {
+				map.putInt("delay", presence.timeoutSeconds.toInt())
+			}
+		}
+		return map
+	}
+
+	private fun genBehaviourReply(indexAndHash: BehaviourIndexedAndHashPacket): WritableMap? {
+		val map = Arguments.createMap()
+		map.putInt("index", indexAndHash.index.toInt())
+		map.putString("masterHash", indexAndHash.hash.toString())
+		return null
+	}
+
+
 
 //endregion
 
