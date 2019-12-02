@@ -127,7 +127,7 @@ export class LockedStateUI extends Component<any, any> {
           <Icon
             name="md-lock"
             size={this.props.size*0.3}
-            color={colors.white.hex}
+            color={colors.csBlue.hex}
           />
           <Text style={textStyle}>{ lang("Ask_an_admin_nto_unlock_m") }</Text>
         </View>

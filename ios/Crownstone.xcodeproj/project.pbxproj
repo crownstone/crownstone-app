@@ -73,6 +73,7 @@
 		FA4722C221DE74A6008795C5 /* RssiRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F321CCF07000811933 /* RssiRowController.swift */; };
 		FA4722C321DE74A8008795C5 /* SwitchRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F221CCF07000811933 /* SwitchRowController.swift */; };
 		FA4722C421DE74AB008795C5 /* SliderRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F121CCF07000811933 /* SliderRowController.swift */; };
+		FA520F4323953F4500735D48 /* libRNUncontrolledDatePickerIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA520F4223953F2A00735D48 /* libRNUncontrolledDatePickerIOS.a */; };
 		FA570EA91EAE30F9001C625D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */; };
 		FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA31EAE30F9001C625D /* BluenetShared.framework */; };
 		FA570EAC1EAE30F9001C625D /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA41EAE30F9001C625D /* CryptoSwift.framework */; };
@@ -88,7 +89,6 @@
 		FA570ECE1EAE3D73001C625D /* Crownstone.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA570ECB1EAE3D73001C625D /* Crownstone.ttf */; };
 		FA570ECF1EAE3D73001C625D /* CustomIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */; };
 		FA570ED01EAE3D73001C625D /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */; };
-		FA597912238E905D0068D5CD /* libRNDateTimePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA597911238E8F690068D5CD /* libRNDateTimePicker.a */; };
 		FA59A6A5224CE5D300D58C9F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA59A6A4224CE5D300D58C9F /* AppDelegate.swift */; };
 		FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DCE020F3AD70002A795E /* EventBus.swift */; };
 		FA60DD1820F3ADA7002A795E /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DD1720F3ADA7002A795E /* Util.swift */; };
@@ -428,6 +428,13 @@
 			remoteGlobalIDString = 64D1BD361EEFE88700F3F219;
 			remoteInfo = "RNBlur-tvOS";
 		};
+		FA520F4123953F2A00735D48 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA520F3D23953F2A00735D48 /* RNUncontrolledDatePickerIOS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNUncontrolledDatePickerIOS;
+		};
 		FA5459E7209B17AB0062E4DC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA5459E2209B17AB0062E4DC /* RNDeviceInfo.xcodeproj */;
@@ -504,13 +511,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = EBF21BFA1FC4989A0052F4D5;
 			remoteInfo = "jsinspector-tvOS";
-		};
-		FA597910238E8F690068D5CD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA59790C238E8F690068D5CD /* RNDateTimePicker.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RNDateTimePicker;
 		};
 		FA70C8EE22030385005E1013 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -674,6 +674,7 @@
 		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		FA4722BC21DE7473008795C5 /* BluenetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluenetManager.swift; sourceTree = "<group>"; };
 		FA4722BD21DE7473008795C5 /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
+		FA520F3D23953F2A00735D48 /* RNUncontrolledDatePickerIOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNUncontrolledDatePickerIOS.xcodeproj; path = "../node_modules/react-native-uncontrolled-date-picker-ios/RNUncontrolledDatePickerIOS.xcodeproj"; sourceTree = "<group>"; };
 		FA5459E2209B17AB0062E4DC /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
 		FA570EA31EAE30F9001C625D /* BluenetShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetShared.framework; path = Carthage/Build/iOS/BluenetShared.framework; sourceTree = "<group>"; };
@@ -692,7 +693,6 @@
 		FA570ECB1EAE3D73001C625D /* Crownstone.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone.ttf; path = ../js/fonts/Crownstone.ttf; sourceTree = "<group>"; };
 		FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = CustomIcons.ttf; path = ../js/fonts/CustomIcons.ttf; sourceTree = "<group>"; };
 		FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../js/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
-		FA59790C238E8F690068D5CD /* RNDateTimePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDateTimePicker.xcodeproj; path = "/Users/alex/Dropbox/Crownstone/Projects/CrownstoneApp/node_modules/react-native/Libraries/PushNotificationIOS/../../../@react-native-community/datetimepicker/ios/RNDateTimePicker.xcodeproj"; sourceTree = "<absolute>"; };
 		FA59A6A4224CE5D300D58C9F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FA60DCE020F3AD70002A795E /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		FA60DD1720F3ADA7002A795E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
@@ -735,6 +735,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA278AAE229684FD00C690B2 /* libReactNativeNavigation.a in Frameworks */,
+				FA520F4323953F4500735D48 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
 				FAE08D90224D115000B39D7D /* libSplashScreen.a in Frameworks */,
 				FA12B7D422450C84003B017E /* JavaScriptCore.framework in Frameworks */,
 				FA570ECA1EAE3661001C625D /* libRCTCameraRoll.a in Frameworks */,
@@ -772,7 +773,6 @@
 				C7B481C578014B55BE888F3B /* libFastImage.a in Frameworks */,
 				613D457D36284A328D2B9CA4 /* libRNCamera.a in Frameworks */,
 				37664E36FD144AB3839B7564 /* libRNBlur.a in Frameworks */,
-				FA597912238E905D0068D5CD /* libRNDateTimePicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -942,7 +942,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				FA59790C238E8F690068D5CD /* RNDateTimePicker.xcodeproj */,
+				FA520F3D23953F2A00735D48 /* RNUncontrolledDatePickerIOS.xcodeproj */,
 				FA278A6A2296838100C690B2 /* ReactNativeNavigation.xcodeproj */,
 				FA5459E2209B17AB0062E4DC /* RNDeviceInfo.xcodeproj */,
 				FA570EC41EAE3655001C625D /* RCTCameraRoll.xcodeproj */,
@@ -1155,6 +1155,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FA520F3E23953F2A00735D48 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FA520F4223953F2A00735D48 /* libRNUncontrolledDatePickerIOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		FA5459D7209B14A80062E4DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1220,14 +1228,6 @@
 			isa = PBXGroup;
 			children = (
 				FA570EC91EAE3655001C625D /* libRCTCameraRoll.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		FA59790D238E8F690068D5CD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				FA597911238E8F690068D5CD /* libRNDateTimePicker.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1567,10 +1567,6 @@
 					ProjectRef = 590B19B119CF4B74B1FB2F7A /* RNCSlider.xcodeproj */;
 				},
 				{
-					ProductGroup = FA59790D238E8F690068D5CD /* Products */;
-					ProjectRef = FA59790C238E8F690068D5CD /* RNDateTimePicker.xcodeproj */;
-				},
-				{
 					ProductGroup = FA5459E3209B17AB0062E4DC /* Products */;
 					ProjectRef = FA5459E2209B17AB0062E4DC /* RNDeviceInfo.xcodeproj */;
 				},
@@ -1585,6 +1581,10 @@
 				{
 					ProductGroup = FA570E6F1EAE30AB001C625D /* Products */;
 					ProjectRef = 0D238B1CF9954BD0836C12D5 /* RNSVG.xcodeproj */;
+				},
+				{
+					ProductGroup = FA520F3E23953F2A00735D48 /* Products */;
+					ProjectRef = FA520F3D23953F2A00735D48 /* RNUncontrolledDatePickerIOS.xcodeproj */;
 				},
 				{
 					ProductGroup = FA570E711EAE30AB001C625D /* Products */;
@@ -1914,6 +1914,13 @@
 			remoteRef = FA49BD0523463E8C00AB0BDF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FA520F4223953F2A00735D48 /* libRNUncontrolledDatePickerIOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNUncontrolledDatePickerIOS.a;
+			remoteRef = FA520F4123953F2A00735D48 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FA5459E8209B17AB0062E4DC /* libRNDeviceInfo.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1989,13 +1996,6 @@
 			fileType = archive.ar;
 			path = "libjsinspector-tvOS.a";
 			remoteRef = FA576DA0204445190036B099 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FA597911238E8F690068D5CD /* libRNDateTimePicker.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNDateTimePicker.a;
-			remoteRef = FA597910238E8F690068D5CD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FA70C8EF22030385005E1013 /* libRNSentry-tvOS.a */ = {

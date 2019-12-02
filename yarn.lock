@@ -1066,13 +1066,6 @@
     xcode "^2.0.0"
     xmldoc "^0.4.0"
 
-"@react-native-community/datetimepicker@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-1.0.0.tgz#6e8550702bdb840b8dfb55d2e2d3638cabc815e3"
-  integrity sha512-DcD7kn0JIUNR3DKT9Sn4btuJmHffLuXm4/WeYj66y+bGc75eBLOtuuZ7/jQUoWpXFEy9UcnP0EMIoWSBP6ngpg==
-  dependencies:
-    invariant "^2.2.4"
-
 "@react-native-community/slider@1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-1.1.4.tgz#ff7438afbc194d61f397e9258d78941c014ac110"
@@ -5535,7 +5528,7 @@ prompts@^2.0.1:
     kleur "^3.0.2"
     sisteransi "^1.0.0"
 
-prop-types@15.x.x, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.7.2:
+prop-types@*, prop-types@15.x.x, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -5774,6 +5767,13 @@ react-native-swiper@1.5.14:
   integrity sha512-Kn0fxKooN7Shwu1qJYHB+Y8ssXXnvrIwReHXU5jCdyYNfz2QbBv0Cv3sa2Mqzr+XgzORCFFIokc8uCCUITDrVA==
   dependencies:
     prop-types "^15.5.10"
+
+react-native-uncontrolled-date-picker-ios@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-uncontrolled-date-picker-ios/-/react-native-uncontrolled-date-picker-ios-1.0.0.tgz#f4c04335538fdb0b5e412fb7df3e471df55538ef"
+  integrity sha512-dqXEwGOM658Zp0Lco1lboqvHY0DdurIScq/7Doh85jSXGwLXDObT+uCgfTiDldbHPe96NMRcFweF/gC9b0WWbA==
+  dependencies:
+    prop-types "*"
 
 react-native-vector-icons@6.4.2:
   version "6.4.2"
