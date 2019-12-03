@@ -32,7 +32,6 @@ import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
 import rocks.crownstone.bluenet.encryption.KeySet
 import rocks.crownstone.bluenet.encryption.MeshKeySet
-import rocks.crownstone.bluenet.packets.PacketInterface
 import rocks.crownstone.bluenet.packets.behaviour.*
 import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeout
 import rocks.crownstone.bluenet.packets.keepAlive.KeepAliveSameTimeoutItem
@@ -45,9 +44,7 @@ import rocks.crownstone.bluenet.scanhandling.NearestDeviceListEntry
 import rocks.crownstone.bluenet.scanparsing.CrownstoneServiceData
 import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
-import rocks.crownstone.bluenet.util.Conversion
-import rocks.crownstone.bluenet.util.Log
-import rocks.crownstone.bluenet.util.SubscriptionId
+import rocks.crownstone.bluenet.util.*
 import rocks.crownstone.localization.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -357,7 +354,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			}
 			val keySet = KeySet(adminKey, memberKey, guestKey, serviceDataKey, localizationKey)
 
-			val settings = SphereSettings(keySet, null, ibeaconUuid, 0, 0)
+			val settings = SphereSettings(keySet, null, ibeaconUuid, 0U, 0U)
 			sphereSettings.put(sphereId, settings)
 		}
 		bluenet.setSphereSettings(sphereSettings)
@@ -1035,8 +1032,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		var meshAccessAddress: Uint32
 
 		try {
-			sphereId = config.getInt("sphereId").toShort()
-			crownstoneId = config.getInt("crownstoneId").toShort()
+			sphereId = config.getInt("sphereId").toUint8()
+			crownstoneId = config.getInt("crownstoneId").toUint8()
 			adminKey = config.getString("adminKey")
 			memberKey = config.getString("memberKey")
 			guestKey = config.getString("basicKey")
@@ -1047,8 +1044,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			meshNetKey = config.getString("meshNetworkKey")
 
 			iBeaconUuid = UUID.fromString(config.getString("ibeaconUUID"))
-			iBeaconMajor = config.getInt("ibeaconMajor")
-			iBeaconMinor = config.getInt("ibeaconMinor")
+			iBeaconMajor = config.getInt("ibeaconMajor").toUint16()
+			iBeaconMinor = config.getInt("ibeaconMinor").toUint16()
 			val meshAccessAddressStr = config.getString("meshAccessAddress")
 			if (meshAccessAddressStr == null) {
 				rejectCallback(callback, "missing meshAccessAddress")
@@ -1103,9 +1100,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun setupPulse(callback: Callback) {
 		// Crownstone is already connected
 		// This call will turn the relay on, wait 1 second, turn it off, disconnect
-		bluenet.control.setSwitch(100)
+		bluenet.control.setSwitch(100U)
 				.then { bluenet.waitPromise(1000) }.unwrap()
-				.then { bluenet.control.setSwitch(0) }.unwrap()
+				.then { bluenet.control.setSwitch(0U) }.unwrap()
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1351,7 +1348,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun setMeshChannel(channel: Int, callback: Callback) {
 		Log.i(TAG, "setMeshChannel $channel")
-		bluenet.config.setMeshChannel(channel.toShort())
+		bluenet.config.setMeshChannel(channel.toUint8())
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1362,7 +1359,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun setTime(timestampDouble: Double, callback: Callback) {
 		Log.i(TAG, "setTime $timestampDouble")
 		val timestamp = timestampDouble.toLong()
-		bluenet.control.setTime(timestamp)
+		bluenet.control.setTime(timestamp.toUint32())
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1372,7 +1369,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun meshSetTime(timestampDouble: Double, callback: Callback) {
 		Log.i(TAG, "meshSetTime $timestampDouble")
 		val timestamp = timestampDouble.toLong()
-		bluenet.mesh.setTime(timestamp)
+		bluenet.mesh.setTime(timestamp.toUint32())
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1429,7 +1426,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun clearSchedule(scheduleEntryIndex: Int, callback: Callback) {
 		Log.i(TAG, "clearSchedule $scheduleEntryIndex")
 		// Clears the schedule entry at given index.
-		bluenet.control.removeSchedule(scheduleEntryIndex.toShort())
+		bluenet.control.removeSchedule(scheduleEntryIndex.toUint8())
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1491,8 +1488,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val packet = ScheduleEntryPacket()
 		try {
 			packet.overrideMask.location = map.getBoolean("ignoreLocationTriggers")
-			packet.timestamp = map.getDouble("nextTime").toLong()
-			packet.minutes = 0
+			packet.timestamp = map.getDouble("nextTime").toLong().toUint32()
+			packet.minutes = 0U
 			val repeatType = map.getString("repeatMode")
 			when (repeatType) {
 				"24h" -> {
@@ -1507,7 +1504,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				}
 				"minute" -> {
 					packet.repeatType = ScheduleRepeatType.MINUTES
-					packet.minutes = map.getInt("intervalInMinutes")
+					packet.minutes = map.getInt("intervalInMinutes").toUint16()
 				}
 				"none" -> {
 					packet.repeatType = ScheduleRepeatType.ONCE
@@ -1520,8 +1517,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 			val switchStateDouble = map.getDouble("switchState")
 			packet.switchVal = convertSwitchVal(switchStateDouble)
-			packet.fadeDuration = map.getInt("fadeDuration")
-			if (packet.fadeDuration > 0) {
+			packet.fadeDuration = map.getInt("fadeDuration").toUint16()
+			if (packet.fadeDuration > 0U) {
 				packet.actionType = ScheduleActionType.FADE
 			}
 			else {
@@ -1569,7 +1566,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		when (packet.repeatType) {
 			ScheduleRepeatType.MINUTES -> {
 				map.putString("repeatMode", "minute")
-				map.putInt("intervalInMinutes", packet.minutes)
+				map.putInt("intervalInMinutes", packet.minutes.toInt())
 			}
 			ScheduleRepeatType.DAY -> {
 				map.putString("repeatMode", "24h")
@@ -1600,7 +1597,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			}
 			ScheduleActionType.FADE -> {
 				map.putDouble("switchState", convertSwitchVal(packet.switchVal))
-				map.putInt("fadeDuration", packet.fadeDuration)
+				map.putInt("fadeDuration", packet.fadeDuration.toInt())
 			}
 			ScheduleActionType.TOGGLE -> {
 				return null
@@ -1634,7 +1631,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			false -> KeepAliveAction.NO_CHANGE
 		}
 		val switchVal = convertSwitchVal(state)
-		bluenet.control.keepAliveAction(action, switchVal, timeout)
+		bluenet.control.keepAliveAction(action, switchVal, timeout.toUint16())
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1655,7 +1652,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "meshKeepAliveState timeout=$timeout entries: $keepAliveItems")
 		// Make the crownstone send a keep alive message on the mesh.
 		// keepAliveItems = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
-		val sameTimeoutPacket = KeepAliveSameTimeout(timeout)
+		val sameTimeoutPacket = KeepAliveSameTimeout(timeout.toUint16())
 		for (i in 0 until keepAliveItems.size()) {
 			val entry = keepAliveItems.getMap(i) ?: continue
 			val crownstoneId = Conversion.toUint8(entry.getInt("crownstoneId"))
@@ -1683,48 +1680,96 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun saveBehaviour(behaviour: ReadableMap, callback: Callback) {
 		Log.i(TAG, "saveBehaviour")
-		rejectCallback(callback, "Not implemented")
-		return
-//		// TODO
-//		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
-//		if (indexedBehaviourPacket == null) {
-//			rejectCallback(callback, Errors.ValueWrong().message)
-//			return
-//		}
-//		bluenet.control.addBehaviour(indexedBehaviourPacket.behaviour)
-//				.success {
-//					resolveCallback()
-//				}
-//				.fail {
-//
-//				}
+//		rejectCallback(callback, "Not implemented")
+//		return
+		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
+		if (indexedBehaviourPacket == null) {
+			rejectCallback(callback, Errors.ValueWrong().message)
+			return
+		}
+		bluenet.control.addBehaviour(indexedBehaviourPacket.behaviour)
+				.success {
+					val retVal = genBehaviourReply(it)
+					if (retVal == null) {
+						rejectCallback(callback, Errors.ValueWrong().message)
+					}
+					else {
+						resolveCallback(callback, retVal)
+					}
+				}
+				.fail {
+					rejectCallback(callback, it.message)
+				}
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun updateBehaviour(behaviour: ReadableMap, callback: Callback) {
 		Log.i(TAG, "updateBehaviour")
-		rejectCallback(callback, "Not implemented")
-		return
-		// TODO
+//		rejectCallback(callback, "Not implemented")
+//		return
+		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
+		if (indexedBehaviourPacket == null) {
+			rejectCallback(callback, Errors.ValueWrong().message)
+			return
+		}
+		bluenet.control.replaceBehaviour(indexedBehaviourPacket.index, indexedBehaviourPacket.behaviour)
+				.success {
+					val retVal = genBehaviourReply(it)
+					if (retVal == null) {
+						rejectCallback(callback, Errors.ValueWrong().message)
+					}
+					else {
+						resolveCallback(callback, retVal)
+					}
+				}
+				.fail {
+					rejectCallback(callback, it.message)
+				}
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun removeBehaviour(index: Int, callback: Callback) {
 		Log.i(TAG, "removeBehaviour")
-		rejectCallback(callback, "Not implemented")
-		return
-		// TODO
+//		rejectCallback(callback, "Not implemented")
+//		return
+		val behaviourIndex = Conversion.toUint8(index)
+		bluenet.control.removeBehaviour(behaviourIndex)
+				.success {
+					val retVal = genBehaviourReply(it)
+					if (retVal == null) {
+						rejectCallback(callback, Errors.ValueWrong().message)
+					}
+					else {
+						resolveCallback(callback, retVal)
+					}
+				}
+				.fail {
+					rejectCallback(callback, it.message)
+				}
 	}
 
 	@ReactMethod
 	@Synchronized
 	fun getBehaviour(index: Int, callback: Callback) {
 		Log.i(TAG, "getBehaviour")
-		rejectCallback(callback, "Not implemented")
-		return
-		// TODO
+//		rejectCallback(callback, "Not implemented")
+//		return
+		val behaviourIndex = Conversion.toUint8(index)
+		bluenet.control.getBehaviour(behaviourIndex)
+				.success {
+					val retVal = genBehaviour(it)
+					if (retVal == null) {
+						rejectCallback(callback, Errors.ValueWrong().message)
+					}
+					else {
+						resolveCallback(callback, retVal)
+					}
+				}
+				.fail {
+					rejectCallback(callback, it.message)
+				}
 	}
 
 	/**
@@ -1739,6 +1784,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	 * @param dayStartOffset Offset in seconds, at which the day is considered to start.
 	 */
 	private fun parseBehaviourTransfer(behaviour: ReadableMap, dayStartOffset: Int32 = behaviourDayStartOffset): IndexedBehaviourPacket? {
+		Log.d(TAG, "parseBehaviourTransfer $behaviour")
 		try {
 			val type = behaviour.getString("type") ?: return null
 
@@ -1749,7 +1795,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 						Conversion.toUint8(behaviour.getInt("idOnCrownstone"))
 					}
 					else {
-						255
+						255U
 					}
 			val profileId = Conversion.toUint8(behaviour.getInt("profileIndex"))
 
@@ -1776,6 +1822,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				}
 			}
 			if (behaviourPacket == null) { return null }
+			Log.d(TAG, "index: $behaviourIndex behaviour: $behaviourPacket")
 			return IndexedBehaviourPacket(behaviourIndex, behaviourPacket)
 
 		} catch (e: Exception) {
@@ -1809,6 +1856,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun genBehaviour(indexedBehaviour: IndexedBehaviourPacket, dayStartOffset: Int32 = behaviourDayStartOffset): WritableMap? {
+		Log.d(TAG, "genBehaviour $indexedBehaviour")
 		val behaviour = indexedBehaviour.behaviour
 		val map = Arguments.createMap()
 		val dataMap = Arguments.createMap()
@@ -1845,6 +1893,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			}
 		}
 		map.putMap("data", dataMap)
+		Log.d(TAG, "behaviour map: $map")
 		return map
 	}
 
@@ -1931,7 +1980,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			"SUNSET" -> {
 				if (!time.hasKey("offsetMinutes")) { return null }
 				val offsetSeconds = time.getInt("offsetMinutes") * 60
-				return TimeOfDayPacket(BaseTimeType.SUNDOWN, offsetSeconds)
+				return TimeOfDayPacket(BaseTimeType.SUNSET, offsetSeconds)
 			}
 			"CLOCK" -> {
 				val hours = time.getMap("data")?.getInt("hours") ?: return null
@@ -1952,7 +2001,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				map.putInt("offsetMinutes", time.timeOffset * 60)
 				return map
 			}
-			BaseTimeType.SUNDOWN -> {
+			BaseTimeType.SUNSET -> {
 				map.putString("type", "SUNSET")
 				map.putInt("offsetMinutes", time.timeOffset * 60)
 				return map
@@ -1973,7 +2022,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun parseBehaviourPresence(presence: ReadableMap): PresencePacket? {
 		val type = presence.getString("type") ?: return null
 		when (type) {
-			"IGNORE" -> return PresencePacket(PresenceType.ALWAYS_TRUE, ArrayList(), 0)
+			"IGNORE" -> return PresencePacket(PresenceType.ALWAYS_TRUE, ArrayList(), 0U)
 			"SOMEBODY" -> {}
 			"NOBODY" -> {}
 			else -> return null
@@ -2056,7 +2105,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return map
 	}
 
-	private fun genBehaviourReply(indexAndHash: BehaviourIndexedAndHashPacket): WritableMap? {
+	private fun genBehaviourReply(indexAndHash: BehaviourIndexAndHashPacket): WritableMap? {
 		val map = Arguments.createMap()
 		map.putInt("index", indexAndHash.index.toInt())
 		map.putString("masterHash", indexAndHash.hash.toString())
@@ -2421,8 +2470,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			val map = Arguments.createMap()
 			map.putString("id", beaconId)
 			map.putString("uuid", scan.ibeaconData.uuid.toString())
-			map.putInt("major", scan.ibeaconData.major)
-			map.putInt("minor", scan.ibeaconData.minor)
+			map.putInt("major", scan.ibeaconData.major.toInt())
+			map.putInt("minor", scan.ibeaconData.minor.toInt())
 			map.putInt("rssi", scan.rssi)
 			map.putString("referenceId", scan.referenceId)
 			array.pushMap(map)
@@ -2566,7 +2615,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			serviceDataMap.putDouble("timestamp", serviceData.timestamp.toDouble())
 		}
 		else {
-			serviceDataMap.putInt("timestamp", serviceData.count)
+			serviceDataMap.putInt("timestamp", serviceData.count.toInt())
 		}
 
 		serviceDataMap.putBoolean("dimmingAvailable", serviceData.flagDimmingAvailable)
@@ -2697,7 +2746,23 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		callback.invoke(retVal)
 	}
 
+	private fun resolveCallback(callback: Callback, data: UByte) {
+		Log.d(TAG, "resolve $callback $data")
+		val retVal = Arguments.createMap()
+		retVal.putInt("data", data.toInt())
+		retVal.putBoolean("error", false)
+		callback.invoke(retVal)
+	}
+
 	private fun resolveCallback(callback: Callback, data: Short) {
+		Log.d(TAG, "resolve $callback $data")
+		val retVal = Arguments.createMap()
+		retVal.putInt("data", data.toInt())
+		retVal.putBoolean("error", false)
+		callback.invoke(retVal)
+	}
+
+	private fun resolveCallback(callback: Callback, data: UShort) {
 		Log.d(TAG, "resolve $callback $data")
 		val retVal = Arguments.createMap()
 		retVal.putInt("data", data.toInt())
