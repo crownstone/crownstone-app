@@ -130,7 +130,7 @@ android {
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
         missingDimensionStrategy 'react-native-camera', 'general'
         versionCode 52
-        versionName "3.0.2"
+        versionName "3.1.0"
 //        ndk {
 //            abiFilters "armeabi-v7a", "x86"
 //        }
