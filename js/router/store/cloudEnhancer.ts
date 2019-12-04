@@ -10,6 +10,7 @@ import { MapProvider} from "../../backgroundProcesses/MapProvider";
 import { transferLocations} from "../../cloud/transferData/transferLocations";
 import { core } from "../../core";
 import { BATCH } from "./reducers/BatchReducer";
+import { transferBehaviours } from "../../cloud/transferData/transferBehaviours";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -307,9 +308,36 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 function handleBehaviourInCloud(action, state) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
-  let behaviourId = action.ruleId;
+  let ruleId = action.ruleId;
 
-  console.log("TODO: update behaviour in cloud");
+  let sphere = state.spheres[sphereId];
+  if (!sphere) { return }
+  let stone = sphere.stones[stoneId];
+  if (!stone) { return }
+  let rule = stone.rules[ruleId];
+  if (!rule) { return }
+
+  if (rule.cloudId !== null) {
+    transferBehaviours.updateOnCloud({
+      localId: ruleId,
+      localData: rule,
+      cloudStoneId: stone.config.cloudId,
+      cloudSphereId: sphere.config.cloudId,
+      cloudId: rule.cloudId
+    })
+  }
+  else {
+    let actions = [];
+    transferBehaviours.createOnCloud(actions,{
+      localId: ruleId,
+      localData: rule,
+      localSphereId: sphereId,
+      localStoneId: stoneId,
+      cloudStoneId: stone.config.cloudId,
+      cloudSphereId: sphere.config.cloudId,
+    })
+    core.store.batchDispatch(actions);
+  }
 
 }
 

@@ -48,7 +48,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
 
     examples.forEach((ex) => {
       options.push({
-        label: ex.getSentence(),
+        label: ex.getSentence(this.props.sphereId),
         onSelect: () => {
           NavigationUtil.navigate( "DeviceSmartBehaviour_Editor", {
             twilightRule: twilight, data: ex, sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: null, typeLabel: typeLabel})
@@ -156,13 +156,13 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   }
 
 
-  _getLocationIds(amount) {
+  _getLocationUids(amount) {
     let state = core.store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let locationIds = Object.keys(sphere.locations);
     let usedLocationIds = [];
     for (let i = 0; i < locationIds.length && i < amount; i++) {
-      usedLocationIds.push(locationIds[i]);
+      usedLocationIds.push(sphere.locations[locationIds[i]].config.uid);
     }
 
     return usedLocationIds;
@@ -171,7 +171,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   _getPresenceExamples() {
     let examples : AicoreBehaviour[] = [];
     examples.push(new AicoreBehaviour().setPresenceInSphere().setTimeWhenDark());
-    examples.push(new AicoreBehaviour().setPresenceInLocations(this._getLocationIds(2)).setTimeAllday());
+    examples.push(new AicoreBehaviour().setPresenceInLocations(this._getLocationUids(2)).setTimeAllday());
     examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setEndConditionWhilePeopleInSphere());
     return examples;
   }

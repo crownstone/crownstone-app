@@ -50,7 +50,7 @@ export const TopBarUtil = {
       leftButtons.push(getLeftButton('cancel', Languages.get("__UNIVERSAL", "Cancel")()));
     }
     if (props.leftNav) {
-      leftButtons.push(getButtonComponent(props.leftNav.id, props.leftNav.text));
+      leftButtons.push(getLeftButton(props.leftNav.id, props.leftNav.text));
     }
 
 

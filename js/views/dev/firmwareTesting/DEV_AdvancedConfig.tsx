@@ -373,7 +373,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground image={backgroundImage} >
+      <AnimatedBackground image={backgroundImage} hideNotifications={true} >
         <BleStatusBar bleState={this.state.bleState} />
         <SlideInView hidden={true} height={50} visible={this.state.bleState !== BLE_STATE_READY && this.state.bleState !== BLE_STATE_BUSY}>
           <TouchableOpacity onPress={triggerErrorMessage} style={{paddingLeft: 10, paddingRight: 10, backgroundColor: colors.red.hex, borderBottomWidth: 1, borderBottomColor: colors.black.rgba(0.2), height: 50, ...styles.centered}}>

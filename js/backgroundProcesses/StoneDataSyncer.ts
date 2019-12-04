@@ -109,7 +109,6 @@ class StoneDataSyncerClass {
   }
 
   _syncTapToToggle(sphereId : string, stoneId : string) {
-    console.log("_syncTapToToggle", sphereId , stoneId )
     StoneAvailabilityTracker.setTrigger(sphereId, stoneId, ABILITY_SYNCER_OWNER_ID, () => {
       // we get it again and check synced again to ensure that we are sending the latest data and that we're not doing duplicates.
       let stone = DataUtil.getStone(sphereId, stoneId);
