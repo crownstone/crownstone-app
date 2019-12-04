@@ -58,16 +58,16 @@ class StoneDataSyncerClass {
             this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.tapToToggle, 'tapToToggle');
           }
 
-          // // handle rules
-          // if (Permissions.inSphere(sphereIds[i]).canChangeBehaviours) {
-          //   let ruleIds = Object.keys(stone.rules);
-          //   for (let k = 0; k < ruleIds.length; k++) {
-          //     let rule = stone.rules[ruleIds[k]];
-          //     if (!rule.syncedToCrownstone) {
-          //       this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule)
-          //     }
-          //   }
-          // }
+          // handle rules
+          if (Permissions.inSphere(sphereIds[i]).canChangeBehaviours) {
+            let ruleIds = Object.keys(stone.rules);
+            for (let k = 0; k < ruleIds.length; k++) {
+              let rule = stone.rules[ruleIds[k]];
+              if (!rule.syncedToCrownstone) {
+                this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule)
+              }
+            }
+          }
         }
       }
     }
