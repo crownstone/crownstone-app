@@ -46,6 +46,19 @@ export function SmartBehaviourRule(props: {
   }
 
   let showEditIcons = props.editMode && !props.ruleSelection && !props.rule.deleted;
+  const editCallback = () => {
+    NavigationUtil.launchModal(
+      "DeviceSmartBehaviour_Editor",
+      {
+        data: ai,
+        sphereId: props.sphereId,
+        stoneId: props.stoneId,
+        ruleId: props.ruleId,
+        selectedDay: props.activeDay,
+        isModal: true,
+      });
+  }
+
 
   return (
     <View style={{padding:15, flexDirection: 'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
@@ -99,29 +112,18 @@ export function SmartBehaviourRule(props: {
       { /* /ActivityIndicator for sync required */ }
 
       { /* Rule text */ }
-      <View style={{flex:1}}>
+      <TouchableOpacity style={{flex:1}} onPress={editCallback}>
         { props.startedYesterday && <Text style={yesterdayStyle}>{"(Started Yesterday)"}</Text> }
         <Text style={labelStyle}>{ai.getSentence()}</Text>
         { props.rule.syncedToCrownstone === false && props.editMode && !props.ruleSelection ?
           <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center',}}>{"( Not on Crownstone yet... )"}</Text> : undefined }
-      </View>
+      </TouchableOpacity>
       { /* /Rule text */ }
 
 
       { /* Edit icon */ }
       <SlideSideFadeInView width={50} visible={showEditIcons}>
-        <TouchableOpacity onPress={() => {
-          NavigationUtil.launchModal(
-            "DeviceSmartBehaviour_Editor",
-            {
-              data: ai,
-              sphereId: props.sphereId,
-              stoneId: props.stoneId,
-              ruleId: props.ruleId,
-              selectedDay: props.activeDay,
-              isModal: true,
-            });
-        }} style={{width:50, alignItems:'flex-end'}}>
+        <TouchableOpacity onPress={editCallback} style={{width:50, alignItems:'flex-end'}}>
           <Icon name={'md-create'} color={colors.menuTextSelected.hex} size={26} />
         </TouchableOpacity>
       </SlideSideFadeInView>

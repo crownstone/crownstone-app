@@ -108,9 +108,15 @@ function handleAction(action, returnValue, newState, oldState) {
 
     case 'ADD_STONE_RULE':
     case 'UPDATE_STONE_RULE':
+    case 'MARK_STONE_RULE_FOR_DELETION':
       handleBehaviourInCloud(action, newState);
       break;
-
+    case 'REMOVE_STONE_RULE':
+      removeBehaviourInCloud(action, newState);
+      break;
+    case 'REMOVE_ALL_RULES_OF_STONE':
+      removeAllBehavioursForStoneInCloud(action, newState);
+      break;
 
     case "UPDATE_STONE_STATE":
       handleStoneState(action, newState, oldState);
@@ -305,6 +311,17 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
   }
 }
 
+function removeBehaviourInCloud(action, state) {
+  let stoneId = action.stoneId;
+  let ruleId = action.ruleId;
+  CLOUD.forStone(stoneId).deleteBehaviour(ruleId);
+}
+
+function removeAllBehavioursForStoneInCloud(action, state) {
+  let stoneId = action.stoneId;
+  CLOUD.forStone(stoneId).deleteAllBehaviours();
+}
+
 function handleBehaviourInCloud(action, state) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
@@ -338,7 +355,6 @@ function handleBehaviourInCloud(action, state) {
     })
     core.store.batchDispatch(actions);
   }
-
 }
 
 function handleDeviceInCloud(action, state) {

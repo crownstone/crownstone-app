@@ -72,9 +72,6 @@ export const transferStones = {
     }
 
     return CLOUD.forSphere(data.cloudSphereId).updateStone(data.cloudId, payload)
-      .then(() => {
-        // TODO: update location as well.
-      })
       .catch((err) => {
         LOGe.cloud("Transfer-Stone: Could not update stone in cloud", err);
         throw err;

@@ -28,6 +28,13 @@ export const stonesBehaviours = {
       {background: background},
     );
   },
+  deleteAllBehaviours: function(background = true) {
+    return cloudApiBase._setupRequest(
+      'DELETE',
+      '/Stones/{id}/behaviours/',
+      {background: background},
+    );
+  },
   getBehaviours: function(background = true) {
     return cloudApiBase._setupRequest(
       'GET',

@@ -30,13 +30,14 @@ import { ScaledImage } from "../../components/ScaledImage";
 import { DataUtil } from "../../../util/DataUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
+import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 
 
 let className = "DeviceSmartBehaviour";
 
 export class DeviceSmartBehaviour extends LiveComponent<any, any> {
   static options(props) {
-    getTopBarProps(core.store, core.store.getState(), props, {});
+    getTopBarProps(props, {});
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
@@ -51,7 +52,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
   navigationButtonPressed({ buttonId }) {
     let updateTopBar = () => {
-      getTopBarProps(core.store, core.store.getState(), this.props, this.state);
+      getTopBarProps(this.props, this.state);
       TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
     }
     if (buttonId === 'edit') {
@@ -71,7 +72,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       let change = data.change;
 
       if (change.stoneChangeRules) {
-        getTopBarProps(core.store, core.store.getState(), this.props, this.state);
+        getTopBarProps(this.props, this.state);
         TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
         this.forceUpdate();
       }
@@ -359,8 +360,15 @@ export const BehaviourCopySuccessPopup = function() {
 }
 
 
-function getTopBarProps(store, state, props, viewState) {
-  const stone = state.spheres[props.sphereId].stones[props.stoneId];
+function getTopBarProps(props, viewState) {
+  const stone = DataUtil.getStone(props.sphereId,props.stoneId);
+  if (!stone) {
+    NAVBAR_PARAMS_CACHE = {
+      title: "Stone deleted.",
+      closeModal: true,
+    }
+    return NAVBAR_PARAMS_CACHE
+  }
   if (Object.keys(stone.rules).length === 0 && viewState.editMode !== true) {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
@@ -379,7 +387,7 @@ function getTopBarProps(store, state, props, viewState) {
   else {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
-      edit: true,
+      edit: Permissions.inSphere(props.sphereId).canChangeBehaviours,
       closeModal: true,
     };
   }
