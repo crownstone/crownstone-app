@@ -38,7 +38,9 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
   uniqueElement = 0;
   debugInterval;
 
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+
     const store = core.store;
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
@@ -47,32 +49,31 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
     this.uniqueElement = PowerUsageCacher.getUniqueElement(this.props.sphereId, stone.config.handle);
 
     this.hash = Math.random();
-    this.forceUpdate();
-    // this.__loadInitialDebugData()
+  }
 
-
-
-    const processData = (data) => {
-      let now = new Date().valueOf();
-      // throttling
-      if (data.serviceData.uniqueElement === this.uniqueElement) {
-        return;
-      }
-
-      this.uniqueElement = data.serviceData.uniqueElement
-      this.data.push({x: now, y: Math.max(0,data.serviceData.powerUsageReal)})
-
-      if (this.data.length > 50) {
-        this.data.shift()
-      }
-
-      this.hash = Math.random();
-      this.forceUpdate();
-    }
+  componentDidMount() {
+    const store = core.store;
+    const state = store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    const stone = sphere.stones[this.props.stoneId];
 
     this.unsubscribeNativeBusEvent = core.nativeBus.on(NativeBus.topics.advertisement, (data: crownstoneAdvertisement) => {
       if (data.handle === stone.config.handle && data.serviceData.stateOfExternalCrownstone === false && data.serviceData.errorMode === false) {
-        processData(data);
+        let now = new Date().valueOf();
+        // throttling
+        if (data.serviceData.uniqueElement === this.uniqueElement) {
+          return;
+        }
+
+        this.uniqueElement = data.serviceData.uniqueElement
+        this.data.push({x: now, y: Math.max(0,data.serviceData.powerUsageReal)})
+
+        if (this.data.length > 50) {
+          this.data.shift()
+        }
+
+        this.hash = Math.random();
+        this.forceUpdate();
       }
     });
 

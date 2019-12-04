@@ -349,17 +349,15 @@ export class DeviceOverview extends LiveComponent<any, any> {
     let stateColor = stone.state.state > 0 ? colors.green.hex : colors.csBlueDark.hex;
 
     let content = (
-      <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
-        <AnimatedCircle size={outerSize} color={stateColor} style={{alignItems:'center', justifyContent:'center'}}>
-          <AnimatedCircle size={size} color={stateColor} style={{borderRadius:0.5*size, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
-            <Icon size={size*0.63} name={stone.config.icon} color={iconColor} />
-          </AnimatedCircle>
+      <AnimatedCircle size={outerSize} color={stateColor} style={{alignItems:'center', justifyContent:'center'}}>
+        <AnimatedCircle size={size} color={stateColor} style={{borderRadius:0.5*size, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
+          <Icon size={size*0.63} name={stone.config.icon} color={iconColor} />
         </AnimatedCircle>
-      </View>
+      </AnimatedCircle>
     );
 
     if (this.stoneCanSwitch) {
-      return (
+      content = (
         <TouchableOpacity onPress={() => {
           if (this.state.switchIsOn) {
             // switch off
@@ -378,7 +376,11 @@ export class DeviceOverview extends LiveComponent<any, any> {
       )
     }
 
-    return content;
+    return (
+      <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
+        {content}
+      </View>
+    )
   }
 
 

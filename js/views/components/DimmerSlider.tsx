@@ -10,6 +10,7 @@ import {
 import { colors, deviceStyles, screenWidth, styles } from "../styles";
 import { HiddenFadeIn, HiddenFadeInView } from "./animated/FadeInView";
 import { xUtil } from "../../util/StandAloneUtil";
+import { NavigationUtil } from "../../util/NavigationUtil";
 
 const SLIDER_BUBBLE_SIZE = 70;
 const PADDING = 0.125*screenWidth;
@@ -83,6 +84,7 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
       onShouldBlockNativeResponder:        (evt, gestureState) => true,
       onPanResponderTerminate:             (evt, gestureState) => { },
       onPanResponderGrant: (evt, gestureState) => {
+        NavigationUtil.setViewBackSwipeEnabled(false);
         this.setState({showIndicator: true});
         updateState(gestureState);
         clearTimeout(this.indicatorTimeout);
@@ -93,6 +95,7 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
 
       onPanResponderRelease: (evt, gestureState) => {
         this.indicatorTimeout = setTimeout(() => { this.setState({showIndicator: false})},  this.props.dimmingSynced === false ? 500 : 0);
+        NavigationUtil.setViewBackSwipeEnabled(true);
       },
     });
   }
