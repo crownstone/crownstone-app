@@ -227,6 +227,7 @@ class BroadcastStateManagerClass {
     let state = core.store.getState();
 
     let rssiOffset = 0;
+    let ignoreForBehaviour = false;
     let tapToToggleEnabled = state.app.tapToToggleEnabled;
 
     // get device for rssi offset
@@ -235,7 +236,7 @@ class BroadcastStateManagerClass {
       rssiOffset = device.rssiOffset || 0;
     }
 
-    Bluenet.setDevicePreferences(rssiOffset, tapToToggleEnabled);
+    Bluenet.setDevicePreferences(rssiOffset, tapToToggleEnabled, ignoreForBehaviour);
   }
 
 }

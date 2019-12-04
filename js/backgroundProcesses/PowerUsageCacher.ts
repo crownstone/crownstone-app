@@ -2,7 +2,7 @@ import { core } from "../core";
 import { NativeBus } from "../native/libInterface/NativeBus";
 
 
-const NUMBER_OF_DATA_ELEMENTS = 30;
+const NUMBER_OF_DATA_ELEMENTS = 20;
 
 class PowerUsageCacherClass {
 

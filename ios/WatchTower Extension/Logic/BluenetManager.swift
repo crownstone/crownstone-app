@@ -32,14 +32,15 @@ class BluenetManager {
     var pendingStones = [String:Any]()
     
     init() {
-        // TODO: We need the Sphere UID for the watch.
         self.bluenet = Bluenet()
         self.listOfCrownstones = SortedCrownstoneCollection()
         self.unsubscribeArray = [voidCallback]()
+        
+        bluenet.setDevicePreferences(rssiOffset: 0, tapToToggle: false, ignoreForBehaviour: true, useBackgroundBroadcasts: false, useBaseBroadcasts: false)
     }
     
     public func subscribeEvents() {
-        self.unsubscribeArray.append(eventBus.on(Event.newApplicationContext, self._storeKeySets ))
+        self.unsubscribeArray.append(eventBus.on(Event.newApplicationContext, self._handleContext ))
         
         self.unsubscribeArray.append(bluenet.on("verifiedAdvertisementData",   { data in self._handleScan(data, verified: true ) }))
         self.unsubscribeArray.append(bluenet.on("unverifiedAdvertisementData", { data in self._handleScan(data, verified: false) }))
@@ -52,7 +53,7 @@ class BluenetManager {
     }
   }
     
-    func _storeKeySets(_ applicationContext: Any) {
+    func _handleContext(_ applicationContext: Any) {
         //print("I have received keysets", applicationContext)
         if let context = applicationContext as? [String: Any] {
             if let keysets = context["keysets"] {
@@ -61,7 +62,40 @@ class BluenetManager {
                     self._applyKeySets()
                 }
             }
+            if let locationState = context["locationState"] as? [String: Any] {
+                var sphereId : UInt8 = 0
+                var deviceToken : UInt8 = 0
+                var referenceId = "NO_REFERENCE_ID"
+                if let oSphereUID   = locationState["sphereId"]    as? NSNumber { sphereId    = oSphereUID.uint8Value }
+                if let oDeviceToken = locationState["deviceToken"] as? NSNumber { deviceToken = self._processDeviceToken(oDeviceToken.uint8Value) }
+                if let oReferenceId = locationState["referenceId"] as? String   { referenceId = oReferenceId }
+                
+                bluenet.setLocationState(
+                    sphereUID: sphereId,
+                    locationId: 0,
+                    profileIndex: 0,
+                    deviceToken: deviceToken,
+                    referenceId: referenceId
+                )
+            }
         }
+    }
+    
+    
+    /**
+            The format of the device token is as follows (bits)
+     
+                    | 0 | 0 0 | 0 0 0 0 0 |
+     
+                first is wearable true: false
+                second is the device index
+                third is the user index
+     
+            This method will force this format.
+            
+     */
+    func _processDeviceToken(_ deviceToken: UInt8) -> UInt8 {
+        return deviceToken & UInt8(1) << 7
     }
     
     func _applyKeySets() {

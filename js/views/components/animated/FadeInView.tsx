@@ -6,12 +6,12 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Animated,
+  Animated, Platform,
   View
-} from 'react-native';
+} from "react-native";
 import { useState } from "react";
 import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { screenHeight, screenWidth } from "../../styles";
+import { colors, screenHeight, screenWidth } from "../../styles";
 
 export class FadeInView extends Component<any, any> {
   visible : boolean;
@@ -179,11 +179,11 @@ export class HiddenFadeInBlur extends Component<any, any> {
     if (this.state.show === true) {
       return (
         <Animated.View style={{width:screenWidth, height:screenHeight, position:'absolute', top:0, left:0, overflow:'hidden', opacity:this.state.viewOpacity}}>
-          <BlurView
+          { Platform.OS === 'ios' ? <BlurView
             style={{position:'absolute', top:0, left:0, right:0, bottom:0}}
             blurType="light"
             blurAmount={6}
-          />
+          /> :  <View style={{position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor: colors.white.rgba(0.4)}} />}
           <View style={this.props.style}>
             {this.props.children}
           </View>

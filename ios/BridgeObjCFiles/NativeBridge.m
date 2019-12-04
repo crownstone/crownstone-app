@@ -128,7 +128,7 @@ RCT_EXTERN_METHOD(broadcastSwitch:(NSString *)referenceId stoneId:(nonnull NSNum
 
 // set states for broadcast
 RCT_EXTERN_METHOD(setLocationState:(nonnull NSNumber *)sphereUID locationId:(nonnull NSNumber *)locationId profileIndex:(nonnull NSNumber *)profileIndex deviceToken:(nonnull NSNumber *)deviceToken referenceId:(NSString *)referenceId)
-RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggle:(nonnull NSNumber *)tapToToggle)
+RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggle:(nonnull NSNumber *)tapToToggle ignoreForBehaviour:(nonnull NSNumber *)ignoreForBehaviour)
 
 RCT_EXTERN_METHOD(setCrownstoneNames:(NSDictionary *)names)
 
