@@ -73,13 +73,13 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         options: [
           {
             label: "Presence aware",
-            subLabel: '"' + presenceExamples[0].getSentence() + '"',
+            subLabel: '"' + presenceExamples[0].getSentence(this.props.sphereId) + '"',
             image: { source: require('../../../images/icons/presence.png'), sourceWidth: 292, sourceHeight: 399, width: 0.15*screenWidth },
             nextCard: 'presence'
           },
           {
             label: "Smart timer",
-            subLabel: '"' + smartTimerExamples[0].getSentence() + '"',
+            subLabel: '"' + smartTimerExamples[0].getSentence(this.props.sphereId) + '"',
             image: { source: require('../../../images/icons/smartTimer.png'), sourceWidth: 398, sourceHeight: 398, width: 0.175*screenWidth },
             nextCard: 'smartTimer'
           },

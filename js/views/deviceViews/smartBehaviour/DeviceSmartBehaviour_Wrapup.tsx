@@ -344,7 +344,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
 
     let newRule = {type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour, data: this.rule}
-    let newSummary = AicoreUtil.getBehaviourSummary(newRule);
+    let newSummary = AicoreUtil.getBehaviourSummary(this.props.sphereId, newRule);
     for (let i = 0; i < DAY_INDICES_MONDAY_START.length; i++) {
       let day = DAY_INDICES_MONDAY_START[i];
       for (let j = 0; j < ruleIds.length; j++) {
@@ -358,7 +358,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
           if (data.overlapMins === 0) { continue; }
           if (data.aPercentageOverlapped < 0.4 && data.bPercentageOverlapped < 0.4) { continue; } // no hassle
 
-          let existingSummary = AicoreUtil.getBehaviourSummary(rule);
+          let existingSummary = AicoreUtil.getBehaviourSummary(this.props.sphereId, rule);
 
           let isConflicting = false;
           isConflicting = isConflicting || newSummary.usingSingleRoomPresence && existingSummary.usingSingleRoomPresence;
@@ -394,10 +394,10 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   _getRuleComparison() {
     return (
       <View style={styles.centered}>
-        <Text style={ruleStyle}>{'"' + this.existingRule.getSentence() + '"'}</Text>
+        <Text style={ruleStyle}>{'"' + this.existingRule.getSentence(this.props.sphereId) + '"'}</Text>
         <Icon name={'ios-arrow-down'} size={10} color={colors.csBlueDark.hex} />
         <Icon name={'ios-arrow-down'} size={20} color={colors.csBlueDark.hex} />
-        <Text style={ruleStyle}>{'"' + this.rule.getSentence() + '"'}</Text>
+        <Text style={ruleStyle}>{'"' + this.rule.getSentence(this.props.sphereId) + '"'}</Text>
       </View>
     )
   }
@@ -480,7 +480,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
 
-            { this.props.ruleId && this.props.deleteRule && <Text style={ruleStyle}>{'"' + this.existingRule.getSentence() + '"'}</Text> }
+            { this.props.ruleId && this.props.deleteRule && <Text style={ruleStyle}>{'"' + this.existingRule.getSentence(this.props.sphereId) + '"'}</Text> }
             { this.props.ruleId && this.ruleHasChanged && this._getRuleComparison() }
 
             <Text style={deviceStyles.specification}>{ body }</Text>

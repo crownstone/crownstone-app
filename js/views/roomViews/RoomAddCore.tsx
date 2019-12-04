@@ -201,12 +201,53 @@ export class RoomAddCore extends LiveComponent<any, any> {
     }
   }
 
+
+
   createRoom() {
     this._removeUnusedPictures();
     let localId = xUtil.getUUID();
 
+    let sphere = core.store.getState().spheres[this.props.sphereId];
+    let locations = sphere.locations;
+    let locationIds = Object.keys(locations)
+
+
+    let nextUID = 1;
+    if (locationIds.length > 0) {
+      locationIds.sort((a, b) => {
+        return locations[b].config.uid - locations[a].config.uid
+      });
+      let latestUID = locations[locationIds[0]];
+
+      let back = () => {
+        if (this.props.isModal !== true) {
+          NavigationUtil.back();
+        }
+        else {
+          NavigationUtil.dismissModal();
+        }
+      }
+
+      if (latestUID >= 64 && locationIds.length >= 64)  {
+        Alert.alert("Max amount of rooms reached..", "You will have to delete some before you can make a new one.", [{text:"OK", onPress: back}], {cancelable: false})
+        return
+      }
+      else if (latestUID >= 64) {
+        for (let i = 1; i < 64; i++) {
+          if (MapProvider.locationUIDMap[this.props.sphereId][i] === undefined) {
+            nextUID = i;
+            break;
+          }
+        }
+      }
+      else {
+        nextUID = latestUID + 1;
+      }
+    }
+
+
     // create room.
-    core.store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: localId, data:{name: this.newRoomData.name, icon: this.newRoomData.icon}});
+    core.store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: localId, data:{name: this.newRoomData.name, icon: this.newRoomData.icon, uid: nextUID}});
 
     // if we have a picture:
     if (this.newRoomData.picture !== null) {

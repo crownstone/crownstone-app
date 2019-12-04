@@ -90,6 +90,14 @@ export const DataUtil = {
     return stone || null;
   },
 
+  getLocation(sphereId, locationId) {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) return null
+    let location = sphere.stones[locationId];
+    return location || null;
+  },
+
 
 
   getPresentSphereId: function(state) {

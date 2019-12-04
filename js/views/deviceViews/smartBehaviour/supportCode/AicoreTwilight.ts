@@ -87,9 +87,9 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   setPresenceSomebodyInSphere() : AicoreTwilight { return this; }
   setPresenceNobodyInSphere() : AicoreTwilight { return this; }
   setPresenceInSphere() : AicoreTwilight { return this; }
-  setPresenceInLocations(locationIds: string[]) { return this; }
-  setPresenceSomebodyInLocations(locationIds: string[]) : AicoreTwilight { return this; }
-  setPresenceNobodyInLocations(locationIds: string[]) : AicoreTwilight { return this; }
+  setPresenceInLocations(locationIds: number[]) { return this; }
+  setPresenceSomebodyInLocations(locationIds: number[]) : AicoreTwilight { return this; }
+  setPresenceNobodyInLocations(locationIds: number[]) : AicoreTwilight { return this; }
   setNoEndCondition() : AicoreTwilight { return this;  }
   setEndConditionWhilePeopleInSphere() : AicoreTwilight { return this;  }
   setEndConditionWhilePeopleInLocation(locationId) : AicoreTwilight { return this;  }
@@ -107,7 +107,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
     return match;
   }
 
-  getLocationIds() : string[] {
+  getLocationUids() : number[] {
     return [];
   }
 

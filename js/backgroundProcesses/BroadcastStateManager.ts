@@ -181,7 +181,7 @@ class BroadcastStateManagerClass {
       userIndex = sphereUserIds.indexOf(state.user.userId);
     }
 
-    return (userIndex % 254) + 1;
+    return (userIndex % 31) + 1;
   }
 
   _updateLocationState(sphereId, locationId = null) {

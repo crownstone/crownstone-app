@@ -49,7 +49,7 @@ export const AicoreUtil = {
     return { presencePrefix, presenceStr };
   },
 
-  extractLocationStrings(rule : behaviour) {
+  extractLocationStrings(rule : behaviour, sphereId: string) {
     let locationPrefix = "";
     let locationStr = "";
     if (rule.presence.type !== AICORE_PRESENCE_TYPES.IGNORE) {
@@ -65,7 +65,7 @@ export const AicoreUtil = {
           if (pd.locationIds.length > 0) {
             locationPrefix = "is in the";
             // we will now construct a roomA_name, roomB_name or roomC_name line.
-            locationStr = AicoreUtil.getLocationName(pd.locationIds[0]);
+            locationStr = AicoreUtil.getLocationNameFromUid(sphereId, pd.locationIds[0]);
             if (pd.locationIds.length > 1) {
               for (let i = 1; i < pd.locationIds.length - 1; i++) {
                 let locationCloudId = pd.locationIds[i];
@@ -158,6 +158,14 @@ export const AicoreUtil = {
       }
     }
 
+    return "(deleted location)";
+  },
+
+  getLocationNameFromUid(sphereId: string, locationUID: number) {
+    let locationData = MapProvider.locationUIDMap[sphereId][locationUID]
+    if (locationData) {
+      return locationData.name;
+    }
     return "(deleted location)";
   },
 
@@ -627,7 +635,7 @@ export const AicoreUtil = {
     return minutesOverlap;
   },
 
-  getBehaviourSummary(ruleData) {
+  getBehaviourSummary(sphereId: string, ruleData) {
     let rule : AicoreTwilight | AicoreBehaviour = null;
     if (ruleData.type === BEHAVIOUR_TYPES.twilight) { rule = new AicoreTwilight(ruleData.data);  }
     else                                            { rule = new AicoreBehaviour(ruleData.data); }
@@ -637,7 +645,7 @@ export const AicoreUtil = {
       usingMultiRoomPresence:  rule.isUsingMultiRoomPresence(),
       usingSpherePresence:     rule.isUsingSpherePresence(),
       type:                    ruleData.type,
-      label:                   rule.getSentence(),
+      label:                   rule.getSentence(sphereId),
     }
   }
 

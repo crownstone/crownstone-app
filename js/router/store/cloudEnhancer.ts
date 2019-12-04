@@ -105,6 +105,11 @@ function handleAction(action, returnValue, newState, oldState) {
       handleDeviceInCloud(action, newState);
       break;
 
+    case 'ADD_STONE_RULE':
+    case 'UPDATE_STONE_RULE':
+      handleBehaviourInCloud(action, newState);
+      break;
+
 
     case "UPDATE_STONE_STATE":
       handleStoneState(action, newState, oldState);
@@ -297,6 +302,15 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 
     CLOUD.forStone(stoneId).updateStoneSwitchState(stone.state.state).catch(() => {});
   }
+}
+
+function handleBehaviourInCloud(action, state) {
+  let sphereId = action.sphereId;
+  let stoneId = action.stoneId;
+  let behaviourId = action.ruleId;
+
+  console.log("TODO: update behaviour in cloud");
+
 }
 
 function handleDeviceInCloud(action, state) {

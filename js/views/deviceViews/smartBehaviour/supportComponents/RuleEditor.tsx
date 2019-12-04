@@ -91,7 +91,7 @@ export class RuleEditor extends LiveComponent<
         },
         location: {
           sphere:   new AicoreBehaviour().setPresenceSomebodyInSphere(),
-          inRoom:   new AicoreBehaviour().setPresenceSomebodyInLocations([stone.config.locationId]),
+          inRoom:   new AicoreBehaviour().setPresenceSomebodyInLocations([this._locationIdToUid(stone.config.locationId)]),
           custom:   new AicoreBehaviour().setPresenceSomebodyInLocations([]),
         },
         time: {
@@ -112,6 +112,13 @@ export class RuleEditor extends LiveComponent<
   }
 
 
+  _locationIdToUid(locationId) {
+    let location = DataUtil.getLocation(this.props.sphereId, locationId)
+    if (!location) { return null }
+    return location.config.uid;
+  }
+
+
   getRuleSentenceElements() {
     this.amountOfLines = 0;
 
@@ -119,7 +126,7 @@ export class RuleEditor extends LiveComponent<
     let selectable  : TextStyle = {...normal, textDecorationLine:'underline' };
     let segmentStyle : ViewStyle = {...(styles.centered as ViewStyle), flexDirection:'row', width: screenWidth};
 
-    let ruleChunks = this.rule.getSelectableChunkData();
+    let ruleChunks = this.rule.getSelectableChunkData(this.props.sphereId);
 
     let segments = [];
     let result = [];
@@ -371,7 +378,7 @@ export class RuleEditor extends LiveComponent<
         let items = [];
         Object.keys(sphere.locations).forEach((locationId) => {
           let location = sphere.locations[locationId];
-          items.push( {id: locationId, component:<RoomList
+          items.push( {id: location.config.uid, component:<RoomList
               icon={location.config.icon}
               name={location.config.name}
               hideSubtitle={true}
@@ -391,7 +398,7 @@ export class RuleEditor extends LiveComponent<
       },
       themeColor: colors.green.rgba(0.8),
       allowMultipleSelections: true,
-      selection: this.rule.getLocationIds(),
+      selection: this.rule.getLocationUids(),
       image: require("../../../../images/overlayCircles/roomsCircle.png")
     })
   }

@@ -35,11 +35,11 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
   }
 
 
-  _getChunks() {
+  _getChunks(sphereId: string) {
     let intentionStr = "I will be";
     let actionStr = AicoreUtil.extractActionString(this.rule);
     let { presencePrefix, presenceStr } = AicoreUtil.extractPresenceStrings(this.rule);
-    let { locationPrefix, locationStr } = AicoreUtil.extractLocationStrings(this.rule);
+    let { locationPrefix, locationStr } = AicoreUtil.extractLocationStrings(this.rule, sphereId);
     let timeStr = AicoreUtil.extractTimeString(this.rule);
     let { endConditionPrefix, endConditionStr } = AicoreUtil.extractEndConditionStrings(this.rule);
 
@@ -58,8 +58,8 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
   }
 
 
-  getSentence() {
-    let chunks = this._getChunks();
+  getSentence(sphereId: string) {
+    let chunks = this._getChunks(sphereId);
 
     let sentence = "";
 
@@ -80,8 +80,8 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
   }
 
 
-  getSelectableChunkData() : selectableAicoreBehaviourChunk[] {
-    let chunks = this._getChunks();
+  getSelectableChunkData(sphere: string) : selectableAicoreBehaviourChunk[] {
+    let chunks = this._getChunks(sphere);
 
     let result : selectableAicoreBehaviourChunk[]= [];
 
@@ -159,7 +159,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     }
     return this;
   }
-  setPresenceInLocations(locationIds: string[]) {
+  setPresenceInLocations(locationIds: number[]) {
     if (this.rule.presence.type === "IGNORE") {
       this.setPresenceSomebodyInLocations(locationIds);
     }
@@ -169,11 +169,11 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     return this;
   }
 
-  setPresenceSomebodyInLocations(locationIds: string[]) : AicoreBehaviour {
+  setPresenceSomebodyInLocations(locationIds: number[]) : AicoreBehaviour {
     this.rule.presence = { type:"SOMEBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getLocationDelay()};
     return this;
   }
-  setPresenceNobodyInLocations(locationIds: string[]) : AicoreBehaviour {
+  setPresenceNobodyInLocations(locationIds: number[]) : AicoreBehaviour {
     this.rule.presence = { type:"NOBODY", data: {type:"LOCATION", locationIds: locationIds}, delay: this._getLocationDelay()};
     return this;
   }
@@ -186,7 +186,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "SPHERE"}, delay: this._getSphereDelay()}};
     return this;
   }
-  setEndConditionWhilePeopleInLocation(locationId: string) : AicoreBehaviour {
+  setEndConditionWhilePeopleInLocation(locationId: number) : AicoreBehaviour {
     this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}, delay: this._getLocationDelay()}};
     return this;
   }
@@ -225,7 +225,7 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
   }
 
 
-  getLocationIds() : string[] {
+  getLocationUids() : number[] {
     if (this.rule.presence.type !== "IGNORE") {
       if (this.rule.presence.data.type === "LOCATION") {
         return this.rule.presence.data.locationIds;

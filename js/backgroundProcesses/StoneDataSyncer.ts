@@ -194,13 +194,7 @@ class StoneDataSyncerClass {
     else {
       let behaviour = xUtil.deepCopy(rule);
       if (typeof behaviour.data === 'string') {
-        if (behaviour.type === BEHAVIOUR_TYPES.behaviour) {
-          behaviour.data = exchangeLocationIdsForUIDs(sphereId, stoneId, behaviour.data);
-        }
-        else {
-          // twilight
-          behaviour.data = JSON.parse(behaviour.data);
-        }
+        behaviour.data = JSON.parse(behaviour.data);
       }
 
       if (rule.idOnCrownstone !== null) {
@@ -233,28 +227,5 @@ class StoneDataSyncerClass {
   }
 }
 
-function exchangeLocationIdsForUIDs(sphereId, stoneId, behaviourString : behaviour | AicoreBehaviour | string) {
-  let state = core.store.getState();
-  let sphere = state.spheres[sphereId];
-  if (!sphere) { return null; }
-  let stone = sphere.stones[stoneId];
-  if (!stone) { return null; }
-
-  let locations = sphere.locations;
-
-  let behaviour = new AicoreBehaviour(behaviourString);
-
-  let locationIds = behaviour.getLocationIds();
-  let locationUids = [];
-  for (let i = 0; i < locationIds.length; i++) {
-    if (locations[locationIds[i]] !== undefined) {
-      locationUids.push(locations[locationIds[i]].config.uid)
-    }
-  }
-
-  behaviour.setPresenceInLocations(locationUids);
-
-  return behaviour.rule;
-}
 
 export const StoneDataSyncer = new StoneDataSyncerClass();

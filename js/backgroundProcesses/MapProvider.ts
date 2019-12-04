@@ -37,6 +37,7 @@ class MapProviderClass {
   stoneHandleMap  : StoneHandleMap = {};
   stoneSummaryMap : StoneSummaryMap = {};
   stoneCIDMap     : StoneCIDMap = {};
+  locationUIDMap  : locationUIDMap = {};
   stoneIBeaconMap : StoneIBeaconMap = {};
   cloud2localMap  : globalIdMap = getGlobalIdMap();
   local2cloudMap  : globalIdMap = getGlobalIdMap();
@@ -54,6 +55,7 @@ class MapProviderClass {
           change.changeSphereState   ||
           change.changeSpheres       ||
           change.changeSphereUsers   ||
+          change.changeLocations     ||
           change.changeStones        ||
           change.changeStoneHandle   ||
           change.changeDeviceData    ||
@@ -79,9 +81,32 @@ class MapProviderClass {
     this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle( state);
     this.stoneSummaryMap      = getMapOfCrownstonesInAllSpheresByStoneId(state);
     this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(    state);
+    this.locationUIDMap       = this.getLocationUIDMap(                  state);
     this.stoneIBeaconMap      = getMapOfCrownstonesInAllSpheresByIBeacon(state);
     this._updateCloudIdMap();
   }
+
+  getLocationUIDMap(state) {
+    let sphereIds = Object.keys(state.spheres);
+    let uidMap : locationUIDMap = {}
+    sphereIds.forEach((sphereId) => {
+      uidMap[sphereId] = {};
+      let locations = state.spheres[sphereId].locations;
+      let locationIds = Object.keys(locations);
+      locationIds.forEach((locationId) => {
+        let location = locations[locationId];
+        uidMap[sphereId][location.config.uid] = {
+          id: locationId, // redux database id
+          uid: location.config.uid,
+          name: location.config.name,
+          icon: location.config.icon,
+        }
+      })
+    });
+
+    return uidMap;
+  }
+
 
   _updateCloudIdMap() {
     LOG.info("MapProvider: Refreshing CloudIdMap.");

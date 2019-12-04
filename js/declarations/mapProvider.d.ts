@@ -9,6 +9,13 @@ interface StoneMap {
   locationId?: string
 }
 
+interface LocationMap {
+  id: string, // redux database id
+  uid: number,
+  name: string,
+  icon: string,
+}
+
 interface StoneSphereHandleMap {
   [key: string]: {
     [key: string]: StoneMap
@@ -26,6 +33,11 @@ interface StoneSummaryMap {
 interface StoneCIDMap {
   [key: string]: {
     [key: string]: StoneMap
+  }
+}
+interface locationUIDMap {
+  [key: string]: {
+    [key: string]: LocationMap
   }
 }
 

@@ -7,7 +7,7 @@ type aicorePresenceNone     = { type: "IGNORE" }
 type aicorePresence         = aicorePresenceGeneric | aicorePresenceNone
 
 type aicorePresenceSphereData   = { type: "SPHERE" }
-type aicorePresenceLocationData = { type: "LOCATION", locationIds: string[] }
+type aicorePresenceLocationData = { type: "LOCATION", locationIds: number[] } // locationIds are the Uint8 UIDs so that the format is portable
 
 type aicoreTimeAlways   = { type: "ALL_DAY" }
 type aicoreTimeRange    = { type: "RANGE", from: aicoreTimeData, to: aicoreTimeData }
