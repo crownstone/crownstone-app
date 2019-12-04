@@ -52,7 +52,6 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'getBootloaderVersion' } |
   { commandName : 'getFirmwareVersion' } |
   { commandName : 'getHardwareVersion' } |
-  { commandName : 'keepAliveBatchCommand' } |
   { commandName : 'saveBehaviour', behaviour: behaviourTransfer } |
   { commandName : 'updateBehaviour', behaviour: behaviourTransfer } |
   { commandName : 'removeBehaviour', index: number } |
@@ -64,7 +63,6 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'meshSetTime', time: number } |
   { commandName : 'setTime', time: number } |
   { commandName : 'clearErrors', clearErrorJSON: any } |
-  { commandName : 'clearSchedule', scheduleEntryIndex: number } |
   { commandName : 'lockSwitch',     value: boolean } |
   { commandName : 'setSwitchCraft', value: boolean } |
   { commandName : 'allowDimming',   value: boolean } |

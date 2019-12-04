@@ -2,6 +2,7 @@ import { BatchCommandHandler } from '../logic/BatchCommandHandler'
 import {LOG, LOGe} from "../logging/Log";
 import { Util } from "../util/Util";
 import { core } from "../core";
+import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabilityTracker";
 
 class FirmwareWatcherClass {
   _initialized: boolean = false;
@@ -34,40 +35,42 @@ class FirmwareWatcherClass {
     Util.data.callOnStonesInSphere(state, sphereId, (stoneId, stone) => {
       let execute = !stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck  || !stone.config.hardwareVersion || stone.config.hardwareVersion === '0'
 
-      LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: fw", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion, "Will execute:", execute);
+      LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: fw", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion, "Will execute when in range:", execute);
       // random chance to check the firmware again.
       if (execute) {
-        BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},100, 'from checkFirmware in Firmware Watcher')
-          .then((firmwareVersion : {data: string}) => {
-            core.store.dispatch({
-              type: "UPDATE_STONE_CONFIG",
-              stoneId: stoneId,
-              sphereId: sphereId,
-              data: {
-                firmwareVersion: firmwareVersion.data
-              }
-            });
-          })
-          .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
-        BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'}, {},100, 'from checkFirmware in Firmware Watcher')
-          .then((hardwareVersion : {data: string}) => {
-            core.store.dispatch({
-              type: "UPDATE_STONE_CONFIG",
-              stoneId: stoneId,
-              sphereId: sphereId,
-              data: {
-                hardwareVersion: hardwareVersion.data
-              }
-            });
-          })
-          .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err)});
+        StoneAvailabilityTracker.setTrigger(sphereId, stoneId, "FIRMWARE_WATCHER", () => {
+          BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},100, 'from checkFirmware in Firmware Watcher')
+            .then((firmwareVersion : {data: string}) => {
+              core.store.dispatch({
+                type: "UPDATE_STONE_CONFIG",
+                stoneId: stoneId,
+                sphereId: sphereId,
+                data: {
+                  firmwareVersion: firmwareVersion.data
+                }
+              });
+            })
+            .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get firmware version from stone.", err)});
+          BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'}, {},100, 'from checkFirmware in Firmware Watcher')
+            .then((hardwareVersion : {data: string}) => {
+              core.store.dispatch({
+                type: "UPDATE_STONE_CONFIG",
+                stoneId: stoneId,
+                sphereId: sphereId,
+                data: {
+                  hardwareVersion: hardwareVersion.data
+                }
+              });
+            })
+            .catch((err) => { LOGe.info("FirmwareWatcher: Failed to get hardware version from stone.", err)});
+          BatchCommandHandler.execute();
+        })
         loadedCommands = true;
       }
     });
 
     if (loadedCommands) {
-      LOG.info("FirmwareWatcher: Firmware commands loaded into BatchCommandHandler. Executing!");
-      BatchCommandHandler.execute();
+      LOG.info("FirmwareWatcher: Firmware commands loaded into BatchCommandHandler. These will fire when the required Crownstone is in range.");
     }
     else {
       LOG.info("FirmwareWatcher: No need to run a firmware/hardware version check.");

@@ -57,12 +57,44 @@ export class CommandManager {
 
     for (let i = 0; i < uuids.length; i++) {
       let todo = this.commands[uuids[i]];
+
       if (todo.sphereId === sphereId && todo.stoneId === stoneId && todo.command.commandName === command.commandName) {
-        if (todo.promise.pending === false) {
-          clean(todo);
+        let duplicate = false;
+        switch(todo.command.commandName) {
+          case 'multiSwitch':
+          case 'getBootloaderVersion':
+          case 'getFirmwareVersion':
+          case 'getHardwareVersion':
+          case 'commandFactoryReset':
+          case 'sendNoOp':
+          case 'sendMeshNoOp':
+          case 'getTime':
+          case 'meshSetTime':
+          case 'setTime':
+          case 'clearErrors':
+          case 'lockSwitch':
+          case 'setSwitchCraft':
+          case 'allowDimming':
+          case 'setTapToToggle':
+          case 'setTapToToggleThresholdOffset':
+          case 'setMeshChannel':
+          case 'setupPulse':
+            duplicate = true;
+            break
+          case 'saveBehaviour':
+          case 'updateBehaviour':
+          case 'removeBehaviour':
+          case 'getBehaviour':
+            duplicate = xUtil.deepCompare(todo.command, command);
+            break;
         }
-        else {
-          LOGd.bch("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
+
+        if (duplicate) {
+          if (todo.promise.pending === false) {
+            clean(todo);
+          } else {
+            LOGd.bch("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
+          }
         }
       }
     }
