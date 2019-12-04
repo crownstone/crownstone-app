@@ -71,7 +71,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
   }
 
 
-  bleAction(action : (...any) => Promise<any>, props = [], type = null, resultHandler = (any) => {}, connect = true) {
+  bleAction(action : (...any) => Promise<any>, props = [], type = null, resultHandler = (any) => {}, failureHandler = () => {}, connect = true) {
     if (this.state.bleState === BLE_STATE_BUSY) {
       Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
       return;
@@ -107,6 +107,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       })
       .catch((err) => {
         FocusManager.clearUpdateFreeze(type);
+        failureHandler()
         this.showBleError(err);
         if (connect) { ConnectionManager.disconnect() }
       })
@@ -124,6 +125,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
   _getItems(explanationColor) {
     let items = [];
     items.push({label:"CONFIGS", type: 'explanation', color: explanationColor});
+
+    let success = () => { core.eventBus.emit("hideNumericOverlaySuccess"); }
+    let failed = () => { core.eventBus.emit("hideNumericOverlayFailed"); }
+
+
+
+
+
     if (this.state.mode === 'unverified') {
       items.push({label:"Disabled for unverified Crownstone.", type: 'info'});
     }
@@ -142,9 +151,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setSwitchcraftThreshold, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setSwitchcraftThreshold, [Number(value)], null, success, failed )
         }
       });
 
@@ -159,9 +166,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setMaxChipTemp, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setMaxChipTemp, [Number(value)], null, success, failed)
         }
       });
 
@@ -177,9 +182,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setDimmerCurrentThreshold, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setDimmerCurrentThreshold, [Number(value)], null, success, failed)
         }
       });
 
@@ -194,9 +197,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setDimmerTempUpThreshold, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setDimmerTempUpThreshold, [Number(value)], null, success, failed)
         }
       });
 
@@ -211,9 +212,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setDimmerTempDownThreshold, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setDimmerTempDownThreshold, [Number(value)], null, success, failed)
         }
       });
 
@@ -229,9 +228,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setVoltageZero, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setVoltageZero, [Number(value)], null, success, failed)
         }
       });
       items.push({
@@ -245,9 +242,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setSwitchcraftThreshold, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setSwitchcraftThreshold, [Number(value)], null, success, failed)
         }
       });
       items.push({
@@ -261,9 +256,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setPowerZero, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setPowerZero, [Number(value)], null, success, failed)
         }
       });
 
@@ -281,9 +274,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setVoltageMultiplier, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setVoltageMultiplier, [Number(value)], null, success, failed)
         }
       });
       items.push({
@@ -298,9 +289,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           })
         },
         setCallback: (value) => {
-          this.bleAction(BluenetPromiseWrapper.setCurrentMultiplier, [Number(value)], null, () => {
-            core.eventBus.emit("hideNumericOverlay");
-          })
+          this.bleAction(BluenetPromiseWrapper.setCurrentMultiplier, [Number(value)], null, success, failed)
         }
       });
 
