@@ -1681,8 +1681,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun saveBehaviour(behaviour: ReadableMap, callback: Callback) {
 		Log.i(TAG, "saveBehaviour")
-//		rejectCallback(callback, "Not implemented")
-//		return
 		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
 		if (indexedBehaviourPacket == null) {
 			rejectCallback(callback, Errors.ValueWrong().message)
@@ -1707,8 +1705,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun updateBehaviour(behaviour: ReadableMap, callback: Callback) {
 		Log.i(TAG, "updateBehaviour")
-//		rejectCallback(callback, "Not implemented")
-//		return
 		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
 		if (indexedBehaviourPacket == null) {
 			rejectCallback(callback, Errors.ValueWrong().message)
@@ -1733,8 +1729,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun removeBehaviour(index: Int, callback: Callback) {
 		Log.i(TAG, "removeBehaviour")
-//		rejectCallback(callback, "Not implemented")
-//		return
 		val behaviourIndex = Conversion.toUint8(index)
 		bluenet.control.removeBehaviour(behaviourIndex)
 				.success {
@@ -1755,8 +1749,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun getBehaviour(index: Int, callback: Callback) {
 		Log.i(TAG, "getBehaviour")
-//		rejectCallback(callback, "Not implemented")
-//		return
 		val behaviourIndex = Conversion.toUint8(index)
 		bluenet.control.getBehaviour(behaviourIndex)
 				.success {
@@ -1787,26 +1779,28 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun parseBehaviourTransfer(behaviour: ReadableMap, dayStartOffset: Int32 = behaviourDayStartOffset): IndexedBehaviourPacket? {
 		Log.d(TAG, "parseBehaviourTransfer $behaviour")
 		try {
-			val type = behaviour.getString("type") ?: return null
-
-			val daysOfWeekMap = behaviour.getMap("activeDays") ?: return null
-			val daysOfWeek = parseDaysOfWeek(daysOfWeekMap) ?: return null
+			val type = behaviour.getString("type") ?: throw Exception("No behaviour type")
+			val daysOfWeekMap = behaviour.getMap("activeDays") ?: throw Exception("No activeDays")
+			val daysOfWeek = parseDaysOfWeek(daysOfWeekMap)
 			val behaviourIndex: BehaviourIndex =
-					if (behaviour.hasKey("idOnCrownstone")) {
+					if (behaviour.hasKey("idOnCrownstone") && !behaviour.isNull("idOnCrownstone")) {
 						Conversion.toUint8(behaviour.getInt("idOnCrownstone"))
 					}
 					else {
 						255U
 					}
+			if (!behaviour.hasKey("profileIndex")) { throw Exception("No profileIndex") }
 			val profileId = Conversion.toUint8(behaviour.getInt("profileIndex"))
 
-			val behaviourData = behaviour.getMap("data") ?: return null
-			val switchValDouble = behaviourData.getMap("action")?.getDouble("data") ?: return null
-			val switchVal = convertSwitchVal(switchValDouble)
-			if (!behaviour.hasKey("profileIndex")) { return null }
+			val behaviourData = behaviour.getMap("data") ?: throw Exception("No behaviour data")
+			val behaviourActionMap = behaviourData.getMap("action") ?: throw Exception("No behaviour action")
 
-			val timeMap = behaviourData.getMap("time") ?: return null
-			val time = parseBehaviourTime(timeMap, dayStartOffset) ?: return null
+			if (!behaviourActionMap.hasKey("data")) { throw Exception("No action data") }
+			val switchValDouble = behaviourActionMap.getDouble("data")
+			val switchVal = convertSwitchVal(switchValDouble)
+
+			val timeMap = behaviourData.getMap("time") ?: throw Exception("No time")
+			val time = parseBehaviourTime(timeMap, dayStartOffset)
 			val from = time[0]
 			val until = time[1]
 
@@ -1818,11 +1812,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					TwilightBehaviourPacket(switchVal, profileId, daysOfWeek, from, until)
 				}
 				else -> {
-					Log.w(TAG, "Invalid behaviour: $behaviour")
-					null
+					throw Exception("Invalid behaviour type $type")
 				}
 			}
-			if (behaviourPacket == null) { return null }
 			Log.d(TAG, "index: $behaviourIndex behaviour: $behaviourPacket")
 			return IndexedBehaviourPacket(behaviourIndex, behaviourPacket)
 
@@ -1839,20 +1831,24 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 							   daysOfWeek: DaysOfWeekPacket,
 							   from: TimeOfDayPacket,
 							   until: TimeOfDayPacket
-	): BehaviourPacket? {
-		val presenceMap = behaviourData.getMap("presence") ?: return null
-		val presence = parseBehaviourPresence(presenceMap) ?: return null
-		val endConditionMap = behaviourData.getMap("endCondition")
+	): BehaviourPacket {
+		val presenceMap = behaviourData.getMap("presence") ?: throw Exception("No presence")
+		val presence = parseBehaviourPresence(presenceMap)
+		val endConditionMap: ReadableMap? =
+				if (behaviourData.hasKey("endCondition")) {
+					behaviourData.getMap("endCondition")
+				}
+				else {
+					null
+				}
 		val switchBehaviourPacket = SwitchBehaviourPacket(switchVal, profileId, daysOfWeek, from, until, presence)
 		if (endConditionMap == null) {
 			return switchBehaviourPacket
 		}
 		else {
-			if (!endConditionMap.hasKey("presenceBehaviourDurationInSeconds")) { return null }
-			val endDuration = endConditionMap.getInt("presenceBehaviourDurationInSeconds")
-			val endPresenceMap = endConditionMap.getMap("presence") ?: return null
-			val endPresence = parseBehaviourPresence(endPresenceMap) ?: return null
-			return SmartTimerBehaviourPacket(switchBehaviourPacket, endPresence, endDuration)
+			val endPresenceMap = endConditionMap.getMap("presence") ?: throw Exception("No end condition presence")
+			val endPresence = parseBehaviourPresence(endPresenceMap)
+			return SmartTimerBehaviourPacket(switchBehaviourPacket, endPresence)
 		}
 	}
 
@@ -1889,7 +1885,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				val endConditionPresenceMap = genBehaviourPresence(smartTimer.endConditionPresence) ?: return null
 				endConditionMap.putString("type", "PRESENCE_AFTER")
 				endConditionMap.putMap("presence", endConditionPresenceMap)
-				endConditionMap.putInt("presenceBehaviourDurationInSeconds", smartTimer.endConditionTimeOffset)
 				dataMap.putMap("endCondition", endConditionMap)
 			}
 		}
@@ -1905,14 +1900,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return map
 	}
 
-	private fun parseDaysOfWeek(daysOfWeek: ReadableMap): DaysOfWeekPacket? {
-		if (!daysOfWeek.hasKey("Sun")) { return null }
-		if (!daysOfWeek.hasKey("Mon")) { return null }
-		if (!daysOfWeek.hasKey("Tue")) { return null }
-		if (!daysOfWeek.hasKey("Wed")) { return null }
-		if (!daysOfWeek.hasKey("Thu")) { return null }
-		if (!daysOfWeek.hasKey("Fri")) { return null }
-		if (!daysOfWeek.hasKey("Sat")) { return null }
+	private fun parseDaysOfWeek(daysOfWeek: ReadableMap): DaysOfWeekPacket {
+		if (!daysOfWeek.hasKey("Sun")) { throw Exception("No Sun") }
+		if (!daysOfWeek.hasKey("Mon")) { throw Exception("No Mon") }
+		if (!daysOfWeek.hasKey("Tue")) { throw Exception("No Tue") }
+		if (!daysOfWeek.hasKey("Wed")) { throw Exception("No Wed") }
+		if (!daysOfWeek.hasKey("Thu")) { throw Exception("No Thu") }
+		if (!daysOfWeek.hasKey("Fri")) { throw Exception("No Fri") }
+		if (!daysOfWeek.hasKey("Sat")) { throw Exception("No Sat") }
 		return DaysOfWeekPacket(
 				daysOfWeek.getBoolean("Sun"),
 				daysOfWeek.getBoolean("Mon"),
@@ -1937,19 +1932,18 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	// Returns 2 TimeOfDay packets: [from, until]
-	private fun parseBehaviourTime(time: ReadableMap, dayStartOffset: Int32): List<TimeOfDayPacket>? {
-		val type = time.getString("type") ?: return null
+	private fun parseBehaviourTime(time: ReadableMap, dayStartOffset: Int32): List<TimeOfDayPacket> {
+		val type = time.getString("type") ?: throw Exception("No time type")
 		if (type == "ALL_DAY") {
 			return listOf(TimeOfDayPacket(BaseTimeType.MIDNIGHT, dayStartOffset), TimeOfDayPacket(BaseTimeType.MIDNIGHT, dayStartOffset))
 		}
 		if (type != "RANGE") {
-			Log.w(TAG, "Invalid time: $time")
-			return null
+			throw Exception("Invalid time type $type")
 		}
-		val fromMap = time.getMap("from") ?: return null
-		val toMap = time.getMap("to") ?: return null
-		val from = parseBehaviourTimeData(fromMap) ?: return null
-		val to = parseBehaviourTimeData(toMap) ?: return null
+		val fromMap = time.getMap("from") ?: throw Exception("No time from")
+		val toMap = time.getMap("to") ?: throw Exception("No time to")
+		val from = parseBehaviourTimeData(fromMap)
+		val to = parseBehaviourTimeData(toMap)
 		return listOf(from, to)
 	}
 
@@ -1970,26 +1964,29 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return map
 	}
 
-	private fun parseBehaviourTimeData(time: ReadableMap): TimeOfDayPacket? {
-		val type = time.getString("type") ?: return null
+	private fun parseBehaviourTimeData(time: ReadableMap): TimeOfDayPacket {
+		val type = time.getString("type") ?: throw Exception("No time of day type")
 		when (type) {
 			"SUNRISE" -> {
-				if (!time.hasKey("offsetMinutes")) { return null }
+				if (!time.hasKey("offsetMinutes")) { throw Exception("No time of day offsetMinutes") }
 				val offsetSeconds = time.getInt("offsetMinutes") * 60
 				return TimeOfDayPacket(BaseTimeType.SUNRISE, offsetSeconds)
 			}
 			"SUNSET" -> {
-				if (!time.hasKey("offsetMinutes")) { return null }
+				if (!time.hasKey("offsetMinutes")) { throw Exception("No time of day offsetMinutes") }
 				val offsetSeconds = time.getInt("offsetMinutes") * 60
 				return TimeOfDayPacket(BaseTimeType.SUNSET, offsetSeconds)
 			}
 			"CLOCK" -> {
-				val hours = time.getMap("data")?.getInt("hours") ?: return null
-				val minutes = time.getMap("data")?.getInt("minutes") ?: return null
+				val timeData = time.getMap("data") ?: throw Exception("No clock data")
+				if (!timeData.hasKey("hours")) { throw Exception("No clock hours") }
+				val hours = timeData.getInt("hours")
+				if (!timeData.hasKey("minutes")) { throw Exception("No clock minutes") }
+				val minutes = timeData.getInt("minutes")
 				val offsetSeconds = hours * 3600 + minutes * 60
 				return TimeOfDayPacket(BaseTimeType.MIDNIGHT, offsetSeconds)
 			}
-			else -> return null
+			else -> throw Exception("Invalid time of day type: $type")
 		}
 	}
 
@@ -2020,29 +2017,29 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 	}
 
-	private fun parseBehaviourPresence(presence: ReadableMap): PresencePacket? {
-		val type = presence.getString("type") ?: return null
+	private fun parseBehaviourPresence(presence: ReadableMap): PresencePacket {
+		val type = presence.getString("type") ?: throw Exception("No presence type")
 		when (type) {
 			"IGNORE" -> return PresencePacket(PresenceType.ALWAYS_TRUE, ArrayList(), 0U)
 			"SOMEBODY" -> {}
 			"NOBODY" -> {}
-			else -> return null
+			else -> throw Exception("Invalid presence type: $type")
 		}
-		val presenceDataMap = presence.getMap("data") ?: return null
-		val locationType = presenceDataMap.getString("type") ?: return null
+		val presenceDataMap = presence.getMap("data") ?: throw Exception("No presence data")
+		val locationType = presenceDataMap.getString("type") ?: throw Exception("No presence data type")
 		val locadionIds = ArrayList<Uint8>()
 		when (locationType) {
 			"SPHERE" -> {}
 			"LOCATION" -> {
-				val locationsArr = presenceDataMap.getArray("locationIds") ?: return null
+				val locationsArr = presenceDataMap.getArray("locationIds") ?: throw Exception("No locationIds")
 				for (i in 0 until locationsArr.size()) {
 					locadionIds.add(Conversion.toUint8(locationsArr.getInt(i)))
 				}
 			}
-			else -> return null
+			else -> throw Exception("Invalid presence data type: $type")
 		}
-		if (!presenceDataMap.hasKey("delay")) { return null }
-		val timeoutSeconds = Conversion.toUint32(presenceDataMap.getInt("delay"))
+		if (!presence.hasKey("delay")) { throw Exception("No presence delay") }
+		val timeoutSeconds = Conversion.toUint32(presence.getInt("delay"))
 		val presenceType = when (type) {
 			"SOMEBODY" -> {
 				when (locationType) {
@@ -2106,11 +2103,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return map
 	}
 
-	private fun genBehaviourReply(indexAndHash: BehaviourIndexAndHashPacket): WritableMap? {
+	private fun genBehaviourReply(indexAndHash: BehaviourIndexAndHashPacket): WritableMap {
 		val map = Arguments.createMap()
 		map.putInt("index", indexAndHash.index.toInt())
 		map.putString("masterHash", indexAndHash.hash.toString())
-		return null
+		return map
 	}
 
 
