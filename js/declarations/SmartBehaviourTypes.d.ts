@@ -19,7 +19,6 @@ type aicoreTimeData      = aicoreTimeDataSun | aicoreTimeDataClock
 
 type aicoreEndCondition = {
   type: "PRESENCE_AFTER",
-  presenceBehaviourDurationInSeconds: number, // how long or until when is this rule extended by a presence rule
   presence: aicorePresenceSomebody,
 }
 

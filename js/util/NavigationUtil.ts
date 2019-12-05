@@ -651,7 +651,10 @@ export const NavigationUtil = {
     NavigationUtil.dismissAllModals()
   },
 
-
+  /**
+   * This wil enable (true) or disable (false) the gesture used on ios to swipe to go back on the active view.
+   * @param state
+   */
   setViewBackSwipeEnabled(state) {
     let componentId = NavState.getActiveComponent();
     Navigation.mergeOptions(componentId, {popGesture: state});

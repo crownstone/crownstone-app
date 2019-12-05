@@ -183,11 +183,11 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     return this;
   }
   setEndConditionWhilePeopleInSphere() : AicoreBehaviour {
-    this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "SPHERE"}, delay: this._getSphereDelay()}};
+    this.rule.endCondition = {type:"PRESENCE_AFTER", presence: {type: "SOMEBODY", data: { type: "SPHERE"}, delay: this._getSphereDelay()}};
     return this;
   }
   setEndConditionWhilePeopleInLocation(locationId: number) : AicoreBehaviour {
-    this.rule.endCondition = {type:"PRESENCE_AFTER", presenceBehaviourDurationInSeconds: 3600, presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}, delay: this._getLocationDelay()}};
+    this.rule.endCondition = {type:"PRESENCE_AFTER", presence: {type: "SOMEBODY", data: { type: "LOCATION", locationIds:[locationId]}, delay: this._getLocationDelay()}};
     return this;
   }
 
