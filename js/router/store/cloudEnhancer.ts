@@ -112,7 +112,7 @@ function handleAction(action, returnValue, newState, oldState) {
       handleBehaviourInCloud(action, newState);
       break;
     case 'REMOVE_STONE_RULE':
-      removeBehaviourInCloud(action, newState);
+      removeBehaviourInCloud(action, newState, oldState);
       break;
     case 'REMOVE_ALL_RULES_OF_STONE':
       removeAllBehavioursForStoneInCloud(action, newState);
@@ -311,10 +311,21 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
   }
 }
 
-function removeBehaviourInCloud(action, state) {
+function removeBehaviourInCloud(action, state, oldState) {
+  let sphereId = action.sphereId;
   let stoneId = action.stoneId;
   let ruleId = action.ruleId;
-  CLOUD.forStone(stoneId).deleteBehaviour(ruleId);
+
+  let sphere = oldState.spheres[sphereId];
+  if (!sphere) { return }
+  let stone = sphere.stones[stoneId];
+  if (!stone) { return }
+  let rule = stone.rules[ruleId];
+  if (!rule) { return }
+
+  if (rule.cloudId !== undefined) {
+    CLOUD.forStone(stoneId).deleteBehaviour(ruleId);
+  }
 }
 
 function removeAllBehavioursForStoneInCloud(action, state) {

@@ -21,11 +21,11 @@ let defaultState = {
   show_rssi_values_in_mesh:   false,
   nativeExtendedLogging:      false,
 
+  show_sync_button_in_behaviour: false,
+
   devAppVisible: false,
 
   preview: false,
-
-  broadcasting_enabled: false,
 };
 
 // developmentReducer
@@ -60,10 +60,10 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_cloud =          update(action.data.log_cloud,          newState.log_cloud);
         newState.log_nav =            update(action.data.log_nav,            newState.log_nav);
         newState.preview =            update(action.data.preview,            newState.preview);
-        newState.broadcasting_enabled =       update(action.data.broadcasting_enabled,       newState.broadcasting_enabled);
-        newState.nativeExtendedLogging =      update(action.data.nativeExtendedLogging,      newState.nativeExtendedLogging);
-        newState.show_rssi_values_in_mesh =   update(action.data.show_rssi_values_in_mesh,   newState.show_rssi_values_in_mesh);
-        newState.devAppVisible =              update(action.data.devAppVisible,   newState.devAppVisible);
+        newState.show_sync_button_in_behaviour = update(action.data.show_sync_button_in_behaviour, newState.show_sync_button_in_behaviour);
+        newState.nativeExtendedLogging =         update(action.data.nativeExtendedLogging,      newState.nativeExtendedLogging);
+        newState.show_rssi_values_in_mesh =      update(action.data.show_rssi_values_in_mesh,   newState.show_rssi_values_in_mesh);
+        newState.devAppVisible =                 update(action.data.devAppVisible,   newState.devAppVisible);
         return newState;
       }
       return state;

@@ -21,6 +21,7 @@ class WatchStateManager {
   }
   
   func syncState() {
+    print("Syncing this state: \(self.state)")
     if self.shouldSync == false {
       self.shouldSyncCounter += 1
       if self.shouldSyncCounter > 20 {

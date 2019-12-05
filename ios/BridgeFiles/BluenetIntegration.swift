@@ -760,19 +760,7 @@ open class BluenetJS: RCTEventEmitter {
   @objc func saveBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
     do {
       let behaviour = try BehaviourDictionaryParser(data, dayStartTimeSecondsSinceMidnight: 4*3600)
-      GLOBAL_BLUENET.bluenet.behaviour.saveBehaviour(behaviour: behaviour)
-       .done { value -> Void in
-         let dictionaryData : NSDictionary = ["index": value.index, "masterHash": value.masterHash]
-         callback([["error" : false, "data": dictionaryData]])
-       }
-       .catch{err in
-          if let bleErr = err as? BluenetError {
-            callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
-          }
-          else {
-            callback([["error" : true, "data": "UNKNOWN ERROR IN saveBehaviour \(err)"]])
-          }
-      }
+      wrapBehaviourMethodForBluenet("saveBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.saveBehaviour(behaviour: behaviour))
     }
     catch let error {
       if let bluenetErr = error as? BluenetError {
@@ -789,7 +777,7 @@ open class BluenetJS: RCTEventEmitter {
     do {
       let behaviour = try BehaviourDictionaryParser(data, dayStartTimeSecondsSinceMidnight: 4*3600)
       if let index = behaviour.indexOnCrownstone {
-        wrapForBluenet("updateBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.replaceBehaviour(index: index, behaviour: behaviour))
+        wrapBehaviourMethodForBluenet("updateBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.replaceBehaviour(index: index, behaviour: behaviour))
       }
       else {
         callback([["error" : true, "data": "NO INDEX PROVIDED"]])
@@ -808,8 +796,8 @@ open class BluenetJS: RCTEventEmitter {
   @objc func getBehaviour(_  index: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called getBehaviour")
     GLOBAL_BLUENET.bluenet.behaviour.getBehaviour(index: index.uint8Value)
-      .done { value -> Void in
-        let dictionaryData : NSDictionary = value.getDictionary(dayStartTimeSecondsSinceMidnight: 4*3600)
+      .done { behaviour -> Void in
+        let dictionaryData : NSDictionary = behaviour.getDictionary(dayStartTimeSecondsSinceMidnight: 4*3600)
         callback([["error" : false, "data": dictionaryData]])
       }
       .catch{err in
@@ -819,12 +807,41 @@ open class BluenetJS: RCTEventEmitter {
          else {
            callback([["error" : true, "data": "UNKNOWN ERROR IN getBehaviour \(err)"]])
          }
-     }
+      }
   }
   
   @objc func removeBehaviour(_ index: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("removeBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.removeBehaviour(index: index.uint8Value))
+    wrapBehaviourMethodForBluenet("removeBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.removeBehaviour(index: index.uint8Value))
   }
+    
+  @objc func syncBehaviours(_ behaviours: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called syncBehaviours")
+    let syncer = BehaviourSyncer(bluenet: GLOBAL_BLUENET.bluenet, behaviourDictionaryArray: behaviours, dayStartTimeSecondsSinceMidnight: 4*3600)
+    syncer.sync()
+      .done { behaviourArray -> Void in
+        var resultMap = [NSDictionary]()
+        for behaviour in behaviourArray {
+          resultMap.append(behaviour.getDictionary(dayStartTimeSecondsSinceMidnight: 4*3600))
+        }
+        callback([["error" : false, "data": resultMap]])
+      }
+      .catch{err in
+         if let bleErr = err as? BluenetError {
+           callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+         }
+         else {
+           callback([["error" : true, "data": "UNKNOWN ERROR IN getBehaviour \(err)"]])
+         }
+      }
+  }
+  
+  @objc func getBehaviourMasterHash(_ behaviours: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called getBehaviourMasterHash")
+    let hasher = BehaviourHasher(behaviours, dayStartTimeSecondsSinceMidnight: 4*3600)
+    callback([["error" : false, "data": hasher.getMasterHash()]])
+  }
+  
+  
   
   
   
@@ -953,14 +970,6 @@ open class BluenetJS: RCTEventEmitter {
      wrapForBluenet("setUartState", callback, GLOBAL_BLUENET.bluenet.config.setUartState(state))
    }
   
-  
-  
-  
-  
-  
-  
-  
-  
 }
 
 
@@ -991,4 +1000,18 @@ func wrapForBluenet(_ label: String, _ callback: @escaping RCTResponseSenderBloc
         callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
       }
   }
+}
+
+func wrapBehaviourMethodForBluenet(_ label: String, _ callback: @escaping RCTResponseSenderBlock, _ promise: Promise<BehaviourResultPacket>) {
+  LOGGER.info("BluenetBridge: Called \(label)")
+  promise
+    .done{ (value : BehaviourResultPacket) in callback([["error" : false, "data": ["index": value.index, "masterHash": value.masterHash]]]) }
+    .catch{err in
+        if let bleErr = err as? BluenetError {
+          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN \(label) \(err)"]])
+        }
+    }
 }

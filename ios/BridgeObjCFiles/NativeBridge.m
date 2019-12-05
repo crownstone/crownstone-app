@@ -151,6 +151,8 @@ RCT_EXTERN_METHOD(saveBehaviour:  (NSDictionary *)data       callback:(RCTRespon
 RCT_EXTERN_METHOD(updateBehaviour:(NSDictionary *)data       callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(removeBehaviour:(nonnull NSNumber *)index  callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getBehaviour:   (nonnull NSNumber *)index  callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(syncBehaviours:          (NSArray *)behaviours   callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getBehaviourMasterHash:  (NSArray *)behaviours   callback:(RCTResponseSenderBlock)callback)
 
 
 

@@ -6,6 +6,9 @@ import { xUtil } from "../util/StandAloneUtil";
 import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
 import { BCH_ERROR_CODES, BEHAVIOUR_TYPES } from "../Enums";
 import { Permissions } from "./PermissionManager";
+import { BluenetPromise, BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
+import { LOGi } from "../logging/Log";
+import { sync } from "../cloud/sections/sync/sync";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -13,6 +16,8 @@ const RULE_SYNCER_OWNER_ID    = "RULE_SYNCER_OWNER_ID";
 
 class StoneDataSyncerClass {
   initialized = false;
+
+  masterHashTracker = {}
 
   constructor() {}
 
@@ -41,11 +46,18 @@ class StoneDataSyncerClass {
     let sphereIds = Object.keys(state.spheres);
 
     for (let i = 0; i < sphereIds.length; i++) {
+
+      // update the list with this sphere.
+      if (this.masterHashTracker[sphereIds[i]] === undefined) { this.masterHashTracker[sphereIds[i]] = {}; }
+
       let sphere = state.spheres[sphereIds[i]];
       if (sphere.state.present) {
         let stoneIds = Object.keys(sphere.stones);
         for (let j = 0; j < stoneIds.length; j++) {
           let stone = sphere.stones[stoneIds[j]];
+
+          // update the list with this stone.
+          if (this.masterHashTracker[sphereIds[i]][stoneIds[j]] === undefined) { this.masterHashTracker[sphereIds[i]][stoneIds[j]] = null; }
 
           // clear the triggers since this method can be fired repeatedly
           StoneAvailabilityTracker.clearMySetTriggers(sphereIds[i], stoneIds[j], ABILITY_SYNCER_OWNER_ID);
@@ -61,11 +73,23 @@ class StoneDataSyncerClass {
           // handle rules
           if (Permissions.inSphere(sphereIds[i]).canChangeBehaviours) {
             let ruleIds = Object.keys(stone.rules);
+            let rulePromises = [];
+            let syncRequired = false;
             for (let k = 0; k < ruleIds.length; k++) {
               let rule = stone.rules[ruleIds[k]];
               if (!rule.syncedToCrownstone) {
-                this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule)
+                rulePromises.push(this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule));
+                syncRequired = true;
               }
+            }
+
+            if (syncRequired) {
+              BatchCommandHandler.executePriority()
+              Promise.all(rulePromises)
+                .then(() => {
+                  return this.checkAndSyncBehaviour(sphereIds[i], stoneIds[i]);
+                })
+                .catch((err) => { console.log("ERROR WITH SYNC", err)})
             }
           }
         }
@@ -173,17 +197,16 @@ class StoneDataSyncerClass {
   _syncRule(sphereId, stoneId, ruleId, stone, rule : behaviourWrapper) : Promise<string> {
     if (rule.deleted) {
       if (rule.idOnCrownstone !== null) {
-        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "removeBehaviour", index: rule.idOnCrownstone})
-          .then((returnData) : string => {
-            let masterHash = returnData.data;
+        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "removeBehaviour", index: rule.idOnCrownstone},{ keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
+          .then((returnData) => {
             core.store.dispatch({type: "REMOVE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
-            return masterHash
+            let masterHash = returnData.data && returnData.data.masterHash || null;
+            this.masterHashTracker[sphereId][stoneId] = masterHash;
           })
           .catch((err) => {
             console.log(err);
             return null;
           })
-        BatchCommandHandler.executePriority()
       }
       else {
         core.store.dispatch({type: "REMOVE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
@@ -197,11 +220,11 @@ class StoneDataSyncerClass {
       }
 
       if (rule.idOnCrownstone !== null) {
-        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "updateBehaviour", behaviour: behaviour})
+        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "updateBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
           .then((returnData) => {
             core.store.dispatch({type: "UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true}});
-            let masterHash = returnData.data;
-            return masterHash;
+            let masterHash = returnData.data && returnData.data.masterHash || null;
+            this.masterHashTracker[sphereId][stoneId] = masterHash;
           })
           .catch((err) => {
             console.log("Error during rule update", err);
@@ -209,22 +232,66 @@ class StoneDataSyncerClass {
           })
       }
       else {
-        BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "saveBehaviour", behaviour: behaviour})
+        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "saveBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
           .then((returnData) => {
             let index = returnData.data.index;
-            let masterHash = returnData.data.masterHash;
             core.store.dispatch({type: "UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true, idOnCrownstone: index}});
-            return masterHash;
+            let masterHash = returnData.data && returnData.data.masterHash || null;
+            this.masterHashTracker[sphereId][stoneId] = masterHash;
           })
           .catch((err) => {
             console.log("Error during rule create", err);
             return null;
           })
       }
-      BatchCommandHandler.executePriority()
     }
   }
+
+
+
+  checkAndSyncBehaviour(sphereId, stoneId) : Promise<behaviourTransfer[]> {
+    let stone = DataUtil.getStone(sphereId,stoneId);
+
+    let ruleIds = Object.keys(stone.rules);
+    let transferRules = [];
+    for (let k = 0; k < ruleIds.length; k++) {
+      let rule = stone.rules[ruleIds[k]];
+      let behaviour = xUtil.deepCopy(rule);
+      if (typeof behaviour.data === 'string') {
+        behaviour.data = JSON.parse(behaviour.data);
+      }
+      transferRules.push(behaviour);
+    }
+
+    if (transferRules.length === 0) { return Promise.resolve([]); }
+
+    return BluenetPromiseWrapper.getBehaviourMasterHash(transferRules)
+      .then((masterHash) => {
+        if (this.masterHashTracker[sphereId][stoneId] !== masterHash) {
+          // SYNC!
+          LOGi.behaviour("Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId])
+          return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "syncBehaviour", behaviours: transferRules})
+        }
+      })
+      .then((behaviours) => {
+        if (behaviours) {
+
+        }
+        LOGi.behaviour("DONE Syncing! \(behaviours)");
+
+        BatchCommandHandler.closeKeptOpenConnection();
+        // TODO: Check in cloud.
+        return [];
+      })
+      .catch((err) => {
+        console.log("Error during rule sync", err);
+        throw err;
+      })
+
+  }
+
 }
+
 
 
 export const StoneDataSyncer = new StoneDataSyncerClass();

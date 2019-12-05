@@ -222,6 +222,9 @@ class BatchCommandHandlerClass {
               case 'getBehaviour':
                 actionPromise = BluenetPromiseWrapper.getBehaviour(command.index);
                 break;
+              case 'syncBehaviour':
+                actionPromise = BluenetPromiseWrapper.syncBehaviours(command.behaviours);
+                break;
               case 'allowDimming':
                 actionPromise = BluenetPromiseWrapper.allowDimming(command.value);
                 break;

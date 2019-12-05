@@ -344,6 +344,18 @@ text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
         }
       }});
 
+    items.push({
+      label: "Show sync button for behaviour",
+      value: dev.show_sync_button_in_behaviour,
+      icon: <IconButton name={"md-refresh-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.green.hex}}/>,
+      type: 'switch',
+      callback:(newValue) => {
+        store.dispatch({
+          type: 'CHANGE_DEV_SETTINGS',
+          data: {show_sync_button_in_behaviour: newValue}
+        });
+      }});
+
 
 
 

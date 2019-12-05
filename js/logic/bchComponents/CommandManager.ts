@@ -50,7 +50,7 @@ export class CommandManager {
     let uuids = Object.keys(this.commands);
 
     let clean = (todo) => {
-      LOGd.bch("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
+      LOGd.bch("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName, todo);
       todo.promise.reject({code: BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE, message:"Removed because of duplicate"});
       todo.cleanup();
     };
@@ -84,6 +84,7 @@ export class CommandManager {
           case 'saveBehaviour':
           case 'updateBehaviour':
           case 'removeBehaviour':
+          case 'syncBehaviour':
           case 'getBehaviour':
             duplicate = xUtil.deepCompare(todo.command, command);
             break;

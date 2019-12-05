@@ -53,12 +53,15 @@ interface BluenetPromiseWrapperProtocol {
   broadcastSwitch(referenceId, stoneId, switchState):Promise< void >,
 
   saveBehaviour(behaviour: behaviourTransfer)   : Promise<behaviourReply>,
-  updateBehaviour(behaviour: behaviourTransfer) : Promise<number>,
-  removeBehaviour(index: number)                : Promise<number>,
+  updateBehaviour(behaviour: behaviourTransfer) : Promise<behaviourReply>,
+  removeBehaviour(index: number)                : Promise<behaviourReply>,
   getBehaviour(index: number)                   : Promise<behaviourTransfer>,
 
   setTapToToggle(enabled: boolean)              : Promise<void>,
   setTapToToggleThresholdOffset(rssiThresholdOffset: number): Promise<void>,
+
+  syncBehaviours(behaviours: behaviourTransfer[]): Promise<behaviourTransfer[]>,
+  getBehaviourMasterHash(behaviours: behaviourTransfer[]): Promise<number>,
 
   // dev
   switchRelay(state: number)                    : Promise< void >,

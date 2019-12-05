@@ -31,6 +31,7 @@ import { DataUtil } from "../../../util/DataUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
+import { StoneDataSyncer } from "../../../backgroundProcesses/StoneDataSyncer";
 
 
 let className = "DeviceSmartBehaviour";
@@ -273,6 +274,16 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 icon={'md-log-out'}
                 iconSize={14}
                 iconColor={colors.purple.blend(colors.menuTextSelected, 0.5).rgba(0.75)}
+              />
+            </SlideFadeInView>
+
+            <SlideFadeInView visible={this.state.editMode && state.development.show_sync_button_in_behaviour} height={80}>
+              <BehaviourSuggestion
+                backgroundColor={colors.csBlue.rgba(0.5)}
+                label={ "Sync behaviour" }
+                callback={() => {
+                  StoneDataSyncer.checkAndSyncBehaviour(this.props.sphereId, this.props.stoneId);
+                }}
               />
             </SlideFadeInView>
             <View style={{height:30}} />
