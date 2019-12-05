@@ -32,6 +32,7 @@ import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { StoneDataSyncer } from "../../../backgroundProcesses/StoneDataSyncer";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 let className = "DeviceSmartBehaviour";
@@ -67,12 +68,13 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
 
   componentDidMount(): void {
-    // core.store.dispatch({type:"REMOVE_ALL_RULES_OF_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId})
-
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (change.stoneChangeRules) {
+      if (
+        change.stoneChangeRules      && change.stoneChangeRules.stoneIds[this.props.stoneId] ||
+        change.updateStoneCoreConfig && change.updateStoneCoreConfig.stoneIds[this.props.stoneId]
+      ) {
         getTopBarProps(this.props, this.state);
         TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
         this.forceUpdate();
@@ -284,6 +286,9 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 callback={() => {
                   StoneDataSyncer.checkAndSyncBehaviour(this.props.sphereId, this.props.stoneId);
                 }}
+                icon={'md-refresh-circle'}
+                iconSize={14}
+                iconColor={colors.darkPurple.blend(colors.menuTextSelected, 0.5).rgba(0.75)}
               />
             </SlideFadeInView>
             <View style={{height:30}} />
@@ -301,6 +306,8 @@ function NoRulesYet(props) {
   let stone = sphere.stones[props.stoneId];
   if (!stone) return <View />;
 
+  let updateRequired = !xUtil.versions.canIUse(stone.config.firmwareVersion, '4.0.0')
+
   return (
     <Background image={core.background.lightBlurLighter} hasNavBar={false}>
       <ScrollView>
@@ -317,46 +324,69 @@ function NoRulesYet(props) {
           <Text style={styles.explanation}>{ "I can take multiple people in your household into account, or I could turn a light on at 50% when you use your wall switches after dark." }</Text>
           <Text style={styles.explanation}>{ "Tap the Add button below to get started or copy the behaviour from another Crownstone!" }</Text>
           <View style={{flex:1, minHeight: 40}} />
-          <BehaviourSuggestion
+          { updateRequired && <BehaviourSuggestion
             backgroundColor={colors.green.rgba(0.9)}
-            label={ "Add my first behaviour!"}
-            callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', {sphereId: props.sphereId, stoneId: props.stoneId}); }}
+            label={ "Update to use behaviour!"}
+            callback={() => { NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId}); }}
+          /> }
+
+          { !updateRequired && <BehaviourSuggestion
+            backgroundColor={colors.green.rgba(0.9)}
+            label={"Add my first behaviour!"}
+            callback={() => {
+              NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', {
+                sphereId: props.sphereId,
+                stoneId: props.stoneId
+              });
+            }}
           />
-          <BehaviourSuggestion
+          }
+          { !updateRequired && <BehaviourSuggestion
             backgroundColor={colors.menuTextSelected.rgba(0.6)}
-            label={ "Copy from another Crownstone!"}
+            label={"Copy from another Crownstone!"}
             icon={'md-log-in'}
             iconSize={14}
             iconColor={colors.menuTextSelected.rgba(0.75)}
             callback={() => {
-              NavigationUtil.launchModal("DeviceSmartBehaviour_CopyStoneSelection",{
-                ...props,
-                copyType: "FROM",
-                originId: props.stoneId,
-                originIsDimmable: stone.abilities.dimming.enabledTarget,
-                callback:(fromStoneId, selectedRuleIds) => {
-                  let stoneName = DataUtil.getStoneName(props.sphereId, fromStoneId);
-                  Alert.alert(
-                    "Shall I copy the behaviour from " + stoneName + "?",
-                    undefined,
-                    [{text:"Cancel"}, {text:"OK", onPress:() => {
-                        StoneUtil.copyRulesBetweenStones(props.sphereId, fromStoneId, props.stoneId, selectedRuleIds)
-                          .then((success) => {
-                            if (success) {
-                              let seeResults = () => {
-                                NavigationUtil.dismissModal();
-                              }
-                              Alert.alert(
-                                "Success!",
-                                "Behaviour has been copied!",
-                                [{text:"Great!", onPress:() => { seeResults() }}], {onDismiss: () => { seeResults() }})
+            NavigationUtil.launchModal("DeviceSmartBehaviour_CopyStoneSelection", {
+              ...props,
+              copyType: "FROM",
+              originId: props.stoneId,
+              originIsDimmable: stone.abilities.dimming.enabledTarget,
+              callback: (fromStoneId, selectedRuleIds) => {
+                let stoneName = DataUtil.getStoneName(props.sphereId, fromStoneId);
+                Alert.alert(
+                  "Shall I copy the behaviour from " + stoneName + "?",
+                  undefined,
+                  [{ text: "Cancel" }, {
+                    text: "OK", onPress: () => {
+                      StoneUtil.copyRulesBetweenStones(props.sphereId, fromStoneId, props.stoneId, selectedRuleIds)
+                        .then((success) => {
+                          if (success) {
+                            let seeResults = () => {
+                              NavigationUtil.dismissModal();
                             }
-                          })
-                      }}])
-                },
-              })
-            }}
-          />
+                            Alert.alert(
+                              "Success!",
+                              "Behaviour has been copied!",
+                              [{
+                                text: "Great!", onPress: () => {
+                                  seeResults()
+                                }
+                              }], {
+                                onDismiss: () => {
+                                  seeResults()
+                                }
+                              })
+                          }
+                        })
+                    }
+                  }])
+              },
+            })
+          }}
+            />
+          }
           <View style={{height:30}} />
         </View>
       </ScrollView>

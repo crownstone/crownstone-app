@@ -89,7 +89,11 @@ class StoneDataSyncerClass {
                 .then(() => {
                   return this.checkAndSyncBehaviour(sphereIds[i], stoneIds[i]);
                 })
-                .catch((err) => { console.log("ERROR WITH SYNC", err)})
+                .catch((err) => {
+                  if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+                    // this whould just trigger an update phase.
+                  }
+                })
             }
           }
         }
@@ -194,7 +198,7 @@ class StoneDataSyncerClass {
   }
 
 
-  _syncRule(sphereId, stoneId, ruleId, stone, rule : behaviourWrapper) : Promise<string> {
+  _syncRule(sphereId, stoneId, ruleId, stone, rule : behaviourWrapper) : Promise<void> {
     if (rule.deleted) {
       if (rule.idOnCrownstone !== null) {
         return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "removeBehaviour", index: rule.idOnCrownstone},{ keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
@@ -204,8 +208,8 @@ class StoneDataSyncerClass {
             this.masterHashTracker[sphereId][stoneId] = masterHash;
           })
           .catch((err) => {
-            console.log(err);
-            return null;
+            console.log("Error while removing", err);
+            throw err;
           })
       }
       else {
@@ -228,7 +232,7 @@ class StoneDataSyncerClass {
           })
           .catch((err) => {
             console.log("Error during rule update", err);
-            return null;
+            throw err;
           })
       }
       else {
@@ -241,7 +245,7 @@ class StoneDataSyncerClass {
           })
           .catch((err) => {
             console.log("Error during rule create", err);
-            return null;
+            throw err;
           })
       }
     }
