@@ -24,7 +24,7 @@ class SwitchRowController: NSObject {
     
     @IBAction func switchToggled(_ value: Bool) {
         
-        print("switchToggled")
+        //print("switchToggled")
         
         if let stone = self.switchableStone {
             var newSwitchState : Float = 0.0
@@ -32,7 +32,7 @@ class SwitchRowController: NSObject {
                 newSwitchState = 1.0
             }
             
-            print("Starting Toggle")
+            //print("Starting Toggle")
             
 //            stone.pendingAction = true
             bluenetManager.switchStoneBroadcast(stone.referenceId, stoneId: stone.crownstoneId, newSwitchState)

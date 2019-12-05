@@ -35,7 +35,7 @@ class BluenetManager {
         self.bluenet = Bluenet()
         self.listOfCrownstones = SortedCrownstoneCollection()
         self.unsubscribeArray = [voidCallback]()
-        
+
         bluenet.setDevicePreferences(rssiOffset: 0, tapToToggle: false, ignoreForBehaviour: true, useBackgroundBroadcasts: false, useBaseBroadcasts: false)
     }
     
@@ -54,7 +54,7 @@ class BluenetManager {
   }
     
     func _handleContext(_ applicationContext: Any) {
-        //print("I have received keysets", applicationContext)
+        //print("I have received applicationContext", applicationContext)
         if let context = applicationContext as? [String: Any] {
             if let keysets = context["keysets"] {
                 if let castSets = keysets as? [String: [String:String]] {
@@ -63,10 +63,10 @@ class BluenetManager {
                 }
             }
             if let locationState = context["locationState"] as? [String: Any] {
-                var sphereId : UInt8 = 0
+                var sphereId    : UInt8 = 0
                 var deviceToken : UInt8 = 0
                 var referenceId = "NO_REFERENCE_ID"
-                if let oSphereUID   = locationState["sphereId"]    as? NSNumber { sphereId    = oSphereUID.uint8Value }
+                if let oSphereUID   = locationState["sphereUID"]   as? NSNumber { sphereId    = oSphereUID.uint8Value }
                 if let oDeviceToken = locationState["deviceToken"] as? NSNumber { deviceToken = self._processDeviceToken(oDeviceToken.uint8Value) }
                 if let oReferenceId = locationState["referenceId"] as? String   { referenceId = oReferenceId }
                 
@@ -83,19 +83,19 @@ class BluenetManager {
     
     
     /**
-            The format of the device token is as follows (bits)
-     
-                    | 0 | 0 0 | 0 0 0 0 0 |
-     
-                first is wearable true: false
-                second is the device index
-                third is the user index
-     
-            This method will force this format.
+        The format of the device token is as follows (bits)
+ 
+                | 0 | 0 0 | 0 0 0 0 0 |
+ 
+            first is wearable true: false
+            second is the device index
+            third is the user index
+ 
+        This method will force this format.
             
      */
     func _processDeviceToken(_ deviceToken: UInt8) -> UInt8 {
-        return deviceToken & UInt8(1) << 7
+        return deviceToken | UInt8(1) << 7
     }
     
     func _applyKeySets() {
@@ -216,6 +216,7 @@ class BluenetManager {
     }
   
   public func switchStoneBroadcast(_ referenceId: String, stoneId: UInt8, _ newState: Float) {
+    print("Switching \(referenceId) \(stoneId) \(newState)")
      _ = self.bluenet.broadcast.multiSwitch(referenceId: referenceId, stoneId: stoneId, switchState: newState)
   }
 }
