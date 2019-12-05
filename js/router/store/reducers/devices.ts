@@ -12,6 +12,8 @@ let defaultSettings = {
   locale: null,
   installationId: null,
 
+  deviceUID: 0,
+
   rssiOffset: 0,
   updatedAt: 1
 };
@@ -41,6 +43,7 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
         newState.address                = update(action.data.address,                newState.address);
         newState.cloudId                = update(action.data.cloudId,                newState.cloudId);
         newState.description            = update(action.data.description,            newState.description);
+        newState.deviceUID              = update(action.data.deviceUID,              newState.deviceUID);
         newState.os                     = update(action.data.os,                     newState.os);
         newState.userAgent              = update(action.data.userAgent,              newState.userAgent);
         newState.model                  = update(action.data.model,                  newState.model);

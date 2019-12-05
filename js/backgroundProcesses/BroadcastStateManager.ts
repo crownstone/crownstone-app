@@ -4,6 +4,7 @@ import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { SphereUtil } from "../util/SphereUtil";
 import { core } from "../core";
 import { LOGi } from "../logging/Log";
+import { DataUtil } from "../util/DataUtil";
 
 
 class BroadcastStateManagerClass {
@@ -168,10 +169,11 @@ class BroadcastStateManagerClass {
 
   /**
    * This token will allow a user to "claim" a switch of a Crownstone to avoid alternatingly flickering between two broadcast commands.
-   * TODO: This has to be per device ideally...
    * @private
    */
   _getDeviceToken(state, sphere) {
+    let device = DataUtil.getDevice(state);
+
     let sphereUserIds = Object.keys(sphere.users).sort();
     let userIndex = sphereUserIds.indexOf(state.user.userId);
 
@@ -181,7 +183,9 @@ class BroadcastStateManagerClass {
       userIndex = sphereUserIds.indexOf(state.user.userId);
     }
 
-    return (userIndex % 31) + 1;
+
+    //   this index is made of 2 bits of deviceToken, 1 bit of wearable true/false and 5 bits of userIndex
+    return (userIndex % 32) + (device.uid % 4 << 6);
   }
 
   _updateLocationState(sphereId, locationId = null) {
@@ -191,7 +195,9 @@ class BroadcastStateManagerClass {
 
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
+
     let deviceToken = this._getDeviceToken(state, sphere);
+
     let location = sphere.locations[locationId];
     let locationUid = location ? location.config.uid : 0;
 

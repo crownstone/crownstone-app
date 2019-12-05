@@ -191,7 +191,6 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
     return this;
   }
 
-
   doesActionMatch(otherAicoreBehaviour: AicoreBehaviour) : boolean {
     return xUtil.deepCompare(this.rule.action, otherAicoreBehaviour.rule.action);
   }

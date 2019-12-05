@@ -124,7 +124,7 @@ export class DEV_RawAdvertisements extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground image={backgroundImage} >
+      <AnimatedBackground image={backgroundImage} hideNotifications={true}>
         <ScrollView>
           <Text style={{fontSize: 13, backgroundColor: this.state.stateOfExternalCrownstone ? colors.green.rgba(0.6) : colors.white.rgba(0.6)}}>{this.state.advertisement}</Text>
         </ScrollView>

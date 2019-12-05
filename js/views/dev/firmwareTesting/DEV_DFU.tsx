@@ -182,7 +182,7 @@ export class DEV_DFU extends LiveComponent<{
     }
 
     return (
-      <AnimatedBackground image={backgroundImage} >
+      <AnimatedBackground image={backgroundImage} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(explanationColor)} separatorIndent={true} />
         </ScrollView>

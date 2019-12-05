@@ -22,7 +22,8 @@ import { base_core } from "../../../../base_core";
 interface matchingSpecs {
   id: string,
   address: string,
-  deviceInCloud: any
+  deviceInCloud: any,
+  uid: number,
 }
 
 
@@ -170,6 +171,7 @@ export class DeviceSyncer extends SyncingBase {
           address:     matchingSpecs.address,
           description: specs.description,
           cloudId:     matchingSpecs.id,
+          uid:         matchingSpecs.uid,
           os:          specs.os,
           model:       specs.model,
           deviceType:  specs.deviceType,
@@ -219,6 +221,7 @@ export class DeviceSyncer extends SyncingBase {
         address:      matchingSpecs.address,
         description:  specs.description,
         os:           specs.os,
+        uid:          matchingSpecs.uid,
         model:        specs.model,
         cloudId:      matchingSpecs.id,
         deviceType:   specs.deviceType,
@@ -319,28 +322,36 @@ export class DeviceSyncer extends SyncingBase {
 
   _findMatchingDeviceInCloud(localDeviceSpecs, devicesInCloud) : matchingSpecs {
     let deviceId = undefined;
+    let uid = 0;
     let address = localDeviceSpecs.address;
     let matchingDevice = undefined;
+
+    // sort this list so we deterministically get the deviceUID
+    devicesInCloud.sort((a,b) => { return new Date(a.updatedAt).valueOf() - new Date(b.updatedAt).valueOf(); })
+
     for (let i = 0; i < devicesInCloud.length; i++) {
       let cloudDevice = devicesInCloud[i];
       if (cloudDevice.address === localDeviceSpecs.address) {
         deviceId = cloudDevice.id;
         matchingDevice = cloudDevice;
+        uid = i;
         break;
       }
       else if (cloudDevice.name === localDeviceSpecs.name && cloudDevice.description === localDeviceSpecs.description) {
         deviceId = cloudDevice.id;
         address = cloudDevice.address;
         matchingDevice = cloudDevice;
+        uid = i;
       }
       else if (cloudDevice.description === localDeviceSpecs.description) {
         deviceId = cloudDevice.id;
         address = cloudDevice.address;
         matchingDevice = cloudDevice;
+        uid = i;
       }
     }
 
-    return { id: deviceId, address: address, deviceInCloud: matchingDevice };
+    return { id: deviceId, address: address, deviceInCloud: matchingDevice, uid: uid };
   }
 
 
