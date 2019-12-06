@@ -114,7 +114,7 @@ export function SmartBehaviourRule(props: {
       { /* Rule text */ }
       <TouchableOpacity style={{flex:1}} onPress={editCallback}>
         { props.startedYesterday && <Text style={yesterdayStyle}>{"(Started Yesterday)"}</Text> }
-        <Text style={labelStyle}>{ai.getSentence()}</Text>
+        <Text style={labelStyle}>{ai.getSentence(props.sphereId)}</Text>
         { props.rule.syncedToCrownstone === false && props.editMode && !props.ruleSelection ?
           <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center',}}>{"( Not on Crownstone yet... )"}</Text> : undefined }
       </TouchableOpacity>
