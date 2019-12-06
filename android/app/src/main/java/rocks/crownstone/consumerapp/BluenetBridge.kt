@@ -2106,7 +2106,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun genBehaviourReply(indexAndHash: BehaviourIndexAndHashPacket): WritableMap {
 		val map = Arguments.createMap()
 		map.putInt("index", indexAndHash.index.toInt())
-		map.putString("masterHash", indexAndHash.hash.toString())
+		map.putDouble("masterHash", indexAndHash.hash.hash.toDouble())
 		return map
 	}
 
