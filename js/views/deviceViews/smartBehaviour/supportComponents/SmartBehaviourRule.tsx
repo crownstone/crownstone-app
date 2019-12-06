@@ -152,7 +152,7 @@ function RuleDescription(props, ai, editCallback) {
   }
 
   let content = (
-    <View style={{flex:1}}>
+    <View style={{flex:1, paddingHorizontal: props.editMode ? 0 : 15 }}>
       { props.startedYesterday && <Text style={yesterdayStyle}>{"(Started Yesterday)"}</Text> }
       <Text style={labelStyle}>{ai.getSentence(props.sphereId)}</Text>
       { props.rule.syncedToCrownstone === false && props.editMode && !props.ruleSelection ? <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center',}}>{syncLabel}</Text> : undefined }

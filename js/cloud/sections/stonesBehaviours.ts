@@ -21,6 +21,7 @@ export const stonesBehaviours = {
     );
   },
   deleteBehaviour: function(localBehaviourId, background = true) {
+    console.log("HERE", localBehaviourId, MapProvider.local2cloudMap)
     let cloudBehaviourId = MapProvider.local2cloudMap.behaviours[localBehaviourId] || localBehaviourId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(
       'DELETE',

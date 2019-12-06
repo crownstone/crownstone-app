@@ -55,6 +55,7 @@ class MapProviderClass {
           change.changeSphereState   ||
           change.changeSpheres       ||
           change.changeSphereUsers   ||
+          change.stoneChangeRules    ||
           change.changeLocations     ||
           change.changeStones        ||
           change.changeStoneHandle   ||
@@ -146,7 +147,7 @@ class MapProviderClass {
       getFromId(sphere.users,                this.cloud2localMap.users,      this.local2cloudMap.users);
 
       Object.keys(sphere.stones).forEach((stoneId) => {
-        getFromItem(sphere.stones[stoneId].rules,   this.cloud2localMap.behaviours,      this.local2cloudMap.behaviours);
+        getFromItem(sphere.stones[stoneId].rules,   this.cloud2localMap.behaviours, this.local2cloudMap.behaviours);
       })
     });
   }

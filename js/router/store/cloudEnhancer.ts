@@ -324,7 +324,7 @@ function removeBehaviourInCloud(action, state, oldState) {
   if (!rule) { return }
 
   if (rule.cloudId !== undefined) {
-    CLOUD.forStone(stoneId).deleteBehaviour(ruleId);
+    CLOUD.forStone(stoneId).deleteBehaviour(rule.cloudId); // we pass the cloud id since the data is already gone from the MapProvider.
   }
 }
 
@@ -355,16 +355,18 @@ function handleBehaviourInCloud(action, state) {
     })
   }
   else {
-    let actions = [];
-    transferBehaviours.createOnCloud(actions,{
-      localId: ruleId,
-      localData: rule,
-      localSphereId: sphereId,
-      localStoneId: stoneId,
-      cloudStoneId: stone.config.cloudId,
-      cloudSphereId: sphere.config.cloudId,
-    })
-    core.store.batchDispatch(actions);
+    if (action.type === "ADD_STONE_RULE") {
+      let actions = [];
+      transferBehaviours.createOnCloud(actions, {
+        localId: ruleId,
+        localData: rule,
+        localSphereId: sphereId,
+        localStoneId: stoneId,
+        cloudStoneId: stone.config.cloudId,
+        cloudSphereId: sphere.config.cloudId,
+      })
+      core.store.batchDispatch(actions);
+    }
   }
 }
 
