@@ -327,7 +327,7 @@ function NoRulesYet(props) {
           { updateRequired && <BehaviourSuggestion
             backgroundColor={colors.green.rgba(0.9)}
             label={ "Update to use behaviour!"}
-            callback={() => { NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId}); }}
+            callback={() => { NavigationUtil.launchModal( "DfuIntroduction", {sphereId: props.sphereId}); }}
           /> }
 
           { !updateRequired && <BehaviourSuggestion
