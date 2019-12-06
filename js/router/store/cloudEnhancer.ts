@@ -323,7 +323,7 @@ function removeBehaviourInCloud(action, state, oldState) {
   let rule = stone.rules[ruleId];
   if (!rule) { return }
 
-  if (rule.cloudId !== undefined) {
+  if (rule.cloudId !== undefined && rule.cloudId !== null) {
     CLOUD.forStone(stoneId).deleteBehaviour(rule.cloudId); // we pass the cloud id since the data is already gone from the MapProvider.
   }
 }
@@ -365,7 +365,10 @@ function handleBehaviourInCloud(action, state) {
         cloudStoneId: stone.config.cloudId,
         cloudSphereId: sphere.config.cloudId,
       })
-      core.store.batchDispatch(actions);
+        .then(() => {
+          core.store.batchDispatch(actions);
+        })
+        .catch((err) => { console.log("Error handleBehaviourInCloud",err)})
     }
   }
 }

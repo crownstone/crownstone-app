@@ -98,6 +98,9 @@ export class StoneBehaviourSyncer extends SyncingStoneItemBase {
     let behaviourIds = Object.keys(behavioursInState);
     for (let i = 0; i < behaviourIds.length; i++) {
       let behaviour = behavioursInState[behaviourIds[i]];
+
+      console.log("Matching cloud behaviour", cloud_behaviour, " with", behavioursInState)
+
     }
 
     return null;
