@@ -68,12 +68,12 @@ export const AicoreUtil = {
             locationStr = AicoreUtil.getLocationNameFromUid(sphereId, pd.locationIds[0]);
             if (pd.locationIds.length > 1) {
               for (let i = 1; i < pd.locationIds.length - 1; i++) {
-                let locationCloudId = pd.locationIds[i];
-                let locationName = AicoreUtil.getLocationName(locationCloudId);
+                let locationUid = pd.locationIds[i];
+                let locationName = AicoreUtil.getLocationNameFromUid(sphereId, locationUid);
                 locationStr += ", " + locationName;
               }
 
-              locationStr += " or " + AicoreUtil.getLocationName(pd.locationIds[pd.locationIds.length - 1]);
+              locationStr += " or " + AicoreUtil.getLocationNameFromUid(sphereId, pd.locationIds[pd.locationIds.length - 1]);
             }
           }
       }
@@ -147,19 +147,6 @@ export const AicoreUtil = {
     return {endConditionPrefix, endConditionStr};
   },
 
-
-  getLocationName(locationCloudId : string) {
-    let state = core.store.getState();
-    let sphereIds = Object.keys(state.spheres);
-    let localId = MapProvider.cloud2localMap.locations[locationCloudId] || locationCloudId;
-    for (let i = 0; i < sphereIds.length; i++) {
-      if (state.spheres[sphereIds[i]].locations[localId] !== undefined) {
-        return state.spheres[sphereIds[i]].locations[localId].config.name;
-      }
-    }
-
-    return "(deleted location)";
-  },
 
   getLocationNameFromUid(sphereId: string, locationUID: number) {
     let locationData = MapProvider.locationUIDMap[sphereId][locationUID]

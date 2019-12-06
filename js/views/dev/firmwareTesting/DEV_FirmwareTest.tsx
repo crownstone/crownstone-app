@@ -274,7 +274,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
           type: 'slider',
           disabled: FocusManager.crownstoneState.switchState === null,
           value: FocusManager.crownstoneState.switchStateValue,
-          step: 0.01,
+          step: 0.025,
           min: 0,
           max: 1,
           callback: (value) => {
@@ -303,7 +303,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
           type: 'slider',
           disabled: FocusManager.crownstoneState.switchState === null,
           value: FocusManager.crownstoneState.switchStateValue,
-          step: 0.01,
+          step: 0.025,
           min: 0,
           max: 1,
           callback: (value) => {
