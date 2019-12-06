@@ -94,13 +94,27 @@ export class StoneBehaviourSyncer extends SyncingStoneItemBase {
 
 
   _searchForLocalMatch(behavioursInState, cloud_behaviour) {
-    console.log("TODO: implement _searchForLocalMatch for behaviour ")
     let behaviourIds = Object.keys(behavioursInState);
+    let cloudBehaviourParsed = JSON.parse(cloud_behaviour.data);
     for (let i = 0; i < behaviourIds.length; i++) {
       let behaviour = behavioursInState[behaviourIds[i]];
-
+      if (
+        behaviour.profileIndex   === cloud_behaviour.profileIndex &&
+        behaviour.type           === cloud_behaviour.type &&
+        behaviour.activeDays.Mon === cloud_behaviour.activeDays.Mon &&
+        behaviour.activeDays.Tue === cloud_behaviour.activeDays.Tue &&
+        behaviour.activeDays.Wed === cloud_behaviour.activeDays.Wed &&
+        behaviour.activeDays.Thu === cloud_behaviour.activeDays.Thu &&
+        behaviour.activeDays.Fri === cloud_behaviour.activeDays.Fri &&
+        behaviour.activeDays.Sat === cloud_behaviour.activeDays.Sat &&
+        behaviour.activeDays.Sun === cloud_behaviour.activeDays.Sun
+      ) {
+        let parsedData = JSON.parse(behaviour.data);
+        if (xUtil.deepCompare(cloudBehaviourParsed, parsedData)) {
+          return behaviourIds[i];
+        }
+      }
       console.log("Matching cloud behaviour", cloud_behaviour, " with", behavioursInState)
-
     }
 
     return null;
