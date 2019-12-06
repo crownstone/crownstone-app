@@ -34,7 +34,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   }
 
 
-  _getChunks() {
+  _getChunks(sphereId: string) {
     let intentionStr = "If I'm turned on";
     let timeStr   = AicoreUtil.extractTimeString(this.rule, true) + ',';
     let actionStr = AicoreUtil.extractActionString(this.rule);
@@ -47,8 +47,8 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   }
 
 
-  getSentence() {
-    let chunks = this._getChunks();
+  getSentence(sphereId: string) {
+    let chunks = this._getChunks(sphereId);
 
     let sentence = "";
     sentence += chunks.intention.label;
@@ -60,8 +60,8 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   }
 
 
-  getSelectableChunkData() : selectableAicoreBehaviourChunk[] {
-    let chunks = this._getChunks();
+  getSelectableChunkData(sphereId: string) : selectableAicoreBehaviourChunk[] {
+    let chunks = this._getChunks(sphereId);
 
     let result : selectableAicoreBehaviourChunk[]= [];
 

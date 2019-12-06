@@ -19,6 +19,7 @@ const EXPLANATION_HEIGHT = 40;
 const SLIDER_HEIGHT = 60;
 
 export function SliderBar(props) {
+  let [sliderValue, setSliderValue] = useState( props.value );
   let [sliderHidden, setSliderHidden] = useState(props.sliderHidden === true)
 
   let iconWidth   = 0;
@@ -68,10 +69,10 @@ export function SliderBar(props) {
             minimumValue={props.min}
             maximumValue={props.max}
             step={props.step || 1}
-            value={props.value}
+            value={sliderValue}
             minimumTrackTintColor={colors.gray.hex}
             maximumTrackTintColor={colors.gray.hex}
-            onValueChange={props.callback}
+            onValueChange={(value) => { setSliderValue(value); props.callback(value); }}
           />
         </View>
         { props.explanation &&

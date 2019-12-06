@@ -85,7 +85,7 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
           },
           {
             label: "Twilight mode",
-            subLabel: '"' + twilightExamples[0].getSentence() + '"',
+            subLabel: '"' + twilightExamples[0].getSentence(this.props.sphereId) + '"',
             image: { source: require('../../../images/icons/twilight.png'), sourceWidth: 529, sourceHeight: 398, width: 0.18*screenWidth },
             onSelect: () => {
               let state = core.store.getState();
