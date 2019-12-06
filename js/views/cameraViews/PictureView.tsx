@@ -88,19 +88,47 @@ export class PictureView extends Component<any, any> {
   render() {
     let width = screenWidth;
     let height = screenHeight;
-    if (this.state.orientation === "landscape") {
-      width = height;
-      height = screenWidth;
-    }
 
+    let x = screenWidth;
+    let y = screenHeight;
 
     // somehow the camera does not take full screen size.
     let buttonSize = Math.min(60,0.18 * width);
 
     // has aspect ratio
     let isSquare = this.props.isSquare === true;
+
     let bottomPadding = 15;
     let bottomHeight = buttonSize + 2*bottomPadding + tabBarMargin;
+    let maxSquarePictureHeight = height - topBarHeight - bottomHeight;
+
+
+    let pictureWidth  = 100;
+    let pictureHeight = 100;
+
+    if (this.state.orientation === "landscape") {
+      x = screenHeight;
+      y = screenWidth;
+
+      if (isSquare) {
+        pictureWidth = screenWidth - topBarHeight;
+        pictureHeight = screenWidth- topBarHeight;
+      }
+      else {
+        pictureWidth = Math.min(screenHeight,1.5*(screenWidth - 0.5*topBarHeight));
+        pictureHeight = screenWidth - 0.5*topBarHeight;
+      }
+    }
+    else {
+      if (isSquare) {
+        pictureWidth = screenWidth;
+        pictureHeight = screenWidth;
+      }
+      else {
+        pictureWidth = screenWidth;
+        pictureHeight = maxSquarePictureHeight;
+      }
+    }
 
     let bottomStyle : ViewStyle = {
       position:'absolute',
@@ -111,33 +139,41 @@ export class PictureView extends Component<any, any> {
       paddingHorizontal: 20,
       flexDirection:'row',
       height: bottomHeight,
-      width: width,
+      width: x,
       paddingBottom: tabBarMargin,
-      backgroundColor: colors.black.hex,
+      backgroundColor: 'transparent',
     };
 
-    let maxSquarePictureHeight = height - topBarHeight - bottomHeight;
 
     if (this.state.picture) {
       return (
-        <View style={{flex:1, width: width, height: height, backgroundColor:colors.black.hex}}>
-          <TopbarImitation
-            leftStyle={{color: colors.white.hex}}
+        <View style={{flex:1, width: x, height: y, backgroundColor:colors.black.hex}}>
+          {this.state.orientation === 'portrait' && <TopbarImitation
+            leftStyle={{ color: colors.white.hex }}
             left={Platform.OS === 'android' ? null : "Back"}
-            leftAction={() => { this.cleanup(); NavigationUtil.dismissModal(); }}
-            style={{backgroundColor:colors.black.hex, paddingTop: this.state.orientation === 'portrait' ? statusBarHeight : 0, width: width}}
+            leftAction={() => {
+              this.cleanup();
+              NavigationUtil.dismissModal();
+            }}
+            style={{
+              backgroundColor: colors.black.hex,
+              paddingTop: this.state.orientation === 'portrait' ? statusBarHeight : 0,
+              width: width
+            }}
             title={"Did it go well?"}
           />
-          <View style={{width: width, height: 2, backgroundColor: colors.csOrange.hex }} />
-          <View style={{flex:1}} />
-          <Image
-            source={{uri:this.state.picture}}
-            style={{
-              width: width,
-              height: isSquare ? Math.min(width, maxSquarePictureHeight) : height,
-            }}
-          />
-          <View style={{flex:1}} />
+          }
+          { this.state.orientation === 'portrait' && <View style={{width: x, height: 2, backgroundColor: colors.csOrange.hex }} /> }
+          <View style={{flex:1, flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+            <Image
+              source={{uri:this.state.picture}}
+              style={{
+                width: pictureWidth,
+                height: pictureHeight,
+              }}
+            />
+          </View>
+          { this.state.orientation === "portrait" && <View style={{height:bottomHeight*0.5, width: screenWidth}} /> }
           <View style={bottomStyle}>
             <TouchableOpacity
               style={{alignItems:'center', justifyContent:'center'}}
@@ -156,18 +192,18 @@ export class PictureView extends Component<any, any> {
               <Text style={{fontSize:16, color:colors.white.hex}}>{"Done"}</Text>
             </TouchableOpacity>
           </View>
-          <View style={{height:tabBarMargin, width:width}} />
+          <View style={{height:tabBarMargin, width:x}} />
         </View>
       );
     }
     else {
       return (
-        <View style={{flex:1, width: width, height: height, backgroundColor:colors.black.hex}}>
-          <TopbarImitation
+        <View style={{flex:1, width: x, height: y, backgroundColor:colors.black.hex}}>
+          { this.state.orientation === 'portrait'  && <TopbarImitation
             leftStyle={{color: colors.white.hex}}
             left={Platform.OS === 'android' ? null : "Back"}
             leftAction={() => { NavigationUtil.dismissModal(); }}
-            style={{backgroundColor:colors.black.hex, paddingTop: this.state.orientation === 'portrait' ? statusBarHeight : 0, width: width}}
+            style={{backgroundColor:colors.black.hex, width: x}}
             title={"Take a Picture"}
             rightAction={() => {
               this.cleanup();
@@ -183,39 +219,40 @@ export class PictureView extends Component<any, any> {
                 <Icon name={'md-images'} color={colors.white.hex} size={30} />
               </View>
             }
-          />
-          <View style={{width: width, height: 2, backgroundColor: colors.csOrange.hex }} />
-          <View style={{flex:1}} />
-          <RNCamera
-            ref={ref => {
-              this.camera = ref;
-            }}
-            captureAudio={false}
-            style={{
-              width: width,
-              height: isSquare ? Math.min(width, maxSquarePictureHeight) : height,
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-            }}
-            type={this.state.cameraType}
-            flashMode={this.state.flashMode}
-            androidCameraPermissionOptions={{
-              title: 'Permission to use camera',
-              message: 'We need your permission to use your camera',
-              buttonPositive: 'Ok',
-              buttonNegative: 'Cancel',
-            }}
-            androidRecordAudioPermissionOptions={{
-              title: 'Permission to use audio recording',
-              message: 'We need your permission to use your audio',
-              buttonPositive: 'Ok',
-              buttonNegative: 'Cancel',
-            }}
-            // onGoogleVisionBarcodesDetected={({ barcodes }) => {
-            //   console.log(barcodes);
-            // }}
-          />
-          <View style={{flex:1}} />
+          /> }
+          { this.state.orientation === 'portrait'  && <View style={{width: x, height: 2, backgroundColor: colors.csOrange.hex }} /> }
+          <View style={{flex:1, flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+            <RNCamera
+              ref={ref => {
+                this.camera = ref;
+              }}
+              captureAudio={false}
+              style={{
+                width: pictureWidth,
+                height: pictureHeight,
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}
+              type={this.state.cameraType}
+              flashMode={this.state.flashMode}
+              androidCameraPermissionOptions={{
+                title: 'Permission to use camera',
+                message: 'We need your permission to use your camera',
+                buttonPositive: 'Ok',
+                buttonNegative: 'Cancel',
+              }}
+              androidRecordAudioPermissionOptions={{
+                title: 'Permission to use audio recording',
+                message: 'We need your permission to use your audio',
+                buttonPositive: 'Ok',
+                buttonNegative: 'Cancel',
+              }}
+              // onGoogleVisionBarcodesDetected={({ barcodes }) => {
+              //   console.log(barcodes);
+              // }}
+            />
+          </View>
+          { this.state.orientation === "portrait" && <View style={{height:bottomHeight*0.5, width: screenWidth}} /> }
           <View style={bottomStyle}>
             <View style={{alignItems:'center', justifyContent:'center'}}>{this.getFlashIcon()}</View>
             <View style={{flex:1}} />
@@ -238,7 +275,7 @@ export class PictureView extends Component<any, any> {
               <Icon name={'ios-reverse-camera'} color={colors.white.hex} size={40} />
             </TouchableOpacity>
           </View>
-          <View style={{height:tabBarMargin, width:width}} />
+          <View style={{height:tabBarMargin, width:x}} />
         </View>
       );
     }

@@ -76,7 +76,9 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
   bleAction(action : (...any) => Promise<any>, props = [], type = null, resultHandler = (any) => {}, connect = true, immediate = false) {
     if (this.state.bleState === BLE_STATE_BUSY) {
-      Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
+      if (immediate === false) {
+        Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
+      }
       return;
     }
 
@@ -272,6 +274,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
           type: 'slider',
           disabled: FocusManager.crownstoneState.switchState === null,
           value: FocusManager.crownstoneState.switchStateValue,
+          step: 0.01,
           min: 0,
           max: 1,
           callback: (value) => {
@@ -300,6 +303,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
           type: 'slider',
           disabled: FocusManager.crownstoneState.switchState === null,
           value: FocusManager.crownstoneState.switchStateValue,
+          step: 0.01,
           min: 0,
           max: 1,
           callback: (value) => {
@@ -339,6 +343,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
           type: 'slider',
           disabled: FocusManager.crownstoneState.dimmerState === null,
           value: FocusManager.crownstoneState.dimmerState,
+          step: 0.01,
           min: 0,
           max: 0.99,
           callback: (value) => {
