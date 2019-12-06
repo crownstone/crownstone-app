@@ -217,10 +217,10 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.updateBehaviour(command.behaviour);
                 break;
               case 'removeBehaviour':
-                actionPromise = BluenetPromiseWrapper.removeBehaviour(command.index);
+                actionPromise = BluenetPromiseWrapper.removeBehaviour(Number(command.index));
                 break;
               case 'getBehaviour':
-                actionPromise = BluenetPromiseWrapper.getBehaviour(command.index);
+                actionPromise = BluenetPromiseWrapper.getBehaviour(Number(command.index));
                 break;
               case 'syncBehaviour':
                 actionPromise = BluenetPromiseWrapper.syncBehaviours(command.behaviours);

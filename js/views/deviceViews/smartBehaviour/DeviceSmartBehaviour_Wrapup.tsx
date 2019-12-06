@@ -170,7 +170,6 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
         }
       })
 
-
       updateRuleWithNewActiveDays(newActiveDaysForRule, rule, ruleId);
     }
 
@@ -232,6 +231,14 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       }
     }
     else {
+      // search for behaviour that is the same as the behaviour to see if we can merge them.
+      for (let i = 0; i < ruleIds.length; i++) {
+        if (this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
+          Alert.alert("Behaviour already exists!","You already have a behaviour that does exactly this. There's no need to add another!",[{text:"OK"}])
+          return;
+        }
+      }
+
       // this is a new rule!
       let newRuleId = xUtil.getUUID();
       actions.push({

@@ -27,25 +27,8 @@ export function SmartBehaviourRule(props: {
   if      (props.rule.type === "BEHAVIOUR") { ai = new AicoreBehaviour(props.rule.data); }
   else if (props.rule.type === "TWILIGHT")  { ai = new AicoreTwilight(props.rule.data);  }
 
-  let labelStyle : TextStyle = {
-    color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
-    fontSize:16,
-    textAlign:'center',
-    textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
-  };
-  let yesterdayStyle : TextStyle = {
-    color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
-    fontSize: 13,
-    textAlign:'center',
-    fontWeight:'bold',
-    textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
-  };
-  if (props.selected) {;
-    labelStyle['color'] = colors.csBlueDark.hex;
-    labelStyle['fontWeight'] = 'bold';
-  }
-
   let showEditIcons = props.editMode && !props.ruleSelection && !props.rule.deleted;
+
   const editCallback = () => {
     NavigationUtil.launchModal(
       "DeviceSmartBehaviour_Editor",
@@ -58,7 +41,6 @@ export function SmartBehaviourRule(props: {
         isModal: true,
       });
   }
-
 
   return (
     <View style={{padding:15, flexDirection: 'row', width: screenWidth, alignItems:'center', justifyContent:'center'}}>
@@ -112,12 +94,7 @@ export function SmartBehaviourRule(props: {
       { /* /ActivityIndicator for sync required */ }
 
       { /* Rule text */ }
-      <TouchableOpacity style={{flex:1}} onPress={editCallback}>
-        { props.startedYesterday && <Text style={yesterdayStyle}>{"(Started Yesterday)"}</Text> }
-        <Text style={labelStyle}>{ai.getSentence(props.sphereId)}</Text>
-        { props.rule.syncedToCrownstone === false && props.editMode && !props.ruleSelection ?
-          <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center',}}>{"( Not on Crownstone yet... )"}</Text> : undefined }
-      </TouchableOpacity>
+      { RuleDescription(props, ai, editCallback) }
       { /* /Rule text */ }
 
 
@@ -146,3 +123,51 @@ export function SmartBehaviourRule(props: {
   );
 }
 
+function RuleDescription(props, ai, editCallback) {
+  let labelStyle : TextStyle = {
+    color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
+    fontSize:16,
+    textAlign:'center',
+    textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
+  };
+
+  if (props.selected) {;
+    labelStyle['color'] = colors.csBlueDark.hex;
+    labelStyle['fontWeight'] = 'bold';
+  }
+
+  let yesterdayStyle : TextStyle = {
+    color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
+    fontSize: 13,
+    textAlign:'center',
+    fontWeight:'bold',
+    textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
+  };
+
+
+
+  let syncLabel = "( Not on Crownstone yet... )";
+  if (props.rule.deleted) {
+    syncLabel = "( Not removed from Crownstone yet... )"
+  }
+
+  let content = (
+    <View style={{flex:1}}>
+      { props.startedYesterday && <Text style={yesterdayStyle}>{"(Started Yesterday)"}</Text> }
+      <Text style={labelStyle}>{ai.getSentence(props.sphereId)}</Text>
+      { props.rule.syncedToCrownstone === false && props.editMode && !props.ruleSelection ? <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center',}}>{syncLabel}</Text> : undefined }
+    </View>
+  )
+
+  if (props.editMode) {
+    return (
+      <TouchableOpacity style={{flex:1}} onPress={editCallback}>
+        {content}
+      </TouchableOpacity>
+    )
+  }
+  else {
+    return content;
+  }
+
+}
