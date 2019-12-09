@@ -179,6 +179,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     if (this.props.deleteRule) {
       removeActiveDaysFromRule(rules[this.props.ruleId], this.props.ruleId)
       core.store.batchDispatch(actions);
+      NavigationUtil.dismissModal();
       return;
     }
 
@@ -234,7 +235,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       // search for behaviour that is the same as the behaviour to see if we can merge them.
       for (let i = 0; i < ruleIds.length; i++) {
         if (this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
-          Alert.alert("Behaviour already exists!","You already have a behaviour that does exactly this. There's no need to add another!",[{text:"OK"}])
+          Alert.alert("Behaviour already exists!","You already have a behaviour that does exactly this. There's no need to add another!",[{text:"OK", onPress:() => { NavigationUtil.dismissModal();}}], {cancelable: false})
           return;
         }
       }
@@ -269,6 +270,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     }
 
     core.store.batchDispatch(actions);
+    NavigationUtil.dismissModal();
   }
 
   getOptionContext() {
@@ -316,7 +318,6 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
 
     this._handleSubmit();
-    NavigationUtil.dismissModal();
   }
 
 

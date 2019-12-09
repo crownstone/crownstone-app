@@ -94,7 +94,7 @@ export function SmartBehaviourRule(props: {
       { /* /ActivityIndicator for sync required */ }
 
       { /* Rule text */ }
-      { RuleDescription(props, ai, editCallback) }
+      { RuleDescription(props, ai, editCallback, showEditIcons) }
       { /* /Rule text */ }
 
 
@@ -123,7 +123,7 @@ export function SmartBehaviourRule(props: {
   );
 }
 
-function RuleDescription(props, ai, editCallback) {
+function RuleDescription(props, ai, editCallback, showEditIcons) {
   let labelStyle : TextStyle = {
     color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
     fontSize:16,
@@ -144,6 +144,7 @@ function RuleDescription(props, ai, editCallback) {
     textDecorationLine: props.rule.deleted ? 'line-through' : 'none'
   };
 
+  let paddingHorizontal = showEditIcons ? 0 : 20;
 
 
   let syncLabel = "( Not on Crownstone yet... )";
@@ -152,7 +153,7 @@ function RuleDescription(props, ai, editCallback) {
   }
 
   let content = (
-    <View style={{flex:1}}>
+    <View style={{flex:1, paddingHorizontal: paddingHorizontal }}>
       { props.startedYesterday && <Text style={yesterdayStyle}>{"(Started Yesterday)"}</Text> }
       <Text style={labelStyle}>{ai.getSentence(props.sphereId)}</Text>
       { props.rule.syncedToCrownstone === false && props.editMode && !props.ruleSelection ? <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center',}}>{syncLabel}</Text> : undefined }

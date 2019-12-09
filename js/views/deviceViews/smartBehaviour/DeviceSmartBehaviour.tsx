@@ -33,6 +33,7 @@ import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { StoneDataSyncer } from "../../../backgroundProcesses/StoneDataSyncer";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 
 
 let className = "DeviceSmartBehaviour";
@@ -68,6 +69,13 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
 
   componentDidMount(): void {
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    let stone = sphere.stones[this.props.stoneId];
+    let rules = stone.rules;
+    console.log("RULES", rules)
+    console.log("MAP", MapProvider.local2cloudMap)
+
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
