@@ -173,6 +173,10 @@ class BroadcastStateManagerClass {
    */
   _getDeviceToken(state, sphere) {
     let device = DataUtil.getDevice(state);
+    let deviceUID = 0;
+    if (device) {
+      deviceUID = device.uid || 0;
+    }
 
     let sphereUserIds = Object.keys(sphere.users).sort();
     let userIndex = sphereUserIds.indexOf(state.user.userId);
@@ -185,7 +189,7 @@ class BroadcastStateManagerClass {
 
 
     //   this index is made of 2 bits of deviceToken, 1 bit of wearable true/false and 5 bits of userIndex
-    return (userIndex % 32) + (device.uid % 4 << 6);
+    return (userIndex % 32) + (deviceUID % 4 << 6);
   }
 
   _updateLocationState(sphereId, locationId = null) {

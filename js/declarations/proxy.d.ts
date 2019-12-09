@@ -1,3 +1,4 @@
+
 interface BluenetPromiseWrapperProtocol {
   clearTrackedBeacons()                                               : Promise< void >,
   commandFactoryReset()                                               : Promise< void >,
@@ -31,7 +32,16 @@ interface BluenetPromiseWrapperProtocol {
   // new
   clearErrors(clearErrorJSON : clearErrorData)  : Promise< void >,
   restartCrownstone()                           : Promise< void >,
+  setSuntimesOnCrownstone(
+    sunriseSecondsSinceMidnight: number,
+    sunsetSecondsSinceMidnight: number)         : Promise< void >,
   setTime(time : number)                        : Promise< void >,
+  setTimeViaBroadcast(
+    time : number,
+    sunriseSecondsSinceMidnight: number,
+    sunsetSecondsSinceMidnight: number,
+    referenceId: string,
+  )                                             : Promise< void >,
   meshSetTime(time : number)                    : Promise< void >,
   getTime()                                     : Promise< number >, // timestamp in seconds since epoch
 
@@ -52,7 +62,7 @@ interface BluenetPromiseWrapperProtocol {
 
   broadcastSwitch(referenceId, stoneId, switchState):Promise< void >,
 
-  saveBehaviour(behaviour: behaviourTransfer)   : Promise<behaviourReply>,
+  addBehaviour(behaviour: behaviourTransfer)    : Promise<behaviourReply>,
   updateBehaviour(behaviour: behaviourTransfer) : Promise<behaviourReply>,
   removeBehaviour(index: number)                : Promise<behaviourReply>,
   getBehaviour(index: number)                   : Promise<behaviourTransfer>,

@@ -38,6 +38,7 @@ export function SmartBehaviourRule(props: {
         stoneId: props.stoneId,
         ruleId: props.ruleId,
         selectedDay: props.activeDay,
+        twilightRule: props.rule.type === "TWILIGHT",
         isModal: true,
       });
   }
@@ -76,6 +77,7 @@ export function SmartBehaviourRule(props: {
                 stoneId: props.stoneId,
                 ruleId: props.ruleId,
                 rule: props.rule.data,
+                twilightRule: props.rule.type === "TWILIGHT",
                 selectedDay: props.activeDay,
                 deleteRule: true,
                 isModal: true,

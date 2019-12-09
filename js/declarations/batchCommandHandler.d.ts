@@ -52,7 +52,7 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'getBootloaderVersion' } |
   { commandName : 'getFirmwareVersion' } |
   { commandName : 'getHardwareVersion' } |
-  { commandName : 'saveBehaviour', behaviour: behaviourTransfer } |
+  { commandName : 'addBehaviour', behaviour: behaviourTransfer } |
   { commandName : 'updateBehaviour', behaviour: behaviourTransfer } |
   { commandName : 'removeBehaviour', index: number } |
   { commandName : 'getBehaviour', index: number } |
@@ -61,8 +61,9 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'sendNoOp' } |
   { commandName : 'sendMeshNoOp' } |
   { commandName : 'getTime' } |
-  { commandName : 'meshSetTime', time: number } |
-  { commandName : 'setTime', time: number } |
+  { commandName : 'meshSetTime', time:  number } |
+  { commandName : 'setTime',     time?: number } |
+  { commandName : 'setSunTimes', sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number } |
   { commandName : 'clearErrors', clearErrorJSON: any } |
   { commandName : 'lockSwitch',     value: boolean } |
   { commandName : 'setSwitchCraft', value: boolean } |

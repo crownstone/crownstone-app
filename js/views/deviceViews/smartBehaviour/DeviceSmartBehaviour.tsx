@@ -292,7 +292,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 backgroundColor={colors.csBlue.rgba(0.5)}
                 label={ "Sync behaviour" }
                 callback={() => {
-                  StoneDataSyncer.checkAndSyncBehaviour(this.props.sphereId, this.props.stoneId);
+                  StoneDataSyncer.checkAndSyncBehaviour(this.props.sphereId, this.props.stoneId).catch(() => {});
                 }}
                 icon={'md-refresh-circle'}
                 iconSize={14}

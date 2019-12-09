@@ -210,8 +210,8 @@ class BatchCommandHandlerClass {
               case 'setSwitchCraft':
                 actionPromise = BluenetPromiseWrapper.setSwitchCraft(command.value);
                 break;
-              case 'saveBehaviour':
-                actionPromise = BluenetPromiseWrapper.saveBehaviour(command.behaviour);
+              case 'addBehaviour':
+                actionPromise = BluenetPromiseWrapper.addBehaviour(command.behaviour);
                 break;
               case 'updateBehaviour':
                 actionPromise = BluenetPromiseWrapper.updateBehaviour(command.behaviour);

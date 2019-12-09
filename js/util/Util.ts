@@ -2,6 +2,8 @@ import ImageResizer from 'react-native-image-resizer';
 
 import { screenWidth, screenHeight, pxRatio } from '../views/styles'
 
+const SunCalc = require('suncalc');
+
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
@@ -10,6 +12,7 @@ import { Scheduler } from "../logic/Scheduler";
 import { Permissions } from "../backgroundProcesses/PermissionManager";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
 import { xUtil } from "./StandAloneUtil";
+import { core } from "../core";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -98,6 +101,38 @@ export const Util = {
       return xUtil.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion.substr(0,11)]);
     }
     return false;
-  }
+  },
+
+
+  getSunTimes: function(sphereId) {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+
+    // position of Crownstone HQ.
+    let lat = 51.923611570463152;
+    let lon = 4.4667693378575288;
+    if (sphere) {
+      lat = sphere.state.latitude || lat;
+      lon = sphere.state.longitude || lon;
+    }
+    var times = SunCalc.getTimes(new Date(), lat, lon);
+
+    let sunriseTime = new Date(times.sunriseEnd).valueOf();
+    let sunsetTime  = new Date(times.sunset).valueOf();
+
+    return { sunrise: sunriseTime, sunset: sunsetTime };
+  },
+
+  getSunTimesInSecondsSinceMidnight: function(sphereId) {
+    let sunTimes = Util.getSunTimes(sphereId);
+
+    let midnightToday = new Date().setHours(0,0,0,0).valueOf();
+
+    return {
+      sunrise: Math.round(0.001*(sunTimes.sunrise - midnightToday)),
+      sunset:  Math.round(0.001*(sunTimes.sunset  - midnightToday)),
+    }
+  },
+
 };
 

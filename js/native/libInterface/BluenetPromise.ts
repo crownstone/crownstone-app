@@ -102,6 +102,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
       .then( () => { core.eventBus.emit("disconnect"); })
       .catch(() => { core.eventBus.emit("disconnect"); })
   },
+
   getMACAddress:                  ()           => { return BluenetPromise('getMACAddress');               },
   setupCrownstone:                (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
   setKeySets:                     (dataObject) => { return BluenetPromise('setKeySets',      dataObject); },
@@ -128,6 +129,8 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   restartCrownstone:              ()     => { return BluenetPromise('restartCrownstone'); },
   clearFingerprintsPromise:       ()     => { return BluenetPromise('clearFingerprintsPromise'); },
   setTime:                        (time) => { return BluenetPromise('setTime',time); },
+  setSuntimesOnCrownstone:        (sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number) => { return BluenetPromise('setSuntimesOnCrownstone',sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight); },
+  setTimeViaBroadcast:            (time: number, sunriseSecondsSinceMidnight: number, sunsetSecondsSinceMidnight: number, referenceId: string) => { return BluenetPromise('setTimeViaBroadcast', time, sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight, referenceId); },
   meshSetTime:                    (time) => { return BluenetPromise('meshSetTime',time); },
   getTime:                        ()     => { return BluenetPromise('getTime'); },
 
@@ -148,7 +151,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   broadcastSwitch:                (referenceId, stoneId, switchState) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState); },
 
-  saveBehaviour:                  (behaviour: behaviourTransfer) => { return BluenetPromise('saveBehaviour',behaviour) },
+  addBehaviour:                   (behaviour: behaviourTransfer) => { return BluenetPromise('addBehaviour',behaviour) },
   updateBehaviour:                (behaviour: behaviourTransfer) => { return BluenetPromise('updateBehaviour',behaviour) },
   removeBehaviour:                (index: number)                => { return BluenetPromise('removeBehaviour',index) },
   getBehaviour:                   (index: number)                => { return BluenetPromise('getBehaviour',index) },

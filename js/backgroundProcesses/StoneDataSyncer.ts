@@ -84,9 +84,10 @@ class StoneDataSyncerClass {
             }
 
             if (syncRequired) {
-              BatchCommandHandler.executePriority()
+              BatchCommandHandler.executePriority();
               Promise.all(rulePromises)
                 .then(() => {
+                  console.log("IN HERE")
                   return this.checkAndSyncBehaviour(sphereIds[i], stoneIds[i]);
                 })
                 .catch((err) => {
@@ -236,12 +237,28 @@ class StoneDataSyncerClass {
           })
       }
       else {
-        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "saveBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
+        return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "addBehaviour", behaviour: behaviour}, { keepConnectionOpen: true, keepConnectionOpenTimeout: 100})
           .then((returnData) => {
             let index = returnData.data.index;
-            core.store.dispatch({type: "UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true, idOnCrownstone: index}});
             let masterHash = returnData.data && returnData.data.masterHash || null;
             this.masterHashTracker[sphereId][stoneId] = masterHash;
+
+            // handle duplicates!
+            let stone = DataUtil.getStone(sphereId, stoneId);
+            if (stone) {
+              let rules = stone.rules;
+              let ruleIds = Object.keys(rules);
+              for (let i = 0; i < ruleIds.length; i++) {
+                let rule = rules[ruleIds[i]];
+                if (rule.idOnCrownstone === index && ruleId !== ruleIds[i]) {
+                  // this rule is a duplicate &&
+                  core.store.dispatch({type: "REMOVE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId});
+                  return
+                }
+              }
+            }
+
+            core.store.dispatch({type: "UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data:{syncedToCrownstone: true, idOnCrownstone: index}});
           })
           .catch((err) => {
             console.log("Error during rule create", err);
@@ -271,11 +288,16 @@ class StoneDataSyncerClass {
 
     return BluenetPromiseWrapper.getBehaviourMasterHash(transferRules)
       .then((masterHash) => {
+        console.log("HERE", masterHash, this.masterHashTracker[sphereId][stoneId])
         if (this.masterHashTracker[sphereId][stoneId] !== masterHash) {
           // SYNC!
           LOGi.behaviour("Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId])
-          return BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "syncBehaviour", behaviours: transferRules})
+          console.log(" trying to sync ")
+          let commandPromise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "syncBehaviour", behaviours: transferRules});
+          BatchCommandHandler.executePriority();
+          return commandPromise
         }
+        throw "NO_SYNC_REQUIRED"
       })
       .then((behaviours) => {
         if (behaviours) {
@@ -288,6 +310,12 @@ class StoneDataSyncerClass {
         return [];
       })
       .catch((err) => {
+        if (err == "NO_SYNC_REQUIRED") {
+          LOGi.behaviour("DONE Syncing! NOT REQUIRED!");
+          BatchCommandHandler.closeKeptOpenConnection();
+          return transferRules;
+        }
+
         console.log("Error during rule sync", err);
         throw err;
       })

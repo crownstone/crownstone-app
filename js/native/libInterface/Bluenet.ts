@@ -107,7 +107,7 @@ const BluenetAPI = {
   clearErrors:                 () => { console.log("BluenetBridgeCall: clearErrors"); },
   forceClearActiveRegion:      () => { console.log("BluenetBridgeCall: forceClearActiveRegion"); },
   broadcastSwitch:             () => { console.log("BluenetBridgeCall: broadcastSwitch"); },
-  saveBehaviour:               () => { console.log("BluenetBridgeCall: saveBehaviour"); },
+  addBehaviour:                () => { console.log("BluenetBridgeCall: addBehaviour"); },
   updateBehaviour:             () => { console.log("BluenetBridgeCall: updateBehaviour"); },
   removeBehaviour:             () => { console.log("BluenetBridgeCall: removeBehaviour"); },
   getBehaviour:                () => { console.log("BluenetBridgeCall: getBehaviour"); },
@@ -138,6 +138,9 @@ const BluenetAPI = {
 
   setTapToToggle:                () => { console.log("BluenetBridgeCall: setTapToToggle"); },
   setTapToToggleThresholdOffset: () => { console.log("BluenetBridgeCall: setTapToToggleThresholdOffset"); },
+
+
+  setSunTimes: () => { console.log("BluenetBridgeCall: setSunTimes"); },
 
 };
 

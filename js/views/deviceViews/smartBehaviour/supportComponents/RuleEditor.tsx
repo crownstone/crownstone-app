@@ -268,7 +268,7 @@ export class RuleEditor extends LiveComponent<
 
   _shouldShowSuggestions() {
     let shouldShowTimeConflict = false;
-    let showPresenceSuggestion = this.rule.isUsingPresence() === false;
+    let showPresenceSuggestion = this.props.twilightRule === false && this.rule.isUsingPresence() === false;
 
     let showTimeSuggestion = this.rule.isAlwaysActive() === true;
     let showEndConditionSuggestion = this.props.twilightRule === false &&
@@ -519,6 +519,16 @@ export class RuleEditor extends LiveComponent<
                   onSelect: () => {
                     this.rule.setTimeWhenSunUp();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "2"})
+                  }
+                },
+                {
+                  label: lang("All_day"),
+                  isSelected: () => {
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.allDay);
+                  },
+                  onSelect: () => {
+                    this.rule.setTimeAllday();
+                    this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
                   }
                 },
                 {
