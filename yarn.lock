@@ -5691,6 +5691,11 @@ react-native-device-info@2.1.2:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-2.1.2.tgz#5c553498e8930410aa65796b83f8f8c8fb9893b4"
   integrity sha512-q14hVR0eLRXnKeRyKX4naydXstCWetCIL+K+vUqREGkVj6qKoBouKd2yd8AxBfyomQN4uP3XRT6hTCwErIj9Ew==
 
+react-native-extra-dimensions-android@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/react-native-extra-dimensions-android/-/react-native-extra-dimensions-android-1.2.5.tgz#8ade91029aaac7519bf305116d39019e618a60f0"
+  integrity sha512-eorFo9X1vEqAWUkgcZ300yKBG1wtgNeE7tdWAH2CE+P50FGTniJg5Sr6l1iPWG8ZskQOuF+KeiSTFlDa4vLfMw==
+
 react-native-fast-image@6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-6.0.3.tgz#e644076c5e21dd8695db07905779352b2b9c1cb8"

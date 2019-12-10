@@ -1,4 +1,6 @@
 rootProject.name = 'Crownstone'
+include ':react-native-extra-dimensions-android'
+project(':react-native-extra-dimensions-android').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-extra-dimensions-android/android')
 include ':@react-native-community_blur'
 project(':@react-native-community_blur').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/blur/android')
 include ':react-native-camera'

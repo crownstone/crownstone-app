@@ -129,7 +129,6 @@ class SphereCircleClass extends Component<any, any> {
         style={{width: 0.85*this.innerDiameter, height:20, color: color, fontWeight: 'bold', fontSize: textSize, textAlign:'center', paddingTop:2}}
         numberOfLines={1}
         ellipsizeMode={"tail"}
-        // adjustsFontSizeToFit={true} this does not work together with ellipse size mode
       >{name}</Text>
     )
   }

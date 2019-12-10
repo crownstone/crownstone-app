@@ -318,6 +318,7 @@ export class RoomOverview extends LiveComponent<any, any> {
               separatorIndent={false}
               renderer={this._renderer.bind(this)}
             />
+            <View style={{height:60}} />
           </View>
         </ScrollView>
       </Background>

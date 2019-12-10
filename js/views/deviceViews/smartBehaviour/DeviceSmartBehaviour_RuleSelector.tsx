@@ -21,6 +21,7 @@ import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
+import ResponsiveText from "../../components/ResponsiveText";
 
 
 /**
@@ -114,7 +115,7 @@ export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
       <Background image={core.background.lightBlur} hasNavBar={false}>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "Tap behaviours to copy!" }</Text>
+            <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "Tap behaviours to copy!" }</ResponsiveText>
             <View style={{height: 0.2*iconSize}} />
 
             <View style={{flex:1}} />

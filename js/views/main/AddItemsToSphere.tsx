@@ -45,34 +45,36 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
-        <ScrollView contentContainerStyle={{flex: 1, alignItems:'center', paddingTop:30}}>
-          <IconButton
-            name="c1-sphere"
-            size={0.75*iconSize}
-            color="#fff"
-            buttonSize={iconSize}
-            buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}
-          />
-          <View style={{height: 0.2*iconSize}} />
-          <Text style={deviceStyles.specification}>{ lang("You_can_add_Rooms__People") }</Text>
-          <View style={{height: 0.2*iconSize}} />
-          <View  style={{flexDirection:'row', alignItems:'center'}}>
-            <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
-              NavigationUtil.launchModal("RoomAdd", { sphereId: this.props.sphereId, isModal: true });
-            }} />
-            <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} callback={() => {
-              NavigationUtil.launchModal("AddCrownstone", {sphereId: this.props.sphereId});
-            }} />
+        <ScrollView contentContainerStyle={{flexGrow:1}}>
+          <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
+            <IconButton
+              name="c1-sphere"
+              size={0.75*iconSize}
+              color="#fff"
+              buttonSize={iconSize}
+              buttonStyle={{backgroundColor:colors.csBlueDark.hex, borderRadius: 0.2*iconSize}}
+            />
+            <View style={{height: 0.2*iconSize}} />
+            <Text style={deviceStyles.specification}>{ lang("You_can_add_Rooms__People") }</Text>
+            <View style={{height: 0.2*iconSize}} />
+            <View  style={{flexDirection:'row', alignItems:'center'}}>
+              <AddItem icon={'md-cube'} label={ lang("Room")} callback={() => {
+                NavigationUtil.launchModal("RoomAdd", { sphereId: this.props.sphereId, isModal: true });
+              }} />
+              <AddItem icon={'c2-crownstone'} highlight={hightlightAddCrownstoneButton} label={ lang("Crownstone")} callback={() => {
+                NavigationUtil.launchModal("AddCrownstone", {sphereId: this.props.sphereId});
+              }} />
+            </View>
+            <View  style={{flexDirection:'row'}}>
+              <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => {
+                NavigationUtil.launchModal("SphereUserInvite",{sphereId: this.props.sphereId});
+              }} />
+              <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => {
+                NavigationUtil.launchModal("SphereIntegrations",{sphereId: this.props.sphereId, isModal: true})
+              }} />
+            </View>
+            <View style={{height: 30}} />
           </View>
-          <View  style={{flexDirection:'row'}}>
-            <AddItem icon={'ios-body'} label={ lang("Person")} callback={() => {
-              NavigationUtil.launchModal("SphereUserInvite",{sphereId: this.props.sphereId});
-            }} />
-            <AddItem icon={'ios-link'} label={ lang("Something_else_")} callback={() => {
-              NavigationUtil.launchModal("SphereIntegrations",{sphereId: this.props.sphereId, isModal: true})
-            }} />
-          </View>
-          <View style={{height: 30}} />
         </ScrollView>
       </Background>
     );

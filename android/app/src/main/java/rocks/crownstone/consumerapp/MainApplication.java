@@ -1,6 +1,6 @@
 package rocks.crownstone.consumerapp;
 
-
+import ca.jaysoo.extradimensions.ExtraDimensionsPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -58,6 +58,7 @@ public class MainApplication extends NavigationApplication {
 		return Arrays.<ReactPackage>asList(
 				new BluenetBridgePacket(),
 				new MainReactPackage(),
+                new ExtraDimensionsPackage(),
             	new BlurViewPackage(),
 				new RNCameraPackage(),
 				new FastImageViewPackage(),

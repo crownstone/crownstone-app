@@ -295,7 +295,7 @@ function InterviewCard(props : {
   return (
     <ScrollView style={{height: props.height || availableModalHeight}}>
       <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
-        { header      ? <Text adjustsFontSizeToFit={true} minimumFontScale={0.1} numberOfLines={card.headerMaxNumLines || undefined} style={[headerStyle,      overrideTextColor]}>{header}</Text>      : undefined }
+        { header      ? <Text adjustsFontSizeToFit={true} minimumFontScale={0.1} numberOfLines={card.headerMaxNumLines || undefined} style={{...headerStyle, ...overrideTextColor}}>{header}</Text>      : undefined }
         { subHeader   ? <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   : undefined }
         { explanation ? <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> : undefined }
         {

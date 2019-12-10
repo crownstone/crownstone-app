@@ -23,6 +23,7 @@ import { Component, useState } from "react";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { NotificationLine } from "../../components/NotificationLine";
+import ResponsiveText from "../../components/ResponsiveText";
 
 
 
@@ -167,7 +168,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
         <NotificationLine />
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <Text style={[deviceStyles.header, {width: 0.85*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
+            <ResponsiveText style={{...deviceStyles.header, width: 0.85*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
             <View style={{height:30}} />
             { this._getLocationStoneList() }
           </View>

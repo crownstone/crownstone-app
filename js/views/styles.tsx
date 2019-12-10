@@ -2,23 +2,25 @@ import * as React from 'react';
 import { Dimensions, PixelRatio, Platform, StyleSheet} from 'react-native'
 import {hex2rgb, hsv2hex, rgb2hex, rgb2hsv} from '../util/ColorConverters'
 import DeviceInfo from 'react-native-device-info';
+import ExtraDimensions from 'react-native-extra-dimensions-android';
 import { Navigation } from "react-native-navigation";
 
 export const deviceModel = DeviceInfo.getModel();
 
 export let isIPhoneX = deviceModel.indexOf('iPhone X') !== -1;
 
-export let topBarMargin    = Platform.OS === 'android' ? 0   :  (isIPhoneX ? 0 : 0 ); // Status bar in iOS is 20 high
+export let topBarMargin    = 0
 export let tabBarMargin    = isIPhoneX ? 34 : 0 ; // Status bar in iOS is 20 high
 export let tabBarHeight    = isIPhoneX ? 49 + 34: 49;
-export let statusBarHeight = Platform.OS === 'android' ? 0   :  (isIPhoneX ? 44 : 20); // Status bar in iOS is 20 high
+export let statusBarHeight = Platform.OS === 'android' ? 24  :  (isIPhoneX ? 44 : 20); // Status bar in iOS is 20 high
 export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isIPhoneX ? 44 : 44) + statusBarHeight; // Status bar in iOS is 20 high
 
 export let screenWidth = Dimensions.get('window').width;
 
-export let screenHeight = Platform.OS === 'android' ?
-  Dimensions.get('window').height - 24 :  // android includes the top bar in the window height but we cant draw there.
-  Dimensions.get('window').height;
+export let screenHeight = Dimensions.get('window').height;
+if (Platform.OS === 'android') {
+  screenHeight = ExtraDimensions.getRealWindowHeight() - ExtraDimensions.getStatusBarHeight() - ExtraDimensions.getSoftMenuBarHeight()
+}
 
 export let availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 export let availableModalHeight  = screenHeight - topBarHeight - 0.5 * tabBarMargin;
@@ -27,7 +29,7 @@ export const stylesUpdateConstants = () =>  {
   Navigation.constants()
     .then((constants) => {
       let tmpStatusBarHeight = constants.statusBarHeight > 0 ? constants.statusBarHeight : statusBarHeight;
-      statusBarHeight = Platform.OS === 'android' ? 0 : tmpStatusBarHeight;
+      statusBarHeight = tmpStatusBarHeight;
 
       topBarHeight = constants.topBarHeight > 0 ? constants.topBarHeight : topBarHeight;
       tabBarHeight = constants.bottomTabsHeight > 0 ? constants.bottomTabsHeight : tabBarHeight;

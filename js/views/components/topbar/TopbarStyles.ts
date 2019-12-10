@@ -1,9 +1,14 @@
 import {
-  StyleSheet} from 'react-native';
+  Platform,
+  StyleSheet
+} from "react-native";
 
 import { colors, topBarHeight, statusBarHeight} from '../../styles'
 
 let barHeight = topBarHeight - statusBarHeight;
+if (Platform.OS === 'android') {
+  barHeight = topBarHeight;
+}
 
 
 export const topBarStyle = StyleSheet.create({
