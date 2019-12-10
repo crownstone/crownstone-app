@@ -318,8 +318,10 @@ function NoRulesYet(props) {
 
   return (
     <Background image={core.background.lightBlurLighter} hasNavBar={false}>
-      <ScrollView>
-        <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
+      <ScrollView contentContainerStyle={{
+        flex: 1, alignItems:'center', paddingTop:30
+      }}>
+        {/*<View style={{ width: screenWidth, minHeight: availableModalHeight,  }}>*/}
           <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "What is Behaviour?" }</Text>
           <View style={{height: 40}} />
           <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent: 'space-evenly'}}>
@@ -396,7 +398,7 @@ function NoRulesYet(props) {
             />
           }
           <View style={{height:30}} />
-        </View>
+        {/*</View>*/}
       </ScrollView>
     </Background>
   )

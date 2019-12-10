@@ -78,7 +78,7 @@ export class Sphere extends Component<any, any> {
     let shouldShowStatusCommunication = noStones === false && this.props.arrangingRooms === false
 
     return (
-      <View style={{width: screenWidth, height: availableScreenHeight}}>
+      <View style={{width: screenWidth, flex:1}}>
         { shouldShowStatusCommunication ? <StatusCommunication sphereId={currentSphere} viewingRemotely={viewingRemotely} opacity={0.5}  /> : undefined }
         <RoomLayer
           viewId={this.props.viewId}

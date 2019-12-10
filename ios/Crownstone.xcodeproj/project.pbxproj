@@ -2137,7 +2137,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
-				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework",
+				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Release-iphoneos/BluenetLib.framework",
 			);
 			name = "Run Script";
 			outputPaths = (
@@ -2462,7 +2462,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)",
-					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/",
+					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Release-iphoneos/",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

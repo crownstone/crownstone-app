@@ -151,7 +151,28 @@ if (DISABLE_NATIVE === true) {
   Bluenet = BluenetAPI;
 }
 else if (NativeModules.BluenetJS) {
-  Bluenet = NativeModules.BluenetJS;
+  if (global.__DEV__ ) {
+    let wrappedBluenet = {};
+    Object.keys(NativeModules.BluenetJS).forEach((key) => {
+      wrappedBluenet[key] = function(param, param2, param3, param4, param5) {
+        let bluenetArguments = [];
+        // @ts-ignore
+        for (let i = 0; i < arguments.length; i++) {
+          // @ts-ignore
+          if (arguments[i] !== undefined) {
+            // @ts-ignore
+            bluenetArguments.push(arguments[i])
+          }
+        }
+        console.log("XX BLUENET CALL:", key, bluenetArguments);
+        return NativeModules.BluenetJS[key].apply(this, bluenetArguments);
+      }
+    })
+    Bluenet = wrappedBluenet;
+  }
+  else {
+    Bluenet = NativeModules.BluenetJS;
+  }
 
   let API_Keys = Object.keys(BluenetAPI);
   let notImplemented = [];

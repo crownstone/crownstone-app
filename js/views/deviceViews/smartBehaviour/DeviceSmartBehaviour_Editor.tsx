@@ -37,13 +37,11 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
         <View style={{height:height,width:screenWidth}}>
-        <ScrollView style={{width: screenWidth}}>
-          <View style={{flex:1, width: screenWidth, minHeight:height, alignItems:'center', paddingTop:30}}>
-            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
-            <View style={{height: 0.02*height}} />
-            <Text style={deviceStyles.specification}>{ lang("Tap_the_underlined_parts_t") }</Text>
-            <RuleEditor {...this.props} />
-          </View>
+        <ScrollView style={{width: screenWidth}} contentContainerStyle={{ flex: 1, alignItems:'center', paddingTop:30 }}>
+          <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
+          <View style={{height: 0.02*height}} />
+          <Text style={deviceStyles.specification}>{ lang("Tap_the_underlined_parts_t") }</Text>
+          <RuleEditor {...this.props} />
         </ScrollView>
         </View>
       </Background>

@@ -68,8 +68,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
     let hasSwitchcraft = stone.config.type === STONE_TYPES.builtinOne;
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
-        <ScrollView>
-          <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
+        <ScrollView style={{width: screenWidth}} contentContainerStyle={{ flex: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "My Abilities" }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{"These are the things I can do for you!\n" + (permissionGranted ? "You can enable or disable my abilities\nto suit your needs." : "The sphere admin can enable or disable\nmy abilities to suit your needs.") }</Text>
@@ -77,7 +76,6 @@ export class DeviceAbilities extends LiveComponent<any, any> {
                                 <Ability type={"dimming"}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
             { hasSwitchcraft && <Ability type={"switchcraft"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
                                 <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
-          </View>
         </ScrollView>
       </Background>
     )
