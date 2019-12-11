@@ -89,7 +89,7 @@ export class Register extends LiveComponent<any, any> {
           return (
             <View style={{flex:1, width:screenWidth}}>
               <InterviewTextInput
-                autofocus={true}
+                // autofocus={true}
                 // focussed={this.focussingIndex === 0 || undefined}
                 placeholder={ lang("First_name")}
                 value={state && state.firstName || this.user.firstName}
@@ -104,7 +104,7 @@ export class Register extends LiveComponent<any, any> {
                 onBlur={() => { this.focussingIndex = 1; this.forceUpdate(); }}
               />
               <InterviewTextInput
-                autofocus={false}
+                // autofocus={false}
                 placeholder={ lang("Last_name")}
                 focussed={this.focussingIndex === 1}
                 value={state && state.lastName || this.user.lastName}

@@ -87,12 +87,12 @@ class StoneDataSyncerClass {
               BatchCommandHandler.executePriority();
               Promise.all(rulePromises)
                 .then(() => {
-                  console.log("IN HERE")
                   return this.checkAndSyncBehaviour(sphereIds[i], stoneIds[i]);
                 })
                 .catch((err) => {
                   if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
-                    // this whould just trigger an update phase.
+                    /** if the syncing fails, we set another watcher **/
+                    this.update();
                   }
                 })
             }
