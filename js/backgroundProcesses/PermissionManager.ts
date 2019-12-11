@@ -1,11 +1,10 @@
-import {LOG} from "../logging/Log";
+import { LOG, LOGd } from "../logging/Log";
 import {PermissionBase, PermissionClass} from "./Permissions";
 import { core } from "../core";
 
 export class PermissionManagerClass {
   _initialized : boolean = false;
   _activeSphereId : string;
-  _enableUpdates : boolean = false;
 
   permissionClasses = {};
 
@@ -15,10 +14,6 @@ export class PermissionManagerClass {
 
       // sometimes the first event since state change can be wrong, we use this to ignore it.
       core.eventBus.on("databaseChange", (data) => {
-        if (this._enableUpdates === false) {
-          return;
-        }
-
         let change = data.change;
         if (change.changeSpheres || change.changeSphereConfig || change.updateActiveSphere) {
           LOG.info("PermissionManager: Update permissions due to databaseChange");
@@ -28,12 +23,10 @@ export class PermissionManagerClass {
 
       core.eventBus.on('userLoggedIn', () => {
         LOG.info("PermissionManager: Update permissions due to userLoggedIn");
-        this._enableUpdates = true;
         this._update(core.store.getState());
       });
 
       // in case the login event has already fired before we init the permission module.
-      this._enableUpdates = true;
       this._update(core.store.getState());
     }
   }
@@ -47,10 +40,11 @@ export class PermissionManagerClass {
    * @private
    */
   _update(state) {
+    LOGd.info("PermissionManager: Update permissionsManager");
     if (!state) { return; }
-
     this._activeSphereId = state.app.activeSphere;
 
+    LOGd.info("PermissionManager: Update permissionsManager");
     // we don't clean up removed spheres since it does not really matter memory wise
     Object.keys(state.spheres).forEach((sphereId) => {
       if (this.permissionClasses[sphereId] === undefined) {

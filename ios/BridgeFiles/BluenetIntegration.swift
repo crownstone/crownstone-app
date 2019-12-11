@@ -33,7 +33,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func rerouteEvents() {
     LOGGER.info("BluenetBridge: Called rerouteEvents")
-      
+
     _ = AppEventBus.on("callbackUrlInvoked", { (data) -> Void in
       if let urlStr = data as? String {
         self.sendEvent(withName: "callbackUrlInvoked", body: urlStr)
@@ -314,12 +314,22 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func requestLocation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called requestLocation")
-    let coordinates = GLOBAL_BLUENET.bluenetLocalization.requestLocation()
-    var returnType = [String: NSNumber]();
-    returnType["latitude"] = NSNumber(value: coordinates.latitude)
-    returnType["longitude"] = NSNumber(value: coordinates.longitude)
-    
-    callback([["error" : false, "data": returnType]])
+    GLOBAL_BLUENET.bluenetLocalization.requestLocation()
+      .done{ coordinates in
+        var returnType = [String: NSNumber]();
+        returnType["latitude"] = NSNumber(value: coordinates.latitude)
+        returnType["longitude"] = NSNumber(value: coordinates.longitude)
+        
+        callback([["error" : false, "data": returnType]])
+      }
+      .catch{err in
+        if let bleErr = err as? BluenetError {
+          callback([["error" : true, "data": getBluenetErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN requestLocation \(err)"]])
+        }
+      }
   }
   
   @objc func requestLocationPermission() -> Void {

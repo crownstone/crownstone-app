@@ -40,6 +40,7 @@ class Portal : NSObject {
     self.watchStateManager = WatchStateManager()
     
     BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
+    
     BluenetLib.LOG.setTimestampPrinting(newState: true)
     self.classifier = CrownstoneBasicClassifier()
     

@@ -273,12 +273,12 @@ lang("_Incorrect_Email_or_Passw_body"),
       </Background>
     );
   }
-  
+
   checkForRegistrationPictureUpload(userId, filename) {
     LOGi.info("Login: checkForRegistrationPictureUpload", userId, filename);
     return new Promise((resolve, reject) => {
       let uploadingImage = false;
-      
+
       let handleFiles = (files) => {
         files.forEach((file) => {
           LOGi.info("Login: check file", file);
@@ -323,7 +323,7 @@ lang("_Incorrect_Email_or_Passw_body"),
     this.progress = 0;
     core.eventBus.emit('showProgress', {progress: 0, progressText: lang("Getting_user_data_")});
 
-    // give the access token and the userId to the cloud api 
+    // give the access token and the userId to the cloud api
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
 
@@ -338,10 +338,10 @@ lang("_Incorrect_Email_or_Passw_body"),
         userId:       userId,
       }
     });
-    
+
     this.downloadSettings(store, userId);
   }
-  
+
   downloadSettings(store, userId) {
     let parts = 1/5;
     let promises = [];
@@ -467,13 +467,14 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
           if (state.user.isNew !== false) {
             let sphereIds = Object.keys(state.spheres);
             let goToSphereOverview = () => {
+              core.eventBus.emit("userLoggedInFinished");
               NavigationUtil.setRoot(Stacks.loggedIn());
             };
 
             // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment
             if (sphereIds.length === 1) {
               if (Util.data.getUserLevelInSphere(state, sphereIds[0]) === 'admin' && !state.spheres[sphereIds[0]].config.aiSex) {
-                NavigationUtil.setRoot(Stacks.aiStart({sphereId: sphereIds[0]}));
+                NavigationUtil.setRoot(Stacks.aiStart({sphereId: sphereIds[0], fromLogin: true}));
               }
               else {
                 goToSphereOverview();
