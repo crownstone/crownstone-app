@@ -31,7 +31,7 @@ class BroadcastCommandManagerClass {
   clearPendingCommandCallback = null;
 
   commandsToBroadcast = {
-    multiSwitch: true
+    multiSwitch: true,
   };
 
   broadcast(commandSummary : commandSummary, ignoreDuplicates = false) : Promise<bchReturnType> {

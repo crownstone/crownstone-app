@@ -6,6 +6,7 @@ import { FadeIn} from "./animated/FadeInView";
 import React, { useRef } from "react";
 import { TextEditInput } from "./editComponents/TextEditInput";
 import { xUtil } from "../../util/StandAloneUtil";
+import ResponsiveText from "./ResponsiveText";
 
 
 let buttonStyle : ViewStyle = {
@@ -94,7 +95,7 @@ export function TimeButtonWithImage(props) {
       <TouchableOpacity style={props.basic ? buttonBasicStyle : buttonStyle} onPress={() => { props.callback(); }}>
         <ScaledImage source={props.image} sourceWidth={100} sourceHeight={100} targetHeight={40}/>
         <Icon name={"md-arrow-dropright"} color={colors.csBlue.hex} size={15} style={{padding:10}} />
-        <Text style={[textStyle, {width:0.85*screenWidth - 135, paddingRight:0}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</Text>
+        <ResponsiveText style={{...textStyle, width:0.85*screenWidth - 135, paddingRight:0}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.5}>{props.label}</ResponsiveText>
       </TouchableOpacity>
     </FadeIn>
   );

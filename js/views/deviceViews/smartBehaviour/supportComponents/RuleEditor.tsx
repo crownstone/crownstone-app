@@ -12,7 +12,14 @@ import {
   Text,
   View, TextStyle, ViewStyle
 } from "react-native";
-import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../../../styles";
+import {
+  availableModalHeight,
+  availableScreenHeight,
+  colors,
+  deviceStyles,
+  screenWidth,
+  styles
+} from "../../../styles";
 import { SELECTABLE_TYPE } from "../../../../Enums";
 import { RoomList } from "../../../components/RoomList";
 import { core } from "../../../../core";
@@ -37,7 +44,7 @@ export class RuleEditor extends LiveComponent<
   selectedChunk : selectableAicoreBehaviourChunk;
 
   exampleBehaviours : any;
-  baseHeight = availableScreenHeight - 300;
+  baseHeight = Math.max(4*70, (availableModalHeight-60)*0.5);
 
   constructor(props) {
     super(props);
@@ -210,7 +217,7 @@ export class RuleEditor extends LiveComponent<
     }
 
     let baseHeight = this.baseHeight;
-    let behaviourHeight = availableScreenHeight - 200 - this.amountOfLines*30;
+    let behaviourHeight = Math.max(4*70, (availableModalHeight-60)*0.5); - this.amountOfLines*30;
     switch (selectedBehaviourType) {
       case SELECTABLE_TYPE.ACTION:
       case SELECTABLE_TYPE.PRESENCE:
@@ -268,7 +275,7 @@ export class RuleEditor extends LiveComponent<
 
   _shouldShowSuggestions() {
     let shouldShowTimeConflict = false;
-    let showPresenceSuggestion = this.rule.isUsingPresence() === false;
+    let showPresenceSuggestion = this.props.twilightRule === false && this.rule.isUsingPresence() === false;
 
     let showTimeSuggestion = this.rule.isAlwaysActive() === true;
     let showEndConditionSuggestion = this.props.twilightRule === false &&
@@ -522,6 +529,16 @@ export class RuleEditor extends LiveComponent<
                   }
                 },
                 {
+                  label: lang("All_day"),
+                  isSelected: () => {
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.allDay);
+                  },
+                  onSelect: () => {
+                    this.rule.setTimeAllday();
+                    this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
+                  }
+                },
+                {
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.rule)) + ".",
                   subLabel: "(tap to customize)",
                   isSelected: () => {
@@ -764,8 +781,10 @@ export class RuleEditor extends LiveComponent<
       <Animated.View style={{height: this.state.containerHeight}}>
         <Animated.View style={{opacity: this.state.detailOpacity, height: this.state.detailHeight, position:'absolute', top:0}}>{details}</Animated.View>
         <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
-          <Animated.View style={{width:screenWidth, flex:1, alignItems:'center'}}>
+          <Animated.View style={{width:screenWidth, flex:2, alignItems:'center'}}>
+            { showSuggestions.shouldShowTimeConflict || <View style={{flex:0.25}} /> }
             { this._getSuggestions() }
+            { showSuggestions.shouldShowTimeConflict || <View style={{flex:1}} /> }
             { showSuggestions.shouldShowTimeConflict ||
 
             <BehaviourSubmitButton callback={() => {
@@ -790,10 +809,10 @@ export class RuleEditor extends LiveComponent<
   render() {
     return (
       <View style={{flex:1}}>
-        <View style={{flex:1}} />
+        <View style={{flex:0.75}} />
         { this.getRuleSentenceElements() }
+        <View style={{flex:0.25}} />
         { this.getDetails() }
-        <View style={{flex:1}} />
       </View>
     );
   }

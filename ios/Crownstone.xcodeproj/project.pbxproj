@@ -65,6 +65,7 @@
 		FA3645EF22FAE03B0062591B /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645EC22FAE03B0062591B /* flaticon_household.ttf */; };
 		FA3645F022FAE03B0062591B /* flaticon_essentials.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645ED22FAE03B0062591B /* flaticon_essentials.ttf */; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
+		FA44800F239EA53800DED7A6 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA44800E239EA53800DED7A6 /* BluenetLib.framework */; };
 		FA4722B921DE7463008795C5 /* SwitchableStone.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722B521DE7462008795C5 /* SwitchableStone.swift */; };
 		FA4722BE21DE7473008795C5 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BB21DE7473008795C5 /* Events.swift */; };
 		FA4722BF21DE7473008795C5 /* BluenetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BC21DE7473008795C5 /* BluenetManager.swift */; };
@@ -104,7 +105,6 @@
 		FA86C6EB21CCF05C00811933 /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E221CCF05500811933 /* InterfaceController.swift */; };
 		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
-		FA8C6E2D23731FEB00A801A5 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA8C6DEF23731FEB00A801A5 /* BluenetLib.framework */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
 		FABB8A0121E0E4FA007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
@@ -670,6 +670,7 @@
 		FA3645EC22FAE03B0062591B /* flaticon_household.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_household.ttf; path = ../js/fonts/flaticon_household.ttf; sourceTree = "<group>"; };
 		FA3645ED22FAE03B0062591B /* flaticon_essentials.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_essentials.ttf; path = ../js/fonts/flaticon_essentials.ttf; sourceTree = "<group>"; };
 		FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = imageAssets.xcassets; sourceTree = "<group>"; };
+		FA44800E239EA53800DED7A6 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework"; sourceTree = "<group>"; };
 		FA4722B521DE7462008795C5 /* SwitchableStone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableStone.swift; sourceTree = "<group>"; };
 		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		FA4722BC21DE7473008795C5 /* BluenetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluenetManager.swift; sourceTree = "<group>"; };
@@ -717,7 +718,6 @@
 		FA86C6F121CCF07000811933 /* SliderRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderRowController.swift; sourceTree = "<group>"; };
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
-		FA8C6DEF23731FEB00A801A5 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
 /* End PBXFileReference section */
 
@@ -769,7 +769,7 @@
 				5536AAFCA2F647ABB306701F /* libRCTToast.a in Frameworks */,
 				77A4BC75F6794BFC8EA372F7 /* libRNCSlider.a in Frameworks */,
 				128F84CE4A2E4BF88CBC89A2 /* libRNCAsyncStorage.a in Frameworks */,
-				FA8C6E2D23731FEB00A801A5 /* BluenetLib.framework in Frameworks */,
+				FA44800F239EA53800DED7A6 /* BluenetLib.framework in Frameworks */,
 				C7B481C578014B55BE888F3B /* libFastImage.a in Frameworks */,
 				613D457D36284A328D2B9CA4 /* libRNCamera.a in Frameworks */,
 				37664E36FD144AB3839B7564 /* libRNBlur.a in Frameworks */,
@@ -995,7 +995,7 @@
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
 				FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
-				FA8C6DEF23731FEB00A801A5 /* BluenetLib.framework */,
+				FA44800E239EA53800DED7A6 /* BluenetLib.framework */,
 				FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
@@ -2137,7 +2137,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
+				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Release-iphoneos/BluenetLib.framework",
 			);
 			name = "Run Script";
 			outputPaths = (
@@ -2403,6 +2403,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)",
+					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2461,6 +2462,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)",
+					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Release-iphoneos/",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

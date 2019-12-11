@@ -45,9 +45,8 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
-        <ScrollView>
-          <View style={{ width: screenWidth, alignItems:'center' }}>
-            <View style={{height: 30}} />
+        <ScrollView contentContainerStyle={{flexGrow:1}}>
+          <View style={{flexGrow: 1, alignItems:'center', paddingTop:30}}>
             <IconButton
               name="c1-sphere"
               size={0.75*iconSize}
@@ -74,8 +73,8 @@ export class AddItemsToSphere extends LiveComponent<any, any> {
                 NavigationUtil.launchModal("SphereIntegrations",{sphereId: this.props.sphereId, isModal: true})
               }} />
             </View>
+            <View style={{height: 30}} />
           </View>
-          <View style={{height: 30}} />
         </ScrollView>
       </Background>
     );

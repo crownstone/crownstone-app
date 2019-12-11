@@ -114,8 +114,8 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
-        <ScrollView>
-          <View style={{alignItems:'center', paddingTop:30, minHeight: availableModalHeight}}>
+        <ScrollView contentContainerStyle={{flexGrow:1}}>
+          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <Text style={deviceStyles.header}>{header}</Text>
             <View style={{height:30}} />
             <Graph width={screenWidth*0.95} height={availableScreenHeight/2} data={this.data} dataHash={this.hash}/>

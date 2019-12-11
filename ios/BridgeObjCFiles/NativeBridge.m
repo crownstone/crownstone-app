@@ -147,7 +147,7 @@ RCT_EXTERN_METHOD(subscribeToUnverified)
 RCT_EXTERN_METHOD(unsubscribeUnverified)
 
 // Behaviour
-RCT_EXTERN_METHOD(saveBehaviour:  (NSDictionary *)data       callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(addBehaviour:   (NSDictionary *)data       callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(updateBehaviour:(NSDictionary *)data       callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(removeBehaviour:(nonnull NSNumber *)index  callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getBehaviour:   (nonnull NSNumber *)index  callback:(RCTResponseSenderBlock)callback)
@@ -155,20 +155,13 @@ RCT_EXTERN_METHOD(syncBehaviours:          (NSArray *)behaviours   callback:(RCT
 RCT_EXTERN_METHOD(getBehaviourMasterHash:  (NSArray *)behaviours   callback:(RCTResponseSenderBlock)callback)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+RCT_EXTERN_METHOD(setTimeViaBroadcast:(nonnull NSNumber *)time
+                  sunriseSecondsSinceMidnight:(nonnull NSNumber *)sunriseSecondsSinceMidnight
+                  sundownSecondsSinceMidnight:(nonnull NSNumber *)sundownSecondsSinceMidnight
+                  referenceId:(NSString *)referenceId
+                  callback:(RCTResponseSenderBlock)callback
+              )
+RCT_EXTERN_METHOD(setSunTimes: (nonnull NSNumber *)sunriseSecondsSinceMidnight  sundownSecondsSinceMidnight:(nonnull NSNumber *)sundownSecondsSinceMidnight)
 
 
 

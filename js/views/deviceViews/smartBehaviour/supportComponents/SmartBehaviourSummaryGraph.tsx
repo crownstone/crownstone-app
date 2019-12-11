@@ -20,7 +20,7 @@ import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { AlternatingContent } from "../../../components/animated/AlternatingContent";
-const SunCalc = require('suncalc');
+import { Util } from "../../../../util/Util";
 
 export class SmartBehaviourSummaryGraph extends Component<any, any> {
   id;
@@ -344,29 +344,18 @@ class DayNightIndicator extends Component<any, any> {
   }
 
   render() {
-    let width = 0.8*screenWidth - 25;
+    let width = 0.8 * screenWidth - 25;
 
-    let state = core.store.getState();
-    let sphere = state.spheres[this.props.sphereId];
+    let sunTimes = Util.getSunTimes(this.props.sphereId);
 
-    // position of Crownstone HQ.
-    let lat = 51.923611570463152;
-    let lon = 4.4667693378575288;
-    if (sphere) {
-      lat = sphere.state.latitude || lat;
-      lon = sphere.state.longitude || lon;
-    }
-    var times = SunCalc.getTimes(new Date(), lat, lon);
-
-    let sunriseTime = new Date(times.sunriseEnd).valueOf();
-    let sunsetTime  = new Date(times.sunset).valueOf();
+    let sunriseTime = sunTimes.sunrise;
+    let sunsetTime  = sunTimes.sunset;
 
     let sunriseTimeStr = AicoreUtil.getClockTimeStr(new Date(sunriseTime).getHours(), new Date(sunriseTime).getMinutes());
     let sunsetTimeStr = AicoreUtil.getClockTimeStr(new Date(sunsetTime).getHours(), new Date(sunsetTime).getMinutes());
 
     let dawnLeft = width*(getMinutes(sunriseTimeStr)/(24*60));
     let duskLeft = width*(getMinutes(sunsetTimeStr) /(24*60));
-
 
     return (
       <View style={{position:'absolute', top:0, left: 24, width:width, height:90}}>

@@ -114,7 +114,6 @@ export class StoneBehaviourSyncer extends SyncingStoneItemBase {
           return behaviourIds[i];
         }
       }
-      console.log("Matching cloud behaviour", cloud_behaviour, " with", behavioursInState)
     }
 
     return null;

@@ -33,6 +33,7 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP } from "../../../Constants";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
+import ResponsiveText from "../../components/ResponsiveText";
 
 const ruleStyle : TextStyle = {
   fontSize: 15,
@@ -235,7 +236,12 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       // search for behaviour that is the same as the behaviour to see if we can merge them.
       for (let i = 0; i < ruleIds.length; i++) {
         if (this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
-          Alert.alert("Behaviour already exists!","You already have a behaviour that does exactly this. There's no need to add another!",[{text:"OK", onPress:() => { NavigationUtil.dismissModal();}}], {cancelable: false})
+          Alert.alert(
+            "Behaviour already exists!",
+            "You already have a behaviour that does exactly this. There's no need to add another!",
+            [{text:"OK", onPress:() => { NavigationUtil.dismissModal();}}],
+            {cancelable: false}
+          );
           return;
         }
       }
@@ -483,9 +489,9 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
-        <ScrollView style={{width: screenWidth}}>
-          <View style={{flex:1, width: screenWidth, minHeight:availableModalHeight, alignItems:'center', paddingTop:30}}>
-            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
+        <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
+          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
+            <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
             <View style={{height: 0.02*availableModalHeight}} />
 
             { this.props.ruleId && this.props.deleteRule && <Text style={ruleStyle}>{'"' + this.existingRule.getSentence(this.props.sphereId) + '"'}</Text> }

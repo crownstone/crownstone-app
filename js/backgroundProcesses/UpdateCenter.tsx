@@ -12,6 +12,7 @@ import { LOG } from "../logging/Log";
 
 class UpdateCenterClass {
   _initialized: boolean = false;
+  updateAvailable: boolean = false;
 
   constructor() { }
 
@@ -32,10 +33,10 @@ class UpdateCenterClass {
   checkForFirmwareUpdates() {
     let state = core.store.getState();
     let spheres = state.spheres;
-
     Object.keys(spheres).forEach((sphereId) => {
       let updatableStones = DfuUtil.getUpdatableStones(sphereId);
       if (updatableStones.amountOfStones > 0) {
+        this.updateAvailable = true;
         OnScreenNotifications.setNotification({
           source: "UpdateCenter",
           id: "UpdateCenter" + sphereId,
@@ -48,6 +49,7 @@ class UpdateCenterClass {
         });
       }
       else {
+        this.updateAvailable = false;
         OnScreenNotifications.removeNotification("UpdateCenter" + sphereId);
       }
     })

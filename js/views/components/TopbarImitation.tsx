@@ -60,9 +60,9 @@ class TopBarAndroid extends Component<any, any> {
         backCallback = this.props.leftAction;
       }
       return (
-        <TouchableOpacity onPress={() => { backCallback(); }} style={[topBarStyle.topBarLeftTouch, {paddingLeft:10}]} >
+        <TouchableOpacity onPress={() => { backCallback(); }} style={[topBarStyle.topBarLeftTouch, {paddingLeft:20}]} >
           <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
-            <Icon name="md-arrow-back" size={22} color={this.props.leftStyle && this.props.leftStyle.color || colors.white.hex} style={{paddingRight:6, marginTop:2}} />
+            <Icon name="md-arrow-round-back" size={23} color={this.props.leftStyle && this.props.leftStyle.color || colors.white.hex} style={{paddingRight:6, marginTop:2}} />
           </View>
         </TouchableOpacity>
       );
@@ -94,7 +94,7 @@ class TopBarAndroid extends Component<any, any> {
   }
 
   render() {
-    let barHeight = topBarHeight - statusBarHeight;
+    let barHeight = topBarHeight;
     return (
       <View>
         <View style={[topBarStyle.topBar,this.props.style]}>

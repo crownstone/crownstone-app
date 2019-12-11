@@ -34,6 +34,7 @@ import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { StoneDataSyncer } from "../../../backgroundProcesses/StoneDataSyncer";
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
+import ResponsiveText from "../../components/ResponsiveText";
 
 
 let className = "DeviceSmartBehaviour";
@@ -69,13 +70,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
 
   componentDidMount(): void {
-    let state = core.store.getState();
-    let sphere = state.spheres[this.props.sphereId];
-    let stone = sphere.stones[this.props.stoneId];
-    let rules = stone.rules;
-    console.log("RULES", rules)
-    console.log("MAP", MapProvider.local2cloudMap)
-
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
@@ -182,7 +176,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       <Background image={core.background.lightBlurLighter} hasNavBar={false}>
         <ScrollView>
           <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</Text>
+            <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</ResponsiveText>
             <View style={{height: 0.2*iconSize}} />
             <SlideFadeInView visible={true} height={1.5*(screenWidth/9)}>
               <WeekDayList
@@ -292,7 +286,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 backgroundColor={colors.csBlue.rgba(0.5)}
                 label={ "Sync behaviour" }
                 callback={() => {
-                  StoneDataSyncer.checkAndSyncBehaviour(this.props.sphereId, this.props.stoneId);
+                  StoneDataSyncer.checkAndSyncBehaviour(this.props.sphereId, this.props.stoneId).catch(() => {});
                 }}
                 icon={'md-refresh-circle'}
                 iconSize={14}
@@ -318,9 +312,9 @@ function NoRulesYet(props) {
 
   return (
     <Background image={core.background.lightBlurLighter} hasNavBar={false}>
-      <ScrollView>
-        <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
-          <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "What is Behaviour?" }</Text>
+      <ScrollView contentContainerStyle={{flexGrow:1}}>
+        <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
+          <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "What is Behaviour?" }</Text>
           <View style={{height: 40}} />
           <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent: 'space-evenly'}}>
             <ScaledImage source={require('../../../images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />

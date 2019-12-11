@@ -6,6 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Platform,
   ScrollView,
   Text, TouchableOpacity,
   View
@@ -20,6 +21,7 @@ import { Background } from "../../components/Background";
 import { core } from "../../../core";
 import { RuleEditor } from "./supportComponents/RuleEditor";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import ResponsiveText from "../../components/ResponsiveText";
 
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string, ruleId: any, label:string, selectedDay?: string, isModal?:boolean}, any> {
@@ -37,9 +39,9 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
         <View style={{height:height,width:screenWidth}}>
-        <ScrollView style={{width: screenWidth}}>
-          <View style={{flex:1, width: screenWidth, minHeight:height, alignItems:'center', paddingTop:30}}>
-            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</Text>
+        <ScrollView contentContainerStyle={{flexGrow:1}}>
+          <View style={{ flexGrow: 1, alignItems:'center', paddingVertical:30}}>
+            <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
             <View style={{height: 0.02*height}} />
             <Text style={deviceStyles.specification}>{ lang("Tap_the_underlined_parts_t") }</Text>
             <RuleEditor {...this.props} />

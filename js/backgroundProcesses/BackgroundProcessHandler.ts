@@ -18,7 +18,6 @@ import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 import { NotificationHandler }   from "./NotificationHandler";
-import { BatchUploader }         from "./BatchUploader";
 import { MessageCenter }         from "./MessageCenter";
 import { CloudEventHandler }     from "./CloudEventHandler";
 import { Permissions }           from "./PermissionManager";
@@ -44,6 +43,7 @@ import { StoneDataSyncer } from "./StoneDataSyncer";
 import { BackButtonHandler } from "./BackButtonHandler";
 import { base_core } from "../base_core";
 import { PowerUsageCacher } from "./PowerUsageCacher";
+import { TimeKeeper } from "./TimeKeeper";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -445,6 +445,7 @@ class BackgroundProcessHandlerClass {
     StoneManager.init();
     StoneDataSyncer.init();
     SetupStateHandler.init();
+    TimeKeeper.init();
     ToonIntegration.init();
     UpdateCenter.init();
     WatchStateManager.init();

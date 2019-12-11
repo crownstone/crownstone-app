@@ -298,7 +298,6 @@ export class RoomOverview extends LiveComponent<any, any> {
     let {stoneArray, ids} = this._getStoneList(stones);
     this._setNearestStoneInRoom(ids);
     this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
-    let viewHeight = screenHeight-tabBarHeight-topBarHeight-100;
 
     return (
       <Background image={core.background.lightBlur}>
@@ -306,22 +305,21 @@ export class RoomOverview extends LiveComponent<any, any> {
         <LocationFlavourImage location={location} />
         <View style={{height:2, width:screenWidth, backgroundColor: colors.menuTextSelected.hex}} />
         <ScrollView>
-          <View style={{minHeight:availableScreenHeight, width:screenWidth}}>
-          <RoomExplanation
-            state={state}
-            explanation={ this.props.explanation }
-            sphereId={    this.props.sphereId }
-            locationId={  this.props.locationId }
-          />
-          <View style={{height: Math.max(stoneArray.length*81 + 0.5*viewHeight, viewHeight)} /* make sure we fill the screen */}>
+          <View style={{width:screenWidth}}>
+            <RoomExplanation
+              state={state}
+              explanation={ this.props.explanation }
+              sphereId={    this.props.sphereId }
+              locationId={  this.props.locationId }
+            />
             <SeparatedItemList
               items={stoneArray}
               ids={ids}
               separatorIndent={false}
               renderer={this._renderer.bind(this)}
             />
+            <View style={{height:60}} />
           </View>
-        </View>
         </ScrollView>
       </Background>
     );

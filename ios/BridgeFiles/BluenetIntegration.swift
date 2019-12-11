@@ -757,10 +757,10 @@ open class BluenetJS: RCTEventEmitter {
     callback([["error" : false, "data": GLOBAL_BLUENET.bluenet.checkBroadcastAuthorization() ]])
   }
   
-  @objc func saveBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func addBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
     do {
       let behaviour = try BehaviourDictionaryParser(data, dayStartTimeSecondsSinceMidnight: 4*3600)
-      wrapBehaviourMethodForBluenet("saveBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.saveBehaviour(behaviour: behaviour))
+      wrapBehaviourMethodForBluenet("addBehaviour", callback, GLOBAL_BLUENET.bluenet.behaviour.addBehaviour(behaviour: behaviour))
     }
     catch let error {
       if let bluenetErr = error as? BluenetError {
@@ -770,7 +770,6 @@ open class BluenetJS: RCTEventEmitter {
         callback([["error" : true, "data": "UNKNOWN ERROR" ]])
       }
     }
-
   }
   
   @objc func updateBehaviour(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
@@ -836,14 +835,24 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   @objc func getBehaviourMasterHash(_ behaviours: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-    LOGGER.info("BluenetBridge: Called getBehaviourMasterHash")
+    LOGGER.info("BluenetBridge: Called getBehaviourMasterHash \(behaviours)")
     let hasher = BehaviourHasher(behaviours, dayStartTimeSecondsSinceMidnight: 4*3600)
     callback([["error" : false, "data": hasher.getMasterHash()]])
   }
   
+  @objc func setTimeViaBroadcast(_ time: NSNumber, sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber, referenceId: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("setTimeViaBroadcast", callback,
+                   GLOBAL_BLUENET.bluenet.broadcast.setTime(
+                    referenceId:                 referenceId,
+                    time:                        time.uint32Value,
+                    sunriseSecondsSinceMidnight: sunriseSecondsSinceMidnight.uint32Value,
+                    sunsetSecondsSinceMidnight:  sundownSecondsSinceMidnight.uint32Value
+    ))
+  }
   
-  
-  
+  @objc func setSunTimes(_ sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber) {
+    GLOBAL_BLUENET.bluenet.setSunTimes(sunriseSecondsSinceMidnight: sunriseSecondsSinceMidnight.uint32Value, sunsetSecondsSinceMidnight: sundownSecondsSinceMidnight.uint32Value)
+  }
   
   
   

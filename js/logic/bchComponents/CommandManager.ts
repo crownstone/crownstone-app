@@ -71,6 +71,7 @@ export class CommandManager {
           case 'getTime':
           case 'meshSetTime':
           case 'setTime':
+          case 'setSunTimes':
           case 'clearErrors':
           case 'lockSwitch':
           case 'setSwitchCraft':
@@ -81,13 +82,15 @@ export class CommandManager {
           case 'setupPulse':
             duplicate = true;
             break
-          case 'saveBehaviour':
+          case 'addBehaviour':
           case 'updateBehaviour':
           case 'removeBehaviour':
           case 'syncBehaviour':
           case 'getBehaviour':
             duplicate = xUtil.deepCompare(todo.command, command);
             break;
+          default:
+            duplicate = true;
         }
 
         if (duplicate) {

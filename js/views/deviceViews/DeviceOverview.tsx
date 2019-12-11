@@ -319,7 +319,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
   _getSpecificInformation(stone) {
-    let label = ""
+    let label = "";
     switch (stone.config.type) {
       case STONE_TYPES.guidestone:
         label = "Guidestone"; break;

@@ -69,11 +69,7 @@ class SchedulerClass {
    * @param {Object} options       | Possible options:
    *                                    repeatEveryNSeconds
    */
-  setRepeatingTrigger(id, options) {
-    if (options.repeatEveryNSeconds && options.repeatEveryNSeconds > 20000) {
-      LOGw.info(id, "Probably passed milliseconds to scheduler", options.repeatEveryNSeconds);
-    }
-
+  setRepeatingTrigger(id, options, performImmediatelyAfterSet = false) {
     if (this.triggers[id] === undefined) {
       this.triggers[id] = {
         active:     true,
@@ -82,7 +78,7 @@ class SchedulerClass {
         overwritableActions:   {},
         overwritableCallbacks: {},
         options:    {},
-        lastTriggerTime: 0
+        lastTriggerTime: performImmediatelyAfterSet ? 0 : new Date().valueOf()
       };
     }
     this.triggers[id].options = options;
