@@ -240,8 +240,8 @@ export const AicoreUtil = {
       let lat = 51.923611570463152;
       let lon = 4.4667693378575288;
       if (sphere) {
-        lat = sphere.state.latitude || lat;
-        lon = sphere.state.longitude || lon;
+        lat = sphere.config.latitude  || lat;
+        lon = sphere.config.longitude || lon;
       }
       let baseTime = 0;
       var times = SunCalc.getTimes(new Date(), lat, lon);

@@ -89,6 +89,7 @@ function handleAction(action, returnValue, newState, oldState) {
     case 'UPDATE_LOCATION_CONFIG':
       handleLocationInCloud(action, newState);
       break;
+    case 'SET_SPHERE_GPS_COORDINATES':
     case 'UPDATE_SPHERE_CONFIG':
       handleSphereInCloud(action, newState);
       break;

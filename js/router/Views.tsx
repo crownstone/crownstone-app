@@ -108,6 +108,7 @@ import { DEV_AdvancedConfig } from "../views/dev/firmwareTesting/DEV_AdvancedCon
 import { DEV_DFU } from "../views/dev/firmwareTesting/DEV_DFU";
 import { DEV_StoneSelector } from "../views/dev/stoneSelecting/DEV_StoneSelector";
 import { DEV_RawAdvertisements } from "../views/dev/firmwareTesting/DEV_RawAdvertisements";
+import { SphereEditMap } from "../views/main/editSubviews/SphereEditMap";
 
 
 export const Views = {
@@ -181,6 +182,7 @@ export const Views = {
   SphereCrownstoneOverview:          SphereCrownstoneOverview,
   SphereEdit:                        SphereEdit,
   SphereEditSettings:                SphereEditSettings,
+  SphereEditMap:                     SphereEditMap,
   SphereIntegrations:                SphereIntegrations,
   SphereInvitedUser:                 SphereInvitedUser,
   SphereOverview:                    SphereOverview,

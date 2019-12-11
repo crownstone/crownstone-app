@@ -106,7 +106,7 @@ export class BleStateOverlay extends Component<any, any> {
         case "poweredOn":
           return "Bluetooth is turned on, resuming Crownstone services.";
         case "unauthorized":
-          return "Crownstone is not authorized to use Bluetooth. This should be resolved soon.";
+          return "Crownstone is not authorized to use Bluetooth. Please open the settings app on your phone, go to Crownstone in the list of apps and enable the Bluetooth permission.";
         default: // "unknown":
           return "We are turning on Bluetooth. This should not take long :).";
       }

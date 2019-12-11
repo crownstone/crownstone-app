@@ -14,6 +14,7 @@ import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
 import { core } from "../../core";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
 class LocationHandlerClass {
   _initialized : boolean;
@@ -108,28 +109,33 @@ class LocationHandlerClass {
     // update location of the sphere, start the keepAlive and check if we have to perform an enter sphere behaviour trigger.
     LOG.info('LocationHandler: ENTER SPHERE', enteringSphereId);
 
-    BluenetPromiseWrapper.requestLocation()
-      .catch((err) => {
-        LOGe.info('LocationHandler: Could not get GPS Location when entering a sphere: ', err);
-      })
-      .then((location) => {
-        if (location && location.latitude && location.longitude) {
-          if (sphere.state.latitude && sphere.state.longitude) {
-            let dx = location.latitude - sphere.state.latitude;
-            let dy = location.longitude - sphere.state.longitude;
-            let distance = Math.sqrt(dx*dx + dy*dy);
-            if (distance > 0.4) {
-              LOG.info('LocationHandler: Update sphere location, old: (', sphere.state.latitude, ',', sphere.state.longitude,') to new: (', location.latitude, ',', location.longitude,')');
+    if (sphere.config.latitude && sphere.config.longitude || Permissions.inSphere(enteringSphereId).canSetSphereLocation == false) {
+      // do not request new position.
+    }
+    else {
+      BluenetPromiseWrapper.requestLocation()
+        .catch((err) => {
+          LOGe.info('LocationHandler: Could not get GPS Location when entering a sphere: ', err);
+        })
+        .then((location) => {
+          if (location && location.latitude && location.longitude) {
+            if (sphere.config.latitude && sphere.config.longitude) {
+              let dx = location.latitude  - sphere.config.latitude;
+              let dy = location.longitude - sphere.config.longitude;
+              let distance = Math.sqrt(dx*dx + dy*dy);
+              if (distance > 0.4) {
+                LOG.info('LocationHandler: Update sphere location, old: (', sphere.config.latitude, ',', sphere.config.longitude,') to new: (', location.latitude, ',', location.longitude,')');
+                core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+              }
+            }
+            else {
+              LOG.info('LocationHandler: Setting sphere location to (', location.latitude, ',', location.longitude,')');
               core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
             }
           }
-          else {
-            LOG.info('LocationHandler: Setting sphere location to (', location.latitude, ',', location.longitude,')');
-            core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
-          }
-        }
-      })
-      .catch((err) => {});
+        })
+        .catch((err) => {});
+    }
 
     // set the presence
     core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true}});

@@ -20,7 +20,6 @@ import {Background} from "../../components/Background";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
-import { Stacks } from "../../../router/Stacks";
 
 export class SphereEditSettings extends LiveComponent<any, any> {
   static options(props) {
@@ -71,6 +70,9 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     const state = core.store.getState();
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
+
+    let coordinates = Util.getSphereLocation(this.props.sphereId);
+    const city = Util.getNearestCity(coordinates);
 
     items.push({label: lang("SPHERE_DETAILS"),  type:'explanation', below:false});
     if (spherePermissions.editSphere) {
@@ -127,6 +129,18 @@ export class SphereEditSettings extends LiveComponent<any, any> {
       }
     });
     items.push({label: lang("_will_do__very_best_help_"),  type:'explanation', style:{paddingBottom:0}, below:true});
+
+
+    items.push({label: "SPHERE LOCATION",  type:'explanation', below:false});
+    items.push({
+      label: "Near " + city,
+      type: spherePermissions.canSetSphereLocation ? 'navigation' : 'info',
+      icon: <IconButton name='c1-locationIcon1' size={15} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex}}/>,
+      callback: () => {
+        NavigationUtil.navigate( "SphereEditMap", {sphereId: this.props.sphereId});
+      }
+    });
+    items.push({label: "We use the location of the sphere to calculate the sunrise and sunset times used in the behaviour. A very rough estimate is sufficient for this.",  type:'explanation', style:{paddingBottom:0}, below:true});
 
 
     items.push({label: lang("SPHERE_USERS"),  type:'explanation', below:false});

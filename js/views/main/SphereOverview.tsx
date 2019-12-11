@@ -256,13 +256,13 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
   render() {
-    LOG.info("RENDERING_OVERVIEW");
     const state = core.store.getState();
 
     let amountOfSpheres = Object.keys(state.spheres).length;
     let activeSphereId = state.app.activeSphere;
     let background = core.background.main;
 
+    LOG.info("RENDERING_OVERVIEW", activeSphereId);
     if (amountOfSpheres > 0) {
       if (!activeSphereId) {
         return (

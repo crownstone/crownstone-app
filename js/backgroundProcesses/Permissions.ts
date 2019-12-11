@@ -30,6 +30,7 @@ export class PermissionBase {
   removeCrownstone        = false; // a
   canClearErrors          = false; // a
 
+  canSetSphereLocation    = false; // a
   editSphere              = false; // a
   manageUsers             = false; // a or m
   deleteSphere            = false; // a
@@ -139,6 +140,7 @@ export class PermissionClass extends PermissionBase {
         this.removeCrownstone        = true; // admin
         this.canClearErrors          = true; // admin
 
+        this.canSetSphereLocation    = true; // admin
         this.editSphere              = true; // admin
         this.deleteSphere            = true; // admin
         this.inviteAdminToSphere     = true; // admin

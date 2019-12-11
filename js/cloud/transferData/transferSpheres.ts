@@ -64,6 +64,10 @@ export const transferSpheres = {
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
+    if (localConfig.latitude && localConfig.longitude) {
+      payload['gpsLocation'] = {lat:localConfig.latitude, lng: localConfig.longitude}
+    }
+
     return CLOUD.updateSphere(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
@@ -73,8 +77,6 @@ export const transferSpheres = {
   },
 
   createLocal: function( actions, data: transferNewSphereToLocalData) {
-    // TODO: fix lat/long
-
     transferUtil._handleLocal(
       actions,
       'ADD_SPHERE',
@@ -82,11 +84,13 @@ export const transferSpheres = {
       data,
       fieldMap
     );
+
+    if (data.cloudData.gpsLocation && data.cloudData.gpsLocation.lat && data.cloudData.gpsLocation.lng) {
+      actions.push({type:"SET_SPHERE_GPS_COORDINATES", sphereId:data.localId, data:{ latitude:data.cloudData.gpsLocation.lat, longitude:data.cloudData.gpsLocation.lng, updatedAt: data.cloudData.updatedAt }});
+    }
   },
 
   updateLocal: function( actions, data: transferSphereToLocalData) {
-    // TODO: fix lat/long
-
     transferUtil._handleLocal(
       actions,
       'UPDATE_SPHERE_CONFIG',
@@ -94,6 +98,10 @@ export const transferSpheres = {
       data,
       fieldMap
     );
+
+    if (data.cloudData.gpsLocation && data.cloudData.gpsLocation.lat && data.cloudData.gpsLocation.lng) {
+      actions.push({type:"SET_SPHERE_GPS_COORDINATES", sphereId:data.localId, data:{ latitude:data.cloudData.gpsLocation.lat, longitude:data.cloudData.gpsLocation.lng, updatedAt: data.cloudData.updatedAt }});
+    }
   },
 
 };
