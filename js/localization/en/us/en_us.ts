@@ -1903,7 +1903,7 @@ export default {
     PERSONAL_ARTIFICIAL_INTEL:           function() { return "PERSONAL ARTIFICIAL INTELLIGENCE" },
     SPHERE_USERS:                        function() { return "SPHERE USERS" },
     Manage_Sphere_Users:                 function() { return "Manage Sphere Users" },
-    _will_do__very_best_help_:           function() { return "I will do my very best help you!" },
+    _will_do__very_best_help_:           function() { return "I will do my very best to help you!" },
     DANGER:                              function() { return "DANGER" },
     Leave_Sphere:                        function() { return "Leave Sphere" },
     Delete_Sphere:                       function() { return "Delete Sphere" },

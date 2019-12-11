@@ -42,7 +42,7 @@ export class AddSphereTutorial extends LiveComponent<any, any> {
     let components = this._getContent();
     return (
       <Background hasNavBar={false} image={core.background.light}>
-        <View style={{height: availableModalHeight, width:screenWidth}}>
+        <View style={{flex:1, width:screenWidth}}>
         <Carousel
           useScrollView={true}
           ref={(c) => { this._carousel = c; }}
