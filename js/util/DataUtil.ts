@@ -94,7 +94,7 @@ export const DataUtil = {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
     if (!sphere) return null
-    let location = sphere.stones[locationId];
+    let location = sphere.locations[locationId];
     return location || null;
   },
 
