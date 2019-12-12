@@ -306,8 +306,13 @@ export class DfuExecutor {
         this.runningDfuProcess = false;
         LOGi.dfu("Executor: DFU failed.");
 
-        // TODO: put back in app mode.
-        throw err;
+        return this.dfuHelper.restartInAppMode()
+          .then(() => {
+            throw err;
+          })
+          .catch(() => {
+            throw err;
+          })
       })
   }
 

@@ -88,24 +88,45 @@ export class DeviceEntry extends Component<any, any> {
 
     this.setState({pendingCommand:true});
 
-    StoneUtil.switchBHC(
-      this.props.sphereId,
-      this.props.stoneId,
-      stone, newState,
-      core.store,
-      {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
-      (err, result) => {
-        let newState = {pendingCommand:false};
-        if (!err && result && result.viaMesh === true) {
-          newState['showViaMesh'] = true;
-          this.showMeshMessageTimeout = setTimeout(() => { this.setState({showViaMesh: false})}, 1000);
-        }
-        this.setState(newState);
-      },
-      INTENTS.manual,
-      1,
-      'from _pressedDevice in DeviceEntry'
-    );
+    if (newState > 0) {
+      StoneUtil.turnOnBCH(
+        this.props.sphereId,
+        this.props.stoneId,
+        stone,
+        {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
+        (err, result) => {
+          let newState = {pendingCommand:false};
+          if (!err && result && result.viaMesh === true) {
+            newState['showViaMesh'] = true;
+            this.showMeshMessageTimeout = setTimeout(() => { this.setState({showViaMesh: false})}, 1000);
+          }
+          this.setState(newState);
+        },
+        1,
+        'from _pressedDevice in DeviceEntry'
+      );
+    }
+    else {
+      StoneUtil.switchBCH(
+        this.props.sphereId,
+        this.props.stoneId,
+        stone, newState,
+        {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
+        (err, result) => {
+          let newState = {pendingCommand:false};
+          if (!err && result && result.viaMesh === true) {
+            newState['showViaMesh'] = true;
+            this.showMeshMessageTimeout = setTimeout(() => { this.setState({showViaMesh: false})}, 1000);
+          }
+          this.setState(newState);
+        },
+        INTENTS.manual,
+        1,
+        'from _pressedDevice in DeviceEntry'
+      );
+    }
+
+
   }
 
   _getControl(stone) {

@@ -98,6 +98,9 @@ interface BluenetPromiseWrapperProtocol {
   getCurrentMultiplier()                        : Promise< number >,
   setCurrentMultiplier(value: number)           : Promise< void >,
   setUartState(value: number)                   : Promise< number >,
+
+  turnOnMesh(arrayOfStoneSwitchPackets: any[])  : Promise< void >,
+  turnOnBroadcast(referenceId, stoneId)         : Promise< void >,
 }
 
 

@@ -32,6 +32,7 @@ class BroadcastCommandManagerClass {
 
   commandsToBroadcast = {
     multiSwitch: true,
+    turnOn: true
   };
 
   broadcast(commandSummary : commandSummary, ignoreDuplicates = false) : Promise<bchReturnType> {
@@ -42,6 +43,8 @@ class BroadcastCommandManagerClass {
       switch (commandSummary.command.commandName) {
         case "multiSwitch":
           return this._broadCastMultiSwitch(commandSummary);
+        case "turnOn":
+          return this._broadcastTurnOn(commandSummary);
         default:
           return Promise.reject(BROADCAST_ERRORS.CANNOT_BROADCAST);
       }
@@ -92,6 +95,29 @@ class BroadcastCommandManagerClass {
         "Loading Pending Command"
       );
     }
+  }
+
+  _broadcastTurnOn(commandSummary) : Promise<bchReturnType> {
+    this.timeLastBroadcast = new Date().valueOf();
+
+    LOGi.broadcast("turnOn via broadcast");
+    return new Promise((resolve, reject) => {
+      let result : bchReturnType = {data:null};
+      Scheduler.scheduleCallback(() => { resolve(result); }, 100, "auto resolve broadcast promise" );
+
+      // ignore old states for a while
+      core.eventBus.emit(Util.events.getIgnoreTopic(commandSummary.stoneId), {timeoutMs: 2000, conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: 1}]});
+
+      // broadcast
+      BluenetPromiseWrapper.turnOnBroadcast(commandSummary.sphereId, commandSummary.stone.config.crownstoneId)
+        .then(() => {
+          LOGi.broadcast("Success broadcast turn On");
+          return { data: null }
+        })
+        .catch((err) => {
+          LOGi.broadcast("ERROR broadcast turn On");
+        })
+    })
   }
 
   _broadCastMultiSwitch(commandSummary) : Promise<bchReturnType> {

@@ -99,6 +99,7 @@ RCT_EXTERN_METHOD(meshSetTime:(nonnull NSNumber *)time callback:(RCTResponseSend
 RCT_EXTERN_METHOD(meshKeepAlive:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAlivePackets:(NSArray *)stoneKeepAlivePackets callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(turnOnMesh:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setMeshChannel:(nonnull NSNumber *)channel callback:(RCTResponseSenderBlock)callback)
 
 // DFU
@@ -106,7 +107,7 @@ RCT_EXTERN_METHOD(putInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupPutInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *)uri callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupFactoryReset:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(bootloaderToNormalMode:(NSString *)uuid callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(bootloaderToNormalMode:(NSString *)handle callback:(RCTResponseSenderBlock)callback)
 
 // scheduler
 RCT_EXTERN_METHOD(addSchedule:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
@@ -124,7 +125,7 @@ RCT_EXTERN_METHOD(getTrackingState:(RCTResponseSenderBlock)callback)
 
 // Broadcast
 RCT_EXTERN_METHOD(broadcastSwitch:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId switchState:(nonnull NSNumber *)switchState callback:(RCTResponseSenderBlock)callback)
-
+RCT_EXTERN_METHOD(turnOnBroadcast:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId callback:(RCTResponseSenderBlock)callback)
 
 // set states for broadcast
 RCT_EXTERN_METHOD(setLocationState:(nonnull NSNumber *)sphereUID locationId:(nonnull NSNumber *)locationId profileIndex:(nonnull NSNumber *)profileIndex deviceToken:(nonnull NSNumber *)deviceToken referenceId:(NSString *)referenceId)

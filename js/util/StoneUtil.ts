@@ -20,12 +20,11 @@ import { act } from "react-test-renderer";
 import { xUtil } from "./StandAloneUtil";
 
 export const StoneUtil = {
-  switchBHC: function (
+  switchBCH: function (
       sphereId : string,
       stoneId : string,
       stone : any,
       newState : number,
-      store : any,
       options : batchCommandEntryOptions = {},
       finalize = (err, result?: any) => {},
       intent = INTENTS.manual,
@@ -47,7 +46,43 @@ export const StoneUtil = {
       label
     )
       .then((result) => {
-        store.dispatch({
+        core.store.dispatch({
+          type: 'UPDATE_STONE_SWITCH_STATE',
+          sphereId: sphereId,
+          stoneId: stoneId,
+          data: data
+        });
+        finalize(null, result);
+      })
+      .catch((err) => {
+        finalize(err);
+      });
+
+    BatchCommandHandler.executePriority(options);
+  },
+
+  turnOnBCH: function (
+    sphereId : string,
+    stoneId : string,
+    stone : any,
+    options : batchCommandEntryOptions = {},
+    finalize = (err, result?: any) => {},
+    attempts : number = 1,
+    label : string = 'from StoneUtil'
+  ) {
+    let data = {state: 1};
+
+    BatchCommandHandler.loadPriority(
+      stone,
+      stoneId,
+      sphereId,
+      {commandName:'turnOn'},
+      options,
+      attempts,
+      label
+    )
+      .then((result) => {
+        core.store.dispatch({
           type: 'UPDATE_STONE_SWITCH_STATE',
           sphereId: sphereId,
           stoneId: stoneId,

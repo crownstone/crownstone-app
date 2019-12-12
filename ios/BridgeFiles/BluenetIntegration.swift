@@ -574,6 +574,15 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
+  @objc func turnOnMesh(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("turnOnMesh", callback, GLOBAL_BLUENET.bluenet.mesh.turnOn(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
+  }
+  
+  @objc func turnOnBroadcast(_ referenceId: String, stoneId: NSNumber, switchState: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("turnOnBroadcast", callback, GLOBAL_BLUENET.bluenet.broadcast.turnOn(referenceId: referenceId, stoneId: stoneId.uint8Value))
+  }
+  
+  
   // DFU
   
   @objc func setupPutInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
@@ -593,8 +602,8 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("setupFactoryReset", callback, GLOBAL_BLUENET.bluenet.setup.factoryReset())
   }
   
-  @objc func bootloaderToNormalMode(_ uuid: String, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("bootloaderToNormalMode", callback, GLOBAL_BLUENET.bluenet.dfu.bootloaderToNormalMode(uuid: uuid))
+  @objc func bootloaderToNormalMode(_ handle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("bootloaderToNormalMode", callback, GLOBAL_BLUENET.bluenet.dfu.bootloaderToNormalMode(handle: handle))
   }
 
   @objc func setTime(_ time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {

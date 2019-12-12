@@ -9,8 +9,8 @@ import {
   Alert,
   TouchableOpacity,
   Text,
-  View
-} from 'react-native';
+  View, ActivityIndicator
+} from "react-native";
 
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
@@ -18,6 +18,9 @@ import { styles, colors} from '../../styles'
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { DfuUtil } from "../../../util/DfuUtil";
+import { BleUtil } from "../../../util/BleUtil";
+import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 
 
 export class DfuDeviceEntry extends Component<any, any> {
@@ -34,7 +37,8 @@ export class DfuDeviceEntry extends Component<any, any> {
       name: props.name || 'DFU Crownstone',
       subtext:  lang("Tap_here_to_configure_me_"),
       showRssi: false,
-      rssi: null
+      rssi: null,
+      restoring: false
     };
 
     this.currentLoadingWidth = 0;
@@ -66,6 +70,17 @@ export class DfuDeviceEntry extends Component<any, any> {
   }
 
   _getIcon() {
+    if (this.state.restoring) {
+      return (
+        <View style={[{
+          width:60,
+          height:60,
+          backgroundColor: 'transparent',
+        }, styles.centered]}>
+          <ActivityIndicator size={'large'} color={colors.purple.hex} />
+        </View>
+      );
+    }
     return (
       <View style={[{
         width:60,
@@ -83,10 +98,10 @@ export class DfuDeviceEntry extends Component<any, any> {
     return (
       <View style={{flexDirection: 'column', height: this.baseHeight, flex: 1}}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.performDFU(); }}>
+          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.repair(); }}>
             {this._getIcon()}
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.performDFU(); }}>
+          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.repair(); }}>
             <View style={{flexDirection: 'column'}}>
               <Text style={{fontSize: 17}}>{this.props.name}</Text>
               {this._getSubText()}
@@ -97,20 +112,40 @@ export class DfuDeviceEntry extends Component<any, any> {
     );
   }
 
-  performDFU() {
-    if (Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
-      NavigationUtil.launchModal( "DfuIntroduction", { sphereId: this.props.sphereId });
-    }
-    else {
-      Alert.alert(
-      lang("_You_dont_have_permission_header"),
-      lang("_You_dont_have_permission_body"),
-      [{text: lang("_You_dont_have_permission_left")}])
+  repair() {
+    if (this.state.restoring === false) {
+      if (Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
+        let updatableStones = DfuUtil.getUpdatableStones(this.props.sphereId);
+        if (updatableStones.stones[this.props.stoneId]) {
+          NavigationUtil.launchModal("DfuIntroduction", { sphereId: this.props.sphereId });
+        }
+        else {
+          this.setState({restoring: true})
+          let proxy = BleUtil.getProxy(this.props.handle, this.props.sphereId);
+          proxy.performPriority(() => {
+            return BluenetPromiseWrapper.bootloaderToNormalMode(this.props.handle)
+          })
+            .then(() => {
+              // this.setState({restoring: false});
+            })
+            .catch((err) => {
+              core.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{firmwareVersion: null}});
+              this.setState({restoring: false})
+              NavigationUtil.launchModal("DfuIntroduction", { sphereId: this.props.sphereId });
+            })
+        }
+      }
+      else {
+        Alert.alert(
+        lang("_You_dont_have_permission_header"),
+        lang("_You_dont_have_permission_body"),
+        [{text: lang("_You_dont_have_permission_left")}])
+      }
     }
   }
 
   _getSubText() {
-    if (this.state.showRssi && SetupStateHandler.isSetupInProgress() === false) {
+    if (this.state.showRssi && SetupStateHandler.isSetupInProgress() === false && this.state.restoring === false) {
       if (this.state.rssi > -40) {
         return <View style={{flexDirection: 'column'}}>
           <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
@@ -145,7 +180,7 @@ export class DfuDeviceEntry extends Component<any, any> {
     else {
       return <View style={{flexDirection: 'column'}}>
         <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
-        <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{''}</Text>
+        <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{this.state.restoring && "Working..." || ''}</Text>
       </View>;
     }
   }

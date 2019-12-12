@@ -57,6 +57,30 @@ export class SphereEditMap extends LiveComponent<any, any> {
     this.unsubscribeStoreEvents();
   }
 
+  // _getCities() {
+  //   const cities = require('../../../data/cities.json')
+  //   let rad2deg = (rad) => {
+  //     return rad * 180 / Math.PI;
+  //   }
+  //
+  //   let res = [];
+  //
+  //   for (let i = 0; i < cities.length; ++i) {
+  //     let c = cities[i];
+  //     let latitude = rad2deg(c[1]);
+  //     let longitude = rad2deg(c[2])
+  //     res.push(
+  //       <Marker
+  //         key={c[0] + i}
+  //         coordinate={{latitude:latitude, longitude:longitude}}
+  //         pinColor={colors.red.hex}
+  //       />
+  //     );
+  //
+  //   }
+  //   return res
+  // }
+
   _getCurrentLocation() {
     this.setState({gettingLocation: true})
     BluenetPromiseWrapper.requestLocation()
@@ -106,14 +130,11 @@ export class SphereEditMap extends LiveComponent<any, any> {
             longitudeDelta: 0.0421,
           }}
         >
+          {/*{ this._getCities() }*/}
           <Marker
             coordinate={this.state.coordinates}
-            pinColor={colors.red.hex}
-            onSelect={    () => { }}
-            onDrag={      () => { }}
-            onDragStart={ () => { }}
-            onDragEnd={   (e) => { this.setState({coordinates: e.nativeEvent.coordinate});  }}
-            onPress={     () => { }}
+            pinColor={  colors.red.hex }
+            onDragEnd={ (e) => { this.setState({coordinates: e.nativeEvent.coordinate});  }}
             draggable
           />
         </MapView>

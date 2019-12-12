@@ -112,18 +112,32 @@ class NotificationParserClass {
 
     if (state && state.spheres[localSphereId] && state.spheres[localSphereId].stones[localStoneId]) {
       LOG.notifications("NotificationParser: switching based on notification", notificationData);
-      StoneUtil.switchBHC(
-        localSphereId,
-        localStoneId,
-        state.spheres[localSphereId].stones[localStoneId],
-        Math.min(1, Math.max(0, notificationData.switchState || 0)),
-        core.store,
-        {},
-        (err) => {},
-        INTENTS.manual,
-        25,
-        'from handle in NotificationParser'
-      );
+      let switchState = Math.min(1, Math.max(0, notificationData.switchState || 0))
+      if (switchState === 1) {
+        StoneUtil.turnOnBCH(
+          localSphereId,
+          localStoneId,
+          state.spheres[localSphereId].stones[localStoneId],
+          {},
+          (err) => {},
+          5,
+          'from _getButton in DeviceSummary'
+        );
+      }
+      else {
+        StoneUtil.switchBCH(
+          localSphereId,
+          localStoneId,
+          state.spheres[localSphereId].stones[localStoneId],
+          switchState,
+          {},
+          (err) => {},
+          INTENTS.manual,
+          5,
+          'from handle in NotificationParser'
+        );
+      }
+
       BatchCommandHandler.executePriority();
     }
   }
