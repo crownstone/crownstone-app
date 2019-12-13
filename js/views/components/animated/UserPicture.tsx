@@ -57,7 +57,6 @@ export class UserPicture extends Component<any, any> {
 
   render() {
     let picture = null;
-    console.log("UserPicture this is the user:",this.props.user)
     if (this.props.user && this.props.user.data && this.props.user.data.picture) {
       picture = this.props.user.data.picture;
     }
