@@ -96,13 +96,13 @@ export class InSphere extends Component<any, any> {
           subExplanation={ lang("Scroll_down_to_see_all_op")}
           labels={[
             lang("aCrownstone"),
-            lang("theIndoorLocalization"),
+            // lang("theIndoorLocalization"),
             lang("invitingUsers"),
             lang("other___"),
           ]}
           pressHandlers={[
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'crownstone'   }); }); },
-            () => { this._changeContent(() => { this.setState({userInputProblemType: 'localization' }); }); },
+            // () => { this._changeContent(() => { this.setState({userInputProblemType: 'localization' }); }); },
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'inviting'     }); }); },
             () => { this._changeContent(() => { this.setState({userInputProblemType: 'other'        }); }); },
           ]}

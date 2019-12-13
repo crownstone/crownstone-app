@@ -97,6 +97,7 @@ export class UserLayer extends LiveComponent<any, any> {
       let change = data.change;
       if (
         change.changeUsers       ||
+        change.changeUserData    ||
         change.changeSphereUsers ||
         change.updateSphereUser  ||
         (change.userPositionUpdate && change.userPositionUpdate.sphereIds[this.props.sphereId])

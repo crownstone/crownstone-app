@@ -21,7 +21,7 @@ class TimeKeeperClass {
       this.initialized = true;
 
       Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds:4*3600} );
-      Scheduler.loadOverwritableAction( TRIGGER_ID, "TIME_SETTER", this._setTime.bind(this));
+      Scheduler.loadOverwritableCallback( TRIGGER_ID, "TIME_SETTER", this._setTime.bind(this), false);
 
       core.eventBus.on("enterSphere", (enteringSphereId) => {
         this._updateSunTimes(enteringSphereId);

@@ -24,13 +24,13 @@ export class RoomTraining_finished extends Component<any, any> {
             backgroundColor:'transparent',
             fontSize:20,
             fontWeight:'bold',
-            color: colors.white.hex,
+            color: colors.csBlueDark.hex,
             textAlign:'center'
           }}>{ lang("Finished_learning_about_t") }</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
-            color: colors.white.hex,
+            color: colors.csBlueDark.hex,
             textAlign:'center',
             paddingTop:20,
           }}>{ lang("Once_you_have_taught__all") }</Text>

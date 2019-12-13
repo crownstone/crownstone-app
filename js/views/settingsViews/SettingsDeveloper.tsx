@@ -156,7 +156,7 @@ text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}
             .catch((err) => { core.eventBus.emit("hideLoading"); Alert.alert(
               lang("_Error_during_sync__argum_header"),
               lang("_Error_during_sync__argum_body",err,err.message,JSON.stringify(err)),
-              [{text:lang("_Error_during_sync__argum_left")}]) })
+              [{text:lang("_Error_during_sync__argum_left"), onPress: () => { core.eventBus.emit("hideLoading"); }}]) })
         }
         else {
           Alert.alert(

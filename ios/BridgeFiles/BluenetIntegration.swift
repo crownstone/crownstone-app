@@ -578,7 +578,7 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("turnOnMesh", callback, GLOBAL_BLUENET.bluenet.mesh.turnOn(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
   }
   
-  @objc func turnOnBroadcast(_ referenceId: String, stoneId: NSNumber, switchState: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func turnOnBroadcast(_ referenceId: String, stoneId: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     wrapForBluenet("turnOnBroadcast", callback, GLOBAL_BLUENET.bluenet.broadcast.turnOn(referenceId: referenceId, stoneId: stoneId.uint8Value))
   }
   

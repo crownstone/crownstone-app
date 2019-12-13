@@ -157,6 +157,7 @@ function checkAction(action, affectedIds) {
       eventStatus['userLogin'] = affectedIds; break;
     case 'USER_SEEN_TAP_TO_TOGGLE':
     case 'USER_UPDATE':
+    case "USER_UPDATE_PICTURE":
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       eventStatus['changeUserData'] = affectedIds; break;
     case "SET_DEVELOPER_MODE":
@@ -267,7 +268,6 @@ function checkAction(action, affectedIds) {
       break;
     case "UPDATE_STONE_SWITCH_STATE_TRANSIENT":
       eventStatus['stoneUsageUpdatedTransient'] = affectedIds; break;
-    case "USER_UPDATE_PICTURE":
       break;
     case "ADD_SPHERE_KEY":
     case "UPDATE_SPHERE_KEY":

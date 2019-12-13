@@ -473,7 +473,12 @@ export const getPresentUsersInLocation = function(state, sphereId, locationId, a
     presentUsers = Object.keys(state.spheres[sphereId].users)
   }
   presentUsers.forEach((userId) => {
-    users.push({id: userId, data: state.spheres[sphereId].users[userId]})
+    if (userId === state.user.userId) {
+      users.push({id: userId, data: state.user});
+    }
+    else {
+      users.push({id: userId, data: state.spheres[sphereId].users[userId]});
+    }
   });
 
   return users
