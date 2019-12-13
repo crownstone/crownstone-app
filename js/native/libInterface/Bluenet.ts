@@ -76,7 +76,7 @@ const BluenetAPI = {
   getSwitchState:           () => { console.log("BluenetBridgeCall:  getSwitchState:   "); },
   getTime:                  () => { console.log("BluenetBridgeCall:  getTime:          "); },
   putInDFU:                 () => { console.log("BluenetBridgeCall:  putInDFU:         "); },
-  performDFU:               () => { console.log("BluenetBridgeCall:  performDFU:       "); },
+  performDFU:               () => { console.log("BluenetBridgeCall:  repair:       "); },
   restartCrownstone:        () => { console.log("BluenetBridgeCall:  restartCrownstone:"); },
   clearKeySets:             () => { console.log("BluenetBridgeCall:  clearKeysets:     "); },
   setKeySets:               () => { console.log("BluenetBridgeCall:  setKeySets:       "); },
@@ -140,7 +140,9 @@ const BluenetAPI = {
   setTapToToggleThresholdOffset: () => { console.log("BluenetBridgeCall: setTapToToggleThresholdOffset"); },
 
 
-  setSunTimes: () => { console.log("BluenetBridgeCall: setSunTimes"); },
+  setSunTimes:      () => { console.log("BluenetBridgeCall: setSunTimes"); },
+  turnOnMesh:       () => { console.log("BluenetBridgeCall: turnOnMesh"); },
+  turnOnBroadcast:  () => { console.log("BluenetBridgeCall: turnOnBroadcast"); },
 
 };
 

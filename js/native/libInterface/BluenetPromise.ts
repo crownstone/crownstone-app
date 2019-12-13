@@ -189,6 +189,9 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getCurrentMultiplier:           ()        => { return BluenetPromise('getCurrentMultiplier')},
   setCurrentMultiplier:           ( value ) => { return BluenetPromise('setCurrentMultiplier', value)},
   setUartState:                   ( value ) => { return BluenetPromise('setUartState', value)},
+
+  turnOnMesh:                     (arrayOfStoneSwitchPackets: any[]) => { return BluenetPromise('turnOnMesh', arrayOfStoneSwitchPackets)},
+  turnOnBroadcast:                (referenceId, stoneId)             => { return BluenetPromise('turnOnBroadcast', referenceId, stoneId)},
 };
 
 

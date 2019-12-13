@@ -22,6 +22,9 @@ let defaultSettings = {
     aiSex: null,
     exitDelay: 600,
 
+    latitude: null,
+    longitude: null,
+
     updatedAt: 1,
     lastSeen: 1,
   },
@@ -36,8 +39,7 @@ let defaultSettings = {
   state: {
     reachable: false,
     present: false,
-    latitude: null,
-    longitude: null,
+
     newMessageFound: false,
   },
   keys: {
@@ -51,6 +53,17 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
       if (action.data) {
         let newState = {...state};
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
+    case 'SET_SPHERE_GPS_COORDINATES':
+      if (action.data) {
+        let newState = {...state};
+
+        newState.latitude  = update(action.data.latitude, newState.latitude);
+        newState.longitude = update(action.data.longitude, newState.longitude);
+
+        newState.updatedAt = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -68,7 +81,12 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         newState.memberKey   = update(action.data.memberKey,   newState.memberKey);
         newState.guestKey    = update(action.data.guestKey,    newState.guestKey);
         newState.cloudId     = update(action.data.cloudId,     newState.cloudId);
+
+        newState.latitude    = update(action.data.latitude, newState.latitude);
+        newState.longitude   = update(action.data.longitude, newState.longitude);
+
         newState.meshAccessAddress = update(action.data.meshAccessAddress, newState.meshAccessAddress);
+
         newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;
       }
@@ -111,16 +129,7 @@ let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
         return newState;
       }
       return state;
-    case 'SET_SPHERE_GPS_COORDINATES':
-      if (action.data) {
-        let newState = {...state};
 
-        newState.latitude = update(action.data.latitude, newState.latitude);
-        newState.longitude = update(action.data.longitude, newState.longitude);
-
-        return newState;
-      }
-      return state;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.layout.floatingLocation);
     default:

@@ -596,7 +596,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];
 
-    StoneUtil.switchBHC(sphereId, stoneId, stone,stone.state.state > 0 ? 0 : 1, core.store,{onlyAllowDirectCommand: true},
+    StoneUtil.switchBCH(sphereId, stoneId, stone,stone.state.state > 0 ? 0 : 1,{onlyAllowDirectCommand: true},
       (err) => {
         if (err) {
           if (typeof err === 'object' && err.code === "NO_STONES_FOUND") {

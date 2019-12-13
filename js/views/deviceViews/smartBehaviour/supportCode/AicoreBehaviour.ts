@@ -80,8 +80,8 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
   }
 
 
-  getSelectableChunkData(sphere: string) : selectableAicoreBehaviourChunk[] {
-    let chunks = this._getChunks(sphere);
+  getSelectableChunkData(sphereId: string) : selectableAicoreBehaviourChunk[] {
+    let chunks = this._getChunks(sphereId);
 
     let result : selectableAicoreBehaviourChunk[]= [];
 

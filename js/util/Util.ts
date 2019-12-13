@@ -103,19 +103,25 @@ export const Util = {
     return false;
   },
 
+  getSphereLocation: function(sphereId) : {latitude: number, longitude: number } {
+    // position of Crownstone HQ.
+    let latitude = 51.923611570463152;
+    let longitude = 4.4667693378575288;
+    if (sphereId) {
+      let state = core.store.getState();
+      let sphere = state.spheres[sphereId];
+      if (sphere) {
+        latitude = sphere.config.latitude || latitude;
+        longitude = sphere.config.longitude || longitude;
+      }
+    }
+
+    return {latitude: latitude, longitude: longitude };
+  },
 
   getSunTimes: function(sphereId) {
-    let state = core.store.getState();
-    let sphere = state.spheres[sphereId];
-
-    // position of Crownstone HQ.
-    let lat = 51.923611570463152;
-    let lon = 4.4667693378575288;
-    if (sphere) {
-      lat = sphere.state.latitude || lat;
-      lon = sphere.state.longitude || lon;
-    }
-    var times = SunCalc.getTimes(new Date(), lat, lon);
+    let coordinates = Util.getSphereLocation(sphereId);
+    var times = SunCalc.getTimes(new Date(), coordinates.latitude, coordinates.longitude);
 
     let sunriseTime = new Date(times.sunriseEnd).valueOf();
     let sunsetTime  = new Date(times.sunset).valueOf();
@@ -134,5 +140,36 @@ export const Util = {
     }
   },
 
+
+  getNearestCity: function({latitude, longitude}) {
+    const cities = require('../data/cities.json')
+    let deg2Rad = (deg) => {
+      return deg * Math.PI / 180;
+    }
+
+    const pythagorasEquirectangular = function(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
+      const y = (lat2 - lat1);
+      const d = Math.sqrt(x * x + y * y) * R;
+      return d;
+    }
+
+    let mindif = 99999;
+    let closest = null;
+    let latitude_Radians = deg2Rad(latitude);
+    let longitude_Radians = deg2Rad(longitude);
+    for (let i = 0; i < cities.length; ++i) {
+      const dif = pythagorasEquirectangular(latitude_Radians, longitude_Radians, cities[i][1], cities[i][2]);
+      if (dif < mindif) {
+        closest = i;
+        mindif = dif;
+      }
+    }
+    if (closest !== null) {
+      return cities[closest][0]
+    }
+    return null;
+  }
 };
 

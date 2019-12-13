@@ -153,6 +153,9 @@ export class AiStart extends Component<any, any> {
           NavigationUtil.setRoot(Stacks.loggedIn());
         }
         else {
+          if (this.props.fromLogin) {
+            core.eventBus.emit("userLoggedInFinished");
+          }
           NavigationUtil.setRoot(Stacks.loggedIn());
         }
       };

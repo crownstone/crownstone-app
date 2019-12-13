@@ -110,7 +110,7 @@ export class RuleEditor extends LiveComponent<
         },
         option: {
           inSphere: new AicoreBehaviour().setEndConditionWhilePeopleInSphere(),
-          inRoom:   new AicoreBehaviour().setEndConditionWhilePeopleInLocation(stone.config.locationId),
+          inRoom:   new AicoreBehaviour().setEndConditionWhilePeopleInLocation(this._locationIdToUid(stone.config.locationId)),
           noOption: new AicoreBehaviour().setNoEndCondition(),
         }
       }
@@ -646,7 +646,7 @@ export class RuleEditor extends LiveComponent<
                     let state = core.store.getState();
                     let sphere = state.spheres[this.props.sphereId];
                     let stone = sphere.stones[this.props.stoneId];
-                    this.rule.setPresenceInLocations([stone.config.locationId]);
+                    this.rule.setPresenceInLocations([this._locationIdToUid(stone.config.locationId)]);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "2"})
                   }
                 },

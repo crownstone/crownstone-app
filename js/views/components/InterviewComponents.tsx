@@ -249,7 +249,7 @@ export function InterviewTextInput(props: {autofocus?, placeholder, value, callb
         autoCapitalize={props.autoCapitalize}
         ref={inputElement}
         focussed={props.focussed}
-        autoFocus={props.autofocus === undefined ? true : props.autofocus}
+        autoFocus={props.autofocus === undefined ? false : props.autofocus}
         style={{width: 0.8*screenWidth, padding:10}}
         placeholder={props.placeholder}
         placeholderTextColor='#888'

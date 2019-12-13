@@ -30,6 +30,7 @@ export class PermissionBase {
   removeCrownstone        = false; // a
   canClearErrors          = false; // a
 
+  canSetSphereLocation    = false; // a
   editSphere              = false; // a
   manageUsers             = false; // a or m
   deleteSphere            = false; // a
@@ -59,7 +60,6 @@ const EmptyPermissions = new PermissionBase();
 export class PermissionClass extends PermissionBase {
   _initialized : boolean = false;
   _sphereId : string;
-  _enableUpdates : boolean = false;
 
   constructor(sphereId) {
     super();
@@ -74,10 +74,6 @@ export class PermissionClass extends PermissionBase {
 
       // sometimes the first event since state change can be wrong, we use this to ignore it.
       core.eventBus.on("databaseChange", (data) => {
-        if (this._enableUpdates === false) {
-          return;
-        }
-
         let change = data.change;
         if (change.setKeys) {
           LOG.info("Permissions: Update permissions in " + this._sphereId + " due to keySet");
@@ -87,12 +83,10 @@ export class PermissionClass extends PermissionBase {
 
       core.eventBus.on('userLoggedIn', () => {
         LOG.info("Permissions: Update permissions in Sphere " + this._sphereId + "  due to userLoggedIn");
-        this._enableUpdates = true;
         this._update(core.store.getState());
       });
 
       // in case the login event has already fired before we init the permission module.
-      this._enableUpdates = true;
       this._update(core.store.getState());
     }
   }
@@ -146,6 +140,7 @@ export class PermissionClass extends PermissionBase {
         this.removeCrownstone        = true; // admin
         this.canClearErrors          = true; // admin
 
+        this.canSetSphereLocation    = true; // admin
         this.editSphere              = true; // admin
         this.deleteSphere            = true; // admin
         this.inviteAdminToSphere     = true; // admin

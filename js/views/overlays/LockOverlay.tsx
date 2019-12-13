@@ -47,7 +47,7 @@ export class LockOverlay extends Component<any, any> {
       return lang("Only_Admins_have_permissi");
     }
 
-    if (stone.config.dimmingEnabled) {
+    if (stone.abilities.dimming.enabledTarget) {
       return lang("You_can_only_lock_Crownst");
     }
 
@@ -87,7 +87,7 @@ export class LockOverlay extends Component<any, any> {
       return;
     }
 
-    if (!Permissions.inSphere(this.state.sphereId).canLockCrownstone || stone.config.dimmingEnabled) {
+    if (!Permissions.inSphere(this.state.sphereId).canLockCrownstone || stone.abilities.dimming.enabledTarget) {
       return (
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 1}}/>

@@ -31,6 +31,15 @@ class StoneAvailabilityTrackerClass {
       core.eventBus.on("iBeaconOfValidCrownstone",       (data) => { this._update(data, true); });
       core.eventBus.on("AdvertisementOfValidCrownstone", (data) => { this._update(data, false); });
 
+      core.eventBus.on("databaseChange", (data) => {
+        let change = data.change;
+
+        if (change.removeSphere) {
+          this._sanitize();
+          return;
+        }
+      });
+
       Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: 4});
       Scheduler.loadCallback(TRIGGER_ID, this.notify.bind(this), false);
     }
@@ -79,6 +88,29 @@ class StoneAvailabilityTrackerClass {
         this._evaluateDisabledState(sphereId);
       })
     }
+  }
+
+
+  /**
+   * Clean up after sphere removal.
+   * @private
+   */
+  _sanitize() {
+    let state = core.store.getState();
+    let spheres = state.spheres;
+    let sphereIds = Object.keys(spheres);
+
+    let sphereIdsInList = Object.keys(this.sphereLog);
+    sphereIdsInList.forEach((sphereIdInList) => {
+      if (sphereIds[sphereIdInList] === undefined) {
+        let stoneIdsToClean = Object.keys(this.sphereLog[sphereIdInList]);
+        stoneIdsToClean.forEach((stoneId) => {
+          delete this.log[stoneId];
+        })
+        delete this.sphereLog[sphereIdInList];
+        delete this.triggers[sphereIdInList];
+      }
+    })
   }
 
   _update(data, beacon) {
@@ -172,6 +204,9 @@ class StoneAvailabilityTrackerClass {
 
   _evaluateDisabledState(sphereId) {
     let state = core.store.getState();
+    if (state.spheres[sphereId] === undefined) { return; }
+
+
     // check if there are any stones left that are not disabled.
     let stoneIds = Object.keys(state.spheres[sphereId].stones);
     let allDisabled = true;

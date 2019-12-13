@@ -10,3 +10,13 @@ add bridge methods;
    
 rename brige method cuz blegh
     saveBehaviour --> addBehaviour
+    
+add module react-native-maps
+https://github.com/react-native-community/react-native-maps
+
+add bridge functions:
+(exactly the same as multiswitch)
+turnOnMesh(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void
+
+(same as broadcastSwitch without state) 
+turnOnBroadcast(_ referenceId: String, stoneId: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {

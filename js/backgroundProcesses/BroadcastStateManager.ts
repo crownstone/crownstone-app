@@ -178,14 +178,19 @@ class BroadcastStateManagerClass {
       deviceUID = device.uid || 0;
     }
 
-    let sphereUserIds = Object.keys(sphere.users).sort();
-    let userIndex = sphereUserIds.indexOf(state.user.userId);
 
-    if (userIndex === -1) {
-      sphereUserIds.push(state.user.userId);
-      sphereUserIds.sort();
+    let userIndex = 0;
+    if (sphere.users) {
+      let sphereUserIds = Object.keys(sphere.users).sort();
       userIndex = sphereUserIds.indexOf(state.user.userId);
+
+      if (userIndex === -1) {
+        sphereUserIds.push(state.user.userId);
+        sphereUserIds.sort();
+        userIndex = sphereUserIds.indexOf(state.user.userId);
+      }
     }
+
 
 
     //   this index is made of 2 bits of deviceToken, 1 bit of wearable true/false and 5 bits of userIndex

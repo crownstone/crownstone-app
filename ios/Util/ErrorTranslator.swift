@@ -231,5 +231,7 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
       return "NO_END_CONDITION_PRESENCE"
     case .NO_END_CONDITION_DURATION:
       return "NO_END_CONDITION_DURATION"
-}
+    case .COULD_NOT_GET_LOCATION:
+      return "COULD_NOT_GET_LOCATION"
+    }
 }

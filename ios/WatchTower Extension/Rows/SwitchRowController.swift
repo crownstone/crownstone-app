@@ -21,6 +21,7 @@ class SwitchRowController: NSObject {
     
     var pendingToggle = false
     var stateOfSwitch : Bool? = nil
+    var toggleTime : Double = 0
     
     @IBAction func switchToggled(_ value: Bool) {
         
@@ -33,20 +34,14 @@ class SwitchRowController: NSObject {
             }
             
             //print("Starting Toggle")
-            
-//            stone.pendingAction = true
+            self.toggleTime = Date().timeIntervalSince1970
             bluenetManager.switchStoneBroadcast(stone.referenceId, stoneId: stone.crownstoneId, newSwitchState)
 //            bluenetManager.switchStone(stone.handle, newSwitchState)
         }
     }
     
     func showSwitchingLabel() {
-        if bluenetManager.performingStone == switchableStone!.handle {
-            loadingText.setTextColor(UIColor(red:0.16, green:0.99, blue:0.35, alpha:1.0))
-        }
-        else {
-            loadingText.setTextColor(UIColor(red:1, green:1, blue:1, alpha:1.0))
-        }
+        loadingText.setTextColor(UIColor(red:1, green:1, blue:1, alpha:1.0))
         stoneSwitch.setHidden(true)
         stoneName.setHidden(true)
         loadingText.setHidden(false)
@@ -63,18 +58,15 @@ class SwitchRowController: NSObject {
             guard let stone = switchableStone else { return }
             stoneName.setText(stone.name)
             
-            if bluenetManager.pendingStones[stone.handle] != nil {
-                self.showSwitchingLabel()
+            self.hideSwitchingLabel()
+            
+            let now = Date().timeIntervalSince1970
+            
+            if stone.getState() != self.stateOfSwitch && now - self.toggleTime > 1.5 {
+                stoneSwitch.setOn(stone.getState())
             }
-        
-            if (bluenetManager.pendingStones[stone.handle] == nil) {
-                self.hideSwitchingLabel()
-                
-                if stone.getState() != self.stateOfSwitch {
-                    stoneSwitch.setOn(stone.getState())
-                }
-                self.stateOfSwitch = stone.getState()
-            }
+            self.stateOfSwitch = stone.getState()
+            
         }
     }
 }

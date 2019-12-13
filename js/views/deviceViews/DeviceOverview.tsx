@@ -194,18 +194,30 @@ export class DeviceOverview extends LiveComponent<any, any> {
       stateWhenOn = state < 0.2 ? 1 : state;
     }
 
-    StoneUtil.switchBHC(
-      this.props.sphereId,
-      this.props.stoneId,
-      stone,
-      state,
-      core.store,
-      {},
-      () => { this.storedSwitchState = state; this.storedSwitchStateWhenOn = stateWhenOn; },
-      INTENTS.manual,
-      1,
-      'from _getButton in DeviceSummary'
-    );
+    if (this.storedSwitchStateWhenOn === null && !this.state.switchIsOn) {
+      StoneUtil.turnOnBCH(
+        this.props.sphereId,
+        this.props.stoneId,
+        stone,
+        {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
+        () => { this.storedSwitchState = 1; this.storedSwitchStateWhenOn = null; },
+        1,
+        'from _getButton in DeviceSummary'
+      );
+    }
+    else {
+      StoneUtil.switchBCH(
+        this.props.sphereId,
+        this.props.stoneId,
+        stone,
+        state,
+        {},
+        () => { this.storedSwitchState = state; this.storedSwitchStateWhenOn = stateWhenOn; },
+        INTENTS.manual,
+        1,
+        'from _getButton in DeviceSummary'
+      );
+    }
   }
 
   _getButton(stone) {
@@ -319,7 +331,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
   _getSpecificInformation(stone) {
-    let label = "";
+    let label;
     switch (stone.config.type) {
       case STONE_TYPES.guidestone:
         label = "Guidestone"; break;
