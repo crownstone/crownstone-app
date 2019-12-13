@@ -396,6 +396,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.setCurrentSphere(sphereId)
 	}
 
+	@ReactMethod
+	@Synchronized
+	fun setSunTimes(sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int) {
+		Log.i(TAG, "setSunTimes sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
+		bluenet.setSunTime(null, sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
+	}
 
 	@ReactMethod
 	@Synchronized
@@ -1212,17 +1218,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun broadcastSwitch(referenceId: String, stoneIdInt: Int, switchValDouble: Double, callback: Callback) {
-		Log.i(TAG, "broadcastSwitch referenceId=$referenceId stoneId=$stoneIdInt switchVal=$switchValDouble")
-		val stoneId = Conversion.toUint8(stoneIdInt)
-		val switchVal = convertSwitchVal(switchValDouble)
-		bluenet.broadCast.switch(referenceId, stoneId, switchVal)
-				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
-	}
-
-	@ReactMethod
-	@Synchronized
 	fun toggleSwitchState(valueOnDouble: Double, callback: Callback) {
 		Log.i(TAG, "toggleSwitchState $valueOnDouble")
 		val valueOn = convertSwitchVal(valueOnDouble)
@@ -1235,8 +1230,32 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun multiSwitch(switchItems: ReadableArray, callback: Callback) {
 		Log.i(TAG, "multiSwitch $switchItems")
-		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
+		val listPacket = parseMultiSwitchLegacy(switchItems)
+		if (listPacket == null) {
+			rejectCallback(callback, "Invalid multiSwitch data: $switchItems")
+			return
+		}
+		bluenet.control.multiSwitch(listPacket)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
 
+	@ReactMethod
+	@Synchronized
+	fun turnOnMesh(switchItems: ReadableArray, callback: Callback) {
+		Log.i(TAG, "turnOnMesh $switchItems")
+		val listPacket = parseMultiSwitchLegacy(switchItems)
+		if (listPacket == null) {
+			rejectCallback(callback, "Invalid multiSwitch data: $switchItems")
+			return
+		}
+		bluenet.control.multiSwitchOn(listPacket)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	private fun parseMultiSwitchLegacy(switchItems: ReadableArray): MultiSwitchLegacyPacket? {
+		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
 		val listPacket = MultiSwitchLegacyPacket()
 		var success = true
 		for (i in 0 until switchItems.size()) {
@@ -1254,15 +1273,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			}
 		}
 		if (!success) {
-			rejectCallback(callback, "Invalid multiSwitch data: $switchItems")
-			return
+			return null
 		}
-		bluenet.control.multiSwitch(listPacket)
-				.success { resolveCallback(callback) }
-				.fail { rejectCallback(callback, it.message) }
+		return listPacket
 	}
-
-
 
 	@ReactMethod
 	@Synchronized
@@ -1676,6 +1690,40 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 //endregion
 
+//##################################################################################################
+//region           Broadcasting
+//##################################################################################################
+
+	@ReactMethod
+	@Synchronized
+	fun broadcastSwitch(referenceId: String, stoneIdInt: Int, switchValDouble: Double, callback: Callback) {
+		Log.i(TAG, "broadcastSwitch referenceId=$referenceId stoneId=$stoneIdInt switchVal=$switchValDouble")
+		val stoneId = Conversion.toUint8(stoneIdInt)
+		val switchVal = convertSwitchVal(switchValDouble)
+		bluenet.broadCast.switch(referenceId, stoneId, switchVal)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun turnOnBroadcast(referenceId: String, stoneIdInt: Int, callback: Callback) {
+		Log.i(TAG, "turnOnBroadcast referenceId=$referenceId stoneId=$stoneIdInt")
+		val stoneId = Conversion.toUint8(stoneIdInt)
+		bluenet.broadCast.switchOn(referenceId, stoneId)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun setTimeViaBroadcast(timestampDouble: Double, sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int, referenceId: String, callback: Callback) {
+		Log.i(TAG, "setTimeViaBroadcast referenceId=$referenceId timestampDouble=$timestampDouble sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
+		bluenet.broadCast.setTime(referenceId, timestampDouble.toUint32(), sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+//endregion
 
 //##################################################################################################
 //region           Behaviour
@@ -1683,7 +1731,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun saveBehaviour(behaviour: ReadableMap, callback: Callback) {
+	fun addBehaviour(behaviour: ReadableMap, callback: Callback) {
 		Log.i(TAG, "saveBehaviour")
 		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
 		if (indexedBehaviourPacket == null) {
@@ -2201,7 +2249,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
-
 //endregion
 
 //##################################################################################################
