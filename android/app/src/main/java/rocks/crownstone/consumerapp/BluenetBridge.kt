@@ -30,6 +30,8 @@ import nl.komponents.kovenant.then
 import nl.komponents.kovenant.unwrap
 import org.json.JSONException
 import rocks.crownstone.bluenet.Bluenet
+import rocks.crownstone.bluenet.behaviour.BehaviourHashGen
+import rocks.crownstone.bluenet.behaviour.BehaviourSyncerFromCrownstone
 import rocks.crownstone.bluenet.encryption.KeySet
 import rocks.crownstone.bluenet.encryption.MeshKeySet
 import rocks.crownstone.bluenet.packets.behaviour.*
@@ -58,6 +60,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private lateinit var initPromise: Promise<Unit, Exception>
 	private lateinit var handler: Handler
 
+	private lateinit var behaviourSyncer: BehaviourSyncerFromCrownstone
+
 	private val ONGOING_NOTIFICATION_ID = 99115
 
 	// Scanning
@@ -80,7 +84,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private var nearestStoneSub: SubscriptionId? = null
 	private var nearestSetupSub: SubscriptionId? = null
 	private var sendUnverifiedAdvertisements = false
-
 
 	init {
 
@@ -179,6 +182,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val looper = Looper.myLooper()
 		bluenet = Bluenet(looper)
 		handler = Handler(looper)
+		behaviourSyncer = BehaviourSyncerFromCrownstone(bluenet)
 
 //		// Main thread
 //		bluenet = Bluenet(Looper.getMainLooper())
@@ -1765,10 +1769,71 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				}
 	}
 
+	@ReactMethod
+	@Synchronized
+	fun syncBehaviours(behaviours: ReadableArray, callback: Callback) {
+		Log.i(TAG, "syncBehaviours")
+		// Synchronize behaviours: the given behaviours is the local believe of what behaviours are on the Crownstone.
+		// The sync will check which behaviours are on the Crownstone, and return those.
+		val behaviourList = parseBehaviourTransferArray(behaviours)
+		if (behaviourList == null) {
+			rejectCallback(callback, "Invalid behaviour")
+			return
+		}
+		behaviourSyncer.setBehaviours(behaviourList)
+		behaviourSyncer.sync()
+				.success {
+					val behaviourArray = genBehaviourTransferArray(it)
+					if (behaviourArray == null) {
+						rejectCallback(callback, "Invalid behaviour")
+						return@success
+					}
+					resolveCallback(callback, behaviourArray)
+				}
+				.fail {
+					rejectCallback(callback, it.message)
+				}
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun getBehaviourMasterHash(behaviours: ReadableArray, callback: Callback) {
+		Log.i(TAG, "getBehaviourMasterHash")
+		val behaviourList = parseBehaviourTransferArray(behaviours)
+		if (behaviourList == null) {
+			rejectCallback(callback, "Invalid behaviour")
+			return
+		}
+		val hash = BehaviourHashGen.getHash(behaviourList)
+		resolveCallback(callback, hash.toDouble())
+	}
+
 	/**
 	 * Value that determines when the day starts, defined as offset from midnight in seconds.
 	 */
 	private val behaviourDayStartOffset = 4*3600
+
+	/**
+	 * Parse a list of behaviour maps
+	 */
+	private fun parseBehaviourTransferArray(behaviours: ReadableArray): List<IndexedBehaviourPacket>? {
+		val behaviourList = ArrayList<IndexedBehaviourPacket>()
+		for (i in 0 until behaviours.size()) {
+			val behaviourMap = behaviours.getMap(i) ?: return null
+			val behaviour = parseBehaviourTransfer(behaviourMap) ?: return null
+			behaviourList.add(behaviour)
+		}
+		return behaviourList
+	}
+
+	private fun genBehaviourTransferArray(behaviours: List<IndexedBehaviourPacket>): WritableArray? {
+		val behaviourArray = Arguments.createArray()
+		for (b in behaviours) {
+			val behaviourMap = genBehaviour(b) ?: return null
+			behaviourArray.pushMap(behaviourMap)
+		}
+		return behaviourArray
+	}
 
 	/**
 	 * Parse a behaviour map
@@ -2106,7 +2171,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun genBehaviourReply(indexAndHash: BehaviourIndexAndHashPacket): WritableMap {
 		val map = Arguments.createMap()
 		map.putInt("index", indexAndHash.index.toInt())
-		map.putString("masterHash", indexAndHash.hash.toString())
+		map.putDouble("masterHash", indexAndHash.hash.hash.toDouble())
 		return map
 	}
 
