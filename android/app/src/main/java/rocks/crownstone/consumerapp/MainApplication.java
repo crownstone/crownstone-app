@@ -1,6 +1,8 @@
 package rocks.crownstone.consumerapp;
 
 import ca.jaysoo.extradimensions.ExtraDimensionsPackage;
+
+import com.airbnb.android.react.maps.MapsPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -72,7 +74,8 @@ public class MainApplication extends NavigationApplication {
 				new SplashScreenReactPackage(),
 				new RNSentryPackage(),
 				new RNDeviceInfo(),
-				new ReactNativePushNotificationPackage()
+				new ReactNativePushNotificationPackage(),
+				new MapsPackage()
 		);
 	}
 

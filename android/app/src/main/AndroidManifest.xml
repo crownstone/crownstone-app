@@ -80,6 +80,10 @@
 		<meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
 			android:resource="@android:color/white"/>
 
+		<!-- required for react-native-maps -->
+		<meta-data android:name="com.google.android.geo.API_KEY"
+			android:value="@string/mapKey"/>
+
 		<!-- < Only if you're using GCM or localNotificationSchedule() > -->
 		<receiver
 			android:name="com.google.android.gms.gcm.GcmReceiver"
