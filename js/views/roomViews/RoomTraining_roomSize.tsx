@@ -93,8 +93,7 @@ export class RoomTraining_roomSize extends LiveComponent<any, any> {
 
     return (
       <Background hasNavBar={false} image={core.background.light}>
-        <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
-          <View style={{flex:1}} />
+        <View style={{flexDirection:'column', flex:1, padding:20, paddingTop: 30, alignItems:'center'}}>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:20,
