@@ -49,7 +49,7 @@ export class FingerprintSyncer extends SyncingBase {
       })
       .then(() => {
         this.syncUp(state, deviceId, locationIdsWithNewFingerprints);
-        return Promise.all(this.transferPromises)
+        return Promise.all(this.transferPromises);
       })
       .then(() => {
         return this.reinitializeTracking;
@@ -118,6 +118,7 @@ export class FingerprintSyncer extends SyncingBase {
     return {existing: existingFingerprints, missing: missingFingerprints, new: newFingerprints};
   }
 
+
   syncUp(state, deviceId, locationIdsWithNewFingerprints) {
     // all the fingerprints we have and that do not have a cloudId, upload them to the cloud.
     let locationIds = Object.keys(locationIdsWithNewFingerprints);
@@ -141,10 +142,15 @@ export class FingerprintSyncer extends SyncingBase {
   }
 
 
-
   checkForUpdates(state, deviceId, locationIdsWithCloudFingerprints : any) {
     // get the fingerprints ids from the locationIdObject.
     let locationIds = Object.keys(locationIdsWithCloudFingerprints);
+
+    if (locationIds.length === 0) {
+      return new Promise((resolve, reject) => { resolve(); });
+    }
+
+
     let locationMap = {};
     let fingerprintIds = [];
     for ( let i = 0; i < locationIds.length; i++ ) {

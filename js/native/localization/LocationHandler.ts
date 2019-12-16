@@ -322,7 +322,7 @@ class LocationHandlerClass {
               }
               else {
                 showRemoveFingerprintNotification = true;
-                actions.push({type: 'REMOVE_LOCATION_FINGERPRINT', sphereId: sphereId, locationId: locationId})
+                actions.push({type: 'REMOVE_LOCATION_FINGERPRINT', sphereId: sphereId, locationId: locationId});
               }
             }
           });

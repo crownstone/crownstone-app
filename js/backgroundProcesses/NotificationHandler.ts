@@ -2,7 +2,7 @@ import { NotificationParser } from "../notifications/NotificationParser";
 
 const PushNotification = require('react-native-push-notification');
 import { Platform } from 'react-native';
-import {LOG, LOGe, LOGi, LOGw} from "../logging/Log";
+import { LOG, LOGd, LOGe, LOGi, LOGw } from "../logging/Log";
 import { Util } from "../util/Util";
 import { CLOUD } from "../cloud/cloudAPI";
 import { core } from "../core";
@@ -59,7 +59,7 @@ class NotificationHandlerClass {
 
         if (!installationId || !state.installations[installationId]) {
           LOGw.notifications("NotificationHandler: No Installation found.");
-          CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS })
+          CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, deviceToken: tokenData.token })
             .then((installation) => {
               LOG.notifications("NotificationHandler: Creating new installation and connecting it to the device.");
               let actions = [];
@@ -80,7 +80,9 @@ class NotificationHandlerClass {
             });
         }
         else {
+          LOGd.notifications("NotificationHandler: Installation found, checking token.");
           if (state.installations[installationId].deviceToken !== tokenData.token) {
+            LOGi.notifications("NotificationHandler: Installation found, UPDATING token.");
             core.store.dispatch({
               type:'UPDATE_INSTALLATION_CONFIG',
               installationId: installationId,

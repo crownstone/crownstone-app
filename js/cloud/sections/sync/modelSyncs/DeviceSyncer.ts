@@ -248,11 +248,18 @@ export class DeviceSyncer extends SyncingBase {
     if (installationId) {
       this.transferPromises.push(CLOUD.getInstallation(installationId)
         .then((installation) => {
-          this.actions.push({
-            type: 'ADD_INSTALLATION',
-            installationId: installation.id,
-            data: {deviceToken: installation.deviceToken}
-          });
+          let notificationToken = state.app.notificationToken || state.installations[installationId];
+          if (installation.deviceToken !== notificationToken) {
+            this.transferPromises.push(CLOUD.updateInstallation(installationId, {deviceToken: notificationToken }))
+          }
+
+          if (!state.installations[installationId]) {
+            this.actions.push({
+              type: 'ADD_INSTALLATION',
+              installationId: installation.id,
+              data: { deviceToken: notificationToken }
+            });
+          }
 
           // check if we have to update this installation in the cloud.
           if (installation.developmentApp !== base_core.sessionMemory.developmentEnvironment) {
@@ -261,13 +268,18 @@ export class DeviceSyncer extends SyncingBase {
         }))
     }
     else if (deviceId && state && state.devices && state.devices[deviceId] && state.devices[deviceId].installationId === null) {
+      // we have not installation, create one!
+
+      // check if we have a notification token that we can use.
+      let notificationToken = state.app.notificationToken || undefined;
+
       this.transferPromises.push(
-        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, developmentApp: base_core.sessionMemory.developmentEnvironment })
+        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, developmentApp: base_core.sessionMemory.developmentEnvironment, deviceToken: notificationToken })
           .then((installation) => {
             this.actions.push({
               type: 'ADD_INSTALLATION',
               installationId: installation.id,
-              data: {deviceToken: null}
+              data: { deviceToken: notificationToken }
             });
             this.actions.push({
               type: 'UPDATE_DEVICE_CONFIG',

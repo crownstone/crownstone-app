@@ -13,6 +13,7 @@ import { BROADCAST_ERRORS, BroadcastCommandManager } from "./bchComponents/Broad
 import { xUtil } from "../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../Enums";
 import { core } from "../core";
+import { INTENTS } from "../native/libInterface/Constants";
 
 
 /**
@@ -195,7 +196,7 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.setMeshChannel(command.channel);
                 break;
               case 'turnOn':
-                let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, timeout: 0, intent: 0, state: 1};
+                let stoneSwitchPacket = {crownstoneId: connectedStoneInfo.stone.config.crownstoneId, timeout: 0, intent: INTENTS.manual, state: 1};
                 actionPromise = BluenetPromiseWrapper.turnOnMesh([stoneSwitchPacket])
                 break;
               case 'multiSwitch':
