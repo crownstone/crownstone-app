@@ -178,9 +178,9 @@ lang("_Sync_already_in_progress_body"),
         let unsubscribe = core.eventBus.on("NotificationReceived", (data) => {
           if (data.type === "testNotification") {
             Alert.alert(
-lang("_Notification_Received____header"),
-lang("_Notification_Received____body"),
-[{text:lang("_Notification_Received____left")}]);
+            lang("_Notification_Received____header"),
+            lang("_Notification_Received____body"),
+    [{text:lang("_Notification_Received____left"), onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
             cleanup()
           }
         });
@@ -190,15 +190,14 @@ lang("_Notification_Received____body"),
         clearScheduledTimeout = Scheduler.scheduleActiveCallback(() => {
           cleanup();
           Alert.alert(
-lang("_Nothing_Received_____May_header"),
-lang("_Nothing_Received_____May_body"),
-[{text:lang("_Nothing_Received_____May_left")}]);
+            lang("_Nothing_Received_____May_header"),
+            lang("_Nothing_Received_____May_body"),
+    [{text:lang("_Nothing_Received_____May_left"), onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
         }, 4000);
 
         cleanup = () => {
           clearScheduledTimeout();
           unsubscribe();
-          core.eventBus.emit("hideLoading");
         };
 
         let deviceId = Util.data.getDeviceIdFromState(state, state.user.appIdentifier);
@@ -208,15 +207,15 @@ lang("_Nothing_Received_____May_body"),
             Alert.alert(
 lang("_Could_not_send_Request___header"),
 lang("_Could_not_send_Request___body",JSON.stringify(err)),
-[{text:lang("_Could_not_send_Request___left")}]);
+[{text:lang("_Could_not_send_Request___left"), onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
           });
         }
         else {
           Alert.alert(
-lang("_No_device_Id___There_was_header"),
-lang("_No_device_Id___There_was_body"),
-[{text:lang("_No_device_Id___There_was_left")}]);
-          cleanup()
+            lang("_No_device_Id___There_was_header"),
+            lang("_No_device_Id___There_was_body"),
+            [{text:lang("_No_device_Id___There_was_left"), onPress: () => { core.eventBus.emit("hideLoading"); }}], {cancelable:false});
+          cleanup();
         }
       }});
 

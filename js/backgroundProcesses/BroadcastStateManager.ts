@@ -168,10 +168,10 @@ class BroadcastStateManagerClass {
 
 
   /**
-   * This token will allow a user to "claim" a switch of a Crownstone to avoid alternatingly flickering between two broadcast commands.
+   * This uid will allow a user to "claim" a switch of a Crownstone to avoid alternatingly flickering between two broadcast commands.
    * @private
    */
-  _getDeviceToken(state, sphere) {
+  _getDeviceUID(state, sphere) {
     let device = DataUtil.getDevice(state);
     let deviceUID = 0;
     if (device) {
@@ -193,7 +193,7 @@ class BroadcastStateManagerClass {
 
 
 
-    //   this index is made of 2 bits of deviceToken, 1 bit of wearable true/false and 5 bits of userIndex
+    //   this index is made of 2 bits of deviceUID, 1 bit of wearable true/false and 5 bits of userIndex
     return (userIndex % 32) + (deviceUID % 4 << 6);
   }
 
@@ -205,14 +205,14 @@ class BroadcastStateManagerClass {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
 
-    let deviceToken = this._getDeviceToken(state, sphere);
+    let deviceUID = this._getDeviceUID(state, sphere);
 
     let location = sphere.locations[locationId];
     let locationUid = location ? location.config.uid : 0;
 
     LOGi.broadcast("Settings Sphere As Present:",sphere.config.name);
     this._sphereIdInLocationState = sphereId;
-    Bluenet.setLocationState(sphere.config.uid || 0, locationUid, 0, deviceToken, sphereId);
+    Bluenet.setLocationState(sphere.config.uid || 0, locationUid, 0, deviceUID, sphereId);
   }
 
   _reloadAdvertisingState() {
