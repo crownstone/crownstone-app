@@ -157,9 +157,6 @@ android {
         }
     }
     buildTypes {
-        buildTypes.each {
-            it.resValue("string", "mapKey", "$System.env.CS_ANDROID_MAP_API_KEY")
-        }
         debug {
         }
         release {
