@@ -36,13 +36,19 @@ export class AicoreTwilight extends AicoreBehaviourCore {
 
   _getChunks(sphereId: string) {
     let intentionStr = "If I'm turned on";
-    let timeStr   = AicoreUtil.extractTimeString(this.rule, true) + ',';
+    let timeStr   = AicoreUtil.extractTimeString(this.rule, true);
+    if (timeStr) {
+      timeStr += ',';
+    }
+    else {
+      intentionStr += ',';
+    }
     let actionStr = AicoreUtil.extractActionString(this.rule);
 
     return {
       intention:      { label: intentionStr,   data: null },
-      action:         { label: actionStr,      data: this.rule.action },
       time:           { label: timeStr,        data: this.rule.time },
+      action:         { label: actionStr,      data: this.rule.action },
     }
   }
 

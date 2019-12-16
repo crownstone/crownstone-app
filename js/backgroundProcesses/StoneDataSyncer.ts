@@ -9,6 +9,7 @@ import { Permissions } from "./PermissionManager";
 import { BluenetPromise, BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { LOGi } from "../logging/Log";
 import { sync } from "../cloud/sections/sync/sync";
+import { CLOUD } from "../cloud/cloudAPI";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -299,9 +300,22 @@ class StoneDataSyncerClass {
         }
         throw "NO_SYNC_REQUIRED"
       })
-      .then((behaviours) => {
+      .then((result) => {
+        let behaviours = result.data;
         if (behaviours) {
+          // From this, we get all behaviours that SHOULD be on our phone.
+          // (the ones not synced yet (which should be already synced by here, but still) are also in this list).
 
+          // We first double check the differences between OUR behaviours and those on the Crownstone
+          behaviours.forEach((stoneBehaviour) => {
+            console.log(stoneBehaviour);
+            for (let i = 0; i < transferRules.length; i++) {
+
+            }
+          })
+
+          // download all behaviours from the cloud
+          CLOUD.forStone(stoneId).getBehaviours()
         }
         LOGi.behaviour("DONE Syncing! \(behaviours)");
 

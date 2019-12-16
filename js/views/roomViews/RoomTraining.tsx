@@ -46,7 +46,14 @@ export class RoomTraining extends LiveComponent<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {phase: 0, text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
+    this.state = {
+      phase: 0,
+      text:'initializing',
+      active: false,
+      opacity: new Animated.Value(0),
+      iconIndex: 0,
+      progress:0
+    };
     this.collectedData = [];
     this.amountOfInvalidPoints = 0;
     this.invalidMeasurements = [];

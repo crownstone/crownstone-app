@@ -78,6 +78,7 @@ export class RuleEditor extends LiveComponent<
         time: {
           dark:     new AicoreTwilight().setTimeWhenDark(),
           sunUp:    new AicoreTwilight().setTimeWhenSunUp(),
+          allDay:   new AicoreTwilight().setTimeAllday(),
           specific: new AicoreTwilight().setTimeFrom(9,30).setTimeTo(15,0),
           custom:   this.props.ruleId ? this.rule : new AicoreTwilight().setTimeFromSunset(-30).setTimeTo(23,0),
         },

@@ -22,8 +22,8 @@ export class RoomTraining_training extends Component<any, any> {
 
     return (
       <View style={{flex:1}}>
-                <View style={{flexDirection:'column', flex:1}}>
-          <View style={{padding:30, alignItems:'center'}}>
+        <View style={{flexDirection:'column', flex:1}}>
+          <View style={{padding:20, paddingTop: 30, alignItems:'center'}}>
             <Text style={{
               backgroundColor:'transparent',
               fontSize:20,
