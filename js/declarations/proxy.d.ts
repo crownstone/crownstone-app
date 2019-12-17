@@ -100,7 +100,7 @@ interface BluenetPromiseWrapperProtocol {
 
   turnOnMesh(arrayOfStoneSwitchPackets: any[])  : Promise< void >,
   turnOnBroadcast(referenceId, stoneId)         : Promise< void >,
-  setSunTimesViaCommand(sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) : Promise< void >,
+  setSunTimesViaConnection(sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) : Promise< void >,
 }
 
 
