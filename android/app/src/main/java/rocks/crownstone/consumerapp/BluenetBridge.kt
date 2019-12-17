@@ -1461,6 +1461,15 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
+	fun setSunTimesViaConnection(sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int, callback: Callback) {
+		Log.i(TAG, "setSunTimesViaConnection sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
+		bluenet.config.setSunTime(sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
 	fun getTime(callback: Callback) {
 		Log.i(TAG, "getTime")
 		bluenet.state.getTime()
