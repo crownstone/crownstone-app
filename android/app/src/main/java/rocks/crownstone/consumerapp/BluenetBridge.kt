@@ -85,6 +85,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private var nearestSetupSub: SubscriptionId? = null
 	private var sendUnverifiedAdvertisements = false
 
+	private var lastLocation: Location? = null // Store last known GPS location.
+
 	init {
 
 	}
@@ -490,7 +492,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.tryMakeScannerReady(activity)
 	}
 
-	private class CsLocationListener(val callback: Callback): LocationListener {
+	private class CsLocationListener(val callback: Callback, val lastLocation: Location?): LocationListener {
 		private val TAG = this.javaClass.simpleName
 		private var done = false
 
@@ -500,16 +502,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				rejectCallback("no location available")
 				return
 			}
-			if (done) { return }
-			done = true
-			val dataVal = Arguments.createMap()
-			dataVal.putDouble("latitude", location.latitude)
-			dataVal.putDouble("longitude", location.longitude)
-			Log.d(TAG, "resolve $callback $dataVal")
-			val retVal = Arguments.createMap()
-			retVal.putMap("data", dataVal)
-			retVal.putBoolean("error", false)
-			callback.invoke(retVal)
+			resolveCallback(location)
 		}
 
 		override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -525,7 +518,25 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 
 		fun onTimeout() {
-			rejectCallback("timeout")
+			if (lastLocation == null || lastLocation.elapsedRealtimeNanos > 5*60*1000*1000) {
+				rejectCallback("timeout")
+			}
+			else {
+				resolveCallback(lastLocation)
+			}
+		}
+
+		private fun resolveCallback(location: Location) {
+			if (done) { return }
+			done = true
+			val dataVal = Arguments.createMap()
+			dataVal.putDouble("latitude", location.latitude)
+			dataVal.putDouble("longitude", location.longitude)
+			Log.d(TAG, "resolve $callback $dataVal")
+			val retVal = Arguments.createMap()
+			retVal.putMap("data", dataVal)
+			retVal.putBoolean("error", false)
+			callback.invoke(retVal)
 		}
 
 		private fun rejectCallback(error: String?) {
@@ -578,6 +589,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		else {
 			Log.d(TAG, "last known location=$location")
 			if (location.elapsedRealtimeNanos < 60 * 1000 * 1000) {
+				lastLocation = location
 				val dataVal = Arguments.createMap()
 				dataVal.putDouble("latitude", location.latitude)
 				dataVal.putDouble("longitude", location.longitude)
@@ -587,13 +599,15 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		}
 
 		Log.i(TAG, "Request location update")
-		val locationListener = CsLocationListener(callback)
+		val locationListener = CsLocationListener(callback, lastLocation)
 		locationManager.requestSingleUpdate(provider, locationListener, looper)
 		handler.postDelayed(Runnable {
 			Log.d(TAG, "timeout")
 			locationManager.removeUpdates(locationListener)
 			locationListener.onTimeout()
 		}, 10*1000)
+
+		// TODO: change to new API: https://stackoverflow.com/questions/51837719/requestsingleupdate-not-working-on-oreo
 	}
 
 	@ReactMethod
