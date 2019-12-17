@@ -8,6 +8,7 @@
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 	<!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> not required since 4.4 -->
 
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
 	<!-- Camera module -->
 	<uses-permission android:name="android.permission.CAMERA" />
@@ -79,6 +80,10 @@
 		<!-- Change the resource name to your App's accent color - or any other color you want -->
 		<meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
 			android:resource="@android:color/white"/>
+
+		<!-- required for react-native-maps -->
+		<meta-data android:name="com.google.android.geo.API_KEY"
+			android:value="AIzaSyCeK-7-wFdqPsgn-eG7MV-7cH-7Y-HFPuI"/>
 
 		<!-- < Only if you're using GCM or localNotificationSchedule() > -->
 		<receiver

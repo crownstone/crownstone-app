@@ -11,6 +11,8 @@ buildscript {
         googlePlayServicesVersion = "16.1.0"
         googlePlayServicesVisionVersion = "17.0.2" // Used by camera module
         firebaseVersion = "17.3.4"
+        playServicesVersion = "16.1.0"
+        androidMapsUtilsVersion = "0.5+"
     }
     repositories {
         google()

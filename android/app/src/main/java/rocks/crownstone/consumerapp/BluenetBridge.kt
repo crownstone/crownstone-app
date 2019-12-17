@@ -14,11 +14,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Criteria
+import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.os.Process
+import android.os.*
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import com.facebook.react.bridge.*
@@ -58,6 +57,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private lateinit var bluenet: Bluenet
 	private val localization = FingerprintLocalization.getInstance()
 	private lateinit var initPromise: Promise<Unit, Exception>
+	private lateinit var looper: Looper
 	private lateinit var handler: Handler
 
 	private lateinit var behaviourSyncer: BehaviourSyncerFromCrownstone
@@ -179,7 +179,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		// Current thread
 //		Looper.prepare()
 //		Looper.loop()
-		val looper = Looper.myLooper()
+		looper = Looper.myLooper()
 		bluenet = Bluenet(looper)
 		handler = Handler(looper)
 		behaviourSyncer = BehaviourSyncerFromCrownstone(bluenet)
@@ -490,17 +490,68 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.tryMakeScannerReady(activity)
 	}
 
+	private class CsLocationListener(val callback: Callback): LocationListener {
+		private val TAG = this.javaClass.simpleName
+		private var done = false
+
+		override fun onLocationChanged(location: Location?) {
+			Log.i(TAG, "onLocationChanged location=$location")
+			if (location == null) {
+				rejectCallback("no location available")
+				return
+			}
+			if (done) { return }
+			done = true
+			val dataVal = Arguments.createMap()
+			dataVal.putDouble("latitude", location.latitude)
+			dataVal.putDouble("longitude", location.longitude)
+			Log.d(TAG, "resolve $callback $dataVal")
+			val retVal = Arguments.createMap()
+			retVal.putMap("data", dataVal)
+			retVal.putBoolean("error", false)
+			callback.invoke(retVal)
+		}
+
+		override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+			Log.i(TAG, "onStatusChanged provider=$provider status=$status")
+		}
+
+		override fun onProviderEnabled(provider: String?) {
+			Log.i(TAG, "onProviderEnabled provider=$provider")
+		}
+
+		override fun onProviderDisabled(provider: String?) {
+			Log.i(TAG, "onProviderDisabled provider=$provider")
+		}
+
+		fun onTimeout() {
+			rejectCallback("timeout")
+		}
+
+		private fun rejectCallback(error: String?) {
+			if (done) { return }
+			done = true
+			Log.i(TAG, "reject $callback $error")
+			val retVal = Arguments.createMap()
+			retVal.putString("data", error)
+			retVal.putBoolean("error", true)
+			callback.invoke(retVal)
+		}
+	}
+
 	@ReactMethod
 	@Synchronized
 	fun requestLocation(callback: Callback) {
 		Log.i(TAG, "requestLocation")
 		if (ContextCompat.checkSelfPermission(reactContext, "android.permission.ACCESS_COARSE_LOCATION") != PackageManager.PERMISSION_GRANTED) {
+			Log.w(TAG, "no permission to get location")
 			rejectCallback(callback, "no permission to get location")
 			return
 		}
 
 		val locationManager = reactContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
 		if (locationManager == null) {
+			Log.w(TAG, "no location manager")
 			rejectCallback(callback, "no location manager")
 			return
 		}
@@ -510,22 +561,39 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		criteria.isAltitudeRequired = false
 		criteria.isBearingRequired = false
 		criteria.isSpeedRequired = false
+
 		val provider = locationManager.getBestProvider(criteria, true)
 		if (provider == null) {
+			Log.w(TAG, "no location provider available")
 			rejectCallback(callback, "no location provider available")
 			return
 		}
+		Log.d(TAG, "location provider=$provider")
 
+		// Maybe we can use the last known location.
 		val location = locationManager.getLastKnownLocation(provider)
 		if (location == null) {
-			rejectCallback(callback, "no location available")
-			return
+			Log.i(TAG, "last known location not available")
+		}
+		else {
+			Log.d(TAG, "last known location=$location")
+			if (location.elapsedRealtimeNanos < 60 * 1000 * 1000) {
+				val dataVal = Arguments.createMap()
+				dataVal.putDouble("latitude", location.latitude)
+				dataVal.putDouble("longitude", location.longitude)
+				resolveCallback(callback, dataVal)
+				return
+			}
 		}
 
-		val dataVal = Arguments.createMap()
-		dataVal.putDouble("latitude", location.latitude)
-		dataVal.putDouble("longitude", location.longitude)
-		resolveCallback(callback, dataVal)
+		Log.i(TAG, "Request location update")
+		val locationListener = CsLocationListener(callback)
+		locationManager.requestSingleUpdate(provider, locationListener, looper)
+		handler.postDelayed(Runnable {
+			Log.d(TAG, "timeout")
+			locationManager.removeUpdates(locationListener)
+			locationListener.onTimeout()
+		}, 10*1000)
 	}
 
 	@ReactMethod
@@ -534,8 +602,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		Log.i(TAG, "forceClearActiveRegion")
 		// Forces not being in an ibeacon region (not needed for android as far as I know)
 	}
-
-
 
 	@ReactMethod
 	@Synchronized
