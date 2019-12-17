@@ -192,7 +192,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
   turnOnMesh:                     (arrayOfStoneSwitchPackets: any[]) => { return BluenetPromise('turnOnMesh', arrayOfStoneSwitchPackets)},
   turnOnBroadcast:                (referenceId, stoneId)             => { return BluenetPromise('turnOnBroadcast', referenceId, stoneId)},
-  setSunTimesViaConnection:          (sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight) => { return BluenetPromise('setSunTimesViaCommand', sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight)},
+  setSunTimesViaConnection:          (sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight) => { return BluenetPromise('setSunTimesViaConnection', sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight)},
 };
 
 
