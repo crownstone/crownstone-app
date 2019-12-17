@@ -66,7 +66,7 @@ export const Stacks = {
               children: [
                 // { component: {name: "SettingsApp"} },
                 { component: {name: "SphereOverview"} },
-                // { component: {name: "DeviceOverview", passProps: {sphereId: "70498f0b-efa0-c11b-1dec-1f34d1c9e64f", stoneId: "a1421d1e-937d-6fe-1f2-e5f72122311c"}} },
+                // { component: {name: "DeviceOverview", passProps: {sphereId: "18232301-e0f1-eb16-1de3-73a837d0ceb7", stoneId: "2517a0f9-c1f-79d2-7462-5708dd1d2cf0"}} },
               ],
               options: {
                 bottomTab: {

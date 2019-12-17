@@ -1,33 +1,32 @@
-
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("DeviceError", key)(a,b,c,d,e);
 }
-import * as React from 'react'; import { Component } from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  View, Alert
-} from "react-native";
 
-
-import { styles, colors, screenWidth, screenHeight, deviceStyles } from "../styles";
-import {IconButton} from "../components/IconButton";
-import {ErrorContent} from "../content/ErrorContent";
-import {StoneUtil} from "../../util/StoneUtil";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import { core } from "../../core";
+import { Background } from '../components/Background'
+import { availableScreenHeight, colors, screenWidth, styles } from "../styles";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { BehaviourSubmitButton } from "./smartBehaviour/supportComponents/BehaviourSubmitButton";
+import React, { Component } from "react";
+import { ErrorContent } from "../content/ErrorContent";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { StoneUtil } from "../../util/StoneUtil";
+import { core } from "../../core";
+import { DeviceIcon } from "./DeviceOverview";
 
 
 export class DeviceError extends Component<any, any> {
 
-  _getAction(stone) {
+  _getButton(stone) {
     if (Permissions.inSphere(this.props.sphereId).canClearErrors) {
       return (
-        <TouchableOpacity
-          onPress={() => {
+        <BehaviourSubmitButton
+          width={ 0.8*screenWidth }
+          color={ colors.menuTextSelected.rgba(0.5) }
+          label={ ErrorContent.getButtonLabel(stone.errors) }
+          callback={() => {
             if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
               Alert.alert("Stone unavailable.","You have to be in range of the Crownstone to reset the errors.",[{text:"OK"}]);
             }
@@ -35,44 +34,65 @@ export class DeviceError extends Component<any, any> {
               StoneUtil.clearErrors(this.props.sphereId, this.props.stoneId, stone, core.store);
             }
           }}
-          style={[styles.centered, {
-            width: 0.6 * screenWidth,
-            height: 50,
-            borderRadius: 25,
-            borderWidth: 3,
-            borderColor: colors.red.hex,
-            backgroundColor: colors.white.hex
-          }]}>
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{ lang("Reset_Error") }</Text>
-        </TouchableOpacity>
-      )
+        />
+      );
     }
     else {
-      return <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, textAlign:'center'}}>{ lang("Notify_an_admin_of_your_S") }</Text>
+      return <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, textAlign:'center', padding:30}}>{ lang("Notify_an_admin_of_your_S") }</Text>
     }
   }
 
-  render() {
-    const store = core.store;
-    const state = store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+
+  _getHardwareErrorInformation(stone) {
     return (
-      <View style={{flex:1, alignItems:'center', padding: 30}}>
-        <Text style={deviceStyles.header}>{ lang("Error_Detected") }</Text>
+      <View style={{flex:5, width:screenWidth, padding:30, ...styles.centered}}>
         <View style={{flex:1}} />
-        <IconButton
-          name="ios-warning"
-          size={0.15*screenHeight}
-          color="#fff"
-          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.red.hex, borderRadius: 0.03*screenHeight}}
-          style={{position:'relative'}}
-        />
+        <Text style={{color: colors.white.hex, fontSize: 18, fontWeight:'bold', textAlign:'center'}}>{ErrorContent.getHeader(stone.errors)}</Text>
         <View style={{flex:1}} />
-        <Text style={deviceStyles.errorText}>{ErrorContent.getTextDescription(2, stone.errors)}</Text>
-        <View style={{flex:1}} />
-        { this._getAction(stone) }
+        <Text style={{color: colors.white.hex, fontSize: 15, fontWeight:'bold', textAlign:'center'}}>{ErrorContent.getSubheader(stone.errors)}</Text>
         <View style={{flex:1}} />
       </View>
+    )
+  }
+
+
+  _getStoneIcon(stone) {
+    let iconColor = colors.white.rgba(1);
+    let size = 0.24*availableScreenHeight;
+    let stateColor = colors.csOrange.blend(colors.menuRed,0.5).rgba(1)
+
+    return (
+      <View style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}>
+        <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />
+      </View>
+    )
+  }
+
+
+  render() {
+    let stone = this.props.stone;
+
+    // stone.errors = {
+    //   overCurrent: false,
+    //   overCurrentDimmer: false,
+    //   temperatureChip: false,
+    //   temperatureDimmer: false,
+    //   dimmerOnFailure: false || true,
+    //   dimmerOffFailure: false,
+    // }
+
+    return (
+      <Background image={require("../../images/backgrounds/hwError.png")}>
+        <View style={{flex:2}} />
+
+        { this._getStoneIcon(stone) }
+
+        { this._getHardwareErrorInformation(stone) }
+
+        <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
+
+        <View style={{ height: 40}} />
+      </Background>
     )
   }
 }

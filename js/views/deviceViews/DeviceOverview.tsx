@@ -27,10 +27,12 @@ import { DimmerSlider } from "../components/DimmerSlider";
 import { AnimatedCircle } from "../components/animated/AnimatedCircle";
 import { LockedStateUI } from "../components/LockedStateUI";
 import { STONE_TYPES } from "../../Enums";
-import { DataUtil } from "../../util/DataUtil";
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
-import { OverlayUtil } from "../overlays/OverlayUtil";
 import { Navigation } from "react-native-navigation";
+import { DeviceError } from "./DeviceError";
+import { Util } from "../../util/Util";
+import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
+import { AlternatingContent } from "../components/animated/AlternatingContent";
 
 
 export class DeviceOverview extends LiveComponent<any, any> {
@@ -220,6 +222,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
     }
   }
 
+
   _getButton(stone) {
     let border = 4;
     let height = 50;
@@ -246,6 +249,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
         </View>
       );
     }
+
 
     if (stone.config.locked) {
       return (
@@ -353,20 +357,34 @@ export class DeviceOverview extends LiveComponent<any, any> {
     )
   }
 
-  _getStoneIcon(stone) {
+
+  _getStoneIcon(stone, updateAvailable) {
     let iconColor = colors.white.rgba(1);
-    let size = 0.24*availableScreenHeight;
-    let borderWidth = size*0.04;
-    let outerSize = size+1.5*borderWidth;
+    let size = 0.25*availableScreenHeight;
     let stateColor = stone.state.state > 0 ? colors.green.hex : colors.csBlueDark.hex;
 
-    let content = (
-      <AnimatedCircle size={outerSize} color={stateColor} style={{alignItems:'center', justifyContent:'center'}}>
-        <AnimatedCircle size={size} color={stateColor} style={{borderRadius:0.5*size, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
-          <Icon size={size*0.63} name={stone.config.icon} color={iconColor} />
-        </AnimatedCircle>
-      </AnimatedCircle>
-    );
+    let content = <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />
+
+    if (updateAvailable) {
+      return (
+        <TouchableOpacity
+          style={{width: screenWidth, height:size, alignItems:'center', justifyContent:'center'}}
+          onPress={() => {
+            NavigationUtil.launchModal( "DfuIntroduction", {sphereId: this.props.sphereId});
+          }}
+        >
+          <AlternatingContent
+            style={{width:screenWidth, height:size, justifyContent:'center', alignItems:'center'}}
+            fadeDuration={500}
+            switchDuration={2000}
+            contentArray={[
+              <DeviceIcon size={size} color={colors.green.hex} iconColor={iconColor} icon={"c1-update-arrow"} />,
+              <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />,
+            ]}
+          />
+        </TouchableOpacity>
+      )
+    }
 
     if (this.stoneCanSwitch) {
       content = (
@@ -407,14 +425,14 @@ export class DeviceOverview extends LiveComponent<any, any> {
           })
         }} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.5).hex}  callback={() => {
+        <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.5).hex} callback={() => {
           NavigationUtil.launchModal("DeviceSmartBehaviour", {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId
           })
         }} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Power usage"} image={require("../../images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex}  callback={() => {
+        <DeviceMenuIcon label={"Power usage"} image={require("../../images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex} callback={() => {
           NavigationUtil.launchModal("DevicePowerUsage", {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId
@@ -438,16 +456,25 @@ export class DeviceOverview extends LiveComponent<any, any> {
       return <StoneDeleted/>
     }
 
+    let hardwareError = stone.errors.hasError && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
+    if (hardwareError) {
+      return <DeviceError {...this.props} stone={stone} />
+    }
+
+    let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
+    if (updateAvailable) {
+
+    }
+
     return (
       <Background image={core.background.lightBlur}>
-        { this.stoneCanSwitch && this._getMenuIcons(stone)}
+        { this.stoneCanSwitch && this._getMenuIcons(stone) }
         <View style={{flex:2}} />
 
         {/* If the stone can't switch its a Guidestone or a Crownstone USB. */}
         { !this.stoneCanSwitch && <View style={{padding:30}}><Text style={deviceStyles.header}>Hi there!</Text></View> }
 
-
-        { this._getStoneIcon(stone) }
+        { this._getStoneIcon(stone, updateAvailable) }
 
         {/* If the stone can't switch its a Guidestone or a Crownstone USB. The specific information is it telling you which device it is and where it lives. */}
         { !this.stoneCanSwitch && this._getSpecificInformation(stone) }
@@ -462,8 +489,18 @@ export class DeviceOverview extends LiveComponent<any, any> {
       </Background>
     )
   }
+}
 
-
+export function DeviceIcon({ size, color, iconColor, icon}) {
+  let borderWidth = size*0.04;
+  let innerSize = size-1.5*borderWidth;
+  return (
+    <AnimatedCircle size={size} color={color} style={{alignItems:'center', justifyContent:'center'}}>
+      <AnimatedCircle size={innerSize} color={color} style={{borderRadius:0.5*innerSize, borderWidth: borderWidth, borderColor: iconColor, alignItems:'center', justifyContent:'center'}}>
+        <Icon size={innerSize*0.63} name={icon} color={iconColor} />
+      </AnimatedCircle>
+    </AnimatedCircle>
+  );
 }
 
 function getTopBarProps(props) {

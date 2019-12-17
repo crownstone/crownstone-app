@@ -220,7 +220,7 @@ class MeshElementClass extends LiveComponent<any, any> {
           />
           <View style={fontContainerViewStyle}>
             <View style={fontViewStyle}>
-              <Text style={{fontSize:15}}>{this.props.nodeData.element.config.name}</Text>
+              <Text style={{fontSize:15}}>{this.props.nodeData.stone.config.name}</Text>
             </View>
           </View>
         </View>

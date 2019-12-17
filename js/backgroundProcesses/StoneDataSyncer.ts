@@ -3,13 +3,14 @@ import { StoneAvailabilityTracker } from "../native/advertisements/StoneAvailabi
 import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { DataUtil } from "../util/DataUtil";
 import { xUtil } from "../util/StandAloneUtil";
-import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
-import { BCH_ERROR_CODES, BEHAVIOUR_TYPES } from "../Enums";
+import { BCH_ERROR_CODES } from "../Enums";
 import { Permissions } from "./PermissionManager";
-import { BluenetPromise, BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
+import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { LOGi } from "../logging/Log";
-import { sync } from "../cloud/sections/sync/sync";
 import { CLOUD } from "../cloud/cloudAPI";
+import { StoneBehaviourSyncer } from "../cloud/sections/sync/modelSyncs/StoneBehaviourSyncer";
+import { MapProvider } from "./MapProvider";
+import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -42,58 +43,65 @@ class StoneDataSyncerClass {
   }
 
 
-  update() {
+  update(ruleSyncRequired = false) {
     let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
 
     for (let i = 0; i < sphereIds.length; i++) {
-
+      let sphereId = sphereIds[i];
       // update the list with this sphere.
-      if (this.masterHashTracker[sphereIds[i]] === undefined) { this.masterHashTracker[sphereIds[i]] = {}; }
+      if (this.masterHashTracker[sphereId] === undefined) { this.masterHashTracker[sphereId] = {}; }
 
-      let sphere = state.spheres[sphereIds[i]];
+      let sphere = state.spheres[sphereId];
       if (sphere.state.present) {
         let stoneIds = Object.keys(sphere.stones);
         for (let j = 0; j < stoneIds.length; j++) {
-          let stone = sphere.stones[stoneIds[j]];
+          let stoneId = stoneIds[j];
+          let stone = sphere.stones[stoneId];
 
           // update the list with this stone.
-          if (this.masterHashTracker[sphereIds[i]][stoneIds[j]] === undefined) { this.masterHashTracker[sphereIds[i]][stoneIds[j]] = null; }
+          if (this.masterHashTracker[sphereId][stoneId] === undefined) { this.masterHashTracker[sphereId][stoneId] = null; }
 
           // clear the triggers since this method can be fired repeatedly
-          StoneAvailabilityTracker.clearMySetTriggers(sphereIds[i], stoneIds[j], ABILITY_SYNCER_OWNER_ID);
-          StoneAvailabilityTracker.clearMySetTriggers(sphereIds[i], stoneIds[j], RULE_SYNCER_OWNER_ID);
+          StoneAvailabilityTracker.clearMySetTriggers(sphereId, stoneId, ABILITY_SYNCER_OWNER_ID);
+          StoneAvailabilityTracker.clearMySetTriggers(sphereId, stoneId, RULE_SYNCER_OWNER_ID);
 
           // handle abilities
-          if (Permissions.inSphere(sphereIds[i]).canChangeAbilities) {
-            this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.dimming, 'dimming');
-            this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.switchcraft, 'switchcraft');
-            this._syncAbility(sphereIds[i], stoneIds[j], stone.abilities.tapToToggle, 'tapToToggle');
+          if (Permissions.inSphere(sphereId).canChangeAbilities) {
+            this._syncAbility(sphereId, stoneId, stone.abilities.dimming, 'dimming');
+            this._syncAbility(sphereId, stoneId, stone.abilities.switchcraft, 'switchcraft');
+            this._syncAbility(sphereId, stoneId, stone.abilities.tapToToggle, 'tapToToggle');
           }
 
           // handle rules
-          if (Permissions.inSphere(sphereIds[i]).canChangeBehaviours) {
+          if (Permissions.inSphere(sphereId).canChangeBehaviours) {
             let ruleIds = Object.keys(stone.rules);
             let rulePromises = [];
-            let syncRequired = false;
+            let rulesHaveChanged = false;
             for (let k = 0; k < ruleIds.length; k++) {
-              let rule = stone.rules[ruleIds[k]];
+              let ruleId = ruleIds[k];
+              let rule = stone.rules[ruleId];
               if (!rule.syncedToCrownstone) {
-                rulePromises.push(this._syncRule(sphereIds[i], stoneIds[j], ruleIds[k], stone, rule));
-                syncRequired = true;
+                rulePromises.push(this._syncRule(sphereId, stoneId, ruleId, stone, rule));
+                rulesHaveChanged = true;
               }
             }
 
-            if (syncRequired) {
+            if (rulesHaveChanged || ruleSyncRequired) {
               BatchCommandHandler.executePriority();
               Promise.all(rulePromises)
                 .then(() => {
-                  return this.checkAndSyncBehaviour(sphereIds[i], stoneIds[i]);
+                  return this.checkAndSyncBehaviour(sphereId, stoneId);
                 })
                 .catch((err) => {
-                  if (err && err.code && err.code !== BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+                  console.log("SOMETHING FAILED", err)
+                  if (err && err.code && err.code === BCH_ERROR_CODES.REMOVED_BECAUSE_IS_DUPLICATE) {
+                    // we ignore the duplicate error
+                  }
+                  else {
                     /** if the syncing fails, we set another watcher **/
-                    this.update();
+                    console.log("TODO: RETRY the update")
+                    // this.update(ruleSyncRequired = true);
                   }
                 })
             }
@@ -270,8 +278,7 @@ class StoneDataSyncerClass {
   }
 
 
-
-  checkAndSyncBehaviour(sphereId, stoneId) : Promise<behaviourTransfer[]> {
+  _getTransferRulesFromStone(sphereId,stoneId) : behaviourTransfer[] {
     let stone = DataUtil.getStone(sphereId,stoneId);
 
     let ruleIds = Object.keys(stone.rules);
@@ -284,12 +291,23 @@ class StoneDataSyncerClass {
       }
       transferRules.push(behaviour);
     }
+    return transferRules;
+  }
 
-    if (transferRules.length === 0) { return Promise.resolve([]); }
 
+  checkAndSyncBehaviour(sphereId, stoneId) : Promise<void> {
+    let stone = DataUtil.getStone(sphereId,stoneId);
+    let transferRules = this._getTransferRulesFromStone(sphereId, stoneId);
+    console.log("IN THE CHECK AND SYNC BEHAVIOUR", transferRules, stone )
+
+    if (transferRules.length === 0) { return Promise.resolve(); }
+
+    let rulesAccordingToCrownstone = transferRules;
+    let syncActions = [];
     return BluenetPromiseWrapper.getBehaviourMasterHash(transferRules)
       .then((masterHash) => {
-        console.log("HERE", masterHash, this.masterHashTracker[sphereId][stoneId])
+        console.log("GOT THE MASTER HASH", masterHash, this.masterHashTracker[sphereId][stoneId])
+        BatchCommandHandler.closeKeptOpenConnection();
         if (this.masterHashTracker[sphereId][stoneId] !== masterHash) {
           // SYNC!
           LOGi.behaviour("Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId])
@@ -301,33 +319,88 @@ class StoneDataSyncerClass {
         throw "NO_SYNC_REQUIRED"
       })
       .then((result) => {
-        let behaviours = result.data;
-        if (behaviours) {
+        rulesAccordingToCrownstone = result.data;
+        // since there appearently was a change, we first sync with the cloud to ensure that we're really up to date and can do all
+        // the behaviour comparing locally.
+        if (stone.config.cloudId) {
+          return CLOUD.forStone(stoneId).getBehaviours()
+            .then((cloudBehaviours) => {
+              let behaviourCloudSyncer = new StoneBehaviourSyncer(
+                syncActions,
+                [],
+                stoneId,
+                stone.config.cloudId,
+                sphereId,
+                MapProvider.local2cloudMap.spheres[sphereId],
+                getGlobalIdMap(),
+                getGlobalIdMap()
+              );
+
+              return behaviourCloudSyncer.sync(stone.rules, cloudBehaviours)
+            })
+            .then(() => {
+              if (syncActions.length > 0) {
+                core.store.batchDispatch(syncActions);
+              }
+            })
+            .catch((err) => {
+              console.log("THERE WAS AN ERROR SYNCING THE behaviours for this stone.", err)
+            })
+        }
+        else {
+          return Promise.resolve()
+        }
+      })
+      .then(() => {
+        // get the rules from the db again since the cloudsync may have added a few.
+        transferRules = this._getTransferRulesFromStone(sphereId, stoneId);
+
+        if (rulesAccordingToCrownstone) {
           // From this, we get all behaviours that SHOULD be on our phone.
           // (the ones not synced yet (which should be already synced by here, but still) are also in this list).
 
           // We first double check the differences between OUR behaviours and those on the Crownstone
-          behaviours.forEach((stoneBehaviour) => {
-            console.log(stoneBehaviour);
+          rulesAccordingToCrownstone.forEach((stoneBehaviour: behaviourTransfer) => {
+            let foundMatch = false;
             for (let i = 0; i < transferRules.length; i++) {
+              if (xUtil.deepCompare(stoneBehaviour, transferRules[i])) {
+                foundMatch = true;
+                // great! this is already in the list. We do not have to do anything here.
+                break
+              }
+            }
 
+            if (!foundMatch) {
+              // TODO: this needs to be added to the local list of rules.
             }
           })
 
-          // download all behaviours from the cloud
-          CLOUD.forStone(stoneId).getBehaviours()
-        }
-        LOGi.behaviour("DONE Syncing! \(behaviours)");
+          transferRules.forEach((transferRule: behaviourTransfer) => {
+            let foundMatch = false;
+            for (let i = 0; i < rulesAccordingToCrownstone.length; i++) {
+              if (xUtil.deepCompare(transferRule, rulesAccordingToCrownstone[i])) {
+                foundMatch = true;
+                // great! this is already in the list. We do not have to do anything here.
+                break
+              }
+            }
 
-        BatchCommandHandler.closeKeptOpenConnection();
-        // TODO: Check in cloud.
-        return [];
+            if (!foundMatch) {
+              // TODO: we have to delete this item.
+            }
+          })
+
+        }
+        else {
+         // TODO: there is nothing on the crownstone. We have to delete all our local behaviours to match.
+        }
+        return;
       })
       .catch((err) => {
         if (err == "NO_SYNC_REQUIRED") {
           LOGi.behaviour("DONE Syncing! NOT REQUIRED!");
           BatchCommandHandler.closeKeptOpenConnection();
-          return transferRules;
+          return;
         }
 
         console.log("Error during rule sync", err);
@@ -337,6 +410,16 @@ class StoneDataSyncerClass {
   }
 
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

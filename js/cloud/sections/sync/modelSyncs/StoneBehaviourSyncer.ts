@@ -10,6 +10,8 @@ import { transferBehaviours } from "../../../transferData/transferBehaviours";
 import { shouldUpdateInCloud, shouldUpdateLocally } from "../shared/syncUtil";
 
 export class StoneBehaviourSyncer extends SyncingStoneItemBase {
+
+
   sync(behavioursInState, cloud_behaviours) {
     return this.syncDown(behavioursInState, cloud_behaviours)
       .then((localBehaviourIdsSynced) => {

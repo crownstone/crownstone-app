@@ -634,7 +634,5 @@ export const AicoreUtil = {
       type:                    ruleData.type,
       label:                   rule.getSentence(sphereId),
     }
-  }
-
-
+  },
 };

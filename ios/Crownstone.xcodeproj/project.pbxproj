@@ -65,7 +65,6 @@
 		FA3645EF22FAE03B0062591B /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645EC22FAE03B0062591B /* flaticon_household.ttf */; };
 		FA3645F022FAE03B0062591B /* flaticon_essentials.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645ED22FAE03B0062591B /* flaticon_essentials.ttf */; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
-		FA44800F239EA53800DED7A6 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA44800E239EA53800DED7A6 /* BluenetLib.framework */; };
 		FA4722B921DE7463008795C5 /* SwitchableStone.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722B521DE7462008795C5 /* SwitchableStone.swift */; };
 		FA4722BE21DE7473008795C5 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BB21DE7473008795C5 /* Events.swift */; };
 		FA4722BF21DE7473008795C5 /* BluenetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BC21DE7473008795C5 /* BluenetManager.swift */; };
@@ -93,6 +92,7 @@
 		FA5BF12B23A12E8800CF6C30 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5BF12A23A12E7A00CF6C30 /* libAirMaps.a */; };
 		FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DCE020F3AD70002A795E /* EventBus.swift */; };
 		FA60DD1820F3ADA7002A795E /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DD1720F3ADA7002A795E /* Util.swift */; };
+		FA613A6323A7E783009B7BCF /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA613A6223A7E783009B7BCF /* BluenetLib.framework */; };
 		FA6D86E923A3E7D500DCC7E2 /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6D86E823A3E7D500DCC7E2 /* BluenetBasicLocalization.framework */; };
 		FA6FBC6B20A98EBD00EEEF18 /* Crownstone2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */; };
 		FA86C68221CCEECD00811933 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA86C68021CCEECD00811933 /* Interface.storyboard */; };
@@ -678,7 +678,6 @@
 		FA3645EC22FAE03B0062591B /* flaticon_household.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_household.ttf; path = ../js/fonts/flaticon_household.ttf; sourceTree = "<group>"; };
 		FA3645ED22FAE03B0062591B /* flaticon_essentials.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_essentials.ttf; path = ../js/fonts/flaticon_essentials.ttf; sourceTree = "<group>"; };
 		FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = imageAssets.xcassets; sourceTree = "<group>"; };
-		FA44800E239EA53800DED7A6 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework"; sourceTree = "<group>"; };
 		FA4722B521DE7462008795C5 /* SwitchableStone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableStone.swift; sourceTree = "<group>"; };
 		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		FA4722BC21DE7473008795C5 /* BluenetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluenetManager.swift; sourceTree = "<group>"; };
@@ -705,6 +704,7 @@
 		FA5BF12523A12E7A00CF6C30 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		FA60DCE020F3AD70002A795E /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		FA60DD1720F3ADA7002A795E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		FA613A6223A7E783009B7BCF /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FA6D86E823A3E7D500DCC7E2 /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
 		FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone2.ttf; path = ../js/fonts/Crownstone2.ttf; sourceTree = "<group>"; };
 		FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
@@ -757,6 +757,7 @@
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
+				FA613A6323A7E783009B7BCF /* BluenetLib.framework in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				FA570EB01EAE30F9001C625D /* Zip.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
@@ -779,7 +780,6 @@
 				5536AAFCA2F647ABB306701F /* libRCTToast.a in Frameworks */,
 				77A4BC75F6794BFC8EA372F7 /* libRNCSlider.a in Frameworks */,
 				128F84CE4A2E4BF88CBC89A2 /* libRNCAsyncStorage.a in Frameworks */,
-				FA44800F239EA53800DED7A6 /* BluenetLib.framework in Frameworks */,
 				C7B481C578014B55BE888F3B /* libFastImage.a in Frameworks */,
 				613D457D36284A328D2B9CA4 /* libRNCamera.a in Frameworks */,
 				37664E36FD144AB3839B7564 /* libRNBlur.a in Frameworks */,
@@ -1006,8 +1006,8 @@
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
 				FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
+				FA613A6223A7E783009B7BCF /* BluenetLib.framework */,
 				FA6D86E823A3E7D500DCC7E2 /* BluenetBasicLocalization.framework */,
-				FA44800E239EA53800DED7A6 /* BluenetLib.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
 				FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */,
@@ -2433,7 +2433,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)",
-					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/",
+					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphonesimulator/BluenetLib.framework",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
