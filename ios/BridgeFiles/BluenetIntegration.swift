@@ -873,7 +873,9 @@ open class BluenetJS: RCTEventEmitter {
     GLOBAL_BLUENET.bluenet.setSunTimes(sunriseSecondsSinceMidnight: sunriseSecondsSinceMidnight.uint32Value, sunsetSecondsSinceMidnight: sundownSecondsSinceMidnight.uint32Value)
   }
   
-  
+  @objc func setSunTimesViaConnection(_ sunriseSecondsSinceMidnight: NSNumber, sundownSecondsSinceMidnight: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("setSunTimes", callback, GLOBAL_BLUENET.bluenet.config.setSunTimes(sunriseSecondsSinceMidnight: sunriseSecondsSinceMidnight.uint32Value, sunsetSecondsSinceMidnight: sundownSecondsSinceMidnight.uint32Value))
+  }
   
   
   

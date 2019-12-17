@@ -233,6 +233,9 @@ class BatchCommandHandlerClass {
               case 'allowDimming':
                 actionPromise = BluenetPromiseWrapper.allowDimming(command.value);
                 break;
+              case 'setSunTimes':
+                actionPromise = BluenetPromiseWrapper.setSunTimesViaCommand(command.sunriseSecondsSinceMidnight, command.sunsetSecondsSinceMidnight);
+                break;
               default:
                 LOGe.bch("BatchCommandHandler: Error: COULD NOT PERFORM ACTION", commandsInSphere, action);
                 return reject("Failed to handle command");

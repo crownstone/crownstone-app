@@ -163,10 +163,7 @@ RCT_EXTERN_METHOD(setTimeViaBroadcast:(nonnull NSNumber *)time
                   callback:(RCTResponseSenderBlock)callback
               )
 RCT_EXTERN_METHOD(setSunTimes: (nonnull NSNumber *)sunriseSecondsSinceMidnight  sundownSecondsSinceMidnight:(nonnull NSNumber *)sundownSecondsSinceMidnight)
-
-
-
-
+RCT_EXTERN_METHOD(setSunTimesViaConnection: (nonnull NSNumber *)sunriseSecondsSinceMidnight  sundownSecondsSinceMidnight:(nonnull NSNumber *)sundownSecondsSinceMidnight callback:(RCTResponseSenderBlock)callback)
 
 
 // dev
