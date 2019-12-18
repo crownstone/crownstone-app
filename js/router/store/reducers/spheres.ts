@@ -39,7 +39,7 @@ let defaultSettings = {
   state: {
     reachable: false,
     present: false,
-
+    smartHomeEnabled: true,
     newMessageFound: false,
   },
   keys: {
@@ -103,7 +103,7 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
 
 let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
   switch (action.type) {
-    case 'RESET_SPHERE_STATE':
+    case 'RESET_SPHERE_PRESENCE_STATE':
       if (action.data) {
         let newState = {...state};
         newState.reachable = update(action.data.reachable, newState.reachable);
@@ -119,10 +119,19 @@ let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
       }
       return state;
     }
+    case 'SET_SPHERE_SMART_HOME_STATE': {
+      if (action.data) {
+        let newState = {...state};
+        newState.smartHomeEnabled  = update(action.data.smartHomeEnabled, newState.smartHomeEnabled);
+        return newState;
+      }
+      return state;
+    }
     case 'SET_SPHERE_STATE':
       if (action.data) {
         let newState = {...state};
 
+        newState.smartHomeEnabled = update(action.data.smartHomeEnabled, newState.smartHomeEnabled);
         newState.reachable = update(action.data.reachable, newState.reachable);
         newState.present = update(action.data.present, newState.present);
 
@@ -131,7 +140,7 @@ let sphereStateReducer = (state = defaultSettings.state, action : any = {}) => {
       return state;
 
     case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, defaultSettings.layout.floatingLocation);
+      return refreshDefaults(state, defaultSettings.state);
     default:
       return state;
   }

@@ -13,9 +13,9 @@ import {
 } from "react-native";
 
 import {
-  availableModalHeight, availableScreenHeight, colors,
-  deviceStyles, screenHeight,
-  screenWidth, statusBarHeight
+  availableModalHeight,
+  deviceStyles,
+  screenWidth,
 } from "../../styles";
 import { Background } from "../../components/Background";
 import { core } from "../../../core";
@@ -38,8 +38,7 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
     let height = availableModalHeight;
     return (
       <Background image={core.background.lightBlur} hasNavBar={false}>
-        <View style={{height:height,width:screenWidth}}>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
+        <ScrollView style={{width:screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingVertical:30}}>
             <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
             <View style={{height: 0.02*height}} />
@@ -47,7 +46,6 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
             <RuleEditor {...this.props} />
           </View>
         </ScrollView>
-        </View>
       </Background>
     )
   }

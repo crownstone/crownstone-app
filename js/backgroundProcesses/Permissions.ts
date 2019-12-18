@@ -3,55 +3,55 @@ import { DataUtil } from "../util/DataUtil";
 import { core } from "../core";
 
 export class PermissionBase {
-  canEditSphere           = false; // a or m
+  canEditSphere              = false; // a or m
 
-  useKeepAliveState       = false; // m
-  setStoneTime            = false; // a or m
-  setToonInCloud          = false; // a
-  setBehaviourInCloud     = false; // a
-  seeUpdateCrownstone     = false; // a?
-  canUpdateCrownstone     = false; // a
-  canSetupCrownstone      = false; // a
-  seeSetupCrownstone      = false; // a
-  moveCrownstone          = false; // a or m
-  canLockCrownstone       = false; // a
-  canUnlockCrownstone     = false; // a
-  canEnableDimming        = false; // a
+  useKeepAliveState          = false; // m
+  setStoneTime               = false; // a or m
+  setToonInCloud             = false; // a
+  setBehaviourInCloud        = false; // a
+  seeUpdateCrownstone        = false; // a?
+  canUpdateCrownstone        = false; // a
+  canSetupCrownstone         = false; // a
+  seeSetupCrownstone         = false; // a
+  moveCrownstone             = false; // a or m
+  canLockCrownstone          = false; // a
+  canUnlockCrownstone        = false; // a
+  canEnableDimming           = false; // a
 
-  canSetPositionInCloud   = false; // a
+  canSetPositionInCloud      = false; // a
 
-  doLocalizationTutorial  = false; // a?
-  addRoom                 = false; // a?
-  editRoom                = false; // a
-  removeRoom              = false; // a
+  doLocalizationTutorial     = false; // a?
+  addRoom                    = false; // a?
+  editRoom                   = false; // a
+  removeRoom                 = false; // a
 
-  editCrownstone          = false; // a
-  changeBehaviour         = false; // a or m
-  removeCrownstone        = false; // a
-  canClearErrors          = false; // a
+  editCrownstone             = false; // a
+  changeBehaviour            = false; // a or m
+  removeCrownstone           = false; // a
+  canClearErrors             = false; // a
 
-  canSetSphereLocation    = false; // a
-  editSphere              = false; // a
-  manageUsers             = false; // a or m
-  deleteSphere            = false; // a
-  inviteAdminToSphere     = false; // a
-  inviteMemberToSphere    = false; // a or m
-  inviteGuestToSphere     = false; // a or m
+  canSetSphereLocation       = false; // a
+  canSetSphereSmartHomeState = false; // a or m
+  editSphere                 = false; // a
+  manageUsers                = false; // a or m
+  deleteSphere               = false; // a
+  inviteAdminToSphere        = false; // a
+  inviteMemberToSphere       = false; // a or m
+  inviteGuestToSphere        = false; // a or m
 
-  canCreateStones         = false; // a
-  canCreateLocations      = false; // a or m
-  canCreateData           = false; // a or m
-  canCreateSpheres        = false; // a or m
+  canCreateStones            = false; // a
+  canCreateLocations         = false; // a or m
+  canCreateData              = false; // a or m
+  canCreateSpheres           = false; // a or m
 
-  canUploadDiagnostics    = false; // a or m
-  canUploadStones         = false; // a or m
-  canUploadLocations      = false; // a or m
-  canUploadData           = false; // a or m
-  canUploadSpheres        = false; // a or m
+  canUploadDiagnostics       = false; // a or m
+  canUploadStones            = false; // a or m
+  canUploadLocations         = false; // a or m
+  canUploadData              = false; // a or m
+  canUploadSpheres           = false; // a or m
 
-
-  canChangeAbilities      = false // a
-  canChangeBehaviours     = false // a or m
+  canChangeAbilities         = false // a
+  canChangeBehaviours        = false // a or m
 }
 
 const EmptyPermissions = new PermissionBase();
@@ -160,6 +160,7 @@ export class PermissionClass extends PermissionBase {
         this.inviteMemberToSphere    = true; // admin and member
         this.inviteGuestToSphere     = true; // admin and member
 
+        this.canSetSphereSmartHomeState = true; // admin and member
         this.canUploadStones         = true; // admin and member
         this.canUploadLocations      = true; // admin and member
         this.canUploadData           = true; // admin and member

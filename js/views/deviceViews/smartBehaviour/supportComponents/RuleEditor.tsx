@@ -116,7 +116,6 @@ export class RuleEditor extends LiveComponent<
         }
       }
     }
-
   }
 
 

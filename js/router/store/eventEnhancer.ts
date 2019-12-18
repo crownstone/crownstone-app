@@ -98,6 +98,8 @@ function checkAction(action, affectedIds) {
       eventStatus['changeLocationPositions'] = affectedIds; break;
     case 'SET_SPHERE_STATE':
       eventStatus['changeSphereState'] = affectedIds; break;
+    case 'SET_SPHERE_SMART_HOME_STATE':
+      eventStatus['changeSphereSmartHomeState'] = affectedIds; break;
     case 'ADD_SPHERE':
       eventStatus['addSphere'] = affectedIds;
       eventStatus['changeSpheres'] = affectedIds;
@@ -191,7 +193,7 @@ function checkAction(action, affectedIds) {
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":
     case 'SET_BETA_ACCESS':
-    case 'RESET_SPHERE_STATE':
+    case 'RESET_SPHERE_PRESENCE_STATE':
     case 'SET_APP_IDENTIFIER':
     case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
     case 'USER_SEEN_ROOM_FINGERPRINT_ALERT':

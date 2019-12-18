@@ -54,7 +54,7 @@ class TimeKeeperClass {
 
   _updateSunTimes(sphereId) {
     let suntimes = Util.getSunTimesInSecondsSinceMidnight(sphereId);
-    Bluenet.setSunTimes(suntimes.sunrise, suntimes.sunset)
+    Bluenet.setSunTimes(suntimes.sunrise, suntimes.sunset, sphereId)
   }
 
   _setTime() {
