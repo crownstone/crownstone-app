@@ -305,6 +305,8 @@ export const styles = StyleSheet.create({
 });
 
 let textColor = colors.csBlueDark;
+
+
 export const deviceStyles = StyleSheet.create({
   header: {
     color: textColor.hex,

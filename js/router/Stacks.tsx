@@ -61,6 +61,19 @@ export const Stacks = {
       bottomTabs: {
         id: 'bottomTabs',
         children: [
+          // {
+          //   stack: {
+          //     children: [
+          //       { component: {name: "ScenesOverview"} },
+          //     ],
+          //     options: {
+          //       bottomTab: {
+          //         text: Languages.get("Tabs","Scenes")(),
+          //         icon: require('../images/icons/overview.png'),
+          //       }
+          //     }
+          //   }
+          // },
           {
             stack: {
               children: [
@@ -71,7 +84,7 @@ export const Stacks = {
               options: {
                 bottomTab: {
                   text: Languages.get("Tabs","Overview")(),
-                  icon: require('../images/icons/overview.png'),
+                  icon: require('../images/icons/house.png'),
                 }
               }
             }

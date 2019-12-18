@@ -2096,6 +2096,7 @@ export default {
     Overview:                            function() { return "Overview" },
     Messages:                            function() { return "Messages" },
     Settings:                            function() { return "Settings" },
+    Scenes:                              function() { return "Scenes" },
     Back:                                function() { return "Back" },
   },
   TapToToggleCalibration:{

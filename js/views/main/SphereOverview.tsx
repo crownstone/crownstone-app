@@ -38,6 +38,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { RoomAddCore } from "../roomViews/RoomAddCore";
 import { Background } from "../components/Background";
+import { SmartHomeStateButton } from "./buttons/SmartHomeStateButton";
 
 
 const ZOOM_LEVELS = {
@@ -106,6 +107,7 @@ export class SphereOverview extends LiveComponent<any, any> {
         change.changeAppSettings     ||
         change.changeSphereState     ||
         change.changeSphereConfig    ||
+        change.changeSphereSmartHomeState ||
         change.stoneLocationUpdated  ||
         change.updateStoneCoreConfig ||
         change.updateSphereUser      ||
@@ -164,10 +166,10 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
 
-  _getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) {
+  _getSphereSelectButton(state, amountOfSpheres, activeSphereId) {
     if (this.state.zoomLevel !== ZOOM_LEVELS.sphere) {
       if (amountOfSpheres > 1) {
-        return <SphereChangeButton viewingRemotely={viewingRemotely} visible={this.state.arrangingRooms === false} sphereId={activeSphereId} onPress={() => {
+        return <SphereChangeButton visible={this.state.arrangingRooms === false} sphereId={activeSphereId} onPress={() => {
           let newState = {zoomLevel: ZOOM_LEVELS.sphere};
 
           if (state.app.hasZoomedOutForSphereOverview === false) {
@@ -273,17 +275,10 @@ export class SphereOverview extends LiveComponent<any, any> {
       }
 
       let activeSphere = state.spheres[activeSphereId];
-      let sphereIsPresent = activeSphere.state.present;
-
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
       background = core.background.lightBlur;
-
-      let viewingRemotely = true;
-      if (sphereIsPresent || DfuStateHandler.areDfuStonesAvailable() || (noStones === true && noRooms === true)) {
-        viewingRemotely = false;
-      }
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
         background = require("../../images/backgrounds/sphereBackground.png");
@@ -316,10 +311,16 @@ export class SphereOverview extends LiveComponent<any, any> {
         <AnimatedBackground image={background} hideNotifications={this.state.zoomLevel === ZOOM_LEVELS.sphere}>
           { this._getAddButtonDescription(activeSphereId, noStones) }
           { this._getContent(state, amountOfSpheres, activeSphereId) }
-          { this._getSphereSelectButton(state, amountOfSpheres, viewingRemotely, activeSphereId) }
+          { this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }
           { this._getAddButtonDescription(activeSphereId, noStones) }
-          <AddItemButton noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} viewingRemotely={true }/>
-          <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
+          <AddItemButton     noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />
+          <AutoArrangeButton arrangingRooms={this.state.arrangingRooms && false} viewId={this.viewId} />
+          <SmartHomeStateButton
+            sphereId={activeSphereId}
+            visible={!this.state.arrangingRooms}
+            state={activeSphere.state.smartHomeEnabled === true}
+            viewId={this.viewId}
+          />
         </AnimatedBackground>
       );
     }
