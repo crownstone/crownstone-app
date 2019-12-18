@@ -78,8 +78,6 @@ export class SmartHomeStateButton extends Component<any, any> {
       }
     }
 
-
-
     return (
       <HiddenFadeInView
         visible={this.props.visible}
@@ -151,7 +149,7 @@ export class SmartHomeStateButton extends Component<any, any> {
               height: innerRadius,
               borderRadius: 0.5 * innerRadius,
               borderColor: iconColor,
-              borderWidth: 3,
+              borderWidth: 2.5,
               backgroundColor: 'transparent',
               alignItems: 'center',
               justifyContent: 'center',

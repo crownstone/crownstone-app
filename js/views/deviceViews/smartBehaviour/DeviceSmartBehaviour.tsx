@@ -136,8 +136,6 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
         return -1;
       }
       return 1;
-
-
     })
 
     ruleIds.forEach((ruleId) => {
