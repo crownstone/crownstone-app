@@ -33,7 +33,6 @@ import { DAY_INDICES_SUNDAY_START } from "../../../Constants";
 import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { StoneDataSyncer } from "../../../backgroundProcesses/StoneDataSyncer";
 import { xUtil } from "../../../util/StandAloneUtil";
-import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import ResponsiveText from "../../components/ResponsiveText";
 
 
@@ -171,11 +170,11 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       }
     });
 
-
     return (
       <Background image={core.background.lightBlurLighter} hasNavBar={false}>
-        <ScrollView>
-          <View style={{ width: screenWidth, minHeight: availableModalHeight, alignItems:'center', paddingTop:30 }}>
+        {!sphere.state.smartHomeEnabled && sphere.state.present === true && <DisabledBehaviourBanner sphereId={this.props.sphereId} /> }
+        <ScrollView contentContainerStyle={{flexGrow:1}}>
+          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Behaviour", stone.config.name) }</ResponsiveText>
             <View style={{height: 0.2*iconSize}} />
             <SlideFadeInView visible={true} height={1.5*(screenWidth/9)}>
@@ -396,6 +395,19 @@ function NoRulesYet(props) {
   )
 }
 
+function DisabledBehaviourBanner(props) {
+  return (
+    <TouchableOpacity
+      style={{height:65, width: screenWidth, backgroundColor: colors.menuTextSelected.hex, justifyContent:'space-evenly', alignItems:'center', borderBottomWidth:2, borderColor: colors.white.hex}}
+      onPress={() => {
+        // TODO: toggle sphere behaviour state
+      }}
+    >
+      <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>Behaviour is currently disabled.</Text>
+      <Text style={{fontSize: 15, color: colors.white.hex}}>Tap here to re-enable behaviour.</Text>
+    </TouchableOpacity>
+  )
+}
 
 
 export const BehaviourCopySuccessPopup = function() {

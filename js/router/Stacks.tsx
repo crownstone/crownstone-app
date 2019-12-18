@@ -49,9 +49,10 @@ export const Stacks = {
     //   stack: {
     //     children: [
     //       { component: {
-    //           name: "SphereEditMap", passProps:
+    //           name: "DeviceSmartBehaviour", passProps:
     //             {
-    //               sphereId: "52b7b179-1520-43f6-1921-5f62cbb7d9d2",
+    //               stoneId: "7f2e1a82-43d6-4dd1-8068-abfc3124aad9",
+    //               sphereId: "18232301-e0f1-eb16-1de3-73a837d0ceb7"
     //             },
     //         }}
     //     ],

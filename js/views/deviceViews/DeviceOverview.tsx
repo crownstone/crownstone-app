@@ -319,7 +319,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
       alignItems: 'center',
       justifyContent: "center"
     };
-    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false && stone.config.locked === false || true) {
+    if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false && stone.config.locked === false) {
       return (
         <TouchableOpacity
           onPress={() => {core.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}

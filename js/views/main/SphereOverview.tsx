@@ -314,7 +314,7 @@ export class SphereOverview extends LiveComponent<any, any> {
           { this._getSphereSelectButton(state, amountOfSpheres,  activeSphereId) }
           { this._getAddButtonDescription(activeSphereId, noStones) }
           <AddItemButton     noCrownstones={noStones} inSphere={this.state.zoomLevel === ZOOM_LEVELS.room} arrangingRooms={this.state.arrangingRooms} sphereId={activeSphereId} />
-          <AutoArrangeButton arrangingRooms={this.state.arrangingRooms && false} viewId={this.viewId} />
+          <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
           <SmartHomeStateButton
             sphereId={activeSphereId}
             visible={!this.state.arrangingRooms}
