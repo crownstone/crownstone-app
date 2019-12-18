@@ -34,8 +34,49 @@ export class SmartHomeStateButton extends Component<any, any> {
 
   render() {
     let outerRadius = 0.11 * screenWidth;
-    let size = 0.08 * screenWidth;
-    let color = !this.props.state ? colors.white.hex : colors.csBlueDark.rgba(0.75);
+    let innerRadius = outerRadius - 10;
+    let size = 0.06 * screenWidth;
+
+    let explanationOpen = !this.props.state || this.state.doubleCheck;
+    let iconColor             = null;
+    let iconBackgroundColor   = null;
+    let explanationColor      = null;
+    let explanationLabel      = null;
+    let explanationTextColor  = null;
+
+    if (this.state.doubleCheck) {
+      iconColor = colors.white.hex;
+      if (this.props.state === false) {
+        // will enable
+        explanationColor     = colors.green.rgba(0.2);
+        explanationLabel     = "Enable behaviour?";
+        iconBackgroundColor  = colors.green.hex;
+      }
+      else {
+        // tap to disable
+        explanationTextColor = colors.white.hex;
+        explanationColor     = colors.menuTextSelected.rgba(0.5);
+
+        explanationLabel     = "Tap again to\ndisable behaviour.";
+        iconBackgroundColor = colors.menuTextSelected.hex;
+      }
+    }
+    else {
+      if (explanationOpen === false) {
+        // only an icon
+        iconColor             = colors.csBlueDark.rgba(0.75);
+        iconBackgroundColor   = colors.white.rgba(0.55);
+      }
+      else {
+        // smart home disabled
+        explanationLabel     = "Behaviour disabled."
+        explanationTextColor = colors.white.hex;
+        explanationColor     = colors.menuTextSelected.rgba(0.1);
+
+        iconBackgroundColor  = colors.menuTextSelected.hex;
+        iconColor            = colors.white.hex;
+      }
+    }
 
 
 
@@ -67,14 +108,14 @@ export class SmartHomeStateButton extends Component<any, any> {
         }}>
           <SlideSideFadeInView
             width={0.6 * screenWidth}
-            visible={!this.props.state || this.state.doubleCheck }
+            visible={explanationOpen}
             style={{
               height: outerRadius,
               borderRadius: 0.5 * outerRadius,
               borderTopLeftRadius: 0,
               borderWidth:2,
               borderColor: colors.white.rgba(0.8),
-              backgroundColor: this.state.doubleCheck ? colors.menuTextSelected.rgba(0.35) : colors.menuTextSelected.rgba(0.1),
+              backgroundColor: explanationColor,
             }}
           >
             <View style={{
@@ -84,9 +125,8 @@ export class SmartHomeStateButton extends Component<any, any> {
               flexDirection: 'row'
             }}>
               <View style={{ flex: 1 }}/>
-              {this.props.state === false && this.state.doubleCheck === false && <Text style={{ fontWeight: 'bold' }}>{"Behaviour disabled."}</Text> }
-              {this.props.state === true && this.state.doubleCheck === true && <Text style={{ fontSize: 14, fontWeight: 'bold', textAlign:'right', color: colors.white.hex }}>{"Tap again to\ndisable behaviour."}</Text> }
-              {this.props.state === false && this.state.doubleCheck === true && <Text style={{ fontSize: 14, fontWeight: 'bold', textAlign:'right', color: colors.white.hex }}>{"Enable behaviour?"}</Text> }
+              {explanationOpen && this.state.doubleCheck === false && <Text style={{ fontWeight: 'bold' }}>{"Behaviour disabled."}</Text> }
+              {explanationOpen && this.state.doubleCheck === true  && <Text style={{ fontSize: 14, fontWeight: 'bold', textAlign:'right', color: explanationTextColor }}>{explanationLabel}</Text> }
               <View style={{ flex: 0.2, paddingRight: outerRadius }}/>
 
             </View>
@@ -97,15 +137,28 @@ export class SmartHomeStateButton extends Component<any, any> {
             right: 0,
             width: outerRadius,
             height: outerRadius,
-            borderColor: this.props.state ? colors.white.rgba(0.3) : colors.white.hex,
-            borderWidth: this.props.state ? 5 : 2,
+            borderColor: colors.white.rgba(0.8),
+            borderWidth: explanationOpen ? 2 : 0,
             borderRadius: 0.5 * outerRadius,
 
-            backgroundColor: this.props.state ? colors.white.rgba(0.7) : colors.menuTextSelected.hex,
+            backgroundColor: iconBackgroundColor,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            <Icon name="c1-brain" size={size} color={color}/>
+            { explanationOpen ? <Icon name="c1-brain" size={0.07 * screenWidth} color={iconColor}/> :
+            <View style={{
+              width: innerRadius,
+              height: innerRadius,
+              borderRadius: 0.5 * innerRadius,
+              borderColor: iconColor,
+              borderWidth: 3,
+              backgroundColor: 'transparent',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <Icon name="c1-brain" size={size} color={iconColor}/>
+            </View>
+            }
           </View>
         </TouchableOpacity>
       </HiddenFadeInView>
