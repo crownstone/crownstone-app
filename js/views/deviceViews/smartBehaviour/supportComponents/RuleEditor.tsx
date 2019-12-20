@@ -68,12 +68,17 @@ export class RuleEditor extends LiveComponent<
     if (this.props.twilightRule) {
       // @ts-ignore
       this.rule =   new AicoreTwilight(this.props.data);
+      let customIntensity = 0.4;
+
+      if (this.rule.rule.action.data !== 0.6 && this.rule.rule.action.data !== 0.8) {
+        customIntensity = this.rule.rule.action.data;
+      }
 
       this.exampleBehaviours = {
         action: {
           dimming8: new AicoreTwilight().setActionState(0.8),
           dimming6: new AicoreTwilight().setActionState(0.6),
-          dimming4: new AicoreTwilight().setActionState(0.4),
+          dimming4: new AicoreTwilight().setActionState(customIntensity),
         },
         time: {
           dark:     new AicoreTwilight().setTimeWhenDark(),
