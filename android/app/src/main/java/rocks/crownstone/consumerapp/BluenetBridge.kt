@@ -400,9 +400,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun setSunTimes(sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int) {
+	fun setSunTimes(sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int, sphereId: SphereId) {
 		Log.i(TAG, "setSunTimes sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
-		bluenet.setSunTime(null, sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
+		bluenet.setSunTime(sphereId, sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
 	}
 
 	@ReactMethod
@@ -1827,6 +1827,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			rejectCallback(callback, Errors.ValueWrong().message)
 			return
 		}
+		Log.i(TAG, "hash = ${BehaviourHashGen.getHash(indexedBehaviourPacket.behaviour)}")
 		bluenet.control.addBehaviour(indexedBehaviourPacket.behaviour)
 				.success {
 					val retVal = genBehaviourReply(it)
@@ -1942,6 +1943,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			return
 		}
 		val hash = BehaviourHashGen.getHash(behaviourList)
+		Log.i(TAG, "masterHash=$hash")
 		resolveCallback(callback, hash.toDouble())
 	}
 
