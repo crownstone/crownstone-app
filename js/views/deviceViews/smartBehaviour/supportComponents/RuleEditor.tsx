@@ -90,7 +90,7 @@ export class RuleEditor extends LiveComponent<
       this.exampleBehaviours = {
         action: {
           on:       new AicoreBehaviour(),
-          dimming:  new AicoreBehaviour().setActionState(0.5),
+          dimming:  new AicoreBehaviour().setActionState(this.rule.rule.action.data < 1 ? this.rule.rule.action.data : 0.5),
         },
         presence: {
           somebody: new AicoreBehaviour().setPresenceSomebody(),
@@ -349,19 +349,20 @@ export class RuleEditor extends LiveComponent<
     let stone = sphere.stones[this.props.stoneId];
 
     let dimmerOptions = [];
-    for (let i = 0.9; i >= 0.1; i = i - 0.1) {
-      dimmerOptions.push({ label: lang("x_percent", Math.round(i*100)), id: i });
+    for (let i = 9; i >= 1; i = i - 1) {
+      dimmerOptions.push({ label: lang("x_percent", Math.round(i*10)), id: i*0.1 });
     }
 
     core.eventBus.emit('showListOverlay', {
       title: lang("Dim_how_much_"),
+      showSaveButton: true,
       getItems: () => { return dimmerOptions; },
       customContent:
         stone.abilities.dimming.enabledTarget ? null :
         (props) => {
           return (
             <DimmerPermissionOverlay hideOverlayCallback={props.hideOverlayCallback} callback={() => {
-              core.store.dispatch({type:'UPDATE_DIMMER', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {enabledTarget: true}})
+              core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {enabledTarget: true}})
               props.hideCustomContentCallback();
             }} />
           );

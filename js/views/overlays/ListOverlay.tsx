@@ -32,7 +32,7 @@ export class ListOverlay extends LiveComponent<any, any> {
       image:                   props.data.image,
       maxSelections:           props.data.maxSelections,
       saveLabel:               null,
-      showSaveButton:          false,
+      showSaveButton:          props.data.showSaveButton || false,
       separator: props.data.separator === undefined ? true : props.data.separator,
       title: props.data.title,
       showCustomContent: true,

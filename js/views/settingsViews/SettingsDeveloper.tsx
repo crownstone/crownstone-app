@@ -237,6 +237,13 @@ lang("_Could_not_send_Request___body",JSON.stringify(err)),
       icon: <IconButton name="md-locate" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
       callback:() => {
         NavigationUtil.navigate( "SettingsLocalizationDebug");
+      }})
+    items.push({
+      label: "Database Explorer",
+      type: 'navigation',
+      icon: <IconButton name="md-folder" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlueDark.hex}} />,
+      callback:() => {
+        NavigationUtil.navigate( "SettingsDatabaseExplorer");
       }});
 
     items.push({label: lang("MESH"), type: 'explanation', below: false});
@@ -287,61 +294,61 @@ lang("_Reset_Done__Rediscovery__body"),
         NavigationUtil.navigate( "SettingsMeshTopology");
       }});
 
-    if (user.betaAccess) {
-      items.push({label: lang("ALPHA_FEATURES_WILL_LOOK_"), type: 'explanation', below: false});
-    }
-    else {
-      items.push({label: lang("EXPERIMENTAL_FEATURES"), type: 'explanation', below: false});
-    }
-    items.push({
-      label: lang("Join_Alpha_Program"),
-      value: user.betaAccess,
-      experimental: user.betaAccess,
-      icon: <IconButton name={"ios-flask"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
-      type: 'switch',
-      callback:(newValue) => {
-        let storeIt = () => {
-          store.dispatch({
-            type: 'SET_BETA_ACCESS',
-            data: {betaAccess: newValue}
-          });
-        };
-        if (newValue) {
-          Alert.alert(
-lang("_EXPERIMENTAL___Switchcra_header"),
-lang("_EXPERIMENTAL___Switchcra_body"),
-[{text:lang("_EXPERIMENTAL___Switchcra_left"), style:'cancel'}, {
-text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
-          );
-        }
-        else {
-          storeIt();
-        }
-      }});
-    items.push({
-      label: lang("FeaturePreview"),
-      value: dev.preview,
-      icon: <IconButton name={"ios-fastforward"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelectedDark.hex}}/>,
-      type: 'switch',
-      callback:(newValue) => {
-        let storeIt = () => {
-          store.dispatch({
-            type: 'CHANGE_DEV_SETTINGS',
-            data: {preview: newValue}
-          });
-        };
-        if (newValue) {
-          Alert.alert(
-            lang("_EXPERIMENTAL___Preview_header"),
-            lang("_EXPERIMENTAL___Preview_body"),
-            [{text:lang("_EXPERIMENTAL___Preview_left"), style:'cancel'}, {
-              text:lang("_EXPERIMENTAL___Preview_right"), onPress: storeIt}]
-          );
-        }
-        else {
-          storeIt();
-        }
-      }});
+    // if (user.betaAccess) {
+    //   items.push({label: lang("ALPHA_FEATURES_WILL_LOOK_"), type: 'explanation', below: false});
+    // }
+    // else {
+    //   items.push({label: lang("EXPERIMENTAL_FEATURES"), type: 'explanation', below: false});
+    // }
+//     items.push({
+//       label: lang("Join_Alpha_Program"),
+//       value: user.betaAccess,
+//       experimental: user.betaAccess,
+//       icon: <IconButton name={"ios-flask"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+//       type: 'switch',
+//       callback:(newValue) => {
+//         let storeIt = () => {
+//           store.dispatch({
+//             type: 'SET_BETA_ACCESS',
+//             data: {betaAccess: newValue}
+//           });
+//         };
+//         if (newValue) {
+//           Alert.alert(
+// lang("_EXPERIMENTAL___Switchcra_header"),
+// lang("_EXPERIMENTAL___Switchcra_body"),
+// [{text:lang("_EXPERIMENTAL___Switchcra_left"), style:'cancel'}, {
+// text:lang("_EXPERIMENTAL___Switchcra_right"), onPress: storeIt}]
+//           );
+//         }
+//         else {
+//           storeIt();
+//         }
+//       }});
+    // items.push({
+    //   label: lang("FeaturePreview"),
+    //   value: dev.preview,
+    //   icon: <IconButton name={"ios-fastforward"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelectedDark.hex}}/>,
+    //   type: 'switch',
+    //   callback:(newValue) => {
+    //     let storeIt = () => {
+    //       store.dispatch({
+    //         type: 'CHANGE_DEV_SETTINGS',
+    //         data: {preview: newValue}
+    //       });
+    //     };
+    //     if (newValue) {
+    //       Alert.alert(
+    //         lang("_EXPERIMENTAL___Preview_header"),
+    //         lang("_EXPERIMENTAL___Preview_body"),
+    //         [{text:lang("_EXPERIMENTAL___Preview_left"), style:'cancel'}, {
+    //           text:lang("_EXPERIMENTAL___Preview_right"), onPress: storeIt}]
+    //       );
+    //     }
+    //     else {
+    //       storeIt();
+    //     }
+    //   }});
 
     items.push({
       label: "Show sync button for behaviour",

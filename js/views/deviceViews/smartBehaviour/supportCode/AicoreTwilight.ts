@@ -58,7 +58,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
 
     let sentence = "";
     sentence += chunks.intention.label;
-    sentence += chunks.time.label   ? " " + chunks.time.label   : ",";
+    sentence += chunks.time.label   ? " " + chunks.time.label   : "";
     sentence += chunks.action.label ? " " + chunks.action.label : "";
     sentence += ".";
 

@@ -88,6 +88,7 @@ function checkAction(action, affectedIds) {
       eventStatus['addLocation'] = affectedIds;
       eventStatus['changeLocations'] = affectedIds;
     case 'UPDATE_LOCATION_CONFIG':
+    case 'LOCATION_UPDATE_PICTURE':
       eventStatus['updateLocationConfig'] = affectedIds; break;
     case 'REMOVE_LOCATION':
       eventStatus['removeLocation'] = affectedIds;

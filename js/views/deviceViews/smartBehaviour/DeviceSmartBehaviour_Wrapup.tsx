@@ -142,7 +142,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
         actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: ruleId, data: {activeDays: activeDays, syncedToCrownstone: false}});
       }
       else {
-        if (rule.idOnCrownstone) {
+        if (rule.idOnCrownstone !== null) {
           actions.push({
             type: "MARK_STONE_RULE_FOR_DELETION",
             sphereId: this.props.sphereId,
@@ -191,41 +191,49 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     if (this.props.ruleId) {
       // if the existing rule has been changed, we make a new one and update the old one to not be active on the selected days.
       if (this.ruleHasChanged) {
-        // search for behaviour that is the same as the behaviour to see if we can merge them.
-        for (let i = 0; i < ruleIds.length; i++) {
-          if (ruleIds[i] !== this.props.ruleId) {
-            if (this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
-              mergedId = ruleIds[i];
-              let newActiveDaysForMergeRule = {...rules[ruleIds[i]].activeDays};
-              Object.keys(appliedDays).forEach((day) => {
-                if (appliedDays[day]) {
-                  newActiveDaysForMergeRule[day] = true;
-                }
-              })
-              actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: mergedId, data: {activeDays: newActiveDaysForMergeRule, syncedToCrownstone: false}});
-              break;
+        // if the rule has been fully changed (for every active day)
+        let rule = rules[this.props.ruleId];
+        if (xUtil.deepCompare(this.state.activeDays, rule.acitveDays) === true) {
+          // this means we change the rule for all active days
+          actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: this.props.ruleId, data: {data: this.rule.stringify(), syncedToCrownstone: false}});
+        }
+        else {
+          // search for behaviour that is the same as the behaviour to see if we can merge them.
+          for (let i = 0; i < ruleIds.length; i++) {
+            if (ruleIds[i] !== this.props.ruleId) {
+              if (this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
+                mergedId = ruleIds[i];
+                let newActiveDaysForMergeRule = {...rules[ruleIds[i]].activeDays};
+                Object.keys(appliedDays).forEach((day) => {
+                  if (appliedDays[day]) {
+                    newActiveDaysForMergeRule[day] = true;
+                  }
+                })
+                actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: mergedId, data: {activeDays: newActiveDaysForMergeRule, syncedToCrownstone: false}});
+                break;
+              }
             }
           }
-        }
 
-        // we could not find a behaviour to merge with, we will make a new behaviour.
-        if (!mergedId) {
-          let newRuleId = xUtil.getUUID();
-          actions.push({
-            type: "ADD_STONE_RULE",
-            sphereId: this.props.sphereId,
-            stoneId: this.props.stoneId,
-            ruleId: newRuleId,
-            data: {
-              type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
-              data: this.rule.stringify(),
-              activeDays: appliedDays,
-              syncedToCrownstone: false
-            }
-          });
-        }
+          // we could not find a behaviour to merge with, we will make a new behaviour.
+          if (!mergedId) {
+            let newRuleId = xUtil.getUUID();
+            actions.push({
+              type: "ADD_STONE_RULE",
+              sphereId: this.props.sphereId,
+              stoneId: this.props.stoneId,
+              ruleId: newRuleId,
+              data: {
+                type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,
+                data: this.rule.stringify(),
+                activeDays: appliedDays,
+                syncedToCrownstone: false
+              }
+            });
+          }
 
-        removeActiveDaysFromRule(rules[this.props.ruleId], this.props.ruleId)
+          removeActiveDaysFromRule(rules[this.props.ruleId], this.props.ruleId)
+        }
       }
       else {
         // if the rule has not been changed, the active days have been changed.

@@ -203,7 +203,7 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
   let locationId = action.data.locationId;
 
   if (MapProvider.local2cloudMap.locations[locationId] === undefined) {
-    console.log("NO CLOUD ID FOR THIS ENTRY");
+    // console.log("NO CLOUD ID FOR THIS ENTRY");
     // the location is not synced to the cloud yet... We should wait for a sync to properly handle this.
     return;
   }
@@ -369,7 +369,9 @@ function handleBehaviourInCloud(action, state) {
         .then(() => {
           core.store.batchDispatch(actions);
         })
-        .catch((err) => { console.log("Error handleBehaviourInCloud",err)})
+        .catch((err) => {
+          console.log("Error handleBehaviourInCloud",err)
+        })
     }
   }
 }

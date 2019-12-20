@@ -109,6 +109,7 @@ import { DEV_DFU } from "../views/dev/firmwareTesting/DEV_DFU";
 import { DEV_StoneSelector } from "../views/dev/stoneSelecting/DEV_StoneSelector";
 import { DEV_RawAdvertisements } from "../views/dev/firmwareTesting/DEV_RawAdvertisements";
 import { SphereEditMap } from "../views/main/editSubviews/SphereEditMap";
+import { SettingsDatabaseExplorer } from "../views/settingsViews/dev/SettingsDatabaseExplorer";
 
 
 export const Views = {
@@ -160,6 +161,7 @@ export const Views = {
   RoomTraining_roomSize:             RoomTraining_roomSize,
   SelectFromList:                    SelectFromList,
   SettingsApp:                       SettingsApp,
+  SettingsDatabaseExplorer:          SettingsDatabaseExplorer,
   SettingsBleDebug:                  SettingsBleDebug,
   SettingsBleTroubleshooting:        SettingsBleTroubleshooting,
   SettingsDeveloper:                 SettingsDeveloper,

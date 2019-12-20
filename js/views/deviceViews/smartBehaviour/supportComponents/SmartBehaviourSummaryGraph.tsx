@@ -63,7 +63,7 @@ export class SmartBehaviourSummaryGraph extends Component<any, any> {
             <View style={{position:'absolute', left:0, top:15, width:screenWidth*0.8, height:75}}>
               <SmartBehaviourSummaryGraphElement dataColor={colors.green}       icon={'md-power'}        iconSize={17} times={onArray}       id={this.id} explanation={ lang("When_I_will_be_on_")} />
               <SmartBehaviourSummaryGraphElement dataColor={colors.csBlueDark}  icon={'c1-locationPin1'} iconSize={14} times={presenceArray} id={this.id} explanation={"When I'll be on based on presence."} />
-              <SmartBehaviourSummaryGraphElement dataColor={colors.blinkColor2} icon={'ios-leaf'}        iconSize={17} times={twilightArray} id={this.id} explanation={ lang("When_twilight_mode_is_acti")} />
+              <SmartBehaviourSummaryGraphElement dataColor={colors.blinkColor2} icon={'ios-leaf'}        iconSize={17} times={twilightArray} id={this.id} explanation={ lang("When_twilight_mode_is_acti")} twilight={true} />
             </View>
             <TimeSelector id={this.id} />
           </View>

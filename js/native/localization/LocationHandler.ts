@@ -15,6 +15,7 @@ import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
 import { core } from "../../core";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
+import { canUseIndoorLocalizationInSphere } from "../../util/DataUtil";
 
 class LocationHandlerClass {
   _initialized : boolean;
@@ -77,14 +78,14 @@ class LocationHandlerClass {
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the
     // right settings in the lib.
 
-    // if (canUseIndoorLocalizationInSphere(state, enteringSphereId) === true) {
-    //   LOG.info('LocationHandler: Starting indoor localization for sphere', enteringSphereId);
-    //   Bluenet.startIndoorLocalization();
-    // }
-    // else {
-    //   LOG.info('LocationHandler: Stopping indoor localization for sphere', enteringSphereId, 'due to missing fingerprints or not enough Crownstones.');
-    //   Bluenet.stopIndoorLocalization();
-    // }
+    if (canUseIndoorLocalizationInSphere(state, enteringSphereId) === true) {
+      LOG.info('LocationHandler: Starting indoor localization for sphere', enteringSphereId);
+      Bluenet.startIndoorLocalization();
+    }
+    else {
+      LOG.info('LocationHandler: Stopping indoor localization for sphere', enteringSphereId, 'due to missing fingerprints or not enough Crownstones.');
+      Bluenet.stopIndoorLocalization();
+    }
 
     // scan for crownstones on entering a sphere.
     BatterySavingUtil.startNormalUsage(enteringSphereId);

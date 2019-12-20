@@ -98,6 +98,9 @@ export const TopBarUtil = {
     if (props.create) {
       rightButtons.push(getButtonComponent('create', Languages.get("__UNIVERSAL", "Create")()));
     }
+    if (props.update) {
+      rightButtons.push(getButtonComponent('update', Languages.get("__UNIVERSAL", "Update")()));
+    }
     if (props.rightLoading && Platform.OS === 'ios') {
       rightButtons.push({
         id: 'loading',

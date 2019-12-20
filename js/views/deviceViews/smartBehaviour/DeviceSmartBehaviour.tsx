@@ -34,6 +34,8 @@ import { Permissions } from "../../../backgroundProcesses/PermissionManager";
 import { StoneDataSyncer } from "../../../backgroundProcesses/StoneDataSyncer";
 import { xUtil } from "../../../util/StandAloneUtil";
 import ResponsiveText from "../../components/ResponsiveText";
+import { BEHAVIOUR_TYPES } from "../../../Enums";
+import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 
 
 let className = "DeviceSmartBehaviour";
@@ -138,6 +140,9 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       return 1;
     })
 
+    let presenceRulePresent = false;
+    let roomBasedPresenceRulePresent = false;
+
     ruleIds.forEach((ruleId) => {
       let active = rules[ruleId].activeDays[this.state.activeDay];
       let partiallyActive = !active && rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]];
@@ -149,6 +154,16 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
           yesterday: rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]],
           today:     rules[ruleId].activeDays[this.state.activeDay],
         };
+
+        if (rule.type === BEHAVIOUR_TYPES.behaviour) {
+          let ruleObj = new AicoreBehaviour(rule.data);
+          if (ruleObj.isUsingPresence()) {
+            if (ruleObj.isUsingMultiRoomPresence() || ruleObj.isUsingSingleRoomPresence()) {
+              roomBasedPresenceRulePresent = true;
+            }
+            presenceRulePresent = true;
+          }
+        }
 
         let ruleComponent = (
           <SmartBehaviourRule
@@ -290,6 +305,14 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 iconColor={colors.darkPurple.blend(colors.menuTextSelected, 0.5).rgba(0.75)}
               />
             </SlideFadeInView>
+
+            <SlideFadeInView visible={!this.state.editMode} height={80} style={styles.centered}>
+              <Text style={deviceStyles.explanationText}>{
+                "I'll be off if I'm not supposed to be on." +
+                (presenceRulePresent ? "\nOnce everyone left the " + (roomBasedPresenceRulePresent ? "room" : "house") + " I'll wait 5 minutes before turning off." : "")
+              }</Text>
+            </SlideFadeInView>
+
             <View style={{height:30}} />
           </View>
         </ScrollView>
@@ -440,7 +463,7 @@ function getTopBarProps(props, viewState) {
   else {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
-      edit: Permissions.inSphere(props.sphereId).canChangeBehaviours,
+      edit: true || Permissions.inSphere(props.sphereId).canChangeBehaviours,
       closeModal: true,
     };
   }

@@ -42,7 +42,6 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
 
   _pushCrownstoneItem(items, sphereId, stone, stoneId, subtext = '', locationColor = colors.gray.hex) {
     let backgroundColor = colors.menuBackground.hex;
-    console.log("IMA", stone)
     if (stone && stone.state.state > 0 && StoneAvailabilityTracker.isDisabled(stoneId) === false) {
       backgroundColor = colors.green.hex
     }

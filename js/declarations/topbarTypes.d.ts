@@ -26,6 +26,7 @@ interface topbarOptions {
   save? : boolean,
   next? : boolean,
   create? : boolean,
+  update? : boolean,
 }
 
 interface topbarNavComponent {

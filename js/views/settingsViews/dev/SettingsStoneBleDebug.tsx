@@ -63,6 +63,11 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   }
 
   _parseIBeacon(data : ibeaconPackage[]) {
+    if (this._major === null && this._minor === null) {
+      this.setState({ibeaconPayload: xUtil.stringify(data, 2), ibeaconTimestamp: new Date().valueOf()});
+      return
+    }
+
     data.forEach((ibeacon) => {
       if (ibeacon.uuid.toLowerCase() !== this._ibeaconUuid.toLowerCase() ) { return; }
       if (this._major && ibeacon.major !== this._major)                    { return; }
@@ -109,7 +114,6 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     let state = store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let stone = sphere.stones[this.props.stoneId];
-
 
     let largeLabel = 'Examining Sphere';
     if (stone) {

@@ -2245,6 +2245,7 @@ export default {
     Create:                              function() { return "Create" },
     Cancel:                              function() { return "Cancel" },
     Save:                                function() { return "Save" },
+    Update:                              function() { return "Update" },
     Edit:                                function() { return "Edit" },
     Next:                                function() { return "Next" },
     Back:                                function() { return "Back" },

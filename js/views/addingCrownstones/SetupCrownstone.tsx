@@ -121,7 +121,6 @@ export class SetupCrownstone extends LiveComponent<any, any> {
 
             // this check is here because the user MIGHT go back somehow, destroying the view
             if (this._interview) {
-              console.log(0)
               this._interview.setLockedCard("iKnowThisOne");
             }
             return;
@@ -131,27 +130,21 @@ export class SetupCrownstone extends LiveComponent<any, any> {
           }
         })
         .catch((err) => {
-          console.log(9,err)
           if (this.abort === true) {
-            console.log(8)
             return this._interview.setLockedCard("aborted");
           }
 
           if (err.code) {
             if (err.code === 1) {
-              console.log(7)
               this._interview.setLockedCard("problemBle");
             }
             else if (err.code === "network_error") {
-              console.log(6)
               this._interview.setLockedCard("problemCloud");
             }
             else {
-              console.log(5)
               this._interview.setLockedCard("problemBle");
             }
           }
-          console.log(4)
           this._interview.setLockedCard("problemBle");
         })
     };
@@ -178,7 +171,6 @@ export class SetupCrownstone extends LiveComponent<any, any> {
           return performSetup();
         })
         .catch((err) => {
-          console.log(3,err)
           this._interview.setLockedCard("problem");
         })
     }
@@ -207,11 +199,9 @@ export class SetupCrownstone extends LiveComponent<any, any> {
     }
 
     if (this.abort) {
-      console.log(1)
       this._interview.setLockedCard("successWhileAborting")
     }
     else {
-      console.log(2)
       this._interview.setLockedCard("setupMore")
     }
   }

@@ -7,7 +7,6 @@ import { core } from "../../../../core";
 import { Icon } from "../../../components/Icon";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import * as React from "react";
-import { ScaledImage } from "../../../components/ScaledImage";
 import { DAY_INDICES_MONDAY_START } from "../../../../Constants";
 
 
@@ -59,8 +58,8 @@ export function SmartBehaviourRule(props: {
             Alert.alert(
               "Are you sure?",
               "Since this behaviour is only active on this day, removing it will remove it completely.",
-              [{text:"Cancel"}, {text:"I'm sure", onPress: () =>{
-                if (props.rule.idOnCrownstone) {
+              [{text:"Cancel"}, {text:"I'm sure", onPress: () => {
+                if (props.rule.idOnCrownstone !== null) {
                   core.store.dispatch({type:"MARK_STONE_RULE_FOR_DELETION", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
                 }
                 else {
