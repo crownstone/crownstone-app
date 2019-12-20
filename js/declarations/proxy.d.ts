@@ -60,6 +60,7 @@ interface BluenetPromiseWrapperProtocol {
   checkBroadcastAuthorization()                 : Promise< string >,
 
   broadcastSwitch(referenceId, stoneId, switchState):Promise< void >,
+  broadcastBehaviourSettings(referenceId, enabled:boolean):Promise< void >,
 
   addBehaviour(behaviour: behaviourTransfer)    : Promise<behaviourReply>,
   updateBehaviour(behaviour: behaviourTransfer) : Promise<behaviourReply>,

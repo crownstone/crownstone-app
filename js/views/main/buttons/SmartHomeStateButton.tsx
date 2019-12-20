@@ -15,6 +15,7 @@ import { core } from "../../../core";
 import { Icon } from "../../components/Icon";
 import { Component } from "react";
 import { SlideFadeInView, SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
+import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 
 export class SmartHomeStateButton extends Component<any, any> {
 
@@ -101,7 +102,7 @@ export class SmartHomeStateButton extends Component<any, any> {
               sphereId: this.props.sphereId,
               data: { smartHomeEnabled: !this.props.state }
             })
-            // TODO: Broadcast enable/disable
+            BluenetPromiseWrapper.broadcastBehaviourSettings(this.props.sphereId, !this.props.state).catch(() => {});
           }
         }}>
           <SlideSideFadeInView

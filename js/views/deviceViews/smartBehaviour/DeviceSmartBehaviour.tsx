@@ -36,6 +36,7 @@ import { xUtil } from "../../../util/StandAloneUtil";
 import ResponsiveText from "../../components/ResponsiveText";
 import { BEHAVIOUR_TYPES } from "../../../Enums";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
+import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 
 
 let className = "DeviceSmartBehaviour";
@@ -75,6 +76,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       let change = data.change;
 
       if (
+        change.changeSphereSmartHomeState &&
         change.stoneChangeRules      && change.stoneChangeRules.stoneIds[this.props.stoneId] ||
         change.updateStoneCoreConfig && change.updateStoneCoreConfig.stoneIds[this.props.stoneId]
       ) {
@@ -421,7 +423,12 @@ function DisabledBehaviourBanner(props) {
     <TouchableOpacity
       style={{height:65, width: screenWidth, backgroundColor: colors.menuTextSelected.hex, justifyContent:'space-evenly', alignItems:'center', borderBottomWidth:2, borderColor: colors.white.hex}}
       onPress={() => {
-        // TODO: toggle sphere behaviour state
+        BluenetPromiseWrapper.broadcastBehaviourSettings(this.props.sphereId, true).catch(() => {});
+        core.store.dispatch({
+          type: "SET_SPHERE_SMART_HOME_STATE",
+          sphereId: this.props.sphereId,
+          data: { smartHomeEnabled: true }
+        })
       }}
     >
       <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>Behaviour is currently disabled.</Text>

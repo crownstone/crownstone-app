@@ -124,6 +124,7 @@ RCT_EXTERN_METHOD(sendMeshNoOp:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getTrackingState:(RCTResponseSenderBlock)callback)
 
 // Broadcast
+RCT_EXTERN_METHOD(broadcastBehaviourSettings:(NSString *)referenceId enabled:(nonnull NSNumber *)enabled callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(broadcastSwitch:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId switchState:(nonnull NSNumber *)switchState callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(turnOnBroadcast:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId callback:(RCTResponseSenderBlock)callback)
 

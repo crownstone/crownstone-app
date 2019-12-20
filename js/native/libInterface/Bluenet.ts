@@ -144,6 +144,7 @@ const BluenetAPI = {
   setSunTimesViaConnection:  () => { console.log("BluenetBridgeCall: setSunTimesViaConnection"); },
   turnOnMesh:       () => { console.log("BluenetBridgeCall: turnOnMesh"); },
   turnOnBroadcast:  () => { console.log("BluenetBridgeCall: turnOnBroadcast"); },
+  broadcastBehaviourSettings:  () => { console.log("BluenetBridgeCall: broadcastBehaviourSettings"); },
 
 };
 
