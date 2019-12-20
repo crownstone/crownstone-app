@@ -45,18 +45,18 @@ export const Stacks = {
   },
 
   loggedIn: function() : StackData {
-    return {
-      stack: {
-        children: [
-          { component: {
-              name: "DeviceSmartBehaviour", passProps:
-                {
-                  stoneId: "5dfcd54658a88b0004fa3a4a", sphereId: "52b7b179-1520-43f6-1921-5f62cbb7d9d2"
-                },
-            }}
-        ],
-      },
-    }
+    // return {
+    //   stack: {
+    //     children: [
+    //       { component: {
+    //           name: "DeviceSmartBehaviour", passProps:
+    //             {
+    //               stoneId: "5dfcd54658a88b0004fa3a4a", sphereId: "52b7b179-1520-43f6-1921-5f62cbb7d9d2"
+    //             },
+    //         }}
+    //     ],
+    //   },
+    // }
     return {
       bottomTabs: {
         id: 'bottomTabs',

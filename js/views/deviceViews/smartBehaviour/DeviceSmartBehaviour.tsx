@@ -470,7 +470,7 @@ function getTopBarProps(props, viewState) {
   else {
     NAVBAR_PARAMS_CACHE = {
       title: stone.config.name,
-      edit: true || Permissions.inSphere(props.sphereId).canChangeBehaviours,
+      edit: Permissions.inSphere(props.sphereId).canChangeBehaviours,
       closeModal: true,
     };
   }
