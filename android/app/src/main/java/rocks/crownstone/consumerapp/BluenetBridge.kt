@@ -1812,6 +1812,19 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
+
+	@ReactMethod
+	@Synchronized
+	fun broadcastBehaviourSettings(referenceId: String, smartEnabled: Boolean, callback: Callback) {
+		Log.i(TAG, "broadcastBehaviourSettings referenceId=$referenceId smartEnabled=$smartEnabled")
+		val mode = when (smartEnabled) {
+			true -> BehaviourSettingsMode.SMART
+			false -> BehaviourSettingsMode.DUMB
+		}
+		bluenet.broadCast.setBehaviourSettings(referenceId, mode)
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
 //endregion
 
 //##################################################################################################
