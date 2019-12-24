@@ -401,7 +401,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setSunTimes(sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int, sphereId: SphereId) {
-		Log.i(TAG, "setSunTimes sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
+		Log.i(TAG, "setSunTimes sphereId=$sphereId sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
 		bluenet.setSunTime(sphereId, sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
 	}
 
