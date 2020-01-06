@@ -285,15 +285,15 @@ export class RuleEditor extends LiveComponent<
     let showTimeSuggestion = this.rule.isAlwaysActive() === true;
     let showEndConditionSuggestion = this.props.twilightRule === false &&
       (
-        (this.rule.isUsingClockEndTime() && this.rule.getHour() >= 20)
+        (this.rule.isUsingClockEndTime() && this.rule.getHour() !== null && this.rule.getHour() >= 20)
         || this.rule.isUsingSunsetAsEndTime()
       ) &&
       this.rule.hasNoEndCondition();
 
     return {
-      showPresenceSuggestion:     showPresenceSuggestion && !shouldShowTimeConflict,
-      showTimeSuggestion:         showTimeSuggestion     && !shouldShowTimeConflict,
-      showEndConditionSuggestion: showEndConditionSuggestion   && !shouldShowTimeConflict,
+      showPresenceSuggestion:     showPresenceSuggestion     && !shouldShowTimeConflict,
+      showTimeSuggestion:         showTimeSuggestion         && !shouldShowTimeConflict,
+      showEndConditionSuggestion: showEndConditionSuggestion && !shouldShowTimeConflict,
       shouldShowTimeConflict:     shouldShowTimeConflict,
       showAnySuggestions:         showPresenceSuggestion || showTimeSuggestion || showEndConditionSuggestion,
       amountOfSuggestions:        (showPresenceSuggestion ? 1 : 0)  + (showTimeSuggestion ? 1 : 0) + (showEndConditionSuggestion ? 1 : 0)
@@ -331,7 +331,7 @@ export class RuleEditor extends LiveComponent<
       />);
     }
     if (showEndConditionSuggestion) {
-      let timeStr = AicoreUtil.getClockTimeStr(this.rule.getHour(), this.rule.getMinutes());
+      let timeStr = this.rule.isUsingSunsetAsEndTime() ? AicoreUtil.getSunsetTimeString(this.props.sphereId) : AicoreUtil.getClockTimeStr(this.rule.getHour(), this.rule.getMinutes());
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
       suggestionArray.push(<BehaviourSuggestion
         key={"optionSuggestion"}
@@ -373,6 +373,9 @@ export class RuleEditor extends LiveComponent<
           );
       },
       callback: (value) => {
+        if (Array.isArray(value)) {
+          value = value[0];
+        }
         exampleBehaviour.setDimAmount(value);
         this.rule.setDimAmount(value);
         this.setState({selectedDetailField: selectionDescription})

@@ -98,7 +98,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       }
     }
 
-    let { activeDays, conflictDays } = this._getConflictingDays();
+    let { activeDays, conflictDays } = this._getDayData();
     if (this.props.ruleId && this.ruleHasChanged === false) {
       let rule = stone.rules[this.props.ruleId];
       if (rule) {
@@ -193,7 +193,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       if (this.ruleHasChanged) {
         // if the rule has been fully changed (for every active day)
         let rule = rules[this.props.ruleId];
-        if (xUtil.deepCompare(this.state.activeDays, rule.acitveDays) === true) {
+        if (xUtil.deepCompare(this.state.activeDays, rule.activeDays) === true) {
           // this means we change the rule for all active days
           actions.push({type:"UPDATE_STONE_RULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: this.props.ruleId, data: {data: this.rule.stringify(), syncedToCrownstone: false}});
         }
@@ -335,7 +335,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   }
 
 
-  _getConflictingDays() {
+  _getDayData() {
     let activeDays = { Mon: false, Tue: false, Wed: false, Thu: false, Fri: false, Sat: false, Sun: false };
     let conflictDays = {
       Mon: {rules: [], conflict:false },
@@ -432,7 +432,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     let body = lang("Tap_the_days_below_to_let");
 
     let buttonColor = colors.green.hex;
-    let buttonLabel = lang("Thats_it_");
+    let buttonLabel = "That's it!";
 
     let amountOfUnresolvedConflictingDays = 0;
     let amountOfConflictingDays = 0;
@@ -447,7 +447,6 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     }
     if (amountOfConflictingDays > 0) {
       header = "When do I do this?"
-
     }
 
     // if we have a rule ID, this is an edit operation, not a new rule
@@ -462,7 +461,6 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       headerNumberOfLines = 2;
       header = "From which days shall I remove this behaviour?";
       body = "Select the days you wish to remove this behaviour from. I've already selected the day you picked as one to remove."
-
 
       buttonColor = colors.csOrange.hex;
       buttonLabel = 'Remove behaviour!'
@@ -542,6 +540,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
               <View style={{flex:1}} />
               <View>
               <BehaviourSubmitButton
+                width={0.8*screenWidth}
                 color={ buttonColor }
                 label={ buttonLabel }
                 callback={() => { this.submit() }}

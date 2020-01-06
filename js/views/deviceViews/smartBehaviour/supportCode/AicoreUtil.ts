@@ -11,6 +11,7 @@ import { AicoreBehaviour } from "./AicoreBehaviour";
 import { AicoreTwilight } from "./AicoreTwilight";
 import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
 import { DAY_INDICES_MONDAY_START } from "../../../../Constants";
+import { Util } from "../../../../util/Util";
 const SunCalc = require('suncalc');
 
 
@@ -156,8 +157,53 @@ export const AicoreUtil = {
     return "(deleted location)";
   },
 
+
+  getSunsetTimeString(sphereId: string) {
+    let sunTimes = Util.getSunTimes(sphereId);
+    let sunsetTime  = sunTimes.sunset;
+    return AicoreUtil.getClockTimeStr(new Date(sunsetTime).getHours(), new Date(sunsetTime).getMinutes());
+  },
+
   getClockTimeStr(hours, minutes) {
     return hours + ":" + (minutes < 10 ? "0" + minutes : minutes);
+  },
+
+  getSunTimeStr(timeObj : aicoreTimeDataSun) {
+    // TYPE IS SUNSET/SUNRISE
+    let obj = (timeObj as aicoreTimeDataSun);
+    let str = "";
+    if (obj.offsetMinutes !== 0) {
+      let getTimeNotation = function(mins) {
+        mins = Math.abs(mins);
+        if (mins%60 === 0) {
+          let hours = mins/60;
+          if (hours === 1) {
+            return "1 hour";
+          }
+          return hours + " hours"
+        }
+        else if (mins < 60) {
+          return mins + " minutes"
+        }
+        else {
+          return Math.floor(mins/60) + " hrs, " + mins%60 + ' mins'
+        }
+      };
+
+      if (obj.offsetMinutes < 0) {
+        str += getTimeNotation(obj.offsetMinutes) + " before "
+      }
+      else {
+        str += getTimeNotation(obj.offsetMinutes) + " after "
+      }
+    }
+    if (obj.type === "SUNSET") {
+      str += "sunset"
+    }
+    else if (obj.type === "SUNRISE") {
+      str += "sunrise"
+    }
+    return str;
   },
 
   getTimeStr(timeObj: aicoreTimeData) {
@@ -167,41 +213,7 @@ export const AicoreUtil = {
       return AicoreUtil.getClockTimeStr(obj.hours, obj.minutes);
     }
     else {
-      // TYPE IS SUNSET/SUNRISE
-      let obj = (timeObj as aicoreTimeDataSun);
-      let str = "";
-      if (obj.offsetMinutes !== 0) {
-        let getTimeNotation = function(mins) {
-          mins = Math.abs(mins);
-          if (mins%60 === 0) {
-            let hours = mins/60;
-            if (hours === 1) {
-              return "1 hour";
-            }
-            return hours + " hours"
-          }
-          else if (mins < 60) {
-            return mins + " minutes"
-          }
-          else {
-            return Math.floor(mins/60) + " hrs, " + mins%60 + ' mins'
-          }
-        };
-
-        if (obj.offsetMinutes < 0) {
-          str += getTimeNotation(obj.offsetMinutes) + " before "
-        }
-        else {
-          str += getTimeNotation(obj.offsetMinutes) + " after "
-        }
-      }
-      if (obj.type === "SUNSET") {
-        str += "sunset"
-      }
-      else if (obj.type === "SUNRISE") {
-        str += "sunrise"
-      }
-      return str;
+      return AicoreUtil.getSunTimeStr(timeObj);
     }
   },
 
