@@ -186,7 +186,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
 
-  _switch(stone, state) {
+  _switch(stone, state, fromDimmerSlider = false) {
     let stateWhenOn = this.storedSwitchStateWhenOn;
 
     if (state === 0 && this.state.switchIsOn) {
@@ -196,7 +196,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
       stateWhenOn = state < 0.2 ? 1 : state;
     }
 
-    if (this.storedSwitchStateWhenOn === null && !this.state.switchIsOn) {
+    if (this.storedSwitchStateWhenOn === null && !this.state.switchIsOn && !fromDimmerSlider) {
       StoneUtil.turnOnBCH(
         this.props.sphereId,
         this.props.stoneId,
@@ -279,10 +279,10 @@ export class DeviceOverview extends LiveComponent<any, any> {
           showDimmingText={showDimmingText}
           callback={(percentage) => {
             if (stone.abilities.dimming.syncedToCrownstone) {
-              this._switch(stone, xUtil.transformUISwitchStateToStoneSwitchState(percentage));
+              this._switch(stone, xUtil.transformUISwitchStateToStoneSwitchState(percentage), true);
             }
             else {
-              this._switch(stone, percentage);
+              this._switch(stone, percentage, true);
             }
           }}/>
       );
