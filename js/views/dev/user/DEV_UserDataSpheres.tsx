@@ -12,6 +12,7 @@ import { IconCircle } from "../../components/IconCircle";
 import { base_core } from "../../../base_core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
+import { AppUtil } from "../../../util/AppUtil";
 
 
 
@@ -77,34 +78,34 @@ export class DEV_UserData extends LiveComponent<any, any> {
             { this.getSpheres() }
             <View style={{flex: 1, width:screenWidth, minHeight:30}} />
 
-            <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.4)}} />
+            <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.7)}} />
             <View style={{width:screenWidth}}>
-            <ButtonBar
-              barHeight={NORMAL_ROW_SIZE}
-              style={{color: colors.black.hex}}
-              label={"Sync"}
-              icon={<IconButton name="md-cloud-download" size={22} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />}
-              callback={() => {
-                if (CLOUD.__currentlySyncing === false) {
-                  core.eventBus.emit("showLoading", "Syncing...");
-                  CLOUD.sync(core.store, true)
-                    .then(() => { core.eventBus.emit("showLoading","Done"); setTimeout(() => { core.eventBus.emit("hideLoading");}, 500); })
-                    .catch((err) => {
-                      core.eventBus.emit("hideLoading");
-                      Alert.alert(
-                      "Error during sync",
-                      err && err.message && JSON.stringify(err),
-                      [{text:"OK"}])
-                    })
-                }
-                else {
-                  Alert.alert(
-                    "Sync already in progress",
-                    "Try again later",
-                    [{text:"OK"}]
-                  );
-                }
-              }} />
+              <ButtonBar
+                barHeight={NORMAL_ROW_SIZE}
+                style={{color: colors.black.hex}}
+                label={"Sync"}
+                icon={<IconButton name="md-cloud-download" size={22} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />}
+                callback={() => {
+                  if (CLOUD.__currentlySyncing === false) {
+                    core.eventBus.emit("showLoading", "Syncing...");
+                    CLOUD.sync(core.store, true)
+                      .then(() => { core.eventBus.emit("showLoading","Done"); setTimeout(() => { core.eventBus.emit("hideLoading");}, 500); })
+                      .catch((err) => {
+                        core.eventBus.emit("hideLoading");
+                        Alert.alert(
+                        "Error during sync",
+                        err && err.message && JSON.stringify(err),
+                        [{text:"OK"}])
+                      })
+                  }
+                  else {
+                    Alert.alert(
+                      "Sync already in progress",
+                      "Try again later",
+                      [{text:"OK"}]
+                    );
+                  }
+                }} />
             </View>
             <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.4)}} />
             <SwitchBar
@@ -124,7 +125,21 @@ export class DEV_UserData extends LiveComponent<any, any> {
                 core.store.dispatch({type: "DEV_USER_UPDATE", data: {fastPhone: newValue}});
                 this.forceUpdate();
               }} />
-            <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.4)}} />
+            <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.7)}} />
+            <View style={{height:30}} />
+            <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.7)}} />
+            <View style={{width:screenWidth}}>
+              <ButtonBar
+                barHeight={NORMAL_ROW_SIZE}
+                style={{color: colors.black.hex}}
+                label={"Quit"}
+                icon={<IconButton name={'md-remove-circle'} buttonSize={40} size={28} color={colors.white.hex} buttonStyle={{backgroundColor:colors.darkRed.hex}}/>}
+                callback={() => {
+                  AppUtil.quit();
+                }}
+              />
+            </View>
+            <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.7)}} />
           </View>
         </ScrollView>
       </Background>
