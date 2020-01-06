@@ -50,8 +50,6 @@ class SchedulerClass {
 
   init() {
     if (this._initialized === false) {
-      // we use the local event instead of the native one to also trigger when enter is triggered by fallback.
-      core.eventBus.on("enterSphere", this.flushAll.bind(this));
       core.nativeBus.on(core.nativeBus.topics.exitSphere, this.flushAll.bind(this));
       core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, () => {
         this.tick();
