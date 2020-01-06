@@ -401,7 +401,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setSunTimes(sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int, sphereId: SphereId) {
-		Log.i(TAG, "setSunTimes sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
+		Log.i(TAG, "setSunTimes sphereId=$sphereId sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
 		bluenet.setSunTime(sphereId, sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
 	}
 
@@ -1809,6 +1809,19 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun setTimeViaBroadcast(timestampDouble: Double, sunRiseAfterMidnight: Int, sunSetAfterMidnight: Int, referenceId: String, callback: Callback) {
 		Log.i(TAG, "setTimeViaBroadcast referenceId=$referenceId timestampDouble=$timestampDouble sunRiseAfterMidnight=$sunRiseAfterMidnight sunSetAfterMidnight=$sunSetAfterMidnight")
 		bluenet.broadCast.setTime(referenceId, timestampDouble.toUint32(), sunRiseAfterMidnight.toUint32(), sunSetAfterMidnight.toUint32())
+				.success { resolveCallback(callback) }
+				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun broadcastBehaviourSettings(referenceId: String, smartEnabled: Boolean, callback: Callback) {
+		Log.i(TAG, "broadcastBehaviourSettings referenceId=$referenceId smartEnabled=$smartEnabled")
+		val mode = when (smartEnabled) {
+			true -> BehaviourSettingsMode.SMART
+			false -> BehaviourSettingsMode.DUMB
+		}
+		bluenet.broadCast.setBehaviourSettings(referenceId, mode)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
