@@ -74,9 +74,8 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
   componentDidMount(): void {
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-
       if (
-        change.changeSphereSmartHomeState &&
+        change.changeSphereSmartHomeState ||
         change.stoneChangeRules      && change.stoneChangeRules.stoneIds[this.props.stoneId] ||
         change.updateStoneCoreConfig && change.updateStoneCoreConfig.stoneIds[this.props.stoneId]
       ) {
