@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { Background } from '../components/Background'
-import {availableScreenHeight, colors, screenWidth} from "../styles";
+import { availableScreenHeight, colors, deviceStyles, screenWidth } from "../styles";
 import {IconButton} from "../components/IconButton";
 import {Bluenet} from "../../native/libInterface/Bluenet";
 import {BluenetPromiseWrapper} from "../../native/libInterface/BluenetPromise";
@@ -106,7 +106,7 @@ export class SettingsDiagnostics extends Component<any, any> {
 
   getIntroduction() {
     return (
-      <Animated.View style={{flex:1, alignItems:'center', justifyContent:'center', position:'relative', left: this.state.leftOffset, opacity: this.state.opacity}}>
+      <Animated.View style={{flexGrow:1, alignItems:'center', justifyContent:'center', position:'relative', left: this.state.leftOffset, opacity: this.state.opacity}}>
         <View style={{flex:1}} />
         <IconButton name="md-analytics" buttonSize={0.27*screenWidth} size={0.21*screenWidth} radius={0.05*screenWidth}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />
         <View style={{flex:0.5}} />
@@ -117,6 +117,7 @@ export class SettingsDiagnostics extends Component<any, any> {
         <TouchableOpacity onPress={() => { this.startInitialTest() }} style={diagnosticStyles.buttonStyle}>
           <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Run_diagnostics") }</Text>
         </TouchableOpacity>
+        <View style={{flex:1}} />
       </Animated.View>
     );
   }
@@ -124,7 +125,7 @@ export class SettingsDiagnostics extends Component<any, any> {
 
   getInitialTests() {
     return (
-      <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flexGrow:1, alignItems:'center', justifyContent:'center'}}>
         <Text style={diagnosticStyles.headerStyle}>{ lang("Running_initial_tests___") }</Text>
         <View>
           <TestResult label={ lang("Database_is_healthy")}    state={ this.state.databaseHealth }         />
@@ -192,11 +193,9 @@ export class SettingsDiagnostics extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.menu}>
-                <ScrollView>
-          <View style={{alignItems:'center', justifyContent:'center'}}>
-            <Text style={diagnosticStyles.titleStyle}>{ lang("Diagnostics") }</Text>
-          </View>
-          <View style={{width: screenWidth, alignItems:'center', justifyContent:'center', minHeight: availableScreenHeight-63}}>
+        <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
+          <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30, paddingBottom: 30 }}>
+            <Text style={deviceStyles.header}>{ lang("Diagnostics") }</Text>
             { this.getContent() }
           </View>
         </ScrollView>
