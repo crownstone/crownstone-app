@@ -442,10 +442,6 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("getMACAddress", callback, GLOBAL_BLUENET.bluenet.setup.getMACAddress())
   }
   
-  @objc func getErrors(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("getErrors", callback, GLOBAL_BLUENET.bluenet.state.getErrors())
-  }
-  
   @objc func clearErrors(_ errors: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
     wrapForBluenet("clearErrors", callback, GLOBAL_BLUENET.bluenet.control.clearError(errorDict: errors))
   }

@@ -316,7 +316,7 @@ export class SphereOverview extends LiveComponent<any, any> {
           <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
           <SmartHomeStateButton
             sphereId={activeSphereId}
-            visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room}
+            visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room && noStones === false}
           />
         </AnimatedBackground>
       );

@@ -45,7 +45,6 @@ RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getFirmwareVersion:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getBootloaderVersion:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getHardwareVersion:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(getErrors:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(clearErrors:(NSDictionary *)errors callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(restartCrownstone:(RCTResponseSenderBlock)callback)
 

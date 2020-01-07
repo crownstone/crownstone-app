@@ -147,13 +147,9 @@ const BluenetAPI = {
   broadcastBehaviourSettings:  () => { console.log("BluenetBridgeCall: broadcastBehaviourSettings"); },
 
 
-  getErrors:              () => { console.log("BluenetBridgeCall: getErrors"); },
   syncBehaviours:         () => { console.log("BluenetBridgeCall: syncBehaviours"); },
   getBehaviourMasterHash: () => { console.log("BluenetBridgeCall: getBehaviourMasterHash"); },
   setTimeViaBroadcast:    () => { console.log("BluenetBridgeCall: setTimeViaBroadcast"); },
-  addListener:            () => { console.log("BluenetBridgeCall: addListener"); },
-  removeListeners:        () => { console.log("BluenetBridgeCall: removeListeners"); },
-  getConstants:           () => { console.log("BluenetBridgeCall: getConstants"); },
 
 };
 
