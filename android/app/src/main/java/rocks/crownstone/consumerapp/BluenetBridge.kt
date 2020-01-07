@@ -1818,8 +1818,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun broadcastBehaviourSettings(referenceId: String, smartEnabled: Boolean, callback: Callback) {
 		Log.i(TAG, "broadcastBehaviourSettings referenceId=$referenceId smartEnabled=$smartEnabled")
 		val mode = when (smartEnabled) {
-			true -> BehaviourSettingsMode.SMART
-			false -> BehaviourSettingsMode.DUMB
+			true -> BehaviourSettings.SMART
+			false -> BehaviourSettings.DUMB
 		}
 		bluenet.broadCast.setBehaviourSettings(referenceId, mode)
 				.success { resolveCallback(callback) }
@@ -2839,7 +2839,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putBoolean("switchCraftEnabled", serviceData.flagSwitchCraft)
 		serviceDataMap.putBoolean("tapToToggleEnabled", serviceData.flagTapToToggleEnabled)
 		serviceDataMap.putBoolean("behaviourOverridden", serviceData.flagBehaviourOverridden)
-
+		serviceDataMap.putBoolean("behaviourEnabled", serviceData.flagBehaviourEnabled)
 
 		val deviceTypeString = when (serviceData.deviceType) {
 			DeviceType.CROWNSTONE_PLUG -> "plug"

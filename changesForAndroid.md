@@ -1,1 +1,0 @@
-add behaviourEnabled : boolean, to the service data of the crownstone advertisements (see the proxy.d.ts); (default value: true for old advertisements)
