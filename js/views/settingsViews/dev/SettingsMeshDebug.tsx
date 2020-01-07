@@ -192,7 +192,7 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} >
-                <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

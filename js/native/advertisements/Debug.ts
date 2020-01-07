@@ -35,6 +35,7 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
       dimmerOffFailure  : false,
       bitMask           : 0,
     },
+    behaviourEnabled    : true,
     uniqueElement             : Math.random()
   };
 

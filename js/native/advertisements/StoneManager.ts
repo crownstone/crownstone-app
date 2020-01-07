@@ -60,7 +60,8 @@ class StoneManagerClass {
       // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
       core.eventBus.on("connecting", (handle) => {
         // this is a fallback mechanism in case no disconnect event is fired.
-        this.stonesInConnectionProcess[handle] = { timeout: Scheduler.scheduleCallback(() => {
+        this.stonesInConnectionProcess[handle] = {
+          timeout: Scheduler.scheduleCallback(() => {
             LOGw.native("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 15 seconds.");
             this._restoreConnectionTimeout();
           }, 15000, 'ignoreProcessAdvertisementsTimeout')};
@@ -262,58 +263,18 @@ class StoneManagerClass {
       this.entities[referenceByHandle.id].handleAdvertisementOfExternalCrownstone(advertisement.referenceId, stoneFromAdvertisement, referenceByCrownstoneId.id, stoneFromServiceData, advertisement);
     }
     else {
+      let smartHomeState = state.spheres[sphereId].state.smartHomeEnabled;
+      if (
+        advertisement.serviceData.behaviourEnabled !== null &&
+        advertisement.serviceData.behaviourEnabled !== undefined &&
+        advertisement.serviceData.behaviourEnabled !== smartHomeState
+      ) {
+        core.eventBus.emit(sphereId + "_smartHomeState", smartHomeState);
+      }
+
       this.entities[referenceByCrownstoneId.id].handleDirectAdvertisement(stoneFromAdvertisement, advertisement);
     }
   }
-
-
-  /**
-   * This is a suggestion for the cases where you can decypher an advertisement but you don't know this Crownstone.
-   * Currently unused.
-   * @param stoneFromAdvertisement
-   * @param stoneFromAdvertisementId
-   * @param sphereId
-   * @param stoneFromServiceData
-   * @param stoneFromServiceDataId
-   * @param stoneFromAdvertisement
-   * @param stoneFromAdvertisementId
-   * @param sphereId
-   * @param stoneFromServiceData
-   * @param stoneFromServiceDataId
-   * @param stoneFromAdvertisement
-   * @param stoneFromAdvertisementId
-   * @param sphereId
-   * @param stoneFromServiceData
-   * @param stoneFromServiceDataId
-   * @param stoneFromAdvertisement
-   * @param stoneFromAdvertisementId
-   * @param sphereId
-   * @param stoneFromServiceData
-   * @param stoneFromServiceDataId
-   * @param stoneFromAdvertisement
-   * @param stoneFromAdvertisementId
-   */
-  // _factoryResetUnknownCrownstone(handle) {
-  //   if (this.factoryResetUnknownStonesEnabled === false) { return; }
-  //
-  //   if (!this.factoryResettingCrownstones[handle]) {
-  //     this.factoryResettingCrownstones[handle] = true;
-  //
-  //     let clearFlag = () => {
-  //       this.factoryResettingCrownstones[handle] = null;
-  //       delete this.factoryResettingCrownstones[handle];
-  //     };
-  //
-  //     let details = { from: 'DirectCommand: connecting to ' + handle + ' doing this: commandFactoryReset' };
-  //     BlePromiseManager.registerPriority(
-  //       () => {
-  //         let proxy = BleUtil.getProxy(handle);
-  //         return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
-  //       }, details )
-  //       .then( () => { clearFlag(); })
-  //       .catch(() => { clearFlag(); })
-  //   }
-  // }
 
 
   _resolveMeshNetworkIds(sphereId, stoneFromServiceData, stoneFromServiceDataId, stoneFromAdvertisement, stoneFromAdvertisementId) {

@@ -6,6 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
+  ActivityIndicator, Alert,
   Text,
   TouchableOpacity, View
 } from "react-native";
@@ -14,70 +15,144 @@ import { HiddenFadeInView } from "../../components/animated/FadeInView";
 import { core } from "../../../core";
 import { Icon } from "../../components/Icon";
 import { Component } from "react";
-import { SlideFadeInView, SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
-import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
+import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
+import { SphereStateManager } from "../../../backgroundProcesses/SphereStateManager";
 
 export class SmartHomeStateButton extends Component<any, any> {
 
+  loadingTimeout = null;
   doubleCheckTimeout = null;
+  unsubscribeEventListener = null;
 
   constructor(props) {
     super(props);
 
     this.state = {
       doubleCheck: false,
+      showLoading: false,
     }
+  }
+
+  componentDidMount() {
+    this.unsubscribeEventListener = core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if (change.changeSphereSmartHomeState && change.changeSphereSmartHomeState.sphereIds[this.props.sphereId]) {
+        this.forceUpdate();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this._cleanup();
+    this.unsubscribeEventListener();
   }
 
   _cleanup() {
     clearTimeout(this.doubleCheckTimeout);
+    clearTimeout(this.loadingTimeout);
   }
 
-  render() {
-    let outerRadius = 0.11 * screenWidth;
-    let innerRadius = outerRadius - 10;
-    let size = 0.06 * screenWidth;
-
-    let explanationOpen = !this.props.state || this.state.doubleCheck;
-    let iconColor             = null;
-    let iconBackgroundColor   = null;
+  getContentData(currentState, outerRadius) {
+    let iconColor             = colors.white.hex;
+    let iconBackgroundColor   = colors.menuTextSelected.hex;
     let explanationColor      = null;
     let explanationLabel      = null;
     let explanationTextColor  = null;
 
-    if (this.state.doubleCheck) {
-      iconColor = colors.white.hex;
-      if (this.props.state === false) {
-        // will enable
+    if (this.state.showLoading) {
+      if (currentState === false) {
+        // waiting to be disabled
+        explanationTextColor = colors.white.hex;
+        explanationColor     = colors.menuTextSelected.rgba(0.5);
+        explanationLabel     = "Disabling...";
+      }
+      else {
+        // waiting to be enabled
+        explanationColor     = colors.green.rgba(0.2);
+        explanationLabel     = "Enabling...";
+        iconBackgroundColor  = colors.green.hex;
+      }
+    }
+    else if (this.state.doubleCheck) {
+      if (currentState === false) {
+        // are you sure you want to enable?
         explanationColor     = colors.green.rgba(0.2);
         explanationLabel     = "Enable behaviour?";
         iconBackgroundColor  = colors.green.hex;
+        explanationTextColor = colors.black.rgba(0.7 );
       }
       else {
-        // tap to disable
+        // are you sure you want to disable?
         explanationTextColor = colors.white.hex;
         explanationColor     = colors.menuTextSelected.rgba(0.5);
-
         explanationLabel     = "Tap again to\ndisable behaviour.";
-        iconBackgroundColor = colors.menuTextSelected.hex;
       }
     }
     else {
-      if (explanationOpen === false) {
-        // only an icon
+      if (currentState === false) {
+        // smart home is disabled
+        explanationLabel     = "Behaviour disabled."
+        explanationTextColor = colors.white.hex;
+        explanationColor     = colors.menuTextSelected.rgba(0.2);
+      }
+      else {
+        // smart home is enabled
         iconColor             = colors.csBlueDark.rgba(0.75);
         iconBackgroundColor   = colors.white.rgba(0.55);
       }
-      else {
-        // smart home disabled
-        explanationLabel     = "Behaviour disabled."
-        explanationTextColor = colors.white.hex;
-        explanationColor     = colors.menuTextSelected.rgba(0.1);
 
-        iconBackgroundColor  = colors.menuTextSelected.hex;
-        iconColor            = colors.white.hex;
-      }
+
     }
+
+
+    return {
+      iconColor: iconColor, iconBackgroundColor: iconBackgroundColor, explanation:(
+        <SlideSideFadeInView
+          width={220}
+          visible={explanationLabel !== null}
+          style={{
+            height: outerRadius,
+            borderRadius: 0.5 * outerRadius,
+            borderTopLeftRadius: 0,
+            borderWidth:2,
+            borderColor: colors.white.rgba(0.8),
+            backgroundColor: explanationColor,
+          }}
+        >
+          <View style={{
+            flex:1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row'
+          }}>
+            <View style={{ flex: 1 }}/>
+            { explanationLabel &&
+            <View style={{flexDirection:'row'}}>
+              { this.state.showLoading && <ActivityIndicator size={'small'} color={explanationTextColor} style={{paddingRight:5}} /> }
+              <Text style={{ fontWeight: 'bold', color: explanationTextColor }}>{explanationLabel}</Text>
+            </View>
+            }
+            <View style={{ flex: 0.2, paddingRight: outerRadius }}/>
+          </View>
+        </SlideSideFadeInView>
+      )
+    }
+  }
+
+  render() {
+    let state = core.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    let activeState = true;
+    if (sphere) {
+      activeState = sphere.state.smartHomeEnabled === true
+    }
+
+    let outerRadius = 0.11 * screenWidth;
+    let innerRadius = outerRadius - 10;
+    let size = 0.06 * screenWidth;
+
+    let explanationOpen = !activeState || this.state.doubleCheck || this.state.showLoading;
+    let contentData = this.getContentData(activeState, outerRadius)
 
     return (
       <HiddenFadeInView
@@ -90,46 +165,25 @@ export class SmartHomeStateButton extends Component<any, any> {
           flexDirection: 'row',
         }}>
         <TouchableOpacity style={{minWidth: outerRadius}} onPress={() => {
-          if (this.state.doubleCheck === false) {
-            this.setState({doubleCheck: true});
-            this.doubleCheckTimeout = setTimeout(() => { this.setState({doubleCheck: false});}, 2500);
+          if (sphere && sphere.state.present) {
+            if (this.state.showLoading === false) {
+              if (this.state.doubleCheck === false) {
+                this.setState({doubleCheck: true});
+                this.doubleCheckTimeout = setTimeout(() => { this.setState({doubleCheck: false});}, 2500);
+              }
+              else {
+                this._cleanup();
+                SphereStateManager.userSetSmartHomeState(this.props.sphereId, !activeState);
+                this.setState({doubleCheck: false, showLoading: true });
+                this.loadingTimeout = setTimeout(() => { this.setState({showLoading: false})}, 2000)
+              }
+            }
           }
           else {
-            this._cleanup();
-            this.setState({doubleCheck: false});
-            core.store.dispatch({
-              type: "SET_SPHERE_SMART_HOME_STATE",
-              sphereId: this.props.sphereId,
-              data: { smartHomeEnabled: !this.props.state }
-            })
-            BluenetPromiseWrapper.broadcastBehaviourSettings(this.props.sphereId, !this.props.state).catch(() => {});
+            Alert.alert("You're not in the Sphere","You have to be in range of your Crownstones to disable their behaviour.",[{text:"OK"}])
           }
         }}>
-          <SlideSideFadeInView
-            width={0.6 * screenWidth}
-            visible={explanationOpen}
-            style={{
-              height: outerRadius,
-              borderRadius: 0.5 * outerRadius,
-              borderTopLeftRadius: 0,
-              borderWidth:2,
-              borderColor: colors.white.rgba(0.8),
-              backgroundColor: explanationColor,
-            }}
-          >
-            <View style={{
-              flex:1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row'
-            }}>
-              <View style={{ flex: 1 }}/>
-              {explanationOpen && this.state.doubleCheck === false && <Text style={{ fontWeight: 'bold' }}>{"Behaviour disabled."}</Text> }
-              {explanationOpen && this.state.doubleCheck === true  && <Text style={{ fontSize: 14, fontWeight: 'bold', textAlign:'right', color: explanationTextColor }}>{explanationLabel}</Text> }
-              <View style={{ flex: 0.2, paddingRight: outerRadius }}/>
-
-            </View>
-          </SlideSideFadeInView>
+          { contentData.explanation }
           <View style={{
             position: 'absolute',
             top: 0,
@@ -139,23 +193,22 @@ export class SmartHomeStateButton extends Component<any, any> {
             borderColor: colors.white.rgba(0.8),
             borderWidth: explanationOpen ? 2 : 0,
             borderRadius: 0.5 * outerRadius,
-
-            backgroundColor: iconBackgroundColor,
+            backgroundColor: contentData.iconBackgroundColor,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            { explanationOpen ? <Icon name="c1-brain" size={0.07 * screenWidth} color={iconColor}/> :
+            { explanationOpen ? <Icon name="c1-brain" size={0.07 * screenWidth} color={contentData.iconColor}/> :
             <View style={{
               width: innerRadius,
               height: innerRadius,
               borderRadius: 0.5 * innerRadius,
-              borderColor: iconColor,
+              borderColor: contentData.iconColor,
               borderWidth: 2.5,
               backgroundColor: 'transparent',
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-              <Icon name="c1-brain" size={size} color={iconColor}/>
+              <Icon name="c1-brain" size={size} color={contentData.iconColor}/>
             </View>
             }
           </View>

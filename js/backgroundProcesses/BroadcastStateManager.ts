@@ -204,15 +204,24 @@ class BroadcastStateManagerClass {
 
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
+    let sphereUID = 0;
+    let deviceUID = 0;
+    let locationUID = 0;
 
-    let deviceUID = this._getDeviceUID(state, sphere);
+    if (sphere) {
+      deviceUID = this._getDeviceUID(state, sphere);
 
-    let location = sphere.locations[locationId];
-    let locationUid = location ? location.config.uid : 0;
+      let location = sphere.locations[locationId];
+      locationUID = location ? location.config.uid : 0;
+      sphereUID = sphere.config.uid;
 
-    LOGi.broadcast("Settings Sphere As Present:",sphere.config.name);
+      LOGi.broadcast("Setting Sphere As Present:",sphere.config.name);
+    }
+    else {
+      LOGi.broadcast("Setting Custom Sphere As Present");
+    }
     this._sphereIdInLocationState = sphereId;
-    Bluenet.setLocationState(sphere.config.uid || 0, locationUid, 0, deviceUID, sphereId);
+    Bluenet.setLocationState(sphereUID, locationUID, 0, deviceUID, sphereId);
   }
 
   _reloadAdvertisingState() {

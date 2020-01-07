@@ -104,17 +104,16 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
       if (
-        change.changeAppSettings     ||
-        change.changeSphereState     ||
-        change.changeSphereConfig    ||
-        change.changeSphereSmartHomeState ||
-        change.stoneLocationUpdated  ||
-        change.updateStoneCoreConfig ||
-        change.updateSphereUser      ||
-        change.updateActiveSphere    ||
-        change.updateLocationConfig  ||
-        change.changeFingerprint     ||
-        change.changeSpheres         ||
+        change.changeAppSettings          ||
+        change.changeSphereState          ||
+        change.changeSphereConfig         ||
+        change.stoneLocationUpdated       ||
+        change.updateStoneCoreConfig      ||
+        change.updateSphereUser           ||
+        change.updateActiveSphere         ||
+        change.updateLocationConfig       ||
+        change.changeFingerprint          ||
+        change.changeSpheres              ||
         change.changeLocations
       ) {
         this.forceUpdate();
@@ -317,9 +316,7 @@ export class SphereOverview extends LiveComponent<any, any> {
           <AutoArrangeButton arrangingRooms={this.state.arrangingRooms} viewId={this.viewId} />
           <SmartHomeStateButton
             sphereId={activeSphereId}
-            visible={!this.state.arrangingRooms}
-            state={activeSphere.state.smartHomeEnabled === true}
-            viewId={this.viewId}
+            visible={!this.state.arrangingRooms && this.state.zoomLevel === ZOOM_LEVELS.room}
           />
         </AnimatedBackground>
       );

@@ -44,6 +44,7 @@ import { BackButtonHandler } from "./BackButtonHandler";
 import { base_core } from "../base_core";
 import { PowerUsageCacher } from "./PowerUsageCacher";
 import { TimeKeeper } from "./TimeKeeper";
+import { SphereStateManager } from "./SphereStateManager";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -426,7 +427,6 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
-    // BatchUploader.init();
     BleLogger.init();
     CloudEventHandler.init();
     DfuStateHandler.init();
@@ -445,6 +445,7 @@ class BackgroundProcessHandlerClass {
     StoneManager.init();
     StoneDataSyncer.init();
     SetupStateHandler.init();
+    SphereStateManager.init();
     TimeKeeper.init();
     ToonIntegration.init();
     UpdateCenter.init();

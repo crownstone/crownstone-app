@@ -132,6 +132,8 @@ interface crownstoneServiceData {
   tapToToggleEnabled        : boolean,
   behaviourOverridden       : boolean,
 
+  behaviourEnabled          : boolean,
+
   deviceType                : deviceType,
   rssiOfExternalCrownstone  : number, // Set to 0 when not external service data.
   errorMode                 : boolean, // True when service data is of type error.
