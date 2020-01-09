@@ -2074,7 +2074,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val behaviour = indexedBehaviour.behaviour
 		val map = Arguments.createMap()
 		val dataMap = Arguments.createMap()
-		val actionMap = genBehaviourAction(behaviour.switchVal) ?: return null
+		val actionMap = genBehaviourAction(behaviour.switchVal, indexedBehaviour.behaviour.type == BehaviourType.TWILIGHT) ?: return null
 		dataMap.putMap("action", actionMap)
 		map.putInt("profileIndex", behaviour.profileId.toInt())
 		val daysOfWeekMap = genDaysOfWeek(behaviour.daysOfWeek) ?: return null
@@ -2087,14 +2087,17 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		when (indexedBehaviour.behaviour.type) {
 			BehaviourType.UNKNOWN -> return null
 			BehaviourType.SWITCH -> {
+				map.putString("type", "BEHAVIOUR")
 				val switchBehaviour = behaviour as SwitchBehaviourPacket
 				val presenceMap = genBehaviourPresence(switchBehaviour.presence) ?: return null
 				dataMap.putMap("presence", presenceMap)
 			}
 			BehaviourType.TWILIGHT -> {
-
+				map.putString("type", "TWILIGHT")
+				val twilightBehaviour = behaviour as TwilightBehaviourPacket
 			}
 			BehaviourType.SMART_TIMER -> {
+				map.putString("type", "BEHAVIOUR")
 				val smartTimer = behaviour as SmartTimerBehaviourPacket
 				val presenceMap = genBehaviourPresence(smartTimer.presence) ?: return null
 				dataMap.putMap("presence", presenceMap)
@@ -2110,9 +2113,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return map
 	}
 
-	private fun genBehaviourAction(switchVal: Uint8): WritableMap? {
+	private fun genBehaviourAction(switchVal: Uint8, twilight: Boolean): WritableMap? {
 		val map = Arguments.createMap()
-		map.putString("type", "BE_ON")
+		when (twilight) {
+			true -> map.putString("type", "DIM_WHEN_TURNED_ON")
+			false -> map.putString("type", "BE_ON")
+		}
 		map.putDouble("data", convertSwitchVal(switchVal))
 		return map
 	}
