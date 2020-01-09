@@ -10,20 +10,20 @@ import {
   ScrollView, Text, TextStyle,
   View
 } from "react-native";
-import { availableModalHeight, colors, screenHeight, screenWidth, styles } from "../styles";
-import Carousel, { Pagination } from 'react-native-snap-carousel';
-import { FadeIn } from "../components/animated/FadeInView";
+import { availableModalHeight, colors, screenWidth, styles } from "../styles";
+import Carousel from 'react-native-snap-carousel';
 import {
   InterviewTextInput, LargeTextButtonWithLargeImage,
   TextButtonLight, TextButtonWithLargeImage, ThemedTextButtonWithIcon
 } from "../components/InterviewComponents";
 import { ScaledImage } from "./ScaledImage";
+import ResponsiveText from "./ResponsiveText";
 
 let headerStyle : TextStyle = {
   paddingLeft: 15,
   paddingRight: 15,
   marginTop: 20,
-  fontSize: 28,
+  fontSize: 26,
   fontWeight: "bold",
   color: colors.csBlueDark.hex
 };
@@ -295,9 +295,9 @@ function InterviewCard(props : {
   return (
     <ScrollView style={{height: props.height || availableModalHeight}}>
       <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
-        { header      ? <Text adjustsFontSizeToFit={true} minimumFontScale={0.1} numberOfLines={card.headerMaxNumLines || undefined} style={{...headerStyle, ...overrideTextColor}}>{header}</Text>      : undefined }
-        { subHeader   ? <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   : undefined }
-        { explanation ? <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> : undefined }
+        { header      && <ResponsiveText style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText> }
+        { subHeader   && <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   }
+        { explanation && <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> }
         {
           card.hasTextInputField ?
             <InterviewTextInput placeholder={card.placeholder} value={textInput} callback={(text) => { setTextInput(text); }} /> :

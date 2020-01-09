@@ -37,7 +37,7 @@ export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolea
 
     let height = availableModalHeight;
     return (
-      <Background image={core.background.lightBlur} hasNavBar={false}>
+      <Background image={core.background.lightBlur} hideNotifications={true} hasNavBar={false}>
         <ScrollView style={{width:screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingVertical:30}}>
             <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>

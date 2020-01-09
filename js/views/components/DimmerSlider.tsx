@@ -20,7 +20,7 @@ const UPPER_BOUND = screenWidth - PADDING;
 const LOWER_BOUND = PADDING;
 const RANGE = UPPER_BOUND - LOWER_BOUND;
 const CORRECTION = LOWER_BOUND/RANGE;
-export const DIMMING_INDICATOR_SIZE = Math.min(0.10*availableScreenHeight, 60);
+export const DIMMING_INDICATOR_SIZE = Math.min(0.08*availableScreenHeight, 60);
 export const DIMMING_INDICATOR_SPACING = DIMMING_INDICATOR_SIZE/3;
 
 export class DimmerSlider extends Component<{state: number, dimmingSynced: boolean, showDimmingText: boolean, callback: any}, any> {

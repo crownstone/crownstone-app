@@ -494,7 +494,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     }
 
     return (
-      <Background image={core.background.lightBlur} hasNavBar={false}>
+      <Background image={core.background.lightBlur} hideNotifications={true} hasNavBar={false}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
             <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
@@ -521,11 +521,9 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
                         for (let j = 1; j < this.state.conflictDays[day].rules.length; j++) {
                           ruleList += "\n" + this.state.conflictDays[day].rules[j].label;
                         }
-                        Alert.alert("This will replace the following behaviours on " + DAY_LABEL_MAP[day] + ":", ruleList, [{ text: "Cancel" }, {
-                          text: "OK", onPress: () => {
-                            this.setState({ activeDays: fullData })
-                          }
-                        }]);
+                        Alert.alert("This will replace the following behaviours on " + DAY_LABEL_MAP[day] + ":", ruleList,
+                          [{ text: "Cancel" }, {text: "OK", onPress: () => { this.setState({ activeDays: fullData }); }}]
+                        );
                         return;
                       }
                     }

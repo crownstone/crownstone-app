@@ -222,19 +222,9 @@ export class RuleEditor extends LiveComponent<
     }
 
     let baseHeight = this.baseHeight;
-    let behaviourHeight = Math.max(4*70, (availableModalHeight-60)*0.5); - this.amountOfLines*30;
-    switch (selectedBehaviourType) {
-      case SELECTABLE_TYPE.ACTION:
-      case SELECTABLE_TYPE.PRESENCE:
-      case SELECTABLE_TYPE.LOCATION:
-        break;
-      case SELECTABLE_TYPE.TIME:
-        behaviourHeight += 130;
-        break;
-      case SELECTABLE_TYPE.OPTION:
-        behaviourHeight += 50;
-        break
-    }
+    let numberOfSlots = this._getNumberOfDetailSlots(selectedBehaviourType);
+    let expectedHeight = 60 + numberOfSlots*50 +30+60+20; // 60 for introduction, 50 for a slot, 30 for padding, 60 for OK button, 20 for additional padding.
+    let behaviourHeight = Math.max(expectedHeight, (availableModalHeight-60)*0.5); - this.amountOfLines*30;
 
     if (this.state.detail === null) {
       // selecting a behaviour type while none was selected before.
@@ -462,6 +452,34 @@ export class RuleEditor extends LiveComponent<
   }
   _evaluateOptionSelection( selectedDescription, ruleToMatch ) {
     return this._evaluateSelection(selectedDescription) || this.rule.doesEndConditionMatch(ruleToMatch);
+  }
+
+
+  _getNumberOfDetailSlots(selectedBehaviourType) {
+    let details = null;
+    if (this.props.twilightRule) {
+      switch (selectedBehaviourType) {
+        case SELECTABLE_TYPE.ACTION:
+          return 3 + 1; // 1 for explanation
+        case SELECTABLE_TYPE.TIME:
+          return 5;
+      }
+    }
+    else {
+      switch (selectedBehaviourType) {
+        case SELECTABLE_TYPE.ACTION:
+          return 2 + 1; // 1 for explanation
+        case SELECTABLE_TYPE.PRESENCE:
+          return 3;
+        case SELECTABLE_TYPE.LOCATION:
+          return 3;
+        case SELECTABLE_TYPE.TIME:
+          return 5;
+        case SELECTABLE_TYPE.OPTION:
+          return 3;
+      }
+    }
+    return details
   }
 
   _getDetails() {
@@ -787,9 +805,9 @@ export class RuleEditor extends LiveComponent<
     let details = this._getDetails();
     let showSuggestions = this._shouldShowSuggestions();
     return (
-      <Animated.View style={{height: this.state.containerHeight}}>
-        <Animated.View style={{opacity: this.state.detailOpacity, height: this.state.detailHeight, position:'absolute', top:0}}>{details}</Animated.View>
-        <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
+      <Animated.View style={{height: this.state.containerHeight, backgroundColor:"#ff0"}}>
+        <Animated.View style={{opacity: this.state.detailOpacity,     height: this.state.detailHeight,     position:'absolute', top:0, backgroundColor:"#f00"}}>{details}</Animated.View>
+        <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, backgroundColor:"#0f0", overflow: 'hidden'}}>
           <Animated.View style={{width:screenWidth, flex:2, alignItems:'center'}}>
             { showSuggestions.shouldShowTimeConflict || <View style={{flex:0.25}} /> }
             { this._getSuggestions() }
