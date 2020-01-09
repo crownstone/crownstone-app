@@ -805,9 +805,9 @@ export class RuleEditor extends LiveComponent<
     let details = this._getDetails();
     let showSuggestions = this._shouldShowSuggestions();
     return (
-      <Animated.View style={{height: this.state.containerHeight, backgroundColor:"#ff0"}}>
-        <Animated.View style={{opacity: this.state.detailOpacity,     height: this.state.detailHeight,     position:'absolute', top:0, backgroundColor:"#f00"}}>{details}</Animated.View>
-        <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, backgroundColor:"#0f0", overflow: 'hidden'}}>
+      <Animated.View style={{height: this.state.containerHeight}}>
+        <Animated.View style={{opacity: this.state.detailOpacity,     height: this.state.detailHeight,     position:'absolute', top:0}}>{details}</Animated.View>
+        <Animated.View style={{opacity: this.state.mainBottomOpacity, height: this.state.mainBottomHeight, position:'absolute', top:0, overflow: 'hidden'}}>
           <Animated.View style={{width:screenWidth, flex:2, alignItems:'center'}}>
             { showSuggestions.shouldShowTimeConflict || <View style={{flex:0.25}} /> }
             { this._getSuggestions() }
