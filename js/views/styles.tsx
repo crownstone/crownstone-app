@@ -145,6 +145,7 @@ function populateColorObject(clr, color) {
   return clr;
 }
 
+
 export const styles = StyleSheet.create({
   fullscreen:{
     position:'absolute',

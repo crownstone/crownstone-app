@@ -7,21 +7,21 @@ import {
   View
 } from "react-native";
 
-import { colors, deviceStyles, screenWidth, styles } from "../styles";
+import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../styles";
 import { HiddenFadeIn, HiddenFadeInView } from "./animated/FadeInView";
 import { xUtil } from "../../util/StandAloneUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import ResponsiveText from "./ResponsiveText";
 
-const SLIDER_BUBBLE_SIZE = 70;
+const SLIDER_BUBBLE_SIZE = Math.min(0.12*availableScreenHeight, 70);
 const PADDING = 0.125*screenWidth;
 const SLIDER_WIDTH = screenWidth - 2 * PADDING;
 const UPPER_BOUND = screenWidth - PADDING;
 const LOWER_BOUND = PADDING;
 const RANGE = UPPER_BOUND - LOWER_BOUND;
 const CORRECTION = LOWER_BOUND/RANGE;
-export const INDICATOR_SIZE = 60;
-export const INDICATOR_SPACING = 20;
+export const DIMMING_INDICATOR_SIZE = Math.min(0.10*availableScreenHeight, 60);
+export const DIMMING_INDICATOR_SPACING = DIMMING_INDICATOR_SIZE/3;
 
 export class DimmerSlider extends Component<{state: number, dimmingSynced: boolean, showDimmingText: boolean, callback: any}, any> {
 
@@ -163,14 +163,14 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
   _getIndicator() {
     if (this.props.dimmingSynced) {
       return (
-        <View style={{marginBottom: INDICATOR_SPACING, height: INDICATOR_SIZE}}>
+        <View style={{marginBottom: DIMMING_INDICATOR_SPACING, height: DIMMING_INDICATOR_SIZE}}>
           <Indicator x={this.x} visible={this.state.showIndicator} />
         </View>
       );
     }
     else {
       return (
-        <View style={{marginBottom: INDICATOR_SPACING-15, height: INDICATOR_SIZE+15}}>
+        <View style={{marginBottom: DIMMING_INDICATOR_SPACING-15, height: DIMMING_INDICATOR_SIZE+15}}>
           <Explanation visible={this.state.showIndicator} />
         </View>
       );
@@ -179,12 +179,24 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
   }
 
   render() {
+    let sliderBarHeight = 5/7*SLIDER_BUBBLE_SIZE;
+
     return (
-      <View style={{width:screenWidth, height: SLIDER_BUBBLE_SIZE + INDICATOR_SIZE + INDICATOR_SPACING}}>
+      <View style={{width:screenWidth, height: SLIDER_BUBBLE_SIZE + DIMMING_INDICATOR_SIZE + DIMMING_INDICATOR_SPACING}}>
         { this._getIndicator() }
         <View {...this._panResponder.panHandlers} style={{width:screenWidth, height: SLIDER_BUBBLE_SIZE, alignItems:'center', justifyContent:'center'}}>
-        <View style={{height:50 + 6, width: SLIDER_WIDTH + 6, backgroundColor: 'transparent', borderColor:colors.white.rgba(0.5), borderWidth:1, borderRadius: 28, alignItems:'center', justifyContent:'center'}}>
-          <View style={{height:50, width: SLIDER_WIDTH, backgroundColor: colors.white.rgba(0.8), borderRadius: 25, alignItems:'center', justifyContent:'center'}}>
+        <View style={{
+          height:sliderBarHeight + 6,
+          width: SLIDER_WIDTH + 6,
+          backgroundColor: 'transparent',
+          borderColor:colors.white.rgba(0.5),
+          borderWidth:1,
+          borderRadius: 0.5*sliderBarHeight + 3, alignItems:'center', justifyContent:'center'}}>
+          <View style={{
+            height:sliderBarHeight,
+            width: SLIDER_WIDTH,
+            backgroundColor: colors.white.rgba(0.8),
+            borderRadius: 0.5*sliderBarHeight, alignItems:'center', justifyContent:'center'}}>
             { this._getDimmerStatus() }
           </View>
         </View>
@@ -211,12 +223,12 @@ class SliderBubbleClass extends Component<any, any> {
           backgroundColor: colors.csBlueDark.rgba(1), ...styles.centered
         }}>
         <View
-          style={{ width: 65, height: 65, backgroundColor: colors.white.hex, borderRadius: 33, ...styles.centered }}>
+          style={{ width: SLIDER_BUBBLE_SIZE-5, height: SLIDER_BUBBLE_SIZE-5, backgroundColor: colors.white.hex, borderRadius: 33, ...styles.centered }}>
           <View style={{
-            width: 60,
-            height: 60,
+            width: SLIDER_BUBBLE_SIZE-10,
+            height: SLIDER_BUBBLE_SIZE-10,
             backgroundColor: colors.csBlueDark.blend(colors.green, percentage).hex,
-            borderRadius: 30, ...styles.centered
+            borderRadius: 0.5*(SLIDER_BUBBLE_SIZE-10), ...styles.centered
           }}>
             <Text style={{
               color: colors.white.hex,
@@ -240,9 +252,9 @@ class IndicatorClass extends Component<any, any> {
       <HiddenFadeInView
         style={{
           position: "absolute",
-          left: this.props.x - 0.65 * INDICATOR_SIZE,
-          height: INDICATOR_SIZE,
-          width: INDICATOR_SIZE * 1.3,
+          left: this.props.x - 0.65 * DIMMING_INDICATOR_SIZE,
+          height: DIMMING_INDICATOR_SIZE,
+          width: DIMMING_INDICATOR_SIZE * 1.3,
           borderRadius: SLIDER_BUBBLE_SIZE * 0.5,
           backgroundColor: colors.black.rgba(0.2), ...styles.centered
         }}
@@ -264,7 +276,7 @@ class Explanation extends Component<any, any> {
     return (
       <HiddenFadeInView
         style={{
-          height: INDICATOR_SIZE + 15,
+          height: DIMMING_INDICATOR_SIZE + 15,
           width: screenWidth,
           alignItems:'center',
           justifyContent:"center"

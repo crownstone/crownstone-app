@@ -1,10 +1,10 @@
 import { View, TouchableOpacity, Text, Image } from "react-native";
 import { Icon } from "../components/Icon";
-import { colors, screenWidth } from "../styles";
+import { availableScreenHeight, colors, screenWidth } from "../styles";
 import React from "react";
 
 export function DeviceMenuIcon(props) {
-  let size = screenWidth/6;
+  let size = Math.min(0.12*availableScreenHeight, screenWidth/6);
   let borderWidth = size*0.05;
   let innerSize = size-2*borderWidth;
 

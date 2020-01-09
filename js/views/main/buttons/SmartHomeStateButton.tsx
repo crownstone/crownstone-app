@@ -55,9 +55,9 @@ export class SmartHomeStateButton extends Component<any, any> {
   getContentData(currentState, outerRadius) {
     let iconColor             = colors.white.hex;
     let iconBackgroundColor   = colors.menuTextSelected.hex;
-    let explanationColor      = null;
+    let explanationColor      = colors.white.hex;
+    let explanationTextColor  = colors.white.hex;
     let explanationLabel      = null;
-    let explanationTextColor  = null;
 
     if (this.state.showLoading) {
       if (currentState === false) {
@@ -100,8 +100,6 @@ export class SmartHomeStateButton extends Component<any, any> {
         iconColor             = colors.csBlueDark.rgba(0.75);
         iconBackgroundColor   = colors.white.rgba(0.55);
       }
-
-
     }
 
 
@@ -129,7 +127,7 @@ export class SmartHomeStateButton extends Component<any, any> {
             { explanationLabel &&
             <View style={{flexDirection:'row'}}>
               { this.state.showLoading && <ActivityIndicator size={'small'} color={explanationTextColor} style={{paddingRight:5}} /> }
-              <Text style={{ fontWeight: 'bold', color: explanationTextColor }}>{explanationLabel}</Text>
+              <Text style={{ fontWeight: 'bold', color: explanationTextColor, textAlign:'right' }}>{explanationLabel}</Text>
             </View>
             }
             <View style={{ flex: 0.2, paddingRight: outerRadius }}/>
@@ -153,7 +151,6 @@ export class SmartHomeStateButton extends Component<any, any> {
 
     let explanationOpen = !activeState || this.state.doubleCheck || this.state.showLoading;
     let contentData = this.getContentData(activeState, outerRadius)
-
     return (
       <HiddenFadeInView
         visible={this.props.visible}

@@ -141,14 +141,14 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
 
     let innerPaddingTop = this.props.getDesignElement ? 0.7*designElementSize - 2*topPadding - 30: padding;
 
-
-
     let innerChildrenArea = (
       <View style={{ minHeight: height - innerPaddingTop - 2*topPadding}}>
         {this.props.getDesignElement ? <View style={{height:35}} /> : undefined}
         {this.props.children}
       </View>
     );
+
+
 
     return (
       <HiddenFadeInBlur

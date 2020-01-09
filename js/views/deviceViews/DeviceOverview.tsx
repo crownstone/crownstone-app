@@ -23,7 +23,7 @@ import { DeviceMenuIcon } from "./DeviceMenuIcon";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
-import { DimmerSlider } from "../components/DimmerSlider";
+import { DimmerSlider, DIMMING_INDICATOR_SIZE, DIMMING_INDICATOR_SPACING } from "../components/DimmerSlider";
 import { AnimatedCircle } from "../components/animated/AnimatedCircle";
 import { LockedStateUI } from "../components/LockedStateUI";
 import { STONE_TYPES } from "../../Enums";
@@ -415,8 +415,16 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
   _getMenuIcons(stone) {
+    let dimmingAvailable = !StoneAvailabilityTracker.isDisabled(this.props.stoneId) && !stone.config.locked && stone.abilities.dimming.enabledTarget
+
     return (
-      <View style={{width:screenWidth, alignItems:'center', flexDirection:'row', marginTop:15, marginBottom: stone.abilities.dimming.enabledTarget ? 80 : 0}}>
+      <View style={{
+        width:screenWidth,
+        alignItems:'center',
+        flexDirection:'row',
+        marginTop:15,
+        marginBottom: dimmingAvailable ? DIMMING_INDICATOR_SIZE + DIMMING_INDICATOR_SPACING : 0
+      }}>
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {
           NavigationUtil.launchModal("DeviceAbilities", {
@@ -462,9 +470,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
     }
 
     let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
-    if (updateAvailable) {
-
-    }
 
     return (
       <Background image={core.background.lightBlur}>
