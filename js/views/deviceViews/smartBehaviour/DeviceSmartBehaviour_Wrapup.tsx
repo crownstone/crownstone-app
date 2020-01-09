@@ -221,7 +221,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
             actions.push({
               type: "ADD_STONE_RULE",
               sphereId: this.props.sphereId,
-              stoneId: this.props.stoneId,
+              stoneId:  this.props.stoneId,
               ruleId: newRuleId,
               data: {
                 type: this.props.twilightRule ? BEHAVIOUR_TYPES.twilight : BEHAVIOUR_TYPES.behaviour,

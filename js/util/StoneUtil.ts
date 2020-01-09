@@ -249,7 +249,7 @@ export const StoneUtil = {
         let rule = {...newRules[ruleId]}; // duplicate the source rule
         delete rule.cloudId;              // remove cloud id so it will be synced as a unique rule
         delete rule.updatedAt;            // remove timestamp since this is essentially a new rule.
-        rule.idOnCrownstone     = null;   // new rules do not already have a ruleId on the Crownstone.
+        rule.idOnCrownstone = null;       // new rules do not already have a ruleId on the Crownstone.
         actions.push({type: "ADD_STONE_RULE", ...actionProps, ruleId: newId, data: rule})
       })
 
@@ -262,8 +262,8 @@ export const StoneUtil = {
           "These behaviours require that dimming is enabled on the Crownstone",
           "Would you like to enable dimming now?",
           [
-            {text:'Neve rmind', onPress: () => { resolve(false)}},
-            {text:"Yes",       onPress:() => {
+            {text:'Never mind', onPress: () => { resolve(false)}},
+            {text:"Yes",        onPress:() => {
               let actions = copyRules();
               actions.push({type:'UPDATE_DIMMER', sphereId: sphereId, stoneId: toStoneId, data: {enabledTarget: true}});
               core.store.batchDispatch(actions);
