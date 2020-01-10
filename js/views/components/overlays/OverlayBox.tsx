@@ -37,6 +37,7 @@ interface overlayBoxProps {
 //    true: disable the back button
 //    function: execute that function when the back button is pressed
 export class OverlayBox extends Component<overlayBoxProps, any> {
+
   _getExtraContent(width, height, size, padding, top) {
     if (this.props.getDesignElement) {
       let left = 10;
@@ -129,17 +130,11 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
   }
 
   render() {
-    let screenHeightWithoutStatusBar = screenHeight - statusBarHeight;
-    let usedScreenHeight = screenHeight;
-    if (Platform.OS === 'android') {
-      usedScreenHeight = screenHeightWithoutStatusBar;
-    }
-
     let width = this.props.width || 0.85*screenWidth;
     let height = this.props.height || Math.min(500,0.9*availableScreenHeight);
 
-    let topPositionOfOverlay = (usedScreenHeight - height) / 2;
-    let designElementSize = 0.38 * screenWidth;
+    let topPositionOfOverlay = (screenHeight - height) / 2;
+    let designElementSize = Math.min(0.21*screenHeight,0.38 * screenWidth);
     let topPositionOfDesignElements = topPositionOfOverlay - 0.3*designElementSize;
     let closeIconSize = 40;
     let topPadding = 12;
@@ -186,7 +181,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
             {...this.props.style}
           ]}>
             { this._getTitle() }
-            {this.props.scrollable ?
+            { this.props.scrollable ?
               <ScrollView style={{ width: width - 2*padding }}>{innerChildrenArea}</ScrollView> : this.props.children
             }
           </View>
