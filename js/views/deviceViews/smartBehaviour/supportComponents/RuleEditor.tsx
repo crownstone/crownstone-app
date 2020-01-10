@@ -643,7 +643,7 @@ export class RuleEditor extends LiveComponent<
                 {
                   label: lang("Ignore_presence"),
                   isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
-                  onSelect: () => { this.rule.setPresenceIgnore();  }
+                  onSelect: () => { this.rule.setPresenceIgnore(); this.forceUpdate(); }
                 },
               ]}
             />
