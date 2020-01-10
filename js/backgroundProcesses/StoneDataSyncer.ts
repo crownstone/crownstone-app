@@ -87,7 +87,7 @@ class StoneDataSyncerClass {
             for (let k = 0; k < ruleIds.length; k++) {
               let ruleId = ruleIds[k];
               let rule = stone.rules[ruleId];
-              if (!rule.syncedToCrownstone) {
+              if (!rule.syncedToCrownstone || rule.deleted) {
                 rulesHaveChanged = true;
               }
             }
@@ -130,7 +130,7 @@ class StoneDataSyncerClass {
       for (let k = 0; k < ruleIds.length; k++) {
         let ruleId = ruleIds[k];
         let rule = stone.rules[ruleId];
-        if (!rule.syncedToCrownstone) {
+        if (!rule.syncedToCrownstone || rule.deleted) {
           LOGi.info("StoneDataSyncer: Attempting to sync rule", sphereId, stoneId, ruleId, sessionId);
           rulePromises.push(
             this._syncRule(sphereId, stoneId, ruleId, stone, rule, sessionId)

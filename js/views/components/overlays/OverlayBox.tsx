@@ -8,12 +8,12 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
   Text,
-  View, ScrollView
+  View, ScrollView, Platform
 } from "react-native";
 
 import { HiddenFadeInBlur, HiddenFadeInView } from "../animated/FadeInView";
 import { Icon }         from '../Icon'
-import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../../styles'
+import { styles, colors, screenHeight, screenWidth, availableScreenHeight, statusBarHeight } from "../../styles";
 
 interface overlayBoxProps {
   overrideBackButton?: any,
@@ -129,10 +129,16 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
   }
 
   render() {
+    let screenHeightWithoutStatusBar = screenHeight - statusBarHeight;
+    let usedScreenHeight = screenHeight;
+    if (Platform.OS === 'android') {
+      usedScreenHeight = screenHeightWithoutStatusBar;
+    }
+
     let width = this.props.width || 0.85*screenWidth;
     let height = this.props.height || Math.min(500,0.9*availableScreenHeight);
 
-    let topPositionOfOverlay = (screenHeight - height) / 2;
+    let topPositionOfOverlay = (usedScreenHeight - height) / 2;
     let designElementSize = 0.38 * screenWidth;
     let topPositionOfDesignElements = topPositionOfOverlay - 0.3*designElementSize;
     let closeIconSize = 40;
@@ -147,8 +153,6 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
         {this.props.children}
       </View>
     );
-
-
 
     return (
       <HiddenFadeInBlur

@@ -62,6 +62,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         LOGGER.info("applicationWillTerminate");
     }
     
+    func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
+        LOGGER.info("applicationDidReceiveMemoryWarning");
+    }
+    
     func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
         RCTPushNotificationManager.didRegister(notificationSettings)
     }
