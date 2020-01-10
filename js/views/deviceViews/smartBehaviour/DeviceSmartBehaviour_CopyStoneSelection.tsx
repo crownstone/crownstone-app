@@ -312,7 +312,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
       </Circle>
       <View style={{justifyContent:'center', height: height-2*padding, flex:1, paddingLeft:15}}>
         <Text style={{fontSize: 15}}>{stone.config.name}</Text>
-        { subText ? <Text style={{fontSize: 12, color: colors.black.rgba(0.3), ...subTextStyleOverride}}>{subText}</Text> : undefined }
+        { subText ? <Text style={{fontSize: 12, color: colors.black.rgba(0.3), paddingRight:5, ...subTextStyleOverride}}>{subText}</Text> : undefined }
       </View>
       { overrideButton }
     </React.Fragment>
