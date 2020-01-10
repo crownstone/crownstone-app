@@ -2048,7 +2048,7 @@ export default {
   },
   StatusCommunication:{
     __filename: "../js/views/main/StatusCommunication.tsx",
-    No_Crownstones_in_range_:            function() { return "No Crownstones in range." },
+    No_Crownstones_in_range_:            function() { return "Not in sphere." },
     I_see_:                              function() { return "I see " + arguments[0] },
     NARROW_so_the_indoor_localizati:     function() { return "Indoor localization running." },
     _so_the_indoor_localizati:           function() { return "The indoor localization is running." },

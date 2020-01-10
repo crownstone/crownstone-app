@@ -248,6 +248,7 @@ class NavStateManager {
   popView() {
     if (this.views[this.activeTab].length > 0) {
       this.views[this.activeTab].pop();
+      this.activeView[this.activeTab] = lastItem(this.views[this.activeTab]).id;
     }
     else {
       LOGw.nav("Maybe something is wrong?");
@@ -799,9 +800,9 @@ export const NavigationUtil = {
     let backFrom = NavState._getViewId();
     addSentryLog("baseStackBack", backFrom);
     LOGi.nav("Going back baseStackBack", backFrom);
-    NavState.popView();
     Navigation.pop(backFrom)
       .then(() => {
+        NavState.popView();
         LOGi.nav("Going back baseStackBack ", backFrom, " success!")
       })
       .catch((err) => {
