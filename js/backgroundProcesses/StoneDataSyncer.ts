@@ -378,7 +378,7 @@ class StoneDataSyncerClass {
   }
 
 
-  checkAndSyncBehaviour(sphereId, stoneId) : Promise<void> {
+  checkAndSyncBehaviour(sphereId, stoneId, force = false) : Promise<void> {
     let stone = DataUtil.getStone(sphereId,stoneId);
     let transferRules = this._getTransferRulesFromStone(sphereId, stoneId);
 
@@ -392,7 +392,7 @@ class StoneDataSyncerClass {
 
     return BluenetPromiseWrapper.getBehaviourMasterHash(ruleData)
       .then((masterHash) => {
-        if (this.masterHashTracker[sphereId][stoneId] !== masterHash) {
+        if (this.masterHashTracker[sphereId][stoneId] !== masterHash || force) {
           // SYNC!
           LOGi.behaviour("Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId])
           let commandPromise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "syncBehaviour", behaviours: ruleData});

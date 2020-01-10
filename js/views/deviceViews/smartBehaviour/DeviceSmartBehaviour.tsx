@@ -299,7 +299,16 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 backgroundColor={colors.csBlue.rgba(0.5)}
                 label={ "Sync behaviour" }
                 callback={() => {
-                  StoneDataSyncer.checkAndSyncBehaviour(this.props.sphereId, this.props.stoneId).catch(() => {});
+                  core.eventBus.emit("showLoading","Syncing...");
+                  StoneDataSyncer.checkAndSyncBehaviour(this.props.sphereId, this.props.stoneId, true)
+                    .then(() => { core.eventBus.emit("hideLoading"); })
+                    .catch((err) => {
+                      Alert.alert(
+                        "Failed to sync",
+                        err,
+                        [{text:"OK", onPress:() => { core.eventBus.emit("hideLoading"); }}],
+                        { cancelable: false }
+                      )});
                 }}
                 icon={'md-refresh-circle'}
                 iconSize={14}
