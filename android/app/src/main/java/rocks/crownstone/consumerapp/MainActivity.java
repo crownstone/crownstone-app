@@ -22,4 +22,10 @@ public class MainActivity extends NavigationActivity {
         BluenetBridgePacket.onRequestPermissionsResult(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
+    @Override
+    public void onTrimMemory(int level) {
+        BluenetBridgePacket.onTrimMemory(level);
+        super.onTrimMemory(level);
+    }
 }
