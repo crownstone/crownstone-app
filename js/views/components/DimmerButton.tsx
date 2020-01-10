@@ -59,7 +59,7 @@ export class DimmerButton extends Component<any, any> {
     this.yCenter = 0.55*props.size;
 
     this.refName = (Math.random() * 1e9).toString(36);
-    this.state = {state: xUtil.transformStoneSwitchStateToUISwitchState(props.state) || 0, pendingCommand: false, pendingId: ''};
+    this.state = {state: props.state || 0, pendingCommand: false, pendingId: ''};
 
     this.init();
   }
@@ -145,7 +145,7 @@ export class DimmerButton extends Component<any, any> {
   }
 
   componentWillReceiveProps(nextProps) {
-    let stateFromProps = xUtil.transformStoneSwitchStateToUISwitchState(nextProps.state) || 0;
+    let stateFromProps = nextProps.state || 0;
     if (stateFromProps !== this.state.state && this.state.pendingCommand === false) {
       this.setState({state: stateFromProps})
     }
@@ -158,7 +158,7 @@ export class DimmerButton extends Component<any, any> {
 
   _updateStone(state, keepConnectionOpenTimeout = 6000) {
     this.requestedStateChange = true;
-    let stateToSwitch = xUtil.transformUISwitchStateToStoneSwitchState(state);
+    let stateToSwitch = state;
     let switchId = (Math.random()*1e9).toString(26);
     BatchCommandHandler.loadPriority(
       this.props.stone,

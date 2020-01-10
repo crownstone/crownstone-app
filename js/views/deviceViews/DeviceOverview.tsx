@@ -278,12 +278,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
           dimmingSynced={stone.abilities.dimming.syncedToCrownstone}
           showDimmingText={showDimmingText}
           callback={(percentage) => {
-            if (stone.abilities.dimming.syncedToCrownstone) {
-              this._switch(stone, xUtil.transformUISwitchStateToStoneSwitchState(percentage), true);
-            }
-            else {
-              this._switch(stone, percentage, true);
-            }
+            this._switch(stone, percentage, true);
           }}/>
       );
     }

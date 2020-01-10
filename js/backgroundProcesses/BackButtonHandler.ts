@@ -17,7 +17,7 @@ class BackButtonHandlerClass {
   }
 
   clearOverride(viewName : string) {
-    delete this.override[viewName];
+    delete this.overrides[viewName];
   }
 
 
@@ -36,6 +36,7 @@ class BackButtonHandlerClass {
       }
 
       let activeViewData = NavState.getCurrentlyActiveComponentData();
+      LOGd.nav("BackButtonHandlerClass: check if activeViewData", activeViewData,  this.overrides);
       if (activeViewData && this.overrides[activeViewData.name] !== undefined) {
         this.overrides[activeViewData.name]();
         return true;

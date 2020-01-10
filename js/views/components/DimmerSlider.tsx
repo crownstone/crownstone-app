@@ -31,14 +31,12 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
   manualSwitchTimeout = null;
   manualSwitchTimeoutActive = false;
   percentage = null;
-  transformedPercentage = null;
 
   constructor(props) {
     super(props)
 
-    this.x = new Animated.Value(xUtil.transformStoneSwitchStateToUISwitchState(this.props.state)*RANGE + LOWER_BOUND);
-    this.percentage = xUtil.transformStoneSwitchStateToUISwitchState(this.props.state);
-    this.transformedPercentage = this.props.state;
+    this.x = new Animated.Value(this.props.state + LOWER_BOUND);
+    this.percentage = this.props.state;
     this.state = {
       showIndicator: false
     };
@@ -54,8 +52,8 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
 
   _checkIfSynced() {
     if (this.props.dimmingSynced) {
-      if (this.props.state !== this.transformedPercentage) {
-        this._updatePercentage(xUtil.transformStoneSwitchStateToUISwitchState(this.props.state), false, this.props.state);
+      if (this.props.state !== this.percentage) {
+        this._updatePercentage(this.props.state, false);
       }
     }
     else {
@@ -101,9 +99,8 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
     });
   }
 
-  _updatePercentage(percentage, isManualAction, transformedPercentage = null) {
+  _updatePercentage(percentage, isManualAction) {
     this.percentage = percentage;
-    this.transformedPercentage = transformedPercentage === null ? xUtil.transformUISwitchStateToStoneSwitchState(percentage) : transformedPercentage;
 
     let newState = percentage * RANGE + LOWER_BOUND;
 

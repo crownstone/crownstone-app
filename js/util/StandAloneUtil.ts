@@ -420,39 +420,6 @@ export const xUtil = {
     return pictureUri;
   },
 
-  /**
-   * SwitchState is 0..1 and it is linear. We transform this to a different switch state on the Crownstone since the Crownstone dim curve is not linear.
-   * @param switchState
-   * @returns {number}
-   * @private
-   */
-  transformStoneSwitchStateToUISwitchState : function(switchState) {
-    let UIState = ((Math.cos(switchState*Math.PI / 0.99) - 1) / -2);
-    UIState = Math.round(UIState*100)/100;
-
-    return UIState;
-  },
-
-  /**
-   * SwitchState is 0..1 and it is linear. We transform this to a different switch state on the Crownstone since the Crownstone dim curve is not linear.
-   * @param switchState
-   * @returns {number}
-   * @private
-   */
-  transformUISwitchStateToStoneSwitchState : function(switchState) {
-    if (switchState >= 0.05 && switchState < 0.1) { switchState = 0.1; }
-    if (switchState <  0.05)                      { switchState = 0.0; }
-
-    // linearize:
-    let linearState = (Math.acos(-2*switchState+1) / Math.PI);
-
-    // only PWM, not Relay
-    linearState *= 0.99;
-
-    linearState = Math.round(linearState*100)/100;
-
-    return linearState;
-  },
 };
 
 

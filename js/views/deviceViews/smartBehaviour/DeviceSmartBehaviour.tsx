@@ -63,7 +63,10 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
     }
     if (buttonId === 'edit') {
       this.setState({ editMode: true  }, updateTopBar);
-      BackButtonHandler.override(className, () => { this.setState({ editMode: false  }, updateTopBar); })
+      BackButtonHandler.override(className, () => {
+        BackButtonHandler.clearOverride(className);
+        this.setState({ editMode: false  }, updateTopBar);
+      })
     }
     if (buttonId === 'closeEdit') {
       BackButtonHandler.clearOverride(className);
