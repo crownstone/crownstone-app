@@ -53,4 +53,8 @@ public class BluenetBridgePacket implements ReactPackage {
 	public static void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 		bluenetBridge.onRequestPermissionsResult(requestCode, permissions, grantResults);
 	}
+
+	public static void onTrimMemory(int level) {
+		bluenetBridge.onTrimMemory(level);
+	}
 }

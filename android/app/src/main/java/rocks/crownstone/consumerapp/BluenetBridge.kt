@@ -7,9 +7,11 @@
 
 package rocks.crownstone.consumerapp
 
+import android.app.ActivityManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.PendingIntent
+import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -87,6 +89,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	private var lastLocation: Location? = null // Store last known GPS location.
 
+	enum class AppLogLevel {
+		NONE,
+		BASIC,
+		EXTENDED
+	}
+	private var appLogLevel = AppLogLevel.NONE
+
 	init {
 
 	}
@@ -151,6 +160,54 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		appForeGround = false
 		if (::bluenet.isInitialized) {
 			bluenet.filterForCrownstones(false)
+		}
+	}
+
+	fun onTrimMemory(level: Int) {
+		Log.i(TAG, "onTrimMemory level=$level")
+		when (level) {
+			ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN -> {
+				Log.i(TAG, "Release hidden UI memory.")
+				/*
+                   Release any UI objects that currently hold memory.
+
+                   The user interface has moved to the background.
+                */
+			}
+			ComponentCallbacks2.TRIM_MEMORY_RUNNING_MODERATE,
+			ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW,
+			ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL -> {
+				Log.i(TAG, "Release memory that app doesn't need.")
+				/*
+				   Release any memory that your app doesn't need to run.
+
+				   The device is running low on memory while the app is running.
+				   The event raised indicates the severity of the memory-related event.
+				   If the event is TRIM_MEMORY_RUNNING_CRITICAL, then the system will
+				   begin killing background processes.
+				*/
+			}
+			ComponentCallbacks2.TRIM_MEMORY_BACKGROUND,
+			ComponentCallbacks2.TRIM_MEMORY_MODERATE,
+			ComponentCallbacks2.TRIM_MEMORY_COMPLETE -> {
+				Log.i(TAG, "Release as much memory as possible.")
+				/*
+				   Release as much memory as the process can.
+
+				   The app is on the LRU list and the system is running low on memory.
+				   The event raised indicates where the app sits within the LRU list.
+				   If the event is TRIM_MEMORY_COMPLETE, the process will be one of
+				   the first to be terminated.
+				*/
+			}
+			else -> {
+				/*
+				  Release any non-critical data structures.
+
+				  The app received an unrecognized memory level value
+				  from the system. Treat this as a generic low-memory message.
+				*/
+			}
 		}
 	}
 
@@ -622,7 +679,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun enableLoggingToFile(enable: Boolean) {
 		Log.i(TAG, "enableLoggingToFile $enable")
 		if (enable) {
+			appLogLevel = AppLogLevel.BASIC
 			bluenet.initFileLogging(reactContext.currentActivity)
+		}
+		else {
+			appLogLevel = AppLogLevel.NONE
 		}
 		bluenet.enableFileLogging(enable)
 	}
@@ -632,8 +693,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun enableExtendedLogging(enable: Boolean) {
 		Log.i(TAG, "enableExtendedLogging $enable")
 		when (enable) {
-			true -> bluenet.setFileLogLevel(Log.Level.DEBUG)
-			false -> bluenet.setFileLogLevel(Log.Level.INFO)
+			true -> {
+				appLogLevel = AppLogLevel.EXTENDED
+				bluenet.setFileLogLevel(Log.Level.DEBUG)
+			}
+			false -> {
+				appLogLevel = AppLogLevel.BASIC
+				bluenet.setFileLogLevel(Log.Level.INFO)
+			}
 		}
 	}
 
@@ -2677,6 +2744,19 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@Synchronized
 	private fun onIbeaconScan(scanList: ScannedIbeaconList) {
+
+		if (appLogLevel == AppLogLevel.BASIC || appLogLevel == AppLogLevel.EXTENDED) {
+			val activityManager = getReactApplicationContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+			var memoryInfo = ActivityManager.MemoryInfo()
+			activityManager.getMemoryInfo(memoryInfo)
+			Log.i(TAG, "Sys memory: total=${memoryInfo.totalMem} available=${memoryInfo.availMem}")
+			val runtime = Runtime.getRuntime()
+			val used = runtime.maxMemory() - runtime.freeMemory()
+			val availableHeap = runtime.maxMemory() - used
+			Log.i(TAG, "Runtime: max=${runtime.maxMemory()} total=${runtime.totalMemory()} free=${runtime.freeMemory()} used=$used availableHeap=$availableHeap")
+			Log.i(TAG, "heapSize=${Debug.getNativeHeapSize()} heapAvailable=${Debug.getNativeHeapFreeSize()}")
+		}
+
 		if (scanList.isEmpty()) {
 			return
 		}
