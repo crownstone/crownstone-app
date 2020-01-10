@@ -89,7 +89,7 @@ export function SmartBehaviourRule(props: {
       { /* /Delete Icon */ }
 
       { /* ActivityIndicator for sync required */ }
-      <SlideSideFadeInView width={50} visible={props.rule.syncedToCrownstone === false && !props.editMode}>
+      <SlideSideFadeInView width={50} visible={(props.rule.syncedToCrownstone === false || props.rule.deleted) && !props.editMode}>
         <ActivityIndicator size={"small"} color={colors.csBlue.hex} style={{marginRight:15}} />
       </SlideSideFadeInView>
       { /* /ActivityIndicator for sync required */ }

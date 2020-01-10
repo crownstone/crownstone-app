@@ -13,7 +13,7 @@ import {
 } from "react-native";
 
 import { OverlayBox }           from '../components/overlays/OverlayBox'
-import { colors, screenWidth, screenHeight } from "../styles";
+import { colors, screenWidth, screenHeight, statusBarHeight } from "../styles";
 import { ScaledImage } from "../components/ScaledImage";
 import { Separator } from "../components/Separator";
 import { NavigationUtil } from "../../util/NavigationUtil";
@@ -141,7 +141,7 @@ export class ListOverlay extends LiveComponent<any, any> {
   render() {
     let idealAspectRatio = 1.75;
     let width = 0.85*screenWidth;
-    let height = Math.min(width*idealAspectRatio, 0.9 * screenHeight);
+    let height = Math.min(width*idealAspectRatio, 0.9 * (screenHeight - statusBarHeight));
 
     let customContent = null;
     if (this.state.showCustomContent) {

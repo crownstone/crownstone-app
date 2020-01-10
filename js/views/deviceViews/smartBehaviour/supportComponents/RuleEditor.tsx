@@ -569,12 +569,12 @@ export class RuleEditor extends LiveComponent<
                   label: xUtil.capitalize(AicoreUtil.extractTimeString(this.exampleBehaviours.time.specific.rule)) + ".",
                   subLabel: "(tap to customize)",
                   isSelected: () => {
-                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.specific);
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "4", this.exampleBehaviours.time.specific);
                   },
                   onSelect: () => {
                     this._showTimeSelectionPopup('specific',
                       () => {
-                        this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
+                        this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "4"})
                       })
                   }
                 },
@@ -582,11 +582,11 @@ export class RuleEditor extends LiveComponent<
                   label: lang("Other___"),
                   subLabel: "(tap to create)",
                   isSelected: () => {
-                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "4", this.exampleBehaviours.time.custom);
+                    return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "5", this.exampleBehaviours.time.custom);
                   },
                   onSelect: () => {
                     this._showTimeSelectionPopup('custom', () => {
-                      this.setState({showCustomTimeData: true, selectedDetailField: SELECTABLE_TYPE.TIME + "4"})
+                      this.setState({showCustomTimeData: true, selectedDetailField: SELECTABLE_TYPE.TIME + "5"})
                     }, this.state.showCustomTimeData)
                   }
                 },
@@ -643,7 +643,7 @@ export class RuleEditor extends LiveComponent<
                 {
                   label: lang("Ignore_presence"),
                   isSelected: () => { return this.rule.doesPresenceTypeMatch(this.exampleBehaviours.presence.ignore); },
-                  onSelect: () => { this.rule.setPresenceIgnore();  }
+                  onSelect: () => { this.rule.setPresenceIgnore(); this.forceUpdate(); }
                 },
               ]}
             />

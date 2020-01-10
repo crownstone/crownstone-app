@@ -24,6 +24,7 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 import { TopbarImitation } from "../../components/TopbarImitation";
 import { NotificationLine } from "../../components/NotificationLine";
 import ResponsiveText from "../../components/ResponsiveText";
+import { xUtil } from "../../../util/StandAloneUtil";
 
 
 
@@ -223,6 +224,8 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
   let height = 80;
   let padding = 10;
 
+  let updateRequired = !xUtil.versions.canIUse(stone.config.firmwareVersion, '4.0.0')
+
   let containerStyle : ViewStyle = {
     width:screenWidth,
     height: height,
@@ -280,7 +283,14 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
     }
   }
 
-  if (dimmingRequired && !isOrigin && !overrideButton) {
+
+  if (updateRequired) {
+    clickable = false;
+    subText = "Firmware update required...";
+    overrideButton = null;
+    circleBackgroundColor = colors.gray.rgba(0.5);
+  }
+  else if (dimmingRequired && !isOrigin && !overrideButton) {
     if (stone.abilities.dimming.enabledTarget !== true) {
       clickable = false;
       subText = "Dimming is required to copy this behaviour.";
@@ -295,6 +305,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
       );
     }
   }
+
 
   if (isOrigin) {
     clickable = false;
@@ -312,7 +323,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
       </Circle>
       <View style={{justifyContent:'center', height: height-2*padding, flex:1, paddingLeft:15}}>
         <Text style={{fontSize: 15}}>{stone.config.name}</Text>
-        { subText ? <Text style={{fontSize: 12, color: colors.black.rgba(0.3), ...subTextStyleOverride}}>{subText}</Text> : undefined }
+        { subText ? <Text style={{fontSize: 12, color: colors.black.rgba(0.3), paddingRight:5, ...subTextStyleOverride}}>{subText}</Text> : undefined }
       </View>
       { overrideButton }
     </React.Fragment>
