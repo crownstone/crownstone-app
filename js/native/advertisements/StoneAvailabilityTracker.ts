@@ -1,5 +1,5 @@
 import { core } from "../../core";
-import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, KEEPALIVE_INTERVAL } from "../../ExternalConfig";
+import { DISABLE_TIMEOUT, FALLBACKS_ENABLED } from "../../ExternalConfig";
 import { Scheduler } from "../../logic/Scheduler";
 import { DfuStateHandler } from "../firmware/DfuStateHandler";
 import { LOGi } from "../../logging/Log";

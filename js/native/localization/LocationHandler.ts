@@ -9,7 +9,6 @@ import { Alert }                    from 'react-native';
 import { BluenetPromiseWrapper }    from '../libInterface/BluenetPromise';
 import { Bluenet  }                 from '../libInterface/Bluenet';
 import { LOG, LOGe } from '../../logging/Log';
-import { KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 import {FingerprintManager} from "./FingerprintManager";
 import { SphereUtil } from "../../util/SphereUtil";
@@ -91,9 +90,8 @@ class LocationHandlerClass {
     BatterySavingUtil.startNormalUsage(enteringSphereId);
 
     // get the time last seen of the crownstones in this sphere
-    // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
     let timeLastSeen  = SphereUtil.getTimeLastSeenInSphere(state, enteringSphereId);
-    let sphereTimeout = state.spheres[enteringSphereId].config.exitDelay - KEEPALIVE_INTERVAL;
+    let sphereTimeout = 5*60*1000; // 5 minutes.
     let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
     let sphereHasTimedOut = timeSinceLastCrownstoneWasSeen > sphereTimeout;
 
@@ -147,7 +145,7 @@ class LocationHandlerClass {
       // trigger crownstones on enter sphere
     }
     else {
-      LOG.info('LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ', timeSinceLastCrownstoneWasSeen, ' WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ', KEEPALIVE_INTERVAL*1000*1.5, ' ms');
+      LOG.info('LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ', timeSinceLastCrownstoneWasSeen);
     }
 
     // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
@@ -270,7 +268,7 @@ class LocationHandlerClass {
     let sphereIds = Object.keys(state.spheres);
     let now = new Date().valueOf();
     sphereIds.forEach((sphereId) => {
-      let sphereTimeout = 1000*(state.spheres[sphereId].config.exitDelay - KEEPALIVE_INTERVAL);
+      let sphereTimeout = 1000*(state.spheres[sphereId].config.exitDelay);
       if (SphereUtil.getTimeLastSeenInSphere(state, sphereId) > (now - sphereTimeout)) {
         this.enterSphere(sphereId);
       }

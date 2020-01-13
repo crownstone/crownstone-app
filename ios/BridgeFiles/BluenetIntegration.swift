@@ -124,42 +124,29 @@ open class BluenetJS: RCTEventEmitter {
         }
       }
       self.sendEvent(withName: "iBeaconAdvertisement", body: returnArray)
-      //self.bridge.eventDispatcher().sendAppEvent(withName: "iBeaconAdvertisement", body: returnArray)
     })
-    
-//      globalBluenet.bluenetLocalizationOn("lowLevelEnterRegion", {data -> Void in
-//        print("BluenetBridge: lowLevelEnterRegion")
-//      })
-//      globalBluenet.bluenetLocalizationOn("lowLevelExitRegion", {data -> Void in
-//        print("BluenetBridge: lowLevelExitRegion")
-//      })
-    
     GLOBAL_BLUENET.bluenetLocalizationOn("enterRegion", {data -> Void in
       print("BluenetBridge: enterRegion")
       if let castData = data as? String {
         self.sendEvent(withName: "enterSphere", body: castData)
-        //self.bridge.eventDispatcher().sendAppEvent(withName: "enterSphere", body: castData)
       }
     })
     GLOBAL_BLUENET.bluenetLocalizationOn("exitRegion", {data -> Void in
       print("BluenetBridge: exitRegion")
       if let castData = data as? String {
         self.sendEvent(withName: "exitSphere", body: castData)
-        //self.bridge.eventDispatcher().sendAppEvent(withName: "exitSphere", body: castData)
       }
     })
     GLOBAL_BLUENET.bluenetLocalizationOn("enterLocation", {data -> Void in
       print("BluenetBridge: enterLocation")
       if let castData = data as? NSDictionary {
         self.sendEvent(withName: "enterLocation", body: castData)
-        //self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
       }
     })
     GLOBAL_BLUENET.bluenetLocalizationOn("exitLocation", {data -> Void in
       print("BluenetBridge: exitLocation")
       if let castData = data as? NSDictionary {
         self.sendEvent(withName: "exitLocation", body: castData)
-        //self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
       }
     })
     GLOBAL_BLUENET.bluenetLocalizationOn("currentLocation", {data -> Void in
@@ -167,7 +154,6 @@ open class BluenetJS: RCTEventEmitter {
       if let castData = data as? NSDictionary {
         //print("BluenetBridge: currentLocation \(castData)")
         self.sendEvent(withName: "currentLocation", body: castData)
-        //self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
       }
     })
   }

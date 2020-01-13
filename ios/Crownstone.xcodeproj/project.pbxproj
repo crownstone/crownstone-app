@@ -64,8 +64,8 @@
 		FA3645EE22FAE03B0062591B /* flaticon_custom_selection_1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645EB22FAE03B0062591B /* flaticon_custom_selection_1.ttf */; };
 		FA3645EF22FAE03B0062591B /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645EC22FAE03B0062591B /* flaticon_household.ttf */; };
 		FA3645F022FAE03B0062591B /* flaticon_essentials.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645ED22FAE03B0062591B /* flaticon_essentials.ttf */; };
+		FA3BAD0323CC794A00E23E70 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA3BAD0223CC794900E23E70 /* BluenetLib.framework */; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
-		FA40BEF823C73D5C00C33E1A /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA40BEF723C73D5C00C33E1A /* BluenetLib.framework */; };
 		FA4722B921DE7463008795C5 /* SwitchableStone.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722B521DE7462008795C5 /* SwitchableStone.swift */; };
 		FA4722BE21DE7473008795C5 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BB21DE7473008795C5 /* Events.swift */; };
 		FA4722BF21DE7473008795C5 /* BluenetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4722BC21DE7473008795C5 /* BluenetManager.swift */; };
@@ -677,8 +677,8 @@
 		FA3645EB22FAE03B0062591B /* flaticon_custom_selection_1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_custom_selection_1.ttf; path = ../js/fonts/flaticon_custom_selection_1.ttf; sourceTree = "<group>"; };
 		FA3645EC22FAE03B0062591B /* flaticon_household.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_household.ttf; path = ../js/fonts/flaticon_household.ttf; sourceTree = "<group>"; };
 		FA3645ED22FAE03B0062591B /* flaticon_essentials.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = flaticon_essentials.ttf; path = ../js/fonts/flaticon_essentials.ttf; sourceTree = "<group>"; };
+		FA3BAD0223CC794900E23E70 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework"; sourceTree = "<group>"; };
 		FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = imageAssets.xcassets; sourceTree = "<group>"; };
-		FA40BEF723C73D5C00C33E1A /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FA4722B521DE7462008795C5 /* SwitchableStone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableStone.swift; sourceTree = "<group>"; };
 		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		FA4722BC21DE7473008795C5 /* BluenetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluenetManager.swift; sourceTree = "<group>"; };
@@ -757,7 +757,7 @@
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
-				FA40BEF823C73D5C00C33E1A /* BluenetLib.framework in Frameworks */,
+				FA3BAD0323CC794A00E23E70 /* BluenetLib.framework in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				FA570EB01EAE30F9001C625D /* Zip.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
@@ -1005,8 +1005,8 @@
 				FA570ECB1EAE3D73001C625D /* Crownstone.ttf */,
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
 				FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */,
+				FA3BAD0223CC794900E23E70 /* BluenetLib.framework */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
-				FA40BEF723C73D5C00C33E1A /* BluenetLib.framework */,
 				FA47536423AB9525002AB89F /* BluenetBasicLocalization.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
@@ -2167,7 +2167,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
+				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework",
 			);
 			name = "Run Script";
 			outputPaths = (
@@ -2426,7 +2426,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2486,7 +2486,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2659,7 +2659,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2720,7 +2720,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2778,7 +2778,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2829,7 +2829,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (

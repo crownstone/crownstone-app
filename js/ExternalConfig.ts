@@ -29,7 +29,7 @@ import { Platform } from "react-native";
   export const DEBUG_MODE_ENABLED = false;
 
 /******************** /RELEASE FLAGS ********************/
-
+ 
 
 /**
  *  DO NOT CHANGE THESE VALUES BELOW THIS LINE. YOU CAN CHANGE THEM IN THE LOCAL CONFIG FILE!
@@ -137,10 +137,6 @@ import { Platform } from "react-native";
 
   // The disable timeout determines how long we will keep showing the crownstone active (instead of searching...) since we last heard from it.
   export const DISABLE_TIMEOUT = 120000; //ms == 2 min
-
-  // settings for the keepAlive. The interval determines how often the keep alive fires, the attemps are the times it will try in total. 2 means 1 retry.
-  export const KEEPALIVE_INTERVAL = 70; // s !
-  export const KEEPALIVE_ATTEMPTS = 2;
 
   // Time until a scanned crownstone in setup mode is regarded to be gone.
   export const SETUP_MODE_TIMEOUT = 15000; // ms

@@ -81,6 +81,9 @@ class BroadcastStateManagerClass {
 
     // if there are 0 active spheres, we dont care what the user does. Stop broadcasting.
     if (amountOfPresentSpheres === 0) {
+      if (activeSphereData.sphereId !== null) {
+        return this._updateLocationState(activeSphereData.sphereId);
+      }
       return this._stopAdvertising();
     }
     else if (amountOfPresentSpheres === 1) {
