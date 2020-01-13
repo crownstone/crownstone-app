@@ -5,10 +5,6 @@ import { Platform } from "react-native";
 
 /******************** RELEASE FLAGS ********************/
 
-
-  // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
-  const RELEASE_MODE = false;
-
   // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
   const IGNORE_LOCAL_CONFIG = false;
 
@@ -19,7 +15,7 @@ import { Platform } from "react-native";
 
   // DO NOT CHANGE THIS LINE.
   // the global is meant as a last resort, forcing release to true when compiled in release mode.
-  export const RELEASE_MODE_USED = (RELEASE_MODE && DeviceInfo.getModel() !== "Simulator") || global.__DEV__ !== true;
+  export const RELEASE_MODE_USED = DeviceInfo.getModel() !== "Simulator" || global.__DEV__ !== true;
 
   // this is the name of the app in the database. It has to be exactly this to match the database entry for push notifications.
   // it is used to link an installation to a specific App.

@@ -92,24 +92,24 @@ import { LockOverlay }                       from "../views/overlays/LockOverlay
 import { SimpleOverlay }                     from "../views/overlays/SimpleOverlay";
 import { OptionPopup }                       from "../views/overlays/OptionPopup";
 import { DeviceAbilities }                   from "../views/deviceViews/DeviceAbilities";
-import { Ability_DimmerSettings } from "../views/deviceViews/abilities/settings/Ability_DimmerSettings";
-import { Ability_SwitchcraftInformation } from "../views/deviceViews/abilities/information/Ability_SwitchcraftInformation";
-import { Ability_TapToToggleSettings } from "../views/deviceViews/abilities/settings/Ability_TapToToggleSettings";
-import { Ability_SwitchcraftSettings } from "../views/deviceViews/abilities/settings/Ability_SwitchcraftSettings";
-import { Ability_TapToToggleInformation } from "../views/deviceViews/abilities/information/Ability_TapToToggleInformation";
-import { DevicePowerUsage } from "../views/deviceViews/DevicePowerUsage";
+import { Ability_DimmerSettings }                  from "../views/deviceViews/abilities/settings/Ability_DimmerSettings";
+import { Ability_SwitchcraftInformation }          from "../views/deviceViews/abilities/information/Ability_SwitchcraftInformation";
+import { Ability_TapToToggleSettings }             from "../views/deviceViews/abilities/settings/Ability_TapToToggleSettings";
+import { Ability_SwitchcraftSettings }             from "../views/deviceViews/abilities/settings/Ability_SwitchcraftSettings";
+import { Ability_TapToToggleInformation }          from "../views/deviceViews/abilities/information/Ability_TapToToggleInformation";
+import { DevicePowerUsage }                        from "../views/deviceViews/DevicePowerUsage";
 import { DeviceSmartBehaviour_CopyStoneSelection } from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_CopyStoneSelection";
-import { DeviceSmartBehaviour_RuleSelector } from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_RuleSelector";
-import { NumericOverlay } from "../views/overlays/NumericOverlay";
-import { DEV_UserData } from "../views/dev/user/DEV_UserDataSpheres";
-import { DEV_PresenceMocking } from "../views/dev/PresenceMocking/DEV_PresenceMocking";
-import { DEV_FirmwareTest } from "../views/dev/firmwareTesting/DEV_FirmwareTest";
-import { DEV_AdvancedConfig } from "../views/dev/firmwareTesting/DEV_AdvancedConfig";
-import { DEV_DFU } from "../views/dev/firmwareTesting/DEV_DFU";
-import { DEV_StoneSelector } from "../views/dev/stoneSelecting/DEV_StoneSelector";
-import { DEV_RawAdvertisements } from "../views/dev/firmwareTesting/DEV_RawAdvertisements";
-import { SphereEditMap } from "../views/main/editSubviews/SphereEditMap";
-import { SettingsDatabaseExplorer } from "../views/settingsViews/dev/SettingsDatabaseExplorer";
+import { DeviceSmartBehaviour_RuleSelector }       from "../views/deviceViews/smartBehaviour/DeviceSmartBehaviour_RuleSelector";
+import { NumericOverlay }                          from "../views/overlays/NumericOverlay";
+import { DEV_UserData }                            from "../views/dev/user/DEV_UserDataSpheres";
+import { DEV_PresenceMocking }                     from "../views/dev/PresenceMocking/DEV_PresenceMocking";
+import { DEV_FirmwareTest }                        from "../views/dev/firmwareTesting/DEV_FirmwareTest";
+import { DEV_AdvancedConfig }                      from "../views/dev/firmwareTesting/DEV_AdvancedConfig";
+import { DEV_DFU }                                 from "../views/dev/firmwareTesting/DEV_DFU";
+import { DEV_StoneSelector }                       from "../views/dev/stoneSelecting/DEV_StoneSelector";
+import { DEV_RawAdvertisements }                   from "../views/dev/firmwareTesting/DEV_RawAdvertisements";
+import { SphereEditMap }                           from "../views/main/editSubviews/SphereEditMap";
+import { SettingsDatabaseExplorer }                from "../views/settingsViews/dev/SettingsDatabaseExplorer";
 
 
 export const Views = {

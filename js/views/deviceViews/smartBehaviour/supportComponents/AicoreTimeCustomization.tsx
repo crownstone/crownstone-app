@@ -237,6 +237,8 @@ function TimePart(props : {
                           if (data.action === 'timeSetAction') {
                             setTime({hours:data.hour, minutes:data.minute});
                             props.timeObj.setTime(data.hour, data.minute);
+                            setFinished(true);
+                            props.setFinished(true);
                           }
                         })
                         .catch((err) => { LOGe.info("AicoreTimeCustomization: Could not pick time for android.", err) })
@@ -264,33 +266,8 @@ function TimePart(props : {
                     style={{ height: 210 }}
                   />
                 </FadeIn>
-                <TimeButtonWithImage
-                  basic={true}
-                  key={"resultButton" + index}
-                  index={index}
-                  label={ lang("Tap_to_select_time_")}
-                  image={require("../../../../images/icons/clock.png")}
-                  callback={() => {
-                    timeReference.getDate((date) => {
-                      let hours = date.getHours();
-                      let minutes = date.getMinutes();
-                      setTime({hours:hours, minutes:minutes});
-                      props.timeObj.setTime(hours, minutes);
-                      setFinished(true);
-                      props.setFinished(true);
-                    });
-                  }}
-                />
-                { props.instantEdit && !ignoreInstantEdit ?
-                  <FadeIn index={index++}>
-                    <View style={{ marginLeft: 25 }}>
-                      <TextButtonDark label={"I want something else!"} basic={true} callback={() => {
-                        setType(null);
-                        setIgnorInstantEdit(true);
-                      }}/>
-                    </View>
-                  </FadeIn>
-                  : undefined }
+                { sharedButton }
+                { sharedOther }
               </View>
           );
           break;
