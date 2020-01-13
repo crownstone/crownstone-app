@@ -2758,7 +2758,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			activityManager.getMemoryInfo(memoryInfo)
 			Log.i(TAG, "Sys memory: total=${memoryInfo.totalMem} available=${memoryInfo.availMem}")
 			val runtime = Runtime.getRuntime()
-			val used = runtime.maxMemory() - runtime.freeMemory()
+			val used = runtime.totalMemory() - runtime.freeMemory()
 			val availableHeap = runtime.maxMemory() - used
 			Log.i(TAG, "Runtime: max=${runtime.maxMemory()} total=${runtime.totalMemory()} free=${runtime.freeMemory()} used=$used availableHeap=$availableHeap")
 			Log.i(TAG, "heapSize=${Debug.getNativeHeapSize()} heapAvailable=${Debug.getNativeHeapFreeSize()}")
