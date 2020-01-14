@@ -267,6 +267,13 @@ export class AicoreBehaviourCore {
     return this.rule.time.type === "ALL_DAY";
   }
 
+  isUsingClockTime(): boolean {
+    return this.isUsingClockStartTime() || this.isUsingClockEndTime();
+  }
+
+  isUsingClockStartTime(): boolean {
+    return this.rule.time.type === "RANGE" && this.rule.time.from.type === "CLOCK";
+  }
   isUsingClockEndTime(): boolean {
     return this.rule.time.type === "RANGE" && this.rule.time.to.type === "CLOCK";
   }

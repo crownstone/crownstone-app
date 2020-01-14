@@ -75,6 +75,7 @@ export class RuleEditor extends LiveComponent<
         customIntensity = this.rule.rule.action.data;
       }
 
+
       this.exampleBehaviours = {
         action: {
           dimming8: new AicoreTwilight().setActionState(0.8),
@@ -85,8 +86,8 @@ export class RuleEditor extends LiveComponent<
           dark:     new AicoreTwilight().setTimeWhenDark(),
           sunUp:    new AicoreTwilight().setTimeWhenSunUp(),
           allDay:   new AicoreTwilight().setTimeAllday(),
-          specific: new AicoreTwilight().setTimeFrom(9,30).setTimeTo(15,0),
-          custom:   this.props.ruleId ? this.rule : new AicoreTwilight().setTimeFromSunset(-30).setTimeTo(23,0),
+          specific: this.props.ruleId &&  this.rule.isUsingClockTime() ? this.rule : new AicoreTwilight().setTimeFrom(9,30).setTimeTo(15,0),
+          custom:   this.props.ruleId && !this.rule.isUsingClockTime() ? this.rule : new AicoreTwilight().setTimeFromSunset(-30).setTimeTo(23,0),
         },
       }
     }
@@ -112,8 +113,8 @@ export class RuleEditor extends LiveComponent<
           dark:     new AicoreBehaviour().setTimeWhenDark(),
           sunUp:    new AicoreBehaviour().setTimeWhenSunUp(),
           allDay:   new AicoreBehaviour().setTimeAllday(),
-          specific: new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
-          custom:   this.props.ruleId ? this.rule : new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
+          specific: this.props.ruleId &&  this.rule.isUsingClockTime() ? this.rule : new AicoreBehaviour().setTimeFrom(9,30).setTimeTo(15,0),
+          custom:   this.props.ruleId && !this.rule.isUsingClockTime() ? this.rule : new AicoreBehaviour().setTimeFromSunset(-30).setTimeTo(23,0),
         },
         option: {
           inSphere: new AicoreBehaviour().setEndConditionWhilePeopleInSphere(),

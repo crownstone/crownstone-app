@@ -193,19 +193,6 @@ function TimePart(props : {
           );
           break;
         case "CLOCK":
-          let sharedButton = (
-            <TimeButtonWithImage
-              basic={true}
-              key={"resultButton" + index}
-              index={index}
-              label={ Platform.OS === "android" ? "That's a good time!" : lang("Tap_to_select_time_")}
-              image={require("../../../../images/icons/clock.png")}
-              callback={() => {
-                setFinished(true);
-                props.setFinished(true);
-              }}
-            />
-          );
           let sharedOther = (
             props.instantEdit && !ignoreInstantEdit ?
             <FadeIn index={index++}>
@@ -249,7 +236,17 @@ function TimePart(props : {
                     </Text>
                   </TouchableOpacity>
                 </FadeIn>
-                {sharedButton}
+                <TimeButtonWithImage
+                  basic={true}
+                  key={"resultButton" + index}
+                  index={index}
+                  label={ Platform.OS === "android" ? "That's a good time!" : lang("Tap_to_select_time_")}
+                  image={require("../../../../images/icons/clock.png")}
+                  callback={() => {
+                    setFinished(true);
+                    props.setFinished(true);
+                  }}
+                />
                 {sharedOther}
               </View>);
           }
@@ -266,7 +263,25 @@ function TimePart(props : {
                     style={{ height: 210 }}
                   />
                 </FadeIn>
-                { sharedButton }
+                <TimeButtonWithImage
+                  basic={true}
+                  key={"resultButton" + index}
+                  index={index}
+                  label={lang("Tap_to_select_time_")}
+                  image={require("../../../../images/icons/clock.png")}
+                  callback={() => {
+                    timeReference.getDate((date) => {
+                      let hours = date.getHours();
+                      let minutes = date.getMinutes();
+
+                      setTime({hours:hours, minutes: minutes});
+                      props.timeObj.setTime(hours, minutes);
+
+                      setFinished(true);
+                      props.setFinished(true);
+                    })
+                  }}
+                />
                 { sharedOther }
               </View>
           );
