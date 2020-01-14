@@ -12,6 +12,11 @@ import { AicoreTwilight } from "./AicoreTwilight";
 import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
 import { DAY_INDICES_MONDAY_START } from "../../../../Constants";
 import { Util } from "../../../../util/Util";
+import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../../ExternalConfig";
+import { Alert } from "react-native";
+import {
+  enoughCrownstonesInLocationsForIndoorLocalization, requireMoreFingerprints
+} from "../../../../util/DataUtil";
 const SunCalc = require('suncalc');
 
 
@@ -482,6 +487,37 @@ export const AicoreUtil = {
   //   result.bPercentageOverlapped = result.overlapMins / bLength;
   //   return result;
   // },
+
+  canBehaviourUseIndoorLocalization(sphereId, endLine: string, rule=null) {
+    if (!rule || rule.isUsingSingleRoomPresence() || rule.isUsingMultiRoomPresence() || rule.hasLocationEndCondition()) {
+      let state = core.store.getState();
+
+      // are there enough?
+      let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, sphereId);
+
+      // do we need more fingerprints?
+      let requiresFingerprints = requireMoreFingerprints(state, sphereId);
+
+      if (enoughForLocalization === false) {
+        Alert.alert(
+          "Indoor localization not available...",
+          "We need at least " + AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION + " Crownstones to be able to determine which room you're in.\n\n" +
+          endLine, [{text:"OK"}]
+        );
+        return false;
+      }
+      else if (enoughForLocalization && requiresFingerprints) {
+        Alert.alert(
+          "Not all rooms are trained yet!",
+          "Make sure you train all the rooms in your Sphere in order to enable indoor localization.", [{text:"OK"}]
+        );
+        return true;
+      }
+
+      return true;
+    }
+
+  },
 
   /**
    * A and B are full rules from the database;

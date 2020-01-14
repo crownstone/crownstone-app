@@ -261,4 +261,10 @@ export class AicoreBehaviour extends AicoreBehaviourCore {
   hasNoEndCondition(): boolean {
     return !this.rule.endCondition;
   }
+  hasLocationEndCondition(): boolean {
+    if (this.rule.endCondition && this.rule.endCondition.presence && this.rule.endCondition.presence.data.type) {
+      return this.rule.endCondition.presence.data.type === "LOCATION"
+    }
+    return false;
+  }
 }

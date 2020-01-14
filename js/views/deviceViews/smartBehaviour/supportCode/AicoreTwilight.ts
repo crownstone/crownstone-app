@@ -132,4 +132,7 @@ export class AicoreTwilight extends AicoreBehaviourCore {
   hasNoEndCondition(): boolean {
     return true;
   }
+  hasLocationEndCondition(): boolean {
+    return false;
+  }
 }

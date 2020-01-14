@@ -19,6 +19,8 @@ import { TopbarImitation } from "../../components/TopbarImitation";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { DataUtil } from "../../../util/DataUtil";
+import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../ExternalConfig";
+import { AicoreUtil } from "./supportCode/AicoreUtil";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   static options = {
@@ -46,12 +48,16 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   getOptions(examples : AicoreBehaviour[] | AicoreTwilight[], typeLabel, twilight=false) : interviewOption[] {
     let options = [];
 
-    examples.forEach((ex) => {
+    examples.forEach((rule) => {
       options.push({
-        label: ex.getSentence(this.props.sphereId),
+        label: rule.getSentence(this.props.sphereId),
         onSelect: () => {
+          if (AicoreUtil.canBehaviourUseIndoorLocalization(this.props.sphereId, "Pick a different example as a starting point.", rule) === false) {
+            return false;
+          }
+
           NavigationUtil.navigate( "DeviceSmartBehaviour_Editor", {
-            twilightRule: twilight, data: ex, sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: null, typeLabel: typeLabel})
+            twilightRule: twilight, data: rule, sphereId: this.props.sphereId, stoneId: this.props.stoneId, ruleId: null, typeLabel: typeLabel})
         }
       })
     })

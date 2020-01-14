@@ -26,6 +26,7 @@ export const DataUtil = {
     }
   },
 
+
   /**
    * Call a callback on all stones in all spheres
    * @param state
@@ -45,6 +46,7 @@ export const DataUtil = {
     }
   },
 
+
   /**
    * Get the ID of the device (phone model) we are currently using.
    * @param state
@@ -60,6 +62,7 @@ export const DataUtil = {
     }
     return null;
   },
+
 
   getTapToToggleCalibration: function(state) : number {
     if (state && state.devices) {
@@ -82,6 +85,7 @@ export const DataUtil = {
     return null;
   },
 
+
   getStone(sphereId, stoneId) {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
@@ -90,6 +94,7 @@ export const DataUtil = {
     return stone || null;
   },
 
+
   getLocation(sphereId, locationId) {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
@@ -97,7 +102,6 @@ export const DataUtil = {
     let location = sphere.locations[locationId];
     return location || null;
   },
-
 
 
   getPresentSphereId: function(state) {
@@ -109,6 +113,7 @@ export const DataUtil = {
     }
     return null;
   },
+
 
   getReferenceId: function(state) {
     let sphereIds = Object.keys(state.spheres);
@@ -130,6 +135,7 @@ export const DataUtil = {
     return 'unknown';
   },
 
+
   getStonesInLocation: function(state : any, sphereId : string, locationId?) : object {
     let filteredStones = {};
     if (sphereId !== undefined) {
@@ -143,6 +149,7 @@ export const DataUtil = {
     }
     return filteredStones;
   },
+
 
   getStonesInLocationArray: function(state : any, sphereId : string, locationId?) : any[] {
     let filteredStones = [];
@@ -159,7 +166,6 @@ export const DataUtil = {
   },
 
 
-
   getLocationFromStone: function(sphere, stone) {
     if (stone.config.locationId && sphere.locations[stone.config.locationId]) {
       return sphere.locations[stone.config.locationId];
@@ -168,10 +174,13 @@ export const DataUtil = {
       return null;
     }
   },
+
+
   getLocationIdFromStone: function(sphereId, stoneId) {
     let stone = DataUtil.getStone(sphereId, stoneId);
     return stone.config.locationId;
   },
+
 
   getLocationUIdFromStone: function(sphereId, stoneId) {
     let stone = DataUtil.getStone(sphereId, stoneId);
@@ -180,6 +189,7 @@ export const DataUtil = {
     if (!location) { return null }
     return location.config.uid;
   },
+
 
   getUserLocations(state, userId) {
     let presentSphereMap = {};
@@ -195,6 +205,7 @@ export const DataUtil = {
 
     return presentSphereMap;
   },
+
 
   getUserLocationIdInSphere: function(state, sphereId, userId) {
     let locationIds = Object.keys(state.spheres[sphereId].locations);
@@ -224,6 +235,7 @@ export const DataUtil = {
     return false;
   },
 
+
   getStoneIdFromHandle: function(state, sphereId, handle) {
     let stones = state.spheres[sphereId].stones;
     let stoneIds = Object.keys(stones);
@@ -244,10 +256,12 @@ export const DataUtil = {
     return stone.config.name;
   },
 
+
   getStoneFromHandle: function(state, sphereId, handle) {
     let stoneId = DataUtil.getStoneIdFromHandle(state, sphereId, handle);
     return state.spheres[sphereId].stones[stoneId];
   },
+
 
   getDeviceSpecs: function(state) {
     let address = state.user.appIdentifier;

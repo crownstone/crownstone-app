@@ -104,16 +104,16 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
       if (
-        change.changeAppSettings          ||
-        change.changeSphereState          ||
-        change.changeSphereConfig         ||
-        change.stoneLocationUpdated       ||
-        change.updateStoneCoreConfig      ||
-        change.updateSphereUser           ||
-        change.updateActiveSphere         ||
-        change.updateLocationConfig       ||
-        change.changeFingerprint          ||
-        change.changeSpheres              ||
+        change.changeAppSettings     ||
+        change.changeSphereState     ||
+        change.changeSphereConfig    ||
+        change.stoneLocationUpdated  ||
+        change.updateStoneCoreConfig ||
+        change.updateSphereUser      ||
+        change.updateActiveSphere    ||
+        change.updateLocationConfig  ||
+        change.changeFingerprint     ||
+        change.changeSpheres         ||
         change.changeLocations
       ) {
         this.forceUpdate();

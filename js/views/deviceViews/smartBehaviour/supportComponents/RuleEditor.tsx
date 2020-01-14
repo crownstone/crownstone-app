@@ -32,6 +32,7 @@ import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 import { DataUtil } from "../../../../util/DataUtil";
+import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../../ExternalConfig";
 
 
 export class RuleEditor extends LiveComponent<
@@ -664,6 +665,12 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluatePresenceLocationSelection(SELECTABLE_TYPE.LOCATION + "2", this.exampleBehaviours.location.inRoom);
                   },
                   onSelect: () => {
+                    if (AicoreUtil.canBehaviourUseIndoorLocalization(
+                      this.props.sphereId,
+                      "You can use in the house with less than " + AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION + ".") === false) {
+                      return false;
+                    }
+
                     let state = core.store.getState();
                     let sphere = state.spheres[this.props.sphereId];
                     let stone = sphere.stones[this.props.stoneId];
@@ -677,7 +684,15 @@ export class RuleEditor extends LiveComponent<
                   isSelected: () => {
                     return this._evaluatePresenceLocationSelection(SELECTABLE_TYPE.LOCATION + "3", this.exampleBehaviours.location.custom);
                   },
-                  onSelect: () => { this._showLocationSelectionPopup(); },
+                  onSelect: () => {
+                    if (AicoreUtil.canBehaviourUseIndoorLocalization(
+                      this.props.sphereId,
+                      "You can use in the house with less than " + AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION + ".") === false) {
+                      return false;
+                    }
+
+                    this._showLocationSelectionPopup();
+                  },
                 },
               ]}
             />
