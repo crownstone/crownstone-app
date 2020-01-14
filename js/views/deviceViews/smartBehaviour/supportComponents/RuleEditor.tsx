@@ -104,7 +104,7 @@ export class RuleEditor extends LiveComponent<
         },
         location: {
           sphere:   new AicoreBehaviour().setPresenceSomebodyInSphere(),
-          inRoom:   new AicoreBehaviour().setPresenceSomebodyInLocations([this._locationIdToUid(stone.config.locationId)]),
+          inRoom:   new AicoreBehaviour().setPresenceSomebodyInLocations([DataUtil.locationIdToUid(this.props.sphereId, stone.config.locationId)]),
           custom:   new AicoreBehaviour().setPresenceSomebodyInLocations([]),
         },
         time: {
@@ -116,19 +116,13 @@ export class RuleEditor extends LiveComponent<
         },
         option: {
           inSphere: new AicoreBehaviour().setEndConditionWhilePeopleInSphere(),
-          inRoom:   new AicoreBehaviour().setEndConditionWhilePeopleInLocation(this._locationIdToUid(stone.config.locationId)),
+          inRoom:   new AicoreBehaviour().setEndConditionWhilePeopleInLocation(DataUtil.locationIdToUid(this.props.sphereId, stone.config.locationId)),
           noOption: new AicoreBehaviour().setNoEndCondition(),
         }
       }
     }
   }
 
-
-  _locationIdToUid(locationId) {
-    let location = DataUtil.getLocation(this.props.sphereId, locationId)
-    if (!location) { return null }
-    return location.config.uid;
-  }
 
 
   getRuleSentenceElements() {
@@ -673,7 +667,7 @@ export class RuleEditor extends LiveComponent<
                     let state = core.store.getState();
                     let sphere = state.spheres[this.props.sphereId];
                     let stone = sphere.stones[this.props.stoneId];
-                    this.rule.setPresenceInLocations([this._locationIdToUid(stone.config.locationId)]);
+                    this.rule.setPresenceInLocations([DataUtil.locationIdToUid(this.props.sphereId, stone.config.locationId)]);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.LOCATION + "2"})
                   }
                 },
@@ -769,7 +763,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "1", this.exampleBehaviours.option.inRoom);
                   },
                   onSelect: () => {
-                    this.rule.setEndConditionWhilePeopleInLocation(this._locationIdToUid(DataUtil.getLocationIdFromStone(this.props.sphereId, this.props.stoneId)));
+                    this.rule.setEndConditionWhilePeopleInLocation(DataUtil.getLocationUIdFromStone(this.props.sphereId, this.props.stoneId));
                     this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "1"})
                   }
                 },

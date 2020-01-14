@@ -173,6 +173,14 @@ export const DataUtil = {
     return stone.config.locationId;
   },
 
+  getLocationUIdFromStone: function(sphereId, stoneId) {
+    let stone = DataUtil.getStone(sphereId, stoneId);
+    if (!stone) { return null; }
+    let location = DataUtil.getLocation(sphereId, stone.config.locationId)
+    if (!location) { return null }
+    return location.config.uid;
+  },
+
   getUserLocations(state, userId) {
     let presentSphereMap = {};
 
@@ -423,6 +431,13 @@ export const DataUtil = {
       }
     }
     return true;
+  },
+
+
+  locationIdToUid(sphereId, locationId) {
+    let location = DataUtil.getLocation(sphereId, locationId)
+    if (!location) { return null }
+    return location.config.uid;
   }
 };
 
