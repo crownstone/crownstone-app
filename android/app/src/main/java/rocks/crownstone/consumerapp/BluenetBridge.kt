@@ -1908,7 +1908,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun addBehaviour(behaviour: ReadableMap, callback: Callback) {
-		Log.i(TAG, "saveBehaviour")
+		Log.i(TAG, "addBehaviour")
 		val indexedBehaviourPacket = parseBehaviourTransfer(behaviour)
 		if (indexedBehaviourPacket == null) {
 			rejectCallback(callback, Errors.ValueWrong().message)
@@ -2156,8 +2156,10 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		val timeMap = genBehaviourTime(behaviour.from, behaviour.until, dayStartOffset) ?: return null
 		dataMap.putMap("time", timeMap)
 
-		map.putInt("idOnCrownstone", indexedBehaviour.index.toInt())
-
+		when (indexedBehaviour.index) {
+			INDEX_UNKNOWN -> map.putNull("idOnCrownstone")
+			else -> map.putInt("idOnCrownstone", indexedBehaviour.index.toInt())
+		}
 		when (indexedBehaviour.behaviour.type) {
 			BehaviourType.UNKNOWN -> return null
 			BehaviourType.SWITCH -> {
