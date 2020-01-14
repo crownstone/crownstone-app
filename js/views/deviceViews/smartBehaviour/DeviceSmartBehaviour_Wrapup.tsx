@@ -243,7 +243,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     else {
       // search for behaviour that is the same as the behaviour to see if we can merge them.
       for (let i = 0; i < ruleIds.length; i++) {
-        if (this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
+        if (rules[ruleIds[i]].deleted === false && this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
           Alert.alert(
             "Behaviour already exists!",
             "You already have a behaviour that does exactly this. There's no need to add another!",
