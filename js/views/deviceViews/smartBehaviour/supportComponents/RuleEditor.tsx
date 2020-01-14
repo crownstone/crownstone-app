@@ -769,7 +769,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateOptionSelection(SELECTABLE_TYPE.OPTION + "1", this.exampleBehaviours.option.inRoom);
                   },
                   onSelect: () => {
-                    this.rule.setEndConditionWhilePeopleInLocation(DataUtil.getLocationIdFromStone(this.props.sphereId, this.props.stoneId));
+                    this.rule.setEndConditionWhilePeopleInLocation(this._locationIdToUid(DataUtil.getLocationIdFromStone(this.props.sphereId, this.props.stoneId)));
                     this.setState({selectedDetailField: SELECTABLE_TYPE.OPTION + "1"})
                   }
                 },
