@@ -72,7 +72,7 @@ class StoneDataSyncerClass {
 
           // handle abilities
           if (Permissions.inSphere(sphereId).canChangeAbilities) {
-            this._syncAbility(sphereId, stoneId, initialAbilities.dimming, 'dimming');
+            this._syncAbility(sphereId, stoneId, initialAbilities.dimming,     'dimming');
             this._syncAbility(sphereId, stoneId, initialAbilities.switchcraft, 'switchcraft');
             this._syncAbility(sphereId, stoneId, initialAbilities.tapToToggle, 'tapToToggle');
           }
@@ -138,7 +138,7 @@ class StoneDataSyncerClass {
         }
 
         if (rulePromises.length > 0) {
-          LOGi.info("StoneDataSyncer: Executing rule syncing trigger for ", sphereId, stoneId, rulePromises, rulePromises.length, sessionId);
+          LOGi.info("StoneDataSyncer: Executing rule syncing trigger for ", sphereId, stoneId, rulePromises.length, sessionId);
           BatchCommandHandler.executePriority();
           Promise.all(rulePromises)
             .then(() => {
@@ -427,7 +427,7 @@ class StoneDataSyncerClass {
               }
             })
             .catch((err) => {
-              // console.log("THERE WAS AN ERROR SYNCING THE behaviours for this stone.", err)
+              LOGe.info("StoneDataSyncer: checkAndSyncBehaviour Error downloading behaviours.", err)
             })
         }
         else {
@@ -435,6 +435,7 @@ class StoneDataSyncerClass {
         }
       })
       .then(() => {
+        LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Starting the compare analysis.");
         // get the rules from the db again since the cloudsync may have added a few.
         transferRules = this._getTransferRulesFromStone(sphereId, stoneId);
         let actions = [];
@@ -446,15 +447,20 @@ class StoneDataSyncerClass {
           rulesAccordingToCrownstone.forEach((stoneBehaviour: behaviourTransfer) => {
             let foundMatch = false;
             for (let i = 0; i < transferRules.length; i++) {
+              LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Comparing", stoneBehaviour, transferRules[i].behaviour);
               if (xUtil.deepCompare(stoneBehaviour, transferRules[i].behaviour)) {
                 foundMatch = true;
+                LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Compare is a MATCH.");
                 // great! this is already in the list. We do not have to do anything here.
                 break
+              }
+              else {
+                LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Compare was not a match.");
               }
             }
 
             if (!foundMatch) {
-              LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Found an unknown behaviour, we will add this.")
+              LOGi.info("StoneDataSyncer: checkAndSyncBehaviour Found an unknown behaviour, we will add this.")
               // this is a new rule!
               let newRuleId = xUtil.getUUID();
               actions.push({
@@ -485,7 +491,7 @@ class StoneDataSyncerClass {
             }
 
             if (!foundMatch) {
-              LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Behaviour should be deleted");
+              LOGi.info("StoneDataSyncer: checkAndSyncBehaviour Behaviour should be deleted");
               actions.push({
                 type: "REMOVE_STONE_RULE",
                 sphereId: sphereId,
@@ -493,11 +499,11 @@ class StoneDataSyncerClass {
                 ruleId: transferRule.ruleId,
               });
             }
-          })
+          });
 
         }
         else {
-            LOGd.info("StoneDataSyncer: checkAndSyncBehaviour All behaviour should be deleted.");
+            LOGi.info("StoneDataSyncer: checkAndSyncBehaviour All behaviour should be deleted.");
             actions.push({
               type: "REMOVE_ALL_RULES_OF_STONE",
               sphereId: sphereId,
@@ -506,6 +512,7 @@ class StoneDataSyncerClass {
         }
 
         if (actions.length > 0) {
+          LOGi.info("StoneDataSyncer: checkAndSyncBehaviour required sync actions!", actions);
           core.store.batchDispatch(actions);
         }
         else {
