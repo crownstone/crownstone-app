@@ -715,6 +715,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun subscribeToNearest() {
+		Log.i(TAG, "subscribeToNearest")
 		// Starts the flow of nearestSetupCrownstone and nearestCrownstone events to the app.
 		// Can be called multiple times safely
 		if (nearestStoneSub == null) {
@@ -728,6 +729,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun unsubscribeNearest() {
+		Log.i(TAG, "unsubscribeNearest")
 		// Stops the flow of nearestSetupCrownstone and nearestCrownstone events to the app.
 		// Can be called multiple times safely
 		val nearestStoneSubVal = nearestStoneSub
@@ -745,6 +747,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun subscribeToUnverified() {
+		Log.i(TAG, "subscribeToUnverified")
 		// Starts the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events to the app.
 		// Can be called multiple times safely
 		sendUnverifiedAdvertisements = true
@@ -753,6 +756,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun unsubscribeUnverified() {
+		Log.i(TAG, "unsubscribeUnverified")
 		// Starts the flow of crownstoneAdvertisementReceived and unverifiedAdvertisementData events to the app.
 		// Can be called multiple times safely
 		sendUnverifiedAdvertisements = false
@@ -1256,6 +1260,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@ReactMethod
 	@Synchronized
 	fun setupPulse(callback: Callback) {
+		Log.i(TAG, "setupPulse")
 		// Crownstone is already connected
 		// This call will turn the relay on, wait 1 second, turn it off, disconnect
 		bluenet.control.setSwitch(100U)
