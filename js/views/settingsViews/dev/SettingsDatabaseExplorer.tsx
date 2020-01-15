@@ -16,6 +16,10 @@ import { TopBarUtil } from "../../../util/TopBarUtil";
 import { core } from "../../../core";
 import { colors, screenWidth } from "../../styles";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { TextEditBar } from "../../components/editComponents/TextEditBar";
+import { TextEditInput } from "../../components/editComponents/TextEditInput";
+import { Persistor } from "../../../router/store/Persistor";
+import { StoreManager } from "../../../router/store/storeManager";
 
 const viewStyle : ViewStyle = {
   width: screenWidth,
@@ -37,17 +41,18 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
   }
 
   expanded = { "BASE": {} };
-  state = {}
+  dbState = {}
 
   constructor(props) {
     super(props);
 
-    this.state = core.store.getState();
+    this.dbState = core.store.getState();
+    this.state = { editField: null, editValue:null, committer: null };
   }
 
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'update') {
-      this.state = core.store.getState();
+      this.dbState = core.store.getState();
       this.forceUpdate();
     }
   }
@@ -84,24 +89,58 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
           label = "\n" + JSON.stringify(data, undefined, 2);
           ignoreStep = true;
         }
+
         items.push(
-          <View key={url+'/'+key} style={[viewStyle,{paddingLeft: ignoreStep === false && step*15 + 5 || 5, backgroundColor: colors.menuTextSelected.rgba(0.1*step)}]}>
-            <Text style={textStyle}>{key+": "+label}</Text>
-          </View>
+          <TouchableOpacity
+            key={url+'/'+key}
+            style={[viewStyle,{paddingLeft: ignoreStep === false && step*15 + 5 || 5, backgroundColor: colors.menuTextSelected.rgba(0.1*step)}]}
+            onPress={() => {
+              if (this.state.editField !== null) {
+                this.state.committer();
+                this.setState({editField:null, editValue:null, committer:null});
+              }
+              else {
+                this.setState({ editField: url + key, editValue: label, committer:() => {
+                  stateSegment[key] = this.state.editValue;
+                  StoreManager.persistor.persistChanges(null, this.dbState);
+                }});
+              }
+            }}
+          >
+            {
+              this.state.editField === url+key ?
+                this.getEditField(stateSegment, key)
+                :
+                <Text style={textStyle}>{key + ": " + label}</Text>
+            }
+          </TouchableOpacity>
         );
       }
     })
-
 
     return items;
   }
 
 
+  getEditField(stateSegment, key) {
+    return (
+      <TextEditInput
+        autoFocus={true}
+        style={{paddingVertical: 15}}
+        value={this.state.editValue}
+        blurOnSubmit={true}
+        callback={(value) => { this.setState({editValue: value}); }}
+      />
+    );
+
+    return null;
+  }
+
   render() {
     return (
       <Background image={core.background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
-          {this._getItems(this.state, this.expanded, '', 'BASE', 0) }
+          {this._getItems(this.dbState, this.expanded, '', 'BASE', 0) }
         </ScrollView>
       </Background>
     );

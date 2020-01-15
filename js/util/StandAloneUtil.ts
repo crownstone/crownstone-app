@@ -216,7 +216,7 @@ export const xUtil = {
         return true;
       }
 
-      if (versionClean === compareWithVersionClean && versionClean && compareWithVersionClean) {
+      if (versionClean === compareWithVersionClean && versionClean && compareWithVersionClean && versionRc === compareWithVersionRc) {
         return true;
       }
 
@@ -236,7 +236,7 @@ export const xUtil = {
       }
 
       // Do not allow compareWithVersion to be semver
-      if (compareWithVersion.split(".").length !== 3) {
+      if (compareWithVersionClean.split(".").length !== 3) {
         return false;
       }
 

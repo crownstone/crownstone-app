@@ -6,7 +6,7 @@ import { Platform } from "react-native";
 /******************** RELEASE FLAGS ********************/
 
   // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
-  const IGNORE_LOCAL_CONFIG = false;
+  const IGNORE_LOCAL_CONFIG = true;
 
   export const FALLBACKS_ENABLED = true;
 
@@ -34,7 +34,7 @@ import { Platform } from "react-native";
  *  The local file is ignored if RELEASE_MODE is set to true.
  */
 
-
+ 
 /******************** APP ********************/
 
   /**
