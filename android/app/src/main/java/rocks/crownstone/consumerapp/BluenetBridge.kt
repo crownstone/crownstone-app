@@ -2770,6 +2770,11 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	private fun onIbeaconScan(scanList: ScannedIbeaconList) {
 
 		if (appLogLevel == AppLogLevel.BASIC || appLogLevel == AppLogLevel.EXTENDED) {
+			Log.i("IbeaconScan", "onTimeout numBeacons=${scanList.size}")
+			for (scan in scanList) {
+				Log.d("IbeaconScan", "    ${scan.address} uuid=${scan.ibeaconData.uuid} major=${scan.ibeaconData.major} minor=${scan.ibeaconData.minor} rssi=${scan.rssi}")
+			}
+
 			val activityManager = getReactApplicationContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 			var memoryInfo = ActivityManager.MemoryInfo()
 			activityManager.getMemoryInfo(memoryInfo)
