@@ -2103,7 +2103,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 			if (!behaviourActionMap.hasKey("data")) { throw Exception("No action data") }
 			val switchValDouble = behaviourActionMap.getDouble("data")
-			val switchVal = convertSwitchVal(switchValDouble)
+//			val switchVal = convertSwitchVal(switchValDouble)
+			// Changed to 0-100
+			var switchValInt = switchValDouble.toInt()
+			if (switchValInt > 100) { switchValInt = 100 }
+			else if (switchValInt < 0) { switchValInt = 0 }
+			val switchVal = switchValInt.toUint8()
 
 			val timeMap = behaviourData.getMap("time") ?: throw Exception("No time")
 			val time = parseBehaviourTime(timeMap, dayStartOffset)
@@ -2210,7 +2215,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			true -> map.putString("type", "DIM_WHEN_TURNED_ON")
 			false -> map.putString("type", "BE_ON")
 		}
-		map.putDouble("data", convertSwitchVal(switchVal))
+//		map.putDouble("data", convertSwitchVal(switchVal))
+		// Changed to 0-100
+		map.putDouble("data", switchVal.toDouble())
 		return map
 	}
 
@@ -3004,7 +3011,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //region           Helper functions
 //##################################################################################################
 
-	/** Convert 0.0 .. 1.0 value to switch value (0-100).
+	/**
+	 * Convert 0.0 .. 100.0 value to switch value (0-100).
 	 */
 	private fun convertSwitchVal(switchVal: Double): Uint8 {
 		var switchValInt = 0
@@ -3017,21 +3025,17 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		return Conversion.toUint8(switchValInt)
 	}
 
-	/** Convert switch value (0-100) to 0.0 .. 1.0 value.
+	/**
+	 * Convert switch value (0-100) to 0.0 .. 100.0 value.
 	 */
 	private fun convertSwitchVal(switchVal: Uint8): Double {
 		return switchVal.toDouble() / 100
 	}
 
-	/** Converts switch state (0-228) to value used in react: 0 - 228.
+	/**
+	 * Converts switch state (0-228) to value used in react: 0.0 - 228.0.
 	 */
 	private fun convertSwitchState(switchState: SwitchState): Double {
-//		var switchStateInt = switchState.state.toInt()
-//		if (switchStateInt > 100) {
-//			switchStateInt = 100
-//		}
-//		return switchStateInt.toDouble() / 100
-//		return switchState.value.toDouble() / 100
 		return switchState.state.toDouble()
 	}
 
