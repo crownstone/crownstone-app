@@ -69,17 +69,17 @@ export class RuleEditor extends LiveComponent<
     if (this.props.twilightRule) {
       // @ts-ignore
       this.rule =   new AicoreTwilight(this.props.data);
-      let customIntensity = 0.4;
+      let customIntensity = 40;
 
-      if (this.rule.rule.action.data !== 0.6 && this.rule.rule.action.data !== 0.8) {
+      if (this.rule.rule.action.data !== 60 && this.rule.rule.action.data !== 80) {
         customIntensity = this.rule.rule.action.data;
       }
 
 
       this.exampleBehaviours = {
         action: {
-          dimming8: new AicoreTwilight().setActionState(0.8),
-          dimming6: new AicoreTwilight().setActionState(0.6),
+          dimming8: new AicoreTwilight().setActionState(80),
+          dimming6: new AicoreTwilight().setActionState(60),
           dimming4: new AicoreTwilight().setActionState(customIntensity),
         },
         time: {
@@ -97,7 +97,7 @@ export class RuleEditor extends LiveComponent<
       this.exampleBehaviours = {
         action: {
           on:       new AicoreBehaviour(),
-          dimming:  new AicoreBehaviour().setActionState(this.rule.rule.action.data < 1 ? this.rule.rule.action.data : 0.5),
+          dimming:  new AicoreBehaviour().setActionState(this.rule.rule.action.data < 100 ? this.rule.rule.action.data : 50),
         },
         presence: {
           somebody: new AicoreBehaviour().setPresenceSomebody(),
@@ -341,7 +341,7 @@ export class RuleEditor extends LiveComponent<
 
     let dimmerOptions = [];
     for (let i = 9; i >= 1; i = i - 1) {
-      dimmerOptions.push({ label: lang("x_percent", Math.round(i*10)), id: i*0.1 });
+      dimmerOptions.push({ label: lang("x_percent", Math.round(i*10)), id: i*10 });
     }
 
     core.eventBus.emit('showListOverlay', {
@@ -363,7 +363,7 @@ export class RuleEditor extends LiveComponent<
           value = value[0];
         }
         exampleBehaviour.setDimAmount(value);
-        this.rule.setDimAmount(value);
+        this.rule.setDimPercentage(value);
         this.setState({selectedDetailField: selectionDescription})
       },
       selection: this.rule.willDim() ? this.rule.getDimAmount() : exampleBehaviour.getDimAmount(),
@@ -497,7 +497,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "1", this.exampleBehaviours.action.dimming8);
                   },
                   onSelect: () => {
-                    this.rule.setDimAmount(0.8);
+                    this.rule.setDimPercentage(80);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.ACTION + "1"})
                   }
                 },
@@ -507,7 +507,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "4", this.exampleBehaviours.action.dimming6);
                   },
                   onSelect: () => {
-                    this.rule.setDimAmount(0.6);
+                    this.rule.setDimPercentage(60);
                     this.setState({selectedDetailField: SELECTABLE_TYPE.ACTION + "2"})
                   }
                 },
@@ -606,10 +606,10 @@ export class RuleEditor extends LiveComponent<
                 {
                   label: lang("On"),
                   isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.on) },
-                  onSelect: () => {this.rule.setActionState(1); this.forceUpdate(); }
+                  onSelect: () => {this.rule.setActionState(100); this.forceUpdate(); }
                 },
                 {
-                  label: lang("Dimmed__", Math.round(this.rule.willDim() ? this.rule.getDimAmount() * 100 : 0.5 * 100)),
+                  label: lang("Dimmed__", Math.round(this.rule.willDim() ? this.rule.getDimAmount() : 50)),
                   subLabel: "(tap to change)",
                   isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming)},
                   onSelect: () => { this._showDimAmountPopup(this.exampleBehaviours.action.dimming); }

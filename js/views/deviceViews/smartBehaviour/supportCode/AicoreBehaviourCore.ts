@@ -18,7 +18,7 @@ export class AicoreBehaviourCore {
     return this;
   }
 
-  setDimAmount(value: number)/* : AicoreBehaviourCore*/ {
+  setDimPercentage(value: number)/* : AicoreBehaviourCore*/ {
     this.rule.action.data = value;
     return this;
   }
@@ -144,7 +144,7 @@ export class AicoreBehaviourCore {
   }
 
   willDim() : boolean {
-    return this.rule.action.data < 1;
+    return this.rule.action.data < 100;
   }
   getDimAmount() : number {
     return this.rule.action.data;
@@ -296,5 +296,34 @@ export class AicoreBehaviourCore {
       return xUtil.deepCompare(this.rule, JSON.parse(otherRule));
     }
     return xUtil.deepCompare(this.rule, otherRule.rule);
+  }
+
+  isCurrentlyActive(sphereId:string) : boolean {
+    let now = new Date();
+    let nowMinutes = now.getHours() * 60 + now.getMinutes();
+    let myTime = this.rule.time;
+
+    if (myTime.type === "ALL_DAY") { return true; }
+
+    let myTimeStart = AicoreUtil.getMinuteValue(myTime.from, sphereId);
+    let myTimeEnd   = AicoreUtil.getMinuteValue(myTime.to, sphereId);
+
+    if (myTimeStart > myTimeEnd) {
+      // we overlap with midnight
+      if (myTimeStart < nowMinutes) {
+        return true;
+      }
+      else if (myTimeEnd > nowMinutes) {
+        return true;
+      }
+      return false;
+    }
+    else {
+      // this is a direct range
+      if (myTimeStart <= nowMinutes && myTimeEnd > nowMinutes) {
+        return true;
+      }
+      return false;
+    }
   }
 }

@@ -48,7 +48,7 @@ interface meshTodo {
 }
 
 type commandInterface = { commandName : 'toggle', stateForOn : number } |
-  { commandName : 'multiSwitch', state : number, timeout : number, intent: number } |
+  { commandName : 'multiSwitch', state : number } |
   { commandName : 'turnOn' } |
   { commandName : 'getBootloaderVersion' } |
   { commandName : 'getFirmwareVersion' } |

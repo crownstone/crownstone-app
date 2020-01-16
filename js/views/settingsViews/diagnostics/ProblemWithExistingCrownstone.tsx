@@ -610,7 +610,6 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           this.setState({switchedCrownstone: true});
         }
       },
-      INTENTS.manual,
       2,
       'from Diagnostics')
   }

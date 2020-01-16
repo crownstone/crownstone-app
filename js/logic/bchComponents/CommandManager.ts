@@ -422,8 +422,6 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
       options: batchCommand.options,
       handle: stoneConfig.handle,
       state: command.state,
-      intent: command.intent,
-      timeout: command.timeout,
       cleanup: batchCommand.cleanup,
       promise: batchCommand.promise
     };

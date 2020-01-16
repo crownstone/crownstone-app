@@ -6,7 +6,7 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { AicoreBehaviourCore } from "./AicoreBehaviourCore";
 
 const EMPTY_RULE : behaviour = {
-  action:   { type: "BE_ON", data: 1 },
+  action:   { type: "BE_ON", data: 100 },
   time:     { type: "ALL_DAY" },
   presence: { type: "IGNORE" },
 };

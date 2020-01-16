@@ -7,9 +7,8 @@ import {
   View
 } from "react-native";
 
-import { availableScreenHeight, colors, deviceStyles, screenWidth, styles } from "../styles";
-import { HiddenFadeIn, HiddenFadeInView } from "./animated/FadeInView";
-import { xUtil } from "../../util/StandAloneUtil";
+import { availableScreenHeight, colors, screenWidth, styles } from "../styles";
+import { HiddenFadeInView } from "./animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import ResponsiveText from "./ResponsiveText";
 
@@ -35,7 +34,7 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
   constructor(props) {
     super(props)
 
-    this.x = new Animated.Value(this.props.state + LOWER_BOUND);
+    this.x = new Animated.Value(this.props.state*RANGE + LOWER_BOUND);
     this.percentage = this.props.state;
     this.state = {
       showIndicator: false

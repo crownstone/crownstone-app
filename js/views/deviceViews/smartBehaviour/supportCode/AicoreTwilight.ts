@@ -6,7 +6,7 @@ import { xUtil } from "../../../../util/StandAloneUtil";
 import { AicoreBehaviourCore } from "./AicoreBehaviourCore";
 
 const EMPTY_RULE : twilight = {
-  action:   { type: "DIM_WHEN_TURNED_ON", data: 0.6 },
+  action:   { type: "DIM_WHEN_TURNED_ON", data: 60 },
   time:     { type:"RANGE", from: { type: "SUNSET", offsetMinutes:0}, to:{ type: "SUNRISE", offsetMinutes:0} },
 };
 

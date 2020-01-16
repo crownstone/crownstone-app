@@ -10,7 +10,7 @@ import { AicoreTimeData } from "./AicoreTimeData";
 import { AicoreBehaviour } from "./AicoreBehaviour";
 import { AicoreTwilight } from "./AicoreTwilight";
 import { BEHAVIOUR_TYPES } from "../../../../router/store/reducers/stoneSubReducers/rules";
-import { DAY_INDICES_MONDAY_START } from "../../../../Constants";
+import { DAY_INDICES_MONDAY_START, DAY_INDICES_SUNDAY_START } from "../../../../Constants";
 import { Util } from "../../../../util/Util";
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../../ExternalConfig";
 import { Alert } from "react-native";
@@ -24,12 +24,12 @@ export const AicoreUtil = {
 
   extractActionString(rule : behaviour | twilight) {
     if (rule.action.type === "DIM_WHEN_TURNED_ON") {
-      return "I'll dim to " + Math.round(rule.action.data * 100) + "% instead";
+      return "I'll dim to " + Math.round(rule.action.data ) + "% instead";
     }
-    if (rule.action.data < 1) {
-      return "dimmed at " + Math.round(rule.action.data * 100) + "%";
+    if (rule.action.data < 100) {
+      return "dimmed at " + Math.round(rule.action.data) + "%";
     }
-    else if (rule.action.data == 1) {
+    else if (rule.action.data == 100) {
       return "on";
     }
   },
@@ -670,6 +670,7 @@ export const AicoreUtil = {
     return minutesOverlap;
   },
 
+
   getBehaviourSummary(sphereId: string, ruleData) {
     let rule : AicoreTwilight | AicoreBehaviour = null;
     if (ruleData.type === BEHAVIOUR_TYPES.twilight) { rule = new AicoreTwilight(ruleData.data);  }
@@ -683,4 +684,28 @@ export const AicoreUtil = {
       label:                   rule.getSentence(sphereId),
     }
   },
+
+
+  getActiveTurnOnPercentage(sphereId:string, stone) {
+    let rules = stone.rules;
+    let ruleIds = Object.keys(rules);
+
+    let dimAmount = 100;
+
+    for (let i = 0; i < ruleIds.length; i++) {
+      let ruleData = rules[ruleIds[i]];
+      let rule : AicoreTwilight | AicoreBehaviour = null;
+      if (ruleData.type === BEHAVIOUR_TYPES.twilight) { rule = new AicoreTwilight(ruleData.data);  }
+      else                                            { rule = new AicoreBehaviour(ruleData.data); }
+
+      let currentDay = DAY_INDICES_SUNDAY_START[new Date().getDay()];
+      if (ruleData.activeDays[currentDay]) {
+        if (rule.isCurrentlyActive(sphereId)) {
+          dimAmount = Math.min(dimAmount, rule.getDimAmount());
+        }
+      }
+    }
+
+    return dimAmount;
+  }
 };
