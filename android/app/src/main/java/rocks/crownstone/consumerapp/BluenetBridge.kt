@@ -70,10 +70,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	enum class ScannerState {
 		STOPPED,
 		UNIQUE_ONLY,
+		BALANCED,
 		HIGH_POWER
 	}
 //	private var uniqueScansOnly = false // Easier than unsubscribing and subscribing to events.
 	private var scannerState = ScannerState.STOPPED
+	private var prevScannerState = ScannerState.STOPPED
 	private var isTracking = false
 	private var appForeGround = true // Assume we start in foreground.
 
@@ -724,6 +726,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		if (nearestSetupSub == null) {
 			nearestSetupSub = bluenet.subscribe(BluenetEvent.NEAREST_SETUP, ::onNearestSetup)
 		}
+		scannerState = ScannerState.HIGH_POWER
+		updateScanner()
 	}
 
 	@ReactMethod
@@ -742,6 +746,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			bluenet.unsubscribe(nearestSetupSubVal)
 			nearestSetupSub = null
 		}
+		scannerState = prevScannerState
+		updateScanner()
 	}
 
 	@ReactMethod
@@ -773,7 +779,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun startScanning() {
 		Log.i(TAG, "startScanning")
-		scannerState = ScannerState.HIGH_POWER
+//		scannerState = ScannerState.HIGH_POWER
+		scannerState = ScannerState.BALANCED
 		bluenet.filterForIbeacons(true)
 		bluenet.filterForCrownstones(appForeGround)
 		updateScanner()
@@ -783,7 +790,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	fun startScanningForCrownstones() {
 		Log.i(TAG, "startScanningForCrownstones")
-		scannerState = ScannerState.HIGH_POWER
+//		scannerState = ScannerState.HIGH_POWER
+		scannerState = ScannerState.BALANCED
 		bluenet.filterForIbeacons(true)
 		bluenet.filterForCrownstones(appForeGround)
 		updateScanner()
@@ -910,7 +918,8 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					bluenet.stopScanning()
 				}
 			}
-			ScannerState.UNIQUE_ONLY -> {
+			ScannerState.UNIQUE_ONLY,
+			ScannerState.BALANCED-> {
 				if (isTracking) {
 					bluenet.setScanInterval(ScanMode.BALANCED)
 				}
@@ -924,6 +933,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				bluenet.startScanning()
 			}
 		}
+		prevScannerState = scannerState
 	}
 //endregion
 
