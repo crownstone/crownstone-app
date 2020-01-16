@@ -146,6 +146,7 @@ export class PictureView extends Component<any, any> {
 
 
     if (this.state.picture) {
+
       return (
         <View style={{flex:1, width: x, height: y, backgroundColor:colors.black.hex}}>
           {this.state.orientation === 'portrait' && <TopbarImitation
@@ -284,7 +285,7 @@ export class PictureView extends Component<any, any> {
 
   takePicture = async() => {
     if (this.camera) {
-      const options = { quality: 0.5, base64: true };
+      const options = { quality: 0.5, base64: true, forceUpOrientation: this.state.orientation === "portrait", fixOrientation: true };
       const data = await this.camera.takePictureAsync(options);
       this.setState({picture: data.uri})
     }

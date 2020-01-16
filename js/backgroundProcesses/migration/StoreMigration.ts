@@ -20,15 +20,13 @@ export function migrate() {
 
       if (rule.getDimAmount() < 1) {
         rule.setDimPercentage(Math.floor(rule.getDimAmount() * 100));
-        actions.push({type:"UPDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data: {data: rule.stringify() }})
+        actions.push({type:"U PDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data: {data: rule.stringify() }})
       }
     });
   })
   if (actions.length > 0) {
-    console.log("MIGRATION", actions)
     core.store.batchDispatch(actions);
   }
-
 
   upTo3_0();
 }
