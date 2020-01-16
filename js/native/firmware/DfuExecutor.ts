@@ -1,6 +1,6 @@
 import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
-import { LOG, LOGd, LOGe, LOGi } from "../../logging/Log";
+import { LOG, LOGd, LOGe, LOGi, LOGv } from "../../logging/Log";
 import { BleUtil } from "../../util/BleUtil";
 import { DfuHelper } from "./DfuHelper";
 import { StoneUtil } from "../../util/StoneUtil";
@@ -701,17 +701,26 @@ export class DfuExecutor {
         if (advertisement.handle === this.stone.config.handle) {
           rssiResolver(advertisement, false, false);
         }
+        else {
+          LOGv.dfu("DFUExecutor: Other advertisment received while looking for", this.stone.config.handle, advertisement);
+        }
       }));
 
       this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
         if (setupAdvertisement.handle === this.stone.config.handle) {
           rssiResolver(setupAdvertisement, true, false);
         }
+        else {
+          LOGv.dfu("DFUExecutor: Other setupAdvertisement received while looking for", this.stone.config.handle, setupAdvertisement);
+        }
       }));
 
       this.processSubscriptions.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
         if (dfuAdvertisement.handle === this.stone.config.handle) {
           rssiResolver(dfuAdvertisement, false, true);
+        }
+        else {
+          LOGv.dfu("DFUExecutor: Other dfuAdvertisement received while looking for", this.stone.config.handle, dfuAdvertisement);
         }
       }))
     });
