@@ -132,7 +132,6 @@ class NotificationParserClass {
           switchState,
           {},
           (err) => {},
-          INTENTS.manual,
           5,
           'from handle in NotificationParser'
         );

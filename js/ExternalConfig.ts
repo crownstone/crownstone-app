@@ -179,7 +179,7 @@ import { Platform } from "react-native";
   // if this is enabled, you will always have the option to update the firmware and bootloader,
   // and all of them will be installed and a hard reset follows. This is to test the DFU.
   export const ALWAYS_DFU_UPDATE_BOOTLOADER = false;
-  export const ALWAYS_DFU_UPDATE_FIRMWARE = false;
+  export const ALWAYS_DFU_UPDATE_FIRMWARE   = false;
 /******************** /DEV EXCEPTIONS ********************/
 
 

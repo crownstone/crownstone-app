@@ -192,8 +192,8 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
   }
   _getTwilightModeExamples() {
     let examples : AicoreTwilight[] = [];
-    examples.push(new AicoreTwilight().setDimAmount(0.5).setTimeWhenDark());
-    examples.push(new AicoreTwilight().setDimAmount(0.3).setTimeFrom(23,30).setTimeToSunrise());
+    examples.push(new AicoreTwilight().setDimPercentage(50).setTimeWhenDark());
+    examples.push(new AicoreTwilight().setDimPercentage(30).setTimeFrom(23,30).setTimeToSunrise());
     return examples;
   }
 

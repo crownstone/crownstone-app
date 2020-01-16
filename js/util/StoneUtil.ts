@@ -16,7 +16,6 @@ import { BleUtil } from "./BleUtil";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { BEHAVIOUR_TYPES } from "../router/store/reducers/stoneSubReducers/rules";
 import { AicoreBehaviour } from "../views/deviceViews/smartBehaviour/supportCode/AicoreBehaviour";
-import { act } from "react-test-renderer";
 import { xUtil } from "./StandAloneUtil";
 
 export const StoneUtil = {
@@ -27,9 +26,9 @@ export const StoneUtil = {
       newState : number,
       options : batchCommandEntryOptions = {},
       finalize = (err, result?: any) => {},
-      intent = INTENTS.manual,
       attempts : number = 1,
-      label : string = 'from StoneUtil'
+      label : string = 'from StoneUtil',
+      transient = false
     ) {
     let data = {state: newState};
     if (newState === 0) {
@@ -40,14 +39,14 @@ export const StoneUtil = {
       stone,
       stoneId,
       sphereId,
-      {commandName:'multiSwitch', state: newState, intent: intent, timeout: 0},
+      {commandName:'multiSwitch', state: newState},
       options,
       attempts,
       label
     )
       .then((result) => {
         core.store.dispatch({
-          type: 'UPDATE_STONE_SWITCH_STATE',
+          type: transient ? 'UPDATE_STONE_SWITCH_STATE_TRANSIENT' : 'UPDATE_STONE_SWITCH_STATE',
           sphereId: sphereId,
           stoneId: stoneId,
           data: data

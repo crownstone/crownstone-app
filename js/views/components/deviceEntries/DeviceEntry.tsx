@@ -120,7 +120,6 @@ export class DeviceEntry extends Component<any, any> {
           }
           this.setState(newState);
         },
-        INTENTS.manual,
         1,
         'from _pressedDevice in DeviceEntry'
       );

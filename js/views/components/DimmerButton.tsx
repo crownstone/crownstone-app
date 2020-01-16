@@ -164,7 +164,7 @@ export class DimmerButton extends Component<any, any> {
       this.props.stone,
       this.props.stoneId,
       this.props.sphereId,
-      {commandName:'multiSwitch', state: stateToSwitch, intent: INTENTS.manual, timeout: 0},
+      {commandName:'multiSwitch', state: stateToSwitch},
       {keepConnectionOpen: true, keepConnectionOpenTimeout: keepConnectionOpenTimeout},
       1
     )

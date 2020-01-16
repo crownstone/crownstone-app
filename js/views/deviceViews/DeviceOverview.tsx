@@ -33,6 +33,7 @@ import { DeviceError } from "./DeviceError";
 import { Util } from "../../util/Util";
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION } from "../../ExternalConfig";
 import { AlternatingContent } from "../components/animated/AlternatingContent";
+import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
 
 
 export class DeviceOverview extends LiveComponent<any, any> {
@@ -42,9 +43,11 @@ export class DeviceOverview extends LiveComponent<any, any> {
   }
 
   storedSwitchState = 0;
-  storedSwitchStateWhenOn = null;
   unsubscribeStoreEvents;
   stoneCanSwitch = true;
+
+  storeSwitchState = false;
+  storeSwitchStateTimeout = null;
 
   constructor(props) {
     super(props);
@@ -125,7 +128,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
         this.forceUpdate();
         return
       }
-      if (change.updateStoneSwitchState && change.updateStoneSwitchState.stoneIds[this.props.stoneId]) {
+      if (change.updateStoneSwitchState && change.updateStoneSwitchState.stoneIds[this.props.stoneId] && this.state.switchIsOn !== stone.state.state > 0) {
         this.setState({switchIsOn: stone.state.state > 0})
       }
     });
@@ -154,6 +157,11 @@ export class DeviceOverview extends LiveComponent<any, any> {
           data: { firmwareVersionSeenInOverview: stone.config.firmwareVersion }
         });
       }
+    }
+
+    if (this.storeSwitchState) {
+      clearTimeout(this.storeSwitchStateTimeout);
+      this.safeStoreUpdate()
     }
   }
 
@@ -186,42 +194,28 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
 
-  _switch(stone, state, fromDimmerSlider = false) {
-    let stateWhenOn = this.storedSwitchStateWhenOn;
-
-    if (state === 0 && this.state.switchIsOn) {
-      stateWhenOn = stone.state.state < 0.2 ? 1 : stone.state.state;
-    }
-    else if (state > 0 && !this.state.switchIsOn) {
-      stateWhenOn = state < 0.2 ? 1 : state;
-    }
-
-    if (this.storedSwitchStateWhenOn === null && !this.state.switchIsOn && !fromDimmerSlider) {
-      StoneUtil.turnOnBCH(
-        this.props.sphereId,
-        this.props.stoneId,
-        stone,
-        {keepConnectionOpen: true, keepConnectionOpenTimeout: 2},
-        () => { this.storedSwitchState = 1; this.storedSwitchStateWhenOn = null; },
-        1,
-        'from _getButton in DeviceSummary'
-      );
-    }
-    else {
-      StoneUtil.switchBCH(
-        this.props.sphereId,
-        this.props.stoneId,
-        stone,
-        state,
-        {},
-        () => { this.storedSwitchState = state; this.storedSwitchStateWhenOn = stateWhenOn; },
-        INTENTS.manual,
-        1,
-        'from _getButton in DeviceSummary'
-      );
-    }
+  _switch(stone, state) {
+    StoneUtil.switchBCH(
+      this.props.sphereId,
+      this.props.stoneId,
+      stone,
+      state,
+      {},
+      () => { this._planStoreAction(); },
+      1,
+      'from _getButton in DeviceSummary',
+      true
+    );
   }
 
+  _planStoreAction() {
+    this.storeSwitchState = true;
+    clearTimeout(this.storeSwitchStateTimeout);
+    this.storeSwitchStateTimeout = setTimeout(() => {
+      this.storeSwitchState = false;
+      this.safeStoreUpdate()
+    }, 3000);
+  }
 
   _getButton(stone) {
     let border = 4;
@@ -278,7 +272,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
           dimmingSynced={stone.abilities.dimming.syncedToCrownstone}
           showDimmingText={showDimmingText}
           callback={(percentage) => {
-            this._switch(stone, percentage, true);
+            this._switch(stone, percentage);
           }}/>
       );
     }
@@ -389,13 +383,27 @@ export class DeviceOverview extends LiveComponent<any, any> {
             this._switch(stone, 0);
           }
           else {
-            // switch on
-            if (this.storedSwitchStateWhenOn > 0.2) {
-              this._switch(stone, this.storedSwitchStateWhenOn);
-            }
-            else {
-              this._switch(stone, 1);
-            }
+            BatchCommandHandler.loadPriority(
+              stone,
+              this.props.stoneId,
+              this.props.sphereId,
+              {commandName:'turnOn'},
+              {},
+              2,
+              "From DeviceOverview"
+            )
+              .then((result) => {
+                let expectedState = AicoreUtil.getActiveTurnOnPercentage(this.props.sphereId, stone)
+
+                core.store.dispatch({
+                  type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
+                  sphereId: this.props.sphereId,
+                  stoneId: this.props.stoneId,
+                  data: {state: 0.01*expectedState}
+                });
+
+                this._planStoreAction();
+              });
           }
         }}>{content}</TouchableOpacity>
       )
@@ -521,8 +529,6 @@ function getTopBarProps(props) {
 
   return NAVBAR_PARAMS_CACHE;
 }
-
-
 
 
 
