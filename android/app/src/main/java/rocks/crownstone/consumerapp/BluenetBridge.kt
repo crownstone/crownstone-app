@@ -2775,7 +2775,6 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@Synchronized
 	private fun onIbeaconScan(scanList: ScannedIbeaconList) {
-
 		if (appLogLevel == AppLogLevel.BASIC || appLogLevel == AppLogLevel.EXTENDED) {
 			Log.i("IbeaconScan", "onTimeout numBeacons=${scanList.size}")
 			for (scan in scanList) {
@@ -2855,6 +2854,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@Synchronized
 	private fun onScan(device: ScannedDevice) {
+//		Log.d(TAG, "onScan: $device")
 		if (device.isStone()) {
 			if (sendUnverifiedAdvertisements) {
 				sendEvent("crownstoneAdvertisementReceived", device.address) // Any advertisement, verified and unverified from crownstones.
