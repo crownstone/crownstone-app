@@ -2093,7 +2093,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 						Conversion.toUint8(behaviour.getInt("idOnCrownstone"))
 					}
 					else {
-						255U
+						INDEX_UNKNOWN
 					}
 			if (!behaviour.hasKey("profileIndex")) { throw Exception("No profileIndex") }
 			val profileId = Conversion.toUint8(behaviour.getInt("profileIndex"))
