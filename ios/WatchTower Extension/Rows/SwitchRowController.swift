@@ -28,15 +28,13 @@ class SwitchRowController: NSObject {
         //print("switchToggled")
         
         if let stone = self.switchableStone {
-            var newSwitchState : Float = 0.0
-            if value {
-                newSwitchState = 1.0
-            }
-            
-            //print("Starting Toggle")
             self.toggleTime = Date().timeIntervalSince1970
-            bluenetManager.switchStoneBroadcast(stone.referenceId, stoneId: stone.crownstoneId, newSwitchState)
-//            bluenetManager.switchStone(stone.handle, newSwitchState)
+            if value {
+                bluenetManager.turnOnCrownstone(stone.referenceId, stoneId: stone.crownstoneId)
+            }
+            else {
+                bluenetManager.switchStoneBroadcast(stone.referenceId, stoneId: stone.crownstoneId, 0)
+            }
         }
     }
     

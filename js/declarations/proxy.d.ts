@@ -98,12 +98,35 @@ interface BluenetPromiseWrapperProtocol {
   getCurrentMultiplier()                        : Promise< number >,
   setCurrentMultiplier(value: number)           : Promise< void >,
   setUartState(value: number)                   : Promise< number >,
+  getBehaviourDebugInformation()                : Promise< behaviourDebug >,
 
   turnOnMesh(arrayOfStoneSwitchPackets: any[])  : Promise< void >,
   turnOnBroadcast(referenceId, stoneId)         : Promise< void >,
   setSunTimesViaConnection(sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) : Promise< void >,
 }
 
+
+interface behaviourDebug {
+  time                : number
+  sunrise             : number
+  sunset              : number
+  overrideState       : number
+  behaviourState      : number
+  aggregatedState     : number
+  dimmerPowered       : number
+  behaviourEnabled    : number
+  activeBehaviours    : boolean[]
+  activeEndConditions : boolean[]
+  presenceProfile_0   : boolean[]
+  presenceProfile_1   : boolean[]
+  presenceProfile_2   : boolean[]
+  presenceProfile_3   : boolean[]
+  presenceProfile_4   : boolean[]
+  presenceProfile_5   : boolean[]
+  presenceProfile_6   : boolean[]
+  presenceProfile_7   : boolean[]
+  presenceProfile_8   : boolean[]
+}
 
 type deviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB' | 'builtinOne'
 

@@ -1756,7 +1756,6 @@ export default {
     Change_Password:                     function() { return "Change Password" },
     Enable_Developer_Mode:               function() { return "Enable Developer Mode" },
     This_will_enable_certain_:           function() { return "This will enable certain features that are useful for developers. Only use if you know what you\'re doing." },
-    Developer_Menu:                      function() { return "Developer Menu" },
     My_Account:                          function() { return "My Account" },
   },
   SettingsRedownloadFromCloud:{
@@ -2242,6 +2241,7 @@ export default {
     Ill_try_it_:                         function() { return "I'll try it!" },
   },
   __UNIVERSAL:{
+    Developer_Menu:                      function() { return "Developer Menu" },
     Create:                              function() { return "Create" },
     Cancel:                              function() { return "Cancel" },
     Save:                                function() { return "Save" },
@@ -2263,5 +2263,12 @@ export default {
     DAY_Friday:                          function() { return "Friday"},
     DAY_Saturday:                        function() { return "Saturday"},
     DAY_Sunday:                          function() { return "Sunday"},
+    DAY_Mondays:                         function() { return "Mondays"  },
+    DAY_Tuesdays:                        function() { return "Tuesdays" },
+    DAY_Wednesdays:                      function() { return "Wednesdays"},
+    DAY_Thursdays:                       function() { return "Thursdays"},
+    DAY_Fridays:                         function() { return "Fridays"},
+    DAY_Saturdays:                       function() { return "Saturdays"},
+    DAY_Sundays:                         function() { return "Sundays"},
   },
 }

@@ -8,7 +8,7 @@ import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import {
   Text,
-  View, ScrollView, Alert, TextStyle
+  View, ScrollView, Alert, TextStyle, TouchableOpacity
 } from "react-native";
 import {
   availableModalHeight,
@@ -31,9 +31,10 @@ import { BehaviourSubmitButton } from "./supportComponents/BehaviourSubmitButton
 import { BEHAVIOUR_TYPES } from "../../../router/store/reducers/stoneSubReducers/rules";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
-import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP } from "../../../Constants";
+import { DAY_INDICES_MONDAY_START, DAY_LABEL_MAP, DAYS_LABEL_MAP } from "../../../Constants";
 import { SlideSideFadeInView } from "../../components/animated/SlideFadeInView";
 import ResponsiveText from "../../components/ResponsiveText";
+import { DataUtil } from "../../../util/DataUtil";
 
 const ruleStyle : TextStyle = {
   fontSize: 15,
@@ -103,7 +104,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       let rule = stone.rules[this.props.ruleId];
       if (rule) {
         if (this.props.deleteRule && this.props.selectedDay) {
-          activeDays[this.props.selectedDay] = true;
+          activeDays = rule.activeDays;
         }
         else {
           activeDays = rule.activeDays;
@@ -336,7 +337,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
 
   _getDayData() {
-    let activeDays = { Mon: false, Tue: false, Wed: false, Thu: false, Fri: false, Sat: false, Sun: false };
+    let activeDays = { Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: true, Sun: true };
     let conflictDays = {
       Mon: {rules: [], conflict:false },
       Tue: {rules: [], conflict:false },
@@ -424,6 +425,29 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     )
   }
 
+  _allActiveDaysAreSelected() {
+    let result = true;
+
+    if (this.props.ruleId) {
+      let state = core.store.getState();
+      let sphere = state.spheres[this.props.sphereId];
+      if (!sphere) return;
+      let stone = sphere.stones[this.props.stoneId];
+      if (!stone) return;
+
+      let rule = stone.rules[this.props.ruleId];
+      if (rule) {
+        DAY_INDICES_MONDAY_START.forEach((dayIndex) => {
+          if (rule.activeDays[dayIndex] && this.state.activeDays[dayIndex] === false) {
+            result = false;
+          }
+        })
+      }
+    }
+
+    return result;
+  }
+
   render() {
     let disabledDays = {};
 
@@ -433,6 +457,8 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
     let buttonColor = colors.green.hex;
     let buttonLabel = "That's it!";
+
+    let changeText = null;
 
     let amountOfUnresolvedConflictingDays = 0;
     let amountOfConflictingDays = 0;
@@ -456,6 +482,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       headerNumberOfLines = 2;
       header = "When shall I use the modified behaviour?";
       body = "You can quickly apply your changes to multiple days!";
+      changeText = this._allActiveDaysAreSelected() && "Only change " + DAYS_LABEL_MAP[this.props.selectedDay] + "."  || "Change everywhere!";
     }
     else if (this.props.ruleId && this.props.deleteRule) {
       headerNumberOfLines = 2;
@@ -464,6 +491,8 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
 
       buttonColor = colors.csOrange.hex;
       buttonLabel = 'Remove behaviour!'
+
+      changeText = this._allActiveDaysAreSelected() && "Remove only " +  DAYS_LABEL_MAP[this.props.selectedDay]+ "." || "Remove everywhere.";
 
       let state = core.store.getState();
       let sphere = state.spheres[this.props.sphereId];
@@ -492,6 +521,10 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
         buttonLabel = 'Never mind...'
       }
     }
+
+
+
+
 
     return (
       <Background image={core.background.lightBlur} hideNotifications={true} hasNavBar={false}>
@@ -533,7 +566,27 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
               </SlideSideFadeInView>
             </View>
 
+
+            { changeText && <View style={{flex:1}} />}
+            { changeText && <TouchableOpacity
+              onPress={() => {
+                if (this._allActiveDaysAreSelected()) {
+                  let activeDays = { Mon: false, Tue: false, Wed: false, Thu: false, Fri: false, Sat: false, Sun: false };
+                  activeDays[this.props.selectedDay] = true;
+                  this.setState({activeDays: activeDays})
+                }
+                else {
+                  let rule = DataUtil.getRule(this.props.sphereId, this.props.stoneId, this.props.ruleId);
+                  if (rule) {
+                    this.setState({activeDays: rule.activeDays})
+                  }
+                }
+              }}
+              style={{height: 36, borderColor: colors.white.rgba(0.6), borderWidth:1, backgroundColor: colors.white.rgba(0.3), borderRadius: 18, paddingHorizontal: 25, ...styles.centered}}>
+              <Text style={{fontWeight:'bold', fontSize:14, color: colors.csBlueDark.hex}}>{changeText}</Text>
+            </TouchableOpacity>}
             <View style={{flex:2}} />
+
             <View style={{flexDirection:'row'}}>
               <View style={{flex:1}} />
               <View>

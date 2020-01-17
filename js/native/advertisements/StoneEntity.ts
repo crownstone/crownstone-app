@@ -534,7 +534,7 @@ export class StoneEntity {
   handleErrors(stone, advertisement : crownstoneAdvertisement) {
     if (xUtil.versions.canIUse(stone.config.firmwareVersion, '2.0.0')) {
       if (advertisement.serviceData.hasError === true) {
-        LOGi.advertisements("StoneEntity: GOT ERROR", advertisement.serviceData);
+        LOGe.advertisements("StoneEntity: GOT ERROR", advertisement.serviceData);
         if (advertisement.serviceData.errorMode) {
           // only mark as error is it is not already marked as error
           if (stone.errors.hasError === false) {
@@ -564,7 +564,7 @@ export class StoneEntity {
                 dimmerOffFailure:  advertisement.serviceData.errors.dimmerOffFailure,
               }
             });
-            LOGe.info("CROWNSTONE ERROR stoneId", this.stoneId, 'sphereId:', this.sphereId, "errors:", advertisement.serviceData.errors)
+            LOGe.info("CROWNSTONE ERROR stoneId", this.stoneId, 'sphereId:', this.sphereId, "serviceData:", advertisement.serviceData, "errors:", advertisement.serviceData.errors, "stoneConfig", stone.config);
             if (Permissions.inSphere(this.sphereId).canClearErrors) {
               core.eventBus.emit('updateErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
             }

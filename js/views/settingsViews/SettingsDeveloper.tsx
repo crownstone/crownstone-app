@@ -51,7 +51,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     let state = core.store.getState();
 
 
-    this.state = { devAppVisible: state.development.devAppVisible }
+    this.state = { devAppVisible: state.development.devAppVisible && this.props.fromOverview !== true }
   }
 
   componentDidMount() {
@@ -444,5 +444,18 @@ export function getDevAppItems() {
       type: 'explanation',
       below: true
     });
+    items.push({
+      label: lang("Developer_Menu"),
+      icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        NavigationUtil.navigate("SettingsDeveloper", {fromOverview: true});
+      }
+    });
+  items.push({
+    label: "Debug options for developers.",
+    type: 'explanation',
+    below: true
+  });
     return items;
 }

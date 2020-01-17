@@ -440,6 +440,10 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("recover", callback, GLOBAL_BLUENET.bluenet.control.recoverByFactoryReset(crownstoneHandle))
   }
   
+  @objc func getBehaviourDebugInformation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("getBehaviourDebugInformation", callback, GLOBAL_BLUENET.bluenet.debug.getBehaviourDebugInformation())
+  }
+  
   @objc func enableExtendedLogging(_ enableLogging: NSNumber) -> Void {
     LOGGER.info("BluenetBridge: Called enableExtendedLogging")
     if (enableLogging.boolValue == true) {

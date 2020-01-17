@@ -362,7 +362,7 @@ export class RuleEditor extends LiveComponent<
         if (Array.isArray(value)) {
           value = value[0];
         }
-        exampleBehaviour.setDimAmount(value);
+        exampleBehaviour.setDimPercentage(value);
         this.rule.setDimPercentage(value);
         this.setState({selectedDetailField: selectionDescription})
       },

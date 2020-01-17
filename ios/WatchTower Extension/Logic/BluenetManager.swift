@@ -165,7 +165,11 @@ class BluenetManager {
     }
 
   
-  public func switchStoneBroadcast(_ referenceId: String, stoneId: UInt8, _ newState: Float) {
+    public func switchStoneBroadcast(_ referenceId: String, stoneId: UInt8, _ newState: Float) {
      _ = self.bluenet.broadcast.multiSwitch(referenceId: referenceId, stoneId: stoneId, switchState: newState)
-  }
+    }
+
+    public func turnOnCrownstone(_ referenceId: String, stoneId: UInt8) {
+        _ = self.bluenet.broadcast.turnOn(referenceId: referenceId, stoneId: stoneId)
+    }
 }
