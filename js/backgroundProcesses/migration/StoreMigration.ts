@@ -18,7 +18,7 @@ export function migrate() {
       if (ruleData.type === BEHAVIOUR_TYPES.twilight) { rule = new AicoreTwilight(ruleData.data);  }
       else                                            { rule = new AicoreBehaviour(ruleData.data); }
 
-      if (rule.getDimAmount() < 1) {
+      if (rule.getDimAmount() <= 1) {
         rule.setDimPercentage(Math.floor(rule.getDimAmount() * 100));
         actions.push({type:"U PDATE_STONE_RULE", sphereId: sphereId, stoneId: stoneId, ruleId: ruleId, data: {data: rule.stringify() }})
       }

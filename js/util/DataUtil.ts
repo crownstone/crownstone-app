@@ -95,6 +95,16 @@ export const DataUtil = {
   },
 
 
+  getRule(sphereId, stoneId, ruleId) {
+    let state = core.store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) return null;
+    let stone = sphere.stones[stoneId];
+    if (!stone) return null;
+    let rule = stone.rules[ruleId];
+    return rule || null;
+  },
+
   getLocation(sphereId, locationId) {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];

@@ -2263,5 +2263,12 @@ export default {
     DAY_Friday:                          function() { return "Friday"},
     DAY_Saturday:                        function() { return "Saturday"},
     DAY_Sunday:                          function() { return "Sunday"},
+    DAY_Mondays:                         function() { return "Mondays"  },
+    DAY_Tuesdays:                        function() { return "Tuesdays" },
+    DAY_Wednesdays:                      function() { return "Wednesdays"},
+    DAY_Thursdays:                       function() { return "Thursdays"},
+    DAY_Fridays:                         function() { return "Fridays"},
+    DAY_Saturdays:                       function() { return "Saturdays"},
+    DAY_Sundays:                         function() { return "Sundays"},
   },
 }

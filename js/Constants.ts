@@ -32,6 +32,15 @@ export let DAY_LABEL_MAP = {
   Sat: Languages.get("__UNIVERSAL", 'DAY_Saturday')(),
   Sun: Languages.get("__UNIVERSAL", 'DAY_Sunday')(),
 };
+export let DAYS_LABEL_MAP = {
+  Mon: Languages.get("__UNIVERSAL", 'DAY_Mondays')(),
+  Tue: Languages.get("__UNIVERSAL", 'DAY_Tuesdays')(),
+  Wed: Languages.get("__UNIVERSAL", 'DAY_Wednesdays')(),
+  Thu: Languages.get("__UNIVERSAL", 'DAY_Thursdays')(),
+  Fri: Languages.get("__UNIVERSAL", 'DAY_Fridays')(),
+  Sat: Languages.get("__UNIVERSAL", 'DAY_Saturdays')(),
+  Sun: Languages.get("__UNIVERSAL", 'DAY_Sundays')(),
+};
 export let DAY_SHORT_LABEL_MAP = {
   Mon: Languages.get("__UNIVERSAL", 'DAY_Mon')(),
   Tue: Languages.get("__UNIVERSAL", 'DAY_Tue')(),
