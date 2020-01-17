@@ -381,11 +381,11 @@ export const xUtil = {
     return screenHeight < 600;
   },
 
-  stringify: function(obj, space = 0) {
+  stringify: function(obj, space = 2) {
     let allKeys = [];
     JSON.stringify( obj, function( key, value ){ allKeys.push( key ); return value; } )
     allKeys.sort();
-    return JSON.stringify( obj, allKeys, 2 );
+    return JSON.stringify( obj, allKeys, space);
   },
 
 

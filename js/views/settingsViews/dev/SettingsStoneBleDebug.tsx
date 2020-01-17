@@ -181,6 +181,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             }
 
             let data = returnData.data;
+
             data.activeBehaviours = mapBitmaskArray(data.activeBehaviours);
             data.activeEndConditions = mapBitmaskArray(data.activeEndConditions);
 
@@ -193,7 +194,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             data.presenceProfile_6 = mapBitmaskArray(data.presenceProfile_6);
             data.presenceProfile_7 = mapBitmaskArray(data.presenceProfile_7);
 
-            let string = xUtil.stringify(data, 2);
+            let string = JSON.stringify(data, undefined, 2);
             console.log("STONE DEBUG INFORMATION:", string);
             LOGe.info("STONE DEBUG INFORMATION:", string);
             this.setState({debugInformation: string});
