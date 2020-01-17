@@ -194,7 +194,7 @@ RCT_EXTERN_METHOD(setVoltageMultiplier: (nonnull NSNumber *)value callback:(RCTR
 RCT_EXTERN_METHOD(setCurrentMultiplier: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setUartState: (nonnull NSNumber *)value callback:(RCTResponseSenderBlock)callback)
 
-
+RCT_EXTERN_METHOD(getBehaviourDebugInformation:(RCTResponseSenderBlock)callback)
 
 
 

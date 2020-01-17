@@ -72,7 +72,8 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'setTapToToggle', value: boolean } |
   { commandName : 'setTapToToggleThresholdOffset', rssiOffset: number } |
   { commandName : 'setMeshChannel', channel: number } |
-  { commandName : 'setupPulse'}
+  { commandName : 'setupPulse'} |
+  { commandName : 'getBehaviourDebugInformation' }
 
 interface commandSummary {
   stone     : any,

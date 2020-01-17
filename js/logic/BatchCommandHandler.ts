@@ -233,6 +233,9 @@ class BatchCommandHandlerClass {
               case 'allowDimming':
                 actionPromise = BluenetPromiseWrapper.allowDimming(command.value);
                 break;
+              case 'getBehaviourDebugInformation':
+                actionPromise = BluenetPromiseWrapper.getBehaviourDebugInformation();
+                break;
               case 'setSunTimes':
                 actionPromise = BluenetPromiseWrapper.setSunTimesViaConnection(command.sunriseSecondsSinceMidnight, command.sunsetSecondsSinceMidnight);
                 break;

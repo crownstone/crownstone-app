@@ -7,10 +7,11 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
+  Alert,
   ScrollView,
   Text,
   View
-} from 'react-native';
+} from "react-native";
 
 import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
@@ -19,6 +20,11 @@ import {Util} from "../../../util/Util";
 import {Scheduler} from "../../../logic/Scheduler";
 import { core } from "../../../core";
 import { xUtil } from "../../../util/StandAloneUtil";
+import { IconButton } from "../../components/IconButton";
+import { NavigationUtil } from "../../../util/NavigationUtil";
+import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
+import { DataUtil } from "../../../util/DataUtil";
+import { LOGe } from "../../../logging/Log";
 
 const triggerId = "SettingsStoneBleDebug";
 
@@ -51,7 +57,8 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
       advertisementTimestamp: null,
       directAdvertisementTimestamp: null,
       ibeaconPayload: '',
-      ibeaconTimestamp: null
+      ibeaconTimestamp: null,
+      debugInformation: null
     };
   }
 
@@ -148,6 +155,74 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
         </View>
     });
     items.push({label: lang("Time_received__no_data",this.state.advertisementTimestamp,new Date(this.state.advertisementTimestamp)), type: 'explanation', below: true});
+
+
+    items.push({
+      label: "Get Behaviour Debug Information",
+      icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformation: null});
+        let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
+        if (!stone) { Alert.alert("Stone is missing", "I can't get it from the DB. Is it deleted?",[{text:"Ok.."}]); return;}
+
+        core.eventBus.emit("showLoading", "Getting Debug Info...");
+
+        BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getBehaviourDebugInformation'}, {}, 2, "From StoneDebug")
+          .then((returnData) => {
+            core.eventBus.emit("hideLoading");
+
+            const mapBitmaskArray = (arr) => {
+              let result = {};
+              for (let i = 0; i < arr.length; i++) {
+                result[i] = arr[i] && 1 || 0;
+              }
+              return result;
+            }
+
+            let data = returnData.data;
+            data.activeBehaviours = mapBitmaskArray(data.activeBehaviours);
+            data.activeEndConditions = mapBitmaskArray(data.activeEndConditions);
+
+            data.presenceProfile_0 = mapBitmaskArray(data.presenceProfile_0);
+            data.presenceProfile_1 = mapBitmaskArray(data.presenceProfile_1);
+            data.presenceProfile_2 = mapBitmaskArray(data.presenceProfile_2);
+            data.presenceProfile_3 = mapBitmaskArray(data.presenceProfile_3);
+            data.presenceProfile_4 = mapBitmaskArray(data.presenceProfile_4);
+            data.presenceProfile_5 = mapBitmaskArray(data.presenceProfile_5);
+            data.presenceProfile_6 = mapBitmaskArray(data.presenceProfile_6);
+            data.presenceProfile_7 = mapBitmaskArray(data.presenceProfile_7);
+
+            let string = xUtil.stringify(data, 2);
+            console.log("STONE DEBUG INFORMATION:", string);
+            LOGe.info("STONE DEBUG INFORMATION:", string);
+            this.setState({debugInformation: string});
+          })
+          .catch((err) => {
+            core.eventBus.emit("hideLoading");
+            Alert.alert("Something went wrong", err, [{text:"Damn."}]);
+          })
+        BatchCommandHandler.executePriority()
+      }
+    });
+
+    if (this.state.debugInformation) {
+      items.push({
+        __item:
+          <View style={{
+            backgroundColor: colors.white.hex,
+            minHeight: 300
+          }}>
+            <Text style={{
+              padding: 15,
+              color: colors.black.hex,
+              fontSize: 12
+            }}>{this.state.debugInformation}</Text>
+          </View>
+      });
+    }
+
+    items.push({ type: 'spacer' });
 
     return items;
   }

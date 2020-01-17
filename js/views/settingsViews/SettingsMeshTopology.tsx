@@ -178,7 +178,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     if (stoneIds.length === 0) {
       return (
         <Background image={core.background.menu}>
-                    <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{ lang("No_Crownstones_in_Sphere_",sphere.config.name) }</Text>
           </View>
           <TouchableOpacity
@@ -249,7 +249,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     height -= offset;
 
     return (
-      <Background image={core.background.menu}>
+      <Background image={core.background.menu} hideNotifications={true}>
         <ForceDirectedView
           viewId={this.viewId}
           height={height}
