@@ -117,6 +117,7 @@ interface behaviourDebug {
   behaviourEnabled    : number
   activeBehaviours    : boolean[]
   activeEndConditions : boolean[]
+  behavioursInTimeoutPeriod: boolean[]
   presenceProfile_0   : boolean[]
   presenceProfile_1   : boolean[]
   presenceProfile_2   : boolean[]

@@ -185,6 +185,8 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             data.activeBehaviours = mapBitmaskArray(data.activeBehaviours);
             data.activeEndConditions = mapBitmaskArray(data.activeEndConditions);
 
+            data.behavioursInTimeoutPeriod = mapBitmaskArray(data.behavioursInTimeoutPeriod);
+
             data.presenceProfile_0 = mapBitmaskArray(data.presenceProfile_0);
             data.presenceProfile_1 = mapBitmaskArray(data.presenceProfile_1);
             data.presenceProfile_2 = mapBitmaskArray(data.presenceProfile_2);
