@@ -5,31 +5,20 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("RoomOverview", key)(a,b,c,d,e);
 }
 import * as React from 'react';
-import {
-  Alert, Image,
-  ScrollView, Text, TextStyle, TouchableOpacity,
-  View
-} from "react-native";
+import {  Alert, Image, ScrollView, View } from "react-native";
 
 import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
 import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 
 import {
-  getPresentUsersInLocation,
-  getCurrentPowerUsageInLocation,
-  canUseIndoorLocalizationInSphere,
   enoughCrownstonesInLocationsForIndoorLocalization, DataUtil
 } from "../../util/DataUtil";
 import {
   styles,
   colors,
   screenHeight,
-  tabBarHeight,
-  topBarHeight,
   screenWidth,
-  deviceStyles,
-  statusBarHeight, availableModalHeight, availableScreenHeight
 } from "../styles";
 import { DfuStateHandler }        from '../../native/firmware/DfuStateHandler';
 import { DfuDeviceEntry }         from '../components/deviceEntries/DfuDeviceEntry';
@@ -94,15 +83,22 @@ export class RoomOverview extends LiveComponent<any, any> {
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'edit')  { NavigationUtil.launchModal( "RoomEdit",{ sphereId: this.props.sphereId, locationId: this.props.locationId }); }
     if (buttonId === 'train') {
+      if (core.store.getState().app.indoorLocalizationEnabled === false) {
+        Alert.alert(
+          "Indoor localization is currently disabeld",
+          "Take a look at the app settings if you'd like to change this.",
+          [{ text: "OK" }]);
+        return
+      }
+
       if (this.viewingRemotely === true) {
         Alert.alert(
           lang("_Youre_not_in_the_Sphere__header"),
           lang("_Youre_not_in_the_Sphere__body"),
-          [{text:lang("_Youre_not_in_the_Sphere__left")}])
+          [{ text: lang("_Youre_not_in_the_Sphere__left") }])
+        return
       }
-      else {
-        NavigationUtil.launchModal( "RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
-      }
+      NavigationUtil.launchModal( "RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
     }
   }
 

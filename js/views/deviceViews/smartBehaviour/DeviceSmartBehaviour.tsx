@@ -176,6 +176,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             sphereId={this.props.sphereId}
             stoneId={this.props.stoneId}
             activeDay={this.state.activeDay}
+            indoorLocalizationDisabled={state.app.indoorLocalizationEnabled !== true}
             startedYesterday={!rules[ruleId].activeDays[this.state.activeDay] && rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]]}
             ruleId={ruleId}
             editMode={this.state.editMode}

@@ -191,6 +191,9 @@ class LocationHandlerClass {
     let sphereId = data.region;
     let locationId = data.location;
     let state = core.store.getState();
+
+    if (state.app.indoorLocalizationEnabled === false) { return };
+
     if (sphereId && locationId) {
       // remove user from all locations except the locationId, if we are in the location ID, don't trigger anything
       let presentAtProvidedLocationId = this._removeUserFromRooms(state, sphereId, state.user.userId, locationId);
@@ -208,9 +211,13 @@ class LocationHandlerClass {
 
   _exitRoom(data : locationDataContainer) {
     LOG.info('LocationHandler: USER_EXIT_LOCATION.', data);
+
     let sphereId = data.region;
     let locationId = data.location;
     let state = core.store.getState();
+
+    if (state.app.indoorLocalizationEnabled === false) { return };
+
     if (sphereId && locationId) {
       core.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
       // used for clearing the timeouts for this room
