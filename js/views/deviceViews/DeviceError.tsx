@@ -72,15 +72,6 @@ export class DeviceError extends Component<any, any> {
   render() {
     let stone = this.props.stone;
 
-    // stone.errors = {
-    //   overCurrent: false,
-    //   overCurrentDimmer: false,
-    //   temperatureChip: false,
-    //   temperatureDimmer: false,
-    //   dimmerOnFailure: false || true,
-    //   dimmerOffFailure: false,
-    // }
-
     return (
       <Background image={require("../../images/backgrounds/hwError.png")}>
         <View style={{flex:2}} />

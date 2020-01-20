@@ -366,7 +366,7 @@ export class RuleEditor extends LiveComponent<
         this.rule.setDimPercentage(value);
         this.setState({selectedDetailField: selectionDescription})
       },
-      selection: this.rule.willDim() ? this.rule.getDimAmount() : exampleBehaviour.getDimAmount(),
+      selection: this.rule.willDim() ? this.rule.getDimPercentage() : exampleBehaviour.getDimPercentage(),
       image: require("../../../../images/overlayCircles/dimmingCircleGreen.png")
     })
   }
@@ -512,7 +512,7 @@ export class RuleEditor extends LiveComponent<
                   }
                 },
                 {
-                  label: lang("Dimmed__",Math.round(this.exampleBehaviours.action.dimming4.getDimAmount() * 100)),
+                  label: lang("Dimmed__",Math.round(this.exampleBehaviours.action.dimming4.getDimPercentage())),
                   subLabel: "(tap to change)",
                   isSelected: () => {
                     return this._evaluateActionSelection(SELECTABLE_TYPE.ACTION + "3", this.exampleBehaviours.action.dimming4);
@@ -609,7 +609,7 @@ export class RuleEditor extends LiveComponent<
                   onSelect: () => {this.rule.setActionState(100); this.forceUpdate(); }
                 },
                 {
-                  label: lang("Dimmed__", Math.round(this.rule.willDim() ? this.rule.getDimAmount() : 50)),
+                  label: lang("Dimmed__", Math.round(this.rule.willDim() ? this.rule.getDimPercentage() : 50)),
                   subLabel: "(tap to change)",
                   isSelected: () => { return this.rule.doesActionMatch(this.exampleBehaviours.action.dimming)},
                   onSelect: () => { this._showDimAmountPopup(this.exampleBehaviours.action.dimming); }

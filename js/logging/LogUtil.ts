@@ -1,4 +1,5 @@
 import { FileUtil } from "../util/FileUtil";
+import { LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
 
 const RNFS = require('react-native-fs');
 
@@ -20,7 +21,7 @@ export function cleanLogs() {
   _cleanLogs(logPath);
 }
 
-function _cleanLogs(logPath, amountOfDaysStored = 3) {
+function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAYS) {
   let allowedLogFiles = {};
   for (let i = 0; i < amountOfDaysStored; i++) {
     let timestamp = new Date().valueOf() - i*86400000;

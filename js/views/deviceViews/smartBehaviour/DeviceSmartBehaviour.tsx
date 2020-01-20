@@ -275,8 +275,8 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <BehaviourSuggestion
-                backgroundColor={colors.menuTextSelected.rgba(0.5)}
-                label={ lang("Copy_to___")}
+                backgroundColor={ colors.menuTextSelected.rgba(0.5) }
+                label={ lang("Copy_to___") }
                 callback={() => {
                   let requireDimming = StoneUtil.doRulesRequireDimming(this.props.sphereId, this.props.stoneId, ruleIds);
 

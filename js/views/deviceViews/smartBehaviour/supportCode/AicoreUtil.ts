@@ -701,7 +701,7 @@ export const AicoreUtil = {
       let currentDay = DAY_INDICES_SUNDAY_START[new Date().getDay()];
       if (ruleData.activeDays[currentDay]) {
         if (rule.isCurrentlyActive(sphereId)) {
-          dimAmount = Math.min(dimAmount, rule.getDimAmount());
+          dimAmount = Math.min(dimAmount, rule.getDimPercentage());
         }
       }
     }
