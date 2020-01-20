@@ -363,13 +363,24 @@ function NoRulesYet(props) {
           { updateRequired && <BehaviourSuggestion
             backgroundColor={colors.green.rgba(0.9)}
             label={ "Update to use behaviour!"}
-            callback={() => { NavigationUtil.launchModal( "DfuIntroduction", {sphereId: props.sphereId}); }}
+            callback={() => {
+              if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
+                Alert.alert("You don't have permission to do this.","Only admins or members can update Crownstones.",[{text:'OK'}]);
+                return
+              }
+
+              NavigationUtil.launchModal( "DfuIntroduction", {sphereId: props.sphereId}); }}
           /> }
 
           { !updateRequired && <BehaviourSuggestion
             backgroundColor={colors.green.rgba(0.9)}
             label={"Add my first behaviour!"}
             callback={() => {
+              if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
+                Alert.alert("You don't have permission to do this.","Only admins or members can update Crownstones.",[{text:'OK'}]);
+                return
+              }
+
               NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', {
                 sphereId: props.sphereId,
                 stoneId: props.stoneId
@@ -384,43 +395,48 @@ function NoRulesYet(props) {
             iconSize={14}
             iconColor={colors.menuTextSelected.rgba(0.75)}
             callback={() => {
-            NavigationUtil.launchModal("DeviceSmartBehaviour_CopyStoneSelection", {
-              ...props,
-              copyType: "FROM",
-              originId: props.stoneId,
-              originIsDimmable: stone.abilities.dimming.enabledTarget,
-              callback: (fromStoneId, selectedRuleIds) => {
-                let stoneName = DataUtil.getStoneName(props.sphereId, fromStoneId);
-                Alert.alert(
-                  "Shall I copy the behaviour from " + stoneName + "?",
-                  undefined,
-                  [{ text: "Cancel" }, {
-                    text: "OK", onPress: () => {
-                      StoneUtil.copyRulesBetweenStones(props.sphereId, fromStoneId, props.stoneId, selectedRuleIds)
-                        .then((success) => {
-                          if (success) {
-                            let seeResults = () => {
-                              NavigationUtil.dismissModal();
+              if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
+                Alert.alert("You don't have permission to do this.","Only admins or members can update Crownstones.",[{text:'OK'}]);
+                return
+              }
+
+              NavigationUtil.launchModal("DeviceSmartBehaviour_CopyStoneSelection", {
+                ...props,
+                copyType: "FROM",
+                originId: props.stoneId,
+                originIsDimmable: stone.abilities.dimming.enabledTarget,
+                callback: (fromStoneId, selectedRuleIds) => {
+                  let stoneName = DataUtil.getStoneName(props.sphereId, fromStoneId);
+                  Alert.alert(
+                    "Shall I copy the behaviour from " + stoneName + "?",
+                    undefined,
+                    [{ text: "Cancel" }, {
+                      text: "OK", onPress: () => {
+                        StoneUtil.copyRulesBetweenStones(props.sphereId, fromStoneId, props.stoneId, selectedRuleIds)
+                          .then((success) => {
+                            if (success) {
+                              let seeResults = () => {
+                                NavigationUtil.dismissModal();
+                              }
+                              Alert.alert(
+                                "Success!",
+                                "Behaviour has been copied!",
+                                [{
+                                  text: "Great!", onPress: () => {
+                                    seeResults()
+                                  }
+                                }], {
+                                  onDismiss: () => {
+                                    seeResults()
+                                  }
+                                })
                             }
-                            Alert.alert(
-                              "Success!",
-                              "Behaviour has been copied!",
-                              [{
-                                text: "Great!", onPress: () => {
-                                  seeResults()
-                                }
-                              }], {
-                                onDismiss: () => {
-                                  seeResults()
-                                }
-                              })
-                          }
-                        })
-                    }
-                  }])
-              },
-            })
-          }}
+                          })
+                      }
+                    }])
+                },
+              })
+            }}
             />
           }
           <View style={{height:30}} />
