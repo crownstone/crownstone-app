@@ -48,6 +48,7 @@ import rocks.crownstone.bluenet.scanparsing.CrownstoneServiceData
 import rocks.crownstone.bluenet.scanparsing.ScannedDevice
 import rocks.crownstone.bluenet.structs.*
 import rocks.crownstone.bluenet.util.*
+import rocks.crownstone.bluenet.util.Util.isBitSet
 import rocks.crownstone.localization.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -2049,6 +2050,54 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		resolveCallback(callback, hash.toDouble())
 	}
 
+	@ReactMethod
+	@Synchronized
+	fun getBehaviourDebugInformation(callback: Callback) {
+		Log.i(TAG, "getBehaviourDebugInformation")
+		bluenet.control.getBehaviourDebug()
+				.success {
+					val behaviourDebug = it
+					Log.i(TAG, "Behaviour debug: $behaviourDebug")
+					val map = Arguments.createMap()
+					map.putDouble("time", behaviourDebug.time.toDouble())
+					map.putInt("sunrise", behaviourDebug.sunrise.toInt())
+					map.putInt("sunset", behaviourDebug.sunset.toInt())
+					map.putInt("overrideState", behaviourDebug.overrideState.toInt())
+					map.putInt("behaviourState", behaviourDebug.behaviourState.toInt())
+					map.putInt("aggregatedState", behaviourDebug.aggregatedState.toInt())
+					map.putInt("dimmerPowered", behaviourDebug.dimmerPowered.toInt())
+					map.putInt("behaviourEnabled", behaviourDebug.behaviourEnabled.toInt())
+
+					val activeBehavioursArray = Arguments.createArray()
+					for (i in 0 until 64) {
+						activeBehavioursArray.pushBoolean(isBitSet(behaviourDebug.activeBehaviours, i))
+					}
+					map.putArray("activeBehaviours", activeBehavioursArray)
+
+					val activeEndConditionsArray = Arguments.createArray()
+					for (i in 0 until 64) {
+						activeEndConditionsArray.pushBoolean(isBitSet(behaviourDebug.activeEndConditions, i))
+					}
+					map.putArray("activeEndConditions", activeEndConditionsArray)
+
+					val activeTimeoutPeriodArray = Arguments.createArray()
+					for (i in 0 until 64) {
+						activeTimeoutPeriodArray.pushBoolean(isBitSet(behaviourDebug.activeTimeoutPeriod, i))
+					}
+					map.putArray("behavioursInTimeoutPeriod", activeTimeoutPeriodArray)
+
+					for (profile in 0 until BehaviourDebugPacket.NUM_PROFILES) {
+						val presenceArray = Arguments.createArray()
+						for (i in 0 until 64) {
+							presenceArray.pushBoolean(isBitSet(behaviourDebug.presenceBitmasks[profile], i))
+						}
+						map.putArray("presenceProfile_$profile", presenceArray)
+					}
+					resolveCallback(callback, map)
+				}
+				.fail { rejectCallback(callback, it.message) }
+	}
+
 	/**
 	 * Value that determines when the day starts, defined as offset from midnight in seconds.
 	 */
@@ -3041,7 +3090,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 
 	private fun rejectCallback(callback: Callback, error: String?) {
-		Log.i(TAG, "reject $callback $error")
+		Log.w(TAG, "reject $callback $error")
 		val retVal = Arguments.createMap()
 		retVal.putString("data", error)
 		retVal.putBoolean("error", true)
