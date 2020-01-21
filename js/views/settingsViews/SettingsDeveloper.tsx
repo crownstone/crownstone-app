@@ -350,6 +350,7 @@ lang("_Reset_Done__Rediscovery__body"),
     //     }
     //   }});
 
+    items.push({type:'spacer'});
     items.push({
       label: "Show sync button for behaviour",
       value: dev.show_sync_button_in_behaviour,
@@ -359,6 +360,23 @@ lang("_Reset_Done__Rediscovery__body"),
         store.dispatch({
           type: 'CHANGE_DEV_SETTINGS',
           data: {show_sync_button_in_behaviour: newValue}
+        });
+      }});
+
+
+    items.push({
+      label: "Early Firmware Access",
+      value: dev.firmwareEarlyAccess,
+      icon: <IconButton name={"ios-cloud-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.darkGreen.hex}}/>,
+      type: 'switch',
+      callback:(newValue) => {
+        if (newValue) {
+          CLOUD.setEarlyAccess(true);
+        }
+
+        store.dispatch({
+          type: 'CHANGE_DEV_SETTINGS',
+          data: {firmwareEarlyAccess: newValue}
         });
       }});
 

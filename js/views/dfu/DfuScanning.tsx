@@ -134,29 +134,37 @@ export class DfuScanning extends LiveComponent<any, any> {
   _updateList(stoneMap: StoneMap, rssi) {
     let stoneId = stoneMap.id;
     if (this.stoneUpdateData.stones[stoneId] !== undefined) {
-      if (rssi >= 0 || rssi < -120) { return };
+      if (rssi >= 0 || rssi < -100) { return };
 
       if (this.visibleStones[stoneId] === undefined) {
         this.visibleStones[stoneId] = {updatedAt: null, rssi: rssi};
       }
-      let factor = 0.1;
-      this.visibleStones[stoneId].rssi = factor*(rssi || DFU_BATCH_RSSI_THRESHOLD) + (1-factor)*this.visibleStones[stoneId].rssi;
+      let factor = 0.2;
+      this.visibleStones[stoneId].rssi = factor*rssi + (1-factor)*this.visibleStones[stoneId].rssi;
       this.visibleStones[stoneId].updatedAt = new Date().valueOf();
     }
   }
 
 
+  _shouldStoneBeVisibleBasedOnLastSeen(stoneId) {
+    return this.visibleStones[stoneId] && (new Date().valueOf() - this.visibleStones[stoneId].updatedAt < 10000) || false;
+  }
+
   _renderer(item, index, stoneId) {
-    let visible = this.visibleStones[stoneId] && (new Date().valueOf() - this.visibleStones[stoneId].updatedAt < 10000) || false;
+    let visible = this._shouldStoneBeVisibleBasedOnLastSeen(stoneId);
     let backgroundColor = colors.lightGray.rgba(0.5);
     let iconColor = colors.csBlue.rgba(0.2);
     let closeEnough = false;
+
+    this.visibleDrawnStones = [];
+
 
     if (visible) {
       if (this.visibleStones[stoneId].rssi > DFU_BATCH_RSSI_THRESHOLD) {
         backgroundColor = colors.green.rgba(0.8);
         iconColor = colors.csBlue.hex;
         closeEnough = true;
+        this.visibleDrawnStones.push(stoneId);
       }
       else {
         backgroundColor = colors.white.rgba(0.8);
@@ -182,25 +190,24 @@ export class DfuScanning extends LiveComponent<any, any> {
     );
   }
 
-  _getStoneList() {
+   _getStoneList() {
     this.visibleDrawnStones = [];
     let stoneArray = [];
     let idArray = [];
 
     let ids = Object.keys(this.stoneUpdateData.stones);
     ids.forEach((id) => {
-      let visible = this.visibleStones[id] && (new Date().valueOf() - this.visibleStones[id].updatedAt < 1000) || false;
+      let visible = this._shouldStoneBeVisibleBasedOnLastSeen(id);
       if (visible) {
         if (this.visibleStones[id].rssi > DFU_BATCH_RSSI_THRESHOLD) {
           stoneArray.push(this.stoneUpdateData.stones[id]);
           idArray.push(id);
-          this.visibleDrawnStones.push(id);
         }
       }
     });
 
     ids.forEach((id) => {
-      let visible = this.visibleStones[id] && (new Date().valueOf() - this.visibleStones[id].updatedAt < 1000) || false;
+      let visible = this._shouldStoneBeVisibleBasedOnLastSeen(id);
       if (visible) {
         if (this.visibleStones[id].rssi <= DFU_BATCH_RSSI_THRESHOLD) {
           stoneArray.push(this.stoneUpdateData.stones[id]);
@@ -210,7 +217,7 @@ export class DfuScanning extends LiveComponent<any, any> {
     });
 
     ids.forEach((id) => {
-      let visible = this.visibleStones[id] && (new Date().valueOf() - this.visibleStones[id].updatedAt < 1000) || false;
+      let visible = this._shouldStoneBeVisibleBasedOnLastSeen(id);
       if (!visible) {
         stoneArray.push(this.stoneUpdateData.stones[id]);
         idArray.push(id);

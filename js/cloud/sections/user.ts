@@ -52,6 +52,14 @@ export const user = {
 
   /**
    *
+   * @param file {String} --> full path string.
+   */
+  setEarlyAccess: function(enabled) {
+    return cloudApiBase._setupRequest('PUT', '/users/{id}', {data: { earlyAccessLevel: enabled ? 1000 : 0 }, background: false}, 'body');
+  },
+
+  /**
+   *
    * @param toPath
    */
   downloadProfileImage: function (toPath) {
