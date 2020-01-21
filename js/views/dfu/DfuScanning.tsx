@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  ActivityIndicator, Alert,
+  ActivityIndicator, Alert, Platform,
   ScrollView, Text, TouchableOpacity,
   View
 } from "react-native";
@@ -28,7 +28,7 @@ import { LiveComponent } from "../LiveComponent";
 
 const triggerId = "ScanningForDfu";
 
-const DFU_BATCH_RSSI_THRESHOLD = -85;
+const DFU_BATCH_RSSI_THRESHOLD = Platform.OS === 'android' ? -80 : -85;
 
 export class DfuScanning extends LiveComponent<any, any> {
   static options(props) {
@@ -106,7 +106,6 @@ export class DfuScanning extends LiveComponent<any, any> {
 
       this.nativeEvents.forEach((unsub) => { unsub(); });
       this.nativeEvents = [];
-      this.visibleDrawnStones = [];
       this.visibleStones = {};
 
       Scheduler.removeTrigger(triggerId);
@@ -191,7 +190,6 @@ export class DfuScanning extends LiveComponent<any, any> {
   }
 
    _getStoneList() {
-    this.visibleDrawnStones = [];
     let stoneArray = [];
     let idArray = [];
 

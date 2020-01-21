@@ -170,7 +170,7 @@ export class DfuBatch extends Component<any, any> {
             <View style={{flex:1}} />
           </View>
         </View>
-        <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3),...borderStyle}}>
+        <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3), ...borderStyle}}>
           <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("This_can_take_a_while_so_j") }</Text>
         </View>
         <ScrollView style={{position:'relative', top:-1}}>
