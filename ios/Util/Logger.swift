@@ -9,7 +9,7 @@
 import Foundation
 import BluenetShared
 
-let LOGGER = BluenetShared.LogClass(daysToStoreLogs: 3, logBaseFilename: "BridgeLog")
+let LOGGER = BluenetShared.LogClass(daysToStoreLogs: 7, logBaseFilename: "BridgeLog")
 
 @objc open class ObjectiveCLogger : NSObject {
   @objc public class func logInfo(log: String) {

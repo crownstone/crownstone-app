@@ -87,7 +87,7 @@ class StoneDataSyncerClass {
             for (let k = 0; k < ruleIds.length; k++) {
               let ruleId = ruleIds[k];
               let rule = stone.rules[ruleId];
-              if (!rule.syncedToCrownstone || rule.deleted) {
+              if (this._shouldRuleBeSynced(rule)) {
                 rulesHaveChanged = true;
               }
             }
@@ -130,7 +130,7 @@ class StoneDataSyncerClass {
       for (let k = 0; k < ruleIds.length; k++) {
         let ruleId = ruleIds[k];
         let rule = stone.rules[ruleId];
-        if (!rule.syncedToCrownstone || rule.deleted) {
+        if (this._shouldRuleBeSynced(rule)) {
           LOGi.info("StoneDataSyncer: Attempting to sync rule", sphereId, stoneId, ruleId, sessionId);
           rulePromises.push(
             this._syncRule(sphereId, stoneId, ruleId, stone, rule, sessionId)
@@ -202,6 +202,10 @@ class StoneDataSyncerClass {
           break;
       }
     }
+  }
+
+  _shouldRuleBeSynced(rule) {
+    return !rule.syncedToCrownstone || rule.deleted || rule.idOnCrownstone === null || rule.idOnCrownstone === undefined;
   }
 
   _syncTapToToggle(sphereId : string, stoneId : string) {
@@ -394,10 +398,10 @@ class StoneDataSyncerClass {
       .then((masterHash) => {
         if (this.masterHashTracker[sphereId][stoneId] !== masterHash || force) {
           // SYNC!
-          LOGi.behaviour("Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId])
-          let commandPromise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "syncBehaviour", behaviours: ruleData});
+          LOGi.behaviour("Syncing behaviours now... My Master Hash", masterHash, " vs Crownstone hash", this.masterHashTracker[sphereId][stoneId]);
+          let commandPromise = BatchCommandHandler.loadPriority(stone, stoneId, sphereId, { commandName: "syncBehaviour", behaviours: ruleData });
           BatchCommandHandler.executePriority();
-          return commandPromise
+          return commandPromise;
         }
         throw "NO_SYNC_REQUIRED"
       })

@@ -73,12 +73,36 @@ class TimeKeeperClass {
         }
         else {
           let stoneIds = Object.keys(sphere.stones);
+
+          // Fisher-Yates shuffle.
+          function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+              let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+              let t = array[i];
+              array[i] = array[j];
+              array[j] = t
+
+            }
+          }
+
+          // randomly shuffle the IDs
+          shuffle(stoneIds);
+
           for (let i = 0; i < stoneIds.length; i++) {
+            // do not update more than 4. Mesh will do the rest.
+            if (i > 3) { break; }
+
             StoneAvailabilityTracker.setTrigger(sphereId, stoneIds[i], TRIGGER_ID, () => {
-              BatchCommandHandler.loadPriority(sphere.stones[stoneIds[i]], stoneIds[i], sphereId, {commandName:"setTime"})
-                .catch((err)=>{})
-              BatchCommandHandler.loadPriority(sphere.stones[stoneIds[i]], stoneIds[i], sphereId, {commandName:"setSunTimes", sunriseSecondsSinceMidnight: suntimes.sunrise, sunsetSecondsSinceMidnight: suntimes.sunset})
-                .catch((err)=>{})
+              BatchCommandHandler.loadPriority(sphere.stones[stoneIds[i]], stoneIds[i], sphereId, { commandName: "setTime" })
+                .catch((err) => {
+                })
+              BatchCommandHandler.loadPriority(sphere.stones[stoneIds[i]], stoneIds[i], sphereId, {
+                commandName: "setSunTimes",
+                sunriseSecondsSinceMidnight: suntimes.sunrise,
+                sunsetSecondsSinceMidnight: suntimes.sunset
+              })
+                .catch((err) => {
+                })
               BatchCommandHandler.executePriority()
             })
           }

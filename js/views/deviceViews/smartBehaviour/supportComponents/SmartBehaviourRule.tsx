@@ -17,6 +17,7 @@ export function SmartBehaviourRule(props: {
   ruleId: string,
   editMode: boolean,
   faded: boolean,
+  indoorLocalizationDisabled: boolean,
   startedYesterday?: boolean,
   activeDay?: string,
   selected?: boolean,
@@ -95,7 +96,7 @@ export function SmartBehaviourRule(props: {
       { /* /ActivityIndicator for sync required */ }
 
       { /* Rule text */ }
-      { RuleDescription(props, ai, editCallback, showEditIcons) }
+      { RuleDescription(props, ai, editCallback, showEditIcons, props.indoorLocalizationDisabled) }
       { /* /Rule text */ }
 
 
@@ -124,7 +125,7 @@ export function SmartBehaviourRule(props: {
   );
 }
 
-function RuleDescription(props, ai, editCallback, showEditIcons) {
+function RuleDescription(props, ai, editCallback, showEditIcons, indoorLocalizationDisabled) {
   let labelStyle : TextStyle = {
     color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
     fontSize:16,
@@ -147,17 +148,24 @@ function RuleDescription(props, ai, editCallback, showEditIcons) {
 
   let paddingHorizontal = showEditIcons ? 0 : 20;
 
-
-  let syncLabel = "( Not on Crownstone yet... )";
-  if (props.rule.deleted) {
-    syncLabel = "( Not removed from Crownstone yet... )"
+  let subLabel = null;
+  let subLabelStyle : TextStyle = {};
+  if (props.rule.syncedToCrownstone === false && showEditIcons) {
+    subLabel = "( Not on Crownstone yet... )";
+  }
+  if (props.rule.deleted && showEditIcons) {
+    subLabel = "( Not removed from Crownstone yet... )";
+  }
+  if (indoorLocalizationDisabled && !showEditIcons) {
+    subLabel = "Indoor localization disabled for this phone (in app settings).";
+    subLabelStyle = { color: colors.orange.hex, fontWeight:'bold'};
   }
 
   let content = (
     <View style={{flex:1, paddingHorizontal: paddingHorizontal }}>
       { props.startedYesterday && <Text style={yesterdayStyle}>{"(Started Yesterday)"}</Text> }
       <Text style={labelStyle}>{ai.getSentence(props.sphereId)}</Text>
-      { props.rule.syncedToCrownstone === false && props.editMode && !props.ruleSelection ? <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center',}}>{syncLabel}</Text> : undefined }
+      { subLabel ? <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center', ...subLabelStyle}}>{subLabel}</Text> : undefined }
     </View>
   )
 

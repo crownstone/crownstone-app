@@ -8,9 +8,8 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
   Text,
-  View} from 'react-native';
-
-
+  View
+} from 'react-native';
 
 import {styles, colors, screenWidth, } from '../../styles'
 import { Icon } from '../../components/Icon';

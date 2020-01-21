@@ -146,12 +146,9 @@ export class AicoreBehaviourCore {
   willDim() : boolean {
     return this.rule.action.data < 100;
   }
-  getDimAmount() : number {
+  getDimPercentage() : number {
     return this.rule.action.data;
   }
-
-
-
 
   getTime() : aicoreTime {
     return this.rule.time;
@@ -207,40 +204,6 @@ export class AicoreBehaviourCore {
 
     return true;
   }
-
-  getOverlapData(otherRule : behaviour | twilight, sphereId) {
-    let otherTime = otherRule.time;
-    let myTime = this.rule.time;
-
-    let result = { iOverlapOtherTime: 0, myPercentageOverlapped: 0, otherOverlapsMeTime: 0, otherPercentageOverlapped: 0}
-
-    /** All day is from 4:00 - 3:59 to cover most of the waking day for people. This will be configurable eventually **/
-    if (otherTime.type === "ALL_DAY") { return true; }
-    if (myTime.type    === "ALL_DAY") { return true; }
-
-    let otherStartBeforeMyEnd = AicoreUtil.isTimeBeforeOtherTime(myTime.from, otherTime.to  , sphereId);
-    let otherEndBeforeMyStart = AicoreUtil.isTimeBeforeOtherTime(myTime.to,   otherTime.from, sphereId);
-
-    if (otherEndBeforeMyStart)  { return false; }
-    if (!otherStartBeforeMyEnd) { return false; }
-
-    // if the other end before my start is false, check if the end is a sunrise, and allow 2 hours leniance.
-    if (!otherEndBeforeMyStart) {
-      if (otherTime.to.type === "SUNRISE") {
-        return AicoreUtil.getMinuteDifference(myTime, otherTime, sphereId) > -120;
-      }
-    }
-
-    // if the other end before my start is false, check if the end is a sunrise, and allow 2 hours leniance.
-    if (otherStartBeforeMyEnd) {
-      if (otherTime.to.type === "SUNSET") {
-        return AicoreUtil.getMinuteDifference(myTime, otherTime, sphereId) < 120;
-      }
-    }
-
-    return true;
-  }
-
 
   /**
    * SphereId is used to get the lat lon of the sphere for the time of day times

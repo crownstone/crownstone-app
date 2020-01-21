@@ -254,7 +254,7 @@ class BroadcastStateManagerClass {
     let state = core.store.getState();
 
     let rssiOffset = 0;
-    let ignoreForBehaviour = false;
+    let ignoreForBehaviour = state.app.indoorLocalizationEnabled === true;
     let tapToToggleEnabled = state.app.tapToToggleEnabled;
 
     // get device for rssi offset

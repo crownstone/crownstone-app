@@ -19,7 +19,6 @@ import { TopbarImitation } from "../../components/TopbarImitation";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
 import { DataUtil } from "../../../util/DataUtil";
-import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../ExternalConfig";
 import { AicoreUtil } from "./supportCode/AicoreUtil";
 
 export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
@@ -185,9 +184,9 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
     let locationId = DataUtil.getLocationIdFromStone(this.props.sphereId, this.props.stoneId);
 
     let examples : AicoreBehaviour[] = [];
-    examples.push(new AicoreBehaviour().ignorePresence().setTimeFromSunset(0).setTimeTo(22,0).setEndConditionWhilePeopleInSphere());
-    examples.push(new AicoreBehaviour().setPresenceInSphere().setTimeFromSunset(30).setTimeTo(23,0));
     examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(15,0).setTimeToSunset().setEndConditionWhilePeopleInLocation(DataUtil.locationIdToUid(this.props.sphereId,locationId)));
+    examples.push(new AicoreBehaviour().setPresenceInSphere().setTimeFromSunset(30).setTimeTo(23,0));
+    examples.push(new AicoreBehaviour().ignorePresence().setTimeFrom(18,0).setTimeTo(22,0));
     return examples;
   }
   _getTwilightModeExamples() {

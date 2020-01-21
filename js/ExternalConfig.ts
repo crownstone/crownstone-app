@@ -81,7 +81,7 @@ import { Platform } from "react-native";
    * Main logging settings.
    * These will override developer settings only if true but they are currently on by default in developer settings.
    */
-  export let LOG_INFO            = LOG_LEVEL.info;    // enabling LOG.info           commands to be shown.
+  export let LOG_INFO            = LOG_LEVEL.debug;    // enabling LOG.info           commands to be shown.
   export let LOG_PROMISE_MANAGER = LOG_LEVEL.info;    // enabling LOG.promiseManager commands to be shown.
   export let LOG_NOTIFICATIONS   = LOG_LEVEL.ERROR;    // enabling LOG.notifications  commands to be shown.
   export let LOG_WARNINGS        = LOG_LEVEL.ERROR;    // enabling LOG.warn           commands to be shown.
@@ -117,6 +117,7 @@ import { Platform } from "react-native";
    */
   export let LOG_TO_FILE          = true;   // log everything that is logged to a file.
   export let LOG_EXTENDED_TO_FILE = true;   // log even more to file.
+  export let LOG_MAX_STORAGE_TIME_DAYS = 7 // max amount of days to store logs.
 
 /******************** /LOGGING ********************/
 

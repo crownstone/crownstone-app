@@ -87,6 +87,7 @@ export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
         <SmartBehaviourRule
           key={"description" + ruleId}
           rule={rule}
+          indoorLocalizationDisabled={state.app.indoorLocalizationEnabled !== true}
           sphereId={this.props.sphereId}
           stoneId={this.props.stoneId}
           ruleId={ruleId}

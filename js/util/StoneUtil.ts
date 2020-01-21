@@ -249,6 +249,7 @@ export const StoneUtil = {
         delete rule.cloudId;              // remove cloud id so it will be synced as a unique rule
         delete rule.updatedAt;            // remove timestamp since this is essentially a new rule.
         rule.idOnCrownstone = null;       // new rules do not already have a ruleId on the Crownstone.
+        rule.syncedToCrownstone = false;  // new rules are not synced.
         actions.push({type: "ADD_STONE_RULE", ...actionProps, ruleId: newId, data: rule})
       })
 
