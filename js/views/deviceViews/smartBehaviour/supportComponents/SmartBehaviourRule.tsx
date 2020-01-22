@@ -125,7 +125,7 @@ export function SmartBehaviourRule(props: {
   );
 }
 
-function RuleDescription(props, ai, editCallback, showEditIcons, indoorLocalizationDisabled) {
+function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallback, showEditIcons, indoorLocalizationDisabled) {
   let labelStyle : TextStyle = {
     color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
     fontSize:16,
@@ -156,7 +156,7 @@ function RuleDescription(props, ai, editCallback, showEditIcons, indoorLocalizat
   if (props.rule.deleted && showEditIcons) {
     subLabel = "( Not removed from Crownstone yet... )";
   }
-  if (indoorLocalizationDisabled && !showEditIcons) {
+  if (indoorLocalizationDisabled && !showEditIcons && ai.isUsingPresence()) {
     subLabel = "Indoor localization disabled for this phone (in app settings).";
     subLabelStyle = { color: colors.orange.hex, fontWeight:'bold'};
   }

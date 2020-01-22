@@ -6,15 +6,15 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react';
 import {
-  ActivityIndicator, Alert, Platform,
-  ScrollView, Text, TouchableOpacity,
+  Alert, Platform,
+  ScrollView, Text,
   View
 } from "react-native";
 import { colors, screenWidth, styles} from "../styles";
 import { core } from "../../core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
-import { FadeIn, FadeInView, HiddenFadeInView } from "../components/animated/FadeInView";
+import { FadeIn } from "../components/animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import KeepAwake from 'react-native-keep-awake';
 import { MapProvider } from "../../backgroundProcesses/MapProvider";

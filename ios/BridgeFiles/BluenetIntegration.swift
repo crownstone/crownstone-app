@@ -693,7 +693,6 @@ open class BluenetJS: RCTEventEmitter {
   @objc func setLocationState(_ sphereUID: NSNumber, locationId: NSNumber, profileIndex: NSNumber, deviceToken: NSNumber, referenceId: String) {
     print("BluenetBridge: Called setLocationState \(sphereUID) \(locationId) \(profileIndex) referenceId:\(referenceId)" )
     GLOBAL_BLUENET.bluenet.setLocationState(sphereUID: sphereUID.uint8Value, locationId: locationId.uint8Value, profileIndex: profileIndex.uint8Value, deviceToken: deviceToken.uint8Value, referenceId: referenceId)
-    
     GLOBAL_BLUENET.watchStateManager.loadState("locationState", ["sphereUID":sphereUID, "locationId":locationId, "profileIndex": profileIndex, "deviceToken": deviceToken, "referenceId": referenceId])
   }
   
