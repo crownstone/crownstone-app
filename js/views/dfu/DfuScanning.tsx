@@ -155,9 +155,6 @@ export class DfuScanning extends LiveComponent<any, any> {
     let iconColor = colors.csBlue.rgba(0.2);
     let closeEnough = false;
 
-    this.visibleDrawnStones = [];
-
-
     if (visible) {
       if (this.visibleStones[stoneId].rssi > DFU_BATCH_RSSI_THRESHOLD) {
         backgroundColor = colors.green.rgba(0.8);
@@ -231,6 +228,7 @@ export class DfuScanning extends LiveComponent<any, any> {
     const { stoneArray, ids } = this._getStoneList();
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
+    this.visibleDrawnStones = [];
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
         <KeepAwake />
