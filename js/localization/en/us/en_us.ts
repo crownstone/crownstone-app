@@ -340,10 +340,10 @@ export default {
   DfuBatch:{
     __filename: "../../js/views/dfu/DfuBatch.tsx",
     Updating_your_Crownstones:           function() { return "Updating your Crownstones!" },
-    This_can_take_a_while_so_:           function() { return "This can take a while so just put you phone down, relax and grab some coffee. I'll let you know when everything is ready!" },
+    This_can_take_a_while_so_:           function() { return "This can take a while so just put your phone down, relax and grab some coffee. I'll let you know when everything is ready!" },
     Updating_:                           function() { return "Updating!" },
     Updating_your_Crownstones_:          function() { return "Updating your Crownstones!" },
-    This_can_take_a_while_so_j:          function() { return "This can take a while so just put you phone down, relax and grab some coffee. I'll let you know when everything is ready!" },
+    This_can_take_a_while_so_j:          function() { return "This can take a while so just put your phone down, relax and grab some coffee. I'll let you know when everything is ready!" },
   },
   DfuDeviceEntry:{
     __filename: "../js/views/components/deviceEntries/DfuDeviceEntry.tsx",

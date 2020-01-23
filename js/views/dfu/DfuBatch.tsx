@@ -14,7 +14,7 @@ import { colors, screenWidth, styles} from "../styles";
 import { core } from "../../core";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Background } from "../components/Background";
-import { FadeIn, FadeInView, HiddenFadeInView } from "../components/animated/FadeInView";
+import { FadeIn } from "../components/animated/FadeInView";
 import KeepAwake from 'react-native-keep-awake';
 import { DfuDeviceUpdaterEntry } from "../components/deviceEntries/DfuDeviceUpdaterEntry";
 import { NavigationUtil } from "../../util/NavigationUtil";

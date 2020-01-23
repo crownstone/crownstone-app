@@ -24,7 +24,6 @@ import React from "react";
 import { StoneSelectorDataContainer } from "./DEV_StoneSelectorData";
 import { CrownstoneEntry, FilterButton, filterState } from "./DEV_SelectionComponents";
 import { DEV_SelectionFilter } from "./DEV_SelectionFilter";
-import { DEV_BatchOps } from "./DEV_BatchOps";
 import Slider from "@react-native-community/slider";
 
 let smallText : TextStyle = { fontSize:12, paddingLeft:10, paddingRight:10};
@@ -51,7 +50,6 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
     this.state = {
       rssiFilter: -100,
       filterSelectorOnScreen: false,
-      batchOpsOnScreen: false,
       trackingHandles: [],
       sorting: true,
       handleFilter: "",
@@ -207,7 +205,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
 
       let minRedrawTime = 1000;
 
-      if (this.state.filterSelectorOnScreen === false && this.state.batchOpsOnScreen === false || now - this.lastRedraw > minRedrawTime) {
+      if (this.state.filterSelectorOnScreen === false || now - this.lastRedraw > minRedrawTime) {
         this.lastRedraw = now;
         this.forceUpdate();
       }
@@ -366,11 +364,11 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
   }
 
   getBatchButton() {
-    if (this.state.trackingHandles.length > 1 && this.state.batchOpsOnScreen === false && this.state.filterSelectorOnScreen === false) {
+    if (this.state.trackingHandles.length > 1 && this.state.filterSelectorOnScreen === false) {
       return (
         <TouchableOpacity
           onPress={() => {
-            this.setState({batchOpsOnScreen: true})
+            NavigationUtil.launchModal("DEV_Batching", {selectedStones: this.trackingItems})
           }}
           style={{
             position: 'absolute',
@@ -395,11 +393,10 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
 
     return (
       <Background image={core.background.light} hideNotifications={true}>
-        <DEV_BatchOps close={() => { this.setState({batchOpsOnScreen: false}); this.startScanning() }} visible={this.state.batchOpsOnScreen} selectedStones={this.trackingItems}></DEV_BatchOps>
         <DEV_SelectionFilter submit={() => { this.setState({filterSelectorOnScreen: false}); this.startScanning() }} visible={this.state.filterSelectorOnScreen} update={() => { this.forceUpdate(); }}></DEV_SelectionFilter>
         <View style={{flexDirection:'row', width:screenWidth, height:60, backgroundColor: colors.white.rgba(0.7), ...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>
           <View style={{flex:1, maxWidth:15}}/>
-          <FilterButton label={"Filters"}  selected={false}      callback={() => { this.setState({filterSelectorOnScreen: true})}}/>
+          <FilterButton label={"Filters"} selected={false} callback={() => {this.setState({filterSelectorOnScreen: true})}}/>
           <View style={{flex:1}}/>
           <FilterButton label={"HF Scanning"} selected={this.state.HFscanning} callback={() => {
             if (this.state.HFscanning === false) {

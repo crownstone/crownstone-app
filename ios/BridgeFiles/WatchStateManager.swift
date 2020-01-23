@@ -11,8 +11,7 @@ import WatchConnectivity
 
 
 class WatchStateManager {
-  var shouldSync = true
-  var shouldSyncCounter = 0
+
   var state = [String: Any]()
   
   func loadState(_ key: String,_ value : Any) {
@@ -21,26 +20,14 @@ class WatchStateManager {
   }
   
   func syncState() {
-//    print("Syncing this state: \(self.state)")
-    if self.shouldSync == false {
-      self.shouldSyncCounter += 1
-      if self.shouldSyncCounter > 20 {
-        self.shouldSyncCounter = 0
-        self.shouldSync = true
+    if (GLOBAL_BLUENET.watchBridge.watchSupported) {
+        do {
+  //      print("Sending state to the Watch")
+        try WCSession.default.updateApplicationContext(self.state)
       }
-      else {
-        return
+      catch {
+  //      print("Error while sending to the watch:",error)
       }
-    }
-    
-    do {
-//      print("Sending state to the Watch")
-      try WCSession.default.updateApplicationContext(self.state)
-    }
-    catch {
-      self.shouldSync = false
-      self.shouldSyncCounter = 0
-//      print("Error while sending to the watch:",error)
     }
   }
   

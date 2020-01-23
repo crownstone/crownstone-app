@@ -156,14 +156,16 @@ func isDevelopmentEnvironment() -> Bool {
 
 
 class WatchBridge: NSObject, WCSessionDelegate {
+  var watchSupported : Bool = false
   
   override init() {
     super.init()
     if (WCSession.isSupported()) {
         let session = WCSession.default
-      session.delegate = self
-      print("Activating Session on iosApp")
-      session.activate()
+        session.delegate = self
+        watchSupported = true
+        print("Activating Session on iosApp")
+        session.activate()
     }
   }
 

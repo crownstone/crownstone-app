@@ -75,16 +75,23 @@ export class DfuHelper {
   }
 
   updateBootloader(crownstoneMode: crownstoneModes, bootloaderPath, progressCallback) {
+    return this.performUpdate(crownstoneMode, bootloaderPath, progressCallback, 'Bootloader');
+  }
+
+  updateFirmware(crownstoneMode: crownstoneModes, firmwarePath, progressCallback) {
+    return this.performUpdate(crownstoneMode, firmwarePath, progressCallback, 'Firmware');
+  }
+
+  performUpdate(crownstoneMode, path, progressCallback, label="Data") {
     let action = () => {
-      let unsubscribe = core.nativeBus.on(core.nativeBus.topics.dfuProgress, (data) => {
-        LOGd.info("DfuHelper: DFU event:", data);
-        progressCallback(data.progress*0.01);
-      });
-
-
       let updateProcess = () => {
-        LOG.info("DfuHelper: performing bootloader update.");
-        return BluenetPromiseWrapper.performDFU(this.handle, bootloaderPath)
+        let unsubscribe = core.nativeBus.on(core.nativeBus.topics.dfuProgress, (data) => {
+          LOGd.info("DfuHelper: DFU event:", data);
+          progressCallback(data.progress*0.01);
+        });
+
+        LOG.info("DfuHelper: performing " + label + " update.");
+        return BluenetPromiseWrapper.performDFU(this.handle, path)
           .then(() => { return delay(1500); })
           .then(() => { unsubscribe(); })
           .catch((err) => {
@@ -103,38 +110,8 @@ export class DfuHelper {
       }
     };
     // we load the DFU into the promise manager with priority so we are not interrupted
-    LOG.info("DfuHelper: Scheduling bootloader update in promise manager for handle:", this.handle);
-    return BlePromiseManager.registerPriority(action, {from: 'DFU: updating Bootloader ' + this.handle}, 300000); // 5 min timeout
-  }
-
-  updateFirmware(crownstoneMode: crownstoneModes, firmwarePath, progressCallback) {
-    let action = () => {
-      let updateProcess = () => {
-        let unsubscribe = core.nativeBus.on(core.nativeBus.topics.dfuProgress, (data) => {
-          LOGd.info("DfuHelper: DFU event:", data);
-          progressCallback(data.progress*0.01);
-        });
-
-        return BluenetPromiseWrapper.performDFU(this.handle, firmwarePath)
-          .then(() => { return delay(1500); })
-          .then(() => { unsubscribe(); })
-          .catch((err) => {
-            unsubscribe();
-            BluenetPromiseWrapper.phoneDisconnect();
-            throw err;
-          })
-      };
-
-      if (crownstoneMode.dfuMode === false) {
-        return this._putInDFU(crownstoneMode.setupMode)
-          .then(() => { return updateProcess(); })
-      }
-      else {
-        return updateProcess()
-      }
-    };
-    // we load the DFU into the promise manager with priority so we are not interrupted
-    return BlePromiseManager.registerPriority(action, {from: 'DFU: updating firmware ' + this.handle}, 300000); // 5 min timeout
+    LOG.info("DfuHelper: Scheduling " +label+ " update in promise manager for handle:", this.handle);
+    return BlePromiseManager.registerPriority(action, {from: 'DFU: updating ' + label + this.handle}, 300000); // 5 min timeout
   }
 
 

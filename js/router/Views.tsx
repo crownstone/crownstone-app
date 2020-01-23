@@ -110,6 +110,7 @@ import { DEV_StoneSelector }                       from "../views/dev/stoneSelec
 import { DEV_RawAdvertisements }                   from "../views/dev/firmwareTesting/DEV_RawAdvertisements";
 import { SphereEditMap }                           from "../views/main/editSubviews/SphereEditMap";
 import { SettingsDatabaseExplorer }                from "../views/settingsViews/dev/SettingsDatabaseExplorer";
+import { DEV_Batching } from "../views/dev/batching/DEV_Batching";
 
 
 export const Views = {
@@ -217,12 +218,11 @@ export const Views = {
 
 
 
-
-
   // DEV
   DEV_FirmwareTest:              DEV_FirmwareTest,
   DEV_AdvancedConfig:            DEV_AdvancedConfig,
   DEV_DFU:                       DEV_DFU,
+  DEV_Batching:                  DEV_Batching,
 
   DEV_StoneSelector:             DEV_StoneSelector,
   DEV_RawAdvertisements:         DEV_RawAdvertisements,

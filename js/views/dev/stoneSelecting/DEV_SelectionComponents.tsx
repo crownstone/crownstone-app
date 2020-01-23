@@ -58,9 +58,6 @@ export class CrownstoneEntry extends Component<any, any> {
     let backgroundColor = colors.white.hex;
     let opacity = 0.65;
     let height = 55;
-    if (this.props.tracking) {
-      height = 75;
-    }
     let sphere = null
 
     switch (this.props.item.type) {
@@ -111,7 +108,7 @@ export class CrownstoneEntry extends Component<any, any> {
         borderBottomWidth: this.props.tracking ? 2 : 1,
         justifyContent: 'center',
       }}>
-        { this.props.tracking ? <ScaledImage source={require('../../../images/selectionArrow.png')} sourceWidth={150} sourceHeight={150} targetHeight={75}  style={{position:'absolute', top:0, left:0}}/> : null }
+        { this.props.tracking ? <ScaledImage source={require('../../../images/selectionArrow.png')} sourceWidth={150} sourceHeight={150} targetHeight={53}  style={{position:'absolute', top:0, left:0}}/> : null }
         <View style={{ flex: 1 }}/>
         <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', }} onPress={() => {this.props.callback();}}>
           { this.props.tracking ? <View style={{width: 40}}/> : null }
