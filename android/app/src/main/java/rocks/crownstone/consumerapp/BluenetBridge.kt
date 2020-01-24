@@ -440,7 +440,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun setDevicePreferences(rssiOffset: Int, tapToToggleEnabled: Boolean, ignoreForBehaviour: Boolean) {
 		// Current rssi offset and whether tap to toggle is enabled.
 		// Cache these, to be used for broadcasting.
-		Log.i(TAG, "setDevicePreferences rssiOffset=$rssiOffset tapToToggleEnabled=$tapToToggleEnabled")
+		Log.i(TAG, "setDevicePreferences rssiOffset=$rssiOffset tapToToggleEnabled=$tapToToggleEnabled ignoreForBehaviour=$ignoreForBehaviour")
 		bluenet.setTapToToggle(null, tapToToggleEnabled, rssiOffset)
 		bluenet.setIgnoreMeForBehaviour(null, ignoreForBehaviour)
 	}
