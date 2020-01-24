@@ -23,6 +23,7 @@ interface topbarOptions {
   rightLoading?: boolean,
   nav?: topbarNavComponent,
   edit? : boolean,
+  clear? : boolean,
   save? : boolean,
   next? : boolean,
   create? : boolean,

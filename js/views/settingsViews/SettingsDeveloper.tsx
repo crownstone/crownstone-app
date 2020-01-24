@@ -141,6 +141,17 @@ text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}
     }
 
 
+    items.push({
+      label: "View uptime",
+      type: 'navigation',
+      icon: <IconButton name="md-calendar" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.black.hex}}/>,
+      callback: () => {
+        NavigationUtil.navigate("SettingsUptime")
+      }
+    });
+    items.push({label: "View when the app was running.", type: 'explanation', below: true});
+
+
 
     items.push({label: lang("CLOUD"), type: 'explanation', below: false, alreadyPadded: true});
     items.push({

@@ -253,7 +253,7 @@ export class SettingsFAQ extends Component<any, any> {
   render() {
     return (
       <Background image={core.background.menu} >
-                <ScrollView>
+        <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>

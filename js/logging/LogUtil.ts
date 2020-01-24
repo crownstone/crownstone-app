@@ -3,7 +3,9 @@ import { LOG_MAX_STORAGE_TIME_DAYS } from "../ExternalConfig";
 
 const RNFS = require('react-native-fs');
 
-function getFilename(timestamp) {
+const LOG_PREFIX = 'CrownstoneAppLog';
+
+export function getLoggingFilename(timestamp, prefix) {
   let monthNumber = new Date(timestamp).getMonth()+1;
   let dayNumber = new Date(timestamp).getDate();
 
@@ -11,7 +13,7 @@ function getFilename(timestamp) {
   let day = dayNumber < 10 ? '0' + dayNumber : '' + dayNumber;
 
   let dateStamp = new Date(timestamp).getFullYear() + "-" + month + "-" +day;
-  return 'ConsumerAppLog' + dateStamp + '.log';
+  return prefix + dateStamp + '.log';
 }
 
 export function cleanLogs() {
@@ -25,14 +27,14 @@ function _cleanLogs(logPath, amountOfDaysStored = LOG_MAX_STORAGE_TIME_DAYS) {
   let allowedLogFiles = {};
   for (let i = 0; i < amountOfDaysStored; i++) {
     let timestamp = new Date().valueOf() - i*86400000;
-    allowedLogFiles[getFilename(timestamp)] = true;
+    allowedLogFiles[getLoggingFilename(timestamp, LOG_PREFIX)] = true;
   }
 
   let flagForRemoval = [];
   RNFS.readdir(logPath)
     .then((files) => {
       for (let i = 0; i < files.length; i++) {
-        if (files[i].substr(0,14) === "ConsumerAppLog" && allowedLogFiles[files[i]] !== true) {
+        if (files[i].substr(0,LOG_PREFIX.length) === LOG_PREFIX && allowedLogFiles[files[i]] !== true) {
           flagForRemoval.push(files[i]);
         }
       }
@@ -58,7 +60,7 @@ export function logToFile() {
   let logPath = FileUtil.getPath();
 
   // generate filename based on current date.
-  let filename = getFilename(new Date().valueOf());
+  let filename = getLoggingFilename(new Date().valueOf(), LOG_PREFIX);
   let filePath = logPath + '/' + filename;
 
   // create string
@@ -74,7 +76,5 @@ export function logToFile() {
   str += " \n";
 
   // write the file
-  RNFS.appendFile(filePath, str, 'utf8')
-    .then((success) => {})
-    .catch((err) => {})
+  RNFS.appendFile(filePath, str, 'utf8').catch((err) => {})
 }

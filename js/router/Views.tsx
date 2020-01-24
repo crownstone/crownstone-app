@@ -110,7 +110,8 @@ import { DEV_StoneSelector }                       from "../views/dev/stoneSelec
 import { DEV_RawAdvertisements }                   from "../views/dev/firmwareTesting/DEV_RawAdvertisements";
 import { SphereEditMap }                           from "../views/main/editSubviews/SphereEditMap";
 import { SettingsDatabaseExplorer }                from "../views/settingsViews/dev/SettingsDatabaseExplorer";
-import { DEV_Batching } from "../views/dev/batching/DEV_Batching";
+import { DEV_Batching }                            from "../views/dev/batching/DEV_Batching";
+import { SettingsUptime }                          from "../views/settingsViews/dev/SettingsUptime";
 
 
 export const Views = {
@@ -181,6 +182,7 @@ export const Views = {
   SettingsProfile:                   SettingsProfile,
   SettingsRedownloadFromCloud:       SettingsRedownloadFromCloud,
   SettingsStoneBleDebug:             SettingsStoneBleDebug,
+  SettingsUptime:                    SettingsUptime,
   SphereBehaviour:                   SphereBehaviour,
   SphereCrownstoneOverview:          SphereCrownstoneOverview,
   SphereEdit:                        SphereEdit,

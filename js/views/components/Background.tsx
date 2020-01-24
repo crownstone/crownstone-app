@@ -12,7 +12,7 @@ import {
 } from "react-native";
 // import { SafeAreaView } from 'react-navigation';
 
-import { styles, screenHeight, topBarHeight, tabBarHeight, colors, screenWidth, statusBarHeight } from "../styles";
+import { styles, screenHeight, topBarHeight, tabBarHeight, colors, screenWidth } from "../styles";
 import { BackgroundImage  } from "./BackgroundImage";
 import { NotificationLine } from "./NotificationLine";
 

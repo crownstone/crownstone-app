@@ -2244,6 +2244,7 @@ export default {
     Developer_Menu:                      function() { return "Developer Menu" },
     Create:                              function() { return "Create" },
     Cancel:                              function() { return "Cancel" },
+    Clear:                               function() { return "Clear" },
     Save:                                function() { return "Save" },
     Update:                              function() { return "Update" },
     Edit:                                function() { return "Edit" },

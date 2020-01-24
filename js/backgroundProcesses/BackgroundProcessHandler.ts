@@ -45,6 +45,7 @@ import { base_core } from "../base_core";
 import { PowerUsageCacher } from "./PowerUsageCacher";
 import { TimeKeeper } from "./TimeKeeper";
 import { SphereStateManager } from "./SphereStateManager";
+import { UptimeMonitor } from "./UptimeMonitor";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -449,6 +450,7 @@ class BackgroundProcessHandlerClass {
     TimeKeeper.init();
     ToonIntegration.init();
     UpdateCenter.init();
+    UptimeMonitor.init();
     WatchStateManager.init();
   }
 }
