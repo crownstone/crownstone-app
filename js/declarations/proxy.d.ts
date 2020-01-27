@@ -148,7 +148,7 @@ interface crownstoneServiceData {
   timestamp                 : number, // reconstructed timestamp, -1 if not available, uint16 counter when time is not set
 
   // bitmask flags
-  dimmingAvailable          : boolean,
+  dimmerReady               : boolean,
   dimmingAllowed            : boolean,
   switchLocked              : boolean,
   timeSet                   : boolean,

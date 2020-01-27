@@ -17,7 +17,7 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
     timestamp                 : new Date().valueOf()/1000,
 
     // bitmask flags,
-    dimmingAvailable          : true,
+    dimmerReady               : true,
     dimmingAllowed            : true,
     switchLocked              : false,
     timeSet                   : true,

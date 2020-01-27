@@ -614,9 +614,9 @@ export class StoneEntity {
       changeData.powerFactor = powerFactor;
     }
 
-    if (stone.state.dimmingAvailable !== advertisement.serviceData.dimmingAvailable) {
+    if (stone.state.dimmerReady !== advertisement.serviceData.dimmerReady) {
       changed = true;
-      changeData.dimmingAvailable = advertisement.serviceData.dimmingAvailable;
+      changeData.dimmerReady = advertisement.serviceData.dimmerReady;
     }
 
     if (stone.state.timeSet !== advertisement.serviceData.timeSet) {

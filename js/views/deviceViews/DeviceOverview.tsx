@@ -417,7 +417,7 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
 
 
   _getMenuIcons(stone) {
-    let dimmingAvailable = !StoneAvailabilityTracker.isDisabled(this.props.stoneId) && !stone.config.locked && stone.abilities.dimming.enabledTarget
+    let dimmerReady = !StoneAvailabilityTracker.isDisabled(this.props.stoneId) && !stone.config.locked && stone.abilities.dimming.enabledTarget
 
     return (
       <View style={{
@@ -425,7 +425,7 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
         alignItems:'center',
         flexDirection:'row',
         marginTop:15,
-        marginBottom: dimmingAvailable ? DIMMING_INDICATOR_SIZE + DIMMING_INDICATOR_SPACING : 0
+        marginBottom: dimmerReady ? DIMMING_INDICATOR_SIZE + DIMMING_INDICATOR_SPACING : 0
       }}>
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {

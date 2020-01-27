@@ -706,8 +706,8 @@ export function BleStatusBar(props : {bleState}) {
         icon={'ios-sunny'}
         iconSize={32}
         disabled={FocusManager.crownstoneMode === 'unverified'}
-        pending={FocusManager.crownstoneState.dimmingAvailable === null}
-        backgroundColor={FocusManager.crownstoneState.dimmingAvailable ? colors.green.hex : colors.csBlueDark.hex}
+        pending={FocusManager.crownstoneState.dimmerReady === null}
+        backgroundColor={FocusManager.crownstoneState.dimmerReady ? colors.green.hex : colors.csBlueDark.hex}
       />
       <View style={{flex:1}} />
     </View>

@@ -23,7 +23,7 @@ const CORRECTION = LOWER_BOUND/RANGE;
 export const DIMMING_INDICATOR_SIZE = Math.min(0.08*availableScreenHeight, 60);
 export const DIMMING_INDICATOR_SPACING = DIMMING_INDICATOR_SIZE/3;
 
-export class DimmerSlider extends Component<{stoneId: string, sphereId: string, callback: any}, {showIndicator: boolean, dimmingAvailable: boolean, dimmingSyncedToCrownstone: boolean}> {
+export class DimmerSlider extends Component<{stoneId: string, sphereId: string, callback: any}, {showIndicator: boolean, dimmerReady: boolean, dimmingSyncedToCrownstone: boolean}> {
 
   _panResponder;
   x = null;
@@ -55,7 +55,7 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
 
     this.state = {
       showIndicator: false,
-      dimmingAvailable: stone.state.dimmingAvailable,
+      dimmerReady: stone.state.dimmerReady,
       dimmingSyncedToCrownstone: stone.abilities.dimming.syncedToCrownstone
     };
 
@@ -87,8 +87,8 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
           }
         }
 
-        if (stone.state.dimmingAvailable !== this.state.dimmingAvailable) {
-          newState['dimmingAvailable'] = stone.state.dimmingAvailable;
+        if (stone.state.dimmerReady !== this.state.dimmerReady) {
+          newState['dimmerReady'] = stone.state.dimmerReady;
           changed = true;
         }
       }
@@ -197,7 +197,7 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
         </View>
       );
     }
-    else if (this.state.dimmingAvailable === false) {
+    else if (this.state.dimmerReady === false) {
       return (
         <View style={{flexDirection:"row"}}>
           <ActivityIndicator size={"small"} style={{height:25, paddingRight:3}} />
