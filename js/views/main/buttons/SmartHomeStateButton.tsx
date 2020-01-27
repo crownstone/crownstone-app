@@ -58,6 +58,7 @@ export class SmartHomeStateButton extends Component<any, any> {
     let explanationColor      = colors.white.hex;
     let explanationTextColor  = colors.white.hex;
     let explanationLabel      = null;
+    let width = 220;
 
     if (this.state.showLoading) {
       if (currentState === false) {
@@ -65,12 +66,14 @@ export class SmartHomeStateButton extends Component<any, any> {
         explanationTextColor = colors.white.hex;
         explanationColor     = colors.menuTextSelected.rgba(0.5);
         explanationLabel     = "Disabling...";
+        width = 180;
       }
       else {
         // waiting to be enabled
         explanationColor     = colors.green.rgba(0.2);
         explanationLabel     = "Enabling...";
         iconBackgroundColor  = colors.green.hex;
+        width = 175;
       }
     }
     else if (this.state.doubleCheck) {
@@ -106,7 +109,7 @@ export class SmartHomeStateButton extends Component<any, any> {
     return {
       iconColor: iconColor, iconBackgroundColor: iconBackgroundColor, explanation:(
         <SlideSideFadeInView
-          width={220}
+          width={width}
           visible={explanationLabel !== null}
           style={{
             height: outerRadius,
