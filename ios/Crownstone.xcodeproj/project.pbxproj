@@ -394,13 +394,6 @@
 			remoteGlobalIDString = 7B49FEBB1E95090800DEB3EA;
 			remoteInfo = ReactNativeNavigationTests;
 		};
-		FA278B122296CD3600C690B2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A9AF8F045F7E466D9BDDA14D /* FastImage.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A287971D1DE0C0A60081BDFA;
-			remoteInfo = FastImage;
-		};
 		FA2BA30622689D4E0079593D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 590B19B119CF4B74B1FB2F7A /* RNCSlider.xcodeproj */;
@@ -646,7 +639,6 @@
 		9B794DCDCC9448DA80C3A509 /* RNCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
 		A0C7056DB5294DFE8A81AC2B /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		A7EF23E51E204C98B3653CE8 /* libReactNativeCameraKit.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeCameraKit.a; sourceTree = "<group>"; };
-		A9AF8F045F7E466D9BDDA14D /* FastImage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		AB14A08CE83A4CF793448D6B /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		B64ABABC89564D0DA2B696F0 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		BB52802436124542B3AD3458 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
@@ -979,7 +971,6 @@
 				EC36535A5433491E89F826E6 /* SplashScreen.xcodeproj */,
 				590B19B119CF4B74B1FB2F7A /* RNCSlider.xcodeproj */,
 				1C37FB237BAD4AF8B0775660 /* RNCAsyncStorage.xcodeproj */,
-				A9AF8F045F7E466D9BDDA14D /* FastImage.xcodeproj */,
 				9B794DCDCC9448DA80C3A509 /* RNCamera.xcodeproj */,
 				7D89F934C90C4F59BFEF020D /* RNBlur.xcodeproj */,
 			);
@@ -1110,14 +1101,6 @@
 			children = (
 				FA278A9A2296838100C690B2 /* libReactNativeNavigation.a */,
 				FA278A9C2296838100C690B2 /* ReactNativeNavigationTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		FA278B0F2296CD3600C690B2 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				FA278B132296CD3600C690B2 /* libFastImage.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1500,10 +1483,6 @@
 				{
 					ProductGroup = FA5BF12623A12E7A00CF6C30 /* Products */;
 					ProjectRef = FA5BF12523A12E7A00CF6C30 /* AirMaps.xcodeproj */;
-				},
-				{
-					ProductGroup = FA278B0F2296CD3600C690B2 /* Products */;
-					ProjectRef = A9AF8F045F7E466D9BDDA14D /* FastImage.xcodeproj */;
 				},
 				{
 					ProductGroup = FA782DC31F4F1AB000057B75 /* Products */;
@@ -1900,13 +1879,6 @@
 			fileType = wrapper.cfbundle;
 			path = ReactNativeNavigationTests.xctest;
 			remoteRef = FA278A9B2296838100C690B2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FA278B132296CD3600C690B2 /* libFastImage.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libFastImage.a;
-			remoteRef = FA278B122296CD3600C690B2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FA2BA30722689D4E0079593D /* libRNCSlider.a */ = {
@@ -2426,7 +2398,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2486,7 +2458,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2659,7 +2631,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2720,7 +2692,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2778,7 +2750,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				ENABLE_TESTABILITY = YES;
@@ -2829,7 +2801,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (

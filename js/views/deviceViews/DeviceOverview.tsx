@@ -116,10 +116,10 @@ export class DeviceOverview extends LiveComponent<any, any> {
         !change.removeStone &&
         (
           change.changeAppSettings ||
-          change.stoneLocationUpdated     && change.stoneLocationUpdated.stoneIds[this.props.stoneId]    ||
-          change.changeStoneAvailability  && change.changeStoneAvailability.stoneIds[this.props.stoneId] ||
-          change.stoneChangeRules         && change.stoneChangeRules.stoneIds[this.props.stoneId]        ||
-          change.updateStoneConfig        && change.updateStoneConfig.stoneIds[this.props.stoneId]
+          change.stoneLocationUpdated    && change.stoneLocationUpdated.stoneIds[this.props.stoneId]    ||
+          change.changeStoneAvailability && change.changeStoneAvailability.stoneIds[this.props.stoneId] ||
+          change.stoneChangeRules        && change.stoneChangeRules.stoneIds[this.props.stoneId]        ||
+          change.updateStoneConfig       && change.updateStoneConfig.stoneIds[this.props.stoneId]
         )
       ) {
         if (change.updateStoneConfig  && change.updateStoneConfig.stoneIds[this.props.stoneId]) {
