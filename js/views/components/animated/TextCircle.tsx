@@ -19,7 +19,6 @@ export class TextCircle extends UserPicture {
   opacity : number;
 
   render() {
-    console.log("this.state", this.state)
     return (
       <Animated.View style={{position:'absolute', width: this.props.size, height: this.props.size, top: this.state.y, left: this.state.x, opacity: this.state.opacity}}>
         <View style={[{

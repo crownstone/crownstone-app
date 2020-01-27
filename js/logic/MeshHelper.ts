@@ -75,14 +75,14 @@ export class MeshHelper {
 
       for (let i = 0; i < multiSwitchInstructions.length; i++) {
         let instruction = multiSwitchInstructions[i];
-        if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
-          multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
+        if (instruction.crownstoneId !== undefined && instruction.state !== undefined) {
+          multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, state: instruction.state});
           instruction.promise.pending = true;
           MeshHelper._mergeOptions(instruction.options, this.activeOptions);
           this._containedInstructions.push(instruction);
         }
         else {
-          LOGe.mesh("MeshHelper: Invalid multiSwitchPackets instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
+          LOGe.mesh("MeshHelper: Invalid multiSwitchPackets instruction, required crownstoneId, state. Got:", instruction);
         }
       }
       if (multiSwitchPackets.length === 0) {

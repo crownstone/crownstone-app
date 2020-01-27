@@ -8,7 +8,7 @@ export class BackgroundImage extends Component<{height?: number, image: any}, an
       <Image
         source={this.props.image}
         style={{width: screenWidth, height: this.props.height}}
-        resizeMode={'contain'}
+        resizeMode={'cover'}
       />
     );
   }

@@ -26,7 +26,6 @@ export class AnimatedSizeView extends Component<any, any> {
 
   componentWillUpdate(nextProps) {
     let actions = [];
-    console.log("IM HERE", this.width, nextProps.width)
     if (this.width !== nextProps.width) {
       actions.push(
         Animated.timing(this.state.width, {

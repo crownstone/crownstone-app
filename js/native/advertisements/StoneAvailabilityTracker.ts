@@ -6,6 +6,7 @@ import { LOGi } from "../../logging/Log";
 import { LocationHandler } from "../localization/LocationHandler";
 
 let RSSI_TIMEOUT = 5000;
+const RSSI_THRESHOLD = 3;
 
 const TRIGGER_ID = "StoneAvailabilityTracker"
 
@@ -47,40 +48,55 @@ class StoneAvailabilityTrackerClass {
 
   notify() {
     let logStoneIds = Object.keys(this.log);
-    let stoneIds = {};
-    let sphereIds = {};
+    let availabilityStoneIds = {};
+    let availabilitySphereIds = {};
+
+    let rssiChangeStoneIds = {};
+    let rssiChangeSphereIds = {};
+
     let disabledSpheres = {};
     let now = new Date().valueOf();
 
     for (let i = 0; i < logStoneIds.length; i++) {
       let stoneId = logStoneIds[i];
+      let logData = this.log[stoneId];
+
       //rssi has expired and we have not marked it yet. do it now.
-      if (now - this.log[stoneId].t > RSSI_TIMEOUT && this.log[stoneId].rssi !== -1000) {
-        stoneIds[stoneId] = true;
-        sphereIds[this.log[stoneId].sphereId] = true;
-        this.log[stoneId].rssi = -1000;
+      if (now - logData.t > RSSI_TIMEOUT && logData.rssi !== -1000) {
+        availabilityStoneIds[stoneId] = true;
+        availabilitySphereIds[logData.sphereId] = true;
+        logData.rssi = -1000;
       }
+
       // stone is active. Cast.
-      if (now - this.log[stoneId].t < RSSI_TIMEOUT) {
-        stoneIds[stoneId] = true;
-        sphereIds[this.log[stoneId].sphereId] = true;
+      if (now - logData.t < RSSI_TIMEOUT && Math.abs(logData.avgRssi - logData.lastNotifiedRssi) > RSSI_THRESHOLD) {
+        rssiChangeStoneIds[stoneId] = true;
+        rssiChangeSphereIds[logData.sphereId] = true;
+        logData.lastNotifiedRssi = logData.avgRssi;
       }
+
       // stone has expired and we will remove it.
-      if (now - this.log[stoneId].t > DISABLE_TIMEOUT) {
-        stoneIds[stoneId] = true;
-        sphereIds[this.log[stoneId].sphereId] = true;
+      if (now - logData.t > DISABLE_TIMEOUT) {
+        availabilityStoneIds[stoneId] = true;
+        availabilitySphereIds[logData.sphereId] = true;
 
         // these have expired. Delete them.
-        disabledSpheres[this.log[stoneId].sphereId] = true;
-        delete this.sphereLog[this.log[stoneId].sphereId][stoneId];
+        disabledSpheres[logData.sphereId] = true;
+        delete this.sphereLog[logData.sphereId][stoneId];
         delete this.log[stoneId];
       }
     }
 
     // cast if there is something to cast
-    if (Object.keys(stoneIds).length > 0) {
-      core.eventBus.emit("databaseChange", {change: {changeStoneAvailability: {stoneIds, sphereIds}}}); // discover a new crownstone!
+    if (Object.keys(availabilityStoneIds).length > 0) {
+      core.eventBus.emit("databaseChange", {change: {changeStoneAvailability: {stoneIds: availabilityStoneIds, sphereIds: availabilitySphereIds}}}); // discover a new crownstone!
     }
+
+    // cast if there is something to cast
+    if (Object.keys(rssiChangeStoneIds).length > 0) {
+      core.eventBus.emit("databaseChange", {change: {changeStoneRSSI: {stoneIds: rssiChangeStoneIds, sphereIds: rssiChangeSphereIds}}}); // significant RSSI change.
+    }
+
 
     let disabledSphereIds = Object.keys(disabledSpheres);
     if (disabledSphereIds.length > 0) {
@@ -119,14 +135,14 @@ class StoneAvailabilityTrackerClass {
     }
 
     if (this.log[data.stoneId] === undefined) {
-      this.log[data.stoneId] = {t: null, beaconRssi: null, advRssi: null, sphereId: data.sphereId, avgRssi: data.rssi };
+      this.log[data.stoneId] = {t: null, beaconRssi: null, advRssi: null, sphereId: data.sphereId, avgRssi: data.rssi, lastNotifiedRssi: data.rssi };
       // new Crownstone detected this run!
       let stoneIds = {};
       let sphereIds = {};
       stoneIds[data.stoneId] = true;
       sphereIds[data.sphereId] = true;
       core.eventBus.emit("databaseChange", {change: {changeStoneAvailability: {stoneIds, sphereIds}}}); // discover a new crownstone!
-      core.eventBus.emit("rssiChange", {stoneId: data.stoneId, sphereId: data.sphereId, rssi:data.rssi}); // Major change in RSSI
+      core.eventBus.emit("rssiChange",     {stoneId: data.stoneId, sphereId: data.sphereId, rssi:data.rssi}); // Major change in RSSI
     }
 
     if (this.sphereLog[data.sphereId][data.stoneId] === undefined) {
@@ -142,7 +158,7 @@ class StoneAvailabilityTrackerClass {
     }
     else {
       this.log[data.stoneId].beaconRssi = data.rssi;
-      this.sphereLog[data.sphereId][data.stoneId].beaconRssi = data.rssi;
+      this.sphereLog[data.sphereId][data.stoneId].advRssi = data.rssi;
     }
 
 

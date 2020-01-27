@@ -50,10 +50,8 @@ export class PlaceFloatingCrownstonesInRoom extends LiveComponent<any, any> {
 
       if (
         (change.updateStoneConfig) ||
-        (change.changeFingerprint) ||
         (change.stoneUsageUpdated && change.stoneUsageUpdated.sphereIds[this.props.sphereId]) ||
         (change.changeSphereState && change.changeSphereState.sphereIds[this.props.sphereId]) ||
-        (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId]) ||
         (change.stoneLocationUpdated && change.stoneLocationUpdated.sphereIds[this.props.sphereId]) ||
         (change.changeStones)
       ) {
