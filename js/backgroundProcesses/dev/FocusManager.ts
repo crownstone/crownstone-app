@@ -14,7 +14,7 @@ class FocusManagerClass {
     temperature: null,
     powerUsage: null,
     dimmingEnabled: null,
-    dimmingAvailable: null,
+    dimmerReady: null,
     locked: null,
     switchCraft: null,
     switchStateValue: null,
@@ -44,7 +44,7 @@ class FocusManagerClass {
     error: false,
     errorDetails: false,
     dimmingEnabled: false,
-    dimmingAvailable: false,
+    dimmerReady: false,
     locked: false,
     switchCraft: false,
     switchState: false,
@@ -56,7 +56,7 @@ class FocusManagerClass {
     error: null,
     errorDetails: null,
     dimmingEnabled: null,
-    dimmingAvailable: null,
+    dimmerReady: null,
     locked: null,
     switchCraft: null,
     switchState: null,
@@ -202,7 +202,7 @@ class FocusManagerClass {
 
     updateCheck('error', data.serviceData.hasError);
     updateCheck('dimmingEnabled', data.serviceData.dimmingAllowed);
-    updateCheck('dimmingAvailable', data.serviceData.dimmingAvailable);
+    updateCheck('dimmerReady', data.serviceData.dimmerReady);
     updateCheck('locked', data.serviceData.switchLocked);
     updateCheck('switchCraft', data.serviceData.switchCraftEnabled);
     updateCheck('referenceId', data.referenceId);

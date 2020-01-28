@@ -223,7 +223,7 @@ class StoneManagerClass {
     // repair mechanism to store the handle.
     if (serviceData.stateOfExternalCrownstone === false && referenceByCrownstoneId !== undefined) {
       if (referenceByCrownstoneId.handle != advertisement.handle) {
-        LOGd.native("StoneManager: IGNORE: Store handle in our database so we can use the next advertisement.");
+        LOGw.native("StoneManager: IGNORE: Store handle in our database so we can use the next advertisement.");
         core.store.dispatch({type: "UPDATE_STONE_HANDLE", sphereId: advertisement.referenceId, stoneId: referenceByCrownstoneId.id, data:{handle: advertisement.handle}});
         return;
       }

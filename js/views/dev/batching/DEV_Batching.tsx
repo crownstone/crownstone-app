@@ -245,7 +245,6 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
 
   runDfuOnCrownstone(selectedStone) {
     this.setState({dfuActiveHandle: selectedStone.handle, dfuProgress:0})
-    console.log("selectedStone", selectedStone)
     let helper = new DfuHelper(
       selectedStone.sphereId,
       200,

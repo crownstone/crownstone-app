@@ -36,16 +36,16 @@ import { AlternatingContent } from "../components/animated/AlternatingContent";
 import { AicoreUtil } from "./smartBehaviour/supportCode/AicoreUtil";
 
 
-export class DeviceOverview extends LiveComponent<any, any> {
+export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> {
   static options(props) {
     getTopBarProps(props);
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
-  storedSwitchState = 0;
   unsubscribeStoreEvents;
-  stoneCanSwitch = true;
 
+  // these are used to determine persisting the switchstate.
+  storedSwitchState = 0;
   storeSwitchState = false;
   storeSwitchStateTimeout = null;
 
@@ -64,14 +64,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
     this.storedSwitchState = stone.state.state;
 
-    this.state = {
-      switchIsOn: this.storedSwitchState > 0,
-      visibleState: stone.state.state
-    }
-
-    if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB) {
-      this.stoneCanSwitch = false;
-    }
+    this.state = { switchIsOn: this.storedSwitchState > 0 }
 
     if (stone.config.firmwareVersionSeenInOverview === null) {
       core.store.dispatch({
@@ -91,7 +84,6 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
   componentDidMount() {
     let state = core.store.getState();
-    // core.store.dispatch({type:"REMOVE_ALL_RULES_OF_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId})
 
     if (state.app.hasSeenDeviceSettings === false) {
       core.store.dispatch({ type: 'UPDATE_APP_SETTINGS', data: { hasSeenDeviceSettings: true } })
@@ -122,14 +114,16 @@ export class DeviceOverview extends LiveComponent<any, any> {
           change.updateStoneConfig       && change.updateStoneConfig.stoneIds[this.props.stoneId]
         )
       ) {
-        if (change.updateStoneConfig  && change.updateStoneConfig.stoneIds[this.props.stoneId]) {
+        if (change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId]) {
           this._updateNavBar();
         }
         this.forceUpdate();
         return
       }
-      if (change.updateStoneSwitchState && change.updateStoneSwitchState.stoneIds[this.props.stoneId] && this.state.switchIsOn !== stone.state.state > 0) {
-        this.setState({switchIsOn: stone.state.state > 0})
+      if (change.updateStoneState && change.updateStoneState.stoneIds[this.props.stoneId]) {
+        if (this.state.switchIsOn && stone.state.state === 0 || this.state.switchIsOn === false && stone.state.state > 0) {
+          this.setState({ switchIsOn: stone.state.state > 0 })
+        }
       }
     });
   }
@@ -195,6 +189,13 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
   _switch(stone, state) {
+    if (state === 0 && this.state.switchIsOn === true) {
+      this.setState({switchIsOn: false});
+    }
+    else if (state > 0 && this.state.switchIsOn === false) {
+      this.setState({switchIsOn: true});
+    }
+
     StoneUtil.switchBCH(
       this.props.sphereId,
       this.props.stoneId,
@@ -265,12 +266,10 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
     if (stone.abilities.dimming.enabledTarget) {
-      let showDimmingText = stone.state.dimmingAvailable === false && StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false;
       return (
         <DimmerSlider
-          state={stone.state.state}
-          dimmingSynced={stone.abilities.dimming.syncedToCrownstone}
-          showDimmingText={showDimmingText}
+          stoneId={this.props.stoneId}
+          sphereId={this.props.sphereId}
           callback={(percentage) => {
             this._switch(stone, percentage);
           }}/>
@@ -311,7 +310,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
     if (StoneAvailabilityTracker.isDisabled(this.props.stoneId) === false && stone.config.locked === false) {
       return (
         <TouchableOpacity
-          onPress={() => {core.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
+          onPress={() => { core.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })} }
           style={wrapperStyle}>
           <Icon name={"md-unlock"} color={colors.csBlueDarker.rgba(0.5)} size={30} />
         </TouchableOpacity>
@@ -347,10 +346,10 @@ export class DeviceOverview extends LiveComponent<any, any> {
   }
 
 
-  _getStoneIcon(stone, updateAvailable) {
+  _getStoneIcon(stone, updateAvailable, stoneCanSwitch) {
     let iconColor = colors.white.rgba(1);
     let size = 0.25*availableScreenHeight;
-    let stateColor = stone.state.state > 0 ? colors.green.hex : colors.csBlueDark.hex;
+    let stateColor = this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex;
 
     let content = <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />
 
@@ -367,7 +366,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
             fadeDuration={500}
             switchDuration={2000}
             contentArray={[
-              <DeviceIcon size={size} color={colors.green.hex} iconColor={iconColor} icon={"c1-update-arrow"} />,
+              <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={"c1-update-arrow"} />,
               <DeviceIcon size={size} color={stateColor} iconColor={iconColor} icon={stone.config.icon} />,
             ]}
           />
@@ -375,14 +374,16 @@ export class DeviceOverview extends LiveComponent<any, any> {
       )
     }
 
-    if (this.stoneCanSwitch) {
+    if (stoneCanSwitch) {
       content = (
         <TouchableOpacity onPress={() => {
           if (this.state.switchIsOn) {
             // switch off
             this._switch(stone, 0);
+            core.eventBus.emit("DeviceOverviewSetSwitchState", 0);
           }
           else {
+            this.setState({switchIsOn: true});
             BatchCommandHandler.loadPriority(
               stone,
               this.props.stoneId,
@@ -394,14 +395,13 @@ export class DeviceOverview extends LiveComponent<any, any> {
             )
               .then((result) => {
                 let expectedState = AicoreUtil.getActiveTurnOnPercentage(this.props.sphereId, stone)
-
                 core.store.dispatch({
                   type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
                   sphereId: this.props.sphereId,
                   stoneId: this.props.stoneId,
                   data: {state: 0.01*expectedState}
                 });
-
+                core.eventBus.emit("DeviceOverviewSetSwitchState", 0.01*expectedState);
                 this._planStoreAction();
               });
           }
@@ -418,7 +418,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
 
 
   _getMenuIcons(stone) {
-    let dimmingAvailable = !StoneAvailabilityTracker.isDisabled(this.props.stoneId) && !stone.config.locked && stone.abilities.dimming.enabledTarget
+    let dimmerReady = !StoneAvailabilityTracker.isDisabled(this.props.stoneId) && !stone.config.locked && stone.abilities.dimming.enabledTarget
 
     return (
       <View style={{
@@ -426,7 +426,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
         alignItems:'center',
         flexDirection:'row',
         marginTop:15,
-        marginBottom: dimmingAvailable ? DIMMING_INDICATOR_SIZE + DIMMING_INDICATOR_SPACING : 0
+        marginBottom: dimmerReady ? DIMMING_INDICATOR_SIZE + DIMMING_INDICATOR_SPACING : 0
       }}>
         <View style={{flex:1}} />
         <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {
@@ -451,7 +451,7 @@ export class DeviceOverview extends LiveComponent<any, any> {
         }} />
         <View style={{flex:1}} />
       </View>
-    )
+    );
   }
 
 
@@ -472,28 +472,33 @@ export class DeviceOverview extends LiveComponent<any, any> {
       return <DeviceError {...this.props} stone={stone} />
     }
 
+    let stoneCanSwitch = true;
+    if (stone.config.type === STONE_TYPES.guidestone || stone.config.type === STONE_TYPES.crownstoneUSB) {
+      stoneCanSwitch = false;
+    }
+
     let updateAvailable = stone.config.firmwareVersion && ((Util.canUpdate(stone, state) === true) || xUtil.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false);
 
     return (
       <Background image={core.background.lightBlur}>
-        { this.stoneCanSwitch && this._getMenuIcons(stone) }
+        { stoneCanSwitch && this._getMenuIcons(stone) }
         <View style={{flex:2}} />
 
         {/* If the stone can't switch its a Guidestone or a Crownstone USB. */}
-        { !this.stoneCanSwitch && <View style={{padding:30}}><Text style={deviceStyles.header}>Hi there!</Text></View> }
+        { !stoneCanSwitch && <View style={{padding:30}}><Text style={deviceStyles.header}>Hi there!</Text></View> }
 
-        { this._getStoneIcon(stone, updateAvailable) }
+        { this._getStoneIcon(stone, updateAvailable, stoneCanSwitch) }
 
         {/* If the stone can't switch its a Guidestone or a Crownstone USB. The specific information is it telling you which device it is and where it lives. */}
-        { !this.stoneCanSwitch && this._getSpecificInformation(stone) }
+        { !stoneCanSwitch && this._getSpecificInformation(stone) }
 
         <View style={{ flex: 2 }} />
 
         {/* If the stone can't switch its a Guidestone or a Crownstone USB. It will not have a button. */}
-        { this.stoneCanSwitch && <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View> }
+        { stoneCanSwitch && <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View> }
 
         <View style={{ height: 40}} />
-        { stone.config.locked === false && this.stoneCanSwitch && Permissions.inSphere(this.props.sphereId).canLockCrownstone ? this._getLockIcon(stone) : undefined }
+        { stone.config.locked === false && stoneCanSwitch && Permissions.inSphere(this.props.sphereId).canLockCrownstone ? this._getLockIcon(stone) : undefined }
       </Background>
     )
   }

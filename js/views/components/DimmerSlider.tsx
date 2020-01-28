@@ -11,6 +11,7 @@ import { availableScreenHeight, colors, screenWidth, styles } from "../styles";
 import { HiddenFadeInView } from "./animated/FadeInView";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import ResponsiveText from "./ResponsiveText";
+import { core } from "../../core";
 
 const SLIDER_BUBBLE_SIZE = Math.min(0.12*availableScreenHeight, 70);
 const PADDING = 0.125*screenWidth;
@@ -22,44 +23,83 @@ const CORRECTION = LOWER_BOUND/RANGE;
 export const DIMMING_INDICATOR_SIZE = Math.min(0.08*availableScreenHeight, 60);
 export const DIMMING_INDICATOR_SPACING = DIMMING_INDICATOR_SIZE/3;
 
-export class DimmerSlider extends Component<{state: number, dimmingSynced: boolean, showDimmingText: boolean, callback: any}, any> {
+export class DimmerSlider extends Component<{stoneId: string, sphereId: string, callback: any}, {showIndicator: boolean, dimmerReady: boolean, dimmingSyncedToCrownstone: boolean}> {
 
   _panResponder;
   x = null;
   indicatorTimeout = null;
   manualSwitchTimeout = null;
   manualSwitchTimeoutActive = false;
+
+  lastRecordedValue = null;
+  lastRecordedValueTimeout = null;
+
   percentage = null;
+  unsubscribeEvents = [];
+
 
   constructor(props) {
     super(props)
 
-    this.x = new Animated.Value(this.props.state*RANGE + LOWER_BOUND);
-    this.percentage = this.props.state;
+
+    let state = core.store.getState();
+    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    if (!stone || !stone.config) { return; }
+
+    let switchState = stone.state.state;
+
+    this.x = new Animated.Value(switchState*RANGE + LOWER_BOUND);
+    this.percentage = switchState;
+    this.lastRecordedValue = switchState;
+
     this.state = {
-      showIndicator: false
+      showIndicator: false,
+      dimmerReady: stone.state.dimmerReady,
+      dimmingSyncedToCrownstone: stone.abilities.dimming.syncedToCrownstone
     };
+
     this.init();
   }
 
+  componentDidMount(): void {
+    this.unsubscribeEvents.push(core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      let state = core.store.getState();
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      if (!stone || !stone.config) { return; }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.manualSwitchTimeoutActive === false) {
-      this._checkIfSynced()
-    }
-  }
+      let newState = {};
+      let changed = false;
 
-  _checkIfSynced() {
-    if (this.props.dimmingSynced) {
-      if (this.props.state !== this.percentage) {
-        this._updatePercentage(this.props.state, false);
+      if (change.stoneSyncedAbilities && change.updateStoneState.stoneIds[this.props.stoneId]) {
+        if (stone.abilities.dimming.syncedToCrownstone !== this.state.dimmingSyncedToCrownstone) {
+          newState["dimmingSyncedToCrownstone"] = stone.abilities.dimming.syncedToCrownstone;
+          changed = true;
+        }
       }
-    }
-    else {
-      if (this.props.state !== this.percentage) {
-        this._updatePercentage(this.props.state, false);
+
+      if (change.updateStoneState && change.updateStoneState.stoneIds[this.props.stoneId]) {
+        if (stone.state.state !== this.percentage) {
+          this.lastRecordedValue = stone.state.state;
+          if (this.manualSwitchTimeoutActive === false) {
+            this._updatePercentage(stone.state.state, false);
+          }
+        }
+
+        if (stone.state.dimmerReady !== this.state.dimmerReady) {
+          newState['dimmerReady'] = stone.state.dimmerReady;
+          changed = true;
+        }
       }
-    }
+
+      if (changed) {
+        this.setState(newState);
+      }
+    }));
+
+    this.unsubscribeEvents.push(core.eventBus.on("DeviceOverviewSetSwitchState", (state) => {
+      this._updatePercentage(state, true);
+    }))
   }
 
 
@@ -67,6 +107,8 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
     const updateState = (gestureState) => {
       let newState = Math.max(LOWER_BOUND, Math.min(UPPER_BOUND, gestureState.x0 + gestureState.dx));
       let percentage = (newState-LOWER_BOUND) / RANGE;
+      // round this to a 0-100 int
+      percentage = Math.round(percentage*100) / 100;
 
       this._updatePercentage(percentage, true);
       this.props.callback(percentage);
@@ -92,7 +134,7 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
       },
 
       onPanResponderRelease: (evt, gestureState) => {
-        this.indicatorTimeout = setTimeout(() => { this.setState({showIndicator: false})},  this.props.dimmingSynced === false ? 500 : 0);
+        this.indicatorTimeout = setTimeout(() => { this.setState({showIndicator: false})},  this.state.dimmingSyncedToCrownstone === false ? 500 : 0);
         NavigationUtil.setViewBackSwipeEnabled(true);
       },
     });
@@ -100,10 +142,9 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
 
   _updatePercentage(percentage, isManualAction) {
     this.percentage = percentage;
-
     let newState = percentage * RANGE + LOWER_BOUND;
 
-    if (this.props.dimmingSynced === false) {
+    if (this.state.dimmingSyncedToCrownstone === false) {
       if (percentage < 0.5) {
         newState = LOWER_BOUND;
       }
@@ -124,10 +165,21 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
 
     if (isManualAction) {
       this.manualSwitchTimeoutActive = true;
+      this.lastRecordedValue = null;
       clearTimeout(this.manualSwitchTimeout);
+      clearTimeout(this.lastRecordedValueTimeout);
+
+      // clear the update freeze after manual timeout
       this.manualSwitchTimeout = setTimeout(() => {
-        this.manualSwitchTimeoutActive = false
-        this._checkIfSynced();
+        this.manualSwitchTimeoutActive = false;
+        // in case we heard a different state after broadcasting our own, we might want to conclude the state was not set.
+        if (this.lastRecordedValue !== null && this.percentage !== this.lastRecordedValue) {
+          this.lastRecordedValueTimeout = setTimeout(() => {
+            if (this.lastRecordedValue !== null && this.percentage !== this.lastRecordedValue) {
+              this._updatePercentage(this.lastRecordedValue, false);
+            }
+          }, 1500);
+        }
       }, 1500);
     }
   }
@@ -135,10 +187,12 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
   componentWillUnmount(): void {
     clearTimeout(this.indicatorTimeout);
     clearTimeout(this.manualSwitchTimeout);
+    clearTimeout(this.lastRecordedValueTimeout);
+    this.unsubscribeEvents.forEach((unsub) => { unsub() });
   }
 
   _getDimmerStatus() {
-    if (this.props.dimmingSynced === false) {
+    if (this.state.dimmingSyncedToCrownstone === false) {
       return (
         <View style={{flexDirection:"row"}}>
           <ActivityIndicator size={"small"} style={{height:25, paddingRight:3}} />
@@ -146,7 +200,7 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
         </View>
       );
     }
-    else if (this.props.showDimmingText) {
+    else if (this.state.dimmerReady === false) {
       return (
         <View style={{flexDirection:"row"}}>
           <ActivityIndicator size={"small"} style={{height:25, paddingRight:3}} />
@@ -157,7 +211,7 @@ export class DimmerSlider extends Component<{state: number, dimmingSynced: boole
   }
 
   _getIndicator() {
-    if (this.props.dimmingSynced) {
+    if (this.state.dimmingSyncedToCrownstone) {
       return (
         <View style={{marginBottom: DIMMING_INDICATOR_SPACING, height: DIMMING_INDICATOR_SIZE}}>
           <Indicator x={this.x} visible={this.state.showIndicator} />

@@ -11,6 +11,7 @@ import { CLOUD } from "../cloud/cloudAPI";
 import { StoneBehaviourSyncer } from "../cloud/sections/sync/modelSyncs/StoneBehaviourSyncer";
 import { MapProvider } from "./MapProvider";
 import { getGlobalIdMap } from "../cloud/sections/sync/modelSyncs/SyncingBase";
+import { Scheduler } from "../logic/Scheduler";
 
 
 const ABILITY_SYNCER_OWNER_ID = "ABILITY_SYNCER_OWNER_ID";
@@ -21,6 +22,7 @@ class StoneDataSyncerClass {
 
   masterHashTracker = {}
 
+  scheduledRetries = {};
   pendingRuleTriggers = {};
   rescheduledRuleTriggers = {};
 
@@ -111,6 +113,12 @@ class StoneDataSyncerClass {
       // clear the reschedule trigger since we're executing
       delete this.rescheduledRuleTriggers[id];
 
+      // clear scheduledRetries
+      if (this.scheduledRetries[id] !== undefined) {
+        this.scheduledRetries[id].clearRetry();
+        delete this.scheduledRetries[id];
+      }
+
       // if there is already a pending trigger, reschedule the trigger to be fired at a later time
       if (this.pendingRuleTriggers[id] === true) {
         this.rescheduledRuleTriggers[id] = true;
@@ -162,6 +170,13 @@ class StoneDataSyncerClass {
                 delete this.pendingRuleTriggers[id];
                 if (this.rescheduledRuleTriggers[id]) {
                   this._setSyncRuleTrigger(sphereId, stoneId)
+                }
+                else {
+                  LOGi.info("StoneDataSyncer: Rescheduling rule sync trigger for", sphereId, stoneId);
+                  this.scheduledRetries[id] = {clearRetry: Scheduler.scheduleCallback(() => {
+                    LOGi.info("StoneDataSyncer: Executing reschedule rule sync trigger", sphereId, stoneId);
+                    this._setSyncRuleTrigger(sphereId, stoneId);
+                  }, 5000, "Retry rule sync for " + sphereId, stoneId)};
                 }
               }
             })

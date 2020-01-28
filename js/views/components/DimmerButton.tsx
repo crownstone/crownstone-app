@@ -24,7 +24,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 export class DimmerButton extends Component<any, any> {
   _panResponder;
   _animationFrame;
-  requestedStateChange = false; // used to keep track of a user wanting to set a dim level while dimmingAvailable is still false.
+  requestedStateChange = false; // used to keep track of a user wanting to set a dim level while dimmerReady is still false.
   refName : string;
   startY : number = 0;
 
@@ -196,7 +196,7 @@ export class DimmerButton extends Component<any, any> {
     }
 
 
-    let dimmingPending = this.props.stone.config.dimmingAvailable === false && this.requestedStateChange;
+    let dimmingPending = this.props.stone.config.dimmerReady === false && this.requestedStateChange;
     let innerSize = 0.50*this.props.size;
     let angle = (this.angleMin - (this.angleMin - this.angleMax)*state)*this.deg2Rad;
     let indicatorX = this.xCenter + this.correctedRadius*Math.sin(angle);

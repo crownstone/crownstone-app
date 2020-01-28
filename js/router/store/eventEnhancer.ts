@@ -143,8 +143,8 @@ function checkAction(action, affectedIds) {
       eventStatus['stoneLocationUpdated'] = affectedIds; break;
     case 'UPDATE_STONE_SWITCH_STATE':
       eventStatus['updateStoneSwitchState'] = affectedIds;
-    case 'CLEAR_STONE_USAGE':
     case 'UPDATE_STONE_STATE':
+    case 'CLEAR_STONE_USAGE':
     case 'REMOVE_ALL_POWER_USAGE':
     case 'REMOVE_POWER_USAGE_DATE':
       eventStatus['updateStoneState'] = affectedIds;
@@ -289,6 +289,11 @@ function checkAction(action, affectedIds) {
     case "UPDATE_ABILITY_SWITCHCRAFT":
     case "UPDATE_ABILITY_TAP_TO_TOGGLE":
       eventStatus['stoneChangeAbilities'] = affectedIds; break;
+
+    case "MARK_ABILITY_DIMMER_AS_SYNCED":
+    case "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED":
+    case "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED":
+      eventStatus['stoneSyncedAbilities'] = affectedIds; break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }
