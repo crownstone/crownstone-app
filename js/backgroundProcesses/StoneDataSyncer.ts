@@ -168,12 +168,16 @@ class StoneDataSyncerClass {
               else {
                 /** if the syncing fails, we set another watcher **/
                 delete this.pendingRuleTriggers[id];
-
-                LOGi.info("StoneDataSyncer: Rescheduling rule sync trigger for", sphereId, stoneId);
-                this.scheduledRetries[id] = {clearRetry: Scheduler.scheduleCallback(() => {
-                  LOGi.info("StoneDataSyncer: Executing reschedule rule sync trigger", sphereId, stoneId);
-                  this._setSyncRuleTrigger(sphereId, stoneId);
-                }, 5000, "Retry rule sync for " + sphereId, stoneId)};
+                if (this.rescheduledRuleTriggers[id]) {
+                  this._setSyncRuleTrigger(sphereId, stoneId)
+                }
+                else {
+                  LOGi.info("StoneDataSyncer: Rescheduling rule sync trigger for", sphereId, stoneId);
+                  this.scheduledRetries[id] = {clearRetry: Scheduler.scheduleCallback(() => {
+                    LOGi.info("StoneDataSyncer: Executing reschedule rule sync trigger", sphereId, stoneId);
+                    this._setSyncRuleTrigger(sphereId, stoneId);
+                  }, 5000, "Retry rule sync for " + sphereId, stoneId)};
+                }
               }
             })
         }
