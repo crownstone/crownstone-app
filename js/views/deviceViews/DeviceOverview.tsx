@@ -380,8 +380,10 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
           if (this.state.switchIsOn) {
             // switch off
             this._switch(stone, 0);
+            core.eventBus.emit("DeviceOverviewSetSwitchState", 0);
           }
           else {
+            this.setState({switchIsOn: true});
             BatchCommandHandler.loadPriority(
               stone,
               this.props.stoneId,
@@ -393,14 +395,13 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
             )
               .then((result) => {
                 let expectedState = AicoreUtil.getActiveTurnOnPercentage(this.props.sphereId, stone)
-
                 core.store.dispatch({
                   type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
                   sphereId: this.props.sphereId,
                   stoneId: this.props.stoneId,
                   data: {state: 0.01*expectedState}
                 });
-
+                core.eventBus.emit("DeviceOverviewSetSwitchState", 0.01*expectedState);
                 this._planStoreAction();
               });
           }

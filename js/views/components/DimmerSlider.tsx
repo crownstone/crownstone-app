@@ -30,13 +30,12 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
   indicatorTimeout = null;
   manualSwitchTimeout = null;
   manualSwitchTimeoutActive = false;
+
   lastRecordedValue = null;
   lastRecordedValueTimeout = null;
 
   percentage = null;
-  changeTime = 0;
-  unsubscribeStoreEvents = null;
-
+  unsubscribeEvents = [];
 
 
   constructor(props) {
@@ -63,7 +62,7 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
   }
 
   componentDidMount(): void {
-    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeEvents.push(core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       let state = core.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
@@ -96,7 +95,11 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
       if (changed) {
         this.setState(newState);
       }
-    });
+    }));
+
+    this.unsubscribeEvents.push(core.eventBus.on("DeviceOverviewSetSwitchState", (state) => {
+      this._updatePercentage(state, true);
+    }))
   }
 
 
@@ -185,7 +188,7 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
     clearTimeout(this.indicatorTimeout);
     clearTimeout(this.manualSwitchTimeout);
     clearTimeout(this.lastRecordedValueTimeout);
-    this.unsubscribeStoreEvents();
+    this.unsubscribeEvents.forEach((unsub) => { unsub() });
   }
 
   _getDimmerStatus() {

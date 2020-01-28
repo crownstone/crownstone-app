@@ -125,7 +125,7 @@ export class RoomOverview extends LiveComponent<any, any> {
         (change.updateLocationConfig    && change.updateLocationConfig.locationIds[this.props.locationId]) ||
         (change.changeSphereUsers       && change.changeSphereUsers.sphereIds[this.props.sphereId])        ||
         (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])  ||
-        (change.changeStoneRSSI         && change.changeStoneAvailability.sphereIds[this.props.sphereId])  ||
+        (change.changeStoneRSSI         && change.changeStoneRSSI.sphereIds[this.props.sphereId])          ||
         (change.stoneUsageUpdated       && change.stoneUsageUpdated.sphereIds[this.props.sphereId])        ||
         (change.changeSphereState       && change.changeSphereState.sphereIds[this.props.sphereId])        ||
         (change.stoneLocationUpdated    && change.stoneLocationUpdated.sphereIds[this.props.sphereId])     ||
