@@ -116,7 +116,7 @@ import { Platform } from "react-native";
    * This flag is meant to just always log to file, regardless of the user input. Used for debugging.
    */
   export let LOG_TO_FILE          = true;   // log everything that is logged to a file.
-  export let LOG_EXTENDED_TO_FILE = true;   // log even more to file.
+  export let LOG_EXTENDED_TO_FILE = false;   // log even more to file.
   export let LOG_MAX_STORAGE_TIME_DAYS = 7 // max amount of days to store logs.
 
 /******************** /LOGGING ********************/

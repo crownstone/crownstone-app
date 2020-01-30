@@ -59,6 +59,7 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
 
   _getItems(stateSegment, expandedPath, url, baseKey, step) {
     let items = [];
+    let state = core.store.getState();
 
     let keys = Object.keys(stateSegment);
     keys.forEach((key) => {
@@ -95,15 +96,17 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
             key={url+'/'+key}
             style={[viewStyle,{paddingLeft: ignoreStep === false && step*15 + 5 || 5, backgroundColor: colors.menuTextSelected.rgba(0.1*step)}]}
             onPress={() => {
-              if (this.state.editField !== null) {
-                this.state.committer();
-                this.setState({editField:null, editValue:null, committer:null});
-              }
-              else {
-                this.setState({ editField: url + key, editValue: label, committer:() => {
-                  stateSegment[key] = this.state.editValue;
-                  StoreManager.persistor.persistChanges(null, this.dbState);
-                }});
+              if (state.development.devAppVisible) {
+                if (this.state.editField !== null) {
+                  this.state.committer();
+                  this.setState({editField:null, editValue:null, committer:null});
+                }
+                else {
+                  this.setState({ editField: url + key, editValue: label, committer:() => {
+                    stateSegment[key] = this.state.editValue;
+                    StoreManager.persistor.persistChanges(null, this.dbState);
+                  }});
+                }
               }
             }}
           >
