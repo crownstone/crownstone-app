@@ -226,7 +226,7 @@ export class AicoreBehaviourCore {
     return null;
   }
 
-  isAlwaysActive() : boolean {
+  isActiveAllDay() : boolean {
     return this.rule.time.type === "ALL_DAY";
   }
 

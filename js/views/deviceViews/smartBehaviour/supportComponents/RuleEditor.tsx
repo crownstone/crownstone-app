@@ -268,7 +268,7 @@ export class RuleEditor extends LiveComponent<
     let shouldShowTimeConflict = false;
     let showPresenceSuggestion = this.props.twilightRule === false && this.rule.isUsingPresence() === false;
 
-    let showTimeSuggestion = this.rule.isAlwaysActive() === true;
+    let showTimeSuggestion = this.rule.isActiveAllDay() === true;
     let showEndConditionSuggestion = this.props.twilightRule === false &&
       (
         (this.rule.isUsingClockEndTime() && this.rule.getHour() !== null && this.rule.getHour() >= 20)

@@ -243,7 +243,7 @@ export const AicoreUtil = {
     return AicoreUtil.getClockTimeStr(timeData.hours, timeData .minutes);
   },
 
-  getClockTime(timeObj, sphereId){
+  getClockTime(timeObj, sphereId) {
     if (timeObj.type === "CLOCK") {
       // TYPE IS CLOCK
       let obj = (timeObj as aicoreTimeDataClock).data;
@@ -323,6 +323,35 @@ export const AicoreUtil = {
     if (aR.rule.time.type !== "ALL_DAY" && bR.rule.time.type === "ALL_DAY") { return false; }
 
     return AicoreUtil.isTimeBeforeOtherTime(aR.rule.time.from, bR.rule.time.from, sphereId)
+  },
+
+
+  /**
+   * A and B are full rules from the database;
+   * @param a
+   * @param b
+   */
+  endsNextDay(ruleData, sphereId) : boolean {
+    let rule : AicoreBehaviour | AicoreTwilight = null;
+    if (ruleData.type === BEHAVIOUR_TYPES.twilight) {
+      rule = new AicoreTwilight(ruleData.data);
+    }
+    else {
+      rule = new AicoreBehaviour(ruleData.data);
+    }
+
+    if (rule.rule.time.type === "RANGE") {
+      let fromTime = AicoreUtil.getMinuteValue(rule.rule.time.from, sphereId);
+      let toTime   = AicoreUtil.getMinuteValue(rule.rule.time.to, sphereId);
+
+      return fromTime >= toTime
+    }
+    else {
+      // all day
+      return true;
+    }
+
+
   },
 
   //
