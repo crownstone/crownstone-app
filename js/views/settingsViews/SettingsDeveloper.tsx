@@ -74,7 +74,7 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
     }
     else {
       this.count++;
-      if (this.count >= 4 && this.state.devAppVisible === false) {
+      if (this.count >= 8 && this.state.devAppVisible === false) {
         this.setState({devAppVisible: true})
         core.store.dispatch({type:'CHANGE_DEV_SETTINGS', data: { devAppVisible: true}});
       }
@@ -375,24 +375,45 @@ lang("_Reset_Done__Rediscovery__body"),
       }});
 
 
+    items.push({label:  "FIRMWARE EARLY ACCESS", type: 'explanation'});
     items.push({
-      label: "Early Firmware Access",
-      value: dev.firmwareEarlyAccess,
-      icon: <IconButton name={"ios-cloud-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.darkGreen.hex}}/>,
+      label: "Beta Firmware Access",
+      value: dev.firmwareEarlyAccessLevel >= 50,
+      icon: <IconButton name={"ios-cloud-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
       type: 'switch',
       callback:(newValue) => {
+        let level = 0;
         if (newValue) {
-          CLOUD.setEarlyAccess(true);
+          level = 50;
         }
+        CLOUD.setEarlyAccess(level);
 
         store.dispatch({
           type: 'CHANGE_DEV_SETTINGS',
-          data: {firmwareEarlyAccess: newValue}
+          data: {firmwareEarlyAccessLevel: level}
         });
       }});
 
+    if (state.development.devAppVisible) {
+      items.push({
+        label: "Alpha Firmware Access",
+        value: dev.firmwareEarlyAccessLevel >= 100,
+        icon: <IconButton name={"ios-cloud-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex}}/>,
+        type: 'switch',
+        callback:(newValue) => {
+          let level = 0;
+          if (newValue) {
+            level = 100;
+          }
+          CLOUD.setEarlyAccess(level);
 
-
+          store.dispatch({
+            type: 'CHANGE_DEV_SETTINGS',
+            data: {firmwareEarlyAccessLevel: level}
+          });
+        }});
+    }
+    items.push({label: "WARNING: Early access builds may be broken and can brick your Crownstones. No guarantees are provided on early access builds", type: 'explanation', below: true});
 
 
     items.push({label: lang("RESET_DEVELOPER_STATE"), type: 'explanation'});

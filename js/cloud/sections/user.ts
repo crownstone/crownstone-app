@@ -54,8 +54,8 @@ export const user = {
    *
    * @param file {String} --> full path string.
    */
-  setEarlyAccess: function(enabled) {
-    return cloudApiBase._setupRequest('PUT', '/users/{id}', {data: { earlyAccessLevel: enabled ? 1000 : 0 }, background: false}, 'body');
+  setEarlyAccess: function(level) {
+    return cloudApiBase._setupRequest('PUT', '/users/{id}', {data: { earlyAccessLevel: level }, background: false}, 'body');
   },
 
   /**

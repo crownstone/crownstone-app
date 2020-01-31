@@ -81,17 +81,17 @@ import { Platform } from "react-native";
    * Main logging settings.
    * These will override developer settings only if true but they are currently on by default in developer settings.
    */
-  export let LOG_INFO            = LOG_LEVEL.debug;    // enabling LOG.info           commands to be shown.
-  export let LOG_PROMISE_MANAGER = LOG_LEVEL.info;    // enabling LOG.promiseManager commands to be shown.
-  export let LOG_NOTIFICATIONS   = LOG_LEVEL.debug;    // enabling LOG.notifications  commands to be shown.
+  export let LOG_INFO            = LOG_LEVEL.ERROR;    // enabling LOG.info           commands to be shown.
+  export let LOG_PROMISE_MANAGER = LOG_LEVEL.ERROR;    // enabling LOG.promiseManager commands to be shown.
+  export let LOG_NOTIFICATIONS   = LOG_LEVEL.ERROR;    // enabling LOG.notifications  commands to be shown.
   export let LOG_WARNINGS        = LOG_LEVEL.ERROR;    // enabling LOG.warn           commands to be shown.
   export let LOG_ERRORS          = LOG_LEVEL.ERROR;    // enabling LOG.error          commands to be shown.
   export let LOG_MESH            = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_MESSAGES        = LOG_LEVEL.ERROR;    // enabling LOG.mesh           commands to be shown.
   export let LOG_ADVERTISEMENTS  = LOG_LEVEL.ERROR;    // enabling LOG.advertisement  commands to be shown.
-  export let LOG_DFU             = LOG_LEVEL.debug;    // enabling LOG.dfu commands to be shown.
+  export let LOG_DFU             = LOG_LEVEL.ERROR;    // enabling LOG.dfu commands to be shown.
   export let LOG_BROADCAST       = LOG_LEVEL.ERROR;    // enabling LOG.broadcast commands to be shown.
-  export let LOG_NAVIGATION      = LOG_LEVEL.info;    // enabling LOG.nav commands to be shown.
+  export let LOG_NAVIGATION      = LOG_LEVEL.ERROR;    // enabling LOG.nav commands to be shown.
   export let LOG_BEHAVIOUR       = LOG_LEVEL.ERROR;    // enabling LOG.behaviour      commands to be shown.
 
 
@@ -101,10 +101,10 @@ import { Platform } from "react-native";
   export let LOG_VERBOSE    = LOG_LEVEL.ERROR;   // enabling LOG.verbose    commands to be shown.
   export let LOG_SCHEDULER  = LOG_LEVEL.ERROR;   // enabling LOG.scheduler  commands to be shown.
   export let LOG_BLE        = LOG_LEVEL.ERROR;   // enabling LOG.ble        commands to be shown.
-  export let LOG_BCH        = LOG_LEVEL.info;   // enabling LOG.bch        commands to be shown.
+  export let LOG_BCH        = LOG_LEVEL.ERROR;   // enabling LOG.bch        commands to be shown.
   export let LOG_EVENTS     = LOG_LEVEL.ERROR;   // enabling LOG.event      commands to be shown.
-  export let LOG_STORE      = LOG_LEVEL.info;   // enabling LOG.store      commands to be shown.
-  export let LOG_CLOUD      = LOG_LEVEL.info;   // enabling LOG.cloud      commands to be shown.
+  export let LOG_STORE      = LOG_LEVEL.ERROR;   // enabling LOG.store      commands to be shown.
+  export let LOG_CLOUD      = LOG_LEVEL.ERROR;   // enabling LOG.cloud      commands to be shown.
   export let LOG_NATIVE     = LOG_LEVEL.ERROR;   // enabling LOG.native      commands to be shown.
 
 
@@ -115,8 +115,8 @@ import { Platform } from "react-native";
    * Log to file. Even if this is false, if the user configures it in the user profile through the developer mode, logging to file will still be used.
    * This flag is meant to just always log to file, regardless of the user input. Used for debugging.
    */
-  export let LOG_TO_FILE          = true;   // log everything that is logged to a file.
-  export let LOG_EXTENDED_TO_FILE = true;   // log even more to file.
+  export let LOG_TO_FILE          = false;   // log everything that is logged to a file.
+  export let LOG_EXTENDED_TO_FILE = false;   // log even more to file.
   export let LOG_MAX_STORAGE_TIME_DAYS = 7 // max amount of days to store logs.
 
 /******************** /LOGGING ********************/

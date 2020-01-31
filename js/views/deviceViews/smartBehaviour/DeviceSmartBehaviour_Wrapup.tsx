@@ -100,7 +100,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     }
 
     let { activeDays, conflictDays } = this._getDayData();
-    if (this.props.ruleId && this.ruleHasChanged === false) {
+    if (this.props.ruleId) {
       let rule = stone.rules[this.props.ruleId];
       if (rule) {
         if (this.props.deleteRule && this.props.selectedDay) {
@@ -448,6 +448,32 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
     return result;
   }
 
+  _hasMoreThenOneActiveDay() {
+    if (this.props.ruleId) {
+      let state = core.store.getState();
+      let sphere = state.spheres[this.props.sphereId];
+      if (!sphere) return;
+      let stone = sphere.stones[this.props.stoneId];
+      if (!stone) return;
+
+      let rule = stone.rules[this.props.ruleId];
+
+      let count = 0;
+      if (rule) {
+        DAY_INDICES_MONDAY_START.forEach((dayIndex) => {
+          if (rule.activeDays[dayIndex]) {
+            count += 1;
+          }
+        })
+        if (count > 1) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   render() {
     let disabledDays = {};
 
@@ -522,8 +548,11 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       }
     }
 
-
-
+    // it does not make sense to show the quick toggle button from single day to all if there is only one day this is active.
+    // by setting changeText to null, the button is not shown.
+    if (this._hasMoreThenOneActiveDay() === false) {
+      changeText = null;
+    }
 
 
     return (

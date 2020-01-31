@@ -21,7 +21,7 @@ let defaultState = {
   show_rssi_values_in_mesh:   false,
   nativeExtendedLogging:      false,
 
-  firmwareEarlyAccess: false,
+  firmwareEarlyAccessLevel: 0,
 
   show_sync_button_in_behaviour: false,
 
@@ -65,7 +65,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.show_sync_button_in_behaviour = update(action.data.show_sync_button_in_behaviour, newState.show_sync_button_in_behaviour);
         newState.nativeExtendedLogging =         update(action.data.nativeExtendedLogging,         newState.nativeExtendedLogging);
         newState.show_rssi_values_in_mesh =      update(action.data.show_rssi_values_in_mesh,      newState.show_rssi_values_in_mesh);
-        newState.firmwareEarlyAccess =           update(action.data.firmwareEarlyAccess,           newState.firmwareEarlyAccess);
+        newState.firmwareEarlyAccessLevel =      update(action.data.firmwareEarlyAccessLevel,      newState.firmwareEarlyAccessLevel);
         newState.devAppVisible =                 update(action.data.devAppVisible,                 newState.devAppVisible);
         return newState;
       }

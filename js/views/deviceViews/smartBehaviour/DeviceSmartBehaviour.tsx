@@ -139,20 +139,20 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
       if (bIsYesterday) { return 1; }
 
       if (AicoreUtil.aStartsBeforeB(rules[a], rules[b], this.props.sphereId)) {
-        return -1;
+        return 1;
       }
-      return 1;
+      return -1;
     })
 
     let presenceRulePresent = false;
     let roomBasedPresenceRulePresent = false;
 
     ruleIds.forEach((ruleId) => {
-      let active = rules[ruleId].activeDays[this.state.activeDay];
-      let partiallyActive = !active && rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]];
+      let rule = rules[ruleId];
+      let active = rule.activeDays[this.state.activeDay];
+      let partiallyActive = !active && rule.activeDays[DAY_INDICES_SUNDAY_START[previousDay]] && AicoreUtil.endsNextDay(rule, this.props.sphereId);
 
       if (active || (partiallyActive && !this.state.editMode)) {
-        let rule = rules[ruleId];
         activeRules[ruleId] = rules[ruleId];
         activityMap[ruleId] = {
           yesterday: rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]],
@@ -321,7 +321,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             </SlideFadeInView>
 
             <SlideFadeInView visible={!this.state.editMode} height={80} style={styles.centered}>
-              <Text style={deviceStyles.explanationText}>{
+              <Text style={{...deviceStyles.explanationText, paddingHorizontal:15}}>{
                 "I'll be off if I'm not supposed to be on." +
                 (presenceRulePresent ? "\nOnce everyone left the " + (roomBasedPresenceRulePresent ? "room" : "house") + " I'll wait 5 minutes before turning off." : "")
               }</Text>
