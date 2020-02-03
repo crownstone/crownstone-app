@@ -47,7 +47,10 @@ export class DeviceAbilities extends LiveComponent<any, any> {
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (change.stoneChangeAbilities && change.stoneChangeAbilities.stoneIds[this.props.stoneId]) {
+      if (
+        change.stoneSyncedAbilities && change.stoneSyncedAbilities.stoneIds[this.props.stoneId] &&
+        change.stoneChangeAbilities && change.stoneChangeAbilities.stoneIds[this.props.stoneId]
+      ) {
         this.forceUpdate();
       }
     });

@@ -166,6 +166,8 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
             data.presenceProfile_6 = mapBitmaskArray(data.presenceProfile_6);
             data.presenceProfile_7 = mapBitmaskArray(data.presenceProfile_7);
 
+            data.storedBehaviours = mapBitmaskArray(data.storedBehaviours);
+
             let string = xUtil.stringify(data, 2);
             console.log("STONE DEBUG INFORMATION:", string);
             LOGe.info("STONE DEBUG INFORMATION:", string);
@@ -240,7 +242,7 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
   render() {
     return (
       <Background image={core.background.menu} >
-          <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

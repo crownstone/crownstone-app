@@ -71,7 +71,10 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
       let newState = {};
       let changed = false;
 
-      if (change.stoneSyncedAbilities && change.updateStoneState.stoneIds[this.props.stoneId]) {
+      if (
+        change.stoneSyncedAbilities && change.stoneSyncedAbilities.stoneIds[this.props.stoneId] &&
+        change.stoneChangeAbilities && change.stoneChangeAbilities.stoneIds[this.props.stoneId]
+      ) {
         if (stone.abilities.dimming.syncedToCrownstone !== this.state.dimmingSyncedToCrownstone) {
           newState["dimmingSyncedToCrownstone"] = stone.abilities.dimming.syncedToCrownstone;
           changed = true;
