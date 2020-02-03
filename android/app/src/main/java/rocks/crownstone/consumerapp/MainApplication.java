@@ -4,7 +4,6 @@ import ca.jaysoo.extradimensions.ExtraDimensionsPackage;
 
 import com.airbnb.android.react.maps.MapsPackage;
 import com.cmcewen.blurview.BlurViewPackage;
-import com.dylanvann.fastimage.FastImageViewPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -63,7 +62,6 @@ public class MainApplication extends NavigationApplication {
                 new ExtraDimensionsPackage(),
             	new BlurViewPackage(),
 				new RNCameraPackage(),
-				new FastImageViewPackage(),
 				new AsyncStoragePackage(),
 				new ReactSliderPackage(),
 				new VectorIconsPackage(),

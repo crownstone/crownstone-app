@@ -440,7 +440,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	fun setDevicePreferences(rssiOffset: Int, tapToToggleEnabled: Boolean, ignoreForBehaviour: Boolean) {
 		// Current rssi offset and whether tap to toggle is enabled.
 		// Cache these, to be used for broadcasting.
-		Log.i(TAG, "setDevicePreferences rssiOffset=$rssiOffset tapToToggleEnabled=$tapToToggleEnabled")
+		Log.i(TAG, "setDevicePreferences rssiOffset=$rssiOffset tapToToggleEnabled=$tapToToggleEnabled ignoreForBehaviour=$ignoreForBehaviour")
 		bluenet.setTapToToggle(null, tapToToggleEnabled, rssiOffset)
 		bluenet.setIgnoreMeForBehaviour(null, ignoreForBehaviour)
 	}
@@ -1425,15 +1425,14 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	private fun parseMultiSwitchLegacy(switchItems: ReadableArray): MultiSwitchLegacyPacket? {
-		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
+		// switchItems = [{crownstoneId: number(uint16), state: number(float) [ 0 .. 1 ]}, {}, ...]
 		val listPacket = MultiSwitchLegacyPacket()
 		var success = true
 		for (i in 0 until switchItems.size()) {
 			val itemMap = switchItems.getMap(i) ?: continue
 			val crownstoneId = Conversion.toUint8(itemMap.getInt("crownstoneId"))
-			val timeout = Conversion.toUint16(itemMap.getInt("timeout"))
-			val intentInt = itemMap.getInt("intent")
-			val intent = MultiSwitchIntent.fromNum(Conversion.toUint8(intentInt))
+			val timeout = Conversion.toUint16(0)
+			val intent = MultiSwitchIntent.MANUAL
 			val switchValDouble = itemMap.getDouble("state")
 			val switchVal = convertSwitchVal(switchValDouble)
 			val item = MultiSwitchLegacyItemPacket(crownstoneId, switchVal, timeout, intent)
@@ -3003,7 +3002,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 			serviceDataMap.putInt("timestamp", serviceData.count.toInt())
 		}
 
-		serviceDataMap.putBoolean("dimmingAvailable", serviceData.flagDimmingAvailable)
+		serviceDataMap.putBoolean("dimmerReady", serviceData.flagDimmerReady)
 		serviceDataMap.putBoolean("dimmingAllowed", serviceData.flagDimmable)
 		serviceDataMap.putBoolean("switchLocked", serviceData.flagSwitchLocked)
 		serviceDataMap.putBoolean("timeSet", serviceData.flagTimeSet)
