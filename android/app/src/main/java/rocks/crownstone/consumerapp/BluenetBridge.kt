@@ -272,7 +272,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //			bluenet.subscribe(BluenetEvent.NEAREST_STONE, { data: Any? -> onNearestStone() })
 //			bluenet.subscribe(BluenetEvent.NEAREST_SETUP, { data: Any? -> onNearestSetup() })
 			bluenet.subscribe(BluenetEvent.DFU_PROGRESS, { data: Any? -> onDfuProgress(data as DfuProgress) })
-			bluenet.subscribe(BluenetEvent.SCAN_FAILURE,  { data: Any? -> onScanFailure() })
+			bluenet.subscribe(BluenetEvent.SCAN_FAILURE,  { data: Any? -> onScanFailure(data as ScanStartFailure) })
 			val logLevel =     if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.VERBOSE else Log.Level.ERROR
 			val logLevelFile = if (rocks.crownstone.bluenet.BuildConfig.DEBUG) Log.Level.DEBUG else Log.Level.INFO
 			bluenet.setLogLevel(logLevel)
@@ -2786,8 +2786,22 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	}
 
 	@Synchronized
-	private fun onScanFailure() {
-		Log.i(TAG, "onScanFailure")
+	private fun onScanFailure(error: ScanStartFailure) {
+		Log.w(TAG, "onScanFailure $error")
+		when (error) {
+			ScanStartFailure.NO_ERROR,
+			ScanStartFailure.ALREADY_STARTED,
+			ScanStartFailure.UNKNOWN -> {
+				return
+			}
+			ScanStartFailure.APPLICATION_REGISTRATION_FAILED,
+			ScanStartFailure.FEATURE_UNSUPPORTED,
+			ScanStartFailure.INTERNAL_ERROR,
+			ScanStartFailure.OUT_OF_HARDWARE_RESOURCES,
+			ScanStartFailure.SCANNING_TOO_FREQUENTLY -> {
+				// Fall through.
+			}
+		}
 		val mapAlert = Arguments.createMap()
 		mapAlert.putString("header", "Bluetooth problem")
 		mapAlert.putString("body", "There is a problem detected with Bluetooth, please turn Bluetooth off and on again.")
