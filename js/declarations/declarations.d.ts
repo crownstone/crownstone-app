@@ -202,6 +202,8 @@ interface onScreenNotificationPayload {
   sphereId?: string,
   icon?: string,
   iconSize?: number,
+  iconColor?: string,
+  backgroundColor? : string,
   callback: () => void
 }
 

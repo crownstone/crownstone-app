@@ -485,6 +485,7 @@ export function getDevAppItems() {
         OnScreenNotifications.removeAllNotifications();
         BroadcastStateManager.destroy();
         LocationHandler.destroy();
+        core.eventBus.clearAllEvents();
         DevAppState.init();
         NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());
       }

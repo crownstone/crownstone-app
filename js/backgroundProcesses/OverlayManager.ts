@@ -2,6 +2,7 @@ import { core } from "../core";
 import { NavigationUtil } from "../util/NavigationUtil";
 import { Alert } from "react-native";
 import { LOGe } from "../logging/Log";
+import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
 
 
 class OverlayManagerClass {
@@ -18,6 +19,8 @@ class OverlayManagerClass {
           case "unauthorized":
             NavigationUtil.showOverlay('BleStateOverlay', { notificationType: status, type: "SCANNER" });
             break;
+          default:
+            OnScreenNotifications.removeAllNotificationsFrom("BleStateOverlay");
         }
       });
       core.nativeBus.on(core.nativeBus.topics.bleBroadcastStatus, (status) => {

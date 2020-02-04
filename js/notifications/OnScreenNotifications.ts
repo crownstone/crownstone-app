@@ -58,9 +58,6 @@ class OnScreenNotificationsClass {
     core.eventBus.emit('onScreenNotificationsUpdated');
   }
 
-
-
-
 }
 
 export const OnScreenNotifications = new OnScreenNotificationsClass();

@@ -15,6 +15,7 @@ import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { colors , screenHeight} from '../styles'
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
+import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
 
 export class BleStateOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -38,7 +39,10 @@ export class BleStateOverlay extends Component<any, any> {
           this.setState({visible: true, notificationType: status, type: "SCANNER"});
           break;
         case "poweredOn":
-          this.setState({visible: false, notificationType: status, type: "SCANNER"}, () => { NavigationUtil.closeOverlay(this.props.componentId); });
+          this.setState({visible: false, notificationType: status, type: "SCANNER"}, () => {
+            OnScreenNotifications.removeAllNotificationsFrom("BleStateOverlay")
+            NavigationUtil.closeOverlay(this.props.componentId);
+          });
           break;
         case "unauthorized":
           this.setState({visible: true, notificationType: status, type: "SCANNER"});
@@ -61,7 +65,10 @@ export class BleStateOverlay extends Component<any, any> {
           this.setState({visible: true, notificationType: status, type: "BROADCASTER"});
           break;
         case "authorized":
-          this.setState({visible: false, notificationType: status, type: "BROADCASTER"}, () => { NavigationUtil.closeOverlay(this.props.componentId); });
+          this.setState({visible: false, notificationType: status, type: "BROADCASTER"}, () => {
+            OnScreenNotifications.removeAllNotificationsFrom("BleStateOverlay");
+            NavigationUtil.closeOverlay(this.props.componentId);
+          });
           break;
       }
     }));
@@ -126,8 +133,26 @@ export class BleStateOverlay extends Component<any, any> {
   }
 
   render() {
+    let state = core.store.getState();
     return (
-      <OverlayBox visible={this.state.visible} overrideBackButton={false}>
+      <OverlayBox
+        visible={this.state.visible}
+        overrideBackButton={false}
+        canClose={state.development.devAppVisible && state.user.developer}
+        closeCallback={() => {
+          NavigationUtil.closeOverlay(this.props.componentId);
+          OnScreenNotifications.setNotification({
+            source: "BleStateOverlay",
+            id: "bluetoothState",
+            label: "Bluetooth disabled",
+            icon: "ios-bluetooth",
+            backgroundColor: colors.csOrange.hex,
+            callback: () => {
+              NavigationUtil.showOverlay('BleStateOverlay', { notificationType: this.state.notificationType, type: this.state.type });
+            }
+          })
+        }}
+      >
         <View style={{flex:1}} />
         <IconButton
           name="ios-bluetooth"
