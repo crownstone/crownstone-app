@@ -92,7 +92,7 @@ export class Register extends LiveComponent<any, any> {
                 // autofocus={true}
                 // focussed={this.focussingIndex === 0 || undefined}
                 placeholder={ lang("First_name")}
-                value={state && state.firstName || this.user.firstName}
+                value={state && state.firstName !== null || this.user.firstName}
                 callback={(newValue) => {
                   let newState = {};
                   if (state !== "") {
@@ -107,7 +107,7 @@ export class Register extends LiveComponent<any, any> {
                 // autofocus={false}
                 placeholder={ lang("Last_name")}
                 focussed={this.focussingIndex === 1}
-                value={state && state.lastName || this.user.lastName}
+                value={state && state.lastName !== null|| this.user.lastName}
                 callback={(newValue) => {
                   let newState = {};
                   if (state !== "") {

@@ -15,7 +15,7 @@ import { styles, colors, screenWidth, LARGE_ROW_SIZE, NORMAL_ROW_SIZE, MID_ROW_S
 import { Icon } from "../Icon";
 import { core } from "../../../core";
 
-
+const DEFAULT_VALUE = '.....';
 export class NumericSet extends Component<any, any> {
   render() {
     let barHeight = this.props.barHeight;
@@ -26,8 +26,8 @@ export class NumericSet extends Component<any, any> {
     else if (this.props.icon)
       barHeight = NORMAL_ROW_SIZE;
 
-    let showValue = '.....'
-    if (this.props.value) {
+    let showValue = DEFAULT_VALUE;
+    if (this.props.value !== null && this.props.value !== undefined) {
       let numericValue = Number(this.props.value);
       showValue = numericValue < 1 ? numericValue.toFixed(this.props.digits || 4) : String(numericValue)
     }
@@ -53,7 +53,7 @@ export class NumericSet extends Component<any, any> {
         </Text>
         <TouchableOpacity style={{alignItems: 'center', justifyContent:'flex-end', width: 0.15 * screenWidth}} onPress={() => {
           core.eventBus.emit("showNumericOverlay",{
-            value: String(showValue),
+            value: showValue === DEFAULT_VALUE ? '' : String(showValue),
             title: "SET " + this.props.label,
             text: "Input a number and press set, or close this window.",
             callback: this.props.setCallback

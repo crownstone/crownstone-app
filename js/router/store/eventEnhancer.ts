@@ -198,7 +198,6 @@ function checkAction(action, affectedIds) {
     case 'SET_APP_IDENTIFIER':
     case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
     case 'USER_SEEN_ROOM_FINGERPRINT_ALERT':
-    case 'SET_NEW_FIRMWARE_VERSIONS':
     case 'REFRESH_DEFAULTS':
     case 'UPDATE_STONE_DFU_RESET':
     case 'ADD_INSTALLATION':
@@ -294,6 +293,10 @@ function checkAction(action, affectedIds) {
     case "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED":
     case "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED":
       eventStatus['stoneSyncedAbilities'] = affectedIds; break;
+
+    case 'SET_NEW_FIRMWARE_VERSIONS':
+      eventStatus['firmwareVersionsAvailable'] = affectedIds; break;
+
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

@@ -355,6 +355,11 @@ export class StoneEntity {
    * @private
    */
   _handleAdvertisementContent(stone, advertisement : crownstoneAdvertisement) {
+    if (advertisement.serviceData.stateOfExternalCrownstone && advertisement.serviceData.timeSet === false) {
+      LOGd.advertisements("StoneEntity: IGNORE: we will not apply a mesh state from a Crownstone that does not have the time.");
+      return;
+    }
+
     // these timestamps are in seconds.
     let dtWithLastDataPoint = advertisement.serviceData.timestamp - this.lastKnownTimestamp;
     if (advertisement.serviceData.timestamp !== -1 && dtWithLastDataPoint <= 0 && Math.abs(dtWithLastDataPoint) < 2000) { // the ABS is to make sure an incorrect overflow correction will not block advertisements for hours.
@@ -465,7 +470,7 @@ export class StoneEntity {
         type: 'UPDATE_STONE_CONFIG',
         sphereId: this.sphereId,
         stoneId: this.stoneId,
-        data: { locked: advertisement.serviceData.switchLocked},
+        data: { locked: advertisement.serviceData.switchLocked },
         updatedAt: new Date().valueOf(),
       });
     }

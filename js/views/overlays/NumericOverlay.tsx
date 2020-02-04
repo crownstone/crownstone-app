@@ -6,6 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  ActivityIndicator,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -29,6 +30,7 @@ export class NumericOverlay extends Component<any, any> {
     this.state = {
       visible: false,
       value: props.data.value || null,
+      pending: false,
       status: "NONE",
     };
     this.unsubscribe = [];
@@ -43,7 +45,7 @@ export class NumericOverlay extends Component<any, any> {
         NavigationUtil.closeOverlay(this.props.componentId);
         this.unsubscribe.forEach((unsub) => { unsub(); });
         this.unsubscribe = [];
-      }, 400)
+      }, 400);
     }))
     this.unsubscribe.push(core.eventBus.on("hideNumericOverlayFailed", () => {
       this.setState({ok: true})
@@ -52,7 +54,7 @@ export class NumericOverlay extends Component<any, any> {
         NavigationUtil.closeOverlay(this.props.componentId);
         this.unsubscribe.forEach((unsub) => { unsub(); });
         this.unsubscribe = [];
-      }, 400)
+      }, 400);
     }))
   }
 
@@ -118,9 +120,10 @@ export class NumericOverlay extends Component<any, any> {
             {this._getText()}
           </Text>
           <View style={{flex:1}} />
-          <TouchableOpacity
+          {this.state.pending ? <ActivityIndicator size={"small"} /> : <TouchableOpacity
             onPress={() => {
               if (this.state.value !== null) {
+                this.setState({pending: true})
                 this.props.data.callback(this.state.value)
               }
               else {
@@ -136,7 +139,7 @@ export class NumericOverlay extends Component<any, any> {
               borderColor: colors.blue.rgba(0.5),
             }]}>
             <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue.hex}}>{"Set!"}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>}
           <View style={{height:30}} />
         </React.Fragment>
       )

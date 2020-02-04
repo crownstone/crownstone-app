@@ -22,7 +22,7 @@ class UpdateCenterClass {
       core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
 
-        if (change.changeStones || change.updateStoneCoreConfig) {
+        if (change.changeStones || change.updateStoneCoreConfig || change.firmwareVersionsAvailable) {
           this.checkForFirmwareUpdates();
         }
       });
