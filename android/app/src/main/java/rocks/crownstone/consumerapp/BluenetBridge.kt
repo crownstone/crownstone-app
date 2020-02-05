@@ -92,6 +92,9 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	private var lastLocation: Location? = null // Store last known GPS location.
 
+	private val SCAN_FAILURE_ALERT_MIN_INTERVAL_MS: Long = 24*3600*1000 // Only show an alert once a day.
+	private var lastScanFailureAlertTimestampMs = -SCAN_FAILURE_ALERT_MIN_INTERVAL_MS
+
 	enum class AppLogLevel {
 		NONE,
 		BASIC,
@@ -2788,23 +2791,37 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 	@Synchronized
 	private fun onScanFailure(error: ScanStartFailure) {
 		Log.w(TAG, "onScanFailure $error")
+		val currentTimestampMs = SystemClock.elapsedRealtime()
+		if (currentTimestampMs - lastScanFailureAlertTimestampMs < SCAN_FAILURE_ALERT_MIN_INTERVAL_MS) {
+			return
+		}
+		lastScanFailureAlertTimestampMs = currentTimestampMs
+		var reason = ""
 		when (error) {
 			ScanStartFailure.NO_ERROR,
 			ScanStartFailure.ALREADY_STARTED,
 			ScanStartFailure.UNKNOWN -> {
 				return
 			}
-			ScanStartFailure.APPLICATION_REGISTRATION_FAILED,
-			ScanStartFailure.FEATURE_UNSUPPORTED,
-			ScanStartFailure.INTERNAL_ERROR,
-			ScanStartFailure.OUT_OF_HARDWARE_RESOURCES,
+			ScanStartFailure.APPLICATION_REGISTRATION_FAILED -> {
+				reason = "App cannot be registered."
+			}
+			ScanStartFailure.FEATURE_UNSUPPORTED -> {
+				reason = "BLE scanning is not supported on this device."
+			}
+			ScanStartFailure.INTERNAL_ERROR -> {
+				reason = "Android internal error."
+			}
+			ScanStartFailure.OUT_OF_HARDWARE_RESOURCES -> {
+				reason = "Out of hardware resources."
+			}
 			ScanStartFailure.SCANNING_TOO_FREQUENTLY -> {
-				// Fall through.
+				reason = "Scanning too frequently."
 			}
 		}
 		val mapAlert = Arguments.createMap()
 		mapAlert.putString("header", "Bluetooth problem")
-		mapAlert.putString("body", "There is a problem detected with Bluetooth, please turn Bluetooth off and on again.")
+		mapAlert.putString("body", "There is a problem detected with Bluetooth, please turn Bluetooth off and on again. Reason: $reason")
 		mapAlert.putString("buttonText", "Ok")
 		sendEvent("libAlert", mapAlert)
 	}
