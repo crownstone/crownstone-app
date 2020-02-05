@@ -31,7 +31,7 @@ export class NotificationLine extends LiveComponent<{notificationsVisible?: bool
   _getNotifications() {
     if (!this.props.notificationsVisible) { return; }
 
-    let color = colors.menuTextSelected.hex;
+    let defaultColor = colors.menuTextSelected.hex;
     let notifications = [];
 
     let state = core.store.getState();
@@ -47,12 +47,12 @@ export class NotificationLine extends LiveComponent<{notificationsVisible?: bool
       notifications.push(
         <TouchableOpacity
           key={notificationId}
-          style={{...styles.centered,  backgroundColor: color, height: 60, width: screenWidth}}
+          style={{...styles.centered,  backgroundColor: notification.backgroundColor || defaultColor, height: 60, width: screenWidth}}
           onPress={() => { notification.callback(); }}
         >
           <View style={{...styles.centered, flexDirection:'row', height: 59, width: screenWidth}}>
             <View style={{flex:1}}/>
-            { notification.icon ? <IconButton name={notification.icon} size={notification.iconSize || 34} buttonSize={40} radius={20} color={color} buttonStyle={{backgroundColor: colors.white.hex}} /> : undefined }
+            { notification.icon ? <IconButton name={notification.icon} size={notification.iconSize || 34} buttonSize={40} radius={20} color={notification.iconColor || notification.backgroundColor || defaultColor} buttonStyle={{backgroundColor: colors.white.hex}} /> : undefined }
             { notification.icon ? <View style={{width:10}}/> : undefined }
             <Text style={{color: colors.white.hex, fontSize: 17, fontWeight:'bold'}}>{notification.label}</Text>
             <View style={{flex:1}}/>

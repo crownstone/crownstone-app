@@ -1,6 +1,8 @@
 import { core } from "../core";
 import { NavigationUtil } from "../util/NavigationUtil";
 import { Alert } from "react-native";
+import { LOGe } from "../logging/Log";
+import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
 
 
 class OverlayManagerClass {
@@ -17,6 +19,8 @@ class OverlayManagerClass {
           case "unauthorized":
             NavigationUtil.showOverlay('BleStateOverlay', { notificationType: status, type: "SCANNER" });
             break;
+          default:
+            OnScreenNotifications.removeAllNotificationsFrom("BleStateOverlay");
         }
       });
       core.nativeBus.on(core.nativeBus.topics.bleBroadcastStatus, (status) => {
@@ -38,9 +42,9 @@ class OverlayManagerClass {
       });
 
       // hardware errors
-      core.eventBus.on('showErrorOverlay', (data) => { NavigationUtil.showOverlay('ErrorOverlay', {data: data}); })
+      core.eventBus.on('showErrorOverlay', (data) => { NavigationUtil.showOverlay('ErrorOverlay', {data: data}); });
 
-      core.eventBus.on('showListOverlay', (data) => { NavigationUtil.showOverlay('ListOverlay',{data: data}); })
+      core.eventBus.on('showListOverlay', (data) => { NavigationUtil.showOverlay('ListOverlay',{data: data}); });
 
       // localization popup.
       core.eventBus.on('showLocalizationSetupStep1', (data) => { NavigationUtil.showOverlay('LocalizationSetupStep1',{data: data}); })
@@ -52,8 +56,14 @@ class OverlayManagerClass {
           case "off":
           case "unknown":
           case "noPermission":
+          case "foreground":
           case "unknown":
             NavigationUtil.showOverlay('LocationPermissionOverlay',{status: status});
+            break;
+          case "on":
+            break;
+          default:
+            LOGe.info("OverlayManager: UNKNOWN PERMISSION FOR LOCATION", status);
         }
       });
 

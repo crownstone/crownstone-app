@@ -134,16 +134,25 @@ class StoneAvailabilityTrackerClass {
       this.sphereLog[data.sphereId] = {};
     }
 
-    if (this.log[data.stoneId] === undefined) {
-      this.log[data.stoneId] = {t: null, beaconRssi: null, advRssi: null, sphereId: data.sphereId, avgRssi: data.rssi, lastNotifiedRssi: data.rssi };
-      // new Crownstone detected this run!
-      let stoneIds = {};
-      let sphereIds = {};
-      stoneIds[data.stoneId] = true;
-      sphereIds[data.sphereId] = true;
-      core.eventBus.emit("databaseChange", {change: {changeStoneAvailability: {stoneIds, sphereIds}}}); // discover a new crownstone!
-      core.eventBus.emit("rssiChange",     {stoneId: data.stoneId, sphereId: data.sphereId, rssi:data.rssi}); // Major change in RSSI
+    let registerStoneId = (stoneId, sphereId, rssi) => {
+      if (this.log[stoneId] === undefined) {
+        this.log[stoneId] = {t: null, beaconRssi: null, advRssi: null, sphereId: sphereId, avgRssi: rssi, lastNotifiedRssi: rssi };
+        // new Crownstone detected this run!
+        let stoneIds = {};
+        let sphereIds = {};
+        stoneIds[stoneId] = true;
+        sphereIds[sphereId] = true;
+        core.eventBus.emit("databaseChange", {change: {changeStoneAvailability: {stoneIds, sphereIds}}}); // discover a new crownstone!
+
+        if (rssi) { core.eventBus.emit("rssiChange", {stoneId: stoneId, sphereId: sphereId, rssi: rssi}); }// Major change in RSSI
+      }
     }
+
+    // add stone that has broadcast this advertisment
+    registerStoneId(data.stoneId, data.sphereId, data.rssi);
+    // add stone that has been relayed by this advertisement via the mesh. If this is not a mesh message,
+    // the payloadId and stoneId are the same and this call does nothing.
+    registerStoneId(data.payloadId, data.sphereId, null);
 
     if (this.sphereLog[data.sphereId][data.stoneId] === undefined) {
       this.sphereLog[data.sphereId][data.stoneId] = {t: null, beaconRssi: null, advRssi: null };

@@ -1612,6 +1612,7 @@ export default {
     Native:                              function() { return "Native" },
     Navigation:                          function() { return "Navigation" },
     Behaviour:                           function() { return "Behaviour" },
+    Advertisements:                      function() { return "Advertisements" },
     Mesh:                                function() { return "Mesh" },
     Notifications:                       function() { return "Notifications" },
     Scheduler:                           function() { return "Scheduler" },

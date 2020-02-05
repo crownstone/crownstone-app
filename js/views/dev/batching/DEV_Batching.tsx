@@ -16,6 +16,7 @@ import { Background } from "../../components/Background";
 import { LiveComponent } from "../../LiveComponent";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import KeepAwake from 'react-native-keep-awake';
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
 const RNFS = require('react-native-fs');
 
@@ -38,7 +39,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
   processSubscriptions = []
 
   static options(props) {
-    return TopBarUtil.getOptions({title: "Batch Operations", leftNav: {id: 'back', text:'Back'}})
+    return TopBarUtil.getOptions({title: "Batch Operations", closeModal: true})
   }
 
   constructor(props) {
@@ -331,7 +332,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
             <View style={{width: screenWidth, flexDirection:'row', marginBottom:15}}>
               <View style={{flex:1}}/>
               <TouchableOpacity
-                onPress={() => { this.props.close()}}
+                onPress={() => { NavigationUtil.dismissModal() }}
                 style={{padding:15, width: 0.4*screenWidth, ...styles.centered, borderRadius: 30, backgroundColor: colors.gray.rgba(0.7), borderWidth: 2, borderColor: "#fff"}}
               >
                 <Text style={{fontSize:20, fontWeight: 'bold'}}>Close</Text>

@@ -8,13 +8,18 @@ import { core } from "../../../core";
 import Toast from 'react-native-same-toast';
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { colors, styles } from "../../styles";
-import { Alert, ScrollView, TouchableOpacity, Text } from "react-native";
+import { Alert, ScrollView, TouchableOpacity, Text, View } from "react-native";
 import { AnimatedBackground } from "../../components/animated/AnimatedBackground";
 import React from "react";
 import { BleStatusBar } from "./DEV_FirmwareTest";
 import { SlideInView } from "../../components/animated/SlideInView";
 import { ListEditableItems } from "../../components/ListEditableItems";
 import { BleUtil } from "../../../util/BleUtil";
+import { IconButton } from "../../components/IconButton";
+import { DataUtil } from "../../../util/DataUtil";
+import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
+import { xUtil } from "../../../util/StandAloneUtil";
+import { LOGe } from "../../../logging/Log";
 
 
 const BLE_STATE_READY = "ready";
@@ -44,7 +49,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       bleState: BLE_STATE_READY,
       mode: props.mode || 'unverified',
       setupActive: false,
-      setupProgress: 0
+      setupProgress: 0,
+      debugInformation: null,
     }
   }
 
@@ -320,7 +326,67 @@ export class DEV_AdvancedConfig extends LiveComponent<{
           this.bleAction(BluenetPromiseWrapper.setUartState, [3], null);
         }
       });
+    }
 
+    items.push({
+      label: "Get Behaviour Debug Information",
+      icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
+      type: 'navigation',
+      callback: () => {
+        this.setState({debugInformation: null});
+        this.bleAction(BluenetPromiseWrapper.getBehaviourDebugInformation, [], null, (response) => {
+          let data = response.data;
+          const mapBitmaskArray = (arr) => {
+            let result = "None";
+            for (let i = 0; i < arr.length; i++) {
+              if (result === "None" && arr[i]) {
+                result = i + '';
+              }
+              else if (arr[i]) {
+                result += ", " + i
+              }
+            }
+            return result;
+          }
+
+          data.activeBehaviours = mapBitmaskArray(data.activeBehaviours);
+          data.activeEndConditions = mapBitmaskArray(data.activeEndConditions);
+
+          data.behavioursInTimeoutPeriod = mapBitmaskArray(data.behavioursInTimeoutPeriod);
+
+          data.presenceProfile_0 = mapBitmaskArray(data.presenceProfile_0);
+          data.presenceProfile_1 = mapBitmaskArray(data.presenceProfile_1);
+          data.presenceProfile_2 = mapBitmaskArray(data.presenceProfile_2);
+          data.presenceProfile_3 = mapBitmaskArray(data.presenceProfile_3);
+          data.presenceProfile_4 = mapBitmaskArray(data.presenceProfile_4);
+          data.presenceProfile_5 = mapBitmaskArray(data.presenceProfile_5);
+          data.presenceProfile_6 = mapBitmaskArray(data.presenceProfile_6);
+          data.presenceProfile_7 = mapBitmaskArray(data.presenceProfile_7);
+
+          data.storedBehaviours = mapBitmaskArray(data.storedBehaviours);
+
+          let string = xUtil.stringify(data, 2);
+          console.log("STONE DEBUG INFORMATION:", string);
+          this.setState({debugInformation: string});
+        })
+        BatchCommandHandler.executePriority()
+      }
+    });
+
+    if (this.state.debugInformation) {
+      items.push({
+        __item:
+          <View style={{
+            backgroundColor: colors.white.hex,
+            minHeight: 300
+          }}>
+            <Text style={{
+              padding: 15,
+              color: colors.black.hex,
+              fontSize: 12
+            }}>{this.state.debugInformation}</Text>
+          </View>
+      });
     }
 
     if (this.state.mode === "verified") {
@@ -330,6 +396,8 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         items.push({ label: "In Sphere " + sphere.config.name, type: 'explanation', below: false, color: explanationColor });
       }
     }
+
+
 
     items.push({type: 'spacer'});
     items.push({type: 'spacer'});

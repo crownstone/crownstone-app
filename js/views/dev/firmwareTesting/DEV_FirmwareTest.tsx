@@ -38,7 +38,8 @@ export class DEV_FirmwareTest extends LiveComponent<{
   }
 
   bleStateResetTimeout;
-
+  cachedCommand = null;
+  cachedCommandTimeout = null;
   unsubscribe = [];
 
   constructor(props) {
@@ -75,9 +76,24 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
 
   bleAction(action : (...any) => Promise<any>, props = [], type = null, resultHandler = (any) => {}, connect = true, immediate = false) {
+    clearTimeout(this.cachedCommandTimeout);
+
     if (this.state.bleState === BLE_STATE_BUSY) {
       if (immediate === false) {
-        Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
+        console.log("BUSY, postponing")
+        this.cachedCommand = { action, props, type, resultHandler, connect, immediate };
+        this.cachedCommandTimeout = setTimeout(() => {
+          this.bleAction(
+            this.cachedCommand.action,
+            this.cachedCommand.props,
+            this.cachedCommand.type,
+            this.cachedCommand.resultHandler,
+            this.cachedCommand.connect,
+            this.cachedCommand.immediate,
+          );
+        }, 400);
+
+        // Toast.showWithGravity('  Bluetooth Busy!  ', Toast.SHORT, Toast.CENTER);
       }
       return;
     }
@@ -86,7 +102,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
 
     let promise = null;
-    this.setState({bleState: BLE_STATE_BUSY})
+    this.setState({bleState: BLE_STATE_BUSY});
     let state = core.store.getState();
 
     if (connect) {
@@ -363,7 +379,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
             let num = Math.max(0, Math.min(1, Number(value)));
             this.bleAction(BluenetPromiseWrapper.switchDimmer, [num], 'dimmerState', () => {
               FocusManager.crownstoneState.dimmerState = num;
-              core.eventBus.emit("hideNumericOverlay");
+              core.eventBus.emit("hideNumericOverlaySuccess");
               this.forceUpdate();
             })
           }
