@@ -28,7 +28,7 @@ import { LiveComponent } from "../LiveComponent";
 
 const triggerId = "ScanningForDfu";
 
-const DFU_BATCH_RSSI_THRESHOLD = Platform.OS === 'android' ? -80 : -85;
+const DFU_BATCH_RSSI_THRESHOLD = Platform.OS === 'android' ? -75 : -85;
 
 export class DfuScanning extends LiveComponent<any, any> {
   static options(props) {

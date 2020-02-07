@@ -129,8 +129,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
         missingDimensionStrategy 'react-native-camera', 'general'
-        versionCode 59
-        versionName "4.0.0"
+        versionCode 61
+        versionName"4.0.0"
 //        ndk {
 //            abiFilters "armeabi-v7a", "x86"
 //        }
@@ -208,7 +208,7 @@ dependencies {
     implementation 'nl.komponents.kovenant:kovenant-combine:3.3.0'
     implementation 'nl.komponents.kovenant:kovenant-jvm:3.3.0'
     implementation 'nl.komponents.kovenant:kovenant-functional:3.3.0'
-    implementation 'no.nordicsemi.android:dfu:1.8.0'
+    implementation 'no.nordicsemi.android:dfu:1.8.1'
     implementation project(':bluenet')
     implementation project(':localization-lib-android')
     implementation project(':react-native-image-resizer')
