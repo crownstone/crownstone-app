@@ -253,6 +253,10 @@ class BroadcastStateManagerClass {
   _reloadDevicePreferences() {
     let state = core.store.getState();
 
+    // TODO: Get token from somewhere.
+    let backgroundToken = 123456;
+
+
     let rssiOffset = 0;
     let ignoreForBehaviour = state.app.indoorLocalizationEnabled !== true;
     let tapToToggleEnabled = state.app.tapToToggleEnabled;
@@ -263,7 +267,7 @@ class BroadcastStateManagerClass {
       rssiOffset = device.rssiOffset || 0;
     }
 
-    Bluenet.setDevicePreferences(rssiOffset, tapToToggleEnabled, ignoreForBehaviour);
+    Bluenet.setDevicePreferences(rssiOffset, tapToToggleEnabled, ignoreForBehaviour, backgroundToken);
   }
 
 }

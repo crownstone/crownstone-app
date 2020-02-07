@@ -133,12 +133,11 @@ export class BleStateOverlay extends Component<any, any> {
   }
 
   render() {
-    let state = core.store.getState();
     return (
       <OverlayBox
         visible={this.state.visible}
         overrideBackButton={false}
-        canClose={state.development.devAppVisible && state.user.developer}
+        canClose={true}
         closeCallback={() => {
           NavigationUtil.closeOverlay(this.props.componentId);
           OnScreenNotifications.setNotification({

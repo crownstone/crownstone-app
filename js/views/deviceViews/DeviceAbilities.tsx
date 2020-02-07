@@ -48,7 +48,7 @@ export class DeviceAbilities extends LiveComponent<any, any> {
       let change = data.change;
 
       if (
-        change.stoneSyncedAbilities && change.stoneSyncedAbilities.stoneIds[this.props.stoneId] &&
+        change.stoneSyncedAbilities && change.stoneSyncedAbilities.stoneIds[this.props.stoneId] ||
         change.stoneChangeAbilities && change.stoneChangeAbilities.stoneIds[this.props.stoneId]
       ) {
         this.forceUpdate();

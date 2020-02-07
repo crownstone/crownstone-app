@@ -713,7 +713,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "1", this.exampleBehaviours.time.dark);
                   },
                   onSelect: () => {
-                    this.rule.setTimeWhenDark();
+                    this.rule.setTimeWhenDark().setNoEndCondition();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "1"})
                   }
                 },
@@ -733,7 +733,7 @@ export class RuleEditor extends LiveComponent<
                     return this._evaluateTimeSelection(SELECTABLE_TYPE.TIME + "3", this.exampleBehaviours.time.allDay);
                   },
                   onSelect: () => {
-                    this.rule.setTimeAllday();
+                    this.rule.setTimeAllday().setNoEndCondition();
                     this.setState({selectedDetailField: SELECTABLE_TYPE.TIME + "3"})
                   }
                 },

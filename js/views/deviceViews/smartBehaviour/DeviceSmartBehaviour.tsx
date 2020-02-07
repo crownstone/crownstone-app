@@ -404,6 +404,7 @@ function NoRulesYet(props) {
                 ...props,
                 copyType: "FROM",
                 originId: props.stoneId,
+                isModal: true,
                 originIsDimmable: stone.abilities.dimming.enabledTarget,
                 callback: (fromStoneId, selectedRuleIds) => {
                   let stoneName = DataUtil.getStoneName(props.sphereId, fromStoneId);

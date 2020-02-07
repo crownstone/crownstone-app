@@ -54,7 +54,7 @@ import { xUtil } from "../../../util/StandAloneUtil";
  *  UPDATE: We copy ALL the rules from 1 Crownstone to another.
  *
  */
-export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copyType: string, callback(data: any): void, sphereId: string, originId: string, rulesRequireDimming: true}, any> {
+export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copyType: string, callback(data: any): void, sphereId: string, originId: string, rulesRequireDimming: true, isModal: boolean}, any> {
   static options = {
     topBar: { visible: false, height: 0 }
   };
@@ -154,7 +154,7 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
       <Background image={core.background.lightBlurLighter} fullScreen={true} hideNotifications={true} hideOrangeLine={true}>
         <TopbarImitation
           title={this.props.copyType === "FROM" ? "Copy from whom?" : "Copy to whom?"}
-          leftAction={() => { NavigationUtil.back() }}
+          leftAction={() => { this.props.isModal ? NavigationUtil.dismissModal() : NavigationUtil.back() }}
           leftLabel={"Back"}
           rightAction={() => {
             if (Object.keys(this.state.selectionMap).length === 0) {

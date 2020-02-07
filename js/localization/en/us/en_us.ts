@@ -1277,7 +1277,7 @@ export default {
     _No_Crownstones_in_range__body:      function() { return "To be able to identify this room, I need to see at least 3 Crownstones, but I can't see any from here... Try to reposition your Crownstones so I can see more of them." },
     _No_Crownstones_in_range__left:      function() { return "OK" },
     _I_can_not_see_enough_Cro_header:    function() { return "I can not see enough Crownstones..." },
-    _I_can_not_see_enough_Cro_body:      function() { return "To be able to identify this room, I need to see at least 3 Crownstones but I see only " + arguments[0] + "." + "Try to reposition your Crownstones so I can see more of them." },
+    _I_can_not_see_enough_Cro_body:      function() { return "To be able to identify this room, I need to see at least 3 Crownstones but I see only " + arguments[0] + "." + " Try to reposition your Crownstones so I can see more of them." },
     _I_can_not_see_enough_Cro_left:      function() { return "OK" },
     _Do_you_want_to_cancel_tr_header:    function() { return "Do you want to cancel training?" },
     _Do_you_want_to_cancel_tr_body:      function() { return "Cancelling this process will revert it to the way it was before." },
