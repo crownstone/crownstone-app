@@ -440,7 +440,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun setDevicePreferences(rssiOffset: Int, tapToToggleEnabled: Boolean, ignoreForBehaviour: Boolean) {
+	fun setDevicePreferences(rssiOffset: Int, tapToToggleEnabled: Boolean, ignoreForBehaviour: Boolean, backgroundToken: Double) {
 		// Current rssi offset and whether tap to toggle is enabled.
 		// Cache these, to be used for broadcasting.
 		Log.i(TAG, "setDevicePreferences rssiOffset=$rssiOffset tapToToggleEnabled=$tapToToggleEnabled ignoreForBehaviour=$ignoreForBehaviour")
@@ -2069,6 +2069,12 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 					map.putInt("aggregatedState", behaviourDebug.aggregatedState.toInt())
 					map.putInt("dimmerPowered", behaviourDebug.dimmerPowered.toInt())
 					map.putInt("behaviourEnabled", behaviourDebug.behaviourEnabled.toInt())
+
+					val storedBehavioursArray = Arguments.createArray()
+					for (i in 0 until 64) {
+						storedBehavioursArray.pushBoolean(isBitSet(behaviourDebug.storedBehaviours, i))
+					}
+					map.putArray("storedBehaviours", storedBehavioursArray)
 
 					val activeBehavioursArray = Arguments.createArray()
 					for (i in 0 until 64) {
