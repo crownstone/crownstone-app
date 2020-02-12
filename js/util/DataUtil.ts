@@ -114,7 +114,7 @@ export const DataUtil = {
   },
 
 
-  getPresentSphereId: function(state) {
+  getPresentSphereId: function(state) : string {
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++ ) {
       if (state.spheres[sphereIds[i]].state.present === true) {
@@ -124,8 +124,19 @@ export const DataUtil = {
     return null;
   },
 
+  getPresentSphereIds: function(state) : string[] {
+    let sphereIds = Object.keys(state.spheres);
+    let result = [];
+    for (let i = 0; i < sphereIds.length; i++ ) {
+      if (state.spheres[sphereIds[i]].state.present === true) {
+        result.push(sphereIds[i]);
+      }
+    }
+    return result;
+  },
 
-  getReferenceId: function(state) {
+
+  getReferenceId: function(state) : string {
     let sphereIds = Object.keys(state.spheres);
     let activeSphereId = state.app.activeSphere;
     if (activeSphereId && state.spheres[activeSphereId] && state.spheres[activeSphereId].state.present) {
@@ -474,6 +485,7 @@ export const DataUtil = {
 
     // get device for rssi offset
     let device = DataUtil.getDevice(state);
+    console.log("MyDevice", device)
     let randomDeviceToken = 0;
     if (device) {
       if (sphereId) {

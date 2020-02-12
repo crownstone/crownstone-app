@@ -273,6 +273,10 @@ class BroadcastStateManagerClass {
     return this._locationUidInLocationState;
   }
 
+  getSphereInLocationState() {
+    return this._sphereIdInLocationState;
+  }
+
 
 
 }

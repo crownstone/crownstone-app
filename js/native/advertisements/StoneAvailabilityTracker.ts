@@ -406,14 +406,12 @@ class StoneAvailabilityTrackerClass {
       amount = Math.min(allStoneIds.length, amount);
 
       let nearestStoneIds = this.getNearestStoneIds(allStoneIds, 3, amount);
-      console.log("nearestStoneIds",nearestStoneIds)
       // send to BHC
       let amountSet = 0;
       nearestStoneIds.forEach((stoneId) => {
         let stone = DataUtil.getStone(sphereId, stoneId);
         if (stone) {
-          console.log("Fire at", stoneId)
-          promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 2).then((r) => { console.log("RESOLVED", r )}).catch((err) => { console.log("ERR", err)}));
+          promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1))
         }
         amountSet+=1;
       })
@@ -423,17 +421,14 @@ class StoneAvailabilityTrackerClass {
       }
 
       let remainder = amount - amountSet;
-      console.log("Remainder", remainder)
       if (remainder > 0) {
         this.setGenericTrigger(sphereId, "sendCommandToNearestCrownstones", (stoneId) => {
-          console.log("TriggerExecuted", stoneId)
           let stone = DataUtil.getStone(sphereId, stoneId);
           if (stone) {
-            promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 2));
+            promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1));
           }
           BatchCommandHandler.executePriority();
 
-          console.log("MY promises", promises)
           if (promises.length == amount) {
             resolve(promises);
           }

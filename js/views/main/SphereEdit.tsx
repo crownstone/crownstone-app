@@ -18,9 +18,9 @@ import { Permissions }       from "../../backgroundProcesses/PermissionManager";
 import { CLOUD }             from "../../cloud/cloudAPI";
 import { createNewSphere }   from "../../util/CreateSphere";
 import { core }              from "../../core";
-import { NavigationUtil } from "../../util/NavigationUtil";
-import { TopBarUtil } from "../../util/TopBarUtil";
-import { LiveComponent } from "../LiveComponent";
+import { NavigationUtil }    from "../../util/NavigationUtil";
+import { TopBarUtil }        from "../../util/TopBarUtil";
+import { LiveComponent }     from "../LiveComponent";
 
 export class SphereEdit extends LiveComponent<any, any> {
   static options(props) {

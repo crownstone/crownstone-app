@@ -102,7 +102,9 @@ export class DeviceSyncer extends SyncingBase {
     // cleanup. remove local devices that do not exist in the cloud.
     let cloudDeviceIdList = {};
     for (let i = 0; i < devicesInCloud.length; i++) {
-      cloudDeviceIdList[devicesInCloud[i].id] = true;
+      if (devicesInCloud[i]["DELETED"] !== true) {
+        cloudDeviceIdList[devicesInCloud[i].id] = true;
+      }
     }
 
     let deviceIds = Object.keys(devicesInState);
@@ -230,17 +232,6 @@ export class DeviceSyncer extends SyncingBase {
           locale:      specs.locale,
         }
       });
-    }
-
-    // if the tap to toggle calibration is available and different from what we have stored, update it.
-    if (matchingSpecs.deviceInCloud.tapToToggleCalibration && localDevice.tapToToggleCalibration === null) {
-      this.actions.push({
-        type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
-        deviceId: matchingSpecs.id,
-        data: {
-          tapToToggleCalibration: matchingSpecs.deviceInCloud.tapToToggleCalibration
-        }
-      })
     }
 
     // if our locale and deviceType is different or missing in the cloud, we restore it
@@ -374,7 +365,7 @@ export class DeviceSyncer extends SyncingBase {
         let userLocationMap = Util.data.getUserLocations(state, state.user.userId);
         let presentSphereIds = Object.keys(userLocationMap);
 
-        if ( presentSphereIds.length === 0 ) {
+        if (presentSphereIds.length === 0 ) {
           this.transferPromises.push(CLOUD.forDevice(deviceId).exitSphere("*").catch((err) => {}));
         }
         else {
@@ -402,16 +393,23 @@ export class DeviceSyncer extends SyncingBase {
     let address = localDeviceSpecs.address;
     let matchingDevice = undefined;
 
+    let hasMatchingAddress = false;
     // sort this list so we deterministically get the deviceUID
     devicesInCloud.sort((a,b) => { return new Date(a.updatedAt).valueOf() - new Date(b.updatedAt).valueOf(); })
 
     for (let i = 0; i < devicesInCloud.length; i++) {
       let cloudDevice = devicesInCloud[i];
       if (cloudDevice.address === localDeviceSpecs.address) {
-        deviceId = cloudDevice.id;
-        matchingDevice = cloudDevice;
-        uid = i;
-        break;
+        if (hasMatchingAddress === false) {
+          deviceId = cloudDevice.id;
+          matchingDevice = cloudDevice;
+          uid = i;
+          hasMatchingAddress = true;
+        }
+        else {
+          this.transferPromises.push(CLOUD.deleteDevice(cloudDevice.id));
+          devicesInCloud[i]["DELETED"] = true;
+        }
       }
       else if (cloudDevice.name === localDeviceSpecs.name && cloudDevice.description === localDeviceSpecs.description) {
         deviceId = cloudDevice.id;
