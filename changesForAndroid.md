@@ -1,8 +1,3 @@
-Run yarn
-
-setDevicePreferences now has an extra argument (backgroundToken: number)
-Bluenet.setDevicePreferences(rssiOffset, tapToToggleEnabled, ignoreForBehaviour, backgroundToken);
-
 
 Bridge functions:
 canUseDynamicBackgroundBroadcasts which returns a boolean as a promise
