@@ -13,7 +13,6 @@ import { BROADCAST_ERRORS, BroadcastCommandManager } from "./bchComponents/Broad
 import { xUtil } from "../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../Enums";
 import { core } from "../core";
-import { INTENTS } from "../native/libInterface/Constants";
 
 
 /**
@@ -235,6 +234,19 @@ class BatchCommandHandlerClass {
                 break;
               case 'getBehaviourDebugInformation':
                 actionPromise = BluenetPromiseWrapper.getBehaviourDebugInformation();
+                break;
+              case 'registerTrackedDevice':
+                let locationUID = typeof command.locationUID == "function" ? command.locationUID() : command.locationUID;
+                actionPromise = BluenetPromiseWrapper.registerTrackedDevice(
+                  command.trackingNumber,
+                  locationUID,
+                  command.profileId,
+                  command.rssiOffset,
+                  command.ignoreForPresence,
+                  command.tapToToggleEnabled,
+                  command.deviceToken,
+                  command.ttlMinutes,
+                );
                 break;
               case 'setSunTimes':
                 actionPromise = BluenetPromiseWrapper.setSunTimesViaConnection(command.sunriseSecondsSinceMidnight, command.sunsetSecondsSinceMidnight);

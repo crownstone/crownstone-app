@@ -73,7 +73,8 @@ type commandInterface = { commandName : 'toggle', stateForOn : number } |
   { commandName : 'setTapToToggleThresholdOffset', rssiOffset: number } |
   { commandName : 'setMeshChannel', channel: number } |
   { commandName : 'setupPulse'} |
-  { commandName : 'getBehaviourDebugInformation' }
+  { commandName : 'getBehaviourDebugInformation' } |
+  { commandName : 'registerTrackedDevice', trackingNumber: number, locationUID: () => number | number, profileId: number, rssiOffset: number, ignoreForPresence: boolean, tapToToggleEnabled: boolean, deviceToken: number, ttlMinutes: number }
 
 interface commandSummary {
   stone     : any,

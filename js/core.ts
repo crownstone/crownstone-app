@@ -1,6 +1,7 @@
 import { eventBus } from "./util/EventBus";
 import { NativeBus } from "./native/libInterface/NativeBus";
 
+
 export const core : core = {
   background: {
     main                   : require('./images/backgrounds/mainBackgroundLight.png'),
@@ -18,3 +19,4 @@ export const core : core = {
   nativeBus: NativeBus,
   store: { getState: () => { return {}; } },
 };
+

@@ -1,10 +1,10 @@
-import { Util } from "../util/Util";
 import { Bluenet } from "../native/libInterface/Bluenet";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { SphereUtil } from "../util/SphereUtil";
 import { core } from "../core";
 import { LOGi } from "../logging/Log";
 import { DataUtil } from "../util/DataUtil";
+import { TrackingNumberManager } from "./TrackingNumberManager";
 
 
 class BroadcastStateManagerClass {
@@ -13,6 +13,8 @@ class BroadcastStateManagerClass {
   _sphereIdInLocationState : string = null;
 
   _listeners = [];
+
+  _locationUidInLocationState = 0;
 
   init() {
     // set event listener on:
@@ -25,7 +27,7 @@ class BroadcastStateManagerClass {
       // console.log("INITIALIZING BroadcastStateManagerClass");
       this._listeners.push(core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
-        if (change.changeAppSettings || change.changeDeviceData) {
+        if (change.changeAppSettings || change.changeDeviceData || change.deviceTrackingTokenCycled) {
           this._reloadDevicePreferences();
         }
         if (change.changeDeveloperData) {
@@ -41,6 +43,7 @@ class BroadcastStateManagerClass {
 
       this._listeners.push(core.eventBus.on("enterSphere", (enteringSphereId) => {
         this._handleEnter(enteringSphereId);
+        TrackingNumberManager.updateMyDeviceTrackingRegistration(enteringSphereId)
       }));
 
       this._listeners.push(core.eventBus.on("exitSphere", (exitSphereId) => {
@@ -49,6 +52,7 @@ class BroadcastStateManagerClass {
 
       this._listeners.push(core.nativeBus.on(core.nativeBus.topics.enterRoom, (data) => {// data = {region: sphereId, location: locationId}
         this._handleEnter(data.region, data.location);
+        TrackingNumberManager.updateMyDeviceTrackingRegistration(data.region);
       }));
 
       Bluenet.initBroadcasting();
@@ -149,6 +153,7 @@ class BroadcastStateManagerClass {
 
     if (amountOfPresentSpheres === 0) {
       LOGi.broadcast("Stopping the broadcasting. Leaving: ",state.spheres[sphereId].config.name);
+      this._updateLocationState(activeSphereData.sphereId);
       return this._stopAdvertising();
     }
 
@@ -210,21 +215,24 @@ class BroadcastStateManagerClass {
     let sphereUID = 0;
     let deviceUID = 0;
     let locationUID = 0;
+    let profileId = 0;
 
     if (sphere) {
       deviceUID = this._getDeviceUID(state, sphere);
 
       let location = sphere.locations[locationId];
-      locationUID = location ? location.config.uid : 0;
-      sphereUID = sphere.config.uid;
+      locationUID  = location ? location.config.uid : 0;
+      sphereUID    = sphere.config.uid;
 
-      LOGi.broadcast("Setting Sphere As Present:",sphere.config.name);
+      LOGi.broadcast("Setting Sphere As Present:", sphere.config.name);
     }
     else {
       LOGi.broadcast("Setting Custom Sphere As Present");
     }
     this._sphereIdInLocationState = sphereId;
-    Bluenet.setLocationState(sphereUID, locationUID, 0, deviceUID, sphereId);
+    this._locationUidInLocationState = locationUID;
+
+    Bluenet.setLocationState(sphereUID, locationUID, profileId, deviceUID, sphereId);
   }
 
   _reloadAdvertisingState() {
@@ -250,25 +258,22 @@ class BroadcastStateManagerClass {
       });
   }
 
+
   _reloadDevicePreferences() {
-    let state = core.store.getState();
-
-    // TODO: Get token from somewhere.
-    let backgroundToken = 123456;
-
-
-    let rssiOffset = 0;
-    let ignoreForBehaviour = state.app.indoorLocalizationEnabled !== true;
-    let tapToToggleEnabled = state.app.tapToToggleEnabled;
-
-    // get device for rssi offset
-    let device = Util.data.getDevice(state);
-    if (device) {
-      rssiOffset = device.rssiOffset || 0;
-    }
-
-    Bluenet.setDevicePreferences(rssiOffset, tapToToggleEnabled, ignoreForBehaviour, backgroundToken);
+    let preferences = DataUtil.getDevicePreferences()
+    Bluenet.setDevicePreferences(
+      preferences.rssiOffset,
+      preferences.tapToToggleEnabled,
+      preferences.ignoreForBehaviour,
+      preferences.randomDeviceToken
+    );
   }
+
+  getCurrentLocationUID() {
+    return this._locationUidInLocationState;
+  }
+
+
 
 }
 

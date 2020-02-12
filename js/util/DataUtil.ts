@@ -462,6 +462,40 @@ export const DataUtil = {
     let location = DataUtil.getLocation(sphereId, locationId)
     if (!location) { return null }
     return location.config.uid;
+  },
+
+  getDevicePreferences(sphereId = null) {
+    let state = core.store.getState();
+
+    let trackingNumber = 0;
+    let rssiOffset = 0;
+    let ignoreForBehaviour = state.app.indoorLocalizationEnabled !== true;
+    let tapToToggleEnabled = state.app.tapToToggleEnabled;
+
+    // get device for rssi offset
+    let device = DataUtil.getDevice(state);
+    let randomDeviceToken = 0;
+    if (device) {
+      if (sphereId) {
+        trackingNumber = device.trackingNumbers && device.trackingNumbers[sphereId] || 0;
+      }
+      randomDeviceToken = device.randomDeviceToken;
+      if (!randomDeviceToken) {
+        // TEMP HACK
+        let token = Math.round(Math.random()*(1<<25));
+        core.store.dispatch({type:"CYCLE_RANDOM_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: token}})
+        randomDeviceToken = token;
+      }
+      rssiOffset = device.rssiOffset || 0;
+    }
+
+    return {
+      trackingNumber,
+      rssiOffset,
+      tapToToggleEnabled,
+      ignoreForBehaviour,
+      randomDeviceToken
+    }
   }
 };
 

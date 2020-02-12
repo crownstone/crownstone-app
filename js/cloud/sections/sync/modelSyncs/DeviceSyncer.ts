@@ -17,18 +17,21 @@ import {CLOUD} from "../../../cloudAPI";
 import {LOG} from "../../../../logging/Log";
 import {APP_NAME} from "../../../../ExternalConfig";
 import { base_core } from "../../../../base_core";
+import { BluenetPromiseWrapper } from "../../../../native/libInterface/BluenetPromise";
 
 
 interface matchingSpecs {
-  id: string,
-  address: string,
+  id:            string,
+  address:       string,
   deviceInCloud: any,
-  uid: number,
+  uid:           number,
 }
 
 
 export class DeviceSyncer extends SyncingBase {
   userId: string;
+  hasAllTrackingNumbers = false;
+  currentDeviceId = null;
 
 
   download() {
@@ -38,6 +41,7 @@ export class DeviceSyncer extends SyncingBase {
 
   sync(state) {
     this.userId = state.user.userId;
+    this.hasAllTrackingNumbers = false;
     return this.download()
       .then((devicesInCloud) => {
         this._constructLocalIdMap();
@@ -47,8 +51,52 @@ export class DeviceSyncer extends SyncingBase {
 
         return Promise.all(this.transferPromises);
       })
+      .then(() => {
+        // check if we have a tracking token for all spheres.
+        // - if not, check if we can use dynamic background broadcasts
+        if (this.hasAllTrackingNumbers === false) {
+          return this.handleTrackingNumbers(state);
+        }
+      })
   }
 
+
+  handleTrackingNumbers(state) {
+    return BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
+      .then((canUseDynamicBackground) => {
+        if (canUseDynamicBackground === true) {
+          // we do not have to use tracking numbers since the phone can broadcast it's own data in the background.
+          return;
+        }
+
+        // get tracking numbers! Every sphere will have it's own tracking number for this device.
+        let transferPromises = [];
+        let sphereIds = Object.keys(this.globalLocalIdMap.spheres);
+        let localDevice = state.devices[this.currentDeviceId];
+        if (localDevice?.trackingNumbers) {
+          for (let i = 0; i < sphereIds.length; i++) {
+            let sphereId = sphereIds[i];
+            if (localDevice.trackingNumbers[sphereId] === undefined) {
+              transferPromises.push(CLOUD.getTrackingNumberInSphere(sphereId)
+                .then((trackingNumber) => {
+                  this.actions.push({
+                    type: "SET_TRACKING_NUMBER",
+                    deviceId: this.currentDeviceId,
+                    data: {
+                      sphereId: sphereId,
+                      trackingNumber: Number(trackingNumber)
+                    }
+                  })
+                })
+                .catch((err) => {
+                  console.log("Err getting trackingNumber", err);
+                }))
+            }
+          }
+        }
+        return Promise.all(transferPromises);
+      })
+  }
 
   syncUp(state, devicesInState, devicesInCloud) {
     // cleanup. remove local devices that do not exist in the cloud.
@@ -82,11 +130,13 @@ export class DeviceSyncer extends SyncingBase {
       // download device data and store locally.
       this._createNewDeviceLocally(state, specs, matchingSpecs);
       this.globalCloudIdMap.devices[matchingSpecs.id] = matchingSpecs.id;
+      this.currentDeviceId = matchingSpecs.id;
     }
     else {
       // this
       this._updateLocalDevice(state, specs, devicesInState[matchingSpecs.id], matchingSpecs);
       this.globalCloudIdMap.devices[matchingSpecs.id] = matchingSpecs.id
+      this.currentDeviceId = matchingSpecs.id;
     }
 
 
@@ -126,6 +176,7 @@ export class DeviceSyncer extends SyncingBase {
             data: {deviceToken: null}
           });
 
+          this.currentDeviceId = newDevice.id;
           this.actions.push({
             type: 'ADD_DEVICE',
             deviceId: newDevice.id,
@@ -201,6 +252,19 @@ export class DeviceSyncer extends SyncingBase {
           deviceType: specs.deviceType,
         })
       );
+    }
+
+    // check if we have stored a tracking number for ALL spheres we are currently in. If not, this information is
+    // propagated to the next step which determines if this is required.
+    let sphereIds = Object.keys(this.globalLocalIdMap.spheres);
+    if (localDevice.trackingNumbers) {
+      this.hasAllTrackingNumbers = true;
+      for (let i = 0; i < sphereIds.length; i++) {
+        if (localDevice.trackingNumbers[sphereIds[i]] === undefined) {
+          this.hasAllTrackingNumbers = false;
+          break;
+        }
+      }
     }
 
     LOG.info("Sync: User device found in cloud, updating installation: ", installationId);

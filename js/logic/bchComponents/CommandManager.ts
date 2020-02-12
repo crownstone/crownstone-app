@@ -89,6 +89,11 @@ export class CommandManager {
           case 'getBehaviour':
             duplicate = xUtil.deepCompare(todo.command, command);
             break;
+          case 'registerTrackedDevice':
+            if (command.commandName === "registerTrackedDevice") {
+              duplicate = todo.command.trackingNumber === command.trackingNumber;
+            }
+            break;
           default:
             duplicate = true;
         }

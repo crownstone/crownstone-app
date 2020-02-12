@@ -15,6 +15,8 @@ let defaultSettings = {
   uid: 0,
 
   trackingNumbers: {},
+  randomDeviceToken: Math.round(Math.random()*(1<<25)), // 24 bit number, random is 1 excluded
+  tokenRefreshRequired: false,
 
   rssiOffset: 0,
   updatedAt: 1
@@ -33,6 +35,13 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.rssiOffset = update(action.data.rssiOffset, newState.rssiOffset);
+        return newState;
+      }
+      return state;
+    case 'CYCLE_RANDOM_DEVICE_TOKEN':
+      if (action.data) {
+        let newState = {...state};
+        newState.randomDeviceToken = update(action.data.randomDeviceToken, newState.randomDeviceToken);
         return newState;
       }
       return state;
@@ -59,6 +68,7 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
         newState.model                  = update(action.data.model,           newState.model);
         newState.deviceType             = update(action.data.deviceType,      newState.deviceType);
         newState.locale                 = update(action.data.locale,          newState.locale);
+        newState.tokenRefreshRequired   = update(action.data.tokenRefreshRequired,  newState.tokenRefreshRequired);
         newState.installationId         = update(action.data.installationId,  newState.installationId);
         newState.rssiOffset             = update(action.data.rssiOffset,      newState.rssiOffset);
         newState.updatedAt              = getTime(action.data.updatedAt);

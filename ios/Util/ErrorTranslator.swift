@@ -235,5 +235,9 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
       return "COULD_NOT_GET_LOCATION"
     case .INVALID_DATA_LENGTH:
       return "INVALID_DATA_LENGTH"
+    case .FIRMWARE_TOO_OLD:
+      return "FIRMWARE_TOO_OLD"
+    case .ERR_ALREADY_EXISTS:
+      return "ERR_ALREADY_EXISTS"
     }
 }

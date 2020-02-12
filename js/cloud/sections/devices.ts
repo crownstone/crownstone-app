@@ -45,6 +45,16 @@ export const devices = {
     );
   },
 
+  getTrackingNumberInSphere: function(localSphereId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    return cloudApiBase._setupRequest(
+      'GET',
+      '/Devices/{id}/trackingNumber/',
+      { data: {sphereId:cloudSphereId}, background: background },
+      'query'
+    );
+  },
+
   inSphere: function (localSphereId, background = true) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(

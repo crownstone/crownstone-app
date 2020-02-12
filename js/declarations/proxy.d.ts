@@ -73,6 +73,8 @@ interface BluenetPromiseWrapperProtocol {
   syncBehaviours(behaviours: behaviourTransfer[]): Promise<behaviourTransfer[]>,
   getBehaviourMasterHash(behaviours: behaviourTransfer[]): Promise<number>,
 
+  canUseDynamicBackgroundBroadcasts()           : Promise<boolean>,
+
   // dev
   switchRelay(state: number)                    : Promise< void >,
   switchDimmer(state: number)                   : Promise< void >,
@@ -103,6 +105,27 @@ interface BluenetPromiseWrapperProtocol {
   turnOnMesh(arrayOfStoneSwitchPackets: any[])  : Promise< void >,
   turnOnBroadcast(referenceId, stoneId)         : Promise< void >,
   setSunTimesViaConnection(sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) : Promise< void >,
+
+  registerTrackedDevice(
+    trackingNumber:number,
+    locationUID:number,
+    profileId:number,
+    rssiOffset:number,
+    ignoreForPresence:boolean,
+    tapToToggleEnabled:boolean,
+    deviceToken:number,
+    ttlMinutes:number) : Promise< void >,
+
+  broadcastUpdateTrackedDevice(
+    referenceId: string,
+    trackingNumber:number,
+    locationUID:number,
+    profileId:number,
+    rssiOffset:number,
+    ignoreForPresence:boolean,
+    tapToToggleEnabled:boolean,
+    deviceToken:number,
+    ttlMinutes:number) : Promise< void >,
 }
 
 

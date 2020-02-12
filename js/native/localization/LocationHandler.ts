@@ -20,7 +20,9 @@ class LocationHandlerClass {
   _initialized : boolean;
   _readyForLocalization = false;
 
-  _unsubscribeLocationEvents = []
+  _unsubscribeLocationEvents = [];
+
+
 
   constructor() {
     this._initialized = false;
@@ -385,6 +387,8 @@ class LocationHandlerClass {
     this.loadFingerprints();
     Bluenet.startIndoorLocalization();
   }
+
+
 }
 
 

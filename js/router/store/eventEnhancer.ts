@@ -297,6 +297,11 @@ function checkAction(action, affectedIds) {
     case 'SET_NEW_FIRMWARE_VERSIONS':
       eventStatus['firmwareVersionsAvailable'] = affectedIds; break;
 
+    case 'SET_TRACKING_NUMBER':
+      eventStatus['newTrackingNumberSet'] = affectedIds; break;
+    case 'CYCLE_RANDOM_DEVICE_TOKEN':
+      eventStatus['deviceTrackingTokenCycled'] = affectedIds; break;
+
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

@@ -131,10 +131,10 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
         icon: <IconButton name="ios-cut" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
         callback: () => {
           Alert.alert(
-lang("_Clear_all_Logs___Press_O_header"),
-lang("_Clear_all_Logs___Press_O_body"),
-[{text:lang("_Clear_all_Logs___Press_O_left"), style: 'cancel'},{
-text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}])
+            lang("_Clear_all_Logs___Press_O_header"),
+            lang("_Clear_all_Logs___Press_O_body"),
+            [{text:lang("_Clear_all_Logs___Press_O_left"), style: 'cancel'},{
+            text: lang("_Clear_all_Logs___Press_O_right"), onPress: () => {clearAllLogs();}}])
         }
       });
       items.push({label: lang("Logging_will_keep_a_histor"), type: 'explanation', below: true});

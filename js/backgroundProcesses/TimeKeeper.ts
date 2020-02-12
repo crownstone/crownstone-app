@@ -38,7 +38,7 @@ class TimeKeeperClass {
       })
 
       // broadcast on app open.
-      AppState.addEventListener('change', (appState) => {
+      core.eventBus.on('AppStateChange', (appState) => {
         if (appState === 'active') {
           this._setTime()
         }
@@ -51,6 +51,7 @@ class TimeKeeperClass {
       }
     }
   }
+
 
   _updateSunTimes(sphereId) {
     let suntimes = Util.getSunTimesInSecondsSinceMidnight(sphereId);

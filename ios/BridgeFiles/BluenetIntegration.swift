@@ -86,6 +86,7 @@ open class BluenetJS: RCTEventEmitter {
     
   
     GLOBAL_BLUENET.bluenetLocalizationOn("locationStatus", {data -> Void in
+      print("BluenetBridge: ----- LocationStatus", data)
       if let castData = data as? String {
         self.sendEvent(withName: "locationStatus", body: castData)
       }
@@ -690,21 +691,26 @@ open class BluenetJS: RCTEventEmitter {
     LOGGER.info("BluenetBridge: Called viewsInitialized")
   }
   
-  @objc func setLocationState(_ sphereUID: NSNumber, locationId: NSNumber, profileIndex: NSNumber, deviceToken: NSNumber, referenceId: String) {
-    print("BluenetBridge: Called setLocationState \(sphereUID) \(locationId) \(profileIndex) referenceId:\(referenceId)" )
-    GLOBAL_BLUENET.bluenet.setLocationState(sphereUID: sphereUID.uint8Value, locationId: locationId.uint8Value, profileIndex: profileIndex.uint8Value, deviceToken: deviceToken.uint8Value, referenceId: referenceId)
-    GLOBAL_BLUENET.watchStateManager.loadState("locationState", ["sphereUID":sphereUID, "locationId":locationId, "profileIndex": profileIndex, "deviceToken": deviceToken, "referenceId": referenceId])
+  @objc func setLocationState(_ sphereUID: NSNumber, locationId: NSNumber, profileId: NSNumber, deviceToken: NSNumber, referenceId: String) {
+    print("BluenetBridge: Called setLocationState \(sphereUID) \(locationId) \(profileId) referenceId:\(referenceId)" )
+    GLOBAL_BLUENET.bluenet.setLocationState(sphereUID: sphereUID.uint8Value, locationId: locationId.uint8Value, profileIndex: profileId.uint8Value, deviceToken: deviceToken.uint8Value, referenceId: referenceId)
+    GLOBAL_BLUENET.watchStateManager.loadState("locationState", ["sphereUID":sphereUID, "locationId":locationId, "profileIndex": profileId, "deviceToken": deviceToken, "referenceId": referenceId])
   }
   
-  @objc func setDevicePreferences(_ rssiOffset: NSNumber, tapToToggle: NSNumber, ignoreForBehaviour: NSNumber) {
-    print("BluenetBridge: Called setDevicePreferences \(rssiOffset) \(tapToToggle) \(ignoreForBehaviour)")
+  @objc func setDevicePreferences(_ rssiOffset: NSNumber, tapToToggle: NSNumber, ignoreForBehaviour: NSNumber, randomDeviceToken: NSNumber) {
+    print("BluenetBridge: Called setDevicePreferences \(rssiOffset) \(tapToToggle) \(ignoreForBehaviour) \(randomDeviceToken)")
     GLOBAL_BLUENET.bluenet.setDevicePreferences(
       rssiOffset: rssiOffset.int8Value,
       tapToToggle: tapToToggle.boolValue,
       ignoreForBehaviour: ignoreForBehaviour.boolValue,
       useBackgroundBroadcasts: true,
-      useBaseBroadcasts: true
+      useBaseBroadcasts: true,
+      trackingNumber: randomDeviceToken.uint32Value
     );
+  }
+  
+  @objc func canUseDynamicBackgroundBroadcasts(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    wrapForBluenet("canUseDynamicBackgroundBroadcasts", callback, BluenetLib.BroadcastProtocol.useDynamicBackground())
   }
   
   @objc func setCrownstoneNames(_ names: NSDictionary) {
@@ -867,19 +873,54 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  @objc func registerTrackedDevice(
+    _ trackingNumber: NSNumber,
+    locationUid: NSNumber,
+    profileId: NSNumber,
+    rssiOffset: NSNumber,
+    ignoreForPresence: NSNumber,
+    tapToToggleEnabled: NSNumber,
+    deviceToken: NSNumber,
+    ttlMinutes: NSNumber,
+    callback: @escaping RCTResponseSenderBlock) {
+    wrapForBluenet("registerTrackedDevice", callback,
+      GLOBAL_BLUENET.bluenet.control.registerTrackedDevice(
+        trackingNumber: trackingNumber.uint16Value,
+        locationUid:    trackingNumber.uint8Value,
+        profileId:      profileId.uint8Value,
+        rssiOffset:     rssiOffset.uint8Value,
+        ignoreForPresence: ignoreForPresence.boolValue,
+        tapToToggle:    tapToToggleEnabled.boolValue,
+        deviceToken:    deviceToken.uint32Value,
+        ttlMinutes:     ttlMinutes.uint16Value
+    ))
+  }
+    
+  @objc func broadcastUpdateTrackedDevice(
+    _ referenceId: String,
+    trackingNumber: NSNumber,
+    locationUid: NSNumber,
+    profileId: NSNumber,
+    rssiOffset: NSNumber,
+    ignoreForPresence: NSNumber,
+    tapToToggleEnabled: NSNumber,
+    deviceToken: NSNumber,
+    ttlMinutes: NSNumber,
+    callback:  @escaping RCTResponseSenderBlock) {
+    wrapForBluenet("broadcastUpdateTrackedDevice", callback,
+      GLOBAL_BLUENET.bluenet.broadcast.updateTrackedDevice(
+        referenceId:    referenceId,
+        trackingNumber: trackingNumber.uint16Value,
+        locationUid:    locationUid.uint8Value,
+        profileId:      profileId.uint8Value,
+        rssiOffset:     rssiOffset.uint8Value,
+        ignoreForPresence: ignoreForPresence.boolValue,
+        tapToToggle:    tapToToggleEnabled.boolValue,
+        deviceToken:    deviceToken.uint32Value,
+        ttlMinutes:     ttlMinutes.uint16Value
+      ))
+  }
+
   
   // DEV
   @objc func switchRelay(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
@@ -1006,6 +1047,10 @@ func wrapForBluenet<T>(_ label: String, _ callback: @escaping RCTResponseSenderB
   }
 }
 
+func wrapForBluenet<T>(_ label: String, _ callback: @escaping RCTResponseSenderBlock, _ value: T) {
+  LOGGER.info("BluenetBridge: Called \(label)")
+  callback([["error" : false, "data": value]])
+}
 
 func wrapForBluenet(_ label: String, _ callback: @escaping RCTResponseSenderBlock, _ promise: Promise<Void>) {
   LOGGER.info("BluenetBridge: Called \(label)")

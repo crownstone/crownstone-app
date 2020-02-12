@@ -46,6 +46,7 @@ import { PowerUsageCacher } from "./PowerUsageCacher";
 import { TimeKeeper } from "./TimeKeeper";
 import { SphereStateManager } from "./SphereStateManager";
 import { UptimeMonitor } from "./UptimeMonitor";
+import { TrackingNumberManager } from "./TrackingNumberManager";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -261,6 +262,8 @@ class BackgroundProcessHandlerClass {
   startEventTriggers() {
     // listen to the state of the app: if it is in the foreground or background
     AppState.addEventListener('change', (appState) => {
+      core.eventBus.emit("AppStateChange", appState)
+
       LOG.info("App State Change", appState);
       Sentry.captureBreadcrumb({
         category: 'AppState',
@@ -445,6 +448,7 @@ class BackgroundProcessHandlerClass {
     StoneDataSyncer.init();
     SetupStateHandler.init();
     SphereStateManager.init();
+    TrackingNumberManager.init();
     TimeKeeper.init();
     ToonIntegration.init();
     UpdateCenter.init();

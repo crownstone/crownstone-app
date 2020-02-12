@@ -11,7 +11,7 @@ import { Platform } from "react-native";
   export const FALLBACKS_ENABLED = true;
 
   // possiblity to block Sentry
-  export let USE_SENTRY = true;
+  export let USE_SENTRY = DeviceInfo.getModel() !== "Simulator" || global.__DEV__ !== true;
 
   // DO NOT CHANGE THIS LINE.
   // the global is meant as a last resort, forcing release to true when compiled in release mode.

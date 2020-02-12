@@ -5,7 +5,7 @@ import { Bluenet }        from './Bluenet'
 import { Sentry }         from "react-native-sentry";
 import { core } from "../../core";
 
-export const BluenetPromise : any = function(functionName, param, param2, param3, param4, param5) {
+export const BluenetPromise : any = function(functionName) {
   // console.log("XX BLUENET PROMISE", functionName, param, param2, param3, param4, param5)
   return new Promise((resolve, reject) => {
 	  let id = (Math.random() * 1e8).toString(36);
@@ -190,12 +190,32 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setCurrentMultiplier:           ( value ) => { return BluenetPromise('setCurrentMultiplier', value)},
   setUartState:                   ( value ) => { return BluenetPromise('setUartState', value)},
 
-  getBehaviourDebugInformation:   () => { return BluenetPromise('getBehaviourDebugInformation'); },
+  getBehaviourDebugInformation:     () => { return BluenetPromise('getBehaviourDebugInformation'); },
+  canUseDynamicBackgroundBroadcasts:() => { return BluenetPromise('canUseDynamicBackgroundBroadcasts'); },
 
   turnOnMesh:                     (arrayOfStoneSwitchPackets: any[]) => { return BluenetPromise('turnOnMesh', arrayOfStoneSwitchPackets)},
   turnOnBroadcast:                (referenceId, stoneId)             => { return BluenetPromise('turnOnBroadcast', referenceId, stoneId)},
   setSunTimesViaConnection:       (sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight) => { return BluenetPromise('setSunTimesViaConnection', sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight)},
   broadcastBehaviourSettings:     (referenceId, enabled) => { return BluenetPromise('broadcastBehaviourSettings', referenceId, enabled)},
+
+  registerTrackedDevice:          (trackingNumber: number,
+                                   locationUID: number,
+                                   profileId: number,
+                                   rssiOffset: number,
+                                   ignoreForPresence: boolean,
+                                   tapToToggleEnabled: boolean,
+                                   deviceToken: number,
+                                   ttlMinutes: number) => { return BluenetPromise('registerTrackedDevice', trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes); },
+
+  broadcastUpdateTrackedDevice:   (referenceId: string,
+                                   trackingNumber:number,
+                                   locationUID:number,
+                                   profileId:number,
+                                   rssiOffset:number,
+                                   ignoreForPresence:boolean,
+                                   tapToToggleEnabled:boolean,
+                                   deviceToken:number,
+                                   ttlMinutes:number) => { return BluenetPromise('broadcastUpdateTrackedDevice', referenceId, trackingNumber, locationUID, profileId, rssiOffset, ignoreForPresence, tapToToggleEnabled, deviceToken, ttlMinutes); }
 };
 
 

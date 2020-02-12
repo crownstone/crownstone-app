@@ -128,8 +128,33 @@ RCT_EXTERN_METHOD(broadcastSwitch:(NSString *)referenceId stoneId:(nonnull NSNum
 RCT_EXTERN_METHOD(turnOnBroadcast:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId callback:(RCTResponseSenderBlock)callback)
 
 // set states for broadcast
-RCT_EXTERN_METHOD(setLocationState:(nonnull NSNumber *)sphereUID locationId:(nonnull NSNumber *)locationId profileIndex:(nonnull NSNumber *)profileIndex deviceToken:(nonnull NSNumber *)deviceToken referenceId:(NSString *)referenceId)
-RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggle:(nonnull NSNumber *)tapToToggle ignoreForBehaviour:(nonnull NSNumber *)ignoreForBehaviour)
+RCT_EXTERN_METHOD(setLocationState:(nonnull NSNumber *)sphereUID locationId:(nonnull NSNumber *)locationId profileId:(nonnull NSNumber *)profileId deviceToken:(nonnull NSNumber *)deviceToken referenceId:(NSString *)referenceId)
+RCT_EXTERN_METHOD(setDevicePreferences:(nonnull NSNumber *)rssiOffset tapToToggle:(nonnull NSNumber *)tapToToggle ignoreForBehaviour:(nonnull NSNumber *)ignoreForBehaviour randomDeviceToken:(nonnull NSNumber *)randomDeviceToken)
+
+RCT_EXTERN_METHOD(canUseDynamicBackgroundBroadcasts:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(registerTrackedDevice:
+                  (nonnull NSNumber *)trackingNumber
+                  locationUid:(nonnull NSNumber *)locationUid
+                  profileId:(nonnull NSNumber *)profileId
+                  rssiOffset:(nonnull NSNumber *)rssiOffset
+                  ignoreForPresence:(nonnull NSNumber *)ignoreForPresence
+                  tapToToggleEnabled:(nonnull NSNumber *)tapToToggleEnabled
+                  deviceToken:(nonnull NSNumber *)deviceToken
+                  ttlMinutes:(nonnull NSNumber *)ttlMinutes
+                  callback:(RCTResponseSenderBlock)callback
+)
+RCT_EXTERN_METHOD(broadcastUpdateTrackedDevice:
+                  (NSString *)referenceId
+                  trackingNumber:(nonnull NSNumber *)trackingNumber
+                  locationUid:(nonnull NSNumber *)locationUid
+                  profileId:(nonnull NSNumber *)profileId
+                  rssiOffset:(nonnull NSNumber *)rssiOffset
+                  ignoreForPresence:(nonnull NSNumber *)ignoreForPresence
+                  tapToToggleEnabled:(nonnull NSNumber *)tapToToggleEnabled
+                  deviceToken:(nonnull NSNumber *)deviceToken
+                  ttlMinutes:(nonnull NSNumber *)ttlMinutes
+                  callback:(RCTResponseSenderBlock)callback
+)
 
 RCT_EXTERN_METHOD(setCrownstoneNames:(NSDictionary *)names)
 
