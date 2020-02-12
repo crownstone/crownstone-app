@@ -469,11 +469,16 @@ class StoneDataSyncerClass {
           // (the ones not synced yet (which should be already synced by here, but still) are also in this list).
 
           // We first double check the differences between OUR behaviours and those on the Crownstone
+          let indicesThatMatched = {};
           rulesAccordingToCrownstone.forEach((stoneBehaviour: behaviourTransfer) => {
             let foundMatch = false;
             for (let i = 0; i < transferRules.length; i++) {
+              // once we have decided on a match, a behaviour cannot be used for matching again.
+              if (indicesThatMatched[i]) { continue; }
+
               LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Comparing", stoneBehaviour, transferRules[i].behaviour);
               if (xUtil.deepCompare(stoneBehaviour, transferRules[i].behaviour)) {
+                indicesThatMatched[i] = true;
                 foundMatch = true;
                 LOGd.info("StoneDataSyncer: checkAndSyncBehaviour Compare is a MATCH.");
                 // great! this is already in the list. We do not have to do anything here.
@@ -505,10 +510,15 @@ class StoneDataSyncerClass {
             }
           })
 
+          indicesThatMatched = {};
           transferRules.forEach((transferRule: {ruleId: string, behaviour: behaviourTransfer}) => {
             let foundMatch = false;
+
             for (let i = 0; i < rulesAccordingToCrownstone.length; i++) {
+              if (indicesThatMatched[i]) { continue; }
+
               if (xUtil.deepCompare(transferRule.behaviour, rulesAccordingToCrownstone[i])) {
+                indicesThatMatched[i] = true;
                 foundMatch = true;
                 // great! this is already in the list. We do not have to do anything here.
                 break
