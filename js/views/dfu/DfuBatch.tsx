@@ -164,13 +164,15 @@ export class DfuBatch extends Component<any, any> {
         <KeepAwake />
         <View style={{...styles.centered, width: screenWidth, height: 110, ...borderStyle, overflow:'hidden'}}>
           <BatchDFUCrownstonesBanner componentId={this.props.componentId} height={110} />
-          <View style={{...styles.centered, flexDirection:'row', flex:1, height: 110}}>
+          <View style={{...styles.centered, flex:1, height: 110}}>
             <View style={{flex:1}} />
             <Text style={{color: colors.black.hex, fontSize:20, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Updating_your_Crownstones_") }</Text>
+            <View style={{flex:0.25}} />
+            <Text style={{color: colors.black.hex, fontSize:15, width:screenWidth - 30, textAlign:'center'}}>{ "Some Crownstones may turn on while updating." }</Text>
             <View style={{flex:1}} />
           </View>
         </View>
-        <View style={{...styles.centered, width:screenWidth, height:80, backgroundColor: colors.white.rgba(0.3), ...borderStyle}}>
+        <View style={{...styles.centered, width:screenWidth, height:95, backgroundColor: colors.white.rgba(0.3), ...borderStyle}}>
           <Text style={{color: colors.black.hex, fontSize:14, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("This_can_take_a_while_so_j") }</Text>
         </View>
         <ScrollView style={{position:'relative', top:-1}}>

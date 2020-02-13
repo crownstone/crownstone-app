@@ -374,7 +374,7 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
       )
     }
 
-    if (stoneCanSwitch) {
+    if (stoneCanSwitch && stone.config.locked === false) {
       content = (
         <TouchableOpacity onPress={() => {
           if (this.state.switchIsOn) {
