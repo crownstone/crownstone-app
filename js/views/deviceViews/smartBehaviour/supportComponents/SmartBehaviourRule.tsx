@@ -18,6 +18,7 @@ export function SmartBehaviourRule(props: {
   editMode: boolean,
   faded: boolean,
   indoorLocalizationDisabled: boolean,
+  overrideActive?: boolean,
   startedYesterday?: boolean,
   activeDay?: string,
   selected?: boolean,
@@ -96,7 +97,7 @@ export function SmartBehaviourRule(props: {
       { /* /ActivityIndicator for sync required */ }
 
       { /* Rule text */ }
-      { RuleDescription(props, ai, editCallback, showEditIcons, props.indoorLocalizationDisabled) }
+      { RuleDescription(props, ai, editCallback, showEditIcons, props.indoorLocalizationDisabled, props.overrideActive) }
       { /* /Rule text */ }
 
 
@@ -125,7 +126,7 @@ export function SmartBehaviourRule(props: {
   );
 }
 
-function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallback, showEditIcons, indoorLocalizationDisabled) {
+function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallback, showEditIcons, indoorLocalizationDisabled, overrideActive) {
   let labelStyle : TextStyle = {
     color: props.rule.syncedToCrownstone === false || props.faded ? colors.csBlue.rgba(0.4) : colors.csBlueDark.hex,
     fontSize:16,
@@ -156,6 +157,12 @@ function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallb
   if (props.rule.deleted && showEditIcons) {
     subLabel = "( Not removed from Crownstone yet... )";
   }
+
+  // if (!showEditIcons && overrideActive) {
+  //   subLabel = "This behaviour is currently overruled because someone manually switched it.";
+  //   subLabelStyle = { color: colors.csBlue.rgba(0.4), fontWeight:'bold'};
+  // }
+
   if (indoorLocalizationDisabled && !showEditIcons && ai.isUsingPresence()) {
     subLabel = "Indoor localization disabled for this phone (in app settings).";
     subLabelStyle = { color: colors.orange.hex, fontWeight:'bold'};

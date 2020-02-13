@@ -628,6 +628,10 @@ export class StoneEntity {
       changed = true;
       changeData.timeSet = advertisement.serviceData.timeSet;
     }
+    if (stone.state.behaviourOverridden !== advertisement.serviceData.behaviourOverridden) {
+      changed = true;
+      changeData.behaviourOverridden = advertisement.serviceData.behaviourOverridden;
+    }
 
     if (changed) {
       this.storeManager.loadAction(this.stoneId, UPDATE_STATE_FROM_ADVERTISEMENT, {

@@ -37,6 +37,8 @@ import ResponsiveText from "../../components/ResponsiveText";
 import { BEHAVIOUR_TYPES } from "../../../Enums";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
+import { AicoreTwilight } from "./supportCode/AicoreTwilight";
+import { AicoreBehaviourCore } from "./supportCode/AicoreBehaviourCore";
 
 
 let className = "DeviceSmartBehaviour";
@@ -146,6 +148,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
     let presenceRulePresent = false;
     let roomBasedPresenceRulePresent = false;
+    let behaviourOverridden = stone.state.behaviourOverridden;
 
     ruleIds.forEach((ruleId) => {
       let rule = rules[ruleId];
@@ -159,14 +162,33 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
           today:     rules[ruleId].activeDays[this.state.activeDay],
         };
 
+        let overrideActive = false;
+
+        let overrideCheck = (ruleObj) => {
+          console.log("CHECK", ruleObj)
+          if (ruleObj && ruleObj.isCurrentlyActive(this.props.sphereId)) {
+            console.log("currentlyActive", stone.state.state, ruleObj.getDimPercentage(), behaviourOverridden)
+            if (Math.round(100*stone.state.state) !== ruleObj.getDimPercentage() && behaviourOverridden) {
+              overrideActive = true;
+            }
+          }
+          console.log("OVerrie Active", overrideActive)
+        }
+
+
         if (rule.type === BEHAVIOUR_TYPES.behaviour) {
           let ruleObj = new AicoreBehaviour(rule.data);
+          overrideCheck(ruleObj)
           if (ruleObj.isUsingPresence()) {
             if (ruleObj.isUsingMultiRoomPresence() || ruleObj.isUsingSingleRoomPresence()) {
               roomBasedPresenceRulePresent = true;
             }
             presenceRulePresent = true;
           }
+        }
+        else {
+          let ruleObj = new AicoreTwilight(rule.data);
+          overrideCheck(ruleObj)
         }
 
         let ruleComponent = (
@@ -179,6 +201,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             indoorLocalizationDisabled={state.app.indoorLocalizationEnabled !== true}
             startedYesterday={!rules[ruleId].activeDays[this.state.activeDay] && rules[ruleId].activeDays[DAY_INDICES_SUNDAY_START[previousDay]]}
             ruleId={ruleId}
+            overrideActive={overrideActive}
             editMode={this.state.editMode}
             faded={partiallyActive}
           />

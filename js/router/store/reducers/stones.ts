@@ -45,6 +45,7 @@ let defaultSettings = {
     state: 0.0,
     previousState: 0.0,
     currentUsage: 0,
+    behaviourOverridden: false,
     dimmerReady: false,
     powerFactor: null,
     updatedAt: 1
@@ -196,12 +197,13 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
           newState.previousState = newState.state;
         }
 
-        newState.state             = update(action.data.state,            newState.state);
-        newState.dimmerReady       = update(action.data.dimmerReady,      newState.dimmerReady);
-        newState.currentUsage      = update(action.data.currentUsage,     newState.currentUsage);
-        newState.powerFactor       = update(action.data.powerFactor,      newState.powerFactor);
-        newState.timeSet           = update(action.data.timeSet,          newState.timeSet);
-        newState.updatedAt         = getTime(action.data.updatedAt);
+        newState.state               = update(action.data.state,               newState.state);
+        newState.dimmerReady         = update(action.data.dimmerReady,         newState.dimmerReady);
+        newState.currentUsage        = update(action.data.currentUsage,        newState.currentUsage);
+        newState.behaviourOverridden = update(action.data.behaviourOverridden, newState.behaviourOverridden);
+        newState.powerFactor         = update(action.data.powerFactor,         newState.powerFactor);
+        newState.timeSet             = update(action.data.timeSet,             newState.timeSet);
+        newState.updatedAt           = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
