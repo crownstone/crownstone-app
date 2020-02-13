@@ -6,16 +6,16 @@ import { Platform } from "react-native";
 /******************** RELEASE FLAGS ********************/
 
   // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
-  const IGNORE_LOCAL_CONFIG = true;
+  const IGNORE_LOCAL_CONFIG = false;
 
   export const FALLBACKS_ENABLED = true;
 
   // possiblity to block Sentry
-  export let USE_SENTRY = DeviceInfo.getModel() !== "Simulator" || global.__DEV__ !== true;
+  export let USE_SENTRY = DeviceInfo.getModel() !== "Simulator" && global.__DEV__ !== true;
 
   // DO NOT CHANGE THIS LINE.
   // the global is meant as a last resort, forcing release to true when compiled in release mode.
-  export const RELEASE_MODE_USED = DeviceInfo.getModel() !== "Simulator" || global.__DEV__ !== true;
+  export const RELEASE_MODE_USED = DeviceInfo.getModel() !== "Simulator" && global.__DEV__ !== true;
 
   // this is the name of the app in the database. It has to be exactly this to match the database entry for push notifications.
   // it is used to link an installation to a specific App.
@@ -191,6 +191,7 @@ import { Platform } from "react-native";
 // force flags based on release modes
 if (RELEASE_MODE_USED === false && !IGNORE_LOCAL_CONFIG) {
   //override settings with local config, if it exists
+  console.log("Using local config.")
   try {
   let localConfig = require('./LocalConfig');
   let localKeys = Object.keys(localConfig);

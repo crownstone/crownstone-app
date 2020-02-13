@@ -16,6 +16,7 @@ let defaultSettings = {
 
   trackingNumbers: {},
   randomDeviceToken: Math.round(Math.random()*(1<<25)), // 24 bit number, random is 1 excluded
+  randomDeviceTokenValidated: false,
   tokenRefreshRequired: false,
 
   rssiOffset: 0,
@@ -38,10 +39,20 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
         return newState;
       }
       return state;
+    case 'TRY_NEW_DEVICE_TOKEN':
+      if (action.data) {
+        let newState = {...state};
+        newState.randomDeviceToken = update(action.data.randomDeviceToken, newState.randomDeviceToken);
+        newState.randomDeviceTokenValidated = false;
+        return newState;
+      }
+      return state;
     case 'CYCLE_RANDOM_DEVICE_TOKEN':
       if (action.data) {
         let newState = {...state};
         newState.randomDeviceToken = update(action.data.randomDeviceToken, newState.randomDeviceToken);
+        newState.randomDeviceTokenValidated = true;
+
         return newState;
       }
       return state;

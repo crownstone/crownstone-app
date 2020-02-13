@@ -35,7 +35,7 @@ class Portal : NSObject {
   var nearestSubscriptions = [voidCallback]()
   var unverifiedSubscriptions = [voidCallback]()
     
-  open func initController(viewController: UIViewController) {
+  open func initController(viewController: UIViewController?) {
     self.watchBridge = WatchBridge()
     self.watchStateManager = WatchStateManager()
     

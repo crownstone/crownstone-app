@@ -1,7 +1,7 @@
 import { core } from "../core";
 import { NavigationUtil } from "../util/NavigationUtil";
 import { Alert } from "react-native";
-import { LOGe } from "../logging/Log";
+import { LOGe, LOGi } from "../logging/Log";
 import { OnScreenNotifications } from "../notifications/OnScreenNotifications";
 
 
@@ -52,6 +52,7 @@ class OverlayManagerClass {
 
       // location permission updates.
       core.nativeBus.on(core.nativeBus.topics.locationStatus, (status) => {
+        LOGi.info("OverlayManager: Received locations status", status)
         switch (status) {
           case "off":
           case "unknown":

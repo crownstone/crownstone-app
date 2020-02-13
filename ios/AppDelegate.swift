@@ -24,8 +24,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
         
         ReactNativeNavigation.bootstrap(jsBundleUrl!, launchOptions: launchOptions)
-        let rootViewController = UIViewController()
-        GLOBAL_BLUENET.initController(viewController: rootViewController)
+        
+        
+        GLOBAL_BLUENET.initController(viewController: nil)
 
         RNSplashScreen.show()
 

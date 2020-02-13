@@ -142,7 +142,7 @@ class TrackingNumberManagerClass {
           if (err === "ERR_ALREADY_EXISTS") {
             this._cycleMyDeviceTrackingToken(sphereId);
           }
-          LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken...")
+          LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken with error...")
           this.currentlyCyclingToken = false;
         })
     }
@@ -155,7 +155,6 @@ class TrackingNumberManagerClass {
   _broadcastUpdateTrackedDevice(sphereId, suggestedNewRandom=null) {
     this.lastTimeTokenWasBumped = new Date().valueOf();
     let preferences = DataUtil.getDevicePreferences(sphereId);
-    console.log("My Device Prefernces", preferences)
     BluenetPromiseWrapper.broadcastUpdateTrackedDevice(
       sphereId,
       preferences.trackingNumber,
@@ -175,8 +174,14 @@ class TrackingNumberManagerClass {
     if (this.currentlyCyclingToken === false) {
       if (AppState.currentState === 'active') {
         // broadcast with update!
-        this._broadcastUpdateTrackedDevice(sphereId);
-      } else {
+        if (preferences.randomDeviceTokenValidated) {
+          this._broadcastUpdateTrackedDevice(sphereId);
+        }
+        else {
+          this._cycleMyDeviceTrackingToken(sphereId);
+        }
+      }
+      else {
         // connect to two crownstones to update registration
         StoneAvailabilityTracker.sendCommandToNearestCrownstones(
           sphereId,

@@ -485,17 +485,19 @@ export const DataUtil = {
 
     // get device for rssi offset
     let device = DataUtil.getDevice(state);
-    console.log("MyDevice", device)
     let randomDeviceToken = 0;
+    let randomDeviceTokenValidated = false;
     if (device) {
       if (sphereId) {
         trackingNumber = device.trackingNumbers && device.trackingNumbers[sphereId] || 0;
       }
       randomDeviceToken = device.randomDeviceToken;
+      randomDeviceTokenValidated = device.randomDeviceTokenValidated;
       if (!randomDeviceToken) {
+        randomDeviceTokenValidated = false;
         // TEMP HACK
         let token = Math.round(Math.random()*(1<<25));
-        core.store.dispatch({type:"CYCLE_RANDOM_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: token}})
+        core.store.dispatch({type:"TRY_NEW_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: token }})
         randomDeviceToken = token;
       }
       rssiOffset = device.rssiOffset || 0;
@@ -506,7 +508,8 @@ export const DataUtil = {
       rssiOffset,
       tapToToggleEnabled,
       ignoreForBehaviour,
-      randomDeviceToken
+      randomDeviceToken,
+      randomDeviceTokenValidated
     }
   }
 };

@@ -6,7 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
+  Alert, Linking, Platform,
   Text,
   TouchableOpacity,
   View
@@ -42,6 +42,11 @@ export class LocationPermissionOverlay extends Component<any, any> {
         case "off":
           if (this.state.waitingOnPermission) {
             this.setState({showRequestFailed: true, notificationType: status})
+            if (Platform.OS === 'ios') {
+              Alert.alert("Request not allowed....", "Please ensure that the permission is set to always. If it is always already, please set it to while in use, and back to always.", [{text:"OK", onPress:() => {
+                Linking.openURL('app-settings:')
+              }}])
+            }
             return;
           }
           this.setState({notificationType: status});

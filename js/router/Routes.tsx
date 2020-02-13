@@ -72,6 +72,8 @@ Navigation.events().registerAppLaunchedListener(() => {
     defaultOptions.topBar["backButton"]       = { color: "#fff" };
   }
 
+
+
   Navigation.setDefaultOptions(defaultOptions);
 
   NavigationUtil.init();

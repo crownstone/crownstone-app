@@ -300,6 +300,7 @@ export class Register extends LiveComponent<any, any> {
         subHeader: "We have sent an email to:\n\n" +
           (this.user.email || "" ).toLowerCase() + "\n\n" +
           "Please tap the link in the email to activate your account and log in!",
+        explanation:"If you do not see the email, try checking your spam folder.",
         backgroundImage: require('../../images/backgrounds/fadedLightBackgroundGreen.png'),
         component: (
           <View style={{...styles.centered, flex:1}}>

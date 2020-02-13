@@ -25,7 +25,7 @@ export class NoStones extends Component<any, any> {
     super(props);
 
     this.state = {
-      visible: true,
+      visible: false,
 
       setupAdvertisements: null,
       crownstoneAdvertisements: null,
@@ -34,7 +34,7 @@ export class NoStones extends Component<any, any> {
       scanningFinished: null,
       userInputNearCrownstone: null,
       userInputHasPower: null,
-      userInputVisitingSphere: null
+      userInputVisitingSphere: null,
     };
     setTimeout(() => { this.init(); }, 150);
   }
@@ -51,7 +51,7 @@ export class NoStones extends Component<any, any> {
         newState["crownstoneAdvertisements"]   = TestRunner.getAnyCrownstoneResult(result);
         newState["anyAdvertisements"]          = TestRunner.getBleResult(result);
 
-        this._changeContent(() => { this.setState(newState); });
+        this._changeContent(() => { this.setState({...newState}); });
       })
   }
 

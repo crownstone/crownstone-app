@@ -88,8 +88,8 @@
 		FA570ECE1EAE3D73001C625D /* Crownstone.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA570ECB1EAE3D73001C625D /* Crownstone.ttf */; };
 		FA570ECF1EAE3D73001C625D /* CustomIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */; };
 		FA570ED01EAE3D73001C625D /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */; };
-		FA5905BE23EDCA3A0010CE9C /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5905BD23EDCA3A0010CE9C /* BluenetLib.framework */; };
 		FA59A6A5224CE5D300D58C9F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA59A6A4224CE5D300D58C9F /* AppDelegate.swift */; };
+		FA59F3D023F556AF00F912FB /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA59F3CF23F556AF00F912FB /* BluenetLib.framework */; };
 		FA5BF12B23A12E8800CF6C30 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5BF12A23A12E7A00CF6C30 /* libAirMaps.a */; };
 		FA60DCE120F3AD70002A795E /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DCE020F3AD70002A795E /* EventBus.swift */; };
 		FA60DD1820F3ADA7002A795E /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA60DD1720F3ADA7002A795E /* Util.swift */; };
@@ -692,8 +692,8 @@
 		FA570ECB1EAE3D73001C625D /* Crownstone.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone.ttf; path = ../js/fonts/Crownstone.ttf; sourceTree = "<group>"; };
 		FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = CustomIcons.ttf; path = ../js/fonts/CustomIcons.ttf; sourceTree = "<group>"; };
 		FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../js/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
-		FA5905BD23EDCA3A0010CE9C /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FA59A6A4224CE5D300D58C9F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FA59F3CF23F556AF00F912FB /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FA5BF12523A12E7A00CF6C30 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		FA60DCE020F3AD70002A795E /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 		FA60DD1720F3ADA7002A795E /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
@@ -769,7 +769,7 @@
 				A7B17E76FE044B29BC30B798 /* libz.tbd in Frameworks */,
 				5536AAFCA2F647ABB306701F /* libRCTToast.a in Frameworks */,
 				77A4BC75F6794BFC8EA372F7 /* libRNCSlider.a in Frameworks */,
-				FA5905BE23EDCA3A0010CE9C /* BluenetLib.framework in Frameworks */,
+				FA59F3D023F556AF00F912FB /* BluenetLib.framework in Frameworks */,
 				128F84CE4A2E4BF88CBC89A2 /* libRNCAsyncStorage.a in Frameworks */,
 				613D457D36284A328D2B9CA4 /* libRNCamera.a in Frameworks */,
 				37664E36FD144AB3839B7564 /* libRNBlur.a in Frameworks */,
@@ -995,7 +995,7 @@
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
 				FA6FBC3320A98E9B00EEEF18 /* Crownstone2.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
-				FA5905BD23EDCA3A0010CE9C /* BluenetLib.framework */,
+				FA59F3CF23F556AF00F912FB /* BluenetLib.framework */,
 				FA47536423AB9525002AB89F /* BluenetBasicLocalization.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
