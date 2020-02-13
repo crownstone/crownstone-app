@@ -25,6 +25,7 @@ export class DfuDeviceOverviewEntry extends Component<any, any> {
     this.baseHeight = props.height || 80;
   }
 
+
   _getIcon(stone) {
     let color = this.props.iconColor || colors.green.rgba(0.8);
     return (

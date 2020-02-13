@@ -37,6 +37,7 @@ import { Icon } from "../components/Icon";
 import { Background } from "../components/Background";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
+import { IconButton } from "../components/IconButton";
 
 
 
@@ -98,7 +99,19 @@ export class RoomOverview extends LiveComponent<any, any> {
           [{ text: lang("_Youre_not_in_the_Sphere__left") }])
         return
       }
-      NavigationUtil.launchModal( "RoomTraining_roomSize",{ sphereId: this.props.sphereId, locationId: this.props.locationId });
+
+      const store = core.store;
+      const state = store.getState();
+      const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
+      if (room && room.config.fingerprintRaw) {
+        Alert.alert(
+          lang("_Retrain_Room__Only_do_th_header"),
+          lang("_Retrain_Room__Only_do_th_body"),
+          [{text: lang("_Retrain_Room__Only_do_th_left"), style: 'cancel'},
+            {
+              text: lang("_Retrain_Room__Only_do_th_right"), onPress: () => { NavigationUtil.launchModal( "RoomTraining_roomSize",{sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
+          ])
+      }
     }
   }
 
