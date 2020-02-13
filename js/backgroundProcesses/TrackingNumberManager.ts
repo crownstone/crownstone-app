@@ -142,7 +142,7 @@ class TrackingNumberManagerClass {
           if (err === "ERR_ALREADY_EXISTS") {
             this._cycleMyDeviceTrackingToken(sphereId);
           }
-          LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken with error...")
+          LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken with error...", err)
           this.currentlyCyclingToken = false;
         })
     }
@@ -199,10 +199,14 @@ class TrackingNumberManagerClass {
             ttlMinutes: 120
           },
           2)
+          .then((promises) => {
+            return Promise.all(promises);
+          })
           .then(() => {
             this.lastTimeTokenWasBumped = new Date().valueOf();
           })
-          .catch(() => {
+          .catch((err) => {
+            console.log("SOMEHTING WENT WRONG", err)
           })
       }
     }

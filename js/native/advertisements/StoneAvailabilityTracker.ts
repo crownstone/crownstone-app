@@ -20,11 +20,11 @@ interface triggerFormat {
   }
 }
 interface logFormat {
-  [key: string]: {sphereId: string, t: number, rssi: number, lastNotifiedRssi: number}
+  [key: string]: {sphereId: string, t: number, rssi: number, lastNotifiedRssi: number, handle: string,}
 }
 
 interface sphereLogFormat {
-  [key: string]: {[key: string] : {t: number, rssi: number }}
+  [key: string]: {[key: string] : {t: number, rssi: number, handle: string }}
 }
 
 class StoneAvailabilityTrackerClass {
@@ -145,7 +145,7 @@ class StoneAvailabilityTrackerClass {
 
     let registerStoneId = (stoneId, sphereId, rssi) => {
       if (this.log[stoneId] === undefined) {
-        this.log[stoneId] = {t: null, rssi: null, sphereId: sphereId, lastNotifiedRssi: rssi };
+        this.log[stoneId] = {t: null, rssi: null, sphereId: sphereId, lastNotifiedRssi: rssi, handle: data.handle || null };
         // new Crownstone detected this run!
         let stoneIds  = {};
         let sphereIds = {};
@@ -164,7 +164,7 @@ class StoneAvailabilityTrackerClass {
     registerStoneId(data.payloadId, data.sphereId, null);
 
     if (this.sphereLog[data.sphereId][data.stoneId] === undefined) {
-      this.sphereLog[data.sphereId][data.stoneId] = {t: null, rssi: null };
+      this.sphereLog[data.sphereId][data.stoneId] = {t: null, rssi: null, handle: null };
     }
 
     let now = new Date().valueOf();
@@ -175,6 +175,11 @@ class StoneAvailabilityTrackerClass {
     let newRSSI = 0.7*prevRSSI + 0.3*data.rssi;;
     this.log[data.stoneId].rssi = newRSSI
     this.sphereLog[data.sphereId][data.stoneId].rssi = newRSSI
+
+    if (data.handle) {
+      this.log[data.stoneId].handle = data.handle;
+      this.sphereLog[data.sphereId][data.stoneId].rssi = data.handle;
+    }
 
     if (Math.abs(newRSSI - prevRSSI) > 3*RSSI_THRESHOLD) {
       core.eventBus.emit("rssiChange", {stoneId: data.stoneId, sphereId: data.sphereId, rssi:data.rssi}); // Major change in RSSI
@@ -193,7 +198,7 @@ class StoneAvailabilityTrackerClass {
     let timeThreshold = new Date().valueOf() - 1000 * inTheLastNSeconds;
     for (let i = 0; i < ids.length; i++) {
       let item = this.log[ids[i]];
-      if (item && item.t >= timeThreshold && item.rssi > nearestRssi && (rssiThreshold === null || item.rssi > rssiThreshold)) {
+      if (item && item.handle && item.t >= timeThreshold && item.rssi > nearestRssi && (rssiThreshold === null || item.rssi > rssiThreshold)) {
         nearestRssi = item.rssi;
         nearestId = ids[i]
       }
@@ -212,13 +217,11 @@ class StoneAvailabilityTrackerClass {
     for (let i = 0; i < stoneIds.length; i++) {
       let item = this.log[stoneIds[i]];
       if (item) {
-        console.log("this is the stoneId", stoneIds[i], item, item.t >= timeThreshold, item.rssi > rssiThreshold)
-        if (item.t >= timeThreshold && (rssiThreshold === null || item.rssi > rssiThreshold)) {
+        if (item.handle && item.t >= timeThreshold && (rssiThreshold === null || item.rssi > rssiThreshold)) {
           contenders.push({ id: stoneIds[i], rssi: item.rssi })
         }
       }
     }
-    console.log("contenders", contenders)
     contenders.sort((a,b) => { return b.rssi - a.rssi })
 
     for ( let i = 0; i < contenders.length && i < amount; i++) {
@@ -335,6 +338,11 @@ class StoneAvailabilityTrackerClass {
   handleTriggers(sphereId, stoneId, rssi) {
     if (!this.triggers[sphereId])          { return; }
 
+    let stone = DataUtil.getStone(sphereId, stoneId)
+    if (!stone) { return; }
+    if (!stone.config.handle) { return; }
+
+
     this._handleTargetedTriggers(sphereId, stoneId, rssi);
     this._handleGenericTriggers( sphereId, stoneId, rssi);
   }
@@ -411,7 +419,13 @@ class StoneAvailabilityTrackerClass {
       nearestStoneIds.forEach((stoneId) => {
         let stone = DataUtil.getStone(sphereId, stoneId);
         if (stone) {
-          promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1))
+          promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1)
+            .catch((err) => {
+              if (err?.code !== "REMOVED_BECAUSE_IS_DUPLICATE") {
+                throw err;
+              }
+            })
+          );
         }
         amountSet+=1;
       })
@@ -425,7 +439,13 @@ class StoneAvailabilityTrackerClass {
         this.setGenericTrigger(sphereId, "sendCommandToNearestCrownstones", (stoneId) => {
           let stone = DataUtil.getStone(sphereId, stoneId);
           if (stone) {
-            promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1));
+            promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1)
+              .catch((err) => {
+                if (err?.code !== "REMOVED_BECAUSE_IS_DUPLICATE") {
+                  throw err;
+                }
+              })
+            );
           }
           BatchCommandHandler.executePriority();
 

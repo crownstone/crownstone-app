@@ -15,7 +15,7 @@ let defaultSettings = {
   uid: 0,
 
   trackingNumbers: {},
-  randomDeviceToken: Math.round(Math.random()*(1<<25)), // 24 bit number, random is 1 excluded
+  randomDeviceToken: Math.round(Math.random()*(1<<24)), // 24 bit number, random is 1 excluded
   randomDeviceTokenValidated: false,
   tokenRefreshRequired: false,
 

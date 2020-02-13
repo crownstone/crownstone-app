@@ -294,7 +294,9 @@ export const xUtil = {
   },
 
   deepCompare: function (a, b, d=0) {
+    let iterated = false;
     for (let prop in b) {
+      iterated = true;
       if (b.hasOwnProperty(prop)) {
         if (a[prop] === undefined) {
           return false;
@@ -339,6 +341,11 @@ export const xUtil = {
         }
       }
     }
+
+    if (!iterated) {
+      return a === b;
+    }
+
     return true;
   },
 

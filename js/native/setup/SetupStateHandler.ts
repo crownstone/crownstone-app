@@ -122,6 +122,7 @@ class SetupStateHandlerClass {
 
           this._stonesInSetupStateAdvertisements[handle] = setupAdvertisement;
           this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
+
           if (this._stonesInSetupStateTypes[handle] === undefined && base_core.sessionMemory.developmentEnvironment === false) {
             delete this._stonesInSetupStateTypes[handle];
           }

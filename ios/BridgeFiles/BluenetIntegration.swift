@@ -886,7 +886,7 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("registerTrackedDevice", callback,
       GLOBAL_BLUENET.bluenet.control.registerTrackedDevice(
         trackingNumber: trackingNumber.uint16Value,
-        locationUid:    trackingNumber.uint8Value,
+        locationUid:    locationUid.uint8Value,
         profileId:      profileId.uint8Value,
         rssiOffset:     rssiOffset.uint8Value,
         ignoreForPresence: ignoreForPresence.boolValue,

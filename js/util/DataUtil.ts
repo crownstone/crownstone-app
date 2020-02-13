@@ -496,7 +496,7 @@ export const DataUtil = {
       if (!randomDeviceToken) {
         randomDeviceTokenValidated = false;
         // TEMP HACK
-        let token = Math.round(Math.random()*(1<<25));
+        let token = Math.round(Math.random()*(1<<24));
         core.store.dispatch({type:"TRY_NEW_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: token }})
         randomDeviceToken = token;
       }
