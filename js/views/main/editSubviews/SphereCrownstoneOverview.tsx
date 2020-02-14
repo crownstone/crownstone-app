@@ -110,7 +110,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
       type: 'button',
       callback: () => {
         if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {
-          NavigationUtil.navigate("AddCrownstone", {sphereId: this.props.sphereId});
+          NavigationUtil.launchModal("AddCrownstone", {sphereId: this.props.sphereId});
         }
         else {
           Alert.alert(

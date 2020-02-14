@@ -16,6 +16,7 @@ class TrackingNumberManagerClass {
   lastTimeTokenWasCycled = 0;
 
   currentlyCyclingToken = false;
+  _listeners = [];
 
   constructor() {
     BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
@@ -61,6 +62,7 @@ class TrackingNumberManagerClass {
   }
 
   cycleMyDeviceTrackingToken(sphereId) {
+    LOGi.info("TrackingNumberManager: Cycle my device tracking registration for active sphere.");
     if (this.canUseDynamicBackgroundBroadcasts === null) {
       BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
         .then((canUse) => {
@@ -75,6 +77,7 @@ class TrackingNumberManagerClass {
 
 
   updateMyDeviceTrackingRegistrationInActiveSphere() {
+    LOGi.info("TrackingNumberManager: Update my device tracking registration for active sphere.");
     // do not do this too often.
     if (new Date().valueOf() - this.lastTimeTokenWasBumped < 1800000) {
       return;
@@ -86,6 +89,7 @@ class TrackingNumberManagerClass {
 
 
   updateMyDeviceTrackingRegistration(sphereId) {
+    LOGi.info("TrackingNumberManager: Update my device tracking registration for sphere:", sphereId);
     if (this.canUseDynamicBackgroundBroadcasts === null) {
       BluenetPromiseWrapper.canUseDynamicBackgroundBroadcasts()
         .then((canUse) => {
@@ -100,10 +104,14 @@ class TrackingNumberManagerClass {
 
 
   _generateToken() {
-    return Math.round(Math.random()*(1<<25));
+    let token = Math.round(Math.random()*(1<<24));
+    let state = core.store.getState();
+    core.store.dispatch({type:"TRY_NEW_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: token }})
+    return token;
   }
 
   _cycleMyDeviceTrackingToken(sphereId) {
+    LOGi.info("TrackingNumberManager: Will cycle the deviceRandomTrackingToken. Appstate:", AppState.currentState);
     if (AppState.currentState === 'active') {
       LOGi.info("TrackingNumberManager: Cycling the deviceRandomTrackingToken...")
       // block other requests for registration based on the stored token.
@@ -112,6 +120,7 @@ class TrackingNumberManagerClass {
       // connect to check availability
       let preferences = DataUtil.getDevicePreferences(sphereId);
       let suggestedNewRandom = this._generateToken();
+
       this._broadcastUpdateTrackedDevice(sphereId, suggestedNewRandom);
       StoneAvailabilityTracker.sendCommandToNearestCrownstones(
         sphereId,
@@ -147,6 +156,7 @@ class TrackingNumberManagerClass {
         })
     }
     else {
+      LOGi.info("TrackingNumberManager: Did not cycle due to Appstate:", AppState.currentState);
       // do not cycle.
       return
     }
@@ -170,6 +180,7 @@ class TrackingNumberManagerClass {
 
 
   _updateMyDeviceTrackingRegistration(sphereId) {
+    LOGi.info("TrackingNumberManager: Executing device tracking registration update for sphere:", sphereId, "Current app state: ", AppState.currentState);
     let preferences = DataUtil.getDevicePreferences(sphereId);
     if (this.currentlyCyclingToken === false) {
       if (AppState.currentState === 'active') {
@@ -206,9 +217,12 @@ class TrackingNumberManagerClass {
             this.lastTimeTokenWasBumped = new Date().valueOf();
           })
           .catch((err) => {
-            console.log("SOMEHTING WENT WRONG", err)
+            console.log("SOMETHING WENT WRONG", err)
           })
       }
+    }
+    else {
+      LOGi.info("TrackingNumberManager: Did not execute device tracking registration update for sphere:", sphereId, "due to cycling token");
     }
   }
 

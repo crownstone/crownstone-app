@@ -242,7 +242,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
               <View style={{height: 0.1*iconSize}} />
               <SmartBehaviourSummaryGraph rules={activeRules} activityMap={activityMap} sphereId={this.props.sphereId} />
             </SlideFadeInView>
-
+            { stone.config.locked && <Text style={{color: colors.csOrange.hex, fontWeight:"bold", fontSize:15, textAlign:'center', padding: 20}}>This Crownstone is locked, so the behaviours will not be acted upon.</Text> }
             <View style={{flex:1}} />
             {ruleComponents}
             <View style={{flex:2}} />

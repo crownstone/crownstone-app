@@ -27,30 +27,39 @@ class BroadcastStateManagerClass {
       // console.log("INITIALIZING BroadcastStateManagerClass");
       this._listeners.push(core.eventBus.on("databaseChange", (data) => {
         let change = data.change;
-        if (change.changeAppSettings || change.changeDeviceData || change.deviceTrackingTokenCycled) {
-          this._reloadDevicePreferences();
+        let reloadActiveSphereUpdate = false;
+        let reloadDevicePreferences  = false;
+
+        if (change.changeAppSettings || change.changeDeviceData || change.deviceTrackingTokenCycled || change.deviceTrackingTokenTried) {
+          reloadDevicePreferences = true;
         }
         if (change.changeDeveloperData) {
+          reloadDevicePreferences  = true;
+          reloadActiveSphereUpdate = true;
           this._reloadAdvertisingState();
-          this._handleActiveSphereUpdate();
-          this._reloadDevicePreferences();
         }
 
         if (change.updateActiveSphere) {
-          this._handleActiveSphereUpdate();
+          reloadActiveSphereUpdate = true;
         }
+
+        if (reloadDevicePreferences)  { this._reloadDevicePreferences(); }
+        if (reloadActiveSphereUpdate) { this._reloadDevicePreferences(); }
       }));
 
       this._listeners.push(core.eventBus.on("enterSphere", (enteringSphereId) => {
+        LOGi.info("BroadcastStateManager: processing enter sphere", enteringSphereId)
         this._handleEnter(enteringSphereId);
         TrackingNumberManager.updateMyDeviceTrackingRegistration(enteringSphereId)
       }));
 
       this._listeners.push(core.eventBus.on("exitSphere", (exitSphereId) => {
+        LOGi.info("BroadcastStateManager: processing exit sphere");
         this._handleExitSphere(exitSphereId);
       }));
 
       this._listeners.push(core.nativeBus.on(core.nativeBus.topics.enterRoom, (data) => {// data = {region: sphereId, location: locationId}
+        LOGi.info("BroadcastStateManager: processing enter room in sphere", data.region, " location", data.location);
         this._handleEnter(data.region, data.location);
         TrackingNumberManager.updateMyDeviceTrackingRegistration(data.region);
       }));

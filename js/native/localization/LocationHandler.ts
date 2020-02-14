@@ -141,15 +141,6 @@ class LocationHandlerClass {
     // set the presence
     core.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true}});
 
-
-
-    if (sphereHasTimedOut) {
-      // trigger crownstones on enter sphere
-    }
-    else {
-      LOG.info('LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ', timeSinceLastCrownstoneWasSeen);
-    }
-
     // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
     core.eventBus.emit('enterSphere', enteringSphereId);
   }
