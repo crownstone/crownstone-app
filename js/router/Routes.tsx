@@ -1,7 +1,7 @@
 import { Navigation, Options } from "react-native-navigation";
 import { Views } from "./Views";
 import SplashScreen from "react-native-splash-screen";
-import { Platform } from "react-native";
+import { Platform, Text } from "react-native";
 import { Stacks } from "./Stacks";
 import { colors } from "../views/styles"
 import {
@@ -15,6 +15,11 @@ import { OverlayManager } from "../backgroundProcesses/OverlayManager";
 import { NavigationUtil } from "../util/NavigationUtil";
 import { IconDebug } from "../views/development/IconDebug";
 import { IconDevSelector } from "../views/development/IconDevSelector";
+import React from "react";
+
+
+import './TextFontFix';
+
 
 let viewsLoaded = false;
 

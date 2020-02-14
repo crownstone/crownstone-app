@@ -1,4 +1,5 @@
-
+Add roboto fonts from the js/fonts folder (Yes, all of them!)
+ 
 Bridge functions:
 canUseDynamicBackgroundBroadcasts which returns a boolean as a promise
 

@@ -17,6 +17,7 @@ import { LiveComponent } from "../LiveComponent";
 import { DfuUtil } from "../../util/DfuUtil";
 import { Icon } from "../components/Icon";
 import { UpdateCenter } from "../../backgroundProcesses/UpdateCenter";
+import { TrackingNumberManager } from "../../backgroundProcesses/TrackingNumberManager";
 
 export class DfuFinished extends LiveComponent<any, any> {
   static options = {
@@ -30,6 +31,11 @@ export class DfuFinished extends LiveComponent<any, any> {
     UpdateCenter.checkForFirmwareUpdates();
   }
 
+  close() {
+    NavigationUtil.dismissModal();
+    TrackingNumberManager.updateMyDeviceTrackingRegistrationInActiveSphere();
+  }
+
   getFailedCard() : interviewCards {
     return {
       start: {
@@ -39,7 +45,7 @@ export class DfuFinished extends LiveComponent<any, any> {
         textColor: colors.white.hex,
         backgroundImage:  require('../../images/backgrounds/upgradeBackgroundFailed.png'),
         options: [
-          {label: lang("Not_right_now___"), onSelect: () => { NavigationUtil.dismissModal() }},
+          {label: lang("Not_right_now___"), onSelect: () => { this.close(); }},
           {label: lang("Yes_"),     onSelect: () => { NavigationUtil.backTo("DfuScanning") }},
         ]
       },
@@ -62,7 +68,7 @@ export class DfuFinished extends LiveComponent<any, any> {
           </View>
         ),
         options: [
-          {label: lang("Thats_enough_for_now___"), onSelect: () => { NavigationUtil.dismissModal()}},
+          {label: lang("Thats_enough_for_now___"), onSelect: () => { this.close(); }},
           {label: lang("Lets_do_the_rest_of_them_"), onSelect: () => {  NavigationUtil.backTo("DfuScanning") }},
         ]
       },
@@ -83,7 +89,7 @@ export class DfuFinished extends LiveComponent<any, any> {
           </View>
         ),
         options: [
-          {label: lang("Great_"), onSelect: () => { NavigationUtil.dismissModal() }},
+          {label: lang("Great_"), onSelect: () => { this.close(); }},
         ]
       },
     }

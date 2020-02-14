@@ -218,15 +218,15 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
         let edgeId = stoneId > nodeId ? stoneId + nodeId : nodeId + stoneId;
         let existing = connections[edgeId];
         if (
-            existing === undefined ||
-            existing.timestamp < MESH_TIMEOUT ||
-            existing.timestamp < stone.mesh[nodeId].timestamp ||
-            existing.rssi > stone.mesh[nodeId].rssi
+            existing           === undefined    ||
+            existing.timestamp  <  MESH_TIMEOUT ||
+            existing.timestamp  <  stone.mesh[nodeId].timestamp ||
+            existing.rssi       >  stone.mesh[nodeId].rssi
            ) {
           connections[edgeId] = {
-            id: edgeId,
+            id:   edgeId,
             from: stoneId,
-            to: nodeId,
+            to:   nodeId,
             rssi: stone.mesh[nodeId].rssi,
             timestamp: stone.mesh[nodeId].timestamp
           };
