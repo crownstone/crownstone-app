@@ -27,7 +27,7 @@ export class RoomAdd extends LiveComponent<any, any> {
     topBar: { visible: false, height: 0 }
   };
 
-  _roomAddCore = null;
+  _roomAddCoreReference = null;
 
   render() {
     return (
@@ -35,9 +35,16 @@ export class RoomAdd extends LiveComponent<any, any> {
         <TopbarImitation
           leftStyle={{color: colors.black.hex}}
           left={Platform.OS === 'android' ? null : "Back"}
-          leftAction={() => { if (this._roomAddCore.canGoBack() === false) { NavigationUtil.dismissModal(); }}}
+          leftAction={() => { if (this._roomAddCoreReference.canGoBack() === false) {
+            if (this.props.isModal !== false) {
+              NavigationUtil.dismissModal();
+            }
+            else {
+              NavigationUtil.back();
+            }
+          }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
-        <RoomAddCore {...this.props} ref={(roomAddCore) => { this._roomAddCore = roomAddCore; }} />
+        <RoomAddCore {...this.props} ref={(roomAddCore) => { this._roomAddCoreReference = roomAddCore; }} />
       </Background>
     );
   }

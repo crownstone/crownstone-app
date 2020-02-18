@@ -29,7 +29,13 @@ import { delay } from "../../util/Util";
 import { BleUtil } from "../../util/BleUtil";
 import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
 
-export class SetupCrownstone extends LiveComponent<any, any> {
+export class SetupCrownstone extends LiveComponent<{
+  restoration: boolean,
+  sphereId: string,
+  setupStone: any,
+  componentId: any,
+  unownedVerified: boolean
+}, any> {
   static options(props) {
     let title = props.restoration ? lang("Restoring_Crownstone") : lang("New_Crownstone")
     return TopBarUtil.getOptions({title: title});
@@ -84,6 +90,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
 
   _startSetup() {
     this._disableBackButton();
+    this.abort = false;
 
     const performSetup = () => {
       SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId)
@@ -148,6 +155,7 @@ export class SetupCrownstone extends LiveComponent<any, any> {
           this._interview.setLockedCard("problemBle");
         })
     };
+
 
     if (this.props.unownedVerified) {
       let resetPromise = () => {
@@ -256,7 +264,12 @@ export class SetupCrownstone extends LiveComponent<any, any> {
         onSelect: (result) => {
           this.newCrownstoneState.setupFinished = false;
           this.newCrownstoneState.configFinished = false;
-          if (!this.newCrownstoneState.name) {
+          if (this.props.restoration) {
+            this._startSetup();
+            this.newCrownstoneState.configFinished = true;
+            return this._interview.resetStackToCard("start");
+          }
+          else if (!this.newCrownstoneState.name) {
             return this._interview.resetStackToCard("start");
           }
           else if (!this.newCrownstoneState.icon) {

@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 
 import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
-import {LOG, LOGe} from '../../logging/Log'
+import { LOG, LOGe, LOGi } from "../../logging/Log";
 import { CLOUD }                 from '../../cloud/cloudAPI'
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -198,9 +198,17 @@ export class SetupHelper {
             core.eventBus.emit("useTriggers");
             core.eventBus.emit("setupCancelled", this.handle);
 
+            let promises = [];
+
             // clean up in the cloud after failed setup.
             if (this.stoneIdInCloud !== undefined && this.stoneWasAlreadyInCloud === false) {
-              CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOGe.info("COULD NOT CLEAN UP AFTER SETUP", err)})
+              LOGi.info("SetupHelper: Attempt cleaning up after failed setup....")
+              promises.push(CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud)
+                .then(() => { LOGi.info("SetupHelper: Successfully cleaned up after failed setup.") })
+                .catch((cloudErr) => { LOGe.info("SetupHelper: COULD NOT CLEAN UP AFTER SETUP", cloudErr); }))
+            }
+            else {
+              LOGi.info("SetupHelper: Not cleaning up after failed setup. StoneIdInCLoud", this.stoneIdInCloud, "stonewasAlreadyInCloud", this.stoneWasAlreadyInCloud)
             }
 
             if (err == "INVALID_SESSION_DATA" && silent === false) {
@@ -216,7 +224,12 @@ export class SetupHelper {
 
             LOGe.info("SetupHelper: Error during setup phase:", err);
 
-            BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
+            promises.push(BluenetPromiseWrapper.phoneDisconnect().catch(() => {}));
+
+            return Promise.all(promises).then(() => { throw err; });
+          })
+          .catch((err) => {
+             reject(err)
           })
       });
     };
