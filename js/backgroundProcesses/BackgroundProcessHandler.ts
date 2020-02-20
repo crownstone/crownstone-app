@@ -262,9 +262,8 @@ class BackgroundProcessHandlerClass {
   startEventTriggers() {
     // listen to the state of the app: if it is in the foreground or background
     AppState.addEventListener('change', (appState) => {
-      core.eventBus.emit("AppStateChange", appState)
-
       LOG.info("App State Change", appState);
+
       Sentry.captureBreadcrumb({
         category: 'AppState',
         data: {
@@ -272,6 +271,7 @@ class BackgroundProcessHandlerClass {
         }
       });
 
+      core.eventBus.emit("AppStateChange", appState)
       this._applyAppStateOnScanning(appState);
       this._applyAppStateOnCaching(appState);
     });

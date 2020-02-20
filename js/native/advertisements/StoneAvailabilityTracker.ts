@@ -6,6 +6,7 @@ import { LOGi } from "../../logging/Log";
 import { LocationHandler } from "../localization/LocationHandler";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import { DataUtil } from "../../util/DataUtil";
+import { xUtil } from "../../util/StandAloneUtil";
 
 let RSSI_TIMEOUT = 5000;
 const RSSI_THRESHOLD = 3;
@@ -15,7 +16,17 @@ const TRIGGER_ID = "StoneAvailabilityTracker"
 interface triggerFormat {
   [key: string]: {
     [key: string] : {
-      [key: string] : { rssiRequirement: number, action: (stoneId: string) => void, timesToTrigger: number, timesTriggered: number, triggeredIds: map }[]
+      [key: string] : {
+        [key: string] : {
+          rssiRequirement: number,
+          action: (stoneId: string) => void,
+          timesToTrigger: number,
+          timesTriggered: number,
+          triggeredIds: map,
+          timeout?:number,
+          promise?: {resolve: (stoneId) => void, reject: (err) => void}
+        }
+      }
     }
   }
 }
@@ -304,9 +315,10 @@ class StoneAvailabilityTrackerClass {
   setTrigger(sphereId, stoneId, ownerId, action: (stoneId: string) => void, rssi= -100) {
     if (!this.triggers[sphereId])                   { this.triggers[sphereId] = {}; }
     if (!this.triggers[sphereId][stoneId])          { this.triggers[sphereId][stoneId] = {}; }
-    if (!this.triggers[sphereId][stoneId][ownerId]) { this.triggers[sphereId][stoneId][ownerId] = []; }
+    if (!this.triggers[sphereId][stoneId][ownerId]) { this.triggers[sphereId][stoneId][ownerId] = {} }
 
-    this.triggers[sphereId][stoneId][ownerId].push({rssiRequirement: rssi, action: action, triggeredIds: {}, timesTriggered: 0, timesToTrigger: 1});
+    let uuid = xUtil.getShortUUID()
+    this.triggers[sphereId][stoneId][ownerId][uuid] = {rssiRequirement: rssi, action: action, triggeredIds: {}, timesTriggered: 0, timesToTrigger: 1};
   }
 
   /**
@@ -318,11 +330,48 @@ class StoneAvailabilityTrackerClass {
    * @param rssi
    */
   setGenericTrigger(sphereId, ownerId, action: (stoneId: string) => void, rssi= -100, amount= 1) {
-    if (!this.triggers[sphereId])                   { this.triggers[sphereId] = {}; }
+    if (!this.triggers[sphereId])               { this.triggers[sphereId] = {}; }
     if (!this.triggers[sphereId]["*"])          { this.triggers[sphereId]["*"] = {}; }
-    if (!this.triggers[sphereId]["*"][ownerId]) { this.triggers[sphereId]["*"][ownerId] = []; }
+    if (!this.triggers[sphereId]["*"][ownerId]) { this.triggers[sphereId]["*"][ownerId] = {}; }
 
-    this.triggers[sphereId]["*"][ownerId].push({rssiRequirement: rssi, action: action, triggeredIds: {}, timesTriggered: 0, timesToTrigger: amount});
+    let uuid = xUtil.getShortUUID()
+    this.triggers[sphereId]["*"][ownerId][uuid] = {rssiRequirement: rssi, action: action, triggeredIds: {}, timesTriggered: 0, timesToTrigger: amount};
+  }
+  /**
+   * Will execute Action when a stone with the provided ID is seen. ID CAN be a wildcard ("*")
+   * @param sphereId
+   * @param stoneId
+   * @param ownerId
+   * @param action
+   * @param rssi
+   */
+  setGenericTriggerPromise(sphereId, ownerId, action: (stoneId: string) => void, rssi= -100, amount= 1, timeoutSeconds = 0) : Promise<string> {
+    if (!this.triggers[sphereId])               { this.triggers[sphereId] = {}; }
+    if (!this.triggers[sphereId]["*"])          { this.triggers[sphereId]["*"] = {}; }
+    if (!this.triggers[sphereId]["*"][ownerId]) { this.triggers[sphereId]["*"][ownerId] = {}; }
+
+    return new Promise((resolve, reject) => {
+      let uuid = xUtil.getShortUUID()
+
+      let clearScheduledTimeout = () => {};
+      if (timeoutSeconds  > 0) {
+        clearScheduledTimeout = Scheduler.scheduleCallback(() => {
+          if (this.triggers[sphereId]["*"][ownerId][uuid] !== undefined) {
+            reject("TIMEOUT");
+            delete this.triggers[sphereId]["*"][ownerId][uuid];
+          }
+        }, timeoutSeconds*1000);
+      }
+
+      this.triggers[sphereId]["*"][ownerId][uuid] = {
+        rssiRequirement: rssi, action: action, triggeredIds: {}, timesTriggered: 0, timesToTrigger: amount,
+        promise: {
+          resolve: (stoneId) => { clearScheduledTimeout(); resolve(stoneId) },
+          reject:  (err)     => { clearScheduledTimeout(); reject(err) }
+        }
+      };
+    })
+
   }
 
 
@@ -330,6 +379,17 @@ class StoneAvailabilityTrackerClass {
     if (!this.triggers[sphereId])                   { return; }
     if (!this.triggers[sphereId][stoneId])          { return; }
     if (!this.triggers[sphereId][stoneId][ownerId]) { return; }
+
+    let triggerKeys = Object.keys(this.triggers[sphereId][stoneId][ownerId]);
+    if (triggerKeys.length > 0) {
+      for ( let i = 0; i < triggerKeys.length; i++) {
+        let key = triggerKeys[i];
+        if (this.triggers[sphereId][stoneId][ownerId][key].promise !== undefined) {
+          this.triggers[sphereId][stoneId][ownerId][key].promise.reject("TRIGGER_CLEARED_BY_MANUAL_COMMAND");
+        }
+        delete this.triggers[sphereId][stoneId][ownerId][key];
+      }
+    }
 
     delete this.triggers[sphereId][stoneId][ownerId];
   }
@@ -355,20 +415,23 @@ class StoneAvailabilityTrackerClass {
     let ownerIds = Object.keys(this.triggers[sphereId][stoneId]);
     let todos = [];
     for (let i = 0; i < ownerIds.length; i++) {
-      let ownerActions = this.triggers[sphereId][stoneId][ownerIds[i]];
+      let ownerActions     = this.triggers[sphereId][stoneId][ownerIds[i]];
+      let ownerActionsKeys = Object.keys(this.triggers[sphereId][stoneId][ownerIds[i]]);
       // inverse walk so we can delete the elements that we match
-      for (let j = ownerActions.length - 1; j >= 0; j--) {
-        if (ownerActions[j].rssiRequirement <= rssi) {
-          todos.push(ownerActions[j]);
-          ownerActions.splice(j,1);
+      for (let j = 0; j < ownerActionsKeys.length; j++) {
+        if (ownerActions[ownerActionsKeys[j]].rssiRequirement <= rssi) {
+          todos.push(ownerActions[ownerActionsKeys[j]]);
+          delete ownerActions[ownerActionsKeys[j]];
         }
       }
     }
 
     // we now have a collection of todos that we will execute.
-    // the newest are at the bottom now, so we will execute it reversed
-    for (let i = todos.length - 1; i >= 0; i--) {
+    for (let i = 0; i < todos.length; i++) {
       todos[i].action(stoneId);
+      if (todos[i].promise) {
+        todos[i].promise.resolve(stoneId);
+      }
     }
 
   }
@@ -381,30 +444,34 @@ class StoneAvailabilityTrackerClass {
     let ownerIds = Object.keys(this.triggers[sphereId]["*"]);
     let todos = [];
     for (let i = 0; i < ownerIds.length; i++) {
-      let ownerActions = this.triggers[sphereId]["*"][ownerIds[i]];
+      let ownerActions     = this.triggers[sphereId]["*"][ownerIds[i]];
+      let ownerActionsKeys = Object.keys(this.triggers[sphereId]["*"][ownerIds[i]]);
       // inverse walk so we can delete the elements that we match
-      for (let j = ownerActions.length - 1; j >= 0; j--) {
-        if (ownerActions[j].rssiRequirement <= rssi && ownerActions[j].triggeredIds[stoneId] !== true) {
-          todos.push(ownerActions[j]);
-          ownerActions[j].timesTriggered += 1;
-          ownerActions[j].triggeredIds[stoneId] = true;
+      for (let j = 0; j < ownerActionsKeys.length; j++) {
+        if (ownerActions[ownerActionsKeys[j]].rssiRequirement <= rssi) {
+          todos.push(ownerActions[ownerActionsKeys[j]]);
+
+          ownerActions[ownerActionsKeys[j]].timesTriggered += 1;
+          ownerActions[ownerActionsKeys[j]].triggeredIds[stoneId] = true;
 
           if (ownerActions[j].timesTriggered >= ownerActions[j].timesToTrigger) {
-            ownerActions.splice(j, 1);
+            delete ownerActions[ownerActionsKeys[j]];
           }
         }
       }
     }
 
     // we now have a collection of todos that we will execute.
-    // the newest are at the bottom now, so we will execute it reversed
-    for (let i = todos.length - 1; i >= 0; i--) {
+    for (let i = 0; i < todos.length; i++) {
       todos[i].action(stoneId);
+      if (todos[i].promise) {
+        todos[i].promise.resolve(stoneId);
+      }
     }
   }
 
 
-  sendCommandToNearestCrownstones(sphereId, command : commandInterface, amount) : Promise<Promise<any>[]> {
+  sendCommandToNearestCrownstones(sphereId, command : commandInterface, amount, timeoutSeconds = 0) : Promise<Promise<any>[]> {
     return new Promise((resolve, reject) => {
       let state = core.store.getState();
       let allStoneIds = Object.keys(state.spheres[sphereId].stones);
@@ -413,12 +480,10 @@ class StoneAvailabilityTrackerClass {
       // do not try more than we have.
       amount = Math.min(allStoneIds.length, amount);
 
-      let nearestStoneIds = this.getNearestStoneIds(allStoneIds, 3, amount);
-      // send to BHC
-      let amountSet = 0;
-      nearestStoneIds.forEach((stoneId) => {
+      const handleStoneId = (stoneId) => {
         let stone = DataUtil.getStone(sphereId, stoneId);
         if (stone) {
+          // send to BHC
           promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1)
             .catch((err) => {
               if (err?.code !== "REMOVED_BECAUSE_IS_DUPLICATE") {
@@ -427,39 +492,48 @@ class StoneAvailabilityTrackerClass {
             })
           );
         }
+      }
+
+      let nearestStoneIds = this.getNearestStoneIds(allStoneIds, 2, amount);
+
+      let amountSet = 0;
+      nearestStoneIds.forEach((stoneId) => {
+        // first we immediately schedule the last few closest crownstones for handling by the BCH
+        handleStoneId(stoneId);
         amountSet+=1;
       })
 
+      // if any were set, execute.
       if (amountSet > 0) {
         BatchCommandHandler.executePriority();
       }
 
+      // the ones that have not yet been handled will be set as triggers. They will be handled as soon as they are seen
       let remainder = amount - amountSet;
       if (remainder > 0) {
-        this.setGenericTrigger(sphereId, "sendCommandToNearestCrownstones", (stoneId) => {
-          let stone = DataUtil.getStone(sphereId, stoneId);
-          if (stone) {
-            promises.push(BatchCommandHandler.loadPriority(stone, stoneId, sphereId, command, {}, 1)
-              .catch((err) => {
-                if (err?.code !== "REMOVED_BECAUSE_IS_DUPLICATE") {
-                  throw err;
-                }
-              })
-            );
-          }
+        this.setGenericTriggerPromise(sphereId, "sendCommandToNearestCrownstones", (stoneId) => {
+          handleStoneId(stoneId);
           BatchCommandHandler.executePriority();
 
           if (promises.length == amount) {
             resolve(promises);
           }
-        }, -90, remainder);
+        }, -90, remainder, timeoutSeconds)
+          .catch((err) => {
+            // if this has not been resolved quickly, reject the remaining promises
+            if (promises.length < amount) {
+              for (let i = promises.length; i < 4; i++) {
+                promises.push(Promise.reject(err));
+              }
+            }
+            resolve(promises);
+          })
       }
       else {
         resolve(promises);
       }
-    })
+    });
   }
-
 }
 
 export const StoneAvailabilityTracker = new StoneAvailabilityTrackerClass();

@@ -103,8 +103,10 @@ class TrackingNumberManagerClass {
   }
 
 
-  _generateToken() {
-    let token = Math.round(Math.random()*(1<<24));
+  _generateToken(token=null) {
+    if (token === null) {
+      token = Math.round(Math.random() * (1 << 24));
+    }
     let state = core.store.getState();
     core.store.dispatch({type:"TRY_NEW_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: token }})
     return token;
@@ -119,6 +121,7 @@ class TrackingNumberManagerClass {
 
       // connect to check availability
       let preferences = DataUtil.getDevicePreferences(sphereId);
+      let originalToken = preferences.randomDeviceToken;
       let suggestedNewRandom = this._generateToken();
 
       this._broadcastUpdateTrackedDevice(sphereId, suggestedNewRandom);
@@ -135,24 +138,31 @@ class TrackingNumberManagerClass {
           deviceToken: suggestedNewRandom,
           ttlMinutes: 120
         },
-        1)
+        1, 3)
         .then((promises: Promise<any>[]) => {
           return Promise.all(promises);
         })
-        .then((results) => {
+        .then(() => {
           // No error! store the new registered token!
           let state = core.store.getState();
           core.store.dispatch({type:"CYCLE_RANDOM_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: suggestedNewRandom}})
           this.lastTimeTokenWasCycled = new Date().valueOf();
-          LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken...")
+          LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken!")
           this.currentlyCyclingToken = false;
         })
         .catch((err) => {
-          if (err === "ERR_ALREADY_EXISTS") {
-            this._cycleMyDeviceTrackingToken(sphereId);
-          }
           LOGi.info("TrackingNumberManager: Finished Cycling the deviceRandomTrackingToken with error...", err)
           this.currentlyCyclingToken = false;
+          if (err === "ERR_ALREADY_EXISTS") {
+            LOGi.info("TrackingNumberManager: Retrying cycle of token", err)
+            this._cycleMyDeviceTrackingToken(sphereId);
+            return;
+          }
+
+          // revert to old tracking token that WAS successfully set.
+          let state = core.store.getState();
+          core.store.dispatch({type:"CYCLE_RANDOM_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { randomDeviceToken: originalToken}});
+          this._broadcastUpdateTrackedDevice(sphereId, originalToken);
         })
     }
     else {
@@ -206,7 +216,7 @@ class TrackingNumberManagerClass {
             rssiOffset: preferences.rssiOffset,
             ignoreForPresence: preferences.ignoreForBehaviour,
             tapToToggleEnabled: preferences.tapToToggleEnabled,
-            deviceToken: preferences.randomDeviceToken,
+            deviceToken: preferences.activeRandomDeviceToken, // we register the active token since this one is ALWAYS the same as the one we broadcast on the background.
             ttlMinutes: 120
           },
           2)

@@ -179,7 +179,7 @@ function getData(props, stone, active) {
           infoCallback: propsToPass.information,
           settingsCallback: () => { NavigationUtil.navigate("Ability_DimmerSettings", propsToPass); },
           activateCallback: () => { },
-          explanation: "Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so it at your own risk."
+          explanation: "Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk."
         }
       }
       return {
@@ -188,7 +188,7 @@ function getData(props, stone, active) {
         infoCallback: propsToPass.information,
         settingsCallback: () => {  },
         activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true, synced:false }}); },
-        explanation: "Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so it at your own risk."
+        explanation: "Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk."
       }
     case 'switchcraft':
       propsToPass.information = () => { NavigationUtil.navigate("Ability_SwitchcraftInformation"); };

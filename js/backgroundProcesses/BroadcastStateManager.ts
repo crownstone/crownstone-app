@@ -5,6 +5,7 @@ import { core } from "../core";
 import { LOGi } from "../logging/Log";
 import { DataUtil } from "../util/DataUtil";
 import { TrackingNumberManager } from "./TrackingNumberManager";
+import { AppState } from "react-native";
 
 
 class BroadcastStateManagerClass {
@@ -161,7 +162,7 @@ class BroadcastStateManagerClass {
     let activeSphereData = SphereUtil.getActiveSphere(state);
 
     if (amountOfPresentSpheres === 0) {
-      LOGi.broadcast("Stopping the broadcasting. Leaving: ",state.spheres[sphereId].config.name);
+      LOGi.info("Stopping the broadcasting. Leaving: ",state.spheres[sphereId].config.name);
       this._updateLocationState(activeSphereData.sphereId);
       return this._stopAdvertising();
     }
@@ -233,10 +234,10 @@ class BroadcastStateManagerClass {
       locationUID  = location ? location.config.uid : 0;
       sphereUID    = sphere.config.uid;
 
-      LOGi.broadcast("Setting Sphere As Present:", sphere.config.name);
+      LOGi.info("Setting Sphere As Present:", sphere.config.name);
     }
     else {
-      LOGi.broadcast("Setting Custom Sphere As Present");
+      LOGi.info("Setting Custom Sphere As Present");
     }
     this._sphereIdInLocationState = sphereId;
     this._locationUidInLocationState = locationUID;
@@ -251,7 +252,7 @@ class BroadcastStateManagerClass {
   _startAdvertising() {
     BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
-        LOGi.broadcast("Bluenet.startAdvertising()");
+        LOGi.info("Bluenet.startAdvertising()");
         this._advertising = true;
         Bluenet.startAdvertising();
       });
@@ -260,7 +261,7 @@ class BroadcastStateManagerClass {
   _stopAdvertising() {
     BluenetPromiseWrapper.isPeripheralReady()
       .then(() => {
-        LOGi.broadcast("Bluenet.stopAdvertising()");
+        LOGi.info("Bluenet.stopAdvertising()");
         this._sphereIdInLocationState = null;
         this._advertising = false;
         Bluenet.stopAdvertising();
@@ -269,7 +270,17 @@ class BroadcastStateManagerClass {
 
 
   _reloadDevicePreferences() {
-    let preferences = DataUtil.getDevicePreferences()
+    let preferences = DataUtil.getDevicePreferences();
+    LOGi.info("Bluenet.setDevicePreferences", preferences.rssiOffset, preferences.tapToToggleEnabled, preferences.ignoreForBehaviour, preferences.randomDeviceToken, preferences.activeRandomDeviceToken, AppState.currentState);
+
+
+    // if the active token is not the same as the random token and we have the possibility to change it (app is active (on screen))
+    // we update the active token. This active token is used to always keep track of the last token that could have been broadcast in the background.
+    if (preferences.activeRandomDeviceToken !== preferences.randomDeviceToken && AppState.currentState === "active") {
+      let state = core.store.getState();
+      core.store.dispatch({type:"SET_ACTIVE_RANDOM_DEVICE_TOKEN", deviceId: DataUtil.getDeviceIdFromState(state, state.user.appIdentifier), data: { activeRandomDeviceToken: preferences.randomDeviceToken }});
+    }
+
     Bluenet.setDevicePreferences(
       preferences.rssiOffset,
       preferences.tapToToggleEnabled,

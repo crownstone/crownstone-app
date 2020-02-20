@@ -250,6 +250,7 @@ lang("_Incorrect_Email_or_Passw_body"),
             <View style={{height:10, width:screenWidth}} />
             <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
               <TextEditInput
+                autoCapitalize={"none"}
                 ref={(input) => { this.passwordInputRef = input; }}
                 style={{width: 0.8*screenWidth, padding:10}}
                 secureTextEntry={Platform.OS === 'android' ? true : this.state.passwordSecureDisplay  }

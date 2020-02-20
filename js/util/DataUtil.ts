@@ -486,12 +486,14 @@ export const DataUtil = {
     // get device for rssi offset
     let device = DataUtil.getDevice(state);
     let randomDeviceToken = 0;
+    let activeRandomDeviceToken = 0;
     let randomDeviceTokenValidated = false;
     if (device) {
       if (sphereId) {
         trackingNumber = device.trackingNumbers && device.trackingNumbers[sphereId] || 0;
       }
-      randomDeviceToken = device.randomDeviceToken;
+      randomDeviceToken          = device.randomDeviceToken;
+      activeRandomDeviceToken    = device.activeRandomDeviceToken || 0;
       randomDeviceTokenValidated = device.randomDeviceTokenValidated;
       if (!randomDeviceToken) {
         randomDeviceTokenValidated = false;
@@ -509,6 +511,7 @@ export const DataUtil = {
       tapToToggleEnabled,
       ignoreForBehaviour,
       randomDeviceToken,
+      activeRandomDeviceToken,
       randomDeviceTokenValidated
     }
   }

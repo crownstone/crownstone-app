@@ -1,7 +1,7 @@
 import { NotificationParser } from "../notifications/NotificationParser";
 
 const PushNotification = require('react-native-push-notification');
-import { Platform } from 'react-native';
+import { Platform, PushNotificationIOS } from "react-native";
 import { LOG, LOGd, LOGe, LOGi, LOGw } from "../logging/Log";
 import { Util } from "../util/Util";
 import { CLOUD } from "../cloud/cloudAPI";
@@ -104,6 +104,7 @@ class NotificationHandlerClass {
         }
         else {
           NotificationParser.handle(notification.data)
+          notification.finish(PushNotificationIOS.FetchResult.NoData)
         }
       },
 

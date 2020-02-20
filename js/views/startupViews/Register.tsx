@@ -225,6 +225,7 @@ export class Register extends LiveComponent<any, any> {
               />
               <InterviewTextInput
                 autofocus={false}
+                autoCapitalize={'none'}
                 placeholder={lang("Password")}
                 keyboardType={ lang("ascii_capable")}
                 focussed={this.focussingIndex === 1 || undefined}

@@ -303,7 +303,8 @@ function checkAction(action, affectedIds) {
       eventStatus['deviceTrackingTokenCycled'] = affectedIds; break;
     case 'TRY_NEW_DEVICE_TOKEN':
       eventStatus['deviceTrackingTokenTried'] = affectedIds; break;
-
+    case "SET_ACTIVE_RANDOM_DEVICE_TOKEN":
+      break;
     default:
       LOGw.store("UNKNOWN ACTION TYPE:", action);
   }

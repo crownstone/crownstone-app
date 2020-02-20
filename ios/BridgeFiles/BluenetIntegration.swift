@@ -692,13 +692,13 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   @objc func setLocationState(_ sphereUID: NSNumber, locationId: NSNumber, profileId: NSNumber, deviceToken: NSNumber, referenceId: String) {
-    print("BluenetBridge: Called setLocationState \(sphereUID) \(locationId) \(profileId) referenceId:\(referenceId)" )
+    LOGGER.info("BluenetBridge: Called setLocationState \(sphereUID) \(locationId) \(profileId) referenceId:\(referenceId)" )
     GLOBAL_BLUENET.bluenet.setLocationState(sphereUID: sphereUID.uint8Value, locationId: locationId.uint8Value, profileIndex: profileId.uint8Value, deviceToken: deviceToken.uint8Value, referenceId: referenceId)
     GLOBAL_BLUENET.watchStateManager.loadState("locationState", ["sphereUID":sphereUID, "locationId":locationId, "profileIndex": profileId, "deviceToken": deviceToken, "referenceId": referenceId])
   }
   
   @objc func setDevicePreferences(_ rssiOffset: NSNumber, tapToToggle: NSNumber, ignoreForBehaviour: NSNumber, randomDeviceToken: NSNumber) {
-    print("BluenetBridge: Called setDevicePreferences \(rssiOffset) \(tapToToggle) \(ignoreForBehaviour) \(randomDeviceToken)")
+    LOGGER.info("BluenetBridge: Called setDevicePreferences \(rssiOffset) \(tapToToggle) \(ignoreForBehaviour) \(randomDeviceToken)")
     GLOBAL_BLUENET.bluenet.setDevicePreferences(
       rssiOffset: rssiOffset.int8Value,
       tapToToggle: tapToToggle.boolValue,
