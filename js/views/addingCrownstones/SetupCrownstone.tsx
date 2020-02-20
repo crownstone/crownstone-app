@@ -28,6 +28,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { delay } from "../../util/Util";
 import { BleUtil } from "../../util/BleUtil";
 import { getRandomDeviceIcon } from "../deviceViews/DeviceIconSelection";
+import { Scheduler } from "../../logic/Scheduler";
 
 export class SetupCrownstone extends LiveComponent<{
   restoration: boolean,
@@ -94,7 +95,9 @@ export class SetupCrownstone extends LiveComponent<{
 
     const performSetup = () => {
       SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId)
+        .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); } throw err;})
+        .catch((err) => { if (this.abort === false) { return Scheduler.delay(2000) } throw err; })
         .catch((err) => { if (this.abort === false) { return SetupStateHandler.setupStone(this.props.setupStone.handle, this.props.sphereId); } throw err;})
         .then((newStoneData : any) => {
           this.newCrownstoneState.newStoneId    = newStoneData.id;

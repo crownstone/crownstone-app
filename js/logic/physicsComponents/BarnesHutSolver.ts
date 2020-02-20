@@ -215,7 +215,13 @@ class BarnesHutSolver {
     for (let i = 0; i < nodeCount; i++) {
       node = nodes[nodeIndices[i]];
       if (node.mass > 0) {
-        this._placeInTree(barnesHutTree.root, node);
+        let iterations = 0;
+        let base = barnesHutTree.root;
+        while (iterations < 5) {
+          base = this._placeInTree(base, node);
+          if (base === undefined) { break; }
+          iterations += 1;
+        }
       }
     }
 
@@ -261,21 +267,20 @@ class BarnesHutSolver {
       // update the mass of the branch.
       this._updateBranchMass(parentBranch, node);
     }
-
     if (parentBranch.children.NW.range.maxX > node.x) { // in NW or SW
       if (parentBranch.children.NW.range.maxY > node.y) { // in NW
-        this._placeInRegion(parentBranch, node, "NW");
+        return this._placeInRegion(parentBranch, node, "NW");
       }
       else { // in SW
-        this._placeInRegion(parentBranch, node, "SW");
+        return this._placeInRegion(parentBranch, node, "SW");
       }
     }
     else { // in NE or SE
       if (parentBranch.children.NW.range.maxY > node.y) { // in NE
-        this._placeInRegion(parentBranch, node, "NE");
+        return this._placeInRegion(parentBranch, node, "NE");
       }
       else { // in SE
-        this._placeInRegion(parentBranch, node, "SE");
+        return this._placeInRegion(parentBranch, node, "SE");
       }
     }
   }
@@ -296,21 +301,22 @@ class BarnesHutSolver {
         parentBranch.children[region].childrenCount = 1;
         this._updateBranchMass(parentBranch.children[region], node);
         break;
-      case 1: // convert into children
-              // if there are two nodes exactly overlapping (on init, on opening of cluster etc.)
-              // we move one node a little bit and we do not put it in the tree.
+      case 1:
+        // convert into children
+        // if there are two nodes exactly overlapping (on init, on opening of cluster etc.)
+        // we move one node a little bit and we do not put it in the tree.
         if (parentBranch.children[region].children.data.x === node.x &&
-          parentBranch.children[region].children.data.y === node.y) {
+            parentBranch.children[region].children.data.y === node.y) {
           node.x += this.seededRandom();
           node.y += this.seededRandom();
         }
         else {
           this._splitBranch(parentBranch.children[region]);
-          this._placeInTree(parentBranch.children[region], node);
+          return parentBranch.children[region];
         }
         break;
       case 4: // place in branch
-        this._placeInTree(parentBranch.children[region], node);
+        return parentBranch.children[region];
         break;
     }
   }
@@ -324,7 +330,7 @@ class BarnesHutSolver {
    * @private
    */
   _splitBranch(parentBranch) {
-    // if the branch is shaded with a node, replace the node in the new subset.
+    // if the branch is shared with a node, replace the node in the new subset.
     let containedNode = null;
     if (parentBranch.childrenCount === 1) {
       containedNode = parentBranch.children.data;
@@ -340,7 +346,13 @@ class BarnesHutSolver {
     this._insertRegion(parentBranch, "SE");
 
     if (containedNode != null) {
-      this._placeInTree(parentBranch, containedNode);
+      let iterations = 0;
+      let base = parentBranch;
+      while (iterations < 5) {
+        base = this._placeInTree(base, containedNode);
+        if (base === undefined) { break; }
+        iterations += 1;
+      }
     }
   }
 

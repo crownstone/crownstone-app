@@ -1,4 +1,4 @@
-import { Alert} from 'react-native';
+import { Alert, AppState } from "react-native";
 import { DISABLE_NATIVE } from '../../ExternalConfig'
 import { LOGi }      from '../../logging/Log'
 import { Bluenet }        from './Bluenet'
@@ -24,7 +24,7 @@ export const BluenetPromise : any = function(functionName) {
       let bluenetArguments = [];
       let promiseResolver = (result) => {
         if (result.error === true) {
-          LOGi.bch("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id);
+          LOGi.bch("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id, "AppState:", AppState.currentState);
           Sentry.captureBreadcrumb({
             category: 'ble',
             data: {
@@ -37,7 +37,7 @@ export const BluenetPromise : any = function(functionName) {
           reject(result.data);
         }
         else {
-			LOGi.bch("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id);
+			LOGi.bch("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
           Sentry.captureBreadcrumb({
             category: 'ble',
             data: {
@@ -55,7 +55,7 @@ export const BluenetPromise : any = function(functionName) {
         bluenetArguments.push(arguments[i])
       }
 
-      LOGi.bch("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id);
+      LOGi.bch("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments, "for ID:", id, "AppState:", AppState.currentState);
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);

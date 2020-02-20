@@ -17,7 +17,6 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import {colors, } from '../styles'
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
-import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";

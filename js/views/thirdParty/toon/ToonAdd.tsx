@@ -225,7 +225,7 @@ export class ToonAdd extends LiveComponent<any, any> {
     else {
       return (
         <TouchableOpacity onPress={() => {
-          Linking.openURL('https://api.toon.eu/authorize?response_type=code&client_id=' + toonConfig.clientId).catch(() => {})
+          Linking.openURL('https://api.toon.eu/authorize?response_type=code&client_id=' + toonConfig.clientId + "&tenant_id=eneco&redirect_uri=https://my.crownstone.rocks/callbackURL").catch(() => {})
         }} style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}>
           <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Connect_with_Toon_") }</Text>
         </TouchableOpacity>
