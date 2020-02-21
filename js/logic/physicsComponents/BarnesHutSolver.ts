@@ -175,6 +175,7 @@ class BarnesHutSolver {
         }
       }
     }
+
     // make the range a square
     let sizeDiff = Math.abs(maxX - minX) - Math.abs(maxY - minY); // difference between X and Y
     if (sizeDiff > 0) {
@@ -205,7 +206,7 @@ class BarnesHutSolver {
         calcSize: 1 / rootSize,
         children: {data: null},
         maxWidth: 0,
-        level: 0,
+        level:    0,
         childrenCount: 4
       }
     };

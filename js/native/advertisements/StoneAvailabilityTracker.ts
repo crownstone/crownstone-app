@@ -335,7 +335,7 @@ class StoneAvailabilityTrackerClass {
     if (!this.triggers[sphereId]["*"][ownerId]) { this.triggers[sphereId]["*"][ownerId] = {}; }
 
     let uuid = xUtil.getShortUUID()
-    this.triggers[sphereId]["*"][ownerId][uuid] = {rssiRequirement: rssi, action: action, triggeredIds: {}, timesTriggered: 0, timesToTrigger: amount};
+    this.triggers[sphereId]["*"][ownerId][uuid] = { rssiRequirement: rssi, action: action, triggeredIds: {}, timesTriggered: 0, timesToTrigger: amount };
   }
   /**
    * Will execute Action when a stone with the provided ID is seen. ID CAN be a wildcard ("*")
@@ -448,13 +448,14 @@ class StoneAvailabilityTrackerClass {
       let ownerActionsKeys = Object.keys(this.triggers[sphereId]["*"][ownerIds[i]]);
       // inverse walk so we can delete the elements that we match
       for (let j = 0; j < ownerActionsKeys.length; j++) {
-        if (ownerActions[ownerActionsKeys[j]].rssiRequirement <= rssi) {
-          todos.push(ownerActions[ownerActionsKeys[j]]);
+        let actionPayload = ownerActions[ownerActionsKeys[j]];
+        if (actionPayload.rssiRequirement <= rssi) {
+          todos.push(actionPayload);
 
-          ownerActions[ownerActionsKeys[j]].timesTriggered += 1;
-          ownerActions[ownerActionsKeys[j]].triggeredIds[stoneId] = true;
+          actionPayload.timesTriggered += 1;
+          actionPayload.triggeredIds[stoneId] = true;
 
-          if (ownerActions[j].timesTriggered >= ownerActions[j].timesToTrigger) {
+          if (actionPayload.timesTriggered >= actionPayload.timesToTrigger) {
             delete ownerActions[ownerActionsKeys[j]];
           }
         }
