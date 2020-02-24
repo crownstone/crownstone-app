@@ -255,11 +255,11 @@ class StoneDataSyncerClass {
           }
         });
 
-      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'setTapToToggleThresholdOffset', rssiOffset: ability.rssiOffset}, {}, 2)
+      BatchCommandHandler.load(stone, stoneId, sphereId,{commandName:'setTapToToggleThresholdOffset', rssiOffset: ability.rssiOffsetTarget}, {}, 2)
         .then(() => {
-          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle offset", sphereId, stoneId);
+          LOGi.info("StoneDataSyncer: Successfully synced ability trigger for tap2toggle offset", sphereId, stoneId, ability.rssiOffsetTarget);
           let actions = [];
-          actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data: { rssiOffset: ability.rssiOffset}});
+          actions.push({type: "UPDATE_ABILITY_TAP_TO_TOGGLE",         sphereId: sphereId, stoneId: stoneId, data: { rssiOffset: ability.rssiOffsetTarget}});
           actions.push({type: "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
           core.store.batchDispatch(actions);
         })

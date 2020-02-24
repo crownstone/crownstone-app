@@ -161,7 +161,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
   }
 
   getIcon() {
-    let icon = core.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
+    let icon = core.store.getState()?.spheres[this.props.sphereId]?.locations[this.props.locationId]?.config?.icon || null;
     return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
 
   }

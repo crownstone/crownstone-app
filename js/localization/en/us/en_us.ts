@@ -1270,6 +1270,10 @@ export default {
     _Youre_not_in_the_Sphere__left:      function() { return "OK" },
     Edit:                                function() { return "Edit" },
     Train:                               function() { return "Train" },
+    _Retrain_Room__Only_do_th_header:    function() { return "Retrain Room" },
+    _Retrain_Room__Only_do_th_body:      function() { return "Only do this if you experience issues with the indoor localization." },
+    _Retrain_Room__Only_do_th_left:      function() { return "Cancel" },
+    _Retrain_Room__Only_do_th_right:     function() { return "OK" },
   },
   RoomTraining:{
     __filename: "../js/views/roomViews/RoomTraining.tsx",

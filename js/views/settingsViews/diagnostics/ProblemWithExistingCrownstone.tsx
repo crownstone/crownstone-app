@@ -897,7 +897,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           labels={[
             lang("The_app_says_Searching___"),
             lang("I_cant_get_it_to_switch_"),
-            lang("It_is_not_in_the_mesh_"),
+            // lang("It_is_not_in_the_mesh_"),
             lang("It_only_switches_when_Im_"),
             lang("Its_behaviour_is_weird_"),
             lang("Other___")
@@ -905,7 +905,7 @@ export class ProblemWithExistingCrownstone extends Component<any, any> {
           pressHandlers={[
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'searching'      }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'never_switches' }); }); },
-            () => { this._changeContent(() => { this._runExistingCrownstoneTests(true); this.setState({ crownstoneProblemType: 'not_in_mesh' }); }); },
+            // () => { this._changeContent(() => { this._runExistingCrownstoneTests(true); this.setState({ crownstoneProblemType: 'not_in_mesh' }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'only_switches_when_near' }); }); },
             () => { this._changeContent(() => { this.setState({ existingTestsFinished: true, crownstoneProblemType: 'behaviour_is_weird' }); }); },
             () => { this._changeContent(() => { this._runExistingCrownstoneTests(); this.setState({ crownstoneProblemType: 'other' }); }); },
