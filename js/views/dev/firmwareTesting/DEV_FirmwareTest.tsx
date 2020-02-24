@@ -206,7 +206,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
     const store = core.store;
     let state = store.getState();
 
-    let sphereName = DevAppState.name
+    let sphereName = DevAppState.name;
     if (state.spheres[state.devApp.sphereUsedForSetup] !== undefined) {
       sphereName = state.spheres[state.devApp.sphereUsedForSetup].config.name
     }

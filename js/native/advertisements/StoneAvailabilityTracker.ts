@@ -2,7 +2,7 @@ import { core } from "../../core";
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED } from "../../ExternalConfig";
 import { Scheduler } from "../../logic/Scheduler";
 import { DfuStateHandler } from "../firmware/DfuStateHandler";
-import { LOGi } from "../../logging/Log";
+import { LOGd, LOGi, LOGv } from "../../logging/Log";
 import { LocationHandler } from "../localization/LocationHandler";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import { DataUtil } from "../../util/DataUtil";
@@ -150,13 +150,17 @@ class StoneAvailabilityTrackerClass {
   }
 
   _update(data) {
+    LOGd.native("StoneAvailabilityTracker: Updating data", data);
     if (this.sphereLog[data.sphereId] === undefined) {
+      LOGv.native("StoneAvailabilityTracker: Creating Sphere Log field for this sphere");
       this.sphereLog[data.sphereId] = {};
     }
 
     let registerStoneId = (stoneId, sphereId, rssi) => {
+      LOGv.native("StoneAvailabilityTracker: registerStoneId stoneId, sphereId, rssi", stoneId, sphereId, rssi);
       if (this.log[stoneId] === undefined) {
-        this.log[stoneId] = {t: null, rssi: null, sphereId: sphereId, lastNotifiedRssi: rssi, handle: data.handle || null };
+        LOGd.native("StoneAvailabilityTracker: registerStoneId storing in LOG stoneId, sphereId, rssi", stoneId, sphereId, rssi);
+        this.log[stoneId] = {t: null, rssi: data.rssi, sphereId: sphereId, lastNotifiedRssi: rssi, handle: data.handle || null };
         // new Crownstone detected this run!
         let stoneIds  = {};
         let sphereIds = {};
@@ -188,6 +192,7 @@ class StoneAvailabilityTrackerClass {
     this.sphereLog[data.sphereId][data.stoneId].rssi = newRSSI
 
     if (data.handle) {
+      LOGv.native("StoneAvailabilityTracker: Storing data in logs");
       this.log[data.stoneId].handle = data.handle;
       this.sphereLog[data.sphereId][data.stoneId].rssi = data.handle;
     }
@@ -195,6 +200,8 @@ class StoneAvailabilityTrackerClass {
     if (Math.abs(newRSSI - prevRSSI) > 3*RSSI_THRESHOLD) {
       core.eventBus.emit("rssiChange", {stoneId: data.stoneId, sphereId: data.sphereId, rssi:data.rssi}); // Major change in RSSI
     }
+
+    LOGv.native("StoneAvailabilityTracker: Resulting logs after update for this stone:", this.log[data.stoneId], this.sphereLog[data.sphereId][data.stoneId]);
 
     this.handleTriggers(data.sphereId, data.stoneId, data.rssi);
   }

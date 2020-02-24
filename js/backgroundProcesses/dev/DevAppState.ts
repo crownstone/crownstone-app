@@ -1,7 +1,9 @@
-import { xUtil } from "../../util/StandAloneUtil";
 import { EncryptionManager } from "../../native/libInterface/Encryption";
+import { BroadcastStateManager } from "../BroadcastStateManager";
+import { Bluenet } from "../../native/libInterface/Bluenet";
 
-export const TESTING_SPHERE_NAME = "Dev app Sphere"
+export const TESTING_SPHERE_NAME = "Dev app Sphere";
+export const TESTING_SPHERE_ID = "DEV_APP_SPHERE_ID";
 
 class DevAppStateClass {
 
@@ -25,7 +27,7 @@ class DevAppStateClass {
     if (this.initialized === false) {
       this.initialized = true;
 
-      this.sphereId = "DEV_APP_SPHERE_ID";
+      this.sphereId = TESTING_SPHERE_ID;
 
       this.name = TESTING_SPHERE_NAME;
       this.iBeaconUUID = "1843423e-e175-4af0-a2e4-31e32f729a8a";
@@ -52,6 +54,18 @@ class DevAppStateClass {
 
       EncryptionManager.clearAdditionalKeysets();
       EncryptionManager.loadAdditionalKeyset(devKeySet);
+
+
+      let originalMethod = BroadcastStateManager._updateLocationState;
+
+      BroadcastStateManager._updateLocationState = function(sphereId, locationId = null) {
+        if (sphereId === TESTING_SPHERE_ID) {
+          Bluenet.setLocationState(1, 0, 0, Math.floor(Math.random()*255 ), TESTING_SPHERE_ID);
+        }
+        else {
+          originalMethod.call(BroadcastStateManager, [sphereId, locationId]);
+        }
+      }.bind(BroadcastStateManager);
     }
   }
 

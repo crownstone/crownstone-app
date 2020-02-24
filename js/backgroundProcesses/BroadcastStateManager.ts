@@ -209,8 +209,6 @@ class BroadcastStateManagerClass {
       }
     }
 
-
-
     //   this index is made of 2 bits of deviceUID, 1 bit of wearable true/false and 5 bits of userIndex
     return (userIndex % 32) + (deviceUID % 4 << 6);
   }
@@ -242,8 +240,10 @@ class BroadcastStateManagerClass {
     this._sphereIdInLocationState = sphereId;
     this._locationUidInLocationState = locationUID;
 
+    LOGi.info("BroadcastStateManager: Setting Location State", "sphereUID", sphereUID, "locationUID", locationUID, "profileId", profileId, "deviceUID", deviceUID, "sphereId", sphereId)
     Bluenet.setLocationState(sphereUID, locationUID, profileId, deviceUID, sphereId);
   }
+
 
   _reloadAdvertisingState() {
     this._startAdvertising();
