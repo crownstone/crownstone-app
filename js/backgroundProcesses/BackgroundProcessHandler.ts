@@ -409,7 +409,7 @@ class BackgroundProcessHandlerClass {
       let healthyDatabase = DataUtil.verifyDatabase(true);
       if (!healthyDatabase) {
         Alert.alert("Something went wrong...","I have identified a problem with the Sphere on your phone... I'll have to redownload it from the Cloud to fix this.", [{text:'OK', onPress: () => {
-            AppUtil.resetDatabase(core.store, core.eventBus);
+            AppUtil.resetDatabase();
           }}], {cancelable:false});
         return;
       }

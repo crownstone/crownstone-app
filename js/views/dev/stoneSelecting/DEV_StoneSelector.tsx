@@ -8,7 +8,7 @@ import {
   View,
   Text,
   Platform,
-  TextInput
+  TextInput, Alert
 } from "react-native";
 import { NativeBus } from "../../../native/libInterface/NativeBus";
 import { Bluenet } from "../../../native/libInterface/Bluenet";
@@ -25,6 +25,9 @@ import { StoneSelectorDataContainer } from "./DEV_StoneSelectorData";
 import { CrownstoneEntry, FilterButton, filterState } from "./DEV_SelectionComponents";
 import { DEV_SelectionFilter } from "./DEV_SelectionFilter";
 import Slider from "@react-native-community/slider";
+import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
+import { BleUtil } from "../../../util/BleUtil";
+import { AppUtil } from "../../../util/AppUtil";
 
 let smallText : TextStyle = { fontSize:12, paddingLeft:10, paddingRight:10};
 
@@ -56,6 +59,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
       showHandleFilter: false,
       HFscanning: false
     };
+
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -76,12 +80,24 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
     }
   }
 
+
   componentDidMount() {
     if (StoneSelectorDataContainer.started === false) {
       StoneSelectorDataContainer.started = true;
       this.startScanning();
       this.refresh();
     }
+    BackButtonHandler.override('DEV_APP_MAIN', () => {
+      Alert.alert(
+        "You MUST kill the app, not just go back.",
+        "Everything will be effed-up if you don't kill the app.",
+        [{
+          text: "OK. FINE!", onPress: () => {
+            AppUtil.quit()
+          }
+        }],
+        { cancelable: false });
+    });
   }
 
   startScanning() {
@@ -157,6 +173,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
 
   componentWillUnmount(): void {
     this.stopScanning();
+    BackButtonHandler.clearOverride('DEV_APP_MAIN');
   }
 
   update(data : crownstoneAdvertisement, type) {

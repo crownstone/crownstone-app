@@ -38,7 +38,6 @@ import { BEHAVIOUR_TYPES } from "../../../Enums";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
-import { AicoreBehaviourCore } from "./supportCode/AicoreBehaviourCore";
 
 
 let className = "DeviceSmartBehaviour";
