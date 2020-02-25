@@ -63,7 +63,7 @@ export class ReviewInitialTests extends Component<any, any> {
           <View style={{flex:1}}>
             <View style={{flex:1}} />
             <FadeInView visible={this.state.visible} delay={750}>
-              <TouchableOpacity onPress={() => { AppUtil.resetDatabase(core.store, eventBus); }} style={diagnosticStyles.buttonStyle}>
+              <TouchableOpacity onPress={() => { AppUtil.resetDatabase(); }} style={diagnosticStyles.buttonStyle}>
                 <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Restore_database") }</Text>
               </TouchableOpacity>
             </FadeInView>
