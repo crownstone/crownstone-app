@@ -44,7 +44,7 @@ export class SettingsRedownloadFromCloud extends LiveComponent<any, any> {
             <Text style={[deviceStyles.errorText,{color:colors.menuBackground.hex}]}>{ lang("To_restore_your_local_dat") }</Text>
             <View style={{flex:1}} />
             <TouchableOpacity
-              onPress={() => { AppUtil.resetDatabase(core.store, core.eventBus) }}
+              onPress={() => { AppUtil.resetDatabase() }}
               style={{ width:0.7*screenWidth, height:50, borderRadius: 25, borderWidth:2, borderColor: colors.menuBackground.hex, alignItems:'center', justifyContent:'center'}}
             >
               <Text style={{fontSize:18, color: colors.menuBackground.hex, fontWeight: 'bold'}}>{ lang("Im_sure__do_it_") }</Text>

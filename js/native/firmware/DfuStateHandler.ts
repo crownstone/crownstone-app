@@ -56,7 +56,7 @@ class DfuStateHandlerClass {
           }
 
           this._stonesInDfuMode[handle] = {advertisement: data, data: MapProvider.stoneHandleMap[handle], sphereId: MapProvider.stoneHandleMap[handle].sphereId};
-          LOG.info("DfuStateHandler: Found new DFU Crownstone.");
+          LOG.info("DfuStateHandler: Found new DFU Crownstone.", MapProvider.stoneHandleMap[handle]);
           core.eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
         }
 

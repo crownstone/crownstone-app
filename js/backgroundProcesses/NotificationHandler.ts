@@ -20,7 +20,7 @@ class NotificationHandlerClass {
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
       this.notificationPermissionGranted = false;
-      LOG.notifications("NotificationHandler: Request for notification permission submitted from loadStore");
+      LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
   }
@@ -31,13 +31,13 @@ class NotificationHandlerClass {
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
       this.notificationPermissionGranted = false;
-      LOG.notifications("NotificationHandler: Request for notification permission submitted from loadStore");
+      LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
   }
 
   configure() {
-    LOG.notifications("NotificationHandler: Configuring Push");
+    LOG.info("NotificationHandler: Configuring Push");
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: (tokenData) => {
@@ -49,7 +49,7 @@ class NotificationHandlerClass {
             notificationToken: tokenData.token
           }
         });
-        LOG.notifications("NotificationHandler: Got notification token!", tokenData, tokenData.token);
+        LOG.info("NotificationHandler: Got notification token!", tokenData, tokenData.token);
 
         let state = core.store.getState();
         let deviceId = Util.data.getCurrentDeviceId(state);
@@ -58,10 +58,10 @@ class NotificationHandlerClass {
         let installationId = state.devices[deviceId].installationId;
 
         if (!installationId || !state.installations[installationId]) {
-          LOGw.notifications("NotificationHandler: No Installation found.");
+          LOGw.info("NotificationHandler: No Installation found.");
           CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, deviceToken: tokenData.token })
             .then((installation) => {
-              LOG.notifications("NotificationHandler: Creating new installation and connecting it to the device.");
+              LOG.info("NotificationHandler: Creating new installation and connecting it to the device.");
               let actions = [];
               actions.push({
                 type: 'ADD_INSTALLATION',
@@ -76,13 +76,13 @@ class NotificationHandlerClass {
               core.store.batchDispatch(actions);
             })
             .catch((err) => {
-              LOGe.notifications("NotificationHandler: Error during creation of Installation", err);
+              LOGe.info("NotificationHandler: Error during creation of Installation", err);
             });
         }
         else {
-          LOGd.notifications("NotificationHandler: Installation found, checking token.");
+          LOGd.info("NotificationHandler: Installation found, checking token.");
           if (state.installations[installationId].deviceToken !== tokenData.token) {
-            LOGi.notifications("NotificationHandler: Installation found, UPDATING token.");
+            LOGi.info("NotificationHandler: Installation found, UPDATING token.");
             core.store.dispatch({
               type:'UPDATE_INSTALLATION_CONFIG',
               installationId: installationId,
@@ -98,7 +98,7 @@ class NotificationHandlerClass {
       onNotification: function(notification) {
         // fallback
         this.notificationPermissionGranted = true;
-        LOG.notifications("NotificationHandler: Received notification", notification);
+        LOG.info("NotificationHandler: Received notification", notification);
         if (Platform.OS === 'android') {
           NotificationParser.handle(notification)
         }
@@ -137,12 +137,12 @@ class NotificationHandlerClass {
 
   request() {
     if (this.requesting === false) {
-      LOGi.notifications("NotificationHandler: Requesting push permissions");
+      LOGi.info("NotificationHandler: Requesting push permissions");
       this.requesting = true;
       PushNotification.requestPermissions();
     }
     else {
-      LOGi.notifications("NotificationHandler: Push permissions request already pending.");
+      LOGi.info("NotificationHandler: Push permissions request already pending.");
     }
   }
 }

@@ -28,7 +28,7 @@ export const AppUtil = {
     }
   },
 
-  resetDatabase(store, eventBus) {
+  resetDatabase() {
     core.eventBus.emit("showLoading", lang("Preparing_for_download___"));
     let clearDB = () => {
       core.eventBus.clearMostEvents();
@@ -37,7 +37,7 @@ export const AppUtil = {
 
       core.eventBus.emit("showLoading", lang("Clearing_database___"));
 
-      let state = store.getState();
+      let state = core.store.getState();
       let sphereIds = Object.keys(state.spheres);
       let actions = [];
 
@@ -47,12 +47,12 @@ export const AppUtil = {
 
       actions.push({__purelyLocal: true, __noEvents: true, type:'RESET_APP_SETTINGS'});
 
-      store.batchDispatch(actions);
+      core.store.batchDispatch(actions);
       core.eventBus.emit("showLoading", lang("Getting_new_data___"));
       StoreManager.destroyActiveUser()
         .then(() => {
           CLOUD.__syncTriggerDatabaseEvents = false;
-          CLOUD.sync(store)
+          CLOUD.sync()
         })
         .then(() => {
           core.eventBus.emit("showLoading", lang("Finalizing___"));
@@ -66,7 +66,8 @@ export const AppUtil = {
           })
         })
         .catch((err) => {
-          Alert.alert(lang("Data_reset_failed___"), lang("Something_went_wrong_in_t"),[{text: lang("OK")}])
+          LOGe.info("Failed to reset database", err);
+          Alert.alert(lang("Data_reset_failed___"), lang("Something_went_wrong_in_t"),[{text: lang("OK"), onPress: () => { AppUtil.quit(); }}], { cancelable: false})
         })
     };
 

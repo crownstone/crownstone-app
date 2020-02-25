@@ -102,7 +102,7 @@ export class TextEditInput extends Component<any, any> {
       <TextInput
         ref={this.refName}
         autoFocus={this.props.autoFocus || false}
-        autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
+        autoCapitalize={this.props.secureTextEntry ? "none" : this.props.autoCapitalize || 'words'}
         autoCorrect={  false }
         keyboardType={ this.props.visiblePassword ? 'visible-password' : (this.props.keyboardType || 'default')}
         blurOnSubmit={ this.props.blurOnSubmit || (this.props.multiline !== false)}

@@ -1,9 +1,9 @@
-
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("ButtonBar", key)(a,b,c,d,e);
 }
+
 import * as React from 'react'; import { Component } from 'react';
 import {
   Text,
@@ -26,7 +26,8 @@ export class NumericGetSet extends Component<any, any> {
     else if (this.props.icon)
       barHeight = NORMAL_ROW_SIZE;
 
-    let showValue = '.....'
+    let defaultValue = '.....';
+    let showValue = defaultValue;
     if (this.props.value) {
       let numericValue = Number(this.props.value);
       showValue = numericValue < 1 ? numericValue.toFixed(this.props.digits || 4) : String(numericValue)
@@ -59,7 +60,7 @@ export class NumericGetSet extends Component<any, any> {
         </TouchableOpacity>
         <TouchableOpacity style={{alignItems: 'center', justifyContent:'flex-end', width: 0.15 * screenWidth}} onPress={() => {
           core.eventBus.emit("showNumericOverlay",{
-            value: String(showValue),
+            value: showValue === defaultValue ? '' : String(showValue),
             title: "SET " + this.props.label,
             text: "Input a number and press set, or close this window.",
             callback: this.props.setCallback

@@ -34,6 +34,7 @@ import { topBarStyle } from "../components/topbar/TopbarStyles";
 import { SlideFadeInView } from "../components/animated/SlideFadeInView";
 import { BroadcastStateManager } from "../../backgroundProcesses/BroadcastStateManager";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
+import { OverlayManager } from "../../backgroundProcesses/OverlayManager";
 
 
 export class SettingsDeveloper extends LiveComponent<any, any> {
@@ -486,6 +487,12 @@ export function getDevAppItems() {
         BroadcastStateManager.destroy();
         LocationHandler.destroy();
         core.eventBus.clearAllEvents();
+
+        // reset the overlay manager events since we need these and we destroyed all events above.
+        OverlayManager._initialized = false;
+        OverlayManager.init()
+
+
         DevAppState.init();
         NavigationUtil.setRoot(Stacks.DEV_searchingForCrownstones());
       }
@@ -510,3 +517,4 @@ export function getDevAppItems() {
   });
     return items;
 }
+
