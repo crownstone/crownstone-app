@@ -13,6 +13,7 @@ import { Permissions } from "../backgroundProcesses/PermissionManager";
 import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../ExternalConfig";
 import { xUtil } from "./StandAloneUtil";
 import { core } from "../core";
+import { LOGd } from "../logging/Log";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -131,12 +132,13 @@ export const Util = {
 
   getSunTimesInSecondsSinceMidnight: function(sphereId) {
     let sunTimes = Util.getSunTimes(sphereId);
-
-    let midnightToday = new Date().setHours(0,0,0,0).valueOf();
+    let midnightSunrise = new Date(sunTimes.sunrise).setHours(0,0,0,0).valueOf();
+    let midnightSunset  = new Date(sunTimes.sunset).setHours(0,0,0,0).valueOf();
+    LOGd.info("sunTimes", sunTimes, midnightSunrise, midnightSunset);
 
     return {
-      sunrise: Math.round(0.001*(sunTimes.sunrise - midnightToday)),
-      sunset:  Math.round(0.001*(sunTimes.sunset  - midnightToday)),
+      sunrise: Math.round(0.001*(sunTimes.sunrise - midnightSunrise)),
+      sunset:  Math.round(0.001*(sunTimes.sunset  - midnightSunset)),
     }
   },
 
