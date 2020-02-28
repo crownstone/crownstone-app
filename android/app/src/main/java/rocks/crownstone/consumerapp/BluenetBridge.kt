@@ -772,6 +772,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		sendUnverifiedAdvertisements = false
 	}
 
+	@ReactMethod
+	@Synchronized
+	fun canUseDynamicBackgroundBroadcasts(callback: Callback) {
+		Log.i(TAG, "canUseDynamicBackgroundBroadcasts")
+		resolveCallback(callback, true)
+	}
+
 //endregion
 
 
@@ -1869,6 +1876,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
+
 //endregion
 
 //##################################################################################################
@@ -2487,9 +2495,49 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		map.putDouble("masterHash", indexAndHash.hash.hash.toDouble())
 		return map
 	}
+//endregion
 
+//##################################################################################################
+//region           Tracked devices
+//##################################################################################################
+	@ReactMethod
+	@Synchronized
+	fun registerTrackedDevice(
+			deviceId: Int,
+			locationId: Int,
+			profileId: Int,
+			rssiOffset: Int,
+			ignoreForPresence: Boolean,
+			tapToToggle: Boolean,
+			deviceToken: Double,
+			ttlMinutes: Int,
+			callback: Callback) {
+		Log.i(TAG, "registerTrackedDevice")
+		// Since android can broadcast any payload that can be changed at any time,
+		// this function won't be needed.
+		Log.w(TAG, "Not implemented")
+		resolveCallback(callback)
+	}
 
-
+	@ReactMethod
+	@Synchronized
+	fun broadcastUpdateTrackedDevice(
+			referenceId: String,
+			deviceId: Int,
+			locationId: Int,
+			profileId: Int,
+			rssiOffset: Int,
+			ignoreForPresence: Boolean,
+			tapToToggle: Boolean,
+			deviceToken: Double,
+			ttlMinutes: Int,
+			callback: Callback) {
+		Log.i(TAG, "broadcastUpdateTrackedDevice")
+		// Since android can broadcast any payload that can be changed at any time,
+		// this function won't be needed.
+		Log.w(TAG, "Not implemented")
+		resolveCallback(callback)
+	}
 //endregion
 
 
