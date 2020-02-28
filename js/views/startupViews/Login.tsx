@@ -160,16 +160,14 @@ lang("arguments___arguments___O_body",content),
     let invalidLoginCallback = () => {
       core.eventBus.emit('hideLoading')
       Alert.alert(
-lang("_Incorrect_Email_or_Passw_header"),
-lang("_Incorrect_Email_or_Passw_body"),
-[{text: lang("_Incorrect_Email_or_Passw_left")}]);
+        lang("_Incorrect_Email_or_Passw_header"),
+        lang("_Incorrect_Email_or_Passw_body"),
+        [{text: lang("_Incorrect_Email_or_Passw_left")}]);
     };
 
     CLOUD.login({
       email: this.state.email.toLowerCase(),
       password: sha1(this.state.password),
-      onUnverified: unverifiedEmailCallback,
-      onInvalidCredentials: invalidLoginCallback,
     })
       .catch((err) => {
         let handledError = false;

@@ -22,8 +22,6 @@ export const user = {
    * {
    *   email: string,
    *   password: string,
-   *   onUnverified: callback,
-   *   onInvalidCredentials: callback,
    *   background: boolean
    * }
    *
