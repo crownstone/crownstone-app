@@ -206,7 +206,7 @@ export class RoomOverview extends LiveComponent<any, any> {
             stoneId={stoneId}
             locationId={this.props.locationId}
             sphereId={this.props.sphereId}
-            viewingRemotely={false}
+            viewingRemotely={this.viewingRemotely}
             nearestInSphere={stoneId === this.nearestStoneIdInSphere}
             nearestInRoom={stoneId === this.nearestStoneIdInRoom}
             dfuMode={item.dfuMode === true}
