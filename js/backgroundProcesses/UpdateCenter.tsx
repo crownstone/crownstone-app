@@ -37,16 +37,16 @@ class UpdateCenterClass {
       let updatableStones = DfuUtil.getUpdatableStones(sphereId);
       if (updatableStones.amountOfStones > 0) {
         this.updateAvailable = true;
-        OnScreenNotifications.setNotification({
-          source: "UpdateCenter",
-          id: "UpdateCenter" + sphereId,
-          sphereId: sphereId,
-          label: lang("Update_available_"),
-          icon: "c1-update-arrow",
-          callback: () => {
-            NavigationUtil.launchModal( "DfuIntroduction", {sphereId: sphereId});
-          }
-        });
+        // OnScreenNotifications.setNotification({
+        //   source: "UpdateCenter",
+        //   id: "UpdateCenter" + sphereId,
+        //   sphereId: sphereId,
+        //   label: lang("Update_available_"),
+        //   icon: "c1-update-arrow",
+        //   callback: () => {
+        //     NavigationUtil.launchModal( "DfuIntroduction", {sphereId: sphereId});
+        //   }
+        // });
       }
       else {
         this.updateAvailable = false;

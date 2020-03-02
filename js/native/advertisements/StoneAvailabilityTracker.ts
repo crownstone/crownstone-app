@@ -267,6 +267,7 @@ class StoneAvailabilityTrackerClass {
   }
 
   isDisabled(stoneId) {
+    return false
     if (this.log[stoneId]) {
       if (new Date().valueOf() - this.log[stoneId].t < DISABLE_TIMEOUT) {
         return false;
