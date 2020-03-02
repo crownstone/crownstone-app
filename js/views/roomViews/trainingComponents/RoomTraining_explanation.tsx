@@ -8,7 +8,8 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
   Text,
-  View} from 'react-native';
+  View, ScrollView
+} from "react-native";
 
 
 
@@ -18,7 +19,7 @@ import { Icon } from '../../components/Icon';
 export class RoomTraining_explanation extends Component<any, any> {
   render() {
     return (
-      <View style={{flex:1}}>
+      <ScrollView contentContainerStyle={{flexGrow:1}}>
         <View style={{flexDirection:'column', flex:1, padding:20, paddingTop: 30, alignItems:'center'}}>
           <Text style={{
             backgroundColor:'transparent',
@@ -52,7 +53,7 @@ export class RoomTraining_explanation extends Component<any, any> {
           </TouchableOpacity>
           <View style={{flex:1}} />
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }

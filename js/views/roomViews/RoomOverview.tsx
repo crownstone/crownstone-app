@@ -37,7 +37,6 @@ import { Icon } from "../components/Icon";
 import { Background } from "../components/Background";
 import { SetupStateHandler } from "../../native/setup/SetupStateHandler";
 import { SetupDeviceEntry } from "../components/deviceEntries/SetupDeviceEntry";
-import { IconButton } from "../components/IconButton";
 
 
 

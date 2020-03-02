@@ -595,25 +595,26 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
               </SlideSideFadeInView>
             </View>
 
+            {/* This button design was not clear, it will be removed for now. */}
+            {/*{ changeText && <View style={{flex:1}} />}*/}
+            {/*{ changeText && <TouchableOpacity*/}
+            {/*  onPress={() => {*/}
+            {/*    if (this._allActiveDaysAreSelected()) {*/}
+            {/*      let activeDays = { Mon: false, Tue: false, Wed: false, Thu: false, Fri: false, Sat: false, Sun: false };*/}
+            {/*      activeDays[this.props.selectedDay] = true;*/}
+            {/*      this.setState({activeDays: activeDays})*/}
+            {/*    }*/}
+            {/*    else {*/}
+            {/*      let rule = DataUtil.getRule(this.props.sphereId, this.props.stoneId, this.props.ruleId);*/}
+            {/*      if (rule) {*/}
+            {/*        this.setState({activeDays: rule.activeDays})*/}
+            {/*      }*/}
+            {/*    }*/}
+            {/*  }}*/}
+            {/*  style={{height: 36, borderColor: colors.white.rgba(0.6), borderWidth:1, backgroundColor: colors.white.rgba(0.3), borderRadius: 18, paddingHorizontal: 25, ...styles.centered}}>*/}
+            {/*  <Text style={{fontWeight:'bold', fontSize:14, color: colors.csBlueDark.hex}}>{changeText}</Text>*/}
+            {/*</TouchableOpacity>}*/}
 
-            { changeText && <View style={{flex:1}} />}
-            { changeText && <TouchableOpacity
-              onPress={() => {
-                if (this._allActiveDaysAreSelected()) {
-                  let activeDays = { Mon: false, Tue: false, Wed: false, Thu: false, Fri: false, Sat: false, Sun: false };
-                  activeDays[this.props.selectedDay] = true;
-                  this.setState({activeDays: activeDays})
-                }
-                else {
-                  let rule = DataUtil.getRule(this.props.sphereId, this.props.stoneId, this.props.ruleId);
-                  if (rule) {
-                    this.setState({activeDays: rule.activeDays})
-                  }
-                }
-              }}
-              style={{height: 36, borderColor: colors.white.rgba(0.6), borderWidth:1, backgroundColor: colors.white.rgba(0.3), borderRadius: 18, paddingHorizontal: 25, ...styles.centered}}>
-              <Text style={{fontWeight:'bold', fontSize:14, color: colors.csBlueDark.hex}}>{changeText}</Text>
-            </TouchableOpacity>}
             <View style={{flex:2}} />
 
             <View style={{flexDirection:'row'}}>
