@@ -86,19 +86,6 @@ export class SettingsFAQ extends Component<any, any> {
       contentHeight: 235
     });
 
-    items.push({
-      type:'collapsable',
-      label: lang("____use_schedules_"),
-      content:lang("These_can_be_found_in_the"),
-      contentHeight: 175
-    });
-
-    // items.push({
-    //   type:'collapsable',
-    //   label: lang("____use_Switchcraft_"),
-    //   content: lang("Switchcraft_is_currently_"),
-    //   contentHeight: 275
-    // });
 
     items.push({
       type:'largeExplanation',
