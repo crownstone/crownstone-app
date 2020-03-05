@@ -31,9 +31,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
 
     this.state = { releaseNotes: "Downloading...", inSphere: false }
     this.interviewData = {};
-  }
 
-  componentWillMount() {
     let state = core.store.getState();
     let sphereId = this.props.sphereId;
     let sphere = state.spheres[sphereId];
@@ -48,7 +46,6 @@ export class DfuIntroduction extends LiveComponent<any, any> {
         this.setState({ releaseNotes: notes });
       })
   }
-
 
   getCards() : interviewCards {
     return {
@@ -102,7 +99,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     }
 
     return (
-      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={true}  dimStatusBar={true}>
+      <AnimatedBackground fullScreen={true} image={backgroundImage} hideNotifications={true} hideOrangeLine={true} dimStatusBar={true}>
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : "Back"}

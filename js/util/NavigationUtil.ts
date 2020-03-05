@@ -1,8 +1,4 @@
-// import { DrawerActions, NavigationActions, StackActions } from "react-navigation";
-// import { navigationStore } from "../router/NavigationReducer";
-
-
-import { Navigation } from "react-native-navigation";
+import { Navigation, OptionsModalPresentationStyle } from "react-native-navigation";
 import { Sentry } from "react-native-sentry";
 import { LOGd, LOGi, LOGw } from "../logging/Log";
 
@@ -539,6 +535,9 @@ export const NavigationUtil = {
         name: target,
         passProps: props,
         options: {
+          layout: {
+            componentBackgroundColor: "transparent"
+          },
           overlay: {
             interceptTouchOutside: true,
             handleKeyboardEvents: true,
@@ -590,7 +589,12 @@ export const NavigationUtil = {
       stack:{
         children: [
           { component: { name: target, passProps: props }}
-        ]
+        ],
+        options: {
+          modal: {
+            swipeToDismiss: false,
+          }
+        }
       }
     })
   },

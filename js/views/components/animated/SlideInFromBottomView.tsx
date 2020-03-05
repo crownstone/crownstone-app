@@ -12,15 +12,15 @@ export class SlideInFromBottomView extends Component<any, any> {
     this.visible = props.visible || false;
   }
 
-  componentWillUpdate(nextProps) {
-    if (this.visible !== nextProps.visible) {
-      if (nextProps.visible === true) {
-        Animated.timing(this.state.viewTopOffset, {toValue: screenHeight - nextProps.height, duration:150}).start();
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.visible !== this.props.visible) {
+      if (this.props.visible === true) {
+        Animated.timing(this.state.viewTopOffset, {toValue: screenHeight - this.props.height, duration:150}).start();
       }
       else {
         Animated.timing(this.state.viewTopOffset,  {toValue: screenHeight, duration:150}).start();
       }
-      this.visible = nextProps.visible;
+      this.visible = this.props.visible;
     }
   }
 

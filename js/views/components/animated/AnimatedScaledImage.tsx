@@ -25,19 +25,19 @@ export class AnimatedScaledImage extends Component<{
     this.state = {fade: new Animated.Value(0)};
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     let change = false;
 
     if (this.value === 0) {
-      if (nextProps.source !== this.staticImage) {
+      if (this.props.source !== this.staticImage) {
         change = true;
-        this.animatedSource = nextProps.source;
+        this.animatedSource = this.props.source;
       }
     }
     else {
-      if (nextProps.source !== this.animatedSource) {
+      if (this.props.source !== this.animatedSource) {
         change = true;
-        this.staticImage = nextProps.source;
+        this.staticImage = this.props.source;
       }
     }
 

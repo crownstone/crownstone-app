@@ -1,9 +1,9 @@
-import { Navigation, Options } from "react-native-navigation";
+import { Navigation, Options, OptionsModalPresentationStyle } from "react-native-navigation";
 import { Views } from "./Views";
 import SplashScreen from "react-native-splash-screen";
-import { Platform, Text } from "react-native";
+import { Platform } from "react-native";
 import { Stacks } from "./Stacks";
-import { colors } from "../views/styles"
+import { colors } from "../views/styles";
 import {
   TopbarButton,
   TopbarEmptyButton,
@@ -13,12 +13,10 @@ import {
 import { CancelButton } from "../views/components/topbar/CancelButton";
 import { OverlayManager } from "../backgroundProcesses/OverlayManager";
 import { NavigationUtil } from "../util/NavigationUtil";
-import { IconDebug } from "../views/development/IconDebug";
-import { IconDevSelector } from "../views/development/IconDevSelector";
 import React from "react";
 
 
-import './TextFontFix';
+import "./TextFontFix";
 
 
 let viewsLoaded = false;
@@ -69,6 +67,7 @@ Navigation.events().registerAppLaunchedListener(() => {
     layout: {
       orientation: ['portrait'],
     },
+    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen
   };
 
   if (Platform.OS === 'android') {

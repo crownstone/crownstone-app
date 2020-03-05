@@ -33,7 +33,6 @@ export class AlternatingContent extends Component<any, any> {
     clearInterval(this.interval)
   }
 
-  componentWillUpdate(nextProps) { }
 
   getContent() {
     let content = [];

@@ -169,6 +169,3 @@ LOG.info("App Version",            DeviceInfo.getVersion());  // e.g. 1.1.0
 LOG.info("App Version (Readable)", DeviceInfo.getReadableVersion());  // e.g. 1.1.0.89
 LOG.info("Device Name",            DeviceInfo.getDeviceName());  // e.g. Becca's iPhone 6
 LOG.info("User Agent",             DeviceInfo.getUserAgent()); // e.g. Dalvik/2.1.0 (Linux; U; Android 5.1; Google Nexus 4 - 5.1.0 - API 22 - 768x1280 Build/LMY47D)
-LOG.info("Device Locale",          DeviceInfo.getDeviceLocale()); // e.g en-US
-LOG.info("Device Country",         DeviceInfo.getDeviceCountry()); // e.g US
-LOG.info("App Instance ID",        DeviceInfo.getInstanceID()); // ANDROID ONLY - see https://developers.google.com/instance-id/

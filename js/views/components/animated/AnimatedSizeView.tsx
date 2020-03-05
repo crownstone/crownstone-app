@@ -24,21 +24,21 @@ export class AnimatedSizeView extends Component<any, any> {
     this.height = props.height || 0;
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     let actions = [];
-    if (this.width !== nextProps.width) {
+    if (this.width !== this.props.width) {
       actions.push(
         Animated.timing(this.state.width, {
-          toValue: nextProps.width     || 0,
+          toValue: this.props.width     || 0,
           delay:   this.props.delay    || 0,
           duration:this.props.duration || 200
         })
       );
     }
-    if (this.height !== nextProps.height) {
+    if (this.height !== this.props.height) {
       actions.push(
         Animated.timing(this.state.height, {
-          toValue: nextProps.height    || 0,
+          toValue: this.props.height    || 0,
           delay:   this.props.delay    || 0,
           duration:this.props.duration || 200
         })
@@ -49,7 +49,7 @@ export class AnimatedSizeView extends Component<any, any> {
       this.state.width.stopAnimation();
       this.state.height.stopAnimation();
 
-      Animated.parallel(actions).start(() => { this.width = nextProps.width; this.height = nextProps.height});
+      Animated.parallel(actions).start(() => { this.width = this.props.width; this.height = this.props.height});
     }
   }
 

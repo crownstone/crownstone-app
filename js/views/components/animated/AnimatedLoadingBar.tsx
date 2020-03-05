@@ -33,14 +33,14 @@ export class AnimatedLoadingBar extends Component<any, any> {
     this.state = { progress: new Animated.Value(props.progress * this.innerWidth || 0) };
   }
 
-  componentWillUpdate(nextProps) {
-    if (nextProps.progress) {
-      if (nextProps.progress !== this.progressTarget) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.progress) {
+      if (this.props.progress !== this.progressTarget) {
         Animated.timing(this.state.progress, {
-          toValue: this.innerWidth * nextProps.progress,
+          toValue: this.innerWidth * this.props.progress,
           duration: 200
         }).start();
-        this.progressTarget = nextProps.progress;
+        this.progressTarget = this.props.progress;
       }
     }
   }

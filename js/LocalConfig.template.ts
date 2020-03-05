@@ -50,7 +50,7 @@ import { Platform } from "react-native";
    * Disable Native will automatically mock all BLE commands so the app can run in the simulator.
    * Silence cloud will silently reject all cloud calls.
    */
-  export let DISABLE_NATIVE = DeviceInfo.isEmulator();
+  export let DISABLE_NATIVE = DeviceInfo.isEmulatorSync();
   export let SILENCE_CLOUD  = false;
 
   /**

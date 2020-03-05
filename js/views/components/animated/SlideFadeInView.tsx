@@ -19,13 +19,13 @@ export class SlideFadeInView extends Component<{visible, height, delay?, duratio
     this.visible = props.visible || false;
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     let delay = this.props.delay || 0;
     let duration = this.props.duration || 200;
-    let height = nextProps.height || (nextProps.style && nextProps.style.height);
-    if (this.visible !== nextProps.visible) {
+    let height = this.props.height || (this.props.style && this.props.style.height);
+    if (this.visible !== this.props.visible) {
       let animations = [];
-      if (nextProps.visible === true) {
+      if (this.props.visible === true) {
         animations.push(Animated.timing(this.state.viewOpacity, {
           toValue:  1,
           delay:    delay + 0.2*duration,
@@ -42,7 +42,7 @@ export class SlideFadeInView extends Component<{visible, height, delay?, duratio
         animations.push(Animated.timing(this.state.viewHeight,  {toValue: 0, delay:delay, duration:duration}));
       }
       Animated.parallel(animations).start();
-      this.visible = nextProps.visible;
+      this.visible = this.props.visible;
     }
     else if (this.visible && this.height !== height) {
       Animated.timing(this.state.viewHeight, {toValue: height, delay: delay, duration: duration }).start(() => { this.height = height; })
@@ -74,13 +74,13 @@ export class SlideSideFadeInView extends Component<{visible, width, delay?, dura
     this.visible = props.visible || false;
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     let delay = this.props.delay || 0;
     let duration = this.props.duration || 200;
-    let width = nextProps.width || (nextProps.style && nextProps.style.width);
-    if (this.visible !== nextProps.visible) {
+    let width = this.props.width || (this.props.style && this.props.style.width);
+    if (this.visible !== this.props.visible) {
       let animations = [];
-      if (nextProps.visible === true) {
+      if (this.props.visible === true) {
         animations.push(Animated.timing(this.state.viewOpacity, {
           toValue:  1,
           delay:    delay + 0.2*duration,
@@ -97,7 +97,7 @@ export class SlideSideFadeInView extends Component<{visible, width, delay?, dura
         animations.push(Animated.timing(this.state.viewWidth,  {toValue: 0, delay:delay, duration:duration}));
       }
       Animated.parallel(animations).start();
-      this.visible = nextProps.visible;
+      this.visible = this.props.visible;
     }
     else if (this.visible && this.width !== width) {
       Animated.timing(this.state.viewWidth, {toValue: width, delay: delay, duration: duration }).start(() => { this.width = width; })

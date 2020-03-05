@@ -33,11 +33,11 @@ export class TextEditBar extends Component<any, any> {
   }
 
   // the alwaysShowState prop forces the validationState to be checked and updated
-  componentWillReceiveProps(newProps) {
-    if (newProps.alwaysShowState === true && this.state.validation === undefined) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.alwaysShowState === true && this.state.validation === undefined) {
       // we set the timeout to ensure it has been drawn once. It needs to be rendered for the refs to work.
       this.validationTimeout = setTimeout(() => {
-        if (newProps.validation !== undefined) {
+        if (this.props.validation !== undefined) {
           this.validate(this.props.value)
         }
       }, 10);

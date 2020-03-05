@@ -195,17 +195,17 @@ export class Network extends Component<any, any> {
     return dataPointsCount * this.nodeHeight + (dataPointsCount-1) * interNodeDistance + 50 + 2*this.padding;
   }
 
-  componentWillUpdate( nextProps, nextState ) {
-    if (nextProps.remove === true) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.remove === true) {
       Animated.timing(this.state.opacity, {toValue: 0, duration: 200}).start();
       return;
     }
 
     let currentHeight = this.getLineHeight(this.props);
-    let newHeight = this.getLineHeight(nextProps);
+    let newHeight = this.getLineHeight(this.props);
 
     if (currentHeight !== newHeight) {
-      let fullHeight = this.getHeight(nextProps);
+      let fullHeight = this.getHeight(this.props);
 
       Animated.timing(this.state.height, {toValue: fullHeight, duration: 400}).start();
       Animated.timing(this.state.connectionLineHeight, {toValue: newHeight, duration: 400}).start();

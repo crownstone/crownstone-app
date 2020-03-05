@@ -237,6 +237,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
     this.stopHFScanning();
     this.startScanning();
     this.startHFScanning(500);
+    this.setState({trackingHandles:[]})
     StoneSelectorDataContainer.data = {
       verified: {},
       unverified: {},

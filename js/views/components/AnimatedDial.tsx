@@ -37,9 +37,9 @@ export class AnimatedDial extends Component<{width: number, height: number, inde
   }
 
 
-  componentWillReceiveProps(props) {
-    if (props.level !== this.state.level) {
-      this.setState({level: props.level, instant: false}, () => {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.level !== prevProps.level) {
+      this.setState({level: this.props.level, instant: false}, () => {
         if (this.state.level === 1) {
           let delayCount = 0;
           this.animationTimeout1 = setTimeout(() => { this.setState({level:0, instant:true})}, 400 + (delayCount++)*200);
@@ -161,21 +161,21 @@ class AnimatedBlock extends Component<{
     this.visible = props.visible;
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextProps.visible !== this.visible) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.visible !== this.visible) {
       let previousStopIndex = this.previousStopIndex;
 
       let distance = Math.abs(previousStopIndex - this.props.index );
       let delay = 20 * distance;
 
-      if (nextProps.instant) {
+      if (this.props.instant) {
         delay = 0;
       }
 
-      this.visible = nextProps.visible;
-      this.previousStopIndex = nextProps.stopIndex;
+      this.visible = this.props.visible;
+      this.previousStopIndex = this.props.stopIndex;
 
-      Animated.timing(this.state.opacity, {toValue: nextProps.visible ? 1 : 0, delay: delay, duration: nextProps.animationSpeed}).start()
+      Animated.timing(this.state.opacity, {toValue: this.props.visible ? 1 : 0, delay: delay, duration: this.props.animationSpeed}).start()
     }
   }
 

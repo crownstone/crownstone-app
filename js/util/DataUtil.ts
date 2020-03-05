@@ -7,6 +7,7 @@ import DeviceInfo from 'react-native-device-info';
 import { core } from "../core";
 import { FileUtil } from "./FileUtil";
 
+import * as RNLocalize from "react-native-localize";
 
 export const DataUtil = {
 
@@ -292,7 +293,7 @@ export const DataUtil = {
     let deviceType = DeviceInfo.getDeviceId();
     let model = DeviceInfo.getModel();
     let userAgent = DeviceInfo.getUserAgent();
-    let locale = DeviceInfo.getDeviceLocale();
+    let locale = RNLocalize.getLocales()[0]?.languageCode || "default"
 
     return { name, address, description, os, userAgent, locale, deviceType, model };
   },
@@ -312,10 +313,7 @@ export const DataUtil = {
 
   getAiName: function(state, sphereId) : string {
     if (sphereId) {
-      if (!state.spheres[sphereId].config.aiSex) {
-        return state.spheres[sphereId].config.aiName || 'AI';
-      }
-      return state.spheres[sphereId].config.aiName;
+      return state.spheres[sphereId].config.aiName || 'AI';
     }
     else {
       return 'AI';

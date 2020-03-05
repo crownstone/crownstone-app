@@ -194,17 +194,17 @@ export class ForceDirectedView extends Component<{
     return false;
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     // update the offset if it was changed
-    if(nextProps.heightOffset !== this.viewHeightOffset) {
-      this.viewHeightOffset = nextProps.heightOffset || 0;
+    if(this.props.heightOffset !== this.viewHeightOffset) {
+      this.viewHeightOffset = this.props.heightOffset || 0;
     }
-    if(nextProps.height !== this.frameHeight) {
-      this.frameHeight = nextProps.height || availableScreenHeight;
+    if(this.props.height !== this.frameHeight) {
+      this.frameHeight = this.props.height || availableScreenHeight;
     }
 
-    if (nextProps.drawToken !== this._drawToken) {
-      this._drawToken = nextProps.drawToken;
+    if (this.props.drawToken !== this._drawToken) {
+      this._drawToken = this.props.drawToken;
       this._panOffset.x = 0;
       this._panOffset.y = 0;
       this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
@@ -212,19 +212,19 @@ export class ForceDirectedView extends Component<{
       this._currentPan = {x:0, y:0};
       this._currentScale = 1;
 
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
+      this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges, this.props.initialPositions, this.props.enablePhysics);
     }
-    else if (nextProps.nodeIds.length !== this.props.nodeIds.length) {
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
+    else if (this.props.nodeIds.length !== this.props.nodeIds.length) {
+      this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges, this.props.initialPositions, this.props.enablePhysics);
     }
-    else if (nextProps.nodeIds.join() !== this.props.nodeIds.join()) {
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
+    else if (this.props.nodeIds.join() !== this.props.nodeIds.join()) {
+      this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges, this.props.initialPositions, this.props.enablePhysics);
     }
-    else if (nextProps.nodeIds.indexOf(null) !== this.props.nodeIds.indexOf(null)) {
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
+    else if (this.props.nodeIds.indexOf(null) !== this.props.nodeIds.indexOf(null)) {
+      this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges, this.props.initialPositions, this.props.enablePhysics);
     }
-    else if (nextProps.initialPositions && this.props.initialPositions && xUtil.deepCompare(nextProps.initialPositions, this.props.initialPositions) === false) {
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
+    else if (this.props.initialPositions && this.props.initialPositions && xUtil.deepCompare(this.props.initialPositions, this.props.initialPositions) === false) {
+      this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges, this.props.initialPositions, this.props.enablePhysics);
     }
     else {
       // check for changes in edges.
@@ -236,22 +236,22 @@ export class ForceDirectedView extends Component<{
         }
         edgeIdsCurrent.sort();
       }
-      if (nextProps.edges && Array.isArray(nextProps.edges)) {
-        for (let i = 0; i < nextProps.edges.length; i++) {
-          edgeIdsNew.push(nextProps.edges[i].id);
+      if (this.props.edges && Array.isArray(this.props.edges)) {
+        for (let i = 0; i < this.props.edges.length; i++) {
+          edgeIdsNew.push(this.props.edges[i].id);
         }
         edgeIdsNew.sort();
       }
       if (edgeIdsCurrent.join() !== edgeIdsNew.join()) {
         // the ids are different --> we need to change the physics
-        this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges, nextProps.initialPositions, nextProps.enablePhysics);
+        this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges, this.props.initialPositions, this.props.enablePhysics);
       }
       else {
         // the IDs are not different, but we will merge the edge information into our edges anyway.
-        if (nextProps.edges && Array.isArray(nextProps.edges)) {
-          for (let i = 0; i < nextProps.edges.length; i++) {
-            let edgeId = nextProps.edges[i].id;
-            this.edges[this.edgeMap[edgeId]] = xUtil.deepExtend(this.edges[this.edgeMap[edgeId]], nextProps.edges[i])
+        if (this.props.edges && Array.isArray(this.props.edges)) {
+          for (let i = 0; i < this.props.edges.length; i++) {
+            let edgeId = this.props.edges[i].id;
+            this.edges[this.edgeMap[edgeId]] = xUtil.deepExtend(this.edges[this.edgeMap[edgeId]], this.props.edges[i])
           }
         }
       }

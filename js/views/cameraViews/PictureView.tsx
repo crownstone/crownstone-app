@@ -5,7 +5,7 @@ function lang(key,a?,b?,c?,d?,e?) {
   return Languages.get("PictureView", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
-import { Image, TouchableOpacity, StyleSheet, Text, View, Platform, ViewStyle, Dimensions } from "react-native";
+import { Image, TouchableOpacity, Text, View, Platform, ViewStyle, Dimensions } from "react-native";
 
 import { RNCamera } from 'react-native-camera';
 
@@ -13,7 +13,6 @@ import {
   colors,
   screenWidth,
   screenHeight,
-  availableModalHeight,
   styles,
   tabBarMargin,
   topBarHeight,
@@ -22,7 +21,6 @@ import {
 
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopbarImitation } from "../components/TopbarImitation";
-import { Background } from "../components/Background";
 import { Icon } from "../components/Icon";
 import { FileUtil } from "../../util/FileUtil";
 import { Navigation } from "react-native-navigation";

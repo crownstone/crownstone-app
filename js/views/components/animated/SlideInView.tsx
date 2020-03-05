@@ -19,11 +19,11 @@ export class SlideInView extends Component<any, any> {
     this.visible = props.visible || false;
   }
 
-  componentWillUpdate(nextProps) {
-    if (this.visible !== nextProps.visible) {
-      if (nextProps.visible === true) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.visible !== this.props.visible) {
+      if (this.props.visible === true) {
         Animated.timing(this.state.viewHeight, {
-          toValue: (nextProps.height || (nextProps.style && nextProps.style.height)) || 0,
+          toValue: (this.props.height || (this.props.style && this.props.style.height)) || 0,
           delay: this.props.delay || 0,
           duration:this.props.duration || 200
         }).start();
@@ -35,7 +35,7 @@ export class SlideInView extends Component<any, any> {
           duration: this.props.duration || 200
         }).start();
       }
-      this.visible = nextProps.visible;
+      this.visible = this.props.visible;
     }
   }
 

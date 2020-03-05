@@ -24,18 +24,18 @@ export class AnimatedCircle extends Component<any, any> {
     this.value = 0;
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     let change = false;
     if (this.value === 0) {
-      if (nextProps.color !== this.color1) {
+      if (this.props.color !== this.color1) {
         change = true;
-        this.color2 = nextProps.color;
+        this.color2 = this.props.color;
       }
     }
     else {
-      if (nextProps.color !== this.color2) {
+      if (this.props.color !== this.color2) {
         change = true;
-        this.color1 = nextProps.color;
+        this.color1 = this.props.color;
       }
     }
 

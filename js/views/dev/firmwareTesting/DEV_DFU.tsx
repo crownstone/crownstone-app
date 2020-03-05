@@ -144,6 +144,7 @@ export class DEV_DFU extends LiveComponent<{
         items.push({
           __item: <View style={{flexDirection:'row', width: screenWidth, height: 50, backgroundColor: colors.white.hex, alignItems:'center', justifyContent:'center'}}>
             <ActivityIndicator color={colors.csBlueDark.hex} size={"large"} /><Text style={{fontSize:16, color:colors.csBlueDark.hex, fontWeight:'bold'}}>Firmware is updating...</Text>
+            <View style={{position:'absolute', bottom:0, height:5, width: this.state.dfuProgress * screenWidth, backgroundColor: colors.green.hex}} />
           </View>
 
         });

@@ -21,8 +21,6 @@ import { NavigationUtil } from "../../../util/NavigationUtil";
 const RNFS = require('react-native-fs');
 
 
-
-
 export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible: boolean, close: () => void}, {operation: any
   values: any
   pending: any
@@ -70,9 +68,9 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
         <CrownstoneBatchEntry
           key={"batchH" + handle}
           item={stoneData}
-          value={  this.state.values[handle]  || "..." }
-          pending={this.state.pending[handle] || false }
-          failed={ this.state.failed[handle]  || false }
+          value={    this.state.values[handle]  || "..." }
+          pending={  this.state.pending[handle] || false }
+          failed={   this.state.failed[handle]  || false }
           progress={ this.state.dfuActiveHandle == handle && this.state.dfuProgress || 0}
         />
       );

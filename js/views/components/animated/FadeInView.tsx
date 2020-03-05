@@ -27,16 +27,16 @@ export class FadeInView extends Component<any, any> {
     this.pendingTimeout = null;
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     let defaultDuration = 200;
-    if ((nextProps.visible !== undefined && this.visible !== nextProps.visible) || (nextProps.maxOpacity !== undefined && this.maxOpacity !== nextProps.maxOpacity)) {
+    if ((this.props.visible !== undefined && this.visible !== this.props.visible) || (this.props.maxOpacity !== undefined && this.maxOpacity !== this.props.maxOpacity)) {
       this.state.viewOpacity.stopAnimation()
-      if (nextProps.visible === true) {
+      if (this.props.visible === true) {
         this.setState({show: true});
         this.pendingTimeout = setTimeout(() => {
           this.pendingTimeout = null;
           Animated.timing(this.state.viewOpacity, {
-            toValue:  nextProps.maxOpacity || this.maxOpacity,
+            toValue:  this.props.maxOpacity || this.maxOpacity,
             delay:    this.props.delay     || 0,
             duration: this.props.duration  || defaultDuration
           }).start();
@@ -56,8 +56,8 @@ export class FadeInView extends Component<any, any> {
     }
 
     // set new values as the current state.
-    if (nextProps.maxOpacity !== undefined) { this.maxOpacity = nextProps.maxOpacity; }
-    if (nextProps.visible    !== undefined) { this.visible = nextProps.visible;       }
+    if (this.props.maxOpacity !== undefined) { this.maxOpacity = this.props.maxOpacity; }
+    if (this.props.visible    !== undefined) { this.visible = this.props.visible;       }
   }
 
   componentWillUnmount() {
@@ -135,16 +135,16 @@ export class HiddenFadeInBlur extends Component<any, any> {
     this.pendingTimeout = null;
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     let defaultDuration = 200;
-    if ((nextProps.visible !== undefined && this.visible !== nextProps.visible) || (nextProps.maxOpacity !== undefined && this.maxOpacity !== nextProps.maxOpacity)) {
+    if ((this.props.visible !== undefined && this.visible !== this.props.visible) || (this.props.maxOpacity !== undefined && this.maxOpacity !== this.props.maxOpacity)) {
       this.state.viewOpacity.stopAnimation()
-      if (nextProps.visible === true) {
+      if (this.props.visible === true) {
         this.setState({show: true});
         this.pendingTimeout = setTimeout(() => {
           this.pendingTimeout = null;
           Animated.timing(this.state.viewOpacity, {
-            toValue:  nextProps.maxOpacity || this.maxOpacity,
+            toValue:  this.props.maxOpacity || this.maxOpacity,
             delay:    this.props.delay     || 0,
             duration: this.props.duration  || defaultDuration
           }).start();
@@ -164,8 +164,8 @@ export class HiddenFadeInBlur extends Component<any, any> {
     }
 
     // set new values as the current state.
-    if (nextProps.maxOpacity !== undefined) { this.maxOpacity = nextProps.maxOpacity; }
-    if (nextProps.visible    !== undefined) { this.visible = nextProps.visible;       }
+    if (this.props.maxOpacity !== undefined) { this.maxOpacity = this.props.maxOpacity; }
+    if (this.props.visible    !== undefined) { this.visible = this.props.visible;       }
   }
 
   componentWillUnmount() {
@@ -183,7 +183,8 @@ export class HiddenFadeInBlur extends Component<any, any> {
             style={{position:'absolute', top:0, left:0, right:0, bottom:0}}
             blurType="light"
             blurAmount={6}
-          /> :  <View style={{position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor: colors.white.rgba(0.4)}} />}
+          /> :
+            <View style={{position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor: colors.white.rgba(0.4)}} />}
           <View style={this.props.style}>
             {this.props.children}
           </View>

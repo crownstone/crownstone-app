@@ -41,22 +41,39 @@ export class AnimatedBackground extends Component<{
     this.state = {fade: new Animated.Value(0)};
   }
 
-  componentWillReceiveProps(nextProps) {
+  getSnapshotBeforeUpdate(prevProps, prevState) {
     let change = false;
     if (this.value === 0) {
-      if (nextProps.image !== this.staticImage) {
+      if (this.props.image !== this.staticImage) {
         change = true;
-        this.animatedImage = nextProps.image;
+        this.animatedImage = this.props.image;
       }
     }
     else {
-      if (nextProps.image !== this.animatedImage) {
+      if (this.props.image !== this.animatedImage) {
         change = true;
-        this.staticImage = nextProps.image;
+        this.staticImage = this.props.image;
       }
     }
+    return change;
+  }
 
-    if (change) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    // let change = false;
+    // if (this.value === 0) {
+    //   if (this.props.image !== this.staticImage) {
+    //     change = true;
+    //     this.animatedImage = this.props.image;
+    //   }
+    // }
+    // else {
+    //   if (this.props.image !== this.animatedImage) {
+    //     change = true;
+    //     this.staticImage = this.props.image;
+    //   }
+    // }
+    console.log("this is my snapshot", snapshot)
+    if (snapshot) {
       let newValue = this.value === 0 ? 1 : 0;
       Animated.timing(this.state.fade, {toValue: newValue, duration: this.props.duration || 500}).start();
       this.value = newValue;
@@ -64,6 +81,8 @@ export class AnimatedBackground extends Component<{
   }
 
   render() {
+
+    console.log(this.staticImage, this.animatedImage)
     let height = screenHeight;
     let hasNavBar = false;
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {

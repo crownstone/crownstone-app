@@ -10,8 +10,8 @@
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTEventEmitter.h>
 
-#import "RCTPushNotificationManager.h"
 #import <React/RCTBundleURLProvider.h>
+#import <RNCPushNotificationIOS.h>
 #import <React/RCTRootView.h>
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 

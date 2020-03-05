@@ -92,8 +92,8 @@ export class Graph extends LiveComponent<{width: number, height: number, data: G
     cancelAnimationFrame(this.interval)
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.props.dataHash !== nextProps.dataHash) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.dataHash !== this.props.dataHash) {
       let now = new Date().valueOf();
       this.range.start = new Date(now - RANGE);
       this.range.end   = new Date(now + OVERSHOOT);

@@ -24,9 +24,9 @@ export class Dropdown extends Component<any, any> {
     this.state = {open:false, value: props.value};
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextProps.value !== this.props.value) {
-      this.setState({value: nextProps.value});
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.value !== this.props.value) {
+      this.setState({value: this.props.value});
     }
   }
 

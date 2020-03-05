@@ -25,7 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         ReactNativeNavigation.bootstrap(jsBundleUrl!, launchOptions: launchOptions)
         
-        
         GLOBAL_BLUENET.initController(viewController: nil)
 
         RNSplashScreen.show()
@@ -68,23 +67,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
-        RCTPushNotificationManager.didRegister(notificationSettings)
+        RNCPushNotificationIOS.didRegister(notificationSettings)
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        RCTPushNotificationManager.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
+        RNCPushNotificationIOS.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        RCTPushNotificationManager.didFailToRegisterForRemoteNotificationsWithError(error)
+        RNCPushNotificationIOS.didFailToRegisterForRemoteNotificationsWithError(error)
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        RCTPushNotificationManager.didReceiveRemoteNotification(userInfo, fetchCompletionHandler: completionHandler)
+        RNCPushNotificationIOS.didReceiveRemoteNotification(userInfo, fetchCompletionHandler: completionHandler)
     }
 
     func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-        RCTPushNotificationManager.didReceive(notification)
+        RNCPushNotificationIOS.didReceive(notification)
     }
     
     // required to hook web urls
