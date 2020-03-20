@@ -392,8 +392,8 @@ class BackgroundProcessHandlerClass {
             throw err;
           }
         })
-        .then((reply) => {
-          LOG.info("BackgroundProcessHandler: Verified User.", reply);
+        .then(() => {
+          LOG.info("BackgroundProcessHandler: Verified User.");
           CLOUD.sync(core.store, true).catch(() => {})
         })
         .catch((err) => {

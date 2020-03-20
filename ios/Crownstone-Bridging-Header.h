@@ -12,6 +12,7 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <RNCPushNotificationIOS.h>
+#import <UserNotifications/UserNotifications.h>
 #import <React/RCTRootView.h>
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 

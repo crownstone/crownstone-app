@@ -1,7 +1,8 @@
 import { NotificationParser } from "../notifications/NotificationParser";
 
 const PushNotification = require('react-native-push-notification');
-import { Platform, PushNotificationIOS } from "react-native";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import { Platform } from "react-native";
 import { LOG, LOGd, LOGe, LOGi, LOGw } from "../logging/Log";
 import { Util } from "../util/Util";
 import { CLOUD } from "../cloud/cloudAPI";

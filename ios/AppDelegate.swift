@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UserNotifications
 import UIKit
 
 @UIApplicationMain

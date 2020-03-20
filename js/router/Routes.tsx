@@ -12,7 +12,7 @@ import {
 } from "../views/components/topbar/TopbarButton";
 import { CancelButton } from "../views/components/topbar/CancelButton";
 import { OverlayManager } from "../backgroundProcesses/OverlayManager";
-import { NavigationUtil } from "../util/NavigationUtil";
+import { NavigationUtil, topBarComponentNames } from "../util/NavigationUtil";
 import React from "react";
 
 
@@ -38,6 +38,12 @@ export const loadRoutes = function() {
   Navigation.registerComponent("topbarRightMoreButton",    () => TopbarRightMoreButton);
   Navigation.registerComponent("topbarButton",             () => TopbarButton);
   Navigation.registerComponent("topbarEmptyButton",        () => TopbarEmptyButton);
+
+  topBarComponentNames.push("topbarCancelButton");
+  topBarComponentNames.push("topbarLeftButton");
+  topBarComponentNames.push("topbarRightMoreButton");
+  topBarComponentNames.push("topbarButton");
+  topBarComponentNames.push("topbarEmptyButton");
 
   OverlayManager.init();
 };

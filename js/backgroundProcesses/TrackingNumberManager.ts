@@ -36,11 +36,13 @@ class TrackingNumberManagerClass {
       core.eventBus.on('AppStateChange', (appState) => {
         if (appState === 'active') {
           // this.checkToCycle();
+          this.updateMyDeviceTrackingRegistrationInActiveSphere();
         }
       });
 
       if (AppState.currentState === 'active') {
         // this.checkToCycle();
+        this.updateMyDeviceTrackingRegistrationInActiveSphere();
       }
     }
   }

@@ -491,15 +491,18 @@ let loadNamesFromStack = (stack) => {
 };
 
 let tabBarComponentNames = [];
+export let topBarComponentNames = [];
+
 
 // Listen for componentDidAppear screen events
 Navigation.events().registerComponentDidAppearListener(({ componentId, componentName }) => {
-  LOGi.nav("VIEW DID APPEAR", componentId, componentName);
-  if (tabBarComponentNames.indexOf(componentName) !== -1) {
-    NavState.switchTab(componentId, componentName)
+  if (topBarComponentNames.indexOf(componentName) === -1) {
+    LOGi.nav("VIEW DID APPEAR", componentId, componentName);
+    if (tabBarComponentNames.indexOf(componentName) !== -1) {
+      NavState.switchTab(componentId, componentName)
+    }
+    NavState.addView(componentId, componentName);
   }
-
-  NavState.addView(componentId, componentName);
 });
 
 // Listen for componentDidAppear screen events

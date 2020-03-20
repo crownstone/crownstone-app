@@ -127,6 +127,8 @@
 		FA86C6EC21CCF05C00811933 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E321CCF05900811933 /* ComplicationController.swift */; };
 		FA86C6ED21CCF05C00811933 /* CSInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6E421CCF05C00811933 /* CSInterfaceController.swift */; };
 		FAA4252721F9D26400EF7772 /* WatchStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA4252621F9D26400EF7772 /* WatchStateManager.swift */; };
+		FAAEF8F92417C3790078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
+		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FABB8A0121E0E4FA007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FD641FF3E1F2479382087025 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55F5CEDF77EE4B91A302901C /* Fontisto.ttf */; };
@@ -428,6 +430,13 @@
 			remoteGlobalIDString = 15912309AA610251329D74FA111DE5CA;
 			remoteInfo = RNLocalize;
 		};
+		FA5C2BBC24165FEC00358011 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0B9BD901B3EB04B824A157C85265F044;
+			remoteInfo = RNCPushNotificationIOS;
+		};
 		FA86C68C21CCEECF00811933 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
@@ -646,11 +655,13 @@
 				FA274F0C2410171B00D7C858 /* libSentry.a in Frameworks */,
 				FA274F0D2410171B00D7C858 /* libSentryReactNative.a in Frameworks */,
 				FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */,
+				FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */,
 				FA12B7D422450C84003B017E /* JavaScriptCore.framework in Frameworks */,
 				FA47536523AB9526002AB89F /* BluenetBasicLocalization.framework in Frameworks */,
 				FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */,
 				FA570EB01EAE30F9001C625D /* Zip.framework in Frameworks */,
 				FA570EAF1EAE30F9001C625D /* SwiftyJSON.framework in Frameworks */,
+				FAAEF8F92417C3790078A930 /* libRNCPushNotificationIOS.a in Frameworks */,
 				FA570EAD1EAE30F9001C625D /* iOSDFULibrary.framework in Frameworks */,
 				FA570EAE1EAE30F9001C625D /* PromiseKit.framework in Frameworks */,
 				FA570EAC1EAE30F9001C625D /* CryptoSwift.framework in Frameworks */,
@@ -887,6 +898,7 @@
 				FA274EB62410144F00D7C858 /* libReactCommon.a */,
 				FA274EB82410144F00D7C858 /* libReactNativeNavigation.a */,
 				FA274EBA2410144F00D7C858 /* libRNCAsyncStorage.a */,
+				FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */,
 				FA274EBC2410144F00D7C858 /* libRNDeviceInfo.a */,
 				FA274EBE2410144F00D7C858 /* libRNFS.a */,
 				FA345D9424111FEA00C288D3 /* libRNLocalize.a */,
@@ -1452,6 +1464,13 @@
 			remoteRef = FA345D9324111FEA00C288D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNCPushNotificationIOS.a;
+			remoteRef = FA5C2BBC24165FEC00358011 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1641,7 +1660,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym\n";
 		};
 		FA12B7D522450D7F003B017E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
