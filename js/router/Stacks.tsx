@@ -67,19 +67,19 @@ export const Stacks = {
       bottomTabs: {
         id: 'bottomTabs',
         children: [
-          // {
-          //   stack: {
-          //     children: [
-          //       { component: {name: "ScenesOverview"} },
-          //     ],
-          //     options: {
-          //       bottomTab: {
-          //         text: Languages.get("Tabs","Scenes")(),
-          //         icon: require('../images/icons/overview.png'),
-          //       }
-          //     }
-          //   }
-          // },
+          {
+            stack: {
+              children: [
+                { component: {name: "ScenesOverview"} },
+              ],
+              options: {
+                bottomTab: {
+                  text: Languages.get("Tabs","Scenes")(),
+                  icon: require('../images/icons/overview.png'),
+                }
+              }
+            }
+          },
           {
             stack: {
               children: [

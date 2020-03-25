@@ -112,6 +112,8 @@ import { SphereEditMap }                           from "../views/main/editSubvi
 import { SettingsDatabaseExplorer }                from "../views/settingsViews/dev/SettingsDatabaseExplorer";
 import { DEV_Batching }                            from "../views/dev/batching/DEV_Batching";
 import { SettingsUptime }                          from "../views/settingsViews/dev/SettingsUptime";
+import { ScenesOverview } from "../views/scenesViews/ScenesOverview";
+
 
 
 export const Views = {
@@ -199,6 +201,7 @@ export const Views = {
   ToonAdd:                           ToonAdd,
   ToonOverview:                      ToonOverview,
   ToonSettings:                      ToonSettings,
+  ScenesOverview:                    ScenesOverview,
 
 
   // Overlays:

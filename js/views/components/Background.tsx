@@ -21,6 +21,7 @@ export class Background extends Component<{
   hideNotifications?:        boolean,
   hideOrangeLine?:           boolean,
   orangeLineAboveStatusBar?: boolean,
+  style?:                    any,
   hasNavBar?:                boolean,
 
   dimStatusBar?:      boolean,
@@ -42,8 +43,10 @@ export class Background extends Component<{
       height -= tabBarHeight;
     }
 
+    let overrideStyle = this.props.style || {};
+
     return (
-      <KeyboardAvoidingView style={[styles.fullscreen, {height:height, overflow:"hidden", backgroundColor:"transparent"}]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
+      <KeyboardAvoidingView style={[styles.fullscreen, {height:height, overflow:"hidden", backgroundColor:"transparent"}, overrideStyle]} behavior={Platform.OS === 'ios' ? 'position' : undefined} enabled={this.props.keyboardAvoid || false}>
         { this.props.image    ? <BackgroundImage height={height} image={this.props.image} /> : undefined }
         { this.props.topImage ? <View style={[styles.fullscreen, {height:height, backgroundColor:"transparent"}]}>{this.props.topImage}</View> : undefined }
         <View style={[styles.fullscreen, {height:height}]}>

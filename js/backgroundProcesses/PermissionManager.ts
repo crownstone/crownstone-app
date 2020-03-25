@@ -59,8 +59,7 @@ export class PermissionManagerClass {
       return this.permissionClasses[sphereId];
     }
     else {
-      // this returns a class with empty permissions. This means, nothing is allowed.
-      return new PermissionBase();
+      return new PermissionClass(sphereId);
     }
   }
 

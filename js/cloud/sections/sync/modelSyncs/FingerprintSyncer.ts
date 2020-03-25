@@ -40,7 +40,6 @@ export class FingerprintSyncer extends SyncingBase {
     // these we only get the timestamps of to save bandwidth
     let locationIdsWithCloudFingerprints = locationIdObject.existing;
 
-    // these we only get the timestamps of to save bandwidth
     let locationIdsWithNewFingerprints = locationIdObject.new;
 
     return this.syncDown(state, deviceId, locationIdsRequiringFingerprints)

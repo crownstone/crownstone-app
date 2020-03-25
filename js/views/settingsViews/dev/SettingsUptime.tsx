@@ -92,14 +92,16 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
         return month + "/" + xUtil.pad(day) + " " + xUtil.pad(hour) + ":" + xUtil.pad(minutes);
       }
 
+      let timeStart = this.timeArray[0];
       let stringPart = getString(this.timeArray[0]);
       for (let i = 1; i < this.timeArray.length; i++) {
         let dt = this.timeArray[i] - this.timeArray[i - 1];
         if (dt > 2 * 60 * 1000) {
-          stringPart += " --- " + getString((this.timeArray[i - 1]));
+          stringPart += " --- " + getString((this.timeArray[i - 1])) + " (" + calcGap(this.timeArray[i-1] - timeStart) + ")";
           content.push(stringPart);
           gaps.push(dt);
           stringPart = getString(this.timeArray[i]);
+          timeStart = this.timeArray[i];
         }
       }
 
@@ -109,8 +111,9 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
         stringPart += " --- " + getString((this.timeArray[this.timeArray.length - 1]));
         content.push(stringPart);
         gaps.push(dt);
-      } else {
-        stringPart += " --- now";
+      }
+      else {
+        stringPart += " --- now"  + " (" + calcGap(now - timeStart) + ")";;
       }
       content.push(stringPart);
     }
@@ -122,23 +125,6 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
     let items = []
     let contentStyle : TextStyle = { fontSize: 15, width:screenWidth-60, height:30 }
     let gapStyle     : TextStyle = { fontSize: 15, width:screenWidth-60, height:30, textAlign:'right', fontWeight:'bold', color: colors.red.hex}
-
-    let calcGap = function(ms) {
-      let days = Math.floor(ms / (24*3600*1000))
-      let hours = Math.floor(ms / (3600*1000))%24;
-      let minutes = Math.floor(ms / (60*1000))%60;
-      let seconds = Math.floor(ms / (1000))% 60
-      if (ms > 24*3600*1000) {
-        return days + "d " + hours + "h " + minutes + "m " + seconds + 's';
-      }
-      else if (ms > 3600*1000) {
-        // show hours
-        return hours + "h " + minutes + "m " + seconds + 's';
-      }
-      else {
-        return minutes + "m " + seconds + 's';
-      }
-    }
 
     if (this.state.content.length > 0) {
       items.push(<Text key={'content' + 0} style={contentStyle}>{this.state.content[0]}</Text>)
@@ -178,5 +164,22 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
         </ScrollView>
       </Background>
     );
+  }
+}
+
+let calcGap = function(ms) {
+  let days = Math.floor(ms / (24*3600*1000))
+  let hours = Math.floor(ms / (3600*1000))%24;
+  let minutes = Math.floor(ms / (60*1000))%60;
+  let seconds = Math.floor(ms / (1000))% 60
+  if (ms > 24*3600*1000) {
+    return days + "d " + hours + "h " + minutes + "m " + seconds + 's';
+  }
+  else if (ms > 3600*1000) {
+    // show hours
+    return hours + "h " + minutes + "m " + seconds + 's';
+  }
+  else {
+    return minutes + "m " + seconds + 's';
   }
 }

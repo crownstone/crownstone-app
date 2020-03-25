@@ -52,6 +52,7 @@ export class PermissionBase {
 
   canChangeAbilities         = false // a
   canChangeBehaviours        = false // a or m
+  canChangeScenes            = false // a or m
 }
 
 const EmptyPermissions = new PermissionBase();
@@ -176,6 +177,7 @@ export class PermissionClass extends PermissionBase {
         this.canEditSphere           = true; // admin and member
 
         this.canChangeBehaviours     = true // a or m
+        this.canChangeScenes         = true // a or m
 
       case 'guest':
         // nothing will be added.

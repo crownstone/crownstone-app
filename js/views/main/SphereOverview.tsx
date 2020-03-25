@@ -48,7 +48,7 @@ const ZOOM_LEVELS = {
 
 export class SphereOverview extends LiveComponent<any, any> {
   static options(props) {
-    getTopBarProps(core.store.getState(), props, {}, null);
+    getTopBarProps(core.store.getState(), props, {});
     return TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE);
   }
 
@@ -160,7 +160,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
 
   _updateNavBar() {
-    getTopBarProps(core.store.getState(), this.props, this.state, this.viewId);
+    getTopBarProps(core.store.getState(), this.props, this.state);
     Navigation.mergeOptions(this.props.componentId, TopBarUtil.getOptions(NAVBAR_PARAMS_CACHE))
   }
 
@@ -277,6 +277,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
       let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
+
       background = core.background.lightBlur;
 
       if (this.state.zoomLevel === ZOOM_LEVELS.sphere) {
@@ -335,7 +336,7 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 }
 
-function getTopBarProps(state, props, viewState, viewId) {
+function getTopBarProps(state, props, viewState) {
   let { sphereId, sphere } = SphereUtil.getActiveSphere(state);
   LOG.info("UPDATING SPHERE OVERVIEW NAV BAR", viewState.zoomLevel === ZOOM_LEVELS.sphere , (sphereId === null && Object.keys(state.spheres).length > 0));
   if (viewState.arrangingRooms === true) {

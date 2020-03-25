@@ -97,7 +97,6 @@
 		FA4722C221DE74A6008795C5 /* RssiRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F321CCF07000811933 /* RssiRowController.swift */; };
 		FA4722C321DE74A8008795C5 /* SwitchRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F221CCF07000811933 /* SwitchRowController.swift */; };
 		FA4722C421DE74AB008795C5 /* SliderRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA86C6F121CCF07000811933 /* SliderRowController.swift */; };
-		FA47536523AB9526002AB89F /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA47536423AB9525002AB89F /* BluenetBasicLocalization.framework */; };
 		FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA31EAE30F9001C625D /* BluenetShared.framework */; };
 		FA570EAC1EAE30F9001C625D /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA41EAE30F9001C625D /* CryptoSwift.framework */; };
 		FA570EAD1EAE30F9001C625D /* iOSDFULibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */; };
@@ -131,6 +130,7 @@
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FABB8A0121E0E4FA007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
+		FAC85BB0242A506A00CF9946 /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC85BAF242A506A00CF9946 /* BluenetBasicLocalization.framework */; };
 		FD641FF3E1F2479382087025 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55F5CEDF77EE4B91A302901C /* Fontisto.ttf */; };
 		FDE6E52417DF40F4A46D33F6 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB14A08CE83A4CF793448D6B /* FontAwesome5_Solid.ttf */; };
 /* End PBXBuildFile section */
@@ -560,7 +560,6 @@
 		FA4722BB21DE7473008795C5 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		FA4722BC21DE7473008795C5 /* BluenetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluenetManager.swift; sourceTree = "<group>"; };
 		FA4722BD21DE7473008795C5 /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
-		FA47536423AB9525002AB89F /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetBasicLocalization-azxiscyvrcnjmggarodvuyedvabd/Build/Products/Debug-iphoneos/BluenetBasicLocalization.framework"; sourceTree = "<group>"; };
 		FA570EA31EAE30F9001C625D /* BluenetShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetShared.framework; path = Carthage/Build/iOS/BluenetShared.framework; sourceTree = "<group>"; };
 		FA570EA41EAE30F9001C625D /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
 		FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iOSDFULibrary.framework; path = Carthage/Build/iOS/iOSDFULibrary.framework; sourceTree = "<group>"; };
@@ -601,6 +600,7 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
+		FAC85BAF242A506A00CF9946 /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetBasicLocalization-azxiscyvrcnjmggarodvuyedvabd/Build/Products/Debug-iphoneos/BluenetBasicLocalization.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -649,6 +649,7 @@
 				FA274F062410171B00D7C858 /* libRNCAsyncStorage.a in Frameworks */,
 				FA274F072410171B00D7C858 /* libRNDeviceInfo.a in Frameworks */,
 				FA274F082410171B00D7C858 /* libRNFS.a in Frameworks */,
+				FAC85BB0242A506A00CF9946 /* BluenetBasicLocalization.framework in Frameworks */,
 				FA274F092410171B00D7C858 /* libRNSVG.a in Frameworks */,
 				FA274F0A2410171B00D7C858 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
 				FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */,
@@ -657,7 +658,6 @@
 				FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */,
 				FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */,
 				FA12B7D422450C84003B017E /* JavaScriptCore.framework in Frameworks */,
-				FA47536523AB9526002AB89F /* BluenetBasicLocalization.framework in Frameworks */,
 				FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */,
 				FA570EB01EAE30F9001C625D /* Zip.framework in Frameworks */,
 				FA570EAF1EAE30F9001C625D /* SwiftyJSON.framework in Frameworks */,
@@ -767,11 +767,11 @@
 				FA3F740823F6F2ED009045A7 /* Roboto-LightItalic.ttf */,
 				FA3F740923F6F2ED009045A7 /* Roboto-Medium.ttf */,
 				FA3F740723F6F2EC009045A7 /* Roboto-MediumItalic.ttf */,
+				FAC85BAF242A506A00CF9946 /* BluenetBasicLocalization.framework */,
 				FA3F740C23F6F2ED009045A7 /* Roboto-Thin.ttf */,
 				FA3F740423F6F2EC009045A7 /* Roboto-ThinItalic.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
 				FA59F3CF23F556AF00F912FB /* BluenetLib.framework */,
-				FA47536423AB9525002AB89F /* BluenetBasicLocalization.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
 				FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */,
@@ -1691,7 +1691,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/iOSDFULibrary.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
+				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetBasicLocalization-azxiscyvrcnjmggarodvuyedvabd/Build/Products/Debug-iphoneos/BluenetBasicLocalization.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
 			);
 			name = "Run Script";
@@ -2000,6 +2000,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)",
 					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/",
+					"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetBasicLocalization-azxiscyvrcnjmggarodvuyedvabd/Build/Products/Debug-iphoneos/",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
