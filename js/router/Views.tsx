@@ -112,7 +112,9 @@ import { SphereEditMap }                           from "../views/main/editSubvi
 import { SettingsDatabaseExplorer }                from "../views/settingsViews/dev/SettingsDatabaseExplorer";
 import { DEV_Batching }                            from "../views/dev/batching/DEV_Batching";
 import { SettingsUptime }                          from "../views/settingsViews/dev/SettingsUptime";
-import { ScenesOverview } from "../views/scenesViews/ScenesOverview";
+import { ScenesOverview }                          from "../views/scenesViews/ScenesOverview";
+import { SceneCreate }                             from "../views/scenesViews/SceneCreate";
+import { PictureSlideShow } from "../views/scenesViews/PictureSlideShow";
 
 
 
@@ -203,6 +205,9 @@ export const Views = {
   ToonSettings:                      ToonSettings,
   ScenesOverview:                    ScenesOverview,
 
+  SceneCreate:                       SceneCreate,
+  PictureSlideShow:                  PictureSlideShow,
+
 
   // Overlays:
 
@@ -235,5 +240,5 @@ export const Views = {
   DEV_UserData:                  DEV_UserData,
 
   // Overlays:
-  NumericOverlay:            NumericOverlay,
+  NumericOverlay:                NumericOverlay,
 };

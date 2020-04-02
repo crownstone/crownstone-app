@@ -17,6 +17,8 @@ import React from "react";
 
 
 import "./TextFontFix";
+import { IconDevSelector } from "../views/development/IconDevSelector";
+import { IconDebug } from "../views/development/IconDebug";
 
 
 let viewsLoaded = false;
@@ -91,6 +93,6 @@ Navigation.events().registerAppLaunchedListener(() => {
   NavigationUtil.setRoot(Stacks.initial());
 
   // overwrite for Icon Debug view
-  // Navigation.registerComponent("IconDevSelector",        () => IconDevSelector);
+  // Navigation.registerComponent("IconDevSelector",        () => IconDebug);
   // NavigationUtil.setRoot({ component: { name: 'IconDevSelector' }});
 });

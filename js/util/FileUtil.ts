@@ -38,6 +38,7 @@ export const FileUtil = {
   },
 
   safeDeleteFile: function(uri) {
+    console.log("URI", uri)
     return new Promise((resolve, reject) => {
       RNFS.exists(uri)
         .then((fileExists) => {
