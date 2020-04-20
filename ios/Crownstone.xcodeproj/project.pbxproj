@@ -73,7 +73,6 @@
 		FA274F0A2410171B00D7C858 /* libRNUncontrolledDatePickerIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC22410144F00D7C858 /* libRNUncontrolledDatePickerIOS.a */; };
 		FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC42410144F00D7C858 /* libRNVectorIcons.a */; };
 		FA274F0C2410171B00D7C858 /* libSentry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC62410144F00D7C858 /* libSentry.a */; };
-		FA274F0D2410171B00D7C858 /* libSentryReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274EC82410144F00D7C858 /* libSentryReactNative.a */; };
 		FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274ECA2410144F00D7C858 /* libYoga.a */; };
 		FA3645EE22FAE03B0062591B /* flaticon_custom_selection_1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645EB22FAE03B0062591B /* flaticon_custom_selection_1.ttf */; };
 		FA3645EF22FAE03B0062591B /* flaticon_household.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3645EC22FAE03B0062591B /* flaticon_household.ttf */; };
@@ -409,13 +408,6 @@
 			remoteGlobalIDString = 0115C3C00C175D77422084DD0542CE6F;
 			remoteInfo = Sentry;
 		};
-		FA274EC72410144F00D7C858 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 67E6685C65F82EFBE6878DE54FBC3828;
-			remoteInfo = SentryReactNative;
-		};
 		FA274EC92410144F00D7C858 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
@@ -436,6 +428,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 0B9BD901B3EB04B824A157C85265F044;
 			remoteInfo = RNCPushNotificationIOS;
+		};
+		FA6FDE10244DDD82002BEB27 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0869B584D93A292F0E54724F0B8DA382;
+			remoteInfo = RNSentry;
 		};
 		FA86C68C21CCEECF00811933 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -676,7 +675,6 @@
 				FA274F0A2410171B00D7C858 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
 				FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */,
 				FA274F0C2410171B00D7C858 /* libSentry.a in Frameworks */,
-				FA274F0D2410171B00D7C858 /* libSentryReactNative.a in Frameworks */,
 				FA274F0E2410171B00D7C858 /* libYoga.a in Frameworks */,
 				FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */,
 				FA12B7D422450C84003B017E /* JavaScriptCore.framework in Frameworks */,
@@ -926,11 +924,11 @@
 				FABC3D0424349B9100F4002E /* libRNGestureHandler.a */,
 				FA345D9424111FEA00C288D3 /* libRNLocalize.a */,
 				FABC3D0624349B9100F4002E /* libRNReanimated.a */,
+				FA6FDE11244DDD82002BEB27 /* libRNSentry.a */,
 				FA274EC02410144F00D7C858 /* libRNSVG.a */,
 				FA274EC22410144F00D7C858 /* libRNUncontrolledDatePickerIOS.a */,
 				FA274EC42410144F00D7C858 /* libRNVectorIcons.a */,
 				FA274EC62410144F00D7C858 /* libSentry.a */,
-				FA274EC82410144F00D7C858 /* libSentryReactNative.a */,
 				FA274ECA2410144F00D7C858 /* libYoga.a */,
 			);
 			name = Products;
@@ -1467,13 +1465,6 @@
 			remoteRef = FA274EC52410144F00D7C858 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FA274EC82410144F00D7C858 /* libSentryReactNative.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSentryReactNative.a;
-			remoteRef = FA274EC72410144F00D7C858 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FA274ECA2410144F00D7C858 /* libYoga.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1493,6 +1484,13 @@
 			fileType = archive.ar;
 			path = libRNCPushNotificationIOS.a;
 			remoteRef = FA5C2BBC24165FEC00358011 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA6FDE11244DDD82002BEB27 /* libRNSentry.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSentry.a;
+			remoteRef = FA6FDE10244DDD82002BEB27 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FABC3D0424349B9100F4002E /* libRNGestureHandler.a */ = {

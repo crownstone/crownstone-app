@@ -43,7 +43,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
     this.state = {
       editMode: true,
       data: listOfItems,
-      invalidationkey:'test'
+      invalidationkey:'ImHereForTheDraggable'
     }
 
     this.localEventBus = new EventBusClass();
@@ -85,7 +85,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
   }
 
   componentDidMount(): void {
-    NavigationUtil.launchModal("ScenePictureGallery");
+    // NavigationUtil.launchModal("ScenePictureGallery");
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -109,39 +109,40 @@ export class ScenesOverview extends LiveComponent<any, any> {
     let state = core.store.getState();
     let activeSphere = state.app.activeSphere;
     let roundness = 10;
+    let content;
 
     if (activeSphere && state.spheres[activeSphere]) {
-      return (
-        <View style={{backgroundColor: colors.csBlueDarker.hex, flex:1}}>
-          <View style={{backgroundColor: colors.csOrange.hex, flex:1, borderRadius:roundness, overflow: 'hidden'}}>
-            <View style={{height:2, width: screenWidth, backgroundColor: "transparent"}} />
-            <View>
-              <Background image={core.background.lightBlur} style={{borderTopRightRadius:roundness, borderTopLeftRadius:roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true}>
-                <View style={{ flexGrow: 1, alignItems:'center', paddingTop: 20 }}>
-                  <SlideFadeInView visible={this.state.editMode} height={100}>
-                    <CreateNewItem callback={()=>{}} />
-                  </SlideFadeInView>
-                  <DraggableFlatList
-                    data={this.state.data}
-                    onRelease={() => { this.localEventBus.emit("END_DRAG" );}}
-                    renderItem={({ item, index, drag, isActive }) => { return this.renderItem( item, index, drag, isActive) } }
-                    keyExtractor={(item : any, index) => `draggable-item-${item.key}`}
-                    onDragEnd={({ data }) => { this.setState({ data })}}
-                    activationDistance={1}
-                  />
-                  <SlideFadeInView visible={this.state.editMode} height={30} style={{position:'absolute', bottom:0}}>
-                    <Text style={{fontSize:13, color: colors.black.rgba(0.5)}}>Touch and drag the arrow icons to reorder the scenes</Text>
-                  </SlideFadeInView>
-                </View>
-               </Background>
-            </View>
+      let sceneIds = Object.keys(state.spheres[activeSphere].scenes);
+      if (sceneIds.length === 0) {
+        content = (
+          <View style={{ flexGrow: 1, alignItems:'center', paddingTop: 20 }}>
+            <CreateNewItem callback={()=>{}} />
           </View>
-        </View>
-       );
+        );
+      }
+      else {
+        content = (
+          <View style={{ flexGrow: 1, alignItems:'center', paddingTop: 20 }}>
+            <SlideFadeInView visible={this.state.editMode} height={100}>
+              <CreateNewItem callback={()=>{}} />
+            </SlideFadeInView>
+            <DraggableFlatList
+              data={this.state.data}
+              onRelease={() => { this.localEventBus.emit("END_DRAG" );}}
+              renderItem={({ item, index, drag, isActive }) => { return this.renderItem( item, index, drag, isActive) } }
+              keyExtractor={(item : any, index) => `draggable-item-${item.key}`}
+              onDragEnd={({ data }) => { this.setState({ data })}}
+              activationDistance={1}
+            />
+            <SlideFadeInView visible={this.state.editMode} height={30} style={{position:'absolute', bottom:0}}>
+              <Text style={{fontSize:13, color: colors.black.rgba(0.5)}}>Touch and drag the arrow icons to reorder the scenes</Text>
+            </SlideFadeInView>
+          </View>
+         );
+       }
      }
      else {
-      return (
-        <Background image={core.background.lightBlur}>
+      content = (
           <View style={{flex:1, justifyContent:'center', padding: 30}}>
             <View style={{flex:1}} />
             <TouchableOpacity onPress={() => { NavigationUtil.launchModal("AddSphereTutorial") }}>
@@ -149,9 +150,22 @@ export class ScenesOverview extends LiveComponent<any, any> {
             </TouchableOpacity>
             <View style={{flex:1}} />
           </View>
-        </Background>
       );
     }
+
+
+    return (
+      <View style={{backgroundColor: colors.csBlueDarker.hex, flex:1}}>
+        <View style={{backgroundColor: colors.csOrange.hex, flex:1, borderRadius:roundness, overflow: 'hidden'}}>
+          <View style={{height:2, width: screenWidth, backgroundColor: "transparent"}} />
+          <View>
+            <Background image={core.background.lightBlur} style={{borderTopRightRadius:roundness, borderTopLeftRadius:roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true}>
+              {content}
+            </Background>
+          </View>
+        </View>
+      </View>
+    );
   }
 }
 

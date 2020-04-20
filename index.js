@@ -13,15 +13,15 @@ YellowBox.ignoreWarnings([
 
 // import 'react-native-console-time-polyfill';
 import { Platform } from 'react-native';
-
+import * as Sentry from "@sentry/react-native";
 import { config } from './sentrySettings'
-import { Sentry, SentryLog } from 'react-native-sentry';
 import { USE_SENTRY } from "./js/ExternalConfig";
 import { loadRoutes } from "./js/router/Routes";
 import { BackgroundProcessHandler } from "./js/backgroundProcesses/BackgroundProcessHandler";
 
 if (USE_SENTRY) {
   let sentryConfig = {
+    dsn: null,
     deactivateStacktraceMerging: true,
     autoBreadcrumbs: {
       'xhr': false,      // XMLHttpRequest
@@ -31,16 +31,18 @@ if (USE_SENTRY) {
 
   if (Platform.OS === 'android') {
     if (config.android) {
-      Sentry.config(config.android, sentryConfig).install();
+      sentryConfig.dsn = config.android;
     }
   }
   else {
     if (config.ios) {
-      Sentry.config(config.ios, sentryConfig).install();
+      sentryConfig.dsn = config.ios;
     }
   }
 
-  Sentry.captureBreadcrumb({
+  Sentry.init(sentryConfig)
+
+  Sentry.addBreadcrumb({
     category: 'AppState',
     data: {
       state: "started",

@@ -2,7 +2,7 @@ import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
   name: '',
-  stockPicture: null,
+  stockPicture:  null,
   customPicture: null,
   data: {}, // stoneUID: switchState
   updatedAt: 0,
