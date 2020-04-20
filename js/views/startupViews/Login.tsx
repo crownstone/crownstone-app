@@ -32,14 +32,13 @@ import {screenWidth, screenHeight, colors, topBarHeight} from '../styles'
 import { DEBUG_MODE_ENABLED } from '../../ExternalConfig';
 import { TopbarImitation }             from "../components/TopbarImitation";
 import { Icon }               from "../components/Icon";
-import { Sentry }             from "react-native-sentry";
 import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { createNewSphere } from "../../util/CreateSphere";
 import { Stacks } from "../../router/Stacks";
 import { base_core } from "../../base_core";
-
+import * as Sentry from "@sentry/react-native";
 
 export class Login extends Component<any, any> {
   progress : number;
@@ -360,7 +359,7 @@ lang("arguments___arguments___O_body",content),
         })
     );
 
-    Sentry.captureBreadcrumb({
+    Sentry.addBreadcrumb({
       category: 'login',
       data: {
         state: 'downloading settings'
@@ -433,7 +432,7 @@ lang("_DEBUG__err__arguments____body",stringifiedError),
 
     Promise.all(promises)
       .then(() => {
-        Sentry.captureBreadcrumb({
+        Sentry.addBreadcrumb({
           category: 'login',
           data: {
             state:'finished'

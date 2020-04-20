@@ -45,18 +45,18 @@ export const Stacks = {
   },
 
   loggedIn: function() : StackData {
-    return {
-      stack: {
-        children: [
-          { component: {
-              name: "PictureSlideShow", passProps:
-                {
-
-                },
-            }}
-        ],
-      },
-    }
+    // return {
+    //   stack: {
+    //     children: [
+    //       { component: {
+    //           name: "PictureSlideShow", passProps:
+    //             {
+    //
+    //             },
+    //         }}
+    //     ],
+    //   },
+    // }
     return {
       bottomTabs: {
         id: 'bottomTabs',

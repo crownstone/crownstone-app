@@ -160,7 +160,6 @@ export class SettingsProfile extends LiveComponent<any, any> {
           type: 'switch',
           callback: (newValue) => {
             setTimeout(() => {
-              NotificationHandler._verifyState();
               store.dispatch({
                 type: 'SET_DEVELOPER_MODE',
                 data: { developer: newValue }

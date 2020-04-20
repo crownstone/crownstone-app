@@ -2,7 +2,7 @@ import { Alert, AppState } from "react-native";
 import { DISABLE_NATIVE } from '../../ExternalConfig'
 import { LOGi }      from '../../logging/Log'
 import { Bluenet }        from './Bluenet'
-import { Sentry }         from "react-native-sentry";
+import * as Sentry from "@sentry/react-native";
 import { core } from "../../core";
 
 export const BluenetPromise : any = function(functionName) {
@@ -13,7 +13,7 @@ export const BluenetPromise : any = function(functionName) {
       resolve()
     }
     else {
-      Sentry.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         category: 'ble',
         data: {
           functionCalled: functionName,
@@ -25,7 +25,7 @@ export const BluenetPromise : any = function(functionName) {
       let promiseResolver = (result) => {
         if (result.error === true) {
           LOGi.bch("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data, "for ID:", id, "AppState:", AppState.currentState);
-          Sentry.captureBreadcrumb({
+          Sentry.addBreadcrumb({
             category: 'ble',
             data: {
               functionCalled: functionName,
@@ -38,7 +38,7 @@ export const BluenetPromise : any = function(functionName) {
         }
         else {
 			LOGi.bch("BluenetPromise: promise resolved in bridge: ", functionName, " data:", result.data, "for ID:", id, "AppState:", AppState.currentState);
-          Sentry.captureBreadcrumb({
+          Sentry.addBreadcrumb({
             category: 'ble',
             data: {
               functionCalled: functionName,

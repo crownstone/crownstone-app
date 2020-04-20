@@ -13,16 +13,9 @@ import { useState } from "react";
 import { Circle } from "../components/Circle";
 import { SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 import Slider from "@react-native-community/slider";
-import ImagePicker from 'react-native-image-picker';
 import { FileUtil } from "../../util/FileUtil";
-// More info on all the options is below in the API Reference... just some common use cases shown here
-const options = {
-  title: 'Select Picture',
-  storageOptions: {
-    skipBackup: true,
-    path: 'images',
-  },
-};
+import { PictureCircle } from "../components/PictureCircle";
+import { PictureGallerySelector } from "../components/PictureGallerySelector";
 
 
 export class SceneCreate extends LiveComponent<any, any> {
@@ -40,7 +33,7 @@ export class SceneCreate extends LiveComponent<any, any> {
     this.sceneData =  {
       name:'',
       sphereId: core.store.getState()?.app?.activeSphere || null,
-      stoneData: {},
+      data: {},
       pictureURI: null
     };
   }
@@ -105,13 +98,13 @@ export class SceneCreate extends LiveComponent<any, any> {
               locationName={locationName}
               selection={(selected) => {
                 if (selected) {
-                  this.sceneData.stoneData[stoneId] = {
+                  this.sceneData.data[stoneId] = {
                     selected: true,
-                    switchState: this.sceneData.stoneData[stoneId]?.switchState || stone.state.state
+                    switchState: this.sceneData.data[stoneId]?.switchState || stone.state.state
                   }
                 }
                 else {
-                  delete this.sceneData.stoneData[stoneId];
+                  delete this.sceneData.data[stoneId];
                 }
               }}/>}
       )
@@ -135,7 +128,7 @@ export class SceneCreate extends LiveComponent<any, any> {
     let sortData = {};
 
     stoneIds.forEach((stoneId) => {
-      if (this.sceneData.stoneData[stoneId] === undefined) { return; }
+      if (this.sceneData.data[stoneId] === undefined) { return; }
 
       let stone = state.spheres[sphereId].stones[stoneId];
       let locationId = stone.config.locationId;
@@ -152,9 +145,9 @@ export class SceneCreate extends LiveComponent<any, any> {
             sphereId={sphereId}
             stoneId={stoneId}
             locationName={locationName}
-            state={this.sceneData.stoneData[stoneId].switchState}
+            state={this.sceneData.data[stoneId].switchState}
             setStateCallback={(switchState) => {
-              this.sceneData.stoneData[stoneId] = {
+              this.sceneData.data[stoneId] = {
                 selected: true,
                 switchState: switchState,
               }
@@ -184,7 +177,7 @@ export class SceneCreate extends LiveComponent<any, any> {
         label: state.spheres[sphereId].config.name,
         nextCard:'stoneSelection',
         onSelect: (result) => {
-          this.sceneData.sphereId = sphereId
+          this.sceneData.sphereId = sphereId;
         }}
       );
     });
@@ -258,15 +251,53 @@ export class SceneCreate extends LiveComponent<any, any> {
       },
       picture: {
         header: "And finally...",
-        subHeader: "Let's pick an image! Something to quickly remember me by :)",
-        editableItem: (state, setState) => {},
-        options: [{label: "Creta", textAlign:'right', onSelect: (result) => { }}]
+        subHeader: "Let's pick an image! Something to quickly remember it by.",
+        backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
+        textColor: colors.white.hex,
+        editableItem: (state, setState) => {
+          return (
+            <View style={{...styles.centered, flex:1}}>
+              <PictureGallerySelector
+                isSquare={true}
+                value={state && state.picture || this.sceneData.picture }
+                callback={(pictureUrl, source) => {
+                  this.sceneData.picture = pictureUrl;
+
+                  let newState = {};
+                  if (state !== "") {
+                    newState = {...state};
+                  }
+                  newState["picture"] = pictureUrl;
+                  setState(newState);
+                  this.forceUpdate();
+                }}
+                removePicture={() => {
+                  this.removePictureQueue.push(this.sceneData.picture);
+                  this.sceneData.picture = null;
+                  let newState = {};
+                  if (state !== "") {
+                    newState = { ...state };
+                  }
+                  newState["picture"] = null;
+                  setState(newState);
+                  this.forceUpdate();
+                }}
+                size={0.22*screenHeight}
+              />
+            </View>
+          )
+        },
+        options: [{label: "Create Scene!", textAlign:'right', onSelect: (result) => {
+
+
+
+        }}]
       },
     }
   }
 
   render() {
-    let backgroundImage = require('../../images/backgrounds/behaviourMix.png');
+    let backgroundImage = require('../../images/backgrounds/plugBackgroundFade.png');
     let textColor = colors.white.hex;
     if (this._interview) {
       backgroundImage = this._interview.getBackgroundFromCard() || backgroundImage;
@@ -338,7 +369,7 @@ function StoneRow({sphereId, stoneId, locationName, selection}) {
   return (
     <TouchableOpacity
       style={containerStyle}
-      onPress={() => { selection(!selected); setSelected(!selected);  }}
+      onPress={() => { selection(!selected); setSelected(!selected); }}
     >
       { content }
       <SlideSideFadeInView width={50} visible={!selected}></SlideSideFadeInView>

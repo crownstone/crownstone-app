@@ -19,18 +19,7 @@ class NotificationHandlerClass {
     let state = core.store.getState();
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
-    if (state.app.notificationToken !== null || device) {
-      this.notificationPermissionGranted = false;
-      LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
-      this.request();
-    }
-  }
-
-  _verifyState() {
-    let state = core.store.getState();
-    let device = Util.data.getDevice(state);
-    // double check the token if we should have one.
-    if (state.app.notificationToken !== null || device) {
+    if (state.app.notificationToken === null || device === null) {
       this.notificationPermissionGranted = false;
       LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();

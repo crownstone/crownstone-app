@@ -11,7 +11,7 @@ import { getGlobalIdMap }           from "./modelSyncs/SyncingBase";
 import { KeySyncer }                from "./modelSyncs/KeySyncer";
 import { Scheduler }                from "../../../logic/Scheduler";
 import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
-import { Sentry }                   from "react-native-sentry";
+import * as Sentry from "@sentry/react-native";
 import { PreferenceSyncer }         from "./modelSyncs/PreferencesSyncer";
 import { core } from "../../../core";
 import { CloudPoller } from "../../../logic/CloudPoller";
@@ -57,7 +57,7 @@ export const sync = {
 
     core.eventBus.emit("CloudSyncStarting");
 
-    Sentry.captureBreadcrumb({
+    Sentry.addBreadcrumb({
       category: 'sync',
       data: {
         state:'start'
@@ -149,8 +149,10 @@ export const sync = {
           core.store.batchDispatch(actions);
         }
 
-        LOG.info("Sync: Requesting notification permissions during updating of the device.");
-        NotificationHandler.request();
+        if (core.store.getState().app.notificationToken === null) {
+          LOG.info("Sync: Requesting notification permissions during updating of the device.");
+          NotificationHandler.request();
+        }
 
         if (reloadOfTrackingRequired === true) {
           core.eventBus.emit("reloadTracking")
@@ -167,7 +169,7 @@ export const sync = {
         CLOUD.__syncTriggerDatabaseEvents = true;
         cancelFallbackCallback();
 
-        Sentry.captureBreadcrumb({
+        Sentry.addBreadcrumb({
           category: 'sync',
           data: {
             state:'success'
@@ -191,7 +193,7 @@ export const sync = {
         //   core.store.batchDispatch(actions);
         // }
 
-        Sentry.captureBreadcrumb({
+        Sentry.addBreadcrumb({
           category: 'sync',
           data: {
             state:'failed',

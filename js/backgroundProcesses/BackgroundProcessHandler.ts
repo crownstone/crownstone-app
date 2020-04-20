@@ -26,7 +26,7 @@ import { LogProcessor }          from "../logging/LogProcessor";
 import { BleLogger }             from "../native/advertisements/BleLogger";
 import { StoneManager }          from "../native/advertisements/StoneManager";
 import { MeshUtil }              from "../util/MeshUtil";
-import { Sentry }                from "react-native-sentry";
+import * as Sentry from "@sentry/react-native";
 import { ToonIntegration }       from "./thirdParty/ToonIntegration";
 import { EncryptionManager }     from "../native/libInterface/Encryption";
 import { BroadcastStateManager } from "./BroadcastStateManager";
@@ -264,7 +264,7 @@ class BackgroundProcessHandlerClass {
     AppState.addEventListener('change', (appState) => {
       LOG.info("App State Change", appState);
 
-      Sentry.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         category: 'AppState',
         data: {
           state: appState,

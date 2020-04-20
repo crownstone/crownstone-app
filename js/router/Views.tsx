@@ -114,7 +114,7 @@ import { DEV_Batching }                            from "../views/dev/batching/D
 import { SettingsUptime }                          from "../views/settingsViews/dev/SettingsUptime";
 import { ScenesOverview }                          from "../views/scenesViews/ScenesOverview";
 import { SceneCreate }                             from "../views/scenesViews/SceneCreate";
-import { PictureSlideShow } from "../views/scenesViews/PictureSlideShow";
+import { ScenePictureGallery }                     from "../views/scenesViews/ScenePictureGallery";
 
 
 
@@ -206,7 +206,7 @@ export const Views = {
   ScenesOverview:                    ScenesOverview,
 
   SceneCreate:                       SceneCreate,
-  PictureSlideShow:                  PictureSlideShow,
+  ScenePictureGallery:               ScenePictureGallery,
 
 
   // Overlays:

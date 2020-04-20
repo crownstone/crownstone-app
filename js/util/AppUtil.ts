@@ -11,7 +11,7 @@ import { Bluenet }               from '../native/libInterface/Bluenet';
 import {LOG, LOGe} from "../logging/Log";
 import {CLOUD} from "../cloud/cloudAPI";
 import {Util} from "./Util";
-import { Sentry } from "react-native-sentry";
+import * as Sentry from "@sentry/react-native";
 import {Scheduler} from "../logic/Scheduler";
 import { core } from "../core";
 import { NavigationUtil } from "./NavigationUtil";
@@ -102,7 +102,7 @@ export const AppUtil = {
 
   _logOut: function(store, gracefulExit) {
 
-    Sentry.captureBreadcrumb({
+    Sentry.addBreadcrumb({
       category: 'logout',
       data: {
         state:'startLogOut'

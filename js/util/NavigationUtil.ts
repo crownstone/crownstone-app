@@ -1,5 +1,5 @@
 import { Navigation, OptionsModalPresentationStyle } from "react-native-navigation";
-import { Sentry } from "react-native-sentry";
+import * as Sentry from "@sentry/react-native";
 import { LOGd, LOGi, LOGw } from "../logging/Log";
 
 const BASE_TAB_NAME = "BASE_TAB";
@@ -833,7 +833,7 @@ export const NavigationUtil = {
 
 
 function addSentryLog(methodName: string, data: string) {
-  Sentry.captureBreadcrumb({
+  Sentry.addBreadcrumb({
     category: 'Navigation',
     data: {
       methodName: methodName,

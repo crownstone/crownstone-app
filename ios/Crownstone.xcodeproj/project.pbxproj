@@ -465,6 +465,13 @@
 			remoteGlobalIDString = C777CF2FB1E39A45CBBDB54E8693F471;
 			remoteInfo = RNReanimated;
 		};
+		FAE05691243765B0003BE780 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CC9CF62342D0D8A46D8176D06AABE411;
+			remoteInfo = "react-native-image-picker";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -781,11 +788,11 @@
 				FA3F740823F6F2ED009045A7 /* Roboto-LightItalic.ttf */,
 				FA3F740923F6F2ED009045A7 /* Roboto-Medium.ttf */,
 				FA3F740723F6F2EC009045A7 /* Roboto-MediumItalic.ttf */,
-				FAC85BAF242A506A00CF9946 /* BluenetBasicLocalization.framework */,
 				FA3F740C23F6F2ED009045A7 /* Roboto-Thin.ttf */,
 				FA3F740423F6F2EC009045A7 /* Roboto-ThinItalic.ttf */,
-				FABC3D0724349B9700F4002E /* BluenetLib.framework */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
+				FAC85BAF242A506A00CF9946 /* BluenetBasicLocalization.framework */,
+				FABC3D0724349B9700F4002E /* BluenetLib.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
 				FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */,
@@ -895,6 +902,7 @@
 				FA274E942410144F00D7C858 /* libReact-jsinspector.a */,
 				FA274E962410144F00D7C858 /* libreact-native-blur.a */,
 				FA274E982410144F00D7C858 /* libreact-native-camera.a */,
+				FAE05692243765B0003BE780 /* libreact-native-image-picker.a */,
 				FA274E9A2410144F00D7C858 /* libreact-native-image-resizer.a */,
 				FA274E9C2410144F00D7C858 /* libreact-native-keep-awake.a */,
 				FA274E9E2410144F00D7C858 /* libreact-native-maps.a */,
@@ -1499,6 +1507,13 @@
 			fileType = archive.ar;
 			path = libRNReanimated.a;
 			remoteRef = FABC3D0524349B9100F4002E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FAE05692243765B0003BE780 /* libreact-native-image-picker.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libreact-native-image-picker.a";
+			remoteRef = FAE05691243765B0003BE780 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

@@ -406,6 +406,9 @@ export const xUtil = {
         picture = picture.path;
       }
     }
+    if (typeof picture === 'number') {
+      return picture
+    }
 
     let pictureUri = picture;
 

@@ -257,18 +257,18 @@ PODS:
     - React
   - RNReanimated (1.7.1):
     - React
+  - RNSentry (1.3.7):
+    - React
+    - Sentry (~> 4.4.0)
   - RNSVG (11.0.1):
     - React
   - RNUncontrolledDatePickerIOS (1.0.0):
     - React
   - RNVectorIcons (6.6.0):
     - React
-  - Sentry (4.1.3):
-    - Sentry/Core (= 4.1.3)
-  - Sentry/Core (4.1.3)
-  - SentryReactNative (0.43.2):
-    - React
-    - Sentry (~> 4.1.3)
+  - Sentry (4.4.3):
+    - Sentry/Core (= 4.4.3)
+  - Sentry/Core (4.4.3)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -315,10 +315,10 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNUncontrolledDatePickerIOS (from `../node_modules/react-native-uncontrolled-date-picker-ios`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
-  - SentryReactNative (from `../node_modules/react-native-sentry`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -407,14 +407,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-localize"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNUncontrolledDatePickerIOS:
     :path: "../node_modules/react-native-uncontrolled-date-picker-ios"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
-  SentryReactNative:
-    :path: "../node_modules/react-native-sentry"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -460,11 +460,11 @@ SPEC CHECKSUMS:
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNLocalize: a734b53c45e77acd3ffb78b92e63bb4d6cd13257
   RNReanimated: 4e102df74a9674fa943e05f97f3362b6e44d0b48
+  RNSentry: 370623102247ebea20191b5fb549ecc7a275b324
   RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
   RNUncontrolledDatePickerIOS: fe14888be90717d80d179ff4b3fd04e4046e3600
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
-  Sentry: 4e8a17b61ddd116f89536cc81d567fdee1ebca96
-  SentryReactNative: 07237139c00366ea2e75ae3e5c566e7a71c27a90
+  Sentry: 14bdd673870e8cf64932b149fad5bbbf39a9b390
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
 PODFILE CHECKSUM: 086e1da6c59ddda1257fe1578e4b1f8351914ed0

@@ -23,29 +23,51 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { xUtil } from "../../util/StandAloneUtil";
 
+import ImagePicker from 'react-native-image-picker';
+
 export class PictureCircle extends Component<any, any> {
   triggerOptions() {
-    if (Platform.OS === 'android') {
-      this.askForPermissions();
-    } else {
-      // for iOS show the popup menu
-      this.showOptions();
-    }
+    const options = {
+      title: 'Select Picture',
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        this.props.callback(response.uri)
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+      }
+    });
+
+
+    // if (Platform.OS === 'android') {
+    //   this.askForPermissions();
+    // } else {
+    //   // for iOS show the popup menu
+    //   this.showOptions();
+    // }
   }
 
-  showOptions() {
-    let buttons = [];
-
-    if (Platform.OS === 'android') {
-      buttons.push({ text: lang("Take_Photo"),          callback: () => { NavigationUtil.launchModal( 'PictureView',   {selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
-      buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { NavigationUtil.launchModal( 'CameraRollView',{selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
-    }
-    else {
-      buttons.push({ text: lang("Take_Picture"),    callback: () => { NavigationUtil.launchModal( 'PictureView',   {selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
-      buttons.push({ text: lang("Choose_Existing"), callback: () => { NavigationUtil.launchModal( 'CameraRollView',{selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
-    }
-    core.eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
-  }
+  // showOptions() {
+  //   let buttons = [];
+  //
+  //   if (Platform.OS === 'android') {
+  //     buttons.push({ text: lang("Take_Photo"),          callback: () => { NavigationUtil.launchModal( 'PictureView',   {selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
+  //     buttons.push({ text: lang("Choose_from_Gallery"), callback: () => { NavigationUtil.launchModal( 'CameraRollView',{selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
+  //   }
+  //   else {
+  //     buttons.push({ text: lang("Take_Picture"),    callback: () => { NavigationUtil.launchModal( 'PictureView',   {selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
+  //     buttons.push({ text: lang("Choose_Existing"), callback: () => { NavigationUtil.launchModal( 'CameraRollView',{selectCallback: this.props.callback, isSquare: this.props.isSquare});}});
+  //   }
+  //   core.eventBus.emit('showPopup', {title: lang("Profile_Picture"), buttons: buttons} );
+  // }
 
   render() {
     let size = this.props.size || 60;
@@ -101,90 +123,90 @@ export class PictureCircle extends Component<any, any> {
     }
   }
 
-  askForPermissions() {
-    if (Platform.OS === 'android') {
-      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
-        .then((grantedPreviously : any) => {
-          if (grantedPreviously === true || grantedPreviously === PermissionsAndroid.RESULTS.GRANTED) {
-            return PermissionsAndroid.RESULTS.GRANTED;
-          }
-          else if (grantedPreviously === false || grantedPreviously === PermissionsAndroid.RESULTS.DENIED) {
-            return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
-          }
-          else if (grantedPreviously === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-            return new Promise(
-              (resolve,reject) => {
-                let reason =  lang("Can_t_make_a_picture_with");
-                Alert.alert(
-lang("_Sorry_arguments___OKnull_header"),
-lang("_Sorry_arguments___OKnull_body",reason),
-[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
-                  { onDismiss: () => { reject(reason) } }
-                );
-              }
-            );
-          }
-          else {
-            return PermissionsAndroid.RESULTS.GRANTED;
-          }
-        })
-        .then((granted) => {
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
-            return new Promise(
-              (resolve,reject) => { 
-                let reason =  lang("Cant_take_a_picture_witho");
-                Alert.alert(
-lang("_Sorry_arguments___OKnull_header"),
-lang("_Sorry_arguments___OKnull_body",reason),
-[{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
-                  { onDismiss: () => { reject(reason) }}
-                );
-              }
-            );
-          }
-          else {
-            return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-          }
-        })
-        .then((granted) => {
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
-            return new Promise(
-              (resolve,reject) => { 
-                let reason =  lang("Can_t_read_a_stored_pictu");
-                Alert.alert(
-                  lang("_Sorry_arguments___OKnull_header"),
-                  lang("_Sorry_arguments___OKnull_body",reason),
-                  [{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
-                  { onDismiss: () => { reject(reason) } }
-                );
-              }
-            );
-          }
-          else {
-            return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-          }
-        })
-        .then((granted) => {
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
-            return new Promise(
-              (resolve,reject) => { 
-                let reason =  lang("Can_t_store_a_captured_pi");
-                Alert.alert(
-                  lang("_Sorry_arguments___OKnull_header"),
-                  lang("_Sorry_arguments___OKnull_body",reason),
-                  [{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
-                  { onDismiss: () => { reject(reason) } }
-                );
-              }
-            );
-          }
-          else {
-            this.showOptions();
-          }
-        })
-        .catch((err) => {
-          LOGe.info("PictureCircle: Error in checking camera permission:", err);
-        })
-    }
-  }
+//   askForPermissions() {
+//     if (Platform.OS === 'android') {
+//       PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
+//         .then((grantedPreviously : any) => {
+//           if (grantedPreviously === true || grantedPreviously === PermissionsAndroid.RESULTS.GRANTED) {
+//             return PermissionsAndroid.RESULTS.GRANTED;
+//           }
+//           else if (grantedPreviously === false || grantedPreviously === PermissionsAndroid.RESULTS.DENIED) {
+//             return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+//           }
+//           else if (grantedPreviously === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+//             return new Promise(
+//               (resolve,reject) => {
+//                 let reason =  lang("Can_t_make_a_picture_with");
+//                 Alert.alert(
+// lang("_Sorry_arguments___OKnull_header"),
+// lang("_Sorry_arguments___OKnull_body",reason),
+// [{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
+//                   { onDismiss: () => { reject(reason) } }
+//                 );
+//               }
+//             );
+//           }
+//           else {
+//             return PermissionsAndroid.RESULTS.GRANTED;
+//           }
+//         })
+//         .then((granted) => {
+//           if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
+//             return new Promise(
+//               (resolve,reject) => {
+//                 let reason =  lang("Cant_take_a_picture_witho");
+//                 Alert.alert(
+// lang("_Sorry_arguments___OKnull_header"),
+// lang("_Sorry_arguments___OKnull_body",reason),
+// [{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
+//                   { onDismiss: () => { reject(reason) }}
+//                 );
+//               }
+//             );
+//           }
+//           else {
+//             return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+//           }
+//         })
+//         .then((granted) => {
+//           if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
+//             return new Promise(
+//               (resolve,reject) => {
+//                 let reason =  lang("Can_t_read_a_stored_pictu");
+//                 Alert.alert(
+//                   lang("_Sorry_arguments___OKnull_header"),
+//                   lang("_Sorry_arguments___OKnull_body",reason),
+//                   [{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
+//                   { onDismiss: () => { reject(reason) } }
+//                 );
+//               }
+//             );
+//           }
+//           else {
+//             return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+//           }
+//         })
+//         .then((granted) => {
+//           if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
+//             return new Promise(
+//               (resolve,reject) => {
+//                 let reason =  lang("Can_t_store_a_captured_pi");
+//                 Alert.alert(
+//                   lang("_Sorry_arguments___OKnull_header"),
+//                   lang("_Sorry_arguments___OKnull_body",reason),
+//                   [{text: lang("_Sorry_arguments___OKnull_left"), onPress: () => { reject(reason) }}],
+//                   { onDismiss: () => { reject(reason) } }
+//                 );
+//               }
+//             );
+//           }
+//           else {
+//             this.showOptions();
+//           }
+//         })
+//         .catch((err) => {
+//           LOGe.info("PictureCircle: Error in checking camera permission:", err);
+//         })
+//     }
+//   }
 }

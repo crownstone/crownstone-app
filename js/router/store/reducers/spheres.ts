@@ -3,6 +3,7 @@ import locationsReducer from './locations'
 import sphereUserReducer from './sphereUser'
 import stonesReducer from './stones'
 import messageReducer from './messages'
+import scenesReducer from './scenes'
 import thirdPartyReducer from './thirdParty'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import sphereKeyReducer from "./sphereKeys";
@@ -176,6 +177,7 @@ let combinedSphereReducer = combineReducers({
   users:      sphereUserReducer,
   locations:  locationsReducer,
   stones:     stonesReducer,
+  scenes:     scenesReducer,
   messages:   messageReducer,
   state:      sphereStateReducer,
   thirdParty: thirdPartyReducer,

@@ -17,6 +17,7 @@ import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import { EventBusClass } from "../../util/EventBus";
+import { AlternatingContent } from "../components/animated/AlternatingContent";
 
 
 let className = "ScenesOverview";
@@ -28,6 +29,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
   }
   _panResponder : any
   localEventBus : EventBusClass;
+  unsubscribeStoreEvents = null;
 
   constructor(props) {
     super(props);
@@ -39,7 +41,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
       {key : 'hello_5', title:"5"},
     ]
     this.state = {
-      editMode: false,
+      editMode: true,
       data: listOfItems,
       invalidationkey:'test'
     }
@@ -76,18 +78,30 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
       })
     }
-    if (buttonId === 'save') {
+    if (buttonId === 'Done') {
       this.localEventBus.emit("ChangeInEditMode", false);
       BackButtonHandler.clearOverride(className);
       this.setState({ editMode: false }, updateTopBar); }
   }
 
   componentDidMount(): void {
-    NavigationUtil.launchModal("SceneCreate")
+    NavigationUtil.launchModal("ScenePictureGallery");
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if (
+        change.updateActiveSphere ||
+        change.changeSpheres      ||
+        change.changeScenes
+      ) {
+        this.forceUpdate();
+      }
+    });
   }
 
 
   componentWillUnmount() {
+    this.unsubscribeStoreEvents();
     this.localEventBus.clearAllEvents()
   }
 
@@ -104,6 +118,9 @@ export class ScenesOverview extends LiveComponent<any, any> {
             <View>
               <Background image={core.background.lightBlur} style={{borderTopRightRadius:roundness, borderTopLeftRadius:roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true}>
                 <View style={{ flexGrow: 1, alignItems:'center', paddingTop: 20 }}>
+                  <SlideFadeInView visible={this.state.editMode} height={100}>
+                    <CreateNewItem callback={()=>{}} />
+                  </SlideFadeInView>
                   <DraggableFlatList
                     data={this.state.data}
                     onRelease={() => { this.localEventBus.emit("END_DRAG" );}}
@@ -145,6 +162,7 @@ function SceneItem({title, stateEditMode, roundness, dragAction, eventBus, isBei
   let height = 80;
   let padding = 15;
   let buttonWidth = 30;
+  let textWidth = screenWidth - 2*padding - height - (buttonWidth+50) - 10;
 
   const [editMode, setEditMode] = useState(stateEditMode);
   const [drag, setDrag] = useState(isBeingDragged);
@@ -152,7 +170,24 @@ function SceneItem({title, stateEditMode, roundness, dragAction, eventBus, isBei
   useEffect(() => { let cleaner = eventBus.on('ChangeInEditMode', (data) => { setEditMode((data) ); }); return () => { cleaner(); } });
   useEffect(() => { let cleaner = eventBus.on('END_DRAG',         ()     => { setDrag(false); }); return () => { cleaner(); } });
 
+
+
   let color = drag ? colors.menuTextSelected.rgba(0.5) : colors.white.hex
+  let subtext = <Text style={{fontStyle:'italic'}}>{ "Bedroom" }</Text>;
+  if (editMode) {
+    subtext = <AlternatingContent style={{width: textWidth, alignItems:'flex-start', height: 0.4*height}} switchDuration={3000} contentArray={[
+      <View style={{flexDirection:'row', width: textWidth, justifyContent:'flex-start'}}>
+        <Icon name={"md-arrow-round-back"} color={colors.black.hex} size={15} />
+        <Text style={{ fontStyle: 'italic' }}>{ "  Edit" }</Text>
+      </View>,
+      <View style={{flexDirection:'row', width: textWidth, justifyContent: 'flex-end'}}>
+        <Text style={{ fontStyle: 'italic' }}>{ "Hold to change order  " }</Text>
+        <Icon name={"md-arrow-round-forward"} color={colors.black.hex} size={15} />
+      </View>
+    ]} />
+  }
+  if (drag)     { subtext = <Text style={{ fontStyle: 'italic' }}>{ "Drag me up or down" }</Text>; }
+
 
   return (
     <View style={{
@@ -171,7 +206,7 @@ function SceneItem({title, stateEditMode, roundness, dragAction, eventBus, isBei
             dragAction();
           }
           else {
-                            //   execute me!
+            //   execute me!
           }
         }}>
         <View style={{width: height, height}}>
@@ -188,7 +223,7 @@ function SceneItem({title, stateEditMode, roundness, dragAction, eventBus, isBei
           <View style={{flex:4}} />
           <Text style={{fontSize:18, fontWeight:'bold'}}>{title}</Text>
           <View style={{flex:1}} />
-          <Text style={{fontStyle:'italic'}}>{ drag ? "Drag me up or down" : "Bedroom" }</Text>
+          { subtext }
           <View style={{flex:4}} />
         </View>
         <View style={{flex:1}} />
@@ -232,6 +267,46 @@ function SceneItem({title, stateEditMode, roundness, dragAction, eventBus, isBei
   )
 }
 
+
+function CreateNewItem({callback}) {
+  let height = 80;
+  let padding = 15;
+
+  let color = colors.green.rgba(0.75);
+
+  return (
+    <View style={{
+      flexDirection:'row', borderRadius: 10, overflow:'hidden',
+      backgroundColor: "transparent",
+      width:screenWidth - 2*padding, height: height,
+      alignItems:'center', marginBottom: 15
+    }}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={{flexDirection:'row', height: height, flex:1, alignItems:'center'}}
+        onPress={() => {
+          callback()
+        }}>
+        <View style={{width: height, height}}>
+          <View style={{width:height, height:height, backgroundColor: colors.csBlue.hex, ...styles.centered}}>
+            <Icon name="c3-addRounded" size={50} color={colors.white.hex} />
+          </View>
+        </View>
+        <View style={{flexDirection:'row', backgroundColor: color, flex:1, height: height, alignItems:'center'}}>
+          <View style={{width:1, height, backgroundColor: colors.black.hex}} />
+          <View style={{paddingLeft:10}}>
+            <View style={{flex:4}} />
+            <Text style={{fontSize:18, fontWeight:'bold'}}>{"Create new Scene"}</Text>
+            <View style={{flex:1}} />
+            <Text style={{fontStyle:'italic'}}>{ "Tap me to create more Scenes!" }</Text>
+            <View style={{flex:4}} />
+          </View>
+          <View style={{flex:1}} />
+        </View>
+      </TouchableOpacity>
+    </View>
+  )
+}
 
 
 function getTopBarProps(props, viewState) {

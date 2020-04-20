@@ -190,6 +190,10 @@ function checkAction(action, affectedIds) {
       eventStatus['changeMessage'] = affectedIds; break;
     case "I_RECEIVED_MESSAGE":
       eventStatus['iChangedMessage'] = affectedIds; break;
+    case "ADD_SCENE":
+    case "UPDATE_SCENE":
+    case "REMOVE_SCENE":
+      eventStatus['changeScenes'] = affectedIds; break;
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":
