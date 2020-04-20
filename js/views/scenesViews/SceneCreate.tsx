@@ -11,7 +11,7 @@ import { AnimatedBackground } from "../components/animated/AnimatedBackground";
 import { Icon } from "../components/Icon";
 import { useState } from "react";
 import { Circle } from "../components/Circle";
-import { SlideSideFadeInView } from "../components/animated/SlideFadeInView";
+import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 import Slider from "@react-native-community/slider";
 import { FileUtil } from "../../util/FileUtil";
 import { PictureCircle } from "../components/PictureCircle";
@@ -319,6 +319,7 @@ export class SceneCreate extends LiveComponent<any, any> {
           }}}
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
+          scrollEnabled={false}
           ref={     (i) => { this._interview = i; }}
           getCards={ () => { return this.getCards();}}
           update={   () => { this.forceUpdate() }}
@@ -332,14 +333,14 @@ export class SceneCreate extends LiveComponent<any, any> {
 
 function StoneRow({sphereId, stoneId, locationName, selection}) {
   let [selected, setSelected] = useState(false);
+  let [showExplanation, setShowExplanation] = useState(false);
   let stone = DataUtil.getStone(sphereId, stoneId);
 
   let height  = 80;
   let padding = 10;
 
-
   let containerStyle : ViewStyle = {
-    width:screenWidth-20,
+    width:screenWidth-2*padding,
     height: height,
     padding:padding,
     paddingLeft:15,
@@ -350,36 +351,56 @@ function StoneRow({sphereId, stoneId, locationName, selection}) {
     marginLeft:10,
     borderRadius: 10,
   };
+  let textWidth = screenWidth - 2*padding - (height-2*padding) -15-50;
 
   let circleBackgroundColor = selected ? colors.green.hex : colors.black.rgba(0.2);
-
 
   let content = (
     <React.Fragment>
       <Circle size={height-2*padding} color={circleBackgroundColor}>
         <Icon name={stone.config.icon} size={35} color={'#ffffff'} />
       </Circle>
-      <View style={{justifyContent:'center', height: height-2*padding, flex:1, paddingLeft:15}}>
+      <View style={{justifyContent:'center', height: height-2*padding, flex:1, paddingLeft:15, width:textWidth}}>
         <Text style={{fontSize: 16, fontWeight:'bold'}}>{stone.config.name}</Text>
         <Text style={{fontSize: 13}}>{locationName}</Text>
+        <SlideFadeInView height={20} visible={showExplanation}>
+          <Text style={{fontSize: 13, fontStyle:"italic"}}>{"Unlock first..."}</Text>
+        </SlideFadeInView>
       </View>
     </React.Fragment>
   );
 
-  return (
-    <TouchableOpacity
-      style={containerStyle}
-      onPress={() => { selection(!selected); setSelected(!selected); }}
-    >
-      { content }
-      <SlideSideFadeInView width={50} visible={!selected}></SlideSideFadeInView>
-      <SlideSideFadeInView width={50} visible={selected}>
-        <View style={{width:50, alignItems:'flex-end'}}>
-          <Icon name={'ios-checkmark-circle'} color={colors.green.hex} size={26} />
-        </View>
-      </SlideSideFadeInView>
-    </TouchableOpacity>
-  )
+  if (stone.config.locked) {
+    return (
+      <TouchableOpacity
+        style={containerStyle}
+        onPress={() => { setShowExplanation(true); setTimeout(() => { setShowExplanation(false); }, 2000) }}
+      >
+        { content }
+        <SlideSideFadeInView width={50} visible={stone.config.locked}>
+          <View style={{width:50, alignItems:'flex-end'}}>
+            <Icon name={"md-unlock"} color={colors.black.rgba(0.5)} size={26} />
+          </View>
+        </SlideSideFadeInView>
+      </TouchableOpacity>
+    );
+  }
+  else {
+    return (
+      <TouchableOpacity
+        style={containerStyle}
+        onPress={() => { selection(!selected); setSelected(!selected); }}
+      >
+        { content }
+        <SlideSideFadeInView width={50} visible={!selected}></SlideSideFadeInView>
+        <SlideSideFadeInView width={50} visible={selected}>
+          <View style={{width:50, alignItems:'flex-end'}}>
+            <Icon name={'ios-checkmark-circle'} color={colors.green.hex} size={26} />
+          </View>
+        </SlideSideFadeInView>
+      </TouchableOpacity>
+    );
+  }
 }
 
 
@@ -392,7 +413,7 @@ function StoneSwitchStateRow({sphereId, stoneId, locationName, state, setStateCa
 
 
   let containerStyle : ViewStyle = {
-    width:screenWidth-20,
+    width:screenWidth-2*padding,
     height: height,
     padding:padding,
     paddingLeft:15,

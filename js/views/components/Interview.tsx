@@ -47,7 +47,8 @@ let explanationStyle : TextStyle = {
 
 export class Interview extends Component<{
   getCards() : interviewCards,
-  height? : number
+  height? : number,
+  scrollEnabled? : boolean,
   update?() : void
 }, any> {
 
@@ -221,6 +222,7 @@ export class Interview extends Component<{
 
     return (
       <Carousel
+        scrollEnabled={this.props.scrollEnabled}
         ref={(c) => {
           this._carousel = c;
         }}

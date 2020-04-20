@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Text, TouchableOpacity, Image,
-  View
+  View, ViewStyle
 } from "react-native";
 
 import {screenWidth, deviceStyles, colors, styles} from "../styles";
@@ -18,6 +18,7 @@ import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/Sli
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import { EventBusClass } from "../../util/EventBus";
 import { AlternatingContent } from "../components/animated/AlternatingContent";
+import { IconCircle } from "../components/IconCircle";
 
 
 let className = "ScenesOverview";
@@ -78,14 +79,13 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
       })
     }
-    if (buttonId === 'Done') {
+    if (buttonId === 'Save') {
       this.localEventBus.emit("ChangeInEditMode", false);
       BackButtonHandler.clearOverride(className);
       this.setState({ editMode: false }, updateTopBar); }
   }
 
   componentDidMount(): void {
-    // NavigationUtil.launchModal("ScenePictureGallery");
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = core.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -111,12 +111,28 @@ export class ScenesOverview extends LiveComponent<any, any> {
     let roundness = 10;
     let content;
 
+
     if (activeSphere && state.spheres[activeSphere]) {
+
+      let createCallback = () => {
+        NavigationUtil.launchModal("SceneCreate", {sphereId: activeSphere})
+      }
       let sceneIds = Object.keys(state.spheres[activeSphere].scenes);
       if (sceneIds.length === 0) {
+        let addIconStyle : ViewStyle = {width:40, height:40, borderRadius:20, overflow:"hidden", backgroundColor:"#fff", alignItems:'center', justifyContent:'center', position:'absolute', top:0,right:0}
         content = (
-          <View style={{ flexGrow: 1, alignItems:'center', paddingTop: 20 }}>
-            <CreateNewItem callback={()=>{}} />
+          <View style={{ flexGrow: 1, alignItems:'center', padding: 30 }}>
+            <View style={{flex:1}} />
+            <TouchableOpacity style={styles.centered} onPress={() => { createCallback() }}>
+              <View style={{width: 0.5*screenWidth+36, height:0.5*0.75*screenWidth+18, overflow:'hidden', marginBottom:30}}>
+                <Image source={require('../../images/Scenes/cooking/spaghetti-4456186_1920.jpg')} style={{width: 0.5*screenWidth, height:0.5*0.75*screenWidth, borderRadius: 20, marginLeft:18, marginTop:18}} />
+                <View style={addIconStyle}><Icon name={'md-add-circle'} size={42} color={colors.green.hex}/></View>
+              </View>
+              <Text style={deviceStyles.header}>{ "Let's make a Scene!"}</Text>
+              <View style={{flex:0.2}} />
+              <Text style={deviceStyles.text}>{ "Scenes allow you to quickly set the mood by switching multiple Crownstones with just a single touch!\n\nTap the picture to get started!"}</Text>
+            </TouchableOpacity>
+            <View style={{flex:2}} />
           </View>
         );
       }
@@ -124,7 +140,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
         content = (
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop: 20 }}>
             <SlideFadeInView visible={this.state.editMode} height={100}>
-              <CreateNewItem callback={()=>{}} />
+              <CreateNewItem callback={()=>{}} isFirst={false} />
             </SlideFadeInView>
             <DraggableFlatList
               data={this.state.data}
@@ -143,12 +159,13 @@ export class ScenesOverview extends LiveComponent<any, any> {
      }
      else {
       content = (
-          <View style={{flex:1, justifyContent:'center', padding: 30}}>
+          <View style={{flex:1, padding: 30, ...styles.centered}}>
             <View style={{flex:1}} />
-            <TouchableOpacity onPress={() => { NavigationUtil.launchModal("AddSphereTutorial") }}>
+            <TouchableOpacity style={styles.centered} onPress={() => { NavigationUtil.launchModal("AddSphereTutorial") }}>
+              <Image source={require('../../images/Scenes/cooking/spaghetti-4456186_1920.jpg')} style={{width: 0.5*screenWidth, height:0.5*0.75*screenWidth, borderRadius: 20, marginBottom:30}} />
               <Text style={deviceStyles.text}>{ "Add a sphere to use Scenes! Tap here and create one now!"}</Text>
             </TouchableOpacity>
-            <View style={{flex:1}} />
+            <View style={{flex:2}} />
           </View>
       );
     }
@@ -282,11 +299,11 @@ function SceneItem({title, stateEditMode, roundness, dragAction, eventBus, isBei
 }
 
 
-function CreateNewItem({callback}) {
+function CreateNewItem({callback, isFirst}) {
   let height = 80;
   let padding = 15;
 
-  let color = colors.green.rgba(0.75);
+  let color = colors.white.rgba(0.75);
 
   return (
     <View style={{
@@ -302,17 +319,17 @@ function CreateNewItem({callback}) {
           callback()
         }}>
         <View style={{width: height, height}}>
-          <View style={{width:height, height:height, backgroundColor: colors.csBlue.hex, ...styles.centered}}>
+          <View style={{width:height, height:height, backgroundColor: colors.green.hex, ...styles.centered}}>
             <Icon name="c3-addRounded" size={50} color={colors.white.hex} />
           </View>
         </View>
         <View style={{flexDirection:'row', backgroundColor: color, flex:1, height: height, alignItems:'center'}}>
-          <View style={{width:1, height, backgroundColor: colors.black.hex}} />
+          <View style={{width:1, height, backgroundColor: colors.black.rgba(0.4)}} />
           <View style={{paddingLeft:10}}>
             <View style={{flex:4}} />
             <Text style={{fontSize:18, fontWeight:'bold'}}>{"Create new Scene"}</Text>
             <View style={{flex:1}} />
-            <Text style={{fontStyle:'italic'}}>{ "Tap me to create more Scenes!" }</Text>
+            <Text style={{fontStyle:'italic'}}>{ isFirst ? "Tap me to get started!" : "Tap me to create more Scenes!" }</Text>
             <View style={{flex:4}} />
           </View>
           <View style={{flex:1}} />
@@ -347,7 +364,7 @@ function getTopBarProps(props, viewState) {
   else {
     NAVBAR_PARAMS_CACHE = {
       title: title,
-      save:true
+      done: true
     };
   }
 

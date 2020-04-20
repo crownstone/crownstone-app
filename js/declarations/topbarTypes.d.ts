@@ -25,6 +25,7 @@ interface topbarOptions {
   edit? : boolean,
   clear? : boolean,
   save? : boolean,
+  done? : boolean,
   next? : boolean,
   create? : boolean,
   update? : boolean,

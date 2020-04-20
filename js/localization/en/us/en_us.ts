@@ -2250,6 +2250,7 @@ export default {
     Create:                              function() { return "Create" },
     Cancel:                              function() { return "Cancel" },
     Clear:                               function() { return "Clear" },
+    Done:                                function() { return "Done" },
     Save:                                function() { return "Save" },
     Update:                              function() { return "Update" },
     Edit:                                function() { return "Edit" },
