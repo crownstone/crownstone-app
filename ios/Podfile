@@ -38,6 +38,8 @@ target 'Crownstone' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'RNSentry', :path => '../node_modules/@sentry/react-native'
+
   target 'CrownstoneTests' do
     inherit! :search_paths
     # Pods for testing
