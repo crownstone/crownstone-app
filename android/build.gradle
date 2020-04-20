@@ -1,18 +1,21 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.3.10'
+    ext.kotlin_version = '1.3.71'
     ext {
-        RNNKotlinVersion = kotlin
         buildToolsVersion = "28.0.3"
         minSdkVersion = 21
         compileSdkVersion = 28
         targetSdkVersion = 28
-        supportLibVersion = "28.0.0"
-        googlePlayServicesVersion = "16.1.0"
+
+        supportLibVersion = "28.0.0" // Used by bluenet
+
+        RNNKotlinVersion = ext.kotlin_version  // Used by react-native-navigation
+        RNNKotlinStdlib = "kotlin-stdlib-jdk8" // Used by react-native-navigation
+        firebaseIidVersion = "19.0.1" // Used by react-native-device-info
+        firebaseVersion = "19.0.1" // Used by react-native-push-notification
+        googlePlayServicesVersion = "17.0.0" // Used by react-native-push-notification
         googlePlayServicesVisionVersion = "17.0.2" // Used by camera module
-        firebaseVersion = "17.3.4"
-        playServicesVersion = "16.1.0"
         androidMapsUtilsVersion = "0.5+"
     }
     repositories {
@@ -22,7 +25,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.1'
+//        classpath("com.android.tools.build:gradle:3.4.2")
+        classpath("com.android.tools.build:gradle:3.5.3") // react-native-navigation requires 3.5.3 or higher
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -47,18 +51,20 @@ allprojects {
                 }
             }
         }
-        google()
+
         mavenLocal()
         mavenCentral()
-        jcenter()
+
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url "$rootDir/../node_modules/react-native/android"
+            url("$rootDir/../node_modules/react-native/android")
         }
-//        maven {
-//            // Android JSC is installed from npm
-//            url("$rootDir/../node_modules/jsc-android/dist")
-//        }
+        maven {
+            // Android JSC is installed from npm
+            url("$rootDir/../node_modules/jsc-android/dist")
+        }
+        google()
+        jcenter()
         maven { url 'https://jitpack.io' }
     }
 }
@@ -74,21 +80,21 @@ subprojects {
     }
 }
 
-// From http://wix.github.io/react-native-navigation/#/docs/Installing
-subprojects { subproject ->
-    afterEvaluate {
-        if ((subproject.plugins.hasPlugin('android') || subproject.plugins.hasPlugin('android-library'))) {
-            android {
-                variantFilter { variant ->
-                    def names = variant.flavors*.name
-                    if (names.contains("reactNative51") || names.contains("reactNative55") || names.contains("reactNative56") || (names.contains("reactNative57") && !names.contains("reactNative57_5"))) {
-                        setIgnore(true)
-                    }
-                }
-            }
-        }
-    }
-}
+//// From http://wix.github.io/react-native-navigation/#/docs/Installing
+//subprojects { subproject ->
+//    afterEvaluate {
+//        if ((subproject.plugins.hasPlugin('android') || subproject.plugins.hasPlugin('android-library'))) {
+//            android {
+//                variantFilter { variant ->
+//                    def names = variant.flavors*.name
+//                    if (names.contains("reactNative51") || names.contains("reactNative55") || names.contains("reactNative56") || names.contains("reactNative57") || names.contains("reactNative62")) {
+//                        setIgnore(true)
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 //task wrapper(type: Wrapper) {
 //    gradleVersion = '4.4'
