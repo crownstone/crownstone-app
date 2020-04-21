@@ -113,7 +113,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
 
     if (activeSphere && state.spheres[activeSphere]) {
-
       let createCallback = () => {
         NavigationUtil.launchModal("SceneCreate", {sphereId: activeSphere})
       }
@@ -176,7 +175,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
         <View style={{backgroundColor: colors.csOrange.hex, flex:1, borderRadius:roundness, overflow: 'hidden'}}>
           <View style={{height:2, width: screenWidth, backgroundColor: "transparent"}} />
           <View>
-            <Background image={core.background.lightBlur} style={{borderTopRightRadius:roundness, borderTopLeftRadius:roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true}>
+            <Background image={core.background.lightBlur} style={{borderTopRightRadius:roundness, borderTopLeftRadius:roundness, backgroundColor: colors.white.hex}} hideOrangeLine={true} hideNotifications={true}>
               {content}
             </Background>
           </View>

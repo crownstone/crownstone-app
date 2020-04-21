@@ -203,7 +203,7 @@ let source = {
 
 const imageSize = screenWidth/11;
 
-let types = [];
+let types = [{ type: 'custom', name: 'custom', key: 'custom'}]
 let pictures = {};
 let pictureList = {};
 function prettify(name) {
