@@ -16,6 +16,9 @@ import Slider from "@react-native-community/slider";
 import { FileUtil } from "../../util/FileUtil";
 import { PictureCircle } from "../components/PictureCircle";
 import { PictureGallerySelector } from "../components/PictureGallerySelector";
+import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./ScenePictureGallery";
+import { xUtil } from "../../util/StandAloneUtil";
+import { processImage } from "../../util/Util";
 
 
 export class SceneCreate extends LiveComponent<any, any> {
@@ -31,9 +34,12 @@ export class SceneCreate extends LiveComponent<any, any> {
     super(props);
 
     this.sceneData =  {
+      id: xUtil.getUUID(),
       name:'',
       sphereId: core.store.getState()?.app?.activeSphere || null,
       data: {},
+      pictureSource: null,
+      picture: null,
       pictureURI: null
     };
   }
@@ -50,13 +56,16 @@ export class SceneCreate extends LiveComponent<any, any> {
   }
 
   componentWillUnmount(): void {
-
+    this._removeUnusedPictures();
+    this._removePicture(this.sceneData.picture);
   }
 
   cancelEdit() {
     // clean up any pictures that were taken
     this._removeUnusedPictures();
-    this._removePicture(this.sceneData.picture);
+    if (this.sceneData.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM && this.sceneData.picture) {
+      this._removePicture(this.sceneData.picture);
+    }
   }
 
   _removeUnusedPictures() {
@@ -68,7 +77,6 @@ export class SceneCreate extends LiveComponent<any, any> {
 
   _removePicture(image) {
     if (image) {
-      console.log("HE")
       FileUtil.safeDeleteFile(image).catch((e) => {console.log("ER",e)});
     }
   }
@@ -183,7 +191,7 @@ export class SceneCreate extends LiveComponent<any, any> {
     });
 
     return {
-      start: {
+      stxart: {
         header:"Let's make a Scene!",
         subHeader: "What shall we call it?",
         hasTextInputField: true,
@@ -197,17 +205,8 @@ export class SceneCreate extends LiveComponent<any, any> {
             // response: "Good choice!",
             onSelect: (result) => {
               let name = result.textfieldState;
-
-              this.sceneData.name = name;
-
-
+              this.sceneData.name = name || "My new scene";
               return true;
-              if (name == "") {
-                return false;
-              }
-              else {
-              }
-              return true
             }}
         ]
       },
@@ -249,7 +248,7 @@ export class SceneCreate extends LiveComponent<any, any> {
           </View>,
         options: [{label: "Next", nextCard:'picture', textAlign:'right', onSelect: (result) => { }}]
       },
-      picture: {
+      start: {
         header: "And finally...",
         subHeader: "Let's pick an image! Something to quickly remember it by.",
         backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
@@ -259,21 +258,41 @@ export class SceneCreate extends LiveComponent<any, any> {
             <View style={{...styles.centered, flex:1}}>
               <PictureGallerySelector
                 isSquare={true}
-                value={state && state.picture || this.sceneData.picture }
-                callback={(pictureUrl, source) => {
-                  this.sceneData.picture = pictureUrl;
-
+                value={state && state.picture || this.sceneData.pictureURI }
+                callback={(picture, source) => {
+                  this.sceneData.pictureSource = source;
                   let newState = {};
                   if (state !== "") {
                     newState = {...state};
                   }
-                  newState["picture"] = pictureUrl;
-                  setState(newState);
-                  this.forceUpdate();
+                  if (source === PICTURE_GALLERY_TYPES.CUSTOM) {
+                    processImage(picture, this.sceneData.id + ".jpg")
+                      .then((newPicturePath) => {
+                         this.sceneData.pictureURI = { uri: newPicturePath };
+                         this.sceneData.picture = newPicturePath;
+                         this.sceneData.pictureURI = {uri: xUtil.preparePictureURI(newPicturePath)}
+                         newState["picture"] = this.sceneData.pictureURI;
+
+                         setState(newState);
+                         this.forceUpdate();
+                      })
+                  }
+                  else {
+                    this.sceneData.pictureURI = SCENE_STOCK_PICTURE_LIST[picture];
+                    newState["picture"] = this.sceneData.pictureURI;
+
+                    setState(newState);
+                    this.forceUpdate();
+                  }
                 }}
                 removePicture={() => {
-                  this.removePictureQueue.push(this.sceneData.picture);
+                  if (this.sceneData.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
+                    this.removePictureQueue.push(this.sceneData.picture)
+                    this._removePicture(this.sceneData.picture);
+                  }
                   this.sceneData.picture = null;
+                  this.sceneData.pictureSource = null;
+                  this.sceneData.pictureURI = null;
                   let newState = {};
                   if (state !== "") {
                     newState = { ...state };

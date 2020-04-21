@@ -232,6 +232,7 @@ export const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
   },
+  blueButton: {alignItems: 'center', justifyContent:'center', padding:20, backgroundColor: colors.menuTextSelected.hex, borderRadius: 10, marginHorizontal: 15},
   buttonAndroid: {
     width:0.7*screenWidth,
     height:50,

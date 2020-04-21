@@ -7,7 +7,12 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import ImagePicker from "react-native-image-picker";
 import { xUtil } from "../../util/StandAloneUtil";
 
-let source = {
+
+export const PICTURE_GALLERY_TYPES = {
+  STOCK: "STOCK",
+  CUSTOM: "CUSTOM",
+}
+export const SCENE_IMAGE_SOURCE = {
   bedtime: {
     'bedtime_1.jpg': require("../../images/scenes/bedtime/bedtime_1.jpg"),
     'bedtime_2.jpg': require("../../images/scenes/bedtime/bedtime_2.jpg"),
@@ -199,57 +204,31 @@ let source = {
   }
 }
 
-
-
 const imageSize = screenWidth/11;
 
 let types = [{ type: 'custom', name: 'custom', key: 'custom'}]
-let pictures = {};
-let pictureList = {};
+let pictureData = {};
+export const SCENE_STOCK_PICTURE_LIST = {};
 function prettify(name) {
   return xUtil.capitalize(name.replace(/_/g," "));
 }
-Object.keys(source).forEach((cat) => {
+Object.keys(SCENE_IMAGE_SOURCE).forEach((cat) => {
   types.push({ type:cat, name: prettify(cat), key: cat})
-  pictureList[cat] = [];
-  Object.keys(source[cat]).forEach((pic, index) => {
-    pictures[pic] = source[cat][pic];
-    pictureList[cat].push({data:pic, key: cat+index})
+  pictureData[cat] = [];
+  Object.keys(SCENE_IMAGE_SOURCE[cat]).forEach((pic, index) => {
+    SCENE_STOCK_PICTURE_LIST[pic] = SCENE_IMAGE_SOURCE[cat][pic];
+    pictureData[cat].push({data:pic, key: cat+index})
   })
 })
 
-let typeStyle : TextStyle = {
+const typeStyle : TextStyle = {
   color: colors.white.hex,
   fontSize: 24,
   paddingLeft: 20,
   paddingBottom: 10,
 }
+const imageStyle = {height:3*imageSize, width:4*imageSize, marginLeft:15, borderRadius:10 };
 
-let sx = {...styles.centered, padding:20, backgroundColor: colors.menuTextSelected.hex, borderRadius: 10, marginHorizontal: 15}
-
-let imageStyle = {height:3*imageSize, width:4*imageSize, marginLeft:15, borderRadius:10 };
-
-let cb= () => { NavigationUtil.dismissModal() }
-
-let cam = () => {
-  const options = {
-    title: 'Select Picture',
-  };
-
-  ImagePicker.showImagePicker(options, (response) => {
-  console.log('Response = ', response);
-
-  if (response.didCancel) {
-    console.log('User cancelled image picker');
-  } else if (response.error) {
-    console.log('ImagePicker Error: ', response.error);
-  } else {
-    this.props.callback(response.uri)
-    // You can also display the image using data:
-    // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-  }
-});}
 
 
 export class ScenePictureGallery extends LiveComponent<any, any> {
@@ -257,22 +236,38 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
     return TopBarUtil.getOptions({title: "Pick a picture", closeModal: true });
   }
 
-  pictures = {}
-
   constructor(props) {
     super(props);
-
-
   }
 
+  handleCustomImage = () => {
+    const options = {
+      title: 'Select Picture',
+      noData: true,
+      storageOptions: {
+        waitUntilSaved: false,
+        skipBackup: true
+      }
+    };
+    NavigationUtil.dismissModal();
+    ImagePicker.showImagePicker(options, (response) => {
+      // console.log('Response = ', response);
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        this.props.callback(response.uri, PICTURE_GALLERY_TYPES.CUSTOM);
+      }
+    });}
 
   renderStockImages = ({item, index, separators}) => {
     return (
       <TouchableHighlight
         key={item.key}
-        onPress={cb}
+        onPress={() => { this.props.callback(item.data, PICTURE_GALLERY_TYPES.STOCK); NavigationUtil.dismissModal(); }}
       >
-        <Image style={imageStyle} source={pictures[item.data]} />
+        <Image style={imageStyle} source={SCENE_STOCK_PICTURE_LIST[item.data]} />
       </TouchableHighlight>
     )
   }
@@ -282,7 +277,7 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
       return (
         <View style={{marginTop: 30,}}>
           <Text style={typeStyle}>{"Custom picture"}</Text>
-          <TouchableHighlight onPress={() => { cam() }} style={sx}>
+          <TouchableHighlight onPress={this.handleCustomImage} style={styles.blueButton}>
             <Text style={{fontSize:16, color: colors.white.hex, fontWeight: 'bold'}}>Take or select picture...</Text>
           </TouchableHighlight>
         </View>
@@ -293,13 +288,12 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
     return (
       <View style={{marginTop: 30}}>
         <Text style={typeStyle}>{item.name}</Text>
-        <FlatList horizontal={true} data={pictureList[item.type]} removeClippedSubviews={true} initialNumToRender={4} renderItem={this.renderStockImages} showsHorizontalScrollIndicator={false} />
+        <FlatList horizontal={true} data={pictureData[item.type]} removeClippedSubviews={true} initialNumToRender={4} renderItem={this.renderStockImages} showsHorizontalScrollIndicator={false} />
       </View>
     )
   }
 
   render() {
-
     return (
       <View style={{flex:1, backgroundColor: colors.black.hex}}>
         <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} />
