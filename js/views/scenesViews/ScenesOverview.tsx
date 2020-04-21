@@ -128,7 +128,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
                 <Image source={require('../../images/scenes/cooking/cooking_8.jpg')} style={{width: 0.5*screenWidth, height:0.5*0.75*screenWidth, borderRadius: 20, marginLeft:18, marginTop:18}} />
                 <View style={addIconStyle}><Icon name={'md-add-circle'} size={42} color={colors.green.hex}/></View>
               </View>
-              <Text style={deviceStyles.header}>{ "Let's make a Scene!"}</Text>
+              <Text style={deviceStyles.header}>{ "Let's make a Scene!" }</Text>
               <View style={{flex:0.2}} />
               <Text style={deviceStyles.text}>{ "Scenes allow you to quickly set the mood by switching multiple Crownstones with just a single touch!\n\nTap the picture to get started!"}</Text>
             </TouchableOpacity>
