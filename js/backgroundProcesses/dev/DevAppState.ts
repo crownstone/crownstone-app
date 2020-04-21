@@ -63,7 +63,7 @@ class DevAppStateClass {
           Bluenet.setLocationState(1, 0, 0, Math.floor(Math.random()*255 ), TESTING_SPHERE_ID);
         }
         else {
-          originalMethod.call(BroadcastStateManager, [sphereId, locationId]);
+          originalMethod.apply(BroadcastStateManager, [sphereId, locationId]);
         }
       }.bind(BroadcastStateManager);
     }

@@ -4,6 +4,7 @@ let defaultSettings = {
   name: '',
   stockPicture:  null,
   customPicture: null,
+  cloudId: null,
   data: {}, // stoneUID: switchState
   updatedAt: 0,
 };
@@ -11,6 +12,13 @@ let defaultSettings = {
 
 let sceneReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_SCENE_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'ADD_SCENE':
     case 'UPDATE_SCENE':
       if (action.data) {
@@ -43,7 +51,7 @@ export default (state = {}, action : any = {}) => {
         if (state[action.sceneId] !== undefined || action.type === "ADD_SCENE") {
           return {
             ...state,
-            ...{[action.sceneId]: sceneReducer(state[action.stoneId], action)}
+            ...{[action.sceneId]: sceneReducer(state[action.sceneId], action)}
           };
         }
       }

@@ -124,7 +124,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
             <View style={{flex:1}} />
             <TouchableOpacity style={styles.centered} onPress={() => { createCallback() }}>
               <View style={{width: 0.5*screenWidth+36, height:0.5*0.75*screenWidth+18, overflow:'hidden', marginBottom:30}}>
-                <Image source={require('../../images/scenes/cooking/cooking_8.jpg')} style={{width: 0.5*screenWidth, height:0.5*0.75*screenWidth, borderRadius: 20, marginLeft:18, marginTop:18}} />
+                <Image source={require('../../images/scenes/relax/relax_7.jpg')} style={{width: 0.5*screenWidth, height:0.5*0.75*screenWidth, borderRadius: 20, marginLeft:18, marginTop:18}} />
                 <View style={addIconStyle}><Icon name={'md-add-circle'} size={42} color={colors.green.hex}/></View>
               </View>
               <Text style={deviceStyles.header}>{ "Let's make a Scene!" }</Text>
@@ -161,7 +161,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
           <View style={{flex:1, padding: 30, ...styles.centered}}>
             <View style={{flex:1}} />
             <TouchableOpacity style={styles.centered} onPress={() => { NavigationUtil.launchModal("AddSphereTutorial") }}>
-              <Image source={require('../../images/scenes/cooking/cooking_8.jpg')} style={{width: 0.5*screenWidth, height:0.5*0.75*screenWidth, borderRadius: 20, marginBottom:30}} />
+              <Image source={require('../../images/scenes/relax/relax_7.jpg')} style={{width: 0.5*screenWidth, height:0.5*0.75*screenWidth, borderRadius: 20, marginBottom:30}} />
               <Text style={deviceStyles.text}>{ "Add a sphere to use Scenes! Tap here and create one now!"}</Text>
             </TouchableOpacity>
             <View style={{flex:2}} />
