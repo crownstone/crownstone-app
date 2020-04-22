@@ -293,6 +293,16 @@ export const xUtil = {
     return a;
   },
 
+  arrayCompare: function (a,b) {
+    if (a.length !== b.length) { return false; }
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        return false;
+      }
+    }
+    return true;
+  },
+
   deepCompare: function (a, b, d=0) {
     let iterated = false;
     for (let prop in b) {

@@ -2,13 +2,13 @@ import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
   name: '',
-  stockPicture:  null,
-  customPicture: null,
+  referenceId:  null,
+  picture:  null,
+  pictureSource: null, // PICTURE_GALLERY_TYPES
   cloudId: null,
   data: {}, // stoneUID: switchState
   updatedAt: 0,
 };
-
 
 let sceneReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
@@ -24,8 +24,8 @@ let sceneReducer = (state = defaultSettings, action : any = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.name          = update(action.data.name,          newState.name);
-        newState.stockPicture  = update(action.data.stockPicture,  newState.stockPicture);
-        newState.customPicture = update(action.data.customPicture, newState.customPicture);
+        newState.picture       = update(action.data.picture,  newState.picture);
+        newState.pictureSource = update(action.data.pictureSource, newState.pictureSource);
         newState.data          = update(action.data.data, newState.data);
         newState.updatedAt     = getTime(action.data.updatedAt);
         return newState;

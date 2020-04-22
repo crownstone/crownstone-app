@@ -216,3 +216,11 @@ interface GraphData {
 
 type sphereId = string
 type stoneId  = string
+
+interface SortedListData {
+  viewKey: string,
+  referenceId: string,
+  sortedList: string[],
+  cloudId: string,
+  updatedAt: number,
+}

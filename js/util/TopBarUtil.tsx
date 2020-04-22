@@ -96,7 +96,7 @@ export const TopBarUtil = {
       rightButtons.push(getButtonComponent('save', Languages.get("__UNIVERSAL", "Save")()));
     }
     if (props.done) {
-      rightButtons.push(getButtonComponent('save', Languages.get("__UNIVERSAL", "Done")()));
+      rightButtons.push(getButtonComponent('done', Languages.get("__UNIVERSAL", "Done")()));
     }
     if (props.clear) {
       rightButtons.push(getButtonComponent('clear', Languages.get("__UNIVERSAL", "Clear")()));

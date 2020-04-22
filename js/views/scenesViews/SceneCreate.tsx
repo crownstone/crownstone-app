@@ -28,7 +28,6 @@ export class SceneCreate extends LiveComponent<any, any> {
 
   _interview;
   sceneData;
-  removePictureQueue = [];
 
   constructor(props) {
     super(props);
@@ -56,23 +55,14 @@ export class SceneCreate extends LiveComponent<any, any> {
   }
 
   componentWillUnmount(): void {
-    this._removeUnusedPictures();
     this._removePicture(this.sceneData.picture);
   }
 
   cancelEdit() {
     // clean up any pictures that were taken
-    this._removeUnusedPictures();
     if (this.sceneData.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM && this.sceneData.picture) {
       this._removePicture(this.sceneData.picture);
     }
-  }
-
-  _removeUnusedPictures() {
-    this.removePictureQueue.forEach((pic) => {
-      this._removePicture(pic);
-    })
-    this.removePictureQueue = [];
   }
 
   _removePicture(image) {
@@ -191,7 +181,7 @@ export class SceneCreate extends LiveComponent<any, any> {
     });
 
     return {
-      stxart: {
+      start: {
         header:"Let's make a Scene!",
         subHeader: "What shall we call it?",
         hasTextInputField: true,
@@ -248,7 +238,7 @@ export class SceneCreate extends LiveComponent<any, any> {
           </View>,
         options: [{label: "Next", nextCard:'picture', textAlign:'right', onSelect: (result) => { }}]
       },
-      start: {
+      picture: {
         header: "And finally...",
         subHeader: "Let's pick an image! Something to quickly remember it by.",
         backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
@@ -287,7 +277,6 @@ export class SceneCreate extends LiveComponent<any, any> {
                 }}
                 removePicture={() => {
                   if (this.sceneData.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
-                    this.removePictureQueue.push(this.sceneData.picture)
                     this._removePicture(this.sceneData.picture);
                   }
                   this.sceneData.picture = null;
@@ -307,9 +296,26 @@ export class SceneCreate extends LiveComponent<any, any> {
           )
         },
         options: [{label: "Create Scene!", textAlign:'right', onSelect: (result) => {
+          if (this.sceneData.picture === null) {
+            this.sceneData.pictureSource = PICTURE_GALLERY_TYPES.STOCK;
+            let allImages = Object.keys(SCENE_STOCK_PICTURE_LIST);
+            let randomImage = allImages[Math.floor(Math.random()*allImages.length)];
+            this.sceneData.picture = randomImage;
+          }
 
+          core.store.dispatch({
+            type:"ADD_SCENE",
+            sphereId: this.sceneData.sphereId,
+            sceneId: this.sceneData.id,
+            data: {
+              picture: this.sceneData.picture,
+              pictureSource: this.sceneData.pictureSource,
+              data: this.sceneData.data,
+              name: this.sceneData.name,
+            }
+          });
 
-
+          NavigationUtil.dismissModal();
         }}]
       },
     }
