@@ -24,7 +24,7 @@ export function SceneIntroduction({sphereId}) {
   return (
     <View style={{ flexGrow: 1, alignItems:'center', padding: 30 }}>
       <View style={{flex:1}} />
-      <TouchableOpacity style={styles.centered} onPress={() => { NavigationUtil.launchModal("SceneCreate", {sphereId: sphereId}) }}>
+      <TouchableOpacity style={styles.centered} onPress={() => { NavigationUtil.launchModal("SceneAdd", {sphereId: sphereId}) }}>
         <View style={{width: 0.5*screenWidth+2*margin, height:0.5*0.75*screenWidth+margin, overflow:'hidden', marginBottom:30}}>
           <Image source={require('../../../images/scenes/relax/relax_7.jpg')} style={{width: 0.5*screenWidth, height:0.5*0.75*screenWidth, borderRadius: 20, marginLeft:margin, marginTop:margin}} />
           <View style={addIconStyle}><Icon name={'md-add-circle'} size={42} color={colors.green.hex}/></View>

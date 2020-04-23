@@ -1,6 +1,6 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
-let defaultSettings = {
+let defaultSettings : SceneData = {
   name: '',
   referenceId:  null,
   picture:  null,
@@ -42,6 +42,8 @@ let sceneReducer = (state = defaultSettings, action : any = {}) => {
 // stonesReducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'REMOVE_ALL_SCENES':
+      return {};
     case 'REMOVE_SCENE':
       let stateCopy = {...state};
       delete stateCopy[action.sceneId];

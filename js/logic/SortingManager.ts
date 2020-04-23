@@ -16,13 +16,13 @@ export class SortingManager {
    * @param referenceId     | this is the Id of a location that corresponds to the RoomOverview.
    * @param sortedListOfIds | Optionally, provide an initial list.
    */
-  static getList(sphereId : string, viewKey: string, referenceId: string, sortedListOfIds?: string[]) : SortedList {
+  static getList(sphereId : string, viewKey: string, referenceId: string, listOfIds?: string[]) : SortedList {
     let state = core.store.getState();
     let sphere = state.spheres[sphereId];
 
     let sortedListId = viewKey + "_" + referenceId;
-    let list = sphere.sortedLists[sortedListId];
-    if (list === undefined) {
+    let listElement : SortedListData = sphere.sortedLists[sortedListId];
+    if (listElement === undefined) {
       core.store.dispatch({
         type:"ADD_SORTED_LIST",
         sphereId:     sphereId,
@@ -30,11 +30,18 @@ export class SortingManager {
         data: {
           referenceId: referenceId,
           viewKey:     viewKey,
-          sortedList:  sortedListOfIds || [],
+          sortedList:  listOfIds || [],
         }
       });
+      return new SortedList(sphereId, sortedListId, listOfIds || []);
     }
-    return new SortedList(sphereId, sortedListId, sortedListOfIds || []);
+    else {
+      let initialList = new SortedList(sphereId, sortedListId, listElement.sortedList);
+      if (xUtil.arrayCompare(listElement.sortedList, listOfIds) === false) {
+        initialList.mustContain(listOfIds)
+      }
+      return initialList;
+    }
   }
 
   static removeFromLists(itemId) : void {
@@ -119,7 +126,7 @@ export class SortingManager {
 
 }
 
-class SortedList {
+export class SortedList {
 
   sphereId     : string
   sortedListId : string
@@ -129,6 +136,45 @@ class SortedList {
     this.sphereId     = sphereId;
     this.sortedListId = sortedListId;
     this.sortedList = sortedList;
+  }
+
+  mustContain(requiredItems: string[]) {
+    let changeRequired = false;
+    let existingItemMap = {}
+    for (let i = 0; i < this.sortedList.length; i++) {
+      existingItemMap[this.sortedList[i]] = true;
+    }
+    let requiredItemsMap = {}
+    for (let i = 0; i < requiredItems.length; i++) {
+      requiredItemsMap[requiredItems[i]] = true;
+    }
+
+    // add new required items to bottle of the list.
+    for (let i = 0; i < requiredItems.length; i++) {
+      if (!existingItemMap[requiredItems[i]]) {
+        this.sortedList.push(requiredItems[i]);
+        changeRequired = true;
+      }
+    }
+
+    // remove other items that should not be in there.
+    for (let i = this.sortedList.length; i >= 0; i--) {
+      if (!requiredItemsMap[this.sortedList[i]]) {
+        this.sortedList.splice(i,1);
+        changeRequired = true;
+      }
+    }
+
+    if (changeRequired) {
+      core.store.dispatch({
+        type:"UPDATE_SORTED_LIST",
+        sphereId:     this.sphereId,
+        sortedListId: this.sortedListId,
+        data: {
+          sortedList: this.sortedList
+        }
+      });
+    }
   }
 
   update(items : string[]) {
@@ -145,7 +191,7 @@ class SortedList {
       data: {
         sortedList: this.sortedList
       }
-    })
+    });
   }
 
 }

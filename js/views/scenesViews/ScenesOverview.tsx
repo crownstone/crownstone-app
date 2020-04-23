@@ -15,6 +15,8 @@ import { SceneCreateNewItem }     from "./supportComponents/SceneCreateNewItem";
 import { SceneIntroduction,
          ScenesWithoutSpheres }   from "./supportComponents/SceneIntroduction";
 import { SceneItem }              from "./supportComponents/SceneItem";
+import { NavigationUtil } from "../../util/NavigationUtil";
+import { SortedList, SortingManager } from "../../logic/SortingManager";
 
 
 let className = "ScenesOverview";
@@ -27,25 +29,34 @@ export class ScenesOverview extends LiveComponent<any, any> {
   _panResponder : any
   localEventBus : EventBusClass;
   unsubscribeStoreEvents = null;
+  sortedList : SortedList = null;
 
   constructor(props) {
     super(props);
 
     let state = core.store.getState();
     let activeSphere = state.app.activeSphere;
+    let data = [];
+    if (activeSphere) {
+      let sceneIds = Object.keys(state.spheres[activeSphere].scenes);
+      this.sortedList = SortingManager.getList(activeSphere, className, "Overview", sceneIds);
+      data = this.sortedList.sortedList;
+    }
+
     this.state = {
-      editMode: false,
-      data: Object.keys(state.spheres[activeSphere].scenes),
+      editMode: true,
+      data: data,
       invalidationkey:'ImHereForTheDraggable'
     }
 
     this.localEventBus = new EventBusClass();
   }
 
-  renderItem(item, index, drag, isBeingDragged) {
+  renderItem(scene, sphereId, item, index, drag, isBeingDragged) {
     return (
       <SceneItem
-        scene={{name:'test'}}
+        scene={scene}
+        sphereId={sphereId}
         stateEditMode={this.state.editMode}
         dragAction={drag}
         eventBus={this.localEventBus}
@@ -99,7 +110,8 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
     let content;
     if (activeSphere && state.spheres[activeSphere]) {
-      let sceneIds = Object.keys(state.spheres[activeSphere].scenes);
+      let scenes = state.spheres[activeSphere].scenes;
+      let sceneIds = Object.keys(scenes);
       if (sceneIds.length === 0) {
         content = <SceneIntroduction sphereId={activeSphere} />
       }
@@ -107,19 +119,16 @@ export class ScenesOverview extends LiveComponent<any, any> {
         content = (
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop: 20 }}>
             <SlideFadeInView visible={this.state.editMode} height={100}>
-              <SceneCreateNewItem callback={()=>{}} isFirst={false} />
+              <SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphere }) }} isFirst={false} />
             </SlideFadeInView>
             <DraggableFlatList
               data={this.state.data}
               onRelease={() => { this.localEventBus.emit("END_DRAG" );}}
-              renderItem={({ item, index, drag, isActive }) => { return this.renderItem( item, index, drag, isActive ); }}
+              renderItem={({ item, index, drag, isActive }) => { return this.renderItem( scenes[item as string], activeSphere, item, index, drag, isActive ); }}
               keyExtractor={(item : any, index) => `draggable-item-${item.key}`}
-              onDragEnd={({ data }) => { this.setState({ data })}}
+              onDragEnd={({ data }) => { this.setState({ data }); this.sortedList.update(data as string[])}}
               activationDistance={1}
             />
-            <SlideFadeInView visible={this.state.editMode} height={30} style={{position:'absolute', bottom:0}}>
-              <Text style={{fontSize:13, color: colors.black.rgba(0.5)}}>Touch and drag the arrow icons to reorder the scenes</Text>
-            </SlideFadeInView>
           </View>
          );
        }

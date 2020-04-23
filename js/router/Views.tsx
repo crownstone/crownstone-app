@@ -113,7 +113,7 @@ import { SettingsDatabaseExplorer }                from "../views/settingsViews/
 import { DEV_Batching }                            from "../views/dev/batching/DEV_Batching";
 import { SettingsUptime }                          from "../views/settingsViews/dev/SettingsUptime";
 import { ScenesOverview }                          from "../views/scenesViews/ScenesOverview";
-import { SceneCreate }                             from "../views/scenesViews/SceneCreate";
+import { SceneAdd }                                from "../views/scenesViews/SceneAdd";
 import { ScenePictureGallery }                     from "../views/scenesViews/ScenePictureGallery";
 
 
@@ -205,7 +205,7 @@ export const Views = {
   ToonSettings:                      ToonSettings,
   ScenesOverview:                    ScenesOverview,
 
-  SceneCreate:                       SceneCreate,
+  SceneAdd:                       SceneAdd,
   ScenePictureGallery:               ScenePictureGallery,
 
 

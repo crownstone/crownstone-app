@@ -14,14 +14,14 @@ import { Circle } from "../components/Circle";
 import { SlideFadeInView, SlideSideFadeInView } from "../components/animated/SlideFadeInView";
 import Slider from "@react-native-community/slider";
 import { FileUtil } from "../../util/FileUtil";
-import { PictureCircle } from "../components/PictureCircle";
 import { PictureGallerySelector } from "../components/PictureGallerySelector";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./ScenePictureGallery";
 import { xUtil } from "../../util/StandAloneUtil";
 import { processImage } from "../../util/Util";
+import { getScenePictureSource } from "./supportComponents/SceneItem";
 
 
-export class SceneCreate extends LiveComponent<any, any> {
+export class SceneAdd extends LiveComponent<any, any> {
   static options = {
     topBar: { visible: false, height: 0 }
   };
@@ -33,14 +33,22 @@ export class SceneCreate extends LiveComponent<any, any> {
     super(props);
 
     this.sceneData =  {
-      id: xUtil.getUUID(),
+      id: props.sceneId || xUtil.getUUID(),
       name:'',
-      sphereId: core.store.getState()?.app?.activeSphere || null,
+      sphereId: props.sphereId || core.store.getState()?.app?.activeSphere || null,
       data: {},
       pictureSource: null,
       picture: null,
       pictureURI: null
     };
+
+    if (props.sphereId && props.sceneId) {
+      let scene = core.store.getState()?.spheres[props.sphereId]?.scenes[props.sceneId] || null;
+      if (scene) {
+        this.sceneData = {...this.sceneData, ...scene};
+        this.sceneData.pictureURI = getScenePictureSource(scene);
+      }
+    }
   }
 
   navigationButtonPressed({buttonId}) {
@@ -81,6 +89,7 @@ export class SceneCreate extends LiveComponent<any, any> {
     stoneIds.forEach((stoneId) => {
       let stone = state.spheres[sphereId].stones[stoneId];
       let locationId = stone.config.locationId;
+      let stoneCID = stone.config.crownstoneId;
       let locationName = "Not in a room..."
       if (locationId) {
         let location = DataUtil.getLocation(sphereId, locationId);
@@ -96,13 +105,13 @@ export class SceneCreate extends LiveComponent<any, any> {
               locationName={locationName}
               selection={(selected) => {
                 if (selected) {
-                  this.sceneData.data[stoneId] = {
+                  this.sceneData.data[stoneCID] = {
                     selected: true,
-                    switchState: this.sceneData.data[stoneId]?.switchState || stone.state.state
+                    switchState: this.sceneData.data[stoneCID]?.switchState || stone.state.state
                   }
                 }
                 else {
-                  delete this.sceneData.data[stoneId];
+                  delete this.sceneData.data[stoneCID];
                 }
               }}/>}
       )
@@ -126,11 +135,12 @@ export class SceneCreate extends LiveComponent<any, any> {
     let sortData = {};
 
     stoneIds.forEach((stoneId) => {
-      if (this.sceneData.data[stoneId] === undefined) { return; }
-
       let stone = state.spheres[sphereId].stones[stoneId];
+      let stoneCID = stone.config.crownstoneId;
+      if (this.sceneData.data[stoneCID] === undefined) { return; }
+
       let locationId = stone.config.locationId;
-      let locationName = "Not in a room..."
+      let locationName = "Not in a room...";
       if (locationId) {
         let location = DataUtil.getLocation(sphereId, locationId);
         locationName = location.config.name;
@@ -143,9 +153,9 @@ export class SceneCreate extends LiveComponent<any, any> {
             sphereId={sphereId}
             stoneId={stoneId}
             locationName={locationName}
-            state={this.sceneData.data[stoneId].switchState}
+            state={this.sceneData.data[stoneCID].switchState}
             setStateCallback={(switchState) => {
-              this.sceneData.data[stoneId] = {
+              this.sceneData.data[stoneCID] = {
                 selected: true,
                 switchState: switchState,
               }
@@ -268,6 +278,7 @@ export class SceneCreate extends LiveComponent<any, any> {
                       })
                   }
                   else {
+                    this.sceneData.picture = picture;
                     this.sceneData.pictureURI = SCENE_STOCK_PICTURE_LIST[picture];
                     newState["picture"] = this.sceneData.pictureURI;
 

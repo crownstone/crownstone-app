@@ -2,16 +2,16 @@ import { screenWidth } from "../../styles";
 
 let padding     = 15;
 let sceneHeight = 80;
-let buttonWidth = 60;
-let selectableWidth = buttonWidth + 20;
+let sceneImageWidth = 100;
+let buttonWidth = 80;
 
 
 export let SceneConstants = {
   roundness:   10,
   sceneHeight: sceneHeight,
+  sceneImageWidth: sceneImageWidth,
   padding:     padding,
   buttonWidth: buttonWidth,
-  selectableWidth: selectableWidth,
-  arrowWidth: buttonWidth - 30,
-  textWidth:   screenWidth - 2*padding - sceneHeight - selectableWidth - 10
+  arrowWidth: buttonWidth - 50,
+  textWidth:   screenWidth - 2*padding - sceneImageWidth - buttonWidth - 10
 }

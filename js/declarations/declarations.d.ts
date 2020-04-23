@@ -224,3 +224,13 @@ interface SortedListData {
   cloudId: string,
   updatedAt: number,
 }
+
+interface SceneData {
+  name: string,
+  referenceId:  string,
+  picture:  string,
+  pictureSource: "STOCK" | "CUSTOM", // PICTURE_GALLERY_TYPES
+  cloudId: string | null,
+  data: { [key: number] : number }, // stoneUID: switchState
+  updatedAt: number
+};
