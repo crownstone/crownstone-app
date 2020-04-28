@@ -21,6 +21,7 @@ import { core }              from "../../core";
 import { NavigationUtil }    from "../../util/NavigationUtil";
 import { TopBarUtil }        from "../../util/TopBarUtil";
 import { LiveComponent }     from "../LiveComponent";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 export class SphereEdit extends LiveComponent<any, any> {
   static options(props) {
@@ -184,7 +185,7 @@ export class SphereEdit extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={false} >
+      <BackgroundNoNotification image={core.background.menu} hasNavBar={false} >
         <ScrollView>
           <RefreshControl
             refreshing={this.state.syncing}
@@ -196,7 +197,7 @@ export class SphereEdit extends LiveComponent<any, any> {
           />
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

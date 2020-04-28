@@ -29,7 +29,7 @@ export class DfuIntroduction extends LiveComponent<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = { releaseNotes: "Downloading...", inSphere: false }
+    let stateData = { releaseNotes: "Downloading...", inSphere: false }
     this.interviewData = {};
 
     let state = core.store.getState();
@@ -37,9 +37,10 @@ export class DfuIntroduction extends LiveComponent<any, any> {
     let sphere = state.spheres[sphereId];
     if (sphere) {
       if (sphere.state.present === true || DfuStateHandler.sphereHasDfuCrownstone(sphereId)) {
-        this.setState({inSphere: true});
+        stateData.inSphere = true;
       }
     }
+    this.state = stateData;
 
     DfuUtil.getReleaseNotes(sphereId, state.user)
       .then((notes) => {

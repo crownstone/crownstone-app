@@ -27,12 +27,12 @@ import { BehaviourOptionList } from "./BehaviourOptionList";
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreUtil } from "../supportCode/AicoreUtil";
 import { xUtil } from "../../../../util/StandAloneUtil";
-import { BehaviourSuggestion } from "./BehaviourSuggestion";
 import { NavigationUtil } from "../../../../util/NavigationUtil";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { BehaviourSubmitButton } from "./BehaviourSubmitButton";
 import { DataUtil } from "../../../../util/DataUtil";
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from "../../../../ExternalConfig";
+import { Button } from "../../../components/Button";
 
 
 export class RuleEditor extends LiveComponent<
@@ -293,7 +293,7 @@ export class RuleEditor extends LiveComponent<
     if (shouldShowTimeConflict) {
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
       suggestionArray.push(
-        <BehaviourSuggestion
+        <Button
           backgroundColor={colors.menuTextSelected.rgba(0.6)}
           iconColor={colors.red.hex}
           icon={'md-remove-circle'}
@@ -304,14 +304,14 @@ export class RuleEditor extends LiveComponent<
     }
     if (showPresenceSuggestion) {
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
-      suggestionArray.push(<BehaviourSuggestion key={"presenceSuggestion"}
+      suggestionArray.push(<Button key={"presenceSuggestion"}
         label={ lang("Would_you_like_me_to_react")}
         callback={() => { this.toggleDetails(SELECTABLE_TYPE.PRESENCE); }}
       />);
     }
     if (showTimeSuggestion) {
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
-      suggestionArray.push(<BehaviourSuggestion key={"timeSuggestion"}
+      suggestionArray.push(<Button key={"timeSuggestion"}
         label={ lang("Shall_I_do_this_at_a_certa")}
         callback={() => { this.toggleDetails(SELECTABLE_TYPE.TIME); }}
       />);
@@ -319,7 +319,7 @@ export class RuleEditor extends LiveComponent<
     if (showEndConditionSuggestion) {
       let timeStr = this.rule.isUsingSunsetAsEndTime() ? AicoreUtil.getSunsetTimeString(this.props.sphereId) : AicoreUtil.getClockTimeStr(this.rule.getHour(), this.rule.getMinutes());
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
-      suggestionArray.push(<BehaviourSuggestion
+      suggestionArray.push(<Button
         key={"optionSuggestion"}
         label={"Is it OK if I turn off at " + timeStr + " if there are still people around?"}
         callback={() => { this.toggleDetails(SELECTABLE_TYPE.OPTION); }}

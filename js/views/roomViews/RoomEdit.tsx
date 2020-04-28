@@ -24,6 +24,7 @@ import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 
 
@@ -46,9 +47,9 @@ export class RoomEdit extends LiveComponent<any, any> {
     const room  = state.spheres[props.sphereId].locations[props.locationId];
 
     this.state = {
-      name: room.config.name,
-      icon: room.config.icon,
-      picture: room.config.picture,
+      name:      room.config.name,
+      icon:      room.config.icon,
+      picture:   room.config.picture,
       pictureId: room.config.pictureId,
     };
   }
@@ -140,6 +141,7 @@ export class RoomEdit extends LiveComponent<any, any> {
 
         // reload fingerprints.
         LocationHandler.loadFingerprints();
+
       })
       .catch((err) => {
         this.deleting = false;
@@ -313,23 +315,6 @@ export class RoomEdit extends LiveComponent<any, any> {
     NavigationUtil.dismissModal();
   }
 
-  cancelEdit() {
-    const state = core.store.getState();
-    const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
-
-    // remove all pictures that have been attempted except the one we will use.
-    this.removePictureQueue.forEach((pic) => {
-      if (pic !== room.config.picture) {
-        this._removePicture(pic);
-      }
-    });
-
-    if (this.pictureTaken) {
-      this._removePicture(this.state.picture)
-    }
-
-    NavigationUtil.dismissModal();
-  }
 
   render() {
     const state = core.store.getState();
@@ -337,11 +322,11 @@ export class RoomEdit extends LiveComponent<any, any> {
 
     let backgroundImage = core.background.menu;
     return (
-      <Background hasNavBar={false} image={backgroundImage}>
+      <BackgroundNoNotification hasNavBar={false} image={backgroundImage}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

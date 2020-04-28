@@ -36,6 +36,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { OverlayUtil } from "../overlays/OverlayUtil";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -430,12 +431,12 @@ export class DeviceEdit extends LiveComponent<any, any> {
     let backgroundImage = core.background.menu;
 
     return (
-      <Background hasNavBar={false} image={backgroundImage}>
+      <BackgroundNoNotification hasNavBar={false} image={backgroundImage}>
         <ScrollView>
           <ListEditableItems items={options} separatorIndent={true}/>
           {this._getVersionInformation(stone)}
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     )
   }
 }

@@ -6,6 +6,7 @@ import { TopBarUtil } from "../../util/TopBarUtil";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import ImagePicker from "react-native-image-picker";
 import { xUtil } from "../../util/StandAloneUtil";
+import { Button } from "../components/Button";
 
 
 export const PICTURE_GALLERY_TYPES = {
@@ -277,12 +278,17 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
       return (
         <View style={{marginTop: 30,}}>
           <Text style={typeStyle}>{"Custom picture"}</Text>
-          <TouchableHighlight onPress={this.handleCustomImage} style={styles.blueButton}>
-            <Text style={{fontSize:16, color: colors.white.hex, fontWeight: 'bold'}}>Take or select picture...</Text>
-          </TouchableHighlight>
+          <Button
+            iconPosition={"right"}
+            icon={'ios-camera'}
+            xl={true}
+            backgroundColor={colors.menuTextSelected.hex}
+            iconColor={colors.menuTextSelectedDark.hex}
+            label={"Take or select picture..."}
+            callback={this.handleCustomImage}
+          />
         </View>
-
-      )
+      );
     }
 
     return (

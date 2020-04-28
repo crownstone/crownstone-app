@@ -17,7 +17,7 @@ import { FileUtil } from "../../util/FileUtil";
 import { PictureGallerySelector } from "../components/PictureGallerySelector";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./ScenePictureGallery";
 import { xUtil } from "../../util/StandAloneUtil";
-import { processImage } from "../../util/Util";
+import { processImage, processStockCustomImage, removeStockCustomImage } from "../../util/Util";
 import { getScenePictureSource } from "./supportComponents/SceneItem";
 
 
@@ -33,7 +33,7 @@ export class SceneAdd extends LiveComponent<any, any> {
     super(props);
 
     this.sceneData =  {
-      id: props.sceneId || xUtil.getUUID(),
+      id: xUtil.getUUID(),
       name:'',
       sphereId: props.sphereId || core.store.getState()?.app?.activeSphere || null,
       data: {},
@@ -41,40 +41,21 @@ export class SceneAdd extends LiveComponent<any, any> {
       picture: null,
       pictureURI: null
     };
-
-    if (props.sphereId && props.sceneId) {
-      let scene = core.store.getState()?.spheres[props.sphereId]?.scenes[props.sceneId] || null;
-      if (scene) {
-        this.sceneData = {...this.sceneData, ...scene};
-        this.sceneData.pictureURI = getScenePictureSource(scene);
-      }
-    }
   }
 
   navigationButtonPressed({buttonId}) {
     if (buttonId === 'cancel') {
+      this._removePicture(this.sceneData.picture, this.sceneData.pictureSource);
       if (this.props.isModal) {
         NavigationUtil.dismissModal();
-      }
-      else {
+      } else {
         NavigationUtil.back();
       }
     }
   }
 
-  componentWillUnmount(): void {
-    this._removePicture(this.sceneData.picture);
-  }
-
-  cancelEdit() {
-    // clean up any pictures that were taken
-    if (this.sceneData.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM && this.sceneData.picture) {
-      this._removePicture(this.sceneData.picture);
-    }
-  }
-
-  _removePicture(image) {
-    if (image) {
+  _removePicture(image, source) {
+    if (image && source === PICTURE_GALLERY_TYPES.CUSTOM) {
       FileUtil.safeDeleteFile(image).catch((e) => {console.log("ER",e)});
     }
   }
@@ -102,6 +83,7 @@ export class SceneAdd extends LiveComponent<any, any> {
               key={stoneId}
               sphereId={sphereId}
               stoneId={stoneId}
+              initialSelection={null}
               locationName={locationName}
               selection={(selected) => {
                 if (selected) {
@@ -154,6 +136,7 @@ export class SceneAdd extends LiveComponent<any, any> {
             stoneId={stoneId}
             locationName={locationName}
             state={this.sceneData.data[stoneCID].switchState}
+            margins={true}
             setStateCallback={(switchState) => {
               this.sceneData.data[stoneCID] = {
                 selected: true,
@@ -260,43 +243,25 @@ export class SceneAdd extends LiveComponent<any, any> {
                 isSquare={true}
                 value={state && state.picture || this.sceneData.pictureURI }
                 callback={(picture, source) => {
-                  this.sceneData.pictureSource = source;
                   let newState = {};
-                  if (state !== "") {
-                    newState = {...state};
-                  }
-                  if (source === PICTURE_GALLERY_TYPES.CUSTOM) {
-                    processImage(picture, this.sceneData.id + ".jpg")
-                      .then((newPicturePath) => {
-                         this.sceneData.pictureURI = { uri: newPicturePath };
-                         this.sceneData.picture = newPicturePath;
-                         this.sceneData.pictureURI = {uri: xUtil.preparePictureURI(newPicturePath)}
-                         newState["picture"] = this.sceneData.pictureURI;
-
-                         setState(newState);
-                         this.forceUpdate();
-                      })
-                  }
-                  else {
-                    this.sceneData.picture = picture;
-                    this.sceneData.pictureURI = SCENE_STOCK_PICTURE_LIST[picture];
-                    newState["picture"] = this.sceneData.pictureURI;
-
-                    setState(newState);
-                    this.forceUpdate();
-                  }
+                  if (state !== "") { newState = {...state}; }
+                  processStockCustomImage(this.sceneData.id, picture, source)
+                    .then((pictureResult) => {
+                      this.sceneData.pictureSource = pictureResult.source;
+                      this.sceneData.picture       = pictureResult.picture;
+                      this.sceneData.pictureURI    = pictureResult.pictureURI;
+                      newState["picture"] = this.sceneData.pictureURI;
+                      setState(newState);
+                      this.forceUpdate();
+                    })
                 }}
                 removePicture={() => {
-                  if (this.sceneData.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
-                    this._removePicture(this.sceneData.picture);
-                  }
+                  removeStockCustomImage(this.sceneData.picture, this.sceneData.pictureSource)
                   this.sceneData.picture = null;
                   this.sceneData.pictureSource = null;
                   this.sceneData.pictureURI = null;
                   let newState = {};
-                  if (state !== "") {
-                    newState = { ...state };
-                  }
+                  if (state !== "") { newState = { ...state }; }
                   newState["picture"] = null;
                   setState(newState);
                   this.forceUpdate();
@@ -367,8 +332,8 @@ export class SceneAdd extends LiveComponent<any, any> {
 }
 
 
-function StoneRow({sphereId, stoneId, locationName, selection}) {
-  let [selected, setSelected] = useState(false);
+export function StoneRow({sphereId, stoneId, locationName, selection, initialSelection}) {
+  let [selected, setSelected] = useState(initialSelection || false);
   let [showExplanation, setShowExplanation] = useState(false);
   let stone = DataUtil.getStone(sphereId, stoneId);
 
@@ -440,7 +405,7 @@ function StoneRow({sphereId, stoneId, locationName, selection}) {
 }
 
 
-function StoneSwitchStateRow({sphereId, stoneId, locationName, state, setStateCallback}) {
+export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, setStateCallback, margins}) {
   let [switchState, setSwitchState] = useState(state);
   let stone = DataUtil.getStone(sphereId, stoneId);
 
@@ -449,14 +414,14 @@ function StoneSwitchStateRow({sphereId, stoneId, locationName, state, setStateCa
 
 
   let containerStyle : ViewStyle = {
-    width:screenWidth-2*padding,
+    width: margins ? screenWidth-2*padding : screenWidth,
     height: height,
-    padding:padding,
-    paddingLeft:15,
+    padding: padding,
+    paddingLeft: margins ? 1.5*padding : padding,
     alignItems:'center',
     backgroundColor: colors.white.rgba( 0.9),
-    marginBottom: 10,
-    marginLeft:10,
+    marginBottom: margins ? 10 : 0,
+    marginLeft: margins ? 10 : 0,
     borderRadius: 10,
   };
 
@@ -484,7 +449,6 @@ function StoneSwitchStateRow({sphereId, stoneId, locationName, state, setStateCa
       <View style={{flexDirection:'row'}}>
         { content }
       </View>
-
         <Slider
           style={{ width: screenWidth-70, height: 60}}
           minimumValue={0}

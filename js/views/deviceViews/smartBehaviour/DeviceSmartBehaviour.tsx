@@ -21,7 +21,6 @@ import {
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
 import { WeekDayList } from "../../components/WeekDayList";
 import { SmartBehaviourSummaryGraph } from "./supportComponents/SmartBehaviourSummaryGraph";
-import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
 import { BackButtonHandler } from "../../../backgroundProcesses/BackButtonHandler";
@@ -38,6 +37,7 @@ import { BEHAVIOUR_TYPES } from "../../../Enums";
 import { AicoreBehaviour } from "./supportCode/AicoreBehaviour";
 import { BluenetPromiseWrapper } from "../../../native/libInterface/BluenetPromise";
 import { AicoreTwilight } from "./supportCode/AicoreTwilight";
+import { Button } from "../../components/Button";
 
 
 let className = "DeviceSmartBehaviour";
@@ -247,14 +247,14 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             <View style={{flex:2}} />
 
             <SlideFadeInView visible={this.state.editMode} height={80}>
-              <BehaviourSuggestion
+              <Button
                 backgroundColor={colors.menuTextSelected.rgba(0.5)}
                 label={ lang("Add_more___")}
                 callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', this.props); }}
               />
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
-              <BehaviourSuggestion
+              <Button
                 backgroundColor={colors.menuTextSelected.rgba(0.5)}
                 label={ lang("Copy_from___")}
                 callback={() => {
@@ -297,7 +297,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
               />
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
-              <BehaviourSuggestion
+              <Button
                 backgroundColor={ colors.menuTextSelected.rgba(0.5) }
                 label={ lang("Copy_to___") }
                 callback={() => {
@@ -321,7 +321,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             </SlideFadeInView>
 
             <SlideFadeInView visible={this.state.editMode && state.development.show_sync_button_in_behaviour} height={80}>
-              <BehaviourSuggestion
+              <Button
                 backgroundColor={colors.csBlue.rgba(0.5)}
                 label={ "Sync behaviour" }
                 callback={() => {
@@ -382,7 +382,7 @@ function NoRulesYet(props) {
           <Text style={styles.explanation}>{ "I can take multiple people in your household into account, or I could turn a light on at 50% when you use your wall switches after dark." }</Text>
           <Text style={styles.explanation}>{ "Tap the Add button below to get started or copy the behaviour from another Crownstone!" }</Text>
           <View style={{flex:1, minHeight: 40}} />
-          { updateRequired && <BehaviourSuggestion
+          { updateRequired && <Button
             backgroundColor={colors.green.rgba(0.9)}
             label={ "Update to use behaviour!"}
             callback={() => {
@@ -394,7 +394,7 @@ function NoRulesYet(props) {
               NavigationUtil.launchModal( "DfuIntroduction", {sphereId: props.sphereId}); }}
           /> }
 
-          { !updateRequired && <BehaviourSuggestion
+          { !updateRequired && <Button
             backgroundColor={colors.green.rgba(0.9)}
             label={"Add my first behaviour!"}
             callback={() => {
@@ -410,7 +410,7 @@ function NoRulesYet(props) {
             }}
           />
           }
-          { !updateRequired && <BehaviourSuggestion
+          { !updateRequired && <Button
             backgroundColor={colors.menuTextSelected.rgba(0.6)}
             label={"Copy from another Crownstone!"}
             icon={'md-log-in'}

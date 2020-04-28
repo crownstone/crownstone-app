@@ -1,6 +1,6 @@
 import { default as React, useEffect, useState }          from "react";
 import { colors, screenWidth, styles }                    from "../../styles";
-import { Image, Text, TextStyle, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Text, TextStyle, TouchableOpacity, View } from "react-native";
 import { SceneConstants }                                 from "../constants/SceneConstants";
 import { SlideSideFadeInView }                            from "../../components/animated/SlideFadeInView";
 import { Icon }                                           from "../../components/Icon";
@@ -9,8 +9,9 @@ import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "../ScenePicture
 import { xUtil } from "../../../util/StandAloneUtil";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import { core } from "../../../core";
+import { NavigationUtil } from "../../../util/NavigationUtil";
 
-export function SceneItem({sphereId, scene, stateEditMode, dragAction, eventBus, isBeingDragged}) {
+export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, eventBus, isBeingDragged}) {
   const [editMode, setEditMode] = useState(stateEditMode);
   const [drag, setDrag] = useState(isBeingDragged);
 
@@ -38,8 +39,7 @@ export function SceneItem({sphereId, scene, stateEditMode, dragAction, eventBus,
         activeOpacity={1}
         style={{flexDirection:'row', height: SceneConstants.sceneHeight, flex:1, alignItems:'center', backgroundColor: color,}}
         onLongPress={dragAction}
-        onPress={() => {
-        }}>
+      >
         <Image source={image} style={{width: SceneConstants.sceneHeight, height: SceneConstants.sceneHeight, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}} />
         <View style={{flexDirection:'row', backgroundColor: color, flex:1, height: SceneConstants.sceneHeight, alignItems:'center'}}>
           <View style={{width:1, height: SceneConstants.sceneHeight, backgroundColor: colors.black.hex}} />
@@ -47,7 +47,7 @@ export function SceneItem({sphereId, scene, stateEditMode, dragAction, eventBus,
             <View style={{flex:4}} />
             <Text style={{fontSize:18, fontWeight:'bold'}}>{scene.name}</Text>
             <View style={{flex:1}} />
-            <Text style={{ fontSize: 13, fontStyle: 'italic' }}>{subtext}</Text>
+            <Text style={{fontSize: 13, fontStyle: 'italic' }}>{subtext}</Text>
             <View style={{flex:4}} />
           </View>
           <View style={{flex:1}} />
@@ -55,7 +55,17 @@ export function SceneItem({sphereId, scene, stateEditMode, dragAction, eventBus,
       </TouchableOpacity>
       <SlideSideFadeInView visible={!drag} width={SceneConstants.buttonWidth}>
         <View style={{width: SceneConstants.buttonWidth, height:SceneConstants.sceneHeight, alignItems:'flex-end', backgroundColor: color}}>
-          <EditIcons editMode={editMode} />
+          <EditIcons
+            editMode={editMode}
+            editCallback={  () => { NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId}) }}
+            deleteCallback={() => { Alert.alert("Are you sure?","Do you want to delete this scene?", [{text:"Cancel"},{text:"OK", onPress: (() => {
+              core.store.dispatch({
+                type:"REMOVE_SCENE",
+                sphereId: sphereId,
+                sceneId: sceneId,
+              })
+            })}])}}
+          />
           <SlideSideFadeInView visible={!editMode} width={SceneConstants.arrowWidth} style={{position:'absolute', top:0.25*SceneConstants.sceneHeight, right:10}}>
             <View style={{width:SceneConstants.arrowWidth, height:0.5*SceneConstants.sceneHeight, padding:8, backgroundColor: colors.black.rgba(0.05), borderRadius: SceneConstants.roundness, ...styles.centered}}>
               <Icon name="ios-arrow-forward" size={18} color={'#888'} />
@@ -96,16 +106,16 @@ function getLocationSubtext(sphereId: string, scene : SceneData) {
 
 }
 
-function EditIcons({editMode}) {
+function EditIcons({editMode, editCallback, deleteCallback}) {
   let buttonStyle = {width: 0.5*SceneConstants.buttonWidth, height: SceneConstants.sceneHeight,...styles.centered}
   return (
     <SlideSideFadeInView visible={editMode} width={SceneConstants.buttonWidth} style={{position:'absolute', top:0}}>
       <View style={{flexDirection:'row'}}>
-        <TouchableOpacity style={buttonStyle}>
+        <TouchableOpacity style={buttonStyle} onPress={editCallback}>
           <Icon name="md-create" size={24} color={colors.menuTextSelected.hex} />
         </TouchableOpacity>
-        <TouchableOpacity style={buttonStyle}>
-          <Icon name={'ios-trash'} color={colors.red.rgba(0.6)} size={34} />
+        <TouchableOpacity style={buttonStyle} onPress={deleteCallback}>
+          <Icon name={'ios-trash'} color={colors.red.rgba(0.6)} size={30} />
         </TouchableOpacity>
       </View>
     </SlideSideFadeInView>

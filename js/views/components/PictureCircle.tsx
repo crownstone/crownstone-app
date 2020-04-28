@@ -22,6 +22,11 @@ import ImagePicker from 'react-native-image-picker';
 
 export class PictureCircle extends Component<any, any> {
   triggerOptions() {
+    if (this.props.customPictureSelector !== undefined) {
+      this.props.customPictureSelector();
+      return;
+    }
+
     const options = {
       title: 'Select Picture',
       noData: true,
@@ -46,17 +51,28 @@ export class PictureCircle extends Component<any, any> {
 
   render() {
     let size = this.props.size || 60;
-    if (this.props.value !== undefined && this.props.value !== null) {
-      let imageURI = xUtil.preparePictureURI(this.props.value);
+    if (this.props.value || this.props.imageURI) {
+      let imageURI = this.props.imageURI || {uri:xUtil.preparePictureURI(this.props.value)}
       let borderWidth = this.props.borderWidth || size / 30;
       let innerSize = size - 2*borderWidth;
       return (
         <TouchableOpacity
-          onPress={() => { Alert.alert(
-            lang("_Delete_this_picture__arg_header"),
-            lang("_Delete_this_picture__arg_body",undefined),
-            [{text:lang("_Delete_this_picture__arg_left")}, {
-            text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); }}])}}
+          onPress={() => {
+            if (this.props.stock) {
+              this.props.removePicture();
+              this.triggerOptions();
+            }
+            else {
+              Alert.alert(
+                lang("_Delete_this_picture__arg_header"),
+                lang("_Delete_this_picture__arg_body",undefined),
+                [
+                  {text:lang("_Delete_this_picture__arg_left")},
+                  {text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); }}
+                ]
+              )
+            }
+          }}
           style={{
             height:size,
             width:size,
@@ -65,7 +81,7 @@ export class PictureCircle extends Component<any, any> {
             alignItems:'center',
             justifyContent:'center',
           }}>
-            <Image style={{width:innerSize, height:innerSize, borderRadius:innerSize * 0.5, backgroundColor: 'transparent'}} source={{uri:imageURI}} />
+            <Image style={{width:innerSize, height:innerSize, borderRadius:innerSize * 0.5, backgroundColor: 'transparent'}} source={imageURI} />
             <View style={[{
               position: 'absolute',
               top: 0,

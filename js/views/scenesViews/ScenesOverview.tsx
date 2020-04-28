@@ -17,6 +17,7 @@ import { SceneIntroduction,
 import { SceneItem }              from "./supportComponents/SceneItem";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { SortedList, SortingManager } from "../../logic/SortingManager";
+import { Navigation } from "react-native-navigation";
 
 
 let className = "ScenesOverview";
@@ -44,7 +45,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
     }
 
     this.state = {
-      editMode: true,
+      editMode: false,
       data: data,
       invalidationkey:'ImHereForTheDraggable'
     }
@@ -52,10 +53,11 @@ export class ScenesOverview extends LiveComponent<any, any> {
     this.localEventBus = new EventBusClass();
   }
 
-  renderItem(scene, sphereId, item, index, drag, isBeingDragged) {
+  renderItem(scene, sphereId, sceneId, index, drag, isBeingDragged) {
     return (
       <SceneItem
         scene={scene}
+        sceneId={sceneId}
         sphereId={sphereId}
         stateEditMode={this.state.editMode}
         dragAction={drag}

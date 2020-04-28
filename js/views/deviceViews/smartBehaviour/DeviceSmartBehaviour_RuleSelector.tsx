@@ -18,10 +18,10 @@ import {
   screenWidth
 } from "../../styles";
 import { SlideFadeInView } from "../../components/animated/SlideFadeInView";
-import { BehaviourSuggestion } from "./supportComponents/BehaviourSuggestion";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { SmartBehaviourRule } from "./supportComponents/SmartBehaviourRule";
 import ResponsiveText from "../../components/ResponsiveText";
+import { Button } from "../../components/Button";
 
 
 /**
@@ -123,7 +123,7 @@ export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
             {ruleComponents}
             <View style={{flex:1}} />
             <SlideFadeInView visible={true} height={80}>
-              <BehaviourSuggestion
+              <Button
                 label={ 'Copy selected behaviour(s)' }
                 callback={() => {
                   this.props.callback(this.state.selectionMap);
@@ -134,7 +134,7 @@ export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
               />
             </SlideFadeInView>
             <SlideFadeInView visible={true} height={80}>
-              <BehaviourSuggestion
+              <Button
                 label={ 'Back' }
                 callback={() => { NavigationUtil.back()  }}
                 icon={'md-close-circle'}

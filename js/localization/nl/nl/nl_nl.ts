@@ -236,12 +236,11 @@ export default {
     __filename: "../../js/views/main/buttons/AutoArrangeButton.tsx",
     Auto_arrange_:                       function() { return "Auto arrange!" },
   },
-  BehaviourSuggestion:{
+  Button:{
     __stringSameAsBaseLanguage: {
       Yes:                                false,
       No:                                 false,
     },
-    __filename: "../../js/views/deviceViews/elements/smartBehaviour/supportComponents/BehaviourSuggestion.tsx",
     Yes:                                 function() { return "Yes" },
     No:                                  function() { return "No" },
   },

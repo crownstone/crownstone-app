@@ -14,6 +14,7 @@ import { ALWAYS_DFU_UPDATE_BOOTLOADER, ALWAYS_DFU_UPDATE_FIRMWARE } from "../Ext
 import { xUtil } from "./StandAloneUtil";
 import { core } from "../core";
 import { LOGd } from "../logging/Log";
+import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "../views/scenesViews/ScenePictureGallery";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -38,7 +39,7 @@ export const getImageFileFromUser = function(email) {
 };
 
 
-export const processImage = function(pictureURI, targetFilename, scaleFactor = 0.5) {
+export const processImage = function(pictureURI, targetFilename, scaleFactor = 0.5) : Promise<string> {
   return new Promise((resolve, reject) => {
     if (!pictureURI) { return resolve(); }
 
@@ -58,6 +59,30 @@ export const processImage = function(pictureURI, targetFilename, scaleFactor = 0
         reject("picture resizing error:" + err.message);
       });
   })
+};
+
+
+
+export const processStockCustomImage = function(targetName, picture, source) : Promise<{pictureURI: any, picture: string, source: string}> {
+  return new Promise((resolve, reject) => {
+      if (source === PICTURE_GALLERY_TYPES.CUSTOM) {
+        processImage(picture, targetName + ".jpg")
+          .then((newPicturePath: string) => {
+            resolve({picture: newPicturePath, pictureURI: {uri: xUtil.preparePictureURI(newPicturePath)}, source: source})
+          })
+      }
+      else {
+        resolve({picture: picture, pictureURI: SCENE_STOCK_PICTURE_LIST[picture], source: source})
+     }
+  })
+};
+
+export const removeStockCustomImage = function(picture, source) {
+  if (source === PICTURE_GALLERY_TYPES.CUSTOM) {
+    if (picture) {
+      FileUtil.safeDeleteFile(picture).catch((e) => {console.log("ER", e)});
+    }
+  }
 };
 
 

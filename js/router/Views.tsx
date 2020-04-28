@@ -115,6 +115,8 @@ import { SettingsUptime }                          from "../views/settingsViews/
 import { ScenesOverview }                          from "../views/scenesViews/ScenesOverview";
 import { SceneAdd }                                from "../views/scenesViews/SceneAdd";
 import { ScenePictureGallery }                     from "../views/scenesViews/ScenePictureGallery";
+import { SceneEdit } from "../views/scenesViews/SceneEdit";
+import { SceneSelectCrownstones } from "../views/scenesViews/SceneSelectCrownstones";
 
 
 
@@ -203,10 +205,12 @@ export const Views = {
   ToonAdd:                           ToonAdd,
   ToonOverview:                      ToonOverview,
   ToonSettings:                      ToonSettings,
-  ScenesOverview:                    ScenesOverview,
 
-  SceneAdd:                       SceneAdd,
+  ScenesOverview:                    ScenesOverview,
+  SceneAdd:                          SceneAdd,
+  SceneEdit:                         SceneEdit,
   ScenePictureGallery:               ScenePictureGallery,
+  SceneSelectCrownstones:            SceneSelectCrownstones,
 
 
   // Overlays:
