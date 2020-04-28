@@ -39,7 +39,7 @@ let sortedListReducer = (state = defaultSettings, action : any = {}) => {
 };
 
 
-// stonesReducer
+// sortedListReducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_SORTED_LIST':
@@ -47,7 +47,7 @@ export default (state = {}, action : any = {}) => {
       delete stateCopy[action.sortedListId];
       return stateCopy;
     default:
-      if (action.sortListId !== undefined) {
+      if (action.sortedListId !== undefined) {
         if (state[action.sortedListId] !== undefined || action.type === "ADD_SORTED_LIST") {
           return {
             ...state,

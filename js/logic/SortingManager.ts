@@ -22,6 +22,7 @@ export class SortingManager {
 
     let sortedListId = viewKey + "_" + referenceId;
     let listElement : SortedListData = sphere.sortedLists[sortedListId];
+
     if (listElement === undefined) {
       core.store.dispatch({
         type:"ADD_SORTED_LIST",
@@ -33,6 +34,7 @@ export class SortingManager {
           sortedList:  listOfIds || [],
         }
       });
+
       return new SortedList(sphereId, sortedListId, listOfIds || []);
     }
     else {
@@ -44,6 +46,11 @@ export class SortingManager {
     }
   }
 
+
+  /**
+   * This will be used if you remove something that might be sorted.
+   * @param itemId
+   */
   static removeFromLists(itemId) : void {
     let state = core.store.getState();
     let spheres = state.spheres;
@@ -135,7 +142,7 @@ export class SortedList {
   constructor(sphereId : string, sortedListId: string, sortedList: string[]) {
     this.sphereId     = sphereId;
     this.sortedListId = sortedListId;
-    this.sortedList = sortedList;
+    this.sortedList   = sortedList;
   }
 
   mustContain(requiredItems: string[]) {
@@ -192,6 +199,14 @@ export class SortedList {
         sortedList: this.sortedList
       }
     });
+  }
+
+  getDraggableList() : string[] {
+    let draggableList = [];
+    for (let i = 0; i < this.sortedList.length; i++) {
+      draggableList.push(this.sortedList[i]);
+    }
+    return draggableList;
   }
 
 }

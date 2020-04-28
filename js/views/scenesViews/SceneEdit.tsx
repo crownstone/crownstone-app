@@ -209,7 +209,6 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
         }
       })
     }
-
     NavigationUtil.dismissModal();
   }
 

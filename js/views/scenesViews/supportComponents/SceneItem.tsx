@@ -10,6 +10,8 @@ import { xUtil } from "../../../util/StandAloneUtil";
 import { MapProvider } from "../../../backgroundProcesses/MapProvider";
 import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
+import { SortingManager } from "../../../logic/SortingManager";
 
 export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, eventBus, isBeingDragged}) {
   const [editMode, setEditMode] = useState(stateEditMode);
@@ -34,12 +36,26 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
       height: SceneConstants.sceneHeight,
       alignItems:'center', marginBottom: 15
     }}>
-      <SlideSideFadeInView visible={drag} width={40} />
       <TouchableOpacity
-        activeOpacity={1}
-        style={{flexDirection:'row', height: SceneConstants.sceneHeight, flex:1, alignItems:'center', backgroundColor: color,}}
+        activeOpacity={editMode ? 1 : 0}
+        style={{flexDirection:'row', height: SceneConstants.sceneHeight, flex:1, alignItems:'center'}}
+        onPress={() => {
+          if (editMode === false) {
+            let switchData = scene.data;
+            let action = false;
+            Object.keys(switchData).forEach((stoneCID) => {
+              action = true;
+              let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
+              BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {commandName:"multiSwitch", state: switchData[stoneCID]})
+            })
+            if (action) {
+              BatchCommandHandler.executePriority();
+            }
+          }
+        }}
         onLongPress={dragAction}
       >
+      <SlideSideFadeInView visible={drag} width={40} />
         <Image source={image} style={{width: SceneConstants.sceneHeight, height: SceneConstants.sceneHeight, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}} />
         <View style={{flexDirection:'row', backgroundColor: color, flex:1, height: SceneConstants.sceneHeight, alignItems:'center'}}>
           <View style={{width:1, height: SceneConstants.sceneHeight, backgroundColor: colors.black.hex}} />
@@ -52,13 +68,13 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
           </View>
           <View style={{flex:1}} />
         </View>
-      </TouchableOpacity>
       <SlideSideFadeInView visible={!drag} width={SceneConstants.buttonWidth}>
         <View style={{width: SceneConstants.buttonWidth, height:SceneConstants.sceneHeight, alignItems:'flex-end', backgroundColor: color}}>
           <EditIcons
             editMode={editMode}
             editCallback={  () => { NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId}) }}
             deleteCallback={() => { Alert.alert("Are you sure?","Do you want to delete this scene?", [{text:"Cancel"},{text:"OK", onPress: (() => {
+              SortingManager.removeFromLists(sceneId);
               core.store.dispatch({
                 type:"REMOVE_SCENE",
                 sphereId: sphereId,
@@ -73,6 +89,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
           </SlideSideFadeInView>
         </View>
       </SlideSideFadeInView>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -80,14 +97,19 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
 function getLocationSubtext(sphereId: string, scene : SceneData) {
   let data = scene.data;
   let locations = [];
+  let locationMap = {};
   let sphere = core.store.getState().spheres[sphereId]
   let locationCount = Object.keys(sphere.locations).length;
   Object.keys(data).forEach((stoneCID) => {
-    console.log("stoneCID", stoneCID, MapProvider.stoneCIDMap[sphereId])
-    locations.push(MapProvider.stoneCIDMap[sphereId]?.[stoneCID]?.locationName);
+    let locationName = MapProvider.stoneCIDMap[sphereId]?.[stoneCID]?.locationName;
+    if (locationName) {
+      if (locationMap[locationName] === undefined) {
+        locationMap[locationName] = true;
+        locations.push(locationName);
+      }
+    }
   });
 
-  console.log("locations", locations)
   if (locations.length == locationCount) {
     return "All rooms";
   }

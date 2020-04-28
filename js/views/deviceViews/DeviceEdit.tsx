@@ -37,6 +37,7 @@ import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvail
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { OverlayUtil } from "../overlays/OverlayUtil";
 import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
+import { SortingManager } from "../../logic/SortingManager";
 
 
 export class DeviceEdit extends LiveComponent<any, any> {
@@ -297,6 +298,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
       lang("_Success__arguments___OKn_body",labelText),
 [{text:lang("_Success__arguments___OKn_left"), onPress: () => {
         NavigationUtil.dismissModalAndBack();
+        SortingManager.removeFromLists(this.props.stoneId);
         core.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }}]
     )

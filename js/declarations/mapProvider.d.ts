@@ -4,6 +4,7 @@ interface StoneMap {
   handle: string,
   name: string,
   sphereId: string,
+  stone: any,
   stoneConfig: any,
   locationName?: string,
   locationId?: string

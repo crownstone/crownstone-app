@@ -87,10 +87,7 @@ export class SceneAdd extends LiveComponent<any, any> {
               locationName={locationName}
               selection={(selected) => {
                 if (selected) {
-                  this.sceneData.data[stoneCID] = {
-                    selected: true,
-                    switchState: this.sceneData.data[stoneCID]?.switchState || stone.state.state
-                  }
+                  this.sceneData.data[stoneCID] = this.sceneData.data[stoneCID] || stone.state.state
                 }
                 else {
                   delete this.sceneData.data[stoneCID];
@@ -135,13 +132,10 @@ export class SceneAdd extends LiveComponent<any, any> {
             sphereId={sphereId}
             stoneId={stoneId}
             locationName={locationName}
-            state={this.sceneData.data[stoneCID].switchState}
+            state={this.sceneData.data[stoneCID]}
             margins={true}
             setStateCallback={(switchState) => {
-              this.sceneData.data[stoneCID] = {
-                selected: true,
-                switchState: switchState,
-              }
+              this.sceneData.data[stoneCID] = switchState;
             }}/>
       });
     })
@@ -219,7 +213,14 @@ export class SceneAdd extends LiveComponent<any, any> {
           <View>
             { this.getStoneSelectionList(this.sceneData.sphereId) }
           </View>,
-        options: [{label: "Next", nextCard:'stateSelection', textAlign:'right', onSelect: (result) => { }}]
+        options: [{label: "Next", nextCard:'stateSelection', textAlign:'right', onSelect: (result) => {
+            let stonesSelected = Object.keys(this.sceneData.data).length > 0;
+            if (!stonesSelected) {
+              Alert.alert("Select at least one...","I don't know why you'd want to make a scene without any Crownstones...", [{text:"Right.."}]);
+              return false;
+            }
+            return true;
+        }}]
       },
       stateSelection: {
         header: "What to do?",
@@ -453,7 +454,7 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
           style={{ width: screenWidth-70, height: 60}}
           minimumValue={0}
           maximumValue={1}
-          step={0.025}
+          step={0.01}
           value={switchState}
           minimumTrackTintColor={colors.gray.hex}
           maximumTrackTintColor={colors.gray.hex}

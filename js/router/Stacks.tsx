@@ -64,19 +64,6 @@ export const Stacks = {
           {
             stack: {
               children: [
-                { component: {name: "ScenesOverview"} },
-              ],
-              options: {
-                bottomTab: {
-                  text: Languages.get("Tabs","Scenes")(),
-                  icon: require('../images/icons/overview.png'),
-                }
-              }
-            }
-          },
-          {
-            stack: {
-              children: [
                 // { component: {name: "SettingsApp"} },
                 { component: {name: "SphereOverview"} },
                 // { component: {name: "DeviceOverview", passProps: {sphereId: "18232301-e0f1-eb16-1de3-73a837d0ceb7", stoneId: "2517a0f9-c1f-79d2-7462-5708dd1d2cf0"}} },
@@ -85,6 +72,19 @@ export const Stacks = {
                 bottomTab: {
                   text: Languages.get("Tabs","Overview")(),
                   icon: require('../images/icons/house.png'),
+                }
+              }
+            }
+          },
+          {
+            stack: {
+              children: [
+                { component: {name: "ScenesOverview"} },
+              ],
+              options: {
+                bottomTab: {
+                  text: Languages.get("Tabs","Scenes")(),
+                  icon: require('../images/icons/overview.png'),
                 }
               }
             }

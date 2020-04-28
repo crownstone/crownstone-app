@@ -2,7 +2,7 @@ import { LiveComponent } from "../LiveComponent";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { DataUtil } from "../../util/DataUtil";
 import { core } from "../../core";
-import { Platform, View } from "react-native";
+import { Alert, Platform, View } from "react-native";
 import { availableModalHeight, colors } from "../styles";
 import { Interview } from "../components/Interview";
 import * as React from "react";
@@ -87,7 +87,14 @@ export class SceneSelectCrownstones extends LiveComponent<any, any> {
           <View>
             { this.getStoneSelectionList(this.props.sphereId) }
           </View>,
-        options: [{label: "Select", textAlign:'right', onSelect: (result) => { this.props.callback(this.sceneData.data); NavigationUtil.dismissModal(); }}]
+        options: [{label: "Select", textAlign:'right', onSelect: (result) => {
+          let stonesSelected = Object.keys(this.sceneData.data).length > 0;
+          if (!stonesSelected) {
+            Alert.alert("Select at least one...","I don't know why you'd want to make a scene without any Crownstones...", [{text:"Right.."}]);
+            return false;
+          }
+
+          this.props.callback(this.sceneData.data); NavigationUtil.dismissModal(); }}]
       },
     }
   }

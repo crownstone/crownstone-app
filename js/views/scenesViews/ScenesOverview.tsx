@@ -41,7 +41,12 @@ export class ScenesOverview extends LiveComponent<any, any> {
     if (activeSphere) {
       let sceneIds = Object.keys(state.spheres[activeSphere].scenes);
       this.sortedList = SortingManager.getList(activeSphere, className, "Overview", sceneIds);
-      data = this.sortedList.sortedList;
+      data = this.sortedList.getDraggableList();
+    }
+
+    if (data.length > 0) {
+      getTopBarProps(props, {});
+      TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
     }
 
     this.state = {
@@ -56,6 +61,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
   renderItem(scene, sphereId, sceneId, index, drag, isBeingDragged) {
     return (
       <SceneItem
+        key={sceneId}
         scene={scene}
         sceneId={sceneId}
         sphereId={sphereId}
@@ -95,6 +101,17 @@ export class ScenesOverview extends LiveComponent<any, any> {
         change.changeSpheres      ||
         change.changeScenes
       ) {
+        let state = core.store.getState();
+        let activeSphere = state.app.activeSphere;
+
+        getTopBarProps(this.props, this.state);
+        TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
+
+        if (activeSphere) {
+          let sceneIds = Object.keys(state.spheres[activeSphere].scenes);
+          this.sortedList.mustContain(sceneIds);
+          this.setState({ data: this.sortedList.getDraggableList() })
+        }
         this.forceUpdate();
       }
     });
@@ -114,7 +131,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
     if (activeSphere && state.spheres[activeSphere]) {
       let scenes = state.spheres[activeSphere].scenes;
       let sceneIds = Object.keys(scenes);
-      if (sceneIds.length === 0) {
+      if (sceneIds.length === 0 && this.state.editMode === false) {
         content = <SceneIntroduction sphereId={activeSphere} />
       }
       else {
@@ -127,7 +144,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
               data={this.state.data}
               onRelease={() => { this.localEventBus.emit("END_DRAG" );}}
               renderItem={({ item, index, drag, isActive }) => { return this.renderItem( scenes[item as string], activeSphere, item, index, drag, isActive ); }}
-              keyExtractor={(item : any, index) => `draggable-item-${item.key}`}
+              keyExtractor={(item : any, index) => `draggable-item-${item}`}
               onDragEnd={({ data }) => { this.setState({ data }); this.sortedList.update(data as string[])}}
               activationDistance={1}
             />
@@ -160,29 +177,32 @@ export class ScenesOverview extends LiveComponent<any, any> {
 function getTopBarProps(props, viewState) {
   let state = core.store.getState();
   let activeSphere = state.app.activeSphere;
-
+  let scenesAvailable = false;
+  if (activeSphere) {
+    scenesAvailable = Object.keys(state.spheres[activeSphere].scenes).length > 0;
+  }
   let title = "Scenes";
 
   if (!activeSphere) {
-    NAVBAR_PARAMS_CACHE = {
-      title: title,
-    };
+    NAVBAR_PARAMS_CACHE = { title: title };
     return NAVBAR_PARAMS_CACHE;
   }
 
-  if (viewState.editMode !== true) {
-    NAVBAR_PARAMS_CACHE = {
-      title: title,
-
-      edit: Permissions.inSphere(activeSphere).canChangeScenes,
-    };
-      return NAVBAR_PARAMS_CACHE;
+  if (scenesAvailable) {
+    if (viewState.editMode !== true) {
+      NAVBAR_PARAMS_CACHE = { title: title, edit: true };
+    }
+    else {
+      NAVBAR_PARAMS_CACHE = { title: title, done: true };
+    }
   }
   else {
-    NAVBAR_PARAMS_CACHE = {
-      title: title,
-      done: true
-    };
+    if (viewState.editMode === true) {
+      NAVBAR_PARAMS_CACHE = { title: title, done: true };
+    }
+    else {
+      NAVBAR_PARAMS_CACHE = { title: title };
+    }
   }
 
   return NAVBAR_PARAMS_CACHE;

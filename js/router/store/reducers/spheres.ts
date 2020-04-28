@@ -4,7 +4,7 @@ import sphereUserReducer from './sphereUser'
 import stonesReducer from './stones'
 import messageReducer from './messages'
 import scenesReducer from './scenes'
-import sortedListsReducer from './sortedListsReducer'
+import sortedListsReducer from './sortedLists'
 import thirdPartyReducer from './thirdParty'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import sphereKeyReducer from "./sphereKeys";

@@ -757,6 +757,7 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
         handle: stoneConfig.handle,
         name: stoneConfig.name,
         sphereId: sphereId,
+        stone: state.spheres[sphereId].stones[stoneId],
         stoneConfig: stoneConfig,
         locationName: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? locations[stoneConfig.locationId].config.name : null,
         locationId: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? stoneConfig.locationId : null
