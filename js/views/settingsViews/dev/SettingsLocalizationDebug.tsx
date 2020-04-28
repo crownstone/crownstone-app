@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { availableScreenHeight, colors, screenWidth } from "../../styles";
 import {Util} from "../../../util/Util";
-import {Background} from "../../components/Background";
 import {ForceDirectedView} from "../../components/interactiveView/ForceDirectedView";
 import {LocalizationDebugCircle} from "./LocalizationDebugCircle";
 import {getPresentUsersInLocation} from "../../../util/DataUtil";
@@ -21,6 +20,7 @@ import { xUtil } from "../../../util/StandAloneUtil";
 import { core } from "../../../core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { OnScreenNotifications } from "../../../notifications/OnScreenNotifications";
+import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 
 
 export class SettingsLocalizationDebug extends LiveComponent<any, any> {
@@ -193,8 +193,8 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
     else {
       let roomData = Util.data.getLayoutDataRooms(core.store.getState(), sphereId);
       return (
-        <Background image={require('../../../images/backgrounds/blueprintBackgroundDesaturated_noLine.png')}>
-                    <View style={{
+        <BackgroundNoNotification image={require('../../../images/backgrounds/blueprintBackgroundDesaturated_noLine.png')}>
+          <View style={{
             position:'absolute', top:5, left:5, padding:5, borderRadius:5,
             backgroundColor:this._amountOfStones < AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION ? colors.csOrange.hex : 'transparent',
           }}>
@@ -218,7 +218,7 @@ export class SettingsLocalizationDebug extends LiveComponent<any, any> {
             allowDrag={false}
             renderNode={(id, nodePosition) => { return this._renderRoom(id, nodePosition); }}
           />
-        </Background>
+        </BackgroundNoNotification>
       );
     }
   }

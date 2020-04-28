@@ -10,7 +10,7 @@ import {
   ScrollView, View, Text, TouchableOpacity, Alert, TextStyle, ViewStyle
 } from "react-native";
 
-import { Background } from '../../components/Background'
+import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { core } from "../../../core";
@@ -141,11 +141,11 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} >
+      <BackgroundNoNotification image={core.background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
           {this._getItems(this.dbState, this.expanded, '', 'BASE', 0) }
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

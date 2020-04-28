@@ -12,13 +12,13 @@ import {
 } from 'react-native';
 
 
-import { Background } from './../components/Background'
 import { colors, styles } from "./../styles";
 import {screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 import {MeshElement} from "../components/MeshElement";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 
 export class SettingsMeshTopologyHelp extends Component<any, any> {
@@ -29,8 +29,8 @@ export class SettingsMeshTopologyHelp extends Component<any, any> {
   render() {
     let mockData = {deviceIcon: 'c1-studiolight', locationIcon: 'c1-cinema', locationTitle: lang("Movie_Room"), element:{config:{name:lang("Device")}}, stone:{config:{name:'Device', firmwareVersion: '2.3.0'}}};
     return (
-      <Background hasNavBar={false} image={core.background.menu}>
-                <ScrollView >
+      <BackgroundNoNotification hasNavBar={false} image={core.background.menu}>
+        <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:10}} />
             <Text style={styles.title}>{ lang("Mesh_Topology") }</Text>
@@ -55,7 +55,7 @@ export class SettingsMeshTopologyHelp extends Component<any, any> {
             <View style={{height:100}} />
           </View>
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

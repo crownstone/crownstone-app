@@ -9,7 +9,7 @@ import * as React from 'react';
 import {
   ScrollView} from 'react-native';
 
-import { Background } from '../../components/Background'
+import { BackgroundNoNotification } from '../../components/BackgroundNoNotification'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import {colors, } from '../../styles'
 import {Util} from "../../../util/Util";
@@ -100,11 +100,11 @@ export class SettingsBleDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} >
+      <BackgroundNoNotification image={core.background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

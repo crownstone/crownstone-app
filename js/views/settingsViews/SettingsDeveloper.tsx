@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import { IconButton } from '../components/IconButton'
-import { Background } from '../components/Background'
+import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
@@ -445,7 +445,7 @@ lang("_Reset_Done__Rediscovery__body"),
 
   render() {
     return (
-      <Background image={core.background.menu} hasTopBar={false} hideNotifications={true} hideOrangeLine={true} >
+      <BackgroundNoNotification image={core.background.menu} hasTopBar={false} hideNotifications={true} hideOrangeLine={true} >
         <TopbarImitation
           left={Platform.OS === 'android' ? null : "Back"}
           title={"test"}
@@ -467,7 +467,7 @@ lang("_Reset_Done__Rediscovery__body"),
           </SlideFadeInView>
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

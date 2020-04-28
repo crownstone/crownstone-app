@@ -26,6 +26,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { LiveComponent } from "../LiveComponent";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
@@ -322,11 +323,11 @@ lang("_No_recipients____I_cant__body"),
 
   render() {
     return (
-      <Background hasNavBar={false} image={core.background.lightBlur} >
-                <ScrollView>
+      <BackgroundNoNotification hasNavBar={false} image={core.background.lightBlur} >
+        <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
       );
   }
 }

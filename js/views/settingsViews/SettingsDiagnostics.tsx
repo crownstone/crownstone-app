@@ -13,7 +13,7 @@ import {
   View
 } from 'react-native';
 
-import { Background } from '../components/Background'
+import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { availableScreenHeight, colors, deviceStyles, screenWidth } from "../styles";
 import {IconButton} from "../components/IconButton";
 import {Bluenet} from "../../native/libInterface/Bluenet";
@@ -192,14 +192,14 @@ export class SettingsDiagnostics extends Component<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu}>
+      <BackgroundNoNotification image={core.background.menu}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30, paddingBottom: 30 }}>
             <Text style={deviceStyles.header}>{ lang("Diagnostics") }</Text>
             { this.getContent() }
           </View>
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

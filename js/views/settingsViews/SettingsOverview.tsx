@@ -14,7 +14,6 @@ import {
   View, Alert, Platform
 } from "react-native";
 
-import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import {styles, colors, } from '../styles'
 
@@ -26,6 +25,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { AppUtil } from "../../util/AppUtil";
 import { LOGe } from "../../logging/Log";
 import { IconButton } from "../components/IconButton";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 export class SettingsOverview extends LiveComponent<any, any> {
   static options(props) {
@@ -187,12 +187,12 @@ export class SettingsOverview extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu}>
+      <BackgroundNoNotification image={core.background.menu}>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
           <Text style={[styles.version,{paddingBottom: 20}]}>{ lang("version__",DeviceInfo.getReadableVersion()) }</Text>
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

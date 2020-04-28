@@ -12,7 +12,6 @@ import {
   View
 } from "react-native";
 
-import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { processImage } from '../../util/Util'
@@ -26,6 +25,7 @@ import { FileUtil } from "../../util/FileUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 export class SettingsProfile extends LiveComponent<any, any> {
   static options(props) {
@@ -219,7 +219,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     let user = state.user;
 
     return (
-      <Background image={core.background.menu} hideNotifications={true}>
+      <BackgroundNoNotification image={core.background.menu} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="always">
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
@@ -258,7 +258,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
         { !this.state.showDevMenu && <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
           <View style={{position:'absolute', bottom:0, left:0, width:screenWidth, height:50, backgroundColor: 'transparent'}} />
         </TouchableWithoutFeedback>}
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

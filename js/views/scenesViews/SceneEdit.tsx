@@ -140,14 +140,11 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
             stoneId={stoneId}
             locationName={locationName}
             margins={false}
-            state={this.state.data[stoneCID].switchState}
+            state={this.state.data[stoneCID]}
             setStateCallback={(switchState) => {
               this.changed = true;
               let data = {...this.state.data};
-              data[stoneCID] = {
-                selected: true,
-                switchState: switchState,
-              }
+              data[stoneCID] = switchState,
               this.setState({data: data});
             }}
           />

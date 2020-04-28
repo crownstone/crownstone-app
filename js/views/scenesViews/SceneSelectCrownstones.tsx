@@ -55,7 +55,7 @@ export class SceneSelectCrownstones extends LiveComponent<any, any> {
                 if (selected) {
                   this.sceneData.data[stoneCID] = {
                     selected: true,
-                    switchState: this.sceneData.data[stoneCID]?.switchState || stone.state.state
+                    switchState: this.sceneData.data[stoneCID] || stone.state.state
                   }
                 }
                 else {

@@ -12,7 +12,7 @@ import {
   Linking} from 'react-native';
 
 import { IconButton } from '../components/IconButton'
-import { Background } from '../components/Background'
+import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { ListEditableItems } from '../components/ListEditableItems'
 import {colors, } from '../styles'
 import { Util } from "../../util/Util";
@@ -157,11 +157,11 @@ lang("_Whoops___We_could_not_re_body"),
     let user = state.user;
 
     return (
-      <Background image={core.background.menu} >
-                <ScrollView keyboardShouldPersistTaps="always">
+      <BackgroundNoNotification image={core.background.menu} >
+        <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

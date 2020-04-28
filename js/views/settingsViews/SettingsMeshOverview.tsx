@@ -13,12 +13,12 @@ import {
   View
 } from 'react-native';
 
-import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
 import {colors, screenWidth, } from './../styles'
 import { IconCircle } from "../components/IconCircle";
 import { core } from "../../core";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 let FLOATING_NETWORK_KEY = '__null';
 
@@ -126,7 +126,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
     networkKeys = Object.keys(networks);
 
     return (
-      <Background image={core.background.light}>
+      <BackgroundNoNotification image={core.background.light}>
         <ScrollView>
           <Text style={{
             backgroundColor:'transparent',
@@ -156,7 +156,7 @@ export class SettingsMeshOverview extends LiveComponent<any, any> {
           }
           { this.getNetworks(networks) }
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

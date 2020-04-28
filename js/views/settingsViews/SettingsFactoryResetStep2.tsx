@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 
 
-import { Background }            from '../components/Background'
 import { setupStyle }            from './SetupShared'
 import {colors, screenWidth, screenHeight, } from './../styles'
 import { BleUtil }               from '../../util/BleUtil'
@@ -28,6 +27,7 @@ import { xUtil } from "../../util/StandAloneUtil";
 import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 export class SettingsFactoryResetStep2 extends Component<any, any> {
   static options(props) {
@@ -261,7 +261,7 @@ lang("_Error_during_Factory_Res_body"),
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <Background hasNavBar={false} image={core.background.light}>
+      <BackgroundNoNotification hasNavBar={false} image={core.background.light}>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text]}>{ lang("Hold_your_phone_next_to_t") }</Text>
           <View style={setupStyle.lineDistance} />
@@ -280,7 +280,7 @@ lang("_Error_during_Factory_Res_body"),
             <ActivityIndicator animating={true} color={colors.csBlueDark.hex} size="large"/>
           </View>
         </View>
-      </Background>
+      </BackgroundNoNotification>
     )
   }
 }

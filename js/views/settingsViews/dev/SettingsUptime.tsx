@@ -1,7 +1,6 @@
 import { LiveComponent }          from "../../LiveComponent";
 import * as React from 'react';
 import { RefreshControl, ScrollView, Text, TextStyle, View } from "react-native";
-import { Background } from '../../components/Background'
 import { ListEditableItems } from '../../components/ListEditableItems'
 import { core } from "../../../core";
 import { TopBarUtil } from "../../../util/TopBarUtil";
@@ -11,6 +10,7 @@ import { UPTIME_LOG_PREFIX, UptimeMonitor } from "../../../backgroundProcesses/U
 import { xUtil } from "../../../util/StandAloneUtil";
 import { colors, screenWidth } from "../../styles";
 import { CLOUD } from "../../../cloud/cloudAPI";
+import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 
 const RNFS = require('react-native-fs');
 
@@ -148,7 +148,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
 
   render() {
     return (
-      <Background image={core.background.menu} hideNotifications={true}>
+      <BackgroundNoNotification image={core.background.menu} hideNotifications={true}>
         <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{flexGrow:1}}>
           <RefreshControl
             refreshing={this.state.updating}
@@ -162,7 +162,7 @@ export class SettingsUptime extends LiveComponent<any, {content: string[], gaps:
             { this._getContent() }
           </View>
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

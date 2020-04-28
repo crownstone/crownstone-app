@@ -31,6 +31,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { Navigation } from "react-native-navigation";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 
 export class MessageInbox extends LiveComponent<any, any> {
@@ -259,31 +260,31 @@ export class MessageInbox extends LiveComponent<any, any> {
         }
 
         return (
-          <Background image={core.background.lightBlur}>
+          <BackgroundNoNotification image={core.background.lightBlur}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             { scrollView }
-          </Background>
+          </BackgroundNoNotification>
         );
       }
       else {
         return (
-          <Background image={core.background.lightBlur}>
+          <BackgroundNoNotification image={core.background.lightBlur}>
             <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>{ lang("Add_some_Crownstones_to_u") }</Text>
             <View style={{flex:1}} />
-          </Background>
+          </BackgroundNoNotification>
         );
       }
     }
     else {
       return (
-        <Background image={core.background.lightBlur}>
+        <BackgroundNoNotification image={core.background.lightBlur}>
           <ViewStateWatcher componentId={ this.props.componentId } onBlur={ () => { this.clearMessageBadge(); }} />
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>{ lang("Add_a_Sphere_to_use_messa") }</Text>
           <View style={{flex:1}} />
-        </Background>
+        </BackgroundNoNotification>
       );
     }
   }

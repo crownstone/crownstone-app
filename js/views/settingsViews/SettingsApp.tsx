@@ -10,7 +10,7 @@ import {
   ScrollView} from 'react-native';
 
 import { IconButton } from '../components/IconButton'
-import { Background } from '../components/Background'
+import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
@@ -175,11 +175,11 @@ export class SettingsApp extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} hasNavBar={!this.props.modal}>
+      <BackgroundNoNotification image={core.background.menu} hasNavBar={!this.props.modal}>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

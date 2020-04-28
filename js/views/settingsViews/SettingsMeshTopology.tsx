@@ -14,7 +14,6 @@ import {
   View
 } from 'react-native';
 
-import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
 import { availableScreenHeight, colors } from "./../styles";
 import { MeshElement } from "../components/MeshElement";
@@ -27,6 +26,7 @@ import { core } from "../../core";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { OnScreenNotifications } from "../../notifications/OnScreenNotifications";
+import { BackgroundNoNotification } from "../components/BackgroundNoNotification";
 
 let MESH_TIMEOUT = 3*24*3600*1000;
 
@@ -177,7 +177,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
 
     if (stoneIds.length === 0) {
       return (
-        <Background image={core.background.menu}>
+        <BackgroundNoNotification image={core.background.menu}>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <Text style={{color:colors.menuBackground.hex, fontWeight:'bold'}}>{ lang("No_Crownstones_in_Sphere_",sphere.config.name) }</Text>
           </View>
@@ -186,7 +186,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
             style={{position:'absolute', bottom:0, right:0, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
             <Icon name={'ios-help-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
           </TouchableOpacity>
-        </Background>
+        </BackgroundNoNotification>
       );
     }
 
@@ -249,7 +249,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
     height -= offset;
 
     return (
-      <Background image={core.background.menu} hideNotifications={true}>
+      <BackgroundNoNotification image={core.background.menu} hideNotifications={true}>
         <ForceDirectedView
           viewId={this.viewId}
           height={height}
@@ -282,7 +282,7 @@ export class SettingsMeshTopology extends LiveComponent<any, any> {
           style={{position:'absolute', bottom:0, right:40, width:40, height:40, borderRadius:20, overflow:'hidden',alignItems:'center', justifyContent:'center'}}>
           <Icon name={'md-refresh-circle'} size={40} color={colors.darkGray.rgba(0.75)} />
         </TouchableOpacity>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

@@ -10,7 +10,6 @@ import {
   Alert,
   ScrollView} from 'react-native';
 
-import { Background }          from '../../components/Background'
 import { ListEditableItems }   from '../../components/ListEditableItems'
 import { colors,  }  from '../../styles'
 import { Util }                from "../../../util/Util";
@@ -21,6 +20,7 @@ import { core } from "../../../core";
 import { NavigationUtil } from "../../../util/NavigationUtil";
 import { StoneAvailabilityTracker } from "../../../native/advertisements/StoneAvailabilityTracker";
 import { TopBarUtil } from "../../../util/TopBarUtil";
+import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 
 
 export class SettingsMeshDebug extends LiveComponent<any, any> {
@@ -191,11 +191,11 @@ export class SettingsMeshDebug extends LiveComponent<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} >
+      <BackgroundNoNotification image={core.background.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

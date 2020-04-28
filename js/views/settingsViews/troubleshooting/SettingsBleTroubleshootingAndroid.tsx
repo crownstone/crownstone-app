@@ -15,6 +15,7 @@ import {Background} from "../../components/Background";
 import { colors, screenWidth, styles } from "../../styles";
 import {ScaledImage} from "../../components/ScaledImage";
 import { core } from "../../../core";
+import { BackgroundNoNotification } from "../../components/BackgroundNoNotification";
 
 
 
@@ -26,7 +27,7 @@ export class SettingsBleTroubleshootingAndroid extends Component<any, any> {
 
     let imageWidth = 0.7*screenWidth;
     return (
-      <Background image={core.background.menu} hasNavBar={false}>
+      <BackgroundNoNotification image={core.background.menu} hasNavBar={false}>
         <ScrollView >
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <View style={{height:20}} />
@@ -46,7 +47,7 @@ export class SettingsBleTroubleshootingAndroid extends Component<any, any> {
             <View style={{height:100}} />
           </View>
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }

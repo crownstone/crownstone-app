@@ -13,7 +13,7 @@ import {
   View
 } from 'react-native';
 
-import { Background } from '../components/Background'
+import { BackgroundNoNotification } from '../components/BackgroundNoNotification'
 import { ListEditableItems } from '../components/ListEditableItems'
 import {colors, } from "../styles";
 import {IconButton} from "../components/IconButton";
@@ -239,11 +239,11 @@ export class SettingsFAQ extends Component<any, any> {
 
   render() {
     return (
-      <Background image={core.background.menu} >
+      <BackgroundNoNotification image={core.background.menu} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
-      </Background>
+      </BackgroundNoNotification>
     );
   }
 }
