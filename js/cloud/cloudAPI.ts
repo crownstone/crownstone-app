@@ -55,13 +55,15 @@ function combineSections() {
  */
 export const CLOUD : any = combineSections();
 
-CLOUD.setAccess =          function(accessToken)     : any  { TokenStore.accessToken = accessToken;       return CLOUD; };
-CLOUD.setUserId =          function(userId)          : any  { TokenStore.userId = userId;                 return CLOUD; }; // cloudId === localId
-CLOUD.forUser =            function(userId)          : any  { TokenStore.userId = userId;                 return CLOUD; }; // cloudId === localId
-CLOUD.forDevice =          function(deviceId)        : any  { TokenStore.deviceId = deviceId;             return CLOUD; }; // cloudId === localId
-CLOUD.forInstallation =    function(installationId)  : any  { TokenStore.installationId = installationId; return CLOUD; }; // cloudId === localId
-CLOUD.forStone =           function(localStoneId)    : any  { TokenStore.stoneId     = MapProvider.local2cloudMap.stones[localStoneId]         || localStoneId;     return CLOUD; };
-CLOUD.forSphere =          function(localSphereId)   : any  { TokenStore.sphereId    = MapProvider.local2cloudMap.spheres[localSphereId]       || localSphereId;    return CLOUD; };
-CLOUD.forLocation =        function(localLocationId) : any  { TokenStore.locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return CLOUD; };
-CLOUD.forMessage =         function(localMessageId)  : any  { TokenStore.messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return CLOUD; };
-CLOUD.forToon =            function(localToonId)     : any  { TokenStore.toonId      = MapProvider.local2cloudMap.toons[localToonId]           || localToonId;      return CLOUD; };
+CLOUD.setAccess =          function(accessToken)      : any { TokenStore.accessToken  = accessToken;      return CLOUD; };
+CLOUD.setUserId =          function(userId)           : any { TokenStore.userId       = userId;           return CLOUD; }; // cloudId === localId
+CLOUD.forUser =            function(userId)           : any { TokenStore.userId       = userId;           return CLOUD; }; // cloudId === localId
+CLOUD.forDevice =          function(deviceId)         : any { TokenStore.deviceId     = deviceId;         return CLOUD; }; // cloudId === localId
+CLOUD.forInstallation =    function(installationId)   : any { TokenStore.installationId = installationId; return CLOUD; }; // cloudId === localId
+CLOUD.forStone =           function(localStoneId)     : any { TokenStore.stoneId      = MapProvider.local2cloudMap.stones[localStoneId]           || localStoneId;      return CLOUD; };
+CLOUD.forSphere =          function(localSphereId)    : any { TokenStore.sphereId     = MapProvider.local2cloudMap.spheres[localSphereId]         || localSphereId;     return CLOUD; };
+CLOUD.forScene =           function(localSceneId)     : any { TokenStore.sceneId      = MapProvider.local2cloudMap.scenes[localSceneId]           || localSceneId;      return CLOUD; };
+CLOUD.forSortedList =      function(localSortedListId): any { TokenStore.sortedListId = MapProvider.local2cloudMap.sortedLists[localSortedListId] || localSortedListId; return CLOUD; };
+CLOUD.forLocation =        function(localLocationId)  : any { TokenStore.locationId   = MapProvider.local2cloudMap.locations[localLocationId]     || localLocationId;   return CLOUD; };
+CLOUD.forMessage =         function(localMessageId)   : any { TokenStore.messageId    = MapProvider.local2cloudMap.messages[localMessageId]       || localMessageId;    return CLOUD; };
+CLOUD.forToon =            function(localToonId)      : any { TokenStore.toonId       = MapProvider.local2cloudMap.toons[localToonId]             || localToonId;       return CLOUD; };

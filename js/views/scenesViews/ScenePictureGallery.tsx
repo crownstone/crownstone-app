@@ -296,7 +296,7 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
         <Text style={typeStyle}>{item.name}</Text>
         <FlatList horizontal={true} data={pictureData[item.type]} removeClippedSubviews={true} initialNumToRender={4} renderItem={this.renderStockImages} showsHorizontalScrollIndicator={false} />
       </View>
-    )
+    );
   }
 
   render() {

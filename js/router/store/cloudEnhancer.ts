@@ -11,6 +11,8 @@ import { transferLocations} from "../../cloud/transferData/transferLocations";
 import { core } from "../../core";
 import { BATCH } from "./reducers/BatchReducer";
 import { transferBehaviours } from "../../cloud/transferData/transferBehaviours";
+import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/ScenePictureGallery";
+import { transferScenes } from "../../cloud/transferData/transferScenes";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -76,6 +78,12 @@ function handleAction(action, returnValue, newState, oldState) {
       break;
     case 'USER_UPDATE':
       handleUserInCloud(action, newState);
+      break;
+
+
+    case 'ADD_SCENE':
+    case 'UPDATE_SCENE':
+      handleSceneInCloud(action, newState);
       break;
 
     case 'ADD_STONE':
@@ -243,6 +251,8 @@ function handleLocationInCloud(action, state) {
   let sphere   = state.spheres[action.sphereId];
   let location = sphere.locations[action.locationId];
 
+
+
   transferLocations.updateOnCloud({
     localId:       action.stoneId,
     localData:     location,
@@ -252,6 +262,59 @@ function handleLocationInCloud(action, state) {
   }).catch(() => {});
 }
 
+
+
+function handleSceneInCloud(action, state) {
+  if (action.data.picture && action.data.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
+    // in case the user has a pending delete scene picture request, we will finish this immediately so a new
+    // picture will not be deleted.
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_SCENES', id: 'removeScenePicture' + action.sceneId });
+    core.eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_SPECIAL_SCENES',
+      id: 'uploadScenePicture' + action.sceneId,
+      localId: action.sceneId,
+      localSphereId: action.sphereId,
+      specialType: 'uploadScenePicture'
+    });
+  }
+  else if (action.data.picture === null || action.data.pictureSource === PICTURE_GALLERY_TYPES.STOCK) {
+    // in case the user has a pending upload scene picture request, we will finish this immediately so a new
+    // picture will not be uploaded.
+    core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_SCENES', id: 'uploadScenePicture' + action.sceneId });
+    core.eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_SPECIAL_SCENES',
+      id: 'removeScenePicture'+ action.sceneId,
+      localId: action.sceneId,
+      localSphereId: action.sphereId,
+      specialType: 'removeScenePicture'
+    });
+  }
+
+
+  let sphere = state.spheres[action.sphereId];
+
+  if (action.type === "ADD_SCENE") {
+    let actions = [];
+    transferScenes.createOnCloud(actions, {
+      localId: action.stoneId,
+      localData: action.data,
+      localSphereId: action.sphereId,
+      cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
+    }).catch(() => {
+    });
+  }
+  else {
+    let scene = sphere.scenes[action.sceneId];
+    transferScenes.updateOnCloud({
+      localId: action.stoneId,
+      localData: scene,
+      localSphereId: action.sphereId,
+      cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
+      cloudId: scene.cloudId || action.sceneId,
+    }).catch(() => {
+    });
+  }
+}
 
 function handleSphereInCloud(action, state) {
   let sphere = state.spheres[action.sphereId];

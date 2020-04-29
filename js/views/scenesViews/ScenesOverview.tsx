@@ -37,12 +37,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
     let state = core.store.getState();
     let activeSphere = state.app.activeSphere;
-    let data = [];
-    if (activeSphere) {
-      let sceneIds = Object.keys(state.spheres[activeSphere].scenes);
-      this.sortedList = SortingManager.getList(activeSphere, className, "Overview", sceneIds);
-      data = this.sortedList.getDraggableList();
-    }
+    let data = this.initializeSortedList(activeSphere, state);
 
     if (data.length > 0) {
       getTopBarProps(props, {});
@@ -56,6 +51,16 @@ export class ScenesOverview extends LiveComponent<any, any> {
     }
 
     this.localEventBus = new EventBusClass();
+  }
+
+  initializeSortedList(activeSphereId, state) {
+    let data = [];
+    if (activeSphereId) {
+      let sceneIds = Object.keys(state.spheres[activeSphereId].scenes);
+      this.sortedList = SortingManager.getList(activeSphereId, className, "Overview", sceneIds);
+      data = this.sortedList.getDraggableList();
+    }
+    return data;
   }
 
   renderItem(scene, sphereId, sceneId, index, drag, isBeingDragged) {
@@ -99,6 +104,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
       if (
         change.updateActiveSphere ||
         change.changeSpheres      ||
+        change.updateScene        ||
         change.changeScenes
       ) {
         let state = core.store.getState();
@@ -109,8 +115,11 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
         if (activeSphere) {
           let sceneIds = Object.keys(state.spheres[activeSphere].scenes);
-          this.sortedList.mustContain(sceneIds);
-          this.setState({ data: this.sortedList.getDraggableList() })
+          if (this.sortedList) {
+            this.initializeSortedList(activeSphere, state);
+            this.sortedList.mustContain(sceneIds);
+            this.setState({ data: this.sortedList.getDraggableList() })
+          }
         }
         this.forceUpdate();
       }

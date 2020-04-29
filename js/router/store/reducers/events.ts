@@ -34,7 +34,6 @@ let getReducer = (changeType) => {
   let itemReducerCreator = (itemType) => {
     let itemReducer = getItemReducer(changeType, itemType);
     
-
     return (state = {}, action : any = {}) => {
       switch (action.type) {
         case 'REMOVE_ALL_EVENTS':
@@ -68,6 +67,7 @@ let getReducer = (changeType) => {
     installations: itemReducerCreator('INSTALLATIONS'),
     devices:       itemReducerCreator('DEVICES'),
     messages:      itemReducerCreator('MESSAGES'),
+    scenes:        itemReducerCreator('SCENES'),
   })
 };
 

@@ -112,6 +112,14 @@ export const Util = {
   data: DataUtil,
   events: EventUtil,
 
+  narrowScreen: function() {
+    return screenWidth < 340;
+  },
+
+  shortScreen: function() {
+    return screenHeight < 600;
+  },
+
   canUpdate: function(stone, state) {
     // only admins are allowed to update
     if (Permissions.activeSphere().seeUpdateCrownstone) {

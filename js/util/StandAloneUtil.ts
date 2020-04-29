@@ -1,7 +1,5 @@
 import { Dimensions } from 'react-native'
-import { screenHeight } from "../views/styles";
 import { base_core } from "../base_core";
-const screenWidth = Dimensions.get('window').width;
 
 export const xUtil = {
 
@@ -390,13 +388,6 @@ export const xUtil = {
     return inputStr[0].toUpperCase() + inputStr.substr(1)
   },
 
-  narrowScreen: function() {
-    return screenWidth < 340;
-  },
-
-  shortScreen: function() {
-    return screenHeight < 600;
-  },
 
   stringify: function(obj, space = 2) {
     let allKeys = [];

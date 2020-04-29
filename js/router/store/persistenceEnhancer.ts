@@ -1,4 +1,4 @@
-import {LOGd, LOGe} from '../../logging/Log'
+import { LOGd, LOGe } from '../../logging/Log'
 import { StoreManager } from "./storeManager";
 import { BATCH } from "./reducers/BatchReducer";
 

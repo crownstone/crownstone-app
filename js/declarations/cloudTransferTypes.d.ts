@@ -21,7 +21,7 @@ type transferToLocalData = {
   localId: string,
   localSphereId: string,
   cloudId?: string,
-  cloudData?: any,
+  cloudData: any,
   extraFields? : any,
 }
 
@@ -85,6 +85,8 @@ interface globalIdMap {
   locations: keyMap,
   behaviours: keyMap,
   stones: keyMap,
+  scenes: keyMap,
+  sortedLists: keyMap,
   messages: keyMap,
   spheres: keyMap,
   schedules: keyMap,
@@ -99,7 +101,9 @@ interface globalSphereMap {
     users: keyMap,
     locations: keyMap,
     behaviours: keyMap,
+    scenes: keyMap,
     stones: keyMap,
+    sortedLists: keyMap,
     messages: keyMap,
     spheres: keyMap,
     schedules: keyMap,

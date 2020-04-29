@@ -75,6 +75,8 @@ Carthage
 !testRouterEquality.js
 !__tests__/**
 !**.tapetest.js
+!babel.config.js
+
 
 sentrySettings.js
 sentry.properties
@@ -85,3 +87,4 @@ toonConfig.ts
 __prototypes
 .logs
 /ios/Pods/
+.jest

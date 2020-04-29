@@ -81,7 +81,9 @@ const handleSpecial = function(state, events, actions) {
   let promises = [];
   let messageIds = Object.keys(events.messages);
   let locationEventIds = Object.keys(events.locations);
+  let sceneEventIds = Object.keys(events.scenes);
   let userEventIds = Object.keys(events.user);
+
   messageIds.forEach((dbId) => {
     let payload = events.messages[dbId];
     let success = () => { actions.push({type: 'FINISHED_SPECIAL_MESSAGES', id: dbId })};
@@ -180,7 +182,50 @@ const handleSpecial = function(state, events, actions) {
           )
         }
         break;
+    }
+  });
 
+  sceneEventIds.forEach((sceneEventId) => {
+    let payload = events.scenes[sceneEventId];
+    let success = () => { actions.push({type: 'FINISHED_SPECIAL_SCENES', id: sceneEventId })};
+
+    let sphere = state.spheres[payload.localSphereId];
+    if (!sphere) { return success(); }
+
+    let scene = sphere.scenes[payload.localId];
+    if (!scene) { return success(); }
+
+
+    switch (payload.specialType) {
+      case 'removeSceneCustomPicture':
+        promises.push(CLOUD.forScene(payload.localId).deleteSceneCustomPicture({background: true}).then(() => { success(); })
+          .catch((err) => {
+            // even if there is no profile pic, 204 will be returned. Any other errors are.. errors?
+            LOGe.cloud("syncEvents Special: Could not remove scene image from cloud", err);
+          }));
+        break;
+      case 'uploadSceneCustomPicture':
+        if (!scene.picture) {
+          success();
+        }
+        else {
+          promises.push(
+            RNFS.exists(scene.picture)
+              .then((fileExists) => {
+                if (fileExists === false) {
+                  success();
+                }
+                else {
+                  return CLOUD.forScene(payload.localId).uploadSceneCustomPicture(scene.picture);
+                }
+              })
+              .then(() => { success() })
+              .catch((err) => {
+                LOGe.cloud("syncEvents Special: Could not upload scene image to cloud", err);
+              })
+          )
+        }
+        break;
     }
   });
 

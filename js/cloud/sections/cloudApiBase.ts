@@ -35,6 +35,8 @@ class TokenStoreClass {
   locationId;
   messageId;
   sphereId;
+  sceneId;
+  sortedListId;
   stoneId;
   toonId;
   userId;
@@ -210,6 +212,14 @@ function _getId(url, obj) : string {
   let stoneLocation = url.indexOf('Stones');
   if (stoneLocation !== -1 && stoneLocation < 3)
     return obj.stoneId;
+
+  let sceneLocation = url.indexOf('Scenes');
+  if (sceneLocation !== -1 && sceneLocation < 3)
+    return obj.sceneId;
+
+  let sortedListsLocation = url.indexOf('SortedLists');
+  if (sortedListsLocation !== -1 && sortedListsLocation < 3)
+    return obj.sortedListId;
 
   let installationLocation = url.indexOf('AppInstallation');
   if (installationLocation !== -1 && installationLocation < 3)

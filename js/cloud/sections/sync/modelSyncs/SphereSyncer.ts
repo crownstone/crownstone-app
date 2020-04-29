@@ -19,9 +19,14 @@ import {ToonSyncer} from "./thirdParty/ToonSyncer";
 import { PresenceSyncer } from "./PresenceSyncer";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { DataUtil } from "../../../../util/DataUtil";
+import { FileUtil } from "../../../../util/FileUtil";
+import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/ScenePictureGallery";
+import { SceneSyncer } from "./SceneSyncer";
+import { core } from "../../../../core";
 
 export class SphereSyncer extends SyncingBase {
   globalSphereMap;
+  userId = null;
 
   constructor(actions : any[], transferPromises: any[], globalCloudIdMap: globalIdMap, globalSphereMap : globalSphereMap) {
     super(actions, transferPromises, globalCloudIdMap);
@@ -33,6 +38,9 @@ export class SphereSyncer extends SyncingBase {
   }
 
   sync(store) {
+    let userInState = store.getState().user;
+    this.userId = userInState.userId;
+
     return this.download()
       .then((spheresInCloud) => {
         let state = store.getState();
@@ -92,6 +100,7 @@ export class SphereSyncer extends SyncingBase {
     let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let toonSyncer        = new ToonSyncer(       this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
     let presenceSyncer    = new PresenceSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    let sceneSyncer       = new SceneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
 
     // sync sphere users
     LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");
@@ -122,6 +131,12 @@ export class SphereSyncer extends SyncingBase {
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE messageSyncer sync.");
+        LOG.info("SphereSync ",localId,": START sceneSyncer sync.");
+        // sync messages
+        return sceneSyncer.sync(store);
+      })
+      .then(() => {
+        LOG.info("SphereSync ",localId,": DONE sceneSyncer sync.");
         LOG.info("SphereSync ",localId,": START ToonSyncer sync.");
         // sync messages
         return toonSyncer.sync(store);
@@ -195,6 +210,7 @@ export class SphereSyncer extends SyncingBase {
     if (!hasSyncedDown) {
       if (localSphere.config.cloudId) {
         this.actions.push({ type: 'REMOVE_SPHERE', sphereId: localSphereId });
+        this.propagateRemoval(localSphere)
       }
       else {
         // this.transferPromises.push(
@@ -202,6 +218,46 @@ export class SphereSyncer extends SyncingBase {
         // );
       }
     }
+  }
+
+  /** We delete all the child picture files **/
+  propagateRemoval(localSphereId) {
+    let spheres = core.store.getState().spheres;
+
+    let localSphere = spheres[localSphereId];
+    let locations = localSphere.locations;
+    let scenes = localSphere.scenes;
+    let sphereUsers = localSphere.users;
+
+    locations.forEach((locationId) => {
+      let location = locations[locationId];
+      if (location.picture) { FileUtil.safeDeleteFile(location.picture); }
+    });
+    scenes.forEach((sceneId) => {
+      let scene = scenes[sceneId];
+      if (scene.picture && scene.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) { FileUtil.safeDeleteFile(scene.picture); }
+    });
+
+
+    // since the images are filenames with the user Id, we could have some shared user images between spheres.
+    // this check makes sure we delete only the userimages that are not shared across spheres.
+    let sharedUserMap = {};
+    Object.keys(spheres).forEach((sphereId) => {
+      if (sphereId !== localSphereId) {
+        let users = spheres[sphereId].users;
+        Object.keys(users).forEach((userId) => {
+          sharedUserMap[userId] = true;
+        })
+      }
+    })
+    sphereUsers.forEach((sphereUserId) => {
+      if (sharedUserMap[sphereUserId] === undefined) {
+        let sphereUser = sphereUsers[sphereUserId];
+        if (sphereUser.picture && sphereUser.id !== this.userId) {
+          FileUtil.safeDeleteFile(sphereUser.picture);
+        }
+      }
+    });
   }
 
   syncLocalSphereDown(localId, sphereInState, sphere_from_cloud) {

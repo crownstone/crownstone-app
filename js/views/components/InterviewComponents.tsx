@@ -7,6 +7,7 @@ import React, { useRef } from "react";
 import { TextEditInput } from "./editComponents/TextEditInput";
 import { xUtil } from "../../util/StandAloneUtil";
 import ResponsiveText from "./ResponsiveText";
+import { Util } from "../../util/Util";
 
 
 let buttonStyle : ViewStyle = {
@@ -76,14 +77,14 @@ let dangerStyle : ViewStyle = {
 
 let textStyle : TextStyle = {
   paddingRight: 25,
-  fontSize: xUtil.narrowScreen() ? 15 : 16,
+  fontSize: Util.narrowScreen() ? 15 : 16,
   fontWeight: "bold",
   color: colors.csBlue.hex
 };
 
 
 let subTextStyle : TextStyle = {
-  fontSize: xUtil.narrowScreen() ? 12 : 13,
+  fontSize: Util.narrowScreen() ? 12 : 13,
   fontWeight: "300",
   fontStyle:'italic',
   color: colors.csBlue.hex

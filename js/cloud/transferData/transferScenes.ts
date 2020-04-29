@@ -1,0 +1,88 @@
+import { CLOUD } from "../cloudAPI";
+import {LOGe} from "../../logging/Log";
+
+
+import { transferUtil } from "./shared/transferUtil";
+import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/ScenePictureGallery";
+
+let fieldMap : fieldMap = [
+  {local: 'name',      cloud: 'name'},
+  {local: 'updatedAt', cloud: 'updatedAt'},
+  {local: 'data',      cloud: 'data'},
+  {local: 'pictureId', cloud: 'customPictureId', cloudToLocalOnly: true},
+
+  // used for local config
+  {local: 'cloudId',   cloud: 'id',  cloudToLocalOnly: true },
+];
+
+export const transferScenes = {
+  fieldMap: fieldMap,
+
+  createOnCloud: function(actions, data : transferNewToCloudData ) {
+    let payload = {};
+    let localData = data.localData;
+
+    transferUtil.fillFieldsForCloud(payload, localData, fieldMap);
+    if (data.localData.pictureSource === PICTURE_GALLERY_TYPES.STOCK) {
+      payload["stockPicture"] = data.localData.picture;
+    }
+    return CLOUD.forSphere(data.cloudSphereId).createScene(payload)
+      .then((result) => {
+        // update cloudId in local database.
+        actions.push({type: 'UPDATE_SCENE_CLOUD_ID', sphereId: data.localSphereId, sceneId: data.localId, data: { cloudId: result.id }});
+        return result.id;
+      })
+      .catch((err) => {
+        LOGe.cloud("Transfer-Scene: Could not create scene in cloud", err);
+        throw err;
+      });
+  },
+
+  updateOnCloud: function( data : transferToCloudData ) {
+    if (data.cloudId === undefined) {
+      return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
+    }
+
+    let payload = {};
+    let localData = data.localData;
+    transferUtil.fillFieldsForCloud(payload, localData, fieldMap);
+
+    return CLOUD.forSphere(data.cloudSphereId).updateScene(data.cloudId, payload)
+      .then((result) => { })
+      .catch((err) => {
+        LOGe.cloud("Transfer-Scene: Could not update scene in cloud", err);
+        throw err;
+      });
+  },
+
+  createLocal: function( actions, data: transferToLocalData) {
+    if (data.cloudData.stockPicture !== null) {
+      data.cloudData["picture"] = data.cloudData.stockPicture;
+      data.cloudData["pictureSource"] = PICTURE_GALLERY_TYPES.STOCK;
+    }
+    // the custom picture will be downloaded elsewhere.
+    transferUtil._handleLocal(
+      actions,
+      'ADD_SCENE',
+      { sphereId: data.localSphereId, sceneId: data.localId },
+      data,
+      fieldMap
+    );
+  },
+
+
+  updateLocal: function( actions, data: transferToLocalData) {
+    if (data.cloudData.stockPicture !== null) {
+      data.cloudData["picture"] = data.cloudData.stockPicture;
+      data.cloudData["pictureSource"] = PICTURE_GALLERY_TYPES.STOCK;
+    }
+
+    transferUtil._handleLocal(
+      actions,
+      'UPDATE_SCENE',
+      { sphereId: data.localSphereId, sceneId: data.localId },
+      data,
+      fieldMap
+    );
+  },
+};

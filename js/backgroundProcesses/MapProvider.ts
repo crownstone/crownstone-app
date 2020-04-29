@@ -58,6 +58,7 @@ class MapProviderClass {
           change.stoneChangeRules    ||
           change.changeLocations     ||
           change.changeStones        ||
+          change.changeScenes        ||
           change.changeStoneHandle   ||
           change.changeDeviceData    ||
           change.updatedToon         ||
@@ -140,11 +141,12 @@ class MapProviderClass {
     let sphereIds = Object.keys(state.spheres);
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
-      getFromConfig(sphere.messages,         this.cloud2localMap.messages,   this.local2cloudMap.messages);
-      getFromConfig(sphere.locations,        this.cloud2localMap.locations,  this.local2cloudMap.locations);
-      getFromConfig(sphere.stones,           this.cloud2localMap.stones,     this.local2cloudMap.stones);
-      getFromItem(sphere.thirdParty.toons,   this.cloud2localMap.toons,      this.local2cloudMap.toons);
-      getFromId(sphere.users,                this.cloud2localMap.users,      this.local2cloudMap.users);
+      getFromConfig( sphere.messages,         this.cloud2localMap.messages,   this.local2cloudMap.messages);
+      getFromConfig( sphere.locations,        this.cloud2localMap.locations,  this.local2cloudMap.locations);
+      getFromConfig( sphere.stones,           this.cloud2localMap.stones,     this.local2cloudMap.stones);
+      getFromItem(   sphere.scenes,           this.cloud2localMap.scenes,     this.local2cloudMap.scenes);
+      getFromItem(   sphere.thirdParty.toons, this.cloud2localMap.toons,      this.local2cloudMap.toons);
+      getFromId(     sphere.users,            this.cloud2localMap.users,      this.local2cloudMap.users);
 
       Object.keys(sphere.stones).forEach((stoneId) => {
         getFromItem(sphere.stones[stoneId].rules,   this.cloud2localMap.behaviours, this.local2cloudMap.behaviours);
