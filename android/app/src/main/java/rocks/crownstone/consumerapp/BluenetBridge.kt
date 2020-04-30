@@ -2858,7 +2858,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 				return
 			}
 			ScanStartFailure.APPLICATION_REGISTRATION_FAILED -> {
-				reason = "App cannot be registered."
+				reason = "App cannot access Bluetooth."
 			}
 			ScanStartFailure.FEATURE_UNSUPPORTED -> {
 				reason = "BLE scanning is not supported on this device."
