@@ -51,6 +51,7 @@
   "devDependencies": {
     "@babel/core": "^7.8.6",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@react-native-community/cli-debugger-ui": "^4.8.0",
     "@testing-library/react-native":"^5.0.3",
     "@types/jest": "^24.0.11",
     "@types/node": "^13.7.7",
@@ -68,6 +69,9 @@
     "tape": "~4.10.1",
     "ts-jest": "^24.1.0",
     "typescript": "^3.8.3"
+  },
+  "resolutions": {
+    "@react-native-community/cli-debugger-ui": "4.7.0"
   },
   "jest": {
     "preset": "@testing-library/react-native",
