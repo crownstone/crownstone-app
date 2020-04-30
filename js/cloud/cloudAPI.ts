@@ -10,6 +10,7 @@ import { locations }         from './sections/locations'
 import { messages }          from './sections/messages'
 import { preferences }       from './sections/preferences'
 import { stones }            from './sections/stones'
+import { scenes }            from './sections/scenes'
 import { stonesAbilities }   from './sections/stonesAbilities'
 import { stonesBehaviours }  from './sections/stonesBehaviours'
 import { spheres }           from './sections/spheres'
@@ -36,6 +37,7 @@ function combineSections() {
   xUtil.mixin(result, messages,          result);
   xUtil.mixin(result, preferences,       result);
   xUtil.mixin(result, spheres,           result);
+  xUtil.mixin(result, scenes,            result);
   xUtil.mixin(result, stones,            result);
   xUtil.mixin(result, stonesAbilities,   result);
   xUtil.mixin(result, stonesBehaviours,  result);

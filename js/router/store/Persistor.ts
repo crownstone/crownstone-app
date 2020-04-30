@@ -725,7 +725,6 @@ export class Persistor {
 
 
   _batchPersist(keyValueWrites : string[][]) : Promise<void> {
-    console.log("BATCH PERSIST", keyValueWrites)
     return new Promise((resolve, reject) => {
       if (keyValueWrites.length > 0) {
         let updatedKeys = [];
