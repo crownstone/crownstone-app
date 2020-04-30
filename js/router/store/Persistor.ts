@@ -610,11 +610,13 @@ export class Persistor {
 
     // unpack keys are keys in the path that will not just be stringified and stored, but rather stepped into and stored in pieces.
     const unpackKeys = {
-      'spheres'                  : true,
-      'spheres.{id}'             : true,
-      'spheres.{id}.locations'   : true,
-      'spheres.{id}.stones'      : true,
-      'spheres.{id}.stones.{id}' : true,
+      'spheres'                  : true, // so each sphere is a separate file
+      'spheres.{id}'             : true, // each item IN a sphere is a separate file (config, layout etc)
+      'spheres.{id}.locations'   : true, // each individual location is a separate file
+      'spheres.{id}.sortedLists' : true, // each sorted list is a separate file
+      'spheres.{id}.scenes'      : true, // each scene is a separate file
+      'spheres.{id}.stones'      : true, // each stone is a separate file
+      'spheres.{id}.stones.{id}' : true, // each item IN a stone is a separate file.
     };
 
     let keyValueWrites = [] as string[][];
@@ -723,6 +725,7 @@ export class Persistor {
 
 
   _batchPersist(keyValueWrites : string[][]) : Promise<void> {
+    console.log("BATCH PERSIST", keyValueWrites)
     return new Promise((resolve, reject) => {
       if (keyValueWrites.length > 0) {
         let updatedKeys = [];

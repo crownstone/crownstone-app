@@ -20,8 +20,8 @@ import {
 import { colors, screenWidth, overviewStyles } from "../styles";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import { core } from "../../core";
-import { xUtil } from "../../util/StandAloneUtil";
 import { StoneAvailabilityTracker } from "../../native/advertisements/StoneAvailabilityTracker";
+import { Util } from "../../util/Util";
 
 
 
@@ -115,7 +115,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
             <Text style={descriptionTextStyle}>{ lang("I_see_",this.amountOfVisible) }</Text>
             <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
           </View>
-          <Text style={descriptionTextStyle}>{ xUtil.narrowScreen() ? lang("NARROW_so_the_indoor_localizati") : lang("_so_the_indoor_localizati") }</Text>
+          <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_the_indoor_localizati") : lang("_so_the_indoor_localizati") }</Text>
         </View>
       )
     }
@@ -126,7 +126,7 @@ export class StatusCommunication extends LiveComponent<any, any> {
             <Text style={descriptionTextStyle}>{ lang("I_see_only_",this.amountOfVisible) }</Text>
             <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
           </View>
-          <Text style={descriptionTextStyle}>{ xUtil.narrowScreen() ? lang("NARROW_so_I_paused_the_indoor_l") : lang("_so_I_paused_the_indoor_l") }</Text>
+          <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_I_paused_the_indoor_l") : lang("_so_I_paused_the_indoor_l") }</Text>
         </View>
       )
     }

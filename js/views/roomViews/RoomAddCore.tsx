@@ -16,7 +16,7 @@ import { IconCircle } from '../components/IconCircle'
 import { getLocationNamesInSphere} from '../../util/DataUtil'
 
 import { availableModalHeight, colors, screenHeight, styles } from "../styles";
-import {processImage} from "../../util/Util";
+import { processImage, Util } from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
@@ -137,7 +137,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
         explanation: "You can always change this later in the room's settings.",
         editableItem: (state, setState) => {
           return (
-            <View style={{flex:1,flexDirection: xUtil.shortScreen() ? 'row' : 'column'}}>
+            <View style={{flex:1,flexDirection: Util.shortScreen() ? 'row' : 'column'}}>
               <View style={{flex:1}} />
               <TouchableOpacity style={styles.centered} onPress={() => {
                 NavigationUtil.navigate( "RoomIconSelection",{

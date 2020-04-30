@@ -16,7 +16,6 @@ export let statusBarHeight = Platform.OS === 'android' ? 24  :  (isIPhoneX ? 44 
 export let topBarHeight    = Platform.OS === 'android' ? 54  :  (isIPhoneX ? 44 : 44) + statusBarHeight; // Status bar in iOS is 20 high
 
 export let screenWidth = Dimensions.get('window').width;
-
 export let screenHeight = Dimensions.get('window').height;
 if (Platform.OS === 'android') {
   screenHeight = ExtraDimensions.getRealWindowHeight() - ExtraDimensions.getStatusBarHeight() - ExtraDimensions.getSoftMenuBarHeight()

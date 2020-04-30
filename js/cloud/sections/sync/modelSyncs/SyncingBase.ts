@@ -152,6 +152,8 @@ export function getGlobalIdMap() : globalIdMap {
     messages:    {},
     preferences: {},
     stones:      {},
+    scenes:      {},
+    sortedLists: {},
     spheres:     {},
     schedules:   {},
     toons:       {},

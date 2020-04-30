@@ -182,8 +182,8 @@ let combinedSphereReducer = combineReducers({
   messages:    messageReducer,
   state:       sphereStateReducer,
   thirdParty:  thirdPartyReducer,
-  keys:        sphereKeyReducer,
   sortedLists: sortedListsReducer,
+  keys:        sphereKeyReducer,
 });
 
 // spheresReducer

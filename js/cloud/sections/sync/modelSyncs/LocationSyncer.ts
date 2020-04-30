@@ -12,10 +12,9 @@ import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 import {LOGe} from "../../../../logging/Log";
 import { xUtil } from "../../../../util/StandAloneUtil";
 import { FileUtil } from "../../../../util/FileUtil";
+import { PICTURE_GALLERY_TYPES } from "../../../../views/scenesViews/ScenePictureGallery";
 
 export class LocationSyncer extends SyncingSphereItemBase {
-  userId: string;
-
   download() {
     return CLOUD.forSphere(this.cloudSphereId).getLocations();
   }
@@ -29,9 +28,6 @@ export class LocationSyncer extends SyncingSphereItemBase {
   }
 
   sync(store) {
-    let userInState = store.getState().user;
-    this.userId = userInState.userId;
-
     return this.download()
       .then((locationsInCloud) => {
         let locationsInState = this._getLocalData(store);
@@ -157,7 +153,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
     if (!hasSyncedDown) {
       if (localLocation.config.cloudId) {
         this.actions.push({ type: 'REMOVE_LOCATION', sphereId: this.localSphereId, locationId: localLocationId });
-        this.propagateRemoval(store, localLocationId);
+        this.propagateRemoval(store, localLocationId, localLocation);
       }
       else {
         if (!Permissions.inSphere(this.localSphereId).canCreateLocations) { return }
@@ -172,7 +168,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
     }
   }
 
-  propagateRemoval(store, locationId) {
+  propagateRemoval(store, locationId, localLocation) {
     let state = store.getState();
     let sphere = state.spheres[this.localSphereId];
     if (!sphere) { return } // the sphere does not exist yet. In that case we do not need to propagate.
@@ -186,6 +182,10 @@ export class LocationSyncer extends SyncingSphereItemBase {
         actions.push({type:'UPDATE_STONE_CONFIG', sphereId: this.localSphereId, stoneId: stoneId, data: {locationId: null}});
       }
     });
+
+    if (localLocation.picture) {
+      FileUtil.safeDeleteFile(localLocation.picture);
+    }
 
     if (actions.length > 0) {
       store.batchDispatch(actions);

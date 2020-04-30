@@ -41,11 +41,13 @@ export class PermissionBase {
 
   canCreateStones            = false; // a
   canCreateLocations         = false; // a or m
+  canCreateScenes            = false; // a or m
   canCreateData              = false; // a or m
   canCreateSpheres           = false; // a or m
 
   canUploadDiagnostics       = false; // a or m
   canUploadStones            = false; // a or m
+  canUploadScenes            = false; // a or m
   canUploadLocations         = false; // a or m
   canUploadData              = false; // a or m
   canUploadSpheres           = false; // a or m
@@ -150,6 +152,7 @@ export class PermissionClass extends PermissionBase {
         this.canUnlockCrownstone     = true; // admin
         this.canEnableDimming        = true; // admin
         this.canChangeAbilities      = true // a
+        this.canCreateStones         = true; // admin
       case 'member':
         this.doLocalizationTutorial  = true; // admin and member
         this.changeBehaviour         = true; // admin and member
@@ -166,9 +169,10 @@ export class PermissionClass extends PermissionBase {
         this.canUploadLocations      = true; // admin and member
         this.canUploadData           = true; // admin and member
         this.canUploadSpheres        = true; // admin and member
+        this.canUploadScenes         = true; // admin and member
         this.canUploadDiagnostics    = true; // admin and member
 
-        this.canCreateStones         = true; // admin and member
+        this.canCreateScenes         = true; // admin and member
         this.canCreateLocations      = true; // admin and member
         this.canCreateData           = true; // admin and member
         this.canCreateSpheres        = true; // admin and member
