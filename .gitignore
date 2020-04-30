@@ -87,4 +87,4 @@ toonConfig.ts
 __prototypes
 .logs
 /ios/Pods/
-.jest
+.jest/
