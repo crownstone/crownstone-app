@@ -122,7 +122,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
       this.globalSphereMap
     );
 
-    return abilitySyncer.sync(localStone && localStone.abilties || {}, stone_from_cloud.abilities)
+    return abilitySyncer.sync(localStone && localStone.abilities || {}, stone_from_cloud.abilities)
       .then(() => {
         return behaviourSyncer.sync(localStone && localStone.rules || {}, stone_from_cloud.behaviours)
       })
