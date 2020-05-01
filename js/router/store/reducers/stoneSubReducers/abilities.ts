@@ -21,6 +21,16 @@ let tapToToggleAbilityFormat = {
 
 let dimmingReducer = (state = defaultAbilityFormat, action) => {
   switch (action.type) {
+    case 'UPDATE_ABILITY_DIMMER_AS_SYNCED_FROM_CLOUD':
+      if (action.data) {
+        let newState = {...state};
+        newState.enabled            = update(action.data.enabled,       newState.enabled);
+        newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
+        newState.syncedToCrownstone = true;
+        newState.updatedAt          = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
     case 'UPDATE_ABILITY_DIMMER':
       if (action.data) {
         let newState = {...state};
@@ -47,6 +57,16 @@ let dimmingReducer = (state = defaultAbilityFormat, action) => {
 
 let switchcraftReducer = (state = defaultAbilityFormat, action) => {
   switch (action.type) {
+    case 'UPDATE_ABILITY_SWITCHCRAFT_AS_SYNCED_FROM_CLOUD':
+      if (action.data) {
+        let newState = {...state};
+        newState.enabled            = update(action.data.enabled,     newState.enabled);
+        newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
+        newState.syncedToCrownstone = true;
+        newState.updatedAt          = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
     case 'UPDATE_ABILITY_SWITCHCRAFT':
       if (action.data) {
         let newState = {...state};
@@ -73,6 +93,18 @@ let switchcraftReducer = (state = defaultAbilityFormat, action) => {
 
 let tapToToggleReducer = (state = tapToToggleAbilityFormat, action) => {
   switch (action.type) {
+    case 'UPDATE_ABILITY_TAP_TO_TOGGLE_AS_SYNCED_FROM_CLOUD':
+      if (action.data) {
+        let newState = {...state};
+        newState.enabled            = update(action.data.enabled,           newState.enabled);
+        newState.enabledTarget      = update(action.data.enabledTarget,     newState.enabledTarget);
+        newState.rssiOffset         = update(action.data.rssiOffset,        newState.rssiOffset);
+        newState.rssiOffsetTarget   = update(action.data.rssiOffsetTarget,  newState.rssiOffsetTarget);
+        newState.syncedToCrownstone = true;
+        newState.updatedAt          = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
     case 'UPDATE_ABILITY_TAP_TO_TOGGLE':
       if (action.data) {
         let newState = {...state};

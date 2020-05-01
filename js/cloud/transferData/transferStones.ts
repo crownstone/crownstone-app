@@ -1,7 +1,7 @@
 import { CLOUD }        from "../cloudAPI";
-import {LOGe} from "../../logging/Log";
+import { LOGe }         from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { Permissions }  from "../../backgroundProcesses/PermissionManager";
 
 let fieldMap : fieldMap = [
   {local: 'uid',                cloud: 'uid'},

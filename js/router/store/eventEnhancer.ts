@@ -298,6 +298,9 @@ function checkAction(action, affectedIds) {
     case "MARK_ABILITY_DIMMER_AS_SYNCED":
     case "MARK_ABILITY_SWITCHCRAFT_AS_SYNCED":
     case "MARK_ABILITY_TAP_TO_TOGGLE_AS_SYNCED":
+    case "UPDATE_ABILITY_DIMMER_AS_SYNCED_FROM_CLOUD":
+    case "UPDATE_ABILITY_SWITCHCRAFT_AS_SYNCED_FROM_CLOUD":
+    case "UPDATE_ABILITY_TAP_TO_TOGGLE_AS_SYNCED_FROM_CLOUD":
       eventStatus['stoneSyncedAbilities'] = affectedIds; break;
 
     case 'SET_NEW_FIRMWARE_VERSIONS':
