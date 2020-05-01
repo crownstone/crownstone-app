@@ -49,7 +49,7 @@ class StoneDataSyncerClass {
 
 
   update() {
-    LOGi.info("StoneDataSyncer: Update called. ")
+    LOGi.info("StoneDataSyncer: Update called.")
     let state = core.store.getState();
     let sphereIds = Object.keys(state.spheres);
 
@@ -200,7 +200,7 @@ class StoneDataSyncerClass {
             (ability) => { return {commandName:'allowDimming', value: ability.enabledTarget}},
             (ability) => {
               let actions = [];
-              actions.push({type: "UPDATE_ABILITY_DIMMER",         sphereId: sphereId, stoneId: stoneId, data: { enabled: ability.enabledTarget}});
+              actions.push({type: "UPDATE_ABILITY_DIMMER",         sphereId: sphereId, stoneId: stoneId, data: { enabled: ability.enabledTarget }});
               actions.push({type: "MARK_ABILITY_DIMMER_AS_SYNCED", sphereId: sphereId, stoneId: stoneId});
               core.store.batchDispatch(actions);
             }

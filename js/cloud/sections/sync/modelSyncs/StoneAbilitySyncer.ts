@@ -44,29 +44,44 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
     }
 
     let setLocally = (localAbility, ability_in_cloud) => {
+      // this.actions.push({type: 'UPDATE_ABILITY_TAP_TO_TOGGLE', sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
+      //     enabledTarget: false,
+      //     syncedToCrownstone: false,
+      //     rssiOffset: 0
+      //   }})
       switch(ability_in_cloud.type) {
         case ABILITY_TYPE.dimming:
+          // if (this.cloudStoneId === "5db2138d4174980004e4567c") {
+          //   console.log("Settings Abilitiy:", this.localStoneId, {
+          //     type: 'UPDATE_ABILITY_DIMMER', sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
+          //       enabledTarget: ability_in_cloud.enabled,
+          //       syncedToCrownstone: ability_in_cloud.syncedToCrownstone,
+          //     }
+          //   })
+          // }
+          // this.actions.push({type: 'UPDATE_ABILITY_DIMMER', sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
+          //     enabledTarget: ability_in_cloud.enabled,
+          //     syncedToCrownstone: ability_in_cloud.syncedToCrownstone,
+          //   }})
+          break;
         case ABILITY_TYPE.switchcraft:
-          this.actions.push({type: 'UPDATE_ABILITY_DIMMER', sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
-              enabledTarget: ability_in_cloud.enabled,
-              syncedToCrownstone: ability_in_cloud.syncedToCrownstone,
-            }})
+
           break;
         case ABILITY_TYPE.tapToToggle:
-          let rssiOffset = localAbility.rssiOffset;
-          if (ability_in_cloud.properties && ability_in_cloud.properties.length > 0) {
-            for (let i = 0; i < ability_in_cloud.properties.length; i++) {
-              if (ability_in_cloud.properties[i].type === ABILITY_PROPERTY_TYPE.tapToToggle.rssiOffset) {
-                rssiOffset = ability_in_cloud.properties[i].value;
-              }
-            }
-          }
+          // let rssiOffset = localAbility.rssiOffset;
+          // if (ability_in_cloud.properties && ability_in_cloud.properties.length > 0) {
+          //   for (let i = 0; i < ability_in_cloud.properties.length; i++) {
+          //     if (ability_in_cloud.properties[i].type === ABILITY_PROPERTY_TYPE.tapToToggle.rssiOffset) {
+          //       rssiOffset = ability_in_cloud.properties[i].value;
+          //     }
+          //   }
+          // }
 
-          this.actions.push({type: 'UPDATE_ABILITY_DIMMER', sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
-              enabledTarget: ability_in_cloud.enabled,
-              syncedToCrownstone: ability_in_cloud.syncedToCrownstone,
-              rssiOffset: rssiOffset
-            }})
+          // this.actions.push({type: 'UPDATE_ABILITY_TAP_TO_TOGGLE', sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
+          //     enabledTarget: false,
+          //     syncedToCrownstone: false,
+          //     rssiOffset: rssiOffset
+          //   }})
           break;
       }
     }

@@ -6,7 +6,6 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 let fieldMap : fieldMap = [
   {local: 'uid',                cloud: 'uid'},
   {local: 'crownstoneId',       cloud: 'uid'},
-  {local: 'dimmingEnabled',     cloud: 'dimmingEnabled'},
   {local: 'firmwareVersion',    cloud: 'firmwareVersion'},
   {local: 'bootloaderVersion',  cloud: 'bootloaderVersion'},
   {local: 'hardwareVersion',    cloud: 'hardwareVersion'},
@@ -15,15 +14,10 @@ let fieldMap : fieldMap = [
   {local: 'iBeaconMajor',       cloud: 'major'},
   {local: 'iBeaconMinor',       cloud: 'minor'},
   {local: 'locked',             cloud: 'locked'},
-  {local: 'switchCraft',        cloud: 'switchCraft'},
   {local: 'macAddress',         cloud: 'address'},
-  // {local: 'meshNetworkId',      cloud: 'meshNetworkId', localToCloudOnly: true},
   {local: 'name',               cloud: 'name'},
-  {local: 'onlyOnWhenDark',     cloud: 'onlyOnWhenDark'},
-  {local: 'tapToToggle',        cloud: 'tapToToggle'},
   {local: 'type',               cloud: 'type'},
   {local: 'updatedAt',          cloud: 'updatedAt'},
-  {local: 'json',               cloud: 'json', localToCloudOnly: true},
 
   // this is custom inserted.
   {local: 'locationId',         cloud: 'localLocationId',  cloudToLocalOnly: true},
@@ -31,9 +25,6 @@ let fieldMap : fieldMap = [
 
   // used for local config
   {local: 'cloudId',            cloud:  'id',  cloudToLocalOnly: true  },
-  {local: 'nearThreshold',      cloud:  null },
-  {local: 'rssi',               cloud:  null },
-  {local: 'disabled',           cloud:  null },
   {local: 'dfuResetRequired',   cloud:  null },
   {local: 'handle',             cloud:  null },
   {local: 'locationId',         cloud:  null },

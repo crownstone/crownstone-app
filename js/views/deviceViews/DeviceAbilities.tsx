@@ -187,7 +187,7 @@ function getData(props, stone, active) {
         label: 'Dimming',
         infoCallback: propsToPass.information,
         settingsCallback: () => {  },
-        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true, synced:false }}); },
+        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
         explanation: "Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk."
       }
     case 'switchcraft':
@@ -207,7 +207,7 @@ function getData(props, stone, active) {
         label: 'Switchcraft',
         infoCallback: propsToPass.information,
         settingsCallback: () => { },
-        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_SWITCHCRAFT", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true, synced:false }}); },
+        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_SWITCHCRAFT", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
         explanation: "Use modified wall switches to switch both the Crownstone and the light. Tap the questionmark for more information."
       }
     case 'tapToToggle':
@@ -249,7 +249,7 @@ function getData(props, stone, active) {
         label: 'Tap to toggle',
         infoCallback: propsToPass.information,
         settingsCallback: () => { },
-        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true, synced:false }}); },
+        activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
         explanation:  disabledLabel || typeLabel
       }
   }

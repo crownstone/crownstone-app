@@ -18,6 +18,7 @@ import {LOG} from "../../../../logging/Log";
 import {APP_NAME} from "../../../../ExternalConfig";
 import { base_core } from "../../../../base_core";
 import { BluenetPromiseWrapper } from "../../../../native/libInterface/BluenetPromise";
+import DeviceInfo from "react-native-device-info";
 
 
 interface matchingSpecs {
@@ -145,6 +146,15 @@ export class DeviceSyncer extends SyncingBase {
   }
 
 
+  _getAppVersion() {
+    let appVersionArray = DeviceInfo.getReadableVersion().split(".");
+    let appVersion = "UNKNOWN";
+    if (Array.isArray(appVersionArray) && appVersionArray.length >= 3) {
+      appVersion = appVersionArray[0] + '.' + appVersionArray[1] + '.' + appVersionArray[2];
+    }
+    return appVersion;
+  }
+
   _createNewDeviceInCloud(specs, state) {
     let newDevice = null;
     LOG.info("Sync: Create new device in cloud", specs.name, specs.address, specs.description);
@@ -168,6 +178,8 @@ export class DeviceSyncer extends SyncingBase {
         .then((device) => {
           newDevice = device;
           return CLOUD.forDevice(device.id).createInstallation({
+            developmentApp: base_core.sessionMemory.developmentEnvironment,
+            appVersion: this._getAppVersion(),
             deviceType: Platform.OS,
           })
         })
@@ -300,12 +312,13 @@ export class DeviceSyncer extends SyncingBase {
 
 
   _verifyInstallation(state, deviceId, installationId) {
+    let appVersion = this._getAppVersion();
     if (installationId) {
       this.transferPromises.push(CLOUD.getInstallation(installationId)
         .then((installation) => {
           let notificationToken = state.app.notificationToken || state.installations[installationId];
-          if (installation.deviceToken !== notificationToken) {
-            this.transferPromises.push(CLOUD.updateInstallation(installationId, {deviceToken: notificationToken }))
+          if (installation.deviceToken !== notificationToken || installation.appVersion !== appVersion) {
+            this.transferPromises.push(CLOUD.updateInstallation(installationId, {deviceToken: notificationToken, appVersion: appVersion, }))
           }
 
           if (!state.installations[installationId]) {
@@ -318,7 +331,7 @@ export class DeviceSyncer extends SyncingBase {
 
           // check if we have to update this installation in the cloud.
           if (installation.developmentApp !== base_core.sessionMemory.developmentEnvironment) {
-            return CLOUD.updateInstallation(installationId, {developmentApp: base_core.sessionMemory.developmentEnvironment}).catch(() => {})
+            return CLOUD.updateInstallation(installationId, {developmentApp: base_core.sessionMemory.developmentEnvironment, appVersion: appVersion}).catch(() => {})
           }
         }))
     }
@@ -329,7 +342,7 @@ export class DeviceSyncer extends SyncingBase {
       let notificationToken = state.app.notificationToken || undefined;
 
       this.transferPromises.push(
-        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, developmentApp: base_core.sessionMemory.developmentEnvironment, deviceToken: notificationToken })
+        CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS, developmentApp: base_core.sessionMemory.developmentEnvironment, appVersion: appVersion, deviceToken: notificationToken })
           .then((installation) => {
             this.actions.push({
               type: 'ADD_INSTALLATION',

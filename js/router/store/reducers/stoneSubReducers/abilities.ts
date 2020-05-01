@@ -24,7 +24,7 @@ let dimmingReducer = (state = defaultAbilityFormat, action) => {
     case 'UPDATE_ABILITY_DIMMER':
       if (action.data) {
         let newState = {...state};
-        newState.enabled            = update(action.data.enabled,     newState.enabled);
+        newState.enabled            = update(action.data.enabled,       newState.enabled);
         newState.enabledTarget      = update(action.data.enabledTarget, newState.enabledTarget);
         newState.syncedToCrownstone = false;
         newState.updatedAt          = getTime(action.data.updatedAt);

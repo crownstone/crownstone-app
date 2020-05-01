@@ -34,7 +34,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
   }
 
   disable() {
-    core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { enabledTarget: false, synced:false }});
+    core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { enabledTarget: false }});
     NavigationUtil.back();
   }
 
@@ -87,7 +87,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
                 sliderHidden={true}
                 largeIcon={<IconButton name="ios-options" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}} />}
                 callback={(value) => {
-                  core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { rssiOffsetTarget:value, synced:false }});
+                  core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { rssiOffsetTarget:value }});
                   this.setState({rssiOffsetTarget: value})
                 }}
                 min={-10}

@@ -15,6 +15,17 @@ import { SyncingBase } from "./SyncingBase";
 import { CLOUD } from "../../../cloudAPI";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {LOGe} from "../../../../logging/Log";
+import abilities from "../../../../router/store/reducers/stoneSubReducers/abilities";
+
+interface locationSummary {
+  [key: string]: { locationConfig: any, localLocationId: string, sphereId: string}
+}
+
+interface locationCoverageMap {
+  missing:  locationSummary,
+  existing: locationSummary,
+  new:      locationSummary,
+}
 
 export class FingerprintSyncer extends SyncingBase {
   userId: string;
@@ -46,7 +57,7 @@ export class FingerprintSyncer extends SyncingBase {
       .then(() => {
         return this.checkForUpdates(state, deviceId, locationIdsWithCloudFingerprints);
       })
-      .then(() => {
+      .then((additionalNewFingerprints) => {
         this.syncUp(state, deviceId, locationIdsWithNewFingerprints);
         return Promise.all(this.transferPromises);
       })
@@ -67,7 +78,7 @@ export class FingerprintSyncer extends SyncingBase {
   }
 
 
-  _getLocationIds(state) {
+  _getLocationIds(state) : locationCoverageMap {
     let newFingerprints = {};
     let existingFingerprints = {};
     let missingFingerprints = {};
@@ -118,7 +129,7 @@ export class FingerprintSyncer extends SyncingBase {
   }
 
 
-  syncUp(state, deviceId, locationIdsWithNewFingerprints) {
+  syncUp(state, deviceId, locationIdsWithNewFingerprints : locationSummary) {
     // all the fingerprints we have and that do not have a cloudId, upload them to the cloud.
     let locationIds = Object.keys(locationIdsWithNewFingerprints);
     for ( let i = 0; i < locationIds.length; i++ ) {
@@ -130,7 +141,7 @@ export class FingerprintSyncer extends SyncingBase {
               type:'UPDATE_LOCATION_FINGERPRINT_CLOUD_ID',
                 sphereId: locationData.sphereId,
                 locationId: locationData.localLocationId,
-                data:{ fingerprintCloudId: fingerprint.id }
+                data:{ fingerprintCloudId: fingerprint.id, fingerprintUpdatedAt: fingerprint.updatedAt }
             })
           })
           .catch((err) => {
@@ -141,7 +152,7 @@ export class FingerprintSyncer extends SyncingBase {
   }
 
 
-  checkForUpdates(state, deviceId, locationIdsWithCloudFingerprints : any) {
+  checkForUpdates(state, deviceId, locationIdsWithCloudFingerprints : locationSummary) {
     // get the fingerprints ids from the locationIdObject.
     let locationIds = Object.keys(locationIdsWithCloudFingerprints);
 
@@ -152,11 +163,13 @@ export class FingerprintSyncer extends SyncingBase {
 
     let locationMap = {};
     let fingerprintIds = [];
+    let availabilityMap = {};
     for ( let i = 0; i < locationIds.length; i++ ) {
       let item = locationIdsWithCloudFingerprints[locationIds[i]];
       let fingerprintCloudId = item.locationConfig.fingerprintCloudId;
       fingerprintIds.push(fingerprintCloudId);
       locationMap[fingerprintCloudId] = item;
+      availabilityMap[fingerprintCloudId] = false;
     }
 
     // nothing to declare
@@ -165,40 +178,78 @@ export class FingerprintSyncer extends SyncingBase {
     return CLOUD.forDevice(deviceId).getFingerprintUpdateTimes(fingerprintIds)
       .then((updatedTimeEntries) => {
         for (let i = 0; i < updatedTimeEntries.length; i++) {
-          let data = updatedTimeEntries[i];
-          let localConfig = locationMap[data.id].locationConfig;
+          let timeData = updatedTimeEntries[i];
+          let fingerprintCloudId = timeData.id;
+
+          // tell the system this fingerprint was not deleted in the cloud.
+          availabilityMap[fingerprintCloudId] = true;
+
+          let localConfig = locationMap[timeData.id].locationConfig;
+
 
           let fingerprintsToUpdateFromCloud = [];
-          if (shouldUpdateInCloud(localConfig.fingerprintUpdatedAt, data.updatedAt)) {
+          if (shouldUpdateInCloud(localConfig.fingerprintUpdatedAt, timeData.updatedAt)) {
             // upload the new fingerprint to to the cloud.
             this.transferPromises.push(
-              CLOUD.forDevice(deviceId).updateFingerprint(data.id, localConfig.fingerprintRaw)
+              CLOUD.forDevice(deviceId).updateFingerprint(fingerprintCloudId, localConfig.fingerprintRaw)
+                .then((updatedFingerprint) => {
+                  // if this is a new fingerprint that has been duplicated especially for you, you must update the id!
+                  if (updatedFingerprint.id !== fingerprintCloudId) {
+                    let locationData = locationMap[fingerprintCloudId];
+                    this.actions.push({
+                      type: 'UPDATE_LOCATION_FINGERPRINT',
+                      sphereId: locationData.sphereId,
+                      locationId: locationData.localLocationId,
+                      data: {
+                        fingerprintCloudId:   updatedFingerprint.id,
+                        fingerprintUpdatedAt: updatedFingerprint.updatedAt
+                      }
+                    });
+                  }
+                })
                 .catch((err) => {
                   LOGe.cloud("FingerprintSyncer: Could not update fingerprint in cloud", err);
                 })
             );
           }
-          else if (shouldUpdateLocally(localConfig.fingerprintUpdatedAt, data.updatedAt)) {
-            fingerprintsToUpdateFromCloud.push(data.id);
+          else if (shouldUpdateLocally(localConfig.fingerprintUpdatedAt, timeData.updatedAt)) {
+            fingerprintsToUpdateFromCloud.push(fingerprintCloudId);
           }
 
           if (fingerprintsToUpdateFromCloud.length > 0) {
-            return CLOUD.forDevice(deviceId).getFingerprints(fingerprintsToUpdateFromCloud)
-              .then((updatedFingerprints) => {
-                for (let i = 0; i < updatedFingerprints; i++) {
-                  let updatedFingerprint = updatedFingerprints[i];
-                  let locationData = locationMap[updatedFingerprint.id];
-                  this.reinitializeTracking = true;
-                  this.actions.push({
-                    type:'UPDATE_LOCATION_FINGERPRINT',
-                    sphereId: locationData.sphereId,
-                    locationId: locationData.localLocationId,
-                    data:{ fingerprintRaw: JSON.stringify(updatedFingerprint.data), fingerprintCloudId: updatedFingerprint.id, fingerprintUpdatedAt: updatedFingerprint.updatedAt }
-                  });
-                }
-              })
+            this.transferPromises.push(
+              CLOUD.forDevice(deviceId).getFingerprints(fingerprintsToUpdateFromCloud)
+                .then((updatedFingerprints) => {
+                  for (let i = 0; i < updatedFingerprints; i++) {
+                    let updatedFingerprint = updatedFingerprints[i];
+                    let locationData = locationMap[updatedFingerprint.id];
+                    this.reinitializeTracking = true;
+                    this.actions.push({
+                      type:'UPDATE_LOCATION_FINGERPRINT',
+                      sphereId: locationData.sphereId,
+                      locationId: locationData.localLocationId,
+                      data:{ fingerprintRaw: JSON.stringify(updatedFingerprint.data), fingerprintCloudId: updatedFingerprint.id, fingerprintUpdatedAt: updatedFingerprint.updatedAt }
+                    });
+                  }
+                })
+            );
           }
         }
+
+        return Promise.all(this.transferPromises);
+      })
+      .then(() => {
+        this.transferPromises = [];
+        // we will now check if fingerprints have been removed from the cloud
+        // let fingerprintIds = Object.keys(availabilityMap);
+        // for (let i = 0; i < fingerprintIds.length; i++) {
+        //   let fingerprintId = fingerprintIds[i];
+        //   if ( availabilityMap[fingerprintId] === false ) {
+        //     // this fingerprint has been deleted from the cloud.
+        //     // we will
+        //   }
+        // }
+
       })
       .catch((err) => {
         LOGe.cloud("FingerprintSyncer: Could not check updared for fingerprints in cloud.", err);
@@ -217,7 +268,7 @@ export class FingerprintSyncer extends SyncingBase {
    * @param locationIdsRequiringFingerprints
    * @returns {Promise<any>}
    */
-  syncDown(state, deviceId, locationIdsRequiringFingerprints) {
+  syncDown(state, deviceId, locationIdsRequiringFingerprints : locationSummary) {
     let cloudIds = Object.keys(locationIdsRequiringFingerprints);
     // download fingerprints for rooms that need it from our cloud database.
     let pendingActions =  [];
@@ -237,7 +288,7 @@ export class FingerprintSyncer extends SyncingBase {
             type:'UPDATE_LOCATION_FINGERPRINT',
             sphereId: dataInfo.sphereId,
             locationId: dataInfo.localLocationId,
-            data:{ fingerprintRaw: JSON.stringify(fingerprint.data), fingerprintCloudId: fingerprint.id }
+            data:{ fingerprintRaw: JSON.stringify(fingerprint.data), fingerprintCloudId: fingerprint.id, fingerprintUpdatedAt: fingerprint.updatedAt }
           });
           delete locationIdsRequiringFingerprints[fingerprint.locationId];
         }
@@ -255,7 +306,7 @@ export class FingerprintSyncer extends SyncingBase {
             type:'UPDATE_LOCATION_FINGERPRINT',
             sphereId: dataInfo.sphereId,
             locationId: dataInfo.localLocationId,
-            data:{ fingerprintRaw: JSON.stringify(fingerprint.data), fingerprintCloudId: fingerprint.id }
+            data:{ fingerprintRaw: JSON.stringify(fingerprint.data), fingerprintCloudId: fingerprint.id, fingerprintUpdatedAt: fingerprint.updatedAt }
           });
           linkIdList.push(fingerprint.id);
           delete locationIdsRequiringFingerprints[fingerprint.locationId];

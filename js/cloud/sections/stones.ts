@@ -82,70 +82,6 @@ export const stones = {
   },
 
 
-  /**
-   * !
-   * !
-   * ! ------------- DEPRECATED -----------------
-   * !
-   * !
-   * Update the link from a crownstone to a room.
-   * @param localLocationId
-   * @param localSphereId
-   * @param updatedAt
-   * @param background
-   * @param doNotSetUpdatedTimes
-   * @returns {*}
-   */
-  updateStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true, doNotSetUpdatedTimes = false) {
-    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
-    return cloudApiBase._setupRequest(
-        'PUT',
-        '/Stones/{id}/locations/rel/' + cloudLocationId,
-        {background: background},
-      )
-      .then(() => {
-        if (doNotSetUpdatedTimes !== true) {
-          let promises = [];
-          promises.push(CLOUD.forSphere(localSphereId).updateStone(TokenStore.stoneId,{locationId: cloudLocationId, updatedAt: updatedAt}));
-          promises.push(CLOUD.forSphere(localSphereId).updateLocation(localLocationId,   {updatedAt: updatedAt}));
-          // we set the updatedAt time in the cloud since changing the links does not update the time there
-          return Promise.all(promises);
-        }
-      })
-  },
-
-
-  /**
-   * !
-   * !
-   * ! ------------- DEPRECATED -----------------
-   * !
-   * !
-   * Delete the link from a crownstone to a room.
-   * @param localLocationId
-   * @param localSphereId
-   * @param updatedAt
-   * @param background
-   * @returns {*}
-   */
-  deleteStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true) {
-    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
-    return cloudApiBase._setupRequest(
-        'DELETE',
-        '/Stones/{id}/locations/rel/' + cloudLocationId,
-        {background: background},
-      )
-      .then(() => {
-        let promises = [];
-        promises.push(CLOUD.forSphere(localSphereId).updateStone(TokenStore.stoneId,{updatedAt: updatedAt}));
-        promises.push(CLOUD.forSphere(localSphereId).updateLocation(localLocationId,   {updatedAt: updatedAt}));
-        // we set the updatedAt time in the cloud since changing the links does not update the time there
-        return Promise.all(promises);
-      })
-  },
-
-
-
 
   /**
    * request the data of all crownstones in this sphere
@@ -202,7 +138,6 @@ export const stones = {
       );
     }
   },
-
 
 
   sendStoneDiagnosticInfo: function(data, background = true) {
