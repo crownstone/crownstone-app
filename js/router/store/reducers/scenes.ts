@@ -28,6 +28,7 @@ let sceneReducer = (state = defaultSettings, action : any = {}) => {
         newState.pictureId     = update(action.data.pictureId,     newState.pictureId);
         newState.pictureSource = update(action.data.pictureSource, newState.pictureSource);
         newState.data          = update(action.data.data,          newState.data);
+        newState.cloudId       = update(action.data.cloudId,       newState.cloudId);
         newState.updatedAt     = getTime(action.data.updatedAt);
         return newState;
       }

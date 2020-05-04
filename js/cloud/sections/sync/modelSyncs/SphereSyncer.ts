@@ -40,15 +40,17 @@ export class SphereSyncer extends SyncingBase {
   sync(store) {
     let userInState = store.getState().user;
     this.userId = userInState.userId;
-
+    let spheresInState;
     return this.download()
       .then((spheresInCloud) => {
         let state = store.getState();
-        let spheresInState = state.spheres;
+        spheresInState = state.spheres;
 
-        let localSphereIdsSynced = this.syncDown(store, spheresInState, spheresInCloud);
+        return this.syncDown(store, spheresInState, spheresInCloud);
+      })
+      .then((localSphereIdsSynced ) => {
+        this.transferPromises = [];
         this.syncUp(spheresInState, localSphereIdsSynced);
-
         return Promise.all(this.transferPromises);
       })
       .then(() => { return this.actions });
@@ -59,7 +61,8 @@ export class SphereSyncer extends SyncingBase {
     let cloudIdMap = this._getCloudIdMap(spheresInState);
 
     // go through all spheres in the cloud.
-    spheresInCloud.forEach((sphere_from_cloud) => { // underscores so its visually different from sphereInState
+    return xUtil.promiseBatchPerformer(spheresInCloud, (sphere_from_cloud) => {
+      this.transferPromises = [];
       let localId = cloudIdMap[sphere_from_cloud.id];
 
       // if we do not have a sphere with exactly this cloudId, verify that we do not have the same sphere on our device already.
@@ -79,14 +82,16 @@ export class SphereSyncer extends SyncingBase {
         transferSpheres.createLocal(this.actions, {
           localId: localId,
           cloudData: sphere_from_cloud
-        })
+        });
       }
 
       this.syncChildren(store, localId, localId ? spheresInState[localId] : null, sphere_from_cloud);
-    });
-
-    this.globalCloudIdMap.spheres = cloudIdMap;
-    return localSphereIdsSynced;
+      return Promise.all(this.transferPromises)
+    })
+      .then(() => {
+        this.globalCloudIdMap.spheres = cloudIdMap;
+        return localSphereIdsSynced;
+      })
   }
 
   syncChildren(store, localId, localSphere, sphere_from_cloud) {
@@ -213,6 +218,7 @@ export class SphereSyncer extends SyncingBase {
         this.propagateRemoval(localSphere)
       }
       else {
+        // We will never create a sphere on the app FIRST
         // this.transferPromises.push(
         //   transferSpheres.createOnCloud(this.actions, { localId: localSphereId, localData: localSphere })
         // );

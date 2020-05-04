@@ -52,6 +52,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
           }
           this.actions.push({type: actionType, sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
             enabledTarget: ability_in_cloud.enabled,
+            updatedAt: ability_in_cloud.updatedAt
           }});
           break;
         case ABILITY_TYPE.switchcraft:
@@ -61,6 +62,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
           }
           this.actions.push({type: actionType, sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
             enabledTarget: ability_in_cloud.enabled,
+            updatedAt: ability_in_cloud.updatedAt
           }});
           break;
         case ABILITY_TYPE.tapToToggle:
@@ -80,6 +82,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
           }
           this.actions.push({type: actionType, sphereId: this.localSphereId, stoneId: this.localStoneId, data: {
             enabledTarget: ability_in_cloud.enabled,
+            updatedAt: ability_in_cloud.updatedAt,
             ...rssiOffsetData
           }});
           break;
@@ -92,7 +95,6 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
       abilitiesPresentInCloud[ability_in_cloud.type] = true;
 
       let localAbility = localAbilities[ability_in_cloud.type];
-
       // this ability is present both locally and in the cloud!
       if (localAbility) {
         if (shouldUpdateInCloud(localAbility, ability_in_cloud)) {

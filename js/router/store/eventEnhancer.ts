@@ -192,6 +192,7 @@ function checkAction(action, affectedIds) {
       eventStatus['iChangedMessage'] = affectedIds; break;
     case "ADD_SCENE":
     case "REMOVE_SCENE":
+    case "REMOVE_ALL_SCENES":
       eventStatus['changeScenes'] = affectedIds; break;
       eventStatus['updateScene']  = affectedIds; break;
     case "UPDATE_SCENE":

@@ -44,11 +44,12 @@ export const syncEvents = function(store) {
 
 const handleRemove = function(state, events, actions) {
   let promises = [];
-  let scheduleIds = Object.keys(events.schedules);
-  let messageIds = Object.keys(events.messages);
-  messageIds.forEach((messageId) => {
-    let payload = events.messages[messageId];
-    let success = () => { actions.push({type: 'FINISHED_REMOVE_MESSAGES', id: messageId })};
+  let messageEventIds   = Object.keys(events.messages);
+  let behaviourEventIds = Object.keys(events.behaviours);
+  let sceneEventIds     = Object.keys(events.scenes);
+  messageEventIds.forEach((messageEventId) => {
+    let payload = events.messages[messageEventId];
+    let success = () => { actions.push({type: 'FINISHED_REMOVE_MESSAGES', id: messageEventId })};
     promises.push(CLOUD.forSphere(payload.sphereId).deleteMessage(payload.cloudId)
       .then(() => { success(); })
       .catch((err) => {
@@ -58,14 +59,29 @@ const handleRemove = function(state, events, actions) {
   });
 
 
-  scheduleIds.forEach((scheduleId) => {
-    let eventData = events.schedules[scheduleId];
-    let success = () => { actions.push({type: 'FINISHED_REMOVE_SCHEDULES', id: scheduleId })};
+  sceneEventIds.forEach((sceneEventId) => {
+    let eventData = events.scenes[sceneEventId];
+    let success = () => { actions.push({type: 'FINISHED_REMOVE_SCENES', id: sceneEventId })};
     if (!eventData.cloudId) { return success() }
-    if (!eventData.stoneId) { return success() }
 
     promises.push(
-      CLOUD.forStone(eventData.stoneId).deleteSchedule(eventData.cloudId)
+      CLOUD.forSphere(eventData.sphereId).deleteScene(eventData.cloudId)
+        .then(() => { success(); })
+        .catch((err) => {
+          // already deleted
+          if (err.status === 404) { success(); }
+        })
+    );
+  });
+
+  behaviourEventIds.forEach((behaviourEventId) => {
+    let eventData = events.scenes[behaviourEventId];
+    let success = () => { actions.push({type: 'FINISHED_REMOVE_BEHAVIOURS', id: behaviourEventId })};
+    if (!eventData.cloudId) { return success() }
+    if (!eventData.sceneId) { return success() } // this is for items living under stones
+
+    promises.push(
+      CLOUD.forStone(eventData.stoneId).deleteBehaviour(eventData.cloudId)
         .then(() => { success(); })
         .catch((err) => {
           // already deleted

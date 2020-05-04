@@ -94,7 +94,7 @@ export class SlideSideFadeInView extends Component<{visible, width, delay?, dura
       }
       else {
         animations.push(Animated.timing(this.state.viewOpacity, {toValue: 0, delay:delay, duration:duration}));
-        animations.push(Animated.timing(this.state.viewWidth,  {toValue: 0, delay:delay, duration:duration}));
+        animations.push(Animated.timing(this.state.viewWidth,   {toValue: 0, delay:delay, duration:duration}));
       }
       Animated.parallel(animations).start();
       this.visible = this.props.visible;

@@ -75,7 +75,5 @@ export const transferLocations = {
     );
   },
 
-  // todo: create new
-
 
 };

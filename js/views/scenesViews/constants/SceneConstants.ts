@@ -12,6 +12,6 @@ export let SceneConstants = {
   sceneImageWidth: sceneImageWidth,
   padding:     padding,
   buttonWidth: buttonWidth,
-  arrowWidth: buttonWidth - 50,
+  playWidth:   buttonWidth - 40,
   textWidth:   screenWidth - 2*padding - sceneImageWidth - buttonWidth - 10
 }

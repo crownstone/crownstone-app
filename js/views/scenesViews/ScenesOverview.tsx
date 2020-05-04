@@ -40,6 +40,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
     let data = this.initializeSortedList(activeSphere, state);
 
     if (data.length > 0) {
+      // core.store.dispatch({type:"REMOVE_ALL_SCENES", sphereId: activeSphere})
       getTopBarProps(props, {});
       TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
     }

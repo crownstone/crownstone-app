@@ -57,6 +57,7 @@ export class SceneSyncer extends SyncingSphereItemBase {
         this.syncLocalScenesDown(localId, scenesInState[localId], scene_from_cloud);
       }
       else {
+        console.log("CREATE!", scene_from_cloud)
         // the scenes does not exist locally but it does exist in the cloud.
         // we create it locally.
         localId = xUtil.getUUID();
@@ -98,7 +99,7 @@ export class SceneSyncer extends SyncingSphereItemBase {
     // if the object does not have a cloudId, it does not exist in the cloud but we have it locally.
     if (!hasSyncedDown) {
       if (localScene.cloudId) {
-        this.actions.push({ type: 'REMOVE_SCENES', sphereId: this.localSphereId, sceneId: localSceneId });
+        this.actions.push({ type: 'REMOVE_SCENE', sphereId: this.localSphereId, sceneId: localSceneId });
         this.propagateRemoval(localScene);
       }
       else {
@@ -124,9 +125,9 @@ export class SceneSyncer extends SyncingSphereItemBase {
 
     let toPath = FileUtil.getPath(localId + '.jpg');
     this.transferPromises.push(
-      CLOUD.forScenes(cloudId).downloadScenesPicture(toPath)
+      CLOUD.forScene(cloudId).downloadSceneCustomPicture(toPath)
         .then((picturePath) => {
-          this.actions.push({type:'scenes_UPDATE_PICTURE', sphereId: this.localSphereId, sceneId: localId, data:{ picture: picturePath, pictureId: imageId, pictureTaken: new Date().valueOf() }});
+          this.actions.push({type:'UPDATE_SCENE', sphereId: this.localSphereId, sceneId: localId, data:{ picture: picturePath, pictureId: imageId, pictureSource: PICTURE_GALLERY_TYPES.CUSTOM }});
         }).catch((err) => { LOGe.cloud("ScenesSyncer: Could not download scenes picture to ", toPath, ' err:', err); })
     );
   }
@@ -178,14 +179,14 @@ export class SceneSyncer extends SyncingSphereItemBase {
     return cloudIdMap;
   }
 
-  _searchForLocalMatch(scenesInState, scenesInCloud) {
+  _searchForLocalMatch(scenesInState, scene_in_cloud) {
     let sceneIds = Object.keys(scenesInState);
     for (let i = 0; i < sceneIds.length; i++) {
-      if (sceneIds[i] === scenesInCloud.id) {
+      if (scenesInState[sceneIds[i]].cloudId === scene_in_cloud.id) {
         return sceneIds[i];
       }
     }
-
+    console.log("could not find a match", scenesInState, scene_in_cloud)
     return null;
   }
 }

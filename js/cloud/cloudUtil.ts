@@ -41,9 +41,9 @@ export function prepareHeaders(options, headers: HeaderObject, accessToken) {
   let skipAccessToken = options && options.options && options.options.noAccessToken || false;
   // append the access token to the url if we have it.
   if (accessToken && !skipAccessToken) {
-    headers.Authorization = accessToken;
+    headerCopy.Authorization = accessToken;
   }
-  return headers;
+  return headerCopy;
 }
 
 function _appendToURL(url, toAppend) {

@@ -6,10 +6,12 @@ import { transferUtil } from "./shared/transferUtil";
 import { PICTURE_GALLERY_TYPES } from "../../views/scenesViews/ScenePictureGallery";
 
 let fieldMap : fieldMap = [
-  {local: 'name',      cloud: 'name'},
-  {local: 'updatedAt', cloud: 'updatedAt'},
-  {local: 'data',      cloud: 'data'},
-  {local: 'pictureId', cloud: 'customPictureId', cloudToLocalOnly: true},
+  {local: 'name',          cloud: 'name'},
+  {local: 'updatedAt',     cloud: 'updatedAt'},
+  {local: 'data',          cloud: 'data'},
+  {local: 'pictureId',     cloud: 'customPictureId',       cloudToLocalOnly: true},
+  {local: 'picture',       cloud: 'stockPictureAvailable', cloudToLocalOnly: true}, // this is added to the cloudData afterwards if there is a stockPicture.
+  {local: 'pictureSource', cloud: 'pictureSource',         cloudToLocalOnly: true},
 
   // used for local config
   {local: 'cloudId',   cloud: 'id',  cloudToLocalOnly: true },
@@ -26,6 +28,7 @@ export const transferScenes = {
     if (data.localData.pictureSource === PICTURE_GALLERY_TYPES.STOCK) {
       payload["stockPicture"] = data.localData.picture;
     }
+
     return CLOUD.forSphere(data.cloudSphereId).createScene(payload)
       .then((result) => {
         // update cloudId in local database.
@@ -57,9 +60,10 @@ export const transferScenes = {
 
   createLocal: function( actions, data: transferToLocalData) {
     if (data.cloudData.stockPicture !== null) {
-      data.cloudData["picture"] = data.cloudData.stockPicture;
-      data.cloudData["pictureSource"] = PICTURE_GALLERY_TYPES.STOCK;
+      data.cloudData["stockPictureAvailable"] = data.cloudData.stockPicture;
+      data.cloudData["pictureSource"]         = PICTURE_GALLERY_TYPES.STOCK;
     }
+
     // the custom picture will be downloaded elsewhere.
     transferUtil._handleLocal(
       actions,
@@ -73,8 +77,8 @@ export const transferScenes = {
 
   updateLocal: function( actions, data: transferToLocalData) {
     if (data.cloudData.stockPicture !== null) {
-      data.cloudData["picture"] = data.cloudData.stockPicture;
-      data.cloudData["pictureSource"] = PICTURE_GALLERY_TYPES.STOCK;
+      data.cloudData["stockPictureAvailable"] = data.cloudData.stockPicture;
+      data.cloudData["pictureSource"]         = PICTURE_GALLERY_TYPES.STOCK;
     }
 
     transferUtil._handleLocal(

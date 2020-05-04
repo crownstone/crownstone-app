@@ -111,6 +111,34 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       }
     });
 
+    items.push({type:"explanation", label:"PARTICIPATING CROWNSTONES"});
+
+    items.push({
+      type:'navigation',
+      label: 'Select Crownstones',
+      icon: <IconButton name='c2-pluginFilled' buttonSize={35} size={23} radius={8}  color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+      callback: () => {
+        NavigationUtil.launchModal("SceneSelectCrownstones", {sphereId: this.props.sphereId, data: this.state.data, callback: (selectedData) => {
+          let existingData = {...this.state.data};
+          Object.keys(selectedData).forEach((selectedStoneCID) => {
+            if (existingData[selectedStoneCID] === undefined) {
+              existingData[selectedStoneCID] = selectedData[selectedStoneCID];
+              this.changed = true;
+            }
+          })
+
+          Object.keys(existingData).forEach((existingStoneCID) => {
+            if (selectedData[existingStoneCID] === undefined) {
+              delete existingData[existingStoneCID];
+              this.changed = true;
+            }
+          })
+
+          this.setState({data: existingData});
+        }})
+      }
+    });
+
     items.push({type:"explanation", label:"CHOOSE DESIRED STATES"})
 
     let state = core.store.getState();
@@ -157,33 +185,6 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       items.push(item.component);
     })
 
-    items.push({type:"explanation", label:"PARTICIPATING CROWNSTONES"});
-
-    items.push({
-      type:'navigation',
-      label: 'Select Crownstones',
-      icon: <IconButton name='c2-pluginFilled' buttonSize={35} size={23} radius={8}  color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
-      callback: () => {
-        NavigationUtil.launchModal("SceneSelectCrownstones", {sphereId: this.props.sphereId, data: this.state.data, callback: (selectedData) => {
-          let existingData = {...this.state.data};
-          Object.keys(selectedData).forEach((selectedStoneCID) => {
-            if (existingData[selectedStoneCID] === undefined) {
-              existingData[selectedStoneCID] = selectedData[selectedStoneCID];
-              this.changed = true;
-            }
-          })
-
-          Object.keys(existingData).forEach((existingStoneCID) => {
-            if (selectedData[existingStoneCID] === undefined) {
-              delete existingData[existingStoneCID];
-              this.changed = true;
-            }
-          })
-
-          this.setState({data: existingData});
-        }})
-      }
-    });
     items.push({type:"spacer"})
     items.push({type:"spacer"})
 

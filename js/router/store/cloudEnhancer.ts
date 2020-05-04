@@ -85,6 +85,9 @@ function handleAction(action, returnValue, newState, oldState) {
     case 'UPDATE_SCENE':
       handleSceneInCloud(action, newState);
       break;
+    case 'REMOVE_SCENE':
+      removeSceneInCloud(action, newState);
+      break;
 
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
@@ -265,6 +268,10 @@ function handleLocationInCloud(action, state) {
 
 
 function handleSceneInCloud(action, state) {
+  let existingSphere = state.spheres[action.sphereId];
+  if (!existingSphere) { return }
+  let existingScene = existingSphere.scenes[action.sceneId];
+
   if (action.data.picture && action.data.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
     // in case the user has a pending delete scene picture request, we will finish this immediately so a new
     // picture will not be deleted.
@@ -277,9 +284,13 @@ function handleSceneInCloud(action, state) {
       specialType: 'uploadScenePicture'
     });
   }
-  else if (action.data.picture === null || action.data.pictureSource === PICTURE_GALLERY_TYPES.STOCK) {
+  else if (existingScene &&
+           existingScene.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM &&
+           (action.data.picture === null || action.data.pictureSource === PICTURE_GALLERY_TYPES.STOCK)
+  ) {
     // in case the user has a pending upload scene picture request, we will finish this immediately so a new
     // picture will not be uploaded.
+    // This is only in the case of an existing scene and picture.
     core.eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_SCENES', id: 'uploadScenePicture' + action.sceneId });
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_SCENES',
@@ -296,23 +307,46 @@ function handleSceneInCloud(action, state) {
   if (action.type === "ADD_SCENE") {
     let actions = [];
     transferScenes.createOnCloud(actions, {
-      localId: action.stoneId,
+      localId: action.sceneId,
       localData: action.data,
       localSphereId: action.sphereId,
       cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
-    }).catch(() => {
-    });
+    })
+      .then(() => {
+        if (actions.length > 0) {
+          core.store.batchDispatch(actions);
+        }
+      })
+      .catch(() => {});
   }
   else {
     let scene = sphere.scenes[action.sceneId];
     transferScenes.updateOnCloud({
-      localId: action.stoneId,
+      localId: action.sceneId,
       localData: scene,
       localSphereId: action.sphereId,
       cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
       cloudId: scene.cloudId || action.sceneId,
     }).catch(() => {
     });
+  }
+}
+
+
+function removeSceneInCloud(action, state) {
+  let existingSphere = state.spheres[action.sphereId];
+  if (existingSphere) {
+    let existingScene = existingSphere.scenes[action.sceneId];
+
+    if (existingScene && existingScene.cloudId) {
+      core.eventBus.emit("submitCloudEvent", {
+        type: 'CLOUD_EVENT_REMOVE_SCENES',
+        id: 'remove'+ action.sceneId,
+        localId: action.sceneId,
+        localSphereId: action.sphereId,
+        cloudId: existingScene.cloudId,
+      });
+    }
   }
 }
 
@@ -388,7 +422,13 @@ function removeBehaviourInCloud(action, state, oldState) {
   if (!rule) { return }
 
   if (rule.cloudId !== undefined && rule.cloudId !== null) {
-    CLOUD.forStone(stoneId).deleteBehaviour(rule.cloudId); // we pass the cloud id since the data is already gone from the MapProvider.
+    core.eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_REMOVE_BEHAVIOURS',
+      id: 'remove'+ action.ruleId,
+      localId: action.ruleId,
+      localSphereId: action.sphereId,
+      cloudId: rule.cloudId,
+    });
   }
 }
 
