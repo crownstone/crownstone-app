@@ -2,7 +2,7 @@ import { CLOUD_ADDRESS, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../Extern
 const RNFS = require('react-native-fs');
 let emptyFunction = function() {};
 import {LOG, LOGe, LOGi} from '../logging/Log'
-import { prepareEndpointAndBody } from './cloudUtil'
+import { prepareEndpointAndBody, prepareHeaders } from "./cloudUtil";
 import { defaultHeaders } from './sections/cloudApiBase'
 import {Scheduler} from "../logic/Scheduler";
 import { xUtil } from "../util/StandAloneUtil";
@@ -22,14 +22,16 @@ import { FileUtil } from "../util/FileUtil";
  * @param doNotStringify
  */
 export function request(
-  options : object,
+  options : any,
   method : string,
-  headers : object = defaultHeaders,
+  headers : HeaderObject = defaultHeaders,
   id : string,
   accessToken : string,
   doNotStringify? : boolean) {
   // append _accessToken, data that goes into the query and insert ids
-  let { endPoint, body } = prepareEndpointAndBody(options, id, accessToken, doNotStringify);
+  let { endPoint, body } = prepareEndpointAndBody(options, id, doNotStringify);
+
+  headers = prepareHeaders(options, headers, accessToken);
 
   // setup the request configuration
   let requestConfig = { method, headers, body };
@@ -146,13 +148,15 @@ export function request(
  */
 export function download(options, id, accessToken, toPath, beginCallback = emptyFunction, progressCallback = emptyFunction, successCallback = emptyFunction) {
   // append _accessToken, data that goes into the query and insert ids
-  let {endPoint} = prepareEndpointAndBody(options, id, accessToken);
+  let {endPoint} = prepareEndpointAndBody(options, id);
+
+  let headers = prepareHeaders(options, defaultHeaders, accessToken);
 
   // this will automatically try to download to a temp file. When not possible it will remove the temp file and resolve with null
-  return downloadFile(CLOUD_ADDRESS + endPoint, toPath, {begin: beginCallback, progress: progressCallback, success: successCallback});
+  return downloadFile(CLOUD_ADDRESS + endPoint, toPath, headers, {begin: beginCallback, progress: progressCallback, success: successCallback});
 }
 
-export function downloadFile(url, targetPath, callbacks) {
+export function downloadFile(url, targetPath, headers : HeaderObject, callbacks) {
   return new Promise((resolve, reject) => {
     // get a temp path
     let downloadSessionId = Math.round(10000 + Math.random() * 1e5).toString(36);
@@ -166,6 +170,7 @@ export function downloadFile(url, targetPath, callbacks) {
 
     // download the file.
     RNFS.downloadFile({
+      headers: headers,
       fromUrl: url,
       toFile: tempPath,
       begin: callbacks.begin,

@@ -119,6 +119,8 @@ import { SceneEdit } from "../views/scenesViews/SceneEdit";
 import { SceneSelectCrownstones } from "../views/scenesViews/SceneSelectCrownstones";
 
 
+import { gestureHandlerRootHOC } from "react-native-gesture-handler";
+
 
 export const Views = {
   Initializer:                       Initializer,
@@ -206,7 +208,7 @@ export const Views = {
   ToonOverview:                      ToonOverview,
   ToonSettings:                      ToonSettings,
 
-  ScenesOverview:                    ScenesOverview,
+  ScenesOverview:                    gestureHandlerRootHOC(ScenesOverview),
   SceneAdd:                          SceneAdd,
   SceneEdit:                         SceneEdit,
   ScenePictureGallery:               ScenePictureGallery,

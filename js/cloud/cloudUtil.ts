@@ -1,18 +1,12 @@
 import { xUtil } from "../util/StandAloneUtil";
 
-export function prepareEndpointAndBody(options : any, id : any, accessToken : any, doNotStringify? : boolean) {
+export function prepareEndpointAndBody(options : any, id : any, doNotStringify? : boolean) {
   let endPoint = options.endPoint;
 
   // inject the ID into the url if required.
   endPoint = endPoint.replace('{id}', id);
   if (endPoint.substr(0,1) === '/') {
     endPoint = endPoint.substr(1,endPoint.length)
-  }
-
-  let skipAccessToken = options && options.options && options.options.noAccessToken || false;
-  // append the access token to the url if we have it.
-  if (accessToken && !skipAccessToken) {
-    endPoint = _appendToURL(endPoint, {access_token: accessToken});
   }
 
   // check if we have to define the body content or add it to the url
@@ -40,6 +34,16 @@ export function prepareEndpointAndBody(options : any, id : any, accessToken : an
     endPoint = _appendToURL(endPoint, options.data);
 
   return { endPoint, body };
+}
+
+export function prepareHeaders(options, headers: HeaderObject, accessToken) {
+  let headerCopy = {...headers};
+  let skipAccessToken = options && options.options && options.options.noAccessToken || false;
+  // append the access token to the url if we have it.
+  if (accessToken && !skipAccessToken) {
+    headers.Authorization = accessToken;
+  }
+  return headers;
 }
 
 function _appendToURL(url, toAppend) {

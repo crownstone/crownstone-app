@@ -5,14 +5,16 @@ import { xUtil } from "../../util/StandAloneUtil";
 
 const RNFS = require('react-native-fs');
 
-export const defaultHeaders = {
+export const defaultHeaders : HeaderObject = {
   'Accept': 'application/json',
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
+  'Authorization': null,
 };
 
-export const uploadHeaders = {
+export const uploadHeaders : HeaderObject = {
   'Accept': 'application/json',
   'Content-Type': 'multipart/form-data',
+  'Authorization': null,
 };
 
 
@@ -83,6 +85,7 @@ export const cloudApiBase = {
         }
         else {
           LOGi.cloud("CloudAPIBase: file exists, continue upload");
+
           let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, TokenStore), TokenStore.accessToken, true);
           return this._finalizeRequest(promise, options);
         }
@@ -93,7 +96,7 @@ export const cloudApiBase = {
     return download(options, _getId(options.endPoint, TokenStore), TokenStore.accessToken, toPath, beginCallback, progressCallback)
   },
   downloadFile: function(url, targetPath, callbacks) {
-    return downloadFile(url, targetPath, callbacks);
+    return downloadFile(url, targetPath, defaultHeaders, callbacks);
   },
   _handleNetworkError: function (error, options, endpoint, promiseBody, reject, startTime) {
     // this will eliminate all cloud requests.
