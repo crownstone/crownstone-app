@@ -339,6 +339,7 @@ const c3CorrectionsAndroid = {
 
 const ioniconCorrectionsAndroid = {
   'ios-warning':        {change: true, top: -0.065, left: +0.000},
+  'ios-play':           {change: true, top: +0.000, left: +0.100},
 };
 
 
@@ -346,7 +347,7 @@ const evilIconsCorrectionsAndroid = {
 
 };
 const fiCS1IconsCorrectionsAndroid = {
-
+  'fiCS1-furniture-and-household-15':         {change: true, top: +0.000, left: +0.200},
 };
 const fiHSIconsCorrectionsAndroid = {
 
