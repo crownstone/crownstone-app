@@ -67,7 +67,7 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
           break;
         case ABILITY_TYPE.tapToToggle:
           actionType = "UPDATE_ABILITY_TAP_TO_TOGGLE";
-          let rssiOffset = localAbility.rssiOffset;
+          let rssiOffset = localAbility && localAbility.rssiOffset || 0;
           if (ability_in_cloud.properties && ability_in_cloud.properties.length > 0) {
             for (let i = 0; i < ability_in_cloud.properties.length; i++) {
               if (ability_in_cloud.properties[i].type === ABILITY_PROPERTY_TYPE.tapToToggle.rssiOffset) {
@@ -93,7 +93,6 @@ export class StoneAbilitySyncer extends SyncingStoneItemBase {
     for (let i = 0; i < abilities_in_cloud.length; i++) {
       let ability_in_cloud = abilities_in_cloud[i];
       abilitiesPresentInCloud[ability_in_cloud.type] = true;
-
       let localAbility = localAbilities[ability_in_cloud.type];
       // this ability is present both locally and in the cloud!
       if (localAbility) {
