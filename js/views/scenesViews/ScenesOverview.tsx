@@ -186,16 +186,20 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
 function getTopBarProps(props, viewState) {
   let state = core.store.getState();
-  let activeSphere = state.app.activeSphere;
+  let activeSphereId = state.app.activeSphere;
+  let activeSphere = state.spheres[activeSphereId];
   let scenesAvailable = false;
-  if (activeSphere) {
-    scenesAvailable = Object.keys(state.spheres[activeSphere].scenes).length > 0;
+  if (activeSphereId) {
+    scenesAvailable = Object.keys(state.spheres[activeSphereId].scenes).length > 0;
   }
   let title = "Scenes";
 
-  if (!activeSphere) {
+  if (!activeSphereId) {
     NAVBAR_PARAMS_CACHE = { title: title };
     return NAVBAR_PARAMS_CACHE;
+  }
+  else if (activeSphere) {
+    title += " in " + activeSphere.config.name;
   }
 
   if (scenesAvailable) {
