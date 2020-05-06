@@ -28,7 +28,6 @@ export const loadRoutes = function() {
   viewsLoaded = true;
 
 
-
   // register all views
   Object.keys(Views).forEach((viewId) => {
     Navigation.registerComponent(viewId,    () => Views[viewId]);
@@ -63,6 +62,7 @@ Navigation.events().registerAppLaunchedListener(() => {
       },
     },
     bottomTabs: {
+      titleDisplayMode: "alwaysShow",
       backgroundColor: colors.csBlueDarker.hex,
     },
     bottomTab: {
@@ -93,6 +93,6 @@ Navigation.events().registerAppLaunchedListener(() => {
   NavigationUtil.setRoot(Stacks.initial());
 
   // overwrite for Icon Debug view
-  // Navigation.registerComponent("IconDevSelector",        () => IconDebug);
+  // Navigation.registerComponent("IconDevSelector", () => IconDebug);
   // NavigationUtil.setRoot({ component: { name: 'IconDevSelector' }});
 });
