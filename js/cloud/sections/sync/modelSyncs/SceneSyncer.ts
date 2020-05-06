@@ -57,7 +57,6 @@ export class SceneSyncer extends SyncingSphereItemBase {
         this.syncLocalScenesDown(localId, scenesInState[localId], scene_from_cloud);
       }
       else {
-        console.log("CREATE!", scene_from_cloud)
         // the scenes does not exist locally but it does exist in the cloud.
         // we create it locally.
         localId = xUtil.getUUID();
@@ -186,7 +185,6 @@ export class SceneSyncer extends SyncingSphereItemBase {
         return sceneIds[i];
       }
     }
-    console.log("could not find a match", scenesInState, scene_in_cloud)
     return null;
   }
 }
