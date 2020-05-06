@@ -163,9 +163,14 @@ export class IconDebug extends LiveComponent<{callback(icon: string) : void, ico
     if (glyphArray.length > MAX_NUMBER_SHOWN) {
       let steps = Math.ceil(glyphArray.length / MAX_NUMBER_SHOWN);
       let chunkMap = [];
+
+      let getChunkKey = (iterator) => {
+        return key + "_" + iterator;
+      }
+
       for (let i = 0; i < steps; i++) {
-        let chunkKey = key + "_" + i;
-        this.iconCorrectionsMap[chunkKey] = glyphs;
+        let chunkKey = getChunkKey(i);
+        this.iconCorrectionsMap[chunkKey] = this.iconCorrectionsMap[key];
         chunkMap[i] = [];
         if (i < steps) {
           for (let j = i*MAX_NUMBER_SHOWN; j < (i+1)*MAX_NUMBER_SHOWN; j++) {
@@ -180,7 +185,7 @@ export class IconDebug extends LiveComponent<{callback(icon: string) : void, ico
       }
 
       for (let i = 0; i < steps; i++) {
-        let chunkKey = key + "_" + i;
+        let chunkKey = getChunkKey(i);
         let itemCount = MAX_NUMBER_SHOWN;
         if (i == steps-1) {
           itemCount = glyphArray.length - MAX_NUMBER_SHOWN*(steps - 1);
