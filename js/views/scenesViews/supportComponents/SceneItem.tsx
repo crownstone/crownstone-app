@@ -40,7 +40,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
       alignItems:'center', marginBottom: 15
     }}>
       <TouchableOpacity
-        activeOpacity={editMode ? 1 : 0.3}
+        activeOpacity={editMode ? 0.7 : 0.3}
         style={{flexDirection:'row', height: SceneConstants.sceneHeight, flex:1, alignItems:'center'}}
         onPress={() => {
           if (editMode === false) {
@@ -57,6 +57,9 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
 
             setActivated(true);
             setTimeout(() => { setActivated(false); }, 2000);
+          }
+          else {
+            NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId});
           }
         }}
         onLongPress={dragAction}
