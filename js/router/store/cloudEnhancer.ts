@@ -86,7 +86,7 @@ function handleAction(action, returnValue, newState, oldState) {
       handleSceneInCloud(action, newState);
       break;
     case 'REMOVE_SCENE':
-      removeSceneInCloud(action, newState);
+      removeSceneInCloud(action, newState, oldState);
       break;
 
     case 'ADD_STONE':
@@ -333,8 +333,8 @@ function handleSceneInCloud(action, state) {
 }
 
 
-function removeSceneInCloud(action, state) {
-  let existingSphere = state.spheres[action.sphereId];
+function removeSceneInCloud(action, state, oldState) {
+  let existingSphere = oldState.spheres[action.sphereId];
   if (existingSphere) {
     let existingScene = existingSphere.scenes[action.sceneId];
 
