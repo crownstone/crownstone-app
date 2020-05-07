@@ -48,7 +48,7 @@ const handleRemove = function(state, events, actions) {
   let behaviourEventIds = Object.keys(events.behaviours);
   let sceneEventIds     = Object.keys(events.scenes);
   messageEventIds.forEach((messageEventId) => {
-    let payload = events.messages[messageEventId];
+    let payload : SyncEvent = events.messages[messageEventId];
     let success = () => { actions.push({type: 'FINISHED_REMOVE_MESSAGES', id: messageEventId })};
     promises.push(CLOUD.forSphere(payload.sphereId).deleteMessage(payload.cloudId)
       .then(() => { success(); })
@@ -60,7 +60,7 @@ const handleRemove = function(state, events, actions) {
 
 
   sceneEventIds.forEach((sceneEventId) => {
-    let eventData = events.scenes[sceneEventId];
+    let eventData : SyncEvent = events.scenes[sceneEventId];
     let success = () => { actions.push({type: 'FINISHED_REMOVE_SCENES', id: sceneEventId })};
     if (!eventData.cloudId) { return success() }
 
@@ -75,10 +75,10 @@ const handleRemove = function(state, events, actions) {
   });
 
   behaviourEventIds.forEach((behaviourEventId) => {
-    let eventData = events.scenes[behaviourEventId];
+    let eventData : SyncEvent = events.scenes[behaviourEventId];
     let success = () => { actions.push({type: 'FINISHED_REMOVE_BEHAVIOURS', id: behaviourEventId })};
     if (!eventData.cloudId) { return success() }
-    if (!eventData.sceneId) { return success() } // this is for items living under stones
+    if (!eventData.stoneId) { return success() } // this is for items living under stones
 
     promises.push(
       CLOUD.forStone(eventData.stoneId).deleteBehaviour(eventData.cloudId)
@@ -161,7 +161,7 @@ const handleSpecial = function(state, events, actions) {
     let payload = events.locations[locationEventId];
     let success = () => { actions.push({type: 'FINISHED_SPECIAL_LOCATIONS', id: locationEventId })};
 
-    let sphere = state.spheres[payload.localSphereId];
+    let sphere = state.spheres[payload.sphereId];
     if (!sphere) { return success(); }
 
     let location = sphere.locations[payload.localId];
@@ -205,7 +205,7 @@ const handleSpecial = function(state, events, actions) {
     let payload = events.scenes[sceneEventId];
     let success = () => { actions.push({type: 'FINISHED_SPECIAL_SCENES', id: sceneEventId })};
 
-    let sphere = state.spheres[payload.localSphereId];
+    let sphere = state.spheres[payload.sphereId];
     if (!sphere) { return success(); }
 
     let scene = sphere.scenes[payload.localId];

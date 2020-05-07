@@ -87,10 +87,21 @@ export class SceneAdd extends LiveComponent<any, any> {
               locationName={locationName}
               selection={(selected) => {
                 if (selected) {
-                  this.sceneData.data[stoneCID] = this.sceneData.data[stoneCID] || stone.state.state
+                  let amountOfItems = Object.keys(this.sceneData.data).length;
+                  this.sceneData.data[stoneCID] = this.sceneData.data[stoneCID] || stone.state.state;
+
+                  if (amountOfItems == 0) {
+                    // we will add an item where there were none before --> redraw to show the always on top button
+                    this.forceUpdate();
+                  }
+
                 }
                 else {
                   delete this.sceneData.data[stoneCID];
+                  if (Object.keys(this.sceneData.data).length == 0) {
+                    // we will remove the last item, remove the always on top button.
+                    this.forceUpdate();
+                  }
                 }
               }}/>}
       )
@@ -208,6 +219,7 @@ export class SceneAdd extends LiveComponent<any, any> {
         subHeader: "Select the Crownstones which will be part of this scene.",
         backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
         textColor: colors.white.hex,
+        optionsAlwaysOnTop: Object.keys(this.sceneData.data).length > 0,
         explanation: "Crownstones that are not selected will be left unchanged when this scene is activated.",
         component:
           <View>

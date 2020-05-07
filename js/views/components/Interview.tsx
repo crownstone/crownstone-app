@@ -295,55 +295,62 @@ function InterviewCard(props : {
   let overrideTextColor = props.card.textColor ? {color: props.card.textColor} : {};
   let card = props.card;
   return (
-    <ScrollView style={{height: props.height || availableModalHeight}}>
-      <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
-        { header      && <ResponsiveText style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText> }
-        { subHeader   && <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   }
-        { explanation && <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> }
-        {
-          card.hasTextInputField ?
-            <InterviewTextInput placeholder={card.placeholder} value={textInput} callback={(text) => { setTextInput(text); }} /> :
-            undefined
-        }
-        { card.editableItem ?
-            <View style={{...styles.centered, flex:1, width: screenWidth}}>{card.editableItem(editableInputState, setEditableInputState)}</View> :
-            undefined}
-        {
-          card.image ?
-            <View style={{...styles.centered, flex:1, width: screenWidth}}>
-              <ScaledImage source={card.image.source} sourceWidth={card.image.sourceWidth} sourceHeight={card.image.sourceHeight} targetWidth={card.image.width} targetHeight={card.image.height} tintColor={card.image.tintColor}/>
-            </View> :
-            undefined
-        }
-        {
-          card.component ?
-            <View style={{ flex: 1 }}/> :
-            undefined
-        }
-        {
-          card.component ?
-            card.component :
-            undefined
-        }
-        {
-          card.component ?
-            <View style={{flex:1}} /> :
-            undefined
-        }
-        {
-          flexBeforeOptions ?
-            <View style={{flex:1}} /> :
-            undefined
-        }
-        { card.optionsExplanation ? <Text style={[explanationStyle, overrideTextColor]}>{card.optionsExplanation}</Text> : undefined }
-        <InterviewOptions options={options} nextCard={props.nextCard || null} selectedOption={props.selectedOption} value={result} />
-        {
-          card.optionsCenter ?
-            <View style={{flex:1}} /> :
-            undefined
-        }
-      </View>
-    </ScrollView>
+    <View>
+      <ScrollView style={{height: props.height || availableModalHeight}}>
+        <View style={{minHeight: props.height || availableModalHeight - 10, paddingBottom: 10}}>
+          { header      && <ResponsiveText style={{...headerStyle, ...overrideTextColor}} numberOfLines={card.headerMaxNumLines || 2} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText> }
+          { subHeader   && <Text style={[subHeaderStyle,   overrideTextColor]}>{subHeader}</Text>   }
+          { explanation && <Text style={[explanationStyle, overrideTextColor]}>{explanation}</Text> }
+          {
+            card.hasTextInputField ?
+              <InterviewTextInput placeholder={card.placeholder} value={textInput} callback={(text) => { setTextInput(text); }} /> :
+              undefined
+          }
+          { card.editableItem ?
+              <View style={{...styles.centered, flex:1, width: screenWidth}}>{card.editableItem(editableInputState, setEditableInputState)}</View> :
+              undefined}
+          {
+            card.image ?
+              <View style={{...styles.centered, flex:1, width: screenWidth}}>
+                <ScaledImage source={card.image.source} sourceWidth={card.image.sourceWidth} sourceHeight={card.image.sourceHeight} targetWidth={card.image.width} targetHeight={card.image.height} tintColor={card.image.tintColor}/>
+              </View> :
+              undefined
+          }
+          {
+            card.component ?
+              <View style={{ flex: 1 }}/> :
+              undefined
+          }
+          {
+            card.component ?
+              card.component :
+              undefined
+          }
+          {
+            card.component ?
+              <View style={{flex:1}} /> :
+              undefined
+          }
+          {
+            flexBeforeOptions ?
+              <View style={{flex:1}} /> :
+              undefined
+          }
+          { card.optionsExplanation ? <Text style={[explanationStyle, overrideTextColor]}>{card.optionsExplanation}</Text> : undefined }
+          { !card.optionsAlwaysOnTop ? <InterviewOptions options={options} nextCard={props.nextCard || null} selectedOption={props.selectedOption} value={result} /> : <InterviewOptionsSpacer options={options} />}
+          {
+            card.optionsCenter && !card.optionsAlwaysOnTop ?
+              <View style={{flex:1}} /> :
+              undefined
+          }
+        </View>
+      </ScrollView>
+      {card.optionsAlwaysOnTop === true &&
+        <View style={{ position: 'absolute', bottom: 10, width: screenWidth }}>
+          <InterviewOptions options={options} nextCard={props.nextCard || null} selectedOption={props.selectedOption} value={result}/>
+        </View>
+      }
+    </View>
   )
 }
 
@@ -422,4 +429,9 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
   return (
     <View>{options}</View>
   )
+}
+
+function InterviewOptionsSpacer(props : {options : interviewOption[]}) {
+  // TODO: make generic on type of options.
+  return <View style={{height: 52}} />;
 }

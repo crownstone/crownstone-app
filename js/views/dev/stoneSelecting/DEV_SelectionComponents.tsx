@@ -110,7 +110,7 @@ export class CrownstoneEntry extends Component<any, any> {
       }}>
         { this.props.tracking ? <ScaledImage source={require('../../../images/selectionArrow.png')} sourceWidth={150} sourceHeight={150} targetHeight={53}  style={{position:'absolute', top:0, left:0}}/> : null }
         <View style={{ flex: 1 }}/>
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', }} onPress={() => {this.props.callback();}}>
+        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', width:screenWidth - 10}} onPress={() => {this.props.callback();}}>
           { this.props.tracking ? <View style={{width: 40}}/> : null }
           <View style={{ height: height }} >
             <View style={{ flex: 1 }}/>
@@ -125,7 +125,8 @@ export class CrownstoneEntry extends Component<any, any> {
             <Text style={{ color: colors.black.rgba(0.5), fontSize: 10 }}>{this.props.item.handle}</Text>
             <View style={{ flex: 1 }}/>
           </View>
-          <TouchableOpacity style={{ height: height, flex: 1, justifyContent: 'center', paddingRight:10 }} onPress={() => {
+          <View style={{ flex: 1 }}/>
+          <TouchableOpacity style={{ height: height, width: 40, justifyContent: 'center', paddingRight:10}} onPress={() => {
             this.props.track()
           }}>
             <Text style={{ fontWeight: 'bold', textAlign: 'right' }}>{this.props.item.rssi}</Text>

@@ -233,7 +233,7 @@ function handleLocationInCloud(action, state) {
       type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
       id: 'uploadLocationPicture' + action.locationId,
       localId: action.locationId,
-      localSphereId: action.sphereId,
+      sphereId: action.sphereId,
       specialType: 'uploadLocationPicture'
     });
   }
@@ -245,7 +245,7 @@ function handleLocationInCloud(action, state) {
       type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
       id: 'removeLocationPicture'+ action.locationId,
       localId: action.locationId,
-      localSphereId: action.sphereId,
+      sphereId: action.sphereId,
       specialType: 'removeLocationPicture'
     });
   }
@@ -280,7 +280,7 @@ function handleSceneInCloud(action, state) {
       type: 'CLOUD_EVENT_SPECIAL_SCENES',
       id: 'uploadScenePicture' + action.sceneId,
       localId: action.sceneId,
-      localSphereId: action.sphereId,
+      sphereId: action.sphereId,
       specialType: 'uploadScenePicture'
     });
   }
@@ -296,7 +296,7 @@ function handleSceneInCloud(action, state) {
       type: 'CLOUD_EVENT_SPECIAL_SCENES',
       id: 'removeScenePicture'+ action.sceneId,
       localId: action.sceneId,
-      localSphereId: action.sphereId,
+      sphereId: action.sphereId,
       specialType: 'removeScenePicture'
     });
   }
@@ -343,7 +343,7 @@ function removeSceneInCloud(action, state, oldState) {
         type: 'CLOUD_EVENT_REMOVE_SCENES',
         id: 'remove'+ action.sceneId,
         localId: action.sceneId,
-        localSphereId: action.sphereId,
+        sphereId: action.sphereId,
         cloudId: existingScene.cloudId,
       });
     }
@@ -426,7 +426,7 @@ function removeBehaviourInCloud(action, state, oldState) {
       type: 'CLOUD_EVENT_REMOVE_BEHAVIOURS',
       id: 'remove'+ action.ruleId,
       localId: action.ruleId,
-      localSphereId: action.sphereId,
+      sphereId: action.sphereId,
       cloudId: rule.cloudId,
     });
   }
