@@ -577,7 +577,7 @@ open class BluenetJS: RCTEventEmitter {
   // DFU
   
   @objc func setupPutInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("setupPutInDFU", callback, GLOBAL_BLUENET.bluenet.setup.putInDFU())
+    wrapForBluenet("setupPutInDFU", callback, GLOBAL_BLUENET.bluenet.control.putInDFU())
   }
   
   @objc func putInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
@@ -720,7 +720,7 @@ open class BluenetJS: RCTEventEmitter {
 
 
   @objc func setupPulse(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("setupPulse", callback, GLOBAL_BLUENET.bluenet.setup.pulse())
+    wrapForBluenet("setupPulse", callback, GLOBAL_BLUENET.bluenet.control.pulse())
   }
 
   @objc func subscribeToNearest() {

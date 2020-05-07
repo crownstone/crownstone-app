@@ -47,6 +47,7 @@ import { TimeKeeper } from "./TimeKeeper";
 import { SphereStateManager } from "./SphereStateManager";
 import { UptimeMonitor } from "./UptimeMonitor";
 import { TrackingNumberManager } from "./TrackingNumberManager";
+import { ActiveSphereManager } from "./ActiveSphereManager";
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -105,6 +106,8 @@ class BackgroundProcessHandlerClass {
       // when the user is logged in we track spheres and scan for Crownstones
       // This event is triggered on boot by the start store or by the login process.
       core.eventBus.on('userLoggedInFinished', () => {
+        ActiveSphereManager.userIsLoggedIn = true;
+
         this.userLoggedIn = true;
 
         // pass the store to the singletons
@@ -274,6 +277,7 @@ class BackgroundProcessHandlerClass {
       core.eventBus.emit("AppStateChange", appState)
       this._applyAppStateOnScanning(appState);
       this._applyAppStateOnCaching(appState);
+      this._applyAppStateOnActiveSphere(appState);
     });
   }
 
@@ -334,6 +338,15 @@ class BackgroundProcessHandlerClass {
 
       // remove the user sync so it won't use battery in the background
       Scheduler.pauseTrigger(BACKGROUND_USER_SYNC_TRIGGER);
+    }
+  }
+
+  _applyAppStateOnActiveSphere(appState) {
+    if (appState === "active" && this.userLoggedIn) {
+      ActiveSphereManager.onScreen()
+    }
+    else if (appState === 'background') {
+      ActiveSphereManager.toBackground()
     }
   }
 

@@ -39,6 +39,7 @@ import { DataUtil } from "../../util/DataUtil";
 import { RoomAddCore } from "../roomViews/RoomAddCore";
 import { Background } from "../components/Background";
 import { SmartHomeStateButton } from "./buttons/SmartHomeStateButton";
+import { ActiveSphereManager } from "../../backgroundProcesses/ActiveSphereManager";
 
 
 const ZOOM_LEVELS = {
@@ -62,7 +63,7 @@ export class SphereOverview extends LiveComponent<any, any> {
 
     this.state = { zoomLevel: ZOOM_LEVELS.room, zoomInstructionsVisible: false, arrangingRooms: false };
     this.viewId = xUtil.getUUID();
-    this._setActiveSphere();
+    ActiveSphereManager.updateActiveSphere();
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -88,18 +89,10 @@ export class SphereOverview extends LiveComponent<any, any> {
       let change = data.change;
 
       if (change.removeSphere) {
-        core.store.dispatch({type:"CLEAR_ACTIVE_SPHERE"});
+        ActiveSphereManager.clearActiveSphere();
         this._updateNavBar();
         this.setState({zoomLevel: ZOOM_LEVELS.sphere});
         return;
-      }
-
-
-      if (change.changeSpheres) {
-        this._setActiveSphere(true);
-      }
-      else if (change.updateActiveSphere) {
-        this._setActiveSphere(false);
       }
 
 
@@ -130,33 +123,7 @@ export class SphereOverview extends LiveComponent<any, any> {
   }
 
 
-  _setActiveSphere(updateStore = false) {
-    // set the active sphere if needed and setup the object variables.
-    let state = core.store.getState();
-    let activeSphere = state.app.activeSphere;
 
-    let sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
-    // handle the case where we deleted a sphere that was active.
-    if (state.spheres[activeSphere] === undefined) {
-      activeSphere = null;
-    }
-    if (activeSphere === null && sphereIds.length > 0) {
-      if (sphereIds.length === 1) {
-        core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
-      }
-      else if (updateStore) {
-        let presentSphereId = Util.data.getPresentSphereId(state);
-        if (!presentSphereId) {
-          core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: null}});
-        }
-        else {
-          core.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: presentSphereId}});
-        }
-      }
-    }
-
-    this._updateNavBar();
-  }
 
 
   _updateNavBar() {
@@ -239,7 +206,7 @@ export class SphereOverview extends LiveComponent<any, any> {
       return (
         <SphereLevel
           selectSphere={(sphereId) => {
-            core.store.dispatch({type:"SET_ACTIVE_SPHERE", data: { activeSphere:sphereId }});
+            ActiveSphereManager.setActiveSphere(sphereId);
 
             // request latest location data.
             CLOUD.syncUsers();

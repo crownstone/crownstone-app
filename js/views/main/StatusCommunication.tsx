@@ -30,9 +30,10 @@ export class StatusCommunication extends LiveComponent<any, any> {
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
 
-  amountOfVisible = 0;
+  amountOfVisibleCrownstones = 0;
   constructor(props) {
     super(props);
+    this.amountOfVisibleCrownstones = this._getAmountOfCrownstones();
   }
 
   componentDidMount() {
@@ -46,24 +47,29 @@ export class StatusCommunication extends LiveComponent<any, any> {
       if (
         (change.changeStoneAvailability && change.changeStoneAvailability.sphereIds[this.props.sphereId])
          ) {
-        const store = core.store;
-        const state = store.getState();
-        if (!(state && state.spheres && state.spheres[this.props.sphereId])) { return }
-
-        let stones = state.spheres[this.props.sphereId].stones;
-        let stoneIds = Object.keys(stones);
-        let amountOfVisible = 0;
-        stoneIds.forEach((stoneId) => {
-          if (StoneAvailabilityTracker.getRssi(stoneId) > -100) {
-            amountOfVisible += 1;
-          }
-        });
-        if (this.amountOfVisible !== amountOfVisible) {
-          this.amountOfVisible = amountOfVisible;
+        let amountOfVisibleCrownstones = this._getAmountOfCrownstones();
+        if (this.amountOfVisibleCrownstones !== amountOfVisibleCrownstones) {
+          this.amountOfVisibleCrownstones = amountOfVisibleCrownstones;
           this.forceUpdate();
         }
       }
     });
+  }
+
+  _getAmountOfCrownstones() {
+    const store = core.store;
+    const state = store.getState();
+    if (!(state && state.spheres && state.spheres[this.props.sphereId])) { return }
+
+    let stones = state.spheres[this.props.sphereId].stones;
+    let stoneIds = Object.keys(stones);
+    let amountOfVisible = 0;
+    stoneIds.forEach((stoneId) => {
+      if (StoneAvailabilityTracker.getRssi(stoneId) > -100) {
+        amountOfVisible += 1;
+      }
+    });
+    return amountOfVisible;
   }
 
   componentWillUnmount() {
@@ -108,22 +114,22 @@ export class StatusCommunication extends LiveComponent<any, any> {
         </View>
       );
     }
-    else if (this.amountOfVisible >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    else if (this.amountOfVisibleCrownstones >= 3 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={generalStyle} pointerEvents={'none'}>
           <View style={inRangeStyle}>
-            <Text style={descriptionTextStyle}>{ lang("I_see_",this.amountOfVisible) }</Text>
+            <Text style={descriptionTextStyle}>{ lang("I_see_",this.amountOfVisibleCrownstones) }</Text>
             <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
           </View>
           <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_the_indoor_localizati") : lang("_so_the_indoor_localizati") }</Text>
         </View>
       )
     }
-    else if (this.amountOfVisible > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
+    else if (this.amountOfVisibleCrownstones > 0 && enoughForLocalizationInLocations && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={generalStyle} pointerEvents={'none'}>
           <View style={inRangeStyle}>
-            <Text style={descriptionTextStyle}>{ lang("I_see_only_",this.amountOfVisible) }</Text>
+            <Text style={descriptionTextStyle}>{ lang("I_see_only_",this.amountOfVisibleCrownstones) }</Text>
             <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
           </View>
           <Text style={descriptionTextStyle}>{ Util.narrowScreen() ? lang("NARROW_so_I_paused_the_indoor_l") : lang("_so_I_paused_the_indoor_l") }</Text>
@@ -144,15 +150,15 @@ export class StatusCommunication extends LiveComponent<any, any> {
         </View>
       )
     }
-    else if (this.amountOfVisible > 0) {
+    else if (this.amountOfVisibleCrownstones > 0) {
       return (
         <View style={[generalStyle, {flexDirection:'row'}]} pointerEvents={'none'} >
-          <Text style={{backgroundColor:'transparent', color: colors.csBlue.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",this.amountOfVisible) }</Text>
+          <Text style={{backgroundColor:'transparent', color: colors.csBlue.hex, fontSize:12, padding:3}}>{ lang("I_can_see_",this.amountOfVisibleCrownstones) }</Text>
           <Icon name="c2-crownstone" size={20} color={colors.csBlue.hex} style={{position:'relative', top:3, width:20, height:20}} />
         </View>
       )
     }
-    else { //if (this.amountOfVisible === 0) {
+    else { //if (this.amountOfVisibleCrownstones === 0) {
       return (
         <View style={generalStyle} pointerEvents={'none'}>
           <Text style={overviewStyles.bottomText}>{ lang("Looking_for_Crownstones__") }</Text>
