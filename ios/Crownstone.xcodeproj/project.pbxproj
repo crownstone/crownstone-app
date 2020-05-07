@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* CrownstoneTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CrownstoneTests.m */; };
 		02B76B6C4BE74C6AA10E411F /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4C00E76B8E8342C39BA07CC7 /* FontAwesome5_Regular.ttf */; };
@@ -127,8 +128,8 @@
 		FAAEF8FA2417C3850078A930 /* libRNCPushNotificationIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C2BBD24165FEC00358011 /* libRNCPushNotificationIOS.a */; };
 		FABB8A0121E0E4FA007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
 		FABB8A0221E0E507007E1396 /* BluenetWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0DD9D421DFE17900824ABF /* BluenetWatch.framework */; };
-		FABC3D0824349B9700F4002E /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FABC3D0724349B9700F4002E /* BluenetLib.framework */; };
-		FAC85BB0242A506A00CF9946 /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC85BAF242A506A00CF9946 /* BluenetBasicLocalization.framework */; };
+		FACF2AD62463157100B88E0D /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD52463157000B88E0D /* BluenetLib.framework */; };
+		FACF2AD82463157E00B88E0D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */; };
 		FD641FF3E1F2479382087025 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55F5CEDF77EE4B91A302901C /* Fontisto.ttf */; };
 		FDE6E52417DF40F4A46D33F6 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB14A08CE83A4CF793448D6B /* FontAwesome5_Solid.ttf */; };
 /* End PBXBuildFile section */
@@ -618,8 +619,8 @@
 		FA86C6F221CCF07000811933 /* SwitchRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchRowController.swift; sourceTree = "<group>"; };
 		FA86C6F321CCF07000811933 /* RssiRowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssiRowController.swift; sourceTree = "<group>"; };
 		FAA4252621F9D26400EF7772 /* WatchStateManager.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = WatchStateManager.swift; sourceTree = "<group>"; tabWidth = 2; };
-		FABC3D0724349B9700F4002E /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework"; sourceTree = "<group>"; };
-		FAC85BAF242A506A00CF9946 /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetBasicLocalization-azxiscyvrcnjmggarodvuyedvabd/Build/Products/Debug-iphoneos/BluenetBasicLocalization.framework"; sourceTree = "<group>"; };
+		FACF2AD52463157000B88E0D /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
+		FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -643,9 +644,9 @@
 				FA274EED2410171B00D7C858 /* libRCTTypeSafety.a in Frameworks */,
 				FA274EEE2410171B00D7C858 /* libReact-Core.a in Frameworks */,
 				FA274EEF2410171B00D7C858 /* libReact-CoreModules.a in Frameworks */,
-				FABC3D0824349B9700F4002E /* BluenetLib.framework in Frameworks */,
 				FA274EF02410171B00D7C858 /* libReact-cxxreact.a in Frameworks */,
 				FA274EF12410171B00D7C858 /* libReact-jsi.a in Frameworks */,
+				FACF2AD62463157100B88E0D /* BluenetLib.framework in Frameworks */,
 				FA274EF22410171B00D7C858 /* libReact-jsiexecutor.a in Frameworks */,
 				FA274EF32410171B00D7C858 /* libReact-jsinspector.a in Frameworks */,
 				FA274EF42410171B00D7C858 /* libreact-native-blur.a in Frameworks */,
@@ -663,13 +664,13 @@
 				FA274F002410171B00D7C858 /* libReact-RCTNetwork.a in Frameworks */,
 				FA274F012410171B00D7C858 /* libReact-RCTSettings.a in Frameworks */,
 				FA274F022410171B00D7C858 /* libReact-RCTText.a in Frameworks */,
+				FACF2AD82463157E00B88E0D /* BluenetBasicLocalization.framework in Frameworks */,
 				FA274F032410171B00D7C858 /* libReact-RCTVibration.a in Frameworks */,
 				FA274F042410171B00D7C858 /* libReactCommon.a in Frameworks */,
 				FA274F052410171B00D7C858 /* libReactNativeNavigation.a in Frameworks */,
 				FA274F062410171B00D7C858 /* libRNCAsyncStorage.a in Frameworks */,
 				FA274F072410171B00D7C858 /* libRNDeviceInfo.a in Frameworks */,
 				FA274F082410171B00D7C858 /* libRNFS.a in Frameworks */,
-				FAC85BB0242A506A00CF9946 /* BluenetBasicLocalization.framework in Frameworks */,
 				FA274F092410171B00D7C858 /* libRNSVG.a in Frameworks */,
 				FA274F0A2410171B00D7C858 /* libRNUncontrolledDatePickerIOS.a in Frameworks */,
 				FA274F0B2410171B00D7C858 /* libRNVectorIcons.a in Frameworks */,
@@ -788,8 +789,8 @@
 				FA3F740C23F6F2ED009045A7 /* Roboto-Thin.ttf */,
 				FA3F740423F6F2EC009045A7 /* Roboto-ThinItalic.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
-				FAC85BAF242A506A00CF9946 /* BluenetBasicLocalization.framework */,
-				FABC3D0724349B9700F4002E /* BluenetLib.framework */,
+				FACF2AD72463157E00B88E0D /* BluenetBasicLocalization.framework */,
+				FACF2AD52463157000B88E0D /* BluenetLib.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
 				FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */,
@@ -1041,14 +1042,6 @@
 				C1BE5133CF45403FBE811FFB /* ReactNativeNavigationTests.xctest */,
 			);
 			name = "Recovered References";
-			sourceTree = "<group>";
-		};
-		B37F6FD7A51146F1A887738F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			path = Application;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1698,6 +1691,20 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		7EDB5199EB784208A1882FFF /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym";
+		};
 		FA12B7D522450D7F003B017E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1727,8 +1734,8 @@
 				"$(SRCROOT)/Carthage/Build/iOS/iOSDFULibrary.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
-				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetBasicLocalization-azxiscyvrcnjmggarodvuyedvabd/Build/Products/Debug-iphoneos/BluenetBasicLocalization.framework",
-				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetLib-gcpeopbchquyyidwtjigobcmoaei/Build/Products/Debug-iphoneos/BluenetLib.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
 			);
 			name = "Run Script";
 			outputPaths = (
@@ -1757,20 +1764,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
-		7EDB5199EB784208A1882FFF /* Upload Debug Symbols to Sentry */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			name = "Upload Debug Symbols to Sentry";
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym";
 		};
 /* End PBXShellScriptBuildPhase section */
 

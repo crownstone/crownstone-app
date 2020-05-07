@@ -239,9 +239,9 @@ func getBluenetErrorString(_ err: BluenetError) -> String {
       return "FIRMWARE_TOO_OLD"
     case .ERR_ALREADY_EXISTS:
       return "ERR_ALREADY_EXISTS"
-  case .INVALID_DATA:
-    return "INVALID_DATA"
-  case .INVALID_STARTING_POSITION:
-    return "INVALID_STARTING_POSITION"
+    case .INVALID_DATA:
+      return "INVALID_DATA"
+    case .INVALID_STARTING_POSITION:
+      return "INVALID_STARTING_POSITION"
     }
 }
