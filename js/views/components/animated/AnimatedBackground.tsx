@@ -31,7 +31,7 @@ export class AnimatedBackground extends Component<{
 }, any> {
   staticImage : any;
   animatedImage : any;
-  value  : number = 0;
+  backgroundOpacity  : number = 0;
 
   constructor(props) {
     super(props);
@@ -43,28 +43,27 @@ export class AnimatedBackground extends Component<{
 
 
   shouldComponentUpdate(nextProps){
-    let change = false;
-    if (this.value === 0) {
+    let imageChanged = false;
+    if (this.backgroundOpacity === 0) {
       if (nextProps.image !== this.staticImage) {
-        change = true;
+        imageChanged = true;
         this.animatedImage = nextProps.image;
       }
     }
     else {
       if (nextProps.image !== this.animatedImage) {
-        change = true;
+        imageChanged = true;
         this.staticImage = nextProps.image;
       }
     }
-    if (change) {
-      let newValue = this.value === 0 ? 1 : 0;
+    if (imageChanged) {
+      let newValue = this.backgroundOpacity === 0 ? 1 : 0;
       Animated.timing(this.state.fade, {toValue: newValue, duration: nextProps.duration || 500}).start();
-      this.value = newValue;
-      return true;
+      this.backgroundOpacity = newValue;
     }
-    return false;
+    return true
   }
-  
+
 
   render() {
     let height = screenHeight;

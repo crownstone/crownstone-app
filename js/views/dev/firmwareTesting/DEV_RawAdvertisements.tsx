@@ -107,7 +107,7 @@ export class DEV_RawAdvertisements extends LiveComponent<{
     let backgroundImage = core.background.light;
     let explanationColor = colors.black.rgba(0.9);
 
-    switch (FocusManager.crownstoneMode ) {
+    switch (FocusManager.crownstoneMode) {
       case "setup":
         explanationColor = colors.white.hex;
         backgroundImage = require('../../../images/backgrounds/blueBackground2.png');
