@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SphereEditMap", key)(a,b,c,d,e);
+}
 import { LiveComponent }          from "../../LiveComponent";
 
 import * as React from 'react';
@@ -150,7 +156,7 @@ export class SphereEditMap extends LiveComponent<any, any> {
               core.store.dispatch({type: 'SET_SPHERE_GPS_COORDINATES', sphereId: this.props.sphereId, data: {latitude: this.state.coordinates.latitude, longitude: this.state.coordinates.longitude}});
               NavigationUtil.back();
             }}
-            label={"Use this location!"}
+            label={ lang("Use_this_location_")}
           />
         </View>
       </Background>

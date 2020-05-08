@@ -123,13 +123,16 @@ export class SettingsStoneBleDebug extends LiveComponent<any, any> {
     let stone = sphere.stones[this.props.stoneId];
 
     items.push({
-      label: "Get Behaviour Debug Information",
+      label: lang("Get_Behaviour_Debug_Infor"),
       icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
       type: 'navigation',
       callback: () => {
         this.setState({debugInformation: null});
         let stone = DataUtil.getStone(this.props.sphereId, this.props.stoneId);
-        if (!stone) { Alert.alert("Stone is missing", "I can't get it from the DB. Is it deleted?",[{text:"Ok.."}]); return;}
+        if (!stone) { Alert.alert(
+lang("_Stone_is_missing__I_cant_header"),
+lang("_Stone_is_missing__I_cant_body"),
+[{text:lang("_Stone_is_missing__I_cant_left")}]); return;}
 
         core.eventBus.emit("showLoading", "Getting Debug Info...");
 

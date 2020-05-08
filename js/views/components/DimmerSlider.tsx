@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DimmerSlider", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ActivityIndicator,
@@ -213,7 +219,7 @@ export class DimmerSlider extends Component<{stoneId: string, sphereId: string, 
       return (
         <View style={{flexDirection:"row"}}>
           <ActivityIndicator size={"small"} style={{height:25, paddingRight:3}} />
-          <Text style={{fontSize: 13, lineHeight: 25, color: colors.black.rgba(0.3), textAlign:'center'}}>The dimmer is starting up...</Text>
+          <Text style={{fontSize: 13, lineHeight: 25, color: colors.black.rgba(0.3), textAlign:'center'}}>{ lang("The_dimmer_is_starting_up") }</Text>
         </View>
       );
     }
@@ -353,7 +359,7 @@ class Explanation extends Component<any, any> {
             fontSize: 13,
             fontWeight: "bold",
             textAlign:'center'
-          }}>{"Smooth sliding will be available once I'm close enough to the Crownstone to enable dimming on it."}</Text>
+          }}>{ lang("Smooth_sliding_will_be_av") }</Text>
         </View>
       </HiddenFadeInView>
     );

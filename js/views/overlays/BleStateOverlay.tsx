@@ -143,7 +143,7 @@ export class BleStateOverlay extends Component<any, any> {
           OnScreenNotifications.setNotification({
             source: "BleStateOverlay",
             id: "bluetoothState",
-            label: "Bluetooth disabled",
+            label: lang("Bluetooth_disabled"),
             icon: "ios-bluetooth",
             backgroundColor: colors.csOrange.hex,
             callback: () => {

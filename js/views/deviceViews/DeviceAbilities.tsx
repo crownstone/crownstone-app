@@ -73,13 +73,13 @@ export class DeviceAbilities extends LiveComponent<any, any> {
       <Background image={core.background.lightBlur} hasNavBar={false}>
         <ScrollView style={{width: screenWidth}} contentContainerStyle={{flexGrow:1}}>
           <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
-            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "My Abilities" }</Text>
+            <Text style={[deviceStyles.header, {width: 0.7*screenWidth}]} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("My_Abilities") }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-            <Text style={deviceStyles.specification}>{"These are the things I can do for you!\n" + (permissionGranted ? "You can enable or disable my abilities\nto suit your needs." : "The sphere admin can enable or disable\nmy abilities to suit your needs.") }</Text>
+            <Text style={deviceStyles.specification}>{ lang("These_are_the_things_I_ca",permissionGranted) }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-                                <Ability type={"dimming"}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
-            { hasSwitchcraft && <Ability type={"switchcraft"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
-                                <Ability type={"tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
+                                <Ability type={ lang("dimming")}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
+            { hasSwitchcraft && <Ability type={ lang("switchcraft")} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
+                                <Ability type={ lang("tapToToggle")} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
           </View>
         </ScrollView>
       </Background>
@@ -107,12 +107,12 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
         <View style={{height: height-2*padding, justifyContent:'center', alignItems:'flex-start', marginLeft:10}}>
           <View style={{flexDirection:'row'}}>
             <Text style={deviceStyles.text}>{data.label}</Text>
-            <FadeInView visible={!synced}><ActivityIndicator color={colors.csBlueDark.hex} size={'small'} style={{marginLeft:10}}/></FadeInView>
+            <FadeInView visible={!synced}><ActivityIndicator color={colors.csBlueDark.hex} size={ "small"} style={{marginLeft:10}}/></FadeInView>
           </View>
           <SlideFadeInView visible={!synced} height={40} style={{alignItems:'center'}}>
-            <Text style={[deviceStyles.explanationText, {marginTop:3, textAlign:'left'}]}>{"Waiting to notify the\nCrownstone..."}</Text>
+            <Text style={[deviceStyles.explanationText, {marginTop:3, textAlign:'left'}]}>{ lang("Waiting_to_notify_the_nCr") }</Text>
           </SlideFadeInView>
-          { active && synced  ? <Text style={[deviceStyles.explanationText, {marginTop:3}]}>{"Enabled"}</Text> : undefined}
+          { active && synced  ? <Text style={[deviceStyles.explanationText, {marginTop:3}]}>{ lang("Enabled") }</Text> : undefined}
         </View>
         <View style={{flex:1, flexDirection:'row', justifyContent:'flex-end', alignItems:'center'}}>
           <TouchableOpacity onPress={() => { data.infoCallback(); }} style={{borderColor: helpColor, borderWidth: 1, width:30, height:30, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
@@ -175,7 +175,7 @@ function getData(props, stone, active) {
       if (active) {
         return {
           image: require('../../images/overlayCircles/dimmingCircleGreen.png'),
-          label: 'Dimming',
+          label: lang("Dimming"),
           infoCallback: propsToPass.information,
           settingsCallback: () => { NavigationUtil.navigate("Ability_DimmerSettings", propsToPass); },
           activateCallback: () => { },
@@ -184,7 +184,7 @@ function getData(props, stone, active) {
       }
       return {
         image: require('../../images/overlayCircles/dimmingCircleGreen_bw.png'),
-        label: 'Dimming',
+        label: lang("Dimming"),
         infoCallback: propsToPass.information,
         settingsCallback: () => {  },
         activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_DIMMER", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
@@ -195,7 +195,7 @@ function getData(props, stone, active) {
       if (active) {
         return {
           image: require('../../images/overlayCircles/switchcraft.png'),
-          label: 'Switchcraft',
+          label: lang("Switchcraft"),
           infoCallback: propsToPass.information,
           settingsCallback: () => { NavigationUtil.navigate("Ability_SwitchcraftSettings", propsToPass); },
           activateCallback: () => { },
@@ -204,7 +204,7 @@ function getData(props, stone, active) {
       }
       return {
         image: require('../../images/overlayCircles/switchcraft_bw.png'),
-        label: 'Switchcraft',
+        label: lang("Switchcraft"),
         infoCallback: propsToPass.information,
         settingsCallback: () => { },
         activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_SWITCHCRAFT", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },
@@ -237,7 +237,7 @@ function getData(props, stone, active) {
       if (active) {
         return {
           image: require('../../images/overlayCircles/tapToToggle.png'),
-          label: 'Tap to toggle',
+          label: lang("Tap_to_toggle"),
           infoCallback: propsToPass.information,
           settingsCallback: () => { NavigationUtil.navigate("Ability_TapToToggleSettings", propsToPass); },
           activateCallback: () => { },
@@ -246,7 +246,7 @@ function getData(props, stone, active) {
       }
       return {
         image: require('../../images/overlayCircles/tapToToggle_bw.png'),
-        label: 'Tap to toggle',
+        label: lang("Tap_to_toggle"),
         infoCallback: propsToPass.information,
         settingsCallback: () => { },
         activateCallback: () => { core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: props.sphereId, stoneId: props.stoneId, data: { enabledTarget: true }}); },

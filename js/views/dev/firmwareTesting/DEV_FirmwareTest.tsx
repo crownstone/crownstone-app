@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DEV_FirmwareTest", key)(a,b,c,d,e);
+}
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import { FocusManager } from "../../../backgroundProcesses/dev/FocusManager";
@@ -62,7 +68,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
   componentDidMount() {
     this.unsubscribe.push(core.eventBus.on("FOCUS_RSSI_UPDATE", () => {
-      TopBarUtil.updateOptions(this.props.componentId, { title: FocusManager.name + " ["+ FocusManager.crownstoneState.stoneId + "] " + FocusManager.crownstoneState.rssiAverage })
+      TopBarUtil.updateOptions(this.props.componentId, { title: lang("____",FocusManager.name,FocusManager.crownstoneState.stoneId,FocusManager.crownstoneState.rssiAverage)})
     }));
 
     this.unsubscribe.push(core.eventBus.on("FOCUS_UPDATE", () => {
@@ -214,10 +220,10 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
     let items = [];
 
-    items.push({label:"OPERATIONS", type: 'explanation', below: false, color: explanationColor});
+    items.push({label: lang("OPERATIONS"), type: 'explanation', below: false, color: explanationColor});
     if (FocusManager.crownstoneMode === 'setup') {
       items.push({
-        label: "Reboot Crownstone",
+        label: lang("Reboot_Crownstone"),
         type: 'button',
         style: { color: colors.blue.hex },
         callback: () => {
@@ -225,7 +231,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         }
       });
       items.push({
-        label: this.state.setupActive ? "Setting up Crownstone..." : "Perform setup",
+        label: lang("Setting_up_Crownstone___P",this.state.setupActive),
         type: 'button',
         style: {color:colors.blue.hex},
         progress: this.state.setupProgress,
@@ -233,11 +239,11 @@ export class DEV_FirmwareTest extends LiveComponent<{
           this._setupCrownstone();
         }
       });
-      items.push({label:"Using sphere: \"" + sphereName + "\" for setup.", type: 'explanation', below: true, color: explanationColor});
+      items.push({label: lang("Using_sphere_______for_se",sphereName), type: 'explanation', below: true, color: explanationColor});
     }
     else if (FocusManager.crownstoneMode === "verified") {
       items.push({
-        label: "Reboot Crownstone",
+        label: lang("Reboot_Crownstone"),
         type: 'button',
         style: { color: colors.blue.hex },
         callback: () => {
@@ -245,48 +251,48 @@ export class DEV_FirmwareTest extends LiveComponent<{
         }
       });
       items.push({
-        label: "Factory Reset",
+        label: lang("Factory_Reset"),
         type: 'button',
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.commandFactoryReset)
         }
       });
-      items.push({label:"Put your Crownstone back in setup mode.", type: 'explanation', below: true, color: explanationColor});
+      items.push({label: lang("Put_your_Crownstone_back_"), type: 'explanation', below: true, color: explanationColor});
     }
     else if (FocusManager.crownstoneMode === 'unverified') {
       items.push({
-        label: "Recover",
+        label: lang("Recover"),
         type: 'button',
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.recover, [this.props.handle], null, () => {}, false);
         }
       });
-      items.push({label:"Recovery is possible in the first 30 seconds after power on.", type: 'explanation', below: true, color: explanationColor});
+      items.push({label: lang("Recovery_is_possible_in_t"), type: 'explanation', below: true, color: explanationColor});
     }
     else if (FocusManager.crownstoneMode === 'dfu' ) {
       items.push({
-        label: "Back to normal mode",
+        label: lang("Back_to_normal_mode"),
         type: 'button',
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.bootloaderToNormalMode, [this.props.handle], null, () => {}, false);
         }
       });
-      items.push({label:"Put your Crownstone back into app mode.", type: 'explanation', below: true, color: explanationColor});
+      items.push({label: lang("Put_your_Crownstone_back_i"), type: 'explanation', below: true, color: explanationColor});
     }
 
 
 
-    items.push({label:"CONTROL", type: 'explanation', below: false, color: explanationColor, alreadyPadded:true});
+    items.push({label: lang("CONTROL"), type: 'explanation', below: false, color: explanationColor, alreadyPadded:true});
     if (FocusManager.crownstoneMode === 'unverified') {
-      items.push({label:"Disabled for unverified Crownstone.", type: 'info'});
+      items.push({label: lang("Disabled_for_unverified_C"), type: 'info'});
     }
     else if (FocusManager.crownstoneMode === 'dfu' ) {
-      items.push({label:"Disabled for Crownstone in DFU mode.", type: 'info'});
+      items.push({label: lang("Disabled_for_Crownstone_i"), type: 'info'});
     }
     else {
       if (FocusManager.crownstoneState.dimmingEnabled) {
         items.push({
-          label: 'Set Switch',
+          label: lang("Set_Switch"),
           type: 'slider',
           disabled: FocusManager.crownstoneState.switchState === null,
           value: FocusManager.crownstoneState.switchStateValue,
@@ -302,7 +308,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       }
       else {
         items.push({
-          label: 'Set Switch',
+          label: lang("Set_Switch"),
           type: 'switch',
           disabled: FocusManager.crownstoneState.switchStateValue === null,
           value: FocusManager.crownstoneState.switchStateValue === 1,
@@ -315,7 +321,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       }
       if (FocusManager.crownstoneState.dimmingEnabled) {
         items.push({
-          label: 'Cast Switch',
+          label: lang("Cast_Switch"),
           type: 'slider',
           disabled: FocusManager.crownstoneState.switchState === null,
           value: FocusManager.crownstoneState.switchStateValue,
@@ -331,7 +337,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       }
       else {
         items.push({
-          label: 'Cast Switch',
+          label: lang("Cast_Switch"),
           type: 'switch',
           disabled: FocusManager.crownstoneState.switchStateValue === null,
           value: FocusManager.crownstoneState.switchStateValue === 1,
@@ -343,7 +349,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         });
       }
       items.push({
-        label: 'Set Relay',
+        label: lang("Set_Relay"),
         type: 'switch',
         disabled: FocusManager.crownstoneState.relayState === null,
         value: FocusManager.crownstoneState.relayState === 1,
@@ -355,7 +361,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       });
       if (FocusManager.crownstoneState.dimmingEnabled) {
         items.push({
-          label: 'Set Dimmer',
+          label: lang("Set_Dimmer"),
           type: 'slider',
           disabled: FocusManager.crownstoneState.dimmerState === null,
           value: FocusManager.crownstoneState.dimmerState,
@@ -370,7 +376,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         });
 
         items.push({
-          label: 'Set Dimmer',
+          label: lang("Set_Dimmer"),
           type: 'numericSet',
           digits:2,
           disabled: FocusManager.crownstoneState.dimmerState === null,
@@ -386,20 +392,20 @@ export class DEV_FirmwareTest extends LiveComponent<{
         });
       }
       else {
-        items.push({label:"Dimming is disabled.", type: 'info'});
+        items.push({label: lang("Dimming_is_disabled_"), type: 'info'});
       }
     }
 
-    items.push({label:"CONFIG", type: 'explanation', below: false, color: explanationColor});
+    items.push({label: lang("CONFIG"), type: 'explanation', below: false, color: explanationColor});
     if (FocusManager.crownstoneMode === 'unverified' ) {
-      items.push({label:"Disabled for unverified Crownstone.", type: 'info'});
+      items.push({label: lang("Disabled_for_unverified_Cr"), type: 'info'});
     }
     else if (FocusManager.crownstoneMode === 'dfu' ) {
-      items.push({label:"Disabled for Crownstone in DFU mode.", type: 'info'});
+      items.push({label: lang("Disabled_for_Crownstone_in"), type: 'info'});
     }
     else {
       items.push({
-        label: 'Allow Dimming',
+        label: lang("Allow_Dimming"),
         type: 'switch',
         disabled: FocusManager.crownstoneState.dimmingEnabled === null,
         value: FocusManager.crownstoneState.dimmingEnabled,
@@ -409,7 +415,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         }
       });
       items.push({
-        label: 'Switch Locked',
+        label: lang("Switch_Locked"),
         type: 'switch',
         disabled: FocusManager.crownstoneState.locked === null,
         value: FocusManager.crownstoneState.locked,
@@ -419,7 +425,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         }
       });
       items.push({
-        label: 'Switchcraft',
+        label: lang("Switchcraft"),
         type: 'switch',
         disabled: FocusManager.crownstoneState.switchCraft === null,
         value: FocusManager.crownstoneState.switchCraft,
@@ -429,7 +435,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         }
       });
       items.push({
-        label: 'Reset Errors',
+        label: lang("Reset_Errors"),
         type: 'button',
         style: {color:colors.blue.hex},
         callback: () => {
@@ -444,7 +450,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         }
       });
       items.push({
-        label: 'Set time',
+        label: lang("Set_time"),
         type: 'button',
         style: {color:colors.blue.hex},
         callback: () => {
@@ -453,18 +459,18 @@ export class DEV_FirmwareTest extends LiveComponent<{
       });
     }
 
-    items.push({ label: "GET INFORMATION", type: 'explanation', color: explanationColor });
+    items.push({ label: lang("GET_INFORMATION"), type: 'explanation', color: explanationColor });
 
     if (Platform.OS === 'android') {
       items.push({
-        label: "MAC address",
+        label: lang("MAC_address"),
         type: 'info',
         value: FocusManager.crownstoneState.macAddress,
       });
     }
     else if (FocusManager.crownstoneMode === 'setup') {
       items.push({
-        label: "MAC address",
+        label: lang("MAC_address"),
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.macAddress,
         getter: () => {
@@ -477,7 +483,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
     }
     if (FocusManager.crownstoneMode === 'dfu' ) {
       items.push({
-        label: "Bootloader Version",
+        label: lang("Bootloader_Version"),
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.bootloaderVersion,
         getter: () => {
@@ -490,7 +496,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
     }
     else {
       items.push({
-        label: "Firmware Version",
+        label: lang("Firmware_Version"),
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.firmwareVersion,
         getter: () => {
@@ -505,7 +511,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
     if (FocusManager.crownstoneMode !== 'dfu' ) {
       items.push({
-        label: "Hardware Version",
+        label: lang("Hardware_Version"),
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.hardwareVersion,
         getter: () => {
@@ -518,7 +524,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
 
       items.push({
-        label: "Reset Counter",
+        label: lang("Reset_Counter"),
         type: 'buttonGetValue',
         value: FocusManager.crownstoneState.resetCounter,
         getter: () => {
@@ -534,7 +540,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         let sphere = state.spheres[FocusManager.crownstoneState.referenceId];
         if (sphere) {
           items.push({
-            label: "In Sphere " + sphereName,
+            label: lang("In_Sphere_",sphereName),
             type: 'explanation',
             below: false,
             color: explanationColor
@@ -544,7 +550,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
 
       if (FocusManager.crownstoneMode !== 'unverified') {
         items.push({
-          label: "Go in DFU mode",
+          label: lang("Go_in_DFU_mode"),
           type: 'button',
           style: { color: colors.red.hex },
           callback: () => {
@@ -600,7 +606,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
         <BleStatusBar bleState={this.state.bleState} />
         <SlideInView hidden={true} height={50} visible={this.state.bleState !== BLE_STATE_READY && this.state.bleState !== BLE_STATE_BUSY}>
           <TouchableOpacity onPress={triggerErrorMessage} style={{paddingLeft: 10, paddingRight: 10, backgroundColor: colors.red.hex, borderBottomWidth: 1, borderBottomColor: colors.black.rgba(0.2), height: 50, ...styles.centered}}>
-            <Text style={{fontSize: 15, fontWeight: 'bold', color: colors.white.hex}}>Error during BLE command.</Text>
+            <Text style={{fontSize: 15, fontWeight: 'bold', color: colors.white.hex}}>{ lang("Error_during_BLE_command_") }</Text>
           </TouchableOpacity>
         </SlideInView>
         <ScrollView keyboardShouldPersistTaps="always">
@@ -670,7 +676,7 @@ export function BleStatusBar(props : {bleState}) {
     <View style={{flexDirection: 'row', paddingTop: 10, paddingBottom: 10, width:screenWidth, backgroundColor: colors.white.rgba(0.8), borderBottomWidth: 1, borderBottomColor: colors.black.rgba(0.2)}}>
       <View style={{flex:1}} />
       <StatusIndicator
-        label={'BLE'}
+        label={ lang("BLE")}
         icon={'ios-bluetooth'}
         pending={props.bleState === BLE_STATE_BUSY}
         backgroundColor={props.bleState === BLE_STATE_READY || props.bleState === BLE_STATE_BUSY ? colors.green.hex : colors.red.hex}
@@ -680,7 +686,7 @@ export function BleStatusBar(props : {bleState}) {
       />
       <View style={{flex:1}} />
       <StatusIndicator
-        label={'HW Errors'}
+        label={ lang("HW_Errors")}
         icon={'ios-bug'}
         disabled={FocusManager.crownstoneMode === 'unverified'}
         pending={FocusManager.crownstoneState.error === null}
@@ -700,7 +706,7 @@ export function BleStatusBar(props : {bleState}) {
       />
       <View style={{flex:1}} />
       <StatusIndicator
-        label={'Temp'}
+        label={ lang("Temp")}
         icon={'md-thermometer'}
         disabled={FocusManager.crownstoneMode === 'unverified'}
         pending={FocusManager.crownstoneState.temperature === null}
@@ -709,7 +715,7 @@ export function BleStatusBar(props : {bleState}) {
       />
       <View style={{flex:1}} />
       <StatusIndicator
-        label={'Power'}
+        label={ lang("Power")}
         icon={'ios-flash'}
         disabled={FocusManager.crownstoneMode === 'unverified'}
         pending={FocusManager.crownstoneState.powerUsage === null}
@@ -718,7 +724,7 @@ export function BleStatusBar(props : {bleState}) {
       />
       <View style={{flex:1}} />
       <StatusIndicator
-        label={'Dimmer'}
+        label={ lang("Dimmer")}
         icon={'ios-sunny'}
         iconSize={32}
         disabled={FocusManager.crownstoneMode === 'unverified'}

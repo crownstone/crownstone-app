@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Ability_SwitchcraftSettings", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   Button,
@@ -22,7 +28,7 @@ import { NavigationBar } from "../../../components/editComponents/NavigationBar"
 
 export class Ability_SwitchcraftSettings extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Switchcraft Settings"});
+    return TopBarUtil.getOptions({title: lang("Switchcraft_Settings")});
   }
 
   disable() {
@@ -38,23 +44,23 @@ export class Ability_SwitchcraftSettings extends Component<any, any> {
             <View style={{height:40}} />
             <ScaledImage source={require('../../../../images/overlayCircles/switchcraft.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
             <View style={{height:40}} />
-            <Text style={styles.boldExplanation}>{ "This Crownstone is configured to use Switchcraft. Ensure that the wall switch that is switching it has the Switchcraft modification applied." }</Text>
-            <Text style={styles.explanation}>{ "Tap the installation & information button for instructions for modifying your wall switch." }</Text>
-            <Text style={styles.explanation}>{ "Swichcraft should only be enabled for Crownstones connected to a physical wall switch." }</Text>
+            <Text style={styles.boldExplanation}>{ lang("This_Crownstone_is_config") }</Text>
+            <Text style={styles.explanation}>{ lang("Tap_the_installation___in") }</Text>
+            <Text style={styles.explanation}>{ lang("Swichcraft_should_only_be") }</Text>
             <View style={{height:10}} />
             <View style={{width:screenWidth}}>
               <Separator fullLength={true} />
               <NavigationBar
                 setActiveElement={()=>{ }}
                 largeIcon={<IconButton name="md-information-circle" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}} />}
-                label={"Installation & Information"}
+                label={ lang("Installation___Informatio")}
                 callback={() => { this.props.information(); }}
               />
               <Separator  />
               <ButtonBar
                 setActiveElement={()=>{ }}
                 largeIcon={<IconButton name="md-remove-circle" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />}
-                label={"Disable Switchcraft"}
+                label={ lang("Disable_Switchcraft")}
                 callback={() => { this.disable() }}
               />
               <Separator fullLength={true} />

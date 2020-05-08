@@ -26,7 +26,7 @@ import ResponsiveText from "../../components/ResponsiveText";
 
 export class DeviceSmartBehaviour_Editor extends Component<{twilightRule: boolean, data: any, sphereId: string, stoneId: string, ruleId: any, label:string, selectedDay?: string, isModal?:boolean}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: props.typeLabel || "Edit Behaviour", closeModal: props.isModal});
+    return TopBarUtil.getOptions({title: lang("Edit_Behaviour",props.typeLabel), closeModal: props.isModal});
   }
 
   render() {

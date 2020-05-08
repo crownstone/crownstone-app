@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("IconDevSelector", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ScrollView,
@@ -114,7 +120,7 @@ collectionToPlace.forEach((l) => {
 
 export class IconDevSelector extends LiveComponent<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  "Pick an Icon", closeModal: true});
+    return TopBarUtil.getOptions({title: lang("Pick_an_Icon"), closeModal: true});
   }
 
   c1Maps = {};

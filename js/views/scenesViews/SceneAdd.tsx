@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SceneAdd", key)(a,b,c,d,e);
+}
 import { LiveComponent } from "../LiveComponent";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { DataUtil } from "../../util/DataUtil";
@@ -135,7 +141,7 @@ export class SceneAdd extends LiveComponent<any, any> {
         placeholder: "My new scene",
         options: [
           {
-            label: "Next",
+            label: lang("Next"),
             textAlign:'right',
             nextCard: showSphereSelection ? 'sphereSelection' : 'stoneSelection',
             // response: "Good choice!",
@@ -174,10 +180,13 @@ export class SceneAdd extends LiveComponent<any, any> {
           <View>
             { this.getStoneSelectionList(this.sceneData.sphereId) }
           </View>,
-        options: [{label: "Next", nextCard:'stateSelection', textAlign:'right', onSelect: (result) => {
+        options: [{label: lang("Next"), nextCard:'stateSelection', textAlign:'right', onSelect: (result) => {
             let stonesSelected = Object.keys(this.sceneData.data).length > 0;
             if (!stonesSelected) {
-              Alert.alert("Select at least one...","I don't know why you'd want to make a scene without any Crownstones...", [{text:"Right.."}]);
+              Alert.alert(
+lang("_Select_at_least_one______header"),
+lang("_Select_at_least_one______body"),
+[{text:lang("_Select_at_least_one______left")}]);
               return false;
             }
             return true;
@@ -191,7 +200,7 @@ export class SceneAdd extends LiveComponent<any, any> {
           <View>
             { this.getStoneSwitchStateList(this.sceneData.sphereId) }
           </View>,
-        options: [{label: "Next", nextCard:'picture', textAlign:'right', onSelect: (result) => { }}]
+        options: [{label: lang("Next"), nextCard:'picture', textAlign:'right', onSelect: (result) => { }}]
       },
       picture: {
         header: "And finally...",
@@ -233,7 +242,7 @@ export class SceneAdd extends LiveComponent<any, any> {
             </View>
           )
         },
-        options: [{label: "Create Scene!", textAlign:'right', onSelect: (result) => {
+        options: [{label: lang("Create_Scene_"), textAlign:'right', onSelect: (result) => {
           if (this.sceneData.picture === null) {
             this.sceneData.pictureSource = PICTURE_GALLERY_TYPES.STOCK;
             let allImages = Object.keys(SCENE_STOCK_PICTURE_LIST);
@@ -327,7 +336,7 @@ export function StoneRow({sphereId, stoneId, locationName, selection, initialSel
         <Text style={{fontSize: 16, fontWeight:'bold'}}>{stone.config.name}</Text>
         <Text style={{fontSize: 13}}>{locationName}</Text>
         <SlideFadeInView height={20} visible={showExplanation}>
-          <Text style={{fontSize: 13, fontStyle:"italic"}}>{"Unlock first..."}</Text>
+          <Text style={{fontSize: 13, fontStyle:"italic"}}>{ lang("Unlock_first___") }</Text>
         </SlideFadeInView>
       </View>
     </React.Fragment>

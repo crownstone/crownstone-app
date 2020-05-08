@@ -138,7 +138,7 @@ export class NumericOverlay extends Component<any, any> {
               borderWidth: 2,
               borderColor: colors.blue3.rgba(0.5),
             }]}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{"Set!"}</Text>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{ lang("Set_") }</Text>
           </TouchableOpacity>}
           <View style={{height:30}} />
         </React.Fragment>

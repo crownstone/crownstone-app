@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DEV_SelectionComponents", key)(a,b,c,d,e);
+}
 import { TouchableOpacity, ViewStyle, Text, View } from "react-native";
 import { colors, screenWidth, styles } from "../../styles";
 import { Component } from "react";
@@ -116,7 +122,7 @@ export class CrownstoneEntry extends Component<any, any> {
             <View style={{ flex: 1 }}/>
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ width: 60 }}>{this.props.item.data.name}</Text>
-              {!hasType || <Text>{" - "}</Text>}
+              {!hasType || <Text>{ lang("___") }</Text>}
               {!hasType || <Text>{this.props.item.data.serviceData.deviceType}</Text>}
               {sphere !== null ? <Text style={{ fontSize: 13, fontWeight: 'bold' }}>{str}</Text> : undefined}
               <View style={{ flex: 1 }}/>

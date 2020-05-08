@@ -238,7 +238,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
               <View style={{height: 0.1*iconSize}} />
               <SmartBehaviourSummaryGraph rules={activeRules} activityMap={activityMap} sphereId={this.props.sphereId} />
             </SlideFadeInView>
-            { stone.config.locked && <Text style={{color: colors.csOrange.hex, fontWeight:"bold", fontSize:15, textAlign:'center', padding: 20}}>This Crownstone is locked, so the behaviours will not be acted upon.</Text> }
+            { stone.config.locked && <Text style={{color: colors.csOrange.hex, fontWeight:"bold", fontSize:15, textAlign:'center', padding: 20}}>{ lang("This_Crownstone_is_locked") }</Text> }
             <View style={{flex:1}} />
             {ruleComponents}
             <View style={{flex:2}} />
@@ -280,9 +280,10 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
                   if (ruleIds.length > 0) {
                     Alert.alert(
-                      "Copying will override existing Behaviour",
-                      "If you copy behaviour from another Crownstone, it's behaviour will replace the current behaviour. Do you want to continue?",
-                      [{text:"Never mind"}, {text:"Yes", onPress: copyFrom}])
+lang("_Copying_will_override_ex_header"),
+lang("_Copying_will_override_ex_body"),
+[{text:lang("_Copying_will_override_ex_left")}, {
+text:lang("_Copying_will_override_ex_right"), onPress: copyFrom}])
                   }
                   else{
                     copyFrom()
@@ -340,10 +341,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
             </SlideFadeInView>
 
             <SlideFadeInView visible={!this.state.editMode} height={80} style={styles.centered}>
-              <Text style={{...deviceStyles.explanationText, paddingHorizontal:15}}>{
-                "I'll be off if I'm not supposed to be on." +
-                (presenceRulePresent ? "\nOnce everyone left the " + (roomBasedPresenceRulePresent ? "room" : "house") + " I'll wait 5 minutes before turning off." : "")
-              }</Text>
+              <Text style={{...deviceStyles.explanationText, paddingHorizontal:15}}>{ lang("Ill_be_off_if_Im_not_supp",presenceRulePresent,roomBasedPresenceRulePresent) }</Text>
             </SlideFadeInView>
 
             <View style={{height:30}} />
@@ -367,7 +365,7 @@ function NoRulesYet(props) {
     <Background image={core.background.lightBlurLighter} hasNavBar={false}>
       <ScrollView contentContainerStyle={{flexGrow:1}}>
         <View style={{ flexGrow: 1, alignItems:'center', paddingTop:30 }}>
-          <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ "What is Behaviour?" }</Text>
+          <Text style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={1} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ lang("What_is_Behaviour_") }</Text>
           <View style={{height: 40}} />
           <View style={{flexDirection:'row', width: screenWidth, alignItems:'center', justifyContent: 'space-evenly'}}>
             <ScaledImage source={require('../../../images/overlayCircles/dimmingCircleGreen.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
@@ -375,16 +373,19 @@ function NoRulesYet(props) {
             <ScaledImage source={require('../../../images/overlayCircles/time.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.27*screenWidth} />
           </View>
           <View style={{height: 40}} />
-          <Text style={styles.boldExplanation}>{ "My behaviour is a combination of presence awareness, a schedule and responding to your actions." }</Text>
-          <Text style={styles.explanation}>{ "I can take multiple people in your household into account, or I could turn a light on at 50% when you use your wall switches after dark." }</Text>
-          <Text style={styles.explanation}>{ "Tap the Add button below to get started or copy the behaviour from another Crownstone!" }</Text>
+          <Text style={styles.boldExplanation}>{ lang("My_behaviour_is_a_combina") }</Text>
+          <Text style={styles.explanation}>{ lang("I_can_take_multiple_peopl") }</Text>
+          <Text style={styles.explanation}>{ lang("Tap_the_Add_button_below_") }</Text>
           <View style={{flex:1, minHeight: 40}} />
           { updateRequired && <Button
             backgroundColor={colors.green.rgba(0.9)}
             label={ "Update to use behaviour!"}
             callback={() => {
               if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
-                Alert.alert("You don't have permission to do this.","Only admins or members can update Crownstones.",[{text:'OK'}]);
+                Alert.alert(
+lang("_You_dont_have_permission_header"),
+lang("_You_dont_have_permission_body"),
+[{text:lang("_You_dont_have_permission_left")}]);
                 return
               }
 
@@ -393,10 +394,13 @@ function NoRulesYet(props) {
 
           { !updateRequired && <Button
             backgroundColor={colors.green.rgba(0.9)}
-            label={"Add my first behaviour!"}
+            label={ lang("Add_my_first_behaviour_")}
             callback={() => {
               if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
-                Alert.alert("You don't have permission to do this.","Only admins or members can update Crownstones.",[{text:'OK'}]);
+                Alert.alert(
+lang("_You_dont_have_permission__header"),
+lang("_You_dont_have_permission__body"),
+[{text:lang("_You_dont_have_permission__left")}]);
                 return
               }
 
@@ -409,13 +413,16 @@ function NoRulesYet(props) {
           }
           { !updateRequired && <Button
             backgroundColor={colors.blue.rgba(0.6)}
-            label={"Copy from another Crownstone!"}
+            label={ lang("Copy_from_another_Crownst")}
             icon={'md-log-in'}
             iconSize={14}
             iconColor={colors.blue.rgba(0.75)}
             callback={() => {
               if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
-                Alert.alert("You don't have permission to do this.","Only admins or members can update Crownstones.",[{text:'OK'}]);
+                Alert.alert(
+lang("_You_dont_have_permission_t_header"),
+lang("_You_dont_have_permission_t_body"),
+[{text:lang("_You_dont_have_permission_t_left")}]);
                 return
               }
 
@@ -479,15 +486,18 @@ function DisabledBehaviourBanner(props) {
         })
       }}
     >
-      <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>Behaviour is currently disabled.</Text>
-      <Text style={{fontSize: 15, color: colors.white.hex}}>Tap here to re-enable behaviour.</Text>
+      <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{ lang("Behaviour_is_currently_di") }</Text>
+      <Text style={{fontSize: 15, color: colors.white.hex}}>{ lang("Tap_here_to_re_enable_beh") }</Text>
     </TouchableOpacity>
   )
 }
 
 
 export const BehaviourCopySuccessPopup = function() {
-  Alert.alert("Success!", "Behaviour has been copied!", [{text:"Great!", onPress:() => { NavigationUtil.back();}}], {onDismiss: () => { NavigationUtil.back();}})
+  Alert.alert(
+lang("_Success___Behaviour_has__header"),
+lang("_Success___Behaviour_has__body"),
+[{text:lang("_Success___Behaviour_has__left"), onPress:() => { NavigationUtil.back();}}], {onDismiss: () => { NavigationUtil.back();}})
 }
 
 
@@ -495,7 +505,7 @@ function getTopBarProps(props, viewState) {
   const stone = DataUtil.getStone(props.sphereId,props.stoneId);
   if (!stone) {
     NAVBAR_PARAMS_CACHE = {
-      title: "Stone deleted.",
+      title: lang("Stone_deleted_"),
       closeModal: true,
     }
     return NAVBAR_PARAMS_CACHE

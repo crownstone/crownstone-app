@@ -143,14 +143,14 @@ export class SettingsDeveloper extends LiveComponent<any, any> {
 
 
     items.push({
-      label: "View uptime",
+      label: lang("View_uptime"),
       type: 'navigation',
       icon: <IconButton name="md-calendar" size={22}  color="#fff" buttonStyle={{backgroundColor: colors.black.hex}}/>,
       callback: () => {
         NavigationUtil.navigate("SettingsUptime")
       }
     });
-    items.push({label: "View when the app was running.", type: 'explanation', below: true});
+    items.push({label: lang("View_when_the_app_was_run"), type: 'explanation', below: true});
 
 
 
@@ -251,7 +251,7 @@ lang("_Could_not_send_Request___body",JSON.stringify(err)),
         NavigationUtil.navigate( "SettingsLocalizationDebug");
       }})
     items.push({
-      label: "Database Explorer",
+      label: lang("Database_Explorer"),
       type: 'navigation',
       icon: <IconButton name="md-folder" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.iosBlueDark.hex}} />,
       callback:() => {
@@ -364,7 +364,7 @@ lang("_Reset_Done__Rediscovery__body"),
 
     items.push({type:'spacer'});
     items.push({
-      label: "Show sync button for behaviour",
+      label: lang("Show_sync_button_for_beha"),
       value: dev.show_sync_button_in_behaviour,
       icon: <IconButton name={"md-refresh-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.green.hex}}/>,
       type: 'switch',
@@ -376,9 +376,9 @@ lang("_Reset_Done__Rediscovery__body"),
       }});
 
 
-    items.push({label:  "FIRMWARE EARLY ACCESS", type: 'explanation'});
+    items.push({label: lang("FIRMWARE_EARLY_ACCESS"), type: 'explanation'});
     items.push({
-      label: "Beta Firmware Access",
+      label: lang("Beta_Firmware_Access"),
       value: dev.firmwareEarlyAccessLevel >= 50,
       icon: <IconButton name={"ios-cloud-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
       type: 'switch',
@@ -397,7 +397,7 @@ lang("_Reset_Done__Rediscovery__body"),
 
     if (state.development.devAppVisible) {
       items.push({
-        label: "Alpha Firmware Access",
+        label: lang("Alpha_Firmware_Access"),
         value: dev.firmwareEarlyAccessLevel >= 100,
         icon: <IconButton name={"ios-cloud-circle"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.red.hex}}/>,
         type: 'switch',
@@ -414,7 +414,7 @@ lang("_Reset_Done__Rediscovery__body"),
           });
         }});
     }
-    items.push({label: "WARNING: Early access builds may be broken and can brick your Crownstones. No guarantees are provided on early access builds", type: 'explanation', below: true});
+    items.push({label: lang("WARNING__Early_access_bui"), type: 'explanation', below: true});
 
 
     items.push({label: lang("RESET_DEVELOPER_STATE"), type: 'explanation'});
@@ -448,12 +448,12 @@ lang("_Reset_Done__Rediscovery__body"),
       <BackgroundNoNotification image={core.background.menu} hasTopBar={false} hideNotifications={true} hideOrangeLine={true} >
         <TopbarImitation
           left={Platform.OS === 'android' ? null : "Back"}
-          title={"test"}
+          title={ lang("test")}
           titleObject={
 
             <TouchableWithoutFeedback onPress={() => { this._countSecret() }}>
               <View style={{flex:1, width: screenWidth-160, alignItems:'center', justifyContent:'center'}}>
-                <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText]}>{"Developer Menu"}</Text>
+                <Text style={[topBarStyle.topBarCenter, topBarStyle.titleText]}>{ lang("Developer_Menu") }</Text>
               </View>
             </TouchableWithoutFeedback>
 
@@ -476,9 +476,9 @@ lang("_Reset_Done__Rediscovery__body"),
 export function getDevAppItems() {
     let items = [];
 
-    items.push({ label: "GO TO DEV APP", type: 'explanation' });
+    items.push({ label: lang("GO_TO_DEV_APP"), type: 'explanation' });
     items.push({
-      label: "Go to dev app",
+      label: lang("Go_to_dev_app"),
       type: 'button',
       style: { color: colors.black.hex, fontWeight: 'bold' },
       icon: <ScaledImage source={require('../../images/icons/devAppIcon.png')} sourceHeight={180} sourceWidth={180} targetHeight={30}/>,
@@ -498,7 +498,7 @@ export function getDevAppItems() {
       }
     });
     items.push({
-      label: "This can brick your Crownstones. Beware! Your locationhandler will be killed. Restart the app to go back to app mode.",
+      label: lang("This_can_brick_your_Crown"),
       type: 'explanation',
       below: true
     });
@@ -511,7 +511,7 @@ export function getDevAppItems() {
       }
     });
   items.push({
-    label: "Debug options for developers.",
+    label: lang("Debug_options_for_develop"),
     type: 'explanation',
     below: true
   });

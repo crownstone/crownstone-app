@@ -29,7 +29,7 @@ export class StoneDeleted extends Component<any, any> {
           <View style={{flex:1}} />
           <TextButtonLight
             selected={false}
-            label={"Back to room!"}
+            label={ lang("Back_to_room_")}
             callback={() => { NavigationUtil.back(); }}
           />
           <View style={{height: 30}} />

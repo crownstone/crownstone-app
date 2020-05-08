@@ -37,7 +37,7 @@ const textStyle : TextStyle = {
 
 export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Database Explorer", update: true});
+    return TopBarUtil.getOptions({title: lang("Database_Explorer"), update: true});
   }
 
   expanded = { "BASE": {} };
@@ -114,7 +114,7 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
               this.state.editField === url+key ?
                 this.getEditField(stateSegment, key)
                 :
-                <Text style={textStyle}>{key + ": " + label}</Text>
+                <Text style={textStyle}>{ lang("__",key,label) }</Text>
             }
           </TouchableOpacity>
         );

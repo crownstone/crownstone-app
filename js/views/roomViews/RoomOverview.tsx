@@ -85,9 +85,9 @@ export class RoomOverview extends LiveComponent<any, any> {
     if (buttonId === 'train') {
       if (core.store.getState().app.indoorLocalizationEnabled === false) {
         Alert.alert(
-          "Indoor localization is currently disabeld",
-          "Take a look at the app settings if you'd like to change this.",
-          [{ text: "OK" }]);
+lang("_Indoor_localization_is_c_header"),
+lang("_Indoor_localization_is_c_body"),
+[{text: lang("_Indoor_localization_is_c_left") }]);
         return
       }
 

@@ -283,14 +283,14 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
             borderBottomLeftRadius: 25,  borderTopLeftRadius: 25, alignItems:'flex-end',
             backgroundColor: !this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex
           }} onPress={() => { this._switch(stone,0); }}>
-            <Text style={textStyle}>OFF</Text>
+            <Text style={textStyle}>{ lang("OFF") }</Text>
           </TouchableOpacity>
           <View style={{width:border}} />
           <TouchableOpacity style={{...innerStyle,
             borderBottomRightRadius: 25, borderTopRightRadius: 25,
             backgroundColor: this.state.switchIsOn ? colors.green.hex : colors.csBlueDark.hex
           }} onPress={() => { this._switch(stone,1); }}>
-            <Text style={textStyle}>ON</Text>
+            <Text style={textStyle}>{ lang("ON") }</Text>
           </TouchableOpacity>
         </View>
       );
@@ -335,10 +335,10 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
     let map = MapProvider.stoneSummaryMap[this.props.stoneId];
     return (
       <View style={{width:screenWidth, padding:30, ...styles.centered}}>
-        <Text style={deviceStyles.subHeader}>{ "I'm a " + label + "!"}</Text>
+        <Text style={deviceStyles.subHeader}>{ lang("Im_a__",label) }</Text>
         { map  &&
         <View style={{padding:30}}>
-          <Text style={deviceStyles.text}>{ "Currently, I'm in the " + map.locationName + "." }</Text>
+          <Text style={deviceStyles.text}>{ lang("Currently__Im_in_the__",map.locationName) }</Text>
         </View>
         }
       </View>
@@ -429,21 +429,21 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
         marginBottom: dimmerReady ? DIMMING_INDICATOR_SIZE + DIMMING_INDICATOR_SPACING : 0
       }}>
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Abilities"} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {
+        <DeviceMenuIcon label={ lang("Abilities")} icon={'ios-school'} backgroundColor={colors.green.hex} callback={() => {
           NavigationUtil.launchModal("DeviceAbilities", {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId
           })
         }} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Behaviour"} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.5).hex} callback={() => {
+        <DeviceMenuIcon label={ lang("Behaviour")} icon={'c1-brain'} backgroundColor={colors.green.blend(colors.csBlueDark,0.5).hex} callback={() => {
           NavigationUtil.launchModal("DeviceSmartBehaviour", {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId
           })
         }} />
         <View style={{flex:1}} />
-        <DeviceMenuIcon label={"Power usage"} image={require("../../images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex} callback={() => {
+        <DeviceMenuIcon label={ lang("Power_usage")} image={require("../../images/icons/graph.png")} backgroundColor={colors.csBlueDark.hex} callback={() => {
           NavigationUtil.launchModal("DevicePowerUsage", {
             stoneId: this.props.stoneId,
             sphereId: this.props.sphereId
@@ -485,7 +485,7 @@ export class DeviceOverview extends LiveComponent<any, { switchIsOn: boolean }> 
         <View style={{flex:2}} />
 
         {/* If the stone can't switch its a Guidestone or a Crownstone USB. */}
-        { !stoneCanSwitch && <View style={{padding:30}}><Text style={deviceStyles.header}>Hi there!</Text></View> }
+        { !stoneCanSwitch && <View style={{padding:30}}><Text style={deviceStyles.header}>{ lang("Hi_there_") }</Text></View> }
 
         { this._getStoneIcon(stone, updateAvailable, stoneCanSwitch) }
 

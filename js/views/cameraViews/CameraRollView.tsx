@@ -33,7 +33,7 @@ export class CameraRollView extends LiveComponent<any, any> {
              left={Platform.OS === 'android' ? null : "Back"}
              leftAction={() => { NavigationUtil.dismissModal(); }}
              style={{backgroundColor:colors.black.hex, paddingTop:0}}
-             title={"Select your Picture"}
+             title={ lang("Select_your_Picture")}
              rightAction={() => {
                if (this.props.fromCameraView) {
                  NavigationUtil.back();

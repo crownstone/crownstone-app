@@ -28,7 +28,7 @@ export class RoomDeleted extends Component<any, any> {
           <View style={{flex:1}} />
           <TextButtonLight
             selected={false}
-            label={"Back to Sphere!"}
+            label={ lang("Back_to_Sphere_")}
             callback={() => { NavigationUtil.back(); }}
           />
           <View style={{height: 30}} />

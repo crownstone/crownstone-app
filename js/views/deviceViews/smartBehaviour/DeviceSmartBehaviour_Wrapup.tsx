@@ -56,7 +56,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   isModal?: boolean,
 }, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "When to do this?", closeModal: props.isModal});
+    return TopBarUtil.getOptions({title: lang("When_to_do_this_"), closeModal: props.isModal});
   }
 
   rule : AicoreBehaviour | AicoreTwilight;
@@ -246,9 +246,9 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
       for (let i = 0; i < ruleIds.length; i++) {
         if (rules[ruleIds[i]].deleted === false && this.rule.isTheSameAs(rules[ruleIds[i]].data)) {
           Alert.alert(
-            "Behaviour already exists!",
-            "You already have a behaviour that does exactly this. There's no need to add another!",
-            [{text:"OK", onPress:() => { NavigationUtil.dismissModal();}}],
+lang("_Behaviour_already_exists_header"),
+lang("_Behaviour_already_exists_body"),
+[{text:lang("_Behaviour_already_exists_left"), onPress:() => { NavigationUtil.dismissModal();}}],
             {cancelable: false}
           );
           return;
@@ -417,10 +417,10 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
   _getRuleComparison() {
     return (
       <View style={styles.centered}>
-        <Text style={ruleStyle}>{'"' + this.existingRule.getSentence(this.props.sphereId) + '"'}</Text>
+        <Text style={ruleStyle}>{ lang("____",this.existingRule.getSentence(this.props.sphereId)) }</Text>
         <Icon name={'ios-arrow-down'} size={10} color={colors.csBlueDark.hex} />
         <Icon name={'ios-arrow-down'} size={20} color={colors.csBlueDark.hex} />
-        <Text style={ruleStyle}>{'"' + this.rule.getSentence(this.props.sphereId) + '"'}</Text>
+        <Text style={ruleStyle}>{ lang("____",this.rule.getSentence(this.props.sphereId)) }</Text>
       </View>
     )
   }
@@ -562,7 +562,7 @@ export class DeviceSmartBehaviour_Wrapup extends LiveComponent<{
             <ResponsiveText style={{...deviceStyles.header, width: 0.7*screenWidth}} numberOfLines={headerNumberOfLines} adjustsFontSizeToFit={true} minimumFontScale={0.1}>{ header }</ResponsiveText>
             <View style={{height: 0.02*availableModalHeight}} />
 
-            { this.props.ruleId && this.props.deleteRule && <Text style={ruleStyle}>{'"' + this.existingRule.getSentence(this.props.sphereId) + '"'}</Text> }
+            { this.props.ruleId && this.props.deleteRule && <Text style={ruleStyle}>{ lang("____",this.existingRule.getSentence(this.props.sphereId)) }</Text> }
             { this.props.ruleId && this.ruleHasChanged && this._getRuleComparison() }
 
             <Text style={deviceStyles.specification}>{ body }</Text>

@@ -77,19 +77,19 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         textColor: colors.white.hex,
         options: [
           {
-            label: "Presence aware",
+            label: lang("Presence_aware"),
             subLabel: '"' + presenceExamples[0].getSentence(this.props.sphereId) + '"',
             image: { source: require('../../../images/icons/presence.png'), sourceWidth: 292, sourceHeight: 399, width: 0.15*screenWidth },
             nextCard: 'presence'
           },
           {
-            label: "Smart timer",
+            label: lang("Smart_timer"),
             subLabel: '"' + smartTimerExamples[0].getSentence(this.props.sphereId) + '"',
             image: { source: require('../../../images/icons/smartTimer.png'), sourceWidth: 398, sourceHeight: 398, width: 0.175*screenWidth },
             nextCard: 'smartTimer'
           },
           {
-            label: "Twilight mode",
+            label: lang("Twilight_mode"),
             subLabel: '"' + twilightExamples[0].getSentence(this.props.sphereId) + '"',
             image: { source: require('../../../images/icons/twilight.png'), sourceWidth: 529, sourceHeight: 398, width: 0.18*screenWidth },
             onSelect: () => {
@@ -132,14 +132,14 @@ export class DeviceSmartBehaviour_TypeSelector extends Component<any, any> {
         optionsBottom: true,
         options: [
           {
-            label: "Yes, enable dimming!",
+            label: lang("Yes__enable_dimming_"),
             onSelect: () => {
               core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {enabledTarget: true}});
               return "twilight";
             }
           },
           {
-            label: "Not right now..",
+            label: lang("Not_right_now__"),
             onSelect: () => {
               setTimeout(() => {this._interview.back()},100)
               return false;
