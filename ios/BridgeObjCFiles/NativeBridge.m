@@ -124,8 +124,9 @@ RCT_EXTERN_METHOD(getTrackingState:(RCTResponseSenderBlock)callback)
 
 // Broadcast
 RCT_EXTERN_METHOD(broadcastBehaviourSettings:(NSString *)referenceId enabled:(nonnull NSNumber *)enabled callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(broadcastSwitch:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId switchState:(nonnull NSNumber *)switchState callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(turnOnBroadcast:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(broadcastSwitch:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId switchState:(nonnull NSNumber *)switchState autoExecute:(nonnull NSNumber *)autoExecute callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(turnOnBroadcast:(NSString *)referenceId stoneId:(nonnull NSNumber *)stoneId autoExecute:(nonnull NSNumber *)autoExecute callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(broadcastExecute)
 
 // set states for broadcast
 RCT_EXTERN_METHOD(setLocationState:(nonnull NSNumber *)sphereUID locationId:(nonnull NSNumber *)locationId profileId:(nonnull NSNumber *)profileId deviceToken:(nonnull NSNumber *)deviceToken referenceId:(NSString *)referenceId)

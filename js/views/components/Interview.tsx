@@ -18,6 +18,8 @@ import {
 } from "../components/InterviewComponents";
 import { ScaledImage } from "./ScaledImage";
 import ResponsiveText from "./ResponsiveText";
+import { SlideInFromBottomView } from "./animated/SlideInFromBottomView";
+import { SlideFadeInView } from "./animated/SlideFadeInView";
 
 let headerStyle : TextStyle = {
   paddingLeft: 15,
@@ -292,6 +294,8 @@ function InterviewCard(props : {
     textfieldState: textInput
   };
 
+  let changingAlwaysOnTop = props.card.optionsAlwaysOnTop !== undefined;
+
   let overrideTextColor = props.card.textColor ? {color: props.card.textColor} : {};
   let card = props.card;
   return (
@@ -345,10 +349,14 @@ function InterviewCard(props : {
           }
         </View>
       </ScrollView>
-      {card.optionsAlwaysOnTop === true &&
-        <View style={{ position: 'absolute', bottom: 10, width: screenWidth }}>
-          <InterviewOptions options={options} nextCard={props.nextCard || null} selectedOption={props.selectedOption} value={result}/>
-        </View>
+      {
+        changingAlwaysOnTop &&
+        <SlideFadeInView visible={card.optionsAlwaysOnTop} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", paddingTop:10}}>
+          <View style={{shadowColor: colors.black.hex, shadowOpacity:0.9, shadowRadius: 5, shadowOffset:{width:0, height:2} }}>
+            <InterviewOptions options={options} nextCard={props.nextCard || null} selectedOption={props.selectedOption} value={result}/>
+          </View>
+          <View style={{height:10}} />
+        </SlideFadeInView>
       }
     </View>
   )
@@ -433,5 +441,5 @@ function InterviewOptions(props : {options : interviewOption[], value: interview
 
 function InterviewOptionsSpacer(props : {options : interviewOption[]}) {
   // TODO: make generic on type of options.
-  return <View style={{height: 52}} />;
+  return <View style={{height: 62}} />;
 }

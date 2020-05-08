@@ -556,9 +556,7 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("multiSwitch", callback, GLOBAL_BLUENET.bluenet.mesh.multiSwitch(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
   }
   
-  @objc func broadcastSwitch(_ referenceId: String, stoneId: NSNumber, switchState: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("broadcastSwitch", callback, GLOBAL_BLUENET.bluenet.broadcast.multiSwitch(referenceId: referenceId, stoneId: stoneId.uint8Value, switchState: switchState.floatValue))
-  }
+  
   
   @objc func broadcastBehaviourSettings(_ referenceId: String, enabled: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     wrapForBluenet("setBehaviourSettings", callback, GLOBAL_BLUENET.bluenet.broadcast.setBehaviourSettings(referenceId: referenceId, enabled: enabled.boolValue))
@@ -569,8 +567,18 @@ open class BluenetJS: RCTEventEmitter {
     wrapForBluenet("turnOnMesh", callback, GLOBAL_BLUENET.bluenet.mesh.turnOn(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]]))
   }
   
-  @objc func turnOnBroadcast(_ referenceId: String, stoneId: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    wrapForBluenet("turnOnBroadcast", callback, GLOBAL_BLUENET.bluenet.broadcast.turnOn(referenceId: referenceId, stoneId: stoneId.uint8Value))
+  @objc func turnOnBroadcast(_ referenceId: String, stoneId: NSNumber, autoExecute: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let autoExec : Bool = autoExecute.boolValue
+    wrapForBluenet("turnOnBroadcast", callback, GLOBAL_BLUENET.bluenet.broadcast.turnOn(referenceId: referenceId, stoneId: stoneId.uint8Value, autoExecute: autoExec))
+  }
+  
+  @objc func broadcastSwitch(_ referenceId: String, stoneId: NSNumber, switchState: NSNumber, autoExecute: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let autoExec : Bool = autoExecute.boolValue
+    wrapForBluenet("broadcastSwitch", callback, GLOBAL_BLUENET.bluenet.broadcast.multiSwitch(referenceId: referenceId, stoneId: stoneId.uint8Value, switchState: switchState.floatValue, autoExecute: autoExec))
+  }
+  
+  @objc func broadcastExecute() -> Void {
+    GLOBAL_BLUENET.bluenet.broadcast.execute()
   }
   
   

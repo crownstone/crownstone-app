@@ -150,6 +150,7 @@ const BluenetAPI = {
   syncBehaviours:         () => { console.log("BluenetBridgeCall: syncBehaviours"); },
   getBehaviourMasterHash: () => { console.log("BluenetBridgeCall: getBehaviourMasterHash"); },
   setTimeViaBroadcast:    () => { console.log("BluenetBridgeCall: setTimeViaBroadcast"); },
+  broadcastExecute:       () => { console.log("BluenetBridgeCall: broadcastExecute"); },
 
 };
 

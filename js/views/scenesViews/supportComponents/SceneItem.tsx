@@ -49,7 +49,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
             Object.keys(switchData).forEach((stoneCID) => {
               action = true;
               let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
-              BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {commandName:"multiSwitch", state: switchData[stoneCID]}).catch()
+              BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {commandName:"multiSwitch", state: switchData[stoneCID]}, {autoExecute: false}).catch()
             })
             if (action) {
               BatchCommandHandler.executePriority();

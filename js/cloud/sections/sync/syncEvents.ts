@@ -75,7 +75,7 @@ const handleRemove = function(state, events, actions) {
   });
 
   behaviourEventIds.forEach((behaviourEventId) => {
-    let eventData : SyncEvent = events.scenes[behaviourEventId];
+    let eventData : SyncEvent = events.behaviours[behaviourEventId];
     let success = () => { actions.push({type: 'FINISHED_REMOVE_BEHAVIOURS', id: behaviourEventId })};
     if (!eventData.cloudId) { return success() }
     if (!eventData.stoneId) { return success() } // this is for items living under stones

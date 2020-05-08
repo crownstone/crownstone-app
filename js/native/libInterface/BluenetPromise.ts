@@ -149,7 +149,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setupPulse:                     () => { return BluenetPromise('setupPulse'); },               // return type: void
   checkBroadcastAuthorization:    () => { return BluenetPromise('checkBroadcastAuthorization'); },   // return type: string
 
-  broadcastSwitch:                (referenceId, stoneId, switchState) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState); },
+  broadcastSwitch:                (referenceId, stoneId, switchState, autoExecute) => { return BluenetPromise('broadcastSwitch', referenceId, stoneId, switchState, autoExecute); },
 
   addBehaviour:                   (behaviour: behaviourTransfer) => { return BluenetPromise('addBehaviour',behaviour) },
   updateBehaviour:                (behaviour: behaviourTransfer) => { return BluenetPromise('updateBehaviour',behaviour) },
@@ -194,7 +194,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   canUseDynamicBackgroundBroadcasts:() => { return BluenetPromise('canUseDynamicBackgroundBroadcasts'); },
 
   turnOnMesh:                     (arrayOfStoneSwitchPackets: any[]) => { return BluenetPromise('turnOnMesh', arrayOfStoneSwitchPackets)},
-  turnOnBroadcast:                (referenceId, stoneId)             => { return BluenetPromise('turnOnBroadcast', referenceId, stoneId)},
+  turnOnBroadcast:                (referenceId, stoneId, autoExecute)             => { return BluenetPromise('turnOnBroadcast', referenceId, stoneId, autoExecute)},
   setSunTimesViaConnection:       (sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight) => { return BluenetPromise('setSunTimesViaConnection', sunriseSecondsSinceMidnight, sunsetSecondsSinceMidnight)},
   broadcastBehaviourSettings:     (referenceId, enabled) => { return BluenetPromise('broadcastBehaviourSettings', referenceId, enabled)},
 

@@ -7,6 +7,7 @@ import { BROADCAST_THROTTLE_TIME, MINIMUM_FIRMWARE_VERSION_BROADCAST } from "../
 import { Util } from "../../util/Util";
 import { conditionMap } from "../../native/advertisements/StoneEntity";
 import { Scheduler } from "../Scheduler";
+import { Bluenet } from "../../native/libInterface/Bluenet";
 
 export const BROADCAST_ERRORS = {
   CANNOT_BROADCAST:               { message: "CANNOT_BROADCAST",     fatal: false},
@@ -29,6 +30,9 @@ class BroadcastCommandManagerClass {
   queue : broadcastQueueItem[] = [];
   timeLastBroadcast = 0;
   clearPendingCommandCallback = null;
+
+  itemsWaitingForExecute = {};
+
 
   commandsToBroadcast = {
     multiSwitch: true,
@@ -97,8 +101,8 @@ class BroadcastCommandManagerClass {
     }
   }
 
-  _broadcastTurnOn(commandSummary) : Promise<bchReturnType> {
-    this.timeLastBroadcast = new Date().valueOf();
+  _broadcastTurnOn(commandSummary: commandSummary) : Promise<bchReturnType> {
+    let {itemId, autoExecute} = this._handleAutoExecute(commandSummary);
 
     LOGi.broadcast("turnOn via broadcast");
     return new Promise((resolve, reject) => {
@@ -109,12 +113,14 @@ class BroadcastCommandManagerClass {
       core.eventBus.emit(Util.events.getIgnoreTopic(commandSummary.stoneId), {timeoutMs: 2000, conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: 1}]});
 
       // broadcast
-      BluenetPromiseWrapper.turnOnBroadcast(commandSummary.sphereId, commandSummary.stone.config.crownstoneId)
+      BluenetPromiseWrapper.turnOnBroadcast(commandSummary.sphereId, commandSummary.stone.config.crownstoneId, autoExecute)
         .then(() => {
+          delete this.itemsWaitingForExecute[itemId];
           LOGi.broadcast("Success broadcast turn On");
           return { data: null }
         })
         .catch((err) => {
+          delete this.itemsWaitingForExecute[itemId];
           LOGi.broadcast("ERROR broadcast turn On");
         })
     })
@@ -126,7 +132,7 @@ class BroadcastCommandManagerClass {
       return throttling;
     }
 
-    this.timeLastBroadcast = new Date().valueOf();
+    let {itemId, autoExecute} = this._handleAutoExecute(commandSummary);
 
     LOGi.broadcast("Switching via broadcast");
     return new Promise((resolve, reject) => {
@@ -137,16 +143,32 @@ class BroadcastCommandManagerClass {
       core.eventBus.emit(Util.events.getIgnoreTopic(commandSummary.stoneId), {timeoutMs: 2000, conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: commandSummary.command.state}]});
 
       // broadcast
-      BluenetPromiseWrapper.broadcastSwitch(commandSummary.sphereId, commandSummary.stone.config.crownstoneId, commandSummary.command.state)
+      BluenetPromiseWrapper.broadcastSwitch(commandSummary.sphereId, commandSummary.stone.config.crownstoneId, commandSummary.command.state, autoExecute)
         .then(() => {
+          delete this.itemsWaitingForExecute[itemId];
           LOGi.broadcast("Success broadcast", commandSummary.command.state);
           return { data: null }
         })
         .catch((err) => {
+          delete this.itemsWaitingForExecute[itemId];
           LOGi.broadcast("ERROR broadcast", commandSummary.command.state);
           // reject(err);
         })
     })
+  }
+
+  _handleAutoExecute(commandSummary: commandSummary) {
+    let itemId = xUtil.getShortUUID();
+
+    let autoExecute = commandSummary.options?.autoExecute !== undefined ? commandSummary.options.autoExecute : true;
+    if (autoExecute === false) {
+      this.itemsWaitingForExecute[itemId] = true;
+    }
+    else {
+      this.timeLastBroadcast = new Date().valueOf();
+    }
+
+    return {itemId, autoExecute};
   }
 
   shouldWaitForBroadcast() {
@@ -155,6 +177,9 @@ class BroadcastCommandManagerClass {
 
   handleThrottling(commandSummary : commandSummary) : Promise<bchReturnType> | false {
     // throttling
+    // we do not throttle items that do not automatically execute
+    if (commandSummary.options?.autoExecute === false) { return false; }
+
     if (this.shouldWaitForBroadcast()) {
       LOGd.broadcast("Scheduling broadcast for later");
       // if already a pending command check scheduled, we do not need to schedule another.
@@ -177,6 +202,12 @@ class BroadcastCommandManagerClass {
         // remove from queue
         this.queue.pop();
       }
+    }
+  }
+
+  execute() {
+    if (Object.keys(this.itemsWaitingForExecute).length > 0) {
+      Bluenet.broadcastExecute();
     }
   }
 

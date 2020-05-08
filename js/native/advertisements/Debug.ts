@@ -5,6 +5,7 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
     behaviourOverridden: false, tapToToggleEnabled: false,
     stateOfExternalCrownstone : false,
     hasError                  : false,
+    alternativeState          : false,
     setupMode                 : false,
     crownstoneId              : stone.config.crownstoneId,
     switchState               : 1,
@@ -36,13 +37,14 @@ export function generateFakeAdvertisement(sphereId, stone) : crownstoneAdvertise
       bitMask           : 0,
     },
     behaviourEnabled    : true,
-    uniqueElement             : Math.random()
+    behaviourMasterHash : 0,
+    uniqueElement       : Math.random()
   };
 
   return {
     handle              : stone.config.handle,
     name                : 'test',
-    rssi                : -50 - Math.random()*50,
+    rssi                : -50 - Math.floor(Math.random()*50),
     referenceId         : sphereId,
     isInDFUMode         : false,
     serviceData         : serviceData

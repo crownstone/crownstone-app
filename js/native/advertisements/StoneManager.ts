@@ -205,6 +205,11 @@ class StoneManagerClass {
       return;
     }
 
+    if (serviceData.alternativeState === true) {
+      // ignore the alternative state for now.
+      return;
+    }
+
     // this is the referenceId of the spherekeys that we used to decrypt this advertisement
     let sphereId = advertisement.referenceId;
 

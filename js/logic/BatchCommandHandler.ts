@@ -13,6 +13,7 @@ import { BROADCAST_ERRORS, BroadcastCommandManager } from "./bchComponents/Broad
 import { xUtil } from "../util/StandAloneUtil";
 import { BCH_ERROR_CODES } from "../Enums";
 import { core } from "../core";
+import { Bluenet } from "../native/libInterface/Bluenet";
 
 
 /**
@@ -629,6 +630,7 @@ class BatchCommandHandlerClass {
    * @param options
    */
   _execute(priority, options? : batchCommandEntryOptions) {
+    BroadcastCommandManager.execute();
     this._scheduleExecute(priority, options);
   }
 

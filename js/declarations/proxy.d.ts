@@ -59,7 +59,7 @@ interface BluenetPromiseWrapperProtocol {
   setupPulse()                                  : Promise< void >,
   checkBroadcastAuthorization()                 : Promise< string >,
 
-  broadcastSwitch(referenceId, stoneId, switchState):Promise< void >,
+  broadcastSwitch(referenceId, stoneId, switchState, autoExecute):Promise< void >,
   broadcastBehaviourSettings(referenceId, enabled:boolean):Promise< void >,
 
   addBehaviour(behaviour: behaviourTransfer)    : Promise<behaviourReply>,
@@ -103,7 +103,7 @@ interface BluenetPromiseWrapperProtocol {
   getBehaviourDebugInformation()                : Promise< behaviourDebug >,
 
   turnOnMesh(arrayOfStoneSwitchPackets: any[])  : Promise< void >,
-  turnOnBroadcast(referenceId, stoneId)         : Promise< void >,
+  turnOnBroadcast(referenceId, stoneId, autoExecute)         : Promise< void >,
   setSunTimesViaConnection(sunriseSecondsSinceMidnight : number, sunsetSecondsSinceMidnight : number) : Promise< void >,
 
   registerTrackedDevice(
@@ -158,6 +158,7 @@ interface crownstoneServiceData {
   opCode?                   : number, // unencrypted type (optional)
   dataType?                 : number, // encrypted type (optional)
   stateOfExternalCrownstone : boolean,
+  alternativeState          : boolean,
   hasError                  : boolean,
   setupMode                 : boolean,
   crownstoneId              : number, // [0 .. 255]
@@ -180,6 +181,7 @@ interface crownstoneServiceData {
   behaviourOverridden       : boolean,
 
   behaviourEnabled          : boolean,
+  behaviourMasterHash       : number,
 
   deviceType                : deviceType,
   rssiOfExternalCrownstone  : number, // Set to 0 when not external service data.

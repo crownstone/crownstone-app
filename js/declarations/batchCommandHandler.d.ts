@@ -118,6 +118,7 @@ interface batchCommandEntryOptions {
   keepConnectionOpen?: boolean,
   keepConnectionOpenTimeout?: number, // ms
   onlyAllowDirectCommand?: boolean,
+  autoExecute?: boolean
 }
 
 interface incomingAdvertisementTopics {

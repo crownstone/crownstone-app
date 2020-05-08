@@ -59,8 +59,12 @@ let ruleReducer = (state = defaultSettings, action : any = {}) => {
         return newState;
       }
       return state;
-    case 'MARK_STONE_RULE_FOR_DELETION':
+    case 'REFRESH_BEHAVIOURS':
       let newState = {...state};
+      newState.syncedToCrownstone = false;
+      return newState;
+    case 'MARK_STONE_RULE_FOR_DELETION':
+      newState = {...state};
       newState.deleted = true;
       newState.syncedToCrownstone = false;
       return newState;
