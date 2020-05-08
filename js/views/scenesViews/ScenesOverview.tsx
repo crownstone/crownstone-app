@@ -157,7 +157,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
               renderItem={({ item, index, drag, isActive }) => { return this.renderItem( scenes[item as string], activeSphere, item, index, drag, isActive ); }}
               keyExtractor={(item : any, index) => `draggable-item-${item}`}
               onDragEnd={({ data }) => { this.setState({ data }); this.sortedList.update(data as string[])}}
-              activationDistance={2}
+              activationDistance={10}
             />
           </View>
          );
