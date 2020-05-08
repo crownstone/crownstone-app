@@ -341,7 +341,8 @@ function InterviewCard(props : {
               undefined
           }
           { card.optionsExplanation ? <Text style={[explanationStyle, overrideTextColor]}>{card.optionsExplanation}</Text> : undefined }
-          { !card.optionsAlwaysOnTop ? <InterviewOptions options={options} nextCard={props.nextCard || null} selectedOption={props.selectedOption} value={result} /> : <InterviewOptionsSpacer options={options} />}
+          { !card.optionsAlwaysOnTop && card.optionsHiddenIfNotOnTop !== true ?
+            <InterviewOptions options={options} nextCard={props.nextCard || null} selectedOption={props.selectedOption} value={result} /> : <InterviewOptionsSpacer options={options} />}
           {
             card.optionsCenter && !card.optionsAlwaysOnTop ?
               <View style={{flex:1}} /> :

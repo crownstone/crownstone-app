@@ -16,7 +16,7 @@ export const scenes = {
     let cloudSceneId = MapProvider.local2cloudMap.scenes[localSceneId] || localSceneId; // the OR is in case a cloudId has been put into this method.
     return cloudApiBase._setupRequest(
       'PUT',
-      '/Scene/' + cloudSceneId,
+      '/Scenes/' + cloudSceneId,
       {background: background, data: data},
       'body'
     );

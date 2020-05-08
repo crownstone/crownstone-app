@@ -229,7 +229,11 @@ function checkAction(action, affectedIds) {
     case "CLOUD_EVENT_REMOVE_INSTALLATIONS":
     case "CLOUD_EVENT_REMOVE_DEVICES":
     case "CLOUD_EVENT_REMOVE_MESSAGES":
+    case "CLOUD_EVENT_REMOVE_SCENES":
+    case "CLOUD_EVENT_REMOVE_BEHAVIOURS":
     case "CLOUD_EVENT_SPECIAL_USER":
+    case "CLOUD_EVENT_SPECIAL_SCENES":
+    case "CLOUD_EVENT_SPECIAL_BEHAVIOURS":
     case "CLOUD_EVENT_SPECIAL_LOCATIONS":
     case "CLOUD_EVENT_SPECIAL_STONES":
     case "CLOUD_EVENT_SPECIAL_INSTALLATIONS":
@@ -256,9 +260,11 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_INSTALLATIONS":
     case "FINISHED_SPECIAL_DEVICES":
     case "FINISHED_SPECIAL_MESSAGES":
+    case "FINISHED_SPECIAL_SCENES":
     case "UPDATE_STONE_TIME_STATE":
     case "LOCATION_REPAIR_PICTURE":
     case "SPHERE_USER_REPAIR_PICTURE":
+    case "UPDATE_SORTED_LIST":
       break;
     case "ADD_TOON":
     case "TOON_UPDATE_SETTINGS":
@@ -270,6 +276,7 @@ function checkAction(action, affectedIds) {
     case "UPDATE_LOCATION_CLOUD_ID":
     case "UPDATE_STONE_CLOUD_ID":
     case "UPDATE_RULE_CLOUD_ID":
+    case "UPDATE_SCENE_CLOUD_ID":
     case "UPDATE_SPHERE_CLOUD_ID":
       eventStatus['updatedCloudIds'] = affectedIds; break;
     case "UPDATE_STONE_REACHABILITY":

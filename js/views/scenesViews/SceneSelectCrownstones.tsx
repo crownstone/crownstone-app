@@ -8,7 +8,7 @@ import { Interview } from "../components/Interview";
 import * as React from "react";
 import { TopbarImitation } from "../components/TopbarImitation";
 import { AnimatedBackground } from "../components/animated/AnimatedBackground";
-import { StoneRow } from "./SceneAdd";
+import { StoneRow, getStoneSelectionList } from "./SceneAdd";
 
 export class SceneSelectCrownstones extends LiveComponent<any, any> {
   static options = {
@@ -27,51 +27,7 @@ export class SceneSelectCrownstones extends LiveComponent<any, any> {
   }
 
   getStoneSelectionList(sphereId) {
-    let state = core.store.getState();
-    let stoneIds = Object.keys(state.spheres[sphereId].stones);
-
-    let stoneList = [];
-    let sortData = {};
-
-    stoneIds.forEach((stoneId) => {
-      let stone = state.spheres[sphereId].stones[stoneId];
-      let locationId = stone.config.locationId;
-      let stoneCID = stone.config.crownstoneId;
-      let locationName = "Not in a room..."
-      if (locationId) {
-        let location = DataUtil.getLocation(sphereId, locationId);
-        locationName = location.config.name;
-      }
-      sortData[stoneId] = locationName;
-      stoneList.push(
-        {locationName: locationName, component:
-            <StoneRow
-              key={stoneId}
-              sphereId={sphereId}
-              stoneId={stoneId}
-              locationName={locationName}
-              initialSelection={this.sceneData.data[stoneCID] !== undefined}
-              selection={(selected) => {
-                if (selected) {
-                  this.sceneData.data[stoneCID] = {
-                    selected: true,
-                    switchState: this.sceneData.data[stoneCID] || stone.state.state
-                  }
-                }
-                else {
-                  delete this.sceneData.data[stoneCID];
-                }
-              }}/>}
-      )
-    })
-
-    stoneList.sort((a,b) => { return a.locationName > b.locationName ? 1 : -1 })
-
-    let items = [];
-    stoneList.forEach((item) => {
-      items.push(item.component);
-    })
-    return items;
+    return getStoneSelectionList(sphereId, this.sceneData, () => { this.forceUpdate(); });
   }
 
 
@@ -80,6 +36,7 @@ export class SceneSelectCrownstones extends LiveComponent<any, any> {
       start: {
         header: "Who's participating?",
         subHeader: "Select the Crownstones which will be part of this scene.",
+        optionsAlwaysOnTop: true,
         backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
         textColor: colors.white.hex,
         explanation: "Crownstones that are not selected will be left unchanged when this scene is activated.",

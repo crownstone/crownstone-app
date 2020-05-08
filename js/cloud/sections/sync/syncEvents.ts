@@ -213,14 +213,14 @@ const handleSpecial = function(state, events, actions) {
 
 
     switch (payload.specialType) {
-      case 'removeSceneCustomPicture':
+      case 'removeScenePicture':
         promises.push(CLOUD.forScene(payload.localId).deleteSceneCustomPicture({background: true}).then(() => { success(); })
           .catch((err) => {
             // even if there is no profile pic, 204 will be returned. Any other errors are.. errors?
             LOGe.cloud("syncEvents Special: Could not remove scene image from cloud", err);
           }));
         break;
-      case 'uploadSceneCustomPicture':
+      case 'uploadScenePicture':
         if (!scene.picture) {
           success();
         }

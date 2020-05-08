@@ -187,6 +187,7 @@ interface interviewCard {
   backgroundImage?: any
   hasTextInputField?: boolean
   placeholder?: string
+  optionsHiddenIfNotOnTop?: boolean,
   optionsAlwaysOnTop?: boolean,
   optionsCenter?: boolean,
   optionsBottom?: boolean
