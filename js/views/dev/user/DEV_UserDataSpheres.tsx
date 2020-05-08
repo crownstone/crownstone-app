@@ -153,7 +153,7 @@ export function SphereEntry(props) {
   let backgroundColor = colors.white.rgba(0.5);
   let state = core.store.getState();
   if (state.devApp.sphereUsedForSetup === props.sphereId) {
-    backgroundColor = colors.menuTextSelected.rgba(0.7)
+    backgroundColor = colors.blue.rgba(0.7)
   }
   let height = 70;
 
@@ -180,7 +180,7 @@ export function SphereEntry(props) {
 export function RoomEntry(props) {
   let backgroundColor = colors.white.rgba(0.5);
   if (props.selected) {
-    backgroundColor = colors.menuTextSelected.rgba(0.7)
+    backgroundColor = colors.blue.rgba(0.7)
   }
   let height = 70;
 

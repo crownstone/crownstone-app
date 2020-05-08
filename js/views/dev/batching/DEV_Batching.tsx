@@ -151,7 +151,7 @@ export class DEV_Batching extends LiveComponent<{selectedStones: any[], visible:
     items.push({label:"AVAILABLE DFU ZIPS", type: 'explanation', color: colors.black.hex});
     let hasFirmwares = false;
     this.state.availableFirmwares.forEach((fw) => {
-      let textColor = colors.menuTextSelected.hex;
+      let textColor = colors.blue.hex;
       let buttonBackground = colors.white.rgba(0.9)
       hasFirmwares = true;
       if (this.state.selectedDFUFile === fw) {

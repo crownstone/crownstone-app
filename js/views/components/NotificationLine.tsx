@@ -31,7 +31,7 @@ export class NotificationLine extends LiveComponent<{notificationsVisible?: bool
   _getNotifications() {
     if (!this.props.notificationsVisible) { return; }
 
-    let defaultColor = colors.menuTextSelected.hex;
+    let defaultColor = colors.blue.hex;
     let notifications = [];
 
     let state = core.store.getState();

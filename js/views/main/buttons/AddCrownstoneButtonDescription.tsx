@@ -41,8 +41,8 @@ export class AddCrownstoneButtonDescription extends Component<any, any> {
         <View style={{flex:1}} />
         <Text style={{fontSize: fontSize, fontWeight:'bold', color: colors.green.hex}}>{ lang("Add_Crownstones_now_") }</Text>
         { Util.narrowScreen() === false ? <Icon name={"md-arrow-round-forward"}  size={20} color={colors.green.hex} style={{padding:5}} /> : undefined }
-        <Icon name={"md-arrow-round-forward"}  size={20} color={colors.menuTextSelected.blend(colors.green, 0.5).hex} style={{padding:5}} />
-        <Icon name={"md-arrow-round-forward"}  size={20} color={colors.menuTextSelected.hex} style={{padding:5}} />
+        <Icon name={"md-arrow-round-forward"} size={20} color={colors.blue.blend(colors.green, 0.5).hex} style={{padding:5}} />
+        <Icon name={"md-arrow-round-forward"} size={20} color={colors.blue.hex} style={{padding:5}} />
         <View style={{width:5}} />
         <View style={{width:outerRadius,height: outerRadius}} />
     </HiddenFadeInView>

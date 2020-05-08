@@ -147,7 +147,7 @@ export class SphereEditSettings extends LiveComponent<any, any> {
     items.push({
       label: lang("Manage_Sphere_Users"),
       type: 'navigation',
-      icon: <IconButton name='c1-people' size={21} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+      icon: <IconButton name='c1-people' size={21} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: () => {
         core.eventBus.emit("highlight_nav_field", "sphereEdit_users");
         NavigationUtil.back().then(() => {

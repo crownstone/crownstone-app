@@ -119,7 +119,7 @@ export class SphereUserOverview extends LiveComponent<any, any> {
       items.push({
         label: lang("Invite_someone_new_"), // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
         type: 'navigation',
-        labelStyle: {color: colors.menuTextSelected.hex, fontWeight:'bold'},
+        labelStyle: {color: colors.blue.hex, fontWeight:'bold'},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft: 3, marginRight: 7}}/>,
         callback: () => {
           NavigationUtil.launchModal( "SphereUserInvite",{ sphereId: this.props.sphereId });

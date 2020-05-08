@@ -54,7 +54,7 @@ export class SmartHomeStateButton extends Component<any, any> {
 
   getContentData(currentState, outerRadius) {
     let iconColor             = colors.white.hex;
-    let iconBackgroundColor   = colors.menuTextSelected.hex;
+    let iconBackgroundColor   = colors.blue.hex;
     let explanationColor      = colors.white.hex;
     let explanationTextColor  = colors.white.hex;
     let explanationLabel      = null;
@@ -64,7 +64,7 @@ export class SmartHomeStateButton extends Component<any, any> {
       if (currentState === false) {
         // waiting to be disabled
         explanationTextColor = colors.white.hex;
-        explanationColor     = colors.menuTextSelected.rgba(0.5);
+        explanationColor     = colors.blue.rgba(0.5);
         explanationLabel     = "Disabling...";
         width = 180;
       }
@@ -87,7 +87,7 @@ export class SmartHomeStateButton extends Component<any, any> {
       else {
         // are you sure you want to disable?
         explanationTextColor = colors.white.hex;
-        explanationColor     = colors.menuTextSelected.rgba(0.5);
+        explanationColor     = colors.blue.rgba(0.5);
         explanationLabel     = "Tap again to\ndisable behaviour.";
       }
     }
@@ -96,7 +96,7 @@ export class SmartHomeStateButton extends Component<any, any> {
         // smart home is disabled
         explanationLabel     = "Behaviour disabled."
         explanationTextColor = colors.white.hex;
-        explanationColor     = colors.menuTextSelected.rgba(0.2);
+        explanationColor     = colors.blue.rgba(0.2);
       }
       else {
         // smart home is enabled

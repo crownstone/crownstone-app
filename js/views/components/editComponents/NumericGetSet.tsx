@@ -56,7 +56,7 @@ export class NumericGetSet extends Component<any, any> {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={{alignItems: 'center', justifyContent:'flex-start', width: 0.15 * screenWidth}} onPress={() => { this.props.getCallback() }}>
-          <Icon size={32} name={"md-arrow-down"} color={colors.menuTextSelected.hex} />
+          <Icon size={32} name={"md-arrow-down"} color={colors.blue.hex} />
         </TouchableOpacity>
         <TouchableOpacity style={{alignItems: 'center', justifyContent:'flex-end', width: 0.15 * screenWidth}} onPress={() => {
           core.eventBus.emit("showNumericOverlay",{

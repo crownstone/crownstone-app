@@ -84,7 +84,7 @@ export class DEV_DFU extends LiveComponent<{
       items.push({label:"AVAILABLE DFU ZIPS", type: 'explanation', color: explanationColor});
       let hasFirmwares = false;
       this.state.availableFirmwares.forEach((fw) => {
-        let textColor = colors.menuTextSelected.hex;
+        let textColor = colors.blue.hex;
         let buttonBackground = colors.white.rgba(0.9)
         hasFirmwares = true;
         if (this.state.activeFirmware === fw) {
@@ -110,7 +110,7 @@ export class DEV_DFU extends LiveComponent<{
       items.push({
         label: "Check for Zips",
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         callback: () => {
           this.getZips()
         }
@@ -122,7 +122,7 @@ export class DEV_DFU extends LiveComponent<{
         items.push({
           label: this.state.dfuActive ? "DFUing up Crownstone..." : "Perform DFU",
           type: 'button',
-          style: { color: colors.menuTextSelected.hex },
+          style: { color: colors.blue.hex },
           progress: this.state.dfuProgress,
           callback: () => {
             this._dfuCrownstone();

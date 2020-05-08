@@ -24,7 +24,7 @@ export class DeviceError extends Component<any, any> {
       return (
         <BehaviourSubmitButton
           width={ 0.8*screenWidth }
-          color={ colors.menuTextSelected.rgba(0.5) }
+          color={ colors.blue.rgba(0.5) }
           label={ ErrorContent.getButtonLabel(stone.errors) }
           callback={() => {
             if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {

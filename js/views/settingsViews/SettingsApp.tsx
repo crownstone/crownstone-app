@@ -119,7 +119,7 @@ export class SettingsApp extends LiveComponent<any, any> {
           <SliderBar
             label={"Sensitivity"}
             sliderHidden={true}
-            mediumIcon={<IconButton name="ios-options" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}} />}
+            mediumIcon={<IconButton name="ios-options" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
             callback={(value) => {
               let deviceId = Util.data.getCurrentDeviceId(state);
               core.store.dispatch({ type: "SET_RSSI_OFFSET", deviceId: deviceId, data: {rssiOffset: -value}})
@@ -146,7 +146,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       label: lang("Use_Indoor_localization"),
       value: state.app.indoorLocalizationEnabled,
       type: 'switch',
-      mediumIcon: <IconButton name="c1-locationPin1" buttonSize={38} size={22} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
+      mediumIcon: <IconButton name="c1-locationPin1" buttonSize={38} size={22} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue3.hex}}/>,
       callback: (newValue) => {
         store.dispatch({
           type: 'UPDATE_APP_SETTINGS',

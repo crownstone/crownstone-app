@@ -144,7 +144,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
       label: locationLabel,
       mediumIcon:  <IconButton name="md-cube" size={25} buttonSize={38}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
       type:  'button',
-      style: {color: colors.menuTextSelected.hex},
+      style: {color: colors.blue.hex},
       callback: () => {
         OverlayUtil.callRoomSelectionOverlay(this.props.sphereId, (roomId) => {
           this.setState({locationId: roomId})

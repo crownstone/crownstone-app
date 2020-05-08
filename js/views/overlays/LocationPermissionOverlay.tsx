@@ -114,9 +114,9 @@ export class LocationPermissionOverlay extends Component<any, any> {
               height: 36,
               borderRadius: 18,
               borderWidth: 2,
-              borderColor: colors.blue.rgba(0.5),
+              borderColor: colors.blue3.rgba(0.5),
             }]}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue.hex}}>{ lang("Request_Permission") }</Text>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{ lang("Request_Permission") }</Text>
           </TouchableOpacity>
         );
     }
@@ -133,18 +133,18 @@ export class LocationPermissionOverlay extends Component<any, any> {
         <Icon
           name="ios-navigate"
           size={Math.min(0.30*screenHeight, 0.5*screenWidth)}
-          color={colors.blue.hex}
+          color={colors.blue3.hex}
         />
         <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue.hex, padding:5, textAlign:'center'}}>
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue3.hex, padding:5, textAlign:'center'}}>
           {this._getTitle()}
         </Text>
-        <Text style={{fontSize: 11, fontWeight: 'bold',  color: colors.blue.hex, padding:5, textAlign:'center'}}>
+        <Text style={{fontSize: 11, fontWeight: 'bold',  color: colors.blue3.hex, padding:5, textAlign:'center'}}>
           {this._getText()}
         </Text>
         <View style={{flex:1}} />
         {this.state.showRequestFailed ?
-          <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue.hex, padding: 5, textAlign: 'center' }}>{"" +
+          <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue3.hex, padding: 5, textAlign: 'center' }}>{"" +
             "Request failed... You'll have to manually enable location access for the Crownstone app in your phone's settings."}
           </Text>
           : this._getButton()

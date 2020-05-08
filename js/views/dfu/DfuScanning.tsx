@@ -25,6 +25,8 @@ import { ScanningForDFUCrownstonesBanner } from "../components/animated/Scanning
 import { TopBarUtil } from "../../util/TopBarUtil";
 import { ViewStateWatcher } from "../components/ViewStateWatcher";
 import { LiveComponent } from "../LiveComponent";
+import { SlideFadeInView } from "../components/animated/SlideFadeInView";
+import { Button } from "../components/Button";
 
 const triggerId = "ScanningForDfu";
 
@@ -39,14 +41,15 @@ export class DfuScanning extends LiveComponent<any, any> {
   visibleDrawnStones = [];
   stoneUpdateData;
   visibleStones;
+  stonesToUpdate;
   scanningIsActive = false;
   unsubscribeStoreEvents;
 
   constructor(props) {
     super(props);
 
+    this.stonesToUpdate = {};
     this.visibleStones = {};
-
     this.stoneUpdateData = DfuUtil.getUpdatableStones(this.props.sphereId);
     this.visibleDrawnStones = [];
   }
@@ -156,6 +159,7 @@ export class DfuScanning extends LiveComponent<any, any> {
     let closeEnough = false;
 
     if (visible) {
+      this.stonesToUpdate[stoneId] = true;
       if (this.visibleStones[stoneId].rssi > DFU_BATCH_RSSI_THRESHOLD) {
         backgroundColor = colors.green.rgba(0.8);
         iconColor = colors.csBlue.hex;
@@ -166,6 +170,9 @@ export class DfuScanning extends LiveComponent<any, any> {
         backgroundColor = colors.white.rgba(0.8);
         iconColor = colors.csBlue.hex;
       }
+    }
+    else {
+      delete this.stonesToUpdate[stoneId];
     }
 
     return (
@@ -252,6 +259,20 @@ export class DfuScanning extends LiveComponent<any, any> {
             renderer={this._renderer.bind(this)}
           />
         </ScrollView>
+        <SlideFadeInView visible={Object.keys(this.stonesToUpdate).length > 0} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", ...styles.centered}}>
+          <View style={{shadowColor: colors.black.hex, shadowOpacity:0.9, shadowRadius: 5, shadowOffset:{width:0, height:2} }}>
+            <Button
+              iconPosition={"right"}
+              icon={'ios-play'}
+              backgroundColor={colors.blue.hex}
+              iconColor={colors.blueDark.hex}
+              label={"Let's update!"}
+              fontSize={17}
+              iconSize={14}
+              callback={() => { NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones}) }} />
+          </View>
+          <View style={{height:10}} />
+        </SlideFadeInView>
       </Background>
     );
   }

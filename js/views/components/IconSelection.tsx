@@ -131,7 +131,7 @@ export class IconSelection extends Component<any, any> {
 
   _getIcon(icons, iconIndex) {
     if (iconIndex < icons.length) {
-      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : this.props.iconBackgroundColor || "transparent";
+      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue3.hex : this.props.iconBackgroundColor || "transparent";
       if (this.props.debug === true && this.duplicates[icons[iconIndex]]) {
         backgroundColor = colors.red.hex;
       }

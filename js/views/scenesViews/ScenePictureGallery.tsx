@@ -282,8 +282,8 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
             iconPosition={"right"}
             icon={'ios-camera'}
             xl={true}
-            backgroundColor={colors.menuTextSelected.hex}
-            iconColor={colors.menuTextSelectedDark.hex}
+            backgroundColor={colors.blue.hex}
+            iconColor={colors.blueDark.hex}
             label={"Take or select picture..."}
             callback={this.handleCustomImage}
           />

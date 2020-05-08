@@ -219,7 +219,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: "Reboot Crownstone",
         type: 'button',
-        style: { color: colors.menuTextSelected.hex },
+        style: { color: colors.blue.hex },
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.restartCrownstone)
         }
@@ -227,7 +227,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: this.state.setupActive ? "Setting up Crownstone..." : "Perform setup",
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         progress: this.state.setupProgress,
         callback: () => {
           this._setupCrownstone();
@@ -239,7 +239,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: "Reboot Crownstone",
         type: 'button',
-        style: { color: colors.menuTextSelected.hex },
+        style: { color: colors.blue.hex },
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.restartCrownstone)
         }
@@ -431,7 +431,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: 'Reset Errors',
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.clearErrors, [{
             dimmerOnFailure:    true,
@@ -446,7 +446,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: 'Set time',
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.setTime, [StoneUtil.nowToCrownstoneTime()])
         }

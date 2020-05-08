@@ -219,7 +219,7 @@ class ToonSchedule extends Component<any, any> {
       sleep: colors.csBlue.hex,
       away: colors.orange.hex,
       home: colors.green.hex,
-      comfort: colors.menuTextSelected.hex
+      comfort: colors.blue.hex
     };
     let labels = {
       mon: lang("DAY_Monday"),

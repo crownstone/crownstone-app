@@ -52,7 +52,7 @@ export class MessageEntry extends Component<{
 
       recipientIds.forEach((memberId) => {
         if (memberId === this.props.self.userId) { // its you!
-          userArray.push({id: memberId, picture: this.props.self.picture, label: lang("You"), color: colors.menuTextSelected.hex})
+          userArray.push({id: memberId, picture: this.props.self.picture, label: lang("You"), color: colors.blue.hex})
         }
         else if (this.props.sphere.users[memberId]) {  // existing member
           let sphereMember = this.props.sphere.users[memberId];

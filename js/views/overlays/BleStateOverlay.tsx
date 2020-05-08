@@ -157,12 +157,12 @@ export class BleStateOverlay extends Component<any, any> {
           name="ios-bluetooth"
           size={0.15*screenHeight}
           color="#fff"
-          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.blue.hex, borderRadius: 0.03*screenHeight}}
+          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.blue3.hex, borderRadius: 0.03*screenHeight}}
           style={{position:'relative', top:0.008*screenHeight}}
         />
         <View style={{flex:1}} />
-        <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue.hex, padding:15}}>{this._getTitle()}</Text>
-        <Text style={{fontSize: 12, color: colors.blue.hex, padding:15, textAlign:'center'}}>
+        <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue3.hex, padding:15}}>{this._getTitle()}</Text>
+        <Text style={{fontSize: 12, color: colors.blue3.hex, padding:15, textAlign:'center'}}>
           {this._getText()}
         </Text>
         <View style={{flex:1}} />

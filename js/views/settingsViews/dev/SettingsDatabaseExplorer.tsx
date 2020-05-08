@@ -66,7 +66,7 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
       if (typeof stateSegment[key] === 'object' && stateSegment[key] !== null) {
         // this is nested
         items.push(
-          <TouchableOpacity key={url+'/'+key} style={[viewStyle,{paddingLeft: step*15 + 5, backgroundColor: colors.menuTextSelected.rgba(0.1*step)}]} onPress={ () => {
+          <TouchableOpacity key={url+'/'+key} style={[viewStyle,{paddingLeft: step*15 + 5, backgroundColor: colors.blue.rgba(0.1*step)}]} onPress={ () => {
             if (expandedPath[baseKey][key] !== undefined) {
               delete expandedPath[baseKey][key];
             }
@@ -94,7 +94,7 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
         items.push(
           <TouchableOpacity
             key={url+'/'+key}
-            style={[viewStyle,{paddingLeft: ignoreStep === false && step*15 + 5 || 5, backgroundColor: colors.menuTextSelected.rgba(0.1*step)}]}
+            style={[viewStyle,{paddingLeft: ignoreStep === false && step*15 + 5 || 5, backgroundColor: colors.blue.rgba(0.1*step)}]}
             onPress={() => {
               if (state.development.devAppVisible) {
                 if (this.state.editField !== null) {

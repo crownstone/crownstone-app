@@ -297,7 +297,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
       circleBackgroundColor = colors.csOrange.blend(colors.green, 0.75).rgba(0.5);
       subTextStyleOverride = {};
       overrideButton = (
-        <TouchableOpacity style={{backgroundColor: colors.menuTextSelected.hex, borderRadius: 15, padding:10}} onPress={() => {
+        <TouchableOpacity style={{backgroundColor: colors.blue.hex, borderRadius: 15, padding:10}} onPress={() => {
           core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: sphereId, stoneId: stoneId, data: {enabledTarget: true}})
         }}>
           <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{"Enable\nDimming"}</Text>
@@ -310,7 +310,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
   if (isOrigin) {
     clickable = false;
     subText = "This is me!";
-    circleBackgroundColor = colors.menuTextSelected.hex;
+    circleBackgroundColor = colors.blue.hex;
     overrideButton = null;
     subTextStyleOverride = {};
   }

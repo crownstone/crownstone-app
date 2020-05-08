@@ -145,7 +145,7 @@ export class DebugIconSelection extends Component<any, any> {
 
   _getIcon(icons, iconIndex, categoryKey) {
     if (iconIndex < icons.length) {
-      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : "transparent";
+      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue3.hex : "transparent";
 
       if (this.duplicates[icons[iconIndex]]) {
         backgroundColor = colors.red.hex;
@@ -166,7 +166,7 @@ export class DebugIconSelection extends Component<any, any> {
 
       return (
         <View style={[styles.centered, {height:ROW_HEIGHT, flex:1}, {backgroundColor: backgroundColor} ]} key={icons[iconIndex]}>
-          <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h}, {backgroundColor: colors.blue.rgba(1)} ]} />
+          <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h}, {backgroundColor: colors.blue3.rgba(1)} ]} />
           <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h, borderRadius: 0.5*h}, {backgroundColor: colors.red.rgba(1)} ]} />
           <View style={[styles.centered, {position:'absolute', top: 15, left: 15, width: ICON_SIZE, height:ICON_SIZE}, {backgroundColor: colors.purple.rgba(0.6)} ]} />
           <View style={[styles.centered, {position:'absolute', top:5, left: 5, width: h, height:h} ]}>

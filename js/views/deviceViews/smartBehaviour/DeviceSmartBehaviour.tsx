@@ -248,14 +248,14 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
 
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <Button
-                backgroundColor={colors.menuTextSelected.rgba(0.5)}
+                backgroundColor={colors.blue.rgba(0.5)}
                 label={ lang("Add_more___")}
                 callback={() => { NavigationUtil.launchModal('DeviceSmartBehaviour_TypeSelector', this.props); }}
               />
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <Button
-                backgroundColor={colors.menuTextSelected.rgba(0.5)}
+                backgroundColor={colors.blue.rgba(0.5)}
                 label={ lang("Copy_from___")}
                 callback={() => {
                   let copyFrom = () => {
@@ -293,12 +293,12 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 }}
                 icon={'md-log-in'}
                 iconSize={14}
-                iconColor={colors.menuTextSelected.rgba(0.75)}
+                iconColor={colors.blue.rgba(0.75)}
               />
             </SlideFadeInView>
             <SlideFadeInView visible={this.state.editMode} height={80}>
               <Button
-                backgroundColor={ colors.menuTextSelected.rgba(0.5) }
+                backgroundColor={ colors.blue.rgba(0.5) }
                 label={ lang("Copy_to___") }
                 callback={() => {
                   let requireDimming = StoneUtil.doRulesRequireDimming(this.props.sphereId, this.props.stoneId, ruleIds);
@@ -316,7 +316,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 }}
                 icon={'md-log-out'}
                 iconSize={14}
-                iconColor={colors.purple.blend(colors.menuTextSelected, 0.5).rgba(0.75)}
+                iconColor={colors.purple.blend(colors.blue, 0.5).rgba(0.75)}
               />
             </SlideFadeInView>
 
@@ -338,7 +338,7 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
                 }}
                 icon={'md-refresh-circle'}
                 iconSize={14}
-                iconColor={colors.darkPurple.blend(colors.menuTextSelected, 0.5).rgba(0.75)}
+                iconColor={colors.darkPurple.blend(colors.blue, 0.5).rgba(0.75)}
               />
             </SlideFadeInView>
 
@@ -411,11 +411,11 @@ function NoRulesYet(props) {
           />
           }
           { !updateRequired && <Button
-            backgroundColor={colors.menuTextSelected.rgba(0.6)}
+            backgroundColor={colors.blue.rgba(0.6)}
             label={"Copy from another Crownstone!"}
             icon={'md-log-in'}
             iconSize={14}
-            iconColor={colors.menuTextSelected.rgba(0.75)}
+            iconColor={colors.blue.rgba(0.75)}
             callback={() => {
               if (Permissions.inSphere(props.sphereId).canChangeBehaviours === false) {
                 Alert.alert("You don't have permission to do this.","Only admins or members can update Crownstones.",[{text:'OK'}]);
@@ -472,7 +472,7 @@ function NoRulesYet(props) {
 function DisabledBehaviourBanner(props) {
   return (
     <TouchableOpacity
-      style={{height:65, width: screenWidth, backgroundColor: colors.menuTextSelected.hex, justifyContent:'space-evenly', alignItems:'center', borderBottomWidth:2, borderColor: colors.white.hex}}
+      style={{height:65, width: screenWidth, backgroundColor: colors.blue.hex, justifyContent:'space-evenly', alignItems:'center', borderBottomWidth:2, borderColor: colors.white.hex}}
       onPress={() => {
         BluenetPromiseWrapper.broadcastBehaviourSettings(this.props.sphereId, true).catch(() => {});
         core.store.dispatch({

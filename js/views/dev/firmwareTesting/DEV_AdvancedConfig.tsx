@@ -305,7 +305,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       items.push({
         label: "Disable UART",
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.setUartState, [0], null);
         }
@@ -313,7 +313,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       items.push({
         label: "UART RX ONLY",
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.setUartState, [1], null);
         }
@@ -321,7 +321,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       items.push({
         label: "UART TX & RX",
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.setUartState, [3], null);
         }

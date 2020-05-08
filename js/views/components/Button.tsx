@@ -16,14 +16,14 @@ export function Button(props) {
   let margin = 10;
   let width = 0.85 * screenWidth;
   let height = 65;
-  let fontSize = 15;
+  let fontSize = props.fontSize || 15;
   let marginTop = 5;
   let marginSide = 5;
 
   if (props.xl) {
     width    = screenWidth - 2*margin;
     height   = 80;
-    fontSize = 17;
+    fontSize = props.fontSize || 17;
     size     = 35;
     marginTop  = 10;
     marginSide = 10;
@@ -41,7 +41,7 @@ export function Button(props) {
         width:           width,
         height:          height,
         borderRadius:    20,
-        backgroundColor: props.backgroundColor || colors.menuTextSelected.rgba(0.3),
+        backgroundColor: props.backgroundColor || colors.blue.rgba(0.3),
         borderColor:     colors.white.rgba(0.8),
         borderWidth:     2,
         alignItems:      'center',

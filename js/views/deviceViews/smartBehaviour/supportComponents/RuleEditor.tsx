@@ -170,7 +170,7 @@ export class RuleEditor extends LiveComponent<
           if (chunk.clickable) {
             segments.push(
               <TouchableOpacity key={"selectable_element_" + i} onPress={() => { this.toggleDetails(chunk.type); }}>
-                <Text style={[selectable, {color: this.state.detail === chunk.type ? colors.menuTextSelected.hex : colors.csBlueDark.hex}]}>{wordsOnLine.join(" ")}</Text>
+                <Text style={[selectable, {color: this.state.detail === chunk.type ? colors.blue.hex : colors.csBlueDark.hex}]}>{wordsOnLine.join(" ")}</Text>
               </TouchableOpacity>
             );
           }
@@ -294,7 +294,7 @@ export class RuleEditor extends LiveComponent<
       suggestionArray.push(<View style={{flex:1}} key={"padding_" + paddingIndex++} />);
       suggestionArray.push(
         <Button
-          backgroundColor={colors.menuTextSelected.rgba(0.6)}
+          backgroundColor={colors.blue.rgba(0.6)}
           iconColor={colors.red.hex}
           icon={'md-remove-circle'}
           key={"timeConflictSuggestion"}

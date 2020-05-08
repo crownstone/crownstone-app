@@ -210,7 +210,7 @@ export class SettingsFAQ extends Component<any, any> {
       id:'Troubleshooting',
       label: lang("BLE_Troubleshooting"),
       type:'navigation',
-      icon: <IconButton name={'ios-bluetooth'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex }}/>,
+      icon: <IconButton name={'ios-bluetooth'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue3.hex }}/>,
       callback: () => {
         NavigationUtil.launchModal( "SettingsBleTroubleshooting");
       }

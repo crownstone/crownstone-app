@@ -33,7 +33,7 @@ export class SettingsBleTroubleshootingAndroid extends Component<any, any> {
             <View style={{height:20}} />
             <Text style={styles.title}>{ lang("Troubleshooting") }</Text>
             <View style={{height:20}} />
-            <IconButton name="ios-bluetooth" buttonSize={80} size={60}  color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />
+            <IconButton name="ios-bluetooth" buttonSize={80} size={60}  color="#fff" buttonStyle={{backgroundColor:colors.blue3.hex}} />
             <View style={{height:20}} />
             <Text style={styles.header}>{ lang("Sometimes__the_Bluetooth_o") }</Text>
             <Text style={styles.explanation}>{ lang("Unfortunately__sometimes_t") }</Text>

@@ -89,7 +89,7 @@ export class PictureCircle extends Component<any, any> {
               width:size/3,
               height:size/3,
               borderRadius:size/6,
-              backgroundColor: colors.blue.hex,
+              backgroundColor: colors.blue3.hex,
               borderColor: colors.white.hex,
               borderWidth: borderWidth
               }, styles.centered]}>

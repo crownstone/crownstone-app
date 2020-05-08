@@ -125,7 +125,7 @@ export class DevIconSelection extends Component<any, any> {
 
   _getIcon(icons, iconIndex, inCategory) {
     if (iconIndex < icons.length) {
-      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : this.props.iconBackgroundColor || "transparent";
+      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue3.hex : this.props.iconBackgroundColor || "transparent";
       if (this.props.debug === true && this.duplicates[icons[iconIndex]]) {
         backgroundColor = colors.red.hex;
       }
@@ -171,7 +171,7 @@ export class DevIconSelection extends Component<any, any> {
       rowItems.push(
         <TouchableOpacity
           key={'selCat' + cat}
-          style={{padding:4, margin:4, backgroundColor: this.state.activeCategory === cat ? colors.green.hex : colors.menuTextSelected.hex}}
+          style={{padding:4, margin:4, backgroundColor: this.state.activeCategory === cat ? colors.green.hex : colors.blue.hex}}
           onPress={() => { this.setState({activeCategory: cat}) }}>
           <Text>{cat}</Text>
         </TouchableOpacity>

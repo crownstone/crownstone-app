@@ -122,7 +122,7 @@ class TopBarIOS extends Component<any, any> {
         );
       }
       else {
-        let color = colors.menuTextSelected.hex;
+        let color = colors.blue.hex;
         if (this.props.leftStyle && this.props.leftStyle.color) {
           color = this.props.leftStyle.color;
         }
@@ -132,7 +132,7 @@ class TopBarIOS extends Component<any, any> {
             style={[topBarStyle.topBarLeftTouch, {paddingLeft:10}, this.props.leftButtonStyle]}>
             <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
               <Icon name="ios-arrow-back" size={33} color={color} style={{paddingRight:6, marginTop:2}} />
-              <Text style={[topBarStyle.topBarLeft,topBarStyle.leftText, {color: colors.menuTextSelected.hex}, this.props.leftStyle]}>{this.props.left}</Text>
+              <Text style={[topBarStyle.topBarLeft,topBarStyle.leftText, {color: colors.blue.hex}, this.props.leftStyle]}>{this.props.left}</Text>
             </View>
           </TouchableOpacity>
         );
