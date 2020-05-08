@@ -167,6 +167,7 @@ export class SceneAdd extends LiveComponent<any, any> {
         subHeader: "Select the Crownstones which will be part of this scene.",
         backgroundImage: require("../../images/backgrounds/plugBackgroundFade.png"),
         textColor: colors.white.hex,
+        optionsHiddenIfNotOnTop: true,
         optionsAlwaysOnTop: Object.keys(this.sceneData.data).length > 0,
         explanation: "Crownstones that are not selected will be left unchanged when this scene is activated.",
         component:
