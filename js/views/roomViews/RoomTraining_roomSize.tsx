@@ -39,7 +39,7 @@ let squareMeterStyle : TextStyle = {
 };
 
 let buttonStyle : ViewStyle = {
-  backgroundColor: colors.menuTextSelected.rgba(0.6),
+  backgroundColor: colors.blue.rgba(0.6),
   borderRadius: 30,
   width: 0.95*screenWidth,
   height: 0.12*screenHeight,

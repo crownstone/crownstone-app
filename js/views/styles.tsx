@@ -63,8 +63,8 @@ export let colors : colorInterface = {
   menuBackgroundDarker: {hex:'#00172c'},
   // menuBackgroundDarker: {hex:'#001122'},
   menuText:             {hex:'#fff'},
-  menuTextSelected:     {hex:'#2daeff'},
-  menuTextSelectedDark: {hex:'#2472ad'},
+  menuTextSelected:     {hex:'#3478f6'},
+  menuTextSelectedDark: {hex:'#245da8'},
   white:                {hex:'#fff'},
   black:                {hex:'#000'},
   gray:                 {hex:'#ccc'},
@@ -76,8 +76,10 @@ export let colors : colorInterface = {
   purple:               {hex:'#8a01ff'},
   darkPurple:           {hex:'#5801a9'},
   darkerPurple:         {hex:'#2a0051'},
-  blue:                 {hex:'#0075c9'},
+  blue:                 {hex:'#2daeff'},
+  blueDark:             {hex:'#2472ad'},
   blue2:                {hex:'#2698e9'},
+  blue3:                {hex:'#0075c9'},
   green:                {hex:'#a0eb58'},
   green2:               {hex:'#4cd864'},
   lightGreen2:          {hex:'#bae97b'},
@@ -231,7 +233,7 @@ export const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
   },
-  blueButton: {alignItems: 'center', justifyContent:'center', padding:20, backgroundColor: colors.menuTextSelected.hex, borderRadius: 10, marginHorizontal: 15},
+  blueButton: {alignItems: 'center', justifyContent:'center', padding:20, backgroundColor: colors.blue.hex, borderRadius: 10, marginHorizontal: 15},
   buttonAndroid: {
     width:0.7*screenWidth,
     height:50,
@@ -270,7 +272,7 @@ export const styles = StyleSheet.create({
   },
   buttonText : {
     fontSize:16,
-    color: colors.blue.hex
+    color: colors.blue3.hex
   },
   buttonTextAndroid : {
     fontSize:15,

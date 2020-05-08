@@ -52,7 +52,7 @@ let buttonBasicStyle : ViewStyle = {
 };
 
 let selectedAsymetricalStyle : ViewStyle = {
-  borderColor: colors.menuTextSelected.hex,
+  borderColor: colors.blue.hex,
   borderBottomWidth: 6,
   borderRightWidth:  6,
   borderTopWidth:    0,
@@ -60,7 +60,7 @@ let selectedAsymetricalStyle : ViewStyle = {
 };
 
 let selectedStyle : ViewStyle = {
-  borderColor: colors.menuTextSelected.hex,
+  borderColor: colors.blue.hex,
   borderBottomWidth: 5,
   borderRightWidth:  5,
   borderTopWidth:    0,
@@ -228,7 +228,7 @@ export function ThemedTextButtonWithIcon({label, icon, theme, callback, selected
       callback,
       icon,
       selected,
-      backgroundColor: colors.menuTextSelected.rgba(0.8),
+      backgroundColor: colors.blue.rgba(0.8),
       textColor: colors.white.hex,
       fontStyle:'italic',
       textAlign
@@ -245,7 +245,7 @@ export function InterviewTextInput(props: {autofocus?, placeholder, value, callb
     inputElement.current.focus()
   }
   return (
-    <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.menuTextSelected.hex, backgroundColor: colors.white.rgba(1)}}>
+    <View style={{...buttonStyle, borderRightWidth:0, borderColor: colors.blue.hex, backgroundColor: colors.white.rgba(1)}}>
       <TextEditInput
         autoCapitalize={props.autoCapitalize}
         ref={inputElement}

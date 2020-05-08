@@ -96,7 +96,7 @@ export class NumericOverlay extends Component<any, any> {
       let content = (
         <React.Fragment>
           <View style={{flex:0.5}} />
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue.hex, padding:15}}>{this._getTitle()}</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue3.hex, padding:15}}>{this._getTitle()}</Text>
           <View style={{flex:0.5}} />
           <InterviewTextInput
             autofocus={true}
@@ -116,7 +116,7 @@ export class NumericOverlay extends Component<any, any> {
             }}
           />
           <View style={{flex:0.5}} />
-          <Text style={{fontSize: 12, fontWeight: '400',  color: colors.blue.hex, padding:15, textAlign:'center'}}>
+          <Text style={{fontSize: 12, fontWeight: '400',  color: colors.blue3.hex, padding:15, textAlign:'center'}}>
             {this._getText()}
           </Text>
           <View style={{flex:1}} />
@@ -136,9 +136,9 @@ export class NumericOverlay extends Component<any, any> {
               height: 36,
               borderRadius: 18,
               borderWidth: 2,
-              borderColor: colors.blue.rgba(0.5),
+              borderColor: colors.blue3.rgba(0.5),
             }]}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue.hex}}>{"Set!"}</Text>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue3.hex}}>{"Set!"}</Text>
           </TouchableOpacity>}
           <View style={{height:30}} />
         </React.Fragment>

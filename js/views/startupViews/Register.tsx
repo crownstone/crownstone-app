@@ -247,13 +247,13 @@ export class Register extends LiveComponent<any, any> {
                   <TouchableHighlight onPress={() => {
                     Linking.openURL('https://crownstone.rocks/terms-of-service/').catch((err) => {})
                   }}>
-                    <Text style={{fontSize:13, color:colors.blue.hex}}>{ lang("terms_") }</Text>
+                    <Text style={{fontSize:13, color:colors.blue3.hex}}>{ lang("terms_") }</Text>
                   </TouchableHighlight>
                   <Text style={{fontSize:13, color:'#444'}}>{ lang("__") }</Text>
                   <TouchableHighlight onPress={() => {
                     Linking.openURL('https://crownstone.rocks/privacy-policy/').catch(err => {})
                   }}>
-                    <Text style={{fontSize:13, color:colors.blue.hex}}>{ lang("privacy_policy") }</Text>
+                    <Text style={{fontSize:13, color:colors.blue3.hex}}>{ lang("privacy_policy") }</Text>
                   </TouchableHighlight>
                 </View>
               </View>

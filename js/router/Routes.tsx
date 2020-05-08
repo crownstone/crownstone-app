@@ -67,10 +67,10 @@ Navigation.events().registerAppLaunchedListener(() => {
     },
     bottomTab: {
       textColor: colors.white.hex,
-      selectedTextColor: colors.menuTextSelected.hex,
+      selectedTextColor: colors.blue.hex,
       fontSize: 11,
       iconColor: colors.white.hex,
-      selectedIconColor: colors.menuTextSelected.hex,
+      selectedIconColor: colors.blue.hex,
     },
     layout: {
       orientation: ['portrait'],

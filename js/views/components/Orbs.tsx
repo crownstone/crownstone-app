@@ -67,7 +67,7 @@ const orbStyle = StyleSheet.create({
     borderRadius: 0.5 * radius,
     backgroundColor: 'rgba(255,255,255,0.75)',
     borderWidth:1,
-    borderColor:'rgba(' + colors.blue.rgb.r + ',' +colors.blue.rgb.g + ',' + colors.blue.rgb.b + ',0.5)',
+    borderColor:'rgba(' + colors.blue3.rgb.r + ',' +colors.blue3.rgb.g + ',' + colors.blue3.rgb.b + ',0.5)',
     margin:2,
   },
   orb: {
@@ -76,7 +76,7 @@ const orbStyle = StyleSheet.create({
     borderRadius: 0.5 * radius,
     backgroundColor: 'rgba(255,255,255,0.3)',
     borderWidth:1,
-    borderColor:'rgba(' + colors.blue.rgb.r + ',' +colors.blue.rgb.g + ',' + colors.blue.rgb.b + ',0.2)',
+    borderColor:'rgba(' + colors.blue3.rgb.r + ',' +colors.blue3.rgb.g + ',' + colors.blue3.rgb.b + ',0.2)',
     margin:2,
   }
 });

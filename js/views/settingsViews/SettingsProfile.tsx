@@ -136,7 +136,7 @@ export class SettingsProfile extends LiveComponent<any, any> {
     items.push({
       label: lang("Change_Password"),
       type: 'button',
-      style: {color:colors.blue.hex},
+      style: {color:colors.blue3.hex},
       callback: () => {
         Alert.alert(
           lang("_Are_you_sure_you_want_to_header"),

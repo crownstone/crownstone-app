@@ -49,7 +49,7 @@ export const topBarStyle = StyleSheet.create({
   },
   text:{
     fontSize: 17,
-    color: colors.menuTextSelected.hex
+    color: colors.blue.hex
   },
   leftText:{
     fontSize: 14,

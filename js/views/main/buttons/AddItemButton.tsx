@@ -38,7 +38,7 @@ export function AddItemButton(props: {inSphere: boolean, arrangingRooms: boolean
       width: outerRadius,
       height:outerRadius,
       borderRadius:0.5*outerRadius,
-      backgroundColor: setupIcon ? colors.menuTextSelected.hex : colors.white.rgba(0.55),
+      backgroundColor: setupIcon ? colors.blue.hex : colors.white.rgba(0.55),
       alignItems:'center',
       justifyContent:'center',
     };

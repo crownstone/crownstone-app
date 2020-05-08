@@ -316,7 +316,7 @@ lang("_Reset_Done__Rediscovery__body"),
 //       label: lang("Join_Alpha_Program"),
 //       value: user.betaAccess,
 //       experimental: user.betaAccess,
-//       icon: <IconButton name={"ios-flask"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+//       icon: <IconButton name={"ios-flask"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.blue.hex}}/>,
 //       type: 'switch',
 //       callback:(newValue) => {
 //         let storeIt = () => {
@@ -340,7 +340,7 @@ lang("_Reset_Done__Rediscovery__body"),
     // items.push({
     //   label: lang("FeaturePreview"),
     //   value: dev.preview,
-    //   icon: <IconButton name={"ios-fastforward"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelectedDark.hex}}/>,
+    //   icon: <IconButton name={"ios-fastforward"} size={25}  color={colors.white.hex} buttonStyle={{backgroundColor: colors.blueDark.hex}}/>,
     //   type: 'switch',
     //   callback:(newValue) => {
     //     let storeIt = () => {

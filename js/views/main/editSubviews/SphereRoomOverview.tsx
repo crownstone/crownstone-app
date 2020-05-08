@@ -83,7 +83,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
             name={ lang("Rearrange_Rooms_")}
             hideSubtitle={true}
             iconSizeOverride={40}
-            backgroundColor={colors.menuTextSelected.hex}
+            backgroundColor={colors.blue.hex}
             showNavigationIcon={true}
           />
         </View>
@@ -115,7 +115,7 @@ export class SphereRoomOverview extends LiveComponent<any, any> {
       items.push({
         label: lang("Add_a_room"),
         largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
-        style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
+        style: {color: colors.blue.hex, fontWeight: 'bold'},
         type: 'navigation',
         callback: () => {
           NavigationUtil.launchModal( "RoomAdd", {sphereId: this.props.sphereId, isModal:true});

@@ -29,7 +29,7 @@ export function updateFilterState(state) {
 
 export function FilterButton(props) {
   let unselectedFilter : ViewStyle = { backgroundColor: colors.white.hex, borderColor: colors.csBlue.hex, borderWidth:1, borderRadius: 18, height: 36, ...styles.centered }
-  let selectedFilter : ViewStyle = { ...unselectedFilter,  backgroundColor: colors.menuTextSelected.rgba(0.75),  }
+  let selectedFilter : ViewStyle = { ...unselectedFilter,  backgroundColor: colors.blue.rgba(0.75),  }
 
   return (
     <TouchableOpacity onPress={() => { props.callback() }} style={ props.selected ? selectedFilter : unselectedFilter}>
@@ -41,7 +41,7 @@ export function FilterButton(props) {
 
 export function BigFilterButton(props) {
   let unselectedFilter : ViewStyle = { backgroundColor: colors.white.hex, borderColor: colors.csBlue.hex, borderWidth:1, borderRadius: 20, height: 40, marginVertical:5, width: 0.45*screenWidth-20, ...styles.centered, ...props.style }
-  let selectedFilter : ViewStyle = { ...unselectedFilter,  backgroundColor: colors.menuTextSelected.rgba(0.75),  }
+  let selectedFilter : ViewStyle = { ...unselectedFilter,  backgroundColor: colors.blue.rgba(0.75),  }
 
   return (
     <TouchableOpacity onPress={() => { props.callback() }} style={ props.selected ? selectedFilter : unselectedFilter}>
@@ -62,7 +62,7 @@ export class CrownstoneEntry extends Component<any, any> {
 
     switch (this.props.item.type) {
       case 'setup':
-        backgroundColor = colors.menuTextSelected.rgba(opacity);
+        backgroundColor = colors.blue.rgba(opacity);
         break;
       case 'verified':
         backgroundColor = colors.green.rgba(opacity);

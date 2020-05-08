@@ -214,7 +214,7 @@ lang("_No_recipients____I_cant__body"),
         wrapperStyle: { backgroundColor: colors.white.rgba(0.6) },
         style: {paddingLeft: 12},
         icon: <View style={{paddingLeft: 12}}>
-          <IconButton name='ios-body' size={22} buttonSize={30} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex, marginLeft:3, marginRight:7}}/>
+          <IconButton name='ios-body' size={22} buttonSize={30} radius={15}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex, marginLeft:3, marginRight:7}}/>
         </View>,
         value: this.state.everyoneInSphereIncludingOwner,
         callback: (newValue) => {

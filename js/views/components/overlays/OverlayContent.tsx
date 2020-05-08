@@ -66,9 +66,9 @@ export class OverlayContent extends Component<any, any> {
           height: 36,
           borderRadius: 18,
           borderWidth: 2,
-          borderColor: colors.blue.rgba(0.5),
+          borderColor: colors.blue3.rgba(0.5),
       }]}>
-      <Text style={{fontSize: 14, color: colors.blue.hex}}>{this.props.buttonLabel}</Text>
+      <Text style={{fontSize: 14, color: colors.blue3.hex}}>{this.props.buttonLabel}</Text>
       </TouchableOpacity>
     }
   }

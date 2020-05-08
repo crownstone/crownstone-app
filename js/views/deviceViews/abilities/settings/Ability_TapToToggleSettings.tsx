@@ -85,7 +85,7 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
               <SliderBar
                 label={"Only this Crownstone"}
                 sliderHidden={true}
-                largeIcon={<IconButton name="ios-options" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}} />}
+                largeIcon={<IconButton name="ios-options" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
                 callback={(value) => {
                   core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { rssiOffsetTarget: value }});
                   this.setState({rssiOffset: value})

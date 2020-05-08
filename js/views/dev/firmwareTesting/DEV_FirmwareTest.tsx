@@ -219,7 +219,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: "Reboot Crownstone",
         type: 'button',
-        style: { color: colors.menuTextSelected.hex },
+        style: { color: colors.blue.hex },
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.restartCrownstone)
         }
@@ -227,7 +227,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: this.state.setupActive ? "Setting up Crownstone..." : "Perform setup",
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         progress: this.state.setupProgress,
         callback: () => {
           this._setupCrownstone();
@@ -239,7 +239,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: "Reboot Crownstone",
         type: 'button',
-        style: { color: colors.menuTextSelected.hex },
+        style: { color: colors.blue.hex },
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.restartCrownstone)
         }
@@ -323,7 +323,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
           min: 0,
           max: 1,
           callback: (value) => {
-            this.bleAction(BluenetPromiseWrapper.broadcastSwitch, [FocusManager.crownstoneState.referenceId, FocusManager.crownstoneState.stoneId, value], 'switchState', () => {}, false, true)
+            this.bleAction(BluenetPromiseWrapper.broadcastSwitch, [FocusManager.crownstoneState.referenceId, FocusManager.crownstoneState.stoneId, value, true], 'switchState', () => {}, false, true)
             FocusManager.crownstoneState.switchStateValue = value;
             this.forceUpdate();
           }
@@ -336,7 +336,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
           disabled: FocusManager.crownstoneState.switchStateValue === null,
           value: FocusManager.crownstoneState.switchStateValue === 1,
           callback: (value) => {
-            this.bleAction(BluenetPromiseWrapper.broadcastSwitch, [FocusManager.crownstoneState.referenceId, FocusManager.crownstoneState.stoneId, value ? 1 : 0], 'switchState',() => {},false, true);
+            this.bleAction(BluenetPromiseWrapper.broadcastSwitch, [FocusManager.crownstoneState.referenceId, FocusManager.crownstoneState.stoneId, value ? 1 : 0, true], 'switchState',() => {},false, true);
             FocusManager.crownstoneState.switchStateValue = value ? 1 : 0;
             this.forceUpdate();
           }
@@ -431,7 +431,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: 'Reset Errors',
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.clearErrors, [{
             dimmerOnFailure:    true,
@@ -446,7 +446,7 @@ export class DEV_FirmwareTest extends LiveComponent<{
       items.push({
         label: 'Set time',
         type: 'button',
-        style: {color:colors.menuTextSelected.hex},
+        style: {color:colors.blue.hex},
         callback: () => {
           this.bleAction(BluenetPromiseWrapper.setTime, [StoneUtil.nowToCrownstoneTime()])
         }

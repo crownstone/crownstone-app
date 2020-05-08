@@ -194,7 +194,7 @@ class RoomCircleClass extends LiveComponent<any, {top: any, left: any, scale: an
           <Svg width={this.outerDiameter} height={this.outerDiameter}>
             <SvgCircle
               r={this.props.radius - 10}
-              stroke={colors.white.blend(colors.menuTextSelected, percentage).hex}
+              stroke={colors.white.blend(colors.blue, percentage).hex}
               strokeWidth={10*percentage}
               strokeDasharray={[pathLength * percentage, pathLength]}
               rotation="-89.9"

@@ -116,7 +116,7 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
     items.push({
       type:'navigation',
       label: 'Select Crownstones',
-      icon: <IconButton name='c2-pluginFilled' buttonSize={35} size={23} radius={8}  color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+      icon: <IconButton name='c2-pluginFilled' buttonSize={35} size={23} radius={8}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: () => {
         NavigationUtil.launchModal("SceneSelectCrownstones", {sphereId: this.props.sphereId, data: this.state.data, callback: (selectedData) => {
           let existingData = {...this.state.data};

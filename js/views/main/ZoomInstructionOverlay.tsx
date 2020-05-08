@@ -49,10 +49,10 @@ export class ZoomInstructionOverlay extends Component<any, any> {
             height: 36,
             borderRadius: 18,
             borderWidth: 2,
-            borderColor: colors.blue.rgba(0.5),
+            borderColor: colors.blue3.rgba(0.5),
           }]}
         >
-          <Text style={{fontSize: 15, color: colors.blue.hex}}>{ lang("Ill_try_it_") }</Text>
+          <Text style={{fontSize: 15, color: colors.blue3.hex}}>{ lang("Ill_try_it_") }</Text>
         </TouchableOpacity>
         <View style={{height:15}} />
       </View>

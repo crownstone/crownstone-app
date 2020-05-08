@@ -91,13 +91,13 @@ export class Dropdown extends Component<any, any> {
           <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-start', paddingLeft:15}} onPress={() => {
             this.setState({value: this.props.value, open: false});
           }}>
-            <Text style={{fontSize:16, color:colors.blue.hex}}>{ lang("Cancel") }</Text>
+            <Text style={{fontSize:16, color:colors.blue3.hex}}>{ lang("Cancel") }</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-end', paddingRight:15}} onPress={() => {
             this.setState({open: false});
             this.props.callback(this.state.value);
           }}>
-            <Text style={{fontSize:16, color:colors.blue.hex}}>{ lang("Done") }</Text>
+            <Text style={{fontSize:16, color:colors.blue3.hex}}>{ lang("Done") }</Text>
           </TouchableOpacity>
         </View>
       )

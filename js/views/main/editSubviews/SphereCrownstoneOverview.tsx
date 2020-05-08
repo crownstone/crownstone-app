@@ -106,7 +106,7 @@ export class SphereCrownstoneOverview extends LiveComponent<any, any> {
     items.push({
       label: lang("Add_a_Crownstone"),
       largeIcon: <Icon name="c3-addRoundedfilled" size={60} color={colors.green.hex} style={{position: 'relative', top: 2}}/>,
-      style: {color: colors.menuTextSelected.hex, fontWeight: 'bold'},
+      style: {color: colors.blue.hex, fontWeight: 'bold'},
       type: 'button',
       callback: () => {
         if (Permissions.inSphere(this.props.sphereId).canSetupCrownstone) {

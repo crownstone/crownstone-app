@@ -395,7 +395,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
             padding: 15,
             width: 0.75 * screenWidth, ...styles.centered,
             borderRadius: 30,
-            backgroundColor: colors.menuTextSelected.hex,
+            backgroundColor: colors.blue.hex,
             borderWidth: 4,
             borderColor: "#fff"
           }}

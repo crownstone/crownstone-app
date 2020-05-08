@@ -265,7 +265,7 @@ export class Network extends Component<any, any> {
         padding: this.padding,
         flexDirection:'column',
         alignItems:'center',
-        borderColor:  colors.menuTextSelected.rgba(0.3),
+        borderColor:  colors.blue.rgba(0.3),
         borderWidth:  3,
         borderRadius: 12,
         backgroundColor: colors.white.rgba(0.6),

@@ -130,7 +130,7 @@ export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
                 }}
                 icon={'md-log-out'}
                 iconSize={14}
-                iconColor={colors.purple.blend(colors.menuTextSelected, 0.5).rgba(0.75)}
+                iconColor={colors.purple.blend(colors.blue, 0.5).rgba(0.75)}
               />
             </SlideFadeInView>
             <SlideFadeInView visible={true} height={80}>
@@ -140,7 +140,7 @@ export class DeviceSmartBehaviour_RuleSelector extends LiveComponent<any, any> {
                 icon={'md-close-circle'}
                 backgroundColor={ colors.green.rgba(0.5) }
                 iconSize={14}
-                iconColor={colors.menuTextSelected.rgba(0.5)}
+                iconColor={colors.blue.rgba(0.5)}
               />
             </SlideFadeInView>
             <View style={{flex:3}} />

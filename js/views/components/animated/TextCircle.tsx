@@ -24,7 +24,7 @@ export class TextCircle extends UserPicture {
         <View style={[{
           width:this.props.size,
           height:this.props.size,
-          backgroundColor:colors.blue.hex,
+          backgroundColor:colors.blue3.hex,
           borderRadius:0.5*this.props.size,
           borderWidth:0.07*this.props.size,
           borderColor:"#fff"}, styles.centered]}>

@@ -312,7 +312,7 @@ export class RoomOverview extends LiveComponent<any, any> {
       <Background image={core.background.lightBlur}>
         { backgroundImage ? <Image source={backgroundImage} style={{width: screenWidth, height: screenHeight, position:'absolute', top:0, left:0, opacity:0.1}} resizeMode={"cover"} /> : undefined }
         <LocationFlavourImage location={location} />
-        <View style={{height:2, width:screenWidth, backgroundColor: colors.menuTextSelected.hex}} />
+        <View style={{height:2, width:screenWidth, backgroundColor: colors.blue.hex}} />
         <ScrollView>
           <View style={{width:screenWidth}}>
             <RoomExplanation

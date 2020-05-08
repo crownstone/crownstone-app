@@ -22,7 +22,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
   useEffect(() => { let cleaner = eventBus.on('ChangeInEditMode', (data) => { setEditMode((data) ); }); return () => { cleaner(); } });
   useEffect(() => { let cleaner = eventBus.on('END_DRAG',         ()     => { setDrag(false); }); return () => { cleaner(); } });
 
-  let color = drag ? colors.menuTextSelected.rgba(0.5) : colors.white.hex
+  let color = drag ? colors.blue.rgba(0.5) : colors.white.hex
   let subtext = getLocationSubtext(sphereId, scene);
 
   if (activated) { subtext = "Setting the scene!"; }
@@ -148,7 +148,7 @@ function EditIcons({editMode, color, editCallback, deleteCallback}) {
     <SlideSideFadeInView visible={editMode} width={SceneConstants.buttonWidth} style={{position:'absolute', top:0}} duration={300}>
       <View style={{flexDirection:'row'}}>
         <TouchableOpacity style={buttonStyle} onPress={editCallback}>
-          <Icon name="md-create" size={24} color={colors.menuTextSelected.hex} />
+          <Icon name="md-create" size={24} color={colors.blue.hex} />
         </TouchableOpacity>
         <TouchableOpacity style={buttonStyle} onPress={deleteCallback}>
           <Icon name={'ios-trash'} color={colors.red.rgba(0.6)} size={30} />

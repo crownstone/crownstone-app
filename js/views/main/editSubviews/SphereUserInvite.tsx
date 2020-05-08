@@ -91,7 +91,7 @@ export class SphereUserInvite extends LiveComponent<any, any> {
     items.push({
       label: lang("Send_invitation_"),
       type:  'button',
-      style: {color:colors.blue.hex},
+      style: {color:colors.blue3.hex},
       callback: () => {this.validateAndContinue(state);}
     });
 

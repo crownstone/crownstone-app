@@ -78,7 +78,7 @@ export class SettingsPrivacy extends LiveComponent<any, any> {
       label: lang("Share_switch_state"),
       value: user.uploadSwitchState,
       type: 'switch',
-      icon: <IconButton name="md-power" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+      icon: <IconButton name="md-power" size={22}  color="#fff" buttonStyle={{backgroundColor:colors.blue3.hex}} />,
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadSwitchState: newValue} });
     }});

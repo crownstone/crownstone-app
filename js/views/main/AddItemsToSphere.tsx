@@ -95,7 +95,7 @@ function AddItem(props) {
         addIcon={true}
         buttonSize={usedIconSize + 6}
         buttonStyle={{
-          backgroundColor: props.highlight ? colors.menuTextSelected.hex : colors.green.hex,
+          backgroundColor: props.highlight ? colors.blue.hex : colors.green.hex,
           borderRadius: 0.2*usedIconSize,
           borderColor: colors.white.rgba(0.8),
           borderWidth: 4

@@ -104,7 +104,7 @@ export function SmartBehaviourRule(props: {
       { /* Edit icon */ }
       <SlideSideFadeInView width={50} visible={showEditIcons}>
         <TouchableOpacity onPress={editCallback} style={{width:50, alignItems:'flex-end'}}>
-          <Icon name={'md-create'} color={colors.menuTextSelected.hex} size={26} />
+          <Icon name={'md-create'} color={colors.blue.hex} size={26} />
         </TouchableOpacity>
       </SlideSideFadeInView>
       { /* /Edit icon */ }
