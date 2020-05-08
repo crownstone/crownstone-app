@@ -87,12 +87,12 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
                 sliderHidden={true}
                 largeIcon={<IconButton name="ios-options" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex}} />}
                 callback={(value) => {
-                  core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { rssiOffsetTarget:value }});
-                  this.setState({rssiOffsetTarget: value})
+                  core.store.dispatch({type:"UPDATE_ABILITY_TAP_TO_TOGGLE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: { rssiOffsetTarget: value }});
+                  this.setState({rssiOffset: value})
                 }}
                 min={-10}
                 max={10}
-                value={rssiOffsetTarget}
+                value={this.state.rssiOffset}
                 explanation={this._getExplanation(this.state.rssiOffset)}
               />
               <Separator  />

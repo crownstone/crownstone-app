@@ -89,7 +89,8 @@ export class ScenesOverview extends LiveComponent<any, any> {
       this.setState({ editMode: true  }, updateTopBar);
       BackButtonHandler.override(className, () => {
         BackButtonHandler.clearOverride(className);
-
+        this.localEventBus.emit("ChangeInEditMode", false);
+        this.setState({ editMode: false  }, updateTopBar);
       })
     }
     if (buttonId === 'done') {
