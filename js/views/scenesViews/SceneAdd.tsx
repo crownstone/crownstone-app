@@ -61,59 +61,7 @@ export class SceneAdd extends LiveComponent<any, any> {
   }
 
   getStoneSelectionList(sphereId) {
-    let state = core.store.getState();
-    let stoneIds = Object.keys(state.spheres[sphereId].stones);
-
-    let stoneList = [];
-    let sortData = {};
-
-    stoneIds.forEach((stoneId) => {
-      let stone = state.spheres[sphereId].stones[stoneId];
-      let locationId = stone.config.locationId;
-      let stoneCID = stone.config.crownstoneId;
-      let locationName = "Not in a room..."
-      if (locationId) {
-        let location = DataUtil.getLocation(sphereId, locationId);
-        locationName = location.config.name;
-      }
-      sortData[stoneId] = locationName;
-      stoneList.push(
-        {locationName: locationName, component:
-            <StoneRow
-              key={stoneId}
-              sphereId={sphereId}
-              stoneId={stoneId}
-              initialSelection={null}
-              locationName={locationName}
-              selection={(selected) => {
-                if (selected) {
-                  let amountOfItems = Object.keys(this.sceneData.data).length;
-                  this.sceneData.data[stoneCID] = this.sceneData.data[stoneCID] || stone.state.state;
-
-                  if (amountOfItems == 0) {
-                    // we will add an item where there were none before --> redraw to show the always on top button
-                    this.forceUpdate();
-                  }
-
-                }
-                else {
-                  delete this.sceneData.data[stoneCID];
-                  if (Object.keys(this.sceneData.data).length == 0) {
-                    // we will remove the last item, remove the always on top button.
-                    this.forceUpdate();
-                  }
-                }
-              }}/>}
-      )
-    })
-
-    stoneList.sort((a,b) => { return a.locationName > b.locationName ? 1 : -1 })
-
-    let items = [];
-    stoneList.forEach((item) => {
-      items.push(item.component);
-    })
-    return items;
+    return getStoneSelectionList(sphereId, this.sceneData, () => { this.forceUpdate(); });
   }
 
 
@@ -489,6 +437,60 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
       </View>
     )
   }
+}
 
+export function getStoneSelectionList(sphereId, sceneData, forceUpdate) {
+  let state = core.store.getState();
+  let stoneIds = Object.keys(state.spheres[sphereId].stones);
 
+  let stoneList = [];
+  let sortData = {};
+
+  stoneIds.forEach((stoneId) => {
+    let stone = state.spheres[sphereId].stones[stoneId];
+    let locationId = stone.config.locationId;
+    let stoneCID = stone.config.crownstoneId;
+    let locationName = "Not in a room..."
+    if (locationId) {
+      let location = DataUtil.getLocation(sphereId, locationId);
+      locationName = location.config.name;
+    }
+    sortData[stoneId] = locationName;
+    stoneList.push(
+      {locationName: locationName, component:
+          <StoneRow
+            key={stoneId}
+            sphereId={sphereId}
+            stoneId={stoneId}
+            initialSelection={sceneData.data[stoneCID] !== undefined}
+            locationName={locationName}
+            selection={(selected) => {
+              if (selected) {
+                let amountOfItems = Object.keys(sceneData.data).length;
+                sceneData.data[stoneCID] = sceneData.data[stoneCID] || stone.state.state;
+
+                if (amountOfItems == 0) {
+                  // we will add an item where there were none before --> redraw to show the always on top button
+                  forceUpdate();
+                }
+
+              }
+              else {
+                delete sceneData.data[stoneCID];
+                if (Object.keys(sceneData.data).length == 0) {
+                  // we will remove the last item, remove the always on top button.
+                  forceUpdate();
+                }
+              }
+            }}/>}
+    )
+  })
+
+  stoneList.sort((a,b) => { return a.locationName > b.locationName ? 1 : -1 })
+
+  let items = [];
+  stoneList.forEach((item) => {
+    items.push(item.component);
+  })
+  return items;
 }
