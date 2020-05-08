@@ -3084,7 +3084,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putDouble("powerUsageReal", serviceData.powerUsageReal)
 		serviceDataMap.putDouble("powerUsageApparent", serviceData.powerUsageApparent)
 		serviceDataMap.putDouble("accumulatedEnergy", serviceData.energyUsed.toDouble()) // TODO: should be long?
-		servideDataMap.putInt("behaviourMasterHash", serviceData.behaviourHash)
+		serviceDataMap.putInt("behaviourMasterHash", serviceData.behaviourHash.toInt())
 
 		if (serviceData.version == ServiceDataVersion.V1 || serviceData.version == ServiceDataVersion.UNKNOWN) {
 			serviceDataMap.putDouble("timestamp", -1.0)
