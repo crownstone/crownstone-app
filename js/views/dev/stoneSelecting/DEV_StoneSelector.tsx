@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DEV_StoneSelector", key)(a,b,c,d,e);
+}
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { LiveComponent } from "../../LiveComponent";
 import {
@@ -34,7 +40,7 @@ let smallText : TextStyle = { fontSize:12, paddingLeft:10, paddingRight:10};
 
 export class DEV_StoneSelector extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:"Select Crownstone", nav: {id: 'stop', text:'Pause'}, leftNav: {id:'sort', text:'Sorted'}})
+    return TopBarUtil.getOptions({title: lang("Select_Crownstone"), nav: {id: 'stop', text:'Pause'}, leftNav: {id:'sort', text:'Sorted'}})
   }
 
   unsubscribe = [];
@@ -89,10 +95,9 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
     }
     BackButtonHandler.override('DEV_APP_MAIN', () => {
       Alert.alert(
-        "You MUST kill the app, not just go back.",
-        "Everything will be effed-up if you don't kill the app.",
-        [{
-          text: "OK. FINE!", onPress: () => {
+lang("_You_MUST_kill_the_app__n_header"),
+lang("_You_MUST_kill_the_app__n_body"),
+[{text: lang("_You_MUST_kill_the_app__n_left"), onPress: () => {
             AppUtil.quit()
           }
         }],
@@ -349,11 +354,11 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
           paddingLeft:10,
           paddingRight:10
         }}>
-        <Text style={{...smallText}}>Filter:</Text>
+        <Text style={{...smallText}}>{ lang("Filter_") }</Text>
         <TextInput
           autoFocus={this.state.showHandleFilter}
           value={this.state.handleFilter}
-          placeholder={"Handle (MAC) address filter"}
+          placeholder={ lang("Handle__MAC__address_filt")}
           style={{flex:1, fontSize:16}}
           onChangeText={(newText) => {
             let validString = "";
@@ -400,7 +405,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
             borderColor: "#fff"
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Perform Batch!</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{ lang("Perform_Batch_") }</Text>
         </TouchableOpacity>
       )
     }
@@ -414,9 +419,9 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
         <DEV_SelectionFilter submit={() => { this.setState({filterSelectorOnScreen: false}); this.startScanning() }} visible={this.state.filterSelectorOnScreen} update={() => { this.forceUpdate(); }}></DEV_SelectionFilter>
         <View style={{flexDirection:'row', width:screenWidth, height:60, backgroundColor: colors.white.rgba(0.7), ...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>
           <View style={{flex:1, maxWidth:15}}/>
-          <FilterButton label={"Filters"} selected={false} callback={() => {this.setState({filterSelectorOnScreen: true})}}/>
+          <FilterButton label={ lang("Filters")} selected={false} callback={() => {this.setState({filterSelectorOnScreen: true})}}/>
           <View style={{flex:1}}/>
-          <FilterButton label={"HF Scanning"} selected={this.state.HFscanning} callback={() => {
+          <FilterButton label={ lang("HF_Scanning")} selected={this.state.HFscanning} callback={() => {
             if (this.state.HFscanning === false) {
               this.startHFScanning(2000);
             }
@@ -425,7 +430,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
             }
           }}/>
           <View style={{flex:1}}/>
-          <FilterButton label={"MAC"} selected={this.state.showHandleFilter} callback={() => {
+          <FilterButton label={ lang("MAC")} selected={this.state.showHandleFilter} callback={() => {
             this.setState({showHandleFilter: !this.state.showHandleFilter})
           }}/>
           <View style={{flex:1, maxWidth:15}}/>
@@ -437,7 +442,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
             visible={!this.state.showHandleFilter}
             height={50}
             style={{flexDirection:'row', width:screenWidth, height: 50,...styles.centered, borderBottomColor: colors.black.rgba(0.2), borderBottomWidth:1}}>
-            <Text style={{...smallText, width: 50}}>Rssi:</Text>
+            <Text style={{...smallText, width: 50}}>{ lang("Rssi_") }</Text>
             <Slider
               style={{ width: screenWidth - 120, height: 40 }}
               minimumValue={-100}
@@ -450,7 +455,7 @@ export class DEV_StoneSelector extends LiveComponent<any, any> {
                 this.setState({rssiFilter: value});
               }}
             />
-            <Text style={{...smallText, width:70}}>{this.state.rssiFilter + " dB"}</Text>
+            <Text style={{...smallText, width:70}}>{ lang("_dB",this.state.rssiFilter) }</Text>
           </SlideInView>
         </View>
 

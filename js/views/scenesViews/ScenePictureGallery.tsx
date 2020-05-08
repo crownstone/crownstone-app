@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("ScenePictureGallery", key)(a,b,c,d,e);
+}
 import { LiveComponent } from "../LiveComponent";
 import React from "react";
 import { FlatList, Image, Platform, Text, View, TextStyle, TouchableHighlight, TouchableOpacity } from "react-native";
@@ -234,7 +240,7 @@ const imageStyle = {height:3*imageSize, width:4*imageSize, marginLeft:15, border
 
 export class ScenePictureGallery extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Pick a picture", closeModal: true });
+    return TopBarUtil.getOptions({title: lang("Pick_a_picture"), closeModal: true });
   }
 
   constructor(props) {
@@ -243,7 +249,7 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
 
   handleCustomImage = () => {
     const options = {
-      title: 'Select Picture',
+      title: lang("Select_Picture"),
       noData: true,
       storageOptions: {
         waitUntilSaved: false,
@@ -277,14 +283,14 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
     if (index == 0) {
       return (
         <View style={{marginTop: 30,}}>
-          <Text style={typeStyle}>{"Custom picture"}</Text>
+          <Text style={typeStyle}>{ lang("Custom_picture") }</Text>
           <Button
-            iconPosition={"right"}
+            iconPosition={ lang("right")}
             icon={'ios-camera'}
             xl={true}
             backgroundColor={colors.blue.hex}
             iconColor={colors.blueDark.hex}
-            label={"Take or select picture..."}
+            label={ lang("Take_or_select_picture___")}
             callback={this.handleCustomImage}
           />
         </View>

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SceneEdit", key)(a,b,c,d,e);
+}
 import { LiveComponent } from "../LiveComponent";
 import { core } from "../../core";
 import * as React from "react";
@@ -19,7 +25,7 @@ import { BackgroundNoNotification } from "../components/BackgroundNoNotification
 
 export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:  "Edit Scene", cancelModal: true, save: true});
+    return TopBarUtil.getOptions({title: lang("Edit_Scene"), cancelModal: true, save: true});
   }
 
   changed = false;
@@ -76,9 +82,9 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
   _getItems() {
     let items = [];
 
-    items.push({label: "SCENE SETTINGS",  type:'explanation', below:false});
+    items.push({label: lang("SCENE_SETTINGS"),  type:'explanation', below:false});
     items.push({
-      label: "Name",
+      label: lang("Name"),
       type: 'textEdit',
       value: this.state.name,
       callback: (newText) => {
@@ -92,7 +98,7 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       }
     });
     items.push({
-      label: "Picture",
+      label: lang("Picture"),
       type:  'picture',
       stock: this.state.pictureSource === PICTURE_GALLERY_TYPES.STOCK,
       customPictureSelector: () => { NavigationUtil.launchModal("ScenePictureGallery", {callback:
@@ -111,11 +117,11 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       }
     });
 
-    items.push({type:"explanation", label:"PARTICIPATING CROWNSTONES"});
+    items.push({type:"explanation", label: lang("PARTICIPATING_CROWNSTONES")});
 
     items.push({
       type:'navigation',
-      label: 'Select Crownstones',
+      label: lang("Select_Crownstones"),
       icon: <IconButton name='c2-pluginFilled' buttonSize={35} size={23} radius={8}  color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}}/>,
       callback: () => {
         NavigationUtil.launchModal("SceneSelectCrownstones", {sphereId: this.props.sphereId, data: this.state.data, callback: (selectedData) => {
@@ -139,7 +145,7 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
       }
     });
 
-    items.push({type:"explanation", label:"CHOOSE DESIRED STATES"})
+    items.push({type:"explanation", label: lang("CHOOSE_DESIRED_STATES")})
 
     let state = core.store.getState();
     let stoneIds = Object.keys(state.spheres[this.props.sphereId].stones);

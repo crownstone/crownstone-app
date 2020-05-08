@@ -51,7 +51,11 @@ export class DfuDeviceOverviewEntry extends Component<any, any> {
         activeOpacity={1}
         onLongPress={() => {
           if (state.user.developer) {
-            Alert.alert("Update just this Crownstone?", "The rest will be ignored for now.\nOnly developers can do this.",[{text:"Nevermind"},{text:"Let's do it!", onPress:() => {
+            Alert.alert(
+lang("_Update_just_this_Crownst_header"),
+lang("_Update_just_this_Crownst_body"),
+[{text:lang("_Update_just_this_Crownst_left")},{
+text:lang("_Update_just_this_Crownst_right"), onPress:() => {
               NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: [this.props.stoneId]})
             }}])
           }

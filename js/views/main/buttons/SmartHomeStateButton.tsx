@@ -129,7 +129,7 @@ export class SmartHomeStateButton extends Component<any, any> {
             <View style={{ flex: 1 }}/>
             { explanationLabel &&
             <View style={{flexDirection:'row'}}>
-              { this.state.showLoading && <ActivityIndicator size={'small'} color={explanationTextColor} style={{paddingRight:5}} /> }
+              { this.state.showLoading && <ActivityIndicator size={"small"} color={explanationTextColor} style={{paddingRight:5}} /> }
               <Text style={{ fontWeight: 'bold', color: explanationTextColor, textAlign:'right' }}>{explanationLabel}</Text>
             </View>
             }
@@ -180,7 +180,10 @@ export class SmartHomeStateButton extends Component<any, any> {
             }
           }
           else {
-            Alert.alert("You're not in the Sphere","You have to be in range of your Crownstones to disable their behaviour.",[{text:"OK"}])
+            Alert.alert(
+lang("_Youre_not_in_the_Sphere__header"),
+lang("_Youre_not_in_the_Sphere__body"),
+[{text:lang("_Youre_not_in_the_Sphere__left")}])
           }
         }}>
           { contentData.explanation }

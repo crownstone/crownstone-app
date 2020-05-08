@@ -28,7 +28,7 @@ export class PictureCircle extends Component<any, any> {
     }
 
     const options = {
-      title: 'Select Picture',
+      title: lang("Select_Picture"),
       noData: true,
       storageOptions: {
         waitUntilSaved: false,

@@ -117,7 +117,7 @@ export class SettingsApp extends LiveComponent<any, any> {
       items.push({
         __item: (
           <SliderBar
-            label={"Sensitivity"}
+            label={ lang("Sensitivity")}
             sliderHidden={true}
             mediumIcon={<IconButton name="ios-options" buttonSize={38} size={25} radius={8} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
             callback={(value) => {

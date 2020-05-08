@@ -45,7 +45,10 @@ export class DfuBatch extends Component<any, any> {
   }
 
   componentDidMount(): void {
-    BackButtonHandler.override(CLASSNAME, () => { Alert.alert("This process cannot be interrupted.","Please wait until the update cycle is completed.",[{text:"OK"}])})
+    BackButtonHandler.override(CLASSNAME, () => { Alert.alert(
+lang("_This_process_cannot_be_i_header"),
+lang("_This_process_cannot_be_i_body"),
+[{text:lang("_This_process_cannot_be_i_left")}])})
   }
 
   componentWillUnmount(): void {
@@ -180,7 +183,7 @@ export class DfuBatch extends Component<any, any> {
             <View style={{flex:1}} />
             <Text style={{color: colors.black.hex, fontSize:20, fontWeight: "bold", width:screenWidth - 30, textAlign:'center'}}>{ lang("Updating_your_Crownstones_") }</Text>
             <View style={{flex:0.25}} />
-            <Text style={{color: colors.black.hex, fontSize:15, width:screenWidth - 30, textAlign:'center'}}>{ "Some Crownstones may turn on while updating." }</Text>
+            <Text style={{color: colors.black.hex, fontSize:15, width:screenWidth - 30, textAlign:'center'}}>{ lang("Some_Crownstones_may_turn") }</Text>
             <View style={{flex:1}} />
           </View>
         </View>

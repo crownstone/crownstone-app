@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DEV_PresenceMocking", key)(a,b,c,d,e);
+}
 import React from "react";
 import { Background } from "../../components/Background";
 import { core } from "../../../core";
@@ -10,7 +16,7 @@ import { availableScreenHeight, colors, screenWidth } from "../../styles";
 
 export class DEV_PresenceMocking extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:"Presence Mocking"})
+    return TopBarUtil.getOptions({title: lang("Presence_Mocking")})
   }
 
   constructor(props) {
@@ -94,7 +100,7 @@ export class DEV_PresenceMocking extends LiveComponent<any, any> {
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />
-            <Text style={{fontSize:30, fontWeight:"bold"}}>{this.state.sphereId ? "Mock which room?" : "Select Sphere to mock."}</Text>
+            <Text style={{fontSize:30, fontWeight:"bold"}}>{ lang("Mock_which_room_Select_Sp",this.state.sphereId) }</Text>
             <View style={{height:20, width:screenWidth}} />
             <View style={{height:1, width:screenWidth, backgroundColor: colors.black.rgba(0.2)}} />
             { this.state.sphereId === null ? this.getSpheres() : this.getRooms() }

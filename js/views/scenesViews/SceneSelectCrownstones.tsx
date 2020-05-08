@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SceneSelectCrownstones", key)(a,b,c,d,e);
+}
 import { LiveComponent } from "../LiveComponent";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { DataUtil } from "../../util/DataUtil";
@@ -44,10 +50,13 @@ export class SceneSelectCrownstones extends LiveComponent<any, any> {
           <View>
             { this.getStoneSelectionList(this.props.sphereId) }
           </View>,
-        options: [{label: "Select", textAlign:'right', onSelect: (result) => {
+        options: [{label: lang("Select"), textAlign:'right', onSelect: (result) => {
           let stonesSelected = Object.keys(this.sceneData.data).length > 0;
           if (!stonesSelected) {
-            Alert.alert("Select at least one...","I don't know why you'd want to make a scene without any Crownstones...", [{text:"Right.."}]);
+            Alert.alert(
+lang("_Select_at_least_one______header"),
+lang("_Select_at_least_one______body"),
+[{text:lang("_Select_at_least_one______left")}]);
             return false;
           }
 

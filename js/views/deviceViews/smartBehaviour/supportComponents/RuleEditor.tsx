@@ -861,13 +861,13 @@ function DimmerPermissionOverlay(props) {
   return (
     <View style={{flex: 1, alignItems:'center', justifyContent:"center", paddingHorizontal:10}}>
       <View style={{flex:0.2}} />
-      <Text style={deviceStyles.subHeader}>Dimming ability required.</Text>
+      <Text style={deviceStyles.subHeader}>{ lang("Dimming_ability_required_") }</Text>
       <View style={{flex:1}} />
-      <Text style={deviceStyles.text}>You need to enable dimming for this Crownstone in order to use it in a behaviour. Do you want to enable this now?</Text>
+      <Text style={deviceStyles.text}>{ lang("You_need_to_enable_dimmin") }</Text>
       <View style={{flex:1}} />
-      <BehaviourSubmitButton callback={() => { props.callback() }} label={"Enable dimming!"} />
+      <BehaviourSubmitButton callback={() => { props.callback() }} label={ lang("Enable_dimming_")} />
       <View style={{flex:0.25}} />
-      <BehaviourSubmitButton callback={() => { props.hideOverlayCallback() }} label={"Not right now..."} color={colors.csOrange.hex} />
+      <BehaviourSubmitButton callback={() => { props.hideOverlayCallback() }} label={ lang("Not_right_now___")} color={colors.csOrange.hex} />
     </View>
   )
 }

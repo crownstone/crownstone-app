@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Ability_TapToToggleSettings", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ScrollView,
@@ -22,7 +28,7 @@ import { Explanation } from "../../../components/editComponents/Explanation";
 
 export class Ability_TapToToggleSettings extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Tap to Toggle Settings"});
+    return TopBarUtil.getOptions({title: lang("Tap_to_Toggle_Settings")});
   }
 
   constructor(props) {
@@ -67,23 +73,23 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
             <View style={{height:40}} />
             <ScaledImage source={require('../../../../images/overlayCircles/tapToToggle.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
             <View style={{height:40}} />
-            <Text style={styles.boldExplanation}>{ "If you don't want to open the app to toggle a specific Crownstone, just hold your phone against it!" }</Text>
-            <Text style={styles.explanation}>{ "Your phone broadcasts a signal that the Crownstones can pick up! The minimum distance your phone will toggle any of your Crownstones is configured in the app settings." }</Text>
-            <Text style={styles.explanation}>{ "If you want "}<Text style={{fontWeight:'bold'}}>this specific Crownstone</Text>{" to toggle closer or further away than the others, you can set a distance offset here." }</Text>
-            <Text style={styles.explanation}>{ "Tap to toggle is not meant to replace presence based behaviour." }</Text>
+            <Text style={styles.boldExplanation}>{ lang("If_you_dont_want_to_open_") }</Text>
+            <Text style={styles.explanation}>{ lang("Your_phone_broadcasts_a_s") }</Text>
+            <Text style={styles.explanation}>{ "If you want "}<Text style={{fontWeight:'bold'}}>{ lang("this_specific_Crownstone") }</Text>{" to toggle closer or further away than the others, you can set a distance offset here." }</Text>
+            <Text style={styles.explanation}>{ lang("Tap_to_toggle_is_not_mean") }</Text>
             <View style={{height:10}} />
             <View style={{width:screenWidth}}>
-              <Explanation text={"CHANGE TAP TO TOGGLE DISTANCE FOR:"} />
+              <Explanation text={ lang("CHANGE_TAP_TO_TOGGLE_DIST")} />
               <Separator fullLength={true} />
               <NavigationBar
                 setActiveElement={()=>{ }}
                 largeIcon={<IconButton name="ios-options" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex}} />}
-                label={"All Crownstones"}
+                label={ lang("All_Crownstones")}
                 callback={() => { NavigationUtil.launchModal("SettingsApp", {modal:true}) }}
               />
               <Separator  />
               <SliderBar
-                label={"Only this Crownstone"}
+                label={ lang("Only_this_Crownstone")}
                 sliderHidden={true}
                 largeIcon={<IconButton name="ios-options" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.blue.hex}} />}
                 callback={(value) => {
@@ -99,16 +105,16 @@ export class Ability_TapToToggleSettings extends Component<any, any> {
               <NavigationBar
                 setActiveElement={()=>{ }}
                 largeIcon={<IconButton name="md-information-circle" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}} />}
-                label={"More information"}
+                label={ lang("More_information")}
                 callback={() => { this.props.information(); }}
               />
               <Separator fullLength={true}/>
-              <Explanation text={"DISABLE FOR ONLY THIS CROWNSTONE"} />
+              <Explanation text={ lang("DISABLE_FOR_ONLY_THIS_CRO")} />
               <Separator fullLength={true}/>
               <ButtonBar
                 setActiveElement={()=>{ }}
                 largeIcon={<IconButton name="md-remove-circle" buttonSize={44} size={30} radius={10} color="#fff" buttonStyle={{backgroundColor: colors.menuRed.hex}} />}
-                label={"Disable Tap to toggle"}
+                label={ lang("Disable_Tap_to_toggle")}
                 callback={() => { this.disable() }}
               />
               <Separator fullLength={true} />

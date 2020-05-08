@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SceneItem", key)(a,b,c,d,e);
+}
 import { default as React, useEffect, useState }          from "react";
 import { colors, screenWidth, styles }                    from "../../styles";
 import { ActivityIndicator, Alert, Image, Text, TextStyle, TouchableOpacity, View } from "react-native";
@@ -82,7 +88,11 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
             color={color}
             editMode={editMode}
             editCallback={  () => { NavigationUtil.launchModal("SceneEdit", {sphereId: sphereId, sceneId: sceneId}) }}
-            deleteCallback={() => { Alert.alert("Are you sure?","Do you want to delete this scene?", [{text:"Cancel"},{text:"OK", onPress: (() => {
+            deleteCallback={() => { Alert.alert(
+lang("_Are_you_sure___Do_you_wa_header"),
+lang("_Are_you_sure___Do_you_wa_body"),
+[{text:lang("_Are_you_sure___Do_you_wa_left")},{
+text:lang("_Are_you_sure___Do_you_wa_right"), onPress: (() => {
               SortingManager.removeFromLists(sceneId);
               core.store.dispatch({
                 type:"REMOVE_SCENE",

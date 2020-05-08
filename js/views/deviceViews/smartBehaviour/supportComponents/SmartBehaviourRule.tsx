@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SmartBehaviourRule", key)(a,b,c,d,e);
+}
 import { AicoreBehaviour } from "../supportCode/AicoreBehaviour";
 import { AicoreTwilight } from "../supportCode/AicoreTwilight";
 import { ActivityIndicator, Alert, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
@@ -58,9 +64,10 @@ export function SmartBehaviourRule(props: {
 
           if (activeDayCount === 0) {
             Alert.alert(
-              "Are you sure?",
-              "Since this behaviour is only active on this day, removing it will remove it completely.",
-              [{text:"Cancel"}, {text:"I'm sure", onPress: () => {
+lang("_Are_you_sure___Since_thi_header"),
+lang("_Are_you_sure___Since_thi_body"),
+[{text:lang("_Are_you_sure___Since_thi_left")}, {
+text:lang("_Are_you_sure___Since_thi_right"), onPress: () => {
                 if (props.rule.idOnCrownstone !== null) {
                   core.store.dispatch({type:"MARK_STONE_RULE_FOR_DELETION", sphereId: props.sphereId, stoneId: props.stoneId, ruleId: props.ruleId});
                 }
@@ -170,7 +177,7 @@ function RuleDescription(props, ai : AicoreBehaviour | AicoreTwilight, editCallb
 
   let content = (
     <View style={{flex:1, paddingHorizontal: paddingHorizontal }}>
-      { props.startedYesterday && <Text style={yesterdayStyle}>{"(Started Yesterday)"}</Text> }
+      { props.startedYesterday && <Text style={yesterdayStyle}>{ lang("_Started_Yesterday_") }</Text> }
       <Text style={labelStyle}>{ai.getSentence(props.sphereId)}</Text>
       { subLabel ? <Text style={{color: colors.csBlueDark.hex,fontSize:13,textAlign:'center', ...subLabelStyle}}>{subLabel}</Text> : undefined }
     </View>

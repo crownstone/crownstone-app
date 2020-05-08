@@ -43,7 +43,10 @@ export class LocationPermissionOverlay extends Component<any, any> {
           if (this.state.waitingOnPermission) {
             this.setState({showRequestFailed: true, notificationType: status})
             if (Platform.OS === 'ios') {
-              Alert.alert("Request not allowed....", "Please ensure that the permission is set to always. If it is always already, please set it to while in use, and back to always.", [{text:"OK", onPress:() => {
+              Alert.alert(
+lang("_Request_not_allowed______header"),
+lang("_Request_not_allowed______body"),
+[{text:lang("_Request_not_allowed______left"), onPress:() => {
                 Linking.openURL('app-settings:')
               }}])
             }
@@ -144,9 +147,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
         </Text>
         <View style={{flex:1}} />
         {this.state.showRequestFailed ?
-          <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue3.hex, padding: 5, textAlign: 'center' }}>{"" +
-            "Request failed... You'll have to manually enable location access for the Crownstone app in your phone's settings."}
-          </Text>
+          <Text style={{ fontSize: 13, fontWeight: 'bold', color: colors.blue3.hex, padding: 5, textAlign: 'center' }}>{ lang("Request_failed____Youll_h") }</Text>
           : this._getButton()
         }
         <View style={{flex:1}} />

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("SceneCreateNewItem", key)(a,b,c,d,e);
+}
 import { colors, screenWidth, styles } from "../../styles";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SceneConstants } from "../constants/SceneConstants";
@@ -30,9 +36,9 @@ export function SceneCreateNewItem({callback, isFirst}) {
           <View style={{width:2, height: SceneConstants.sceneHeight, backgroundColor: colors.white.rgba(0.1)}} />
           <View style={{paddingLeft:9}}>
             <View style={{flex:4}} />
-            <Text style={{fontSize:18, fontWeight:'bold', color: textColor}}>{"Create new Scene"}</Text>
+            <Text style={{fontSize:18, fontWeight:'bold', color: textColor}}>{ lang("Create_new_Scene") }</Text>
             <View style={{flex:1}} />
-            <Text style={{fontStyle:'italic',fontWeight:'bold', color: textColor}}>{ isFirst ? "Tap me to get started!" : "Tap me to create more Scenes!" }</Text>
+            <Text style={{fontStyle:'italic',fontWeight:'bold', color: textColor}}>{ lang("Tap_me_to_get_started_Tap",isFirst) }</Text>
             <View style={{flex:4}} />
           </View>
           <View style={{flex:1}} />

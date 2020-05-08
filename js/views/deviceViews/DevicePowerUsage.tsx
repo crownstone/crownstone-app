@@ -28,7 +28,7 @@ export class DevicePowerUsage extends LiveComponent<any, any> {
   static options(props) {
     // let state = core.store.getState();
     // const stone = state.spheres[props.sphereId].stones[props.stoneId];
-    return TopBarUtil.getOptions({ title: "Power Usage", closeModal: true});
+    return TopBarUtil.getOptions({ title: lang("Power_Usage"), closeModal: true});
   }
 
   unsubscribeNativeBusEvent;

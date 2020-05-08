@@ -229,7 +229,10 @@ export class RoomAddCore extends LiveComponent<any, any> {
       }
 
       if (latestUID >= 64 && locationIds.length >= 64)  {
-        Alert.alert("Max amount of rooms reached..", "You will have to delete some before you can make a new one.", [{text:"OK", onPress: back}], {cancelable: false})
+        Alert.alert(
+lang("_Max_amount_of_rooms_reac_header"),
+lang("_Max_amount_of_rooms_reac_body"),
+[{text:lang("_Max_amount_of_rooms_reac_left"), onPress: back}], {cancelable: false})
         return
       }
       else if (latestUID >= 64) {

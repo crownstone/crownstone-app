@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("Ability_TapToToggleInformation", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   ScrollView,
@@ -17,7 +23,7 @@ import { TopBarUtil } from "../../../../util/TopBarUtil";
 
 export class Ability_TapToToggleInformation extends Component<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title: "Tap to Toggle"});
+    return TopBarUtil.getOptions({title: lang("Tap_to_Toggle")});
   }
 
   render() {
@@ -28,12 +34,12 @@ export class Ability_TapToToggleInformation extends Component<any, any> {
             <View style={{height:40}} />
             <ScaledImage source={require('../../../../images/overlayCircles/tapToToggle.png')} sourceWidth={600} sourceHeight={600} targetWidth={0.2*screenHeight} />
             <View style={{height:40}} />
-            <Text style={styles.boldExplanation}>{ "If you don't want to open the app to toggle a specific Crownstone, just hold your phone against it!" }</Text>
-            <Text style={styles.explanation}>{ "Your phone broadcasts a signal that the Crownstones can pick up! The minimum distance your phone will toggle any of your Crownstones is configured in the app settings." }</Text>
-            <Text style={styles.explanation}>{ "Once your phone is close enough to the Crownstone to activate tap to toggle, the Crownstone will toggle on and off as long as the phone is near. " }</Text>
-            <Text style={styles.explanation}>{ "You can choose how close you have to hold your phone before it starts to toggle. Additionally, you can globally enable or disable tap to toggle in the app settings." }</Text>
-            <Text style={styles.explanation}>{ "If you'd prefer to enable or disable tap to toggle for individual Crownstones, you can do that in the abilities!" }</Text>
-            <Text style={styles.explanation}>{ "Tap to toggle is not meant to replace presence based behaviour." }</Text>
+            <Text style={styles.boldExplanation}>{ lang("If_you_dont_want_to_open_") }</Text>
+            <Text style={styles.explanation}>{ lang("Your_phone_broadcasts_a_s") }</Text>
+            <Text style={styles.explanation}>{ lang("Once_your_phone_is_close_") }</Text>
+            <Text style={styles.explanation}>{ lang("You_can_choose_how_close_") }</Text>
+            <Text style={styles.explanation}>{ lang("If_youd_prefer_to_enable_") }</Text>
+            <Text style={styles.explanation}>{ lang("Tap_to_toggle_is_not_mean") }</Text>
             <View style={{height:100}} />
           </View>
         </ScrollView>

@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DEV_AdvancedConfig", key)(a,b,c,d,e);
+}
 import { LiveComponent } from "../../LiveComponent";
 import { TopBarUtil } from "../../../util/TopBarUtil";
 import { NavigationUtil } from "../../../util/NavigationUtil";
@@ -130,7 +136,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
 
   _getItems(explanationColor) {
     let items = [];
-    items.push({label:"CONFIGS", type: 'explanation', color: explanationColor});
+    items.push({label: lang("CONFIGS"), type: 'explanation', color: explanationColor});
 
     let success = () => { core.eventBus.emit("hideNumericOverlaySuccess"); }
     let failed = () => { core.eventBus.emit("hideNumericOverlayFailed"); }
@@ -140,14 +146,14 @@ export class DEV_AdvancedConfig extends LiveComponent<{
 
 
     if (this.state.mode === 'unverified') {
-      items.push({label:"Disabled for unverified Crownstone.", type: 'info'});
+      items.push({label: lang("Disabled_for_unverified_C"), type: 'info'});
     }
     else if (FocusManager.crownstoneMode === 'dfu' ) {
-      items.push({label:"Disabled for Crownstone in DFU mode.", type: 'info'});
+      items.push({label: lang("Disabled_for_Crownstone_i"), type: 'info'});
     }
     else {
       items.push({
-        label: 'Switchcraft Threshold',
+        label: lang("Switchcraft_Threshold"),
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.switchCraftThreshold || null,
         getCallback: () => {
@@ -162,7 +168,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       });
 
       items.push({
-        label: 'Max Chip Temp',
+        label: lang("Max_Chip_Temp"),
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.maxChipTemp || null,
         getCallback: () => {
@@ -176,9 +182,9 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         }
       });
 
-      items.push({label:"DIMMER", type: 'explanation', color: explanationColor});
+      items.push({label: lang("DIMMER"), type: 'explanation', color: explanationColor});
       items.push({
-        label: 'Dimmer Threshold',
+        label: lang("Dimmer_Threshold"),
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.dimmerCurrentThreshold || null,
         getCallback: () => {
@@ -193,7 +199,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       });
 
       items.push({
-        label: 'Dimmer Temp Up',
+        label: lang("Dimmer_Temp_Up"),
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.dimmerTempUpThreshold || null,
         getCallback: () => {
@@ -208,7 +214,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       });
 
       items.push({
-        label: 'Dimmer Temp Down',
+        label: lang("Dimmer_Temp_Down"),
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.dimmerTempDownThreshold || null,
         getCallback: () => {
@@ -222,9 +228,9 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         }
       });
 
-      items.push({label:"POWER MEASUREMENT", type: 'explanation', color: explanationColor});
+      items.push({label: lang("POWER_MEASUREMENT"), type: 'explanation', color: explanationColor});
       items.push({
-        label: 'Voltage Zero',
+        label: lang("Voltage_Zero"),
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.voltageZero || null,
         getCallback: () => {
@@ -238,7 +244,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         }
       });
       items.push({
-        label: 'Current Zero',
+        label: lang("Current_Zero"),
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.currentZero || null,
         getCallback: () => {
@@ -252,7 +258,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         }
       });
       items.push({
-        label: 'Power Zero',
+        label: lang("Power_Zero"),
         type: 'numericGetSet',
         value: FocusManager.crownstoneState.powerZero || null,
         getCallback: () => {
@@ -267,9 +273,9 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       });
 
 
-      items.push({label:"ADC CONFIG", type: 'explanation', color: explanationColor});
+      items.push({label: lang("ADC_CONFIG"), type: 'explanation', color: explanationColor});
       items.push({
-        label: 'Voltage Multiplier',
+        label: lang("Voltage_Multiplier"),
         type: 'numericGetSet',
         digits: 6,
         value: FocusManager.crownstoneState.voltageMultiplier || null,
@@ -284,7 +290,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         }
       });
       items.push({
-        label: 'Current Multiplier',
+        label: lang("Current_Multiplier"),
         type: 'numericGetSet',
         digits: 6,
         value: FocusManager.crownstoneState.currentMultiplier || null,
@@ -301,9 +307,9 @@ export class DEV_AdvancedConfig extends LiveComponent<{
 
 
 
-      items.push({label:"DEV COMMANDS", type: 'explanation', color: explanationColor});
+      items.push({label: lang("DEV_COMMANDS"), type: 'explanation', color: explanationColor});
       items.push({
-        label: "Disable UART",
+        label: lang("Disable_UART"),
         type: 'button',
         style: {color:colors.blue.hex},
         callback: () => {
@@ -311,7 +317,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         }
       });
       items.push({
-        label: "UART RX ONLY",
+        label: lang("UART_RX_ONLY"),
         type: 'button',
         style: {color:colors.blue.hex},
         callback: () => {
@@ -319,7 +325,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         }
       });
       items.push({
-        label: "UART TX & RX",
+        label: lang("UART_TX___RX"),
         type: 'button',
         style: {color:colors.blue.hex},
         callback: () => {
@@ -329,7 +335,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
     }
 
     items.push({
-      label: "Get Behaviour Debug Information",
+      label: lang("Get_Behaviour_Debug_Infor"),
       icon: <IconButton name={"md-code-working"} size={25} color={colors.white.hex} buttonStyle={{ backgroundColor: colors.csBlueDark.hex }}/>,
       type: 'navigation',
       callback: () => {
@@ -393,7 +399,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
       let state = core.store.getState();
       let sphere = state.spheres[FocusManager.crownstoneState.referenceId];
       if (sphere) {
-        items.push({ label: "In Sphere " + sphere.config.name, type: 'explanation', below: false, color: explanationColor });
+        items.push({ label: lang("In_Sphere_",sphere.config.name), type: 'explanation', below: false, color: explanationColor });
       }
     }
 
@@ -445,7 +451,7 @@ export class DEV_AdvancedConfig extends LiveComponent<{
         <BleStatusBar bleState={this.state.bleState} />
         <SlideInView hidden={true} height={50} visible={this.state.bleState !== BLE_STATE_READY && this.state.bleState !== BLE_STATE_BUSY}>
           <TouchableOpacity onPress={triggerErrorMessage} style={{paddingLeft: 10, paddingRight: 10, backgroundColor: colors.red.hex, borderBottomWidth: 1, borderBottomColor: colors.black.rgba(0.2), height: 50, ...styles.centered}}>
-            <Text style={{fontSize: 15, fontWeight: 'bold', color: colors.white.hex}}>Error during BLE command.</Text>
+            <Text style={{fontSize: 15, fontWeight: 'bold', color: colors.white.hex}}>{ lang("Error_during_BLE_command_") }</Text>
           </TouchableOpacity>
         </SlideInView>
         <ScrollView keyboardShouldPersistTaps="always">

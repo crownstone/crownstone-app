@@ -77,7 +77,7 @@ export class DfuDeviceEntry extends Component<any, any> {
           height:60,
           backgroundColor: 'transparent',
         }, styles.centered]}>
-          <ActivityIndicator size={'large'} color={colors.purple.hex} />
+          <ActivityIndicator size={"large"} color={colors.purple.hex} />
         </View>
       );
     }
@@ -180,7 +180,7 @@ export class DfuDeviceEntry extends Component<any, any> {
     else {
       return <View style={{flexDirection: 'column'}}>
         <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
-        <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{this.state.restoring && "Working..." || ''}</Text>
+        <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{ lang("Working___",this.state.restoring) }</Text>
       </View>;
     }
   }

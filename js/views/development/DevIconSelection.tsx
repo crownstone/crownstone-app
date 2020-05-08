@@ -1,3 +1,9 @@
+
+import { Languages } from "../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DevIconSelection", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import {
   TouchableOpacity,
@@ -148,7 +154,7 @@ export class DevIconSelection extends Component<any, any> {
             this.allocationMap[inCategory].splice(iconIndex,1);
             this.allocationMap['hidden'].push(icons[iconIndex])
 
-            this.forceUpdate() }}><Text>HIDE</Text></TouchableOpacity>
+            this.forceUpdate() }}><Text>{ lang("HIDE") }</Text></TouchableOpacity>
           {/*<Text style={{fontSize:8}}>{icons[iconIndex]}</Text>*/}
         </View>
       );
@@ -202,7 +208,7 @@ export class DevIconSelection extends Component<any, any> {
         <TouchableOpacity style={{padding:10, margin:10}} onPress={() => {
           let categories = Object.keys(this.props.icons);
           categories.forEach((cat) => { console.log(cat, ":" ,this.allocationMap[cat]) });
-        }}><Text>PRINT</Text></TouchableOpacity>
+        }}><Text>{ lang("PRINT") }</Text></TouchableOpacity>
 
         <TouchableOpacity style={{padding:10, margin:10}} onPress={() => {
           this.allocationMap['hidden'].forEach((icon) => {
@@ -210,7 +216,7 @@ export class DevIconSelection extends Component<any, any> {
           })
           this.allocationMap['hidden'] = [];
           this.forceUpdate()
-        }}><Text>UNHIDE ALL</Text></TouchableOpacity>
+        }}><Text>{ lang("UNHIDE_ALL") }</Text></TouchableOpacity>
       </View>
     );
   }

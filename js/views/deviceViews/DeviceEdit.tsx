@@ -139,7 +139,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     }
     locationLabel += " (tap to change)"
 
-    items.push({label: "CROWNSTONE IS IN ROOM", type: 'explanation', below: false});
+    items.push({label: lang("CROWNSTONE_IS_IN_ROOM"), type: 'explanation', below: false});
     items.push({
       label: locationLabel,
       mediumIcon:  <IconButton name="md-cube" size={25} buttonSize={38}  color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
@@ -153,7 +153,7 @@ export class DeviceEdit extends LiveComponent<any, any> {
     });
 
     if (Permissions.inSphere(this.props.sphereId).removeCrownstone) {
-      items.push({label: "DANGER", type: 'explanation', below: false});
+      items.push({label: lang("DANGER"), type: 'explanation', below: false});
       items.push({
         label: lang("Remove_from_Sphere"),
         mediumIcon: <IconButton name="ios-trash" size={26} buttonSize={38}  color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,

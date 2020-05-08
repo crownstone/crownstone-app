@@ -155,10 +155,13 @@ export class DeviceSmartBehaviour_CopyStoneSelection extends LiveComponent<{copy
         <TopbarImitation
           title={this.props.copyType === "FROM" ? "Copy from whom?" : "Copy to whom?"}
           leftAction={() => { this.props.isModal ? NavigationUtil.dismissModal() : NavigationUtil.back() }}
-          leftLabel={"Back"}
+          leftLabel={ lang("Back")}
           rightAction={() => {
             if (Object.keys(this.state.selectionMap).length === 0) {
-              Alert.alert("No Crownstone selected!","Select at least one Crownstone to copy behaviour to. You can tap on them to select!", [{text:"OK"}]);
+              Alert.alert(
+lang("_No_Crownstone_selected___header"),
+lang("_No_Crownstone_selected___body"),
+[{text:lang("_No_Crownstone_selected___left")}]);
             }
             else {
               this.props.callback(Object.keys(this.state.selectionMap));
@@ -267,7 +270,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
         subText = "Existing behaviour will be overwritten.";
         overrideButton = (
           <TouchableOpacity style={{backgroundColor: colors.csOrange.hex, borderRadius: 15, padding:10}} onPress={() => { setAllowOverwrite(true) }}>
-            <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{"Allow"}</Text>
+            <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{ lang("Allow") }</Text>
           </TouchableOpacity>
         );
       }
@@ -300,7 +303,7 @@ function StoneRow({isOrigin, sphereId, stoneId, stone, selected, callback, dimmi
         <TouchableOpacity style={{backgroundColor: colors.blue.hex, borderRadius: 15, padding:10}} onPress={() => {
           core.store.dispatch({type:'UPDATE_ABILITY_DIMMER', sphereId: sphereId, stoneId: stoneId, data: {enabledTarget: true}})
         }}>
-          <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{"Enable\nDimming"}</Text>
+          <Text style={{fontSize:13, color: colors.white.hex, fontWeight:'bold', textAlign:'center'}}>{ lang("Enable_nDimming") }</Text>
         </TouchableOpacity>
       );
     }

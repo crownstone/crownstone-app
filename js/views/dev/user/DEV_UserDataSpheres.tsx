@@ -1,3 +1,9 @@
+
+import { Languages } from "../../../Languages"
+
+function lang(key,a?,b?,c?,d?,e?) {
+  return Languages.get("DEV_UserDataSpheres", key)(a,b,c,d,e);
+}
 import * as React from 'react'; import { Component } from 'react';
 import { BroadcastStateManager } from "../../../backgroundProcesses/BroadcastStateManager";
 import { core } from "../../../core";
@@ -18,7 +24,7 @@ import { AppUtil } from "../../../util/AppUtil";
 
 export class DEV_UserData extends LiveComponent<any, any> {
   static options(props) {
-    return TopBarUtil.getOptions({title:"User Settings"});
+    return TopBarUtil.getOptions({title: lang("User_Settings")});
   }
 
   constructor(props) {
@@ -68,11 +74,11 @@ export class DEV_UserData extends LiveComponent<any, any> {
         <ScrollView keyboardShouldPersistTaps="never" style={{width: screenWidth, height:availableScreenHeight}}>
           <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', minHeight: availableScreenHeight, width: screenWidth}}>
             <View style={{height:30, width:screenWidth}} />
-            <Text style={{fontSize:30, fontWeight:"bold"}}>{"Logged in as:"}</Text>
+            <Text style={{fontSize:30, fontWeight:"bold"}}>{ lang("Logged_in_as_") }</Text>
             <View style={{height:20, width:screenWidth}} />
             <Text style={{fontSize:26}}>{base_core.sessionMemory.loginEmail || state.user.email}</Text>
             <View style={{height:40, width:screenWidth}} />
-            <Text style={{fontSize:14, fontWeight:'bold'}}>{"Which Sphere should be used for setup?"}</Text>
+            <Text style={{fontSize:14, fontWeight:'bold'}}>{ lang("Which_Sphere_should_be_us") }</Text>
             <View style={{height:10, width:screenWidth}} />
             <View style={{width:screenWidth, height:1, backgroundColor: colors.black.rgba(0.2)}} />
             { this.getSpheres() }
@@ -83,7 +89,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
               <ButtonBar
                 barHeight={NORMAL_ROW_SIZE}
                 style={{color: colors.black.hex}}
-                label={"Sync"}
+                label={ lang("Sync")}
                 icon={<IconButton name="md-cloud-download" size={22} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />}
                 callback={() => {
                   if (CLOUD.__currentlySyncing === false) {
@@ -100,16 +106,16 @@ export class DEV_UserData extends LiveComponent<any, any> {
                   }
                   else {
                     Alert.alert(
-                      "Sync already in progress",
-                      "Try again later",
-                      [{text:"OK"}]
+lang("_Sync_already_in_progress_header"),
+lang("_Sync_already_in_progress_body"),
+[{text:lang("_Sync_already_in_progress_left")}]
                     );
                   }
                 }} />
             </View>
             <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.4)}} />
             <SwitchBar
-              label={"Store setup Crownstones in Cloud"}
+              label={ lang("Store_setup_Crownstones_i")}
               value={state.devApp.storeCrownstonesInCloud}
               setActiveElement={() => {}}
               callback={(newValue) => {
@@ -118,7 +124,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
               }} />
             <View style={{width:screenWidth, height:1, backgroundColor: colors.lightGray.rgba(0.4)}} />
             <SwitchBar
-              label={"Fast Phone"}
+              label={ lang("Fast_Phone")}
               value={state.devApp.fastPhone}
               setActiveElement={() => {}}
               callback={(newValue) => {
@@ -132,7 +138,7 @@ export class DEV_UserData extends LiveComponent<any, any> {
               <ButtonBar
                 barHeight={NORMAL_ROW_SIZE}
                 style={{color: colors.black.hex}}
-                label={"Quit"}
+                label={ lang("Quit")}
                 icon={<IconButton name={'md-remove-circle'} buttonSize={40} size={28} color={colors.white.hex} buttonStyle={{backgroundColor:colors.darkRed.hex}}/>}
                 callback={() => {
                   AppUtil.quit();
@@ -224,7 +230,7 @@ export function BackButton(props) {
     }} onPress={() => { props.callback(); }}>
       <IconCircle icon={'md-arrow-round-back'} backgroundColor={colors.green.hex} color={colors.white.hex} iconSize={32} size={50}  />
       <View style={{width:50}} />
-      <Text style={{fontSize:16}}>{"Back to Spheres"}</Text>
+      <Text style={{fontSize:16}}>{ lang("Back_to_Spheres") }</Text>
       <View style={{flex:5}} />
     </TouchableOpacity>
   );

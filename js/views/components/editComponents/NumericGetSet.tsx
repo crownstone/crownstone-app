@@ -61,7 +61,7 @@ export class NumericGetSet extends Component<any, any> {
         <TouchableOpacity style={{alignItems: 'center', justifyContent:'flex-end', width: 0.15 * screenWidth}} onPress={() => {
           core.eventBus.emit("showNumericOverlay",{
             value: showValue === defaultValue ? '' : String(showValue),
-            title: "SET " + this.props.label,
+            title: lang("SET_",this.props.label),
             text: "Input a number and press set, or close this window.",
             callback: this.props.setCallback
           })

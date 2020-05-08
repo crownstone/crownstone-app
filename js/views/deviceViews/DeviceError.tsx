@@ -28,7 +28,10 @@ export class DeviceError extends Component<any, any> {
           label={ ErrorContent.getButtonLabel(stone.errors) }
           callback={() => {
             if (StoneAvailabilityTracker.isDisabled(this.props.stoneId)) {
-              Alert.alert("Stone unavailable.","You have to be in range of the Crownstone to reset the errors.",[{text:"OK"}]);
+              Alert.alert(
+lang("_Stone_unavailable___You__header"),
+lang("_Stone_unavailable___You__body"),
+[{text:lang("_Stone_unavailable___You__left")}]);
             }
             else {
               StoneUtil.clearErrors(this.props.sphereId, this.props.stoneId, stone, core.store);

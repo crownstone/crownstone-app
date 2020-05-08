@@ -182,7 +182,7 @@ function TimePart(props : {
               { props.instantEdit && !ignoreInstantEdit ?
                 <FadeIn index={index++}>
                   <View style={{ marginLeft: 25 }}>
-                  <TextButtonDark label={"I want something else!"} basic={true} callback={() => {
+                  <TextButtonDark label={ lang("I_want_something_else_")} basic={true} callback={() => {
                     setType(null);
                     setIgnorInstantEdit(true);
                   }}/>
@@ -197,7 +197,7 @@ function TimePart(props : {
             props.instantEdit && !ignoreInstantEdit ?
             <FadeIn index={index++}>
               <View style={{ marginLeft: 25 }}>
-                <TextButtonDark label={"I want something else!"} basic={true} callback={() => {
+                <TextButtonDark label={ lang("I_want_something_else_")} basic={true} callback={() => {
                   setType(null);
                   setIgnorInstantEdit(true);
                 }}/>
@@ -230,7 +230,7 @@ function TimePart(props : {
                         })
                         .catch((err) => { LOGe.info("AicoreTimeCustomization: Could not pick time for android.", err) })
                   }}>
-                    <Text style={{fontSize:13, fontWeight: '200', color:colors.black.rgba(0.6)}}>TAP TIME TO CHANGE</Text>
+                    <Text style={{fontSize:13, fontWeight: '200', color:colors.black.rgba(0.6)}}>{ lang("TAP_TIME_TO_CHANGE") }</Text>
                     <Text style={{fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6)}}>
                       { time.hours + ":" + (time.minutes < 10 ? '0' + time.minutes : time.minutes) }
                     </Text>
