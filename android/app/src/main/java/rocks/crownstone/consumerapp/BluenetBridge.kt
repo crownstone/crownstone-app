@@ -1885,21 +1885,21 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun broadcastSwitch(referenceId: String, stoneIdInt: Int, switchValDouble: Double, callback: Callback) {
-		Log.i(TAG, "broadcastSwitch referenceId=$referenceId stoneId=$stoneIdInt switchVal=$switchValDouble")
+	fun broadcastSwitch(referenceId: String, stoneIdInt: Int, switchValDouble: Double, autoExecute: Boolean, callback: Callback) {
+		Log.i(TAG, "broadcastSwitch referenceId=$referenceId stoneId=$stoneIdInt switchVal=$switchValDouble, autoExecute=$autoExecute")
 		val stoneId = Conversion.toUint8(stoneIdInt)
 		val switchVal = convertSwitchVal(switchValDouble)
-		bluenet.broadCast.switch(referenceId, stoneId, switchVal)
+		bluenet.broadCast.switch(referenceId, stoneId, switchVal, autoExecute)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
 
 	@ReactMethod
 	@Synchronized
-	fun turnOnBroadcast(referenceId: String, stoneIdInt: Int, callback: Callback) {
-		Log.i(TAG, "turnOnBroadcast referenceId=$referenceId stoneId=$stoneIdInt")
+	fun turnOnBroadcast(referenceId: String, stoneIdInt: Int, autoExecute: Boolean, callback: Callback) {
+		Log.i(TAG, "turnOnBroadcast referenceId=$referenceId stoneId=$stoneIdInt, autoExecute=$autoExecute")
 		val stoneId = Conversion.toUint8(stoneIdInt)
-		bluenet.broadCast.switchOn(referenceId, stoneId)
+		bluenet.broadCast.switchOn(referenceId, stoneId, autoExecute)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
 	}
@@ -1924,6 +1924,13 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		bluenet.broadCast.setBehaviourSettings(referenceId, mode)
 				.success { resolveCallback(callback) }
 				.fail { rejectCallback(callback, it.message) }
+	}
+
+	@ReactMethod
+	@Synchronized
+	fun broadcastExecute() {
+		Log.i(TAG, "broadcastExecute")
+		bluenet.broadCast.execute()
 	}
 //endregion
 
@@ -3066,6 +3073,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 //		serviceDataMap.putInt("opCode", serviceData.version.num.toInt()) // Not required
 //		serviceDataMap.putInt("dataType", serviceData.type.num.toInt()) // Not required
 		serviceDataMap.putBoolean("stateOfExternalCrownstone", serviceData.flagExternalData)
+		serviceDataMap.putBoolean("alternativeState", serviceData.type == ServiceDataType.ALT_STATE)
 		serviceDataMap.putBoolean("hasError", serviceData.flagError)
 		serviceDataMap.putBoolean("setupMode", device.operationMode == OperationMode.SETUP)
 		serviceDataMap.putInt("crownstoneId", serviceData.crownstoneId.toInt())
@@ -3076,6 +3084,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 		serviceDataMap.putDouble("powerUsageReal", serviceData.powerUsageReal)
 		serviceDataMap.putDouble("powerUsageApparent", serviceData.powerUsageApparent)
 		serviceDataMap.putDouble("accumulatedEnergy", serviceData.energyUsed.toDouble()) // TODO: should be long?
+		servideDataMap.putInt("behaviourMasterHash", serviceData.behaviourHash)
 
 		if (serviceData.version == ServiceDataVersion.V1 || serviceData.version == ServiceDataVersion.UNKNOWN) {
 			serviceDataMap.putDouble("timestamp", -1.0)
