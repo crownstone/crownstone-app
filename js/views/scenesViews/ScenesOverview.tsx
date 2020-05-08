@@ -1,5 +1,5 @@
 import * as React                 from 'react';
-import { Text, View }             from "react-native";
+import { Platform, Text, View } from "react-native";
 import { screenWidth, colors}     from "../styles";
 import { LiveComponent }          from "../LiveComponent";
 import { core }                   from "../../core";
@@ -157,7 +157,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
               renderItem={({ item, index, drag, isActive }) => { return this.renderItem( scenes[item as string], activeSphere, item, index, drag, isActive ); }}
               keyExtractor={(item : any, index) => `draggable-item-${item}`}
               onDragEnd={({ data }) => { this.setState({ data }); this.sortedList.update(data as string[])}}
-              activationDistance={10}
+              activationDistance={Platform.OS === 'android' ? 10 : 1}
             />
           </View>
          );
