@@ -6,6 +6,7 @@ function lang(key,a?,b?,c?,d?,e?) {
 }
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Alert,
   Platform,
   ScrollView, Text, Vibration,
   View
@@ -20,8 +21,9 @@ import { DfuDeviceUpdaterEntry } from "../components/deviceEntries/DfuDeviceUpda
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { BatchDFUCrownstonesBanner } from "../components/animated/BatchDFUCrownstonesBanner";
 import { TopBarUtil } from "../../util/TopBarUtil";
+import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 
-
+const CLASSNAME = "DFU_BATCH";
 export class DfuBatch extends Component<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Updating_"), disableBack: true});
@@ -41,6 +43,16 @@ export class DfuBatch extends Component<any, any> {
       updatingCrownstoneIndex: 0
     };
   }
+
+  componentDidMount(): void {
+    BackButtonHandler.override(CLASSNAME, () => { Alert.alert("This process cannot be interrupted.","Please wait until the update cycle is completed.",[{text:"OK"}])})
+  }
+
+  componentWillUnmount(): void {
+    BackButtonHandler.clearOverride(CLASSNAME);
+  }
+
+
 
   _renderer(item, index, stoneId) {
     return (
