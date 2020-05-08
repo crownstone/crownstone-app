@@ -421,18 +421,20 @@ function removeBehaviourInCloud(action, state, oldState) {
   let rule = stone.rules[ruleId];
   if (!rule) { return }
 
-  if (rule.cloudId !== undefined && rule.cloudId !== null) {
+  if (rule.cloudId) {
     core.eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_REMOVE_BEHAVIOURS',
       id: 'remove'+ action.ruleId,
       localId: action.ruleId,
       sphereId: action.sphereId,
+      stoneId: action.stoneId,
       cloudId: rule.cloudId,
     });
   }
 }
 
 function removeAllBehavioursForStoneInCloud(action, state) {
+  // this is only used for devs, so we won't wrap it in the events
   let stoneId = action.stoneId;
   CLOUD.forStone(stoneId).deleteAllBehaviours();
 }

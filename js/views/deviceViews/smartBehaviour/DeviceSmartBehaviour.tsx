@@ -164,14 +164,11 @@ export class DeviceSmartBehaviour extends LiveComponent<any, any> {
         let overrideActive = false;
 
         let overrideCheck = (ruleObj) => {
-          console.log("CHECK", ruleObj)
           if (ruleObj && ruleObj.isCurrentlyActive(this.props.sphereId)) {
-            console.log("currentlyActive", stone.state.state, ruleObj.getDimPercentage(), behaviourOverridden)
             if (Math.round(100*stone.state.state) !== ruleObj.getDimPercentage() && behaviourOverridden) {
               overrideActive = true;
             }
           }
-          console.log("OVerrie Active", overrideActive)
         }
 
 
