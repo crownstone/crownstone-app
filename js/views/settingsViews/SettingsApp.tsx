@@ -58,13 +58,13 @@ export class SettingsApp extends LiveComponent<any, any> {
 
   _getExplanation(rssiOffset) {
     if (!rssiOffset || rssiOffset === 0) {
-      return "Tap to toggle when the phone is close a Crownstone."
+      return "Tap to toggle when the phone is close to a Crownstone."
     }
     else if (rssiOffset > 0 && rssiOffset <= 5) {
-      return "Tap to toggle when the phone is very close a Crownstone."
+      return "Tap to toggle when the phone is very close to a Crownstone."
     }
     else if (rssiOffset > 5) {
-      return "Tap to toggle when the phone is close a Crownstone.\nNOTE: It might not be possible to get close enough!"
+      return "Tap to toggle when the phone is close to a Crownstone.\nNOTE: It might not be possible to get close enough!"
     }
     else if (rssiOffset < 0 && rssiOffset >= -5) {
       return "Tap to toggle when the phone is near a Crownstone."

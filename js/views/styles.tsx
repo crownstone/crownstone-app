@@ -46,7 +46,7 @@ export const pxRatio = PixelRatio.get();
 export const EXTRA_LARGE_ROW_SIZE  = 85;
 export const LARGE_ROW_SIZE  = 75;
 export const MID_ROW_SIZE    = 62;
-export const NORMAL_ROW_SIZE = 50;
+export const NORMAL_ROW_SIZE = 54;
 
 export let colors : colorInterface = {
   csBlue:               {hex:'#003E52'},

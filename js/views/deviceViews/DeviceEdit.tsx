@@ -374,13 +374,13 @@ export class DeviceEdit extends LiveComponent<any, any> {
                   firmwareVersion: firmwareVersion.data,
                 }
               })
-              .catch((err) => {
-                Alert.alert(
-                  lang("_Whoops___I_could_not_get_header"),
-                  lang("_Whoops___I_could_not_get_body"),
-                  [{text:lang("_Whoops___I_could_not_get_left")}]);
-                throw err;
-              });
+            })
+            .catch((err) => {
+              Alert.alert(
+                lang("_Whoops___I_could_not_get_header"),
+                lang("_Whoops___I_could_not_get_body"),
+                [{text:lang("_Whoops___I_could_not_get_left")}]);
+              throw err;
             }));
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getHardwareVersion'},{},2, 'from checkFirmware')
             .then((hardwareVersion : {data: string}) => {
@@ -392,14 +392,35 @@ export class DeviceEdit extends LiveComponent<any, any> {
                   hardwareVersion: hardwareVersion.data,
                 }
               })
-              .catch((err) => {
-                Alert.alert(
-                  lang("_Whoops___I_could_not_get__header"),
-                  lang("_Whoops___I_could_not_get__body"),
-                  [{text:lang("_Whoops___I_could_not_get__left")}]);
-                throw err;
-              });
-            }));
+            })
+            .catch((err) => {
+              Alert.alert(
+                lang("_Whoops___I_could_not_get__header"),
+                lang("_Whoops___I_could_not_get__body"),
+                [{text:lang("_Whoops___I_could_not_get__left")}]);
+              throw err;
+            }))
+          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getBootloaderVersion'},{},2, 'from checkFirmware')
+            .then((bootloaderVersion : {data: string}) => {
+              let version = bootloaderVersion.data;
+              if (version) {
+                core.store.dispatch({
+                  type: "UPDATE_STONE_CONFIG",
+                  stoneId: this.props.stoneId,
+                  sphereId: this.props.sphereId,
+                  data: {
+                    bootloaderVersion: version,
+                  }
+                })
+              }
+            })
+            .catch((err) => {
+              Alert.alert(
+                lang("_Whoops___I_could_not_get__header"),
+                lang("_Whoops___I_could_not_get__body"),
+                [{text:lang("_Whoops___I_could_not_get__left")}]);
+              throw err;
+            }))
           BatchCommandHandler.executePriority();
           
           

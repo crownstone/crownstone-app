@@ -24,8 +24,10 @@ import { PictureGallerySelector } from "../components/PictureGallerySelector";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "./ScenePictureGallery";
 import { xUtil } from "../../util/StandAloneUtil";
 import { processImage, processStockCustomImage, removeStockCustomImage } from "../../util/Util";
-import { getScenePictureSource } from "./supportComponents/SceneItem";
+import { executeScene, getScenePictureSource } from "./supportComponents/SceneItem";
+import { BackButtonHandler } from "../../backgroundProcesses/BackButtonHandler";
 
+const SCENE_ADD_CLASSNAME = "SceneAdd";
 
 export class SceneAdd extends LiveComponent<any, any> {
   static options = {
@@ -47,6 +49,18 @@ export class SceneAdd extends LiveComponent<any, any> {
       picture: null,
       pictureURI: null
     };
+  }
+
+  componentDidMount(): void {
+    BackButtonHandler.override(SCENE_ADD_CLASSNAME, () => {
+      if (this._interview.back() === false) {
+        NavigationUtil.dismissModal();
+      }
+    })
+  }
+
+  componentWillUnmount(): void {
+    BackButtonHandler.clearOverride(SCENE_ADD_CLASSNAME);
   }
 
   navigationButtonPressed({buttonId}) {
@@ -92,7 +106,8 @@ export class SceneAdd extends LiveComponent<any, any> {
       sortData[stoneId] = locationName;
       stoneList.push({
         locationName: locationName,
-        component: <StoneSwitchStateRow
+        component:
+          <StoneSwitchStateRow
             key={stoneId}
             sphereId={sphereId}
             stoneId={stoneId}
@@ -101,7 +116,7 @@ export class SceneAdd extends LiveComponent<any, any> {
             margins={true}
             setStateCallback={(switchState) => {
               this.sceneData.data[stoneCID] = switchState;
-            }}/>
+          }}/>
       });
     })
 
@@ -111,6 +126,19 @@ export class SceneAdd extends LiveComponent<any, any> {
     stoneList.forEach((item) => {
       items.push(item.component);
     })
+
+    items.push(
+      <View key={"testingButton"} style={{width: screenWidth, ...styles.centered, marginTop:20, marginBottom:30}}>
+        <View style={{padding:3, borderRadius: 13, backgroundColor: colors.white.blend(colors.green, 0.2).hex }}>
+          <TouchableOpacity
+            style={{flexDirection:'row', width: screenWidth - 70, backgroundColor: colors.green.hex, ...styles.centered, borderRadius:10}}
+            onPress={() => { executeScene(this.sceneData.data, sphereId); }}>
+            <Icon name={'ios-play'} color={colors.white.hex} size={25} />
+            <Text style={{color: colors.white.hex, fontWeight:'bold', fontSize:15, padding:15, fontStyle:'italic'}}>Preview this Scene!</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
     return items;
   }
 
@@ -200,7 +228,9 @@ lang("_Select_at_least_one______body"),
           <View>
             { this.getStoneSwitchStateList(this.sceneData.sphereId) }
           </View>,
-        options: [{label: lang("Next"), nextCard:'picture', textAlign:'right', onSelect: (result) => { }}]
+        options: [
+          {label: lang("Next"), nextCard:'picture', textAlign:'right', onSelect: (result) => { }},
+        ]
       },
       picture: {
         header: "And finally...",
@@ -281,14 +311,11 @@ lang("_Select_at_least_one______body"),
         <TopbarImitation
           leftStyle={{color: textColor}}
           left={Platform.OS === 'android' ? null : "Back"}
-          leftAction={() => { if (this._interview.back() === false) {
-            if (this.props.isModal !== false) {
+          leftAction={() => {
+            if (this._interview.back() === false) {
               NavigationUtil.dismissModal();
-            }
-            else {
-              NavigationUtil.back();
-            }
-          }}}
+            }}
+          }
           leftButtonStyle={{width: 300}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <Interview
           scrollEnabled={false}
@@ -428,7 +455,10 @@ export function StoneSwitchStateRow({sphereId, stoneId, locationName, state, set
           value={switchState}
           minimumTrackTintColor={colors.gray.hex}
           maximumTrackTintColor={colors.gray.hex}
-          onValueChange={(value) => { setStateCallback(value); setSwitchState(value); }}
+          onValueChange={(value) => {
+            if (value < 0.05) { value = 0 };
+            if (value >= 0.05 && value < 0.1) { value = 0.1 };
+            setStateCallback(value); setSwitchState(value); }}
         />
       </View>
     )

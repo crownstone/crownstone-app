@@ -51,15 +51,7 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
         onPress={() => {
           if (editMode === false) {
             let switchData = scene.data;
-            let action = false;
-            Object.keys(switchData).forEach((stoneCID) => {
-              action = true;
-              let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
-              BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {commandName:"multiSwitch", state: switchData[stoneCID]}, {autoExecute: false}).catch()
-            })
-            if (action) {
-              BatchCommandHandler.executePriority();
-            }
+            executeScene(switchData, sphereId);
 
             setActivated(true);
             setTimeout(() => { setActivated(false); }, 2000);
@@ -178,5 +170,17 @@ export const getScenePictureSource = function(scene) {
   }
   else {
     return require("../../../images/icons/downloadFromCrownstone.png");
+  }
+}
+
+export const executeScene = function(switchData, sphereId) {
+  let action = false;
+  Object.keys(switchData).forEach((stoneCID) => {
+    action = true;
+    let stoneData = MapProvider.stoneCIDMap[sphereId][stoneCID];
+    BatchCommandHandler.loadPriority(stoneData.stone, stoneData.id, sphereId, {commandName:"multiSwitch", state: switchData[stoneCID]}, {autoExecute: false}).catch()
+  })
+  if (action) {
+    BatchCommandHandler.executePriority();
   }
 }

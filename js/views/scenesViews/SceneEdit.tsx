@@ -15,7 +15,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import { ScrollView } from "react-native";
 import { ListEditableItems } from "../components/ListEditableItems";
 import { xUtil } from "../../util/StandAloneUtil";
-import { getScenePictureSource } from "./supportComponents/SceneItem";
+import { executeScene, getScenePictureSource } from "./supportComponents/SceneItem";
 import { DataUtil } from "../../util/DataUtil";
 import { StoneSwitchStateRow } from "./SceneAdd";
 import { IconButton } from "../components/IconButton";
@@ -190,6 +190,17 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
     stoneList.forEach((item) => {
       items.push(item.component);
     })
+
+    items.push({type:"spacer"})
+    items.push({
+      type:'button',
+      label: "Test the Scene!",
+      style: { color: colors.green.hex, fontWeight:'bold' },
+      icon: <IconButton name='ios-play' buttonSize={35} size={23} radius={8}  color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+      callback: () => {
+        executeScene(this.state.data, this.props.sphereId);
+      }
+    });
 
     items.push({type:"spacer"})
     items.push({type:"spacer"})

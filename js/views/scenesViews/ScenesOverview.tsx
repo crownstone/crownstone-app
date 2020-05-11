@@ -1,5 +1,5 @@
 import * as React                 from 'react';
-import { Platform, Text, View } from "react-native";
+import { Platform, Text, View, Image } from "react-native";
 import { screenWidth, colors}     from "../styles";
 import { LiveComponent }          from "../LiveComponent";
 import { core }                   from "../../core";
@@ -18,9 +18,11 @@ import { SceneItem }              from "./supportComponents/SceneItem";
 import { NavigationUtil } from "../../util/NavigationUtil";
 import { SortedList, SortingManager } from "../../logic/SortingManager";
 import { Navigation } from "react-native-navigation";
+import { ScaledImage } from "../components/ScaledImage";
 
 
-let className = "ScenesOverview";
+const className = "ScenesOverview";
+const HINT_THRESHOLD = 3;
 
 export class ScenesOverview extends LiveComponent<any, any> {
   static options(props) {
@@ -65,6 +67,36 @@ export class ScenesOverview extends LiveComponent<any, any> {
   }
 
   renderItem(scene, sphereId, sceneId, index, drag, isBeingDragged) {
+    if (sceneId == 'spacer') {
+      return <View style={{height:20}} />
+    }
+    else if (sceneId == 'add') {
+      let state = core.store.getState();
+      let activeSphere = state.app.activeSphere;
+      let showHint = false;
+      if (activeSphere && state.spheres[activeSphere]) {
+        let scenes = state.spheres[activeSphere].scenes;
+        let sceneIds = Object.keys(scenes);
+        if (sceneIds.length < HINT_THRESHOLD) {
+          showHint = true;
+        }
+      }
+
+      return (
+        <View>
+          <SlideFadeInView visible={this.state.editMode} height={95}>
+            <SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphere }) }} isFirst={false} />
+          </SlideFadeInView>
+          <SlideFadeInView visible={!this.state.editMode && showHint} height={50}>
+            <View style={{flexDirection:"row", alignItems:'center'}}>
+              <View style={{flex:1}} />
+              <Text style={{paddingRight:5, paddingTop:15, fontStyle:"italic", color: colors.black.rgba(0.5)}}>Add more scenes by tapping edit!</Text>
+              <ScaledImage source={require("../../images/lineDrawings/arrow.png")} sourceHeight={195} sourceWidth={500} targetWidth={screenWidth-300} style={{marginRight:20}} tintColor={colors.black.rgba(0.5)} />
+            </View>
+          </SlideFadeInView>
+        </View>
+      );
+    }
     return (
       <SceneItem
         key={sceneId}
@@ -131,7 +163,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
-    this.localEventBus.clearAllEvents()
+    this.localEventBus.clearAllEvents();
   }
 
   render() {
@@ -139,6 +171,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
     let activeSphere = state.app.activeSphere;
 
     let content;
+
     if (activeSphere && state.spheres[activeSphere]) {
       let scenes = state.spheres[activeSphere].scenes;
       let sceneIds = Object.keys(scenes);
@@ -147,18 +180,26 @@ export class ScenesOverview extends LiveComponent<any, any> {
       }
       else {
         content = (
-          <View style={{ flexGrow: 1, alignItems:'center', paddingTop: 20 }}>
-            <SlideFadeInView visible={this.state.editMode} height={100}>
-              <SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphere }) }} isFirst={false} />
-            </SlideFadeInView>
+          <View style={{ flexGrow: 1, alignItems:'center' }}>
             <DraggableFlatList
-              data={this.state.data}
+              showsVerticalScrollIndicator={false}
+              data={["add", ...this.state.data, "spacer"]}
               onRelease={() => { this.localEventBus.emit("END_DRAG" );}}
               renderItem={({ item, index, drag, isActive }) => { return this.renderItem( scenes[item as string], activeSphere, item, index, drag, isActive ); }}
               keyExtractor={(item : any, index) => `draggable-item-${item}`}
-              onDragEnd={({ data }) => { this.setState({ data }); this.sortedList.update(data as string[])}}
-              activationDistance={Platform.OS === 'android' ? 10 : 1}
+              onDragEnd={({ data }) => {
+                let dataToUse = [];
+                for (let i = 0; i < data.length; i++) {
+                  if (scenes[data[i]] !== undefined) {
+                    dataToUse.push(data[i]);
+                  }
+                }
+                this.setState({ data: dataToUse }); this.sortedList.update(dataToUse as string[])}}
+              activationDistance={10}
+              style={{paddingTop: sceneIds.length >= HINT_THRESHOLD ? 20 : 10}}
             />
+            {/*<SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphere }) }} isFirst={false} />*/}
+
           </View>
          );
        }
