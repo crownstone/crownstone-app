@@ -10,7 +10,7 @@ let fieldMap : fieldMap = [
   {local: 'updatedAt',     cloud: 'updatedAt'},
   {local: 'data',          cloud: 'data'},
   {local: 'pictureId',     cloud: 'customPictureId',       cloudToLocalOnly: true},
-  {local: 'picture',       cloud: 'stockPictureAvailable', cloudToLocalOnly: true}, // this is added to the cloudData afterwards if there is a stockPicture.
+  {local: 'picture',       cloud: 'stockPictureAvailable', cloudToLocalOnly: true, onlyIfValue: true }, // this is added to the cloudData afterwards if there is a stockPicture.
   {local: 'pictureSource', cloud: 'pictureSource',         cloudToLocalOnly: true},
 
   // used for local config

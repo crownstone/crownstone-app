@@ -1,5 +1,5 @@
 import * as React                 from 'react';
-import { Platform, Text, View, Image } from "react-native";
+import { Platform, Text, View, Image, Alert } from "react-native";
 import { screenWidth, colors}     from "../styles";
 import { LiveComponent }          from "../LiveComponent";
 import { core }                   from "../../core";
@@ -80,6 +80,10 @@ export class ScenesOverview extends LiveComponent<any, any> {
         if (sceneIds.length < HINT_THRESHOLD) {
           showHint = true;
         }
+
+        if (Permissions.inSphere(activeSphere).canCreateScenes === false) {
+          return <View></View>
+        }
       }
 
       return (
@@ -117,6 +121,13 @@ export class ScenesOverview extends LiveComponent<any, any> {
       TopBarUtil.replaceOptions(this.props.componentId, NAVBAR_PARAMS_CACHE)
     }
     if (buttonId === 'edit') {
+      let state = core.store.getState();
+      let activeSphereId = state.app.activeSphere;
+      if (Permissions.inSphere(activeSphereId).canCreateScenes == false) {
+        Alert.alert("You do not have permission to change scenes...","Ask an admin in your Sphere to help you out!", [{text:"OK"}]);
+        return;
+      }
+
       this.localEventBus.emit("ChangeInEditMode", true);
       this.setState({ editMode: true  }, updateTopBar);
       BackButtonHandler.override(className, () => {
@@ -172,6 +183,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
 
     let content;
 
+
     if (activeSphere && state.spheres[activeSphere]) {
       let scenes = state.spheres[activeSphere].scenes;
       let sceneIds = Object.keys(scenes);
@@ -179,6 +191,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
         content = <SceneIntroduction sphereId={activeSphere} />
       }
       else {
+        let hintShown = sceneIds.length < HINT_THRESHOLD && Permissions.inSphere(activeSphere).canCreateScenes === true;
         content = (
           <View style={{ flexGrow: 1, alignItems:'center' }}>
             <DraggableFlatList
@@ -196,7 +209,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
                 }
                 this.setState({ data: dataToUse }); this.sortedList.update(dataToUse as string[])}}
               activationDistance={10}
-              style={{paddingTop: sceneIds.length >= HINT_THRESHOLD ? 20 : 10}}
+              style={{paddingTop: hintShown ? 10 : 20}}
             />
             {/*<SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphere }) }} isFirst={false} />*/}
 
@@ -243,6 +256,7 @@ function getTopBarProps(props, viewState) {
   else if (activeSphere) {
     title += " in " + activeSphere.config.name;
   }
+
 
   if (scenesAvailable) {
     if (viewState.editMode !== true) {
