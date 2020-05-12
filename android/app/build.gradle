@@ -144,8 +144,8 @@ android {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        missingDimensionStrategy 'react-native-camera', 'general'
-        versionCode 67
+//        missingDimensionStrategy 'react-native-camera', 'general'
+        versionCode 68
         versionName"4.1.0"
 //        ndk {
 //            abiFilters "armeabi-v7a", "x86"
@@ -248,7 +248,7 @@ dependencies {
     implementation project(':react-native-navigation')
     implementation project(':react-native-extra-dimensions-android')
     implementation project(':@react-native-community_blur')
-    implementation project(':react-native-camera')
+//    implementation project(':react-native-camera')
     implementation project(':react-native-maps')
 //    compile ('com.google.android.gms:play-services-gcm:9.6.1') {
 //        force = true;
