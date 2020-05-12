@@ -29,6 +29,7 @@ export class PermissionBase {
   changeBehaviour            = false; // a or m
   removeCrownstone           = false; // a
   canClearErrors             = false; // a
+  canUploadSortedLists       = false; // a
 
   canSetSphereLocation       = false; // a
   canSetSphereSmartHomeState = false; // a or m
@@ -44,6 +45,7 @@ export class PermissionBase {
   canCreateScenes            = false; // a or m
   canCreateData              = false; // a or m
   canCreateSpheres           = false; // a or m
+  canCreateSortedLists      = false; // a or m
 
   canUploadDiagnostics       = false; // a or m
   canUploadStones            = false; // a or m
@@ -151,8 +153,10 @@ export class PermissionClass extends PermissionBase {
         this.canLockCrownstone       = true; // admin
         this.canUnlockCrownstone     = true; // admin
         this.canEnableDimming        = true; // admin
-        this.canChangeAbilities      = true // a
+        this.canChangeAbilities      = true  // admin
         this.canCreateStones         = true; // admin
+
+        this.canUploadSortedLists    = true; // admin
       case 'member':
         this.doLocalizationTutorial  = true; // admin and member
         this.changeBehaviour         = true; // admin and member
@@ -172,6 +176,7 @@ export class PermissionClass extends PermissionBase {
         this.canUploadScenes         = true; // admin and member
         this.canUploadDiagnostics    = true; // admin and member
 
+        this.canCreateSortedLists    = true; // admin and member
         this.canCreateScenes         = true; // admin and member
         this.canCreateLocations      = true; // admin and member
         this.canCreateData           = true; // admin and member

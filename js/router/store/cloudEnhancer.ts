@@ -83,7 +83,7 @@ function handleAction(action, returnValue, newState, oldState) {
 
     case 'ADD_SCENE':
     case 'UPDATE_SCENE':
-      handleSceneInCloud(action, newState);
+      handleSceneInCloud(action, newState, oldState);
       break;
     case 'REMOVE_SCENE':
       removeSceneInCloud(action, newState, oldState);
@@ -267,11 +267,13 @@ function handleLocationInCloud(action, state) {
 
 
 
-function handleSceneInCloud(action, state) {
-  let existingSphere = state.spheres[action.sphereId];
-  if (!existingSphere) { return }
-  let existingScene = existingSphere.scenes[action.sceneId];
+function handleSceneInCloud(action, newState, oldState) {
+  let existingSphere = oldState.spheres[action.sphereId];
+  let newSphere = newState.spheres[action.sphereId];
+  if (!existingSphere || !newSphere) { return }
 
+  // existing scene is the one BEFORE this action.
+  let existingScene = existingSphere.scenes[action.sceneId];
   if (existingScene && existingScene.cloudId) {
     if (action.data.picture && action.data.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
       // in case the user has a pending delete scene picture request, we will finish this immediately so a new
@@ -328,24 +330,27 @@ function handleSceneInCloud(action, state) {
         let sphere = newState.spheres[action.sphereId];
         let scene = sphere.scenes[action.sceneId];
 
-        core.eventBus.emit("submitCloudEvent", {
-          type: 'CLOUD_EVENT_SPECIAL_SCENES',
-          id: 'uploadScenePicture' + action.sceneId,
-          localId: action.sceneId,
-          cloudId: existingScene.cloudId,
-          sphereId: action.sphereId,
-          specialType: 'uploadScenePicture'
-        });
+        // upload the image if there is a custom image.
+        if (scene.pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
+          core.eventBus.emit("submitCloudEvent", {
+            type: 'CLOUD_EVENT_SPECIAL_SCENES',
+            id: 'uploadScenePicture' + action.sceneId,
+            localId: action.sceneId,
+            cloudId: scene.cloudId,
+            sphereId: action.sphereId,
+            specialType: 'uploadScenePicture'
+          });
+        }
       })
       .catch(() => {});
   }
   else {
-    let scene = existingSphere.scenes[action.sceneId];
+    let scene = newSphere.scenes[action.sceneId];
     transferScenes.updateOnCloud({
       localId: action.sceneId,
       localData: scene,
       localSphereId: action.sphereId,
-      cloudSphereId: existingSphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
+      cloudSphereId: newSphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
       cloudId: scene.cloudId || action.sceneId,
     }).catch(() => {
     });

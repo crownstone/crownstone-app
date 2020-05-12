@@ -50,8 +50,16 @@ export class SceneEdit extends LiveComponent<{sphereId: string, sceneId: string}
     let scene = core.store.getState()?.spheres[props.sphereId]?.scenes[props.sceneId] || null;
     if (scene) {
       sceneData = {...sceneData, ...scene};
+      let pictureURI = getScenePictureSource(scene);
       this.originalPicture = scene.picture;
-      sceneData.pictureURI = getScenePictureSource(scene);
+      if (pictureURI) {
+        sceneData.pictureURI = getScenePictureSource(scene);
+      }
+      else {
+        sceneData.pictureSource = null;
+        sceneData.picture       = null;
+        sceneData.pictureURI    = null;
+      }
     }
 
     this.state = sceneData;

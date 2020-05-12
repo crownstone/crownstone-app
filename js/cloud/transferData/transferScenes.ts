@@ -11,7 +11,10 @@ let fieldMap : fieldMap = [
   {local: 'data',          cloud: 'data'},
   {local: 'pictureId',     cloud: 'customPictureId',       cloudToLocalOnly: true},
   {local: 'picture',       cloud: 'stockPictureAvailable', cloudToLocalOnly: true, onlyIfValue: true }, // this is added to the cloudData afterwards if there is a stockPicture.
-  {local: 'pictureSource', cloud: 'pictureSource',         cloudToLocalOnly: true},
+  {local: 'pictureSource', cloud: 'pictureSource',         cloudToLocalOnly: true, onlyIfValue: true },
+
+  {local: 'stockPicture', cloud: 'stockPicture',           localToCloudOnly: true, onlyIfValue: true }, // this is added to the cloudData afterwards if there is a stockPicture.
+
 
   // used for local config
   {local: 'cloudId',   cloud: 'id',  cloudToLocalOnly: true },
@@ -44,6 +47,13 @@ export const transferScenes = {
   updateOnCloud: function( data : transferToCloudData ) {
     if (data.cloudId === undefined) {
       return Promise.reject({status: 404, message:"Can not update in cloud, no cloudId available"});
+    }
+
+    if (data.localData.pictureSource === PICTURE_GALLERY_TYPES.STOCK) {
+      data.localData['stockPicture'] = data.localData.picture;
+    }
+    else {
+      data.localData['stockPicture'] = null;
     }
 
     let payload = {};

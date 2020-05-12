@@ -63,7 +63,8 @@ export function SceneItem({sphereId, sceneId, scene, stateEditMode, dragAction, 
         onLongPress={dragAction}
       >
       <SlideSideFadeInView visible={drag} width={40} />
-        <Image source={image} style={{width: SceneConstants.sceneHeight, height: SceneConstants.sceneHeight, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}} />
+        { image ? <Image source={image} style={{width: SceneConstants.sceneHeight, height: SceneConstants.sceneHeight, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}} />
+         : <MissingImage /> }
         <View style={{flexDirection:'row', backgroundColor: color, flex:1, height: SceneConstants.sceneHeight, alignItems:'center'}}>
           <View style={{width:1, height: SceneConstants.sceneHeight, backgroundColor: colors.black.hex}} />
           <View style={{paddingLeft:10}}>
@@ -106,6 +107,16 @@ text:lang("_Are_you_sure___Do_you_wa_right"), onPress: (() => {
           </SlideSideFadeInView>
         </SlideSideFadeInView>
       </TouchableOpacity>
+    </View>
+  )
+}
+
+function MissingImage(props) {
+  return (
+    <View style={{width: SceneConstants.sceneHeight, height: SceneConstants.sceneHeight, borderTopLeftRadius: 10, borderBottomLeftRadius: 10, backgroundColor: colors.white.hex}}>
+      <View style={{flex:1, ...styles.centered, backgroundColor:colors.blue.hex}}>
+        <Icon name={"md-photos"} color={colors.white.hex} size={50} />
+      </View>
     </View>
   )
 }
@@ -169,7 +180,7 @@ export const getScenePictureSource = function(scene) {
     return { uri: xUtil.preparePictureURI(scene.picture) };
   }
   else {
-    return require("../../../images/icons/downloadFromCrownstone.png");
+    return undefined;
   }
 }
 

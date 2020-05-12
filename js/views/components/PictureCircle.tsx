@@ -73,7 +73,7 @@ export class PictureCircle extends Component<any, any> {
                 lang("_Delete_this_picture__arg_body",undefined),
                 [
                   {text:lang("_Delete_this_picture__arg_left")},
-                  {text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); }}
+                  {text:lang("_Delete_this_picture__arg_right"), onPress:() => { this.props.removePicture(); this.triggerOptions(); }}
                 ]
               )
             }

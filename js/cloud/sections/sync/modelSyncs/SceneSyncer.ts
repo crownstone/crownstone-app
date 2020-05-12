@@ -143,7 +143,6 @@ export class SceneSyncer extends SyncingSphereItemBase {
 
     if (shouldUpdateInCloud(sceneInState, scene_from_cloud)) {
       if (!Permissions.inSphere(this.localSphereId).canUploadScenes) { return }
-
       this.transferPromises.push(
         transferScenes.updateOnCloud({
           localId:   localId,

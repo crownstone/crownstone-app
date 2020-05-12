@@ -114,7 +114,7 @@ export class SettingsDatabaseExplorer extends LiveComponent<any, any> {
               this.state.editField === url+key ?
                 this.getEditField(stateSegment, key)
                 :
-                <Text style={textStyle}>{ lang("__",key,label) }</Text>
+                <Text style={textStyle}>{ key + ": " + label }</Text>
             }
           </TouchableOpacity>
         );
