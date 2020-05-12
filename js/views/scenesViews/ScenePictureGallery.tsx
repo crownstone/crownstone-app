@@ -119,7 +119,7 @@ export const SCENE_IMAGE_SOURCE = {
   },
   movie_time: {
     'movie_time_0.jpg': require("../../images/scenes/movie_time/movie_time_0.jpg"),
-    'movie_time_1.png': require("../../images/scenes/movie_time/movie_time_1.png"),
+    'movie_time_1.jpg': require("../../images/scenes/movie_time/movie_time_1.jpg"),
     'movie_time_2.jpg': require("../../images/scenes/movie_time/movie_time_2.jpg"),
     'movie_time_3.jpg': require("../../images/scenes/movie_time/movie_time_3.jpg"),
     'movie_time_4.png': require("../../images/scenes/movie_time/movie_time_4.png"),
@@ -127,7 +127,8 @@ export const SCENE_IMAGE_SOURCE = {
     'movie_time_6.jpg': require("../../images/scenes/movie_time/movie_time_6.jpg"),
     'movie_time_7.jpg': require("../../images/scenes/movie_time/movie_time_7.jpg"),
     'movie_time_8.jpg': require("../../images/scenes/movie_time/movie_time_8.jpg"),
-    'movie_time_9.jpg': require("../../images/scenes/movie_time/movie_time_9.jpg")
+    'movie_time_9.jpg': require("../../images/scenes/movie_time/movie_time_9.jpg"),
+    'movie_time_10.jpg': require("../../images/scenes/movie_time/movie_time_10.jpg")
   },
   music: {
     'music_0.jpg': require("../../images/scenes/music/music_0.jpg"),
@@ -138,8 +139,7 @@ export const SCENE_IMAGE_SOURCE = {
     'music_5.jpg': require("../../images/scenes/music/music_5.jpg"),
     'music_6.jpg': require("../../images/scenes/music/music_6.jpg"),
     'music_7.jpg': require("../../images/scenes/music/music_7.jpg"),
-    'music_8.jpg': require("../../images/scenes/music/music_8.jpg"),
-    'music_9.jpg': require("../../images/scenes/music/music_9.jpg")
+    'music_8.jpg': require("../../images/scenes/music/music_8.jpg")
   },
   party: {
     'party_0.jpg': require("../../images/scenes/party/party_0.jpg"),
@@ -197,7 +197,6 @@ export const SCENE_IMAGE_SOURCE = {
     'study_8.jpg': require("../../images/scenes/study/study_8.jpg"),
     'study_9.jpg': require("../../images/scenes/study/study_9.jpg"),
     'study_10.jpg': require("../../images/scenes/study/study_10.jpg"),
-    'study_11.jpg': require("../../images/scenes/study/study_11.jpg")
   },
   weather: {
     'weather_0.jpg': require("../../images/scenes/weather/weather_0.jpg"),
