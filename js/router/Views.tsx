@@ -11,7 +11,8 @@ import { AlexaOverview }                  from "../views/thirdParty/alexa/AlexaO
 
 import { AiStart }                        from '../views/startupViews/AiStart'
 import { AddItemsToSphere }               from '../views/main/AddItemsToSphere'
-import { CameraRollView }                 from '../views/cameraViews/CameraRollView'
+// import { CameraRollView }                 from '../views/cameraViews/CameraRollView'
+// import { PictureView }                    from '../views/cameraViews/PictureView'
 import { DeviceOverview }                 from '../views/deviceViews/DeviceOverview'
 import { DeviceEdit }                     from '../views/deviceViews/DeviceEdit'
 import { DeviceIconSelection }            from '../views/deviceViews/DeviceIconSelection'
@@ -20,7 +21,6 @@ import { Login }                          from '../views/startupViews/Login'
 import { Logout }                         from "../views/startupViews/Logout";
 import { MessageInbox }                   from '../views/messaging/MessageInbox'
 import { MessageAdd }                     from '../views/messaging/MessageAdd'
-import { PictureView }                    from '../views/cameraViews/PictureView'
 import { Register }                       from '../views/startupViews/Register'
 import { RoomOverview }                   from '../views/roomViews/RoomOverview'
 import { RoomEdit }                       from '../views/roomViews/RoomEdit'
@@ -138,7 +138,8 @@ export const Views = {
   AddSphereTutorial:                 AddSphereTutorial,
   AiStart:                           AiStart,
   AlexaOverview:                     AlexaOverview,
-  CameraRollView:                    CameraRollView,
+  // CameraRollView:                    CameraRollView,
+  // PictureView:                       PictureView,
   DeviceEdit:                        DeviceEdit,
   DeviceIconSelection:               DeviceIconSelection,
   DeviceAbilities:                   DeviceAbilities,
@@ -161,7 +162,6 @@ export const Views = {
   Logout:                            Logout,
   MessageAdd:                        MessageAdd,
   MessageInbox:                      MessageInbox,
-  PictureView:                       PictureView,
   Register:                          Register,
   RoomAdd:                           RoomAdd,
   RoomEdit:                          RoomEdit,

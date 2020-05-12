@@ -21,8 +21,6 @@
     "prop-types": "^15.7.2",
     "react": "16.13.0",
     "react-native": "0.61.5",
-    "react-native-camera": "^3.19.0",
-    "react-native-camera-roll-picker": "^1.3.0",
     "react-native-console-time-polyfill": "^0.0.6",
     "react-native-device-info": "5.5.3",
     "react-native-draggable-flatlist": "^2.3.1",
