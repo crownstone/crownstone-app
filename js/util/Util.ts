@@ -15,6 +15,7 @@ import { xUtil } from "./StandAloneUtil";
 import { core } from "../core";
 import { LOGd } from "../logging/Log";
 import { PICTURE_GALLERY_TYPES, SCENE_STOCK_PICTURE_LIST } from "../views/scenesViews/ScenePictureGallery";
+import { Platform } from "react-native";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -43,9 +44,17 @@ export const processImage = function(pictureURI, targetFilename, scaleFactor = 0
   return new Promise((resolve, reject) => {
     if (!pictureURI) { return resolve(); }
 
+    let rotation = 0;
+    if (Platform.OS === 'android') {
+      let cameraSourceURI = 'content://rocks.crownstone.consumerapp.provider';
+      if (pictureURI.substr(0, cameraSourceURI.length) === cameraSourceURI) {
+        rotation = 90;
+      }
+    }
+
     let targetPath = FileUtil.getPath(targetFilename);
 
-    ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * scaleFactor, screenHeight * pxRatio * scaleFactor, 'JPEG', 90)
+    ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * scaleFactor, screenHeight * pxRatio * scaleFactor, 'JPEG', 90, rotation)
       .then(({uri}) => {
         return FileUtil.safeMoveFile(uri, targetPath);
       })

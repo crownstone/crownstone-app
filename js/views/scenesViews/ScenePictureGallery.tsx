@@ -13,6 +13,7 @@ import { NavigationUtil } from "../../util/NavigationUtil";
 import ImagePicker from "react-native-image-picker";
 import { xUtil } from "../../util/StandAloneUtil";
 import { Button } from "../components/Button";
+import { ImagePickerOptions } from "react-native-image-picker/src/internal/types";
 
 
 export const PICTURE_GALLERY_TYPES = {
@@ -248,13 +249,17 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
   }
 
   handleCustomImage = () => {
-    const options = {
+    const options : ImagePickerOptions = {
       title: lang("Select_Picture"),
       noData: true,
+      mediaType: "photo",
       storageOptions: {
         waitUntilSaved: false,
-        skipBackup: true
-      }
+        skipBackup: true,
+        cameraRoll: false,
+      },
+      allowsEditing: true,
+      quality: 0.99
     };
     NavigationUtil.dismissModal();
     ImagePicker.showImagePicker(options, (response) => {
