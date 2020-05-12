@@ -57,7 +57,8 @@ export const SCENE_IMAGE_SOURCE = {
     'cooking_5.jpg': require("../../images/scenes/cooking/cooking_5.jpg"),
     'cooking_6.jpg': require("../../images/scenes/cooking/cooking_6.jpg"),
     'cooking_7.jpg': require("../../images/scenes/cooking/cooking_7.jpg"),
-    'cooking_8.jpg': require("../../images/scenes/cooking/cooking_8.jpg")
+    'cooking_8.jpg': require("../../images/scenes/cooking/cooking_8.jpg"),
+    'cooking_9.jpg': require("../../images/scenes/cooking/cooking_9.jpg"),
   },
   dinner: {
     'dinner_1.jpg': require("../../images/scenes/dinner/dinner_1.jpg"),
@@ -115,7 +116,8 @@ export const SCENE_IMAGE_SOURCE = {
     'hobby_and_art_8.jpg': require("../../images/scenes/hobby_and_art/hobby_and_art_8.jpg"),
     'hobby_and_art_9.jpg': require("../../images/scenes/hobby_and_art/hobby_and_art_9.jpg"),
     'hobby_and_art_10.jpg': require("../../images/scenes/hobby_and_art/hobby_and_art_10.jpg"),
-    'hobby_and_art_11.jpg': require("../../images/scenes/hobby_and_art/hobby_and_art_11.jpg")
+    'hobby_and_art_11.jpg': require("../../images/scenes/hobby_and_art/hobby_and_art_11.jpg"),
+    'hobby_and_art_12.jpg': require("../../images/scenes/hobby_and_art/hobby_and_art_12.jpg"),
   },
   movie_time: {
     'movie_time_0.jpg': require("../../images/scenes/movie_time/movie_time_0.jpg"),
@@ -162,7 +164,9 @@ export const SCENE_IMAGE_SOURCE = {
     'relax_5.jpg': require("../../images/scenes/relax/relax_5.jpg"),
     'relax_6.jpg': require("../../images/scenes/relax/relax_6.jpg"),
     'relax_7.jpg': require("../../images/scenes/relax/relax_7.jpg"),
-    'relax_8.jpg': require("../../images/scenes/relax/relax_8.jpg")
+    'relax_8.jpg': require("../../images/scenes/relax/relax_8.jpg"),
+    'relax_9.jpg': require("../../images/scenes/relax/relax_9.jpg"),
+    'relax_10.jpg': require("../../images/scenes/relax/relax_10.jpg"),
   },
   romantic: {
     'romantic_1.jpg': require("../../images/scenes/romantic/romantic_1.jpg"),
