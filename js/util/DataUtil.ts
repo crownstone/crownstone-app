@@ -8,6 +8,7 @@ import { core } from "../core";
 import { FileUtil } from "./FileUtil";
 
 import * as RNLocalize from "react-native-localize";
+import { PICTURE_GALLERY_TYPES } from "../views/scenesViews/ScenePictureGallery";
 
 export const DataUtil = {
 
@@ -403,6 +404,7 @@ export const DataUtil = {
     }
     Object.keys(spheres).forEach((sphereId) => {
       let locations = spheres[sphereId].locations;
+      let scenes = spheres[sphereId].scenes;
       let sphereUsers = spheres[sphereId].users;
 
       Object.keys(locations).forEach((locationId) => {
@@ -413,6 +415,11 @@ export const DataUtil = {
       Object.keys(sphereUsers).forEach((userId) => {
         if (sphereUsers[userId].picture) {
           pictures.push({picturePath: sphereUsers[userId].picture, actionToClean: {type:"SPHERE_USER_REPAIR_PICTURE", sphereId: sphereId, userId: userId}})
+        }
+      });
+      Object.keys(scenes).forEach((sceneId) => {
+        if (scenes[sceneId].picture && scenes[sceneId].pictureSource === PICTURE_GALLERY_TYPES.CUSTOM) {
+          pictures.push({picturePath: scenes[sceneId].picture, actionToClean: {type:"SPHERE_SCENE_REPAIR_PICTURE", sphereId: sphereId, sceneId: sceneId}})
         }
       });
     })

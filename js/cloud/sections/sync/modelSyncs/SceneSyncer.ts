@@ -132,7 +132,11 @@ export class SceneSyncer extends SyncingSphereItemBase {
   }
 
   syncLocalScenesDown(localId, sceneInState, scene_from_cloud) {
-    if (scene_from_cloud.customPictureId && sceneInState.pictureId === null || (scene_from_cloud.customPictureId && (scene_from_cloud.customPictureId !== sceneInState.pictureId))) {
+    if (
+      scene_from_cloud.customPictureId && sceneInState.pictureId === null ||
+      (scene_from_cloud.customPictureId && (scene_from_cloud.customPictureId !== sceneInState.pictureId)) ||
+      sceneInState.picture === null // self-repair
+    ) {
       // user should have A or A DIFFERENT profile picture according to the cloud
       this._downloadScenesImage(localId, scene_from_cloud.id,  scene_from_cloud.customPictureId);
     }

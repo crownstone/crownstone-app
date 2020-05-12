@@ -264,6 +264,7 @@ function checkAction(action, affectedIds) {
     case "UPDATE_STONE_TIME_STATE":
     case "LOCATION_REPAIR_PICTURE":
     case "SPHERE_USER_REPAIR_PICTURE":
+    case "SPHERE_SCENE_REPAIR_PICTURE":
     case "UPDATE_SORTED_LIST":
       break;
     case "ADD_TOON":

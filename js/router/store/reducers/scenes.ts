@@ -33,6 +33,13 @@ let sceneReducer = (state = defaultSettings, action : any = {}) => {
         return newState;
       }
       return state;
+
+    case 'SPHERE_SCENE_REPAIR_PICTURE':
+      let newState = {...state};
+      newState.picture    = null;
+      newState.pictureId  = null;
+      newState.pictureSource = null;
+      return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings);
     default:
