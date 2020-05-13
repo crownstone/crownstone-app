@@ -44,8 +44,8 @@ class BroadcastStateManagerClass {
           reloadActiveSphereUpdate = true;
         }
 
-        if (reloadDevicePreferences)  { this._reloadDevicePreferences(); }
-        if (reloadActiveSphereUpdate) { this._reloadDevicePreferences(); }
+        if (reloadDevicePreferences)  { this._reloadDevicePreferences();  }
+        if (reloadActiveSphereUpdate) { this._handleActiveSphereUpdate(); }
       }));
 
       this._listeners.push(core.eventBus.on("enterSphere", (enteringSphereId) => {

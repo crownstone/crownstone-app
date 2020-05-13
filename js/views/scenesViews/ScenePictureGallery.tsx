@@ -258,6 +258,8 @@ export class ScenePictureGallery extends LiveComponent<any, any> {
       mediaType: "photo",
       storageOptions: {
         waitUntilSaved: false,
+        cameraRoll: false,
+        privateDirectory:true,
         skipBackup: true,
       },
       allowsEditing: true,

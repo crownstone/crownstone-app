@@ -34,6 +34,8 @@ export class PictureCircle extends Component<any, any> {
       mediaType: "photo",
       storageOptions: {
         waitUntilSaved: false,
+        cameraRoll: false,
+        privateDirectory:true,
         skipBackup: true,
       },
       allowsEditing: true,

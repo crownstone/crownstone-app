@@ -3,7 +3,7 @@ import { LiveComponent }          from "../LiveComponent";
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("RoomAdd", key)(a,b,c,d,e);
+  return Languages.get("RoomAddCore", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {
@@ -110,17 +110,17 @@ export class RoomAddCore extends LiveComponent<any, any> {
               let name = result.textfieldState;
               if (name == "") {
                 Alert.alert(
-                  lang("_Room_name_must_be_at_lea_header"),
-                  lang("_Room_name_must_be_at_lea_body"),
-                  [{text:lang("_Room_name_must_be_at_lea_left")}]
+                  'Room name must be at least 1 character long.',
+                  'Please change the name and try again.',
+                  [{text:'OK'}]
                 );
                 return false;
               }
               else if (!this.isRoomNameUnique(result.textfieldState)) {
                 Alert.alert(
-                  lang("_Room_already_exists___Pl_header"),
-                  lang("_Room_already_exists___Pl_body"),
-                  [{text:lang("_Room_already_exists___Pl_left")}]
+                  "This room already exitst.",
+                  "Please pick a unique name for this room.",
+                  [{text:'OK'}]
                 );
                 return false;
               }
@@ -191,7 +191,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
         },
 
         options: [
-          {label: lang("Create_room_"), textAlign:'right', onSelect: (result) => {
+          {label: "Create room", textAlign:'right', onSelect: (result) => {
             let icon = result.customElementState.icon || this.newRoomData.icon;
             this.newRoomData.icon = icon;
             this.createRoom()
