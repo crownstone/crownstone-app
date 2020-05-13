@@ -118,7 +118,7 @@ export class RoomAddCore extends LiveComponent<any, any> {
               }
               else if (!this.isRoomNameUnique(result.textfieldState)) {
                 Alert.alert(
-                  "This room already exitst.",
+                  "This room already exists.",
                   "Please pick a unique name for this room.",
                   [{text:'OK'}]
                 );
