@@ -49,7 +49,6 @@
 		FA274EF22410171B00D7C858 /* libReact-jsiexecutor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274E922410144F00D7C858 /* libReact-jsiexecutor.a */; };
 		FA274EF32410171B00D7C858 /* libReact-jsinspector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274E942410144F00D7C858 /* libReact-jsinspector.a */; };
 		FA274EF42410171B00D7C858 /* libreact-native-blur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274E962410144F00D7C858 /* libreact-native-blur.a */; };
-		FA274EF52410171B00D7C858 /* libreact-native-camera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274E982410144F00D7C858 /* libreact-native-camera.a */; };
 		FA274EF62410171B00D7C858 /* libreact-native-image-resizer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274E9A2410144F00D7C858 /* libreact-native-image-resizer.a */; };
 		FA274EF72410171B00D7C858 /* libreact-native-keep-awake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274E9C2410144F00D7C858 /* libreact-native-keep-awake.a */; };
 		FA274EF82410171B00D7C858 /* libreact-native-maps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA274E9E2410144F00D7C858 /* libreact-native-maps.a */; };
@@ -239,13 +238,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 6D65F1A831B333D8CF7EB66829B4339A;
 			remoteInfo = "react-native-blur";
-		};
-		FA274E972410144F00D7C858 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA274E4A2410144E00D7C858 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6C9790F1A25C1E3828E179A8F0850851;
-			remoteInfo = "react-native-camera";
 		};
 		FA274E992410144F00D7C858 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -650,7 +642,6 @@
 				FA274EF22410171B00D7C858 /* libReact-jsiexecutor.a in Frameworks */,
 				FA274EF32410171B00D7C858 /* libReact-jsinspector.a in Frameworks */,
 				FA274EF42410171B00D7C858 /* libreact-native-blur.a in Frameworks */,
-				FA274EF52410171B00D7C858 /* libreact-native-camera.a in Frameworks */,
 				FA274EF62410171B00D7C858 /* libreact-native-image-resizer.a in Frameworks */,
 				FA274EF72410171B00D7C858 /* libreact-native-keep-awake.a in Frameworks */,
 				FA274EF82410171B00D7C858 /* libreact-native-maps.a in Frameworks */,
@@ -899,7 +890,6 @@
 				FA274E922410144F00D7C858 /* libReact-jsiexecutor.a */,
 				FA274E942410144F00D7C858 /* libReact-jsinspector.a */,
 				FA274E962410144F00D7C858 /* libreact-native-blur.a */,
-				FA274E982410144F00D7C858 /* libreact-native-camera.a */,
 				FAE05692243765B0003BE780 /* libreact-native-image-picker.a */,
 				FA274E9A2410144F00D7C858 /* libreact-native-image-resizer.a */,
 				FA274E9C2410144F00D7C858 /* libreact-native-keep-awake.a */,
@@ -1295,13 +1285,6 @@
 			fileType = archive.ar;
 			path = "libreact-native-blur.a";
 			remoteRef = FA274E952410144F00D7C858 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FA274E982410144F00D7C858 /* libreact-native-camera.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libreact-native-camera.a";
-			remoteRef = FA274E972410144F00D7C858 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FA274E9A2410144F00D7C858 /* libreact-native-image-resizer.a */ = {

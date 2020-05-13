@@ -3,7 +3,7 @@ import { LiveComponent }          from "../LiveComponent";
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DeviceSummary", key)(a,b,c,d,e);
+  return Languages.get("DeviceAbilities", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {
@@ -77,9 +77,9 @@ export class DeviceAbilities extends LiveComponent<any, any> {
             <View style={{height: 0.02*availableModalHeight}} />
             <Text style={deviceStyles.specification}>{ lang("These_are_the_things_I_ca",permissionGranted) }</Text>
             <View style={{height: 0.02*availableModalHeight}} />
-                                <Ability type={ lang("dimming")}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
-            { hasSwitchcraft && <Ability type={ lang("switchcraft")} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
-                                <Ability type={ lang("tapToToggle")} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
+                                <Ability type={ "dimming"}     stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
+            { hasSwitchcraft && <Ability type={ "switchcraft"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/> }
+                                <Ability type={ "tapToToggle"} stone={stone} stoneId={this.props.stoneId} sphereId={this.props.sphereId} permissionGranted={permissionGranted}/>
           </View>
         </ScrollView>
       </Background>
@@ -98,7 +98,6 @@ function Ability(props : { type: string, stone: any, stoneId: string, sphereId: 
   let synced = getSyncedState(props.stone, props.type);
   let data = getData(props, props.stone, active);
   let helpColor = colors.black.rgba(0.5);
-
 
   return (
     <View style={{width:screenWidth, marginBottom: margins}}>
