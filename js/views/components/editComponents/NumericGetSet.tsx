@@ -1,7 +1,7 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("ButtonBar", key)(a,b,c,d,e);
+  return Languages.get("NumericGetSet", key)(a,b,c,d,e);
 }
 
 import * as React from 'react'; import { Component } from 'react';

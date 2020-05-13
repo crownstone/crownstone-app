@@ -2,7 +2,7 @@
 import { Languages } from "../../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("SwitchcraftInformation", key)(a,b,c,d,e);
+  return Languages.get("Ability_SwitchcraftInformation", key)(a,b,c,d,e);
 }
 import * as React from 'react'; import { Component } from 'react';
 import {

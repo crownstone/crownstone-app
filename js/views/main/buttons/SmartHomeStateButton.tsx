@@ -2,7 +2,7 @@
 import { Languages } from "../../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("AutoArrangeButton", key)(a,b,c,d,e);
+  return Languages.get("SmartHomeStateButton", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {
@@ -180,10 +180,7 @@ export class SmartHomeStateButton extends Component<any, any> {
             }
           }
           else {
-            Alert.alert(
-lang("_Youre_not_in_the_Sphere__header"),
-lang("_Youre_not_in_the_Sphere__body"),
-[{text:lang("_Youre_not_in_the_Sphere__left")}])
+            Alert.alert("You're not in the Sphere","You have to be in range of your Crownstones to disable their behaviour.",[{text:"OK"}])
           }
         }}>
           { contentData.explanation }

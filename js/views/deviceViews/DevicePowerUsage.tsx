@@ -3,7 +3,7 @@ import { LiveComponent }          from "../LiveComponent";
 import { Languages } from "../../Languages"
 
 function lang(key,a?,b?,c?,d?,e?) {
-  return Languages.get("DevicePowerCurve", key)(a,b,c,d,e);
+  return Languages.get("DevicePowerUsage", key)(a,b,c,d,e);
 }
 import * as React from 'react';
 import {
