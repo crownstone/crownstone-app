@@ -1,6 +1,7 @@
 import { core } from "../core";
 import { Util } from "../util/Util";
 import { KEY_TYPES } from "../Enums";
+import { act } from "@testing-library/react-native";
 
 const ACTIVE_SPHERE_EXPIRATION_THRESHOLD = 5*60*1000; // 5 mins
 
@@ -59,6 +60,14 @@ class ActiveSphereManagerClass {
 
   _updateActiveSphere() {
     let state = core.store.getState();
+    let activeSphereId = state.app.activeSphere;
+    let activeSphere = state.spheres(activeSphereId);
+
+    if (!activeSphere) {} // sphere is deleted
+    else if (activeSphere.state.present === true) { // do not change active spheres if the sphere we're currently in is active.
+      return;
+    }
+
     let sphereIds = Object.keys(state.spheres).sort((sphereIdA,sphereIdB) => {
       let sphereA = state.spheres[sphereIdA];
       let sphereB = state.spheres[sphereIdB];

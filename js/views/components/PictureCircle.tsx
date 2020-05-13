@@ -35,7 +35,6 @@ export class PictureCircle extends Component<any, any> {
       storageOptions: {
         waitUntilSaved: false,
         skipBackup: true,
-        cameraRoll: false,
       },
       allowsEditing: true,
       quality: 0.99
