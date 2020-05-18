@@ -6,6 +6,8 @@ let extractor = require("./extractor");
 
 const LANGUAGE_FILE_PATH = '../../js/'
 
+let success = true;
+
 let translationData = {};
 
 let fileList = [];
@@ -32,7 +34,7 @@ let parseFilesRecursivelyInPath = function(dirPath, BASE) {
     }
   };
 
-  return {fileMap, fileList, translationData}
+  return {fileMap, fileList, translationData, success}
 }
 
 
@@ -65,10 +67,12 @@ let parseFile = function(filePath, allowReplace, BASE) {
   if (labelMatches !== null) {
     if (filenameForTranslation !== filename) {
       console.log("Warning: file", filename, " is not using it's own filename as translation key but:", filenameForTranslation)
+      success = false;
     }
 
     if (!filenameForTranslation) {
       console.log("ERR: NO TRANSLATION FILE IS REFERENCED!", filename)
+      success = false;
       return;
     }
 
@@ -80,12 +84,14 @@ let parseFile = function(filePath, allowReplace, BASE) {
         if (BASE[filenameForTranslation] === undefined) {
           if (BASE['__UNIVERSAL'][key] === undefined) {
             console.log("MISSING FILE ENTRY", filename, key)
+            success = false;
           }
         }
         else {
           if (BASE[filenameForTranslation][key] === undefined) {
             if (BASE['__UNIVERSAL'][key] === undefined) {
               console.log("MISSING KEY", key, "in", filename)
+              success = false;
             }
           }
         }

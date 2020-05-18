@@ -52,3 +52,8 @@ Cut the text from the code and paste it into the textbox. Click next to the text
 with translation file format entries. Paste that into the en_us.ts file and the lang(..) back at the position of the initial string.
 
 Once that is done, run the maintainLanguageFiles.js script to sync this to the other languages.
+
+## Verification
+```$xslt
+node checkForMissingStrings.js
+```

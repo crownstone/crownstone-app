@@ -31,4 +31,8 @@ loadBaseLanguageFile();
 
 
 // parse all files in js folder
-let {fileMap, fileList, translationData} = lineKeyChecker.checkLineElements(config.BASE_CODE_PATH, BASE)
+let {fileMap, fileList, translationData, success} = lineKeyChecker.checkLineElements(config.BASE_CODE_PATH, BASE)
+
+if (success) {
+  console.log("\n\nEverything looks fantastic!\n\n")
+}

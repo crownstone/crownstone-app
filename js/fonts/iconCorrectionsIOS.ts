@@ -441,7 +441,7 @@ const evilIconsCorrectionsIOS = {
 
 };
 const fiCS1IconsCorrectionsIOS = {
-
+'fiCS1-furniture-and-household-9': {change: true, top: +0.040, left: +0.14},
 };
 const fiHSIconsCorrectionsIOS = {
 
