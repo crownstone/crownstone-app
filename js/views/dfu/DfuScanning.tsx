@@ -30,28 +30,34 @@ import { Button } from "../components/Button";
 
 const triggerId = "ScanningForDfu";
 
-const DFU_BATCH_RSSI_THRESHOLD = Platform.OS === 'android' ? -75 : -82;
+const DFU_BATCH_RSSI_THRESHOLD = Platform.OS === 'android' ? -75 : -85;
+const DFU_BATCH_LAST_SEEN_TIME = 10000; // 10 seconds
+
+const AVAILABILITY_STATES = {
+  INVISIBLE:    "INVISIBLE",
+  NOT_IN_RANGE: "NOT_IN_RANGE",
+  IN_RANGE:     "IN_RANGE",
+}
 
 export class DfuScanning extends LiveComponent<any, any> {
   static options(props) {
     return TopBarUtil.getOptions({title: lang("Looking_for_Crownstones"), next: true});
   }
 
-  nativeEvents = [];
-  visibleDrawnStones = [];
-  stoneUpdateData;
-  visibleStones;
-  stonesToUpdate;
+  nativeEvents     = [];
+  stoneIdsToUpdate = [];
+
+  stateMap         = {};
+  scannedStones    = {};
   scanningIsActive = false;
+
+  stoneUpdateData;
   unsubscribeStoreEvents;
 
   constructor(props) {
     super(props);
 
-    this.stonesToUpdate = {};
-    this.visibleStones = {};
     this.stoneUpdateData = DfuUtil.getUpdatableStones(this.props.sphereId);
-    this.visibleDrawnStones = [];
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -61,14 +67,14 @@ export class DfuScanning extends LiveComponent<any, any> {
   }
 
   _goToUpdatePhase() {
-    if (this.visibleDrawnStones.length === 0) {
+    if (this.stoneIdsToUpdate.length === 0) {
       Alert.alert(
         lang("_No_Crownstones_in_range__header"),
         lang("_No_Crownstones_in_range__body"),
         [{text:lang("_No_Crownstones_in_range__left")}])
     }
     else {
-      NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})
+      NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.stoneIdsToUpdate})
     }
   }
 
@@ -99,9 +105,9 @@ export class DfuScanning extends LiveComponent<any, any> {
       this.scanningIsActive = true;
 
       this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.iBeaconAdvertisement, (data) => { this._parseIBeacon(data); }));
-      this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement, (data) => { this._parseAdvertisement(data); }));
-      this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.advertisement, (data) => { this._parseAdvertisement(data); }));
-      this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement, (data) => { this._parseAdvertisement(data); }));
+      this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.dfuAdvertisement,     (data) => { this._parseAdvertisement(data); }));
+      this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.advertisement,        (data) => { this._parseAdvertisement(data); }));
+      this.nativeEvents.push(core.nativeBus.on(core.nativeBus.topics.setupAdvertisement,   (data) => { this._parseAdvertisement(data); }));
       Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds : 1});
       Scheduler.loadCallback(triggerId, () => { this.forceUpdate(); })
     }
@@ -113,7 +119,7 @@ export class DfuScanning extends LiveComponent<any, any> {
 
       this.nativeEvents.forEach((unsub) => { unsub(); });
       this.nativeEvents = [];
-      this.visibleStones = {};
+      this.scannedStones = {};
 
       Scheduler.removeTrigger(triggerId);
     }
@@ -142,41 +148,37 @@ export class DfuScanning extends LiveComponent<any, any> {
     if (this.stoneUpdateData.stones[stoneId] !== undefined) {
       if (rssi >= 0 || rssi < -100) { return };
 
-      if (this.visibleStones[stoneId] === undefined) {
-        this.visibleStones[stoneId] = {updatedAt: null, rssi: rssi};
+      if (this.scannedStones[stoneId] === undefined) {
+        this.scannedStones[stoneId] = {updatedAt: null, rssi: rssi};
       }
       let factor = 0.2;
-      this.visibleStones[stoneId].rssi = factor*rssi + (1-factor)*this.visibleStones[stoneId].rssi;
-      this.visibleStones[stoneId].updatedAt = new Date().valueOf();
+      this.scannedStones[stoneId].rssi = factor*rssi + (1-factor) * this.scannedStones[stoneId].rssi;
+      this.scannedStones[stoneId].updatedAt = new Date().valueOf();
     }
   }
 
 
   _shouldStoneBeVisibleBasedOnLastSeen(stoneId) {
-    return this.visibleStones[stoneId] && (new Date().valueOf() - this.visibleStones[stoneId].updatedAt < 10000) || false;
+    return this.scannedStones[stoneId] && (new Date().valueOf() - this.scannedStones[stoneId].updatedAt < 10000) || false;
   }
 
+
   _renderer(item, index, stoneId) {
-    let visible = this._shouldStoneBeVisibleBasedOnLastSeen(stoneId);
+    let visible = this.stateMap[stoneId] == AVAILABILITY_STATES.IN_RANGE || this.stateMap[stoneId] == AVAILABILITY_STATES.NOT_IN_RANGE
     let backgroundColor = colors.lightGray.rgba(0.5);
     let iconColor = colors.csBlue.rgba(0.2);
     let closeEnough = false;
 
     if (visible) {
-      this.stonesToUpdate[stoneId] = true;
-      if (this.visibleStones[stoneId].rssi > DFU_BATCH_RSSI_THRESHOLD) {
+      if (this.stateMap[stoneId] == AVAILABILITY_STATES.IN_RANGE) {
         backgroundColor = colors.green.rgba(0.8);
         iconColor = colors.csBlue.hex;
         closeEnough = true;
-        this.visibleDrawnStones.push(stoneId);
       }
       else {
         backgroundColor = colors.white.rgba(0.8);
         iconColor = colors.csBlue.hex;
       }
-    }
-    else {
-      delete this.stonesToUpdate[stoneId];
     }
 
     return (
@@ -201,45 +203,73 @@ export class DfuScanning extends LiveComponent<any, any> {
     let stoneArray = [];
     let idArray = [];
 
+    // there are 3 tiers:
+    // - invisible (not seen)
+    // - visible, but not in range in the last DFU_BATCH_LAST_SEEN_TIME seconds
+    // - visible and in range.
+
+    // all Crownstone ids that require updates.
     let ids = Object.keys(this.stoneUpdateData.stones);
-    ids.forEach((id) => {
-      let visible = this._shouldStoneBeVisibleBasedOnLastSeen(id);
+    for (let i = 0; i < ids.length; i++) {
+      let stoneId = ids[i];
+
+      // all will be drawn
+      let visible = this._shouldStoneBeVisibleBasedOnLastSeen(stoneId);
       if (visible) {
-        if (this.visibleStones[id].rssi > DFU_BATCH_RSSI_THRESHOLD) {
-          stoneArray.push(this.stoneUpdateData.stones[id]);
-          idArray.push(id);
+        if (this.scannedStones[stoneId].rssi > DFU_BATCH_RSSI_THRESHOLD) {
+          // this crownstone is within range to update!
+          this.stateMap[stoneId] = AVAILABILITY_STATES.IN_RANGE;
+          this.stoneIdsToUpdate.push(stoneId);
+        }
+        else {
+          // visible but not in range
+          this.stateMap[stoneId] = AVAILABILITY_STATES.NOT_IN_RANGE;
         }
       }
-    });
-
-    ids.forEach((id) => {
-      let visible = this._shouldStoneBeVisibleBasedOnLastSeen(id);
-      if (visible) {
-        if (this.visibleStones[id].rssi <= DFU_BATCH_RSSI_THRESHOLD) {
-          stoneArray.push(this.stoneUpdateData.stones[id]);
-          idArray.push(id);
-        }
+      else {
+        // not visible yet!
+        this.stateMap[stoneId] = AVAILABILITY_STATES.INVISIBLE;
       }
-    });
+    }
 
-    ids.forEach((id) => {
-      let visible = this._shouldStoneBeVisibleBasedOnLastSeen(id);
-      if (!visible) {
-        stoneArray.push(this.stoneUpdateData.stones[id]);
-        idArray.push(id);
+    // construct the list in order of availability.
+    for (let i = 0; i < ids.length; i++) {
+      let stoneId = ids[i];
+      if (this.stateMap[stoneId] == AVAILABILITY_STATES.IN_RANGE) {
+        stoneArray.push(this.stoneUpdateData.stones[stoneId]);
+        idArray.push(stoneId);
       }
-    });
+    }
+    for (let i = 0; i < ids.length; i++) {
+      let stoneId = ids[i];
+      if (this.stateMap[stoneId] == AVAILABILITY_STATES.NOT_IN_RANGE) {
+        stoneArray.push(this.stoneUpdateData.stones[stoneId]);
+        idArray.push(stoneId);
+      }
+    }
+    for (let i = 0; i < ids.length; i++) {
+      let stoneId = ids[i];
+      if (this.stateMap[stoneId] == AVAILABILITY_STATES.INVISIBLE) {
+        stoneArray.push(this.stoneUpdateData.stones[stoneId]);
+        idArray.push(stoneId);
+      }
+     }
 
 
-    return { stoneArray, ids: idArray };
+
+
+     return { stoneArray, ids: idArray };
   }
 
 
+
+
   render() {
+    this.stateMap    = {};
+    this.stoneIdsToUpdate = [];
     const { stoneArray, ids } = this._getStoneList();
 
     let borderStyle = { borderColor: colors.black.rgba(0.2), borderBottomWidth: 1 };
-    this.visibleDrawnStones = [];
     return (
       <Background hasNavBar={false} image={core.background.light} hideNotifications={true}>
         <KeepAwake />
@@ -263,7 +293,7 @@ export class DfuScanning extends LiveComponent<any, any> {
             renderer={this._renderer.bind(this)}
           />
         </ScrollView>
-        <SlideFadeInView visible={Object.keys(this.visibleDrawnStones).length > 0} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", ...styles.centered}}>
+        <SlideFadeInView visible={this.stoneIdsToUpdate.length > 0} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", ...styles.centered}}>
           <View style={{shadowColor: colors.black.hex, shadowOpacity:0.9, shadowRadius: 5, shadowOffset:{width:0, height:2} }}>
             <Button
               iconPosition={ lang("right")}

@@ -93,7 +93,7 @@ export const DfuUtil = {
 
       if (xUtil.versions.isLower(stone.config.firmwareVersion, availableFW) || ALWAYS_DFU_UPDATE_BOOTLOADER || ALWAYS_DFU_UPDATE_FIRMWARE) {
         if (versionsAvailable[availableFW] === undefined) {
-          versionsAvailable[availableFW] = stone.config.hardwareVersion
+          versionsAvailable[availableFW] = stone.config.hardwareVersion;
         }
         updatableStones[stoneId] = stone;
       }

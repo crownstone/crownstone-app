@@ -13,10 +13,10 @@ import {
 
 import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from "../../styles";
-import {AnimatedCircle} from "../animated/AnimatedCircle";
 import { core } from "../../../core";
 import { DataUtil } from "../../../util/DataUtil";
 import { NavigationUtil } from "../../../util/NavigationUtil";
+import { Circle } from "../Circle";
 
 
 export class DfuDeviceOverviewEntry extends Component<any, any> {
@@ -32,9 +32,9 @@ export class DfuDeviceOverviewEntry extends Component<any, any> {
   _getIcon(stone) {
     let color = this.props.iconColor || colors.green.rgba(0.8);
     return (
-      <AnimatedCircle size={60} color={color}>
+      <Circle size={60} color={color}>
         <Icon name={stone.config.icon} size={35} color={'#ffffff'} />
-      </AnimatedCircle>
+      </Circle>
     );
   }
 
@@ -52,10 +52,10 @@ export class DfuDeviceOverviewEntry extends Component<any, any> {
         onLongPress={() => {
           if (state.user.developer) {
             Alert.alert(
-lang("_Update_just_this_Crownst_header"),
-lang("_Update_just_this_Crownst_body"),
-[{text:lang("_Update_just_this_Crownst_left")},{
-text:lang("_Update_just_this_Crownst_right"), onPress:() => {
+              lang("_Update_just_this_Crownst_header"),
+              lang("_Update_just_this_Crownst_body"),
+              [{text:lang("_Update_just_this_Crownst_left")},{
+              text:lang("_Update_just_this_Crownst_right"), onPress:() => {
               NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: [this.props.stoneId]})
             }}])
           }
