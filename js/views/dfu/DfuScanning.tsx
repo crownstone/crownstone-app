@@ -56,15 +56,19 @@ export class DfuScanning extends LiveComponent<any, any> {
 
   navigationButtonPressed({ buttonId }) {
     if (buttonId === 'next') {
-      if (this.visibleDrawnStones.length === 0) {
-        Alert.alert(
-          lang("_No_Crownstones_in_range__header"),
-          lang("_No_Crownstones_in_range__body"),
-          [{text:lang("_No_Crownstones_in_range__left")}])
-      }
-      else {
-        NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})
-      }
+      this._goToUpdatePhase();
+    }
+  }
+
+  _goToUpdatePhase() {
+    if (this.visibleDrawnStones.length === 0) {
+      Alert.alert(
+        lang("_No_Crownstones_in_range__header"),
+        lang("_No_Crownstones_in_range__body"),
+        [{text:lang("_No_Crownstones_in_range__left")}])
+    }
+    else {
+      NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones})
     }
   }
 
@@ -259,7 +263,7 @@ export class DfuScanning extends LiveComponent<any, any> {
             renderer={this._renderer.bind(this)}
           />
         </ScrollView>
-        <SlideFadeInView visible={Object.keys(this.stonesToUpdate).length > 0} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", ...styles.centered}}>
+        <SlideFadeInView visible={Object.keys(this.visibleDrawnStones).length > 0} height={100} style={{ position: 'absolute', bottom: 0, width: screenWidth, overflow:"hidden", ...styles.centered}}>
           <View style={{shadowColor: colors.black.hex, shadowOpacity:0.9, shadowRadius: 5, shadowOffset:{width:0, height:2} }}>
             <Button
               iconPosition={ lang("right")}
@@ -269,7 +273,7 @@ export class DfuScanning extends LiveComponent<any, any> {
               label={"Let's update!"}
               fontSize={17}
               iconSize={14}
-              callback={() => { NavigationUtil.navigate( "DfuBatch", {sphereId: this.props.sphereId, stoneIdsToUpdate: this.visibleDrawnStones}) }} />
+              callback={() => { this._goToUpdatePhase(); }} />
           </View>
           <View style={{height:10}} />
         </SlideFadeInView>
