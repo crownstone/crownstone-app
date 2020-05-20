@@ -74,10 +74,10 @@ export class DeviceSyncer extends SyncingBase {
         let transferPromises = [];
         let sphereIds = Object.keys(this.globalLocalIdMap.spheres);
         let localDevice = state.devices[this.currentDeviceId];
-        if (localDevice?.trackingNumbers) {
+        if (localDevice) {
           for (let i = 0; i < sphereIds.length; i++) {
             let sphereId = sphereIds[i];
-            if (localDevice.trackingNumbers[sphereId] === undefined) {
+            if (localDevice.trackingNumbers === undefined || localDevice.trackingNumbers[sphereId] === undefined) {
               transferPromises.push(CLOUD.getTrackingNumberInSphere(sphereId)
                 .then((trackingNumber) => {
                   this.actions.push({
