@@ -1112,7 +1112,7 @@ class BluenetBridge(reactContext: ReactApplicationContext): ReactContextBaseJava
 
 	@ReactMethod
 	@Synchronized
-	fun connect(address: String, referenceId: String, callback: Callback) {
+	fun connect(address: String, referenceId: String?, callback: Callback) {
 		Log.i(TAG, "connect $address")
 		bluenet.connect(address)
 				.success {
