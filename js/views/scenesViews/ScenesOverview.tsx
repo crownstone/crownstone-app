@@ -95,7 +95,7 @@ export class ScenesOverview extends LiveComponent<any, any> {
             <View style={{flexDirection:"row", alignItems:'center'}}>
               <View style={{flex:1}} />
               <Text style={{paddingRight:5, paddingTop:15, fontStyle:"italic", color: colors.black.rgba(0.5)}}>Add more scenes by tapping edit!</Text>
-              <ScaledImage source={require("../../images/lineDrawings/arrow.png")} sourceHeight={195} sourceWidth={500} targetWidth={screenWidth-300} style={{marginRight:20}} tintColor={colors.black.rgba(0.5)} />
+              <ScaledImage source={require("../../images/lineDrawings/arrow.png")} sourceHeight={195} sourceWidth={500} targetHeight={30} style={{marginRight:20}} tintColor={colors.black.rgba(0.5)} />
             </View>
           </SlideFadeInView>
         </View>
@@ -211,8 +211,6 @@ export class ScenesOverview extends LiveComponent<any, any> {
               activationDistance={10}
               style={{paddingTop: hintShown ? 10 : 20}}
             />
-            {/*<SceneCreateNewItem callback={()=>{ NavigationUtil.launchModal("SceneAdd", { sphereId: activeSphere }) }} isFirst={false} />*/}
-
           </View>
          );
        }
